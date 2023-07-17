@@ -1,5 +1,4 @@
 /*Blog Init*/
-"use strict";
 $(function () {
     let tb = $('#datatable_user_list');
     tb.DataTableDefault({

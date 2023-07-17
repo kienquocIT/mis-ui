@@ -156,7 +156,6 @@
 {% block dataHiddenGroup %}
     <span id="idxUrlPickingDetail">{% url 'OrderPickingDetailAPI' pk=data.pk %}</span>
     {{ data.state_choices|json_script:"dataStateChoices" }}
-    {{ data.config|json_script:'deliver_config' }}
     <input type="hidden" id="trans-factory"
            data-error-picked-quantity="{% trans 'Number is larger than Remain number' %}"
            data-error-warehouse="{% trans 'Warehouse is required!' %}"

@@ -868,7 +868,7 @@ msgstr "Người tạo"
 
 #
 msgid "Posting date"
-msgstr "Ngày tạo"
+msgstr "Ngày hiệu lực"
 
 #
 msgid "Current node"
@@ -3264,7 +3264,7 @@ msgstr "SL lấy trước đó"
 
 #
 msgid "Remain"
-msgstr "còn lại"
+msgstr "Chưa giao"
 
 #
 msgid "Product in Warehouse out of stock"
@@ -3600,3 +3600,7 @@ msgstr "Mỗi Space có các Menus khác nhau."
 #
 msgid "Data is refreshed"
 msgstr "Dữ liệu đã được làm mới"
+
+#
+msgid "Delivery before"
+msgstr "Đã giao"

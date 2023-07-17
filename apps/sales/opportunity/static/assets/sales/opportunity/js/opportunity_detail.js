@@ -732,7 +732,7 @@ $(document).ready(function () {
                 $.fn.compareStatusShowPageAction(opportunity_detail);
                 opp_stage_id = opportunity_detail.stage;
                 opp_is_closed = opportunity_detail.is_close;
-                loadStage(opportunity_detail.stage, opportunity_detail.is_close);
+                loadStage(opportunity_detail.stage, opportunity_detail.is_close_lost, opportunity_detail.is_deal_close);
                 let ele_header = $('#header-title');
                 ele_header.text(opportunity_detail.title);
                 $('#span-code').text(opportunity_detail.code);
@@ -1143,7 +1143,8 @@ $(document).ready(function () {
         ele_product_category.val() !== undefined ? data_form['product_category'] = ele_product_category.val() : undefined;
         ele_decision_factor.val() !== undefined ? data_form['customer_decision_factor'] = ele_decision_factor.val() : undefined;
 
-        data_form['is_close'] = false;
+        data_form['is_close_lost'] = false;
+        data_form['is_deal_close'] = false;
 
         if (data_form['end_customer'] === '') {
             data_form['end_customer'] = null;
@@ -1189,7 +1190,7 @@ $(document).ready(function () {
             let win_deal = false;
             if ($(this).find('.input-win-deal').is(':checked')) {
                 win_deal = true;
-                data_form['is_close'] = true;
+                data_form['is_close_lost'] = true;
             }
 
             let data = {
@@ -1246,7 +1247,7 @@ $(document).ready(function () {
 
 
         if ($('#input-close-deal').is(':checked')) {
-            data_form['is_close'] = true;
+            data_form['is_deal_close'] = true;
         }
 
         data_form['list_stage'] = list_stage;
@@ -1255,7 +1256,7 @@ $(document).ready(function () {
 
         if (ele_lost_other_reason.is(':checked')) {
             data_form['lost_by_other_reason'] = true;
-            data_form['is_close'] = true;
+            data_form['is_close_lost'] = true;
         }
         return data_form
     }
@@ -1413,7 +1414,7 @@ $(document).ready(function () {
     let list_stage = [];
     let dict_stage = {};
 
-    function loadStage(stages, system_status) {
+    function loadStage(stages, is_close_lost, is_deal_close) {
         let ele = $('#div-stage');
         let method = ele.data('method');
         let url = ele.data('url');
@@ -1441,7 +1442,7 @@ $(document).ready(function () {
                         if (item.is_deal_closed) {
                             ele_first_stage.addClass('stage-close')
                             ele_first_stage.find('.dropdown-menu').empty();
-                            if (system_status === true) {
+                            if (is_close_lost || is_deal_close) {
                                 ele_first_stage.find('.dropdown-menu').append(
                                     `<div class="form-check form-switch">
                                     <input type="checkbox" class="form-check-input" id="input-close-deal" checked>
@@ -1570,24 +1571,24 @@ $(document).ready(function () {
         loadWinRate();
     })
 
-    if (config_is_select_stage) {
-        $('#btn-auto-update-stage').hide();
-    } else {
-        if (!$('#input-close-deal').is(':checked')) {
-            window.addEventListener('load', function () {
-                setTimeout(function () {
-                    autoLoadStage(true);
-                }, 1500);
-            });
-
-        }
-    }
+    // if (config_is_select_stage) {
+    //     $('#btn-auto-update-stage').hide();
+    // } else {
+    //     if (!$('#input-close-deal').is(':checked')) {
+    //         window.addEventListener('load', function () {
+    //             setTimeout(function () {
+    //                 autoLoadStage(true);
+    //             }, 1500);
+    //         });
+    //
+    //     }
+    // }
 
     function checkOppWonOrDelivery() {
         let check = false;
         let stage_id = $('.stage-selected').last().data('id');
         let indicator = dict_stage[stage_id].indicator;
-        if (indicator === 'Close Won' || indicator === 'Delivery') {
+        if (indicator === 'Closed Won' || indicator === 'Delivery') {
             check = true;
         }
         return check;

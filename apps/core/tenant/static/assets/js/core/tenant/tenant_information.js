@@ -1,5 +1,4 @@
-/*Blog Init*/
-"use strict";
+
 $(function () {
     $(document).ready(function () {
         let config = {

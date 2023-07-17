@@ -2383,8 +2383,14 @@ String.prototype.format_by_key = function (objKey) {
     return s;
 }
 
+// return boolean value
+// accept to type string with dashes and without dashes
 String.prototype.valid_uuid4 = function () {
-    return /^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$/i.test(this.toString());
+    let isCheck = this.toString()
+    if(this.toString().indexOf('-') === -1){
+        isCheck = this.toString().replace(/(.{8})(.{4})(.{4})(.{4})(.{12})/g, '$1-$2-$3-$4-$5')
+    }
+    return /^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$/i.test(isCheck);
 }
 
 Array.prototype.convert_to_key = function (key = 'id') {

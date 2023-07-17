@@ -1,4 +1,4 @@
-"use strict";
+
 $(function () {
     $(document).ready(function () {
         let boxCustomer = $('#select-box-opportunity-create-customer');

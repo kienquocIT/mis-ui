@@ -388,6 +388,26 @@ class OpportunityCallLogListAPI(APIView):
         )
 
 
+class OpportunityCallLogDeleteAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CALL_LOG_DELETE.fill_key(pk=pk)).put(request.data)
+        if resp.state:
+            return {'opportunity_call_log': resp.result}, status.HTTP_200_OK
+        if resp.errors:  # noqa
+            if isinstance(resp.errors, dict):
+                err_msg = ""
+                for key, value in resp.errors.items():
+                    err_msg += str(key) + ': ' + str(value)
+                    break
+                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
+            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+
+
 class OpportunityEmailList(View):
     permission_classes = [IsAuthenticated]
 
@@ -438,6 +458,26 @@ class OpportunityEmailListAPI(APIView):
         return create_update_opportunity(
             request=request, url=ApiURL.OPPORTUNITY_EMAIL_LIST, msg=SaleMsg.OPPORTUNITY_EMAIL_SEND
         )
+
+
+class OpportunityEmailDeleteAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_EMAIL_DELETE.fill_key(pk=pk)).put(request.data)
+        if resp.state:
+            return {'opportunity_email': resp.result}, status.HTTP_200_OK
+        if resp.errors:  # noqa
+            if isinstance(resp.errors, dict):
+                err_msg = ""
+                for key, value in resp.errors.items():
+                    err_msg += str(key) + ': ' + str(value)
+                    break
+                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
+            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
 
 
 class OpportunityMeetingList(View):
@@ -494,3 +534,23 @@ class OpportunityMeetingListAPI(APIView):
         return create_update_opportunity(
             request=request, url=ApiURL.OPPORTUNITY_MEETING_LIST, msg=SaleMsg.OPPORTUNITY_MEETING_CREATED
         )
+
+
+class OpportunityMeetingDeleteAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_MEETING_DELETE.fill_key(pk=pk)).put(request.data)
+        if resp.state:
+            return {'opportunity_meeting': resp.result}, status.HTTP_200_OK
+        if resp.errors:  # noqa
+            if isinstance(resp.errors, dict):
+                err_msg = ""
+                for key, value in resp.errors.items():
+                    err_msg += str(key) + ': ' + str(value)
+                    break
+                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
+            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR

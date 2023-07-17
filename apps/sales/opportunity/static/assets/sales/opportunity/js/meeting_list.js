@@ -171,7 +171,7 @@ $(function () {
                     columns: [
                         {
                             data: 'subject',
-                            className: 'wrap-text w-40',
+                            className: 'wrap-text w-35',
                             render: (data, type, row, meta) => {
                                 return  `<a class="text-primary link-primary underline_hover detail-call-log-button" href="" data-bs-toggle="modal" data-id="` + row.id + `"
                                             data-bs-target="#detail-meeting"><span><b>` + row.subject + `</b></span></a>`
@@ -193,7 +193,7 @@ $(function () {
                         },
                         {
                             data: 'repeat',
-                            className: 'wrap-text w-20 text-center',
+                            className: 'wrap-text w-15 text-center',
                             render: (data, type, row, meta) => {
                                 if (row.repeat) {
                                     return `Yes`
@@ -201,6 +201,13 @@ $(function () {
                                 else {
                                     return `No`
                                 }
+                            }
+                        },
+                        {
+                            data: 'action',
+                            className: 'wrap-text w-10 text-center',
+                            render: (data, type, row, meta) => {
+                                return `<center><button data-id="${row.id}" class="btn btn-icon btn-rounded btn-flush-primary btn-xs delete-activity"><span class="icon"><i class="bi bi-trash"></i></span></button></center>`
                             }
                         },
                     ],
@@ -243,6 +250,20 @@ $(function () {
             $('#detail-repeat-activity').prop('checked', meeting_obj.repeat);
 
             $('#detail-meeting-result-text-area').val(meeting_obj.input_result);
+        })
+
+        $(document).on('click', '#table_opportunity_meeting_list .delete-activity', function () {
+            let call_log_id = $(this).attr('data-id');
+            let frm = $('#table_opportunity_meeting_list');
+            let csr = $("input[name=csrfmiddlewaretoken]").val();
+            $.fn.callAjax(frm.attr('data-url-delete').replace(0, call_log_id), 'PUT', {}, csr)
+            .then((resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    $.fn.notifyPopup({description: "Successfully"}, 'success')
+                    $.fn.redirectUrl(frm.attr('data-url-redirect'), 1000);
+                }
+            },(errs) => {})
         })
     });
 });

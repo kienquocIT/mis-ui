@@ -33,6 +33,8 @@
     <table id="table_opportunity_email_list" class="table nowrap w-100 mb-5"
            data-url-contact-detail="{% url 'ContactDetail' '0' %}"
            data-url="{% url 'OpportunityEmailListAPI' %}"
+           data-url-delete="{% url 'OpportunityEmailDeleteAPI' '0' %}"
+           data-url-redirect="{% url 'OpportunityEmailList' %}"
            data-method="GET">
         <thead>
         <tr>
@@ -52,6 +54,7 @@
             </th>
             <th class="text-center">{% trans 'Sale Code' %}</th>
             <th class="text-center">{% trans 'Date' %}</th>
+            <th class="text-center">{% trans 'Action' %}</th>
         </tr>
         </thead>
         <tbody>

@@ -32,6 +32,8 @@
 
     <table id="table_opportunity_meeting_list" class="table nowrap w-100 mb-5"
            data-url="{% url 'OpportunityMeetingListAPI' %}"
+           data-url-delete="{% url 'OpportunityMeetingDeleteAPI' '0' %}"
+           data-url-redirect="{% url 'OpportunityMeetingList' %}"
            data-method="GET">
         <thead>
         <tr>
@@ -45,6 +47,7 @@
             <th class="text-center">{% trans 'Sale Code' %}</th>
             <th class="text-center">{% trans 'Date' %}</th>
             <th class="text-center">{% trans 'Repeat' %}</th>
+            <th class="text-center">{% trans 'Action' %}</th>
         </tr>
         </thead>
         <tbody>

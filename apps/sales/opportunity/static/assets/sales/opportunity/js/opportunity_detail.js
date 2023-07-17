@@ -2032,8 +2032,8 @@ $(document).ready(function () {
     $('.new-meeting-button').on('click', function () {
         $('#meeting-sale-code-select-box').prop('disabled', true);
         if (loaded_modal_meeting === false) {
-            LoadMeetingSaleCodeList(pk);
             let customer_id = $('#meeting-sale-code-select-box option:selected').attr('data-customer-id');
+            LoadMeetingSaleCodeList(pk);
             LoadMeetingAddress(customer_id);
             LoadEmployeeAttended(customer_id);
             LoadCustomerMember(customer_id);

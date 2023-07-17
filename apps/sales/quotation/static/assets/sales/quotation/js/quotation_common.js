@@ -520,6 +520,7 @@ class loadDataHandle {
                 let expense_type_title = "";
                 let expense_type = {};
                 let default_uom = {};
+                let uom_group = {};
                 let tax_code = {};
                 let price_list = [];
                 if (Object.keys(data[i].uom).length !== 0) {
@@ -532,6 +533,7 @@ class loadDataHandle {
                 default_uom = data[i].uom;
                 tax_code = data[i].tax_code;
                 price_list = data[i].price_list;
+                uom_group = data[i].uom_group;
                 let dataStr = JSON.stringify({
                     'id': data[i].id,
                     'title': data[i].title,
@@ -545,6 +547,7 @@ class loadDataHandle {
                     'code': data[i].code,
                     'expense_type': expense_type,
                     'unit_of_measure': default_uom,
+                    'uom_group': uom_group,
                     'price_list': price_list,
                     'tax': tax_code,
                 }).replace(/"/g, "&quot;");

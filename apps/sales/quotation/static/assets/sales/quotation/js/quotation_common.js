@@ -3350,8 +3350,9 @@ function loadPriceProduct(eleProduct, is_change_item = true, is_expense = false)
                                                 </button>`);
                         }
                         if (data.price_list[i].id === account_price_id && general_price_id !== account_price_id) { // check & append CUSTOMER_PRICE_LIST
-                            if (!["Expired", "Invalid"].includes(data.price_list[i].price_status)) {
+                            if (!["Expired", "Invalid"].includes(data.price_list[i].price_status)) { // Customer price valid
                                 customer_price = parseFloat(data.price_list[i].value);
+                                $(priceList).empty();
                                 $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option option-btn-checked" data-value="${parseFloat(data.price_list[i].value)}">
                                                         <div class="row">
                                                             <div class="col-5"><span>${data.price_list[i].title}</span></div>
@@ -3359,7 +3360,7 @@ function loadPriceProduct(eleProduct, is_change_item = true, is_expense = false)
                                                             <div class="col-2"><span class="valid-price">${data.price_list[i].price_status}</span></div>
                                                         </div>
                                                     </button>`);
-                            } else {
+                            } else { // Customer price invalid, expired
                                 $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option option-btn-checked" data-value="${parseFloat(data.price_list[i].value)}" disabled>
                                                         <div class="row">
                                                             <div class="col-5"><span>${data.price_list[i].title}</span></div>

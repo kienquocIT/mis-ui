@@ -946,6 +946,8 @@ class loadDataHandle {
     }
 }
 
+let loadDataClass = new loadDataHandle();
+
 // DataTable
 class dataTableHandle {
     dataTableProduct(data, table_id, is_load_detail = false) {
@@ -2478,58 +2480,38 @@ class calculateCaseHandle {
             if (row) {
                 if (is_product === true) {
                     row.querySelector('.table-row-order').innerHTML = data.order;
-                    for (let p = 0; p < row.querySelector('.table-row-item').options.length; p++) {
-                        let option = row.querySelector('.table-row-item').options[p];
-                        if (option.value === data.product.id) {
-                            option.selected = true;
-                            break
-                        }
-                    }
+                    loadDataClass.loadBoxQuotationProduct('data-init-quotation-create-tables-product', row.querySelector('.table-row-item').id, data.product.id);
                     row.querySelector('.table-row-description').value = data.product_description;
-                    for (let u = 0; u < row.querySelector('.table-row-uom').options.length; u++) {
-                        let option = row.querySelector('.table-row-uom').options[u];
-                        if (option.value === data.unit_of_measure.id) {
-                            option.selected = true;
-                            break
+                    // check expense selected to get uom group filter uom data
+                    let optionSelected = row.querySelector('.table-row-item').options[row.querySelector('.table-row-item').selectedIndex];
+                    if (optionSelected) {
+                        if (optionSelected.querySelector('.data-default')) {
+                            let product_data_json = JSON.parse(optionSelected.querySelector('.data-default').value);
+                            loadDataClass.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', row.querySelector('.table-row-uom').id, data.unit_of_measure.id, product_data_json.uom_group.id);
                         }
                     }
                     row.querySelector('.table-row-quantity').value = data.product_quantity;
                     $(row.querySelector('.table-row-price')).attr('value', data.product_unit_price);
                     row.querySelector('.table-row-discount').value = data.product_discount_value;
-                    for (let t = 0; t < row.querySelector('.table-row-tax').options.length; t++) {
-                        let option = row.querySelector('.table-row-tax').options[t];
-                        if (option.value === data.tax.id) {
-                            option.selected = true;
-                            break
-                        }
-                    }
-                    // self.commonCalculate(table, row, true, false, false);
+
+                    loadDataClass.loadBoxQuotationTax('data-init-quotation-create-tables-tax', row.querySelector('.table-row-tax').id, data.tax.id);
                 } else if (is_expense === true) {
                     row.querySelector('.table-row-order').innerHTML = data.order;
-                    for (let p = 0; p < row.querySelector('.table-row-item').options.length; p++) {
-                        let option = row.querySelector('.table-row-item').options[p];
-                        if (option.value === data.expense.id) {
-                            option.selected = true;
-                            break
+                    loadDataClass.loadBoxQuotationExpense('data-init-quotation-create-tables-expense', row.querySelector('.expense-option-list').id, data.expense.id);
+                    row.querySelector('.table-row-item').value = data.expense.title;
+                    // check expense selected to get uom group filter uom data
+                    let optionSelected = row.querySelector('.expense-option-list').querySelector('.option-btn-checked');
+                    if (optionSelected) {
+                        if (optionSelected.querySelector('.data-default')) {
+                            let product_data_json = JSON.parse(optionSelected.querySelector('.data-default').value);
+                            loadDataClass.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', row.querySelector('.table-row-uom').id, data.unit_of_measure.id, product_data_json.uom_group.id);
                         }
                     }
-                    for (let u = 0; u < row.querySelector('.table-row-uom').options.length; u++) {
-                        let option = row.querySelector('.table-row-uom').options[u];
-                        if (option.value === data.unit_of_measure.id) {
-                            option.selected = true;
-                            break
-                        }
-                    }
+
                     row.querySelector('.table-row-quantity').value = data.expense_quantity;
                     $(row.querySelector('.table-row-price')).attr('value', data.expense_price);
                     if (data.tax) {
-                        for (let t = 0; t < row.querySelector('.table-row-tax').options.length; t++) {
-                            let option = row.querySelector('.table-row-tax').options[t];
-                            if (option.value === data.tax.id) {
-                                option.selected = true;
-                                break
-                            }
-                        }
+                       loadDataClass.loadBoxQuotationTax('data-init-quotation-create-tables-tax', row.querySelector('.table-row-tax').id, data.tax.id);
                     }
                     self.commonCalculate(table, row, false, false, true);
                 }

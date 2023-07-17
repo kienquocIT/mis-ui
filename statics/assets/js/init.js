@@ -25,7 +25,6 @@
  21.Resize function
  ** ***************************************/
 
-"use strict";
 /*****Ready function start*****/
 $(function () {
     jampack();

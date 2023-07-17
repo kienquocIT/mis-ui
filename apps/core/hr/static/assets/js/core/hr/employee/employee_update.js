@@ -382,7 +382,6 @@ $(document).on('change', '#select-box-user-update', function (e) {
 
 
 $(function () {
-    "use strict";
 
     /* Single table*/
     $('input[name="dob"]').daterangepicker({

@@ -1,4 +1,3 @@
-"use strict";
 $(function () {
     $(document).ready(function () {
         let $table = $('#table_workflow_list')

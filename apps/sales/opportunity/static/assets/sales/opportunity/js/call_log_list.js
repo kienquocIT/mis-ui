@@ -1,4 +1,4 @@
-"use strict";
+
 $(function () {
     $(document).ready(function () {
         let employee_current_id = $('#employee_current_id').val();

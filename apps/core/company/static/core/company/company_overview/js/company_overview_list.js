@@ -1,4 +1,4 @@
-"use strict";
+
 $(function () {
     $(document).ready(function () {
         // INIT LOAD | multiple select company popup info

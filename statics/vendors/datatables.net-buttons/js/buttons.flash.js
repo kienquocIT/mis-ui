@@ -36,7 +36,7 @@
 		factory( jQuery, window, document );
 	}
 }(function( $, window, document, undefined ) {
-'use strict';
+
 var DataTable = $.fn.dataTable;
 
 

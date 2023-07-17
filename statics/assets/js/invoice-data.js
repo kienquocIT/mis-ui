@@ -1,5 +1,4 @@
-/*Invoice Init*/
-"use strict"; 
+
 $(function() {
 	/*DataTable Init*/
 	if ($("#datable_1").length > 0) {

@@ -1,4 +1,4 @@
-"use strict";
+
 
 function loadConfig(data) {
     if (data.short_sale_config) {

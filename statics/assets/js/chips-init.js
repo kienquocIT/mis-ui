@@ -4,8 +4,6 @@ if( $('.user-input-tagged').length > 0 ) {
 // https://github.com/k-ivan/Tags
 	(function() {
 
-	  'use strict';
-
 	  // Helpers
 	  function $$(selectors, context) {
 		return (typeof selectors === 'string') ? (context || document).querySelectorAll(selectors) : [selectors];

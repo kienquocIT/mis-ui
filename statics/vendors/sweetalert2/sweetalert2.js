@@ -1,7 +1,7 @@
 !function (t, e) {
     "object" == typeof exports && "undefined" != typeof module ? module.exports = e() : "function" == typeof define && define.amd ? define(e) : (t = t || self).Sweetalert2 = e()
 }(this, function () {
-    "use strict";
+
 
     function r(t) {
         return (r = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (t) {

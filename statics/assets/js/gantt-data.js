@@ -1,6 +1,5 @@
 /*Gantt Init*/
 $(function() {
-    'use strict';
     /* Repeater*/
     $('.repeater').repeater({
         defaultValues: {},

@@ -95,13 +95,17 @@ class OpportunityDetail(View):
         resp1 = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_LIST).get()
         resp2 = ServerAPI(user=request.user, url=ApiURL.CONTACT_LIST).get()
         resp3 = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_LIST).get()
-        if resp0.state and resp1.state and resp2.state and resp3.state:
+        resp4 = ServerAPI(user=request.user, url=ApiURL.EMPLOYEE_LIST).get()
+        resp5 = ServerAPI(user=request.user, url=ApiURL.ACCOUNTS_MAP_EMPLOYEES).get()
+        if resp0.state and resp1.state and resp2.state and resp3.state and resp4.state and resp5.state:
             return {
                        'employee_current_id': request.user.employee_current_data.get('id', None),
                        'config': resp0.result,
                        'account_list': resp1.result,
                        'contact_list': resp2.result,
                        'opportunity_list': resp3.result,
+                       'employee_list': resp4.result,
+                       'account_map_employees': resp5.result
             }, status.HTTP_200_OK
         return {
                    'employee_current_id': request.user.employee_current_data.get('id', None),
@@ -384,6 +388,26 @@ class OpportunityCallLogListAPI(APIView):
         )
 
 
+class OpportunityCallLogDeleteAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CALL_LOG_DELETE.fill_key(pk=pk)).put(request.data)
+        if resp.state:
+            return {'opportunity_call_log': resp.result}, status.HTTP_200_OK
+        if resp.errors:  # noqa
+            if isinstance(resp.errors, dict):
+                err_msg = ""
+                for key, value in resp.errors.items():
+                    err_msg += str(key) + ': ' + str(value)
+                    break
+                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
+            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+
+
 class OpportunityEmailList(View):
     permission_classes = [IsAuthenticated]
 
@@ -436,6 +460,26 @@ class OpportunityEmailListAPI(APIView):
         )
 
 
+class OpportunityEmailDeleteAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_EMAIL_DELETE.fill_key(pk=pk)).put(request.data)
+        if resp.state:
+            return {'opportunity_email': resp.result}, status.HTTP_200_OK
+        if resp.errors:  # noqa
+            if isinstance(resp.errors, dict):
+                err_msg = ""
+                for key, value in resp.errors.items():
+                    err_msg += str(key) + ': ' + str(value)
+                    break
+                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
+            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+
+
 class OpportunityMeetingList(View):
     permission_classes = [IsAuthenticated]
 
@@ -450,14 +494,18 @@ class OpportunityMeetingList(View):
         resp1 = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_LIST).get()
         resp2 = ServerAPI(user=request.user, url=ApiURL.CONTACT_LIST).get()
         resp3 = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_LIST).get()
-        # resp4 = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_MEETING_LIST).get()
-        if resp0.state and resp1.state and resp2.state and resp3.state:
+        resp4 = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_MEETING_LIST).get()
+        resp5 = ServerAPI(user=request.user, url=ApiURL.EMPLOYEE_LIST).get()
+        resp6 = ServerAPI(user=request.user, url=ApiURL.ACCOUNTS_MAP_EMPLOYEES).get()
+        if resp0.state and resp1.state and resp2.state and resp3.state and resp4.state and resp5.state and resp6.result:
             return {
                        'employee_current_id': request.user.employee_current_data.get('id', None),
                        'account_list': resp1.result,
                        'contact_list': resp2.result,
                        'opportunity_list': resp3.result,
-                       # 'meeting_list': resp4.result,
+                       'meeting_list': resp4.result,
+                       'employee_list': resp5.result,
+                       'account_map_employees': resp6.result
                    }, status.HTTP_200_OK
         return {
                    'employee_current_id': request.user.employee_current_data.get('id', None),
@@ -486,3 +534,23 @@ class OpportunityMeetingListAPI(APIView):
         return create_update_opportunity(
             request=request, url=ApiURL.OPPORTUNITY_MEETING_LIST, msg=SaleMsg.OPPORTUNITY_MEETING_CREATED
         )
+
+
+class OpportunityMeetingDeleteAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_MEETING_DELETE.fill_key(pk=pk)).put(request.data)
+        if resp.state:
+            return {'opportunity_meeting': resp.result}, status.HTTP_200_OK
+        if resp.errors:  # noqa
+            if isinstance(resp.errors, dict):
+                err_msg = ""
+                for key, value in resp.errors.items():
+                    err_msg += str(key) + ': ' + str(value)
+                    break
+                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
+            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR

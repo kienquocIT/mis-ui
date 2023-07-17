@@ -4,8 +4,10 @@ from apps.sales.opportunity.views import (
     OpportunityList, OpportunityListAPI, OpportunityExpenseListAPI,
     OpportunityDetail, OpportunityDetailAPI, OpportunityCustomerDecisionFactorListAPI, OpportunityConfig,
     OpportunityConfigAPI, OpportunityCustomerDecisionFactorDetailAPI, OpportunityConfigStageListAPI,
-    OpportunityConfigStageDetailAPI, RestoreDefaultStageAPI, OpportunityCallLogList, OpportunityCallLogListAPI,
-    OpportunityEmailList, OpportunityEmailListAPI, OpportunityMeetingList, OpportunityMeetingListAPI
+    OpportunityConfigStageDetailAPI, RestoreDefaultStageAPI,
+    OpportunityCallLogList, OpportunityCallLogListAPI, OpportunityCallLogDeleteAPI,
+    OpportunityEmailList, OpportunityEmailListAPI, OpportunityEmailDeleteAPI,
+    OpportunityMeetingList, OpportunityMeetingListAPI, OpportunityMeetingDeleteAPI
 )
 
 urlpatterns = [
@@ -46,13 +48,13 @@ urlpatterns = [
 ] + [
     path('call-log/lists', OpportunityCallLogList.as_view(), name='OpportunityCallLogList'),
     path('api/call-log/lists', OpportunityCallLogListAPI.as_view(), name='OpportunityCallLogListAPI'),
-    # path('call-log/<str:pk>', OpportunityCallLogDetail.as_view(), name='OpportunityCallLogDetail'),
+    path('api/delete/call-log/<str:pk>', OpportunityCallLogDeleteAPI.as_view(), name='OpportunityCallLogDeleteAPI'),
 
     path('send-email/lists', OpportunityEmailList.as_view(), name='OpportunityEmailList'),
     path('api/send-email/lists', OpportunityEmailListAPI.as_view(), name='OpportunityEmailListAPI'),
-    # path('send-email/<str:pk>', OpportunityEmailDetail.as_view(), name='OpportunityEmailDetail'),
+    path('api/delete/email/<str:pk>', OpportunityEmailDeleteAPI.as_view(), name='OpportunityEmailDeleteAPI'),
 
     path('meeting/lists', OpportunityMeetingList.as_view(), name='OpportunityMeetingList'),
     path('api/meeting/lists', OpportunityMeetingListAPI.as_view(), name='OpportunityMeetingListAPI'),
-    # path('meeting/<str:pk>', OpportunityMeetingDetail.as_view(), name='OpportunityMeetingDetail'),
+    path('api/delete/meeting/<str:pk>', OpportunityMeetingDeleteAPI.as_view(), name='OpportunityMeetingDeleteAPI'),
 ]

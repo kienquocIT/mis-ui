@@ -1,4 +1,3 @@
-
 $(function () {
     $(document).ready(function () {
         let employee_current_id = $('#employee_current_id').val();
@@ -157,7 +156,7 @@ $(function () {
                         },
                         {
                             data: 'call_date',
-                            className: 'wrap-text w-20 text-center',
+                            className: 'wrap-text w-10 text-center',
                             render: (data, type, row, meta) => {
                                 return `<center><span>` + row.call_date.split(' ')[0] + `</span></center>`
                             }
@@ -172,6 +171,13 @@ $(function () {
                                 else {
                                     return `No`
                                 }
+                            }
+                        },
+                        {
+                            data: 'action',
+                            className: 'wrap-text w-10 text-center',
+                            render: (data, type, row, meta) => {
+                                return `<center><button data-id="${row.id}" class="btn btn-icon btn-rounded btn-flush-primary btn-xs delete-activity"><span class="icon"><i class="bi bi-trash"></i></span></button></center>`
                             }
                         },
                     ],
@@ -199,6 +205,20 @@ $(function () {
             $('#detail-date-input').val(call_log_obj.call_date.split(' ')[0]);
             $('#detail-repeat-activity').prop('checked', call_log_obj.repeat);
             $('#detail-result-text-area').val(call_log_obj.input_result);
+        })
+
+        $(document).on('click', '#table_opportunity_call_log_list .delete-activity', function () {
+            let call_log_id = $(this).attr('data-id');
+            let frm = $('#table_opportunity_call_log_list');
+            let csr = $("input[name=csrfmiddlewaretoken]").val();
+            $.fn.callAjax(frm.attr('data-url-delete').replace(0, call_log_id), 'PUT', {}, csr)
+            .then((resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    $.fn.notifyPopup({description: "Successfully"}, 'success')
+                    $.fn.redirectUrl(frm.attr('data-url-redirect'), 1000);
+                }
+            },(errs) => {})
         })
     });
 });

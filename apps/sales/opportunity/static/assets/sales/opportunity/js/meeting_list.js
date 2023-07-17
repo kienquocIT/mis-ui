@@ -33,7 +33,13 @@ $(function () {
         }
         LoadMeetingSaleCodeList(employee_current_id);
 
-        function LoadCustomerMember(contact_mapped_list) {
+        function LoadCustomerMember(customer_id) {
+            let contact_mapped_list = null;
+            account_list.map(function (item) {
+                if (customer_id === item.id) {
+                    contact_mapped_list = item.contact_mapped;
+                }
+            })
             let $customer_member_sb = $('#meeting-customer-member-select-box');
             $customer_member_sb.html(``);
             $customer_member_sb.append(`<option></option>`);
@@ -64,12 +70,6 @@ $(function () {
         }
 
         function LoadMeetingAddress(customer_id) {
-            account_list.map(function (item) {
-                if (customer_id === item.id) {
-                    LoadCustomerMember(item.contact_mapped);
-                }
-            })
-
             let opportunity_obj = JSON.parse($('#opportunity_list').text()).filter(function(item) {
                 return item.customer.id === customer_id;
             })
@@ -86,6 +86,7 @@ $(function () {
             let customer_id = $('#meeting-sale-code-select-box option:selected').attr('data-customer-id');
             LoadMeetingAddress(customer_id);
             LoadEmployeeAttended(customer_id);
+            LoadCustomerMember(customer_id);
         })
 
         $('#meeting-date-input').daterangepicker({

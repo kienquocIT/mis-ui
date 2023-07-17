@@ -1965,7 +1965,13 @@ $(document).ready(function () {
         $sc_sb.select2({dropdownParent: $("#create-meeting")});
     }
 
-    function LoadCustomerMember(contact_mapped_list) {
+    function LoadCustomerMember(customer_id) {
+            let contact_mapped_list = null;
+            account_list.map(function (item) {
+                if (customer_id === item.id) {
+                    contact_mapped_list = item.contact_mapped;
+                }
+            })
             let $customer_member_sb = $('#meeting-customer-member-select-box');
             $customer_member_sb.html(``);
             $customer_member_sb.append(`<option></option>`);
@@ -1978,41 +1984,35 @@ $(document).ready(function () {
         }
 
     function LoadEmployeeAttended(customer_id) {
-            let employee_filtered = [];
-            for (let i = 0; i < account_map_employees.length; i++) {
-                if (account_map_employees[i].account.id === customer_id) {
-                    employee_filtered.push(account_map_employees[i].employee)
-                }
+        let employee_filtered = [];
+        for (let i = 0; i < account_map_employees.length; i++) {
+            if (account_map_employees[i].account.id === customer_id) {
+                employee_filtered.push(account_map_employees[i].employee)
             }
-            let $employee_attended_sb = $('#meeting-employee-attended-select-box');
-            $employee_attended_sb.html(``);
-            $employee_attended_sb.append(`<option></option>`);
-            employee_list.map(function (item) {
-                if (employee_filtered.includes(item.id)) {
-                    $employee_attended_sb.append(`<option data-code="${item.code}" value="${item.id}">${item.full_name}</option>`);
-                }
-            })
-            $employee_attended_sb.select2({dropdownParent: $("#create-meeting")});
         }
+        let $employee_attended_sb = $('#meeting-employee-attended-select-box');
+        $employee_attended_sb.html(``);
+        $employee_attended_sb.append(`<option></option>`);
+        employee_list.map(function (item) {
+            if (employee_filtered.includes(item.id)) {
+                $employee_attended_sb.append(`<option data-code="${item.code}" value="${item.id}">${item.full_name}</option>`);
+            }
+        })
+        $employee_attended_sb.select2({dropdownParent: $("#create-meeting")});
+    }
 
     function LoadMeetingAddress(customer_id) {
-            account_list.map(function (item) {
-                if (customer_id === item.id) {
-                    LoadCustomerMember(item.contact_mapped);
-                }
-            })
-
-            let opportunity_obj = JSON.parse($('#opportunity_list').text()).filter(function(item) {
-                return item.customer.id === customer_id;
-            })
-            let shipping_address_list = opportunity_obj[0].customer.shipping_address;
-            $('#meeting-address-select-box option').remove();
-            $('#meeting-address-select-box').append(`<option></option>`);
-            for (let i = 0; i < shipping_address_list.length; i++) {
-                $('#meeting-address-select-box').append(`<option>` + shipping_address_list[i] + `</option>`);
-            }
-            $('#meeting-address-select-box').select2({dropdownParent: $("#create-meeting")});
+        let opportunity_obj = JSON.parse($('#opportunity_list').text()).filter(function(item) {
+            return item.customer.id === customer_id;
+        })
+        let shipping_address_list = opportunity_obj[0].customer.shipping_address;
+        $('#meeting-address-select-box option').remove();
+        $('#meeting-address-select-box').append(`<option></option>`);
+        for (let i = 0; i < shipping_address_list.length; i++) {
+            $('#meeting-address-select-box').append(`<option>` + shipping_address_list[i] + `</option>`);
         }
+        $('#meeting-address-select-box').select2({dropdownParent: $("#create-meeting")});
+    }
 
     $('#meeting-date-input').daterangepicker({
         singleDatePicker: true,
@@ -2036,6 +2036,7 @@ $(document).ready(function () {
             let customer_id = $('#meeting-sale-code-select-box option:selected').attr('data-customer-id');
             LoadMeetingAddress(customer_id);
             LoadEmployeeAttended(customer_id);
+            LoadCustomerMember(customer_id);
             loaded_modal_meeting = true;
         }
     })

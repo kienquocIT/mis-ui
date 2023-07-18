@@ -118,21 +118,25 @@
         {% endblock %}
     {% endcompress %}
 
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-4GDQQTC98X"></script>
+    {% if is_ga_enabled %}
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-4GDQQTC98X"></script>
+    {% endif %}
     {% compress js %}
-        <script type="text/javascript">
-            window.dataLayer = window.dataLayer || [];
+        {% if is_ga_enabled %}
+            <script type="text/javascript">
+                window.dataLayer = window.dataLayer || [];
 
-            function gtag() {
-                dataLayer.push(arguments);
-            }
+                function gtag() {
+                    dataLayer.push(arguments);
+                }
 
-            gtag('js', new Date());
+                gtag('js', new Date());
 
-            gtag('config', 'G-4GDQQTC98X', {
-                'user_id': `{{ base.username_auth }} {{ base.user_id }}`,
-            });
-        </script>
+                gtag('config', 'G-4GDQQTC98X', {
+                    'user_id': `{{ base.username_auth }} {{ base.user_id }}`,
+                });
+            </script>
+        {% endif %}
         {% block jsHeader %}{% endblock %}
     {% endcompress %}
 </head>

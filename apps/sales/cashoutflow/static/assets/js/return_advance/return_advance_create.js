@@ -125,7 +125,7 @@ $(function () {
             data.map(function (item) {
                 let html = `<tr>
                                 <td class="number text-center wrap-text">${cnt+1}</td>
-                                <td class="wrap-text col-expense text-primary" data-id="${item.id}"><span>${item.product.title}</span></td>
+                                <td class="wrap-text col-product text-primary" data-id="${item.id}"><span>${item.product.title}</span></td>
                                 <td class="wrap-text"><span>${item.product.type.title}</span></td>
                                 <td class="wrap-text"><span class="mask-money" data-init-money="${item.remain_total}"></span></td>
                                 <td class="wrap-text"><input class="mask-money form-control return-price" type="text" data-return-type="number"></td>
@@ -162,7 +162,7 @@ $(function () {
             let cost_list = []
             tbExpense.find('tbody tr').each(function (){
                 cost_list.push({
-                    'advance_payment_cost': $(this).find('.col-expense').attr('data-id'),
+                    'advance_payment_cost': $(this).find('.col-product').attr('data-id'),
                     'remain_value': parseFloat($(this).find('span.mask-money').attr('data-init-money')),
                     'return_value': $(this).find('input.mask-money').valCurrency(),
                 })

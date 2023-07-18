@@ -13,7 +13,7 @@ $(document).ready(function () {
         return obj;
     }, {});
 
-    let advance_payment_expense_items = [];
+    let advance_payment_product_items = [];
     let payment_cost_items_filtered = [];
     const ap_list = JSON.parse($('#advance_payment_list').text());
     let url_detail = $('#form-update-payment').attr('data-url-detail').replace('0', $.fn.getPkDetail())
@@ -105,7 +105,7 @@ $(document).ready(function () {
                     if ($(this).attr('data-detail-view') === 'hide') {
                         $(this).attr('data-detail-view', 'show');
                         if ($(this).closest('td').attr('data-type') === '0') {
-                            // get ap expense items
+                            // get ap product items
                             let so_id = $(this).closest('td').attr('data-sale-code-id');
                             let so_filter = sale_order_list.filter(function(item) {
                                 return item.id === so_id;
@@ -131,19 +131,19 @@ $(document).ready(function () {
                             if (quo_mapped) {quo_mapped_id = quo_mapped.id}
                             if (opp_mapped) {opp_mapped_id = opp_mapped.id}
 
-                            advance_payment_expense_items = [];
+                            advance_payment_product_items = [];
                             for (let i = 0; i < ap_list.length; i++) {
                                 if (ap_list[i].sale_order_mapped === so_mapped_id && ap_list[i].sale_order_mapped) {
-                                    advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
+                                    advance_payment_product_items = advance_payment_product_items.concat(ap_list[i].product_items)
                                 }
                                 if (ap_list[i].quotation_mapped === quo_mapped_id && ap_list[i].quotation_mapped) {
-                                    advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
+                                    advance_payment_product_items = advance_payment_product_items.concat(ap_list[i].product_items)
                                 }
                                 if (ap_list[i].opportunity_mapped === opp_mapped_id && ap_list[i].opportunity_mapped) {
-                                    advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
+                                    advance_payment_product_items = advance_payment_product_items.concat(ap_list[i].product_items)
                                 }
                             }
-                            // console.log(0, advance_payment_expense_items)
+                            // console.log(0, advance_payment_product_items)
 
                             // get payment items
                             payment_cost_items_filtered = [];
@@ -170,7 +170,7 @@ $(document).ready(function () {
                             }
                         }
                         else if ($(this).closest('td').attr('data-type') === '1') {
-                            // get ap expense items
+                            // get ap product items
                             let quo_id = $(this).closest('td').attr('data-sale-code-id');
                             let so_filter = sale_order_list.filter(function(item) {
                                 if (Object.keys(item.quotation).length !== 0) {
@@ -210,19 +210,19 @@ $(document).ready(function () {
                             if (quo_mapped) {quo_mapped_id = quo_mapped.id}
                             if (opp_mapped) {opp_mapped_id = opp_mapped.id}
 
-                            advance_payment_expense_items = [];
+                            advance_payment_product_items = [];
                             for (let i = 0; i < ap_list.length; i++) {
                                 if (ap_list[i].sale_order_mapped === so_mapped_id && ap_list[i].sale_order_mapped) {
-                                    advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
+                                    advance_payment_product_items = advance_payment_product_items.concat(ap_list[i].product_items)
                                 }
                                 if (ap_list[i].quotation_mapped === quo_mapped_id && ap_list[i].quotation_mapped) {
-                                    advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
+                                    advance_payment_product_items = advance_payment_product_items.concat(ap_list[i].product_items)
                                 }
                                 if (ap_list[i].opportunity_mapped === opp_mapped_id && ap_list[i].opportunity_mapped) {
-                                    advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
+                                    advance_payment_product_items = advance_payment_product_items.concat(ap_list[i].product_items)
                                 }
                             }
-                            // console.log(advance_payment_expense_items)
+                            // console.log(advance_payment_product_items)
 
                             // get payment items
                             payment_cost_items_filtered = [];
@@ -280,7 +280,7 @@ $(document).ready(function () {
                     for (let i = 0; i < payment_detail.sale_order_mapped.length; i++) {
                         let sale_code_detail_show = sale_code_id_list[i].opportunity.code;
                         if (sale_code_detail_show === undefined) {sale_code_detail_show = sale_code_id_list[i].code}
-                        // get ap expense items
+                        // get ap product items
                         let so_id = payment_detail.sale_order_mapped[i].id;
                         let so_filter = sale_order_list.filter(function(item) {
                             return item.id === so_id;
@@ -306,16 +306,16 @@ $(document).ready(function () {
                         if (quo_mapped) {quo_mapped_id = quo_mapped.id}
                         if (opp_mapped) {opp_mapped_id = opp_mapped.id}
 
-                        advance_payment_expense_items = [];
+                        advance_payment_product_items = [];
                         for (let i = 0; i < ap_list.length; i++) {
                             if (ap_list[i].sale_order_mapped === so_mapped_id && ap_list[i].sale_order_mapped) {
-                                advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
+                                advance_payment_product_items = advance_payment_product_items.concat(ap_list[i].product_items)
                             }
                             if (ap_list[i].quotation_mapped === quo_mapped_id && ap_list[i].quotation_mapped) {
-                                advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
+                                advance_payment_product_items = advance_payment_product_items.concat(ap_list[i].product_items)
                             }
                             if (ap_list[i].opportunity_mapped === opp_mapped_id && ap_list[i].opportunity_mapped) {
-                                advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
+                                advance_payment_product_items = advance_payment_product_items.concat(ap_list[i].product_items)
                             }
                         }
 
@@ -349,7 +349,7 @@ $(document).ready(function () {
                     for (let i = 0; i < payment_detail.quotation_mapped.length; i++) {
                         let sale_code_detail_show = sale_code_id_list[i].opportunity.code;
                         if (sale_code_detail_show === undefined) {sale_code_detail_show = sale_code_id_list[i].code}
-                        // get ap expense items
+                        // get ap product items
                         let quo_id = payment_detail.quotation_mapped[i].id;
                         let so_filter = sale_order_list.filter(function(item) {
                             if (Object.keys(item.quotation).length !== 0) {
@@ -391,16 +391,16 @@ $(document).ready(function () {
                         if (quo_mapped) {quo_mapped_id = quo_mapped.id}
                         if (opp_mapped) {opp_mapped_id = opp_mapped.id}
 
-                        advance_payment_expense_items = [];
+                        advance_payment_product_items = [];
                         for (let i = 0; i < ap_list.length; i++) {
                             if (ap_list[i].sale_order_mapped === so_mapped_id && ap_list[i].sale_order_mapped) {
-                                advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
+                                advance_payment_product_items = advance_payment_product_items.concat(ap_list[i].product_items)
                             }
                             if (ap_list[i].quotation_mapped === quo_mapped_id && ap_list[i].quotation_mapped) {
-                                advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
+                                advance_payment_product_items = advance_payment_product_items.concat(ap_list[i].product_items)
                             }
                             if (ap_list[i].opportunity_mapped === opp_mapped_id && ap_list[i].opportunity_mapped) {
-                                advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
+                                advance_payment_product_items = advance_payment_product_items.concat(ap_list[i].product_items)
                             }
                         }
 
@@ -434,7 +434,7 @@ $(document).ready(function () {
                     for (let i = 0; i < payment_detail.quotation_mapped.length; i++) {
                         let sale_code_detail_show = sale_code_id_list[i].opportunity.code;
                         if (sale_code_detail_show === undefined) {sale_code_detail_show = sale_code_id_list[i].code}
-                        // get ap expense items
+                        // get ap product items
                         let opp_id = sale_code_mapped[0].id;
                         let so_filter = sale_order_list.filter(function(item) {
                             if (Object.keys(item.opportunity).length !== 0) {
@@ -487,16 +487,16 @@ $(document).ready(function () {
                         if (quo_mapped) {quo_mapped_id = quo_mapped.id}
                         if (opp_mapped) {opp_mapped_id = opp_mapped.id}
 
-                        advance_payment_expense_items = [];
+                        advance_payment_product_items = [];
                         for (let i = 0; i < ap_list.length; i++) {
                             if (ap_list[i].sale_order_mapped === so_mapped_id && ap_list[i].sale_order_mapped) {
-                                advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
+                                advance_payment_product_items = advance_payment_product_items.concat(ap_list[i].product_items)
                             }
                             if (ap_list[i].quotation_mapped === quo_mapped_id && ap_list[i].quotation_mapped) {
-                                advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
+                                advance_payment_product_items = advance_payment_product_items.concat(ap_list[i].product_items)
                             }
                             if (ap_list[i].opportunity_mapped === opp_mapped_id && ap_list[i].opportunity_mapped) {
-                                advance_payment_expense_items = advance_payment_expense_items.concat(ap_list[i].expense_items)
+                                advance_payment_product_items = advance_payment_product_items.concat(ap_list[i].product_items)
                             }
                         }
 
@@ -541,20 +541,20 @@ $(document).ready(function () {
                     let product_ap_detail_list = payment_detail.product_mapped[i].product_ap_detail_list;
                     table_body.append(`<tr id="" class="row-number">
                         <td class="number text-center"></td>
-                        <td><select class="form-select expense-select-box" data-method="GET"><option selected></option></select></td>
-                        <td><input class="form-control expense-type" style="color: black;" disabled></td>
-                        <td><select class="form-select expense-uom-select-box" data-method="GET"><option selected></option></select></td>
-                        <td><input type="number" min="1" onchange="this.value=checkInputQuantity(this.value)" class="form-control expense-quantity" value="1"></td>
+                        <td><select class="form-select product-select-box" data-method="GET"><option selected></option></select></td>
+                        <td><input class="form-control product-type" style="color: black;" disabled></td>
+                        <td><select class="form-select product-uom-select-box" data-method="GET"><option selected></option></select></td>
+                        <td><input type="number" min="1" onchange="this.value=checkInputQuantity(this.value)" class="form-control product-quantity" value="1"></td>
                         <td><div class="input-group dropdown" aria-expanded="false" data-bs-toggle="dropdown">
                                 <span class="input-affix-wrapper">
-                                    <input disabled data-return-type="number" type="text" class="form-control expense-unit-price-select-box mask-money" style="color: black;" placeholder="Select a price or enter">
+                                    <input disabled data-return-type="number" type="text" class="form-control product-unit-price-select-box mask-money" style="color: black;" placeholder="Select a price or enter">
                                 </span>
                             </div>
                             <div style="min-width: 25%" class="dropdown-menu" data-method="GET"></div></td>
-                        <td><select class="form-select expense-tax-select-box" data-method="GET"><option selected></option></select></td>
-                        <td><input type="text" data-return-type="number" class="form-control expense-subtotal-price mask-money" style="color: black;" disabled></td>
-                        <td><input type="text" data-return-type="number" class="form-control expense-subtotal-price-after-tax mask-money" style="color: black;" disabled></td>
-                        <td><input type="text" class="form-control expense-document-number" required></td>
+                        <td><select class="form-select product-tax-select-box" data-method="GET"><option selected></option></select></td>
+                        <td><input type="text" data-return-type="number" class="form-control product-subtotal-price mask-money" style="color: black;" disabled></td>
+                        <td><input type="text" data-return-type="number" class="form-control product-subtotal-price-after-tax mask-money" style="color: black;" disabled></td>
+                        <td><input type="text" class="form-control product-document-number" required></td>
                         <td class="action">
                             <a class="btn-del-line-detail btn text-danger btn-link btn-animated" title="Delete row"><span class="icon"><i class="bi bi-dash-circle"></i></span></a>
                             <a class="row-toggle btn text-primary btn-link btn-animated" title="Toggle row"><span class="icon"><i class="bi bi-caret-down-square"></i></span></a>
@@ -595,7 +595,7 @@ $(document).ready(function () {
                         table_body.append(`<tr class="" hidden>
                             <td colspan="1"></td>
                             <td colspan="1">
-                                <span class="sale_code_expense_detail badge badge-outline badge-soft-primary" data-sale-code-id="` + sale_code_id_list[i].id + `"><b>`+ sale_code_detail_show+ `</b></span>
+                                <span class="sale_code_product_detail badge badge-outline badge-soft-primary" data-sale-code-id="` + sale_code_id_list[i].id + `"><b>`+ sale_code_detail_show+ `</b></span>
                             </td>
                             <td colspan="2">
                                 <input value="` + real_value + `" data-return-type="number" placeholder="Enter payment value" class="value-inp form-control mask-money">
@@ -651,19 +651,19 @@ $(document).ready(function () {
                     }
                     let row_count = count_row(table_body, sale_code_length+1, 1, product_item.product.id, tax_id_value);
 
-                    $('#row-' + row_count.toString()).find('.expense-type').val($('#row-' + row_count.toString()).find('.expense-select-box option:selected').attr('data-type'));
+                    $('#row-' + row_count.toString()).find('.product-type').val($('#row-' + row_count.toString()).find('.product-select-box option:selected').attr('data-type'));
 
-                    $('#row-' + row_count.toString()).find('.expense-uom-select-box').append(`<option selected>` + product_item.product_unit_of_measure.title + `</option>`);
+                    $('#row-' + row_count.toString()).find('.product-uom-select-box').append(`<option selected>` + product_item.product_unit_of_measure.title + `</option>`);
 
-                    $('#row-' + row_count.toString()).find('.expense-quantity').val(product_item.product_quantity);
+                    $('#row-' + row_count.toString()).find('.product-quantity').val(product_item.product_quantity);
 
-                    $('#row-' + row_count.toString()).find('.expense-unit-price-select-box').attr('value', product_item.product_unit_price);
+                    $('#row-' + row_count.toString()).find('.product-unit-price-select-box').attr('value', product_item.product_unit_price);
 
-                    $('#row-' + row_count.toString()).find('.expense-subtotal-price').attr('value', product_item.subtotal_price);
+                    $('#row-' + row_count.toString()).find('.product-subtotal-price').attr('value', product_item.subtotal_price);
 
-                    $('#row-' + row_count.toString()).find('.expense-subtotal-price-after-tax').attr('value', product_item.after_tax_price);
+                    $('#row-' + row_count.toString()).find('.product-subtotal-price-after-tax').attr('value', product_item.after_tax_price);
 
-                    $('#row-' + row_count.toString()).find('.expense-document-number').val(product_item.document_number);
+                    $('#row-' + row_count.toString()).find('.product-document-number').val(product_item.document_number);
 
                     $('#row-' + row_count.toString()).find('.btn-del-line-detail').on('click', function () {
                         for (let i = 0; i <= sale_code_length; i++) {
@@ -675,25 +675,25 @@ $(document).ready(function () {
 
                     $('#row-' + row_count.toString()).find(".row-toggle").on('click', function() {
                         let this_row = $('#row-' + row_count.toString());
-                        let this_product_item = this_row.find('.expense-select-box');
-                        let this_type = this_row.find('.expense-type');
-                        let this_uom = this_row.find('.expense-uom-select-box');
-                        let this_quantity = this_row.find('.expense-quantity');
-                        let this_unit_price = this_row.find('.expense-unit-price-select-box');
-                        let this_subtotal_price = this_row.find('.expense-subtotal-price');
-                        let this_after_tax_subtotal = this_row.find('.expense-subtotal-price-after-tax');
-                        let this_document_number = this_row.find('.expense-document-number');
+                        let this_product_item = this_row.find('.product-select-box');
+                        let this_type = this_row.find('.product-type');
+                        let this_uom = this_row.find('.product-uom-select-box');
+                        let this_quantity = this_row.find('.product-quantity');
+                        let this_unit_price = this_row.find('.product-unit-price-select-box');
+                        let this_subtotal_price = this_row.find('.product-subtotal-price');
+                        let this_after_tax_subtotal = this_row.find('.product-subtotal-price-after-tax');
+                        let this_document_number = this_row.find('.product-document-number');
 
                         if (this_product_item.val() && this_type.val() && this_uom.val() && this_quantity.val() && this_unit_price.attr('value')
                             && this_subtotal_price.attr('value') && this_after_tax_subtotal.attr('value') && this_document_number.val())
                         {
                             let row_number = this_row.attr('id').split('-')[1];
-                            let detail_expense_id = '.row-detail-expense-' + row_number;
-                            if ($(detail_expense_id).is(":hidden")) {
-                                $(detail_expense_id).prop('hidden', false);
+                            let detail_product_id = '.row-detail-product-' + row_number;
+                            if ($(detail_product_id).is(":hidden")) {
+                                $(detail_product_id).prop('hidden', false);
                             }
                             else {
-                                $(detail_expense_id).prop('hidden', true);
+                                $(detail_product_id).prop('hidden', true);
                             }
                         }
                     });
@@ -807,22 +807,22 @@ $(document).ready(function () {
     }
 
     function loadSaleOrderPlan(filter_sale_order_id, filter_sale_order_code) {
-        let ap_expense_list_mapped = []
-        for (let i = 0; i < advance_payment_expense_items.length; i++) {
-            let ap_expense_item = advance_payment_expense_items[i];
+        let ap_product_list_mapped = []
+        for (let i = 0; i < advance_payment_product_items.length; i++) {
+            let ap_product_item = advance_payment_product_items[i];
             let payment_cost_items_list = payment_cost_items_filtered.filter(function(item) {
-                return item.expense_id === ap_expense_item.expense.id;
+                return item.product_id === ap_product_item.product.id;
             });
             let paid = payment_cost_items_list.reduce(function(s, item) {
                 return s + item.sum_value;
             }, 0);
-            ap_expense_list_mapped.push(
+            ap_product_list_mapped.push(
                 {
-                    'expense_id': ap_expense_item.expense.id,
-                    'ap_approved': ap_expense_item.after_tax_price,
-                    'returned': ap_expense_item.returned_total,
+                    'product_id': ap_product_item.product.id,
+                    'ap_approved': ap_product_item.after_tax_price,
+                    'returned': ap_product_item.returned_total,
                     'paid': paid,
-                    'remain_ap': ap_expense_item.remain_total,
+                    'remain_ap': ap_product_item.remain_total,
                 }
             )
         }
@@ -835,11 +835,11 @@ $(document).ready(function () {
                     <td colspan="3"><span class="badge badge-primary">` + filter_sale_order_code + `</span></td>
                     <td colspan="5"></td>
                 </tr>`)
-                let data_detail = data.sale_order_expense_list;
+                let data_detail = data.sale_order_product_list;
                 for (let i = 0; i < data_detail.length; i++) {
-                    let expense_id = data_detail[i].expense_id;
-                    let results = advance_payment_expense_items.filter(function(item) {
-                        return item.expense.id === expense_id;
+                    let product_id = data_detail[i].product_id;
+                    let results = advance_payment_product_items.filter(function(item) {
+                        return item.product.id === product_id;
                     });
                     let ap_approved = results.reduce(function(s, item) {
                         return s + item.after_tax_price;
@@ -848,7 +848,7 @@ $(document).ready(function () {
                         return s + item.returned_total;
                     }, 0);
                     let payment_cost_items_list = payment_cost_items_filtered.filter(function(item) {
-                        return item.expense_id === expense_id;
+                        return item.product_id === product_id;
                     });
                     let to_payment = payment_cost_items_list.reduce(function(s, item) {
                         return s + item.converted_value;
@@ -872,7 +872,7 @@ $(document).ready(function () {
                     }
 
                     $('#tab_plan_datatable tbody').append(`<tr>
-                        <td><a href="#"><span data-id="` + data_detail[i].expense_id + `">` + data_detail[i].expense_title + `</span></a></td>
+                        <td><a href="#"><span data-id="` + data_detail[i].product_id + `">` + data_detail[i].product_title + `</span></a></td>
                         <td><span class="badge badge-soft-indigo badge-outline">` + tax_item + `</span></td>
                         <td><span class="mask-money text-primary" data-init-money="` + plan_after_tax + `"></span></td>
                         <td><span class="mask-money text-primary" data-init-money="` + ap_approved + `"></span></td>
@@ -893,23 +893,23 @@ $(document).ready(function () {
             return item.quotation_mapped === filter_quotation_id;
         });
 
-        let ap_expense_list_mapped = []
+        let ap_product_list_mapped = []
         for (let i = 0; i < ap_item.length; i++) {
-            for (let j = 0; j < ap_item[i].expense_items.length; j++) {
-                let ap_expense_item = ap_item[i].expense_items[j];
+            for (let j = 0; j < ap_item[i].product_items.length; j++) {
+                let ap_product_item = ap_item[i].product_items[j];
                 let payment_cost_items_list = payment_cost_items_filtered.filter(function(item) {
-                    return item.expense_id === ap_expense_item.expense.id;
+                    return item.product_id === ap_product_item.product.id;
                 });
                 let paid = payment_cost_items_list.reduce(function(s, item) {
                     return s + item.sum_value;
                 }, 0);
-                ap_expense_list_mapped.push(
+                ap_product_list_mapped.push(
                     {
-                        'expense_id': ap_expense_item.expense.id,
-                        'ap_approved': ap_expense_item.after_tax_price,
-                        'returned': ap_expense_item.returned_total,
+                        'product_id': ap_product_item.product.id,
+                        'ap_approved': ap_product_item.after_tax_price,
+                        'returned': ap_product_item.returned_total,
                         'paid': paid,
-                        'remain_ap': ap_expense_item.remain_total,
+                        'remain_ap': ap_product_item.remain_total,
                     }
                 )
             }
@@ -923,11 +923,11 @@ $(document).ready(function () {
                     <td colspan="3"><span class="badge badge-primary">` + filter_quotation_code + `</span></td>
                     <td colspan="5"></td>
                 </tr>`)
-                let data_detail = data.quotation_expense_list;
+                let data_detail = data.quotation_product_list;
                 for (let i = 0; i < data_detail.length; i++) {
-                    let expense_id = data_detail[i].expense_id;
-                    let results = advance_payment_expense_items.filter(function (item) {
-                        return item.expense.id === expense_id;
+                    let product_id = data_detail[i].product_id;
+                    let results = advance_payment_product_items.filter(function (item) {
+                        return item.product.id === product_id;
                     });
                     let ap_approved = results.reduce(function (s, item) {
                         return s + item.after_tax_price;
@@ -936,7 +936,7 @@ $(document).ready(function () {
                         return s + item.returned_total;
                     }, 0);
                     let payment_cost_items_list = payment_cost_items_filtered.filter(function (item) {
-                        return item.expense_id === expense_id;
+                        return item.product_id === product_id;
                     });
                     let to_payment = payment_cost_items_list.reduce(function (s, item) {
                         return s + item.converted_value;
@@ -964,7 +964,7 @@ $(document).ready(function () {
                     }
 
                     $('#tab_plan_datatable tbody').append(`<tr>
-                        <td><a href="#"><span data-id="` + data_detail[i].expense_id + `">` + data_detail[i].expense_title + `</span></a></td>
+                        <td><a href="#"><span data-id="` + data_detail[i].product_id + `">` + data_detail[i].product_title + `</span></a></td>
                         <td><span class="badge badge-soft-indigo badge-outline">` + tax_item + `</span></td>
                         <td><span class="mask-money text-primary" data-init-money="` + plan_after_tax + `"></span></td>
                         <td><span class="mask-money text-primary" data-init-money="` + ap_approved + `"></span></td>
@@ -981,22 +981,22 @@ $(document).ready(function () {
     }
 
     function loadSaleOrderPlanMULTI(filter_sale_order_id) {
-        let ap_expense_list_mapped = []
-        for (let i = 0; i < advance_payment_expense_items.length; i++) {
-            let ap_expense_item = advance_payment_expense_items[i];
+        let ap_product_list_mapped = []
+        for (let i = 0; i < advance_payment_product_items.length; i++) {
+            let ap_product_item = advance_payment_product_items[i];
             let payment_cost_items_list = payment_cost_items_filtered.filter(function(item) {
-                return item.expense_id === ap_expense_item.expense.id;
+                return item.product_id === ap_product_item.product.id;
             });
             let paid = payment_cost_items_list.reduce(function(s, item) {
                 return s + item.sum_value;
             }, 0);
-            ap_expense_list_mapped.push(
+            ap_product_list_mapped.push(
                 {
-                    'expense_id': ap_expense_item.expense.id,
-                    'ap_approved': ap_expense_item.after_tax_price,
-                    'returned': ap_expense_item.returned_total,
+                    'product_id': ap_product_item.product.id,
+                    'ap_approved': ap_product_item.after_tax_price,
+                    'returned': ap_product_item.returned_total,
                     'paid': paid,
-                    'remain_ap': ap_expense_item.remain_total,
+                    'remain_ap': ap_product_item.remain_total,
                 }
             )
         }
@@ -1007,12 +1007,12 @@ $(document).ready(function () {
             if (data) {
                 let found_line = $(`#tab_plan_datatable tbody tr td[data-sale-code-id="` + filter_sale_order_id + `"]`).closest('tr');
                 $(`#tab_plan_datatable tbody tr[class="detail-line-for-` + filter_sale_order_id + `"`).remove();
-                let data_detail = data.sale_order_expense_list;
+                let data_detail = data.sale_order_product_list;
                 let new_line = ``;
                 for (let i = 0; i < data_detail.length; i++) {
-                    let expense_id = data_detail[i].expense_id;
-                    let results = advance_payment_expense_items.filter(function(item) {
-                        return item.expense.id === expense_id;
+                    let product_id = data_detail[i].product_id;
+                    let results = advance_payment_product_items.filter(function(item) {
+                        return item.product.id === product_id;
                     });
                     let ap_approved = results.reduce(function(s, item) {
                         return s + item.after_tax_price;
@@ -1021,7 +1021,7 @@ $(document).ready(function () {
                         return s + item.returned_total;
                     }, 0);
                     let payment_cost_items_list = payment_cost_items_filtered.filter(function(item) {
-                        return item.expense_id === expense_id;
+                        return item.product_id === product_id;
                     });
                     let to_payment = payment_cost_items_list.reduce(function(s, item) {
                         return s + item.converted_value;
@@ -1045,7 +1045,7 @@ $(document).ready(function () {
                     }
 
                     new_line = new_line + `<tr class="detail-line-for-` + filter_sale_order_id + `">
-                        <td><a href="#"><span data-id="` + data_detail[i].expense_id + `">` + data_detail[i].expense_title + `</span></a></td>
+                        <td><a href="#"><span data-id="` + data_detail[i].product_id + `">` + data_detail[i].product_title + `</span></a></td>
                         <td><span class="badge badge-soft-indigo badge-outline">` + tax_item + `</span></td>
                         <td><span class="mask-money text-primary" data-init-money="` + plan_after_tax + `"></span></td>
                         <td><span class="mask-money text-primary" data-init-money="` + ap_approved + `"></span></td>
@@ -1071,23 +1071,23 @@ $(document).ready(function () {
             return item.quotation_mapped === filter_quotation_id;
         });
 
-        let ap_expense_list_mapped = []
+        let ap_product_list_mapped = []
         for (let i = 0; i < ap_item.length; i++) {
-            for (let j = 0; j < ap_item[i].expense_items.length; j++) {
-                let ap_expense_item = ap_item[i].expense_items[j];
+            for (let j = 0; j < ap_item[i].product_items.length; j++) {
+                let ap_product_item = ap_item[i].product_items[j];
                 let payment_cost_items_list = payment_cost_items_filtered.filter(function(item) {
-                    return item.expense_id === ap_expense_item.expense.id;
+                    return item.product_id === ap_product_item.product.id;
                 });
                 let paid = payment_cost_items_list.reduce(function(s, item) {
                     return s + item.sum_value;
                 }, 0);
-                ap_expense_list_mapped.push(
+                ap_product_list_mapped.push(
                     {
-                        'expense_id': ap_expense_item.expense.id,
-                        'ap_approved': ap_expense_item.after_tax_price,
-                        'returned': ap_expense_item.returned_total,
+                        'product_id': ap_product_item.product.id,
+                        'ap_approved': ap_product_item.after_tax_price,
+                        'returned': ap_product_item.returned_total,
                         'paid': paid,
-                        'remain_ap': ap_expense_item.remain_total,
+                        'remain_ap': ap_product_item.remain_total,
                     }
                 )
             }
@@ -1100,11 +1100,11 @@ $(document).ready(function () {
                 let found_line = $(`#tab_plan_datatable tbody tr td[data-sale-code-id="` + filter_quotation_id + `"]`).closest('tr');
                 $(`#tab_plan_datatable tbody tr[class="detail-line-for-` + filter_quotation_id + `"`).remove();
                 let new_line = ``;
-                let data_detail = data.quotation_expense_list;
+                let data_detail = data.quotation_product_list;
                 for (let i = 0; i < data_detail.length; i++) {
-                    let expense_id = data_detail[i].expense_id;
-                    let results = advance_payment_expense_items.filter(function (item) {
-                        return item.expense.id === expense_id;
+                    let product_id = data_detail[i].product_id;
+                    let results = advance_payment_product_items.filter(function (item) {
+                        return item.product.id === product_id;
                     });
                     let ap_approved = results.reduce(function (s, item) {
                         return s + item.after_tax_price;
@@ -1113,7 +1113,7 @@ $(document).ready(function () {
                         return s + item.returned_total;
                     }, 0);
                     let payment_cost_items_list = payment_cost_items_filtered.filter(function (item) {
-                        return item.expense_id === expense_id;
+                        return item.product_id === product_id;
                     });
                     let to_payment = payment_cost_items_list.reduce(function (s, item) {
                         return s + item.converted_value;
@@ -1141,7 +1141,7 @@ $(document).ready(function () {
                     }
 
                     new_line = new_line + `<tr class="detail-line-for-` + filter_quotation_id + `">
-                        <td><a href="#"><span data-id="` + data_detail[i].expense_id + `">` + data_detail[i].expense_title + `</span></a></td>
+                        <td><a href="#"><span data-id="` + data_detail[i].product_id + `">` + data_detail[i].product_title + `</span></a></td>
                         <td><span class="badge badge-soft-indigo badge-outline">` + tax_item + `</span></td>
                         <td><span class="mask-money text-primary" data-init-money="` + plan_after_tax + `"></span></td>
                         <td><span class="mask-money text-primary" data-init-money="` + ap_approved + `"></span></td>
@@ -1162,26 +1162,26 @@ $(document).ready(function () {
         })
     }
 
-    function count_row(table_body, sale_code_length, option, expense_id, tax_id) {
+    function count_row(table_body, sale_code_length, option, product_id, tax_id) {
         let count = 0;
         table_body.find('tr td.number').each(function() {
             count = count + 1;
             $(this).text(count);
             $(this).closest('tr').attr('id', 'row-' + count.toString());
-            let detail_expense_element = $(this).closest('tr').nextAll().slice(0, sale_code_length)
-            detail_expense_element.each(function (index, element) {
-                $(this).attr('class', 'row-detail-expense-' + count.toString());
+            let detail_product_element = $(this).closest('tr').nextAll().slice(0, sale_code_length)
+            detail_product_element.each(function (index, element) {
+                $(this).attr('class', 'row-detail-product-' + count.toString());
             });
         });
         if (option === 1) {
-            loadProductList('row-' + count.toString(), expense_id);
+            loadProductList('row-' + count.toString(), product_id);
             loadProductTaxList('row-' + count.toString(), tax_id);
         }
         return count;
     }
 
     function loadProductList(row_id, product_id) {
-        let ele = $('#' + row_id + ' .expense-select-box');
+        let ele = $('#' + row_id + ' .product-select-box');
         ele.select2();
         ele.html('');
         ele.append(`<option></option>`);
@@ -1200,7 +1200,7 @@ $(document).ready(function () {
     }
 
     function loadProductTaxList(row_id, tax_id) {
-        let ele = $('#' + row_id + ' .expense-tax-select-box');
+        let ele = $('#' + row_id + ' .product-tax-select-box');
         ele.html('');
         ele.append(`<option data-rate="0" selected></option>`);
         tax_list.map(function (item) {

@@ -242,22 +242,21 @@
             <div class="tab-pane fade show active mb-25" id="tab_line_detail">
                 <div class="row">
                     <table id="tab_line_detail_datatable" class="table nowrap w-100"
-                           data-url-expense-list="{% url 'ExpenseListAPI' %}"
                            data-url-uom-list="{% url 'UnitOfMeasureListAPI' %}"
                            data-url-tax-list="{% url 'TaxListAPI' %}"
                            data-url-unit-price-list="{% url 'ProductDetailAPI' '0' %}">
                         <thead>
                         <tr>
                             <th class="text-center" style="width: 2%"></th>
-                            <th style="width: 17%">{% trans 'Expense/Cost items' %}</th>
+                            <th class="required" style="width: 17%">{% trans 'Product items' %}</th>
                             <th style="width: 11%">{% trans 'Type' %}</th>
-                            <th style="width: 7%">{% trans 'UoM' %}</th>
-                            <th style="width: 6%">{% trans 'Quantity' %}</th>
-                            <th style="width: 13%">{% trans 'Unit price' %}</th>
+                            <th class="required" style="width: 7%">{% trans 'UoM' %}</th>
+                            <th class="required" style="width: 6%">{% trans 'Quantity' %}</th>
+                            <th class="required" style="width: 13%">{% trans 'Unit price' %}</th>
                             <th style="width: 8%">{% trans 'Tax' %}</th>
                             <th style="width: 13%">{% trans 'Subtotal price' %}</th>
                             <th style="width: 13%">{% trans 'After tax subtotal' %}</th>
-                            <th style="width: 9%">{% trans 'Document number' %}</th>
+                            <th class="required" style="width: 9%">{% trans 'Document number' %}</th>
                             <th style="width: 1%"></th>
                         </tr>
                         </thead>
@@ -293,7 +292,7 @@
                                 </div>
                                 <h1></h1>
                                 <div data-simplebar class="nicescroll-bar">
-                                    <div data-simplebar class="expense-tables nicescroll-bar"></div>
+                                    <div data-simplebar class="product-tables nicescroll-bar"></div>
                                 </div>
                             </div>
                         </div>
@@ -313,11 +312,11 @@
             <div class="tab-pane fade mb-25" id="tab_plan">
                 <div class="row" id="tab_plan_datatable_div">
                     <table id="tab_plan_datatable" hidden class="table nowrap w-100" data-method="GET"
-                           data-url-sale-order="{% url 'SaleOrderExpenseListAPI' %}"
-                           data-url-quotation="{% url 'QuotationExpenseListAPI' %}">
+                           data-url-sale-order="{% url 'SaleOrderProductListAPI' %}"
+                           data-url-quotation="{% url 'QuotationProductListAPI' %}">
                         <thead>
                         <tr>
-                            <th>{% trans 'Expense items' %}</th>
+                            <th>{% trans 'Product items' %}</th>
                             <th>{% trans 'Tax' %}</th>
                             <th>{% trans 'Plan After Tax' %}</th>
                             <th>{% trans 'AP Approved' %}</th>

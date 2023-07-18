@@ -86,8 +86,8 @@ $(function () {
             },)
         }
 
-        function loadExpenseTable(data) {
-            let table = $('#dtbExpense');
+        function loadProductTable(data) {
+            let table = $('#dtbProduct');
             table.find('tbody').html('');
             $('#total-value').attr('data-init-money', '');
             let cnt = table.find('tbody tr').length;
@@ -123,7 +123,7 @@ $(function () {
                     $('[name="date_created"]').val(return_advance_detail.date_created.split(" ")[0]);
                     $('[name="method"]').val(return_advance_detail.method);
                     $('.select2').select2();
-                    loadExpenseTable(return_advance_detail.cost);
+                    loadProductTable(return_advance_detail.cost);
                     let total_value = return_advance_detail.cost.map(obj => obj.return_price).reduce((a, b) => a + b, 0)
                     $('#total-value').attr('data-init-money', total_value);
                     if (return_advance_detail.money_received) {

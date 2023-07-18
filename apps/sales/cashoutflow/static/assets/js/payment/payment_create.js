@@ -1949,7 +1949,7 @@ $(document).ready(function () {
     $('#wizard-t-0').attr('hidden', true);
     $('#wizard-t-1').attr('hidden', true);
     $('#wizard-t-0').closest('li').append(`<span id="tab-1-offCanvas" class="text-primary mr-3" style="font-size: xx-large; font-weight: bolder">1. Select Advance Payment</span>`);
-    $('#wizard-t-1').closest('li').append(`<span id="tab-2-offCanvas" class="text-primary ml-3" style="font-size: larger; font-weight: bolder">2. Select product</span>`);
+    $('#wizard-t-1').closest('li').append(`<span id="tab-2-offCanvas" class="text-primary ml-3" style="font-size: larger; font-weight: bolder">2. Select Product</span>`);
 
     $('.content').css({
         'background': 'none'
@@ -2000,7 +2000,7 @@ $(document).ready(function () {
                                     <thead>
                                         <tr>
                                             <th class="w-5"></th>
-                                            <th class="w-10">product/Cost Items</th>
+                                            <th class="w-10">Product Items</th>
                                             <th class="w-10">Type</th>
                                             <th class="w-5">Quantity</th>
                                             <th class="w-15">Unit Price</th>

@@ -1,4 +1,18 @@
 $(document).ready(function () {
+    const sale_order_list = JSON.parse($('#sale_order_list').text());
+    const quotation_list = JSON.parse($('#quotation_list').text());
+    const product_list = JSON.parse($('#product_list').text());
+    const employee_list = JSON.parse($('#employee_list').text());
+    const unit_of_measure = JSON.parse($('#unit_of_measure').text());
+    const tax_list = JSON.parse($('#tax_list').text());
+    const account_list = JSON.parse($('#account_list').text());
+    const opportunity_list = JSON.parse($('#opportunity_list').text());
+    const payment_cost_items_list = JSON.parse($('#payment_cost_items_list').text());
+    const account_bank_accounts_information_dict = account_list.reduce((obj, item) => {
+        obj[item.id] = item.bank_accounts_information;
+        return obj;
+    }, {});
+
     let advance_payment_expense_items = [];
     let payment_cost_items_filtered = [];
     const ap_list = JSON.parse($('#advance_payment_list').text());
@@ -141,12 +155,12 @@ $(document).ready(function () {
                             }
 
                             if (so_mapped_id) {
-                                loadSaleOrderPlanMULTI(so_mapped_id)
+                                // loadSaleOrderPlanMULTI(so_mapped_id)
                                 $('#notify-none-sale-code').prop('hidden', true);
                                 $('#tab_plan_datatable').prop('hidden', false);
                             }
                             else if (quo_mapped_id) {
-                                loadQuotationPlanMULTI(quo_mapped_id)
+                                // loadQuotationPlanMULTI(quo_mapped_id)
                                 $('#notify-none-sale-code').prop('hidden', true);
                                 $('#tab_plan_datatable').prop('hidden', false);
                             }
@@ -220,12 +234,12 @@ $(document).ready(function () {
                             }
 
                             if (so_mapped_id) {
-                                loadSaleOrderPlanMULTI(so_mapped_id)
+                                // loadSaleOrderPlanMULTI(so_mapped_id)
                                 $('#notify-none-sale-code').prop('hidden', true);
                                 $('#tab_plan_datatable').prop('hidden', false);
                             }
                             else if (quo_mapped_id) {
-                                loadQuotationPlanMULTI(quo_mapped_id)
+                                // loadQuotationPlanMULTI(quo_mapped_id)
                                 $('#notify-none-sale-code').prop('hidden', true);
                                 $('#tab_plan_datatable').prop('hidden', false);
                             }
@@ -315,12 +329,12 @@ $(document).ready(function () {
                             }
                         }
                         if (so_mapped_id) {
-                            loadSaleOrderPlan(so_mapped_id, sale_code_detail_show)
+                            // loadSaleOrderPlan(so_mapped_id, sale_code_detail_show)
                             $('#notify-none-sale-code').prop('hidden', true);
                             $('#tab_plan_datatable').prop('hidden', false);
                         }
                         else if (quo_mapped_id) {
-                            loadQuotationPlan(quo_mapped_id, sale_code_detail_show)
+                            // loadQuotationPlan(quo_mapped_id, sale_code_detail_show)
                             $('#notify-none-sale-code').prop('hidden', true);
                             $('#tab_plan_datatable').prop('hidden', false);
                         }
@@ -400,12 +414,12 @@ $(document).ready(function () {
                             }
                         }
                         if (so_mapped_id) {
-                            loadSaleOrderPlan(so_mapped_id, sale_code_detail_show)
+                            // loadSaleOrderPlan(so_mapped_id, sale_code_detail_show)
                             $('#notify-none-sale-code').prop('hidden', true);
                             $('#tab_plan_datatable').prop('hidden', false);
                         }
                         else if (quo_mapped_id) {
-                            loadQuotationPlan(quo_mapped_id, sale_code_detail_show)
+                            // loadQuotationPlan(quo_mapped_id, sale_code_detail_show)
                             $('#notify-none-sale-code').prop('hidden', true);
                             $('#tab_plan_datatable').prop('hidden', false);
                         }
@@ -496,12 +510,12 @@ $(document).ready(function () {
                             }
                         }
                         if (so_mapped_id) {
-                            loadSaleOrderPlan(so_mapped_id, sale_code_detail_show)
+                            // loadSaleOrderPlan(so_mapped_id, sale_code_detail_show)
                             $('#notify-none-sale-code').prop('hidden', true);
                             $('#tab_plan_datatable').prop('hidden', false);
                         }
                         else if (quo_mapped_id) {
-                            loadQuotationPlan(quo_mapped_id, sale_code_detail_show)
+                            // loadQuotationPlan(quo_mapped_id, sale_code_detail_show)
                             $('#notify-none-sale-code').prop('hidden', true);
                             $('#tab_plan_datatable').prop('hidden', false);
                         }
@@ -522,9 +536,9 @@ $(document).ready(function () {
             let sale_code_length = sale_code_id_list.length;
             if (sale_code_length > 0) {
                 let table_body = $('#tab_line_detail_datatable tbody');
-                for (let i = 0; i < payment_detail.expense_mapped.length; i++) {
-                    let expense_item = payment_detail.expense_mapped[i];
-                    let expense_ap_detail_list = payment_detail.expense_mapped[i].expense_ap_detail_list;
+                for (let i = 0; i < payment_detail.product_mapped.length; i++) {
+                    let product_item = payment_detail.product_mapped[i];
+                    let product_ap_detail_list = payment_detail.product_mapped[i].product_ap_detail_list;
                     table_body.append(`<tr id="" class="row-number">
                         <td class="number text-center"></td>
                         <td><select class="form-select expense-select-box" data-method="GET"><option selected></option></select></td>
@@ -567,12 +581,12 @@ $(document).ready(function () {
                     </tr>`)
 
                     for (let i = 0; i < sale_code_length; i++) {
-                        let expense_ap_detail_item = expense_ap_detail_list[i];
-                        let real_value = expense_ap_detail_item.real_value;
+                        let product_ap_detail_item = product_ap_detail_list[i];
+                        let real_value = product_ap_detail_item.real_value;
                         if (real_value === undefined) {
                             real_value = 0;
                         }
-                        let converted_value = expense_ap_detail_item.converted_value;
+                        let converted_value = product_ap_detail_item.converted_value;
                         if (converted_value === undefined) {
                             converted_value = 0;
                         }
@@ -603,7 +617,7 @@ $(document).ready(function () {
                                 <center><i class="fas fa-equals text-primary"></i></center>
                             </td>
                             <td colspan="1">
-                                <span class="mask-money total-value-salecode-item text-primary" data-init-money="` + expense_ap_detail_item.sum_value + `"></span>
+                                <span class="mask-money total-value-salecode-item text-primary" data-init-money="` + product_ap_detail_item.sum_value + `"></span>
                             </td>
                             <td colspan="1">
                                 <script type="application/json" class="detail-ap-items"></script>
@@ -631,25 +645,25 @@ $(document).ready(function () {
 
                     let tax_id_value = '';
                     let tax_code_value = '';
-                    if (expense_item.tax) {
-                        tax_id_value = expense_item.tax.id;
-                        tax_code_value = expense_item.tax.code;
+                    if (product_item.tax) {
+                        tax_id_value = product_item.tax.id;
+                        tax_code_value = product_item.tax.code;
                     }
-                    let row_count = count_row(table_body, sale_code_length+1, 1, expense_item.expense.id, tax_id_value);
+                    let row_count = count_row(table_body, sale_code_length+1, 1, product_item.product.id, tax_id_value);
 
                     $('#row-' + row_count.toString()).find('.expense-type').val($('#row-' + row_count.toString()).find('.expense-select-box option:selected').attr('data-type'));
 
-                    $('#row-' + row_count.toString()).find('.expense-uom-select-box').append(`<option selected>` + expense_item.expense_unit_of_measure.title + `</option>`);
+                    $('#row-' + row_count.toString()).find('.expense-uom-select-box').append(`<option selected>` + product_item.product_unit_of_measure.title + `</option>`);
 
-                    $('#row-' + row_count.toString()).find('.expense-quantity').val(expense_item.expense_quantity);
+                    $('#row-' + row_count.toString()).find('.expense-quantity').val(product_item.product_quantity);
 
-                    $('#row-' + row_count.toString()).find('.expense-unit-price-select-box').attr('value', expense_item.expense_unit_price);
+                    $('#row-' + row_count.toString()).find('.expense-unit-price-select-box').attr('value', product_item.product_unit_price);
 
-                    $('#row-' + row_count.toString()).find('.expense-subtotal-price').attr('value', expense_item.subtotal_price);
+                    $('#row-' + row_count.toString()).find('.expense-subtotal-price').attr('value', product_item.subtotal_price);
 
-                    $('#row-' + row_count.toString()).find('.expense-subtotal-price-after-tax').attr('value', expense_item.after_tax_price);
+                    $('#row-' + row_count.toString()).find('.expense-subtotal-price-after-tax').attr('value', product_item.after_tax_price);
 
-                    $('#row-' + row_count.toString()).find('.expense-document-number').val(expense_item.document_number);
+                    $('#row-' + row_count.toString()).find('.expense-document-number').val(product_item.document_number);
 
                     $('#row-' + row_count.toString()).find('.btn-del-line-detail').on('click', function () {
                         for (let i = 0; i <= sale_code_length; i++) {
@@ -661,7 +675,7 @@ $(document).ready(function () {
 
                     $('#row-' + row_count.toString()).find(".row-toggle").on('click', function() {
                         let this_row = $('#row-' + row_count.toString());
-                        let this_expense_item = this_row.find('.expense-select-box');
+                        let this_product_item = this_row.find('.expense-select-box');
                         let this_type = this_row.find('.expense-type');
                         let this_uom = this_row.find('.expense-uom-select-box');
                         let this_quantity = this_row.find('.expense-quantity');
@@ -670,7 +684,7 @@ $(document).ready(function () {
                         let this_after_tax_subtotal = this_row.find('.expense-subtotal-price-after-tax');
                         let this_document_number = this_row.find('.expense-document-number');
 
-                        if (this_expense_item.val() && this_type.val() && this_uom.val() && this_quantity.val() && this_unit_price.attr('value')
+                        if (this_product_item.val() && this_type.val() && this_uom.val() && this_quantity.val() && this_unit_price.attr('value')
                             && this_subtotal_price.attr('value') && this_after_tax_subtotal.attr('value') && this_document_number.val())
                         {
                             let row_number = this_row.attr('id').split('-')[1];
@@ -713,19 +727,6 @@ $(document).ready(function () {
         });
     })
 
-    const sale_order_list = JSON.parse($('#sale_order_list').text());
-    const quotation_list = JSON.parse($('#quotation_list').text());
-    const expense_list = JSON.parse($('#expense_list').text());
-    const employee_list = JSON.parse($('#employee_list').text());
-    const unit_of_measure = JSON.parse($('#unit_of_measure').text());
-    const tax_list = JSON.parse($('#tax_list').text());
-    const account_list = JSON.parse($('#account_list').text());
-    const opportunity_list = JSON.parse($('#opportunity_list').text());
-    const payment_cost_items_list = JSON.parse($('#payment_cost_items_list').text());
-    const account_bank_accounts_information_dict = account_list.reduce((obj, item) => {
-        obj[item.id] = item.bank_accounts_information;
-        return obj;
-    }, {});
     function loadSupplier(supplier_id) {
         let ele = $('#supplier-select-box');
         ele.html('');
@@ -1173,32 +1174,32 @@ $(document).ready(function () {
             });
         });
         if (option === 1) {
-            loadExpenseList('row-' + count.toString(), expense_id);
-            loadExpenseTaxList('row-' + count.toString(), tax_id);
+            loadProductList('row-' + count.toString(), expense_id);
+            loadProductTaxList('row-' + count.toString(), tax_id);
         }
         return count;
     }
 
-    function loadExpenseList(row_id, expense_id) {
+    function loadProductList(row_id, product_id) {
         let ele = $('#' + row_id + ' .expense-select-box');
         ele.select2();
         ele.html('');
         ele.append(`<option></option>`);
-        expense_list.map(function (item) {
+        product_list.map(function (item) {
             let tax_code_id = '';
-            if (item.general_information.tax_code) {
-                tax_code_id = item.general_information.tax_code.id;
+            if (item.sale_information.tax_code) {
+                tax_code_id = item.sale_information.tax_code.id;
             }
-            if (item.id === expense_id) {
-                ele.append(`<option selected data-uom-group-id="` + item.general_information.uom_group.id + `" data-type="` + item.general_information.expense_type.title + `" data-uom-id="` + item.general_information.uom.id + `" data-tax-id="` + tax_code_id + `" value="` + item.id + `">` + item.title + `</option>`);
+            if (item.id === product_id) {
+                ele.append(`<option selected data-uom-group-id="` + item.general_information.uom_group.id + `" data-type="` + item.general_information.product_type.title + `" data-tax-id="` + tax_code_id + `" value="` + item.id + `">` + item.title + `</option>`);
             }
             else {
-                ele.append(`<option data-uom-group-id="` + item.general_information.uom_group.id + `" data-type="` + item.general_information.expense_type.title + `" data-uom-id="` + item.general_information.uom.id + `" data-tax-id="` + tax_code_id + `" value="` + item.id + `">` + item.title + `</option>`);
+                ele.append(`<option data-uom-group-id="` + item.general_information.uom_group.id + `" data-type="` + item.general_information.product_type.title + `" data-tax-id="` + tax_code_id + `" value="` + item.id + `">` + item.title + `</option>`);
             }
         })
     }
 
-    function loadExpenseTaxList(row_id, tax_id) {
+    function loadProductTaxList(row_id, tax_id) {
         let ele = $('#' + row_id + ' .expense-tax-select-box');
         ele.html('');
         ele.append(`<option data-rate="0" selected></option>`);

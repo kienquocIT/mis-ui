@@ -94,8 +94,8 @@ $(function () {
             data.map(function (item) {
                 let html = `<tr>
                                 <td class="number text-center wrap-text">${cnt + 1}</td>
-                                <td class="wrap-text col-expense" data-id="${item.id}"><span class="text-primary">${item.expense.title}</span></td>
-                                <td class="wrap-text"><span>${item.expense_type}</span></td>
+                                <td class="wrap-text col-expense" data-id="${item.id}"><span class="text-primary">${item.product.title}</span></td>
+                                <td class="wrap-text"><span>${item.product_type}</span></td>
                                 <td class="wrap-text"><span class="mask-money" data-init-money="${item.remain_total}"></span></td>
                                 <td class="wrap-text">
                                     <input class="mask-money form-control return-price" disabled type="text" value="${item.return_price}" data-return-type="number" readonly> 

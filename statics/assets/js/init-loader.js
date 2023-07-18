@@ -115,10 +115,10 @@ class UrlGatewayReverse {
 class LogController {
     constructor() {
         this.groupLogEle = $('#drawer_log_data');
-        this.tabLog = $('#tab_block_diagram');
+        this.tabLog = $('#tab-diagram');
         this.logUrl = this.tabLog.attr('data-url');
         this.blockDataRuntime = $('#idxDataRuntime');
-        this.tabActivityLog = $('#tab_block_activities');
+        this.tabActivityLog = $('#tab-activities');
         this.activityUrl = this.tabActivityLog.attr('data-url');
         this.blockDataActivities = $('#idxDataActivities');
     }
@@ -193,37 +193,58 @@ class LogController {
 
         // log runtime
         if (this.logUrl && (!this.groupLogEle.attr('data-log-runtime-loaded') || forceLoad === true)) {
-            if (!runtimeID) runtimeID = $.fn.getWFRuntimeID();
-            if (runtimeID) {
-                this.blockDataRuntime.showLoadingWaitResponse();
-                this.blockDataRuntime.empty();
-                $.fn.callAjax(SetupFormSubmit.getUrlDetailWithID(this.logUrl, runtimeID), 'GET',).then((resp) => {
-                    this.groupLogEle.attr('data-log-runtime-loaded', true);
-                    let data = $.fn.switcherResp(resp);
-                    if (data && $.fn.hasOwnProperties(data, ['diagram_data'])) {
-                        let diagram_data = data['diagram_data'];
-                        let stages = diagram_data['stages'];
-                        this.blockDataRuntime.html(this.parseLogOfDoc(stages)).removeClass('hidden').hideLoadingWaitResponse();
+            this.blockDataRuntime.showLoadingWaitResponse();
+            this.blockDataRuntime.empty();
+            let dataRuntimeCounter = 0;
+            let intervalShowWfHistory = setInterval(
+                () => {
+                    if (dataRuntimeCounter > 5) {
+                        clearInterval(intervalShowWfHistory);
+                        this.blockDataRuntime.html(
+                            `<span class="text-danger">${$.fn.storageSystemData.attr('data-msg-resource-load-failed')}</span>`
+                        ).removeClass('hidden').hideLoadingWaitResponse();
+                    } else {
+                        dataRuntimeCounter += 1;
+                        if (!runtimeID) runtimeID = $.fn.getWFRuntimeID();
+                        if (runtimeID) {
+                            clearInterval(intervalShowWfHistory);
+                            $.fn.callAjax(SetupFormSubmit.getUrlDetailWithID(this.logUrl, runtimeID), 'GET',).then((resp) => {
+                                this.groupLogEle.attr('data-log-runtime-loaded', true);
+                                let data = $.fn.switcherResp(resp);
+                                if (data && $.fn.hasOwnProperties(data, ['diagram_data'])) {
+                                    let diagram_data = data['diagram_data'];
+                                    let stages = diagram_data['stages'];
+                                    this.blockDataRuntime.html(this.parseLogOfDoc(stages)).removeClass('hidden').hideLoadingWaitResponse();
+                                }
+                            });
+                        }
                     }
-                })
-            }
+                }
+                , 1000
+            )
         }
 
         // log activities
-        if (!pkID) pkID = this.tabActivityLog.attr('data-id-value');
-        if (this.activityUrl && pkID && (!this.groupLogEle.attr('data-log-activity-loaded') || forceLoad === true)) {
-            this.blockDataActivities.showLoadingWaitResponse();
-            this.blockDataActivities.empty();
-            $.fn.callAjax(this.activityUrl, 'GET', {'doc_id': pkID}, true,).then((resp) => {
-                this.groupLogEle.attr('data-log-activity-loaded', true);
-                let data = $.fn.switcherResp(resp);
-                if (data && data['status'] === 200 && data.hasOwnProperty('log_data')) {
-                    this.blockDataActivities.append(this.parseLogActivities(data['log_data'])).hideLoadingWaitResponse();
-                }
-            }, (errs) => {
+        this.blockDataActivities.showLoadingWaitResponse();
+        this.blockDataActivities.empty();
+        let intervalDataActivity = setInterval(
+            () => {
+                if (!pkID) pkID = this.tabActivityLog.attr('data-id-value');
+                if (this.activityUrl && pkID && (!this.groupLogEle.attr('data-log-activity-loaded') || forceLoad === true)) {
+                    clearInterval(intervalDataActivity);
+                    $.fn.callAjax(this.activityUrl, 'GET', {'doc_id': pkID}, true,).then((resp) => {
+                        this.groupLogEle.attr('data-log-activity-loaded', true);
+                        let data = $.fn.switcherResp(resp);
+                        if (data && data['status'] === 200 && data.hasOwnProperty('log_data')) {
+                            this.blockDataActivities.append(this.parseLogActivities(data['log_data'])).hideLoadingWaitResponse();
+                        }
+                    }, (errs) => {
 
-            })
-        }
+                    })
+                }
+            },
+            1000
+        )
     }
 }
 
@@ -357,7 +378,7 @@ class FileUtils {
     static keyEleFileNameID = 'data-f-name-ele-id';
     static clsNameInputFile = 'input-file-upload';
 
-    static parseFileSize(file_size, fixRound=2) {
+    static parseFileSize(file_size, fixRound = 2) {
         // file_size: is bytes size
         const KiB = 1024;
         const MiB = KiB * 1024;
@@ -993,6 +1014,30 @@ class ListeningEventController {
         });
     }
 
+    tabHashUrl() {
+        $('.nav-tabs a[data-bs-toggle="tab"]').filter(
+            function () {
+                return this.hash === location.hash;
+            }
+        ).each(
+            function () {
+                let drawerEle = $(this).closest('.ntt-drawer');
+                if (drawerEle.length > 0) {
+                    $('.ntt-drawer-toggle-link[data-drawer-target="#' + drawerEle.attr('id') + '"]').each(
+                        function () {
+                            $(this).trigger('click');
+                        }
+                    );
+                }
+                $(this).tab('show');
+            }
+        );
+
+        $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
+            window.history.pushState(null, null, $(e.target).attr("href"));
+        });
+    }
+
     // main
     active() {
         this.switchCompany();
@@ -1008,6 +1053,7 @@ class ListeningEventController {
         this.navAndMenu();
         this.activeFileUpload();
         this.avatarUpload();
+        this.tabHashUrl();  // keep it run after nttDrawer and log
     }
 }
 
@@ -1448,6 +1494,9 @@ $.fn.extend({
     },
 
     // HTTP response, redirect, Ajax
+    pushHashUrl: function (idHash){
+        window.history.pushState(null, null, idHash.includes('#') ? idHash : '#' + idHash);
+    },
     switcherResp: function (resp, isNotify = true) {
         if (typeof resp === 'object') {
             let status = 500;
@@ -1518,6 +1567,26 @@ $.fn.extend({
                 window.location.href = redirectPath;
             }
         }, timeout);
+    },
+    reloadWithHashID: function (tabID = null) {
+        if (this instanceof jQuery) {
+            // call from $('#id').reloadWithHashID()
+            let tabPane = $(this).closest('.tab-pane');
+            if (tabPane.length > 0) {
+                let idTabPane = $(tabPane[0]).attr('id');
+                if (idTabPane) {
+                    $.fn.pushHashUrl(idTabPane);
+                    window.location.reload();
+                }
+            }
+
+        } else {
+            // call from $.fn.reloadWithHashID() | require tabId
+            if (tabID) {
+                $.fn.pushHashUrl(tabID);
+                window.location.reload();
+            }
+        }
     },
     callAjax: function (url, method, data = {}, csrfToken = null, headers = {}, content_type = "application/json", opts = {}) {
         let isNotify = opts['isNotify'];
@@ -2387,7 +2456,7 @@ String.prototype.format_by_key = function (objKey) {
 // accept to type string with dashes and without dashes
 String.prototype.valid_uuid4 = function () {
     let isCheck = this.toString()
-    if(this.toString().indexOf('-') === -1){
+    if (this.toString().indexOf('-') === -1) {
         isCheck = this.toString().replace(/(.{8})(.{4})(.{4})(.{4})(.{12})/g, '$1-$2-$3-$4-$5')
     }
     return /^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$/i.test(isCheck);

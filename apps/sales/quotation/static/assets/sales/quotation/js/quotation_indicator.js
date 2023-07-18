@@ -320,7 +320,7 @@ class indicatorFunctionHandle {
         for (let data of data_list) {
             if (typeof leftValueJSON === 'object' && leftValueJSON !== null) {
                 if (data.hasOwnProperty(leftValueJSON.code)) {
-                    let leftValue = data[leftValueJSON.code].replace(/\s/g, "");
+                    let leftValue = data[leftValueJSON.code].replace(/\s/g, "").toLowerCase();
                     let checkExpression = `"${leftValue}" ${condition_operator} "${rightValue}"`;
                     let check = evaluateFormula(checkExpression);
                     if (check === true) {

@@ -117,29 +117,29 @@ function dataTableSaleOrderIndicator(data) {
     });
 }
 
-function loadQuotationIndicator(indicator_id) {
-    let jqueryId = '#' + indicator_id;
-    let ele = $(jqueryId);
-    if (!ele.val()) {
-        let url = ele.attr('data-url');
-        let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (data.hasOwnProperty('quotation_indicator_list') && Array.isArray(data.quotation_indicator_list)) {
-                        ele.val(JSON.stringify(data.quotation_indicator_list));
-                        calculateIndicator(data.quotation_indicator_list);
-                    }
-                }
-            }
-        )
-    } else {
-        let data_list = JSON.parse(ele.val());
-        calculateIndicator(data_list);
-    }
-
-}
+// function loadQuotationIndicator(indicator_id) {
+//     let jqueryId = '#' + indicator_id;
+//     let ele = $(jqueryId);
+//     if (!ele.val()) {
+//         let url = ele.attr('data-url');
+//         let method = ele.attr('data-method');
+//         $.fn.callAjax(url, method).then(
+//             (resp) => {
+//                 let data = $.fn.switcherResp(resp);
+//                 if (data) {
+//                     if (data.hasOwnProperty('quotation_indicator_list') && Array.isArray(data.quotation_indicator_list)) {
+//                         ele.val(JSON.stringify(data.quotation_indicator_list));
+//                         calculateIndicator(data.quotation_indicator_list);
+//                     }
+//                 }
+//             }
+//         )
+//     } else {
+//         let data_list = JSON.parse(ele.val());
+//         calculateIndicator(data_list);
+//     }
+//
+// }
 
 function calculateIndicator(indicator_list) {
     let result_list = [];
@@ -355,7 +355,7 @@ $(function () {
             let btnEdit = $('#btn-edit_quotation');
             if (btnEdit.length) {
                 if (btnEdit.is(':hidden')) {
-                    loadQuotationIndicator('quotation-indicator-data');
+                    indicatorClass.loadQuotationIndicator('quotation-indicator-data');
                 } else {
                     if (tableIndicator[0].querySelector('.dataTables_empty')) {
                         let detailData = JSON.parse($('#quotation-detail-data').val());
@@ -368,14 +368,14 @@ $(function () {
                     }
                 }
             } else {
-                loadQuotationIndicator('quotation-indicator-data');
+                indicatorClass.loadQuotationIndicator('quotation-indicator-data');
             }
         });
 
         // Clear data indicator store then call API to get new
         $('#btn-refresh-quotation-indicator').on('click', function (e) {
             document.getElementById('quotation-indicator-data').value = "";
-            loadQuotationIndicator('quotation-indicator-data');
+            indicatorClass.loadQuotationIndicator('quotation-indicator-data');
             $.fn.notifyPopup({description: $.fn.transEle.attr('data-refreshed')}, 'success');
         });
 

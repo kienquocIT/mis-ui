@@ -1176,6 +1176,10 @@ $(function () {
                 is_sale_order = true;
             }
             let _form = new SetupFormSubmit(formSubmit);
+
+            // Load again indicator when Submit
+            indicatorClass.loadQuotationIndicator('quotation-indicator-data');
+
             submitClass.setupDataSubmit(_form, is_sale_order);
             let submitFields = [
                 'title',

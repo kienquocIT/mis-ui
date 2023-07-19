@@ -116,6 +116,9 @@ $(function () {
                 }
             }
 
+            // Load first time indicator when Begin edit
+            indicatorClass.loadQuotationIndicator('quotation-indicator-data');
+
         });
 
 

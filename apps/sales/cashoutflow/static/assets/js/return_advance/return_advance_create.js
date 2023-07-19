@@ -37,7 +37,7 @@ $(function () {
                                 loadDetailOpp(null);
                             }
                         }
-                        loadExpenseTable(data.advance_payment_detail.expense_items)
+                        loadProductTable(data.advance_payment_detail.product_items)
 
                         $('#chooseBeneficiary').append(`<option value="${data.advance_payment_detail.beneficiary.id}">${data.advance_payment_detail.beneficiary.name}</option>`);
                         loadDetailBeneficiary(data.advance_payment_detail.beneficiary.id);
@@ -117,16 +117,16 @@ $(function () {
             loadDetailAdvancePayment(data_url)
         })
 
-        function loadExpenseTable(data) {
-            let table = $('#dtbExpense');
+        function loadProductTable(data) {
+            let table = $('#dtbProduct');
             table.find('tbody').html('');
             $('#total-value').attr('data-init-money', '');
             let cnt = table.find('tbody tr').length;
             data.map(function (item) {
                 let html = `<tr>
                                 <td class="number text-center wrap-text">${cnt+1}</td>
-                                <td class="wrap-text col-expense text-primary" data-id="${item.id}"><span>${item.expense.title}</span></td>
-                                <td class="wrap-text"><span>${item.expense.type.title}</span></td>
+                                <td class="wrap-text col-product text-primary" data-id="${item.id}"><span>${item.product.title}</span></td>
+                                <td class="wrap-text"><span>${item.product.type.title}</span></td>
                                 <td class="wrap-text"><span class="mask-money" data-init-money="${item.remain_total}"></span></td>
                                 <td class="wrap-text"><input class="mask-money form-control return-price" type="text" data-return-type="number"></td>
                             </tr>`;
@@ -158,11 +158,11 @@ $(function () {
             frm.dataForm['creator'] = $('[name="creator"]').attr('data-id');
             frm.dataForm['status'] = 0;
             frm.dataForm['money_received'] = !!$('#money-received').is(':checked');
-            let tbExpense = $('#dtbExpense');
+            let tbProduct = $('#dtbProduct');
             let cost_list = []
-            tbExpense.find('tbody tr').each(function (){
+            tbProduct.find('tbody tr').each(function (){
                 cost_list.push({
-                    'advance_payment_cost': $(this).find('.col-expense').attr('data-id'),
+                    'advance_payment_cost': $(this).find('.col-product').attr('data-id'),
                     'remain_value': parseFloat($(this).find('span.mask-money').attr('data-init-money')),
                     'return_value': $(this).find('input.mask-money').valCurrency(),
                 })

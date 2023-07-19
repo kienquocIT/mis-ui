@@ -86,16 +86,16 @@ $(function () {
             },)
         }
 
-        function loadExpenseTable(data) {
-            let table = $('#dtbExpense');
+        function loadProductTable(data) {
+            let table = $('#dtbProduct');
             table.find('tbody').html('');
             $('#total-value').attr('data-init-money', '');
             let cnt = table.find('tbody tr').length;
             data.map(function (item) {
                 let html = `<tr>
                                 <td class="number text-center wrap-text">${cnt + 1}</td>
-                                <td class="wrap-text col-expense" data-id="${item.id}"><span class="text-primary">${item.expense.title}</span></td>
-                                <td class="wrap-text"><span>${item.expense_type}</span></td>
+                                <td class="wrap-text col-product" data-id="${item.id}"><span class="text-primary">${item.product.title}</span></td>
+                                <td class="wrap-text"><span>${item.product_type}</span></td>
                                 <td class="wrap-text"><span class="mask-money" data-init-money="${item.remain_total}"></span></td>
                                 <td class="wrap-text">
                                     <input class="mask-money form-control return-price" disabled type="text" value="${item.return_price}" data-return-type="number" readonly> 
@@ -123,7 +123,7 @@ $(function () {
                     $('[name="date_created"]').val(return_advance_detail.date_created.split(" ")[0]);
                     $('[name="method"]').val(return_advance_detail.method);
                     $('.select2').select2();
-                    loadExpenseTable(return_advance_detail.cost);
+                    loadProductTable(return_advance_detail.cost);
                     let total_value = return_advance_detail.cost.map(obj => obj.return_price).reduce((a, b) => a + b, 0)
                     $('#total-value').attr('data-init-money', total_value);
                     if (return_advance_detail.money_received) {

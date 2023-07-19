@@ -34,12 +34,12 @@
     <div class="row">
         <ul class="nav nav-light nav-tabs">
             <li class="nav-item" id="tab-config">
-                <a class="nav-link active" data-bs-toggle="tab" href="#tab_block_1">
+                <a class="nav-link active" data-bs-toggle="tab" href="#tab_config">
                     <span class="nav-link-text">{% trans 'General' %}</span>
                 </a>
             </li>
             <li class="nav-item" id="tab-indicator">
-                <a class="nav-link" data-bs-toggle="tab" href="#tab_block_2">
+                <a class="nav-link" data-bs-toggle="tab" href="#tab_indicator">
                     <span class="nav-link-text">{% trans 'Indicator' %}</span>
                 </a>
             </li>
@@ -56,10 +56,10 @@
     >
         {% csrf_token %}
         <div class="tab-content">
-            <div class="tab-pane fade show active" id="tab_block_1">
+            <div class="tab-pane fade show active" id="tab_config">
                 {% include 'sales/quotation/config/general_tab.html' %}
             </div>
-            <div class="tab-pane fade" id="tab_block_2">
+            <div class="tab-pane fade" id="tab_indicator">
                 {% include 'sales/saleorder/config/indicator_tab.html' %}
             </div>
         </div>

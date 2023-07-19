@@ -243,7 +243,6 @@ $(document).ready(function () {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('price_list')) {
-                        // console.log(list_price)
                         data.price_list.map(function (item) {
                             if (item.price_list_type.value === 0) {
                                 let price_list_exists = list_price.find(function (obj) {
@@ -332,6 +331,8 @@ $(document).ready(function () {
                             $('#link-tab-sale').addClass('disabled');
                             $('#tab_sale').removeClass('active show');
                             $('#check-tab-sale').prop('checked', false);
+                            loadPriceList([]);
+                            loadTaxCode(null);
                         } else {
                             if (product_detail.sale_information.hasOwnProperty('price_list'))
                                 loadPriceList(product_detail.sale_information.price_list);
@@ -340,6 +341,8 @@ $(document).ready(function () {
                             }
                             if (product_detail.sale_information.hasOwnProperty('tax_code'))
                                 loadTaxCode(product_detail.sale_information.tax_code.id);
+                            else
+                                loadTaxCode(null);
 
                             $('[name="length"]').val(product_detail.sale_information.length);
                             $('[name="width"]').val(product_detail.sale_information.width);
@@ -354,12 +357,16 @@ $(document).ready(function () {
                                 })
                             }
                         }
+
                         data_uom_gr.uom_group.uom.map(function (item) {
                             if ($.fn.hasOwnProperties(product_detail.sale_information, ['default_uom']) && product_detail.sale_information.default_uom !== null) {
                                 if (item.uom_id === product_detail.sale_information.default_uom.id)
                                     select_box_default_uom.append(`<option value="` + item.uom_id + `" selected>` + item.uom_title + `</option>`);
                                 else
                                     select_box_default_uom.append(`<option value="` + item.uom_id + `">` + item.uom_title + `</option>`);
+                            }
+                            else{
+                                select_box_default_uom.append(`<option value="` + item.uom_id + `">` + item.uom_title + `</option>`);
                             }
 
                             if ($.fn.hasOwnProperties(product_detail.inventory_information, ['uom']) && product_detail.inventory_information.uom !== null) {
@@ -368,6 +375,9 @@ $(document).ready(function () {
                                     $('#uom-code').val(item.uom_code);
                                 } else
                                     select_box_uom_name.append(`<option value="` + item.uom_id + `" data-code="` + item.uom_code + `">` + item.uom_title + `</option>`);
+                            }
+                            else{
+                                select_box_uom_name.append(`<option value="` + item.uom_id + `" data-code="` + item.uom_code + `">` + item.uom_title + `</option>`);
                             }
                         })
 
@@ -538,7 +548,6 @@ $(document).ready(function () {
         let frm = new SetupFormSubmit($(this));
 
         let dataForm = getDataForm(frm.dataForm);
-        console.log(dataForm);
 
         $.fn.callAjax(frm.dataUrl.format_url_with_uuid(pk), frm.dataMethod, dataForm, csr)
             .then(

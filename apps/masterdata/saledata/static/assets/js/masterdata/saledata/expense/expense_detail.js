@@ -270,7 +270,7 @@ $(document).ready(function () {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('expense')) {
                     let expense_detail = data?.['expense'];
                     $.fn.compareStatusShowPageAction(expense_detail);
-                    $('#expenseCode').val(expense_detail.code);
+                    $('#expenseCode').text(expense_detail.code);
                     $('#expenseTitle').val(expense_detail.title);
                     loadExpenseType(expense_detail.expense_type);
                     loadUoMGroup(expense_detail.uom_group);

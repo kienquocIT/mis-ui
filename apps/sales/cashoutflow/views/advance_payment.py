@@ -30,7 +30,7 @@ class AdvancePaymentCreate(View):
     def get(self, request, *args, **kwargs):
         resp1 = ServerAPI(user=request.user, url=ApiURL.SALE_ORDER_LIST).get()
         resp2 = ServerAPI(user=request.user, url=ApiURL.QUOTATION_LIST).get()
-        resp3 = ServerAPI(user=request.user, url=ApiURL.EXPENSE_LIST).get()
+        resp3 = ServerAPI(user=request.user, url=ApiURL.PRODUCT_LIST).get()
         resp4 = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_LIST).get()
         resp5 = ServerAPI(user=request.user, url=ApiURL.ADVANCE_PAYMENT_LIST).get()
         resp6 = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_LIST).get()
@@ -43,7 +43,7 @@ class AdvancePaymentCreate(View):
                 'employee_current_id': request.user.employee_current_data.get('id', None),
                 'sale_order_list': resp1.result,
                 'quotation_list': resp2.result,
-                'expense_list': resp3.result,
+                'product_list': resp3.result,
                 'account_list': resp4.result,
                 'advance_payment_list': resp5.result,
                 'opportunity_list': resp6.result,
@@ -97,10 +97,9 @@ class AdvancePaymentDetail(View):
     def get(self, request, *args, **kwargs):
         resp1 = ServerAPI(user=request.user, url=ApiURL.SALE_ORDER_LIST).get()
         resp2 = ServerAPI(user=request.user, url=ApiURL.QUOTATION_LIST).get()
-        resp3 = ServerAPI(user=request.user, url=ApiURL.EXPENSE_LIST).get()
+        resp3 = ServerAPI(user=request.user, url=ApiURL.PRODUCT_LIST).get()
         resp4 = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_LIST).get()
         resp5 = ServerAPI(user=request.user, url=ApiURL.ADVANCE_PAYMENT_LIST).get()
-        resp6 = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_LIST).get()
         resp7 = ServerAPI(user=request.user, url=ApiURL.EMPLOYEE_LIST).get()
         resp8 = ServerAPI(user=request.user, url=ApiURL.TAX_LIST).get()
         resp9 = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE).get()
@@ -110,10 +109,9 @@ class AdvancePaymentDetail(View):
                 'employee_current_id': request.user.employee_current_data.get('id', None),
                 'sale_order_list': resp1.result,
                 'quotation_list': resp2.result,
-                'expense_list': resp3.result,
+                'product_list': resp3.result,
                 'account_list': resp4.result,
                 'advance_payment_list': resp5.result,
-                'opportunity_list': resp6.result,
                 'employee_list': resp7.result,
                 'tax_list': resp8.result,
                 'unit_of_measure': resp9.result,

@@ -122,7 +122,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link disabled" data-bs-toggle="tab" id="link-tab-purchasing">
+                    <a class="nav-link disabled" data-bs-toggle="tab" id="link-tab-purchasing" href="#tab_purchase">
                         <span class="nav-link-text">{% trans 'Purchasing' %}</span>
                     </a>
                 </li>
@@ -292,6 +292,7 @@
                     <div class="col-1"></div>
                 </div>
             </div>
+            <div class="tab-pane fade" id="tab-purchase"></div>
         </div>
     </form>
     {{ data.unit | json_script:"id-unit-list" }}

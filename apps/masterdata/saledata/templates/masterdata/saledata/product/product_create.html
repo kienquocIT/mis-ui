@@ -104,7 +104,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link disabled" data-bs-toggle="tab" id="link-tab-purchasing">
+                    <a class="nav-link disabled" data-bs-toggle="tab" id="link-tab-purchasing" href="#tab_purchase">
                         <span class="nav-link-text">{% trans 'Purchasing' %}</span>
                     </a>
                 </li>
@@ -262,7 +262,9 @@
                             <tfoot>
                             <tr>
                                 <th></th>
-                                <th class="text-primary text-center" style="font-weight: bolder; font-size: larger">TOTAL</th>
+                                <th class="text-primary text-center" style="font-weight: bolder; font-size: larger">
+                                    TOTAL
+                                </th>
                                 <th class="text-primary text-center" style="font-weight: bolder; font-size: larger">
                                     <span class="w-50 badge badge-soft-primary badge-outline">0</span>
                                 </th>
@@ -282,6 +284,7 @@
                     <div class="col-1"></div>
                 </div>
             </div>
+            <div class="tab-pane fade" id="tab_purchase"></div>
         </div>
     </form>
     {{ data.unit | json_script:"id-unit-list" }}

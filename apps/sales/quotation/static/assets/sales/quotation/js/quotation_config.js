@@ -59,7 +59,10 @@ function loadInitPropertyList(property_id, eleShow, is_sale_order = false) {
     if (is_sale_order === true) {
         code_app = "saleorder";
     }
-    let data_filter = {'application__code': code_app};
+    let data_filter = {
+        'application__code': code_app,
+        'is_sale_indicator': true,
+    };
     if (eleShow.is(':empty')) {
         $.fn.callAjax(url, method, data_filter).then(
             (resp) => {

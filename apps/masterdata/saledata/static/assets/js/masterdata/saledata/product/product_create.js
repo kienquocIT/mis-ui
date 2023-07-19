@@ -296,38 +296,8 @@ $(document).ready(function () {
         }
     })
 
-    //submit form create product
-    let form_create_product = $('#form-create-product');
-    form_create_product.submit(function (event) {
-        event.preventDefault();
-        let csr = $("input[name=csrfmiddlewaretoken]").val();
-        let frm = new SetupFormSubmit($(this));
-
-        frm.dataForm['general_information'] = {
-            'product_type': $('#select-box-product-type').val(),
-            'product_category': $('#select-box-product-category').val(),
-            'uom_group': $('#select-box-uom-group').val()
-        }
-
-        if ($('#check-tab-inventory').is(':checked') === true) {
-            let inventory_level_min = $('#inventory-level-min').val();
-            if (inventory_level_min === '') {
-                inventory_level_min = null;
-            }
-
-            let inventory_level_max = $('#inventory-level-max').val();
-            if (inventory_level_max === '') {
-                inventory_level_max = null;
-            }
-            frm.dataForm['inventory_information'] = {
-                'uom': $('#select-box-uom-name').val(),
-                'inventory_level_min': inventory_level_min,
-                'inventory_level_max': inventory_level_max
-            }
-        } else {
-            delete frm.dataForm['inventory_information']
-        }
-
+    function getDataForm(dataForm) {
+        let list_option = []
         let price_list = []
         $('.ul-price-list .value-price-list').each(function () {
             let is_auto_update = '1';
@@ -356,53 +326,76 @@ $(document).ready(function () {
         })
 
         if ($('#check-tab-sale').is(':checked') === true) {
-            frm.dataForm['sale_information'] = {
-                'default_uom': $('#select-box-default-uom').val(),
-                'tax_code': $('#select-box-tax-code').val()
-            }
-            if (price_list.length > 0) {
-                frm.dataForm['price_list'] = price_list;
-                frm.dataForm['sale_information']['currency_using'] = currency_id;
-            } else {
-                frm.dataForm['price_list'] = null;
-                frm.dataForm['sale_information']['currency_using'] = null;
-            }
-            frm.dataForm['sale_information']['measure'] = [];
-            frm.dataForm['sale_information']['length'] = null;
-            frm.dataForm['sale_information']['width'] = null;
-            frm.dataForm['sale_information']['height'] = null;
-            if ($('#check-tab-inventory').is(':checked') === true) {
-                let inpLength = $('[name="length"]');
-                let inpWidth = $('[name="width"]');
-                let inpHeight = $('[name="height"]');
+            dataForm['price_list'] = price_list;
+            let measurementList = []
+            dataForm['currency_using'] = currency_id;
 
-                frm.dataForm['sale_information']['length'] = inpLength.val() !== '' ? parseFloat(inpLength.val()) : null;
-                frm.dataForm['sale_information']['width'] = inpWidth.val() !== '' ? parseFloat(inpWidth.val()) : null;
-                frm.dataForm['sale_information']['height'] = inpHeight.val() !== '' ? parseFloat(inpHeight.val()) : null;
-
-                let measurementList = []
-
-                let inpVolume = $('[name="volume"]');
-                let inpWeight = $('[name="weight"]');
-                if (inpVolume.val() !== '') {
-                    measurementList.push({
-                        'unit': inpVolume.attr('data-id'),
-                        'value': parseFloat(inpVolume.val())
-                    })
-                }
-                if (inpWeight.val() !== '') {
-                    measurementList.push({
-                        'unit': inpWeight.attr('data-id'),
-                        'value': parseFloat(inpWeight.val())
-                    })
-                }
-                frm.dataForm['sale_information']['measure'] = measurementList;
+            if($('[name="length"]').val() === ''){
+                delete dataForm['length']
             }
+            if($('[name="width"]').val() === ''){
+                delete dataForm['width']
+            }
+            if($('[name="height"]').val() === ''){
+                delete dataForm['height']
+            }
+            let inpVolume = $('[name="volume"]');
+            let inpWeight = $('[name="weight"]');
+            if(inpVolume.val() !== ''){
+                measurementList.push({
+                    'unit': inpVolume.attr('data-id'),
+                    'value': parseFloat(inpVolume.val())
+                })
+            }
+            if (inpWeight.val() !== ''){
+                measurementList.push({
+                    'unit': inpWeight.attr('data-id'),
+                    'value': parseFloat(inpWeight.val())
+                })
+            }
+
+
+            dataForm['measure'] = measurementList;
+            list_option.push(0)
         } else {
-            delete frm.dataForm['sale_information']
+            let list_field_del = ['default_uom', 'tax_code', 'currency_using', 'length', 'width', 'height', 'measure', 'price_list']
+            for (const key of list_field_del) {
+                if (key in dataForm) {
+                    delete dataForm[key];
+                }
+            }
         }
 
-        $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
+        if ($('#check-tab-inventory').is(':checked') === true) {
+            if (dataForm['inventory_level_min'] === ''){
+                delete dataForm['inventory_level_min']
+            }
+            if (dataForm['inventory_level_max'] === ''){
+                delete dataForm['inventory_level_max']
+            }
+            list_option.push(1)
+        } else {
+            let list_field_del = ['inventory_uom', 'inventory_level_min', 'inventory_level_max', 'height', 'width', 'length', 'measure']
+            for (const key of list_field_del) {
+                if (key in dataForm) {
+                    delete dataForm[key];
+                }
+            }
+        }
+        dataForm['product_choice'] = list_option;
+        return dataForm
+    }
+
+    //submit form create product
+    let form_create_product = $('#form-create-product');
+    form_create_product.submit(function (event) {
+        event.preventDefault();
+        let csr = $("input[name=csrfmiddlewaretoken]").val();
+        let frm = new SetupFormSubmit($(this));
+        let dataForm = getDataForm(frm.dataForm);
+
+        console.log(frm.dataForm)
+        $.fn.callAjax(frm.dataUrl, frm.dataMethod,  dataForm, csr)
             .then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
@@ -472,10 +465,9 @@ $(document).ready(function () {
             return (a * b).toFixed(2);
         }, 1);
 
-        if(volume === (0).toFixed(2)){
+        if (volume === (0).toFixed(2)) {
             inpVolumeEle.val('');
-        }
-        else{
+        } else {
             inpVolumeEle.val(volume);
         }
     });
@@ -550,7 +542,7 @@ $(document).ready(function () {
                         render: (data, type, row, meta) => {
                             return `<center><span>0</span></center>`
                         }
-                    },{
+                    }, {
                         data: 'available_value',
                         className: 'wrap-text text-center w-15',
                         render: (data, type, row, meta) => {

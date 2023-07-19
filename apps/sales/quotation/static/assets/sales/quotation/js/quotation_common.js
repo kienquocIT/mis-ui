@@ -3172,6 +3172,10 @@ class submitHandle {
         if (quotation_indicators_data_setup.length > 0) {
             _form.dataForm[quotation_indicators_data] = quotation_indicators_data_setup
         }
+        // system fields
+        if (_form.dataMethod === "POST") {
+            _form.dataForm['system_status'] = 1;
+        }
     }
 }
 

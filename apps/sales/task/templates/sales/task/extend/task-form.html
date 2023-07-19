@@ -65,8 +65,7 @@
                     </div>
                     <div class="col-md-6 col-xs-12">
                         <input type="text" class="hidden" name="log_time">
-                        <a href="#" class="text-bold mt-4 d-block btn-log_work"
-                           data-bs-toggle="modal" data-bs-target="#logWorkModal">{% trans 'Log time' %}</a>
+                        <a href="#" class="text-bold mt-4 d-block btn-log_work">{% trans 'Log time' %}</a>
                     </div>
                     <div class="col-md-6 col-xs-12">
                         <div class="form-group">
@@ -206,8 +205,19 @@
                                 </button>
                             </div>
                             <div class="tab-pane fade" id="tab_attach">
-                                <label for="formFileMultiple" class="form-label">{% trans 'Attachments' %}</label>
-                                <input class="form-control" type="file" name="attach" id="formFileMultiple" multiple>
+                                <div class="form-group">
+                                    <button
+                                            type="button"
+                                            class="form-control btn btn-outline-primary btn-file-upload"
+                                            data-f-input-name="attach"
+                                            data-f-input-required="false"
+                                            data-f-input-disabled="false"
+                                            data-f-name-ele-id="#fileNameTestDisplay"
+                                    >{% trans 'Click here to upload image' %}</button>
+                                    <p id="fileNameTestDisplay"></p>
+
+                                </div>
+
                             </div>
                             <div class="tab-pane fade" id="tab_logwork">
                                 <div class="overflow-x-scroll">

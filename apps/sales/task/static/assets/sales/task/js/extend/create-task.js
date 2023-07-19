@@ -3,7 +3,7 @@ function resetFormTask() {
     $('#formOpportunityTask').trigger('reset').removeClass('task_edit')
     $('#selectAssignTo').val(null).trigger('change');
     if ($('.current-create-task').length !== 1)
-        $('#selectOpportunity').val(null).trigger('change');
+        $('#selectOpportunity').val(null).trigger('change').attr('disabled', false);
     $('.label-mark, .wrap-checklist, .wrap-subtask').html('');
     $('#inputLabel').val(null);
     $('[name="id"]').remove();
@@ -12,6 +12,40 @@ function resetFormTask() {
     $('.create-subtask').addClass('hidden')
     $('[name="parent_n"]').remove();
     window.editor.setData('')
+}
+function logworkSubmit(){
+    $('#save-logtime').off().on('click', function () {
+        const startDate = $('#startDateLogTime').val()
+        const endDate = $('#endDateLogTime').val()
+        const est = $('#EstLogtime').val()
+        const taskID = $('#logtime_task_id').val()
+        if (!startDate && !endDate && !est) {
+            $.fn.notifyPopup({description: $('#form_valid').attr('data-logtime-valid')}, 'failure')
+            return false
+        }
+        const data = {
+            'start_date': moment(startDate, 'DD/MM/YYYY').format('YYYY-MM-DD'),
+            'end_date': moment(endDate, 'DD/MM/YYYY').format('YYYY-MM-DD'),
+            'time_spent': est,
+        }
+        // if has task id => log time
+        if (taskID && taskID.valid_uuid4()) {
+            data.task = taskID
+            let url = $('#url-factory').attr('data-logtime')
+            $.fn.callAjax(url, 'POST', data, true)
+                .then(
+                    (req) => {
+                        let data = $.fn.switcherResp(req);
+                        if (data?.['status'] === 200) {
+                            $.fn.notifyPopup({description: data.message}, 'success')
+                        }
+                    }
+                )
+        }else{
+            $('[name="log_time"]').attr('value', JSON.stringify(data))
+        }
+        $('#logWorkModal').modal('hide')
+    });
 }
 
 $(function () {
@@ -148,9 +182,6 @@ $(function () {
         }
     }
 
-    // form reset
-
-
     /** start run and init all function **/
     // run status select default
     const sttElm = $('#selectStatus');
@@ -210,16 +241,14 @@ $(function () {
         }, 1000)
     }
 
-    // click to logwork
-    $('#save-logtime').off().on('click', function () {
-        const start = $('#startDateLogTime').val();
-        const end = $('#endDateLogTime').val();
-        const est = $('#EstLogtime').val();
-        if (start) {
-
-        }
-    });
-    let editor;
+    // click to log-work
+    $('.btn-log_work').off().on('click', () => {
+        $('#logWorkModal').modal('show')
+        $('#startDateLogTime, #endDateLogTime, #EstLogtime').val(null)
+        const taskID = $('.task_edit [name="id"]').val()
+        if (taskID) $('#logtime_task_id').val(taskID)
+        logworkSubmit()
+    })
 
     // run CKEditor
     ClassicEditor
@@ -276,11 +305,19 @@ $(function () {
             $.fn.notifyPopup({description: $('#form_valid').attr('data-valid-datetime')}, 'failure')
             return false
         }
-
+        if (formData.log_time === "")
+            delete formData.log_time
+        else{
+            let temp = formData.log_time.replaceAll("'", '"')
+            temp = JSON.parse(temp)
+            formData.log_time = temp
+        }
         formData.start_date = moment(formData.start_date, 'DD/MM/YYYY').format('YYYY-MM-DD')
         formData.end_date = moment(formData.end_date, 'DD/MM/YYYY').format('YYYY-MM-DD')
         formData.priority = parseInt(formData.priority)
-        formData.label = JSON.parse($('#inputLabel').attr('value'))
+        let tagsList = $('#inputLabel').attr('value')
+        if (tagsList)
+            formData.label = JSON.parse(tagsList)
         formData.employee_created = $('#inputAssigner').attr('value')
         formData.task_status = $('#selectStatus').val()
         const task_status = $('#selectStatus').select2('data')[0]
@@ -288,21 +325,32 @@ $(function () {
             'id': task_status.id,
             'title': task_status.title,
         }
+
         const assign_to = $('#selectAssignTo').select2('data')[0]
-        const assign_toData = {
-            'id': assign_to.id,
-            'first_name': assign_to.text.split('. ')[1],
-            'last_name': assign_to.text.split('. ')[0],
-        }
+        let assign_toData = {}
+        if (assign_to)
+            assign_toData = {
+                'id': assign_to.id,
+                'first_name': assign_to.text.split('. ')[1],
+                'last_name': assign_to.text.split('. ')[0],
+            }
 
         formData.checklist = []
-        if ($('.wrap-checklist .checklist_item').length > 0)
-            $('.wrap-checklist .checklist_item').each(function () {
-                formData.checklist.push({
-                    'name': $(this).find('label').text(),
-                    'done': $(this).find('input').prop('checked'),
-                })
+        $('.wrap-checklist .checklist_item').each(function () {
+            formData.checklist.push({
+                'name': $(this).find('label').text(),
+                'done': $(this).find('input').prop('checked'),
             })
+        })
+
+        if (!formData.opportunity) delete formData.opportunitys
+
+        if ($('[name="attach"]').val()){
+            let list = []
+            list.push($('[name="attach"]').val())
+            formData.attach = list
+        }
+
         let method = 'POST'
         let url = _form.dataUrl
         if(formData.id && formData.id !== ''){
@@ -320,7 +368,7 @@ $(function () {
                         // case update
                         if (!data?.id && data?.status === 200) {
                             elm = $('<input type="hidden" id="updateTaskData"/>');
-                            formData.code = $('#inputTextCode').val()
+                            formData.code = $('#inputTextCode').val();
                             formData.assign_to = assign_toData
                             formData.task_status = taskSttData
                         }
@@ -330,6 +378,7 @@ $(function () {
                         elm.attr('data-task', datadump)
                         $('body').append(elm)
                     }
+                    if ($('.current-create-task').length) $('.cancel-task').trigger('click')
                 }
             })
     })

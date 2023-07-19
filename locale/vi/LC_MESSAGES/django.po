@@ -1028,7 +1028,7 @@ msgstr "Tên khách hàng"
 
 #
 msgid "Group"
-msgstr "Nhóm"
+msgstr "Phòng ban"
 
 #
 msgid "Industry"

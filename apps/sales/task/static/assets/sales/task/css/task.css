@@ -105,3 +105,6 @@
 .isOpened #kb_sub_scroll{
     display: block;
 }
+.visible-hidden{
+    visibility: hidden;
+}

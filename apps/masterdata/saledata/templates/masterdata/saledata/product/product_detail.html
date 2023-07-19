@@ -122,7 +122,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link disabled" data-bs-toggle="tab" id="link-tab-purchasing">
+                    <a class="nav-link disabled" data-bs-toggle="tab" id="link-tab-purchasing" href="#tab_purchase">
                         <span class="nav-link-text">{% trans 'Purchasing' %}</span>
                     </a>
                 </li>
@@ -239,7 +239,7 @@
                         <label class="form-label">{% trans "UoM Name" %}</label>
                         <span class="field-required">*</span></label>
                         <select id="select-box-uom-name" class="form-select" data-method="GET" readonly="readonly"
-                                data-url="{% url 'UnitOfMeasureListAPI' %}" name="uom_name">
+                                data-url="{% url 'UnitOfMeasureListAPI' %}" name="inventory_uom">
                         </select>
                     </div>
                     <div class="form-group col-3 inp-can-edit">
@@ -292,6 +292,7 @@
                     <div class="col-1"></div>
                 </div>
             </div>
+            <div class="tab-pane fade" id="tab-purchase"></div>
         </div>
     </form>
     {{ data.unit | json_script:"id-unit-list" }}

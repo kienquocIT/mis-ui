@@ -500,9 +500,6 @@ $(document).ready(function () {
         let ele = $('#sale-code-select-box');
         ele.html('');
         ele.append(`<option></option>`);
-        console.log(sale_order_list)
-        console.log(quotation_list)
-        console.log(opportunity_list)
         sale_order_list.map(function (item) {
             let added = false;
             if (item.sale_person.id === beneficiary) {

@@ -102,7 +102,6 @@ $(document).ready(function () {
                         data: '',
                         className: 'wrap-text',
                         render: (data, type, row, meta) => {
-                            console.log(row)
                             let sale_code_id = '';
                             let is_close = false;
                             if (row.sale_order_mapped) {

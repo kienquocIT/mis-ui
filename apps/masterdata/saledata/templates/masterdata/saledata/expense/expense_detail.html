@@ -32,12 +32,15 @@
         {% csrf_token %}
         {{ data.content.price_list|json_script:"id-price-list" }}
         {{ data.content.currency_list|json_script:"id-currency-list" }}
+
         <div class="row">
-            <div class="col-3 form-group">
-                <label class="form-label required">{% trans 'Code' %}</label>
-                <input class="form-control" type="text" placeholder="CODE" id="expenseCode" disabled>
+            <div class="col-2">
+                <span class="badge badge-soft-primary badge-outline w-100" style="font-size: large" id="expenseCode"></span>
             </div>
-            <div class="col-6">
+        </div>
+
+        <div class="row mt-5">
+            <div class="col-4">
                 <label class="form-label required">{% trans 'Name' %}</label>
                 <input class="form-control" type="text" placeholder="Input Name" name="title" id="expenseTitle">
             </div>

@@ -6,6 +6,8 @@
     <link href="{% static 'vendors/dropify/dist/css/dropify.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/sweetalert2/sweetalert2.css' %}" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}"/>
+
+    <link href="{% static 'assets/sales/task/css/create-form.css' %}" rel="stylesheet" type="text/css"/>
     <style>
         .sub-stage {
             display: flex;
@@ -202,6 +204,13 @@
                                             <i class="bi bi-telephone-fill"></i>
                                         </span>
                                     </a>
+                                    <a href="#"><span class="ml-2"><i class="bi bi-envelope"></i></span></a>
+                                    <a href="#" class="current-create-task">
+                                        <span class="ml-2 ntt-drawer-toggle-link"
+                                              data-drawer-target="#drawer_task_create"
+                                              data-drawer-active="false">
+                                            <i class="bi bi-file-earmark-arrow-up"></i></span></a>
+                                    <a href="#"><span class="ml-2"><i class="bi bi-pip"></i></span></a>
                                     <a href="" data-bs-toggle="modal" data-bs-target="#send-email" class="send-email-button">
                                         <span class="ml-3"
                                               data-bs-toggle="tooltip"
@@ -863,6 +872,7 @@
             </div>
         </div>
     </div>
+    {% include 'sales/task/extend/task-form.html' %}
 
     <div class="modal fade mt-10" id="send-email" tabindex="-1" role="dialog"
          aria-labelledby="createOpportunityModalForms" aria-hidden="true">
@@ -1038,5 +1048,10 @@
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/dropify/dist/js/dropify.min.js' %}"></script>
     <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>
+    <script src="{% static 'vendors/ckeditor/cdn.ckeditor.5_38.1.0_classic_ckeditor.js' %}"></script>
+    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+
+    <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
+    <script src="{% static 'assets/sales/task/js/extend/create-task.js' %}"></script>
     <script src="{% static 'assets/sales/opportunity/js/opportunity_detail.js' %}"></script>
 {% endblock %}

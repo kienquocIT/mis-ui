@@ -7,38 +7,6 @@
         id="drawer_task_create"
         {#        data-url="{% url 'FlowRuntimeDiagramDetailAPI' pk=1 %}"#}
 >
-    <style>
-        .label-mark .item-tag {
-            color: #ffffff;
-            background: var(--bs-info);
-            border-radius: 0.375rem;
-            padding: 1px 4px 2px;
-            font-size: .8rem;
-        }
-
-        .label-mark .item-tag > .tag-delete {
-            margin-left: 4px;
-            color: #555555;
-            cursor: pointer;
-        }
-
-        .label-mark .item-tag + .item-tag {
-            margin-left: 4px;
-        }
-
-        .checklist_item label {
-            border: 0px solid transparent;
-            padding: 2px 8px;
-        }
-
-        .checklist_item label:focus,
-        .checklist_item label:hover {
-            cursor: text;
-            outline: dotted 1px var(--bs-info);
-            outline-offset: 2px;
-            border-radius: 4px;
-        }
-    </style>
     <div class="ntt-drawer-header">
         <div>
             <span class="ntt-drawer-header-text">{% trans 'Create Task' %}</span>
@@ -97,8 +65,7 @@
                     </div>
                     <div class="col-md-6 col-xs-12">
                         <input type="text" class="hidden" name="log_time">
-                        <a href="#" class="text-bold mt-4 d-block btn-log_work"
-                           data-bs-toggle="modal" data-bs-target="#logWorkModal">{% trans 'Log time' %}</a>
+                        <a href="#" class="text-bold mt-4 d-block btn-log_work">{% trans 'Log time' %}</a>
                     </div>
                     <div class="col-md-6 col-xs-12">
                         <div class="form-group">
@@ -107,6 +74,7 @@
                                     data-prefix="opportunity_list"
                                     data-url="{% url 'OpportunityListAPI' %}"
                                     data-select2-closeOnSelect="true"
+                                    data-format="code"
                             >
                             </select>
                         </div>
@@ -237,8 +205,19 @@
                                 </button>
                             </div>
                             <div class="tab-pane fade" id="tab_attach">
-                                <label for="formFileMultiple" class="form-label">{% trans 'Attachments' %}</label>
-                                <input class="form-control" type="file" name="attach" id="formFileMultiple" multiple>
+                                <div class="form-group">
+                                    <button
+                                            type="button"
+                                            class="form-control btn btn-outline-primary btn-file-upload"
+                                            data-f-input-name="attach"
+                                            data-f-input-required="false"
+                                            data-f-input-disabled="false"
+                                            data-f-name-ele-id="#fileNameTestDisplay"
+                                    >{% trans 'Click here to upload image' %}</button>
+                                    <p id="fileNameTestDisplay"></p>
+
+                                </div>
+
                             </div>
                             <div class="tab-pane fade" id="tab_logwork">
                                 <div class="overflow-x-scroll">

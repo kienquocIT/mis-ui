@@ -221,6 +221,10 @@ function calculateIndicator(indicator_list) {
                 'id': indicator.id,
                 'title': indicator.title,
             },
+            'quotation_indicator': {
+                'id': indicator.id,
+                'title': indicator.title,
+            },
             'order': indicator.order,
             'indicator_value': value,
             'indicator_rate': rateValue,

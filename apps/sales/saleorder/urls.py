@@ -1,7 +1,7 @@
 from django.urls import path
 
 from apps.sales.saleorder.views import (
-    SaleOrderCreate, SaleOrderList, SaleOrderListAPI, SaleOrderDetail,
+    SaleOrderCreate, SaleOrderList, SaleOrderListAPI, SaleOrderDetail, SaleOrderListAPIForCashOutFlow,
     SaleOrderDetailAPI, SaleOrderProductListAPI, SaleOrderDetailDeliveryAPI, SaleOrderConfigDetail,
     SaleOrderConfigDetailAPI, SaleOrderIndicatorListAPI, SaleOrderIndicatorDetailAPI, SaleOrderIndicatorRestoreAPI
 )
@@ -20,4 +20,5 @@ urlpatterns = [
     path('detail-api/<str:pk>', SaleOrderDetailAPI.as_view(), name='SaleOrderDetailAPI'),
     path('sale-order-product-list', SaleOrderProductListAPI.as_view(), name='SaleOrderProductListAPI'),
     path('detail-api/<str:pk>/delivery', SaleOrderDetailDeliveryAPI.as_view(), name='SaleOrderDetailDeliveryAPI'),
+    path('api/list-for-cashoutflow', SaleOrderListAPIForCashOutFlow.as_view(), name='SaleOrderListAPIForCashOutFlow'),
 ]

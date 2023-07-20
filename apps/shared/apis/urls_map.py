@@ -219,6 +219,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # quotation
     QUOTATION_LIST = StringUrl('quotation/lists')
+    QUOTATION_LIST_FOR_CASH_OUTFLOW = StringUrl('quotation/list-for-cashoutflow')
     QUOTATION_DETAIL = StringUrl('quotation')
     QUOTATION_PRODUCT_LIST = StringUrl('quotation/quotation-product-list/lists')
     QUOTATION_CONFIG = StringUrl('quotation/config')
@@ -245,6 +246,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # sale order
     SALE_ORDER_LIST = StringUrl('saleorder/lists')
+    SALE_ORDER_LIST_FOR_CASH_OUTFLOW = StringUrl('saleorder/list-for-cashoutflow')
     SALE_ORDER_DETAIL = StringUrl('saleorder')
     SALE_ORDER_PRODUCT_LIST = StringUrl('saleorder/saleorder-product-list/lists')
     SALE_ORDER_CONFIG = StringUrl('saleorder/config')

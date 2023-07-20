@@ -2648,7 +2648,7 @@ let configClass = new checkConfigHandle();
 
 // Indicator
 class indicatorHandle {
-    loadQuotationIndicator(indicator_id) {
+    loadQuotationIndicator(indicator_id, is_load_init_indicator = false) {
         let jqueryId = '#' + indicator_id;
         let ele = $(jqueryId);
         if (!ele.val()) {
@@ -2660,14 +2660,18 @@ class indicatorHandle {
                     if (data) {
                         if (data.hasOwnProperty('quotation_indicator_list') && Array.isArray(data.quotation_indicator_list)) {
                             ele.val(JSON.stringify(data.quotation_indicator_list));
-                            calculateIndicator(data.quotation_indicator_list);
+                            if (is_load_init_indicator === false) {
+                                calculateIndicator(data.quotation_indicator_list);
+                            }
                         }
                     }
                 }
             )
         } else {
-            let data_list = JSON.parse(ele.val());
-            calculateIndicator(data_list);
+            if (is_load_init_indicator === false) {
+                let data_list = JSON.parse(ele.val());
+                calculateIndicator(data_list);
+            }
         }
 
     }
@@ -3110,18 +3114,18 @@ class submitHandle {
                 let indicator_value = row.querySelector('.table-row-value').getAttribute('data-value');
                 let indicator_rate = row.querySelector('.table-row-rate').getAttribute('data-value');
                 let order = row.querySelector('.table-row-order').getAttribute('data-value');
-                if (!$(tableIndicator).hasClass('sale-order')) {
+                if (!$(tableIndicator).hasClass('sale-order')) { // QUOTATION INDICATOR
                     result.push({
                         'indicator': indicator,
                         'indicator_value': parseFloat(indicator_value),
                         'indicator_rate': parseFloat(indicator_rate),
                         'order': parseInt(order),
                     })
-                } else {
+                } else { // SALE ORDER INDICATOR
                     let quotation_indicator_value = row.querySelector('.table-row-quotation-value').getAttribute('data-value');
                     let difference_indicator_rate = row.querySelector('.table-row-difference-value').getAttribute('data-value');
                     result.push({
-                        'indicator': indicator,
+                        'quotation_indicator': indicator,
                         'indicator_value': parseFloat(indicator_value),
                         'indicator_rate': parseFloat(indicator_rate),
                         'quotation_indicator_value': parseFloat(quotation_indicator_value),

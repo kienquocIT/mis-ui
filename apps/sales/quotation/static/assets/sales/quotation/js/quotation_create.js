@@ -29,6 +29,8 @@ $(function () {
         loadDataClass.loadInitQuotationExpense('data-init-quotation-create-tables-expense');
         // load config
         loadDataClass.loadInitQuotationConfig('quotation-config-data', formSubmit.attr('data-method'));
+        // load first time indicator
+        indicatorClass.loadQuotationIndicator('quotation-indicator-data', true);
 
         dataTableClass.dataTableProduct(data,'datable-quotation-create-product');
         dataTableClass.dataTableCost(data, 'datable-quotation-create-cost');

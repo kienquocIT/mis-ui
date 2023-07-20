@@ -86,7 +86,8 @@ function dataTableSaleOrderIndicator(data) {
             {
                 targets: 1,
                 render: (data, type, row) => {
-                    return `<span class="table-row-title" data-id="${row.indicator.id}">${row.indicator.title}</span>`
+                    // return `<span class="table-row-title" data-id="${row.indicator.id}">${row.indicator.title}</span>`
+                    return `<span class="table-row-title" data-id="${row.quotation_indicator.id}">${row.quotation_indicator.title}</span>`
                 }
             },
             {

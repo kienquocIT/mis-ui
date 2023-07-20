@@ -491,49 +491,95 @@ $(document).ready(function () {
     function loadSaleCode(beneficiary) {
         $('#notify-none-sale-code').prop('hidden', false);
         $('#tab_plan_datatable').prop('hidden', true);
+        $('#sale-code-select-box').prop('disabled', false);
         if (beneficiary === '') {
             $('#sale-code-select-box').prop('disabled', true);
-        }
-        else {
-            $('#sale-code-select-box').prop('disabled', false);
         }
         let quotation_loaded = [];
         let oppcode_loaded = [];
         let ele = $('#sale-code-select-box');
         ele.html('');
         ele.append(`<option></option>`);
+        console.log(sale_order_list)
+        console.log(quotation_list)
+        console.log(opportunity_list)
         sale_order_list.map(function (item) {
+            let added = false;
             if (item.sale_person.id === beneficiary) {
                 if (Object.keys(item.quotation).length !== 0) {
                     quotation_loaded.push(item.quotation.id);
                 }
                 if (Object.keys(item.opportunity).length !== 0) {
-                    oppcode_loaded.push(item.opportunity.id);
-                    ele.append(`<option class="dropdown-item" href="#" data-bs-toggle="tooltip" data-bs-placement="right" data-opp-id="` + item.opportunity.id + `" title="` + item.opportunity.code + `: ` + item.opportunity.title + `" data-sale-code="` + item.opportunity.code + `" data-type="0" data-sale-code-id="` + item.id + `" value="` + item.code + `">` + item.title + `</option>`);
+                    if (item.opportunity.is_close === false) {
+                        oppcode_loaded.push(item.opportunity.id);
+                        ele.append(`<option class="dropdown-item" href="#" data-bs-toggle="tooltip" data-bs-placement="right" data-opp-id="` + item.opportunity.id + `" title="` + item.opportunity.code + `: ` + item.opportunity.title + `" data-sale-code="` + item.opportunity.code + `" data-type="0" data-sale-code-id="` + item.id + `" value="` + item.code + `">` + item.title + `</option>`);
+                        added = true;
+                    }
                 }
                 else {
                     ele.append(`<option class="dropdown-item" href="#" data-bs-toggle="tooltip" data-bs-placement="right" title="No Opportunity Code." data-sale-code="` + item.code + `" data-type="0" data-sale-code-id="` + item.id + `" value="` + item.code + `">` + item.title + `</option>`);
+                    added = true;
+                }
+            }
+            if (Object.keys(item.opportunity).length !== 0) {
+                if (item.opportunity.opportunity_sale_team_datas.length > 0 && added === false) {
+                    $.each(item.opportunity.opportunity_sale_team_datas, function (index, member_obj) {
+                        if (member_obj.member.id === beneficiary) {
+                            if (Object.keys(item.quotation).length !== 0) {
+                                quotation_loaded.push(item.quotation.id);
+                            }
+                            if (item.opportunity.is_close === false) {
+                                oppcode_loaded.push(item.opportunity.id);
+                                ele.append(`<option class="dropdown-item" href="#" data-bs-toggle="tooltip" data-bs-placement="right" data-opp-id="` + item.opportunity.id + `" title="` + item.opportunity.code + `: ` + item.opportunity.title + `" data-sale-code="` + item.opportunity.code + `" data-type="0" data-sale-code-id="` + item.id + `" value="` + item.code + `">` + item.title + `</option>`);
+                                added = true;
+                                return;
+                            }
+                        }
+                    });
                 }
             }
         })
         quotation_list.map(function (item) {
-            if (item.sale_person.id === beneficiary) {
-                if (quotation_loaded.includes(item.id) === false) {
-                    if (Object.keys(item.opportunity).length !== 0) {
+            let added = false;
+            if (item.sale_person.id === beneficiary && quotation_loaded.includes(item.id) === false) {
+                if (Object.keys(item.opportunity).length !== 0) {
+                    if (item.opportunity.is_close === false) {
                         oppcode_loaded.push(item.opportunity.id);
                         ele.append(`<option class="dropdown-item" href="#" data-bs-toggle="tooltip" data-bs-placement="right" title="` + item.opportunity.code + `: ` + item.opportunity.title + `" data-sale-code="` + item.opportunity.code + `" data-type="1" data-sale-code-id="` + item.id + `" value="` + item.code + `">` + item.title + `</option>`);
+                        added = true;
                     }
-                    else {
-                        ele.append(`<option class="dropdown-item" href="#" data-bs-toggle="tooltip" data-bs-placement="right" title="No Opportunity Code." data-sale-code="` + item.code + `" data-type="1" data-sale-code-id="` + item.id + `" value="` + item.code + `">` + item.title + `</option>`);
-                    }
+                }
+                else {
+                    ele.append(`<option class="dropdown-item" href="#" data-bs-toggle="tooltip" data-bs-placement="right" title="No Opportunity Code." data-sale-code="` + item.code + `" data-type="1" data-sale-code-id="` + item.id + `" value="` + item.code + `">` + item.title + `</option>`);
+                    added = true;
+                }
+            }
+            if (Object.keys(item.opportunity).length !== 0) {
+                if (item.opportunity.opportunity_sale_team_datas.length > 0 && added === false) {
+                    $.each(item.opportunity.opportunity_sale_team_datas, function (index, member_obj) {
+                        if (member_obj.member.id === beneficiary && item.opportunity.is_close === false) {
+                            oppcode_loaded.push(item.opportunity.id);
+                            ele.append(`<option class="dropdown-item" href="#" data-bs-toggle="tooltip" data-bs-placement="right" title="` + item.opportunity.code + `: ` + item.opportunity.title + `" data-sale-code="` + item.opportunity.code + `" data-type="1" data-sale-code-id="` + item.id + `" value="` + item.code + `">` + item.title + `</option>`);
+                            added = true;
+                            return;
+                        }
+                    });
                 }
             }
         })
         opportunity_list.map(function (item) {
-            if (item.sale_person.id === beneficiary) {
-                if (oppcode_loaded.includes(item.id) === false) {
-                    ele.append(`<option data-sale-code="` + item.code + `" data-type="2" data-sale-code-id="` + item.id + `" value="` + item.code + `">` + item.title + `</option>`);
-                }
+            let added = false;
+            if (item.sale_person.id === beneficiary && oppcode_loaded.includes(item.id) === false && item.is_close === false) {
+                ele.append(`<option data-sale-code="` + item.code + `" data-type="2" data-sale-code-id="` + item.id + `" value="` + item.code + `">` + item.title + `</option>`);
+                added = true;
+            }
+            if (item.opportunity_sale_team_datas.length > 0 && added === false && item.is_close === false) {
+                $.each(item.opportunity_sale_team_datas, function(index, member_obj) {
+                    if (member_obj.member.id === beneficiary && oppcode_loaded.includes(item.id) === false) {
+                        ele.append(`<option data-sale-code="` + item.code + `" data-type="2" data-sale-code-id="` + item.id + `" value="` + item.code + `">` + item.title + `</option>`);
+                        added = true;
+                    }
+                });
             }
         })
 
@@ -806,7 +852,7 @@ $(document).ready(function () {
             loadSaleCode($('#beneficiary-select-box').val());
             $('#sale-code-label-id').addClass('required');
         }
-        if ($(this).val() === 'non-sale') {
+        else if ($(this).val() === 'non-sale') {
             loadSaleCode('');
             $('#sale-code-label-id').removeClass('required');
         }
@@ -841,12 +887,27 @@ $(document).ready(function () {
     // load Sale Code list which beneficiary person is their sale-person
     $('#beneficiary-select-box').on('change', function () {
         $('#tab_line_detail_datatable tbody').html(``);
-        loadSaleCode($('#beneficiary-select-box').val());
         $('#beneficiary-name').text($('#beneficiary-select-box option:selected').attr('data-name'));
         $('#beneficiary-code').text($('#beneficiary-select-box option:selected').attr('data-code'));
         $('#beneficiary-department').text($('#beneficiary-select-box option:selected').attr('data-department'));
         let url = $('#btn-detail-beneficiary-tab').attr('data-url').replace('0', $('#beneficiary-select-box option:selected').attr('value'));
         $('#btn-detail-beneficiary-tab').attr('href', url);
+
+        let sale_code_type = document.getElementsByClassName('sale_code_type');
+        let sale_code_type_val = '';
+        for (let i = 0; i < sale_code_type.length; i++) {
+            if (sale_code_type[i].checked) {
+                sale_code_type_val = sale_code_type[i].value;
+            }
+        }
+        if (sale_code_type_val === 'non-sale') {
+            loadSaleCode('');
+            $('#sale-code-label-id').removeClass('required');
+        }
+        else if (sale_code_type_val === 'sale') {
+            loadSaleCode($('#beneficiary-select-box').val());
+            $('#sale-code-label-id').addClass('required');
+        }
     })
 
     // load plan when select new sale code

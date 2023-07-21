@@ -1784,8 +1784,27 @@ $(document).ready(function () {
                         return call_3_result;
                     }
                 })
-                Promise.all([call_1, call_2, call_3]).then((results) => {
-                    let sorted = results[0].concat(results[1]).concat(results[2]).sort(function(a, b) {
+                let call_4 = $.fn.callAjax($('#table-timeline').attr('data-url-task'), $('#table-timeline').attr('data-method')).then((resp) => {
+        let data = $.fn.switcherResp(resp);
+        if (data) {
+            let call_4_result = [];
+            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('task_list')) {
+                data.task_list.map(function (item) {
+                    if (item.opportunity.id === pk) {
+                        call_4_result.push({
+                            'id': item.id,
+                            'type': 3,
+                            'subject': item.title,
+                            'date': item.start_date.split(' ')[0],
+                        })
+                    }
+                })
+            }
+            return call_4_result;
+        }
+    })
+                Promise.all([call_1, call_2, call_3, call_4]).then((results) => {
+                    let sorted = results[0].concat(results[1]).concat(results[2]).concat(results[3]).sort(function(a, b) {
                         return new Date(b.date) - new Date(a.date);
                     })
                     loadTimelineList(sorted);
@@ -1961,8 +1980,27 @@ $(document).ready(function () {
                             return call_3_result;
                         }
                     })
-                    Promise.all([call_1, call_2, call_3]).then((results) => {
-                        let sorted = results[0].concat(results[1]).concat(results[2]).sort(function(a, b) {
+                    let call_4 = $.fn.callAjax($('#table-timeline').attr('data-url-task'), $('#table-timeline').attr('data-method')).then((resp) => {
+        let data = $.fn.switcherResp(resp);
+        if (data) {
+            let call_4_result = [];
+            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('task_list')) {
+                data.task_list.map(function (item) {
+                    if (item.opportunity.id === pk) {
+                        call_4_result.push({
+                            'id': item.id,
+                            'type': 3,
+                            'subject': item.title,
+                            'date': item.start_date.split(' ')[0],
+                        })
+                    }
+                })
+            }
+            return call_4_result;
+        }
+    })
+                    Promise.all([call_1, call_2, call_3, call_4]).then((results) => {
+                        let sorted = results[0].concat(results[1]).concat(results[2]).concat(results[3]).sort(function(a, b) {
                             return new Date(b.date) - new Date(a.date);
                         })
                         loadTimelineList(sorted);
@@ -2177,8 +2215,27 @@ $(document).ready(function () {
                             return call_3_result;
                         }
                     })
-                    Promise.all([call_1, call_2, call_3]).then((results) => {
-                        let sorted = results[0].concat(results[1]).concat(results[2]).sort(function(a, b) {
+                    let call_4 = $.fn.callAjax($('#table-timeline').attr('data-url-task'), $('#table-timeline').attr('data-method')).then((resp) => {
+        let data = $.fn.switcherResp(resp);
+        if (data) {
+            let call_4_result = [];
+            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('task_list')) {
+                data.task_list.map(function (item) {
+                    if (item.opportunity.id === pk) {
+                        call_4_result.push({
+                            'id': item.id,
+                            'type': 3,
+                            'subject': item.title,
+                            'date': item.start_date.split(' ')[0],
+                        })
+                    }
+                })
+            }
+            return call_4_result;
+        }
+    })
+                    Promise.all([call_1, call_2, call_3, call_4]).then((results) => {
+                        let sorted = results[0].concat(results[1]).concat(results[2]).concat(results[3]).sort(function(a, b) {
                             return new Date(b.date) - new Date(a.date);
                         })
                         loadTimelineList(sorted);
@@ -2217,6 +2274,9 @@ $(document).ready(function () {
                         else if (row.type === 2) {
                             return `<span>Meeting with customer</span>`
                         }
+                        else if (row.type === 3) {
+                            return `<span>Task</span>`
+                        }
                     }
                 },
                 {
@@ -2231,6 +2291,9 @@ $(document).ready(function () {
                         }
                         else if (row.type === 2) {
                             return `<i class="bi bi-person-workspace"></i>`
+                        }
+                        else if (row.type === 3) {
+                            return `<i class="fa-solid fa-list-check"></i>`
                         }
                     }
                 },
@@ -2309,8 +2372,27 @@ $(document).ready(function () {
             return call_3_result;
         }
     })
-    Promise.all([call_1, call_2, call_3]).then((results) => {
-        let sorted = results[0].concat(results[1]).concat(results[2]).sort(function(a, b) {
+    let call_4 = $.fn.callAjax($('#table-timeline').attr('data-url-task'), $('#table-timeline').attr('data-method')).then((resp) => {
+        let data = $.fn.switcherResp(resp);
+        if (data) {
+            let call_4_result = [];
+            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('task_list')) {
+                data.task_list.map(function (item) {
+                    if (item.opportunity.id === pk) {
+                        call_4_result.push({
+                            'id': item.id,
+                            'type': 3,
+                            'subject': item.title,
+                            'date': item.start_date.split(' ')[0],
+                        })
+                    }
+                })
+            }
+            return call_4_result;
+        }
+    })
+    Promise.all([call_1, call_2, call_3, call_4]).then((results) => {
+        let sorted = results[0].concat(results[1]).concat(results[2]).concat(results[3]).sort(function(a, b) {
             return new Date(b.date) - new Date(a.date);
         })
         loadTimelineList(sorted);

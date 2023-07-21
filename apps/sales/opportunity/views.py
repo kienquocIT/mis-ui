@@ -90,7 +90,7 @@ class OpportunityDetail(View):
                        'contact_list': resp2.result,
                        'opportunity_list': resp3.result,
                        'employee_list': resp4.result,
-                       'account_map_employees': resp5.result
+                       'account_map_employees': resp5.result,
             }, status.HTTP_200_OK
         return {
                    'employee_current_id': request.user.employee_current_data.get('id', None),

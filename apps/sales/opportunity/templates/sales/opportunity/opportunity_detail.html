@@ -204,13 +204,6 @@
                                             <i class="bi bi-telephone-fill"></i>
                                         </span>
                                     </a>
-                                    <a href="#"><span class="ml-2"><i class="bi bi-envelope"></i></span></a>
-                                    <a href="#" class="current-create-task">
-                                        <span class="ml-2 ntt-drawer-toggle-link"
-                                              data-drawer-target="#drawer_task_create"
-                                              data-drawer-active="false">
-                                            <i class="bi bi-file-earmark-arrow-up"></i></span></a>
-                                    <a href="#"><span class="ml-2"><i class="bi bi-pip"></i></span></a>
                                     <a href="" data-bs-toggle="modal" data-bs-target="#send-email" class="send-email-button">
                                         <span class="ml-3"
                                               data-bs-toggle="tooltip"
@@ -225,6 +218,16 @@
                                               data-bs-placement="top"
                                               data-bs-original-title="{% trans 'New Meeting' %}">
                                             <i class="bi bi-person-workspace"></i>
+                                        </span>
+                                    </a>
+                                    <a href="#" class="current-create-task">
+                                        <span class="ml-3 ntt-drawer-toggle-link"
+                                              data-drawer-target="#drawer_task_create"
+                                              data-drawer-active="false"
+                                              data-bs-toggle="tooltip"
+                                              data-bs-placement="top"
+                                              data-bs-original-title="{% trans 'New Task' %}">
+                                            <i class="fa-solid fa-list-check"></i>
                                         </span>
                                     </a>
                                 </div>
@@ -256,6 +259,16 @@
                                               data-bs-placement="top"
                                               data-bs-original-title="{% trans 'New Meeting' %}">
                                             <i class="bi bi-person-workspace"></i>
+                                        </span>
+                                    </a>
+                                    <a href="#" class="current-create-task">
+                                        <span class="ml-3 ntt-drawer-toggle-link"
+                                              data-drawer-target="#drawer_task_create"
+                                              data-drawer-active="false"
+                                              data-bs-toggle="tooltip"
+                                              data-bs-placement="top"
+                                              data-bs-original-title="{% trans 'New Task' %}">
+                                            <i class="fa-solid fa-list-check"></i>
                                         </span>
                                     </a>
                                 </div>
@@ -347,6 +360,7 @@
                                            data-url-call-log="{% url 'OpportunityCallLogListAPI' %}"
                                            data-url-email="{% url 'OpportunityEmailListAPI' %}"
                                            data-url-meeting="{% url 'OpportunityMeetingListAPI' %}"
+                                           data-url-task="{% url 'OpportunityTaskListAPI' %}"
                                            data-method="GET">
                                         <thead>
                                         <tr>

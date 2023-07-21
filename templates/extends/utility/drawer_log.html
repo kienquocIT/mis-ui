@@ -22,13 +22,13 @@
                 <li class="nav-item">
                     <a
                             class="nav-link active" data-bs-toggle="tab"
-                            href="#tab_block_diagram"
+                            href="#tab-diagram"
                     >
                         <span class="nav-link-text">{% trans 'Diagram Workflow' %}</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" data-bs-toggle="tab" href="#tab_block_activities">
+                    <a class="nav-link" data-bs-toggle="tab" href="#tab-activities">
                         <span class="nav-link-text">{% trans 'Document Activities' %}</span>
                     </a>
                 </li>
@@ -36,7 +36,7 @@
             <div class="tab-content">
                 <div
                         class="tab-pane fade show active"
-                        id="tab_block_diagram"
+                        id="tab-diagram"
                         data-url="{% url 'FlowRuntimeDiagramDetailAPI' pk=1 %}"
                 >
                     <div class="hidden" id="idxDataRuntimeNotFound">
@@ -50,7 +50,7 @@
                     ></div>
                 </div>
                 <div
-                        class="tab-pane fade" id="tab_block_activities"
+                        class="tab-pane fade" id="tab-activities"
                         data-url="{% url 'ActivityLogListAPI' %}"
                         data-id-key="doc_id"
                         data-id-value="{{ pk }}"

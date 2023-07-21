@@ -76,7 +76,12 @@ $(function () {
         }
 
         deleteTaskAPI(taskID) {
-            return $.fn.callAjax($urlFact.attr('data-task-detail').format_url_with_uuid(taskID), 'DELETE', {}, true)
+            return $.fn.callAjax(
+                $urlFact.attr('data-task-detail').format_url_with_uuid(taskID),
+                'DELETE',
+                {},
+                true
+            )
         }
 
         renderLogWork(logWorkList) {
@@ -248,13 +253,18 @@ $(function () {
                                 moment(data.end_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
                             )
                             $('#inputTextEstimate').val(data.estimate)
-                            $('#selectOpportunity').attr('data-onload', JSON.stringify(data.opportunity_data))
+                            if (data?.opportunity_data && Object.keys(data.opportunity_data).length)
+                                $('#selectOpportunity').attr('data-onload', JSON.stringify({
+                                    "id": data.opportunity_data.id,
+                                    "title": data.opportunity_data.code
+                                }))
                             $('#selectPriority').val(data.priority).trigger('change')
                             window.formLabel.renderLabel(data.label)
                             $('#inputLabel').attr('value', JSON.stringify(data.label))
                             $('#inputAssigner').val(data.employee_created.last_name + '. ' + data.employee_created.first_name)
                                 .attr('value', data.employee_created.id)
-                            $('#selectAssignTo').attr('data-onload', JSON.stringify(data.assign_to))
+                            if (data.assign_to.length)
+                                $('#selectAssignTo').attr('data-onload', JSON.stringify(data.assign_to))
                             window.editor.setData(data.remark)
                             window.checklist.setDataList = data.checklist
                             window.checklist.render()
@@ -264,6 +274,11 @@ $(function () {
                             else $('.create-subtask').addClass('hidden')
                             if (data.task_log_work.length) _this.renderLogWork(data.task_log_work)
                             _this.renderSubtask(data.id)
+
+                            if (data.attach) {
+                                const fileDetail = data.attach[0]?.['files']
+                                FileUtils.init($(`[name="attach"]`).siblings('button'), fileDetail);
+                            }
                         }
                     })
             })
@@ -321,9 +336,8 @@ $(function () {
                 childHTML.find('.card-priority').html(priorityHTML)
                 let date = moment(newData.end_date, 'YYYY-MM-DD hh:mm:ss').format('YYYY/MM/DD')
                 childHTML.find('.task-deadline').text(date)
-                if (newData.assign_to) {
-                    const assign_to = newData.assign_to
-
+                const assign_to = newData.assign_to
+                if (Object.keys(assign_to).length) {
                     const randomResource = randomColor[Math.floor(Math.random() * randomColor.length)];
                     if (assign_to.avatar) childHTML.find('img').attr('src', assign_to.avatar)
                     else {
@@ -334,7 +348,7 @@ $(function () {
                         childHTML.find('.avatar .initial-wrap').text(name)
                         childHTML.find('.avatar').attr('title', full_name)
                     }
-                }
+                } else childHTML.find('.avatar').addClass('visible-hidden')
                 if (newData.checklist) {
                     let done = newData.checklist.reduce((acc, obj) => {
                         if (obj.done) return acc += 1
@@ -342,6 +356,10 @@ $(function () {
                     }, 0)
                     const total = newData.checklist.length
                     childHTML.find('.checklist_progress').text(`${done}/${total}`)
+                }
+                if (newData.attach){
+                    const fileDetail = newData.attach[0]?.['files']
+                    FileUtils.init($(`[name="attach"]`, childHTML).siblings('button'), fileDetail);
                 }
 
                 if (isReturn) return childHTML
@@ -511,10 +529,17 @@ $(function () {
             $btnCreateSub.off().on('click', function () {
                 // call form create-task.js
                 const taskID = $(this).closest('form').find('[name="id"]').val()
+                const $oppElm = $('#selectOpportunity')
+                const oppData = {
+                    "id": $oppElm.select2('data')[0].id,
+                    "title": $oppElm.select2('data')[0].text,
+                }
                 if (taskID && taskID !== '') {
                     resetFormTask()
                     // after reset
                     $formElm.append(`<input type="hidden" name="parent_n" value="${taskID}"/>`)
+                    $oppElm.attr('data-onload', JSON.stringify(oppData)).attr('disabled', true)
+                    initSelectBox($oppElm)
                 }
             })
         }
@@ -530,43 +555,9 @@ $(function () {
                 const IDTask = $(this).parents('.tasklist-card').find('.card-title').attr('data-task-id')
                 elmTaskID.val(IDTask)
             })
-            $('.btn-log_work').off().on('click', () => {
-                $('#startDateLogTime, #endDateLogTime, #EstLogtime').val(null)
-                const taskID = $('.task_edit [name="id"]').val()
-                if (taskID) elmTaskID.val(taskID)
-            })
             // on click save btn log work
-            $('#save-logtime').off().on('click', function () {
-                const startDate = $('#startDateLogTime').val()
-                const endDate = $('#endDateLogTime').val()
-                const est = $('#EstLogtime').val()
-                const taskID = elmTaskID.val()
-                if (!startDate && !endDate && !est) {
-                    $.fn.notifyPopup({description: $('#form_valid').attr('data-logtime-valid')}, 'failure')
-                    return false
-                }
-                // if has task id => log time
-                if (taskID && taskID.valid_uuid4()) {
-                    let url = $('#url-factory').attr('data-logtime')
-                    const data = {
-                        'task': taskID,
-                        'start_date': moment(startDate, 'DD/MM/YYYY').format('YYYY-MM-DD'),
-                        'end_date': moment(endDate, 'DD/MM/YYYY').format('YYYY-MM-DD'),
-                        'time_spent': est,
-                    }
-                    $.fn.callAjax(url, 'POST', data, true)
-                        .then(
-                            (req) => {
-                                let data = $.fn.switcherResp(req);
-                                if (data?.['status'] === 200) {
-                                    $.fn.notifyPopup({description: data.message}, 'success')
-                                }
-                            }
-                        )
-                } else {
-                    // put to form create submit
-                }
-            });
+            logworkSubmit()
+
         }
 
         init() {
@@ -579,13 +570,10 @@ $(function () {
 
     // drag handle
     class dragHandle {
-        callSwitchSTT(objData) {
-            return $.fn.callAjax($urlFact.attr('data-change-stt'), 'PUT', objData, true)
-        }
+
         init() {
             let dragArray = []
             const _this = this
-            // const config = JSON.parse($('#task_config').text());
             $('.wrap-child').each(function () {
                 if ($(this).attr('id') !== '') {
                     dragArray.push(this)
@@ -599,14 +587,20 @@ $(function () {
                     "id": $(el).find('.card-title').attr('data-task-id'),
                     "task_status": $(target).attr('id').split('taskID-')[1],
                 }
-                const isCheckAndUpd = _this.callSwitchSTT(dataSttUpdate)
-                isCheckAndUpd.then((req) => {
-                    const res = $.fn.switcherResp(req)
-                    if (res.status === 200)
-                        countSTT()
-                    else
-                        drake.cancel(el)
-                })
+                $.fn.callAjax($urlFact.attr('data-change-stt'), 'PUT', dataSttUpdate, true)
+                    .then(
+                        (req) => {
+                            const res = $.fn.switcherResp(req)
+                            if (res.status === 200)
+                                countSTT()
+                            else
+                                drake.cancel(el)
+                        },
+                        (errs) => {
+                            $(el).remove();
+                            $(source).append(el);
+                        }
+                    )
             });
         }
     }

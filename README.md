@@ -510,3 +510,17 @@ $.fn.renderAvatar(data, clsName="some class name is size, color of avatar...")
 ```
 
 ---
+
+#### Reload với thêm '#ID' vào đường dẫn để kích hoạt tab khi load page | kích hoạt được cả tab nằm trong drawer
+
+```javascript
+// Sử dụng 1 trong 2 cách
+
+// cách 1 biết được id_tab
+$.fn.reloadWithHashID('id_tab_need_active');
+
+// cách 2 đang trỏ đến 1 element nằm trong tab, ví thẻ dụ <span id="ss1"></span> nằm trong tag
+$('#ss1').reloadWithHashID();
+```
+
+---

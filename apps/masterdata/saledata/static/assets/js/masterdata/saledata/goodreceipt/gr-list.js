@@ -21,9 +21,15 @@ $(function(){
             {
                 targets: 2,
                 class: 'text-center',
+                data: 'supplier',
                 render: (row, type, data) => {
-                    let url = $('#url-factory').attr('data-account-detail').format_url_with_uuid(data.supplier.id)
-                    return `<p><a href="${url}" target="_blank" class="text-decoration-underline">${data.supplier.title}</a></p>`;
+                    let txt = '--'
+                    if (Object.keys(row).length){
+                        let url = $('#url-factory').attr('data-account-detail').format_url_with_uuid(row.id)
+                        txt = `<a href="${url}" target="_blank" className="text-decoration-underline">${
+                            row.title}</a>`
+                    }
+                    return `<p>${txt}</p>`
                 }
             },
             {
@@ -44,7 +50,7 @@ $(function(){
             {
                 targets: 5,
                 render: (row, type, data) => {
-                    return `<div class="actions-btn text-center">
+                    let html = `<div class="actions-btn text-center">
                                 <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover delete-btn"
                                    title="Delete"
                                    href="#"
@@ -55,6 +61,7 @@ $(function(){
                                     </span>
                                 </a>
                             </div>`;
+                    return ''
                 },
             },
         ],

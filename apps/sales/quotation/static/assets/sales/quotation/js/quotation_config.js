@@ -14,10 +14,12 @@ function loadConfig(data) {
     }
 }
 
-function loadInitIndicatorList(indicator_id, eleShow, indicator_detail_id = null, row = null) {
+function loadInitIndicatorList(indicator_id, eleShow, row = null) {
     let jqueryId = '#' + indicator_id;
     let ele = $(jqueryId);
-    if (ele.val()) {
+    let indicator_detail_id = row.querySelector('.btn-edit-indicator').getAttribute('data-id');
+    let indicator_detail_order = row.querySelector('.table-row-order').value;
+    if (ele.val() && indicator_detail_id && indicator_detail_order) {
         if (eleShow.is(':empty')) {
             let data_list = JSON.parse(ele.val());
             let indicator_list = ``;
@@ -27,7 +29,7 @@ function loadInitIndicatorList(indicator_id, eleShow, indicator_detail_id = null
                 item['syntax'] = "indicator(" + item.title + ")";
                 item['syntax_show'] = "indicator(" + item.title + ")";
                 let dataStr = JSON.stringify(item).replace(/"/g, "&quot;");
-                if (item.id !== indicator_detail_id) { // check & not append this current indicator
+                if (item.id !== indicator_detail_id && item.order < parseInt(indicator_detail_order)) { // check & not append this current indicator or higher indicators
                     indicator_list += `<div class="row param-item">
                                             <button type="button" class="btn btn-flush-light">
                                                 <div class="float-left"><span><span class="icon mr-2"><span class="feather-icon"><i class="fa-solid fa-hashtag"></i></span></span><span class="indicator-title">${item.title}</span></span></div>
@@ -36,11 +38,9 @@ function loadInitIndicatorList(indicator_id, eleShow, indicator_detail_id = null
                                         </div>`
                 }
                 // load detail editor by ID indicator
-                if (indicator_detail_id) {
-                    if (item.id === indicator_detail_id) {
-                        let editor = row.querySelector('.indicator-editor');
-                        editor.value = item.formula_data_show;
-                    }
+                if (item.id === indicator_detail_id) {
+                    let editor = row.querySelector('.indicator-editor');
+                    editor.value = item.formula_data_show;
                 }
             }
             eleShow.append(`<div data-bs-spy="scroll" data-bs-target="#scrollspy_demo_h" data-bs-smooth-scroll="true" class="h-250p position-relative overflow-y-scroll">
@@ -59,7 +59,10 @@ function loadInitPropertyList(property_id, eleShow, is_sale_order = false) {
     if (is_sale_order === true) {
         code_app = "saleorder";
     }
-    let data_filter = {'application__code': code_app};
+    let data_filter = {
+        'application__code': code_app,
+        'is_sale_indicator': true,
+    };
     if (eleShow.is(':empty')) {
         $.fn.callAjax(url, method, data_filter).then(
             (resp) => {
@@ -235,13 +238,12 @@ $(function () {
                     {
                         targets: 0,
                         render: (data, type, row) => {
-                            return `<span>${row.order}</span>`
+                            return `<input type="text" class="form-control table-row-order" value="${row.order}">`
                         }
                     },
                     {
                         targets: 1,
                         render: (data, type, row) => {
-                            // return `<span>${row.title}</span>`
                             return `<input type="text" class="form-control table-row-title" value="${row.title}" hidden><span>${row.title}</span>`
                         }
                     },
@@ -359,7 +361,6 @@ $(function () {
                     {
                         targets: 3,
                         render: (data, type, row) => {
-                            // return `<span>${row.description}</span>`
                             return `<input type="text" class="form-control table-row-description" value="${row.remark}">`
                         }
                     },
@@ -389,15 +390,16 @@ $(function () {
             document.getElementById('btn-edit_quotation_config').removeAttribute('hidden');
         });
 
-        tableIndicator.on('change', '.table-row-title, .table-row-description', function(e) {
+        tableIndicator.on('change', '.table-row-title, .table-row-description, .table-row-order', function(e) {
             $(this)[0].closest('tr').querySelector('.table-row-save').removeAttribute('disabled');
+            $(this)[0].closest('tr').querySelector('.table-row-save').classList.remove('flush-soft-hover');
+            $(this)[0].closest('tr').querySelector('.table-row-save').classList.add('btn-soft-warning');
         });
 
         tableIndicator.on('click', '.modal-edit-formula', function(e) {
             let eleIndicatorListShow = $(this)[0].closest('tr').querySelector('.indicator-list');
             let row = $(this)[0].closest('tr');
-            let indicator_detail_id = row.querySelector('.btn-edit-indicator').getAttribute('data-id');
-            loadInitIndicatorList('init-indicator-list', $(eleIndicatorListShow), indicator_detail_id, row);
+            loadInitIndicatorList('init-indicator-list', $(eleIndicatorListShow), row);
             let elePropertyListShow = $(this)[0].closest('tr').querySelector('.property-list');
             if (!$form.hasClass('sale-order')) {
                 loadInitPropertyList('init-indicator-property-param', $(elePropertyListShow));
@@ -609,7 +611,7 @@ $(function () {
                             let propertyValue = body_item.match(body_nested_regex)[1];
                             functionBodyData.push(checkMatchPropertyIndicator(propertyValue, row, '.property-list'));
                         } else {
-                            functionBodyData.push(body_item);
+                            functionBodyData.push(body_item.toLowerCase());
                         }
                     }
                     functionBodyData = validateItemInList(functionBodyData);
@@ -718,6 +720,7 @@ $(function () {
             data_submit['title'] = $(this)[0].closest('tr').querySelector('.table-row-title').value;
             data_submit['remark'] = $(this)[0].closest('tr').querySelector('.table-row-description').value;
             data_submit['example'] = "indicator(" + data_submit['title'] + ")";
+            data_submit['order'] = $(this)[0].closest('tr').querySelector('.table-row-order').value;
             let csr = $("[name=csrfmiddlewaretoken]").val();
             $.fn.callAjax(url, method, data_submit, csr)
                 .then(
@@ -725,7 +728,7 @@ $(function () {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             $.fn.notifyPopup({description: data.message}, 'success')
-                            // $.fn.redirectUrl(url_redirect, 3000);
+                            $.fn.redirectUrl(url_redirect, 1000);
                         }
                     },
                     (errs) => {
@@ -751,7 +754,7 @@ $(function () {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             $.fn.notifyPopup({description: data.message}, 'success')
-                            // $.fn.redirectUrl(url_redirect, 1000);
+                            $.fn.redirectUrl(url_redirect, 1000);
                         }
                     },
                     (errs) => {

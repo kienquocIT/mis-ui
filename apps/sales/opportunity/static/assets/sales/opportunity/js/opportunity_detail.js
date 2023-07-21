@@ -1639,7 +1639,11 @@ $(document).ready(function () {
         $contact_sb.append(`<option></option>`)
         contact_list.map(function (item) {
             if (contact_list_id.includes(item.id)) {
-                $contact_sb.append(`<option value="${item.id}">${item.fullname}</option>`);
+                let report_to = null
+                if (Object.keys(item.report_to).length !== 0) {
+                    report_to = item.report_to.name;
+                }
+                $contact_sb.append(`<option data-name="${item.fullname}" data-job-title="${item.job_title}" data-mobile="${item.mobile}" data-email="${item.email}" data-report-to="` + report_to + `" value="${item.id}">${item.fullname}</option>`);
             }
         })
         $contact_sb.select2({dropdownParent: $("#create-new-call-log")});
@@ -1675,6 +1679,28 @@ $(document).ready(function () {
         "cancelClass": "btn-secondary",
         maxYear: parseInt(moment().format('YYYY'), 10) + 100
     });
+
+    $('#contact-select-box').on('change', function () {
+        if ($('#contact-select-box option:selected').attr('value')) {
+            $('#call-log-contact-name').text($('#contact-select-box option:selected').attr('data-name'));
+            $('#call-log-contact-job-title').text($('#contact-select-box option:selected').attr('data-job-title'));
+            $('#call-log-contact-mobile').text($('#contact-select-box option:selected').attr('data-mobile'));
+            $('#call-log-contact-email').text($('#contact-select-box option:selected').attr('data-email'));
+            $('#call-log-contact-report-to').text($('#contact-select-box option:selected').attr('data-report-to'));
+            let url = $('#btn-detail-call-log-contact-tab').attr('data-url').replace('0', $('#contact-select-box option:selected').attr('value'));
+            $('#btn-detail-call-log-contact-tab').attr('href', url);
+            $('#call-log-contact-detail-span').prop('hidden', false);
+        }
+        else {
+            $('#call-log-contact-name').text('');
+            $('#call-log-contact-job-title').text('');
+            $('#call-log-contact-mobile').text('');
+            $('#call-log-contact-email').text('');
+            $('#call-log-contact-report-to').text('');
+            $('#btn-detail-call-log-contact-tab').attr('href', '');
+            $('#call-log-contact-detail-span').prop('hidden', true);
+        }
+    })
 
     $('#form-create-new-call-log').submit(function (event) {
         event.preventDefault();

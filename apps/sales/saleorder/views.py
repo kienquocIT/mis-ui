@@ -127,16 +127,16 @@ class SaleOrderDetailAPI(APIView):
         )
 
 
-class SaleOrderProductListAPI(APIView):
+class SaleOrderExpenseListAPI(APIView):
     @mask_view(
         auth_require=True,
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
         data = request.query_params.dict()
-        resp = ServerAPI(user=request.user, url=ApiURL.SALE_ORDER_PRODUCT_LIST).get(data)
+        resp = ServerAPI(user=request.user, url=ApiURL.SALE_ORDER_EXPENSE_LIST).get(data)
         if resp.state:
-            return {'sale_order_product_list': resp.result}, status.HTTP_200_OK
+            return {'sale_order_expense_list': resp.result}, status.HTTP_200_OK
         elif resp.status == 401:
             return {}, status.HTTP_401_UNAUTHORIZED
         return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST

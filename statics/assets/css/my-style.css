@@ -191,3 +191,11 @@ div.inline {
     border-bottom: 0;
 }
 /* -- Update some header table */
+
+.dataTables_scrollBody::-webkit-scrollbar{
+    height:8px;
+}
+.dataTables_scrollBody::-webkit-scrollbar-thumb {
+    background-color: #d6d9da;
+    border-radius: 4px;
+}

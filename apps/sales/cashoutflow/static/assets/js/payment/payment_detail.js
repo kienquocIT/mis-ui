@@ -155,12 +155,12 @@ $(document).ready(function () {
                             }
 
                             if (so_mapped_id) {
-                                // loadSaleOrderPlanMULTI(so_mapped_id)
+                                loadSaleOrderPlanMULTI(so_mapped_id)
                                 $('#notify-none-sale-code').prop('hidden', true);
                                 $('#tab_plan_datatable').prop('hidden', false);
                             }
                             else if (quo_mapped_id) {
-                                // loadQuotationPlanMULTI(quo_mapped_id)
+                                loadQuotationPlanMULTI(quo_mapped_id)
                                 $('#notify-none-sale-code').prop('hidden', true);
                                 $('#tab_plan_datatable').prop('hidden', false);
                             }
@@ -234,12 +234,12 @@ $(document).ready(function () {
                             }
 
                             if (so_mapped_id) {
-                                // loadSaleOrderPlanMULTI(so_mapped_id)
+                                loadSaleOrderPlanMULTI(so_mapped_id)
                                 $('#notify-none-sale-code').prop('hidden', true);
                                 $('#tab_plan_datatable').prop('hidden', false);
                             }
                             else if (quo_mapped_id) {
-                                // loadQuotationPlanMULTI(quo_mapped_id)
+                                loadQuotationPlanMULTI(quo_mapped_id)
                                 $('#notify-none-sale-code').prop('hidden', true);
                                 $('#tab_plan_datatable').prop('hidden', false);
                             }
@@ -329,12 +329,12 @@ $(document).ready(function () {
                             }
                         }
                         if (so_mapped_id) {
-                            // loadSaleOrderPlan(so_mapped_id, sale_code_detail_show)
+                            loadSaleOrderPlan(so_mapped_id, sale_code_detail_show)
                             $('#notify-none-sale-code').prop('hidden', true);
                             $('#tab_plan_datatable').prop('hidden', false);
                         }
                         else if (quo_mapped_id) {
-                            // loadQuotationPlan(quo_mapped_id, sale_code_detail_show)
+                            loadQuotationPlan(quo_mapped_id, sale_code_detail_show)
                             $('#notify-none-sale-code').prop('hidden', true);
                             $('#tab_plan_datatable').prop('hidden', false);
                         }
@@ -414,12 +414,12 @@ $(document).ready(function () {
                             }
                         }
                         if (so_mapped_id) {
-                            // loadSaleOrderPlan(so_mapped_id, sale_code_detail_show)
+                            loadSaleOrderPlan(so_mapped_id, sale_code_detail_show)
                             $('#notify-none-sale-code').prop('hidden', true);
                             $('#tab_plan_datatable').prop('hidden', false);
                         }
                         else if (quo_mapped_id) {
-                            // loadQuotationPlan(quo_mapped_id, sale_code_detail_show)
+                            loadQuotationPlan(quo_mapped_id, sale_code_detail_show)
                             $('#notify-none-sale-code').prop('hidden', true);
                             $('#tab_plan_datatable').prop('hidden', false);
                         }
@@ -510,12 +510,12 @@ $(document).ready(function () {
                             }
                         }
                         if (so_mapped_id) {
-                            // loadSaleOrderPlan(so_mapped_id, sale_code_detail_show)
+                            loadSaleOrderPlan(so_mapped_id, sale_code_detail_show)
                             $('#notify-none-sale-code').prop('hidden', true);
                             $('#tab_plan_datatable').prop('hidden', false);
                         }
                         else if (quo_mapped_id) {
-                            // loadQuotationPlan(quo_mapped_id, sale_code_detail_show)
+                            loadQuotationPlan(quo_mapped_id, sale_code_detail_show)
                             $('#notify-none-sale-code').prop('hidden', true);
                             $('#tab_plan_datatable').prop('hidden', false);
                         }
@@ -835,11 +835,11 @@ $(document).ready(function () {
                     <td colspan="3"><span class="badge badge-primary">` + filter_sale_order_code + `</span></td>
                     <td colspan="5"></td>
                 </tr>`)
-                let data_detail = data.sale_order_product_list;
+                let data_detail = data.sale_order_expense_list;
                 for (let i = 0; i < data_detail.length; i++) {
-                    let product_id = data_detail[i].product_id;
+                    let expense_id = data_detail[i].expense_id;
                     let results = advance_payment_product_items.filter(function(item) {
-                        return item.product.id === product_id;
+                        return item.product.id === expense_id;
                     });
                     let ap_approved = results.reduce(function(s, item) {
                         return s + item.after_tax_price;
@@ -848,7 +848,7 @@ $(document).ready(function () {
                         return s + item.returned_total;
                     }, 0);
                     let payment_cost_items_list = payment_cost_items_filtered.filter(function(item) {
-                        return item.product_id === product_id;
+                        return item.product_id === expense_id;
                     });
                     let to_payment = payment_cost_items_list.reduce(function(s, item) {
                         return s + item.converted_value;
@@ -872,7 +872,7 @@ $(document).ready(function () {
                     }
 
                     $('#tab_plan_datatable tbody').append(`<tr>
-                        <td><a href="#"><span data-id="` + data_detail[i].product_id + `">` + data_detail[i].product_title + `</span></a></td>
+                        <td><a href="#"><span data-id="` + data_detail[i].expense_id + `">` + data_detail[i].expense_title + `</span></a></td>
                         <td><span class="badge badge-soft-indigo badge-outline">` + tax_item + `</span></td>
                         <td><span class="mask-money text-primary" data-init-money="` + plan_after_tax + `"></span></td>
                         <td><span class="mask-money text-primary" data-init-money="` + ap_approved + `"></span></td>
@@ -890,7 +890,9 @@ $(document).ready(function () {
 
     function loadQuotationPlan(filter_quotation_id, filter_quotation_code) {
         let ap_item = ap_list.filter(function(item) {
-            return item.quotation_mapped === filter_quotation_id;
+            if (item.quotation_mapped) {
+                return item.quotation_mapped.id === filter_quotation_id;
+            }
         });
 
         let ap_product_list_mapped = []
@@ -923,11 +925,11 @@ $(document).ready(function () {
                     <td colspan="3"><span class="badge badge-primary">` + filter_quotation_code + `</span></td>
                     <td colspan="5"></td>
                 </tr>`)
-                let data_detail = data.quotation_product_list;
+                let data_detail = data.quotation_expense_list;
                 for (let i = 0; i < data_detail.length; i++) {
-                    let product_id = data_detail[i].product_id;
+                    let expense_id = data_detail[i].expense_id;
                     let results = advance_payment_product_items.filter(function (item) {
-                        return item.product.id === product_id;
+                        return item.product.id === expense_id;
                     });
                     let ap_approved = results.reduce(function (s, item) {
                         return s + item.after_tax_price;
@@ -936,7 +938,7 @@ $(document).ready(function () {
                         return s + item.returned_total;
                     }, 0);
                     let payment_cost_items_list = payment_cost_items_filtered.filter(function (item) {
-                        return item.product_id === product_id;
+                        return item.product_id === expense_id;
                     });
                     let to_payment = payment_cost_items_list.reduce(function (s, item) {
                         return s + item.converted_value;
@@ -964,7 +966,7 @@ $(document).ready(function () {
                     }
 
                     $('#tab_plan_datatable tbody').append(`<tr>
-                        <td><a href="#"><span data-id="` + data_detail[i].product_id + `">` + data_detail[i].product_title + `</span></a></td>
+                        <td><a href="#"><span data-id="` + data_detail[i].expense_id + `">` + data_detail[i].expense_title + `</span></a></td>
                         <td><span class="badge badge-soft-indigo badge-outline">` + tax_item + `</span></td>
                         <td><span class="mask-money text-primary" data-init-money="` + plan_after_tax + `"></span></td>
                         <td><span class="mask-money text-primary" data-init-money="` + ap_approved + `"></span></td>
@@ -1007,12 +1009,12 @@ $(document).ready(function () {
             if (data) {
                 let found_line = $(`#tab_plan_datatable tbody tr td[data-sale-code-id="` + filter_sale_order_id + `"]`).closest('tr');
                 $(`#tab_plan_datatable tbody tr[class="detail-line-for-` + filter_sale_order_id + `"`).remove();
-                let data_detail = data.sale_order_product_list;
+                let data_detail = data.sale_order_expense_list;
                 let new_line = ``;
                 for (let i = 0; i < data_detail.length; i++) {
-                    let product_id = data_detail[i].product_id;
+                    let expense_id = data_detail[i].expense_id;
                     let results = advance_payment_product_items.filter(function(item) {
-                        return item.product.id === product_id;
+                        return item.product.id === expense_id;
                     });
                     let ap_approved = results.reduce(function(s, item) {
                         return s + item.after_tax_price;
@@ -1021,7 +1023,7 @@ $(document).ready(function () {
                         return s + item.returned_total;
                     }, 0);
                     let payment_cost_items_list = payment_cost_items_filtered.filter(function(item) {
-                        return item.product_id === product_id;
+                        return item.product_id === expense_id;
                     });
                     let to_payment = payment_cost_items_list.reduce(function(s, item) {
                         return s + item.converted_value;
@@ -1045,7 +1047,7 @@ $(document).ready(function () {
                     }
 
                     new_line = new_line + `<tr class="detail-line-for-` + filter_sale_order_id + `">
-                        <td><a href="#"><span data-id="` + data_detail[i].product_id + `">` + data_detail[i].product_title + `</span></a></td>
+                        <td><a href="#"><span data-id="` + data_detail[i].expense_id + `">` + data_detail[i].expense_title + `</span></a></td>
                         <td><span class="badge badge-soft-indigo badge-outline">` + tax_item + `</span></td>
                         <td><span class="mask-money text-primary" data-init-money="` + plan_after_tax + `"></span></td>
                         <td><span class="mask-money text-primary" data-init-money="` + ap_approved + `"></span></td>
@@ -1068,7 +1070,9 @@ $(document).ready(function () {
 
     function loadQuotationPlanMULTI(filter_quotation_id) {
         let ap_item = ap_list.filter(function(item) {
-            return item.quotation_mapped === filter_quotation_id;
+            if (item.quotation_mapped) {
+                return item.quotation_mapped.id === filter_quotation_id;
+            }
         });
 
         let ap_product_list_mapped = []
@@ -1100,11 +1104,11 @@ $(document).ready(function () {
                 let found_line = $(`#tab_plan_datatable tbody tr td[data-sale-code-id="` + filter_quotation_id + `"]`).closest('tr');
                 $(`#tab_plan_datatable tbody tr[class="detail-line-for-` + filter_quotation_id + `"`).remove();
                 let new_line = ``;
-                let data_detail = data.quotation_product_list;
+                let data_detail = data.quotation_expense_list;
                 for (let i = 0; i < data_detail.length; i++) {
-                    let product_id = data_detail[i].product_id;
+                    let expense_id = data_detail[i].expense_id;
                     let results = advance_payment_product_items.filter(function (item) {
-                        return item.product.id === product_id;
+                        return item.product.id === expense_id;
                     });
                     let ap_approved = results.reduce(function (s, item) {
                         return s + item.after_tax_price;
@@ -1113,7 +1117,7 @@ $(document).ready(function () {
                         return s + item.returned_total;
                     }, 0);
                     let payment_cost_items_list = payment_cost_items_filtered.filter(function (item) {
-                        return item.product_id === product_id;
+                        return item.product_id === expense_id;
                     });
                     let to_payment = payment_cost_items_list.reduce(function (s, item) {
                         return s + item.converted_value;
@@ -1141,7 +1145,7 @@ $(document).ready(function () {
                     }
 
                     new_line = new_line + `<tr class="detail-line-for-` + filter_quotation_id + `">
-                        <td><a href="#"><span data-id="` + data_detail[i].product_id + `">` + data_detail[i].product_title + `</span></a></td>
+                        <td><a href="#"><span data-id="` + data_detail[i].expense_id + `">` + data_detail[i].expense_title + `</span></a></td>
                         <td><span class="badge badge-soft-indigo badge-outline">` + tax_item + `</span></td>
                         <td><span class="mask-money text-primary" data-init-money="` + plan_after_tax + `"></span></td>
                         <td><span class="mask-money text-primary" data-init-money="` + ap_approved + `"></span></td>

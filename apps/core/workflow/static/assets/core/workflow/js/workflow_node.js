@@ -425,7 +425,7 @@ $(function () {
                     targetDt.rows('.selected').remove().draw(false);
                     return false;
                 });
-                $("div.blog-toolbar-left").html('<div class="d-xxl-flex d-none align-items-center"> <select class="form-select form-select-sm w-120p"><option selected>Bulk actions</option><option value="1">Edit</option><option value="2">Move to trash</option></select> <button class="btn btn-sm btn-light ms-2">Apply</button></div><div class="d-xxl-flex d-none align-items-center form-group mb-0"> <label class="flex-shrink-0 mb-0 me-2">Sort by:</label> <select class="form-select form-select-sm w-130p"><option selected>Date Created</option><option value="1">Date Edited</option><option value="2">Frequent Contacts</option><option value="3">Recently Added</option> </select></div>');
+                // $("div.blog-toolbar-left").html('<div class="d-xxl-flex d-none align-items-center"> <select class="form-select form-select-sm w-120p"><option selected>Bulk actions</option><option value="1">Edit</option><option value="2">Move to trash</option></select> <button class="btn btn-sm btn-light ms-2">Apply</button></div><div class="d-xxl-flex d-none align-items-center form-group mb-0"> <label class="flex-shrink-0 mb-0 me-2">Sort by:</label> <select class="form-select form-select-sm w-130p"><option selected>Date Created</option><option value="1">Date Edited</option><option value="2">Frequent Contacts</option><option value="3">Recently Added</option> </select></div>');
                 dtb.parent().addClass('table-responsive');
             }
         }
@@ -731,7 +731,7 @@ $(function () {
                                         </div>
                                         <div class="offcanvas-body form-group">
                                             <div class="form-group">
-                                                <label class="form-label">Select company</label>
+                                                <label class="form-label">${$.fn.transEle.attr('data-select-company')}</label>
                                                 <select
                                                         class="form-select select-box-audit-in-workflow-company" 
                                                         id="${boxInWorkflowCompanyId}"
@@ -751,7 +751,7 @@ $(function () {
                                             ${defaultZone}
                                             <div class="form-group">
                                                 <label class="form-label">
-                                                    Description
+                                                    ${$.fn.transEle.attr('data-description')}
                                                 </label>
                                                 <textarea
                                                         class="form-control"
@@ -855,9 +855,9 @@ $(function () {
                                         >
                                             <thead>
                                             <tr>
-                                                <th>Code</th>
-                                                <th>Full Name</th>
-                                                <th>Username</th>
+                                                <th>${$.fn.transEle.attr('data-code')}</th>
+                                                <th>${$.fn.transEle.attr('data-full-name')}</th>
+                                                <th>${$.fn.transEle.attr('data-username')}</th>
                                                 <th></th>
                                             </tr>
                                             </thead>

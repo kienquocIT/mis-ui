@@ -1,4 +1,3 @@
-
 $(function () {
     $(document).ready(function () {
         const id = $.fn.getPkDetail()
@@ -24,20 +23,22 @@ $(function () {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('advance_payment_detail')) {
+                        let ele_benefication = $('#chooseBeneficiary');
                         let sale_code_ele = $('[name="sale_code"]');
                         sale_code_ele.val(data.advance_payment_detail.code);
                         if (data.advance_payment_detail.sale_order_mapped.length > 0) {
-                            // sale_code_ele.val(data.advance_payment_detail.sale_order_mapped.title);
                             loadDetailOpp(data.advance_payment_detail.sale_order_mapped[0].opportunity);
+                        } else if (data.advance_payment_detail.quotation_mapped.length > 0) {
+                            loadDetailOpp(data.advance_payment_detail.quotation_mapped[0].opportunity);
+                        } else if (data.advance_payment_detail.opportunity_mapped.length > 0) {
+                            loadDetailOpp(data.advance_payment_detail.opportunity_mapped[0]);
                         } else {
-                            if (data.advance_payment_detail.quotation_mapped.length > 0) {
-                                // sale_code_ele.val(data.advance_payment_detail.quotation_mapped.title);
-                                loadDetailOpp(data.advance_payment_detail.quotation_mapped[0].opportunity);
-                            } else {
-                                loadDetailOpp(null);
-                            }
+                            loadDetailOpp(null);
                         }
-                        $('#chooseBeneficiary').append(`<option value="${data.advance_payment_detail.beneficiary.id}">${data.advance_payment_detail.beneficiary.name}</option>`);
+                        ele_benefication.empty();
+                        ele_benefication.append(`<option value="${data.advance_payment_detail.beneficiary.id}">${data.advance_payment_detail.beneficiary.name}</option>`);
+                        loadProductTable(data.advance_payment_detail.product_items)
+                        loadDetailBeneficiary(data.advance_payment_detail.beneficiary.id);
                     }
                 }
             }, (errs) => {
@@ -62,7 +63,6 @@ $(function () {
                 }
             }, (errs) => {
             },)
-
         }
 
         function loadCreator(id) {
@@ -128,6 +128,7 @@ $(function () {
                     $('#total-value').attr('data-init-money', total_value);
                     if (return_advance_detail.money_received) {
                         $('#money-received').prop('checked', true);
+                        $('#money-received').prop('disabled', true);
                     } else {
                         $('#money-received').prop('checked', false);
                     }

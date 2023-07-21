@@ -83,6 +83,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # organization/group
     GROUP_LEVEL_LIST = StringUrl('hr/levels')
+    GROUP_LEVEL_DETAIL = StringUrl('hr/level')
     GROUP_LIST = StringUrl('hr/groups')
     GROUP_DETAIL = StringUrl('hr/group')
     GROUP_PARENT = StringUrl('hr/group/parent')
@@ -219,8 +220,9 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # quotation
     QUOTATION_LIST = StringUrl('quotation/lists')
+    QUOTATION_LIST_FOR_CASH_OUTFLOW = StringUrl('quotation/list-for-cashoutflow')
     QUOTATION_DETAIL = StringUrl('quotation')
-    QUOTATION_PRODUCT_LIST = StringUrl('quotation/quotation-product-list/lists')
+    QUOTATION_EXPENSE_LIST = StringUrl('quotation/quotation-expense-list/lists')
     QUOTATION_CONFIG = StringUrl('quotation/config')
     QUOTATION_INDICATOR_LIST = StringUrl('quotation/indicators')
     QUOTATION_INDICATOR_DETAIL = StringUrl('quotation/indicator')
@@ -245,8 +247,9 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # sale order
     SALE_ORDER_LIST = StringUrl('saleorder/lists')
+    SALE_ORDER_LIST_FOR_CASH_OUTFLOW = StringUrl('saleorder/list-for-cashoutflow')
     SALE_ORDER_DETAIL = StringUrl('saleorder')
-    SALE_ORDER_PRODUCT_LIST = StringUrl('saleorder/saleorder-product-list/lists')
+    SALE_ORDER_EXPENSE_LIST = StringUrl('saleorder/saleorder-expense-list/lists')
     SALE_ORDER_CONFIG = StringUrl('saleorder/config')
     SALE_ORDER_INDICATOR_LIST = StringUrl('saleorder/indicators')
     SALE_ORDER_INDICATOR_DETAIL = StringUrl('saleorder/indicator')

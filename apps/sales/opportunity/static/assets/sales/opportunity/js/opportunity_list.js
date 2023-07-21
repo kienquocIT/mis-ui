@@ -282,14 +282,14 @@ $(function () {
                     }, {});
                 }
 
+                let list_sale_person = JSON.parse($('#data-sale-person').val());
                 if (Object.keys(dict_sale_person).length === 0) {
-                    dict_sale_person = JSON.parse($('#data-sale-person').val()).reduce((obj, item) => {
+                    dict_sale_person = list_sale_person.reduce((obj, item) => {
                         obj[item.id] = item;
                         return obj;
                     }, {});
                 }
 
-                let customer = dict_customer[$(this).val()];
                 let group_id = $('#group_id_emp_login').val();
                 let select_box_sale_person = $("#select-box-sale-person");
                 select_box_sale_person.html('');
@@ -297,9 +297,9 @@ $(function () {
                     let emp_current = dict_sale_person[employee_current_id];
                     select_box_sale_person.append(`<option value="${emp_current.id}" selected">${emp_current.full_name}</option>`)
                 }
-                customer.manager.map(function (item) {
-                    if (dict_sale_person[item.id].group.id === group_id) {
-                        select_box_sale_person.append(`<option value="${item.id}" selected">${item.fullname}</option>`)
+                list_sale_person.map(function (item) {
+                    if (item.group.id === group_id) {
+                        select_box_sale_person.append(`<option value="${item.id}">${item.full_name}</option>`)
                     }
                 })
                 select_box_sale_person.val(employee_current_id).trigger('change');

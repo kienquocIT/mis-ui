@@ -64,8 +64,8 @@
                             <label class="form-check-label" for="check-tab-sale">{% trans "Sale" %}</label>
                         </div>
                         <div class="form-check form-check-inline mt-2">
-                            <input class="form-check-input" type="checkbox" id="check-tab-purchase" value="option3"
-                                   disabled>
+                            <input class="form-check-input" type="checkbox" id="check-tab-purchase" value="option3" checked
+                                   >
                             <label class="form-check-label" for="check-tab-purchase">{% trans "Purchase" %}</label>
                         </div>
                     </div>
@@ -104,7 +104,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link disabled" data-bs-toggle="tab" id="link-tab-purchasing" href="#tab_purchase">
+                    <a class="nav-link" data-bs-toggle="tab" id="link-tab-purchase" href="#tab_purchase">
                         <span class="nav-link-text">{% trans 'Purchasing' %}</span>
                     </a>
                 </li>
@@ -196,10 +196,12 @@
                     <div class="row">
                         <div class="col-3 form-group" id="divVolume">
                             <label class="form-label">{% trans "Volume" %}</label>
-                            <span class="input-affix-wrapper affix-wth-text">
-                                <input type="number" class="form-control" name="volume" readonly step="0.1">
-                                <span class="input-suffix"></span>
-                            </span>
+                            <div class="readonly">
+                                <span class="input-affix-wrapper affix-wth-text">
+                                    <input type="number" class="form-control" name="volume" readonly step="0.1">
+                                    <span class="input-suffix"></span>
+                                </span>
+                            </div>
                         </div>
                         <div class="col-3 form-group" id="divWeight">
                             <label class="form-label">{% trans "Weight" %}</label>
@@ -215,10 +217,11 @@
             <div class="tab-pane fade" id="tab_inventory">
                 <div class="row">
                     <div class="form-group col-3">
-                        <label class="form-label">{% trans "UoM Code" %}
-                            <span class="field-required">*</span></label>
-                        <input id="uom-code" class="form-control" type="text" style="border: None;"
-                               readonly>
+                        <label class="form-label required">{% trans "UoM Code" %}</label>
+                        <div class="readonly">
+                            <input id="uom-code" class="form-control" type="text"
+                                   readonly>
+                        </div>
                     </div>
                     <div class="form-group col-3">
                         <label class="form-label">{% trans "UoM Name" %}

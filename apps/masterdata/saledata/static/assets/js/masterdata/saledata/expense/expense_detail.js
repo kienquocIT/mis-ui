@@ -10,8 +10,6 @@ $(document).ready(function () {
     const currency_primary = JSON.parse($('#id-currency-list').text()).find(obj => obj.is_primary === true);
     const frmDetail = $('#frmUpdateExpense');
 
-    $(".select2").select2();
-
     function loadUoM(group_id, id) {
         let chooseUom = $('#chooseUom');
         chooseUom.html('');

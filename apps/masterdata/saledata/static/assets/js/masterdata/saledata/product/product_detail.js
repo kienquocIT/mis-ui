@@ -302,9 +302,6 @@ $(document).ready(function () {
             if (data) {
                 let product_detail = data?.['product'];
 
-                // let warehouse_stock_list = GetProductFromWareHouseStockList(pk, product_detail.inventory_information.uom.id);
-                // loadWareHouseList(warehouse_stock_list);
-
                 $.fn.compareStatusShowPageAction(product_detail);
                 $('#product-code').val(product_detail.code);
                 $('#product-title').val(product_detail.title);
@@ -331,6 +328,9 @@ $(document).ready(function () {
                                 $('#tab_inventory').removeClass('active show');
                                 $('#check-tab-inventory').prop('checked', false);
                                 $('.dimensionControl').hide();
+                            } else {
+                                let warehouse_stock_list = GetProductFromWareHouseStockList(pk, product_detail.inventory_information.uom.id);
+                                loadWareHouseList(warehouse_stock_list);
                             }
                             if (!product_detail.product_choice.includes(0)) {
                                 $('#link-tab-sale').addClass('disabled');
@@ -455,7 +455,6 @@ $(document).ready(function () {
 
         dataForm['inventory_uom'] = $('#select-box-uom-name').val();
 
-
         $('.ul-price-list .value-price-list').each(function () {
             let is_auto_update = '1';
             if ($(this).attr('data-auto-update') === 'false') {
@@ -576,11 +575,7 @@ $(document).ready(function () {
         for (let i = 0; i < element.length; i++) {
             if (element[i].hasAttribute('data-source')) {
                 let data_id = element[i].getAttribute('data-source')
-                if (document.querySelector(`input[type="checkbox"][data-id="` + data_id + `"]`).checked) {
-                    element[i].checked = true;
-                } else {
-                    element[i].checked = false;
-                }
+                element[i].checked = !!document.querySelector(`input[type="checkbox"][data-id="` + data_id + `"]`).checked;
             }
         }
     }

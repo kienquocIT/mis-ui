@@ -867,10 +867,6 @@ msgid "Creator"
 msgstr "Người tạo"
 
 #
-msgid "Posting date"
-msgstr "Ngày hiệu lực"
-
-#
 msgid "Current node"
 msgstr "Trạm hiện tại"
 
@@ -1487,8 +1483,8 @@ msgid "Copy From PO"
 msgstr "Sao chép từ đơn mua hàng"
 
 #
-msgid "Posting Date"
-msgstr "Ngày tạo"
+msgid "Posting date"
+msgstr "Ngày hạch toán"
 
 #
 msgid "Line Detail"

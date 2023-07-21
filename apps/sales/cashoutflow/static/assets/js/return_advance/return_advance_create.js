@@ -1,4 +1,3 @@
-
 $(function () {
     $(document).ready(function () {
         const urlParams = new URLSearchParams(window.location.search);
@@ -7,11 +6,10 @@ $(function () {
 
         function loadDetailOpp(data) {
             let dropdown = $('#dropdownOpp');
-            if (data === null){
+            if (data === null) {
                 dropdown.find('.opp-info').addClass('hidden');
                 dropdown.find('.non-opp').removeClass('hidden');
-            }
-            else{
+            } else {
                 dropdown.find('.opp-info').removeClass('hidden');
                 dropdown.find('.non-opp').addClass('hidden');
                 dropdown.find('[name="opp-name"]').text(data.title);
@@ -25,21 +23,21 @@ $(function () {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('advance_payment_detail')) {
+                        let ele_benefication = $('#chooseBeneficiary');
                         let sale_code_ele = $('[name="sale_code"]');
                         sale_code_ele.val(data.advance_payment_detail.code);
                         if (data.advance_payment_detail.sale_order_mapped.length > 0) {
                             loadDetailOpp(data.advance_payment_detail.sale_order_mapped[0].opportunity);
+                        } else if (data.advance_payment_detail.quotation_mapped.length > 0) {
+                            loadDetailOpp(data.advance_payment_detail.quotation_mapped[0].opportunity);
+                        } else if (data.advance_payment_detail.opportunity_mapped.length > 0) {
+                            loadDetailOpp(data.advance_payment_detail.opportunity_mapped[0]);
                         } else {
-                            if (data.advance_payment_detail.quotation_mapped.length > 0) {
-                                loadDetailOpp(data.advance_payment_detail.quotation_mapped[0].opportunity);
-                            }
-                            else{
-                                loadDetailOpp(null);
-                            }
+                            loadDetailOpp(null);
                         }
+                        ele_benefication.empty();
+                        ele_benefication.append(`<option value="${data.advance_payment_detail.beneficiary.id}">${data.advance_payment_detail.beneficiary.name}</option>`);
                         loadProductTable(data.advance_payment_detail.product_items)
-
-                        $('#chooseBeneficiary').append(`<option value="${data.advance_payment_detail.beneficiary.id}">${data.advance_payment_detail.beneficiary.name}</option>`);
                         loadDetailBeneficiary(data.advance_payment_detail.beneficiary.id);
                     }
                 }
@@ -77,7 +75,6 @@ $(function () {
                 }
             }, (errs) => {
             },)
-
         }
 
         function loadCreator() {
@@ -100,6 +97,7 @@ $(function () {
             }, (errs) => {
             },)
         }
+
         loadCreator()
 
         $('input[name="date_created"]').daterangepicker({
@@ -124,7 +122,7 @@ $(function () {
             let cnt = table.find('tbody tr').length;
             data.map(function (item) {
                 let html = `<tr>
-                                <td class="number text-center wrap-text">${cnt+1}</td>
+                                <td class="number text-center wrap-text">${cnt + 1}</td>
                                 <td class="wrap-text col-product text-primary" data-id="${item.id}"><span>${item.product.title}</span></td>
                                 <td class="wrap-text"><span>${item.product.type.title}</span></td>
                                 <td class="wrap-text"><span class="mask-money" data-init-money="${item.remain_total}"></span></td>
@@ -160,7 +158,7 @@ $(function () {
             frm.dataForm['money_received'] = !!$('#money-received').is(':checked');
             let tbProduct = $('#dtbProduct');
             let cost_list = []
-            tbProduct.find('tbody tr').each(function (){
+            tbProduct.find('tbody tr').each(function () {
                 cost_list.push({
                     'advance_payment_cost': $(this).find('.col-product').attr('data-id'),
                     'remain_value': parseFloat($(this).find('span.mask-money').attr('data-init-money')),

@@ -254,8 +254,8 @@ $(function () {
                                                             </table>
                                                         </div>
                                                         <div class="modal-footer">
-                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                            <button type="button" class="btn btn-primary btn-add-audit-create" data-bs-dismiss="modal">Save changes</button>
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">${$.fn.transEle.attr('data-btn-close')}</button>
+                                                            <button type="button" class="btn btn-primary btn-add-audit-create" data-bs-dismiss="modal">${$.fn.transEle.attr('data-btn-save')}</button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -549,8 +549,8 @@ $(function () {
                                                                 </div>
                                                             </div>
                                                             <div class="modal-footer">
-                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                                <button type="button" class="btn btn-primary btn-add-audit-create" data-bs-dismiss="modal">Save changes</button>
+                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">${$.fn.transEle.attr('data-btn-close')}</button>
+                                                                <button type="button" class="btn btn-primary btn-add-audit-create" data-bs-dismiss="modal">${$.fn.transEle.attr('data-btn-save')}</button>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -717,7 +717,7 @@ $(function () {
                                                 <i class="fas fa-plus"></i>
                                             </span>
                                             <span class="font-3 ml-1">
-                                                Add employee
+                                                ${$.fn.transEle.attr('data-add-employee')}
                                             </span>
                                         </span>
                                     </button>
@@ -727,7 +727,7 @@ $(function () {
                                         style="width: 50%; margin-top: 4em;"
                                     >
                                         <div class="offcanvas-header">
-                                            <h5 id="offcanvasRightLabel">Add Employee</h5>
+                                            <h5 id="offcanvasRightLabel">${$.fn.transEle.attr('data-add-employee')}</h5>
                                         </div>
                                         <div class="offcanvas-body form-group">
                                             <div class="form-group">
@@ -761,13 +761,13 @@ $(function () {
                                             </div>
                                             <br><br>
                                             <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas">Close</button>
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas">${$.fn.transEle.attr('data-btn-close')}</button>
                                                 <button
                                                         type="button" 
                                                         class="btn btn-primary button-add-audit-in-workflow-employee" 
                                                         data-bs-dismiss="offcanvas"
                                                         id=""
-                                                >Save changes
+                                                >${$.fn.transEle.attr('data-btn-save')}
                                                 </button>
                                             </div>
                                         </div>
@@ -845,7 +845,7 @@ $(function () {
                                         style="width: 50%; margin-top: 4em;"
                                 >
                                     <div class="offcanvas-header">
-                                        <h5 id="offcanvasRightLabel">Add Employee</h5>
+                                        <h5 id="offcanvasRightLabel">${$.fn.transEle.attr('data-add-employee')}</h5>
                                     </div>
                                     <div class="offcanvas-body form-group">
                                         <table
@@ -866,13 +866,13 @@ $(function () {
                                         </table>
                                         <br><br>
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas">Close</button>
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas">${$.fn.transEle.attr('data-btn-close')}</button>
                                             <button
                                                     type="button" 
                                                     class="btn btn-primary button-add-audit-out-form-employee" 
                                                     data-bs-dismiss="offcanvas"
                                                     id=""
-                                            >Save changes
+                                            >${$.fn.transEle.attr('data-btn-save')}
                                             </button>
                                         </div>
                                     </div>

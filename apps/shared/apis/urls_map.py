@@ -83,6 +83,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # organization/group
     GROUP_LEVEL_LIST = StringUrl('hr/levels')
+    GROUP_LEVEL_DETAIL = StringUrl('hr/level')
     GROUP_LIST = StringUrl('hr/groups')
     GROUP_DETAIL = StringUrl('hr/group')
     GROUP_PARENT = StringUrl('hr/group/parent')

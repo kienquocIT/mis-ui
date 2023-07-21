@@ -8,18 +8,6 @@
 {% block pageAction %}
     <a
             class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
-            id="btn-add-group-level"
-            data-bs-toggle="tooltip" data-bs-placement="top" title=""
-            data-bs-original-title="Add" style="cursor: pointer;"
-    >
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="plus"></i>
-            </span>
-        </span>
-    </a>
-    <a
-            class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
             href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
             data-bs-original-title="Refresh"
     >
@@ -32,41 +20,117 @@
 {% endblock %}
 
 {% block pageContent %}
+    <form
+            data-url="{% url 'GroupLevelListAPI' %}"
+            data-url-update="{% url 'GroupLevelDetailAPI' 1 %}"
+            data-url-redirect="{% url 'GroupLevelList' %}"
+            data-url-cancel="{% url 'GroupList' %}"
+            data-method="POST"
+            id="frm_group_level_create"
+            method="post"
+    >
     {% csrf_token %}
-    <table
-            id="datable-group-level" class="table nowrap w-100 mb-5" data-url="{% url 'GroupLevelListAPI' %}"
-            data-method="GET"
-    >
-        <thead>
-        <tr>
-            <th>Group Level</th>
-            <th>Group Description</th>
-            <th>1st Manager Title</th>
-            <th>2nd Manager Title</th>
-            <th>Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
-
-    <div class="col-md-12" style="margin-top: 50px">
-    <span
-            class="btn-save-group-level" data-bs-toggle="tooltip" data-bs-placement="bottom"
-            title="{% trans 'Save' %}" style=""
-    >
-    {% trans 'Save' %}
-    </span>
-
-        <a href="{% url 'GroupList' %}" id="menu-group-list">
-        <span
-                class="btn btn-light" data-bs-toggle="tooltip" data-bs-placement="bottom"
-                title="{% trans 'Cancel' %}" style=""
+        <button
+                type="button"
+                class="btn btn-link btn-animated"
+                id="btn-add-group-level"
+                data-bs-toggle="modal"
+                data-bs-target="#levelGroupCreateModalCenter"
         >
-        {% trans 'Cancel' %}
-        </span>
-        </a>
-    </div>
+            <span><span class="icon"><span class="feather-icon"><i class="fa-regular fa-square-plus"></i></span></span><span>{% trans 'Add group level' %}</span></span>
+        </button>
+        <table
+                id="datable-group-level"
+                class="table nowrap w-100 mb-5"
+                data-url="{% url 'GroupLevelListAPI' %}"
+                data-method="get"
+        >
+            <thead>
+            <tr>
+                <th>{% trans 'Group Level' %}</th>
+                <th>{% trans 'Group Description' %}</th>
+                <th>{% trans '1st Manager Title' %}</th>
+                <th>{% trans '2nd Manager Title' %}</th>
+                <th>{% trans 'Actions' %}</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        <div class="row">
+            <div class="col-11"></div>
+            <div class="col-1 float-right">
+                <button
+                    type="button" class="btn btn-secondary"
+                    id="btn-cancel-group-level"
+                >{% trans 'Cancel' %}</button>
+            </div>
+        </div>
+
+
+        <div
+                class="modal fade" id="levelGroupCreateModalCenter" tabindex="-1"
+                role="dialog" aria-labelledby="levelGroupCreateModalCenter"
+                aria-hidden="true"
+        >
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{% trans 'Add group level' %}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="form-group">
+                                <label class="form-label" for="group-level-create-description">{% trans 'Description' %}<span class="required"></span></label>
+                                <input
+                                        type="text" class="form-control"
+                                        placeholder="input description"
+                                        id="group-level-create-description"
+                                        name="group_level_description"
+                                >
+                                <small class="form-text text-muted">{% trans 'Description of group level' %}</small>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <label class="form-label" for="group-level-create-first-manager-description">{% trans 'First manager title' %}</label>
+                                <input
+                                        type="text" class="form-control"
+                                        placeholder="input description"
+                                        id="group-level-create-first-manager-description"
+                                        name="group_level_first_manager_description"
+                                >
+                                <small class="form-text text-muted">{% trans 'Title of first manager' %}</small>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <label class="form-label" for="group-level-create-second-manager-description">{% trans 'Second manager title' %}</label>
+                                <input
+                                        type="text" class="form-control"
+                                        placeholder="input description"
+                                        id="group-level-create-second-manager-description"
+                                        name="group_level_second_manager_description"
+                                >
+                                <small class="form-text text-muted">{% trans 'Title of second manager' %}</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                        <button
+                            type="submit"
+                            class="btn btn-primary mr-2"
+                            form="frm_group_level_create"
+                        >{% trans 'Save' %}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
 {% endblock %}
 
 {% block jsFooter %}

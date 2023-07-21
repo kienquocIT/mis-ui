@@ -1,200 +1,167 @@
-
 $(function () {
-    let config = {
-        dom: '<"row"<"col-7 mb-3"<"blog-toolbar-left">><"col-5 mb-3"<"blog-toolbar-right"flip>>><"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
-        ordering: false,
-        columnDefs: [{
-            "searchable": false, "orderable": false, // "targets": [0,1,3,4,5,6,7,8,9]
-        }],
-        order: [2, 'asc'],
-        language: {
-            search: "",
-            searchPlaceholder: "Search",
-            info: "_START_ - _END_ of _TOTAL_",
-            sLengthMenu: "View  _MENU_",
-            paginate: {
-                next: '<i class="ri-arrow-right-s-line"></i>', // or '→'
-                previous: '<i class="ri-arrow-left-s-line"></i>' // or '←'
-            }
-        },
-        drawCallback: function () {
-            $('.dataTables_paginate > .pagination').addClass('custom-pagination pagination-simple');
-            feather.replace();
-        },
-        data: [],
-        columns: [{
-            'data': 'level', render: (data, type, row, meta) => {
-                return String.format(data);
-            }
-        }, {
-            'data': 'description', render: (data, type, row, meta) => {
-                return `<input type="text" min="0" class="form-control" name="group-level-description" placeholder="Group Description" value="${data}">`;
-            }
-        }, {
-            'data': 'first_manager_description', render: (data, type, row, meta) => {
-                return `<input type="text" min="0" class="form-control" name="group-level-first-manager-description" placeholder="1st Manager Description" value="${data}">`;
-            }
-        }, {
-            'data': 'second_manager_description', render: (data, type, row, meta) => {
-                return `<input type="text" min="0" class="form-control" name="group-level-second-manager-description" placeholder="2nd Manager Description" value="${data}">`;
-            }
-        }, {
-            'className': 'action-center', 'render': (data, type, row, meta) => {
-                return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover group-level-del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
-            }
-        },]
-    }
+    $(document).ready(function () {
 
-    function initDataTable(config) {
-        /*DataTable Init*/
-        let dtb = $('#datable-group-level');
-        if (dtb.length > 0) {
-            var targetDt = dtb.DataTable(config);
-            /*Checkbox Add*/
-            // var tdCnt = 0;
-            // $('table tr').each(function () {
-            //     $('<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select" id="chk_sel_' + tdCnt + '"><label class="form-check-label" for="chk_sel_' + tdCnt + '"></label></span>').appendTo($(this).find("td:first-child"));
-            //     tdCnt++;
-            // });
-            // $(document).on('click', '.del-button', function () {
-            //     targetDt.rows('.selected').remove().draw(false);
-            //     return false;
-            // });
-            $("div.blog-toolbar-left").html('<div class="d-xxl-flex d-none align-items-center"> <select class="form-select form-select-sm w-150p"><option selected>Select Template</option></select> <button class="btn btn-sm btn-light ms-2">Apply</button></div><div class="d-xxl-flex d-none align-items-center form-group mb-0"></div>');
-            dtb.parent().addClass('table-responsive');
+        let $table = $('#datable-group-level');
+        let formSubmit = $('#frm_group_level_create');
 
-
-            /*Select all using checkbox*/
-            var DT1 = dtb.DataTable();
-            $(".check-select-all").on("click", function (e) {
-                $('.check-select').attr('checked', true);
-                if ($(this).is(":checked")) {
-                    DT1.rows().select();
-                    $('.check-select').prop('checked', true);
-                } else {
-                    DT1.rows().deselect();
-                    $('.check-select').prop('checked', false);
-                }
-            });
-            $(".check-select").on("click", function (e) {
-                if ($(this).is(":checked")) {
-                    $(this).closest('tr').addClass('selected');
-                } else {
-                    $(this).closest('tr').removeClass('selected');
-                    $('.check-select-all').prop('checked', false);
-                }
+        function loadDbl() {
+            let frm = new SetupFormSubmit($table);
+            $table.DataTableDefault({
+                ajax: {
+                    url: frm.dataUrl,
+                    type: frm.dataMethod,
+                    dataSrc: function (resp) {
+                        let data = $.fn.switcherResp(resp);
+                        if (data && resp.data.hasOwnProperty('group_level_list')) {
+                            return resp.data['group_level_list'] ? resp.data['group_level_list'] : []
+                        }
+                        throw Error('Call data raise errors.')
+                    },
+                },
+                columnDefs: [
+                    {
+                        "width": "5%",
+                        "targets": 0
+                    }, {
+                        "width": "30%",
+                        "targets": 1
+                    }, {
+                        "width": "30%",
+                        "targets": 2
+                    }, {
+                        "width": "30%",
+                        "targets": 3
+                    }, {
+                        "width": "5%",
+                        "targets": 4
+                    }
+                ],
+                columns: [
+                    {
+                        targets: 0,
+                        render: (data, type, row) => {
+                            return `<input type="text" class="form-control table-row-level" value="${row.level}">`
+                        }
+                    },
+                    {
+                        targets: 1,
+                        render: (data, type, row) => {
+                            return `<input type="text" class="form-control table-row-description" value="${row.description}">`
+                        }
+                    },
+                    {
+                        targets: 2,
+                        render: (data, type, row) => {
+                            return `<input type="text" class="form-control table-row-first-manager-description" value="${row.first_manager_description}">`
+                        }
+                    },
+                    {
+                        targets: 3,
+                        render: (data, type, row) => {
+                            return `<input type="text" class="form-control table-row-second-manager-description" value="${row.second_manager_description}">`
+                        }
+                    },
+                    {
+                        targets: 4,
+                        className: 'action-center',
+                        render: (data, type, row) => {
+                            return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover table-row-save" data-id="${row.id}" disabled><span class="icon"><i class="fa-regular fa-floppy-disk"></i></span></button>`;
+                        },
+                    }
+                ],
             });
         }
-    }
+        loadDbl();
 
-    function loadDataTable() {
-        let tb = $('#datable-group-level');
-        $.fn.callAjax(tb.attr('data-url'), tb.attr('data-method')).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (data.hasOwnProperty('group_level_list')) config['data'] = data.group_level_list;
-                    initDataTable(config);
-                }
-            },
-        )
-    }
+        $table.on('change', '.table-row-level, .table-row-description, .table-row-first-manager-description, .table-row-second-manager-description', function() {
+            let row = $(this)[0].closest('tr');
+            row.querySelector('.table-row-save').removeAttribute('disabled');
+            row.querySelector('.table-row-save').classList.remove('flush-soft-hover');
+            row.querySelector('.table-row-save').classList.add('btn-soft-warning');
+        });
 
-    loadDataTable();
-});
+// Action on btn cancel
+        $('#btn-cancel-group-level').on('click', function() {
+            $.fn.redirectUrl(formSubmit.attr('data-url-cancel'), 1000);
+        })
 
-
-// Action on add row
-$(document).on('click', '#btn-add-group-level', function () {
-    tableGroupLevelAdd()
-});
-
-
-function tableGroupLevelAdd() {
-    let tableApply = document.getElementById("datable-group-level");
-    if (tableApply.tBodies[0].rows[0].children[0].classList[0] === "dataTables_empty") {
-            tableApply.deleteRow(1);
+// Setup data submit
+        function setupDataSubmit(_form) {
+            let order = 1;
+            let tableEmpty = $table[0].querySelector('.dataTables_empty');
+            let tableBody = $table[0].tBodies[0];
+            if (tableBody.rows.length !== 0 && !tableEmpty) {
+                order = (tableBody.rows.length + 1);
+            }
+            _form.dataForm['level'] = order;
+            _form.dataForm['description'] = $('#group-level-create-description').val();
+            _form.dataForm['first_manager_description'] = $('#group-level-create-first-manager-description').val();
+            _form.dataForm['second_manager_description'] = $('#group-level-create-second-manager-description').val();
+            return true
         }
-    let tableRowLen = tableApply.tBodies[0].rows.length;
-    let level =  (tableRowLen + 1)
-    let checkBoxId = `chk_sel_${(tableRowLen + 1)}`
 
-    $('#datable-group-level tbody').append(`<tr> <td><span id="group-level">${level}</span></td> <td><input type="text" min="0" class="form-control" name="group-level-description" placeholder="Group Description"></td> <td><input type="text" min="0" class="form-control" name="group-level-first-manager-description" placeholder="1st Manager Description"></td> <td><input type="text" min="0" class="form-control" name="group-level-second-manager-description" placeholder="2nd Manager Description"></td> <td class=" action-center"><a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover group-level-del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></span></span></a></td> </tr>`);
-    return false;
-}
-
-
-// Action on delete row
-$(document).on('click', '.group-level-del-button', function (e) {
-    // $(this).closest('tr').prev().remove();
-    // $(this).closest('tr').next().remove();
-    let currentRow = $(this).closest('tr')
-    let currentLevel = Number(currentRow[0].children[0].innerText)
-    let tableApply = document.getElementById("datable-group-level");
-    let tableRowLen = tableApply.tBodies[0].rows.length;
-
-    let idx = currentRow[0].rowIndex;
-
-    // Reorder level of above rows from delete row
-    for (let i = currentLevel; i < tableRowLen; i++) {
-        let upperRow = currentRow[0].parentNode.rows[ (++idx - 1) ];
-        let upperRowLevel = Number(upperRow.children[0].innerText)
-        upperRow.children[0].innerText=String(upperRowLevel - 1)
-    }
-
-    currentRow.remove();
-    return false;
-});
-
-
-// Save form group level
-$(document).on('click', '.btn-save-group-level', function (e) {
-    let groupLevelSave = {}
-    let tableDataSave = []
-    let rowDataSave = {}
-    let keys = [
-        "level",
-        "description",
-        "first_manager_description",
-        "second_manager_description"
-    ]
-    let tableSave = document.getElementById("datable-group-level");
-    let tableRowLen = tableSave.tBodies[0].rows.length;
-    for (let idx = 0; idx < tableRowLen; idx++) {
-        rowDataSave = {}
-        let row = tableSave.rows[(idx+1)];
-        let childrenLength = row.children.length
-        for (let i = 0; i < (childrenLength - 1); i++) {
-            let child = row.children[(i)]
-            let childText = child.innerText
-            let childValue = child.firstChild.value
-            if (keys[i]) {
-                if (childValue) {
-                    rowDataSave[keys[i]] = childValue
-                } else {
-                    rowDataSave[keys[i]] = Number(childText)
+// Submit form create
+        formSubmit.submit(function (e) {
+            e.preventDefault();
+            let _form = new SetupFormSubmit(formSubmit);
+            setupDataSubmit(_form)
+            let submitFields = [
+                'level',
+                'description',
+                'first_manager_description',
+                'second_manager_description',
+            ]
+            if (_form.dataForm) {
+                for (let key in _form.dataForm) {
+                    if (!submitFields.includes(key)) delete _form.dataForm[key]
                 }
             }
-        }
-        tableDataSave.push(rowDataSave)
-    }
-    if (tableDataSave) {
-        groupLevelSave['group_level_data'] = tableDataSave
-    }
+            let csr = $("[name=csrfmiddlewaretoken]").val();
+            $.fn.callAjax(_form.dataUrl, _form.dataMethod, _form.dataForm, csr)
+                .then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            $.fn.notifyPopup({description: data.message}, 'success')
+                            $.fn.redirectUrl(formSubmit.attr('data-url-redirect'), 1000);
+                        }
+                    },
+                    (errs) => {
+                        console.log(errs)
+                    }
+                )
+        });
 
-    let crf_token = $("input[name=csrfmiddlewaretoken]").val();
-    $.fn.callAjax('/hr/level/api', "POST", groupLevelSave, crf_token)
-        .then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    $.fn.notifyPopup({description: data.message}, 'success')
-                    setTimeout(location.reload.bind(location), 1000);
-                }
-            },
-            (errs) => {
-                console.log(errs)
-                $.fn.notifyPopup({description: "Group level create fail"}, 'failure')
-            }
-        )
+// submit edit on row
+        $table.on('click', '.table-row-save', function() {
+            let url_update = formSubmit.attr('data-url-update');
+            let url = url_update.format_url_with_uuid($(this).attr('data-id'));
+            let url_redirect = formSubmit.attr('data-url-redirect');
+            let method = "PUT";
+            let data_submit = {};
+            let row = $(this)[0].closest('tr');
+            data_submit['level'] = parseInt(row.querySelector('.table-row-level').value);
+            data_submit['description'] = row.querySelector('.table-row-description').value;
+            data_submit['first_manager_description'] = row.querySelector('.table-row-first-manager-description').value;
+            data_submit['second_manager_description'] = row.querySelector('.table-row-second-manager-description').value;
+            let csr = $("[name=csrfmiddlewaretoken]").val();
+            $.fn.callAjax(url, method, data_submit, csr)
+                .then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            $.fn.notifyPopup({description: data.message}, 'success')
+                            $.fn.redirectUrl(url_redirect, 1000);
+                        }
+                    },
+                    (errs) => {
+                        console.log(errs)
+                    }
+                )
+        });
+
+
+
+
+    });
 });

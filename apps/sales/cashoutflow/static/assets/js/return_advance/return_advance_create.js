@@ -3,6 +3,7 @@ $(function () {
         const urlParams = new URLSearchParams(window.location.search);
         const advance_payment_id = urlParams.get('advance_payment_id');
         const choose_AP_ele = $('#chooseAdvancePayment');
+        $('#chooseBeneficiary').prop('disabled', true);
 
         function loadDetailOpp(data) {
             let dropdown = $('#dropdownOpp');

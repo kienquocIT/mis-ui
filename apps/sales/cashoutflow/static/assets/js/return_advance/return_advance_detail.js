@@ -128,6 +128,7 @@ $(function () {
                     $('#total-value').attr('data-init-money', total_value);
                     if (return_advance_detail.money_received) {
                         $('#money-received').prop('checked', true);
+                        $('#money-received').prop('disabled', true);
                     } else {
                         $('#money-received').prop('checked', false);
                     }

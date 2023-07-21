@@ -92,11 +92,11 @@ $(document).ready(function () {
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        let data_detail = data.sale_order_product_list;
+                        let data_detail = data.sale_order_expense_list;
                         for (let i = 0; i < data_detail.length; i++) {
-                            let product_id = data_detail[i].product_id;
+                            let expense_id = data_detail[i].expense_id;
                             let results = advance_payment_product_items.filter(function(item) {
-                                return item.product.id === product_id;
+                                return item.product.id === expense_id;
                             });
                             let sum_AP_approved = results.reduce(function(s, item) {
                                 return s + item.after_tax_price;
@@ -105,7 +105,7 @@ $(document).ready(function () {
                                 return s + item.returned_total;
                             }, 0);
                             let payment_cost_items_list = payment_cost_items_filtered.filter(function(item) {
-                                return item.product_id === product_id;
+                                return item.product_id === expense_id;
                             });
                             let to_payment = payment_cost_items_list.reduce(function(s, item) {
                                 return s + item.converted_value;
@@ -122,17 +122,17 @@ $(document).ready(function () {
                                 data_detail[i].available = 0;
                             }
                         }
-                        return resp.data['sale_order_product_list'] ? resp.data['sale_order_product_list'] : [];
+                        return resp.data['sale_order_expense_list'] ? resp.data['sale_order_expense_list'] : [];
                     }
                     return [];
                 },
             },
             columns: [
                 {
-                    data: 'product_title',
+                    data: 'expense_title',
                     className: 'wrap-text',
                     render: (data, type, row, meta) => {
-                        return `<a href="#"><span>` + row.product_title + `</span></a>`
+                        return `<a href="#"><span>` + row.expense_title + `</span></a>`
                     }
                 },
                 {
@@ -207,11 +207,11 @@ $(document).ready(function () {
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        let data_detail = data.quotation_product_list;
+                        let data_detail = data.quotation_expense_list;
                         for (let i = 0; i < data_detail.length; i++) {
-                            let product_id = data_detail[i].product_id;
+                            let expense_id = data_detail[i].expense_id;
                             let results = advance_payment_product_items.filter(function(item) {
-                                return item.product.id === product_id;
+                                return item.product.id === expense_id;
                             });
                             let sum_AP_approved = results.reduce(function(s, item) {
                                 return s + item.after_tax_price;
@@ -220,7 +220,7 @@ $(document).ready(function () {
                                 return s + item.returned_total;
                             }, 0);
                             let payment_cost_items_list = payment_cost_items_filtered.filter(function(item) {
-                                return item.product_id === product_id;
+                                return item.product_id === expense_id;
                             });
                             let to_payment = payment_cost_items_list.reduce(function(s, item) {
                                 return s + item.converted_value;
@@ -237,17 +237,17 @@ $(document).ready(function () {
                                 data_detail[i].available = 0;
                             }
                         }
-                        return resp.data['quotation_product_list'] ? resp.data['quotation_product_list'] : [];
+                        return resp.data['quotation_expense_list'] ? resp.data['quotation_expense_list'] : [];
                     }
                     return [];
                 },
             },
             columns: [
                 {
-                    data: 'product_title',
+                    data: 'expense_title',
                     className: 'wrap-text',
                     render: (data, type, row, meta) => {
-                        return `<a href="#"><span>` + row.product_title + `</span></a>`
+                        return `<a href="#"><span>` + row.expense_title + `</span></a>`
                     }
                 },
                 {
@@ -940,14 +940,20 @@ $(document).ready(function () {
 
                 advance_payment_product_items = [];
                 for (let i = 0; i < ap_list.length; i++) {
-                    if (ap_list[i].sale_order_mapped === so_mapped_id && ap_list[i].sale_order_mapped) {
-                        advance_payment_product_items = advance_payment_product_items.concat(ap_list[i].product_items)
+                    if (ap_list[i].sale_order_mapped) {
+                        if (ap_list[i].sale_order_mapped.id === so_mapped_id) {
+                            advance_payment_product_items = advance_payment_product_items.concat(ap_list[i].product_items)
+                        }
                     }
-                    if (ap_list[i].quotation_mapped === quo_mapped_id && ap_list[i].quotation_mapped) {
-                        advance_payment_product_items = advance_payment_product_items.concat(ap_list[i].product_items)
+                    if (ap_list[i].quotation_mapped) {
+                        if (ap_list[i].quotation_mapped.id === quo_mapped_id) {
+                            advance_payment_product_items = advance_payment_product_items.concat(ap_list[i].product_items)
+                        }
                     }
-                    if (ap_list[i].opportunity_mapped === opp_mapped_id && ap_list[i].opportunity_mapped) {
-                        advance_payment_product_items = advance_payment_product_items.concat(ap_list[i].product_items)
+                    if (ap_list[i].opportunity_mapped) {
+                        if (ap_list[i].opportunity_mapped.id === opp_mapped_id) {
+                            advance_payment_product_items = advance_payment_product_items.concat(ap_list[i].product_items)
+                        }
                     }
                 }
                 // console.log(advance_payment_product_items)
@@ -963,7 +969,7 @@ $(document).ready(function () {
                 }
                 // console.log(payment_cost_items_filtered)
 
-                // loadSaleOrderProduct($('#sale-code-select-box option:selected').attr('data-sale-code-id'));
+                loadSaleOrderProduct($('#sale-code-select-box option:selected').attr('data-sale-code-id'));
             }
             if ($('#sale-code-select-box option:selected').attr('data-type') === '1') {
                 // get ap product items
@@ -1008,14 +1014,20 @@ $(document).ready(function () {
 
                 advance_payment_product_items = [];
                 for (let i = 0; i < ap_list.length; i++) {
-                    if (ap_list[i].sale_order_mapped === so_mapped_id && ap_list[i].sale_order_mapped) {
-                        advance_payment_product_items = advance_payment_product_items.concat(ap_list[i].product_items)
+                    if (ap_list[i].sale_order_mapped) {
+                        if (ap_list[i].sale_order_mapped.id === so_mapped_id) {
+                            advance_payment_product_items = advance_payment_product_items.concat(ap_list[i].product_items)
+                        }
                     }
-                    if (ap_list[i].quotation_mapped === quo_mapped_id && ap_list[i].quotation_mapped) {
-                        advance_payment_product_items = advance_payment_product_items.concat(ap_list[i].product_items)
+                    if (ap_list[i].quotation_mapped) {
+                        if (ap_list[i].quotation_mapped.id === quo_mapped_id) {
+                            advance_payment_product_items = advance_payment_product_items.concat(ap_list[i].product_items)
+                        }
                     }
-                    if (ap_list[i].opportunity_mapped === opp_mapped_id && ap_list[i].opportunity_mapped) {
-                        advance_payment_product_items = advance_payment_product_items.concat(ap_list[i].product_items)
+                    if (ap_list[i].opportunity_mapped) {
+                        if (ap_list[i].opportunity_mapped.id === opp_mapped_id) {
+                            advance_payment_product_items = advance_payment_product_items.concat(ap_list[i].product_items)
+                        }
                     }
                 }
                 // console.log(advance_payment_product_items)
@@ -1031,7 +1043,7 @@ $(document).ready(function () {
                 }
                 // console.log(payment_cost_items_filtered)
 
-                // loadQuotationProduct($('#sale-code-select-box option:selected').attr('data-sale-code-id'));
+                loadQuotationProduct($('#sale-code-select-box option:selected').attr('data-sale-code-id'));
             }
             if ($('#sale-code-select-box option:selected').attr('data-type') === '2') {
                 $('#sale-code-select-box').attr('data-placeholder', 'Select One');

@@ -231,7 +231,6 @@ $(function () {
             let contact_get = contact_list.filter(function(item) {
                 return item.id === call_log_obj.contact.id;
             })
-            console.log(contact_get)
             if (contact_get.length > 0) {
                 contact_get = contact_get[0];
                 $('#detail-call-log-contact-name').text(contact_get.fullname);

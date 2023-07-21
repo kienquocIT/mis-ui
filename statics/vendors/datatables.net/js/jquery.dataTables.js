@@ -5357,7 +5357,7 @@
 		}
 		else if ( scrollXInner !== "" ) {
 			// legacy x scroll inner has been given - use it
-			tableStyle.width = _fnStringToCss(scrollXInner);
+			// tableStyle.width = _fnStringToCss(scrollXInner);
 	
 			// Recalculate the sanity width
 			sanityWidth = table.outerWidth();

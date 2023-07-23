@@ -1,0 +1,181 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'Email list' %}{% endblock %}
+{% block cssHeader %}
+    <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}"/>
+{% endblock %}
+{% block pageAction %}
+    <a class="btn btn-outline-primary btn-animated btn-xs"
+       href=""
+       data-bs-toggle="modal"
+       data-bs-target="#send-email"
+       id="send-email-button"
+       data-bs-original-title="New Email">
+            <span class="icon">
+                <span class="feather-icon">
+                    <i
+                            data-feather="plus">
+                    </i>
+                </span>
+                <span class="font-3 ml-1">
+                    {% trans 'New' %}
+                </span>
+            </span>
+    </a>
+{% endblock %}
+{% block pageContent %}
+    {{ data.account_list | json_script:"account_list" }}
+    {{ data.contact_list | json_script:"contact_list" }}
+    {{ data.opportunity_list | json_script:"opportunity_list" }}
+    {{ data.email_list | json_script:"email_list" }}
+
+    <input type="hidden" id="employee_current_id" value="{{ data.employee_current_id }}">
+    <table id="table_opportunity_email_list" class="table nowrap w-100 mb-5"
+           data-url-contact-detail="{% url 'ContactDetail' '0' %}"
+           data-url="{% url 'OpportunityEmailListAPI' %}"
+           data-url-delete="{% url 'OpportunityEmailDeleteAPI' '0' %}"
+           data-url-redirect="{% url 'OpportunityEmailList' %}"
+           data-method="GET">
+        <thead>
+        <tr>
+            <th>{% trans 'To Contact/Email' %}
+                <i class="fas fa-info-circle icon-info"
+                   data-bs-toggle="tooltip"
+                   data-bs-placement="bottom"
+                   title="{% trans 'Press row here to open detail page.' %}">
+                </i>
+            </th>
+            <th>{% trans 'Subject' %}
+                <i class="fas fa-info-circle icon-info"
+                   data-bs-toggle="tooltip"
+                   data-bs-placement="bottom"
+                   title="{% trans 'Press row here to see detail email log.' %}">
+                </i>
+            </th>
+            <th class="text-center">{% trans 'Sale Code' %}</th>
+            <th class="text-center">{% trans 'Date' %}</th>
+            <th class="text-center">{% trans 'Action' %}</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <div class="modal fade mt-10" id="send-email" tabindex="-1" role="dialog"
+         aria-labelledby="createOpportunityEmailModalForms" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'Send Email' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true"></span>
+                    </button>
+                </div>
+                <div class="modal-body" style="overflow: auto; height: 58vh">
+                    <form data-url="{% url 'OpportunityEmailListAPI' %}"
+                          data-url-redirect="{% url 'OpportunityEmailList' %}"
+                          data-method="POST"
+                          id="form-new-email"
+                          method="post">
+                        {% csrf_token %}
+                        <div class="row form-group mb-3">
+                            <label class="col-2 col-form-label required">{% trans 'Sale Code' %}</label>
+                            <div class="col-10">
+                                <select id="email-sale-code-select-box" class="form-select" data-url="{% url 'OpportunityListAPI' %}" data-method="GET"></select>
+                            </div>
+                        </div>
+                        <div class="row form-group mb-3">
+                            <label class="col-2 col-form-label required">{% trans 'To' %}</label>
+                            <div class="col-10">
+                                <select id="email-to-select-box" class="form-select" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
+                                <input class="form-control" hidden id="inputEmailTo" placeholder="Enter email">
+                                <a id="email-to-input-btn" class="text-primary form-text text-muted text-right" href="#">to input</a>
+                                <a id="email-to-select-btn" class="text-primary form-text text-muted text-right" href="#" hidden>to select</a>
+                            </div>
+                        </div>
+                        <div class="row form-group mb-3">
+                            <label class="col-2 col-form-label">{% trans 'Cc' %}</label>
+                            <div class="col-10">
+                                <select id="email-cc-select-box" multiple class="select2 select-multiple" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
+                                <input id="inputEmailCc" hidden class="mt-1 form-control" placeholder="Enter email">
+
+                                <a class="text-primary form-text text-muted text-right" href="#">
+                                    <span id="email-cc-add" hidden class="icon"><i class="text-primary bi bi-plus-circle"></i></span>
+                                    <span id="email-cc-remove" hidden class="icon"><i class="text-danger bi bi-x-circle"></i></span>
+                                </a>
+                                <a id="email-cc-input-btn" class="text-primary form-text text-muted text-right" href="#">add email</a>
+                            </div>
+                        </div>
+                        <div class="row form-group mb-3">
+                            <label class="col-2 col-form-label required">{% trans 'Subject' %}</label>
+                            <div class="col-10">
+                                <input id="email-subject-input" class="form-control">
+                            </div>
+                        </div>
+                        <div class="row form-group mb-3">
+                            <label class="col-2 col-form-label">{% trans 'Content' %}</label>
+                            <div class="col-10">
+                                <textarea id="email-content-area" class="form-control" style="min-height: 200px"></textarea>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" form="form-new-email"
+                                id="btn-send-email">{% trans 'Send' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade mt-10" id="detail-send-email" tabindex="-1" role="dialog"
+         aria-labelledby="detailOpportunityEmailModalForms" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'Detail Email' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true"></span>
+                    </button>
+                </div>
+                <div class="modal-body" style="overflow: auto; height: 58vh">
+                    <div class="row form-group mb-3">
+                        <label class="col-2 col-form-label required">{% trans 'Sale Code' %}</label>
+                        <div class="col-10">
+                            <select disabled style="color: #6f6f6f" id="detail-email-sale-code-select-box" class="form-select" data-url="{% url 'OpportunityListAPI' %}" data-method="GET"></select>
+                        </div>
+                    </div>
+                    <div class="row form-group mb-3">
+                        <label class="col-2 col-form-label required">{% trans 'To' %}</label>
+                        <div class="col-10">
+                            <select disabled style="color: #6f6f6f" id="detail-email-to-select-box" class="form-select" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
+                        </div>
+                    </div>
+                    <div class="row form-group mb-3">
+                        <label class="col-2 col-form-label">{% trans 'Cc' %}</label>
+                        <div class="col-10">
+                            <select style="color: #6f6f6f" id="detail-email-cc-select-box" multiple class="select2 select-multiple" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
+                        </div>
+                    </div>
+                    <div class="row form-group mb-3">
+                        <label class="col-2 col-form-label required">{% trans 'Subject' %}</label>
+                        <div class="col-10">
+                            <input readonly id="detail-email-subject-input" class="form-control">
+                        </div>
+                    </div>
+                    <div class="row form-group mb-3">
+                        <label class="col-2 col-form-label">{% trans 'Content' %}</label>
+                        <div class="col-10">
+                            <textarea readonly id="detail-email-content-area" class="form-control" style="min-height: 200px"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
+    <script src="{% static 'assets/sales/opportunity/js/email_list.js' %}"></script>
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+{% endblock %}

@@ -97,13 +97,13 @@
                             method="post"
                     >
                         {% csrf_token %}
-                        <div class="mb-3">
+                        <div class="mb-3 form-group">
                             <label class="form-label">
                                 {% trans 'Select Customer' %}
                                 <sup class="field-required">(*)</sup>
                             </label>
                             <select
-                                    class="form-select"
+                                    class="form-control select2"
                                     id="select-box-opportunity-create-customer"
                                     data-url="{% url "AccountListAPI" %}"
                                     data-method="GET"

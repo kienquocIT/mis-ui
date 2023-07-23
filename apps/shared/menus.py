@@ -124,9 +124,13 @@ class MenusCoreConfigurations:
                 name='Sale Order', code='menu_sale_order_config', view_name='SaleOrderConfigDetail',
                 icon='<i class="fas fa-file-invoice"></i>',
             ),
-			MenuCommon(
+            MenuCommon(
                 name='Opportunity', code='menu_opportunity_config', view_name='OpportunityConfig',
-                icon='<i class="far fa-lightbulb"></i>',
+                icon='<i class="fa-solid fa-lightbulb"></i>',
+            ),
+            MenuCommon(
+                name='Task', code='menu_opportunity_task_config', view_name='OpportunityTaskConfig',
+                icon='<i class="fa-solid fa-clipboard-check"></i>',
             )
         ]
     )
@@ -162,7 +166,7 @@ class MenusCRM:
         name='Product', code='id_menu_product_list', view_name='ProductList', icon='<i class="bi bi-archive-fill"></i>',
     )
     EXPENSE = MenuCommon(
-        name='Expense', code='id_menu_expense_list', view_name='ExpenseList', icon='<i class="bi bi-cash-coin"></i>',
+        name='Internal Expense Items', code='id_menu_expense_list', view_name='ExpenseList', icon='<i class="bi bi-cash-coin"></i>',
     )
     INVENTORY = MenuCommon(
         name='Inventory', code='menu_inventory', view_name='#', icon='<i class="fas fa-clipboard-list"></i>',
@@ -220,12 +224,27 @@ class MenusCRM:
         ],
     )
     SALE_ACTIVITIES = MenuCommon(
-        name='Sale Activities', code='menu_sale_activities', view_name='', icon='<i class="bi bi-graph-up-arrow"></i>',
+        name='Sale Activities', code='menu_sale_activities', view_name='', icon='<i class="bi bi-ui-checks-grid"></i>',
         child=[
             MenuCommon(
                 name='Log a call', code='id_menu_log_a_call', view_name='OpportunityCallLogList',
-                icon='<i class="bi bi-telephone-plus-fill"></i>',
+                icon='<i class="bi bi-telephone-fill"></i>',
             ),
+            MenuCommon(
+                name='Email', code='id_menu_email', view_name='OpportunityEmailList',
+                icon='<i class="bi bi-envelope-fill"></i>',
+            ),
+            MenuCommon(
+                name='Meeting', code='id_menu_meeting', view_name='OpportunityMeetingList',
+                icon='<i class="bi bi-person-workspace"></i>',
+            ),
+        ],
+    )
+
+    TASK = MenuCommon(
+        name='Task', code='menu_opportunity_task', view_name='OpportunityTaskList',
+        icon='<i class="fa-solid fa-list-check"></i>',
+        child=[
         ],
     )
 
@@ -287,6 +306,7 @@ class SpaceItem:
                 MenusCRM.PRICING,
                 MenusCRM.CASH_OUTFLOW,
                 MenusCRM.SALE_ACTIVITIES,
+                MenusCRM.TASK,
             ],
         ),
         'purchase': SpaceCommon(

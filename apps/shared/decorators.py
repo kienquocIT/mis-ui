@@ -69,7 +69,12 @@ class ArgumentDecorator:
         if isinstance(user, get_user_model()):
             space_list, space_current_detail, space_menus = cls.parse_spaces(user.ui_space_selected)
             return {
+                'id': str(user.id),
+                'user_id': str(user.user_id),
+                'first_name': str(user.first_name),
+                'last_name': str(user.last_name),
                 'fullname': user.get_full_name(),
+                'username_auth': user.username_auth,
                 'email': user.email,
                 'is_admin_tenant': user.is_admin_tenant,
                 'tenant_current_data': user.tenant_current_data,
@@ -218,6 +223,7 @@ def mask_view(**parent_kwargs):
                                 return HttpResponse(status=500)
                             case _:
                                 ctx['pk'] = pk
+                                ctx['is_ga_enabled'] = settings.GA_COLLECTION_ENABLED
                                 ctx['is_debug'] = settings.DEBUG_JS
                                 ctx['is_notify_key'] = 1 if is_notify_key is True else 0
                                 ctx['base'] = cls_check.parse_base(request.user)

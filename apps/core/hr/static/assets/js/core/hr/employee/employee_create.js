@@ -288,8 +288,6 @@ $(document).on('change', '#select-box-user', function (e) {
 
 
 $(function () {
-    "use strict";
-
     /* Single table*/
     $('input[name="dob"]').daterangepicker({
         singleDatePicker: true,

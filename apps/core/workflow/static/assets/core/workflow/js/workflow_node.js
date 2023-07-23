@@ -254,8 +254,8 @@ $(function () {
                                                             </table>
                                                         </div>
                                                         <div class="modal-footer">
-                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                            <button type="button" class="btn btn-primary btn-add-audit-create" data-bs-dismiss="modal">Save changes</button>
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">${$.fn.transEle.attr('data-btn-close')}</button>
+                                                            <button type="button" class="btn btn-primary btn-add-audit-create" data-bs-dismiss="modal">${$.fn.transEle.attr('data-btn-save')}</button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -425,7 +425,7 @@ $(function () {
                     targetDt.rows('.selected').remove().draw(false);
                     return false;
                 });
-                $("div.blog-toolbar-left").html('<div class="d-xxl-flex d-none align-items-center"> <select class="form-select form-select-sm w-120p"><option selected>Bulk actions</option><option value="1">Edit</option><option value="2">Move to trash</option></select> <button class="btn btn-sm btn-light ms-2">Apply</button></div><div class="d-xxl-flex d-none align-items-center form-group mb-0"> <label class="flex-shrink-0 mb-0 me-2">Sort by:</label> <select class="form-select form-select-sm w-130p"><option selected>Date Created</option><option value="1">Date Edited</option><option value="2">Frequent Contacts</option><option value="3">Recently Added</option> </select></div>');
+                // $("div.blog-toolbar-left").html('<div class="d-xxl-flex d-none align-items-center"> <select class="form-select form-select-sm w-120p"><option selected>Bulk actions</option><option value="1">Edit</option><option value="2">Move to trash</option></select> <button class="btn btn-sm btn-light ms-2">Apply</button></div><div class="d-xxl-flex d-none align-items-center form-group mb-0"> <label class="flex-shrink-0 mb-0 me-2">Sort by:</label> <select class="form-select form-select-sm w-130p"><option selected>Date Created</option><option value="1">Date Edited</option><option value="2">Frequent Contacts</option><option value="3">Recently Added</option> </select></div>');
                 dtb.parent().addClass('table-responsive');
             }
         }
@@ -549,8 +549,8 @@ $(function () {
                                                                 </div>
                                                             </div>
                                                             <div class="modal-footer">
-                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                                <button type="button" class="btn btn-primary btn-add-audit-create" data-bs-dismiss="modal">Save changes</button>
+                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">${$.fn.transEle.attr('data-btn-close')}</button>
+                                                                <button type="button" class="btn btn-primary btn-add-audit-create" data-bs-dismiss="modal">${$.fn.transEle.attr('data-btn-save')}</button>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -717,7 +717,7 @@ $(function () {
                                                 <i class="fas fa-plus"></i>
                                             </span>
                                             <span class="font-3 ml-1">
-                                                Add employee
+                                                ${$.fn.transEle.attr('data-add-employee')}
                                             </span>
                                         </span>
                                     </button>
@@ -727,11 +727,11 @@ $(function () {
                                         style="width: 50%; margin-top: 4em;"
                                     >
                                         <div class="offcanvas-header">
-                                            <h5 id="offcanvasRightLabel">Add Employee</h5>
+                                            <h5 id="offcanvasRightLabel">${$.fn.transEle.attr('data-add-employee')}</h5>
                                         </div>
                                         <div class="offcanvas-body form-group">
                                             <div class="form-group">
-                                                <label class="form-label">Select company</label>
+                                                <label class="form-label">${$.fn.transEle.attr('data-select-company')}</label>
                                                 <select
                                                         class="form-select select-box-audit-in-workflow-company" 
                                                         id="${boxInWorkflowCompanyId}"
@@ -751,7 +751,7 @@ $(function () {
                                             ${defaultZone}
                                             <div class="form-group">
                                                 <label class="form-label">
-                                                    Description
+                                                    ${$.fn.transEle.attr('data-description')}
                                                 </label>
                                                 <textarea
                                                         class="form-control"
@@ -761,13 +761,13 @@ $(function () {
                                             </div>
                                             <br><br>
                                             <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas">Close</button>
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas">${$.fn.transEle.attr('data-btn-close')}</button>
                                                 <button
                                                         type="button" 
                                                         class="btn btn-primary button-add-audit-in-workflow-employee" 
                                                         data-bs-dismiss="offcanvas"
                                                         id=""
-                                                >Save changes
+                                                >${$.fn.transEle.attr('data-btn-save')}
                                                 </button>
                                             </div>
                                         </div>
@@ -845,7 +845,7 @@ $(function () {
                                         style="width: 50%; margin-top: 4em;"
                                 >
                                     <div class="offcanvas-header">
-                                        <h5 id="offcanvasRightLabel">Add Employee</h5>
+                                        <h5 id="offcanvasRightLabel">${$.fn.transEle.attr('data-add-employee')}</h5>
                                     </div>
                                     <div class="offcanvas-body form-group">
                                         <table
@@ -855,9 +855,9 @@ $(function () {
                                         >
                                             <thead>
                                             <tr>
-                                                <th>Code</th>
-                                                <th>Full Name</th>
-                                                <th>Username</th>
+                                                <th>${$.fn.transEle.attr('data-code')}</th>
+                                                <th>${$.fn.transEle.attr('data-full-name')}</th>
+                                                <th>${$.fn.transEle.attr('data-username')}</th>
                                                 <th></th>
                                             </tr>
                                             </thead>
@@ -866,13 +866,13 @@ $(function () {
                                         </table>
                                         <br><br>
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas">Close</button>
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas">${$.fn.transEle.attr('data-btn-close')}</button>
                                             <button
                                                     type="button" 
                                                     class="btn btn-primary button-add-audit-out-form-employee" 
                                                     data-bs-dismiss="offcanvas"
                                                     id=""
-                                            >Save changes
+                                            >${$.fn.transEle.attr('data-btn-save')}
                                             </button>
                                         </div>
                                     </div>

@@ -1,0 +1,252 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'Meeting list' %}{% endblock %}
+{% block cssHeader %}
+    <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}"/>
+{% endblock %}
+{% block pageAction %}
+    <a class="btn btn-outline-primary btn-animated btn-xs"
+       href=""
+       data-bs-toggle="modal"
+       data-bs-target="#create-meeting"
+       id="create-meeting-button"
+       data-bs-original-title="New Meeting">
+            <span class="icon">
+                <span class="feather-icon">
+                    <i data-feather="plus"></i>
+                </span>
+                <span class="font-3 ml-1">
+                    {% trans 'New' %}
+                </span>
+            </span>
+    </a>
+{% endblock %}
+{% block pageContent %}
+    {{ data.account_list | json_script:"account_list" }}
+    {{ data.contact_list | json_script:"contact_list" }}
+    {{ data.opportunity_list | json_script:"opportunity_list" }}
+    {{ data.meeting_list | json_script:"meeting_list" }}
+    {{ data.employee_list | json_script:"employee_list" }}
+    {{ data.account_map_employees | json_script:"account_map_employees" }}
+    <input type="hidden" id="employee_current_id" value="{{ data.employee_current_id }}">
+
+    <table id="table_opportunity_meeting_list" class="table nowrap w-100 mb-5"
+           data-url="{% url 'OpportunityMeetingListAPI' %}"
+           data-url-delete="{% url 'OpportunityMeetingDeleteAPI' '0' %}"
+           data-url-redirect="{% url 'OpportunityMeetingList' %}"
+           data-method="GET">
+        <thead>
+        <tr>
+            <th>{% trans 'Subject' %}
+                <i class="fas fa-info-circle icon-info"
+                   data-bs-toggle="tooltip"
+                   data-bs-placement="bottom"
+                   title="{% trans 'Press row here to see detail meeting.' %}">
+                </i>
+            </th>
+            <th class="text-center">{% trans 'Sale Code' %}</th>
+            <th class="text-center">{% trans 'Date' %}</th>
+            <th class="text-center">{% trans 'Repeat' %}</th>
+            <th class="text-center">{% trans 'Action' %}</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <div class="modal fade mt-10" id="create-meeting" tabindex="-1" role="dialog"
+         aria-labelledby="createOpportunityMeetingModalForms" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'Create Meeting' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true"></span>
+                    </button>
+                </div>
+                <div class="modal-body" style="overflow: auto; height: 58vh">
+                    <form data-url="{% url 'OpportunityMeetingListAPI' %}"
+                          data-url-redirect="{% url 'OpportunityMeetingList' %}"
+                          data-method="POST"
+                          id="form-new-meeting"
+                          method="post">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="mb-3">
+                                    <label class="form-label required">{% trans 'Subject' %}</label>
+                                    <input id="meeting-subject-input" placeholder="{% trans 'Input subject' %}" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label class="form-label required">{% trans 'Sale Code' %}</label>
+                                    <select id="meeting-sale-code-select-box" class="form-select"></select>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label class="form-label required">{% trans 'Date' %}</label>
+                                    <input id="meeting-date-input" placeholder="{% trans 'Input date' %}" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="mb-3">
+                                    <label class="form-label required">{% trans 'Meeting address' %}</label>
+                                    <select id="meeting-address-select-box" class="form-select"></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="mb-3">
+                                    <label class="form-label">{% trans 'Room location' %}</label>
+                                    <input id="meeting-room-location-input" placeholder="{% trans 'Input location' %}" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="mb-3">
+                                    <label class="form-label required">{% trans 'Employee attended' %}</label>
+                                    <select id="meeting-employee-attended-select-box" multiple class="select2 select-multiple"></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="mb-3">
+                                    <label class="form-label required">{% trans 'Customer member' %}</label>
+                                    <select id="meeting-customer-member-select-box" multiple class="select2 select-multiple"></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="mb-3">
+                                    <label class="form-label required">
+                                        {% trans 'Input Result' %}
+                                    </label>
+                                    <textarea id="meeting-result-text-area" placeholder="{% trans 'Input result' %}" class="form-control" style="min-height: 100px"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="repeat-activity">
+                                        <label class="form-check-label" for="repeat-activity">{% trans 'Need to repeat activity' %}</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" form="form-new-meeting"
+                            id="btn-create-meeting">{% trans 'Save' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade mt-10" id="detail-meeting" tabindex="-1" role="dialog"
+         aria-labelledby="detailOpportunityMeetingModalForms" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'Detail Meeting' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true"></span>
+                    </button>
+                </div>
+                <div class="modal-body" style="overflow: auto; height: 58vh">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <label class="form-label required">{% trans 'Subject' %}</label>
+                                <input disabled style="color: #6f6f6f" id="detail-meeting-subject-input" placeholder="{% trans 'Input subject' %}" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label class="form-label required">{% trans 'Sale Code' %}</label>
+                                <select disabled style="color: #6f6f6f" id="detail-meeting-sale-code-select-box" class="form-select"></select>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label class="form-label required">{% trans 'Date' %}</label>
+                                <input disabled style="color: #6f6f6f" id="detail-meeting-date-input" placeholder="{% trans 'Input date' %}" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <label class="form-label required">{% trans 'Meeting address' %}</label>
+                                <select disabled style="color: #6f6f6f" id="detail-meeting-address-select-box" class="form-select"></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <label class="form-label">{% trans 'Room location' %}</label>
+                                <input disabled style="color: #6f6f6f" id="detail-meeting-room-location-input" placeholder="{% trans 'Input location' %}" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <label class="form-label required">{% trans 'Employee attended' %}</label>
+                                <select disabled style="color: #6f6f6f" id="detail-meeting-employee-attended-select-box" multiple class="select2 select-multiple"></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <label class="form-label required">{% trans 'Customer member' %}</label>
+                                <select disabled style="color: #6f6f6f" id="detail-meeting-customer-member-select-box" multiple class="select2 select-multiple"></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <label class="form-label required">
+                                    {% trans 'Input Result' %}
+                                </label>
+                                <textarea disabled style="color: #6f6f6f" id="detail-meeting-result-text-area" placeholder="{% trans 'Input result' %}" class="form-control" style="min-height: 100px"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input disabled class="form-check-input" type="checkbox" id="detail-repeat-activity">
+                                    <label for="repeat-activity">{% trans 'Need to repeat activity' %}</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
+    <script src="{% static 'assets/sales/opportunity/js/meeting_list.js' %}"></script>
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+{% endblock %}

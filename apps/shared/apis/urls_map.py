@@ -83,6 +83,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # organization/group
     GROUP_LEVEL_LIST = StringUrl('hr/levels')
+    GROUP_LEVEL_DETAIL = StringUrl('hr/level')
     GROUP_LIST = StringUrl('hr/groups')
     GROUP_DETAIL = StringUrl('hr/group')
     GROUP_PARENT = StringUrl('hr/group/parent')
@@ -170,6 +171,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # product
     PRODUCT_LIST = StringUrl('saledata/products')
     PRODUCT_DETAIL = StringUrl('saledata/product/')
+    PRODUCT_SALE_LIST = StringUrl('saledata/products-sale')
 
     # advance payment
     ADVANCE_PAYMENT_LIST = StringUrl('cashoutflow/advances-payments')
@@ -205,14 +207,20 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # expense
     EXPENSE_LIST = StringUrl('saledata/expenses')
     EXPENSE_DETAIL = StringUrl('saledata/expense/{expense_id}')
+    EXPENSE_SALE_LIST = StringUrl('saledata/expenses-sale')
 
     # opportunity
     OPPORTUNITY_LIST = StringUrl('opportunity/lists')
-    OPPORTUNITY_EXPENSE_LIST = StringUrl('opportunity/opportunity-expense-list/lists')
     OPPORTUNITY_CALL_LOG_LIST = StringUrl('opportunity/call-log/lists')
+    OPPORTUNITY_CALL_LOG_DELETE = StringUrl('opportunity/delete-call-log/{pk}')
+    OPPORTUNITY_EMAIL_LIST = StringUrl('opportunity/send-email/lists')
+    OPPORTUNITY_EMAIL_DELETE = StringUrl('opportunity/delete-email/{pk}')
+    OPPORTUNITY_MEETING_LIST = StringUrl('opportunity/meeting/lists')
+    OPPORTUNITY_MEETING_DELETE = StringUrl('opportunity/delete-meeting/{pk}')
 
     # quotation
     QUOTATION_LIST = StringUrl('quotation/lists')
+    QUOTATION_LIST_FOR_CASH_OUTFLOW = StringUrl('quotation/list-for-cashoutflow')
     QUOTATION_DETAIL = StringUrl('quotation')
     QUOTATION_EXPENSE_LIST = StringUrl('quotation/quotation-expense-list/lists')
     QUOTATION_CONFIG = StringUrl('quotation/config')
@@ -239,6 +247,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # sale order
     SALE_ORDER_LIST = StringUrl('saleorder/lists')
+    SALE_ORDER_LIST_FOR_CASH_OUTFLOW = StringUrl('saleorder/list-for-cashoutflow')
     SALE_ORDER_DETAIL = StringUrl('saleorder')
     SALE_ORDER_EXPENSE_LIST = StringUrl('saleorder/saleorder-expense-list/lists')
     SALE_ORDER_CONFIG = StringUrl('saleorder/config')
@@ -283,3 +292,11 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # restore Opportunity Stage
     RESTORE_DEFAULT_OPPORTUNITY_CONFIG_STAGE = StringUrl('company/default-opportunity-stage/{pk}')
+
+    # Task
+    OPPORTUNITY_TASK_CONFIG = StringUrl('task/config')
+    OPPORTUNITY_TASK_STT_LIST = StringUrl('task/status')
+    OPPORTUNITY_TASK_LIST = StringUrl('task/list')
+    OPPORTUNITY_TASK_DETAIL = StringUrl('task/detail')
+    OPPORTUNITY_TASK_LOG_WORK = StringUrl('task/log-work')
+    OPPORTUNITY_TASK_STT_UPDATE = StringUrl('task/update-status')

@@ -87,22 +87,26 @@
                         <div class="form-group mb-0 mt-2">
                             <div class="form-check d-flex justify-content-start align-items-center mr-2">
                                 <input type="checkbox" class="form-check-input" name="receipt_for_po"
-                                       id="receipt_for_po" disabled>
+                                       id="receipt_for_po">
                                 <label class="form-check-label"
                                        for="receipt_for_po">{% trans 'Receipt for PO' %}</label>
                             </div>
                         </div>
                     </div>
-                    <div class="col-xs-12 col-md-8">
-                        <button type="button" class="btn btn-outline-primary btn-animated" disabled>
+                    <div class="col-xs-12 col-md-4">
+                        <button type="button" class="btn btn-outline-primary btn-animated input-po-click" disabled>
                             {% trans 'Copy From PO' %}
                         </button>
+                    </div>
+                    <div class="col-xs-12 col-md-4">
+                        <span class="po_code title-code text-primary font-4"></span>
+                        <input type="hidden" id="po_code" name="po_code">
                     </div>
                 </div>
             </div>
             <div class="col-md-6 col-xs-12">
                 <div class="form-group">
-                    <label class="form-label required" for="posting_date">{% trans 'Posting Date' %}</label>
+                    <label class="form-label required" for="posting_date">{% trans 'Posting date' %}</label>
                     <input class="form-control" type="text" name="posting_date" id="posting_date"
                            placeholder="{% trans 'DD/MM/YYYY' %}" autocomplete="off"
                            required>
@@ -129,20 +133,25 @@
                             <span class="nav-link-text">{% trans 'Line Detail' %}</span>
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#tab_attachments">
+                            <span class="nav-link-text">{% trans 'Attachments' %}</span>
+                        </a>
+                    </li>
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane fade show active" id="tab_block_1">
-                        <table id="line_detail_table" class="table nowrap w-100 mb-5">
+                        <table id="line_detail_table" class="table nowrap mb-5">
                             <thead>
-                            <th class="w-5">#</th>
-                            <th class="w-20">{% trans 'Product' %}</th>
-                            <th class="w-10">{% trans "Warehouse" %}</th>
-                            <th class="w-10">{% trans "UoM" %}</th>
-                            <th class="w-10">{% trans 'Quantity' %}</th>
-                            <th class="w-15">{% trans "Unit price" %}</th>
-                            <th class="w-5">{% trans "Tax" %}</th>
-                            <th class="w-20">{% trans "Subtotal price" %}</th>
-                            <th class="w-5"></th>
+                            <th>#</th>
+                            <th>{% trans 'Product' %}</th>
+                            <th>{% trans "Warehouse" %}</th>
+                            <th>{% trans "UoM" %}</th>
+                            <th>{% trans 'Quantity' %}</th>
+                            <th>{% trans "Unit price" %}</th>
+                            <th>{% trans "Tax" %}</th>
+                            <th>{% trans "Subtotal price" %}</th>
+                            <th></th>
                             </thead>
                         </table>
                         <div class="row">
@@ -176,6 +185,19 @@
                             </div>
                         </div>
                     </div>
+                    <div class="tab-pane fade" id="tab_attachments">
+                        <div class="form-group">
+                            <button
+                                    type="button"
+                                    class="form-control btn btn-outline-primary btn-file-upload"
+                                    data-f-input-name="attachments"
+                                    data-f-input-required="false"
+                                    data-f-input-disabled="false"
+                                    data-f-name-ele-id="#fileNameTestDisplay"
+                            >{% trans 'Click here to upload image' %}</button>
+                            <p id="fileNameTestDisplay"></p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -184,6 +206,8 @@
     <input type="hidden" id="trans-factory"
            data-product="{% trans 'Product list is empty' %}"
            data-row-error="{% trans 'Row {} is missing info please verify again.' %}"
+           data-po-title="{% trans 'Input your PO code here' %}"
+           data-po-save="{% trans 'Save' %}"
     >
     <input type="hidden" id="url-factory"
         data-product="{% url 'ProductListAPI' %}"

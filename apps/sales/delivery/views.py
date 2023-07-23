@@ -92,14 +92,9 @@ class OrderPickingDetail(View):
         menu_active='menu_order_picking_list',
     )
     def get(self, request, *args, pk, **kwargs):
-        config = ServerAPI(user=request.user, url=ApiURL.DELIVERY_CONFIG).get()
-        res_config = {}
-        if config.state:
-            res_config = config.result
         return {
                    'pk': pk,
                    'state_choices': {key: value for key, value in PICKING_STATE},
-                   'config': res_config
                }, status.HTTP_200_OK
 
 
@@ -181,14 +176,9 @@ class OrderDeliveryDetail(View):
         menu_active='menu_order_delivery_list',
     )
     def get(self, request, *args, pk, **kwargs):
-        config = ServerAPI(user=request.user, url=ApiURL.DELIVERY_CONFIG).get()
-        res_config = {}
-        if config.state:
-            res_config = config.result
         return {
                    'pk': pk,
                    'state_choices': {key: value for key, value in DELIVERY_STATE},
-                   'config': res_config,
                }, status.HTTP_200_OK
 
 

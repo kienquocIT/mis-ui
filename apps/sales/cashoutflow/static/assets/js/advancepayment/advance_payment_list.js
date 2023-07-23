@@ -103,13 +103,27 @@ $(document).ready(function () {
                         className: 'wrap-text',
                         render: (data, type, row, meta) => {
                             let sale_code_id = '';
-                            if (row.sale_order_mapped) {sale_code_id = row.sale_order_mapped;}
-                            if (row.quotation_mapped) {sale_code_id = row.quotation_mapped;}
-                            if (row.opportunity_mapped) {sale_code_id = row.opportunity_mapped;}
+                            let is_close = false;
+                            if (row.sale_order_mapped) {
+                                sale_code_id = row.sale_order_mapped.id;
+                                is_close = row.sale_order_mapped.is_close;
+                            }
+                            if (row.quotation_mapped) {
+                                sale_code_id = row.quotation_mapped.id;
+                                is_close = row.quotation_mapped.is_close;
+                            }
+                            if (row.opportunity_mapped) {
+                                sale_code_id = row.opportunity_mapped.id;
+                                is_close = row.opportunity_mapped.is_close;
+                            }
+                            let disabled = ''
+                            if (is_close) {
+                                disabled = 'disabled';
+                            }
                             return `<div class="dropdown">
                                         <a type="button" data-bs-toggle="dropdown"><i class="bi bi-three-dots-vertical"></i></a>
                                         <div class="dropdown-menu">
-                                             <a class="dropdown-item" href="{0}">Return</a>
+                                             <a class="dropdown-item ` + disabled + `" href="{0}">Return</a>
                                              <a class="dropdown-item" href="{1}">To Payment</a>
                                         </div>
                                     </div>`.format_by_idx(

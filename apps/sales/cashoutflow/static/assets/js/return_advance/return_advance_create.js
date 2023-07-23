@@ -1,18 +1,16 @@
-"use strict";
-
 $(function () {
     $(document).ready(function () {
         const urlParams = new URLSearchParams(window.location.search);
         const advance_payment_id = urlParams.get('advance_payment_id');
         const choose_AP_ele = $('#chooseAdvancePayment');
+        $('#chooseBeneficiary').prop('disabled', true);
 
         function loadDetailOpp(data) {
             let dropdown = $('#dropdownOpp');
-            if (data === null){
+            if (data === null) {
                 dropdown.find('.opp-info').addClass('hidden');
                 dropdown.find('.non-opp').removeClass('hidden');
-            }
-            else{
+            } else {
                 dropdown.find('.opp-info').removeClass('hidden');
                 dropdown.find('.non-opp').addClass('hidden');
                 dropdown.find('[name="opp-name"]').text(data.title);
@@ -26,21 +24,21 @@ $(function () {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('advance_payment_detail')) {
+                        let ele_benefication = $('#chooseBeneficiary');
                         let sale_code_ele = $('[name="sale_code"]');
                         sale_code_ele.val(data.advance_payment_detail.code);
                         if (data.advance_payment_detail.sale_order_mapped.length > 0) {
                             loadDetailOpp(data.advance_payment_detail.sale_order_mapped[0].opportunity);
+                        } else if (data.advance_payment_detail.quotation_mapped.length > 0) {
+                            loadDetailOpp(data.advance_payment_detail.quotation_mapped[0].opportunity);
+                        } else if (data.advance_payment_detail.opportunity_mapped.length > 0) {
+                            loadDetailOpp(data.advance_payment_detail.opportunity_mapped[0]);
                         } else {
-                            if (data.advance_payment_detail.quotation_mapped.length > 0) {
-                                loadDetailOpp(data.advance_payment_detail.quotation_mapped[0].opportunity);
-                            }
-                            else{
-                                loadDetailOpp(null);
-                            }
+                            loadDetailOpp(null);
                         }
-                        loadExpenseTable(data.advance_payment_detail.expense_items)
-
-                        $('#chooseBeneficiary').append(`<option value="${data.advance_payment_detail.beneficiary.id}">${data.advance_payment_detail.beneficiary.name}</option>`);
+                        ele_benefication.empty();
+                        ele_benefication.append(`<option value="${data.advance_payment_detail.beneficiary.id}">${data.advance_payment_detail.beneficiary.name}</option>`);
+                        loadProductTable(data.advance_payment_detail.product_items)
                         loadDetailBeneficiary(data.advance_payment_detail.beneficiary.id);
                     }
                 }
@@ -50,12 +48,12 @@ $(function () {
 
         function loadPageWithParameter(advance_payment_id, choose_AP_ele) {
             if (advance_payment_id !== null) {
+                $('#chooseAdvancePayment').prop('disabled', true);
+                $('#chooseBeneficiary').prop('disabled', true);
                 choose_AP_ele.find(`option[value="${advance_payment_id}"]`).prop('selected', true);
                 loadDetailAdvancePayment(choose_AP_ele.attr('data-url-detail').replace(0, advance_payment_id));
             }
             choose_AP_ele.select2();
-            $('#chooseBeneficiary').prop('disabled', true);
-            $('#chooseAdvancePayment').prop('disabled', true);
         }
 
         loadPageWithParameter(advance_payment_id, choose_AP_ele);
@@ -78,7 +76,6 @@ $(function () {
                 }
             }, (errs) => {
             },)
-
         }
 
         function loadCreator() {
@@ -101,6 +98,7 @@ $(function () {
             }, (errs) => {
             },)
         }
+
         loadCreator()
 
         $('input[name="date_created"]').daterangepicker({
@@ -118,16 +116,16 @@ $(function () {
             loadDetailAdvancePayment(data_url)
         })
 
-        function loadExpenseTable(data) {
-            let table = $('#dtbExpense');
+        function loadProductTable(data) {
+            let table = $('#dtbProduct');
             table.find('tbody').html('');
             $('#total-value').attr('data-init-money', '');
             let cnt = table.find('tbody tr').length;
             data.map(function (item) {
                 let html = `<tr>
-                                <td class="number text-center wrap-text">${cnt+1}</td>
-                                <td class="wrap-text col-expense text-primary" data-id="${item.id}"><span>${item.expense.title}</span></td>
-                                <td class="wrap-text"><span>${item.expense.type.title}</span></td>
+                                <td class="number text-center wrap-text">${cnt + 1}</td>
+                                <td class="wrap-text col-product text-primary" data-id="${item.id}"><span>${item.product.title}</span></td>
+                                <td class="wrap-text"><span>${item.product.type.title}</span></td>
                                 <td class="wrap-text"><span class="mask-money" data-init-money="${item.remain_total}"></span></td>
                                 <td class="wrap-text"><input class="mask-money form-control return-price" type="text" data-return-type="number"></td>
                             </tr>`;
@@ -159,17 +157,20 @@ $(function () {
             frm.dataForm['creator'] = $('[name="creator"]').attr('data-id');
             frm.dataForm['status'] = 0;
             frm.dataForm['money_received'] = !!$('#money-received').is(':checked');
-            let tbExpense = $('#dtbExpense');
+            let tbProduct = $('#dtbProduct');
             let cost_list = []
-            tbExpense.find('tbody tr').each(function (){
+            tbProduct.find('tbody tr').each(function () {
                 cost_list.push({
-                    'advance_payment_cost': $(this).find('.col-expense').attr('data-id'),
+                    'advance_payment_cost': $(this).find('.col-product').attr('data-id'),
                     'remain_value': parseFloat($(this).find('span.mask-money').attr('data-init-money')),
                     'return_value': $(this).find('input.mask-money').valCurrency(),
                 })
             })
             frm.dataForm['cost'] = cost_list;
             frm.dataForm['return_total'] = $('#total-value').attr('data-init-money');
+
+            frm.dataForm['advance_payment'] = $('#chooseAdvancePayment').val();
+            frm.dataForm['beneficiary'] = $('#chooseBeneficiary').val();
 
             $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
                 .then(

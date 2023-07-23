@@ -33,9 +33,8 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-flush-success btn-animated mr-1 font-5" type="submit" form="delivery_form"
-            data-bs-toggle="tooltip" data-bs-placement="top" title="Save"
-            data-bs-original-title="Save" {% if data.config.is_picking %}disabled{% endif %}>
+    <button class="btn btn-flush-success btn-animated mr-1 font-5 fw" type="submit" form="delivery_form"
+            data-bs-toggle="tooltip" data-bs-placement="top" title="Save" data-bs-original-title="Save">
         <span class="icon">
             <span class="feather-icon">
                 <i data-feather="save"></i>
@@ -74,7 +73,7 @@
                            class="form-label">{% trans 'Estimated Delivery Date' %}</label>
                     <div class="input-affix-wrapper">
                         <input type="text" name="estimated_delivery_date" id="inputDeliveryDate"
-                               class="form-control date-picker"/>
+                               class="form-control date-picker" autocomplete="off">
                         <span class="input-suffix">
                             <i class="bi bi-calendar-week"></i>
                         </span>
@@ -103,7 +102,7 @@
                     <label for="inputActualDate" class="form-label">{% trans 'Actual Date' %}</label>
                     <div class="input-affix-wrapper">
                         <input type="text" name="actual_delivery_date" id="inputActualDate"
-                               class="form-control date-picker"/>
+                               class="form-control date-picker" autocomplete="off">
                         <span class="input-suffix">
                             <i class="bi bi-calendar-week"></i>
                         </span>
@@ -180,14 +179,7 @@
                         <th>{% trans 'Delivery before' %}</th>
                         <th>{% trans 'Remain' %}</th>
                         <th>{% trans 'Ready' %}</th>
-                        <th>
-                            {% if not data.config.is_picking and not data.config.is_partial_ship %}
-                                <button type="button" class="btn btn-soft-success" id="config-one-all">{% trans 'Done' %}</button>
-                            {% elif data.config.is_picking and not data.config.is_partial_ship %}
-                                <button type="button" class="btn btn-soft-success" disabled id="config-three-all">{% trans 'Done' %}</button>
-                            {% else %}
-                                {% trans 'Done' %}
-                            {% endif %}
+                        <th class="table-handle-btn">
                         </th>
                     </tr>
                     </thead>
@@ -210,10 +202,25 @@
             </div>
             <div class="tab-pane fade" id="tab_attachment">
                 <div class="form-group">
-                    <div id="upload-area" class="form-control">
-                        {% trans "Click here to upload image" %}
+                    <div class="col-4">
+                        <div class="form-group">
+{#                            <label for="attachments" class="form-label">{% trans 'Click button to upload image' %}</label>#}
+                            <button
+                                    type="button"
+                                    class="form-control btn btn-info btn-file-upload text-white"
+                                    data-f-input-name="attachments"
+                                    data-f-input-required="false"
+                                    data-f-input-disabled="false"
+                                    data-f-name-ele-id="#fileNameTestDisplay"
+                            >{% trans 'Click here to upload image' %}</button>
+                            <p id="fileNameTestDisplay"></p>
+                        </div>
                     </div>
-                    <input id="input-attachment" type="file" class="hidden" name="attachments">
+
+                    {#                    <div id="upload-area" class="form-control">#}
+{#                        {% trans "Click here to upload image" %}#}
+{#                    </div>#}
+{#                    <input id="input-attachment" type="file" class="hidden" name="attachments">#}
                 </div>
             </div>
         </div>
@@ -235,17 +242,7 @@
                     <tr>
                         <th>{% trans 'Warehouse Code' %}</th>
                         <th>{% trans 'Warehouse Name' %}</th>
-                        <th>
-                            {% if data.config.is_picking and data.config.is_partial_ship %}
-                                <span class="mr-2">{% trans 'Picking Area' %}</span>
-                                <i class="fa-solid fa-circle-info text-blue font-3" data-toggle="popover"
-                                   title="{% trans 'Notes' %}" data-bs-placement="bottom"
-                                   data-bs-content="{% trans 'Stock' %}&nbsp;&nbsp;({% trans 'Picking zone' %})"
-                                ></i>
-                            {% else %}
-                                <p>{% trans 'Stock' %}</p>
-                            {% endif %}
-                        </th>
+                        <th><p>{% trans 'Stock' %}</p></th>
                         <th>{% trans 'Get' %}</th>
                     </tr>
                     </thead>
@@ -270,7 +267,6 @@
 
 {% block dataHiddenGroup %}
     {{ data.state_choices|json_script:"dataStateChoices" }}
-    {{ data.config|json_script:'delivery_config' }}
     <input type="hidden" id="trans-factory"
            data-error-picked-quantity="{% trans 'Number is larger than Remain number' %}"
            data-error-warehouse="{% trans 'Warehouse is required!' %}"
@@ -287,6 +283,17 @@
            data-warehouse-prod="{% url 'WarehouseProductAPI' %}"
     >
     <script id="request-data" type="application/json"></script>
+    <div class="html-table-title">
+    <div class="case-01">
+        <button type="button" class="btn btn-soft-success" id="config-one-all">{% trans 'Done' %}</button>
+    </div>
+    <div class="case-02">
+        <button type="button" class="btn btn-soft-success" disabled id="config-three-all">{% trans 'Done' %}</button>
+    </div>
+    <div class="case-03">
+        <span>{% trans 'Done' %}</span>
+    </div>
+    </div>
 {% endblock %}
 
 {% block jsFooter %}

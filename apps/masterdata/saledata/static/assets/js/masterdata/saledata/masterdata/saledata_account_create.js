@@ -4,7 +4,6 @@ $(document).ready(function () {
     let ele_account_group = $('#section-account-group').html()
     let ele_industry = $('#section-industry').html()
     // load Data
-    "use strict";
 
     function loadAccountType() {
         if (!$.fn.DataTable.isDataTable('#datatable-account-type-list')) {

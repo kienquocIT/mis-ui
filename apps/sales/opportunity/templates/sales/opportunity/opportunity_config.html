@@ -3,7 +3,7 @@
 {% block cssHeader %}
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-outline-primary btn-animated btn-xs"
+    <button class="btn btn-outline-primary btn-animated btn-xs btn-save-config"
             form="frm-detail-opportunity-config"
             data-bs-original-title="Save Opportunity Config">
                 <span class="icon">
@@ -79,7 +79,7 @@
                                 <span>{% trans 'Add Factor' %}</span>
                             </span>
                         </button>
-                        <div class="table-responsive">
+                        <div class="table-responsive" style="overflow-x: hidden">
                             <table class="table nowrap" id="table-opportunity-customer-decision-factor"
                                    data-method="GET" data-url="{% url 'OpportunityCustomerDecisionFactorListAPI' %}"
                                    data-url-redirect="{% url 'OpportunityConfig' %}"

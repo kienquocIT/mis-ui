@@ -136,13 +136,11 @@ $(document).ready(function () {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         $.fn.notifyPopup({description: data.message}, 'success')
-                        $.fn.redirectUrl(frm.dataUrlRedirect, 3000);
+                        $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
                     }
                 },
                 (errs) => {
-                    if (errs.data.errors.hasOwnProperty('detail')) {
-                        $.fn.notifyPopup({description: String(errs.data.errors['detail'])}, 'failure')
-                    }
+                    console.log(errs)
                 }
             )
     });
@@ -150,7 +148,6 @@ $(document).ready(function () {
 
 
 /*Blog Init*/
-"use strict";
 $(function () {
     let config = {
         dom: '<"row"<"col-7 mb-3"<"blog-toolbar-left">><"col-5 mb-3"<"blog-toolbar-right"flip>>><"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',

@@ -125,21 +125,21 @@ class lineDetailUtil {
         const $tableElm = $('#line_detail_table');
         let _this = this
         $tableElm.DataTable({
+            scrollX: true,
             data: _this.getDatalist,
             searching: false,
             ordering: false,
             paginate: false,
             info: false,
-            responsive: {
-                details: true
-            },
             columns: [
                 {
                     targets: 0,
+                    width: '50px',
                     defaultContent: ''
                 },
                 {
                     targets: 1,
+                    width: '315px',
                     data: 'product',
                     render: (row, type, data, meta) => {
                         const idx = meta.row;
@@ -176,6 +176,7 @@ class lineDetailUtil {
                 },
                 {
                     targets: 2,
+                    width: '200px',
                     data: 'warehouse',
                     render: (row, type, data, meta) => {
                         const idx = meta.row;
@@ -197,6 +198,7 @@ class lineDetailUtil {
                 },
                 {
                     targets: 3,
+                    width: '150px',
                     data: 'uom',
                     render: (row, type, data, meta) => {
                         const idx = meta.row;
@@ -224,6 +226,7 @@ class lineDetailUtil {
                 },
                 {
                     targets: 4,
+                    width: '100px',
                     data: 'quantity',
                     render: (row, type, data, meta) => {
                         const idx = meta.row;
@@ -234,6 +237,7 @@ class lineDetailUtil {
                 },
                 {
                     targets: 5,
+                    width: '150px',
                     data: 'unit_price',
                     render: (row, type, data, meta) => {
                         const idx = meta.row;
@@ -243,6 +247,7 @@ class lineDetailUtil {
                 },
                 {
                     targets: 6,
+                    width: '200px',
                     data: 'tax',
                     render: (row, type, data, meta) => {
                         const idx = meta.row;
@@ -263,6 +268,7 @@ class lineDetailUtil {
                 },
                 {
                     targets: 7,
+                    width: '300px',
                     data: 'subtotal_price',
                     render: (row, type, data) => {
                         return `<span class="mask-money" data-init-money="${row ? row : 0}">`;
@@ -270,6 +276,7 @@ class lineDetailUtil {
                 },
                 {
                     targets: 8,
+                    width: '50px',
                     data: 'product',
                     render: (row, type, data) => {
                         return `<div class="actions-btn text-center">
@@ -363,14 +370,23 @@ function loadDetail(line) {
                     const data = $.fn.switcherResp(resp);
                     if (data) {
                         $('#title').val(data.title)
-                        $('#supplier').attr('data-onload', JSON.stringify(data.supplier));
-                        initSelectBox($('#supplier'))
-                        $('#posting_date').val(moment(data.posting_data).format('DD/MM/YYYY'));
+                        if(Object.keys(data.supplier).length){
+                            $('#supplier').attr('data-onload', JSON.stringify(data.supplier));
+                            initSelectBox($('#supplier'))
+                        }
+                        $('#date_created').val(moment(data.date_created, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY'))
+                        $('#posting_date').val(moment(data.posting_date, 'YYYY-MM-DD').format('DD/MM/YYYY'));
                         line.setDatalist = data.product_list
                         $('#line_detail_table').DataTable().clear().rows.add(data.product_list).draw();
                         $('.pretax').attr('data-init-money', data.pretax_amount)
                         $('.taxes').attr('data-init-money', data.taxes)
                         $('.total').attr('data-init-money', data.total_amount)
+                        if (data.attachments) {
+                            const fileDetail = data.attachments[0]?.['files']
+                            FileUtils.init($(`[name="attachments"]`).siblings('button'), fileDetail);
+                        }
+                        $('.po_code').text(data.po_code)
+                        if (data.po_code) $('#receipt_for_po').prop('checked', true)
                         $.fn.initMaskMoney2()
                     }
                 },
@@ -381,20 +397,13 @@ function loadDetail(line) {
     }
 }
 
+
+
 $(function () {
     // declare variable for all page
     const lineDetail = new lineDetailUtil();
     const $transFactory = $('#trans-factory')
     // end declare variable
-
-    // load data on detail page
-    loadDetail(lineDetail)
-
-    //run line detail table and all util function
-    lineDetail.init()
-
-    // init currency
-    $.fn.initMaskMoney2()
 
     //  run date pick of posting date
     let $validTime = $('#posting_date')
@@ -408,6 +417,52 @@ $(function () {
         }
     })
 
+    // click pick PO
+    $('[name="receipt_for_po"]').on('change', function(){
+        const iChecked = $(this).prop('checked')
+        $('.input-po-click').prop('disabled', !iChecked)
+        if (!iChecked){
+            $('#po_code').val('')
+            $('.po_code').text('')
+        }
+    })
+    $('.input-po-click').off().on('click', function (e){
+        e.preventDefault();
+        Swal.fire({
+            title: $transFactory.attr('data-po-title'),
+            input: 'text',
+            inputAttributes: {
+                autocapitalize: 'off',
+            },
+            inputValue: $('#po_code').val(),
+            showCancelButton: true,
+            confirmButtonText:$transFactory.attr('data-po-save'),
+            showLoaderOnConfirm: true,
+            preConfirm: (code) => {
+                $('#po_code').val(code)
+                $('.po_code').text(code)
+            },
+            allowOutsideClick: () => !Swal.isLoading()
+        })
+    })
+    // .then((result) => {
+    //     if (result.isConfirmed) {
+    //         Swal.fire({
+    //             title: `${result.value.login}'s avatar`,
+    //             imageUrl: result.value.avatar_url
+    //         })
+    //     }
+    // })
+
+    // load data on detail page
+    loadDetail(lineDetail)
+
+    //run line detail table and all util function
+    lineDetail.init()
+
+    // init currency
+    $.fn.initMaskMoney2()
+
     // form submit
     let $form = $('#good_receipt_form')
     jQuery.validator.setDefaults({
@@ -419,7 +474,6 @@ $(function () {
         errorClass: 'is-invalid cl-red',
     })
     $form.on('submit', function (e) {
-        $('.readonly [disabled]:not([hidden]):not(i)', $form).attr('disabled', false)
         e.preventDefault();
         let _form = new SetupFormSubmit($form);
         let csr = $("[name=csrfmiddlewaretoken]").val();
@@ -428,7 +482,8 @@ $(function () {
         if (!lineDetail) {
             $.fn.notifyPopup({description: $transFactory.attr('data-product')}, 'failure')
             return false
-        } else {
+        }
+        else {
             let temp = []
             for (let [idx, val] of lineDetail.entries()) {
                 if (!val?.quantity || !val?.unit_price || !val?.product?.id || !val?.warehouse?.id)
@@ -454,8 +509,25 @@ $(function () {
 
         delete _form.dataForm['date_created']
         delete _form.dataForm['status']
+        const getAttach = $('[name="attachments"]').val()
+        let attach = []
+        if (getAttach){
+            attach.push(getAttach)
+            _form.dataForm['attachments'] = attach
+        }
 
-        $.fn.callAjax(_form.dataUrl, _form.dataMethod, _form.dataForm, csr)
+        let dataSubmit = _form.dataForm
+
+        if ($form.hasClass('.detail-form')){
+            if (!getAttach){
+                $.fn.notifyPopup({description: $transFactory.attr('data-valid_attachment')}, 'success')
+                return false
+            }
+            dataSubmit = {'attachments': attach}
+        }
+
+
+        $.fn.callAjax(_form.dataUrl, _form.dataMethod, dataSubmit, csr)
             .then(
                 (resp) => {
                     const data = $.fn.switcherResp(resp);

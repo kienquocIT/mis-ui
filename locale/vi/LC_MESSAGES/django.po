@@ -867,10 +867,6 @@ msgid "Creator"
 msgstr "Người tạo"
 
 #
-msgid "Posting date"
-msgstr "Ngày tạo"
-
-#
 msgid "Current node"
 msgstr "Trạm hiện tại"
 
@@ -1028,7 +1024,7 @@ msgstr "Tên khách hàng"
 
 #
 msgid "Group"
-msgstr "Nhóm"
+msgstr "Phòng ban"
 
 #
 msgid "Industry"
@@ -1487,8 +1483,8 @@ msgid "Copy From PO"
 msgstr "Sao chép từ đơn mua hàng"
 
 #
-msgid "Posting Date"
-msgstr "Ngày tạo"
+msgid "Posting date"
+msgstr "Ngày hạch toán"
 
 #
 msgid "Line Detail"
@@ -3264,7 +3260,7 @@ msgstr "SL lấy trước đó"
 
 #
 msgid "Remain"
-msgstr "còn lại"
+msgstr "Chưa giao"
 
 #
 msgid "Product in Warehouse out of stock"
@@ -3568,7 +3564,7 @@ msgstr "Không thể chọn giai đoạn vì cơ hội kinh doanh đã đóng"
 
 #
 msgid "Stage has been updated, Please Save!"
-msgstr "Gia đoạn đã được cập nhật, Vui lòng lưu!"
+msgstr "Giai đoạn đã được cập nhật, vui lòng lưu!"
 #
 msgid "Upload"
 msgstr "Tải lên"
@@ -3596,3 +3592,11 @@ msgstr "Chọn một Space Menus"
 #
 msgid "Each Space has different menus."
 msgstr "Mỗi Space có các Menus khác nhau."
+
+#
+msgid "Data is refreshed."
+msgstr "Dữ liệu đã được làm mới"
+
+#
+msgid "Delivery before"
+msgstr "Đã giao"

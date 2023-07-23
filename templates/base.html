@@ -1,21 +1,23 @@
-{% load static i18n compress %}
+{% load static i18n compress string_utils %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Meta Tags -->
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {% if base.tenant_current_data %}
-        <title>{{ base.tenant_current_data.code|upper }} - {{ base.tenant_current_data.title }}</title>
-    {% else %}
-        <title>MIS - {% block title %}Management Information System{% endblock %}</title>
-    {% endif %}
-    <meta name="description" content="MIS - Management Information System - quantrimis.com.vn"/>
+    <title>{% block title %}{{ base.tenant_current_data.code|upper }}{% endblock %}
+        &#8901; {{ base.tenant_current_data|parsed_title_page|safe }}</title>
+    <meta name="description" content="Management Information System"/>
 
-    <!-- Favicon -->
     <link rel="shortcut icon" href="{% static 'assets/images/logo/logo-28x16.png' %}">
     <link rel="icon" href="{% static 'assets/images/logo/logo-28x16.png' %}" type="image/x-icon">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+            rel="stylesheet"
+            href="//fonts.googleapis.com/css?family=Google+Sans:400,500|Roboto:400,400italic,500,500italic,700,700italic|Roboto+Mono:400,500,700&amp;display=swap"
+    >
 
     {% compress css %}
         <!-- Data Table CSS -->
@@ -31,30 +33,40 @@
                 href="{% static 'vendors/bootstrap@4.0.0/dist/css/bootstrap.min.css' %}"
                 rel="stylesheet" type="text/css"
         />
-
-        <!-- CSS -->
-        <link href="{% static 'assets/css/style.css' %}" rel="stylesheet" type="text/css">
-        <link href="{% static 'assets/css/loading-spinner.css' %}" rel="stylesheet" type="text/css">
-        <link href="{% static 'assets/css/my-style.css' %}" rel="stylesheet" type="text/css">
-        <link href="{% static 'assets/css/notify.css' %}" rel="stylesheet" type="text/css">
         <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
-        <link href="{% static 'assets/css/plugins/drawer.css' %}" rel="stylesheet" type="text/css">
         <link href="{% static 'vendors/sweetalert2/dist/sweetalert2.min.css' %}" rel="stylesheet" type="text/css">
 
         <!-- Tour -->
         <link href="{% static 'vendors/hopscotch/dist/css/hopscotch.min.css' %}" rel="stylesheet" type="text/css">
+    {% endcompress %}
 
-        <!-- Customize Style -->
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link
-                href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap"
-                rel="stylesheet"
-        >
+    {% compress css %}
+        <link href="{% static 'assets/css/style.css' %}" rel="stylesheet" type="text/css">
+        <link href="{% static 'assets/css/loading-spinner.css' %}" rel="stylesheet" type="text/css">
+        <link href="{% static 'assets/css/my-style.css' %}" rel="stylesheet" type="text/css">
+        <link href="{% static 'assets/css/notify.css' %}" rel="stylesheet" type="text/css">
+        <link href="{% static 'assets/css/plugins/drawer.css' %}" rel="stylesheet" type="text/css">
+
         <style>
+            html, body {
+                color: rgb(32, 33, 36);
+                font: 400 16px/24px "Roboto", "Google Sans", "Roboto Mono", sans-serif;
+                -moz-osx-font-smoothing: grayscale;
+                -webkit-font-smoothing: antialiased;
+                height: 100%;
+                margin: 0;
+                -webkit-text-size-adjust: 100%;
+                -moz-text-size-adjust: 100%;
+                -ms-text-size-adjust: 100%;
+                text-size-adjust: 100%
+            }
+
             :root {
-                --bs-body-font-family: 'Quicksand', sans-serif;
-                --bs-body-font-weight: 500;
+                --bs-body-color: rgb(32, 33, 36);
+                --bs-body-font-family: "Roboto", "Google Sans", "Roboto Mono", sans-serif;
+                --bs-body-font-size: 16px;
+                --bs-body-font-weight: 400;
+                --bs-body-line-height: 24px;
             }
 
             {#  Override css of select2 for select2 working in Bootstrap Modal  #}
@@ -101,11 +113,30 @@
                 display: flex !important;
             }
         </style>
-        <!-- // Customize Style -->
+
         {% block cssHeader %}
         {% endblock %}
     {% endcompress %}
+
+    {% if is_ga_enabled %}
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-4GDQQTC98X"></script>
+    {% endif %}
     {% compress js %}
+        {% if is_ga_enabled %}
+            <script type="text/javascript">
+                window.dataLayer = window.dataLayer || [];
+
+                function gtag() {
+                    dataLayer.push(arguments);
+                }
+
+                gtag('js', new Date());
+
+                gtag('config', 'G-4GDQQTC98X', {
+                    'user_id': `{{ base.username_auth }} {{ base.user_id }}`,
+                });
+            </script>
+        {% endif %}
         {% block jsHeader %}{% endblock %}
     {% endcompress %}
 </head>
@@ -314,6 +345,7 @@
 </div>
 <!-- /Wrapper -->
 
+
 {% compress js %}
     <!-- jQuery -->
     <script src="{% static 'vendors/jquery/dist/jquery.min.js' %}"></script>
@@ -337,7 +369,7 @@
     <!-- // Simplebar JS -->
 
     <!-- Data Table JS -->
-    <script src="{% static 'vendors/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'vendors/datatables.net/js/jquery.dataTables.min.v1.js' %}"></script>
     <script src="{% static 'vendors/datatables.net-bs5/js/dataTables.bootstrap5.min.js' %}"></script>
     <script src="{% static 'vendors/datatables.net-select/js/dataTables.select.min.js' %}"></script>
     <script src="{% static 'vendors/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
@@ -353,20 +385,24 @@
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
     <!-- // Select2 JS -->
 
+    <!-- Sweet Alert 2 -->
+    <script src="{% static 'vendors/sweetalert2/dist/sweetalert2.min.js' %}"></script>
+
+    <!-- Tour -->
+    <script src="{% static 'vendors/hopscotch/dist/js/hopscotch.min.js' %}"></script>
+
+
+
     <!-- Init JS -->
+    <script src="{% static 'assets/js/plugins/drawer.js' %}"></script>
     <script src="{% static 'assets/js/notify.js' %}"></script>
     <script src="{% static 'assets/js/bootstrap-notify.min.js' %}"></script>
     <script src="{% static 'assets/js/init.js' %}"></script>
     <script src="{% static 'assets/js/chips-init.js' %}"></script>
     <script src="{% static 'assets/js/init-loader.js' %}"></script>
-    <script src="{% static 'assets/js/plugins/drawer.js' %}"></script>
-    <script src="{% static 'vendors/sweetalert2/dist/sweetalert2.min.js' %}"></script>
     <!-- // Init JS -->
 
-    <!-- Tour -->
-    <script src="{% static 'vendors/hopscotch/dist/js/hopscotch.min.js' %}"></script>
-
-    <script>
+    <script type="application/javascript">
         $(window).on("load", function () {
             if (!$('#menu-tenant').attr('data-space-selected')) {
                 hopscotch.startTour({

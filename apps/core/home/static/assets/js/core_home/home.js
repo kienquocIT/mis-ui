@@ -649,13 +649,13 @@ function initEventElement() {
 
     $('.nav-link[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
         let targetTab = $(e.target).attr('href');
-        if (targetTab === '#tab_block_my_task') {
+        if (targetTab === '#tab-task') {
             loadTabTodo();
-        } else if (targetTab === '#tab_block_my_owner') {
+        } else if (targetTab === '#tab-owner') {
             loadTabFollowing();
-        } else if (targetTab === '#tab_block_my_pined') {
+        } else if (targetTab === '#tab-pined') {
             loadTabPined();
-        } else if (targetTab === '#tab_block_my_draft') {
+        } else if (targetTab === '#tab-draft') {
             loadTabDraft();
         }
     });

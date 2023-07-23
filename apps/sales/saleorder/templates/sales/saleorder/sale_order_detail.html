@@ -41,7 +41,7 @@
             </li>
             <li class="nav-item quotation-tab-item" id="tab-indicator">
                 <a class="nav-link" data-bs-toggle="tab" href="#tab_block_2">
-                    <span class="nav-link-text"><i class="fa-solid fa-chart-line"></i></span>
+                    <span class="nav-link-text"><i class="fa-regular fa-chart-bar"></i></span>
                 </a>
             </li>
         </ul>
@@ -116,7 +116,7 @@
                                                 id="select-box-quotation-create-opportunity"
                                                 data-url="{% url "OpportunityListAPI" %}"
                                                 data-method="GET"
-                                                data-link-detail="{% url "OpportunityList" %}"
+                                                data-link-detail="{% url "OpportunityDetail" 1 %}"
                                                 name="opportunity"
                                                 disabled
                                             ></select>
@@ -556,6 +556,10 @@
                                                     value="0"
                                                     hidden
                                                 >
+                                                <input
+                                                    type="hidden"
+                                                    id="quotation-final-revenue-before-tax"
+                                                >
                                             </div>
                                         </div>
                                         <div class="row mb-2">
@@ -953,14 +957,14 @@
                         <input
                                 type="hidden"
                                 id="data-init-quotation-create-tables-product"
-                                data-url="{% url "ProductListAPI" %}"
+                                data-url="{% url "ProductForSaleListAPI" %}"
                                 data-link-detail="{% url "ProductDetail" 1 %}"
                                 data-method="GET"
                         >
                         <input
                                 type="hidden"
                                 id="data-init-quotation-create-tables-expense"
-                                data-url="{% url "ExpenseListAPI" %}"
+                                data-url="{% url "ExpenseForSaleListAPI" %}"
                                 data-link-detail="{% url "ExpenseDetail" 1 %}"
                                 data-method="GET"
                         >
@@ -1031,12 +1035,13 @@
             </div>
             <div class="tab-pane fade" id="tab_block_2">
                 <div class="row">
-                    <div class="row mb-3">
+                    <div class="row mb-1">
                         <div class="col-2">
                             <button
                                     type="button"
                                     class="btn btn-soft-success disabled-but-edit"
                                     id="btn-refresh-quotation-indicator"
+                                    disabled
                             >
                             <span><span class="icon"><span class="feather-icon"><i class="fa-solid fa-arrows-rotate"></i></span></span><span>{% trans 'Refresh data' %}</span></span>
                             </button>
@@ -1064,7 +1069,7 @@
                 <input
                         type="hidden"
                         id="quotation-indicator-data"
-                        data-url="{% url 'SaleOrderIndicatorListAPI' %}"
+                        data-url="{% url 'QuotationIndicatorListAPI' %}"
                         data-method="get"
                 >
             </div>
@@ -1078,6 +1083,7 @@
             data-btn-close="{% trans 'Close' %}"
             data-more-information="{% trans 'More information' %}"
             data-apply="{% trans 'Apply' %}"
+            data-refreshed="{% trans 'Data is refreshed.' %}"
         >
     </form>
 {% endblock %}

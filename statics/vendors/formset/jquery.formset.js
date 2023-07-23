@@ -2,7 +2,7 @@
  * Django formset helper
  */
 (function ($) {
-    "use strict";
+
 
     var pluginName = 'formset';
 

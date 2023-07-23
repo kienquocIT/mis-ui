@@ -1,5 +1,4 @@
 /*Blog Init*/
-"use strict";
 $(function () {
     $(document).ready(function () {
         let company_current_id = $('#company-current-id').attr('data-id')

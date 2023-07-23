@@ -14,8 +14,13 @@ import os
 from colorama import Fore
 from pathlib import Path
 
+from dotenv import load_dotenv
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# load environment from .env file
+load_dotenv(os.path.join(BASE_DIR, '.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -27,8 +32,10 @@ SECRET_KEY = 'django-insecure-p8r4sbt&9q*ig^3_$ao95)n3)vq5hu40k8d4jqep8zzpt49sx1
 DEBUG = True
 DEBUG_JS = True
 DEBUG_NOTIFY_KEY = True
-
+GA_COLLECTION_ENABLED = True if os.environ.get('GA_COLLECTION_ENABLED', '0') in [1, '1'] else False
 ALLOWED_HOSTS = []
+
+RELEASE_VERSION = os.environ.get('RELEASE_VERSION', '0.0.1')
 
 # Application definition
 
@@ -61,6 +68,7 @@ INSTALLED_APPS = \
         'apps.sales.saleorder',
         'apps.sales.cashoutflow',
         'apps.sales.delivery',
+        'apps.sales.task',
     ]
 
 MIDDLEWARE = [
@@ -321,6 +329,17 @@ if os.environ.get('ENABLE_PROD', '0') in [1, '1']:
     )
     # Replace API DOMAIN
     API_DOMAIN = os.environ.get('API_DOMAIN', None)
+
+# compressor config
+# COMPRESS_OFFLINE = False
+# COMPRESS_ROOT_PARENT = os.path.join(STATIC_ROOT, 'compressor')
+# COMPRESS_ROOT = os.path.join(COMPRESS_ROOT_PARENT, RELEASE_VERSION)
+if os.environ.get('COMPRESS_ENABLED', '0') in [1, '1']:
+    COMPRESS_ENABLED = True
+else:
+    COMPRESS_ENABLED = False
+# -- compressor config
+
 # -- PROD configurations
 
 OS_DEBUG = os.environ.get('DEBUG', DEBUG)
@@ -330,4 +349,8 @@ if OS_DEBUG is True or OS_DEBUG in [1, '1']:
     print(Fore.BLUE, f'#  1. DATABASES: {str(DATABASES)} \033[0m')
     print(Fore.YELLOW, f'#  2. API_DOMAIN: {str(API_DOMAIN)} \033[0m')
     print(Fore.LIGHTBLUE_EX, f'#  3. TRACING [JAEGER]: {JAEGER_TRACING_ENABLE}')
+    print(Fore.GREEN, f'#  4. COMPRESSOR ENABLE: {COMPRESS_ENABLED}')
+    print(Fore.LIGHTGREEN_EX, f'#  5. GA ENABLE: {GA_COLLECTION_ENABLED}')
     print(Fore.CYAN, '----------------------------------------------------------------------------------', '\033[0m')
+else:
+    DEBUG = False

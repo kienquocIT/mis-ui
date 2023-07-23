@@ -1,5 +1,4 @@
-/*Blog Init*/
-"use strict"; 
+
 $(function() {
 	/*Select2*/
 	$("#input_tags,#input_tags_1").select2({

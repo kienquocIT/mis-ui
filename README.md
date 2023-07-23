@@ -443,3 +443,84 @@ MEDIA_DOMAIN=http://127.0.0.1:8881/api
 MEDIA_SECRET_TOKEN_UI={KEY_MAP_WITH_SETTING_MEDIA_CLOUD_SV}
 ```
 ---
+
+#### Media cloud init input upload
+
+```html
+<div class="col-4">
+    <div class="form-group">
+        <label for="inputTest2" class="form-label">Upload File 2</label>
+        <button
+            type="button"
+            class="form-control btn btn-danger btn-file-upload"
+            data-f-input-name="inputTest2"
+            data-f-input-required="true"
+            data-f-input-disabled="false"
+            data-f-name-ele-id="#fileNameTestDisplay"
+        >Click me!</button>
+        <p id="fileNameTestDisplay"></p>
+    </div>
+</div>
+# class: btn-file-upload
+# data-f-input-name: Giá trị attribute name của element input text được khởi tạo
+# data-f-input-required: (true/false) attribute "required" của thẻ input text được khởi tạo
+# data-f-input-disabled: (true/false) attribute "disabled" của thẻ input text được khởi tạo
+# data-f-name-ele-id: ID name thẻ hiển thị tên file và dung lượng (không có sẽ tạo <small>)
+```
+
+##### Default: auto init .btn-file-upload with attribute config
+
+#### Manual || Detail Load: 
+```javascript
+let btnInputFile = $('#{btnID}');
+// or
+let btnInputFile = $('.btn-file-upload[data-f-input-name={name_input_init}]')[0];
+
+let dataDetail = {}; 
+// detail of file, sample: {'id': ..., 'media_file_id': '', 'file_name': '', 'file_size': 1024, ...}
+
+FileUtils.init(btnInputFile, dataDetail || {})
+```
+#### Sample in apps\core\home\templates\core\utilities\index.html
+
+---
+
+#### Generate avatar circle
+
+```text
+// data là context chứa {'first_name': '', 'last_name': '', 'avatar': ''}
+let data = {'first_name': '', 'last_name': '', 'avatar': ''}
+```
+1. Render
+```html
+{% load person_utils %}
+<!-- full frame -->
+{{ data|render_avatar:"some class name is size, color of avatar..."|safe }}
+<!-- result: <div class="avatar avatar-rounded {exist_class_name if exist_class_name else 'avatar-xs avatar-primary'}">...</div> -->
+```
+```html
+{% load person_utils %}
+<!-- tag children in avatar -->
+{{ data|render_avatar_tag|safe }}
+```
+2. JS
+```js
+$.fn.renderAvatar(data, clsName="some class name is size, color of avatar...")
+// result: <div class="avatar avatar-rounded {clsName if clsName else 'avatar-xs avatar-primary'}">...</div>
+```
+
+---
+
+#### Reload với thêm '#ID' vào đường dẫn để kích hoạt tab khi load page | kích hoạt được cả tab nằm trong drawer
+
+```javascript
+// Sử dụng 1 trong 2 cách
+
+// cách 1 biết được id_tab
+$.fn.reloadWithHashID('id_tab_need_active');
+
+// cách 2 đang trỏ đến 1 element nằm trong tab, ví thẻ dụ <span id="ss1"></span> nằm trong tag
+$('#ss1').reloadWithHashID();
+```
+
+---

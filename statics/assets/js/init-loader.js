@@ -115,10 +115,10 @@ class UrlGatewayReverse {
 class LogController {
     constructor() {
         this.groupLogEle = $('#drawer_log_data');
-        this.tabLog = $('#tab_block_diagram');
+        this.tabLog = $('#tab-diagram');
         this.logUrl = this.tabLog.attr('data-url');
         this.blockDataRuntime = $('#idxDataRuntime');
-        this.tabActivityLog = $('#tab_block_activities');
+        this.tabActivityLog = $('#tab-activities');
         this.activityUrl = this.tabActivityLog.attr('data-url');
         this.blockDataActivities = $('#idxDataActivities');
     }
@@ -193,37 +193,58 @@ class LogController {
 
         // log runtime
         if (this.logUrl && (!this.groupLogEle.attr('data-log-runtime-loaded') || forceLoad === true)) {
-            if (!runtimeID) runtimeID = $.fn.getWFRuntimeID();
-            if (runtimeID) {
-                this.blockDataRuntime.showLoadingWaitResponse();
-                this.blockDataRuntime.empty();
-                $.fn.callAjax(SetupFormSubmit.getUrlDetailWithID(this.logUrl, runtimeID), 'GET',).then((resp) => {
-                    this.groupLogEle.attr('data-log-runtime-loaded', true);
-                    let data = $.fn.switcherResp(resp);
-                    if (data && $.fn.hasOwnProperties(data, ['diagram_data'])) {
-                        let diagram_data = data['diagram_data'];
-                        let stages = diagram_data['stages'];
-                        this.blockDataRuntime.html(this.parseLogOfDoc(stages)).removeClass('hidden').hideLoadingWaitResponse();
+            this.blockDataRuntime.showLoadingWaitResponse();
+            this.blockDataRuntime.empty();
+            let dataRuntimeCounter = 0;
+            let intervalShowWfHistory = setInterval(
+                () => {
+                    if (dataRuntimeCounter > 5) {
+                        clearInterval(intervalShowWfHistory);
+                        this.blockDataRuntime.html(
+                            `<span class="text-danger">${$.fn.storageSystemData.attr('data-msg-resource-load-failed')}</span>`
+                        ).removeClass('hidden').hideLoadingWaitResponse();
+                    } else {
+                        dataRuntimeCounter += 1;
+                        if (!runtimeID) runtimeID = $.fn.getWFRuntimeID();
+                        if (runtimeID) {
+                            clearInterval(intervalShowWfHistory);
+                            $.fn.callAjax(SetupFormSubmit.getUrlDetailWithID(this.logUrl, runtimeID), 'GET',).then((resp) => {
+                                this.groupLogEle.attr('data-log-runtime-loaded', true);
+                                let data = $.fn.switcherResp(resp);
+                                if (data && $.fn.hasOwnProperties(data, ['diagram_data'])) {
+                                    let diagram_data = data['diagram_data'];
+                                    let stages = diagram_data['stages'];
+                                    this.blockDataRuntime.html(this.parseLogOfDoc(stages)).removeClass('hidden').hideLoadingWaitResponse();
+                                }
+                            });
+                        }
                     }
-                })
-            }
+                }
+                , 1000
+            )
         }
 
         // log activities
-        if (!pkID) pkID = this.tabActivityLog.attr('data-id-value');
-        if (this.activityUrl && pkID && (!this.groupLogEle.attr('data-log-activity-loaded') || forceLoad === true)) {
-            this.blockDataActivities.showLoadingWaitResponse();
-            this.blockDataActivities.empty();
-            $.fn.callAjax(this.activityUrl, 'GET', {'doc_id': pkID}, true,).then((resp) => {
-                this.groupLogEle.attr('data-log-activity-loaded', true);
-                let data = $.fn.switcherResp(resp);
-                if (data && data['status'] === 200 && data.hasOwnProperty('log_data')) {
-                    this.blockDataActivities.append(this.parseLogActivities(data['log_data'])).hideLoadingWaitResponse();
-                }
-            }, (errs) => {
+        this.blockDataActivities.showLoadingWaitResponse();
+        this.blockDataActivities.empty();
+        let intervalDataActivity = setInterval(
+            () => {
+                if (!pkID) pkID = this.tabActivityLog.attr('data-id-value');
+                if (this.activityUrl && pkID && (!this.groupLogEle.attr('data-log-activity-loaded') || forceLoad === true)) {
+                    clearInterval(intervalDataActivity);
+                    $.fn.callAjax(this.activityUrl, 'GET', {'doc_id': pkID}, true,).then((resp) => {
+                        this.groupLogEle.attr('data-log-activity-loaded', true);
+                        let data = $.fn.switcherResp(resp);
+                        if (data && data['status'] === 200 && data.hasOwnProperty('log_data')) {
+                            this.blockDataActivities.append(this.parseLogActivities(data['log_data'])).hideLoadingWaitResponse();
+                        }
+                    }, (errs) => {
 
-            })
-        }
+                    })
+                }
+            },
+            1000
+        )
     }
 }
 
@@ -353,10 +374,28 @@ class FileUtils {
     static keyInputFileID = 'data-f-input-file-id';
     static keyInputTextName = 'data-f-input-name';
     static keyInputTextRequired = 'data-f-input-required';
+    static keyInputTextDisabled = 'data-f-input-disabled';
     static keyEleFileNameID = 'data-f-name-ele-id';
     static clsNameInputFile = 'input-file-upload';
 
-    static createInputText(mainEle, name, required) {
+    static parseFileSize(file_size, fixRound = 2) {
+        // file_size: is bytes size
+        const KiB = 1024;
+        const MiB = KiB * 1024;
+        const GiB = MiB * 1024;
+
+        if (file_size >= GiB) {
+            return (file_size / GiB).toFixed(fixRound) + " GB";
+        } else if (file_size >= MiB) {
+            return (file_size / MiB).toFixed(fixRound) + " MB";
+        } else if (file_size >= KiB) {
+            return (file_size / KiB).toFixed(fixRound) + " KB";
+        } else {
+            return file_size + " B";
+        }
+    }
+
+    static createInputText(mainEle, name, required, disabled) {
         let idRandom = $.fn.generateRandomString(32);
         $(mainEle).attr(FileUtils.keyInputTextID, '#' + idRandom);
         let ele = $(
@@ -365,12 +404,18 @@ class FileUtils {
                 class="hidden" 
                 name="${name}" 
                 ${required === true ? "required" : ""}
+                ${disabled === true ? "disabled" : ""}
                 id="${idRandom}"
             />`
         );
         ele.val("");
         ele.insertAfter(mainEle);
         return ele;
+    }
+
+    static updateInputText(inputText, required, disabled) {
+        $(inputText).prop('required', required);
+        $(inputText).prop('disabled', disabled);
     }
 
     static createInputFile(mainEle) {
@@ -384,27 +429,70 @@ class FileUtils {
         return ele;
     }
 
-    static init(eleSelect$ = null) {
+    static updateInputFile(inputFile, required, disabled) {
+        $(inputFile).prop('required', required);
+        $(inputFile).prop('disabled', disabled);
+    }
+
+    static enableButtonFakeUpload(btnFakeEle, disabled) {
+        $(btnFakeEle).prop('disabled', disabled);
+    }
+
+    static init(eleSelect$ = null, dataDetail = {}) {
         if (eleSelect$) {
             let idInputText = $(eleSelect$).attr(FileUtils.keyInputTextID);
             let idInputFile = $(eleSelect$).attr(FileUtils.keyInputFileID);
             let idInputTextName = $(eleSelect$).attr(FileUtils.keyInputTextName);
             let idInputTextRequired = $(eleSelect$).attr(FileUtils.keyInputTextRequired);
+            let idInputTextDisabled = $(eleSelect$).attr(FileUtils.keyInputTextDisabled);
 
-            if (idInputFile && idInputFile) {
+            if (idInputText && idInputFile) {
                 let eleInputText = $(idInputText);
                 let eleInputFile = $(idInputFile);
                 if (!(eleInputText.length > 0 && eleInputFile.length > 0)) {
                     FileUtils.createInputText(
                         $(eleSelect$),
                         idInputTextName,
-                        $.fn.parseBoolean(idInputTextRequired, false) === true,
+                        $.fn.parseBoolean(idInputTextRequired, true) === true,
+                        $.fn.parseBoolean(idInputTextDisabled, true) === true,
                     );
                     FileUtils.createInputFile($(eleSelect$));
+                } else {
+                    FileUtils.updateInputText(
+                        $(eleInputText[0]),
+                        $.fn.parseBoolean(idInputTextRequired, true) === true,
+                        $.fn.parseBoolean(idInputTextDisabled, true) === true,
+                    )
+                    FileUtils.updateInputFile(
+                        $(eleInputFile[0]),
+                        $.fn.parseBoolean(idInputTextRequired, true) === true,
+                        $.fn.parseBoolean(idInputTextDisabled, true) === true,
+                    )
                 }
             } else {
-                FileUtils.createInputText($(eleSelect$), idInputTextName, idInputTextRequired);
+                FileUtils.createInputText(
+                    $(eleSelect$),
+                    idInputTextName,
+                    $.fn.parseBoolean(idInputTextRequired, false) === true,
+                    $.fn.parseBoolean(idInputTextDisabled, false) === true,
+                );
                 FileUtils.createInputFile($(eleSelect$));
+            }
+
+            FileUtils.enableButtonFakeUpload(
+                $(eleSelect$),
+                $.fn.parseBoolean(idInputTextDisabled, true) === true,
+            )
+
+            if (dataDetail && $.fn.hasOwnProperties(dataDetail, ['media_file_id', 'file_name'])) {
+                let media_file_id = dataDetail?.['media_file_id'];
+                let file_name = dataDetail?.['file_name'];
+                let file_size = dataDetail?.['file_size'];
+                if (media_file_id && file_name) {
+                    let f_utils = new FileUtils(eleSelect$);
+                    f_utils.setIdFile(media_file_id);
+                    f_utils.setFileNameUploaded(file_name, file_size || null);
+                }
             }
         } else {
             $('.btn-file-upload').each(function () {
@@ -445,18 +533,19 @@ class FileUtils {
         if ($.fn.isDebug() === true) throw Error('Input must be required before upload file!');
     }
 
-    setFileNameUploaded(fName) {
+    setFileNameUploaded(fName, fSize = null) {
+        let textDisplay = `${fName} - ${FileUtils.parseFileSize(fSize, 2)}`
         if (this.idEleFileName) {
             let ele = $(this.idEleFileName);
             if (ele.length > 0) {
-                ele.text(fName);
+                ele.text(textDisplay);
             }
         } else {
             let getEleFName = this.btnUploadFileEle$.next('.display-file-name-uploaded');
             if (getEleFName.length > 0) {
-                getEleFName.text(fName);
+                getEleFName.text(textDisplay);
             } else {
-                $(`<small class="form-text text-muted display-file-name-uploaded">${fName}</small>`).insertAfter(
+                $(`<small class="form-text text-muted display-file-name-uploaded">${textDisplay}</small>`).insertAfter(
                     this.btnUploadFileEle$
                 );
             }
@@ -482,7 +571,7 @@ class FileUtils {
             (resp) => {
                 let detailFile = resp?.data?.detail;
                 this.setIdFile(detailFile?.['id']);
-                this.setFileNameUploaded(detailFile?.['name']);
+                this.setFileNameUploaded(detailFile?.['file_name'], detailFile?.['file_size']);
             },
             (errs) => {
                 console.log('errs: ', errs);
@@ -527,7 +616,7 @@ class FileUtils {
                                     (resp) => {
                                         let detailNewFile = resp?.data?.detail;
                                         clsThis.setIdFile(detailNewFile?.['id']);
-                                        clsThis.setFileNameUploaded(detailNewFile?.['name']);
+                                        clsThis.setFileNameUploaded(detailNewFile?.['file_name'], detailNewFile?.['file_size']);
                                         return true;
                                     },
                                     (errs) => {
@@ -550,9 +639,10 @@ class FileUtils {
                             // Swal.fire('Saved!', '', 'success');
                         } else if (result.isDenied) {
                             // use file exist
+                            console.log('existData: ', existData);
                             clsThis.resetValeInputFile();
                             clsThis.setIdFile(existData['id']);
-                            clsThis.setFileNameUploaded(existData['name']);
+                            clsThis.setFileNameUploaded(existData['file_name'], existData['file_size']);
                         } else {
                             // cancel
                             clsThis.resetValeInputFile();
@@ -698,13 +788,10 @@ class ListeningEventController {
         $(document).on('input', 'input.mask-money', function () {
             return MaskMoney2.realtimeInputMoney($(this));
         });
-        <!-- Init Mask Money -->
         $.fn.initMaskMoney2();
-        <!-- ## Init Mask Money -->
     }
 
     ticket() {
-        <!-- Raise a ticket -->
         $('#ticket-hash-tag').select2({
             tags: true,
             tokenSeparators: [',', ' ']
@@ -775,11 +862,9 @@ class ListeningEventController {
                 }
             });
         });
-        <!-- ## Raise a ticket -->
     }
 
     dataTable() {
-        <!-- Loading table ajax -->
         $(document).find('table').each((idx, tbl) => {
             if (!$(tbl).attr('load-data-hide-spinner')) {
                 $(tbl).on('preXhr.dt', (e, settings, data) => {
@@ -798,24 +883,16 @@ class ListeningEventController {
                 });
             }
         });
-        <!-- ## Loading table ajax -->
     }
 
     navAndMenu() {
-        <!-- Toggle Collapse -->
         $('.hk-navbar-togglable').click(function (event) {
             $(this).find('.icon').children().toggleClass('d-none');
         });
-        <!-- ## Toggle Collapse -->
 
-        <!-- Space current -->
         change_space();
-        <!-- ## Space current -->
 
-
-        <!-- Active menu -->
         menu_handler();
-        <!-- ## Active menu -->
     }
 
     activeFileUpload() {
@@ -928,12 +1005,36 @@ class ListeningEventController {
                         timer: 2000,
                         timerProgressBar: true,
                     }).then(
-                        ()=>{
+                        () => {
                             window.location.reload();
                         }
                     )
                 }
             })
+        });
+    }
+
+    tabHashUrl() {
+        $('.nav-tabs a[data-bs-toggle="tab"]').filter(
+            function () {
+                return this.hash === location.hash;
+            }
+        ).each(
+            function () {
+                let drawerEle = $(this).closest('.ntt-drawer');
+                if (drawerEle.length > 0) {
+                    $('.ntt-drawer-toggle-link[data-drawer-target="#' + drawerEle.attr('id') + '"]').each(
+                        function () {
+                            $(this).trigger('click');
+                        }
+                    );
+                }
+                $(this).tab('show');
+            }
+        );
+
+        $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
+            window.history.pushState(null, null, $(e.target).attr("href"));
         });
     }
 
@@ -952,6 +1053,7 @@ class ListeningEventController {
         this.navAndMenu();
         this.activeFileUpload();
         this.avatarUpload();
+        this.tabHashUrl();  // keep it run after nttDrawer and log
     }
 }
 
@@ -990,6 +1092,28 @@ $.fn.extend({
         });
 
         return !additions ? self : self.addClass(additions);
+    },
+
+    // person utils
+    shortNameGlobe: function (personData) {
+        if (typeof personData === 'object') {
+            if ($.fn.hasOwnProperties(personData, ['first_name', 'last_name'])) {
+                let last_name = personData['last_name'];
+                let first_name = personData['first_name'];
+                return `${last_name.length > 0 ? last_name[0] : ''}${first_name.length > 0 ? first_name[0] : ''}`;
+            }
+        }
+        return '';
+    },
+    renderAvatar: function (personData, clsName = "") {
+        let avatar = personData?.['avatar'];
+        let shortName = $.fn.shortNameGlobe(personData);
+        if (avatar) return `<div class="avatar"><img src="${avatar}" alt="${shortName}" class="avatar-img"></div>`;
+        return `
+            <div class="avatar avatar-rounded ${clsName ? clsName : 'avatar-xs avatar-primary'}">
+                <span class="initial-wrap">${shortName}</span>
+            </div>
+        `;
     },
 
     // utils
@@ -1370,6 +1494,9 @@ $.fn.extend({
     },
 
     // HTTP response, redirect, Ajax
+    pushHashUrl: function (idHash){
+        window.history.pushState(null, null, idHash.includes('#') ? idHash : '#' + idHash);
+    },
     switcherResp: function (resp, isNotify = true) {
         if (typeof resp === 'object') {
             let status = 500;
@@ -1440,6 +1567,26 @@ $.fn.extend({
                 window.location.href = redirectPath;
             }
         }, timeout);
+    },
+    reloadWithHashID: function (tabID = null) {
+        if (this instanceof jQuery) {
+            // call from $('#id').reloadWithHashID()
+            let tabPane = $(this).closest('.tab-pane');
+            if (tabPane.length > 0) {
+                let idTabPane = $(tabPane[0]).attr('id');
+                if (idTabPane) {
+                    $.fn.pushHashUrl(idTabPane);
+                    window.location.reload();
+                }
+            }
+
+        } else {
+            // call from $.fn.reloadWithHashID() | require tabId
+            if (tabID) {
+                $.fn.pushHashUrl(tabID);
+                window.location.reload();
+            }
+        }
     },
     callAjax: function (url, method, data = {}, csrfToken = null, headers = {}, content_type = "application/json", opts = {}) {
         let isNotify = opts['isNotify'];
@@ -2305,8 +2452,14 @@ String.prototype.format_by_key = function (objKey) {
     return s;
 }
 
+// return boolean value
+// accept to type string with dashes and without dashes
 String.prototype.valid_uuid4 = function () {
-    return /^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$/i.test(this.toString());
+    let isCheck = this.toString()
+    if (this.toString().indexOf('-') === -1) {
+        isCheck = this.toString().replace(/(.{8})(.{4})(.{4})(.{4})(.{12})/g, '$1-$2-$3-$4-$5')
+    }
+    return /^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$/i.test(isCheck);
 }
 
 Array.prototype.convert_to_key = function (key = 'id') {

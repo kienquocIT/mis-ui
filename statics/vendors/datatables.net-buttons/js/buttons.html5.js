@@ -36,7 +36,7 @@
 		factory( jQuery, window, document );
 	}
 }(function( $, window, document, jszip, pdfmake, undefined ) {
-'use strict';
+
 var DataTable = $.fn.dataTable;
 
 // Allow the constructor to pass in JSZip and PDFMake from external requires.
@@ -70,7 +70,7 @@ DataTable.Buttons.jszip = function (_) {
 /*jslint bitwise: true, indent: 4, laxbreak: true, laxcomma: true, smarttabs: true, plusplus: true */
 
 var _saveAs = (function(view) {
-	"use strict";
+
 	// IE <10 is explicitly unsupported
 	if (typeof view === "undefined" || typeof navigator !== "undefined" && /MSIE [1-9]\./.test(navigator.userAgent)) {
 		return;

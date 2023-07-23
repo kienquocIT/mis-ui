@@ -126,8 +126,10 @@ $(async function () {
                                 data: 'picked',
                                 render: (row, type, data, meta) => {
                                     let disabled = data.product_amount <= 0 ? 'disabled' : '';
-                                    // if condition for config 3 purpose.
-                                    if (config.is_picking && !config.is_partial_ship) disabled = 'disabled'
+                                    // condition 1 for config 3, condition 2 for config 4
+                                    if (config.is_picking && !config.is_partial_ship ||
+                                    (config.is_picking && config.is_partial_ship && data.picked_ready === 0)
+                                    ) disabled = 'disabled'
                                     return `<input class="form-control" type="number" id="warehouse_stock-${meta.row}" value="${row}" ${disabled}>`;
                                 }
                             },

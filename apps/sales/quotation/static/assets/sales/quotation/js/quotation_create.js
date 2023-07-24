@@ -849,7 +849,8 @@ $(function () {
                 if (eleDataCopy.val()) {
                     let dataRaw = JSON.parse(eleDataCopy.val());
                     loadDataClass.loadAPIDetailQuotation('data-init-copy-quotation', dataRaw.id);
-                    checkElementValues();
+                    checkElementValuesBeforeLoadDataCopy();
+                    checkOppLoaded();
                 }
             }
         }
@@ -943,7 +944,7 @@ $(function () {
             }
         }
 
-        function checkElementValues() {
+        function checkElementValuesBeforeLoadDataCopy() {
             let element0 = $('#data-copy-quotation-detail').val();
             let element1 = $('#data-init-quotation-create-tables-product').val();
             let element2 = $('#data-init-quotation-create-tables-uom').val();
@@ -954,7 +955,18 @@ $(function () {
             if (element0 && element1 && element2 && element3 && element4) {
                 loadDataCopyTo(JSON.parse(element0));  // call loadDataCopyTo() if all condition pass
             } else {
-                setTimeout(checkElementValues, 1000);  // call again after 1s if condition not pass yet
+                setTimeout(checkElementValuesBeforeLoadDataCopy, 1000);  // call again after 1s if condition not pass yet
+            }
+        }
+
+        function checkOppLoaded() {
+            let oppVal = boxOpportunity.val();
+            let dataCopy = $('#data-copy-quotation-detail').val();
+            if (oppVal && dataCopy) {
+                let data = JSON.parse(dataCopy);
+                document.getElementById('quotation-final-revenue-before-tax').value = data.total_product_revenue_before_tax;
+            } else {
+                setTimeout(checkOppLoaded, 1000);  // call again after 1s if condition not pass yet
             }
         }
 

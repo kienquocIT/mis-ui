@@ -1634,6 +1634,14 @@ $(document).ready(function () {
     }
 
     function LoadContactList(contact_list_id) {
+        $('#call-log-contact-name').text('');
+        $('#call-log-contact-job-title').text('');
+        $('#call-log-contact-mobile').text('');
+        $('#call-log-contact-email').text('');
+        $('#call-log-contact-report-to').text('');
+        $('#btn-detail-call-log-contact-tab').attr('href', '');
+        $('#call-log-contact-detail-span').prop('hidden', true);
+
         let $contact_sb = $('#contact-select-box');
         $contact_sb.html(``);
         $contact_sb.append(`<option></option>`)
@@ -1649,22 +1657,20 @@ $(document).ready(function () {
         $contact_sb.select2({dropdownParent: $("#create-new-call-log")});
     }
 
-    let loaded_modal_call_log = false;
     $('.create-new-call-log-button').on('click', function () {
-        $('#sale-code-select-box').prop('disabled', true);
-        $('#account-select-box').prop('disabled', true);
         $('#subject-input').val('');
+        $('#date-input').val('');
         $('#result-text-area').val('');
-        $('#repeat-activity').prop('checked', false);
+        $('#call-log-repeat-activity').attr('checked', false);
+        $('#sale-code-select-box').prop('disabled', true);
+        $('#account-select-box').prop('disabled', true);;
+
         let contact_list_id = account_list.filter(function (item) {
             return item.id === $('#select-box-customer option:selected').attr('value');
         })[0].contact_mapped;
         LoadContactList(contact_list_id);
-        if (loaded_modal_call_log === false) {
-            LoadSaleCodeListCallLog(pk);
-            LoadCustomerList($('#select-box-customer option:selected').attr('value'));
-            loaded_modal_call_log = true;
-        }
+        LoadSaleCodeListCallLog(pk);
+        LoadCustomerList($('#select-box-customer option:selected').attr('value'));
     })
 
     $('#date-input').daterangepicker({
@@ -1713,7 +1719,7 @@ $(document).ready(function () {
         frm.dataForm['contact'] = $('#contact-select-box').val();
         frm.dataForm['call_date'] = $('#date-input').val();
         frm.dataForm['input_result'] = $('#result-text-area').val();
-        if ($('#repeat-activity').is(':checked')) {
+        if ($('#call-log-repeat-activity').is(':checked')) {
             frm.dataForm['repeat'] = 1;
         } else {
             frm.dataForm['repeat'] = 0;
@@ -1851,9 +1857,20 @@ $(document).ready(function () {
     }
 
     $('.send-email-button').on('click', function () {
-        $('#email-sale-code-span').text($('#span-code').text())
         $('#email-subject-input').val('');
         $('#email-content-area').val('');
+
+        $('#email-to-select-box').prop('hidden', false);
+        $('#email-to-select-box').next(1).prop('hidden', false);
+        $('#inputEmailTo').prop('hidden', true);
+        $('#email-to-select-btn').prop('hidden', true);
+        $('#email-to-input-btn').prop('hidden', false);
+
+        $('#email-cc-input-btn').prop('hidden', false);
+        $('#inputEmailCc').prop('hidden', true);
+        $('#email-cc-add').prop('hidden', true);
+        $('#email-cc-remove').prop('hidden', true);
+
         let contact_list_id = account_list.filter(function(item) {
             return item.id === $('#select-box-customer option:selected').attr('value');
         })[0].contact_mapped;
@@ -2083,17 +2100,23 @@ $(document).ready(function () {
     });
     $('#meeting-date-input').val('');
 
-    let loaded_modal_meeting = false;
     $('.new-meeting-button').on('click', function () {
+        $('#meeting-subject-input').val('');
+        $('#meeting-date-input').val('');
+        $('#meeting-room-location-input').val('');
+        $('#meeting-result-text-area').val('');
+        $('#meeting-repeat-activity').attr('checked', false);
+        $('#meeting-address-select-box').prop('hidden', false);
+        $('#meeting-address-input-btn').prop('hidden', false);
+        $('#meeting-address-input').prop('hidden', true);
+        $('#meeting-address-select-btn').prop('hidden', true);
+
         $('#meeting-sale-code-select-box').prop('disabled', true);
-        if (loaded_modal_meeting === false) {
-            LoadEmployeeAttended();
-            LoadMeetingSaleCodeList(pk);
-            let customer_id = $('#meeting-sale-code-select-box option:selected').attr('data-customer-id');
-            LoadMeetingAddress(customer_id);
-            LoadCustomerMember(customer_id);
-            loaded_modal_meeting = true;
-        }
+        LoadEmployeeAttended();
+        LoadMeetingSaleCodeList(pk);
+        let customer_id = $('#meeting-sale-code-select-box option:selected').attr('data-customer-id');
+        LoadMeetingAddress(customer_id);
+        LoadCustomerMember(customer_id);
     })
 
     $('#meeting-address-input-btn').on('click', function () {
@@ -2127,7 +2150,7 @@ $(document).ready(function () {
         frm.dataForm['room_location'] = $('#meeting-room-location-input').val();
         frm.dataForm['input_result'] = $('#meeting-result-text-area').val();
 
-        if ($('#repeat-activity').is(':checked')) {
+        if ($('#meeting-repeat-activity').is(':checked')) {
             frm.dataForm['repeat'] = 1;
         }
         else {

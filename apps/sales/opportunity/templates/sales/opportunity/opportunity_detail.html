@@ -905,7 +905,7 @@
                         </div>
                         <div class="mb-3">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="repeat-activity">
+                                <input class="form-check-input" type="checkbox" id="call-log-repeat-activity">
                                 <label class="form-check-label"
                                        for="repeat-activity">{% trans 'Need to repeat activity' %}</label>
                             </div>
@@ -938,13 +938,7 @@
                           id="form-new-email"
                           method="post">
                         {% csrf_token %}
-                        <div class="row form-group mb-3">
-                            <div class="col-2"></div>
-                            <div class="col-10">
-                                <span id="email-sale-code-span" class="badge badge-primary badge-outline" style="font-size: larger">OPP.CODE.XXX</span>
-                            </div>
-                        </div>
-                        <div class="row form-group mb-3">
+                        <div class="row form-group mt-3 mb-3">
                             <label class="col-2 col-form-label required">{% trans 'To' %}</label>
                             <div class="col-10">
                                 <select id="email-to-select-box" class="form-select" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
@@ -1076,7 +1070,7 @@
                             <div class="col-12">
                                 <div class="mb-3">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="repeat-activity">
+                                        <input class="form-check-input" type="checkbox" id="meeting-repeat-activity">
                                         <label class="form-check-label" for="repeat-activity">{% trans 'Need to repeat activity' %}</label>
                                     </div>
                                 </div>

@@ -314,6 +314,10 @@ if os.environ.get('ENABLE_PROD', '0') in [1, '1']:
     OS_ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '[]')
     ALLOWED_HOSTS = json.loads(OS_ALLOWED_HOSTS)
 
+    # allow csrf for ssl
+    OS_CSRF_TRUSTED_ORIGINS = os.environ.get('CSRF_TRUSTED_ORIGINS', '[]')
+    CSRF_TRUSTED_ORIGINS = json.loads(OS_CSRF_TRUSTED_ORIGINS)
+
     # setup database default
     DATABASES.update(
         {

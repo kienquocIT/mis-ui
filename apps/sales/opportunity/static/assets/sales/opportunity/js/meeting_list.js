@@ -266,7 +266,7 @@ $(function () {
             let call_log_id = $(this).attr('data-id');
             let frm = $('#table_opportunity_meeting_list');
             let csr = $("input[name=csrfmiddlewaretoken]").val();
-            $.fn.callAjax(frm.attr('data-url-delete').replace(0, call_log_id), 'PUT', {}, csr)
+            $.fn.callAjax(frm.attr('data-url-delete').replace(0, call_log_id), 'DELETE', {}, csr)
             .then((resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {

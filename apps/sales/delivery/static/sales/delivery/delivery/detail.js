@@ -137,15 +137,14 @@ $(async function () {
                         rowCallback(row, data, index) {
                             $(`input.form-control`, row).on('blur', function (e) {
                                 e.preventDefault();
-                                const val = parseInt(this.value)
-                                let current = data
-                                if (val > 0) {
-                                    if (config.is_picking && config.is_partial_ship) {
-                                        if (val <= data.product_amount) current.picked = val
-                                    } else {
-                                        current.picked = val
-                                    }
-                                    table.DataTable().row(index).data(current).draw();
+                                // let current = data
+                                if (this.value > 0) {
+                                    // if (config.is_picking && config.is_partial_ship) {
+                                    //     if (this.value <= data.product_amount) current.picked = this.value
+                                    // } else {
+                                    // }
+                                    data.picked = this.value
+                                    table.DataTable().row(index).data(data).draw();
                                 }
                             })
                         },
@@ -187,13 +186,14 @@ $(async function () {
                         let temp_picked = 0
                         let sub_delivery_data = []
                         for (let item of isSelected) {
-                            if (item.picked > 0) {
+                            const picked = parseFloat(item.picked)
+                            if (picked > 0) {
                                 sub_delivery_data.push({
                                     'warehouse': item.id,
                                     'uom': prod_data.uom_data.id,
-                                    'stock': item.picked
+                                    'stock': picked
                                 })
-                                temp_picked += item.picked
+                                temp_picked += picked
                             }
                         }
                         if (temp_picked > 0) {

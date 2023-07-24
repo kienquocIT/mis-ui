@@ -1,7 +1,7 @@
 version: '2.12'
 
 services:
-  ui-sit:
+  ui-uat:
     build:
       context: ../../
       dockerfile: builder/Dockerfile

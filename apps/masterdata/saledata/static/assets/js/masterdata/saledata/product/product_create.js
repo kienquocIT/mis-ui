@@ -28,8 +28,9 @@ $(document).ready(function () {
         $('#tab_sale select').val('');
     });
 
-    $('#check-tab-purchasing').change(function () {
-        disabledTab(this.checked, '#link-tab-purchasing');
+
+    $('#check-tab-purchase').change(function () {
+        disabledTab(this.checked, '#link-tab-purchase', '#tab_purchase');
     });
 
     function loadProductType() {
@@ -382,6 +383,11 @@ $(document).ready(function () {
                 }
             }
         }
+
+        if ($('#check-tab-purchase').is(':checked') === true) {
+            list_option.push(2)
+        }
+
         dataForm['product_choice'] = list_option;
         return dataForm
     }

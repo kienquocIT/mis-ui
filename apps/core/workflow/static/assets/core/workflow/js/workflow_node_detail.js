@@ -603,7 +603,7 @@ $(function () {
                                         </div>
                                         <div class="offcanvas-body form-group">
                                             <div class="form-group">
-                                                <label class="form-label">Select company</label>
+                                                <label class="form-label">${$.fn.transEle.attr('data-select-company')}</label>
                                                 <select
                                                         class="form-select select-box-audit-in-workflow-company" 
                                                         id="${boxInWorkflowCompanyId}"
@@ -623,7 +623,7 @@ $(function () {
                                             ${defaultZone}
                                             <div class="form-group">
                                                 <label class="form-label">
-                                                    Description
+                                                    ${$.fn.transEle.attr('data-description')}
                                                 </label>
                                                 <textarea
                                                         class="form-control"
@@ -727,9 +727,9 @@ $(function () {
                                         >
                                             <thead>
                                             <tr>
-                                                <th>Code</th>
-                                                <th>Full Name</th>
-                                                <th>Username</th>
+                                                <th>${$.fn.transEle.attr('data-code')}</th>
+                                                <th>${$.fn.transEle.attr('data-full-name')}</th>
+                                                <th>${$.fn.transEle.attr('data-username')}</th>
                                                 <th></th>
                                             </tr>
                                             </thead>

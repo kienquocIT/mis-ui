@@ -155,6 +155,7 @@ $(function () {
                     }
                 },
                 (errs) => {
+                    $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
                     // $.fn.notifyPopup({description: errs.data.errors}, 'failure');
                 }
             )

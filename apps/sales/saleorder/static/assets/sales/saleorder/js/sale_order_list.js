@@ -19,31 +19,39 @@ $(function () {
                 },
                 columnDefs: [
                     {
-                        "width": "5%",
+                        "width": "10%",
                         "targets": 0
                     }, {
-                        "width": "10%",
+                        "width": "20%",
                         "targets": 1
                     }, {
-                        "width": "25%",
+                        "width": "20%",
                         "targets": 2
                     }, {
-                        "width": "35%",
+                        "width": "15%",
                         "targets": 3
                     }, {
                         "width": "10%",
                         "targets": 4
                     }, {
-                        "width": "10%",
+                        "width": "15%",
                         "targets": 5,
+                    },
+                    {
+                        "width": "5%",
+                        "targets": 6,
+                    },
+                    {
+                        "width": "5%",
+                        "targets": 7,
                     }
                 ],
                 columns: [
                     {
                         targets: 0,
                         render: (data, type, row) => {
-                            const link = $('#sale-order-link').data('link-update').format_url_with_uuid(row.id)
-                            return `<a href="${link}" target="_blank" class="link-primary underline_hover">${row.code}</a>`
+                            const link = $('#sale-order-link').data('link-update').format_url_with_uuid(row.id);
+                            return `<a href="${link}" target="_blank" class="link-primary underline_hover"><span class="badge badge-soft-primary">${row.code}</span></a>`
                         }
                     },
                     {
@@ -56,13 +64,21 @@ $(function () {
                     {
                         targets: 2,
                         render: (data, type, row) => {
-                            return `<p>${row.customer.title}</p>`
+                            let ele = `<p></p>`;
+                            if (Object.keys(row.customer).length !== 0) {
+                                ele = `<p>${row.customer.title}</p>`;
+                            }
+                            return ele;
                         }
                     },
                     {
                         targets: 3,
                         render: (data, type, row) => {
-                            return `<p>${row.sale_person.full_name}</p>`
+                            let ele = `<p></p>`;
+                            if (Object.keys(row.sale_person).length !== 0) {
+                                ele = `<p>${row.sale_person.full_name}</p>`;
+                            }
+                            return ele;
                         }
                     },
                     {
@@ -81,7 +97,14 @@ $(function () {
                     {
                         targets: 6,
                         render: (data, type, row) => {
-                            return `<p>${row.system_status}</p>`
+                            let status_data = {
+                                "Draft": "badge badge-soft-light",
+                                "Created": "badge badge-soft-primary",
+                                "Added": "badge badge-soft-info",
+                                "Finish": "badge badge-soft-success",
+                                "Cancel": "badge badge-soft-danger",
+                            }
+                            return `<span class="${status_data[row.system_status]}">${row.system_status}</span>`;
                         }
                     },
                     {
@@ -131,7 +154,7 @@ $(function () {
                         )
                     })
                 },
-                drawCallback: function (row, data) {
+                drawCallback: function () {
                     // mask money
                     $.fn.initMaskMoney2();
                 },
@@ -139,12 +162,6 @@ $(function () {
         }
 
         loadDbl();
-
-        $('#search_input').on('keyup', function (evt) {
-            const keycode = evt.which;
-            if (keycode === 13) //enter to search
-                _dataTable.ajax.reload()
-        });
 
     });
 });

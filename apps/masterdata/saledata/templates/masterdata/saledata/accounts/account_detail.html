@@ -132,7 +132,7 @@
                         <div class="form-group col-10">
                             <label class="label-field form-label required" for="account-type-id">{% trans "Account Type" %}</label>
                             <select id="account-type-id" name="account_type"
-                                    class="form-control"
+                                    class="form-control select2"
                                     multiple
                                     data-method="GET"
                                     data-url="{% url "AccountTypeListAPI" %}">
@@ -142,12 +142,12 @@
                     <div class="row mb-2" id="account-type-customer-type-div-id">
                         <div class="form-group col-2"></div>
                         <div class="form-group col-5 text-center">
-                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="inp-individual"
+                            <input class="form-check-input" type="radio" name="account-type-individual" id="inp-individual"
                                    disabled checked>
                             <label for="inp-individual">{% trans "individual" %}</label>
                         </div>
                         <div class="form-group col-5 text-center">
-                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="inp-organization"
+                            <input class="form-check-input" type="radio" name="account-type-organization" id="inp-organization"
                                    disabled>
                             <label for="inp-organization">{% trans "organization" %}</label>
                         </div>
@@ -247,7 +247,7 @@
                                         <div class="form-group">
                                             <label class="label-field form-label required" for="account-manager-id">{% trans "Account Manager" %}</label>
                                             <select id="account-manager-id" name="account-manager"
-                                                    class="form-control"
+                                                    class="form-control select2"
                                                     multiple
                                                     data-method="GET"
                                                     data-url="{% url "EmployeeListAPI" %}"
@@ -339,7 +339,7 @@
                                                     <button data-bs-toggle="modal" id="shipping-address-btn"
                                                             data-bs-target="#modal-shipping-address" type="button"
                                                             style="background: none; border: none; color: #007D88"
-                                                            class="btn" hidden>
+                                                            class="btn" disabled>
                                                         <span id="edit-shipping-address" data-bs-toggle="tooltip"
                                                               data-bs-placement="bottom"
                                                               data-bs-original-title="Add new shipping address">
@@ -366,7 +366,7 @@
                                                     <button data-bs-toggle="modal" id="billing-address-btn"
                                                             data-bs-target="#modal-billing-address" type="button"
                                                             style="background: none;border: none; color: #007D88"
-                                                            class="btn" hidden>
+                                                            class="btn" disabled>
                                                         <span id="edit-billing-address" data-bs-toggle="tooltip"
                                                               data-bs-placement="bottom"
                                                               data-bs-original-title="Add new billing/invoice address">
@@ -452,8 +452,8 @@
                                                 <div class="col-12 text-right">
                                                     <button data-bs-toggle="modal" id="bank-account-information-btn"
                                                             data-bs-target="#modal-bank-account-information" type="button"
-                                                            style="background: none; border: none; color: #007D88" hidden
-                                                            class="btn" >
+                                                            style="background: none; border: none; color: #007D88" disabled
+                                                            class="btn">
                                                         <span id="edit-bank-account-information" data-bs-toggle="tooltip"
                                                               data-bs-placement="bottom"
                                                               data-bs-original-title="Add new Bank Account">
@@ -481,8 +481,8 @@
                                                 <div class="col-12 text-right">
                                                     <button data-bs-toggle="modal" id="credit-card-information-btn"
                                                             data-bs-target="#modal-credit-card-information" type="button"
-                                                            style="background: none; border: none; color: #007D88" hidden
-                                                            class="btn" >
+                                                            style="background: none; border: none; color: #007D88" disabled
+                                                            class="btn">
                                                         <span id="edit-credit-card-information" data-bs-toggle="tooltip"
                                                               data-bs-placement="bottom"
                                                               data-bs-original-title="Add new Credit Card">
@@ -526,21 +526,21 @@
                                             <div class="row">
                                                 <div class="form-group">
                                                     <label class="label-field form-label required">{% trans "Province/City" %}</label>
-                                                    <select class="form-select" id="shipping-city" data-url="{% url "CityListAPI" %}" data-method="GET" aria-label=".form-select-sm">
+                                                    <select class="form-select select2" id="shipping-city" data-url="{% url "CityListAPI" %}" data-method="GET" aria-label=".form-select-sm">
                                                     </select>
                                                 </div>
                                             </div>
                                             <div class="row">
                                                 <div class="form-group">
                                                     <label class="label-field form-label required">{% trans "District" %}</label>
-                                                    <select class="form-select" id="shipping-district" data-url="{% url "DistrictListAPI" 'pk' %}" data-method="GET" aria-label=".form-select-sm">
+                                                    <select class="form-select select2" id="shipping-district" data-url="{% url "DistrictListAPI" 'pk' %}" data-method="GET" aria-label=".form-select-sm">
                                                     </select>
                                                 </div>
                                             </div>
                                             <div class="row">
                                                 <div class="form-group">
                                                     <label class="label-field form-label">{% trans "Ward" %}</label>
-                                                    <select class="form-select" id="shipping-ward" data-url="{% url "WardListAPI" 'pk' %}" data-method="GET" aria-label=".form-select-sm">
+                                                    <select class="form-select select2" id="shipping-ward" data-url="{% url "WardListAPI" 'pk' %}" data-method="GET" aria-label=".form-select-sm">
                                                     </select>
                                                 </div>
                                             </div>

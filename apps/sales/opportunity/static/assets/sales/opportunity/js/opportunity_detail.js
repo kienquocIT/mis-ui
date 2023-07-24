@@ -1733,90 +1733,7 @@ $(document).ready(function () {
                 $.fn.notifyPopup({description: "Successfully"}, 'success')
                 $('#create-new-call-log').hide();
 
-                let call_1 = $.fn.callAjax($('#table-timeline').attr('data-url-call-log'), $('#table-timeline').attr('data-method')).then((resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        let call_1_result = [];
-                        if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('call_log_list')) {
-                            data.call_log_list.map(function (item) {
-                                if (item.opportunity.id === pk) {
-                                    call_1_result.push({
-                                        'id': item.id,
-                                        'type': 0,
-                                        'subject': item.subject,
-                                        'date': item.call_date.split(' ')[0],
-                                    })
-                                }
-                            })
-                        }
-                        return call_1_result;
-                    }
-                })
-                let call_2 = $.fn.callAjax($('#table-timeline').attr('data-url-email'), $('#table-timeline').attr('data-method')).then((resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        let call_2_result = [];
-                        if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('email_list')) {
-                            data.email_list.map(function (item) {
-                                if (item.opportunity.id === pk) {
-                                    call_2_result.push({
-                                        'id': item.id,
-                                        'type': 1,
-                                        'subject': item.subject,
-                                        'date': item.date_created.split(' ')[0],
-                                    })
-                                }
-                            })
-                        }
-                        return call_2_result;
-                    }
-                })
-                let call_3 = $.fn.callAjax($('#table-timeline').attr('data-url-meeting'), $('#table-timeline').attr('data-method')).then((resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        let call_3_result = [];
-                        if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('meeting_list')) {
-                            data.meeting_list.map(function (item) {
-                                if (item.opportunity.id === pk) {
-                                    call_3_result.push({
-                                        'id': item.id,
-                                        'type': 2,
-                                        'subject': item.subject,
-                                        'date': item.meeting_date.split(' ')[0],
-                                    })
-                                }
-                            })
-                        }
-                        return call_3_result;
-                    }
-                })
-                let call_4 = $.fn.callAjax($('#table-timeline').attr('data-url-task'), $('#table-timeline').attr('data-method')).then((resp) => {
-        let data = $.fn.switcherResp(resp);
-        if (data) {
-            let call_4_result = [];
-            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('task_list')) {
-                data.task_list.map(function (item) {
-                    if (item.opportunity.id === pk) {
-                        call_4_result.push({
-                            'id': item.id,
-                            'type': 3,
-                            'subject': item.title,
-                            'date': item.start_date.split(' ')[0],
-                        })
-                    }
-                })
-            }
-            return call_4_result;
-        }
-    })
-                Promise.all([call_1, call_2, call_3, call_4]).then((results) => {
-                    let sorted = results[0].concat(results[1]).concat(results[2]).concat(results[3]).sort(function(a, b) {
-                        return new Date(b.date) - new Date(a.date);
-                    })
-                    loadTimelineList(sorted);
-                }).catch((error) => {
-                    console.log(error);
-                });
+                callAjaxtoLoadTimeLineList();
             }
         })
     })
@@ -1940,90 +1857,7 @@ $(document).ready(function () {
                     $.fn.notifyPopup({description: "Successfully"}, 'success')
                     $('#send-email').hide();
 
-                    let call_1 = $.fn.callAjax($('#table-timeline').attr('data-url-call-log'), $('#table-timeline').attr('data-method')).then((resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            let call_1_result = [];
-                            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('call_log_list')) {
-                                data.call_log_list.map(function (item) {
-                                    if (item.opportunity.id === pk) {
-                                        call_1_result.push({
-                                            'id': item.id,
-                                            'type': 0,
-                                            'subject': item.subject,
-                                            'date': item.call_date.split(' ')[0],
-                                        })
-                                    }
-                                })
-                            }
-                            return call_1_result;
-                        }
-                    })
-                    let call_2 = $.fn.callAjax($('#table-timeline').attr('data-url-email'), $('#table-timeline').attr('data-method')).then((resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            let call_2_result = [];
-                            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('email_list')) {
-                                data.email_list.map(function (item) {
-                                    if (item.opportunity.id === pk) {
-                                        call_2_result.push({
-                                            'id': item.id,
-                                            'type': 1,
-                                            'subject': item.subject,
-                                            'date': item.date_created.split(' ')[0],
-                                        })
-                                    }
-                                })
-                            }
-                            return call_2_result;
-                        }
-                    })
-                    let call_3 = $.fn.callAjax($('#table-timeline').attr('data-url-meeting'), $('#table-timeline').attr('data-method')).then((resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            let call_3_result = [];
-                            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('meeting_list')) {
-                                data.meeting_list.map(function (item) {
-                                    if (item.opportunity.id === pk) {
-                                        call_3_result.push({
-                                            'id': item.id,
-                                            'type': 2,
-                                            'subject': item.subject,
-                                            'date': item.meeting_date.split(' ')[0],
-                                        })
-                                    }
-                                })
-                            }
-                            return call_3_result;
-                        }
-                    })
-                    let call_4 = $.fn.callAjax($('#table-timeline').attr('data-url-task'), $('#table-timeline').attr('data-method')).then((resp) => {
-        let data = $.fn.switcherResp(resp);
-        if (data) {
-            let call_4_result = [];
-            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('task_list')) {
-                data.task_list.map(function (item) {
-                    if (item.opportunity.id === pk) {
-                        call_4_result.push({
-                            'id': item.id,
-                            'type': 3,
-                            'subject': item.title,
-                            'date': item.start_date.split(' ')[0],
-                        })
-                    }
-                })
-            }
-            return call_4_result;
-        }
-    })
-                    Promise.all([call_1, call_2, call_3, call_4]).then((results) => {
-                        let sorted = results[0].concat(results[1]).concat(results[2]).concat(results[3]).sort(function(a, b) {
-                            return new Date(b.date) - new Date(a.date);
-                        })
-                        loadTimelineList(sorted);
-                    }).catch((error) => {
-                        console.log(error);
-                    });
+                    callAjaxtoLoadTimeLineList();
                 }
             },
             (errs) => {
@@ -2191,90 +2025,7 @@ $(document).ready(function () {
                     $.fn.notifyPopup({description: "Successfully"}, 'success')
                     $('#create-meeting').hide();
 
-                    let call_1 = $.fn.callAjax($('#table-timeline').attr('data-url-call-log'), $('#table-timeline').attr('data-method')).then((resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            let call_1_result = [];
-                            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('call_log_list')) {
-                                data.call_log_list.map(function (item) {
-                                    if (item.opportunity.id === pk) {
-                                        call_1_result.push({
-                                            'id': item.id,
-                                            'type': 0,
-                                            'subject': item.subject,
-                                            'date': item.call_date.split(' ')[0],
-                                        })
-                                    }
-                                })
-                            }
-                            return call_1_result;
-                        }
-                    })
-                    let call_2 = $.fn.callAjax($('#table-timeline').attr('data-url-email'), $('#table-timeline').attr('data-method')).then((resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            let call_2_result = [];
-                            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('email_list')) {
-                                data.email_list.map(function (item) {
-                                    if (item.opportunity.id === pk) {
-                                        call_2_result.push({
-                                            'id': item.id,
-                                            'type': 1,
-                                            'subject': item.subject,
-                                            'date': item.date_created.split(' ')[0],
-                                        })
-                                    }
-                                })
-                            }
-                            return call_2_result;
-                        }
-                    })
-                    let call_3 = $.fn.callAjax($('#table-timeline').attr('data-url-meeting'), $('#table-timeline').attr('data-method')).then((resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            let call_3_result = [];
-                            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('meeting_list')) {
-                                data.meeting_list.map(function (item) {
-                                    if (item.opportunity.id === pk) {
-                                        call_3_result.push({
-                                            'id': item.id,
-                                            'type': 2,
-                                            'subject': item.subject,
-                                            'date': item.meeting_date.split(' ')[0],
-                                        })
-                                    }
-                                })
-                            }
-                            return call_3_result;
-                        }
-                    })
-                    let call_4 = $.fn.callAjax($('#table-timeline').attr('data-url-task'), $('#table-timeline').attr('data-method')).then((resp) => {
-        let data = $.fn.switcherResp(resp);
-        if (data) {
-            let call_4_result = [];
-            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('task_list')) {
-                data.task_list.map(function (item) {
-                    if (item.opportunity.id === pk) {
-                        call_4_result.push({
-                            'id': item.id,
-                            'type': 3,
-                            'subject': item.title,
-                            'date': item.start_date.split(' ')[0],
-                        })
-                    }
-                })
-            }
-            return call_4_result;
-        }
-    })
-                    Promise.all([call_1, call_2, call_3, call_4]).then((results) => {
-                        let sorted = results[0].concat(results[1]).concat(results[2]).concat(results[3]).sort(function(a, b) {
-                            return new Date(b.date) - new Date(a.date);
-                        })
-                        loadTimelineList(sorted);
-                    }).catch((error) => {
-                        console.log(error);
-                    });
+                    callAjaxtoLoadTimeLineList();
                 }
             },
             (errs) => {
@@ -2347,8 +2098,8 @@ $(document).ready(function () {
             ],
         });
     }
-
-    let call_1 = $.fn.callAjax($('#table-timeline').attr('data-url-call-log'), $('#table-timeline').attr('data-method')).then((resp) => {
+    function callAjaxtoLoadTimeLineList() {
+        let call_1 = $.fn.callAjax($('#table-timeline').attr('data-url-call-log'), $('#table-timeline').attr('data-method')).then((resp) => {
         let data = $.fn.switcherResp(resp);
         if (data) {
             let call_1_result = [];
@@ -2367,69 +2118,71 @@ $(document).ready(function () {
             return call_1_result;
         }
     })
-    let call_2 = $.fn.callAjax($('#table-timeline').attr('data-url-email'), $('#table-timeline').attr('data-method')).then((resp) => {
-        let data = $.fn.switcherResp(resp);
-        if (data) {
-            let call_2_result = [];
-            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('email_list')) {
-                data.email_list.map(function (item) {
-                    if (item.opportunity.id === pk) {
-                        call_2_result.push({
-                            'id': item.id,
-                            'type': 1,
-                            'subject': item.subject,
-                            'date': item.date_created.split(' ')[0],
-                        })
-                    }
-                })
+        let call_2 = $.fn.callAjax($('#table-timeline').attr('data-url-email'), $('#table-timeline').attr('data-method')).then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                let call_2_result = [];
+                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('email_list')) {
+                    data.email_list.map(function (item) {
+                        if (item.opportunity.id === pk) {
+                            call_2_result.push({
+                                'id': item.id,
+                                'type': 1,
+                                'subject': item.subject,
+                                'date': item.date_created.split(' ')[0],
+                            })
+                        }
+                    })
+                }
+                return call_2_result;
             }
-            return call_2_result;
-        }
-    })
-    let call_3 = $.fn.callAjax($('#table-timeline').attr('data-url-meeting'), $('#table-timeline').attr('data-method')).then((resp) => {
-        let data = $.fn.switcherResp(resp);
-        if (data) {
-            let call_3_result = [];
-            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('meeting_list')) {
-                data.meeting_list.map(function (item) {
-                    if (item.opportunity.id === pk) {
-                        call_3_result.push({
-                            'id': item.id,
-                            'type': 2,
-                            'subject': item.subject,
-                            'date': item.meeting_date.split(' ')[0],
-                        })
-                    }
-                })
-            }
-            return call_3_result;
-        }
-    })
-    let call_4 = $.fn.callAjax($('#table-timeline').attr('data-url-task'), $('#table-timeline').attr('data-method')).then((resp) => {
-        let data = $.fn.switcherResp(resp);
-        if (data) {
-            let call_4_result = [];
-            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('task_list')) {
-                data.task_list.map(function (item) {
-                    if (item.opportunity.id === pk) {
-                        call_4_result.push({
-                            'id': item.id,
-                            'type': 3,
-                            'subject': item.title,
-                            'date': item.start_date.split(' ')[0],
-                        })
-                    }
-                })
-            }
-            return call_4_result;
-        }
-    })
-    Promise.all([call_1, call_2, call_3, call_4]).then((results) => {
-        let sorted = results[0].concat(results[1]).concat(results[2]).concat(results[3]).sort(function(a, b) {
-            return new Date(b.date) - new Date(a.date);
         })
-        loadTimelineList(sorted);
-    }).catch((error) => {
-        console.log(error);
-    });
+        let call_3 = $.fn.callAjax($('#table-timeline').attr('data-url-meeting'), $('#table-timeline').attr('data-method')).then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                let call_3_result = [];
+                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('meeting_list')) {
+                    data.meeting_list.map(function (item) {
+                        if (item.opportunity.id === pk) {
+                            call_3_result.push({
+                                'id': item.id,
+                                'type': 2,
+                                'subject': item.subject,
+                                'date': item.meeting_date.split(' ')[0],
+                            })
+                        }
+                    })
+                }
+                return call_3_result;
+            }
+        })
+        let call_4 = $.fn.callAjax($('#table-timeline').attr('data-url-task'), $('#table-timeline').attr('data-method')).then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                let call_4_result = [];
+                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('task_list')) {
+                    data.task_list.map(function (item) {
+                        if (item.opportunity.id === pk) {
+                            call_4_result.push({
+                                'id': item.id,
+                                'type': 3,
+                                'subject': item.title,
+                                'date': item.start_date.split(' ')[0],
+                            })
+                        }
+                    })
+                }
+                return call_4_result;
+            }
+        })
+        Promise.all([call_1, call_2, call_3, call_4]).then((results) => {
+            let sorted = results[0].concat(results[1]).concat(results[2]).concat(results[3]).sort(function(a, b) {
+                return new Date(b.date) - new Date(a.date);
+            })
+            loadTimelineList(sorted);
+        }).catch((error) => {
+            console.log(error);
+        });
+    }
+    callAjaxtoLoadTimeLineList();
 })

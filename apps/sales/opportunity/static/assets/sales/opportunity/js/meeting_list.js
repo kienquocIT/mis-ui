@@ -51,23 +51,16 @@ $(function () {
             $customer_member_sb.select2({dropdownParent: $("#create-meeting")});
         }
 
-        function LoadEmployeeAttended(customer_id) {
-            let employee_filtered = [];
-            for (let i = 0; i < account_map_employees.length; i++) {
-                if (account_map_employees[i].account.id === customer_id) {
-                    employee_filtered.push(account_map_employees[i].employee)
-                }
-            }
+        function LoadEmployeeAttended() {
             let $employee_attended_sb = $('#meeting-employee-attended-select-box');
             $employee_attended_sb.html(``);
             $employee_attended_sb.append(`<option></option>`);
             employee_list.map(function (item) {
-                if (employee_filtered.includes(item.id)) {
-                    $employee_attended_sb.append(`<option data-code="${item.code}" value="${item.id}">${item.full_name}</option>`);
-                }
+                $employee_attended_sb.append(`<option data-code="${item.code}" value="${item.id}">${item.full_name}</option>`);
             })
             $employee_attended_sb.select2({dropdownParent: $("#create-meeting")});
         }
+        LoadEmployeeAttended();
 
         function LoadMeetingAddress(customer_id) {
             let opportunity_obj = JSON.parse($('#opportunity_list').text()).filter(function(item) {
@@ -79,13 +72,11 @@ $(function () {
             for (let i = 0; i < shipping_address_list.length; i++) {
                 $('#meeting-address-select-box').append(`<option>` + shipping_address_list[i] + `</option>`);
             }
-            $('#meeting-address-select-box').select2({dropdownParent: $("#create-meeting")});
         }
 
         $('#meeting-sale-code-select-box').on('change', function () {
             let customer_id = $('#meeting-sale-code-select-box option:selected').attr('data-customer-id');
             LoadMeetingAddress(customer_id);
-            LoadEmployeeAttended(customer_id);
             LoadCustomerMember(customer_id);
         })
 
@@ -111,7 +102,12 @@ $(function () {
             frm.dataForm['subject'] = $('#meeting-subject-input').val();
             frm.dataForm['opportunity'] = $('#meeting-sale-code-select-box option:selected').val();
             frm.dataForm['meeting_date'] = $('#meeting-date-input').val();
-            frm.dataForm['meeting_address'] = $('#meeting-address-select-box option:selected').val();
+            if ($('#meeting-address-select-box').is(':hidden')) {
+                frm.dataForm['meeting_address'] = $('#meeting-address-input').val();
+            }
+            else {
+                frm.dataForm['meeting_address'] = $('#meeting-address-select-box option:selected').val();
+            }
             frm.dataForm['room_location'] = $('#meeting-room-location-input').val();
             frm.dataForm['input_result'] = $('#meeting-result-text-area').val();
 
@@ -215,6 +211,20 @@ $(function () {
             }
         }
         loadOpportunityMeetingList(meeting_list);
+
+        $('#meeting-address-input-btn').on('click', function () {
+            $('#meeting-address-select-box').prop('hidden', true);
+            $('#meeting-address-input-btn').prop('hidden', true);
+            $('#meeting-address-input').prop('hidden', false);
+            $('#meeting-address-select-btn').prop('hidden', false);
+        })
+
+        $('#meeting-address-select-btn').on('click', function () {
+            $('#meeting-address-select-box').prop('hidden', false);
+            $('#meeting-address-input-btn').prop('hidden', false);
+            $('#meeting-address-input').prop('hidden', true);
+            $('#meeting-address-select-btn').prop('hidden', true);
+        })
 
         $(document).on('click', '#table_opportunity_meeting_list .detail-call-log-button', function () {
             let meeting_id = $(this).attr('data-id');

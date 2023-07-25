@@ -1012,12 +1012,20 @@ class loadDataHandle {
 
     loadDataTableAndDropDown(data) {
         let self = this;
+        let products_data = data.quotation_products_data;
+        let costs_data = data.quotation_costs_data;
+        let expenses_data = data.quotation_expenses_data;
+        if (data.hasOwnProperty('sale_order_products_data') && data.hasOwnProperty('sale_order_costs_data') && data.hasOwnProperty('sale_order_expenses_data')) {
+            products_data = data.sale_order_products_data;
+            costs_data = data.sale_order_costs_data;
+            expenses_data = data.sale_order_expenses_data;
+        }
         $('#datable-quotation-create-product').DataTable().destroy();
         $('#datable-quotation-create-cost').DataTable().destroy();
         $('#datable-quotation-create-expense').DataTable().destroy();
-        dataTableClass.dataTableProduct(data.quotation_products_data, 'datable-quotation-create-product');
-        dataTableClass.dataTableCost(data.quotation_costs_data, 'datable-quotation-create-cost');
-        dataTableClass.dataTableExpense(data.quotation_expenses_data, 'datable-quotation-create-expense');
+        dataTableClass.dataTableProduct(products_data, 'datable-quotation-create-product');
+        dataTableClass.dataTableCost(costs_data, 'datable-quotation-create-cost');
+        dataTableClass.dataTableExpense(expenses_data, 'datable-quotation-create-expense');
         // load data dropdown for Tabs
         let tableProduct = document.getElementById('datable-quotation-create-product');
         let tableCost = document.getElementById('datable-quotation-create-cost');

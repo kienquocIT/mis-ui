@@ -570,70 +570,68 @@ class loadDataHandle {
         }
     }
 
-    // loadBoxQuotationProductPurchasing(product_id, box_id, valueToSelect = null) {
-    //     let self = this;
-    //     let ele = document.getElementById(product_id);
-    //     let jqueryId = '#' + box_id;
-    //     let eleBox = $(jqueryId);
-    //     if (ele && eleBox) {
-    //         let linkDetail = ele.getAttribute('data-link-detail');
-    //         eleBox.attr('data-link-detail', linkDetail);
-    //         let data = JSON.parse(ele.value);
-    //         eleBox.empty();
-    //         for (let i = 0; i < data.length; i++) {
-    //             let uom_title = "";
-    //             let expense_type_title = "";
-    //             let expense_type = {};
-    //             let default_uom = {};
-    //             let uom_group = {};
-    //             let tax_code = {};
-    //             let price_list = [];
-    //             if (Object.keys(data[i].uom).length !== 0) {
-    //                 uom_title = data[i].uom.title
-    //             }
-    //             if (Object.keys(data[i].expense_type).length !== 0) {
-    //                 expense_type = data[i].expense_type;
-    //                 expense_type_title = data[i].expense_type.title;
-    //             }
-    //             default_uom = data[i].uom;
-    //             tax_code = data[i].tax_code;
-    //             price_list = data[i].price_list;
-    //             uom_group = data[i].uom_group;
-    //             let dataStr = JSON.stringify({
-    //                 'id': data[i].id,
-    //                 'title': data[i].title,
-    //                 'code': data[i].code,
-    //                 'unit of measure': uom_title,
-    //                 'expense type': expense_type_title,
-    //             }).replace(/"/g, "&quot;");
-    //             let expense_data = JSON.stringify({
-    //                 'id': data[i].id,
-    //                 'title': data[i].title,
-    //                 'code': data[i].code,
-    //                 'expense_type': expense_type,
-    //                 'unit_of_measure': default_uom,
-    //                 'uom_group': uom_group,
-    //                 'price_list': price_list,
-    //                 'tax': tax_code,
-    //             }).replace(/"/g, "&quot;");
-    //             let option = `<button type="button" class="btn btn-white dropdown-item table-row-expense-option" data-value="${data[i].id}">
-    //                             <div class="float-left"><span class="expense-title">${data[i].title}</span></div>
-    //                             <input type="hidden" class="data-default" value="${expense_data}">
-    //                             <input type="hidden" class="data-info" value="${dataStr}">
-    //                         </button>`
-    //             if (valueToSelect && valueToSelect === data[i].id) {
-    //                 option = `<button type="button" class="btn btn-white dropdown-item table-row-expense-option option-btn-checked" data-value="${data[i].id}">
-    //                             <div class="float-left"><span class="expense-title">${data[i].title}</span></div>
-    //                             <input type="hidden" class="data-default" value="${expense_data}">
-    //                             <input type="hidden" class="data-info" value="${dataStr}">
-    //                         </button>`
-    //             }
-    //             eleBox.append(option);
-    //         }
-    //         // load data information
-    //         self.loadInformationSelectBox(eleBox, true);
-    //     }
-    // }
+    loadBoxQuotationProductPurchasing(product_id, box_id, valueToSelect = null) {
+        let self = this;
+        let ele = document.getElementById(product_id);
+        let jqueryId = '#' + box_id;
+        let eleBox = $(jqueryId);
+        if (ele && eleBox) {
+            let linkDetail = ele.getAttribute('data-link-detail');
+            eleBox.attr('data-link-detail', linkDetail);
+            let data = JSON.parse(ele.value);
+            for (let i = 0; i < data.length; i++) {
+                if (Array.isArray(data[i].product_choice)) {
+                    if (data[i].product_choice.includes(2)) {
+                        let uom_title = "";
+                        let default_uom = {};
+                        let uom_group = {};
+                        let tax_code = {};
+                        if (Object.keys(data[i].sale_information).length !== 0) {
+                            if (Object.keys(data[i].sale_information.default_uom).length !== 0) {
+                                uom_title = data[i].sale_information.default_uom.title
+                            }
+                            default_uom = data[i].sale_information.default_uom;
+                            tax_code = data[i].sale_information.tax_code;
+                        }
+                        if (Object.keys(data[i].general_information).length !== 0) {
+                            uom_group = data[i].general_information.uom_group;
+                        }
+                        let dataStr = JSON.stringify({
+                            'id': data[i].id,
+                            'title': data[i].title,
+                            'code': data[i].code,
+                            'unit of measure': uom_title,
+                        }).replace(/"/g, "&quot;");
+                        let product_data = JSON.stringify({
+                            'id': data[i].id,
+                            'title': data[i].title,
+                            'code': data[i].code,
+                            'unit_of_measure': default_uom,
+                            'uom_group': uom_group,
+                            'price_list': data[i].price_list,
+                            'cost_price': data[i].cost_price,
+                            'tax': tax_code,
+                        }).replace(/"/g, "&quot;");
+                        let option = `<button type="button" class="btn btn-white dropdown-item table-row-expense-option" data-value="${data[i].id}">
+                                        <div class="float-left"><span class="expense-title">${data[i].title}</span></div>
+                                        <input type="hidden" class="data-default" value="${product_data}">
+                                        <input type="hidden" class="data-info" value="${dataStr}">
+                                    </button>`
+                        if (valueToSelect && valueToSelect === data[i].id) {
+                            option = `<button type="button" class="btn btn-white dropdown-item table-row-expense-option option-btn-checked" data-value="${data[i].id}">
+                                        <div class="float-left"><span class="expense-title">${data[i].title}</span></div>
+                                        <input type="hidden" class="data-default" value="${product_data}">
+                                        <input type="hidden" class="data-info" value="${dataStr}">
+                                    </button>`
+                        }
+                        eleBox.append(option);
+                    }
+                }
+            }
+            // load data information
+            self.loadInformationSelectBox(eleBox, true);
+        }
+    }
 
     loadDataProductSelect(ele, is_change_item = true, is_expense = false) {
         let self = this;

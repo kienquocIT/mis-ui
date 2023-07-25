@@ -396,6 +396,7 @@ $(function () {
             let selectUOMID = 'quotation-create-expense-box-uom-' + String(order);
             let selectTaxID = 'quotation-create-expense-box-tax-' + String(order);
             loadDataClass.loadBoxQuotationExpense('data-init-quotation-create-tables-expense', selectExpenseID);
+            loadDataClass.loadBoxQuotationProductPurchasing('data-init-quotation-create-tables-product', selectExpenseID);
             loadDataClass.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', selectUOMID);
             loadDataClass.loadBoxQuotationTax('data-init-quotation-create-tables-tax', selectTaxID);
 

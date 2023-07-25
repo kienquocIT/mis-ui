@@ -540,6 +540,7 @@ class loadDataHandle {
                     'code': data[i].code,
                     'unit of measure': uom_title,
                     'expense type': expense_type_title,
+                    'is_product': false,
                 }).replace(/"/g, "&quot;");
                 let expense_data = JSON.stringify({
                     'id': data[i].id,
@@ -601,6 +602,7 @@ class loadDataHandle {
                             'title': data[i].title,
                             'code': data[i].code,
                             'unit of measure': uom_title,
+                            'is_product': true,
                         }).replace(/"/g, "&quot;");
                         let product_data = JSON.stringify({
                             'id': data[i].id,
@@ -1054,6 +1056,7 @@ class loadDataHandle {
             let row = tableExpense.tBodies[0].rows[i];
             if (row.querySelector('.table-row-item')) {
                 self.loadBoxQuotationExpense('data-init-quotation-create-tables-expense', row.querySelector('.expense-option-list').id, row.querySelector('.table-row-item').getAttribute('data-value'));
+                self.loadBoxQuotationProductPurchasing('data-init-quotation-create-tables-product', row.querySelector('.expense-option-list').id, row.querySelector('.table-row-item').getAttribute('data-value'));
                 // check expense selected to get uom group filter uom data
                 let optionSelected = row.querySelector('.expense-option-list').querySelector('.option-btn-checked');
                 if (optionSelected) {
@@ -1065,6 +1068,7 @@ class loadDataHandle {
                 self.loadBoxQuotationTax('data-init-quotation-create-tables-tax', row.querySelector('.table-row-tax').id, row.querySelector('.table-row-tax').value);
             }
         }
+        return true;
     }
 }
 
@@ -1092,13 +1096,14 @@ class dataTableHandle {
             columns: [
                 {
                     targets: 0,
-                    width: "1%",
+                    width: "3%",
                     render: (data, type, row) => {
                         return `<span class="table-row-order">${row.order}</span>`
                     }
                 },
                 {
                     targets: 1,
+                    width: "20%",
                     render: (data, type, row) => {
                         if (!row.hasOwnProperty('is_promotion') && !row.hasOwnProperty('is_shipping')) {
                             if (is_load_detail === false) {
@@ -1204,6 +1209,7 @@ class dataTableHandle {
                 },
                 {
                     targets: 2,
+                    width: "11%",
                     render: (data, type, row) => {
                         if (!row.hasOwnProperty('is_promotion') && !row.hasOwnProperty('is_shipping')) {
                             if (is_load_detail === false) {
@@ -1224,7 +1230,7 @@ class dataTableHandle {
                 },
                 {
                     targets: 3,
-                    width: "1%",
+                    width: "5%",
                     render: (data, type, row) => {
                         if (!row.hasOwnProperty('is_promotion') && !row.hasOwnProperty('is_shipping')) {
                             if (is_load_detail === false) {
@@ -1254,7 +1260,7 @@ class dataTableHandle {
                 },
                 {
                     targets: 4,
-                    width: "1%",
+                    width: "5%",
                     render: (data, type, row) => {
                         if (!row.hasOwnProperty('is_promotion') && !row.hasOwnProperty('is_shipping')) {
                             if (is_load_detail === false) {
@@ -1275,6 +1281,7 @@ class dataTableHandle {
                 },
                 {
                     targets: 5,
+                    width: "18%",
                     render: (data, type, row) => {
                         if (!row.hasOwnProperty('is_promotion') && !row.hasOwnProperty('is_shipping')) {
                             if (is_load_detail === false) {
@@ -1342,6 +1349,7 @@ class dataTableHandle {
                 },
                 {
                     targets: 6,
+                    width: "10%",
                     render: (data, type, row) => {
                         if (!row.hasOwnProperty('is_promotion') && !row.hasOwnProperty('is_shipping')) {
                             if (is_load_detail === false) {
@@ -1395,6 +1403,7 @@ class dataTableHandle {
                 },
                 {
                     targets: 7,
+                    width: "10%",
                     render: (data, type, row) => {
                         let selectTaxID = 'quotation-create-product-box-tax-' + String(row.order);
                         let taxID = "";
@@ -1467,6 +1476,7 @@ class dataTableHandle {
                 },
                 {
                     targets: 8,
+                    width: "15%",
                     render: (data, type, row) => {
                         return `<div class="row">
                                 <input 
@@ -1487,7 +1497,7 @@ class dataTableHandle {
                 },
                 {
                     targets: 9,
-                    width: "1%",
+                    width: "3%",
                     render: () => {
                         if (is_load_detail === false) {
                             return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`
@@ -1523,13 +1533,14 @@ class dataTableHandle {
             columns: [
                 {
                     targets: 0,
-                    width: "1%",
+                    width: "5%",
                     render: (data, type, row) => {
                         return `<span class="table-row-order">${row.order}</span>`
                     }
                 },
                 {
                     targets: 1,
+                    width: "25%",
                     render: (data, type, row) => {
                         if (!row.hasOwnProperty('is_shipping')) {
                             let selectProductID = 'quotation-create-cost-box-product-' + String(row.order);
@@ -1579,7 +1590,7 @@ class dataTableHandle {
                 },
                 {
                     targets: 2,
-                    width: "1%",
+                    width: "5%",
                     render: (data, type, row) => {
                         let selectUOMID = 'quotation-create-cost-box-uom-' + String(row.order);
                         return `<div class="row">
@@ -1591,7 +1602,7 @@ class dataTableHandle {
                 },
                 {
                     targets: 3,
-                    width: "1%",
+                    width: "10%",
                     render: (data, type, row) => {
                         return `<div class="row">
                                 <input type="text" class="form-control table-row-quantity disabled-custom-show" value="${row.product_quantity}" disabled>
@@ -1600,6 +1611,7 @@ class dataTableHandle {
                 },
                 {
                     targets: 4,
+                    width: "20%",
                     render: (data, type, row) => {
                         if (is_load_detail === false) {
                             return `<div class="row">
@@ -1627,6 +1639,7 @@ class dataTableHandle {
                 },
                 {
                     targets: 5,
+                    width: "10%",
                     render: (data, type, row) => {
                         if (is_load_detail === false) {
                             let selectTaxID = 'quotation-create-cost-box-tax-' + String(row.order);
@@ -1685,6 +1698,7 @@ class dataTableHandle {
                 },
                 {
                     targets: 6,
+                    width: "20%",
                     render: (data, type, row) => {
                         return `<div class="row">
                                 <input 
@@ -1705,7 +1719,7 @@ class dataTableHandle {
                 },
                 {
                     targets: 7,
-                    width: "1%",
+                    width: "5%",
                     render: () => {
                         let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-row" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><i class="fa-regular fa-trash-can"></i></span></a>`;
                         return `${bt3}`
@@ -1737,17 +1751,24 @@ class dataTableHandle {
             columns: [
                 {
                     targets: 0,
-                    width: "1%",
+                    width: "5%",
                     render: (data, type, row) => {
                         return `<span class="table-row-order">${row.order}</span>`
                     }
                 },
                 {
                     targets: 1,
+                    width: "25%",
                     render: (data, type, row) => {
                         let selectExpenseID = 'quotation-create-expense-box-expense-' + String(row.order);
                         let checkboxExpenseItemID = 'check-box-expense-item-' + String(row.order);
                         let checkboxPurchaseItemID = 'check-box-purchase-item-' + String(row.order);
+                        let data_title = row.expense.title;
+                        let data_id = row.expense.id;
+                        if (row.is_product === true) {
+                            data_title = row.product.title;
+                            data_id = row.product.id;
+                        }
                         if (is_load_detail === false) {
                             return `<div class="row dropdown-expense">
                                         <div class="input-group">
@@ -1772,8 +1793,8 @@ class dataTableHandle {
                                                             <input 
                                                                 type="text" 
                                                                 class="form-control table-row-item disabled-show-normal" 
-                                                                value="${row.expense.title}"
-                                                                data-value="${row.expense.id}"
+                                                                value="${data_title}"
+                                                                data-value="${data_id}"
                                                                 style="padding-left: 38px"
                                                                 disabled
                                                             >
@@ -1786,13 +1807,13 @@ class dataTableHandle {
                                                         <div class="row mb-2">
                                                             <div class="col-6">
                                                                 <div class="form-check">
-                                                                    <input type="checkbox" class="form-check-input" id="${checkboxExpenseItemID}" checked>
+                                                                    <input type="checkbox" class="form-check-input checkbox-expense-item" id="${checkboxExpenseItemID}" checked>
                                                                     <label class="form-check-label" for="${checkboxExpenseItemID}">Expense items</label>
                                                                 </div>
                                                             </div>
                                                             <div class="col-6">
                                                                 <div class="form-check">
-                                                                    <input type="checkbox" class="form-check-input" id="${checkboxPurchaseItemID}" checked>
+                                                                    <input type="checkbox" class="form-check-input checkbox-purchasing-item" id="${checkboxPurchaseItemID}" checked>
                                                                     <label class="form-check-label" for="${checkboxPurchaseItemID}">Purchasing items</label>
                                                                 </div>
                                                             </div>
@@ -1827,8 +1848,8 @@ class dataTableHandle {
                                                             <input 
                                                                 type="text" 
                                                                 class="form-control table-row-item disabled-show-normal" 
-                                                                value="${row.expense.title}"
-                                                                data-value="${row.expense.id}"
+                                                                value="${data_title}"
+                                                                data-value="${data_id}"
                                                                 style="padding-left: 38px"
                                                                 disabled
                                                             >
@@ -1863,7 +1884,7 @@ class dataTableHandle {
                 },
                 {
                     targets: 2,
-                    width: "1%",
+                    width: "5%",
                     render: (data, type, row) => {
                         if (is_load_detail === false) {
                             let selectUOMID = 'quotation-create-expense-box-uom-' + String(row.order);
@@ -1884,7 +1905,7 @@ class dataTableHandle {
                 },
                 {
                     targets: 3,
-                    width: "1%",
+                    width: "10%",
                     render: (data, type, row) => {
                         if (is_load_detail === false) {
                             return `<div class="row">
@@ -1899,6 +1920,7 @@ class dataTableHandle {
                 },
                 {
                     targets: 4,
+                    width: "20%",
                     render: (data, type, row) => {
                         if (is_load_detail === false) {
                             return `<div class="row">
@@ -1944,7 +1966,7 @@ class dataTableHandle {
                 },
                 {
                     targets: 5,
-                    width: "1%",
+                    width: "10%",
                     render: (data, type, row) => {
                         if (is_load_detail === false) {
                             let selectTaxID = 'quotation-create-expense-box-tax-' + String(row.order);
@@ -2003,6 +2025,7 @@ class dataTableHandle {
                 },
                 {
                     targets: 6,
+                    width: "20%",
                     render: (data, type, row) => {
                         return `<div class="row">
                                 <input 
@@ -2023,7 +2046,7 @@ class dataTableHandle {
                 },
                 {
                     targets: 7,
-                    width: "1%",
+                    width: "5%",
                     render: () => {
                         if (is_load_detail === false) {
                             return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`
@@ -3159,10 +3182,20 @@ class submitHandle {
                 if (optionSelected) {
                     if (optionSelected.querySelector('.data-info')) {
                         let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
-                        rowData['expense'] = dataInfo.id;
-                        rowData['expense_title'] = dataInfo.title;
-                        rowData['expense_code'] = dataInfo.code;
-                        rowData['expense_type_title'] = dataInfo['expense type'];
+                        if (dataInfo.is_product === false) {
+                            rowData['expense'] = dataInfo.id;
+                            rowData['product'] = null;
+                            rowData['expense_title'] = dataInfo.title;
+                            rowData['expense_code'] = dataInfo.code;
+                            rowData['expense_type_title'] = dataInfo['expense type'];
+                            rowData['is_product'] = false;
+                        } else {
+                            rowData['product'] = dataInfo.id;
+                            rowData['expense'] = null;
+                            rowData['product_title'] = dataInfo.title;
+                            rowData['product_code'] = dataInfo.code;
+                            rowData['is_product'] = true;
+                        }
                     }
                 }
             }

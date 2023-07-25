@@ -19,7 +19,8 @@ $(document).ready(function () {
             }, {
                 'data': 'name',
                 render: (data, type, row, meta) => {
-                    return `<a href="/saledata/account/` + row.id + `"><span><b>` + row.name + `</b></span></a>`
+                    let urlEditPage = $('#account-update-page').attr('data-url').format_url_with_uuid(row.id);
+                    return `<a href="${urlEditPage}"><span><b>` + row.name + `</b></span></a>`
                 }
             }, {
                 'data': 'account_type',

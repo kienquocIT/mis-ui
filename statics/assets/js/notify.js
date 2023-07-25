@@ -56,7 +56,6 @@ class NotifyPopup {
     createElementNotifyContent(notify_block, description) {
         if (Array.isArray(description)) {
             if (description.length > 1) {
-                console.log(this.description);
                 let notifyContentEleUl = document.createElement('ul');
                 notifyContentEleUl.classList.add('notify-text');
                 description.map((value, index, array) => {

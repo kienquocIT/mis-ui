@@ -28,8 +28,8 @@ class AdvancePaymentCreate(View):
         menu_active='menu_advance_payment_list',
     )
     def get(self, request, *args, **kwargs):
-        resp1 = ServerAPI(user=request.user, url=ApiURL.SALE_ORDER_LIST).get()
-        resp2 = ServerAPI(user=request.user, url=ApiURL.QUOTATION_LIST).get()
+        resp1 = ServerAPI(user=request.user, url=ApiURL.SALE_ORDER_LIST_FOR_CASH_OUTFLOW).get()
+        resp2 = ServerAPI(user=request.user, url=ApiURL.QUOTATION_LIST_FOR_CASH_OUTFLOW).get()
         resp3 = ServerAPI(user=request.user, url=ApiURL.PRODUCT_LIST).get()
         resp4 = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_LIST).get()
         resp5 = ServerAPI(user=request.user, url=ApiURL.ADVANCE_PAYMENT_LIST).get()
@@ -95,8 +95,8 @@ class AdvancePaymentDetail(View):
         menu_active='menu_advance_payment_detail',
     )
     def get(self, request, *args, **kwargs):
-        resp1 = ServerAPI(user=request.user, url=ApiURL.SALE_ORDER_LIST).get()
-        resp2 = ServerAPI(user=request.user, url=ApiURL.QUOTATION_LIST).get()
+        resp1 = ServerAPI(user=request.user, url=ApiURL.SALE_ORDER_LIST_FOR_CASH_OUTFLOW).get()
+        resp2 = ServerAPI(user=request.user, url=ApiURL.QUOTATION_LIST_FOR_CASH_OUTFLOW).get()
         resp3 = ServerAPI(user=request.user, url=ApiURL.PRODUCT_LIST).get()
         resp4 = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_LIST).get()
         resp5 = ServerAPI(user=request.user, url=ApiURL.ADVANCE_PAYMENT_LIST).get()

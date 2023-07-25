@@ -6,5 +6,5 @@ class PermsMsg:  # pylint: disable=too-few-public-methods
     """translate message Permission"""
     USER = _('User')
     USER_STAFF = _('User\'s staff (lower grade)')
-    ALL_STAFF = _('All staff in user\'s group')
+    ALL_STAFF = _('All staff in their group')
     ALL_USER = _('All users')

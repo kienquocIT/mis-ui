@@ -26,6 +26,16 @@ def create_hr_application(request, url, msg):
     return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
 
 
+def update_hr_application(request, url, pk, msg):
+    resp = ServerAPI(user=request.user, url=url.push_id(pk)).put(request.data)
+    if resp.state:
+        resp.result['message'] = msg
+        return resp.result, status.HTTP_201_CREATED
+    elif resp.status == 401:
+        return {}, status.HTTP_401_UNAUTHORIZED
+    return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+
+
 class EmployeeList(View):
     @mask_view(
         auth_require=True,
@@ -99,6 +109,7 @@ class EmployeeDetail(View):
     @mask_view(
         auth_require=True,
         template='core/hr/employee/employee_detail.html',
+        breadcrumb='EMPLOYEE_DETAIL_PAGE',
         menu_active='menu_employee_list',
     )
     def get(self, request, pk, *args, **kwargs):
@@ -115,10 +126,10 @@ class EmployeeDetail(View):
 
 
 class EmployeeUpdate(View):
-
     @mask_view(
         auth_require=True,
         template='core/hr/employee/employee_update.html',
+        breadcrumb='EMPLOYEE_UPDATE_PAGE',
         menu_active='menu_employee_list',
     )
     def get(self, request, pk, *args, **kwargs):
@@ -312,6 +323,21 @@ class GroupLevelListAPI(APIView):
         )
 
 
+class GroupLevelDetailAPI(APIView):
+
+    @mask_view(
+        auth_require=True,
+        is_api=True
+    )
+    def put(self, request, *args, pk, **kwargs):
+        return update_hr_application(
+            request=request,
+            url=ApiURL.GROUP_LEVEL_DETAIL,
+            pk=pk,
+            msg=HRMsg.GROUP_LEVEL_UPDATE
+        )
+
+
 # Group
 class GroupCreate(View):
 
@@ -361,15 +387,6 @@ class GroupListAPI(APIView):
             msg=HRMsg.GROUP_CREATE
         )
 
-        # data = request.data
-        # resp = ServerAPI(user=request.user, url=ApiURL.GROUP_LIST).post(data)
-        # if resp.state:
-        #     resp.result['message'] = HRMsg.GROUP_CREATE
-        #     return resp.result, status.HTTP_200_OK
-        # elif resp.status == 401:
-        #     return {}, status.HTTP_401_UNAUTHORIZED
-        # return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
-
 
 class GroupDetail(View):
 
@@ -411,7 +428,7 @@ class GroupDetailAPI(APIView):
         is_api=True
     )
     def put(self, request, pk, *args, **kwargs):
-        return update_hr_application(
+        return EmployeeDetailAPI.update_hr_application(
             request=request,
             url=ApiURL.GROUP_DETAIL,
             pk=pk,

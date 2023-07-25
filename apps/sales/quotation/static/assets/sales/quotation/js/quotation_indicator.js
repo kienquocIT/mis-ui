@@ -86,7 +86,8 @@ function dataTableSaleOrderIndicator(data) {
             {
                 targets: 1,
                 render: (data, type, row) => {
-                    return `<span class="table-row-title" data-id="${row.indicator.id}">${row.indicator.title}</span>`
+                    // return `<span class="table-row-title" data-id="${row.indicator.id}">${row.indicator.title}</span>`
+                    return `<span class="table-row-title" data-id="${row.quotation_indicator.id}">${row.quotation_indicator.title}</span>`
                 }
             },
             {
@@ -117,29 +118,29 @@ function dataTableSaleOrderIndicator(data) {
     });
 }
 
-function loadQuotationIndicator(indicator_id) {
-    let jqueryId = '#' + indicator_id;
-    let ele = $(jqueryId);
-    if (!ele.val()) {
-        let url = ele.attr('data-url');
-        let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (data.hasOwnProperty('quotation_indicator_list') && Array.isArray(data.quotation_indicator_list)) {
-                        ele.val(JSON.stringify(data.quotation_indicator_list));
-                        calculateIndicator(data.quotation_indicator_list);
-                    }
-                }
-            }
-        )
-    } else {
-        let data_list = JSON.parse(ele.val());
-        calculateIndicator(data_list);
-    }
-
-}
+// function loadQuotationIndicator(indicator_id) {
+//     let jqueryId = '#' + indicator_id;
+//     let ele = $(jqueryId);
+//     if (!ele.val()) {
+//         let url = ele.attr('data-url');
+//         let method = ele.attr('data-method');
+//         $.fn.callAjax(url, method).then(
+//             (resp) => {
+//                 let data = $.fn.switcherResp(resp);
+//                 if (data) {
+//                     if (data.hasOwnProperty('quotation_indicator_list') && Array.isArray(data.quotation_indicator_list)) {
+//                         ele.val(JSON.stringify(data.quotation_indicator_list));
+//                         calculateIndicator(data.quotation_indicator_list);
+//                     }
+//                 }
+//             }
+//         )
+//     } else {
+//         let data_list = JSON.parse(ele.val());
+//         calculateIndicator(data_list);
+//     }
+//
+// }
 
 function calculateIndicator(indicator_list) {
     let result_list = [];
@@ -154,6 +155,8 @@ function calculateIndicator(indicator_list) {
     }
     submitClass.setupDataSubmit(_form, is_sale_order);
     let data_form = _form.dataForm;
+    // Check special case
+    functionClass.checkSpecialCaseIndicator(data_form);
     for (let indicator of indicator_list) {
         let parse_formula = "";
         let formula_data = indicator.formula_data;
@@ -187,7 +190,7 @@ function calculateIndicator(indicator_list) {
         // calculate
         // value
         let value = evaluateFormula(parse_formula);
-        if (value === null) {
+        if (!value || ['', "", "undefined", null].includes(value)) {
             value = 0;
         }
         // rate value
@@ -217,6 +220,10 @@ function calculateIndicator(indicator_list) {
         // append result
         result_list.push({
             'indicator': {
+                'id': indicator.id,
+                'title': indicator.title,
+            },
+            'quotation_indicator': {
                 'id': indicator.id,
                 'title': indicator.title,
             },
@@ -333,6 +340,30 @@ class indicatorFunctionHandle {
         return functionBody
     }
 
+    checkSpecialCaseIndicator(data_form) {
+        // check if product data has promotion gift then => += vào total_cost_pretax_amount
+        if (data_form.hasOwnProperty('total_cost_pretax_amount')) {
+            let promotion = document.getElementById('datable-quotation-create-product').querySelector('.table-row-promotion');
+            if (promotion) {
+                if (promotion.closest('tr').querySelector('.table-row-description').value === '(Gift)') {
+                    let productGift = promotion.getAttribute('data-id-product');
+                    let product_data_list = [];
+                    if (data_form.hasOwnProperty('quotation_costs_data')) {
+                        product_data_list = data_form['quotation_costs_data'];
+                    } else if (data_form.hasOwnProperty('sale_order_costs_data')) {
+                        product_data_list = data_form['sale_order_costs_data'];
+                    }
+                    for (let product of product_data_list) {
+                        if (product.product === productGift) {
+                            data_form['total_cost_pretax_amount'] += product.product_cost_price;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 }
 
 let functionClass = new indicatorFunctionHandle();
@@ -355,7 +386,7 @@ $(function () {
             let btnEdit = $('#btn-edit_quotation');
             if (btnEdit.length) {
                 if (btnEdit.is(':hidden')) {
-                    loadQuotationIndicator('quotation-indicator-data');
+                    indicatorClass.loadQuotationIndicator('quotation-indicator-data');
                 } else {
                     if (tableIndicator[0].querySelector('.dataTables_empty')) {
                         let detailData = JSON.parse($('#quotation-detail-data').val());
@@ -368,14 +399,14 @@ $(function () {
                     }
                 }
             } else {
-                loadQuotationIndicator('quotation-indicator-data');
+                indicatorClass.loadQuotationIndicator('quotation-indicator-data');
             }
         });
 
         // Clear data indicator store then call API to get new
         $('#btn-refresh-quotation-indicator').on('click', function (e) {
             document.getElementById('quotation-indicator-data').value = "";
-            loadQuotationIndicator('quotation-indicator-data');
+            indicatorClass.loadQuotationIndicator('quotation-indicator-data');
             $.fn.notifyPopup({description: $.fn.transEle.attr('data-refreshed')}, 'success');
         });
 

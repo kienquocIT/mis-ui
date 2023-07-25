@@ -29,6 +29,8 @@ $(function () {
         loadDataClass.loadInitQuotationExpense('data-init-quotation-create-tables-expense');
         // load config
         loadDataClass.loadInitQuotationConfig('quotation-config-data', formSubmit.attr('data-method'));
+        // load first time indicator
+        indicatorClass.loadQuotationIndicator('quotation-indicator-data', true);
 
         dataTableClass.dataTableProduct(data,'datable-quotation-create-product');
         dataTableClass.dataTableCost(data, 'datable-quotation-create-cost');
@@ -1176,6 +1178,10 @@ $(function () {
                 is_sale_order = true;
             }
             let _form = new SetupFormSubmit(formSubmit);
+
+            // Load again indicator when Submit
+            indicatorClass.loadQuotationIndicator('quotation-indicator-data');
+
             submitClass.setupDataSubmit(_form, is_sale_order);
             let submitFields = [
                 'title',

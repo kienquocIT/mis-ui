@@ -539,7 +539,7 @@ $(document).ready(function () {
                 last_row.find('.input-strength').val(item.strength);
                 last_row.find('.input-weakness').val(item.weakness);
                 if (item.win_deal === true) {
-                    last_row.find('.input-win-deal').prop('checked', true);
+                    last_row.find('.input-win-deal').prop(' ', true);
                 }
             })
         }
@@ -1565,24 +1565,23 @@ $(document).ready(function () {
     $(document).on('change', '#input-close-deal', function () {
         if ($(this).is(':checked')) {
             $(this).closest('.sub-stage').addClass('bg-primary-light-5 stage-selected');
+            $('.page-content input, .page-content select, .page-content .btn').not($(this)).not($('#rangeInput')).prop('disabled', true);
         } else {
             $(this).closest('.sub-stage').removeClass('bg-primary-light-5 stage-selected');
+            $('.page-content input, .page-content select, .page-content .btn').not($(this)).not($('#rangeInput')).prop('disabled', false);
+            if($('#check-agency-role').is(':checked')){
+                $('#select-box-end-customer').prop('disabled', false);
+            }
+            else{
+                $('#select-box-end-customer').prop('disabled', true);
+            }
         }
         loadWinRate();
     })
 
-    // if (config_is_select_stage) {
-    //     $('#btn-auto-update-stage').hide();
-    // } else {
-    //     if (!$('#input-close-deal').is(':checked')) {
-    //         window.addEventListener('load', function () {
-    //             setTimeout(function () {
-    //                 autoLoadStage(true);
-    //             }, 1500);
-    //         });
-    //
-    //     }
-    // }
+    if (config_is_select_stage) {
+        $('#btn-auto-update-stage').hide();
+    }
 
     function checkOppWonOrDelivery() {
         let check = false;
@@ -1639,7 +1638,11 @@ $(document).ready(function () {
         $contact_sb.append(`<option></option>`)
         contact_list.map(function (item) {
             if (contact_list_id.includes(item.id)) {
-                $contact_sb.append(`<option value="${item.id}">${item.fullname}</option>`);
+                let report_to = null
+                if (Object.keys(item.report_to).length !== 0) {
+                    report_to = item.report_to.name;
+                }
+                $contact_sb.append(`<option data-name="${item.fullname}" data-job-title="${item.job_title}" data-mobile="${item.mobile}" data-email="${item.email}" data-report-to="` + report_to + `" value="${item.id}">${item.fullname}</option>`);
             }
         })
         $contact_sb.select2({dropdownParent: $("#create-new-call-log")});
@@ -1675,6 +1678,28 @@ $(document).ready(function () {
         "cancelClass": "btn-secondary",
         maxYear: parseInt(moment().format('YYYY'), 10) + 100
     });
+
+    $('#contact-select-box').on('change', function () {
+        if ($('#contact-select-box option:selected').attr('value')) {
+            $('#call-log-contact-name').text($('#contact-select-box option:selected').attr('data-name'));
+            $('#call-log-contact-job-title').text($('#contact-select-box option:selected').attr('data-job-title'));
+            $('#call-log-contact-mobile').text($('#contact-select-box option:selected').attr('data-mobile'));
+            $('#call-log-contact-email').text($('#contact-select-box option:selected').attr('data-email'));
+            $('#call-log-contact-report-to').text($('#contact-select-box option:selected').attr('data-report-to'));
+            let url = $('#btn-detail-call-log-contact-tab').attr('data-url').replace('0', $('#contact-select-box option:selected').attr('value'));
+            $('#btn-detail-call-log-contact-tab').attr('href', url);
+            $('#call-log-contact-detail-span').prop('hidden', false);
+        }
+        else {
+            $('#call-log-contact-name').text('');
+            $('#call-log-contact-job-title').text('');
+            $('#call-log-contact-mobile').text('');
+            $('#call-log-contact-email').text('');
+            $('#call-log-contact-report-to').text('');
+            $('#btn-detail-call-log-contact-tab').attr('href', '');
+            $('#call-log-contact-detail-span').prop('hidden', true);
+        }
+    })
 
     $('#form-create-new-call-log').submit(function (event) {
         event.preventDefault();

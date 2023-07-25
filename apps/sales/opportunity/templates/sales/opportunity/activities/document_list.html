@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'Opportunity list' %}{% endblock %}
+{% block cssHeader %}
+    <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}"/>
+{% endblock %}
+{% block pageAction %}
+    <a class="btn btn-outline-primary btn-animated btn-xs" target="_blank"
+       href="{% url "OpportunityDocumentCreate" %}" data-bs-original-title="Add New Document">
+            <span class="icon">
+                <span class="feather-icon">
+                    <i
+                            data-feather="plus">
+                    </i>
+                </span>
+                <span class="font-3 ml-1">
+                    {% trans 'New' %}
+                </span>
+            </span>
+    </a>
+{% endblock %}
+{% block pageContent %}
+
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+{% endblock %}

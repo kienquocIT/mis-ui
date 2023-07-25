@@ -1565,24 +1565,23 @@ $(document).ready(function () {
     $(document).on('change', '#input-close-deal', function () {
         if ($(this).is(':checked')) {
             $(this).closest('.sub-stage').addClass('bg-primary-light-5 stage-selected');
+            $('.page-content input, .page-content select, .page-content .btn').not($(this)).not($('#rangeInput')).prop('disabled', true);
         } else {
             $(this).closest('.sub-stage').removeClass('bg-primary-light-5 stage-selected');
+            $('.page-content input, .page-content select, .page-content .btn').not($(this)).not($('#rangeInput')).prop('disabled', false);
+            if($('#check-agency-role').is(':checked')){
+                $('#select-box-end-customer').prop('disabled', false);
+            }
+            else{
+                $('#select-box-end-customer').prop('disabled', true);
+            }
         }
         loadWinRate();
     })
 
-    // if (config_is_select_stage) {
-    //     $('#btn-auto-update-stage').hide();
-    // } else {
-    //     if (!$('#input-close-deal').is(':checked')) {
-    //         window.addEventListener('load', function () {
-    //             setTimeout(function () {
-    //                 autoLoadStage(true);
-    //             }, 1500);
-    //         });
-    //
-    //     }
-    // }
+    if (config_is_select_stage) {
+        $('#btn-auto-update-stage').hide();
+    }
 
     function checkOppWonOrDelivery() {
         let check = false;

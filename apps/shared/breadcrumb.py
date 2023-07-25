@@ -28,6 +28,12 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
         _('Home Page'), 'HomeView'
     )
 
+    # base
+    BASTION_LIST = BreadcrumbChildren(_('List'))
+    BASTION_CREATE = BreadcrumbChildren(_('Create'))
+    BASTION_DETAIL = BreadcrumbChildren(_('Detail'))
+    BASTION_UPDATE = BreadcrumbChildren(_('Update'))
+
     # hr
     HR_PAGE = BreadcrumbChildren(_('HR'))
     EMPLOYEE_LIST_PAGE = BreadcrumbChildren(_('Employee List'), 'EmployeeList')
@@ -231,6 +237,9 @@ class BreadcrumbView:
     ]
 
     EMPLOYEE_CREATE_PAGE = EMPLOYEE_LIST_PAGE + [BreadcrumbItem.EMPLOYEE_CREATE_PAGE]
+
+    EMPLOYEE_UPDATE_PAGE = EMPLOYEE_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+    EMPLOYEE_DETAIL_PAGE = EMPLOYEE_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
 
     USER_LIST_PAGE = [
         BreadcrumbItem.HOME_PAGE,

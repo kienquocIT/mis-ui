@@ -99,6 +99,7 @@ class EmployeeDetail(View):
     @mask_view(
         auth_require=True,
         template='core/hr/employee/employee_detail.html',
+        breadcrumb='EMPLOYEE_DETAIL_PAGE',
         menu_active='menu_employee_list',
     )
     def get(self, request, pk, *args, **kwargs):
@@ -115,10 +116,10 @@ class EmployeeDetail(View):
 
 
 class EmployeeUpdate(View):
-
     @mask_view(
         auth_require=True,
         template='core/hr/employee/employee_update.html',
+        breadcrumb='EMPLOYEE_UPDATE_PAGE',
         menu_active='menu_employee_list',
     )
     def get(self, request, pk, *args, **kwargs):
@@ -411,7 +412,7 @@ class GroupDetailAPI(APIView):
         is_api=True
     )
     def put(self, request, pk, *args, **kwargs):
-        return update_hr_application(
+        return EmployeeDetailAPI.update_hr_application(
             request=request,
             url=ApiURL.GROUP_DETAIL,
             pk=pk,

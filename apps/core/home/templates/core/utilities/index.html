@@ -8,19 +8,34 @@
         <form id="frmTest" data-url="xxxx" data-method="POST">
             {% csrf_token %}
             <div class="row">
-                <div class="col-4">
+                <div class="col-3">
+                    <div class="form-group">
+                        <label for="inputTest1" class="form-label">Upload File 0</label>
+                        <button
+                                id="inputTest1"
+                                type="button"
+                                class="form-control btn btn-dark btn-file-upload text-white"
+                                data-f-input-name="inputTest1"
+                                data-f-input-required="true"
+                                data-f-accept="image/*"
+                        >Click me 0!
+                        </button>
+                        <small>Đang cho phép: "image/*"</small>
+                    </div>
+                </div>
+                <div class="col-3">
                     <div class="form-group">
                         <label for="inputTest1" class="form-label">Upload File 1</label>
                         <button
                                 type="button"
-                                class="form-control btn btn-success btn-file-upload"
+                                class="form-control btn btn-success btn-file-upload text-white"
                                 data-f-input-name="inputTest1"
                                 data-f-input-required="true"
                         >Click me 1!
                         </button>
                     </div>
                 </div>
-                <div class="col-4">
+                <div class="col-3">
                     <div class="form-group">
                         <label for="inputTest2" class="form-label">Upload File 2</label>
                         <button
@@ -34,7 +49,7 @@
                         <p id="fileNameTestDisplay"></p>
                     </div>
                 </div>
-                <div class="col-4">
+                <div class="col-3">
                     <div class="form-group">
                         <label for="inputTest3" class="form-label">Upload File 3</label>
                         <button
@@ -293,6 +308,28 @@
             };
             let ele = $('.btn-file-upload[data-f-input-name=inputTest3]')[0];
             if (ele) FileUtils.init($(ele), dataDetail);
+
+            let btn = $('#inputTest1');
+            btn.showLoadingButton();
+            setTimeout(
+                () => {
+                    btn.hideLoadingButton();
+                },
+                1000
+            );
+
+
+            let pc100 = 10;
+            let intervalPc = setInterval(
+                ()=>{
+                    if (pc100 >= 100){
+                        clearInterval(intervalPc);
+                    }
+                    $('#progresBarID').alterClass('w-*', 'w-' + pc100.toString());
+                    pc100 += 10;
+                },
+                1000
+            )
         })
     </script>
 {% endblock %}

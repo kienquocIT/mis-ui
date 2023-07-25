@@ -1,0 +1,135 @@
+{% load i18n %}
+<span
+        id="idBlockRangeMasterElement"
+        class="hidden"
+        data-msg-least-one="{% trans 'Allow at least one permit' %}"
+        data-msg-need-drop="{% trans 'Need drop this row when allow at least one permit' %}"
+        data-msg-are-u-sure="{% trans 'Are you sure?' %}"
+        data-msg-not-revert="{% trans "You won't be able to revert this!" %}"
+        data-msg-yes-delete-it="{% trans 'Yes, delete it!' %}"
+        data-msg-cancel="{% trans 'Cancel' %}"
+        data-msg-delete="{% trans 'Delete' %}"
+></span>
+{#<button class="btn btn-danger" type="button" onclick="new HandlePermissions().combinesData()">Click</button>#}
+{#{% if add_new_enabled == "true" %}#}
+{#    <p>#}
+{#        <small class="text-danger">** {% trans 'Order will be arranged and grouped by app when updated' %}</small>#}
+{#    </p>#}
+{#{% endif %}#}
+<script type="application/json" id="tblPermissionInitData"></script>
+<table
+        id="permissions_list" class="table nowrap w-100"
+        data-change-enable="{% if add_new_enabled == "true" %} true {% else %} false {% endif %}"
+>
+    <thead>
+    <tr>
+        <th>#</th>
+        <th>{% trans 'Application' %}</th>
+        <th>{% trans 'All' %}</th>
+        <th>{% trans 'Create' %}</th>
+        <th>{% trans 'View' %}</th>
+        <th>{% trans 'Edit' %}</th>
+        <th>{% trans 'Delete' %}</th>
+        <th>{% trans 'Jurisdiction' %}</th>
+        <th>
+            <div class="d-flex align-items-center justify-content-end">{% trans 'Actions' %}</div>
+        </th>
+    </tr>
+    </thead>
+    <tbody></tbody>
+    {% if add_new_enabled == "true" %}
+        <tfoot>
+        <tr class="bg-green-light-5">
+            <td>
+                <i
+                        class="fa-solid fa-circle-info text-info"
+                        data-bs-toggle="tooltip" data-bs-placement="right"
+                        title="{% trans 'Setup permission pre-commitment' %}"
+                ></i>
+            </td>
+            <td>
+                <select class="form-control select2" id="newRowApp"></select>
+            </td>
+            <td>
+                <div class="form-check form-switch">
+                    <input
+                            type="checkbox" class="form-check-input row-e-all" name="all-1"
+                            id="newRowAllCheck"
+                    >
+                </div>
+            </td>
+            <td>
+                <div class="form-check form-switch">
+                    <input
+                            type="checkbox" class="form-check-input row-e-child" name="all-1"
+                            id="newRowCreateCheck"
+                    >
+                </div>
+            </td>
+            <td>
+                <div class="form-check form-switch">
+                    <input
+                            type="checkbox" class="form-check-input row-e-child" name="all-1"
+                            id="newRowViewCheck"
+                    >
+                </div>
+            </td>
+            <td>
+                <div class="form-check form-switch">
+                    <input
+                            type="checkbox" class="form-check-input row-e-child" name="all-1"
+                            id="newRowEditCheck"
+                    >
+                </div>
+            </td>
+            <td>
+                <div class="form-check form-switch">
+                    <input
+                            type="checkbox" class="form-check-input row-e-child" name="all-1"
+                            id="newRowDeleteCheck"
+                    >
+                </div>
+            </td>
+            <td>
+                <select class="form-control" id="newRowRange">
+                    <option value="1">{% trans "Themselves" %}</option>
+                    <option value="2">{% trans "Their staff" %}</option>
+                    <option value="3">{% trans "Member in their group" %}</option>
+                    <option value="4">{% trans "All users" %}</option>
+                </select>
+            </td>
+            <td>
+                <div class="d-flex align-items-center justify-content-end">
+                    <button
+                            class="btn btn-primary" type="button" id="btnAddNewRowPerms"
+                    >{% trans 'Add' %}</button>
+                </div>
+            </td>
+        </tr>
+        <tr class="bg-sky-light-5">
+            <td class="wrap-text" colspan="1">
+                <i
+                        class="fa-solid fa-bolt text-warning"
+                        data-bs-toggle="tooltip" data-bs-placement="right"
+                        title="{% trans 'Quick Setup' %}"
+                ></i>
+            </td>
+            <td colspan="8">
+                <button class="btn btn-primary mr-1">Simple</button>
+                <button class="btn btn-primary mr-1">Manager</button>
+                <button class="btn btn-primary mr-1">Administrator</button>
+                <button class="btn btn-primary mr-1">HR Manage</button>
+            </td>
+        </tr>
+        </tfoot>
+    {% else %}
+        <div class="hidden">
+            <select class="form-control" id="newRowRange">
+                <option value="1">{% trans "Themselves" %}</option>
+                <option value="2">{% trans "Their staff" %}</option>
+                <option value="3">{% trans "Member in their group" %}</option>
+                <option value="4">{% trans "All users" %}</option>
+            </select>
+        </div>
+    {% endif %}
+</table>

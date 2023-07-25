@@ -297,8 +297,9 @@ $(function () {
                     let emp_current = dict_sale_person[employee_current_id];
                     select_box_sale_person.append(`<option value="${emp_current.id}" selected">${emp_current.full_name}</option>`)
                 }
+                let list_customer_am = dict_customer[$(this).val()].manager.map(obj=>obj.id)
                 list_sale_person.map(function (item) {
-                    if (item.group.id === group_id) {
+                    if (item.group.id === group_id && list_customer_am.includes(item.id)) {
                         select_box_sale_person.append(`<option value="${item.id}">${item.full_name}</option>`)
                     }
                 })

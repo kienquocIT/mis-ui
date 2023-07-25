@@ -39,14 +39,11 @@
             class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret d-lg-inline-block d-none btn_support_submit"
             href="#" data-bs-toggle="tooltip"
             data-bs-placement="top"
-            title="save"
-            data-bs-original-title="Save"
+            title="{% trans 'Save' %}"
             data-form-id="frm_employee_update"
     >
-        <span class="btn-icon-wrap">
-            <span class="feather-icon">
-                <i data-feather="save"></i>
-            </span>
+        <span class="icon">
+            <i class="fa-regular fa-floppy-disk"></i>
         </span>
     </a>
 {% endblock %}
@@ -54,17 +51,17 @@
 {% block pageContent %}
     <ul class="nav nav-light nav-tabs">
         <li class="nav-item">
-            <a class="nav-link active" data-bs-toggle="tab" href="#tab_info">
-                <span class="nav-link-text">Information</span>
+            <a class="nav-link active" data-bs-toggle="tab" href="#tab-info">
+                <span class="nav-link-text">{% trans 'General Information' %}</span>
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="tab" href="#tab_app">
-                <span class="nav-link-text">Plan-Application</span>
+            <a class="nav-link" data-bs-toggle="tab" href="#tab-app">
+                <span class="nav-link-text">{% trans 'Plan-Application' %}</span>
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="tab" href="#tab_permissions">
+            <a class="nav-link" data-bs-toggle="tab" href="#tab-permissions">
                 <span class="nav-link-text">{% trans 'Permissions' %}</span>
             </a>
         </li>
@@ -79,7 +76,7 @@
     >
         {% csrf_token %}
         <div class="tab-content">
-            <div class="tab-pane fade show active" id="tab_info">
+            <div class="tab-pane fade show active" id="tab-info">
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-8">
@@ -100,10 +97,7 @@
                             <div class="row">
                                 <div class="col-6">
                                     <div class="form-group">
-                                        <label class="form-label">
-                                            {% trans 'First Name' %}
-                                            <span class="field-required">(*)</span>
-                                        </label>
+                                        <label class="form-label required">{% trans 'First Name' %}</label>
                                         <input
                                                 type="text" class="form-control"
                                                 placeholder="A"
@@ -116,10 +110,7 @@
                                 </div>
                                 <div class="col-6">
                                     <div class="form-group">
-                                        <label class="form-label">
-                                            {% trans 'Last Name' %}
-                                            <span class="field-required">(*)</span>
-                                        </label>
+                                        <label class="form-label required">{% trans 'Last Name' %}</label>
                                         <input
                                                 type="text" placeholder="Nguyen Van"
                                                 class="form-control"
@@ -147,9 +138,7 @@
                     <div class="row">
                         <div class="col-4">
                             <div class="form-group">
-                                <label class="form-label">{% trans 'Email' %}<span
-                                        class="field-required"
-                                >(*)</span></label>
+                                <label class="form-label required">{% trans 'Email' %}</label>
                                 <input
                                         type="email" class="form-control"
                                         placeholder="customer@mtsolution.com.vn"
@@ -163,9 +152,7 @@
                         <div class="col-4">
 
                             <div class="form-group">
-                                <label class="form-label">{% trans 'Phone' %}<span
-                                        class="field-required"
-                                >(*)</span></label>
+                                <label class="form-label required">{% trans 'Phone' %}</label>
                                 <input
                                         type="text" placeholder="(+84) 987-654-321"
                                         class="form-control"
@@ -233,24 +220,23 @@
                     </div>
                     <div class="row">
                         <div class="form-group">
-                            <div class="form-check form-switch form-switch-lg mb-1" style="padding-left: 0">
-                                <label class="form-label">
-                                    {% trans 'Active the employee after created' %}
-                                    <span class="field-required">(*)</span>
-                                </label>
+                            <div class="form-check form-switch">
                                 <input
                                         type="checkbox"
                                         class="form-check-input"
-                                        name="is_active" checked
+                                        name="is_active"
+                                        checked
                                         required
-                                        style="margin-left: 0"
                                 >
+                                <label class="form-label required">
+                                    {% trans 'Active the employee after created' %}
+                                </label>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="tab-pane fade" id="tab_app">
+            <div class="tab-pane fade" id="tab-app">
                 <table
                         id="datable-employee-plan-app-update"
                         data-url="{% url 'TenantPlanListAPI' %}"
@@ -261,19 +247,8 @@
                 </table>
                 <input type="hidden" id="is-check-app-employee-update" value="0">
             </div>
-            <div class="tab-pane fade" id="tab_permissions">
-                <table id="permissions_list" class="table nowrap w-100">
-                    <thead>
-                    <tr>
-                        <th>{% trans 'App' %}</th>
-                        <th>{% trans 'All' %}</th>
-                        <th>{% trans 'View' %}</th>
-                        <th>{% trans 'Edit' %}</th>
-                        <th>{% trans 'Delete' %}</th>
-                    </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+            <div class="tab-pane fade" id="tab-permissions">
+                {% include 'core/hr/employee/extends/permissions.html' with add_new_enabled="true" %}
             </div>
         </div>
     </form>
@@ -302,9 +277,5 @@
 
     <script src="{% static 'assets/js/core/hr/employee/employee_update.js' %}"></script>
 
-    <script>
-        $(document).ready(function () {
-            $('#permissions_list').DataTableDefault({});
-        })
-    </script>
+    <script src="{% static 'assets/js/core/hr/employee/permissions.js' %}"></script>
 {% endblock %}

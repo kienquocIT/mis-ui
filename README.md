@@ -457,6 +457,7 @@ MEDIA_SECRET_TOKEN_UI={KEY_MAP_WITH_SETTING_MEDIA_CLOUD_SV}
             data-f-input-required="true"
             data-f-input-disabled="false"
             data-f-name-ele-id="#fileNameTestDisplay"
+            data-f-accept=".docx, image/*"
         >Click me!</button>
         <p id="fileNameTestDisplay"></p>
     </div>
@@ -466,6 +467,7 @@ MEDIA_SECRET_TOKEN_UI={KEY_MAP_WITH_SETTING_MEDIA_CLOUD_SV}
 # data-f-input-required: (true/false) attribute "required" của thẻ input text được khởi tạo
 # data-f-input-disabled: (true/false) attribute "disabled" của thẻ input text được khởi tạo
 # data-f-name-ele-id: ID name thẻ hiển thị tên file và dung lượng (không có sẽ tạo <small>)
+# data-f-accept: (default: "*": cho phép tất cả) các kiểu file được chấp thuận (hàm valid sẽ valid theo cấu hình), tham khảo tạo: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file
 ```
 
 ##### Default: auto init .btn-file-upload with attribute config

@@ -539,7 +539,7 @@ $(document).ready(function () {
                 last_row.find('.input-strength').val(item.strength);
                 last_row.find('.input-weakness').val(item.weakness);
                 if (item.win_deal === true) {
-                    last_row.find('.input-win-deal').prop('checked', true);
+                    last_row.find('.input-win-deal').prop(' ', true);
                 }
             })
         }

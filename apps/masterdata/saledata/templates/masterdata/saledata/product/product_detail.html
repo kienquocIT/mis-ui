@@ -47,18 +47,22 @@
         {% csrf_token %}
         <div class="row">
             <div class="col-9">
+                <div class="row mb-3">
+                    <div class="col-2">
+                        <span class="badge badge-soft-primary badge-outline w-100" style="font-size: large" id="product-code"></span>
+                    </div>
+                </div>
                 <div class="row">
-                    <div class="col-4">
-                        <div class="form-group">
-                            <label class="form-label required">{% trans "Product Code" %}</label>
-                            <div class="readonly">
-                                <input type="text" name="code" placeholder="Input Code" class="form-control"
-                                   id="product-code"
+                    <div class="form-group col-4">
+                        <label class="form-label required">{% trans "Product Name" %}</label>
+                        <div class="readonly">
+                            <input type="text" name="title" placeholder="Input Name" class="form-control"
+                                   id="product-title"
                                    readonly>
-                            </div>
+                            <span></span>
                         </div>
                     </div>
-                    <div class="col-4 mt-5 text-center">
+                    <div class="col-4 text-center mt-5">
                         <div class="form-check form-check-inline mt-2">
                             <input class="form-check-input" type="checkbox" id="check-tab-inventory" value="option1"
                                    checked>
@@ -74,20 +78,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="form-group col-8">
-                        <label class="form-label required">{% trans "Product Name" %}</label>
-                        <div class="readonly">
-                            <input type="text" name="title" placeholder="Input Name" class="form-control"
-                                   id="product-title"
-                                   readonly>
-                            <span></span>
-                        </div>
-                    </div>
-                </div>
             </div>
             <div class="col-3">
-                <div class="form-group mt-5">
+                <div class="form-group">
                     <div id="upload-photo" class="form-control">{% trans "photo" %}</div>
                     <input id="input-photo" type="file" class="hidden" name="photo">
                 </div>
@@ -293,9 +286,35 @@
                                 readonly="readonly" name="valuation_method"></select>
                     </div>
                 </div>
-                <div class="row mt-5 mb-20">
+                <div class="row mb-20">
+                    <div class="col-5 mt-8">
+                        <div>
+                            <span class="mb-3 badge-status">
+                                <span class="badge badge-primary badge-indicator"></span>
+                                <span class="badge-label text-secondary">{% trans 'Product warehouse overview' %}</span>
+                            </span>
+                        </div>
+                        <table id="datatable-warehouse-overview" class="table nowrap w-100"
+                               data-url="{% url "WareHouseListAPI" %}"
+                               data-method="GET">
+                            <thead>
+                            <th>{% trans "Stock" %}</th>
+                            <th>{% trans "Wait for delivery" %}</th>
+                            <th>{% trans "Wait for receipt" %}</th>
+                            <th>{% trans "Available" %}</th>
+                            </thead>
+                            <tfoot>
+                            </tfoot>
+                        </table>
+                    </div>
                     <div class="col-1"></div>
-                    <div class="col-10">
+                    <div class="col-6 mt-8">
+                        <div>
+                            <span class="mb-3 badge-status">
+                                <span class="badge badge-primary badge-indicator"></span>
+                                <span class="badge-label text-secondary">{% trans 'Product warehouse detail' %}</span>
+                            </span>
+                        </div>
                         <table id="datatable-warehouse-list" class="table nowrap w-100"
                                data-url="{% url "WareHouseListAPI" %}"
                                data-method="GET">
@@ -303,30 +322,17 @@
                             <th>{% trans "Warehouse Code" %}</th>
                             <th>{% trans "Warehouse Name" %}</th>
                             <th>{% trans "Stock" %}</th>
-                            <th>{% trans "wait for delivery" %}</th>
-                            <th>{% trans "wait for receipt" %}</th>
-                            <th>{% trans "Available" %}</th>
                             </thead>
                             <tbody></tbody>
                             <tfoot>
-                            <tr>
-                                <th></th>
-                                <th class="text-primary text-center" style="font-weight: bolder; font-size: larger">
-                                    TOTAL
-                                </th>
-                                <th class="text-primary text-center"
-                                    style="font-weight: bolder; font-size: larger"></th>
-                                <th class="text-primary text-center"
-                                    style="font-weight: bolder; font-size: larger"></th>
-                                <th class="text-primary text-center"
-                                    style="font-weight: bolder; font-size: larger"></th>
-                                <th class="text-primary text-center"
-                                    style="font-weight: bolder; font-size: larger"></th>
+                            <tr style="background-color: #ebf5f5">
+                                <th class="text-primary text-center" style="font-weight: bolder; font-size: larger"></th>
+                                <th class="text-primary text-center" style="font-weight: bolder; font-size: larger">{% trans 'TOTAL' %}</th>
+                                <th class="text-primary text-center" style="font-weight: bolder; font-size: larger"></th>
                             </tr>
                             </tfoot>
                         </table>
                     </div>
-                    <div class="col-1"></div>
                 </div>
             </div>
             <div class="tab-pane fade" id="tab_purchase"></div>

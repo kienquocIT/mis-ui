@@ -891,6 +891,10 @@ msgid "Not found"
 msgstr "Không tìm thấy"
 
 #
+msgid "Forbidden"
+msgstr "Không có quyền truy cập"
+
+#
 msgid "Valid time"
 msgstr "Thời gian hợp lệ"
 
@@ -2514,16 +2518,60 @@ msgid "Employee update successfully"
 msgstr "Cập nhật thông tin nhân viên thành công"
 
 #
-msgid "User's staff (lower grade)"
-msgstr "Nhân viên của người dùng (cấp thấp hơn)"
+msgid "Themselves"
+msgstr "Bản thân họ"
 
 #
-msgid "All staff in user's group"
-msgstr "Tất cả nhân viên nhóm của người dùng"
+msgid "Their staff"
+msgstr "Nhân viên cấp dưới"
+
+#
+msgid "Member in their group"
+msgstr "Thành viên nhóm"
 
 #
 msgid "All users"
-msgstr "Tổng số người dùng"
+msgstr "Mọi người"
+
+#
+msgid "Quick Setup"
+msgstr "Cấu hình nhanh"
+
+#
+msgid "Order will be arranged and grouped by app when updated"
+msgstr "Thứ tự sẽ được sắp xếp lại và gom nhóm theo ứng dụng khi cập nhật"
+
+#
+msgid "Need drop this row when allow at least one permit"
+msgstr "Nên loại bỏ dòng này khi không cấp quyền"
+
+#
+msgid "Allow at least one permit"
+msgstr "Cho phép ít nhất một quyền"
+
+#
+msgid "Are you sure?"
+msgstr "Bạn chắc chắn?"
+
+#
+msgid "You won't be able to revert this!"
+msgstr "Bạn sẽ không thể hoàn tác nó!"
+
+#
+msgid "Yes, delete it!"
+msgstr "Đồng ý, xóa nó!"
+
+#
+msgid "Maximum size {size}MiB"
+msgstr "Kích thước tối đa {size}MiB"
+
+#
+msgid "File type not allowed for uploading"
+msgstr "Loại tệp không được phép tải lên"
+
+#
+msgid "It must be one of the following file types:"
+msgstr "Phải là một trong các loại tệp sau:"
 
 #
 msgid "Promotion create successfully"
@@ -3600,3 +3648,19 @@ msgstr "Dữ liệu đã được làm mới"
 #
 msgid "Delivery before"
 msgstr "Đã giao"
+
+#
+msgid "General Information"
+msgstr "Thông tin chung"
+
+#
+msgid "Plan-Application"
+msgstr "Gói - Ứng dụng"
+
+#
+msgid "Jurisdiction"
+msgstr "Phạm vi quyền hạn"
+
+#
+msgid "Setup permission pre-commitment"
+msgstr "Cấu hình quyền trước khi thêm vào"

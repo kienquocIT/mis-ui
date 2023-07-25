@@ -17,85 +17,84 @@ $(document).ready(function () {
         let eleDateJoined = $('#employee-date-joined-update');
         let eleRole = $('#select-box-role-employee-update');
 
-        $.fn.callAjax(url, method).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (data.hasOwnProperty('employee')) {
+        $.fn.callAjax(url, method).then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                if (data.hasOwnProperty('employee')) {
+                    new HandlePermissions().loadData(data.employee.plan_app, data.employee.permission_by_configured || []);
 
-                        if (data.employee.user.hasOwnProperty('full_name')) {
-                            eleUser.text("");
-                            eleUser.append(`<option value="` + data.employee.user.id + `" data-first-name="${data.employee.user.first_name}" data-last-name="${data.employee.user.last_name}" data-email="${data.employee.user.email}" data-phone="${data.employee.user.phone}">` + data.employee.user.full_name + `</option>`)
-                        } else {
-                            eleUser.text("");
-                            eleUser.append(`<option>` + `</option>`)
+                    if (data.employee.user.hasOwnProperty('full_name')) {
+                        eleUser.text("");
+                        eleUser.append(`<option value="` + data.employee.user.id + `" data-first-name="${data.employee.user.first_name}" data-last-name="${data.employee.user.last_name}" data-email="${data.employee.user.email}" data-phone="${data.employee.user.phone}">` + data.employee.user.full_name + `</option>`)
+                    } else {
+                        eleUser.text("");
+                        eleUser.append(`<option>` + `</option>`)
+                    }
+                    loadUserList();
+
+                    eleFirstName.val(data.employee.first_name);
+                    eleLastName.val(data.employee.last_name);
+                    eleEmail.val(data.employee.email);
+                    elePhone.val(data.employee.phone);
+
+                    if (data.employee.group.hasOwnProperty('title')) {
+                        eleDepartment.text("");
+                        eleDepartment.append(`<option value="` + data.employee.group.id + `">` + data.employee.group.title + `</option>`)
+                    } else {
+                        eleDepartment.text("");
+                        eleDepartment.append(`<option>` + `</option>`)
+                    }
+                    loadGroupList();
+
+                    if (data.employee.dob) {
+                        eleDob.val(moment(data.employee.dob).format('YYYY-MM-DD'));
+                    } else {
+                        eleDob.val(null);
+                    }
+
+                    if (data.employee.date_joined) {
+                        eleDateJoined.val(moment(data.employee.date_joined).format('YYYY-MM-DD'));
+                    } else {
+                        eleDateJoined.val(null);
+                    }
+
+                    let dataRoleInstance = [];
+                    if (typeof data.employee.role !== 'undefined' && data.employee.role.length > 0) {
+                        for (let r = 0; r < data.employee.role.length; r++) {
+                            dataRoleInstance.push(data.employee.role[r].id);
                         }
-                        loadUserList();
+                        eleRole.val(dataRoleInstance);
+                        instanceData['role'] = dataRoleInstance;
+                    }
 
-                        eleFirstName.val(data.employee.first_name);
-                        eleLastName.val(data.employee.last_name);
-                        eleEmail.val(data.employee.email);
-                        elePhone.val(data.employee.phone);
+                    $('#select-box-role-employee-update').select2();
 
-                        if (data.employee.group.hasOwnProperty('title')) {
-                            eleDepartment.text("");
-                            eleDepartment.append(`<option value="` + data.employee.group.id + `">` + data.employee.group.title + `</option>`)
-                        } else {
-                            eleDepartment.text("");
-                            eleDepartment.append(`<option>` + `</option>`)
-                        }
-                        loadGroupList();
-
-                        if (data.employee.dob) {
-                            eleDob.val(moment(data.employee.dob).format('YYYY-MM-DD'));
-                        } else {
-                            eleDob.val(null);
-                        }
-
-                        if (data.employee.date_joined) {
-                            eleDateJoined.val(moment(data.employee.date_joined).format('YYYY-MM-DD'));
-                        } else {
-                            eleDateJoined.val(null);
-                        }
-
-                        let dataRoleInstance = [];
-                        if (typeof data.employee.role !== 'undefined' && data.employee.role.length > 0) {
-                            for (let r = 0; r < data.employee.role.length; r++) {
-                                dataRoleInstance.push(data.employee.role[r].id);
-                            }
-                            eleRole.val(dataRoleInstance);
-                            instanceData['role'] = dataRoleInstance;
-                        }
-
-                        $('#select-box-role-employee-update').select2();
-
-                        if (typeof data.employee.plan_app !== 'undefined' && data.employee.plan_app.length > 0) {
-                            let flag_check = $('#is-check-app-employee-update');
-                            let flag_update = 0;
-                            for (let t = 0; t < data.employee.plan_app.length; t++) {
-                                let planCode = "#" + data.employee.plan_app[t].code
-                                let instancePlan = $(planCode)
-                                if (data.employee.plan_app[t].application && Array.isArray(data.employee.plan_app[t].application)) {
-                                    let appLength = data.employee.plan_app[t].application.length;
-                                    for (let i = 0; i < appLength; i++) {
-                                        let planAppInstance = instancePlan.closest('td').find('.employee-application');
-                                        let planAppInstanceList = planAppInstance[0].children;
-                                        for (let app = 0; app < planAppInstanceList.length; app++) {
-                                            if (planAppInstanceList[app].id === data.employee.plan_app[t].application[i].id) {
-                                                let appInput = planAppInstanceList[app].querySelector('.check-plan-application');
-                                                appInput.checked  = true;
-                                                flag_update++;
-                                            }
+                    if (typeof data.employee.plan_app !== 'undefined' && data.employee.plan_app.length > 0) {
+                        let flag_check = $('#is-check-app-employee-update');
+                        let flag_update = 0;
+                        for (let t = 0; t < data.employee.plan_app.length; t++) {
+                            let planCode = "#" + data.employee.plan_app[t].code
+                            let instancePlan = $(planCode)
+                            if (data.employee.plan_app[t].application && Array.isArray(data.employee.plan_app[t].application)) {
+                                let appLength = data.employee.plan_app[t].application.length;
+                                for (let i = 0; i < appLength; i++) {
+                                    let planAppInstance = instancePlan.closest('td').find('.employee-application');
+                                    let planAppInstanceList = planAppInstance[0].children;
+                                    for (let app = 0; app < planAppInstanceList.length; app++) {
+                                        if (planAppInstanceList[app].id === data.employee.plan_app[t].application[i].id) {
+                                            let appInput = planAppInstanceList[app].querySelector('.check-plan-application');
+                                            appInput.checked = true;
+                                            flag_update++;
                                         }
                                     }
                                 }
                             }
-                            flag_check.val(String(flag_update));
                         }
+                        flag_check.val(String(flag_update));
                     }
                 }
             }
-        )
+        })
     }
 
     function loadUserList() {
@@ -103,22 +102,20 @@ $(document).ready(function () {
         let ele = $('#select-box-user-update');
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (data.hasOwnProperty('company_user_list') && Array.isArray(data.company_user_list)) {
-                        data.company_user_list.map(function (item) {
-                            if (Object.keys(item.user).length !== 0) {
-                                if (item.id !== ele[0][0].value) {
-                                    ele.append(`<option value="` + item.user.id + `" data-first-name="${item.user.first_name}" data-last-name="${item.user.last_name}" data-email="${item.user.email}" data-phone="${item.user.phone}">` + item.user.full_name + `</option>`);
-                                }
+        $.fn.callAjax(url, method).then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                if (data.hasOwnProperty('company_user_list') && Array.isArray(data.company_user_list)) {
+                    data.company_user_list.map(function (item) {
+                        if (Object.keys(item.user).length !== 0) {
+                            if (item.id !== ele[0][0].value) {
+                                ele.append(`<option value="` + item.user.id + `" data-first-name="${item.user.first_name}" data-last-name="${item.user.last_name}" data-email="${item.user.email}" data-phone="${item.user.phone}">` + item.user.full_name + `</option>`);
                             }
-                        })
-                    }
+                        }
+                    })
                 }
             }
-        )
+        })
     }
 
     // load role list
@@ -126,19 +123,17 @@ $(document).ready(function () {
         let ele = $('#select-box-role-employee-update');
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (data.hasOwnProperty('role_list') && Array.isArray(data.role_list)) {
-                        data.role_list.map(function (item) {
-                            ele.append(`<option value="` + item.id + `">` + item.title + `</option>`)
-                        })
-                    }
-                    loadInstanceData();
+        $.fn.callAjax(url, method).then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                if (data.hasOwnProperty('role_list') && Array.isArray(data.role_list)) {
+                    data.role_list.map(function (item) {
+                        ele.append(`<option value="` + item.id + `">` + item.title + `</option>`)
+                    })
                 }
+                loadInstanceData();
             }
-        )
+        })
     }
 
     // load group list
@@ -146,20 +141,18 @@ $(document).ready(function () {
         let ele = $('#select-box-group-employee-update');
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (data.hasOwnProperty('group_list') && Array.isArray(data.group_list)) {
-                        data.group_list.map(function (item) {
-                            if (item.id !== ele[0][0].value) {
-                                ele.append(`<option value="` + item.id + `">` + item.title + `</option>`)
-                            }
-                        })
-                    }
+        $.fn.callAjax(url, method).then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                if (data.hasOwnProperty('group_list') && Array.isArray(data.group_list)) {
+                    data.group_list.map(function (item) {
+                        if (item.id !== ele[0][0].value) {
+                            ele.append(`<option value="` + item.id + `">` + item.title + `</option>`)
+                        }
+                    })
                 }
             }
-        )
+        })
     }
 
     // load Plan App
@@ -167,25 +160,24 @@ $(document).ready(function () {
         let tableApply = $('#datable-employee-plan-app-update');
         let url = tableApply.attr('data-url');
         let method = tableApply.attr('data-method');
-        let listTypeBtn = ["primary", "success", "info", "danger", "warning", ]
-        $.fn.callAjax(url, method).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (data.hasOwnProperty('tenant_plan_list') && Array.isArray(data.tenant_plan_list)) {
-                        for (let t = 0; t < data.tenant_plan_list.length; t++) {
-                            let licenseQuantity = null
-                            if (data.tenant_plan_list[t].license_quantity !== null) {
-                                licenseQuantity = data.tenant_plan_list[t].license_quantity;
-                            } else {
-                                licenseQuantity = "Unlimited"
-                            }
+        let listTypeBtn = ["primary", "success", "info", "danger", "warning",]
+        $.fn.callAjax(url, method).then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                if (data.hasOwnProperty('tenant_plan_list') && Array.isArray(data.tenant_plan_list)) {
+                    for (let t = 0; t < data.tenant_plan_list.length; t++) {
+                        let licenseQuantity = null
+                        if (data.tenant_plan_list[t].license_quantity !== null) {
+                            licenseQuantity = data.tenant_plan_list[t].license_quantity;
+                        } else {
+                            licenseQuantity = "Unlimited"
+                        }
 
-                            let app_list = ``
-                            if (data.tenant_plan_list[t].plan.application && Array.isArray(data.tenant_plan_list[t].plan.application)) {
-                                let appLength = data.tenant_plan_list[t].plan.application.length;
-                                for (let i = 0; i < appLength; i++) {
-                                    app_list += `<li class="list-break mt-2 mb-2" style="display: inline" id="${data.tenant_plan_list[t].plan.application[i].id}">
+                        let app_list = ``
+                        if (data.tenant_plan_list[t].plan.application && Array.isArray(data.tenant_plan_list[t].plan.application)) {
+                            let appLength = data.tenant_plan_list[t].plan.application.length;
+                            for (let i = 0; i < appLength; i++) {
+                                app_list += `<li class="list-break mt-2 mb-2" style="display: inline" id="${data.tenant_plan_list[t].plan.application[i].id}">
                                             <input
                                                     type="checkbox" id="list-app-add-employee-${t}"
                                                     name="list-app-add-employee-${t}" class="form-check-input check-plan-application"
@@ -198,9 +190,9 @@ $(document).ready(function () {
                                                     for="list-app-add-employee" class="form-check-label"
                                             >${data.tenant_plan_list[t].plan.application[i].title}</label>
                                         </li>`
-                                }
                             }
-                            $('#datable-employee-plan-app-update tbody').append(`<tr>
+                        }
+                        $('#datable-employee-plan-app-update tbody').append(`<tr>
                         <td>
                             <div class="row mb-6" style="border-color: #007D88; border-style: solid; border-width: 1px; border-top: 0; border-right: 0; border-left: 0">
                                 <div>
@@ -226,11 +218,10 @@ $(document).ready(function () {
                             </div>
                         </td>
                     </tr>`)
-                        }
                     }
                 }
             }
-        )
+        })
     }
 
     function setupDataPlanApp() {
@@ -266,7 +257,7 @@ $(document).ready(function () {
                 }
             }
         }
-    return dataPlanAppSubmit
+        return dataPlanAppSubmit
     }
 
     function loadDefaultData() {
@@ -300,6 +291,9 @@ $(document).ready(function () {
     })
     frm.submit(function (event) {
         let frm = new SetupFormSubmit($(this));
+        let permGet = new HandlePermissions().combinesData();
+        frm.dataForm['permission_by_configured'] = permGet['data'];
+
         event.preventDefault();
         let csr = $("input[name=csrfmiddlewaretoken]").val();
         // check data submit user-app
@@ -344,25 +338,81 @@ $(document).ready(function () {
         }
 
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
-            .then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        $.fn.notifyPopup({description: data.message}, 'success')
-                        $.fn.redirectUrl(frm.dataUrlRedirect, 3000);
-                    }
-                },
-                (errs) => {
-                    if (errs.data.errors.hasOwnProperty('detail')) {
-                        $.fn.notifyPopup({description: String(errs.data.errors['detail'])}, 'failure')
-                    }
+            .then((resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    $.fn.notifyPopup({description: data.message}, 'success');
+                    $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
                 }
-            )
+            }, (errs) => {
+                if (errs.data.errors.hasOwnProperty('detail')) {
+                    $.fn.notifyPopup({description: String(errs.data.errors['detail'])}, 'failure');
+                }
+            })
     });
 });
 
 
+function updateLicenseWhenChangeUser() {
+    let tablePlanApp = document.getElementById("datable-employee-plan-app-update");
+    for (let r = 0; r < tablePlanApp.tBodies[0].rows.length; r++) {
+        let divRow = tablePlanApp.tBodies[0].rows[r].firstElementChild.firstElementChild;
+        let eleDivAppList = divRow.children[1].firstElementChild.children;
+        let licenseQuantity = divRow.querySelector('.license-quantity').value;
+        let eleLicenseUsed = divRow.querySelector('.license-used-employee');
+        for (let t = 0; t < eleDivAppList.length; t++) {
+            let app = eleDivAppList[t].querySelector('.check-plan-application');
+            if (app.checked === true) {
+                if ($('#select-box-user-update').val()) {
+                    let licenseUsed = Number(eleLicenseUsed.innerHTML) + 1;
+                    if (licenseQuantity && licenseQuantity !== "null") {
+                        if (licenseUsed <= Number(licenseQuantity)) {
+                            eleLicenseUsed.innerHTML = licenseUsed.toString();
+                        } else {
+                            $.fn.notifyPopup({description: 'Not enough license for this employee'}, 'failure');
+                            return false
+                        }
+                    } else {
+                        eleLicenseUsed.innerHTML = licenseUsed.toString();
+                    }
+                    break
+                } else {
+                    if (Number(eleLicenseUsed.innerHTML) !== 0) {
+                        let licenseUsed = Number(eleLicenseUsed.innerHTML) - 1;
+                        eleLicenseUsed.innerHTML = licenseUsed.toString();
+                    }
+                    break
+                }
+            }
+        }
+    }
+    return true
+}
+
 // Load user datas
+$('input[name="dob"]').daterangepicker({
+    singleDatePicker: true,
+    timePicker: true,
+    showDropdowns: true,
+    minYear: 1901,
+    "cancelClass": "btn-secondary",
+    maxYear: parseInt(moment().format('YYYY'), 10)
+}, function (start, end, label) {
+    var years = moment().diff(start, 'years');
+});
+
+/* Single table*/
+$('input[name="date_joined"]').daterangepicker({
+    singleDatePicker: true,
+    timePicker: true,
+    showDropdowns: true,
+    minYear: 1901,
+    "cancelClass": "btn-secondary",
+    maxYear: parseInt(moment().format('YYYY'), 10)
+}, function (start, end, label) {
+    let years = moment().diff(start, 'years');
+});
+
 $(document).on('change', '#select-box-user-update', function (e) {
     let sel = $(this)[0].options[$(this)[0].selectedIndex]
     let first_name = sel.getAttribute('data-first-name');
@@ -379,36 +429,6 @@ $(document).on('change', '#select-box-user-update', function (e) {
         sel.selected = false;
     }
 });
-
-
-$(function () {
-
-    /* Single table*/
-    $('input[name="dob"]').daterangepicker({
-        singleDatePicker: true,
-        timePicker: true,
-        showDropdowns: true,
-        minYear: 1901,
-        "cancelClass": "btn-secondary",
-        maxYear: parseInt(moment().format('YYYY'), 10)
-    }, function (start, end, label) {
-        var years = moment().diff(start, 'years');
-    });
-
-    /* Single table*/
-    $('input[name="date_joined"]').daterangepicker({
-        singleDatePicker: true,
-        timePicker: true,
-        showDropdowns: true,
-        minYear: 1901,
-        "cancelClass": "btn-secondary",
-        maxYear: parseInt(moment().format('YYYY'), 10)
-    }, function (start, end, label) {
-        var years = moment().diff(start, 'years');
-    });
-
-});
-
 
 $(document).on('click', '.check-plan-application', function (e) {
     let divRow = $(this)[0].closest('.row');
@@ -475,40 +495,3 @@ $(document).on('click', '.check-plan-application', function (e) {
         }
     }
 });
-
-
-function updateLicenseWhenChangeUser() {
-    let tablePlanApp = document.getElementById("datable-employee-plan-app-update");
-    for (let r = 0; r < tablePlanApp.tBodies[0].rows.length; r++) {
-        let divRow = tablePlanApp.tBodies[0].rows[r].firstElementChild.firstElementChild;
-        let eleDivAppList = divRow.children[1].firstElementChild.children;
-        let licenseQuantity = divRow.querySelector('.license-quantity').value;
-        let eleLicenseUsed = divRow.querySelector('.license-used-employee');
-        for (let t = 0; t < eleDivAppList.length; t++) {
-            let app = eleDivAppList[t].querySelector('.check-plan-application');
-            if (app.checked === true) {
-                if ($('#select-box-user-update').val()) {
-                    let licenseUsed = Number(eleLicenseUsed.innerHTML) + 1;
-                    if (licenseQuantity && licenseQuantity !== "null") {
-                        if (licenseUsed <= Number(licenseQuantity)) {
-                            eleLicenseUsed.innerHTML = licenseUsed.toString();
-                        } else {
-                            $.fn.notifyPopup({description: 'Not enough license for this employee'}, 'failure');
-                            return false
-                        }
-                    } else {
-                        eleLicenseUsed.innerHTML = licenseUsed.toString();
-                    }
-                    break
-                } else {
-                    if (Number(eleLicenseUsed.innerHTML) !== 0) {
-                        let licenseUsed = Number(eleLicenseUsed.innerHTML) - 1;
-                        eleLicenseUsed.innerHTML = licenseUsed.toString();
-                    }
-                    break
-                }
-            }
-        }
-    }
-    return true
-}

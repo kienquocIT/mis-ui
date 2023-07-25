@@ -23,7 +23,7 @@ $(document).ready(function () {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     if (data.hasOwnProperty('employee')) {
-
+                        new HandlePermissions().loadData(data.employee.plan_app, data.employee.permission_by_configured || []);
                         if (data.employee.user.hasOwnProperty('full_name')) {
                             eleUser.val(data.employee.user.full_name)
                         }
@@ -84,7 +84,7 @@ $(document).ready(function () {
     /***
      * on click set permission button
      */
-    $('#btn-edit-emp-permission').on('click', function(){
+    $('#btn-edit-emp-permission').on('click', function () {
         $(this).addClass("hidden")
         $('#button-save-employee-permission').removeClass('hidden');
         $('#employee-perm-detail input').attr('disabled', false);

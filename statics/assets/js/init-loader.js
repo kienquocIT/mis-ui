@@ -100,13 +100,7 @@ class UrlGatewayReverse {
         let arrAppCode = docAppCode.split(".");
         let urlData = '#';
         if (docID && arrAppCode.length === 2) {
-            urlData = $.fn.storageSystemData.attr('data-GatewayMiddleDetailView').replaceAll(
-                '_plan_', arrAppCode[0]
-            ).replaceAll(
-                '_app_', arrAppCode[1]
-            ).replaceAll(
-                '_pk_', docID
-            ) + "?" + $.param(params);
+            urlData = $.fn.storageSystemData.attr('data-GatewayMiddleDetailView').replaceAll('_plan_', arrAppCode[0]).replaceAll('_app_', arrAppCode[1]).replaceAll('_pk_', docID) + "?" + $.param(params);
         }
         return urlData;
     }
@@ -196,55 +190,47 @@ class LogController {
             this.blockDataRuntime.showLoadingWaitResponse();
             this.blockDataRuntime.empty();
             let dataRuntimeCounter = 0;
-            let intervalShowWfHistory = setInterval(
-                () => {
-                    if (dataRuntimeCounter > 5) {
+            let intervalShowWfHistory = setInterval(() => {
+                if (dataRuntimeCounter > 5) {
+                    clearInterval(intervalShowWfHistory);
+                    this.blockDataRuntime.html(`<span class="text-danger">${$.fn.storageSystemData.attr('data-msg-resource-load-failed')}</span>`).removeClass('hidden').hideLoadingWaitResponse();
+                } else {
+                    dataRuntimeCounter += 1;
+                    if (!runtimeID) runtimeID = $.fn.getWFRuntimeID();
+                    if (runtimeID) {
                         clearInterval(intervalShowWfHistory);
-                        this.blockDataRuntime.html(
-                            `<span class="text-danger">${$.fn.storageSystemData.attr('data-msg-resource-load-failed')}</span>`
-                        ).removeClass('hidden').hideLoadingWaitResponse();
-                    } else {
-                        dataRuntimeCounter += 1;
-                        if (!runtimeID) runtimeID = $.fn.getWFRuntimeID();
-                        if (runtimeID) {
-                            clearInterval(intervalShowWfHistory);
-                            $.fn.callAjax(SetupFormSubmit.getUrlDetailWithID(this.logUrl, runtimeID), 'GET',).then((resp) => {
-                                this.groupLogEle.attr('data-log-runtime-loaded', true);
-                                let data = $.fn.switcherResp(resp);
-                                if (data && $.fn.hasOwnProperties(data, ['diagram_data'])) {
-                                    let diagram_data = data['diagram_data'];
-                                    let stages = diagram_data['stages'];
-                                    this.blockDataRuntime.html(this.parseLogOfDoc(stages)).removeClass('hidden').hideLoadingWaitResponse();
-                                }
-                            });
-                        }
+                        $.fn.callAjax(SetupFormSubmit.getUrlDetailWithID(this.logUrl, runtimeID), 'GET',).then((resp) => {
+                            this.groupLogEle.attr('data-log-runtime-loaded', true);
+                            let data = $.fn.switcherResp(resp);
+                            if (data && $.fn.hasOwnProperties(data, ['diagram_data'])) {
+                                let diagram_data = data['diagram_data'];
+                                let stages = diagram_data['stages'];
+                                this.blockDataRuntime.html(this.parseLogOfDoc(stages)).removeClass('hidden').hideLoadingWaitResponse();
+                            }
+                        });
                     }
                 }
-                , 1000
-            )
+            }, 1000)
         }
 
         // log activities
         this.blockDataActivities.showLoadingWaitResponse();
         this.blockDataActivities.empty();
-        let intervalDataActivity = setInterval(
-            () => {
-                if (!pkID) pkID = this.tabActivityLog.attr('data-id-value');
-                if (this.activityUrl && pkID && (!this.groupLogEle.attr('data-log-activity-loaded') || forceLoad === true)) {
-                    clearInterval(intervalDataActivity);
-                    $.fn.callAjax(this.activityUrl, 'GET', {'doc_id': pkID}, true,).then((resp) => {
-                        this.groupLogEle.attr('data-log-activity-loaded', true);
-                        let data = $.fn.switcherResp(resp);
-                        if (data && data['status'] === 200 && data.hasOwnProperty('log_data')) {
-                            this.blockDataActivities.append(this.parseLogActivities(data['log_data'])).hideLoadingWaitResponse();
-                        }
-                    }, (errs) => {
+        let intervalDataActivity = setInterval(() => {
+            if (!pkID) pkID = this.tabActivityLog.attr('data-id-value');
+            if (this.activityUrl && pkID && (!this.groupLogEle.attr('data-log-activity-loaded') || forceLoad === true)) {
+                clearInterval(intervalDataActivity);
+                $.fn.callAjax(this.activityUrl, 'GET', {'doc_id': pkID}, true,).then((resp) => {
+                    this.groupLogEle.attr('data-log-activity-loaded', true);
+                    let data = $.fn.switcherResp(resp);
+                    if (data && data['status'] === 200 && data.hasOwnProperty('log_data')) {
+                        this.blockDataActivities.append(this.parseLogActivities(data['log_data'])).hideLoadingWaitResponse();
+                    }
+                }, (errs) => {
 
-                    })
-                }
-            },
-            1000
-        )
+                })
+            }
+        }, 1000)
     }
 }
 
@@ -289,13 +275,10 @@ class NotifyController {
                 if (data && data.hasOwnProperty('notify_data')) {
                     data['notify_data'].map((item) => {
                         let senderData = item?.['employee_sender_data']?.['full_name'];
-                        let urlData = UrlGatewayReverse.get_url(
-                            item['doc_id'], item['doc_app'],
-                            {
-                                'redirect': true,
-                                'notify_id': item['id']
-                            },
-                        );
+                        let urlData = UrlGatewayReverse.get_url(item['doc_id'], item['doc_app'], {
+                            'redirect': true,
+                            'notify_id': item['id']
+                        },);
                         let tmp = `
                             <a 
                                 href="${urlData}" 
@@ -324,8 +307,7 @@ class NotifyController {
                                 </div>
                             </a>
                         `;
-                        if (item?.['is_done'] === true) arr_seen.push(tmp);
-                        else arr_no_seen.push(tmp);
+                        if (item?.['is_done'] === true) arr_seen.push(tmp); else arr_no_seen.push(tmp);
                     })
                 }
                 if (arr_no_seen.length > 0 || arr_seen.length > 0) {
@@ -370,6 +352,11 @@ class NotifyController {
 }
 
 class FileUtils {
+    static clsButtonMain = 'btn-file-upload';
+    static numberFileSizeMiBMax = 20;
+    // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file#unique_file_type_specifiers
+    static keyTypeAccept = 'data-f-accept'; // default: undefined || null : allow all
+
     static keyInputTextID = 'data-f-input-id';
     static keyInputFileID = 'data-f-input-file-id';
     static keyInputTextName = 'data-f-input-name';
@@ -378,36 +365,77 @@ class FileUtils {
     static keyEleFileNameID = 'data-f-name-ele-id';
     static clsNameInputFile = 'input-file-upload';
 
-    static parseFileSize(file_size, fixRound = 2) {
-        // file_size: is bytes size
-        const KiB = 1024;
-        const MiB = KiB * 1024;
-        const GiB = MiB * 1024;
+    static _getMaxSizeDisplay(){
+        return $.fn.storageSystemData.attr('data-msg-file-max-size').replaceAll("{size}", FileUtils.numberFileSizeMiBMax);
+    }
 
-        if (file_size >= GiB) {
-            return (file_size / GiB).toFixed(fixRound) + " GB";
-        } else if (file_size >= MiB) {
-            return (file_size / MiB).toFixed(fixRound) + " MB";
-        } else if (file_size >= KiB) {
-            return (file_size / KiB).toFixed(fixRound) + " KB";
-        } else {
-            return file_size + " B";
+    static _checkTypeFileAllow(file_type, accept_list) {
+        file_type = file_type.toLowerCase();
+        if (accept_list.includes('*')) return true;
+
+        for (let i = 0; i < accept_list.length; i++) {
+            let typeF = accept_list[i].toLowerCase();
+            if (typeF.endsWith("/*")) {
+                if (file_type.split("/")[0] === typeF.split("/")[0]) return true;
+            } else if (typeF === file_type) return true;
         }
+
+        return false;
+    }
+
+    static checkTypeAccept(file, accept) {
+        let acceptArr = accept.split(",").map((item) => item.trim());
+        if (!FileUtils._checkTypeFileAllow(file.type, acceptArr)) {
+            let typeMsgErr = acceptArr.map((item) => `"${item}"`).join(", ");
+            $.fn.notifyB({
+                'description': `${$.fn.storageSystemData.attr('data-msg-file-accept-deny')}. <p>${$.fn.storageSystemData.attr('data-msg-file-accept-allow')} ${typeMsgErr}<p>`,
+            }, 'failure');
+            return false;
+        }
+        return true;
+    }
+
+    static checkMaxFileSize(file_size) {
+        if (file_size > FileUtils.numberFileSizeMiBMax * 1024 * 1024) {
+            $.fn.notifyB({
+                'description': FileUtils._getMaxSizeDisplay(),
+            }, 'failure');
+            return false;
+        }
+        return true;
+    }
+
+    static parseFileSize(file_size, fixRound = 2) {
+        if (file_size) {
+            // file_size: is bytes size
+            const KiB = 1024;
+            const MiB = KiB * 1024;
+            const GiB = MiB * 1024;
+
+            if (file_size >= GiB) {
+                return (file_size / GiB).toFixed(fixRound) + " GB";
+            } else if (file_size >= MiB) {
+                return (file_size / MiB).toFixed(fixRound) + " MB";
+            } else if (file_size >= KiB) {
+                return (file_size / KiB).toFixed(fixRound) + " KB";
+            } else {
+                return file_size + " B";
+            }
+        }
+        return '0 KiB';
     }
 
     static createInputText(mainEle, name, required, disabled) {
         let idRandom = $.fn.generateRandomString(32);
         $(mainEle).attr(FileUtils.keyInputTextID, '#' + idRandom);
-        let ele = $(
-            `<input 
+        let ele = $(`<input 
                 type="text" 
                 class="hidden" 
                 name="${name}" 
                 ${required === true ? "required" : ""}
                 ${disabled === true ? "disabled" : ""}
                 id="${idRandom}"
-            />`
-        );
+            />`);
         ele.val("");
         ele.insertAfter(mainEle);
         return ele;
@@ -421,9 +449,17 @@ class FileUtils {
     static createInputFile(mainEle) {
         let idRandom = $.fn.generateRandomString(32);
         $(mainEle).attr(FileUtils.keyInputFileID, '#' + idRandom);
-        let ele = $(
-            `<input type="file" class="hidden ${FileUtils.clsNameInputFile}" id="${idRandom}"/>`
-        );
+
+        let accept = $(mainEle).attr(FileUtils.keyTypeAccept);
+
+        let ele = $(`
+                <input 
+                    type="file" 
+                    class="hidden ${FileUtils.clsNameInputFile}" id="${idRandom}"
+                    accept="${accept ? accept : '*'}"
+                />
+                <small><i>${FileUtils._getMaxSizeDisplay()}</i></small>
+            `);
         ele.val("");
         ele.insertAfter(mainEle);
         return ele;
@@ -450,39 +486,18 @@ class FileUtils {
                 let eleInputText = $(idInputText);
                 let eleInputFile = $(idInputFile);
                 if (!(eleInputText.length > 0 && eleInputFile.length > 0)) {
-                    FileUtils.createInputText(
-                        $(eleSelect$),
-                        idInputTextName,
-                        $.fn.parseBoolean(idInputTextRequired, true) === true,
-                        $.fn.parseBoolean(idInputTextDisabled, true) === true,
-                    );
+                    FileUtils.createInputText($(eleSelect$), idInputTextName, $.fn.parseBoolean(idInputTextRequired, true) === true, $.fn.parseBoolean(idInputTextDisabled, true) === true,);
                     FileUtils.createInputFile($(eleSelect$));
                 } else {
-                    FileUtils.updateInputText(
-                        $(eleInputText[0]),
-                        $.fn.parseBoolean(idInputTextRequired, true) === true,
-                        $.fn.parseBoolean(idInputTextDisabled, true) === true,
-                    )
-                    FileUtils.updateInputFile(
-                        $(eleInputFile[0]),
-                        $.fn.parseBoolean(idInputTextRequired, true) === true,
-                        $.fn.parseBoolean(idInputTextDisabled, true) === true,
-                    )
+                    FileUtils.updateInputText($(eleInputText[0]), $.fn.parseBoolean(idInputTextRequired, true) === true, $.fn.parseBoolean(idInputTextDisabled, true) === true,)
+                    FileUtils.updateInputFile($(eleInputFile[0]), $.fn.parseBoolean(idInputTextRequired, true) === true, $.fn.parseBoolean(idInputTextDisabled, true) === true,)
                 }
             } else {
-                FileUtils.createInputText(
-                    $(eleSelect$),
-                    idInputTextName,
-                    $.fn.parseBoolean(idInputTextRequired, false) === true,
-                    $.fn.parseBoolean(idInputTextDisabled, false) === true,
-                );
+                FileUtils.createInputText($(eleSelect$), idInputTextName, $.fn.parseBoolean(idInputTextRequired, false) === true, $.fn.parseBoolean(idInputTextDisabled, false) === true,);
                 FileUtils.createInputFile($(eleSelect$));
             }
 
-            FileUtils.enableButtonFakeUpload(
-                $(eleSelect$),
-                $.fn.parseBoolean(idInputTextDisabled, true) === true,
-            )
+            FileUtils.enableButtonFakeUpload($(eleSelect$), $.fn.parseBoolean(idInputTextDisabled, true) === true,)
 
             if (dataDetail && $.fn.hasOwnProperties(dataDetail, ['media_file_id', 'file_name'])) {
                 let media_file_id = dataDetail?.['media_file_id'];
@@ -534,47 +549,79 @@ class FileUtils {
     }
 
     setFileNameUploaded(fName, fSize = null) {
-        let textDisplay = `${fName} - ${FileUtils.parseFileSize(fSize, 2)}`
+        let textDisplay = fName ? `${fName} - ${FileUtils.parseFileSize(fSize, 2)}` : ''
         if (this.idEleFileName) {
             let ele = $(this.idEleFileName);
             if (ele.length > 0) {
                 ele.text(textDisplay);
             }
         } else {
-            let getEleFName = this.btnUploadFileEle$.next('.display-file-name-uploaded');
+            let getEleFName = this.btnUploadFileEle$.siblings('.display-file-name-uploaded');
             if (getEleFName.length > 0) {
                 getEleFName.text(textDisplay);
             } else {
-                $(`<small class="form-text text-muted display-file-name-uploaded">${textDisplay}</small>`).insertAfter(
-                    this.btnUploadFileEle$
-                );
+                this.btnUploadFileEle$.parent().append($(`<small class="form-text text-muted display-file-name-uploaded">${textDisplay}</small>`));
             }
         }
     }
 
-    callUploadFile(file) {
+    callUploadFile(file, btnMainEle) {
         let clsThis = this;
         let dataUrl = $.fn.storageSystemData.attr('data-url-AttachmentUpload');
 
         let formData = new FormData();
         formData.append('file', file);
 
-        $.fn.callAjax(
-            dataUrl,
-            'POST',
-            formData,
-            true,
-            {},
-            'multipart/form-data',
-            {'isNotify': false},
-        ).then(
+        let progressBarEle = $(
+            `<div class="progress">
+                <div
+                        class="progress-bar progress-bar-striped bg-info progress-bar-animated" role="progressbar"
+                        aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"
+                ></div>
+            </div>
+            `
+        )
+        $(btnMainEle).parent().append(progressBarEle);
+
+        return $.fn.callAjax2({
+            url: dataUrl,
+            method: 'POST',
+            data: formData,
+            contentType: 'multipart/form-data',
+            isNotify: false,
+            xhr: function () {
+                let xhr = new XMLHttpRequest();
+                xhr.upload.addEventListener("progress", function (evt) {
+                    if (evt.lengthComputable) {
+                        let percentComplete = evt.loaded / evt.total;
+                        percentComplete = parseInt(percentComplete * 100);
+                        progressBarEle.find('.progress-bar').alterClass('w-*', 'w-' + Math.ceil(percentComplete).toString());
+
+                        if (percentComplete === 100) {
+                            console.log('complete upload');
+                        }
+
+                    }
+                }, false);
+                return xhr;
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                let resp_data = jqXHR.responseJSON;
+                if ((!resp_data || typeof resp_data !== 'object') && jqXHR.status !== 204) {
+                    $(btnMainEle).hideLoadingButton();
+                    progressBarEle.remove();
+                }
+            },
+            errorOnly: false,
+        }).then(
             (resp) => {
                 let detailFile = resp?.data?.detail;
-                this.setIdFile(detailFile?.['id']);
-                this.setFileNameUploaded(detailFile?.['file_name'], detailFile?.['file_size']);
-            },
-            (errs) => {
-                console.log('errs: ', errs);
+                clsThis.setIdFile(detailFile?.['id']);
+                clsThis.setFileNameUploaded(detailFile?.['file_name'], detailFile?.['file_size']);
+                $(btnMainEle).hideLoadingButton();
+                progressBarEle.remove();
+            }, (errs) => {
+                progressBarEle.remove();
                 let existData = errs?.data?.['errors']?.['exist'];
                 let nameFile = existData['name'].split(".")[0];
                 let extFile = existData['name'].split(".").pop();
@@ -589,13 +636,12 @@ class FileUtils {
                         denyButtonText: `Use it`,
                         denyButtonColor: '#1d9e7d',
                         html: `<div class="input-group mb-3">
-                                    <input type="text" autocapitalize="off" class="form-control" placeholder="New file name" id="${newFileNameIDRandom}">
-                                    <span class="input-group-text" id="newFileExt" data-file-ext="${extFile}">.${extFile}</span>
-                                </div>`,
+                                        <input type="text" autocapitalize="off" class="form-control" placeholder="New file name" id="${newFileNameIDRandom}">
+                                        <span class="input-group-text" id="newFileExt" data-file-ext="${extFile}">.${extFile}</span>
+                                    </div>`,
                         showLoaderOnConfirm: true,
                         preConfirm: () => {
                             let newFileNewEle = $('#' + newFileNameIDRandom);
-                            console.log('newFileNewEle: ', newFileNewEle);
                             let fileNewNameExcludeExt = newFileNewEle.val();
                             if (fileNewNameExcludeExt) {
                                 let nameNewFile = newFileNewEle.val() + "." + extFile;
@@ -604,27 +650,16 @@ class FileUtils {
                                 });
                                 let formDataNewName = new FormData();
                                 formDataNewName.append('file', newFile);
-                                return $.fn.callAjax(
-                                    dataUrl,
-                                    'POST',
-                                    formDataNewName,
-                                    true,
-                                    {},
-                                    'multipart/form-data',
-                                    {'isNotify': false},
-                                ).then(
-                                    (resp) => {
-                                        let detailNewFile = resp?.data?.detail;
-                                        clsThis.setIdFile(detailNewFile?.['id']);
-                                        clsThis.setFileNameUploaded(detailNewFile?.['file_name'], detailNewFile?.['file_size']);
-                                        return true;
-                                    },
-                                    (errs) => {
-                                        if ($.fn.isDebug() === true) console.log(errs);
-                                        clsThis.showErrsUploadFile(newFileNewEle);
-                                        return false;
-                                    }
-                                )
+                                return $.fn.callAjax(dataUrl, 'POST', formDataNewName, true, {}, 'multipart/form-data', {'isNotify': false},).then((resp) => {
+                                    let detailNewFile = resp?.data?.detail;
+                                    clsThis.setIdFile(detailNewFile?.['id']);
+                                    clsThis.setFileNameUploaded(detailNewFile?.['file_name'], detailNewFile?.['file_size']);
+                                    return true;
+                                }, (errs) => {
+                                    if ($.fn.isDebug() === true) console.log(errs);
+                                    clsThis.showErrsUploadFile(newFileNewEle);
+                                    return false;
+                                })
                             } else {
                                 clsThis.showErrsUploadFile(newFileNewEle);
                                 return false;
@@ -639,31 +674,31 @@ class FileUtils {
                             // Swal.fire('Saved!', '', 'success');
                         } else if (result.isDenied) {
                             // use file exist
-                            console.log('existData: ', existData);
                             clsThis.resetValeInputFile();
                             clsThis.setIdFile(existData['id']);
                             clsThis.setFileNameUploaded(existData['file_name'], existData['file_size']);
                         } else {
                             // cancel
                             clsThis.resetValeInputFile();
+                            clsThis.setIdFile(null);
+                            clsThis.setFileNameUploaded(null);
                         }
+                        $(btnMainEle).hideLoadingButton();
                     })
                 } else {
                     if ($.fn.isDebug() === true) console.log(errs);
-                    this.resetValeInputFile();
+                    clsThis.resetValeInputFile();
+                    $(btnMainEle).hideLoadingButton();
                 }
             },
-        )
+        );
     }
 
     showErrsUploadFile(inputNewFileName$) {
         $(inputNewFileName$).addClass('is-invalid');
         let groupNewFileEle = $(inputNewFileName$).closest('.input-group').parent();
         let textErrs = groupNewFileEle.find('.file-errs');
-        if (textErrs.length > 0) textErrs.text(`File name is exist`);
-        else groupNewFileEle.append(
-            `<small class="file-errs form-text text-danger">File name is exist</small>`
-        );
+        if (textErrs.length > 0) textErrs.text(`File name is exist`); else groupNewFileEle.append(`<small class="file-errs form-text text-danger">File name is exist</small>`);
     }
 }
 
@@ -938,19 +973,28 @@ class ListeningEventController {
         });
 
         $(document).on('change', `.${FileUtils.clsNameInputFile}`, function (event) {
-            let file = event.target.files[0];
-            let query = `[${FileUtils.keyInputFileID}="#${$(this).attr('id')}"]`;
-            let mainEle = $(query);
-            if (mainEle.length > 0) {
-                new FileUtils(mainEle).callUploadFile(file);
-            } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Not found main element include file went wrong!',
-                    footer: '<a href="#" class="show-raise-ticket">Raise a ticket?</a>'
-                });
-                if ($.fn.isDebug() === true) throw Error('Not found main element include file went wrong!');
+            let btnMain = $(this).siblings('button.' + FileUtils.clsButtonMain);
+            if (btnMain.length > 0) {
+                $(btnMain).showLoadingButton();
+                let file = event.target.files[0];
+                if (FileUtils.checkMaxFileSize(file.size) === true && FileUtils.checkTypeAccept(file, $(this).attr('accept')) === true) {
+                    let query = `[${FileUtils.keyInputFileID}="#${$(this).attr('id')}"]`;
+                    let mainEle = $(query);
+                    if (mainEle.length > 0) {
+                        new FileUtils(mainEle).callUploadFile(file, btnMain);
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Not found main element include file went wrong!',
+                            footer: '<a href="#" class="show-raise-ticket">Raise a ticket?</a>'
+                        });
+                        if ($.fn.isDebug() === true) throw Error('Not found main element include file went wrong!');
+                        $(btnMain).hideLoadingButton();
+                    }
+                } else {
+                    $(btnMain).hideLoadingButton();
+                }
             }
         });
 
@@ -962,9 +1006,7 @@ class ListeningEventController {
             Swal.fire({
                 html: `
                     <h4>${$.fn.transEle.attr('data-choose-avatar-image')}</h4>
-                    <small class="text-warning">${$.fn.transEle.attr('data-allow-file-properties').format_by_idx(
-                    '*.jpg *.jpeg *.png *.gif'
-                )}</small>
+                    <small class="text-warning">${$.fn.transEle.attr('data-allow-file-properties').format_by_idx('*.jpg *.jpeg *.png *.gif')}</small>
                 `,
                 input: 'file',
                 inputAttributes: {
@@ -978,23 +1020,12 @@ class ListeningEventController {
                 preConfirm: (file) => {
                     let formData = new FormData();
                     formData.append('file', file);
-                    return $.fn.callAjax(
-                        $.fn.storageSystemData.attr('data-url-avatar-upload'),
-                        'POST',
-                        formData,
-                        true,
-                        {},
-                        'multipart/form-data',
-                        {'isNotify': false},
-                    ).then(
-                        (resp) => {
-                            $.fn.switcherResp(resp);
-                            return true;
-                        },
-                        (errs) => {
-                            return false;
-                        }
-                    )
+                    return $.fn.callAjax($.fn.storageSystemData.attr('data-url-avatar-upload'), 'POST', formData, true, {}, 'multipart/form-data', {'isNotify': false},).then((resp) => {
+                        $.fn.switcherResp(resp);
+                        return true;
+                    }, (errs) => {
+                        return false;
+                    })
                 },
                 allowOutsideClick: () => !Swal.isLoading()
             }).then((result) => {
@@ -1004,34 +1035,26 @@ class ListeningEventController {
                         title: $.fn.transEle.attr('data-success'),
                         timer: 2000,
                         timerProgressBar: true,
-                    }).then(
-                        () => {
-                            window.location.reload();
-                        }
-                    )
+                    }).then(() => {
+                        window.location.reload();
+                    })
                 }
             })
         });
     }
 
     tabHashUrl() {
-        $('.nav-tabs a[data-bs-toggle="tab"]').filter(
-            function () {
-                return this.hash === location.hash;
+        $('.nav-tabs a[data-bs-toggle="tab"]').filter(function () {
+            return this.hash === location.hash;
+        }).each(function () {
+            let drawerEle = $(this).closest('.ntt-drawer');
+            if (drawerEle.length > 0) {
+                $('.ntt-drawer-toggle-link[data-drawer-target="#' + drawerEle.attr('id') + '"]').each(function () {
+                    $(this).trigger('click');
+                });
             }
-        ).each(
-            function () {
-                let drawerEle = $(this).closest('.ntt-drawer');
-                if (drawerEle.length > 0) {
-                    $('.ntt-drawer-toggle-link[data-drawer-target="#' + drawerEle.attr('id') + '"]').each(
-                        function () {
-                            $(this).trigger('click');
-                        }
-                    );
-                }
-                $(this).tab('show');
-            }
-        );
+            $(this).tab('show');
+        });
 
         $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
             window.history.pushState(null, null, $(e.target).attr("href"));
@@ -1174,8 +1197,11 @@ $.fn.extend({
     },
     parseBoolean: function (value, no_value_is_false = false, defaultReturn = null) {
         if (typeof value === 'boolean') return value;
-        if (value === 1 || value === '1' || value === 'true' || value === 'True') return true;
-        if (value === 0 || value === '0' || value === 'false' || value === 'False') return false;
+        if (typeof value === "string") {
+            value = value.trim();
+            if (value === 1 || value === '1' || value === 'true' || value === 'True') return true;
+            if (value === 0 || value === '0' || value === 'false' || value === 'False') return false;
+        }
 
         if (!value && no_value_is_false === true) return false;
         return null;
@@ -1270,6 +1296,24 @@ $.fn.extend({
     },
     getBtnIDLastSubmit: function () {
         return $.fn.storageSystemData.attr('data-idBtnIDLastSubmit');
+    },
+
+    // object Javascript
+    popKey: function (data, key, defaultData = null, compareTypeWithDefault = false) {
+        // Has key in "data" && (
+        //      !compareTypeWithDefault || (compareTypeWithDefault === true && typeof data[key] === typeof defaultData)
+        // )
+        // otherwise return defaultData
+        if (typeof data === 'object') {
+            if (data.hasOwnProperty(key)) {
+                let tmp = data[key];
+                delete data[key];
+                if (compareTypeWithDefault === true) {
+                    if (typeof tmp === typeof defaultData) return tmp;
+                } else return tmp;
+            }
+        }
+        return defaultData;
     },
 
     // default components
@@ -1494,7 +1538,7 @@ $.fn.extend({
     },
 
     // HTTP response, redirect, Ajax
-    pushHashUrl: function (idHash){
+    pushHashUrl: function (idHash) {
         window.history.pushState(null, null, idHash.includes('#') ? idHash : '#' + idHash);
     },
     switcherResp: function (resp, isNotify = true) {
@@ -1520,8 +1564,7 @@ $.fn.extend({
                     return {};
                 case 401:
                     if (isNotify === true) $.fn.notifyB({'description': resp.data}, 'failure');
-                    return $.fn.redirectLogin(1000);
-                // return {}
+                    return $.fn.redirectLogin(500);
                 case 403:
                     if (isNotify === true) $.fn.notifyB({'description': resp.data.errors}, 'failure');
                     return {};
@@ -1553,11 +1596,10 @@ $.fn.extend({
     },
     redirectLogin: function (timeout = 0, location_to_next = true) {
         if (location_to_next === true) {
-            jQuery.fn.redirectUrl('/auth/login', timeout, 'next=' + window.location.pathname);
+            return jQuery.fn.redirectUrl('/auth/logout', timeout, 'next=' + window.location.pathname);
         } else {
-            jQuery.fn.redirectUrl('/auth/login', timeout, '');
+            return jQuery.fn.redirectUrl('/auth/logout', timeout, '');
         }
-
     },
     redirectUrl: function (redirectPath, timeout = 0, params = '') {
         setTimeout(() => {
@@ -1614,8 +1656,7 @@ $.fn.extend({
             // Setup then Call Ajax
             let ctx = {
                 url: url,
-                type: method,
-                // dataType: 'json',
+                type: method, // dataType: 'json',
                 contentType: content_type === "multipart/form-data" ? false : content_type,
                 processData: content_type !== "multipart/form-data",
                 data: content_type === "application/json" ? JSON.stringify(data) : data,
@@ -1662,7 +1703,119 @@ $.fn.extend({
         });
     },
     callAjax2: function (opts = {}) {
+        let isNotify = $.fn.popKey(opts, 'isNotify', false, true);
+        if (!$.fn.isBoolean(isNotify)) isNotify = true;
+        return new Promise(function (resolve, reject) {
+            let pk = $.fn.getPkDetail();
+            if (($.fn.getBtnIDLastSubmit() === 'idxSaveInZoneWF' || $.fn.getBtnIDLastSubmit() === 'idxSaveInZoneWFThenNext') && $.fn.getWFRuntimeID() && $.fn.getTaskWF() && pk && url.includes(pk) && (method === 'PUT' || method === 'put')) {
+                let taskID = $.fn.getTaskWF();
+                let keyOk = $.fn.getZoneKeyData();
+                let newData = {};
+                for (let key in data) {
+                    if (keyOk.includes(key)) {
+                        newData[key] = data[key];
+                    }
+                }
+                data = newData;
+                data['task_id'] = taskID;
+            }
 
+            // Setup then Call Ajax
+            let url = opts?.['url'] || null;
+            if (url) {
+                let method = opts?.['method'] || 'GET';
+                let processData = opts?.['processData'] || true;
+                let contentType = opts?.['contentType'] || "application/json";
+                if (contentType === "multipart/form-data") {
+                    contentType = false;
+                    processData = false;
+                }
+
+                let csrfToken = opts?.['csrf_token'] || $("input[name=csrfmiddlewaretoken]").val();
+                let headers = opts?.['headers'] || {}
+                let data = opts?.['data'];
+                if (contentType === "application/json" && method.toLowerCase() !== 'get') data = JSON.stringify(data);
+
+                let successCallback = opts?.['success'] || null;
+                let onlySuccessCallback = $.fn.popKey(opts, 'successOnly', false);
+                let errorCallback = opts?.['error'] || null;
+                let onlyErrorCallback = $.fn.popKey(opts, 'errorOnly', false);
+                let statusCodeCallback = opts?.['statusCode'] || {};
+
+                let ctx = {
+                    ...opts,
+                    success: function (rest, textStatus, jqXHR) {
+                        if (successCallback) successCallback(rest, textStatus, jqXHR);
+                        if (onlySuccessCallback === false) {
+                            let data = $.fn.switcherResp(rest, isNotify);
+                            if (data) {
+                                if ($.fn.getBtnIDLastSubmit() === 'idxSaveInZoneWFThenNext') {
+                                    let btnSubmit = $('#idxSaveInZoneWFThenNext');
+                                    let dataWFAction = btnSubmit.attr('data-wf-action');
+                                    if (btnSubmit && dataWFAction) {
+                                        let eleActionDoneTask = $('.btn-action-wf[data-value=' + dataWFAction + ']');
+                                        if (eleActionDoneTask.length > 0) {
+                                            $.fn.setBtnIDLastSubmit(null);
+                                            $(eleActionDoneTask[0]).attr('data-success-reload', false)
+                                            $.fn.callActionWF($(eleActionDoneTask[0])).then(() => {
+                                                resolve(rest);
+                                            })
+                                        } else {
+                                            resolve(rest);
+                                        }
+                                    } else {
+                                        resolve(rest);
+                                    }
+                                } else resolve(rest);
+                            } else resolve({'status': jqXHR.status});
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        if (errorCallback) errorCallback(jqXHR, textStatus, errorThrown);
+                        if (onlyErrorCallback === false) {
+                            let resp_data = jqXHR.responseJSON;
+                            if (resp_data && typeof resp_data === 'object') {
+                                $.fn.switcherResp(resp_data, isNotify);
+                                reject(resp_data);
+                            } else if (jqXHR.status === 204) reject({'status': 204});
+                        }
+                    },
+                    url: url,
+                    type: method,
+                    contentType: processData,
+                    processData: processData,
+                    data: data,
+                    headers: {
+                        "X-CSRFToken": csrfToken, ...headers
+                    },
+                    statusCode: {
+                        204: function () {
+                            if (isNotify === true) $.fn.notifyB({
+                                'description': $.fn.transEle.attr('data-success'),
+                            }, 'success');
+                        },
+                        401: function () {
+                            if (isNotify === true) $.fn.notifyB({
+                                'description': $.fn.storageSystemData.attr('data-msg-login-expired')
+                            }, 'failure');
+                            return $.fn.redirectLogin(1000);
+                        },
+                        403: function () {
+                            if (isNotify === true) $.fn.notifyB({
+                                'description': $.fn.storageSystemData.attr('data-msg-403')
+                            }, 'failure');
+                        },
+                        404: function () {
+                            if (isNotify === true) $.fn.notifyB({
+                                'description': $.fn.storageSystemData.attr('data-msg-404')
+                            }, 'failure');
+                        }, ...statusCodeCallback,
+                    },
+                };
+                return $.ajax(ctx);
+            }
+            throw Error('Ajax must be url setup before send');
+        });
     },
 
     // Table: loading
@@ -1756,6 +1909,12 @@ $.fn.extend({
 
         }
 
+        let drawCallback = null;
+        if (opts.hasOwnProperty('drawCallback')) {
+            drawCallback = opts['drawCallback'];
+            delete opts['drawCallback'];
+        }
+
         // return data
         let configFinal = {
             // scrollY: '400px',
@@ -1784,7 +1943,12 @@ $.fn.extend({
                 // buildSelect2();
                 setTimeout(() => {
                     buildSelect2();
-                }, 0)
+                }, 0);
+
+                // drawCallback manual
+                if (drawCallback && typeof drawCallback === 'function') {
+                    drawCallback();
+                }
             },
             initComplete: function () {
                 $(this.api().table().container()).find('input').attr('autocomplete', 'off');
@@ -1818,7 +1982,7 @@ $.fn.extend({
                     $('.dataTables_filter input').removeClass('form-control-sm');
                 }
             }
-            $(this).closest('.dataTables_wrapper').find('.select2').select2();
+            $(this).closest('.dataTables_wrapper').find('.select2:not(:disabled)').select2();
         });
         return tbl;
     },
@@ -1837,6 +2001,11 @@ $.fn.extend({
         // element call from in row of DataTable
         let row = $(this).closest('tr');
         return $($(this).closest('table')).DataTable().row(row).data();
+    },
+    deleteRow: function () {
+        if (this instanceof jQuery) {
+            $(this).closest('table').DataTable().row($(this).parents('tr')).remove().draw();
+        }
     },
     groupDataFromPrefix: function (data, prefix) {
         let rs = {};
@@ -1869,14 +2038,15 @@ $.fn.extend({
             if (dropdownParent.length > 0) opts['dropdownParent'] = $(dropdownParent[0]);
         }
         // -- fix select2 for bootstrap modal
-
         $(this).select2({
             multiple: !!$(this).attr('multiple') || !!$(this).attr('data-select2-multiple'),
             closeOnSelect: closeOnSelect === null ? true : closeOnSelect,
             allowClear: allowClear === null ? false : allowClear,
             disabled: !!$(this).attr('data-select2-disabled'),
             tags: !!$(this).attr('data-select2-tags'),
-            tokenSeparators: tokenSeparators ? tokenSeparators : [","], ...opts
+            tokenSeparators: tokenSeparators ? tokenSeparators : [","],
+            width: "100%",
+            theme: 'bootstrap4', ...opts
         });
     }, // -- select2
 
@@ -2201,6 +2371,26 @@ $.fn.extend({
             ...opts
         });
     }, // -- loading wait response data
+    showLoadingButton: function (opts) {
+        let startOrEnd = opts?.['location'] || 'end'; // 'start','end'
+        let borderOrGrow = opts?.['type'] || 'border'; // 'border','grow'
+        if (this instanceof jQuery) {
+            $(this).addClass('btn-upload-force-color');
+            $(this).prop('disabled', true);
+            if (startOrEnd === 'start') {
+                $(this).prepend($(`<span class="spinner-${borderOrGrow} spinner-${borderOrGrow}-sm ntt-spinner-btn mr-1" role="status" aria-hidden="true"></span>`))
+            } else if (startOrEnd === 'end') {
+                $(this).append($(`<span class="spinner-${borderOrGrow} spinner-${borderOrGrow}-sm ntt-spinner-btn ml-1" role="status" aria-hidden="true"></span>`))
+            }
+
+        }
+    },
+    hideLoadingButton: function (opts) {
+        if (this instanceof jQuery) {
+            $(this).prop('disabled', false).removeClass('btn-upload-force-color');
+            $(this).find('.ntt-spinner-btn').remove();
+        }
+    },
 
     // wf call action
     callActionWF: function (ele$) {

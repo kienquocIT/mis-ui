@@ -199,3 +199,9 @@ div.inline {
     background-color: #d6d9da;
     border-radius: 4px;
 }
+/* button upload file */
+.btn-upload-force-color {
+    color: #262a2e !important;
+    background-color: #f2f5f6 !important;
+}
+/* -- button upload file */

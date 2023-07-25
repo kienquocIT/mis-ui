@@ -122,7 +122,7 @@ class AuthLogout(APIView):
     def get(cls, request):
         logout(request)
         request.user = AnonymousUser
-        return redirect(reverse('AuthLogin'))
+        return redirect(reverse('AuthLogin') + '?next=' + request.query_params.get('next', ''))
 
 
 class TenantLoginChoice(APIView):

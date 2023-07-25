@@ -158,6 +158,9 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     EMAIL_LIST_PAGE = BreadcrumbChildren(_('Send email list'), 'OpportunityEmailList')
     MEETING_LIST_PAGE = BreadcrumbChildren(_('Meeting list'), 'OpportunityMeetingList')
 
+    OPPORTUNITY_DOCUMENT_LIST_PAGE = BreadcrumbChildren(_('Document List'), 'OpportunityDocumentForCustomerList')
+    OPPORTUNITY_DOCUMENT_CREATE_PAGE = BreadcrumbChildren(_('Document List'), 'OpportunityDocumentForCustomerCreate')
+
 
 class BreadcrumbView:
     """menu vertical item view"""
@@ -432,3 +435,9 @@ class BreadcrumbView:
     MEETING_LIST_PAGE = [
         BreadcrumbItem.MEETING_LIST_PAGE
     ]
+
+    OPPORTUNITY_DOCUMENT_LIST_PAGE = [
+        BreadcrumbItem.OPPORTUNITY_DOCUMENT_LIST_PAGE
+    ]
+
+    OPPORTUNITY_DOCUMENT_CREATE_PAGE = OPPORTUNITY_DOCUMENT_LIST_PAGE + [BreadcrumbItem.OPPORTUNITY_DOCUMENT_CREATE_PAGE]

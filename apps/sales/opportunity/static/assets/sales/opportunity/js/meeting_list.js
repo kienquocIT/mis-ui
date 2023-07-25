@@ -169,7 +169,7 @@ $(function () {
                             data: 'subject',
                             className: 'wrap-text w-35',
                             render: (data, type, row, meta) => {
-                                return  `<a class="text-primary link-primary underline_hover detail-call-log-button" href="" data-bs-toggle="modal" data-id="` + row.id + `"
+                                return  `<a class="text-primary link-primary underline_hover detail-meeting-button" href="" data-bs-toggle="modal" data-id="` + row.id + `"
                                             data-bs-target="#detail-meeting"><span><b>` + row.subject + `</b></span></a>`
                             }
                         },
@@ -226,7 +226,7 @@ $(function () {
             $('#meeting-address-select-btn').prop('hidden', true);
         })
 
-        $(document).on('click', '#table_opportunity_meeting_list .detail-call-log-button', function () {
+        $(document).on('click', '#table_opportunity_meeting_list .detail-meeting-button', function () {
             let meeting_id = $(this).attr('data-id');
             let meeting_obj = JSON.parse($('#meeting_list').text()).filter(function(item) {
                 return item.id === meeting_id;

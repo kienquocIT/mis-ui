@@ -10,8 +10,6 @@ $(document).ready(function () {
     const currency_primary = JSON.parse($('#id-currency-list').text()).find(obj => obj.is_primary === true);
     const frmDetail = $('#frmUpdateExpense');
 
-    $(".select2").select2();
-
     function loadUoM(group_id, id) {
         let chooseUom = $('#chooseUom');
         chooseUom.html('');
@@ -270,7 +268,7 @@ $(document).ready(function () {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('expense')) {
                     let expense_detail = data?.['expense'];
                     $.fn.compareStatusShowPageAction(expense_detail);
-                    $('#expenseCode').val(expense_detail.code);
+                    $('#expenseCode').text(expense_detail.code);
                     $('#expenseTitle').val(expense_detail.title);
                     loadExpenseType(expense_detail.expense_type);
                     loadUoMGroup(expense_detail.uom_group);

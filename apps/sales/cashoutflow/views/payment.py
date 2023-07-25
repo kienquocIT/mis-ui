@@ -29,9 +29,9 @@ class PaymentCreate(View):
         menu_active='menu_advance_payment_list',
     )
     def get(self, request, *args, **kwargs):
-        resp1 = ServerAPI(user=request.user, url=ApiURL.SALE_ORDER_LIST).get()
-        resp2 = ServerAPI(user=request.user, url=ApiURL.QUOTATION_LIST).get()
-        resp3 = ServerAPI(user=request.user, url=ApiURL.EXPENSE_LIST).get()
+        resp1 = ServerAPI(user=request.user, url=ApiURL.SALE_ORDER_LIST_FOR_CASH_OUTFLOW).get()
+        resp2 = ServerAPI(user=request.user, url=ApiURL.QUOTATION_LIST_FOR_CASH_OUTFLOW).get()
+        resp3 = ServerAPI(user=request.user, url=ApiURL.PRODUCT_LIST).get()
         resp4 = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_LIST).get()
         resp5 = ServerAPI(user=request.user, url=ApiURL.ADVANCE_PAYMENT_LIST).get()
         resp6 = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_LIST).get()
@@ -44,7 +44,7 @@ class PaymentCreate(View):
                 'employee_current_id': request.user.employee_current_data.get('id', None),
                 'sale_order_list': resp1.result,
                 'quotation_list': resp2.result,
-                'expense_list': resp3.result,
+                'product_list': resp3.result,
                 'account_list': resp4.result,
                 'advance_payment_list': resp5.result,
                 'opportunity_list': resp6.result,
@@ -96,9 +96,9 @@ class PaymentDetail(View):
         menu_active='menu_payment_detail',
     )
     def get(self, request, *args, **kwargs):
-        resp1 = ServerAPI(user=request.user, url=ApiURL.SALE_ORDER_LIST).get()
-        resp2 = ServerAPI(user=request.user, url=ApiURL.QUOTATION_LIST).get()
-        resp3 = ServerAPI(user=request.user, url=ApiURL.EXPENSE_LIST).get()
+        resp1 = ServerAPI(user=request.user, url=ApiURL.SALE_ORDER_LIST_FOR_CASH_OUTFLOW).get()
+        resp2 = ServerAPI(user=request.user, url=ApiURL.QUOTATION_LIST_FOR_CASH_OUTFLOW).get()
+        resp3 = ServerAPI(user=request.user, url=ApiURL.PRODUCT_LIST).get()
         resp4 = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_LIST).get()
         resp5 = ServerAPI(user=request.user, url=ApiURL.ADVANCE_PAYMENT_LIST).get()
         resp6 = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_LIST).get()
@@ -112,7 +112,7 @@ class PaymentDetail(View):
                     'employee_current_id': request.user.employee_current_data.get('id', None),
                     'sale_order_list': resp1.result,
                     'quotation_list': resp2.result,
-                    'expense_list': resp3.result,
+                    'product_list': resp3.result,
                     'account_list': resp4.result,
                     'advance_payment_list': resp5.result,
                     'opportunity_list': resp6.result,

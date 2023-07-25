@@ -1,4 +1,6 @@
 $(document).ready(function () {
+    let form_update_product = $('#form-update-product');
+
     function disabledTab(check, link_tab, id_tab) {
         if (!check) {
             $(link_tab).addClass('disabled');
@@ -31,8 +33,8 @@ $(document).ready(function () {
         $('#tab_sale select').val('');
     });
 
-    $('#check-tab-purchasing').change(function () {
-        disabledTab(this.checked, '#link-tab-purchasing');
+    $('#check-tab-purchase').change(function () {
+        disabledTab(this.checked, '#link-tab-purchase', '#tab_purchase');
     });
 
     function loadProductType(id) {
@@ -243,7 +245,6 @@ $(document).ready(function () {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('price_list')) {
-                        // console.log(list_price)
                         data.price_list.map(function (item) {
                             if (item.price_list_type.value === 0) {
                                 let price_list_exists = list_price.find(function (obj) {
@@ -291,111 +292,114 @@ $(document).ready(function () {
     }
 
     let pk = $.fn.getPkDetail()
-    let url_detail = $('#form-update-product').attr('data-url').replace(0, pk)
+
 
     // get detail product
-    $.fn.callAjax(url_detail, 'GET').then((resp) => {
-        let data = $.fn.switcherResp(resp);
-        if (data) {
-            let product_detail = data?.['product'];
+    function loadDetail() {
+        let url_detail = form_update_product.data('url').format_url_with_uuid(pk)
+        $.fn.callAjax(url_detail, 'GET').then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                let product_detail = data?.['product'];
 
-            let warehouse_stock_list = GetProductFromWareHouseStockList(pk, product_detail.inventory_information.uom.id);
-            loadWareHouseList(warehouse_stock_list);
+                $.fn.compareStatusShowPageAction(product_detail);
+                $('#product-code').val(product_detail.code);
+                $('#product-title').val(product_detail.title);
+                loadProductCategory(product_detail.general_information.product_category.id);
+                loadProductType(product_detail.general_information.product_type.id);
+                loadUoMGroup(product_detail.general_information.uom_group.id);
 
-            $.fn.compareStatusShowPageAction(product_detail);
-            $('#product-code').val(product_detail.code);
-            $('#product-title').val(product_detail.title);
-            loadProductCategory(product_detail.general_information.product_category.id);
-            loadProductType(product_detail.general_information.product_type.id);
-            loadUoMGroup(product_detail.general_information.uom_group.id);
+                let ele = $('#select-box-uom-group')
+                let data_url = ele.attr('data-url-detail').replace(0, product_detail.general_information.uom_group.id);
+                let data_method = ele.attr('data-method');
+                let select_box_default_uom = $('#select-box-default-uom');
+                let select_box_uom_name = $('#select-box-uom-name');
+                select_box_default_uom.html('');
+                select_box_uom_name.html('');
 
-            let ele = $('#select-box-uom-group')
-            let data_url = ele.attr('data-url-detail').replace(0, product_detail.general_information.uom_group.id);
-            let data_method = ele.attr('data-method');
-            let select_box_default_uom = $('#select-box-default-uom');
-            let select_box_uom_name = $('#select-box-uom-name');
-            select_box_default_uom.html('');
-            select_box_uom_name.html('');
-            $.fn.callAjax(data_url, data_method).then((resp) => {
-                let data_uom_gr = $.fn.switcherResp(resp);
-                if (data_uom_gr) {
-                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('uom_group')) {
-                        select_box_uom_name.append(`<option data-code=""></option>`);
-                        select_box_default_uom.append(`<option></option>`);
-                        if (Object.keys(product_detail.inventory_information).length === 0) {
-                            $('#link-tab-inventory').addClass('disabled');
-                            $('#tab_inventory').removeClass('active show');
-                            $('#check-tab-inventory').prop('checked', false);
-                            $('.dimensionControl').hide();
-                        }
-                        if (Object.keys(product_detail.sale_information).length === 0) {
-                            $('#link-tab-sale').addClass('disabled');
-                            $('#tab_sale').removeClass('active show');
-                            $('#check-tab-sale').prop('checked', false);
-                        } else {
-                            if (product_detail.sale_information.hasOwnProperty('price_list'))
-                                loadPriceList(product_detail.sale_information.price_list);
-                            else {
+                $.fn.callAjax(data_url, data_method).then((resp) => {
+                    let data_uom_gr = $.fn.switcherResp(resp);
+                    if (data_uom_gr) {
+                        if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('uom_group')) {
+                            select_box_uom_name.append(`<option data-code=""></option>`);
+                            select_box_default_uom.append(`<option></option>`);
+                            if (!product_detail.product_choice.includes(1)) {
+                                $('#link-tab-inventory').addClass('disabled');
+                                $('#tab_inventory').removeClass('active show');
+                                $('#check-tab-inventory').prop('checked', false);
+                                $('.dimensionControl').hide();
+                            } else {
+                                let warehouse_stock_list = GetProductFromWareHouseStockList(pk, product_detail.inventory_information.uom.id);
+                                loadWareHouseList(warehouse_stock_list);
+                            }
+                            if (!product_detail.product_choice.includes(0)) {
+                                $('#link-tab-sale').addClass('disabled');
+                                $('#tab_sale').removeClass('active show');
+                                $('#check-tab-sale').prop('checked', false);
                                 loadPriceList([]);
-                            }
-                            if (product_detail.sale_information.hasOwnProperty('tax_code'))
-                                loadTaxCode(product_detail.sale_information.tax_code.id);
+                                loadTaxCode(null);
+                            } else {
+                                if (product_detail.sale_information.hasOwnProperty('price_list'))
+                                    loadPriceList(product_detail.sale_information.price_list);
+                                else {
+                                    loadPriceList([]);
+                                }
+                                if (product_detail.sale_information.hasOwnProperty('tax_code'))
+                                    loadTaxCode(product_detail.sale_information.tax_code.id);
+                                else
+                                    loadTaxCode(null);
 
-                            $('[name="length"]').val(product_detail.sale_information.length);
-                            $('[name="width"]').val(product_detail.sale_information.width);
-                            $('[name="height"]').val(product_detail.sale_information.height);
-                            if (product_detail.sale_information.measure !== undefined) {
-                                product_detail.sale_information.measure.map(function (item) {
-                                    if (item.unit.title === 'volume') {
-                                        $('[name="volume"]').val(item.value);
-                                    } else {
-                                        $('[name="weight"]').val(item.value);
-                                    }
-                                })
+                                $('[name="length"]').val(product_detail.sale_information.length);
+                                $('[name="width"]').val(product_detail.sale_information.width);
+                                $('[name="height"]').val(product_detail.sale_information.height);
+                                if (product_detail.sale_information.measure !== undefined) {
+                                    product_detail.sale_information.measure.map(function (item) {
+                                        if (item.unit.title === 'volume') {
+                                            $('[name="volume"]').val(item.value);
+                                        } else {
+                                            $('[name="weight"]').val(item.value);
+                                        }
+                                    })
+                                }
                             }
-                        }
-                        data_uom_gr.uom_group.uom.map(function (item) {
-                            if (item.uom_id === product_detail.sale_information.default_uom.id)
-                                select_box_default_uom.append(`<option value="` + item.uom_id + `" selected>` + item.uom_title + `</option>`);
-                            else
-                                select_box_default_uom.append(`<option value="` + item.uom_id + `">` + item.uom_title + `</option>`);
 
-                            if (Object.keys(product_detail.inventory_information).length > 0) {
-                                if (item.uom_id === product_detail.inventory_information.uom.id) {
-                                    select_box_uom_name.append(`<option value="` + item.uom_id + `" data-code="` + item.uom_code + `" selected>` + item.uom_title + `</option>`);
-                                    $('#uom-code').val(item.uom_code);
-                                } else
+                            if (!product_detail.product_choice.includes(2)) {
+                                $('#link-tab-purchase').addClass('disabled');
+                                $('#check-tab-purchase').prop('checked', false);
+                            }
+
+                            data_uom_gr.uom_group.uom.map(function (item) {
+                                if ($.fn.hasOwnProperties(product_detail.sale_information, ['default_uom']) && product_detail.sale_information.default_uom !== null) {
+                                    if (item.uom_id === product_detail.sale_information.default_uom.id)
+                                        select_box_default_uom.append(`<option value="` + item.uom_id + `" selected>` + item.uom_title + `</option>`);
+                                    else
+                                        select_box_default_uom.append(`<option value="` + item.uom_id + `">` + item.uom_title + `</option>`);
+                                } else {
+                                    select_box_default_uom.append(`<option value="` + item.uom_id + `">` + item.uom_title + `</option>`);
+                                }
+
+                                if ($.fn.hasOwnProperties(product_detail.inventory_information, ['uom']) && product_detail.inventory_information.uom !== null) {
+                                    if (item.uom_id === product_detail.inventory_information.uom.id) {
+                                        select_box_uom_name.append(`<option value="` + item.uom_id + `" data-code="` + item.uom_code + `" selected>` + item.uom_title + `</option>`);
+                                        $('#uom-code').val(item.uom_code);
+                                    } else
+                                        select_box_uom_name.append(`<option value="` + item.uom_id + `" data-code="` + item.uom_code + `">` + item.uom_title + `</option>`);
+                                } else {
                                     select_box_uom_name.append(`<option value="` + item.uom_id + `" data-code="` + item.uom_code + `">` + item.uom_title + `</option>`);
-                            }
-                        })
-
-                        $('#inventory-level-max').val(product_detail.inventory_information.inventory_level_max);
-                        $('#inventory-level-min').val(product_detail.inventory_information.inventory_level_min);
-
-                        $('.inp-can-edit').focusin(function () {
-                            $(this).find('input.form-control').prop('readonly', false);
-                            $(this).find('select').removeAttr('readonly');
-                        });
-                        $('.inp-can-edit').focusout(function () {
-                            $(this).find('input.form-control').prop('readonly', true);
-                            $(this).find('select').attr('readonly', 'readonly');
-                        });
-                        $('.inp-can-edit').on('change', function () {
-                            $(this).find('input').css({
-                                'border-color': '#00D67F',
-                                'box-shadow': '0 0 0 0.125rem rgba(0, 214, 127, 0.25)'
+                                }
                             })
-                            $(this).find('select').css({
-                                'border-color': '#00D67F',
-                                'box-shadow': '0 0 0 0.125rem rgba(0, 214, 127, 0.25)'
-                            })
-                        })
+
+                            $('#inventory-level-max').val(product_detail.inventory_information.inventory_level_max);
+                            $('#inventory-level-min').val(product_detail.inventory_information.inventory_level_min);
+                        }
                     }
-                }
-            })
+                })
 
-        }
-    })
+            }
+        })
+    }
+
+    loadDetail();
 
     // change select box UoM group tab general
     $('#select-box-uom-group').on('change', function () {
@@ -439,40 +443,19 @@ $(document).ready(function () {
     })
 
     //submit form edit product
-    let form_update_product = $('#form-update-product');
-    form_update_product.submit(function (event) {
-        event.preventDefault();
-        let csr = $("input[name=csrfmiddlewaretoken]").val();
-        let frm = new SetupFormSubmit($(this));
-
-        frm.dataForm['general_information'] = {
-            'product_type': $('#select-box-product-type').val(),
-            'product_category': $('#select-box-product-category').val(),
-            'uom_group': $('#select-box-uom-group').val()
-        }
-
-        if ($('#check-tab-inventory').is(':checked') === true) {
-            let inventory_level_min = $('#inventory-level-min').val();
-            if (inventory_level_min === '') {
-                inventory_level_min = null;
-            }
-
-            let inventory_level_max = $('#inventory-level-max').val();
-            if (inventory_level_max === '') {
-                inventory_level_max = null;
-            }
-
-            frm.dataForm['inventory_information'] = {
-                'uom': $('#select-box-uom-name').val(),
-                'inventory_level_min': inventory_level_min,
-                'inventory_level_max': inventory_level_max
-            }
-        } else {
-            delete frm.dataForm['inventory_information']
-        }
-
+    function getDataForm(dataForm) {
+        let list_option = []
         let price_list = []
-        $('.ul-price-list .price-list-change').each(function () {
+        dataForm['product_type'] = $('#select-box-product-type').val();
+        dataForm['product_category'] = $('#select-box-product-category').val();
+        dataForm['uom_group'] = $('#select-box-uom-group').val();
+
+        dataForm['default_uom'] = $('#select-box-default-uom').val();
+        dataForm['tax_code'] = $('#select-box-tax-code').val();
+
+        dataForm['inventory_uom'] = $('#select-box-uom-name').val();
+
+        $('.ul-price-list .value-price-list').each(function () {
             let is_auto_update = '1';
             if ($(this).attr('data-auto-update') === 'false') {
                 is_auto_update = '0';
@@ -499,50 +482,80 @@ $(document).ready(function () {
         })
 
         if ($('#check-tab-sale').is(':checked') === true) {
-            frm.dataForm['sale_information'] = {
-                'default_uom': $('#select-box-default-uom').val(),
-                'tax_code': $('#select-box-tax-code').val()
+            dataForm['price_list'] = price_list;
+            let measurementList = []
+            dataForm['currency_using'] = currency_id;
+
+            if ($('[name="length"]').val() === '') {
+                delete dataForm['length']
+            }
+            if ($('[name="width"]').val() === '') {
+                delete dataForm['width']
+            }
+            if ($('[name="height"]').val() === '') {
+                delete dataForm['height']
+            }
+            let inpVolume = $('[name="volume"]');
+            let inpWeight = $('[name="weight"]');
+            if (inpVolume.val() !== '') {
+                measurementList.push({
+                    'unit': inpVolume.attr('data-id'),
+                    'value': parseFloat(inpVolume.val())
+                })
+            }
+            if (inpWeight.val() !== '') {
+                measurementList.push({
+                    'unit': inpWeight.attr('data-id'),
+                    'value': parseFloat(inpWeight.val())
+                })
             }
 
-            frm.dataForm['price_list'] = price_list;
-            frm.dataForm['sale_information']['currency_using'] = currency_id;
 
-            frm.dataForm['sale_information']['measure'] = [];
-            frm.dataForm['sale_information']['length'] = null;
-            frm.dataForm['sale_information']['width'] = null;
-            frm.dataForm['sale_information']['height'] = null;
-            if ($('#check-tab-inventory').is(':checked') === true) {
-                let inpLength = $('[name="length"]');
-                let inpWidth = $('[name="width"]');
-                let inpHeight = $('[name="height"]');
-
-                frm.dataForm['sale_information']['length'] = inpLength.val() !== '' ? parseFloat(inpLength.val()) : null;
-                frm.dataForm['sale_information']['width'] = inpWidth.val() !== '' ? parseFloat(inpWidth.val()) : null;
-                frm.dataForm['sale_information']['height'] = inpHeight.val() !== '' ? parseFloat(inpHeight.val()) : null;
-
-                let measurementList = []
-
-                let inpVolume = $('[name="volume"]');
-                let inpWeight = $('[name="weight"]');
-                if (inpVolume.val() !== '') {
-                    measurementList.push({
-                        'unit': inpVolume.attr('data-id'),
-                        'value': parseFloat(inpVolume.val())
-                    })
-                }
-                if (inpWeight.val() !== '') {
-                    measurementList.push({
-                        'unit': inpWeight.attr('data-id'),
-                        'value': parseFloat(inpWeight.val())
-                    })
-                }
-                frm.dataForm['sale_information']['measure'] = measurementList;
-            }
+            dataForm['measure'] = measurementList;
+            list_option.push(0)
         } else {
-            delete frm.dataForm['sale_information']
+            let list_field_del = ['default_uom', 'tax_code', 'currency_using', 'length', 'width', 'height', 'measure', 'price_list']
+            for (const key of list_field_del) {
+                if (key in dataForm) {
+                    delete dataForm[key];
+                }
+            }
         }
 
-        $.fn.callAjax(frm.dataUrl.replace(0, pk), frm.dataMethod, frm.dataForm, csr)
+        if ($('#check-tab-inventory').is(':checked') === true) {
+            if (dataForm['inventory_level_min'] === '') {
+                delete dataForm['inventory_level_min']
+            }
+            if (dataForm['inventory_level_max'] === '') {
+                delete dataForm['inventory_level_max']
+            }
+            list_option.push(1)
+        } else {
+            let list_field_del = ['inventory_uom', 'inventory_level_min', 'inventory_level_max', 'height', 'width', 'length', 'measure']
+            for (const key of list_field_del) {
+                if (key in dataForm) {
+                    delete dataForm[key];
+                }
+            }
+        }
+
+        if ($('#check-tab-purchase').is(':checked') === true) {
+            list_option.push(2)
+        }
+
+        dataForm['product_choice'] = list_option;
+        return dataForm
+    }
+
+
+    form_update_product.submit(function (event) {
+        event.preventDefault();
+        let csr = $("input[name=csrfmiddlewaretoken]").val();
+        let frm = new SetupFormSubmit($(this));
+
+        let dataForm = getDataForm(frm.dataForm);
+
+        $.fn.callAjax(frm.dataUrl.format_url_with_uuid(pk), frm.dataMethod, dataForm, csr)
             .then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
@@ -562,11 +575,7 @@ $(document).ready(function () {
         for (let i = 0; i < element.length; i++) {
             if (element[i].hasAttribute('data-source')) {
                 let data_id = element[i].getAttribute('data-source')
-                if (document.querySelector(`input[type="checkbox"][data-id="` + data_id + `"]`).checked) {
-                    element[i].checked = true;
-                } else {
-                    element[i].checked = false;
-                }
+                element[i].checked = !!document.querySelector(`input[type="checkbox"][data-id="` + data_id + `"]`).checked;
             }
         }
     }
@@ -650,7 +659,7 @@ $(document).ready(function () {
         })
         let ratio_src = get_uom_src_item[0].ratio;
         let ratio_des = get_uom_des_item[0].ratio;
-        return ratio_src/ratio_des
+        return ratio_src / ratio_des
     }
 
     function GetProductFromWareHouseStockList(product_id, uom_id_des) {
@@ -659,7 +668,6 @@ $(document).ready(function () {
         })
         let warehouse_stock_list = [];
         for (let i = 0; i < product_get_from_wh_product_list.length; i++) {
-            // console.log(product_get_from_wh_product_list[i])
             let calculated_ratio = ConvertToUnitUoM(product_get_from_wh_product_list[i].uom, uom_id_des);
             let raw_stock_quantity = calculated_ratio * product_get_from_wh_product_list[i].stock_amount;
             let delivered_quantity = calculated_ratio * product_get_from_wh_product_list[i].sold_amount;
@@ -708,8 +716,7 @@ $(document).ready(function () {
                                     resp.data['warehouse_list'][i].available_value = available_value;
                                 }
                                 return resp.data['warehouse_list'];
-                            }
-                            else {
+                            } else {
                                 return [];
                             }
                         }
@@ -751,7 +758,7 @@ $(document).ready(function () {
                         render: (data, type, row, meta) => {
                             return `<center><span>` + row.wait_for_receipt_value + `</span></center>`
                         }
-                    },{
+                    }, {
                         data: 'available_value',
                         className: 'wrap-text text-center w-15',
                         render: (data, type, row, meta) => {

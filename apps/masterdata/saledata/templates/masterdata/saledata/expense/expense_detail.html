@@ -32,14 +32,21 @@
         {% csrf_token %}
         {{ data.content.price_list|json_script:"id-price-list" }}
         {{ data.content.currency_list|json_script:"id-currency-list" }}
+
         <div class="row">
-            <div class="col-3 form-group">
-                <label class="form-label required">{% trans 'Code' %}</label>
-                <input class="form-control" type="text" placeholder="CODE" id="expenseCode" disabled>
+            <div class="col-2">
+                <span class="badge badge-soft-primary badge-outline w-100" style="font-size: large"
+                      id="expenseCode"></span>
             </div>
-            <div class="col-6">
+        </div>
+
+        <div class="row mt-5">
+            <div class="col-4">
                 <label class="form-label required">{% trans 'Name' %}</label>
-                <input class="form-control" type="text" placeholder="Input Name" name="title" id="expenseTitle">
+                <div class="readonly">
+                    <input class="form-control" type="text" placeholder="Input Name" name="title" id="expenseTitle" readonly>
+                    <span></span>
+                </div>
             </div>
         </div>
 
@@ -57,21 +64,30 @@
                 <div class="row">
                     <div class="form-group col-2">
                         <label class="form-label required">{% trans "Expense Type" %}</label>
-                        <select id="chooseExpenseType" class="select2 form-control" data-method="GET"
-                                data-url="{% url 'ExpenseTypeListAPI' %}" name="expense_type"></select>
+                        <div class="readonly">
+                            <select id="chooseExpenseType" class="select2 form-control" data-method="GET"
+                                data-url="{% url 'ExpenseTypeListAPI' %}" name="expense_type" disabled></select>
+                            <span></span>
+                        </div>
+
                     </div>
                     <div class="form-group col-2">
                         <label class="form-label required">{% trans "UoM Group" %}</label>
-                        <input id="chooseUoMGroup" class="form-control" data-method="GET" readonly
-                               data-url="{% url "UnitOfMeasureGroupListAPI" %}"
-                               data-url-detail="{% url "UnitOfMeasureGroupDetailAPI" pk=0 %}"
-                        />
+                        <div class="readonly">
+                            <input id="chooseUoMGroup" class="form-control" data-method="GET" readonly
+                                   data-url="{% url "UnitOfMeasureGroupListAPI" %}"
+                                   data-url-detail="{% url "UnitOfMeasureGroupDetailAPI" pk=0 %}"
+                            />
+                        </div>
                     </div>
                     <div class="form-group col-2">
                         <label class="form-label required">{% trans "UoM" %}</label>
-                        <select id="chooseUom" class="select2 form-control" data-method="GET"
+                        <div class="readonly">
+                            <select id="chooseUom" class="select2 form-control" data-method="GET"
                                 data-url="{% url "UnitOfMeasureListAPI" %}"
-                                name="uom"></select>
+                                name="uom" disabled></select>
+                            <span></span>
+                        </div>
                     </div>
                     <div class="col-6 form-group" id="choosePriceList" data-method="GET"
                          data-url="{% url "PriceListAPI" %}">
@@ -86,8 +102,11 @@
                 <div class="row">
                     <div class="col-3 form-group">
                         <label class="form-label">{% trans "Role" %}</label>
-                        <select class="select2 form-control" id="chooseRole" data-method="GET"
-                                data-url="{% url "RoleListAPI" %}" multiple name="role"></select>
+                        <div class="readonly">
+                            <select class="select2 form-control" id="chooseRole" data-method="GET"
+                                data-url="{% url "RoleListAPI" %}" multiple name="role" disabled></select>
+                            <span></span>
+                        </div>
                     </div>
                 </div>
             </div>

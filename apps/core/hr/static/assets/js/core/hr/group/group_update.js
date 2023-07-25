@@ -81,10 +81,6 @@ $(document).ready(function () {
             var targetDt = dtb.DataTable(config);
             /*Checkbox Add*/
             var tdCnt = 0;
-            // $('table tr').each(function () {
-            //     $('<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select check-add-group-employee" id="chk_sel_' + tdCnt + '"><label class="form-check-label" for="chk_sel_' + tdCnt + '"></label></span>').appendTo($(this).find("td:last-child"));
-            //     tdCnt++;
-            // });
             $(document).on('click', '.del-button', function () {
                 targetDt.rows('.selected').remove().draw(false);
                 return false;
@@ -95,24 +91,6 @@ $(document).ready(function () {
 
             /*Select all using checkbox*/
             var DT1 = dtb.DataTable();
-            // $(".check-select-all").on("click", function (e) {
-            //     $('.check-select').attr('checked', true);
-            //     if ($(this).is(":checked")) {
-            //         DT1.rows().select();
-            //         $('.check-select').prop('checked', true);
-            //     } else {
-            //         DT1.rows().deselect();
-            //         $('.check-select').prop('checked', false);
-            //     }
-            // });
-            // $(".check-select").on("click", function (e) {
-            //     if ($(this).is(":checked")) {
-            //         $(this).closest('tr').addClass('selected');
-            //     } else {
-            //         $(this).closest('tr').removeClass('selected');
-            //         $('.check-select-all').prop('checked', false);
-            //     }
-            // });
         }
     }
 
@@ -343,35 +321,46 @@ $(document).ready(function () {
         errorElement: 'p',
         errorClass: 'is-invalid cl-red',
     })
-    frm.submit(function (event) {
+    frm.submit(function (e) {
         let dataEmployee = setGroupEmployeeData()
         let frm = new SetupFormSubmit($(this));
         if (frm.dataForm && dataEmployee) {
             frm.dataForm['group_employee'] = dataEmployee
         }
+        let submitFields = [
+            'group_level',
+            'parent_n',
+            'title',
+            'code',
+            'description',
+            'group_employee',
+            'first_manager',
+            'first_manager_title',
+            'second_manager',
+            'second_manager_title'
+        ]
         if (frm.dataForm) {
             for (let key in frm.dataForm) {
                 if (frm.dataForm[key] === '') {
                     delete frm.dataForm[key]
                 }
             }
+            for (let key in frm.dataForm) {
+                if (!submitFields.includes(key)) delete frm.dataForm[key]
+            }
         }
-        console.log(frm.dataUrl, frm.dataMethod, frm.dataForm,);
-        event.preventDefault();
         let csr = $("input[name=csrfmiddlewaretoken]").val();
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
             .then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyPopup({description: data.message}, 'success');
-                        $.fn.redirectUrl(frm.dataUrlRedirect, 3000);
+                        $.fn.notifyPopup({description: data.message}, 'success')
+                        $.fn.redirectUrl($(this).attr('data-url-redirect'), 1000);
                     }
                 },
                 (errs) => {
-                    if (errs.data.errors.hasOwnProperty('detail')) {
-                        $.fn.notifyPopup({description: String(errs.data.errors['detail'])}, 'failure')
-                    }
+                    console.log(errs)
                 }
             )
     });
@@ -421,8 +410,6 @@ function tableGroupEmployeeAdd() {
 
 // Action on delete row
 $(document).on('click', '.group-employee-del-button', function (e) {
-    // $(this).closest('tr').prev().remove();
-    // $(this).closest('tr').next().remove();
     let currentRow = $(this).closest('tr');
     let dataInModal = Number($(this).attr('data-in-modal'));
     let table = $('#datable-employee-list-popup-update').DataTable();

@@ -867,10 +867,6 @@ msgid "Creator"
 msgstr "Người tạo"
 
 #
-msgid "Posting date"
-msgstr "Ngày hiệu lực"
-
-#
 msgid "Current node"
 msgstr "Trạm hiện tại"
 
@@ -1032,7 +1028,7 @@ msgstr "Tên khách hàng"
 
 #
 msgid "Group"
-msgstr "Nhóm"
+msgstr "Phòng ban"
 
 #
 msgid "Industry"
@@ -1491,8 +1487,8 @@ msgid "Copy From PO"
 msgstr "Sao chép từ đơn mua hàng"
 
 #
-msgid "Posting Date"
-msgstr "Ngày tạo"
+msgid "Posting date"
+msgstr "Ngày hạch toán"
 
 #
 msgid "Line Detail"
@@ -3646,7 +3642,7 @@ msgid "Each Space has different menus."
 msgstr "Mỗi Space có các Menus khác nhau."
 
 #
-msgid "Data is refreshed"
+msgid "Data is refreshed."
 msgstr "Dữ liệu đã được làm mới"
 
 #

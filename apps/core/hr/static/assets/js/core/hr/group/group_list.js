@@ -13,12 +13,12 @@ $(function () {
         },
         columns: [
             {
-                'render': () => {
-                    return '';
+                render: (data, type, row, meta) => {
+                    return `<span>${(meta.row + 1)}</span>`
                 }
             }, {
                 'data': 'group_level',
-                render: (data, type, row, meta) => {
+                render: (data, type, row) => {
                     if (data.level) {
                         let urlGroupDetail = "/hr/group/detail/" + row.id
                         let level = ("level " + data.level);
@@ -68,7 +68,7 @@ $(function () {
                 }
             }, {
                 'className': 'action-center',
-                'render': (data, type, row, meta) => {
+                'render': (data, type, row) => {
                     let urlDetail = "/hr/group/" + row.id
                     let urlList = "/hr/group"
                     let urlUpdate = "/hr/group/update/" + row.id
@@ -90,11 +90,11 @@ $(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.redirectUrl(urlRedirect, 3000);
+                        $.fn.redirectUrl(urlRedirect, 1000);
                     }
                 },
                 (errs) => {
-                    // $.fn.notifyPopup({description: "Group create fail"}, 'failure')
+                    console.log(errs)
                 }
             )
     });

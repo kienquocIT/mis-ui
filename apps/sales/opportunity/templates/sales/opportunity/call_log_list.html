@@ -101,7 +101,41 @@
                                 <label class="form-label required">
                                     {% trans 'Contact' %}
                                 </label>
-                                <select id="contact-select-box" class="form-select" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
+                                <span class="input-affix-wrapper">
+                                    <span class="input-prefix" id="call-log-contact-detail-span" hidden>
+                                        <i class="fas fa-info-circle text-primary" aria-expanded="false" data-bs-toggle="dropdown"></i>
+                                        <span role="menu" class="dropdown-menu ml-4 pl-3 pr-3 pt-3 pb-3" style="width: 25rem;">
+                                            <div class="row">
+                                                <span class="col-7" style="font-style: italic; font-weight: bold">{% trans "More information" %}</span>
+                                                <a id="btn-detail-call-log-contact-tab" class="col-5 text-right" data-url="{% url 'ContactDetail' '0' %}" target="_blank">
+                                                    <span class="badge btn-outline-primary">{% trans "More" %}&nbsp;<i class="bi bi-arrow-right"></i></span>
+                                                </a>
+                                            </div>
+                                            <div class="dropdown-divider"></div>
+                                            <div class="row">
+                                                <span class="col-5" style="font-style: italic">{% trans "Contact name" %}</span>
+                                                <span class="col-7 text-primary" id="call-log-contact-name"></span>
+                                            </div>
+                                            <div class="row">
+                                                <span class="col-5" style="font-style: italic">{% trans "Job title" %}</span>
+                                                <span class="col-7 text-primary" id="call-log-contact-job-title"></span>
+                                            </div>
+                                            <div class="row">
+                                                <span class="col-5" style="font-style: italic">{% trans "Mobile" %}</span>
+                                                <span class="col-7 text-primary" id="call-log-contact-mobile"></span>
+                                            </div>
+                                            <div class="row">
+                                                <span class="col-5" style="font-style: italic">{% trans "Email" %}</span>
+                                                <span class="col-7 text-primary" id="call-log-contact-email"></span>
+                                            </div>
+                                            <div class="row">
+                                                <span class="col-5" style="font-style: italic">{% trans "Report to" %}</span>
+                                                <span class="col-7 text-primary" id="call-log-contact-report-to"></span>
+                                            </div>
+                                        </span>
+                                    </span>
+                                    <select id="contact-select-box" class="form-select" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
+                                </span>
                             </div>
                             <div class="col-6">
                                 <label class="form-label required">
@@ -166,7 +200,41 @@
                             <label class="form-label required">
                                 {% trans 'Contact' %}
                             </label>
-                            <select disabled style="color: #6f6f6f" id="detail-contact-select-box" class="form-select" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
+                            <span class="input-affix-wrapper">
+                                <span class="input-prefix" id="detail-call-log-contact-detail-span">
+                                    <i class="fas fa-info-circle text-primary" aria-expanded="false" data-bs-toggle="dropdown"></i>
+                                    <span role="menu" class="dropdown-menu ml-4 pl-3 pr-3 pt-3 pb-3" style="width: 25rem;">
+                                        <div class="row">
+                                            <span class="col-7" style="font-style: italic; font-weight: bold">{% trans "More information" %}</span>
+                                            <a id="detail-btn-detail-call-log-contact-tab" class="col-5 text-right" data-url="{% url 'ContactDetail' '0' %}" target="_blank">
+                                                <span class="badge btn-outline-primary">{% trans "More" %}&nbsp;<i class="bi bi-arrow-right"></i></span>
+                                            </a>
+                                        </div>
+                                        <div class="dropdown-divider"></div>
+                                        <div class="row">
+                                            <span class="col-5" style="font-style: italic">{% trans "Contact name" %}</span>
+                                            <span class="col-7 text-primary" id="detail-call-log-contact-name"></span>
+                                        </div>
+                                        <div class="row">
+                                            <span class="col-5" style="font-style: italic">{% trans "Job title" %}</span>
+                                            <span class="col-7 text-primary" id="detail-call-log-contact-job-title"></span>
+                                        </div>
+                                        <div class="row">
+                                            <span class="col-5" style="font-style: italic">{% trans "Mobile" %}</span>
+                                            <span class="col-7 text-primary" id="detail-call-log-contact-mobile"></span>
+                                        </div>
+                                        <div class="row">
+                                            <span class="col-5" style="font-style: italic">{% trans "Email" %}</span>
+                                            <span class="col-7 text-primary" id="detail-call-log-contact-email"></span>
+                                        </div>
+                                        <div class="row">
+                                            <span class="col-5" style="font-style: italic">{% trans "Report to" %}</span>
+                                            <span class="col-7 text-primary" id="detail-call-log-contact-report-to"></span>
+                                        </div>
+                                    </span>
+                                </span>
+                                <select disabled style="color: #6f6f6f" id="detail-contact-select-box" class="form-select" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
+                            </span>
                         </div>
                         <div class="col-6">
                             <label class="form-label required">

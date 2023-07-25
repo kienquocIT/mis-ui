@@ -602,7 +602,10 @@ class AccountDetail(View):
         menu_active='menu_account_detail',
     )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        input_mapping_properties = InputMappingProperties.SALE_DATA_ACCOUNT
+        return {
+                   'input_mapping_properties': input_mapping_properties, 'form_id': 'form-detail-update-account'
+               }, status.HTTP_200_OK
 
 
 class AccountDetailAPI(APIView):

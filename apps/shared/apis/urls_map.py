@@ -83,6 +83,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # organization/group
     GROUP_LEVEL_LIST = StringUrl('hr/levels')
+    GROUP_LEVEL_DETAIL = StringUrl('hr/level')
     GROUP_LIST = StringUrl('hr/groups')
     GROUP_DETAIL = StringUrl('hr/group')
     GROUP_PARENT = StringUrl('hr/group/parent')
@@ -210,7 +211,6 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # opportunity
     OPPORTUNITY_LIST = StringUrl('opportunity/lists')
-    OPPORTUNITY_EXPENSE_LIST = StringUrl('opportunity/opportunity-expense-list/lists')
     OPPORTUNITY_CALL_LOG_LIST = StringUrl('opportunity/call-log/lists')
     OPPORTUNITY_CALL_LOG_DELETE = StringUrl('opportunity/delete-call-log/{pk}')
     OPPORTUNITY_EMAIL_LIST = StringUrl('opportunity/send-email/lists')
@@ -220,6 +220,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # quotation
     QUOTATION_LIST = StringUrl('quotation/lists')
+    QUOTATION_LIST_FOR_CASH_OUTFLOW = StringUrl('quotation/list-for-cashoutflow')
     QUOTATION_DETAIL = StringUrl('quotation')
     QUOTATION_EXPENSE_LIST = StringUrl('quotation/quotation-expense-list/lists')
     QUOTATION_CONFIG = StringUrl('quotation/config')
@@ -246,6 +247,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # sale order
     SALE_ORDER_LIST = StringUrl('saleorder/lists')
+    SALE_ORDER_LIST_FOR_CASH_OUTFLOW = StringUrl('saleorder/list-for-cashoutflow')
     SALE_ORDER_DETAIL = StringUrl('saleorder')
     SALE_ORDER_EXPENSE_LIST = StringUrl('saleorder/saleorder-expense-list/lists')
     SALE_ORDER_CONFIG = StringUrl('saleorder/config')

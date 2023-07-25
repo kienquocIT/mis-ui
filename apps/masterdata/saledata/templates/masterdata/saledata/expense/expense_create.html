@@ -34,11 +34,7 @@
         {{ data.content.price_list|json_script:"id-price-list" }}
         {{ data.content.currency_list|json_script:"id-currency-list" }}
         <div class="row">
-            <div class="col-3 form-group">
-                <label class="form-label required">{% trans 'Code' %}</label>
-                <input class="form-control" type="text" placeholder="CODE" name="code">
-            </div>
-            <div class="col-6">
+            <div class="col-4">
                 <label class="form-label required">{% trans 'Name' %}</label>
                 <input class="form-control" type="text" placeholder="Input Name" name="title">
             </div>

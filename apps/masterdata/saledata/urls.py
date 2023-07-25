@@ -69,7 +69,7 @@ urlpatterns = [
     path('account/create', AccountCreate.as_view(), name='AccountCreate'),
     path('account/create/api', AccountCreateAPI.as_view(), name='AccountCreateAPI'),
     path('account/api/<str:pk>', AccountDetailAPI.as_view(), name='AccountDetailAPI'),
-    path('account/<str:pk>', AccountDetail.as_view(), name='AccountDetail'),
+    path('account/update/<str:pk>', AccountDetail.as_view(), name='AccountDetail'),
 
     path('accounts-map-employees/api', AccountsMapEmployeeAPI.as_view(), name='AccountsMapEmployeeAPI'),
     path('accounts-sale/api', AccountForSaleListAPI.as_view(), name='AccountForSaleListAPI'),

@@ -29,19 +29,6 @@
                 </span>
         </a>
     </button>
-
-    {#    <button id="save-account-draft" type="submit" form="form-create-account" style="background: none; border: none">#}
-    {#        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"#}
-    {#           href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""#}
-    {#           data-bs-original-title="Save Draft">#}
-    {#                <span class="icon">#}
-    {#                    <span class="feather-icon">#}
-    {#                        <i class="bi bi-save2"></i>#}
-    {#                    </span>#}
-    {#                </span>#}
-    {#        </a>#}
-    {#    </button>#}
-
     <a
             class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
             href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
@@ -63,11 +50,12 @@
                 <div class="row">
                     <div class="col-4">
                         <div class="form-group">
-                            <label class="form-label">{% trans "Product Code" %}
-                                <span class="field-required">*</span></label>
-                            <input type="text" name="code" placeholder="Input Code" class="form-control"
-                                   id="product-code" style="border: None"
+                            <label class="form-label required">{% trans "Product Code" %}</label>
+                            <div class="readonly">
+                                <input type="text" name="code" placeholder="Input Code" class="form-control"
+                                   id="product-code"
                                    readonly>
+                            </div>
                         </div>
                     </div>
                     <div class="col-4 mt-5 text-center">
@@ -81,18 +69,20 @@
                             <label class="form-check-label" for="check-tab-sale">{% trans "Sale" %}</label>
                         </div>
                         <div class="form-check form-check-inline mt-2">
-                            <input class="form-check-input" type="checkbox" id="check-tab-purchase" value="option3"
-                                   disabled>
+                            <input class="form-check-input" type="checkbox" id="check-tab-purchase" value="option3" checked>
                             <label class="form-check-label" for="check-tab-purchase">{% trans "Purchase" %}</label>
                         </div>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="form-group inp-can-edit col-8">
-                        <label class="form-label">{% trans "Product Name" %}
-                            <span class="field-required">*</span></label>
-                        <input type="text" name="title" placeholder="Input Name" class="form-control" id="product-title"
-                               readonly>
+                    <div class="form-group col-8">
+                        <label class="form-label required">{% trans "Product Name" %}</label>
+                        <div class="readonly">
+                            <input type="text" name="title" placeholder="Input Name" class="form-control"
+                                   id="product-title"
+                                   readonly>
+                            <span></span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -122,7 +112,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link disabled" data-bs-toggle="tab" id="link-tab-purchasing">
+                    <a class="nav-link" data-bs-toggle="tab" id="link-tab-purchase" href="#tab_purchase">
                         <span class="nav-link-text">{% trans 'Purchasing' %}</span>
                     </a>
                 </li>
@@ -131,25 +121,33 @@
         <div class="tab-content">
             <div class="tab-pane fade show active" id="tab_general">
                 <div class="row">
-                    <div class="form-group col-3 inp-can-edit">
-                        <label class="form-label">{% trans "Product Type" %}</label>
-                        <span class="field-required">*</span></label>
-                        <select id="select-box-product-type" class="form-select" data-method="GET" readonly="readonly"
-                                data-url="{% url 'ProductTypeListAPI' %}" name="product_type"></select>
+                    <div class="form-group col-3">
+                        <label class="form-label required">{% trans "Product Type" %}</label>
+                        <div class="readonly">
+                            <select id="select-box-product-type" class="form-select" data-method="GET"
+                                    data-url="{% url 'ProductTypeListAPI' %}" name="product_type" disabled>
+                            </select>
+                            <span></span>
+                        </div>
                     </div>
-                    <div class="form-group col-3 inp-can-edit">
-                        <label class="form-label">{% trans "Product Category" %}</label>
-                        <span class="field-required">*</span></label>
-                        <select id="select-box-product-category" class="form-select" data-method="GET"
-                                readonly="readonly"
-                                data-url="{% url "ProductCategoryListAPI" %}" name="product_category"></select>
+                    <div class="form-group col-3">
+                        <label class="form-label required">{% trans "Product Category" %}</label>
+                        <div class="readonly">
+                            <select id="select-box-product-category" class="form-select" data-method="GET"
+                                    data-url="{% url "ProductCategoryListAPI" %}" name="product_category" disabled>
+                            </select>
+                            <span></span>
+                        </div>
                     </div>
-                    <div class="form-group col-3 inp-can-edit">
-                        <label class="form-label">{% trans "UoM Group" %}</label>
-                        <span class="field-required">*</span></label>
-                        <select id="select-box-uom-group" class="form-select" data-method="GET" readonly="readonly"
-                                data-url="{% url "UnitOfMeasureGroupListAPI" %}" name="uom_group"
-                                data-url-detail="{% url "UnitOfMeasureGroupDetailAPI" pk=0 %}"></select>
+                    <div class="form-group col-3">
+                        <label class="form-label required">{% trans "UoM Group" %}</label>
+                        <div class="readonly">
+                            <select id="select-box-uom-group" class="form-select" data-method="GET"
+                                    data-url="{% url "UnitOfMeasureGroupListAPI" %}" name="uom_group"
+                                    data-url-detail="{% url "UnitOfMeasureGroupDetailAPI" pk=0 %}" disabled>
+                            </select>
+                            <span></span>
+                        </div>
                     </div>
                     <div class="form-group col-3 inp-can-edit" hidden>
                         <label class="form-label"><s>{% trans "Management By" %}</s></label>
@@ -160,23 +158,26 @@
             </div>
             <div class="tab-pane fade" id="tab_sale">
                 <div class="row">
-                    <div class="form-group col-3 inp-can-edit">
+                    <div class="form-group col-3">
                         <label class="form-label">{% trans "Default UoM" %}</label>
-                        <span class="field-required">*</span></label>
-                        <select id="select-box-default-uom" class="form-select" data-method="GET" readonly="readonly"
-                                data-url="{% url "UnitOfMeasureListAPI" %}" name="default_uom"></select>
+                        <div class="readonly">
+                            <select id="select-box-default-uom" class="form-select" data-method="GET" disabled
+                                    data-url="{% url "UnitOfMeasureListAPI" %}" name="default_uom"></select>
+                            <span></span>
+                        </div>
+
                     </div>
-                    <div class="form-group col-3 inp-can-edit">
+                    <div class="form-group col-3">
                         <label class="form-label">{% trans "Tax Code" %}</label>
-                        <span class="field-required">*</span></label>
-                        <select id="select-box-tax-code" class="form-select" data-method="GET"
-                                data-url="{% url "TaxListAPI" %}"
-                                readonly="readonly" name="tax_code"></select>
+                        <div class="readonly">
+                            <select id="select-box-tax-code" class="form-select" data-method="GET"
+                                    data-url="{% url "TaxListAPI" %}" disabled name="tax_code"></select>
+                            <span></span>
+                        </div>
                     </div>
                     <div class="col-6 form-group" id="select-price-list" data-method="GET"
                          data-url="{% url "PriceListAPI" %}" data-currency="{% url "CurrencyListAPI" %}">
-                        <label class="form-label">{% trans "Price List" %}</label>
-                        <span class="field-required">*</span></label>
+                        <label class="form-label required">{% trans "Price List" %}</label>
                         <input type="select" class="form-select dropdown-toggle" data-bs-toggle="dropdown"
                                oninput="this.value=''"
                                data-bs-display="static" aria-expanded="false" placeholder="Select Price List" readonly>
@@ -187,42 +188,59 @@
                 <div class="row mt-3 dimensionControl">
                     <h6>{% trans "Product Dimension and Weight Control" %}</h6>
                     <div class="row">
-                        <div class="col-3 form-group inp-can-edit">
+                        <div class="col-3 form-group">
                             <label class="form-label">{% trans "Length" %}</label>
-                            <span class="input-affix-wrapper affix-wth-text inp-can-edit">
-                                <input type="number" class="form-control inpDimension" name="length" step="0.1" readonly>
-                                <span class="input-suffix">cm</span>
-                            </span>
+                            <div class="readonly">
+                                <span class="input-affix-wrapper affix-wth-text ">
+                                    <input class="form-control inpDimension" type="number" name="length" step="0.1"
+                                           readonly>
+                                    <span class="input-suffix">cm</span>
+                                </span>
+                                <span></span>
+                            </div>
                         </div>
-                        <div class="col-3 form-group inp-can-edit">
+                        <div class="col-3 form-group">
                             <label class="form-label">{% trans "Width" %}</label>
-                            <span class="input-affix-wrapper affix-wth-text inp-can-edit">
-                                <input type="number" class="form-control inpDimension" name="width" step="0.1" readonly>
-                                <span class="input-suffix">cm</span>
-                            </span>
+                            <div class="readonly">
+                                <span class="input-affix-wrapper affix-wth-text">
+                                    <input type="number" class="form-control inpDimension" name="width" step="0.1"
+                                           readonly>
+                                    <span class="input-suffix">cm</span>
+                                </span>
+                                <span></span>
+                            </div>
                         </div>
                         <div class="col-3 form-group">
                             <label class="form-label">{% trans "Height" %}</label>
-                            <span class="input-affix-wrapper affix-wth-text inp-can-edit">
-                                <input type="number" class="form-control inpDimension" name="height" step="0.1" readonly>
-                                <span class="input-suffix">cm</span>
-                            </span>
+                            <div class="readonly">
+                                <span class="input-affix-wrapper affix-wth-text">
+                                    <input type="number" class="form-control inpDimension" name="height" step="0.1"
+                                           readonly>
+                                    <span class="input-suffix">cm</span>
+                                </span>
+                                <span></span>
+                            </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-3 form-group" id="divVolume">
                             <label class="form-label">{% trans "Volume" %}</label>
-                            <span class="input-affix-wrapper affix-wth-text">
-                                <input type="number" class="form-control" name="volume" readonly step="0.1">
-                                <span class="input-suffix"></span>
-                            </span>
+                            <div class="readonly">
+                                <span class="input-affix-wrapper affix-wth-text">
+                                    <input type="number" class="form-control" name="volume" readonly step="0.1">
+                                    <span class="input-suffix"></span>
+                                </span>
+                            </div>
                         </div>
                         <div class="col-3 form-group" id="divWeight">
                             <label class="form-label">{% trans "Weight" %}</label>
-                            <span class="input-affix-wrapper affix-wth-text inp-can-edit">
-                                <input type="number" class="form-control" name="weight" step="0.1" readonly>
-                                <span class="input-suffix"></span>
-                            </span>
+                            <div class="readonly">
+                                <span class="input-affix-wrapper affix-wth-text">
+                                    <input type="number" class="form-control" name="weight" step="0.1" readonly>
+                                    <span class="input-suffix"></span>
+                                </span>
+                                <span></span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -231,28 +249,41 @@
                 <div class="row">
                     <div class="form-group col-3">
                         <label class="form-label">{% trans "UoM Code" %}</label>
-                        <span class="field-required">*</span></label>
-                        <input id="uom-code" class="form-control" name="uom_code" type="text" style="border: None;"
-                               readonly>
+                        <div class="readonly">
+                            <input id="uom-code" class="form-control" name="uom_code" type="text"
+                                   readonly>
+                        </div>
                     </div>
-                    <div class="form-group col-3 inp-can-edit">
-                        <label class="form-label">{% trans "UoM Name" %}</label>
-                        <span class="field-required">*</span></label>
-                        <select id="select-box-uom-name" class="form-select" data-method="GET" readonly="readonly"
-                                data-url="{% url 'UnitOfMeasureListAPI' %}" name="uom_name">
-                        </select>
+                    <div class="form-group col-3">
+                        <label class="form-label required">{% trans "UoM Name" %}</label>
+                        <div class="readonly">
+                            <select id="select-box-uom-name" class="form-select" data-method="GET" disabled
+                                    data-url="{% url 'UnitOfMeasureListAPI' %}" name="inventory_uom">
+                            </select>
+                            <span></span>
+                        </div>
+
                     </div>
-                    <div class="form-group col-3 inp-can-edit">
+                    <div class="form-group col-3">
                         <label class="form-label">{% trans "Inventory Level Min" %}</label>
-                        <input id="inventory-level-min" type="number" class="form-control" name="inventory_level_min"
-                               min="0" step="1"
-                               placeholder="Input number" readonly>
+                        <div class="readonly">
+                            <input id="inventory-level-min" type="number" class="form-control"
+                                   name="inventory_level_min"
+                                   min="0" step="1"
+                                   placeholder="Input number" readonly>
+                            <span></span>
+                        </div>
                     </div>
-                    <div class="form-group col-3 inp-can-edit">
+                    <div class="form-group col-3">
                         <label class="form-label">{% trans "Inventory Level Max" %}</label>
-                        <input id="inventory-level-max" type="number" class="form-control" name="inventory_level_max"
-                               min="0" step="1"
-                               placeholder="Input number" readonly>
+                        <div class="readonly">
+                            <input id="inventory-level-max" type="number" class="form-control"
+                                   name="inventory_level_max"
+                                   min="0" step="1"
+                                   placeholder="Input number" readonly>
+                            <span></span>
+                        </div>
+
                     </div>
                 </div>
                 <div class="row" hidden>
@@ -280,11 +311,17 @@
                             <tfoot>
                             <tr>
                                 <th></th>
-                                <th class="text-primary text-center" style="font-weight: bolder; font-size: larger">TOTAL</th>
-                                <th class="text-primary text-center" style="font-weight: bolder; font-size: larger"></th>
-                                <th class="text-primary text-center" style="font-weight: bolder; font-size: larger"></th>
-                                <th class="text-primary text-center" style="font-weight: bolder; font-size: larger"></th>
-                                <th class="text-primary text-center" style="font-weight: bolder; font-size: larger"></th>
+                                <th class="text-primary text-center" style="font-weight: bolder; font-size: larger">
+                                    TOTAL
+                                </th>
+                                <th class="text-primary text-center"
+                                    style="font-weight: bolder; font-size: larger"></th>
+                                <th class="text-primary text-center"
+                                    style="font-weight: bolder; font-size: larger"></th>
+                                <th class="text-primary text-center"
+                                    style="font-weight: bolder; font-size: larger"></th>
+                                <th class="text-primary text-center"
+                                    style="font-weight: bolder; font-size: larger"></th>
                             </tr>
                             </tfoot>
                         </table>
@@ -292,6 +329,7 @@
                     <div class="col-1"></div>
                 </div>
             </div>
+            <div class="tab-pane fade" id="tab_purchase"></div>
         </div>
     </form>
     {{ data.unit | json_script:"id-unit-list" }}

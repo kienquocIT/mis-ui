@@ -38,7 +38,7 @@
 {% block pageContent %}
     {{ data.data.sale_order_list | json_script:"sale_order_list" }}
     {{ data.data.quotation_list | json_script:"quotation_list" }}
-    {{ data.data.expense_list | json_script:"expense_list" }}
+    {{ data.data.product_list | json_script:"product_list" }}
     {{ data.data.account_list | json_script:"account_list" }}
     {{ data.data.advance_payment_list | json_script:"advance_payment_list" }}
     {{ data.data.opportunity_list | json_script:"opportunity_list" }}
@@ -267,18 +267,17 @@
             <div class="tab-pane fade show active mb-25" id="tab_line_detail">
                 <div class="row">
                     <table id="tab_line_detail_datatable" class="table nowrap w-100"
-                           data-url-expense-list="{% url 'ExpenseListAPI' %}"
                            data-url-uom-list="{% url 'UnitOfMeasureListAPI' %}"
                            data-url-tax-list="{% url 'TaxListAPI' %}"
-                           data-url-unit-price-list="{% url 'ExpenseDetailAPI' '0' %}">
+                           data-url-unit-price-list="{% url 'ProductDetailAPI' '0' %}">
                         <thead>
                         <tr>
                             <th class="text-center" style="width: 2%"></th>
-                            <th style="width: 18%">{% trans 'Expense/Cost items' %}</th>
+                            <th class="required" style="width: 18%">{% trans 'Product items' %}</th>
                             <th style="width: 12%">{% trans 'Type' %}</th>
-                            <th style="width: 7%">{% trans 'UoM' %}</th>
-                            <th style="width: 6%">{% trans 'Quantity' %}</th>
-                            <th style="width: 14%">{% trans 'Unit price' %}</th>
+                            <th class="required" style="width: 7%">{% trans 'UoM' %}</th>
+                            <th class="required" style="width: 6%">{% trans 'Quantity' %}</th>
+                            <th class="required" style="width: 14%">{% trans 'Unit price' %}</th>
                             <th style="width: 10%">{% trans 'Tax' %}</th>
                             <th style="width: 14%">{% trans 'Subtotal price' %}</th>
                             <th style="width: 14%">{% trans 'After tax subtotal' %}</th>
@@ -352,7 +351,7 @@
                            data-url-quotation="{% url 'QuotationExpenseListAPI' %}">
                         <thead>
                         <tr>
-                            <th>{% trans 'Expense items' %}</th>
+                            <th>{% trans 'Product items' %}</th>
                             <th>{% trans 'Tax' %}</th>
                             <th>{% trans 'Plan After Tax' %}</th>
                             <th>{% trans 'AP Approved' %}</th>

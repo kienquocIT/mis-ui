@@ -29,6 +29,8 @@ $(function () {
         loadDataClass.loadInitQuotationExpense('data-init-quotation-create-tables-expense');
         // load config
         loadDataClass.loadInitQuotationConfig('quotation-config-data', formSubmit.attr('data-method'));
+        // load first time indicator
+        indicatorClass.loadQuotationIndicator('quotation-indicator-data', true);
 
         dataTableClass.dataTableProduct(data,'datable-quotation-create-product');
         dataTableClass.dataTableCost(data, 'datable-quotation-create-cost');
@@ -772,6 +774,7 @@ $(function () {
             }
             if (type === 'copy-from') { // COPY FROM (SALE ORDER CREATE -> CHOOSE QUOTATION)
                 // Begin load data copy FROM
+                document.getElementById('customer-price-list').value = dataCopy.customer.customer_price_list;
                 loadDataClass.loadDetailQuotation(dataCopy, true);
                 $('#datable-quotation-create-product').DataTable().destroy();
                 $('#datable-quotation-create-cost').DataTable().destroy();
@@ -880,6 +883,7 @@ $(function () {
                         dataCopy['quotation_costs_data'] = [];
                     }
                     // Begin load data copy TO
+                    document.getElementById('customer-price-list').value = dataCopy.customer.customer_price_list;
                     $('#datable-quotation-create-product').DataTable().destroy();
                     $('#datable-quotation-create-cost').DataTable().destroy();
                     $('#datable-quotation-create-expense').DataTable().destroy();
@@ -1174,6 +1178,10 @@ $(function () {
                 is_sale_order = true;
             }
             let _form = new SetupFormSubmit(formSubmit);
+
+            // Load again indicator when Submit
+            indicatorClass.loadQuotationIndicator('quotation-indicator-data');
+
             submitClass.setupDataSubmit(_form, is_sale_order);
             let submitFields = [
                 'title',
@@ -1206,6 +1214,8 @@ $(function () {
                 'is_customer_confirm',
                 // indicator tab
                 'quotation_indicators_data',
+                // system
+                // 'system_status',
             ]
             if (is_sale_order === true) {
                 submitFields = [
@@ -1238,6 +1248,8 @@ $(function () {
                     'sale_order_expenses_data',
                     // indicator tab
                     'sale_order_indicators_data',
+                    // system
+                    // 'system_status',
                 ]
             }
             if (_form.dataForm) {

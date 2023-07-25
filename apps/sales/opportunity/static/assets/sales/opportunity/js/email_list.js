@@ -155,6 +155,7 @@ $(function () {
                     }
                 },
                 (errs) => {
+                    $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
                     // $.fn.notifyPopup({description: errs.data.errors}, 'failure');
                 }
             )
@@ -244,7 +245,7 @@ $(function () {
             let call_log_id = $(this).attr('data-id');
             let frm = $('#table_opportunity_email_list');
             let csr = $("input[name=csrfmiddlewaretoken]").val();
-            $.fn.callAjax(frm.attr('data-url-delete').replace(0, call_log_id), 'PUT', {}, csr)
+            $.fn.callAjax(frm.attr('data-url-delete').replace(0, call_log_id), 'DELETE', {}, csr)
             .then((resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {

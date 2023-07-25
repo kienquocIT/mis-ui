@@ -1633,6 +1633,14 @@ $(document).ready(function () {
     }
 
     function LoadContactList(contact_list_id) {
+        $('#call-log-contact-name').text('');
+        $('#call-log-contact-job-title').text('');
+        $('#call-log-contact-mobile').text('');
+        $('#call-log-contact-email').text('');
+        $('#call-log-contact-report-to').text('');
+        $('#btn-detail-call-log-contact-tab').attr('href', '');
+        $('#call-log-contact-detail-span').prop('hidden', true);
+
         let $contact_sb = $('#contact-select-box');
         $contact_sb.html(``);
         $contact_sb.append(`<option></option>`)
@@ -1648,22 +1656,20 @@ $(document).ready(function () {
         $contact_sb.select2({dropdownParent: $("#create-new-call-log")});
     }
 
-    let loaded_modal_call_log = false;
     $('.create-new-call-log-button').on('click', function () {
-        $('#sale-code-select-box').prop('disabled', true);
-        $('#account-select-box').prop('disabled', true);
         $('#subject-input').val('');
+        $('#date-input').val('');
         $('#result-text-area').val('');
-        $('#repeat-activity').prop('checked', false);
+        $('#call-log-repeat-activity').attr('checked', false);
+        $('#sale-code-select-box').prop('disabled', true);
+        $('#account-select-box').prop('disabled', true);;
+
         let contact_list_id = account_list.filter(function (item) {
             return item.id === $('#select-box-customer option:selected').attr('value');
         })[0].contact_mapped;
         LoadContactList(contact_list_id);
-        if (loaded_modal_call_log === false) {
-            LoadSaleCodeListCallLog(pk);
-            LoadCustomerList($('#select-box-customer option:selected').attr('value'));
-            loaded_modal_call_log = true;
-        }
+        LoadSaleCodeListCallLog(pk);
+        LoadCustomerList($('#select-box-customer option:selected').attr('value'));
     })
 
     $('#date-input').daterangepicker({
@@ -1712,7 +1718,7 @@ $(document).ready(function () {
         frm.dataForm['contact'] = $('#contact-select-box').val();
         frm.dataForm['call_date'] = $('#date-input').val();
         frm.dataForm['input_result'] = $('#result-text-area').val();
-        if ($('#repeat-activity').is(':checked')) {
+        if ($('#call-log-repeat-activity').is(':checked')) {
             frm.dataForm['repeat'] = 1;
         } else {
             frm.dataForm['repeat'] = 0;
@@ -1726,71 +1732,7 @@ $(document).ready(function () {
                 $.fn.notifyPopup({description: "Successfully"}, 'success')
                 $('#create-new-call-log').hide();
 
-                let call_1 = $.fn.callAjax($('#table-timeline').attr('data-url-call-log'), $('#table-timeline').attr('data-method')).then((resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        let call_1_result = [];
-                        if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('call_log_list')) {
-                            data.call_log_list.map(function (item) {
-                                if (item.opportunity.id === pk) {
-                                    call_1_result.push({
-                                        'id': item.id,
-                                        'type': 0,
-                                        'subject': item.subject,
-                                        'date': item.call_date.split(' ')[0],
-                                    })
-                                }
-                            })
-                        }
-                        return call_1_result;
-                    }
-                })
-                let call_2 = $.fn.callAjax($('#table-timeline').attr('data-url-email'), $('#table-timeline').attr('data-method')).then((resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        let call_2_result = [];
-                        if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('email_list')) {
-                            data.email_list.map(function (item) {
-                                if (item.opportunity.id === pk) {
-                                    call_2_result.push({
-                                        'id': item.id,
-                                        'type': 1,
-                                        'subject': item.subject,
-                                        'date': item.date_created.split(' ')[0],
-                                    })
-                                }
-                            })
-                        }
-                        return call_2_result;
-                    }
-                })
-                let call_3 = $.fn.callAjax($('#table-timeline').attr('data-url-meeting'), $('#table-timeline').attr('data-method')).then((resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        let call_3_result = [];
-                        if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('meeting_list')) {
-                            data.meeting_list.map(function (item) {
-                                if (item.opportunity.id === pk) {
-                                    call_3_result.push({
-                                        'id': item.id,
-                                        'type': 2,
-                                        'subject': item.subject,
-                                        'date': item.meeting_date.split(' ')[0],
-                                    })
-                                }
-                            })
-                        }
-                        return call_3_result;
-                    }
-                })
-                Promise.all([call_1, call_2, call_3]).then((results) => {
-                    let sorted = results[0].concat(results[1]).concat(results[2]).sort(function(a, b) {
-                        return new Date(b.date) - new Date(a.date);
-                    })
-                    loadTimelineList(sorted);
-                }).catch((error) => {
-                    console.log(error);
-                });
+                callAjaxtoLoadTimeLineList();
             }
         })
     })
@@ -1831,9 +1773,20 @@ $(document).ready(function () {
     }
 
     $('.send-email-button').on('click', function () {
-        $('#email-sale-code-span').text($('#span-code').text())
         $('#email-subject-input').val('');
         $('#email-content-area').val('');
+
+        $('#email-to-select-box').prop('hidden', false);
+        $('#email-to-select-box').next(1).prop('hidden', false);
+        $('#inputEmailTo').prop('hidden', true);
+        $('#email-to-select-btn').prop('hidden', true);
+        $('#email-to-input-btn').prop('hidden', false);
+
+        $('#email-cc-input-btn').prop('hidden', false);
+        $('#inputEmailCc').prop('hidden', true);
+        $('#email-cc-add').prop('hidden', true);
+        $('#email-cc-remove').prop('hidden', true);
+
         let contact_list_id = account_list.filter(function(item) {
             return item.id === $('#select-box-customer option:selected').attr('value');
         })[0].contact_mapped;
@@ -1903,71 +1856,7 @@ $(document).ready(function () {
                     $.fn.notifyPopup({description: "Successfully"}, 'success')
                     $('#send-email').hide();
 
-                    let call_1 = $.fn.callAjax($('#table-timeline').attr('data-url-call-log'), $('#table-timeline').attr('data-method')).then((resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            let call_1_result = [];
-                            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('call_log_list')) {
-                                data.call_log_list.map(function (item) {
-                                    if (item.opportunity.id === pk) {
-                                        call_1_result.push({
-                                            'id': item.id,
-                                            'type': 0,
-                                            'subject': item.subject,
-                                            'date': item.call_date.split(' ')[0],
-                                        })
-                                    }
-                                })
-                            }
-                            return call_1_result;
-                        }
-                    })
-                    let call_2 = $.fn.callAjax($('#table-timeline').attr('data-url-email'), $('#table-timeline').attr('data-method')).then((resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            let call_2_result = [];
-                            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('email_list')) {
-                                data.email_list.map(function (item) {
-                                    if (item.opportunity.id === pk) {
-                                        call_2_result.push({
-                                            'id': item.id,
-                                            'type': 1,
-                                            'subject': item.subject,
-                                            'date': item.date_created.split(' ')[0],
-                                        })
-                                    }
-                                })
-                            }
-                            return call_2_result;
-                        }
-                    })
-                    let call_3 = $.fn.callAjax($('#table-timeline').attr('data-url-meeting'), $('#table-timeline').attr('data-method')).then((resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            let call_3_result = [];
-                            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('meeting_list')) {
-                                data.meeting_list.map(function (item) {
-                                    if (item.opportunity.id === pk) {
-                                        call_3_result.push({
-                                            'id': item.id,
-                                            'type': 2,
-                                            'subject': item.subject,
-                                            'date': item.meeting_date.split(' ')[0],
-                                        })
-                                    }
-                                })
-                            }
-                            return call_3_result;
-                        }
-                    })
-                    Promise.all([call_1, call_2, call_3]).then((results) => {
-                        let sorted = results[0].concat(results[1]).concat(results[2]).sort(function(a, b) {
-                            return new Date(b.date) - new Date(a.date);
-                        })
-                        loadTimelineList(sorted);
-                    }).catch((error) => {
-                        console.log(error);
-                    });
+                    callAjaxtoLoadTimeLineList();
                 }
             },
             (errs) => {
@@ -2008,20 +1897,12 @@ $(document).ready(function () {
             $customer_member_sb.select2({dropdownParent: $("#create-meeting")});
         }
 
-    function LoadEmployeeAttended(customer_id) {
-        let employee_filtered = [];
-        for (let i = 0; i < account_map_employees.length; i++) {
-            if (account_map_employees[i].account.id === customer_id) {
-                employee_filtered.push(account_map_employees[i].employee)
-            }
-        }
+    function LoadEmployeeAttended() {
         let $employee_attended_sb = $('#meeting-employee-attended-select-box');
         $employee_attended_sb.html(``);
         $employee_attended_sb.append(`<option></option>`);
         employee_list.map(function (item) {
-            if (employee_filtered.includes(item.id)) {
-                $employee_attended_sb.append(`<option data-code="${item.code}" value="${item.id}">${item.full_name}</option>`);
-            }
+            $employee_attended_sb.append(`<option data-code="${item.code}" value="${item.id}">${item.full_name}</option>`);
         })
         $employee_attended_sb.select2({dropdownParent: $("#create-meeting")});
     }
@@ -2036,7 +1917,6 @@ $(document).ready(function () {
         for (let i = 0; i < shipping_address_list.length; i++) {
             $('#meeting-address-select-box').append(`<option>` + shipping_address_list[i] + `</option>`);
         }
-        $('#meeting-address-select-box').select2({dropdownParent: $("#create-meeting")});
     }
 
     $('#meeting-date-input').daterangepicker({
@@ -2053,17 +1933,37 @@ $(document).ready(function () {
     });
     $('#meeting-date-input').val('');
 
-    let loaded_modal_meeting = false;
     $('.new-meeting-button').on('click', function () {
+        $('#meeting-subject-input').val('');
+        $('#meeting-date-input').val('');
+        $('#meeting-room-location-input').val('');
+        $('#meeting-result-text-area').val('');
+        $('#meeting-repeat-activity').attr('checked', false);
+        $('#meeting-address-select-box').prop('hidden', false);
+        $('#meeting-address-input-btn').prop('hidden', false);
+        $('#meeting-address-input').prop('hidden', true);
+        $('#meeting-address-select-btn').prop('hidden', true);
+
         $('#meeting-sale-code-select-box').prop('disabled', true);
-        if (loaded_modal_meeting === false) {
-            let customer_id = $('#meeting-sale-code-select-box option:selected').attr('data-customer-id');
-            LoadMeetingSaleCodeList(pk);
-            LoadMeetingAddress(customer_id);
-            LoadEmployeeAttended(customer_id);
-            LoadCustomerMember(customer_id);
-            loaded_modal_meeting = true;
-        }
+        LoadEmployeeAttended();
+        LoadMeetingSaleCodeList(pk);
+        let customer_id = $('#meeting-sale-code-select-box option:selected').attr('data-customer-id');
+        LoadMeetingAddress(customer_id);
+        LoadCustomerMember(customer_id);
+    })
+
+    $('#meeting-address-input-btn').on('click', function () {
+        $('#meeting-address-select-box').prop('hidden', true);
+        $('#meeting-address-input-btn').prop('hidden', true);
+        $('#meeting-address-input').prop('hidden', false);
+        $('#meeting-address-select-btn').prop('hidden', false);
+    })
+
+    $('#meeting-address-select-btn').on('click', function () {
+        $('#meeting-address-select-box').prop('hidden', false);
+        $('#meeting-address-input-btn').prop('hidden', false);
+        $('#meeting-address-input').prop('hidden', true);
+        $('#meeting-address-select-btn').prop('hidden', true);
     })
 
     $('#form-new-meeting').submit(function (event) {
@@ -2074,11 +1974,16 @@ $(document).ready(function () {
         frm.dataForm['subject'] = $('#meeting-subject-input').val();
         frm.dataForm['opportunity'] = $('#meeting-sale-code-select-box option:selected').val();
         frm.dataForm['meeting_date'] = $('#meeting-date-input').val();
-        frm.dataForm['meeting_address'] = $('#meeting-address-select-box option:selected').val();
+        if ($('#meeting-address-select-box').is(':hidden')) {
+            frm.dataForm['meeting_address'] = $('#meeting-address-input').val();
+        }
+        else {
+            frm.dataForm['meeting_address'] = $('#meeting-address-select-box option:selected').val();
+        }
         frm.dataForm['room_location'] = $('#meeting-room-location-input').val();
         frm.dataForm['input_result'] = $('#meeting-result-text-area').val();
 
-        if ($('#repeat-activity').is(':checked')) {
+        if ($('#meeting-repeat-activity').is(':checked')) {
             frm.dataForm['repeat'] = 1;
         }
         else {
@@ -2119,71 +2024,7 @@ $(document).ready(function () {
                     $.fn.notifyPopup({description: "Successfully"}, 'success')
                     $('#create-meeting').hide();
 
-                    let call_1 = $.fn.callAjax($('#table-timeline').attr('data-url-call-log'), $('#table-timeline').attr('data-method')).then((resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            let call_1_result = [];
-                            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('call_log_list')) {
-                                data.call_log_list.map(function (item) {
-                                    if (item.opportunity.id === pk) {
-                                        call_1_result.push({
-                                            'id': item.id,
-                                            'type': 0,
-                                            'subject': item.subject,
-                                            'date': item.call_date.split(' ')[0],
-                                        })
-                                    }
-                                })
-                            }
-                            return call_1_result;
-                        }
-                    })
-                    let call_2 = $.fn.callAjax($('#table-timeline').attr('data-url-email'), $('#table-timeline').attr('data-method')).then((resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            let call_2_result = [];
-                            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('email_list')) {
-                                data.email_list.map(function (item) {
-                                    if (item.opportunity.id === pk) {
-                                        call_2_result.push({
-                                            'id': item.id,
-                                            'type': 1,
-                                            'subject': item.subject,
-                                            'date': item.date_created.split(' ')[0],
-                                        })
-                                    }
-                                })
-                            }
-                            return call_2_result;
-                        }
-                    })
-                    let call_3 = $.fn.callAjax($('#table-timeline').attr('data-url-meeting'), $('#table-timeline').attr('data-method')).then((resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            let call_3_result = [];
-                            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('meeting_list')) {
-                                data.meeting_list.map(function (item) {
-                                    if (item.opportunity.id === pk) {
-                                        call_3_result.push({
-                                            'id': item.id,
-                                            'type': 2,
-                                            'subject': item.subject,
-                                            'date': item.meeting_date.split(' ')[0],
-                                        })
-                                    }
-                                })
-                            }
-                            return call_3_result;
-                        }
-                    })
-                    Promise.all([call_1, call_2, call_3]).then((results) => {
-                        let sorted = results[0].concat(results[1]).concat(results[2]).sort(function(a, b) {
-                            return new Date(b.date) - new Date(a.date);
-                        })
-                        loadTimelineList(sorted);
-                    }).catch((error) => {
-                        console.log(error);
-                    });
+                    callAjaxtoLoadTimeLineList();
                 }
             },
             (errs) => {
@@ -2216,6 +2057,9 @@ $(document).ready(function () {
                         else if (row.type === 2) {
                             return `<span>Meeting with customer</span>`
                         }
+                        else if (row.type === 3) {
+                            return `<span>Task</span>`
+                        }
                     }
                 },
                 {
@@ -2230,6 +2074,9 @@ $(document).ready(function () {
                         }
                         else if (row.type === 2) {
                             return `<i class="bi bi-person-workspace"></i>`
+                        }
+                        else if (row.type === 3) {
+                            return `<i class="fa-solid fa-list-check"></i>`
                         }
                     }
                 },
@@ -2250,8 +2097,8 @@ $(document).ready(function () {
             ],
         });
     }
-
-    let call_1 = $.fn.callAjax($('#table-timeline').attr('data-url-call-log'), $('#table-timeline').attr('data-method')).then((resp) => {
+    function callAjaxtoLoadTimeLineList() {
+        let call_1 = $.fn.callAjax($('#table-timeline').attr('data-url-call-log'), $('#table-timeline').attr('data-method')).then((resp) => {
         let data = $.fn.switcherResp(resp);
         if (data) {
             let call_1_result = [];
@@ -2270,50 +2117,71 @@ $(document).ready(function () {
             return call_1_result;
         }
     })
-    let call_2 = $.fn.callAjax($('#table-timeline').attr('data-url-email'), $('#table-timeline').attr('data-method')).then((resp) => {
-        let data = $.fn.switcherResp(resp);
-        if (data) {
-            let call_2_result = [];
-            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('email_list')) {
-                data.email_list.map(function (item) {
-                    if (item.opportunity.id === pk) {
-                        call_2_result.push({
-                            'id': item.id,
-                            'type': 1,
-                            'subject': item.subject,
-                            'date': item.date_created.split(' ')[0],
-                        })
-                    }
-                })
+        let call_2 = $.fn.callAjax($('#table-timeline').attr('data-url-email'), $('#table-timeline').attr('data-method')).then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                let call_2_result = [];
+                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('email_list')) {
+                    data.email_list.map(function (item) {
+                        if (item.opportunity.id === pk) {
+                            call_2_result.push({
+                                'id': item.id,
+                                'type': 1,
+                                'subject': item.subject,
+                                'date': item.date_created.split(' ')[0],
+                            })
+                        }
+                    })
+                }
+                return call_2_result;
             }
-            return call_2_result;
-        }
-    })
-    let call_3 = $.fn.callAjax($('#table-timeline').attr('data-url-meeting'), $('#table-timeline').attr('data-method')).then((resp) => {
-        let data = $.fn.switcherResp(resp);
-        if (data) {
-            let call_3_result = [];
-            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('meeting_list')) {
-                data.meeting_list.map(function (item) {
-                    if (item.opportunity.id === pk) {
-                        call_3_result.push({
-                            'id': item.id,
-                            'type': 2,
-                            'subject': item.subject,
-                            'date': item.meeting_date.split(' ')[0],
-                        })
-                    }
-                })
-            }
-            return call_3_result;
-        }
-    })
-    Promise.all([call_1, call_2, call_3]).then((results) => {
-        let sorted = results[0].concat(results[1]).concat(results[2]).sort(function(a, b) {
-            return new Date(b.date) - new Date(a.date);
         })
-        loadTimelineList(sorted);
-    }).catch((error) => {
-        console.log(error);
-    });
+        let call_3 = $.fn.callAjax($('#table-timeline').attr('data-url-meeting'), $('#table-timeline').attr('data-method')).then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                let call_3_result = [];
+                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('meeting_list')) {
+                    data.meeting_list.map(function (item) {
+                        if (item.opportunity.id === pk) {
+                            call_3_result.push({
+                                'id': item.id,
+                                'type': 2,
+                                'subject': item.subject,
+                                'date': item.meeting_date.split(' ')[0],
+                            })
+                        }
+                    })
+                }
+                return call_3_result;
+            }
+        })
+        let call_4 = $.fn.callAjax($('#table-timeline').attr('data-url-task'), $('#table-timeline').attr('data-method')).then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                let call_4_result = [];
+                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('task_list')) {
+                    data.task_list.map(function (item) {
+                        if (item.opportunity.id === pk) {
+                            call_4_result.push({
+                                'id': item.id,
+                                'type': 3,
+                                'subject': item.title,
+                                'date': item.start_date.split(' ')[0],
+                            })
+                        }
+                    })
+                }
+                return call_4_result;
+            }
+        })
+        Promise.all([call_1, call_2, call_3, call_4]).then((results) => {
+            let sorted = results[0].concat(results[1]).concat(results[2]).concat(results[3]).sort(function(a, b) {
+                return new Date(b.date) - new Date(a.date);
+            })
+            loadTimelineList(sorted);
+        }).catch((error) => {
+            console.log(error);
+        });
+    }
+    callAjaxtoLoadTimeLineList();
 })

@@ -501,7 +501,8 @@ $(document).ready(function () {
             let dtb = $('#datatable-warehouse-list');
             let frm = new SetupFormSubmit(dtb);
             dtb.DataTableDefault({
-                pageLength: 5,
+                dom: '',
+                paging: false,
                 ajax: {
                     url: frm.dataUrl,
                     type: frm.dataMethod,
@@ -516,43 +517,23 @@ $(document).ready(function () {
                 columns: [
                     {
                         data: 'code',
-                        className: 'wrap-text w-15',
+                        className: 'wrap-text w-25',
                         render: (data, type, row, meta) => {
                             return `<span class="text-secondary">` + row.code + `</span>`
                         }
                     },
                     {
                         data: 'title',
-                        className: 'wrap-text text-center w-25',
+                        className: 'wrap-text text-center w-50',
                         render: (data, type, row, meta) => {
                             return `<center><span class="text-secondary"><b>` + row.title + `</b></span></center>`
                         }
                     },
                     {
                         data: 'stock_value',
-                        className: 'wrap-text text-center w-15',
+                        className: 'wrap-text text-center w-25',
                         render: (data, type, row, meta) => {
-                            return `<center><span>0</span></center>`
-                        }
-                    },
-                    {
-                        data: 'wait_for_delivery_value',
-                        className: 'wrap-text text-center w-15',
-                        render: (data, type, row, meta) => {
-                            return `<center><span>0</span></center>`
-                        }
-                    },
-                    {
-                        data: 'wait_for_receipt_value',
-                        className: 'wrap-text text-center w-15',
-                        render: (data, type, row, meta) => {
-                            return `<center><span>0</span></center>`
-                        }
-                    }, {
-                        data: 'available_value',
-                        className: 'wrap-text text-center w-15',
-                        render: (data, type, row, meta) => {
-                            return `<center><span>0</span></center>`
+                            return `<span>0</span>`
                         }
                     },
                 ],
@@ -561,4 +542,47 @@ $(document).ready(function () {
     }
 
     loadWareHouseList();
+
+    function loadWareHouseOverView() {
+        if (!$.fn.DataTable.isDataTable('#datatable-warehouse-overview')) {
+            let dtb = $('#datatable-warehouse-overview');
+            dtb.DataTableDefault({
+                dom: '',
+                paging: false,
+                data: [''],
+                columns: [
+                    {
+                        data: '',
+                        className: 'wrap-text text-center w-25',
+                        render: (data, type, row, meta) => {
+                            return `<span style="font-weight: bolder" class="text-danger">0</span>`
+                        }
+                    },
+                    {
+                        data: '',
+                        className: 'wrap-text text-center w-25',
+                        render: (data, type, row, meta) => {
+                            return `<span style="font-weight: bolder" class="text-danger">0</span>`
+                        }
+                    },
+                    {
+                        data: '',
+                        className: 'wrap-text text-center w-25',
+                        render: (data, type, row, meta) => {
+                            return `<span style="font-weight: bolder" class="text-danger">0</span>`
+                        }
+                    },
+                    {
+                        data: '',
+                        className: 'wrap-text text-center w-25',
+                        render: (data, type, row, meta) => {
+                            return `<span style="font-weight: bolder" class="text-danger">0</span>`
+                        }
+                    },
+                ],
+            });
+        }
+    }
+
+    loadWareHouseOverView();
 })

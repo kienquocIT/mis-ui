@@ -90,7 +90,7 @@ class OpportunityDetail(View):
                        'contact_list': resp2.result,
                        'opportunity_list': resp3.result,
                        'employee_list': resp4.result,
-                       'account_map_employees': resp5.result
+                       'account_map_employees': resp5.result,
             }, status.HTTP_200_OK
         return {
                    'employee_current_id': request.user.employee_current_data.get('id', None),
@@ -115,9 +115,7 @@ class OpportunityDetailAPI(APIView):
         is_api=True,
     )
     def put(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_DETAIL.fill_key(pk=pk)).put(  # noqa
-            request.data
-        )
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_DETAIL.fill_key(pk=pk)).put(request.data)
         if resp.state:
             return {'opportunity': resp.result}, status.HTTP_200_OK
         if resp.errors:  # noqa
@@ -374,23 +372,12 @@ class OpportunityCallLogListAPI(APIView):
 
 
 class OpportunityCallLogDeleteAPI(APIView):
-    @mask_view(
-        auth_require=True,
-        is_api=True,
-    )
-    def put(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CALL_LOG_DELETE.fill_key(pk=pk)).put(request.data)
+    @mask_view(auth_require=True, is_api=True)
+    def delete(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CALL_LOG_DELETE.fill_key(pk=pk)).delete(request.data)
         if resp.state:
-            return {'opportunity_call_log': resp.result}, status.HTTP_200_OK
-        if resp.errors:  # noqa
-            if isinstance(resp.errors, dict):
-                err_msg = ""
-                for key, value in resp.errors.items():
-                    err_msg += str(key) + ': ' + str(value)
-                    break
-                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
-            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
-        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+            return {}, status.HTTP_200_OK
+        return {'detail': resp.errors}, status.HTTP_500_INTERNAL_SERVER_ERROR
 
 
 class OpportunityEmailList(View):
@@ -446,23 +433,12 @@ class OpportunityEmailListAPI(APIView):
 
 
 class OpportunityEmailDeleteAPI(APIView):
-    @mask_view(
-        auth_require=True,
-        is_api=True,
-    )
-    def put(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_EMAIL_DELETE.fill_key(pk=pk)).put(request.data)
+    @mask_view(auth_require=True, is_api=True,)
+    def delete(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_EMAIL_DELETE.fill_key(pk=pk)).delete(request.data)
         if resp.state:
-            return {'opportunity_email': resp.result}, status.HTTP_200_OK
-        if resp.errors:  # noqa
-            if isinstance(resp.errors, dict):
-                err_msg = ""
-                for key, value in resp.errors.items():
-                    err_msg += str(key) + ': ' + str(value)
-                    break
-                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
-            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
-        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+            return {}, status.HTTP_200_OK
+        return {'detail': resp.errors}, status.HTTP_500_INTERNAL_SERVER_ERROR
 
 
 class OpportunityMeetingList(View):
@@ -526,19 +502,11 @@ class OpportunityMeetingDeleteAPI(APIView):
         auth_require=True,
         is_api=True,
     )
-    def put(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_MEETING_DELETE.fill_key(pk=pk)).put(request.data)
+    def delete(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_MEETING_DELETE.fill_key(pk=pk)).delete(request.data)
         if resp.state:
-            return {'opportunity_meeting': resp.result}, status.HTTP_200_OK
-        if resp.errors:  # noqa
-            if isinstance(resp.errors, dict):
-                err_msg = ""
-                for key, value in resp.errors.items():
-                    err_msg += str(key) + ': ' + str(value)
-                    break
-                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
-            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
-        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+            return {}, status.HTTP_200_OK
+        return {'detail': resp.errors}, status.HTTP_500_INTERNAL_SERVER_ERROR
 
 
 class OpportunityDocumentList(View):

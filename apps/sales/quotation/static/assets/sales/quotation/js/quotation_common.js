@@ -58,7 +58,7 @@ class loadDataHandle {
                     }
                     // ReCheck Config when change Opportunity (If not load detail or is copy)
                     if (is_load_detail === false || is_copy === true) {
-                        configClass.checkConfig(true);
+                        configClass.checkConfig(true, null, false, false, is_copy);
                     }
                 }
             )
@@ -66,7 +66,7 @@ class loadDataHandle {
             ele.append(`<option value=""></option>`);
             // ReCheck Config when change Opportunity (If not load detail or is copy)
             if (is_load_detail === false || is_copy === true) {
-                configClass.checkConfig(true);
+                configClass.checkConfig(true, null, false, false, is_copy);
             }
         }
     }
@@ -570,6 +570,71 @@ class loadDataHandle {
         }
     }
 
+    // loadBoxQuotationProductPurchasing(product_id, box_id, valueToSelect = null) {
+    //     let self = this;
+    //     let ele = document.getElementById(product_id);
+    //     let jqueryId = '#' + box_id;
+    //     let eleBox = $(jqueryId);
+    //     if (ele && eleBox) {
+    //         let linkDetail = ele.getAttribute('data-link-detail');
+    //         eleBox.attr('data-link-detail', linkDetail);
+    //         let data = JSON.parse(ele.value);
+    //         eleBox.empty();
+    //         for (let i = 0; i < data.length; i++) {
+    //             let uom_title = "";
+    //             let expense_type_title = "";
+    //             let expense_type = {};
+    //             let default_uom = {};
+    //             let uom_group = {};
+    //             let tax_code = {};
+    //             let price_list = [];
+    //             if (Object.keys(data[i].uom).length !== 0) {
+    //                 uom_title = data[i].uom.title
+    //             }
+    //             if (Object.keys(data[i].expense_type).length !== 0) {
+    //                 expense_type = data[i].expense_type;
+    //                 expense_type_title = data[i].expense_type.title;
+    //             }
+    //             default_uom = data[i].uom;
+    //             tax_code = data[i].tax_code;
+    //             price_list = data[i].price_list;
+    //             uom_group = data[i].uom_group;
+    //             let dataStr = JSON.stringify({
+    //                 'id': data[i].id,
+    //                 'title': data[i].title,
+    //                 'code': data[i].code,
+    //                 'unit of measure': uom_title,
+    //                 'expense type': expense_type_title,
+    //             }).replace(/"/g, "&quot;");
+    //             let expense_data = JSON.stringify({
+    //                 'id': data[i].id,
+    //                 'title': data[i].title,
+    //                 'code': data[i].code,
+    //                 'expense_type': expense_type,
+    //                 'unit_of_measure': default_uom,
+    //                 'uom_group': uom_group,
+    //                 'price_list': price_list,
+    //                 'tax': tax_code,
+    //             }).replace(/"/g, "&quot;");
+    //             let option = `<button type="button" class="btn btn-white dropdown-item table-row-expense-option" data-value="${data[i].id}">
+    //                             <div class="float-left"><span class="expense-title">${data[i].title}</span></div>
+    //                             <input type="hidden" class="data-default" value="${expense_data}">
+    //                             <input type="hidden" class="data-info" value="${dataStr}">
+    //                         </button>`
+    //             if (valueToSelect && valueToSelect === data[i].id) {
+    //                 option = `<button type="button" class="btn btn-white dropdown-item table-row-expense-option option-btn-checked" data-value="${data[i].id}">
+    //                             <div class="float-left"><span class="expense-title">${data[i].title}</span></div>
+    //                             <input type="hidden" class="data-default" value="${expense_data}">
+    //                             <input type="hidden" class="data-info" value="${dataStr}">
+    //                         </button>`
+    //             }
+    //             eleBox.append(option);
+    //         }
+    //         // load data information
+    //         self.loadInformationSelectBox(eleBox, true);
+    //     }
+    // }
+
     loadDataProductSelect(ele, is_change_item = true, is_expense = false) {
         let self = this;
         let optionSelected = null;
@@ -942,6 +1007,65 @@ class loadDataHandle {
                     }
                 }
             )
+        }
+    }
+
+    loadDataTableAndDropDown(data) {
+        let self = this;
+        $('#datable-quotation-create-product').DataTable().destroy();
+        $('#datable-quotation-create-cost').DataTable().destroy();
+        $('#datable-quotation-create-expense').DataTable().destroy();
+        dataTableClass.dataTableProduct(data.quotation_products_data, 'datable-quotation-create-product');
+        dataTableClass.dataTableCost(data.quotation_costs_data, 'datable-quotation-create-cost');
+        dataTableClass.dataTableExpense(data.quotation_expenses_data, 'datable-quotation-create-expense');
+        // load data dropdown for Tabs
+        let tableProduct = document.getElementById('datable-quotation-create-product');
+        let tableCost = document.getElementById('datable-quotation-create-cost');
+        let tableExpense = document.getElementById('datable-quotation-create-expense');
+        for (let i = 0; i < tableProduct.tBodies[0].rows.length; i++) {
+            let row = tableProduct.tBodies[0].rows[i];
+            if (row.querySelector('.table-row-item')) {
+                self.loadBoxQuotationProduct('data-init-quotation-create-tables-product', row.querySelector('.table-row-item').id, row.querySelector('.table-row-item').value);
+                // check expense selected to get uom group filter uom data
+                let optionSelected = row.querySelector('.table-row-item').options[row.querySelector('.table-row-item').selectedIndex];
+                if (optionSelected) {
+                    if (optionSelected.querySelector('.data-default')) {
+                        let product_data_json = JSON.parse(optionSelected.querySelector('.data-default').value);
+                        self.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', row.querySelector('.table-row-uom').id, row.querySelector('.table-row-uom').value, product_data_json.uom_group.id);
+                    }
+                }
+                self.loadBoxQuotationTax('data-init-quotation-create-tables-tax', row.querySelector('.table-row-tax').id, row.querySelector('.table-row-tax').value);
+            }
+        }
+        for (let i = 0; i < tableCost.tBodies[0].rows.length; i++) {
+            let row = tableCost.tBodies[0].rows[i];
+            if (row.querySelector('.table-row-item')) {
+                self.loadBoxQuotationProduct('data-init-quotation-create-tables-product', row.querySelector('.table-row-item').id, row.querySelector('.table-row-item').value);
+                // check expense selected to get uom group filter uom data
+                let optionSelected = row.querySelector('.table-row-item').options[row.querySelector('.table-row-item').selectedIndex];
+                if (optionSelected) {
+                    if (optionSelected.querySelector('.data-default')) {
+                        let product_data_json = JSON.parse(optionSelected.querySelector('.data-default').value);
+                        self.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', row.querySelector('.table-row-uom').id, row.querySelector('.table-row-uom').value, product_data_json.uom_group.id);
+                    }
+                }
+                self.loadBoxQuotationTax('data-init-quotation-create-tables-tax', row.querySelector('.table-row-tax').id, row.querySelector('.table-row-tax').value);
+            }
+        }
+        for (let i = 0; i < tableExpense.tBodies[0].rows.length; i++) {
+            let row = tableExpense.tBodies[0].rows[i];
+            if (row.querySelector('.table-row-item')) {
+                self.loadBoxQuotationExpense('data-init-quotation-create-tables-expense', row.querySelector('.expense-option-list').id, row.querySelector('.table-row-item').getAttribute('data-value'));
+                // check expense selected to get uom group filter uom data
+                let optionSelected = row.querySelector('.expense-option-list').querySelector('.option-btn-checked');
+                if (optionSelected) {
+                    if (optionSelected.querySelector('.data-default')) {
+                        let product_data_json = JSON.parse(optionSelected.querySelector('.data-default').value);
+                        self.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', row.querySelector('.table-row-uom').id, row.querySelector('.table-row-uom').value, product_data_json.uom_group.id);
+                    }
+                }
+                self.loadBoxQuotationTax('data-init-quotation-create-tables-tax', row.querySelector('.table-row-tax').id, row.querySelector('.table-row-tax').value);
+            }
         }
     }
 }
@@ -2254,6 +2378,8 @@ class dataTableHandle {
     }
 }
 
+let dataTableClass = new dataTableHandle();
+
 // Calculate
 class calculateCaseHandle {
     updateTotal(table, is_product, is_cost, is_expense) {
@@ -2459,7 +2585,7 @@ let calculateClass = new calculateCaseHandle();
 
 // Config
 class checkConfigHandle {
-    checkConfig(is_change_opp = false, new_row = null, is_first_time = false, is_has_opp_detail = false) {
+    checkConfig(is_change_opp = false, new_row = null, is_first_time = false, is_has_opp_detail = false, is_copy = false) {
         let self = this;
         let configRaw = $('#quotation-config-data').val();
         if (configRaw) {
@@ -2477,7 +2603,9 @@ class checkConfigHandle {
                                 let row = tableProduct.tBodies[0].rows[i];
                                 is_make_price_change = self.reCheckTable(config, row, true, false, is_make_price_change);
                                 // Re Calculate all data of rows & total
-                                calculateClass.commonCalculate($(tableProduct), row, true, false, false);
+                                if (is_copy === false) {
+                                    calculateClass.commonCalculate($(tableProduct), row, true, false, false);
+                                }
                             }
                         }
                     }
@@ -2494,7 +2622,7 @@ class checkConfigHandle {
                         }
                     }
                     // ReCalculate Total
-                    if (is_first_time === false) {
+                    if (is_first_time === false && is_copy === false) {
                         calculateClass.updateTotal(tableProduct, true, false, false);
                     }
                 } else {
@@ -2523,7 +2651,9 @@ class checkConfigHandle {
                                 let row = tableProduct.tBodies[0].rows[i];
                                 is_make_price_change = self.reCheckTable(config, row, false, true, is_make_price_change);
                                 // Re Calculate all data of rows & total
-                                calculateClass.commonCalculate($(tableProduct), row, true, false, false);
+                                if (is_copy === false) {
+                                    calculateClass.commonCalculate($(tableProduct), row, true, false, false);
+                                }
                             }
                         }
                     }
@@ -2540,7 +2670,7 @@ class checkConfigHandle {
                         is_make_price_change = true;
                     }
                     // ReCalculate Total
-                    if (is_first_time === false) {
+                    if (is_first_time === false && is_copy === false) {
                         calculateClass.updateTotal(tableProduct, true, false, false);
                     }
                 } else {

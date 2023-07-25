@@ -61,14 +61,14 @@ $(function () {
         $('.daterangepicker').remove();
 
 // Action on click dropdown opportunity
-        boxOpportunity.on('click', function(e) {
+        boxOpportunity.on('click', function() {
             if (!$(this)[0].innerHTML) {
                 loadDataClass.loadBoxQuotationOpportunity('select-box-quotation-create-opportunity');
             }
         });
 
 // Action on change dropdown opportunity
-        boxOpportunity.on('change', function (e) {
+        boxOpportunity.on('change', function () {
             let eleData = $(this)[0].options[$(this)[0].selectedIndex].querySelector('.data-default');
             if (eleData) {
                 let data = JSON.parse(eleData.value);
@@ -89,14 +89,14 @@ $(function () {
         });
 
 // Action on click dropdown customer
-        boxCustomer.on('click', function(e) {
+        boxCustomer.on('click', function() {
             if (!$(this)[0].innerHTML) {
                 loadDataClass.loadBoxQuotationCustomer('select-box-quotation-create-customer', null, modalShipping, modalBilling);
             }
         });
 
 // Action on change dropdown customer
-        boxCustomer.on('change', function (e) {
+        boxCustomer.on('change', function () {
             let optionSelected = boxCustomer[0].options[boxCustomer[0].selectedIndex];
             if (optionSelected) {
                 loadDataClass.loadShippingBillingCustomer(modalShipping, modalBilling);
@@ -142,7 +142,7 @@ $(function () {
 //         });
 
 // Action on change dropdown sale person
-        boxSalePerson.on('change', function (e) {
+        boxSalePerson.on('change', function () {
             loadDataClass.loadInformationSelectBox($(this));
             // clear Customer box & Opportunity box & Contact box & PaymentTerm box & PriceListVal
             $('#select-box-quotation-create-customer').empty();
@@ -161,7 +161,7 @@ $(function () {
         });
 
 // Action on click dropdown price list
-        tabPrice.on('click', function(e) {
+        tabPrice.on('click', function() {
             if (!boxPriceList[0].innerHTML) {
                 loadDataClass.loadBoxQuotationPrice('select-box-quotation-create-price-list');
             }
@@ -180,7 +180,7 @@ $(function () {
 //         });
 
 // Action on click dropdown contact
-        boxQuotation.on('click', function(e) {
+        boxQuotation.on('click', function() {
             if (!$(this)[0].innerHTML) {
                 let opp_id = null;
                 let sale_person_id = null;
@@ -276,7 +276,7 @@ $(function () {
         });
 
 // Action on click price list's option
-        tableProduct.on('click', '.table-row-price-option', function (e) {
+        tableProduct.on('click', '.table-row-price-option', function () {
             if (!$(this)[0].querySelector('.expired-price')) { // Check if price not expired
                 let priceValRaw = $(this)[0].getAttribute('data-value');
                 if (priceValRaw) {
@@ -298,7 +298,7 @@ $(function () {
         });
 
 // ******** Action on change data of table row PRODUCT => calculate data for row & calculate data total
-        tableProduct.on('change', '.table-row-item, .table-row-quantity, .table-row-price, .table-row-tax, .table-row-discount', function (e) {
+        tableProduct.on('change', '.table-row-item, .table-row-quantity, .table-row-price, .table-row-tax, .table-row-discount', function () {
             let row = $(this)[0].closest('tr');
             if ($(this).hasClass('table-row-item')) {
                 loadDataClass.loadDataProductSelect($(this));
@@ -319,7 +319,7 @@ $(function () {
         });
 
 // If change product uom then clear table COST
-        tableProduct.on('change', '.table-row-uom', function (e) {
+        tableProduct.on('change', '.table-row-uom', function () {
             // Clear table COST if change product uom
             tableCost.DataTable().clear().draw();
             document.getElementById('quotation-create-cost-pretax-amount').innerHTML = "0";
@@ -328,7 +328,7 @@ $(function () {
         });
 
 // Check valid number for input
-        $('#tab-content-quotation-product').on('change', '.validated-number', function (e) {
+        $('#tab-content-quotation-product').on('change', '.validated-number', function () {
             let value = this.value;
             // Replace non-digit characters with an empty string
             value = value.replace(/[^0-9.]/g, '');
@@ -339,7 +339,7 @@ $(function () {
         });
 
 // Action on change discount rate on Total of product
-        $('#quotation-create-product-discount').on('change', function (e) {
+        $('#quotation-create-product-discount').on('change', function () {
             // Delete all promotion rows
             deletePromotionRows(tableProduct, true, false);
             // Delete all shipping rows
@@ -404,7 +404,7 @@ $(function () {
         });
 
 // Action on click expense option
-        tableExpense.on('click', '.table-row-expense-option', function (e) {
+        tableExpense.on('click', '.table-row-expense-option', function () {
             let itemID = $(this)[0].getAttribute('data-value');
             let itemTitle = $(this)[0].querySelector('.expense-title').innerHTML;
             if (itemID && itemTitle) {
@@ -435,7 +435,7 @@ $(function () {
         });
 
 // Action on click price list's option
-        tableExpense.on('click', '.table-row-price-option', function (e) {
+        tableExpense.on('click', '.table-row-price-option', function () {
             let priceValRaw = $(this)[0].getAttribute('data-value');
             if (priceValRaw) {
                 let row = $(this)[0].closest('tr');
@@ -449,7 +449,7 @@ $(function () {
         });
 
 // ******** Action on change data of table row EXPENSE => calculate data for row & calculate data total
-        tableExpense.on('change', '.table-row-item, .table-row-quantity, .table-row-price, .table-row-tax', function (e) {
+        tableExpense.on('change', '.table-row-item, .table-row-quantity, .table-row-price, .table-row-tax', function () {
             let row = $(this)[0].closest('tr');
             if ($(this).hasClass('table-row-item')) {
                 // loadDataClass.loadDataProductSelect($(this));
@@ -458,7 +458,7 @@ $(function () {
         });
 
 // Action on click tab cost (clear table cost & copy product data -> cost data)
-        $('#quotation-tabs').on('click', '.quotation-cost', function (e) {
+        $('#quotation-tabs').on('click', '.quotation-cost', function () {
             let tableEmpty = tableCost[0].querySelector('.dataTables_empty');
             if (tableEmpty) {
                 // copy data
@@ -622,7 +622,7 @@ $(function () {
         });
 
 // ******** Action on change data of table row COST => calculate data for row & calculate data total
-        tableCost.on('change', '.table-row-item, .table-row-quantity, .table-row-price, .table-row-tax', function (e) {
+        tableCost.on('change', '.table-row-item, .table-row-quantity, .table-row-price, .table-row-tax', function () {
             let row = $(this)[0].closest('tr');
             calculateClass.commonCalculate(tableCost, row, false, true, false);
         });
@@ -634,7 +634,7 @@ $(function () {
 
 // SHIPPING-BILLING
 // Action on click choose shipping
-        modalShipping.on('click', '.choose-shipping', function (e) {
+        modalShipping.on('click', '.choose-shipping', function () {
             // Enable other buttons
             $('.choose-shipping').prop('disabled', false);
             // Disable the clicked button
@@ -656,7 +656,7 @@ $(function () {
         });
 
 // Action on click choose billing
-        modalBilling.on('click', '.choose-billing', function (e) {
+        modalBilling.on('click', '.choose-billing', function () {
             // Enable other buttons
             $('.choose-billing').prop('disabled', false);
             // Disable the clicked button
@@ -670,7 +670,7 @@ $(function () {
 
 // COPY FROM - TO
 // Action on click button copy quotation on sale order page + restart all status of all element of modal
-        $('#btn-copy-quotation').on('click', function (e) {
+        $('#btn-copy-quotation').on('click', function () {
             let type = $(this)[0].getAttribute('data-copy-type');
             $(divCopyOption[0].querySelector('.check-option')).prop('checked', true);
             tableCopyQuotationProduct[0].setAttribute('hidden', true);
@@ -703,14 +703,14 @@ $(function () {
         });
 
 // Action on check quotation for copy
-        tableCopyQuotation.on('click', '.table-row-check', function (e) {
+        tableCopyQuotation.on('click', '.table-row-check', function () {
             tableCopyQuotation.find('.table-row-check').prop('checked', false);
             $(this).prop('checked', true);
             loadDataClass.loadAPIDetailQuotation('data-init-copy-quotation', $(this)[0].getAttribute('data-id'));
         });
 
 // Action on click button select quotation for copy
-        $('#btn-select-quotation-copy').on('click', function(e) {
+        $('#btn-select-quotation-copy').on('click', function() {
             tableCopyQuotation[0].setAttribute('hidden', true);
             tableCopyQuotation.DataTable().clear().draw();
             tableCopyQuotation.empty();
@@ -729,7 +729,7 @@ $(function () {
         });
 
 // Action on check copy option
-        divCopyOption.on('change', '.check-option', function(e) {
+        divCopyOption.on('change', '.check-option', function() {
             if ($(this)[0].checked === false) {
                 tableCopyQuotationProduct[0].removeAttribute('hidden');
             } else {
@@ -738,7 +738,7 @@ $(function () {
         });
 
 // Action on confirm copy quotation
-        $('#btn-quotation-copy-confirm').on('click', function (e) {
+        $('#btn-quotation-copy-confirm').on('click', function () {
             let dataCopy = JSON.parse($('#data-copy-quotation-detail')[0].value);
             let dataCopyTo = {'id': dataCopy.id, 'option': 'all'};
             let type = $(this)[0].getAttribute('data-copy-type');
@@ -972,7 +972,7 @@ $(function () {
 
 // PROMOTION
 // Action on click button Check Available Promotion (show list promotions)
-        $('#btn-check-promotion').on('click', function(e) {
+        $('#btn-check-promotion').on('click', function() {
             if (boxCustomer.val()) {
                 // destroy dataTable then call API load-check again
                 dataTableClass.loadTableQuotationPromotion('data-init-quotation-create-promotion', boxCustomer.val())
@@ -1083,7 +1083,7 @@ $(function () {
 
 // SHIPPING
 // Action on click button Add Shipping Fee (show list shipping)
-        $('#btn-add-shipping').on('click', function(e) {
+        $('#btn-add-shipping').on('click', function() {
             dataTableClass.loadTableQuotationShipping('data-init-quotation-create-shipping')
         });
 
@@ -1303,14 +1303,14 @@ $(function () {
                 )
         }
 
-        $('#btn-remove-promotion').on('click', function(e) {
+        $('#btn-remove-promotion').on('click', function() {
             $('#quotation-check-promotion').val("");
             // Delete Promotion Row & ReCalculate Total
             deletePromotionRows(tableProduct, true, false);
             calculateClass.updateTotal(tableProduct[0], true, false, false);
         });
 
-        $('#btn-check-another-promotion').on('click', function(e) {
+        $('#btn-check-another-promotion').on('click', function() {
             $('#quotation-check-promotion').val("");
             $('#btn-check-promotion').click();
         })

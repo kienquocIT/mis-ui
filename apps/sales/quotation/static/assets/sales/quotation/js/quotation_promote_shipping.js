@@ -651,8 +651,9 @@ class promotionHandle {
         let eleDiscountRaw = document.getElementById('quotation-create-product-discount-amount-raw');
         let totalFinal = (parseFloat(elePretaxAmountRaw.value) - parseFloat(eleDiscountRaw.value) - parseFloat(promotion_amount) + taxAmountTotal);
         document.getElementById('quotation-final-revenue-before-tax').value = (parseFloat(elePretaxAmountRaw.value) - parseFloat(eleDiscountRaw.value) - parseFloat(promotion_amount));
-        if (is_before_tax === false) {
+        if (is_before_tax === false) { // CASE AFTER TAX
             totalFinal = (parseFloat(eleTotalRaw.value) - promotion_amount);
+            document.getElementById('quotation-final-revenue-before-tax').value = (totalFinal - taxAmountTotal);
         }
 
         // apply Final Total

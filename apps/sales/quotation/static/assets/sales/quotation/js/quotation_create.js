@@ -374,6 +374,11 @@ $(function () {
                     "code": "",
                     "title": ""
                 },
+                "product": {
+                    "id": "",
+                    "code": "",
+                    "title": ""
+                },
                 "expense_code": "",
                 "expense_price": 0,
                 "expense_title": "",
@@ -388,14 +393,16 @@ $(function () {
                 "expense_tax_value": 0,
                 "expense_uom_title": "",
                 "expense_tax_amount": 0,
-                "expense_subtotal_price": 0
+                "expense_subtotal_price": 0,
+                "is_product": false,
             }
-            let newRow = tableExpense.DataTable().row.add(dataAdd).draw().node();
+            tableExpense.DataTable().row.add(dataAdd).draw().node();
             // load data dropdown
             let selectExpenseID = 'quotation-create-expense-box-expense-' + String(order);
             let selectUOMID = 'quotation-create-expense-box-uom-' + String(order);
             let selectTaxID = 'quotation-create-expense-box-tax-' + String(order);
             loadDataClass.loadBoxQuotationExpense('data-init-quotation-create-tables-expense', selectExpenseID);
+            loadDataClass.loadBoxQuotationProductPurchasing('data-init-quotation-create-tables-product', selectExpenseID);
             loadDataClass.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', selectUOMID);
             loadDataClass.loadBoxQuotationTax('data-init-quotation-create-tables-tax', selectTaxID);
 
@@ -424,6 +431,42 @@ $(function () {
                     loadDataClass.loadDataProductSelect($(eleExpenseDropdown), true, true);
                 }
             }
+        });
+
+// Action on check expense option (filter expense item or purchasing item)
+        tableExpense.on('click', '.checkbox-expense-item, .checkbox-purchasing-item', function() {
+            let eleExpenseDropDownID = $(this)[0].closest('tr').querySelector('.expense-option-list').id;
+            let jqueryId = '#' + eleExpenseDropDownID;
+            $(jqueryId).empty();
+            if ($(this).hasClass('checkbox-expense-item')) {
+                let otherCheckbox = $(this)[0].closest('tr').querySelector('.checkbox-purchasing-item');
+                if ($(this)[0].checked === true) {
+                    if (otherCheckbox.checked === true) {
+                        loadDataClass.loadBoxQuotationExpense('data-init-quotation-create-tables-expense', eleExpenseDropDownID);
+                        loadDataClass.loadBoxQuotationProductPurchasing('data-init-quotation-create-tables-product', eleExpenseDropDownID);
+                    } else if (otherCheckbox.checked === false) {
+                        loadDataClass.loadBoxQuotationExpense('data-init-quotation-create-tables-expense', eleExpenseDropDownID);
+                    }
+                } else if ($(this)[0].checked === false) {
+                    if (otherCheckbox.checked === true) {
+                        loadDataClass.loadBoxQuotationProductPurchasing('data-init-quotation-create-tables-product', eleExpenseDropDownID);
+                    }
+                }
+           } else if ($(this).hasClass('checkbox-purchasing-item')) {
+                let otherCheckbox = $(this)[0].closest('tr').querySelector('.checkbox-expense-item');
+                if ($(this)[0].checked === true) {
+                    if (otherCheckbox.checked === true) {
+                        loadDataClass.loadBoxQuotationExpense('data-init-quotation-create-tables-expense', eleExpenseDropDownID);
+                        loadDataClass.loadBoxQuotationProductPurchasing('data-init-quotation-create-tables-product', eleExpenseDropDownID);
+                    } else if (otherCheckbox.checked === false) {
+                        loadDataClass.loadBoxQuotationProductPurchasing('data-init-quotation-create-tables-product', eleExpenseDropDownID);
+                    }
+                } else if ($(this)[0].checked === false) {
+                    if (otherCheckbox.checked === true) {
+                        loadDataClass.loadBoxQuotationExpense('data-init-quotation-create-tables-expense', eleExpenseDropDownID);
+                    }
+                }
+           }
         });
 
 // Action on delete row expense
@@ -697,8 +740,6 @@ $(function () {
                 // Filter all data is not Promotion from quotation_products_data
                 let finalList = filterDataProductNotPromotion(dataCopy.quotation_products_data);
                 dataTableClass.dataTableCopyQuotationProduct(finalList, 'datable-copy-quotation-product');
-
-                // dataTableClass.dataTableCopyQuotationProduct(dataCopy.quotation_products_data, 'datable-copy-quotation-product');
             }
         });
 

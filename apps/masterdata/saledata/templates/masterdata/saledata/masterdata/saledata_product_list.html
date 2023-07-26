@@ -7,6 +7,10 @@
             margin-bottom: 10px;
         }
     </style>
+    <link
+            href="{% static 'vendors/datatables.net-rowgroup/css/dataTables.rowGroup.min.css' %}"
+            rel="stylesheet" type="text/css"
+    />
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
@@ -123,7 +127,7 @@
                     <th class="w-5">#</th>
                     <th class="w-20">{% trans "Code" %}</th>
                     <th class="w-20">{% trans "Name" %}</th>
-                    <th class="w-20">{% trans "Group" %}</th>
+                    <th class="w-20">{% trans "UoM Group" %}</th>
                     <th class="w-20">{% trans "Is referenced unit" %}</th>
                     <th class="w-10">{% trans "Action" %}</th>
                     </thead>
@@ -545,4 +549,5 @@
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'assets/js/masterdata/saledata/masterdata/saledata_product.js' %}"></script>
+    <script src="{% static 'vendors/datatables.net-rowgroup/js/dataTables.rowGroup.min.js' %}"></script>
 {% endblock %}

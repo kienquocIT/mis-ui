@@ -943,8 +943,8 @@
                             <div class="col-10">
                                 <select id="email-to-select-box" class="form-select" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
                                 <input class="form-control" hidden id="inputEmailTo" placeholder="Enter email">
-                                <a id="email-to-input-btn" class="text-primary form-text text-muted text-right" href="#">to input</a>
-                                <a id="email-to-select-btn" class="text-primary form-text text-muted text-right" href="#" hidden>to select</a>
+                                <a id="email-to-input-btn" class="text-primary form-text text-muted text-right" href="#">{% trans 'to input' %}</a>
+                                <a id="email-to-select-btn" class="text-primary form-text text-muted text-right" href="#" hidden>{% trans 'to select' %}</a>
                             </div>
                         </div>
                         <div class="row form-group mb-3">
@@ -954,10 +954,10 @@
                                 <input id="inputEmailCc" hidden class="mt-1 form-control" placeholder="Enter email">
 
                                 <a class="text-primary form-text text-muted text-right" href="#">
-                                    <span id="email-cc-add" hidden class="badge badge-primary">Add</span>
+                                    <span id="email-cc-add" hidden class="icon"><i class="text-primary bi bi-plus-circle"></i></span>
                                     <span id="email-cc-remove" hidden class="icon"><i class="text-danger bi bi-x-circle-fill"></i></span>
                                 </a>
-                                <a id="email-cc-input-btn" class="text-primary form-text text-muted text-right" href="#">input email</a>
+                                <a id="email-cc-input-btn" class="text-primary form-text text-muted text-right" href="#">{% trans 'input email' %}</a>
                             </div>
                         </div>
                         <div class="row form-group mb-3">

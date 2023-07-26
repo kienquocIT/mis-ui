@@ -1937,6 +1937,7 @@ $(document).ready(function () {
         $('#meeting-subject-input').val('');
         $('#meeting-date-input').val('');
         $('#meeting-room-location-input').val('');
+        $('#meeting-address-input').val('');
         $('#meeting-result-text-area').val('');
         $('#meeting-repeat-activity').attr('checked', false);
         $('#meeting-address-select-box').prop('hidden', false);

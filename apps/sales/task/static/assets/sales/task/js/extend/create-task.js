@@ -12,6 +12,7 @@ function resetFormTask() {
     $('.create-subtask').addClass('hidden')
     $('[name="parent_n"]').remove();
     window.editor.setData('')
+    $('.create-task').attr('disabled', false)
 }
 function logworkSubmit(){
     $('#save-logtime').off().on('click', function () {
@@ -302,7 +303,7 @@ $(function () {
         const start_date = new Date(formData.start_date).getDate()
         const end_date = new Date(formData.end_date).getDate()
         if (end_date < start_date) {
-            $.fn.notifyPopup({description: $('#form_valid').attr('data-valid-datetime')}, 'failure')
+            $.fn.notifyB({description: $('#form_valid').attr('data-valid-datetime')}, 'failure')
             return false
         }
         if (formData.log_time === "")

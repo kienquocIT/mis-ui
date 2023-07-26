@@ -14,7 +14,16 @@ class loadDataHandle {
             sale_person = $('#select-box-quotation-create-sale-person').val(); // filter by sale_person
         }
         if (sale_person) {
-            let data_filter = {'sale_person_id': sale_person};
+            let data_filter = {
+                'sale_person_id': sale_person,
+                'is_close_lost': false,
+                'is_deal_close': false,
+            };
+            if ($('#frm_quotation_create')[0].classList.contains('sale-order')) {
+                data_filter['sale_order__isnull'] = true;
+            } else {
+                data_filter['quotation__isnull'] = true;
+            }
             ele.empty();
             ele.append(`<option value=""></option>`);
             $.fn.callAjax(url, method, data_filter).then(
@@ -22,36 +31,44 @@ class loadDataHandle {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list)) {
-                            data.opportunity_list.map(function (item) {
-                                let check_used = item.quotation_id;
-                                let check_close = false;
-                                if ($('#frm_quotation_create')[0].classList.contains('sale-order')) {
-                                    check_used = item.sale_order_id
-                                }
-                                check_close = item.is_close;
-                                if ((check_used === null && check_close === false) || valueToSelect === item.id) {
-                                    let dataStr = JSON.stringify({
-                                        'id': item.id,
-                                        'title': item.title,
-                                        'code': item.code,
-                                        'customer': item.customer.title
-                                    }).replace(/"/g, "&quot;");
-                                    let opportunity_data = JSON.stringify(item).replace(/"/g, "&quot;");
-                                    let data_show = `${item.code}` + ` - ` + `${item.title}`;
-                                    let option = `<option value="${item.id}">
-                                                <span class="opp-title">${data_show}</span>
-                                                <input type="hidden" class="data-default" value="${opportunity_data}">
-                                                <input type="hidden" class="data-info" value="${dataStr}">
-                                            </option>`
-                                    if (valueToSelect && valueToSelect === item.id) {
-                                        option = `<option value="${item.id}" selected>
-                                                <span class="opp-title">${data_show}</span>
-                                                <input type="hidden" class="data-default" value="${opportunity_data}">
-                                                <input type="hidden" class="data-info" value="${dataStr}">
-                                            </option>`
+                            if (valueToSelect) {
+                                data.opportunity_list.push(valueToSelect);
+                                // check opp has sale order or closed => disabled button copy to
+                                if (is_load_detail === true) {
+                                    if (!$('#frm_quotation_create')[0].classList.contains('sale-order')) {
+                                        if (valueToSelect.is_close_lost === true || valueToSelect.is_deal_close === true || valueToSelect.sale_order_id !== null) {
+                                            let btnCopy = document.getElementById('btn-copy-quotation');
+                                            let eleTooltipBtnCopy = document.getElementById('tooltip-btn-copy');
+                                            btnCopy.setAttribute('disabled', 'true');
+                                            eleTooltipBtnCopy.removeAttribute('data-bs-original-title');
+                                            eleTooltipBtnCopy.setAttribute('data-bs-placement', 'top');
+                                            eleTooltipBtnCopy.setAttribute('title', 'Opportunity is closed');
+                                        }
                                     }
-                                    ele.append(option)
                                 }
+                            }
+                            data.opportunity_list.map(function (item) {
+                                let dataStr = JSON.stringify({
+                                    'id': item.id,
+                                    'title': item.title,
+                                    'code': item.code,
+                                    'customer': item.customer.title
+                                }).replace(/"/g, "&quot;");
+                                let opportunity_data = JSON.stringify(item).replace(/"/g, "&quot;");
+                                let data_show = `${item.code}` + ` - ` + `${item.title}`;
+                                let option = `<option value="${item.id}">
+                                            <span class="opp-title">${data_show}</span>
+                                            <input type="hidden" class="data-default" value="${opportunity_data}">
+                                            <input type="hidden" class="data-info" value="${dataStr}">
+                                        </option>`
+                                if (valueToSelect && valueToSelect.id === item.id) {
+                                    option = `<option value="${item.id}" selected>
+                                            <span class="opp-title">${data_show}</span>
+                                            <input type="hidden" class="data-default" value="${opportunity_data}">
+                                            <input type="hidden" class="data-info" value="${dataStr}">
+                                        </option>`
+                                }
+                                ele.append(option)
                             })
                             self.loadInformationSelectBox(ele);
                         }
@@ -920,9 +937,9 @@ class loadDataHandle {
         }
         if (data.opportunity) {
             if (data.sale_person) {
-                self.loadBoxQuotationOpportunity('select-box-quotation-create-opportunity', data.opportunity.id, data.sale_person.id, true, is_copy);
+                self.loadBoxQuotationOpportunity('select-box-quotation-create-opportunity', data.opportunity, data.sale_person.id, true, is_copy);
             } else {
-                self.loadBoxQuotationOpportunity('select-box-quotation-create-opportunity', data.opportunity.id, null, true, is_copy);
+                self.loadBoxQuotationOpportunity('select-box-quotation-create-opportunity', data.opportunity, null, true, is_copy);
             }
         }
         if (data.customer) {
@@ -949,6 +966,28 @@ class loadDataHandle {
         }
         if (data.is_customer_confirm && is_copy === false) {
             $('#quotation-customer-confirm')[0].checked = data.is_customer_confirm;
+        }
+        if (data.system_status) {
+            let data_status = {
+                'Draft': 0,
+                'Created': 1,
+                'Added': 2,
+                'Finish': 3,
+                'Cancel': 4,
+            }
+            let css_status = {
+                'Draft': 'status-draft',
+                'Created': 'status-created',
+                'Added': 'status-added',
+                'Finish': 'status-finish',
+                'Cancel': 'status-cancel',
+            }
+            let eleStatus = $('#quotation-create-status');
+            eleStatus.val(data.system_status);
+            eleStatus[0].setAttribute('data-value', data_status[data.system_status]);
+            eleStatus[0].className = '';
+            eleStatus[0].classList.add('form-control');
+            eleStatus[0].classList.add(css_status[data.system_status]);
         }
         if (is_copy === true) {
             let boxQuotation = $('#select-box-quotation');
@@ -2235,12 +2274,14 @@ class dataTableHandle {
         let method = ele.attr('data-method');
         $('#datable-copy-quotation').DataTable().destroy();
         if (sale_person_id) {
-            let data_filter = {'sale_person': sale_person_id};
+            let data_filter = {
+                'sale_person': sale_person_id,
+                'opportunity__sale_order__isnull': true,
+                'opportunity__is_close_lost': false,
+                'opportunity__is_deal_close': false,
+            };
             if (opp_id) {
-                data_filter = {
-                    'sale_person': sale_person_id,
-                    'opportunity': opp_id
-                }
+                data_filter['opportunity'] = opp_id;
             }
             $.fn.callAjax(url, method, data_filter).then(
                 (resp) => {

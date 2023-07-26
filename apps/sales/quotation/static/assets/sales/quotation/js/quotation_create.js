@@ -740,8 +740,6 @@ $(function () {
                 // Filter all data is not Promotion from quotation_products_data
                 let finalList = filterDataProductNotPromotion(dataCopy.quotation_products_data);
                 dataTableClass.dataTableCopyQuotationProduct(finalList, 'datable-copy-quotation-product');
-
-                // dataTableClass.dataTableCopyQuotationProduct(dataCopy.quotation_products_data, 'datable-copy-quotation-product');
             }
         });
 

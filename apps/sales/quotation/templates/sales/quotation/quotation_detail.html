@@ -206,8 +206,7 @@
                                             <div class="input-group">
                                                 <span class="input-affix-wrapper">
                                                     <input
-                                                        type="text" class="form-control disabled-custom-show"
-                                                        value="Open"
+                                                        type="text" class="form-control"
                                                         name="status"
                                                         id="quotation-create-status"
                                                         disabled
@@ -344,14 +343,16 @@
                                         </div>
                                     </div>
                                     <div class="col-3">
-                                        <button
-                                                type="button"
-                                                class="btn btn-soft-primary"
-                                                id="btn-copy-quotation"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#quotationModalCenter"
-                                                data-copy-type="copy-to"
-                                        >{% trans 'Create Order' %}</button>
+                                        <span id="tooltip-btn-copy" class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="Copy to sale order">
+                                            <button
+                                                    type="button"
+                                                    class="btn btn-soft-primary"
+                                                    id="btn-copy-quotation"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#quotationModalCenter"
+                                                    data-copy-type="copy-to"
+                                            >{% trans 'Create Order' %}</button>
+                                        </span>
                                         <div
                                                 class="modal fade" id="quotationModalCenter" tabindex="-1"
                                                 role="dialog" aria-labelledby="quotationModalCenter"

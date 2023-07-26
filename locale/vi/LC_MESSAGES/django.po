@@ -3664,3 +3664,23 @@ msgstr "Phạm vi quyền hạn"
 #
 msgid "Setup permission pre-commitment"
 msgstr "Cấu hình quyền trước khi thêm vào"
+
+#
+msgid "Upload Document"
+msgstr "Tải lên tài liệu"
+
+#
+msgid "Click here to upload file"
+msgstr "Chọn ở đây để tải lên tài liệu"
+
+#
+msgid "Add Document"
+msgstr "Thêm tài liệu"
+
+#
+msgid "Product introduction document for customers"
+msgstr "Tài liệu giới thiệu sản phẩm cho khách hàng"
+
+#
+msgid "Document For Customer"
+msgstr "Tài liệu cho khách hàng"

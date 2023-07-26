@@ -2185,4 +2185,11 @@ $(document).ready(function () {
         });
     }
     callAjaxtoLoadTimeLineList();
+
+    const ele_move_doc_page = $('.btn-add-document')
+    let url_doc_page = ele_move_doc_page.attr('href');
+    const paramString = $.param({
+        'opportunity': pk,
+    })
+    ele_move_doc_page.attr('href', url_doc_page + "?" + paramString);
 })

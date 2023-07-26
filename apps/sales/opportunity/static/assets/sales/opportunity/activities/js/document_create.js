@@ -1,5 +1,8 @@
 $(document).ready(function () {
-    function loadOpportunity() {
+    const searchParams = new URLSearchParams(window.location.search);
+    const opportunityParam = searchParams.get("opportunity");
+
+    function loadOpportunity(opportunityParam) {
         let ele = $('#box-select-opportunity');
         $.fn.callAjax(ele.data('url'), ele.data('method'))
             .then(
@@ -7,14 +10,19 @@ $(document).ready(function () {
                     let data = $.fn.switcherResp(resp);
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('opportunity_list')) {
                         data.opportunity_list.map(function (item) {
-                            ele.append(`<option value="${item.id}">${item.title}</option>`);
+                            if (item.id === opportunityParam) {
+                                ele.append(`<option value="${item.id}" selected>${item.title}</option>`);
+                                ele.prop('disabled', true);
+                            } else {
+                                ele.append(`<option value="${item.id}">${item.title}</option>`);
+                            }
                         })
                     }
                 },
             )
     }
 
-    loadOpportunity();
+    loadOpportunity(opportunityParam);
 
     $('#input-request-completed-date').daterangepicker({
         singleDatePicker: true,
@@ -92,6 +100,10 @@ $(document).ready(function () {
                     $.fn.notifyPopup({description: errs.data.errors}, 'failure');
                 }
             )
+    })
+
+    $(document).on('click', '.btn-del-doc', function () {
+        $(this).closest('.sub-document').remove();
     })
 
 })

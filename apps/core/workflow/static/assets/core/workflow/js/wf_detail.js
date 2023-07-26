@@ -62,13 +62,13 @@ $(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyPopup({description: data.message}, 'success')
+                        $.fn.notifyB({description: data.message}, 'success')
                         $.fn.redirectUrl(frm.dataUrlRedirect, 3000);
                     }
                 },
                 (errs) => {
                     // if (errs.data.errors.hasOwnProperty('detail')) {
-                    //     $.fn.notifyPopup({description: String(errs.data.errors['detail'])}, 'failure')
+                    //     $.fn.notifyB({description: String(errs.data.errors['detail'])}, 'failure')
                     // }
                 }
             )
@@ -831,7 +831,7 @@ $(function () {
             let nodeTableData = setupDataNode(true);
             // check status Node before submit
             if (nodeTableData === false) {
-                $.fn.notifyPopup({description: $.fn.transEle.attr('data-check-complete-node')}, 'failure');
+                $.fn.notifyB({description: $.fn.transEle.attr('data-check-complete-node')}, 'failure');
                 return false
             }
             // add condition object for node list
@@ -898,13 +898,13 @@ $(function () {
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            $.fn.notifyPopup({description: data.message}, 'success')
+                            $.fn.notifyB({description: data.message}, 'success')
                             $.fn.redirectUrl($($form).attr('data-url-redirect'), 3000);
                         }
                     },
                     (errs) => {
                         console.log(errs)
-                        $.fn.notifyPopup({description: "Workflow create fail"}, 'failure')
+                        $.fn.notifyB({description: "Workflow create fail"}, 'failure')
                     }
                 )
         });

@@ -75,7 +75,7 @@ $(document).ready(function () {
         let frm = new SetupFormSubmit($(this));
         frm.dataForm['opportunity'] = $('#box-select-opportunity').val();
         frm.dataForm['person_in_charge'] = $('#box-select-person-in-charge').val();
-        let list_doc = []
+        let list_doc = [];
         let cnt = 1;
         $('.document-content .sub-document').each(function () {
             list_doc.push(

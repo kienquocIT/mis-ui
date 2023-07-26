@@ -155,7 +155,7 @@ $(document).ready(function () {
                     let locations = $(this).find('.chooseCity').val();
                     if (locations.includes('1') && locations.length > 1) {
                         is_submit = false;
-                        $.fn.notifyPopup({description: "location: can't select another city while select Other cities"}, 'failure');
+                        $.fn.notifyB({description: "location: can't select another city while select Other cities"}, 'failure');
                     } else {
                         let ele_formula = $(this).find('.formulaCondition');
                         let formula = []
@@ -195,7 +195,7 @@ $(document).ready(function () {
                         }
                         if (new Set(arr_location).size !== arr_location.length) {
                             is_submit = false;
-                            $.fn.notifyPopup({description: "location: duplicate location"}, 'failure');
+                            $.fn.notifyB({description: "location: duplicate location"}, 'failure');
                         }
                         let data_condition = {
                             'location': data_location,
@@ -214,12 +214,12 @@ $(document).ready(function () {
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            $.fn.notifyPopup({description: "Successfully"}, 'success')
+                            $.fn.notifyB({description: "Successfully"}, 'success')
                             $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
                         }
                     },
                     (errs) => {
-                        $.fn.notifyPopup({description: errs.data.errors}, 'failure');
+                        $.fn.notifyB({description: errs.data.errors}, 'failure');
                     }
                 )
         }

@@ -38,7 +38,7 @@ $(document).ready(function () {
                         })
                         $('#input_tags').select2()
                     }
-                    $.fn.setWFRuntimeID(contactDetail?.['workflow_runtime_id']);
+                    WFRTControl.setWFRuntimeID(contactDetail?.['workflow_runtime_id']);
                 }
             }
         )

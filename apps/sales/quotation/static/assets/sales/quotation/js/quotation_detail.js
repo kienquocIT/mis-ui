@@ -57,67 +57,18 @@ $(function () {
             $('#datable-quotation-create-cost').find('.disabled-but-edit').removeAttr('disabled').removeClass('disabled-but-edit');
             $('#datable-quotation-create-expense').find('.disabled-but-edit').removeAttr('disabled').removeClass('disabled-but-edit');
             // load data dropdown for Tabs
-            let tableProduct = document.getElementById('datable-quotation-create-product');
-            let tableCost = document.getElementById('datable-quotation-create-cost');
-            let tableExpense = document.getElementById('datable-quotation-create-expense');
-            for (let i = 0; i < tableProduct.tBodies[0].rows.length; i++) {
-                let row = tableProduct.tBodies[0].rows[i];
-                if (row.querySelector('.table-row-item')) {
-                    loadDataClass.loadBoxQuotationProduct('data-init-quotation-create-tables-product', row.querySelector('.table-row-item').id, row.querySelector('.table-row-item').value);
-                    // check expense selected to get uom group filter uom data
-                    let optionSelected = row.querySelector('.table-row-item').options[row.querySelector('.table-row-item').selectedIndex];
-                    if (optionSelected) {
-                        if (optionSelected.querySelector('.data-default')) {
-                            let product_data_json = JSON.parse(optionSelected.querySelector('.data-default').value);
-                            loadDataClass.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', row.querySelector('.table-row-uom').id, row.querySelector('.table-row-uom').value, product_data_json.uom_group.id);
-                        }
-                    }
-                    loadDataClass.loadBoxQuotationTax('data-init-quotation-create-tables-tax', row.querySelector('.table-row-tax').id, row.querySelector('.table-row-tax').value);
-                }
-            }
-            for (let i = 0; i < tableCost.tBodies[0].rows.length; i++) {
-                let row = tableCost.tBodies[0].rows[i];
-                if (row.querySelector('.table-row-item')) {
-                    loadDataClass.loadBoxQuotationProduct('data-init-quotation-create-tables-product', row.querySelector('.table-row-item').id, row.querySelector('.table-row-item').value);
-                    // check expense selected to get uom group filter uom data
-                    let optionSelected = row.querySelector('.table-row-item').options[row.querySelector('.table-row-item').selectedIndex];
-                    if (optionSelected) {
-                        if (optionSelected.querySelector('.data-default')) {
-                            let product_data_json = JSON.parse(optionSelected.querySelector('.data-default').value);
-                            loadDataClass.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', row.querySelector('.table-row-uom').id, row.querySelector('.table-row-uom').value, product_data_json.uom_group.id);
-                        }
-                    }
-                    loadDataClass.loadBoxQuotationTax('data-init-quotation-create-tables-tax', row.querySelector('.table-row-tax').id, row.querySelector('.table-row-tax').value);
-                }
-            }
-            for (let i = 0; i < tableExpense.tBodies[0].rows.length; i++) {
-                let row = tableExpense.tBodies[0].rows[i];
-                if (row.querySelector('.table-row-item')) {
-                    loadDataClass.loadBoxQuotationExpense('data-init-quotation-create-tables-expense', row.querySelector('.expense-option-list').id, row.querySelector('.table-row-item').getAttribute('data-value'));
-                    // check expense selected to get uom group filter uom data
-                    let optionSelected = row.querySelector('.expense-option-list').querySelector('.option-btn-checked');
-                    if (optionSelected) {
-                        if (optionSelected.querySelector('.data-default')) {
-                            let product_data_json = JSON.parse(optionSelected.querySelector('.data-default').value);
-                            loadDataClass.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', row.querySelector('.table-row-uom').id, row.querySelector('.table-row-uom').value, product_data_json.uom_group.id);
-                        }
-                    }
-                    loadDataClass.loadBoxQuotationTax('data-init-quotation-create-tables-tax', row.querySelector('.table-row-tax').id, row.querySelector('.table-row-tax').value);
-                }
-            }
+            let data = JSON.parse(eleDataDetail.val());
+            loadDataClass.loadDataTableAndDropDown(data);
+
             // Check config when begin edit
             let check_config = configClass.checkConfig(true);
 
             // load again total products if after check config the price change
             if (check_config.hasOwnProperty('is_make_price_change')) {
                 if (check_config.is_make_price_change === false) {
-                    let data = JSON.parse(eleDataDetail.val());
                     loadDataClass.loadTotal(data, true, false, false);
                 }
             }
-
-            // Load first time indicator when Begin edit
-            // indicatorClass.loadQuotationIndicator('quotation-indicator-data');
 
         });
 

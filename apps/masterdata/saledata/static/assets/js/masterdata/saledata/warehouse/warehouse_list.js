@@ -18,7 +18,7 @@ $(document).ready(function () {
     }
 
     $(document).on('click', '.btn-edit-row', function (event) {
-        let rowData = $(this).getRowData();
+        let rowData = DTBControl.getRowData($(this));
         $('#idxObjectUpdateID').text(rowData?.['id']);
         $('#updateWareHouse').find('.title-warehouse-update').text(rowData?.['title']);
         $('#inputTextUpdateTitle').attr('value', rowData?.['title']).val(rowData?.['title']);
@@ -29,8 +29,8 @@ $(document).ready(function () {
     });
 
     $(document).on('click', '.btn-remove-row', function (event) {
-        $.fn.showLoading();
-        let rowData = $(this).getRowData();
+        WindowControl.showLoading();
+        let rowData = DTBControl.getRowData($(this));
         if (
             confirm(
                 $('#msgConfirmDelete').text().format_by_idx(rowData?.['title'])
@@ -54,15 +54,15 @@ $(document).ready(function () {
                 },
                 (errs)=>{
                     console.log(errs);
-                    $.fn.hideLoading();
+                    WindowControl.hideLoading();
                 }
             )
-        } else $.fn.hideLoading();
+        } else WindowControl.hideLoading();
         event.preventDefault();
     });
 
     $('#btnSubmitUpdateModal').click(function (event) {
-        $.fn.showLoading();
+        WindowControl.showLoading();
         let frm = new SetupFormSubmit($('#updateWareHouse'));
         let bodyData = {
             'title': $('#inputTextUpdateTitle').val(),
@@ -71,7 +71,7 @@ $(document).ready(function () {
             'is_active': $('#inputUpdateActive').prop('checked')
         }
         if (!validBodyDataNewOrUpdate(bodyData)) {
-            $.fn.hideLoading();
+            WindowControl.hideLoading();
             event.preventDefault();
             return;
         }
@@ -86,12 +86,12 @@ $(document).ready(function () {
                 }, 1000);
             }
         }, (errs) => {
-            $.fn.hideLoading();
+            WindowControl.hideLoading();
         })
     });
 
     $('#btnSubmitNewModal').click(function (event) {
-        $.fn.showLoading();
+        WindowControl.showLoading();
         let frm = new SetupFormSubmit($('#addWareHouse'));
         let bodyData = {
             'title': $('#inputTextNewTitle').val(),
@@ -100,7 +100,7 @@ $(document).ready(function () {
             'is_active': $('#inputNewActive').prop('checked')
         }
         if (!validBodyDataNewOrUpdate(bodyData)) {
-            $.fn.hideLoading();
+            WindowControl.hideLoading();
             event.preventDefault();
             return;
         }
@@ -122,7 +122,7 @@ $(document).ready(function () {
                 }
             },
             (errs) => {
-                $.fn.hideLoading();
+                WindowControl.hideLoading();
             }
         )
     });

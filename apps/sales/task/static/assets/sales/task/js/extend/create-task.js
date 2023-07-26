@@ -12,6 +12,7 @@ function resetFormTask() {
     $('.create-subtask').addClass('hidden')
     $('[name="parent_n"]').remove();
     window.editor.setData('')
+    $('.create-task').attr('disabled', false)
 }
 function logworkSubmit(){
     $('#save-logtime').off().on('click', function () {
@@ -20,7 +21,7 @@ function logworkSubmit(){
         const est = $('#EstLogtime').val()
         const taskID = $('#logtime_task_id').val()
         if (!startDate && !endDate && !est) {
-            $.fn.notifyPopup({description: $('#form_valid').attr('data-logtime-valid')}, 'failure')
+            $.fn.notifyB({description: $('#form_valid').attr('data-logtime-valid')}, 'failure')
             return false
         }
         const data = {
@@ -37,7 +38,7 @@ function logworkSubmit(){
                     (req) => {
                         let data = $.fn.switcherResp(req);
                         if (data?.['status'] === 200) {
-                            $.fn.notifyPopup({description: data.message}, 'success')
+                            $.fn.notifyB({description: data.message}, 'success')
                         }
                     }
                 )
@@ -302,7 +303,7 @@ $(function () {
         const start_date = new Date(formData.start_date).getDate()
         const end_date = new Date(formData.end_date).getDate()
         if (end_date < start_date) {
-            $.fn.notifyPopup({description: $('#form_valid').attr('data-valid-datetime')}, 'failure')
+            $.fn.notifyB({description: $('#form_valid').attr('data-valid-datetime')}, 'failure')
             return false
         }
         if (formData.log_time === "")
@@ -361,7 +362,7 @@ $(function () {
             (resp) => {
                 const data = $.fn.switcherResp(resp);
                 if (data) {
-                    $.fn.notifyPopup({description: data.message}, 'success')
+                    $.fn.notifyB({description: data.message}, 'success')
                     // if in task page load add task function
                     if ($(document).find('#tasklist_wrap').length) {
                         let elm = $('<input type="hidden" id="addNewTaskData"/>');

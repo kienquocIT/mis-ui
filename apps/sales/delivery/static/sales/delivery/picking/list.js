@@ -44,7 +44,7 @@ $(document).ready(function () {
             }, {
                 render: (row, type, data) => {
                     return `<a href="{0}" class="text-link"><span>{1}</span></a>`.format_by_idx(
-                        frm.getUrlDetail(data.id), $.fn.getValueOrEmpty(data, 'code'),
+                        frm.getUrlDetail(data.id), UtilControl.getValueOrEmpty(data, 'code'),
                     )
                 },
             }, {
@@ -56,8 +56,8 @@ $(document).ready(function () {
                                 tbl.attr('data-url-sale-order-detail'),
                                 data['id']
                             ),
-                            $.fn.getValueOrEmpty(data, 'title'),
-                            $.fn.getValueOrEmpty(data, 'code'),
+                            UtilControl.getValueOrEmpty(data, 'title'),
+                            UtilControl.getValueOrEmpty(data, 'code'),
                         );
                     }
                     return '';

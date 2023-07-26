@@ -68,12 +68,12 @@ $(document).ready(function (){
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyPopup({description: "Đang cập nhật"}, 'success')
+                        $.fn.notifyB({description: "Đang cập nhật"}, 'success')
                         setTimeout(location.reload.bind(location), 1000);
                     }
                 },
                 (errs) => {
-                    // $.fn.notifyPopup({description: errs.data.errors}, 'failure')
+                    // $.fn.notifyB({description: errs.data.errors}, 'failure')
                 }
             )
     });

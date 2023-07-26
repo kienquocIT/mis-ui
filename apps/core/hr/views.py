@@ -369,12 +369,13 @@ class GroupListAPI(APIView):
         is_api=True
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(url=ApiURL.GROUP_LIST, user=request.user).get()
-        if resp.state:
-            return {'group_list': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(url=ApiURL.GROUP_LIST, user=request.user, request=request).get()
+        return resp.auto_return(key_success='group_list')
+        # if resp.state:
+        #     return {'group_list': resp.result}, status.HTTP_200_OK
+        # elif resp.status == 401:
+        #     return {}, status.HTTP_401_UNAUTHORIZED
+        # return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
 
     @mask_view(
         auth_require=True,

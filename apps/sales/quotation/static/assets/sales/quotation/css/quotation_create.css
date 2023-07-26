@@ -112,3 +112,28 @@ a.dropdown-item.table-row-price-option:hover {
     font-size: x-small;
     color: #c7c7c7;
 }
+
+.status-draft:disabled {
+    background-color: #f7f7f7;
+    color: #6f6f6f;
+}
+
+.status-created:disabled {
+    background-color: #ebf5f5;
+    color: #007D88;
+}
+
+.status-added:disabled {
+    background-color: #edfcfe;
+    color: #18DDEF;
+}
+
+.status-finish:disabled {
+    background-color: #ebfcf5;
+    color: #00ab66;
+}
+
+.status-cancel:disabled {
+    background-color: #ffebeb;
+    color: #e60000;
+}

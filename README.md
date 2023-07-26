@@ -125,7 +125,7 @@ urlpatterns = [
 ### Notify:
 
 1. Sử dụng $.fn.notifyB({'title': '','description': ""|[""]) [recommend]
-2. Sử dụng $.fn.notifyPopup({'title': '','description': ""|[""])
+2. Sử dụng $.fn.notifyB({'title': '','description': ""|[""])
 
 ### Tham khảo các thiết kế UI tại template đã mua:
 
@@ -425,7 +425,7 @@ $.fn.callAjax(url_loaded, 'GET').then(
     (resp) => {
         let data = $.fn.switcherResp(resp);
         if (data) {
-            $.fn.setWFRuntimeID(data['x_detail']?.['workflow_runtime_id']);
+            WFRTControl.setWFRuntimeID(data['x_detail']?.['workflow_runtime_id']);
         }
     }
 );
@@ -507,7 +507,7 @@ let data = {'first_name': '', 'last_name': '', 'avatar': ''}
 ```
 2. JS
 ```js
-$.fn.renderAvatar(data, clsName="some class name is size, color of avatar...")
+PersonControl.renderAvatar(data, clsName="some class name is size, color of avatar...")
 // result: <div class="avatar avatar-rounded {clsName if clsName else 'avatar-xs avatar-primary'}">...</div>
 ```
 

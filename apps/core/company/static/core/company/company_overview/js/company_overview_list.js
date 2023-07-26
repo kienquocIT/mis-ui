@@ -99,7 +99,7 @@ $(function () {
                         // id: 4 = sum user
                         $(this.api().column(4).footer()).html(
                             '<span class="badge badge-success w-50">{0}</span>'.format_by_idx(
-                                $.fn.sumArray(
+                                UtilControl.sumArray(
                                     this.api().column(4, {page: 'current'}).data()
                                 )
                             )
@@ -107,7 +107,7 @@ $(function () {
                         // id: 5 = power user
                         $(this.api().column(5).footer()).html(
                             '<span class="badge badge-warning w-50">{0}</span>'.format_by_idx(
-                                $.fn.sumArray(
+                                UtilControl.sumArray(
                                     this.api().column(5, {page: 'current'}).data()
                                 )
                             )
@@ -273,7 +273,7 @@ $(function () {
                                 render: (data, type, row, meta) => {
                                     return data.reduce((html, currentData) => {
                                         return html += `<span class="badge badge-soft-{0} mr-1 mb-1" data-id="{1}" data-code="{2}">{3}</span>`.format_by_idx(
-                                            $.fn.classOfPlan(currentData.code),
+                                            DocumentControl.classOfPlan(currentData.code),
                                             currentData.id,
                                             currentData.code,
                                             currentData.title,
@@ -330,7 +330,7 @@ $(function () {
                 companiesOld.push($(item).data('id'));
             });
             let companiesNew = $('#company_list_choose').val();
-            if ($.fn.arraysEqual(companiesOld, companiesNew) === false) {
+            if (UtilControl.arraysEqual(companiesOld, companiesNew) === false) {
                 $.fn.callAjax(
                     frm.dataUrlDetail + $('#userPersonFullname').attr('data-id'),
                     frm.dataMethod,

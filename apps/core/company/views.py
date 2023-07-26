@@ -173,12 +173,13 @@ class EmployeeUserByCompanyListOverviewDetailAPI(APIView):
 class CompanyUserNotMapEmployeeListAPI(APIView):
     @mask_view(auth_require=True, is_api=True)
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.COMPANY_USER_NOT_MAP_EMPLOYEE).get()
-        if resp.state:
-            return {'company_user_list': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(user=request.user, url=ApiURL.COMPANY_USER_NOT_MAP_EMPLOYEE, request=request).get()
+        return resp.auto_return(key_success='company_user_list')
+        # if resp.state:
+        #     return {'company_user_list': resp.result}, status.HTTP_200_OK
+        # elif resp.status == 401:
+        #     return {}, status.HTTP_401_UNAUTHORIZED
+        # return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
 
 
 class EmployeeOfTenantListAPI(APIView):

@@ -69,7 +69,7 @@
             let $frm = $('#formDeliveryConfig');
             let frmSetup = new SetupFormSubmit($frm);
 
-            $.fn.showLoading();
+            WindowControl.showLoading();
             $.fn.callAjax(
                 frmSetup.dataUrl,
                 'GET',
@@ -86,12 +86,12 @@
 
                 }
             ).then((data) => {
-                $.fn.hideLoading();
+                WindowControl.hideLoading();
             });
 
             $frm.submit(function (event) {
                 event.preventDefault();
-                $.fn.showLoading();
+                WindowControl.showLoading();
                 let bodyData = {
                     'is_picking': eleInputPicking.prop('checked'),
                     'is_partial_ship': eleInputPartial.prop('checked'),
@@ -114,7 +114,7 @@
                         }
                     },
                     (errs) => {
-                        $.fn.hideLoading();
+                        WindowControl.hideLoading();
                     }
                 );
             });

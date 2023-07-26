@@ -99,7 +99,7 @@ $(document).ready(function () {
                 $('#modal-work-address').modal('hide');
                 $('#detail-modal-work-address').val('');
             } else {
-                $.fn.notifyPopup({description: "Missing address information!"}, 'failure');
+                $.fn.notifyB({description: "Missing address information!"}, 'failure');
             }
 
             if (work_address !== '') {
@@ -113,7 +113,7 @@ $(document).ready(function () {
                 })
             }
         } catch (error) {
-            $.fn.notifyPopup({description: "No address information!"}, 'failure');
+            $.fn.notifyB({description: "No address information!"}, 'failure');
         }
     })
 
@@ -214,7 +214,7 @@ $(document).ready(function () {
                 $('#modal-home-address').modal('hide');
                 $('#detail-modal-home-address').val('');
             } else {
-                $.fn.notifyPopup({description: "Missing address information!"}, 'failure');
+                $.fn.notifyB({description: "Missing address information!"}, 'failure');
             }
 
             if (home_address !== '') {
@@ -231,7 +231,7 @@ $(document).ready(function () {
                 }
             }
         } catch (error) {
-            $.fn.notifyPopup({description: "No address information!"}, 'failure');
+            $.fn.notifyB({description: "No address information!"}, 'failure');
         }
     })
 
@@ -415,7 +415,7 @@ $(document).ready(function () {
                     } else {
                         loadInterestList([]);
                     }
-                    $.fn.setWFRuntimeID(data?.['contact_detail']?.['workflow_runtime_id']);
+                    WFRTControl.setWFRuntimeID(data?.['contact_detail']?.['workflow_runtime_id']);
                 }
             }
         )
@@ -507,7 +507,7 @@ $(document).ready(function () {
 
         let pk = window.location.pathname.split('/').pop();
 
-        $.fn.showLoading();
+        WindowControl.showLoading();
         $.fn.callAjax(frm.dataUrl.replace('0', pk), frm.dataMethod, frm.dataForm, csr)
             .then(
                 (resp) => {
@@ -524,12 +524,12 @@ $(document).ready(function () {
                     }
                     setTimeout(
                         () => {
-                            $.fn.hideLoading();
+                            WindowControl.hideLoading();
                         },
                         1000
                     )
                 }, (err) => {
-                    $.fn.notifyPopup({description: err.detail}, 'failure');
+                    $.fn.notifyB({description: err.detail}, 'failure');
                 }
             )
     });

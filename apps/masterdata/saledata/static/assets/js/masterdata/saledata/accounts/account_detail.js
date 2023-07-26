@@ -104,7 +104,7 @@
                     $('#modal-shipping-address').modal('hide');
                     $('#detail-modal-shipping-address').val('');
                 } else {
-                    $.fn.notifyPopup({description: "Missing address information!"}, 'failure');
+                    $.fn.notifyB({description: "Missing address information!"}, 'failure');
                 }
 
                 if (shipping_address !== '') {
@@ -132,7 +132,7 @@
                     })
                 }
             } catch (error) {
-                $.fn.notifyPopup({description: "No address information!"}, 'failure');
+                $.fn.notifyB({description: "No address information!"}, 'failure');
             }
         })
 
@@ -154,7 +154,7 @@
                     billing_address = acc_name + ', ' + account_address + ' (email: ' + email_address + ', tax code: ' + tax_code + ')';
                     $('#modal-billing-address').modal('hide');
                 } else {
-                    $.fn.notifyPopup({description: "Missing address information!"}, 'failure');
+                    $.fn.notifyB({description: "Missing address information!"}, 'failure');
                 }
 
                 if (billing_address !== '') {
@@ -181,7 +181,7 @@
                     })
                 }
             } catch (error) {
-                $.fn.notifyPopup({description: "No address information!"}, 'failure');
+                $.fn.notifyB({description: "No address information!"}, 'failure');
             }
         })
 
@@ -233,7 +233,7 @@
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
-                    $.fn.setWFRuntimeID(data['account_detail']?.['workflow_runtime_id']);
+                    WFRTControl.setWFRuntimeID(data['account_detail']?.['workflow_runtime_id']);
                     data = data['account_detail'];
                     $.fn.compareStatusShowPageAction(data);
 
@@ -946,7 +946,7 @@
                     $(this).closest('.card').remove()
                 })
             } else {
-                $.fn.notifyPopup({description: "Missing value Banking Account."}, 'failure');
+                $.fn.notifyB({description: "Missing value Banking Account."}, 'failure');
             }
         })
 
@@ -984,7 +984,7 @@
                     $(this).closest('.card').remove()
                 })
             } else {
-                $.fn.notifyPopup({description: "Missing value Credit Card."}, 'failure');
+                $.fn.notifyB({description: "Missing value Credit Card."}, 'failure');
             }
         })
 
@@ -1125,14 +1125,14 @@
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            $.fn.notifyPopup({description: "Updating account"}, 'success')
+                            $.fn.notifyB({description: "Updating account"}, 'success')
                             setTimeout(function () {
                                 location.reload()
                             }, 1000);
                         }
                     },
                     (errs) => {
-                        $.fn.notifyPopup({description: errs.data.errors}, 'failure');
+                        $.fn.notifyB({description: errs.data.errors}, 'failure');
                     }
                 )
         });

@@ -216,7 +216,7 @@ $(document).ready(function () {
         if (frm.dataForm.hasOwnProperty('user')) {
             if (frm.dataForm['user']) {
                 if (flag_check_app === 0) {
-                    $.fn.notifyPopup({description: 'Employee map user must choose applications'}, 'failure');
+                    $.fn.notifyB({description: 'Employee map user must choose applications'}, 'failure');
                     return false
                 }
             }
@@ -254,13 +254,13 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyPopup({description: data.message}, 'success')
+                        $.fn.notifyB({description: data.message}, 'success')
                         $.fn.redirectUrl(frm.dataUrlRedirect, 3000);
                     }
                 },
                 (errs) => {
                     // if (errs.data.errors.hasOwnProperty('detail')) {
-                    //     $.fn.notifyPopup({description: String(errs.data.errors['detail'])}, 'failure')
+                    //     $.fn.notifyB({description: String(errs.data.errors['detail'])}, 'failure')
                     // }
                 }
             )
@@ -348,7 +348,7 @@ $(document).on('click', '.check-plan-application', function (e) {
                         if (licenseUsed <= Number(licenseQuantity)) {
                             eleLicenseUsed.innerHTML = String(licenseUsed);
                         } else {
-                            $.fn.notifyPopup({description: 'Not enough license for this employee'}, 'failure');
+                            $.fn.notifyB({description: 'Not enough license for this employee'}, 'failure');
                             $(this)[0].checked = false;
                             return false
                         }
@@ -398,7 +398,7 @@ function updateLicenseWhenChangeUser() {
                         if (licenseUsed <= Number(licenseQuantity)) {
                             eleLicenseUsed.innerHTML = licenseUsed.toString();
                         } else {
-                            $.fn.notifyPopup({description: 'Not enough license for this employee'}, 'failure');
+                            $.fn.notifyB({description: 'Not enough license for this employee'}, 'failure');
                             return false
                         }
                     } else {

@@ -48,10 +48,12 @@
                 ></i>
             </td>
             <td>
+                <label for="newRowApp" class="hidden"></label>
                 <select class="form-control select2" id="newRowApp"></select>
             </td>
             <td>
                 <div class="form-check form-switch">
+                    <label for="newRowAllCheck" class="hidden"></label>
                     <input
                             type="checkbox" class="form-check-input row-e-all" name="all-1"
                             id="newRowAllCheck"
@@ -60,6 +62,7 @@
             </td>
             <td>
                 <div class="form-check form-switch">
+                    <label for="newRowCreateCheck" class="hidden"></label>
                     <input
                             type="checkbox" class="form-check-input row-e-child" name="all-1"
                             id="newRowCreateCheck"
@@ -68,6 +71,7 @@
             </td>
             <td>
                 <div class="form-check form-switch">
+                    <label for="newRowViewCheck" class="hidden"></label>
                     <input
                             type="checkbox" class="form-check-input row-e-child" name="all-1"
                             id="newRowViewCheck"
@@ -76,6 +80,7 @@
             </td>
             <td>
                 <div class="form-check form-switch">
+                    <label for="newRowEditCheck" class="hidden"></label>
                     <input
                             type="checkbox" class="form-check-input row-e-child" name="all-1"
                             id="newRowEditCheck"
@@ -84,6 +89,7 @@
             </td>
             <td>
                 <div class="form-check form-switch">
+                    <label for="newRowDeleteCheck" class="hidden"></label>
                     <input
                             type="checkbox" class="form-check-input row-e-child" name="all-1"
                             id="newRowDeleteCheck"
@@ -91,6 +97,7 @@
                 </div>
             </td>
             <td>
+                <label for="newRowRange" class="hidden"></label>
                 <select class="form-control" id="newRowRange">
                     <option value="1">{% trans "Themselves" %}</option>
                     <option value="2">{% trans "Their staff" %}</option>
@@ -115,15 +122,18 @@
                 ></i>
             </td>
             <td colspan="8">
-                <button class="btn btn-primary mr-1">Simple</button>
-                <button class="btn btn-primary mr-1">Manager</button>
-                <button class="btn btn-primary mr-1">Administrator</button>
-                <button class="btn btn-primary mr-1">HR Manage</button>
+                <button class="btn btn-primary mr-1" type="button">Normal</button>
+                <button class="btn btn-primary mr-1" type="button">Administrator</button>
+                <button class="btn btn-primary mr-1" type="button">HR Manager</button>
+                <button class="btn btn-primary mr-1" type="button">Warehouse Manager</button>
+                <button class="btn btn-primary mr-1" type="button">Picker</button>
+                <button class="btn btn-primary mr-1" type="button">Deliver</button>
             </td>
         </tr>
         </tfoot>
     {% else %}
         <div class="hidden">
+            <label for="newRowRange" class="hidden"></label>
             <select class="form-control" id="newRowRange">
                 <option value="1">{% trans "Themselves" %}</option>
                 <option value="2">{% trans "Their staff" %}</option>

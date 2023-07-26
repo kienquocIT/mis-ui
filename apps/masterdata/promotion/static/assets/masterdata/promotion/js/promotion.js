@@ -454,7 +454,7 @@ $(function () {
     });
 
     // run default currency form field
-    $.fn.getCompanyConfig().then((configData)=>{
+    DocumentControl.getCompanyConfig().then((configData)=>{
         let $currencyElm = $('[name="currency"]');
         $.fn.callAjax(
             $('#url-factory').attr('data-currency_list'),
@@ -582,14 +582,14 @@ $(function () {
         let csr = $("[name=csrfmiddlewaretoken]").val();
         if (CustomerType === 1) {
             if (!Customer.getCustomerList.length) {
-                $.fn.notifyPopup({description: $transFactory.attr('data-customer-list')}, 'failure')
+                $.fn.notifyB({description: $transFactory.attr('data-customer-list')}, 'failure')
                 return false
             } else
                 _form.dataForm['customer_by_list'] = Customer.getCustomerList
         }
         if (CustomerType === 2) {
             if (!Customer.getCustomerCond.length) {
-                $.fn.notifyPopup({description: $transFactory.attr('data-customer-cond')}, 'failure')
+                $.fn.notifyB({description: $transFactory.attr('data-customer-cond')}, 'failure')
                 return false
             } else
                 _form.dataForm['customer_by_condition'] = Customer.getCustomerCond
@@ -611,7 +611,7 @@ $(function () {
             if (isPerFixed) {
                 // if percent is checked
                 if (!_form.dataForm['percent_value']) {
-                    $.fn.notifyPopup({description: $transFactory.attr('data-percent-invalid')}, 'failure')
+                    $.fn.notifyB({description: $transFactory.attr('data-percent-invalid')}, 'failure')
                     $('[name="percent_value"]').addClass('is-invalid cl-red')
                     return false
                 }
@@ -624,7 +624,7 @@ $(function () {
                 // fixed amount is checked
                 let fixedVal = $('[name="fix_value"]').valCurrency()
                 if (!fixedVal) {
-                    $.fn.notifyPopup({description: $transFactory.attr('data-fixed-invalid')}, 'failure')
+                    $.fn.notifyB({description: $transFactory.attr('data-fixed-invalid')}, 'failure')
                     $('#fix_value').addClass('is-invalid cl-red')
                     return false
                 }
@@ -637,7 +637,7 @@ $(function () {
                 if (_form.dataForm['is_minimum']) {
                     _form.dataForm['discount_method']['is_minimum'] = true
                     if (!$('[name="minimum_value"]').valCurrency()) {
-                        $.fn.notifyPopup({
+                        $.fn.notifyB({
                             description: $transFactory.attr('data-invalid-minimum-value')
                         }, 'failure')
                         $('#minimum_value').addClass('is-invalid cl-red')
@@ -650,7 +650,7 @@ $(function () {
                 _form.dataForm['discount_method']['is_on_product'] = true
                 let proonselect = $('#product_selected').val()
                 if (!proonselect) {
-                    $.fn.notifyPopup({
+                    $.fn.notifyB({
                         description: $transFactory.attr('data-invalid-product-selected')
                     }, 'failure')
                     $('[name="product_selected"]').addClass('is-invalid cl-red')
@@ -659,7 +659,7 @@ $(function () {
                 _form.dataForm['discount_method']['product_selected'] = proonselect
                 if (_form.dataForm['is_min_quantity']) {
                     if (!_form.dataForm['num_minimum']) {
-                        $.fn.notifyPopup({
+                        $.fn.notifyB({
                             description: $transFactory.attr('data-invalid-minimum-quantity')
                         }, 'failure')
                         $('#num_minimum').addClass('is-invalid cl-red')
@@ -672,7 +672,7 @@ $(function () {
             else if (_form.dataForm['free_shipping']) {
                 _form.dataForm['discount_method']['free_shipping'] = true
                 if (!$('#fix_value').valCurrency()) {
-                    $.fn.notifyPopup({
+                    $.fn.notifyB({
                         description: $transFactory.attr('data-fixed-invalid')
                     }, 'failure')
                 }
@@ -738,7 +738,7 @@ $(function () {
                     const data = $.fn.switcherResp(resp);
                     const description = (_form.dataMethod.toLowerCase() === 'put') ? data.detail : data.message;
                     if (data) {
-                        $.fn.notifyPopup({description: description}, 'success')
+                        $.fn.notifyB({description: description}, 'success')
                         $.fn.redirectUrl($($form).attr('data-url-redirect'), 3000);
                     }
                 },

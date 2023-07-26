@@ -914,7 +914,7 @@ $(document).ready(function () {
     $(document).on('change', '.input-quantity', function () {
         let quantity = $(this).val();
         if (quantity < 0) {
-            $.fn.notifyPopup({description: $('#limit-quantity').text()}, 'failure');
+            $.fn.notifyB({description: $('#limit-quantity').text()}, 'failure');
             $(this).val(0);
             quantity = 0;
         }
@@ -1110,7 +1110,7 @@ $(document).ready(function () {
     $('#input-rate').on('change', function () {
         let value = $(this).val();
         if (value < 0 || value > 100) {
-            $.fn.notifyPopup({description: $('#limit-rate').text()}, 'failure');
+            $.fn.notifyB({description: $('#limit-rate').text()}, 'failure');
             $(this).val(0);
         } else {
             $('#rangeInput').val($(this).val());
@@ -1272,12 +1272,12 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyPopup({description: "Successfully"}, 'success')
+                        $.fn.notifyB({description: "Successfully"}, 'success')
                         $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
                     }
                 },
                 (errs) => {
-                    $.fn.notifyPopup({description: errs.data.errors}, 'failure');
+                    $.fn.notifyB({description: errs.data.errors}, 'failure');
                 }
             )
     })
@@ -1360,7 +1360,7 @@ $(document).ready(function () {
 
     $(document).on('change', '.mask-money', function () {
         if ($(this).valCurrency() < 0) {
-            $.fn.notifyPopup({description: $('#limit-money').text()}, 'failure');
+            $.fn.notifyB({description: $('#limit-money').text()}, 'failure');
             $(this).attr('value', 0);
             $.fn.initMaskMoney2();
         }
@@ -1369,7 +1369,7 @@ $(document).ready(function () {
     $(document).on('change', '#input-close-date', function () {
         let open_date = $('#input-open-date').val();
         if ($(this).val() < open_date) {
-            $.fn.notifyPopup({description: $('#limit-close-date').text()}, 'failure');
+            $.fn.notifyB({description: $('#limit-close-date').text()}, 'failure');
             $(this).val(open_date);
         }
     })
@@ -1729,7 +1729,7 @@ $(document).ready(function () {
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
-                $.fn.notifyPopup({description: "Successfully"}, 'success')
+                $.fn.notifyB({description: "Successfully"}, 'success')
                 $('#create-new-call-log').hide();
 
                 callAjaxtoLoadTimeLineList();
@@ -1853,14 +1853,14 @@ $(document).ready(function () {
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
-                    $.fn.notifyPopup({description: "Successfully"}, 'success')
+                    $.fn.notifyB({description: "Successfully"}, 'success')
                     $('#send-email').hide();
 
                     callAjaxtoLoadTimeLineList();
                 }
             },
             (errs) => {
-                // $.fn.notifyPopup({description: errs.data.errors}, 'failure');
+                // $.fn.notifyB({description: errs.data.errors}, 'failure');
             }
         )
     })
@@ -2022,24 +2022,165 @@ $(document).ready(function () {
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
-                    $.fn.notifyPopup({description: "Successfully"}, 'success')
+                    $.fn.notifyB({description: "Successfully"}, 'success')
                     $('#create-meeting').hide();
 
                     callAjaxtoLoadTimeLineList();
                 }
             },
             (errs) => {
-                // $.fn.notifyPopup({description: errs.data.errors}, 'failure');
+                // $.fn.notifyB({description: errs.data.errors}, 'failure');
             }
         )
     })
 
 
     // TIMELINE
+    function tabSubtask(taskID){
+        if (!taskID) return false
+        const $wrap = $('.wrap-subtask')
+        const url = $('#url-factory').attr('data-task_list')
+        $.fn.callAjax(url, 'GET', {parent_n: taskID})
+            .then((resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    for (let [key, item] of data.task_list.entries()) {
+                        const template = $(`<div class="d-flex justify-content-start align-items-center subtask_item">
+                                    <p>${item.title}</p>
+                                    <button class="btn btn-flush-primary btn-icon btn-rounded ml-auto flush-soft-hover" disabled>
+                                        <span><i class="fa-regular fa-trash-can fa-sm"></i></span>
+                                    </button>
+                                 </div>`);
+                        $wrap.append(template);
+                    }
+                }
+            })
+    }
+    function tabLogWork(dataList){
+        let $table = $('#table_log-work')
+        if ($table.hasClass('datatable')) $table.DataTable().clear().draw();
+        $table.DataTable({
+            searching: false,
+            ordering: false,
+            paginate: false,
+            info: false,
+            data: dataList,
+            columns: [
+                {
+                    data: 'employee_created',
+                    targets: 0,
+                    width: "35%",
+                    render: (data, type, row) => {
+                        let avatar = ''
+                        const full_name = data.last_name + ' ' + data.first_name
+                        if (data?.avatar)
+                            avatar = `<img src="${data.avatar}" alt="user" class="avatar-img">`
+                        else avatar = $.fn.shortName(full_name, '', 5)
+                        const randomResource = randomColor[Math.floor(Math.random() * randomColor.length)];
+                        return `<div class="avatar avatar-rounded avatar-xs avatar-${randomResource}">
+                                        <span class="initial-wrap">${avatar}</span>
+                                    </div>
+                                    <span class="ml-2">${full_name}</span>`;
+                    }
+                },
+                {
+                    data: 'start_date',
+                    targets: 1,
+                    width: "35%",
+                    render: (data, type, row) => {
+                        let date = moment(data, 'YYYY-MM-DDThh:mm:ss').format('YYYY/MM/DD')
+                        if (data !== row.end_date) {
+                            date += ' ~ '
+                            date += moment(row.end_date, 'YYYY-MM-DDThh:mm:ss').format('YYYY/MM/DD')
+                        }
+                        return date;
+                    }
+                },
+                {
+                    data: 'time_spent',
+                    targets: 2,
+                    width: "20%",
+                    render: (data, type, row) => {
+                        return data;
+                    }
+                },
+                {
+                    data: 'id',
+                    targets: 3,
+                    width: "10%",
+                    render: (data, type, row) => {
+                        return `<btn type="button" class="btn action act-edit" data-row-id="${data}"><i class="fa-solid fa-pencil"></i></btn>`;
+                    }
+                }
+            ]
+        })
+    }
+
+    function displayTaskView(url){
+        if (url)
+            $.fn.callAjax(url, 'GET')
+                .then((resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        // enable side panel
+                        if (!$('#drawer_task_create').hasClass('open')){
+                            $('.current-create-task span').trigger('click')
+                        }
+                        $('#inputTextTitle').val(data.title)
+                        $('#inputTextCode').val(data.code)
+                        $('#selectStatus').attr('data-onload', JSON.stringify(data.task_status))
+                        $('#inputTextStartDate').val(
+                            moment(data.start_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
+                        )
+                        $('#inputTextEndDate').val(
+                            moment(data.end_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
+                        )
+                        $('#inputTextEstimate').val(data.estimate)
+                        if (data?.opportunity_data && Object.keys(data.opportunity_data).length)
+                            $('#selectOpportunity').attr('data-onload', JSON.stringify({
+                                "id": data.opportunity_data.id,
+                                "title": data.opportunity_data.code
+                            }))
+                        $('#selectPriority').val(data.priority).trigger('change')
+                        window.formLabel.renderLabel(data.label)
+                        $('#inputLabel').attr('value', JSON.stringify(data.label))
+                        $('#inputAssigner').val(data.employee_created.last_name + '. ' + data.employee_created.first_name)
+                            .attr('value', data.employee_created.id)
+                        if (data.assign_to.length)
+                            $('#selectAssignTo').attr('data-onload', JSON.stringify(data.assign_to))
+                        window.editor.setData(data.remark)
+                        window.checklist.setDataList = data.checklist
+                        window.checklist.render()
+                        initSelectBox($('#selectOpportunity, #selectAssignTo, #selectStatus'))
+                        $('.create-subtask, .create-checklist').addClass('hidden')
+                        if (data.task_log_work.length) tabLogWork(data.task_log_work)
+                        tabSubtask(data.id)
+
+                        if (data.attach) {
+                            const fileDetail = data.attach[0]?.['files']
+                            FileUtils.init($(`[name="attach"]`).siblings('button'), fileDetail);
+                        }
+                        $('.create-task').attr('disabled', true)
+                    }
+                })
+    }
 
     function loadTimelineList(data_timeline_list) {
+        const $urlElm = $('#url-factory')
+        const $trans = $('#trans-factory')
         $('#table-timeline').DataTable().destroy();
         let dtb = $('#table-timeline');
+        const type_trans = {
+            0: $trans.attr('data-activity-type01'),
+            1: $trans.attr('data-activity-type02'),
+            2: $trans.attr('data-activity-type03'),
+        }
+        const type_icon = {
+            0: `<i class="bi bi-telephone-fill"></i>`,
+            1: `<i class="bi bi-envelope-fill"></i>`,
+            2: `<i class="bi bi-person-workspace"></i>`,
+            task: '<i class="fa-solid fa-file-arrow-up"></i>'
+        }
         dtb.DataTableDefault({
             pageLength: 5,
             dom: "<'row miner-group'<'col-sm-3 mt-3'f><'col-sm-9'p>>" + "<'row mt-3'<'col-sm-12'tr>>" + "<'row mt-3'<'col-sm-12 col-md-6'i>>",
@@ -2049,36 +2190,22 @@ $(document).ready(function () {
                     data: 'activity',
                     className: 'wrap-text w-25',
                     render: (data, type, row, meta) => {
-                        if (row.type === 0) {
-                            return `<span>Call to customer</span>`
+                        let txt = ''
+                        if (typeof row.type === "number") txt = `<span>${type_trans[row.type]}</span>`
+                        else if (row.type === 'task') {
+                            const taskID = row.id
+                            const url = $urlElm.attr('data-task_detail').format_url_with_uuid(taskID)
+                            txt = `<span class="view_task_log text-decoration-underline text-blue" data-url="${
+                                url}">${row.title}</span>`
                         }
-                        else if (row.type === 1) {
-                            return `<span>Send email</span>`
-                        }
-                        else if (row.type === 2) {
-                            return `<span>Meeting with customer</span>`
-                        }
-                        else if (row.type === 3) {
-                            return `<span>Task</span>`
-                        }
+                        return txt
                     }
                 },
                 {
                     data: 'type',
                     className: 'wrap-text w-10 text-center',
                     render: (data, type, row, meta) => {
-                        if (row.type === 0) {
-                            return `<i class="bi bi-telephone-fill"></i>`
-                        }
-                        else if (row.type === 1) {
-                            return `<i class="bi bi-envelope-fill"></i>`
-                        }
-                        else if (row.type === 2) {
-                            return `<i class="bi bi-person-workspace"></i>`
-                        }
-                        else if (row.type === 3) {
-                            return `<i class="fa-solid fa-list-check"></i>`
-                        }
+                        return type_icon[data]
                     }
                 },
                 {
@@ -2096,6 +2223,13 @@ $(document).ready(function () {
                     }
                 },
             ],
+            rowCallback: function(row, data){
+                // click show task
+                $('.view_task_log', row).off().on('click', function (e) {
+                    e.stopPropagation();
+                    displayTaskView(this.dataset.url)
+                })
+            },
         });
     }
     function callAjaxtoLoadTimeLineList() {
@@ -2156,27 +2290,27 @@ $(document).ready(function () {
                 return call_3_result;
             }
         })
-        let call_4 = $.fn.callAjax($('#table-timeline').attr('data-url-task'), $('#table-timeline').attr('data-method')).then((resp) => {
+        let call_4 = $.fn.callAjax($('#table-timeline').attr('data-url-task'), 'GET', {'opportunity': pk})
+        .then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
-                let call_4_result = [];
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('task_list')) {
-                    data.task_list.map(function (item) {
-                        if (item.opportunity.id === pk) {
-                            call_4_result.push({
-                                'id': item.id,
-                                'type': 3,
-                                'subject': item.title,
-                                'date': item.start_date.split(' ')[0],
-                            })
-                        }
+                let task_logs_list = [];
+                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('log_task_list')) {
+                    data.log_task_list.map(function (item) {
+                        task_logs_list.push({
+                            'id': item.task.id,
+                            'type': item.activity_type,
+                            'title': item.activity_name,
+                            'subject': item.subject,
+                            'date': item.date_created.split(' ')[0],
+                        })
                     })
                 }
-                return call_4_result;
+                return task_logs_list;
             }
         })
         Promise.all([call_1, call_2, call_3, call_4]).then((results) => {
-            let sorted = results[0].concat(results[1]).concat(results[2]).concat(results[3]).sort(function(a, b) {
+        let sorted = results.flat().sort(function(a, b) {
                 return new Date(b.date) - new Date(a.date);
             })
             loadTimelineList(sorted);

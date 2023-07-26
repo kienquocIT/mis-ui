@@ -201,13 +201,13 @@ $(function () {
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            $.fn.notifyPopup({description: data.message}, 'success')
+                            $.fn.notifyB({description: data.message}, 'success')
                             $.fn.redirectUrl($($form).attr('data-url-redirect').format_url_with_uuid(data.id), 1000);
                         }
                     },
                     (errs) => {
                         console.log(errs)
-                        $.fn.notifyPopup({description: "Opportunity create fail"}, 'failure')
+                        $.fn.notifyB({description: "Opportunity create fail"}, 'failure')
                     }
                 )
         });

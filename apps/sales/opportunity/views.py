@@ -507,6 +507,20 @@ class OpportunityMeetingDeleteAPI(APIView):
         if resp.state:
             return {}, status.HTTP_200_OK
         return {'detail': resp.errors}, status.HTTP_500_INTERNAL_SERVER_ERROR
+class OpportunityActivityLogTaskListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_ACTIVITY_LOGS_TASK).get(params)
+        if resp.state:
+            return {'log_task_list': resp.result}, status.HTTP_200_OK
+
+        elif resp.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST
 
 
 class OpportunityDocumentList(View):

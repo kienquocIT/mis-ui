@@ -37,7 +37,7 @@ $(function () {
             let nodeTableData = setupDataNode(true);
             // check status Node before submit
             if (nodeTableData === false) {
-                $.fn.notifyPopup({description: $.fn.transEle.attr('data-check-complete-node')}, 'failure');
+                $.fn.notifyB({description: $.fn.transEle.attr('data-check-complete-node')}, 'failure');
                 return false
             }
             // get exit node condition for node list
@@ -103,13 +103,13 @@ $(function () {
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            $.fn.notifyPopup({description: data.message}, 'success')
+                            $.fn.notifyB({description: data.message}, 'success')
                             $.fn.redirectUrl($($form).attr('data-url-redirect'), 1000);
                         }
                     },
                     (errs) => {
                         console.log(errs)
-                        $.fn.notifyPopup({description: "Workflow create fail"}, 'failure')
+                        $.fn.notifyB({description: "Workflow create fail"}, 'failure')
                     }
                 )
         });

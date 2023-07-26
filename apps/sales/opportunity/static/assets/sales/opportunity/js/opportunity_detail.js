@@ -914,7 +914,7 @@ $(document).ready(function () {
     $(document).on('change', '.input-quantity', function () {
         let quantity = $(this).val();
         if (quantity < 0) {
-            $.fn.notifyPopup({description: $('#limit-quantity').text()}, 'failure');
+            $.fn.notifyB({description: $('#limit-quantity').text()}, 'failure');
             $(this).val(0);
             quantity = 0;
         }
@@ -1110,7 +1110,7 @@ $(document).ready(function () {
     $('#input-rate').on('change', function () {
         let value = $(this).val();
         if (value < 0 || value > 100) {
-            $.fn.notifyPopup({description: $('#limit-rate').text()}, 'failure');
+            $.fn.notifyB({description: $('#limit-rate').text()}, 'failure');
             $(this).val(0);
         } else {
             $('#rangeInput').val($(this).val());
@@ -1272,12 +1272,12 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyPopup({description: "Successfully"}, 'success')
+                        $.fn.notifyB({description: "Successfully"}, 'success')
                         $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
                     }
                 },
                 (errs) => {
-                    $.fn.notifyPopup({description: errs.data.errors}, 'failure');
+                    $.fn.notifyB({description: errs.data.errors}, 'failure');
                 }
             )
     })
@@ -1360,7 +1360,7 @@ $(document).ready(function () {
 
     $(document).on('change', '.mask-money', function () {
         if ($(this).valCurrency() < 0) {
-            $.fn.notifyPopup({description: $('#limit-money').text()}, 'failure');
+            $.fn.notifyB({description: $('#limit-money').text()}, 'failure');
             $(this).attr('value', 0);
             $.fn.initMaskMoney2();
         }
@@ -1369,7 +1369,7 @@ $(document).ready(function () {
     $(document).on('change', '#input-close-date', function () {
         let open_date = $('#input-open-date').val();
         if ($(this).val() < open_date) {
-            $.fn.notifyPopup({description: $('#limit-close-date').text()}, 'failure');
+            $.fn.notifyB({description: $('#limit-close-date').text()}, 'failure');
             $(this).val(open_date);
         }
     })
@@ -1723,7 +1723,7 @@ $(document).ready(function () {
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
-                $.fn.notifyPopup({description: "Successfully"}, 'success')
+                $.fn.notifyB({description: "Successfully"}, 'success')
                 $('#create-new-call-log').hide();
 
                 let call_1 = $.fn.callAjax($('#table-timeline').attr('data-url-call-log'), $('#table-timeline').attr('data-method')).then((resp) => {
@@ -1900,7 +1900,7 @@ $(document).ready(function () {
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
-                    $.fn.notifyPopup({description: "Successfully"}, 'success')
+                    $.fn.notifyB({description: "Successfully"}, 'success')
                     $('#send-email').hide();
 
                     let call_1 = $.fn.callAjax($('#table-timeline').attr('data-url-call-log'), $('#table-timeline').attr('data-method')).then((resp) => {
@@ -1971,7 +1971,7 @@ $(document).ready(function () {
                 }
             },
             (errs) => {
-                // $.fn.notifyPopup({description: errs.data.errors}, 'failure');
+                // $.fn.notifyB({description: errs.data.errors}, 'failure');
             }
         )
     })
@@ -2116,7 +2116,7 @@ $(document).ready(function () {
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
-                    $.fn.notifyPopup({description: "Successfully"}, 'success')
+                    $.fn.notifyB({description: "Successfully"}, 'success')
                     $('#create-meeting').hide();
 
                     let call_1 = $.fn.callAjax($('#table-timeline').attr('data-url-call-log'), $('#table-timeline').attr('data-method')).then((resp) => {
@@ -2187,7 +2187,7 @@ $(document).ready(function () {
                 }
             },
             (errs) => {
-                // $.fn.notifyPopup({description: errs.data.errors}, 'failure');
+                // $.fn.notifyB({description: errs.data.errors}, 'failure');
             }
         )
     })

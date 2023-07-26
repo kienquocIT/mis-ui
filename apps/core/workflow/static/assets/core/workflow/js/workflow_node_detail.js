@@ -935,7 +935,7 @@ $(function () {
                 if (empExist) {
                     let empIdExist = empExist.value;
                     if (empIdExist === employeeVal) {
-                        $.fn.notifyPopup({description: 'Employee already exists. Please choose other employee'}, 'failure');
+                        $.fn.notifyB({description: 'Employee already exists. Please choose other employee'}, 'failure');
                         return false
                     }
                 }

@@ -253,7 +253,7 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyPopup({description: "Successfully"}, 'success')
+                        $.fn.notifyB({description: "Successfully"}, 'success')
                         $('#modal-lookup-data').hide();
                     }
                 },
@@ -357,7 +357,7 @@ $(document).ready(function () {
                     }
                 }
             }, (errs) => {
-                $.fn.notifyPopup({description: errs.data.errors}, 'failure');
+                $.fn.notifyB({description: errs.data.errors}, 'failure');
             },)
         // save edit
         $('#modal-update-data .edit-button').off().on('click', function () {
@@ -384,12 +384,12 @@ $(document).ready(function () {
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            $.fn.notifyPopup({description: "Successfully"}, 'success')
+                            $.fn.notifyB({description: "Successfully"}, 'success')
                             $('#modal-update-data').hide();
                         }
                     },
                     (errs) => {
-                        $.fn.notifyPopup({description: errs.data.errors}, 'failure');
+                        $.fn.notifyB({description: errs.data.errors}, 'failure');
                     }
                 ).then(
                 (resp) => {// reload after save edit

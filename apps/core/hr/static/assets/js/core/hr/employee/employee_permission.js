@@ -255,7 +255,7 @@ function PermUpdateBtn() {
         $.fn.callAjax($('.url-factory').data('link-2'), "PUT",
             {permission_by_configured: permissions_data}, $("input[name=csrfmiddlewaretoken]").val()).then(
             (res) => {
-                $.fn.notifyPopup({description: res.data.message}, 'success')
+                $.fn.notifyB({description: res.data.message}, 'success')
                 $(this).removeClass('disabled');
                 $(this).attr('disabled', false);
                 $(this).find(`span`).addClass('hidden');

@@ -241,7 +241,7 @@ function addZoneBtn(ElmSelectbox) {
         e.preventDefault();
         let getApp = ElmSelectbox.select2('data')
         if (getApp.length === 0) {
-            $.fn.notifyPopup({description: $(this).attr('data-required-text')}, 'failure');
+            $.fn.notifyB({description: $(this).attr('data-required-text')}, 'failure');
             return true
         } else
             $($(this).attr('data-bs-target')).modal('show')

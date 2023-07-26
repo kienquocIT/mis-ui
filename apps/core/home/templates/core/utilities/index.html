@@ -310,10 +310,10 @@
             if (ele) FileUtils.init($(ele), dataDetail);
 
             let btn = $('#inputTest1');
-            btn.showLoadingButton();
+            WindowControl.showLoadingButton(btn);
             setTimeout(
                 () => {
-                    btn.hideLoadingButton();
+                    WindowControl.hideLoadingButton(btn);
                 },
                 1000
             );

@@ -46,7 +46,7 @@ class pickupUtil {
             this.setProdList = currentList
         }
         else if (value > currentList[idx]['remaining_quantity'])// giá trị nhập vào lớn hơn số tồn kho
-            $.fn.notifyPopup({
+            $.fn.notifyB({
                 description: $('#trans-factory').attr('data-error-picked-quantity')
             }, 'failure')
 
@@ -214,7 +214,7 @@ $(async function () {
         const warehouseID = $('#inputWareHouse').val();
 
         if(!warehouseID.valid_uuid4()){
-            $.fn.notifyPopup({description: $elmTrans.attr('data-error-warehouse')}, 'failure')
+            $.fn.notifyB({description: $elmTrans.attr('data-error-warehouse')}, 'failure')
             return false
         }
         $.fn.callAjax(
@@ -328,7 +328,7 @@ $(async function () {
                                 $(this).removeClass('is-invalid cl-red')
                             }
                             else {
-                                $.fn.notifyPopup(
+                                $.fn.notifyB(
                                     {description: $('#trans-factory').attr('data-outstock')},
                                     'failure'
                                 );
@@ -362,7 +362,7 @@ $(async function () {
         const $transElm = $('#trans-factory')
 
         if (!_form.dataForm?.warehouse_id) {
-            $.fn.notifyPopup({description: $transElm.attr('data-error-warehouse')}, 'failure')
+            $.fn.notifyB({description: $transElm.attr('data-error-warehouse')}, 'failure')
             return false
         }
         const pickingData = pickupInit.getPicking
@@ -393,7 +393,7 @@ $(async function () {
                     }
                     prodSub.push(temp)
                 } else {
-                    $.fn.notifyPopup(
+                    $.fn.notifyB(
                         {description: prod.product_data.title + ' ' + $transElm.attr('data-prod-outstock')},
                         'failure')
                 }
@@ -401,7 +401,7 @@ $(async function () {
         }
         pickingData.products = prodSub
         if (!prodSub || !prodSub.length) {
-            $.fn.notifyPopup({description: $transElm.attr('data-error-done')}, 'failure')
+            $.fn.notifyB({description: $transElm.attr('data-error-done')}, 'failure')
             return false
         }
         //call ajax to update picking
@@ -411,13 +411,13 @@ $(async function () {
                     const data = $.fn.switcherResp(resp);
                     const description = (_form.dataMethod.toLowerCase() === 'put') ? data.detail : data.message;
                     if (data) {
-                        $.fn.notifyPopup({description: description}, 'success')
+                        $.fn.notifyB({description: description}, 'success')
                         $.fn.redirectUrl($($form).attr('data-url-redirect'), 3000);
                     }
                 },
                 (errs) => {
                     if (errs.data.errors.hasOwnProperty('detail')) {
-                        $.fn.notifyPopup({description: String(errs.data.errors['detail'])}, 'failure')
+                        $.fn.notifyB({description: String(errs.data.errors['detail'])}, 'failure')
                     }
                 }
             )

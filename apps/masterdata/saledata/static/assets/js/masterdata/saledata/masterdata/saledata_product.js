@@ -451,7 +451,7 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyPopup({description: "Tạo mới"}, 'success')
+                        $.fn.notifyB({description: "Tạo mới"}, 'success')
                         $('#modal-product-and-expense').hide();
                     }
                 },
@@ -489,7 +489,7 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyPopup({description: "Tạo mới"}, 'success')
+                        $.fn.notifyB({description: "Tạo mới"}, 'success')
                         $('#modal-unit-measure-group').hide();
                     }
                 },
@@ -524,7 +524,7 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyPopup({description: "Tạo mới"}, 'success')
+                        $.fn.notifyB({description: "Tạo mới"}, 'success')
                         $('#modal-unit-measure').hide();
                     }
                 },
@@ -654,7 +654,7 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyPopup({description: "Cập nhật"}, 'success')
+                        $.fn.notifyB({description: "Cập nhật"}, 'success')
                         $('#modal-detail-unit-measure').hide();
                     }
                 },
@@ -769,7 +769,7 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyPopup({description: "Cập nhật"}, 'success')
+                        $.fn.notifyB({description: "Cập nhật"}, 'success')
                         $('#modal-detail-product-and-expense').hide();
                     }
                 },
@@ -806,7 +806,7 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyPopup({description: "Cập nhật"}, 'success')
+                        $.fn.notifyB({description: "Cập nhật"}, 'success')
                         $('#modal-detail-unit-measure-group').hide();
                     }
                 },

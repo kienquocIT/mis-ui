@@ -74,7 +74,7 @@ $(document).ready(function () {
         event.preventDefault();
         let frm = new SetupFormSubmit($(this));
         let csr = $("[name=csrfmiddlewaretoken]").val();
-        $.fn.showLoading();
+        WindowControl.showLoading();
         frm.dataForm['is_select_stage'] = $('#is-select-stage')[0].checked;
         frm.dataForm['is_input_win_rate'] = $('#is-input-win-rate')[0].checked;
         frm.dataForm['is_account_manager_create'] = $('#is-AM-create')[0].checked;
@@ -83,7 +83,7 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyPopup({description: 'Successfully'}, 'success')
+                        $.fn.notifyB({description: 'Successfully'}, 'success')
                         $.fn.redirectUrl(window.location, 1000);
                     }
                 },
@@ -104,7 +104,7 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyPopup({description: 'Successfully'}, 'success')
+                        $.fn.notifyB({description: 'Successfully'}, 'success')
                         $.fn.redirectUrl(window.location, 1000);
                     }
                 },
@@ -115,7 +115,7 @@ $(document).ready(function () {
     })
 
     $(document).on('click', '.btn-del-factor', function () {
-        let rowData = $(this).getRowData();
+        let rowData = DTBControl.getRowData($(this));
         if (
             confirm(
                 $('#msgConfirmDeleteFactor').text().format_by_idx(rowData?.['title'])
@@ -130,7 +130,7 @@ $(document).ready(function () {
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            $.fn.notifyPopup({description: 'Successfully'}, 'success')
+                            $.fn.notifyB({description: 'Successfully'}, 'success')
                             $.fn.redirectUrl(window.location, 1000);
                         }
                     },
@@ -372,7 +372,7 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyPopup({description: 'Successfully'}, 'success')
+                        $.fn.notifyB({description: 'Successfully'}, 'success')
                         let table = $('#table-opportunity-config-stage').DataTable();
                         table.ajax.reload();
                         $('#modalCreateStage').modal('hide');
@@ -385,7 +385,7 @@ $(document).ready(function () {
     })
 
     $(document).on('click', '.btn-del-stage', function () {
-        let rowData = $(this).getRowData();
+        let rowData = DTBControl.getRowData($(this));
         if (
             confirm(
                 $('#msgConfirmDeleteFactor').text().format_by_idx(rowData?.['indicator'])
@@ -399,7 +399,7 @@ $(document).ready(function () {
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            $.fn.notifyPopup({description: 'Successfully'}, 'success')
+                            $.fn.notifyB({description: 'Successfully'}, 'success')
                             let table = $('#table-opportunity-config-stage').DataTable();
                             table.ajax.reload();
                         }
@@ -438,7 +438,7 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyPopup({description: 'Successfully'}, 'success')
+                        $.fn.notifyB({description: 'Successfully'}, 'success')
                         $('#modalDetailStage').modal('hide');
                     }
                 },
@@ -464,7 +464,7 @@ $(document).ready(function () {
                             let table = $('#table-opportunity-config-stage').DataTable();
                             table.ajax.reload();
                             modal.modal('hide');
-                            $.fn.notifyPopup({description: 'Successfully'}, 'success')
+                            $.fn.notifyB({description: 'Successfully'}, 'success')
                             modal.find('.modal-body h4').prop('hidden', false);
                             modal.find('.modal-body .div-loading').prop('hidden', true);
                         }, 2000);

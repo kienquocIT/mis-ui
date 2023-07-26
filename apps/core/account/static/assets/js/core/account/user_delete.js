@@ -10,11 +10,11 @@ $("tbody").on("click", ".del-button", function () {
 
             let data = $.fn.switcherResp(resp);
             if (data) {
-                $.fn.notifyPopup({description: "Thành công"}, 'success')
+                $.fn.notifyB({description: "Thành công"}, 'success')
                 $.fn.redirectUrl(location.pathname, 1000);
             }
         }, (errs) => {
-            $.fn.notifyPopup({description: errs.data}, 'failure')
+            $.fn.notifyB({description: errs.data}, 'failure')
         },)
     }
 

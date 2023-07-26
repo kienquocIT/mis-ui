@@ -374,7 +374,7 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyPopup({description: "Successfully"}, 'success')
+                        $.fn.notifyB({description: "Successfully"}, 'success')
                         $('#modal-section-tax-category').hide();
                     }
                 },
@@ -404,7 +404,7 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyPopup({description: "Successfully"}, 'success')
+                        $.fn.notifyB({description: "Successfully"}, 'success')
                         $('#modal-section-tax').hide();
                     }
                 },
@@ -477,7 +477,7 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyPopup({description: "Successfully"}, 'success')
+                        $.fn.notifyB({description: "Successfully"}, 'success')
                         $('#modal-detail-tax').hide();
                     }
                 },
@@ -502,7 +502,7 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyPopup({description: "Successfully"}, 'success')
+                        $.fn.notifyB({description: "Successfully"}, 'success')
                         $('#modal-detail-tax-category').hide();
                     }
                 },
@@ -535,7 +535,7 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyPopup({description: "Successfully"}, 'success')
+                        $.fn.notifyB({description: "Successfully"}, 'success')
                         $('#modal-section-currency').hide();
                     }
                 },
@@ -595,14 +595,14 @@ $(document).ready(function () {
                         (resp) => {
                             let data = $.fn.switcherResp(resp);
                             if (data) {
-                                $.fn.notifyPopup({description: "Successfully"}, 'success')
+                                $.fn.notifyB({description: "Successfully"}, 'success')
                                 setTimeout(function () {
                                     location.reload()
                                 }, 1000);
                             }
                         },
                         (errs) => {
-                            // $.fn.notifyPopup({description: errs.data.errors}, 'failure');
+                            // $.fn.notifyB({description: errs.data.errors}, 'failure');
                             Swal.fire({
                                 html:
                                     '<div><h6 class="text-danger mb-0">Source Price List can not be deleted!</h6></div>',
@@ -822,7 +822,7 @@ $(document).ready(function () {
                 $addBtn.prop('disabled', term_type_list.indexOf(2) !== -1)
                 if (PercentCount === 100) $addBtn.prop('disabled', true)
                 else if (PercentCount > 100)
-                    $.fn.notifyPopup({
+                    $.fn.notifyB({
                         description: $('#trans-factory').attr('data-valid-percent')
                     }, 'failure');
             },
@@ -1016,7 +1016,7 @@ $(document).ready(function () {
             if ((!convertData.value && convertData.unit_type.value === '0')
                 || (!value_amount && convertData.unit_type.value === '1')) txtKey = 'value'
             let errorTxt = $transElm.data('terms-' + txtKey)
-            $.fn.notifyPopup({description: errorTxt}, 'failure')
+            $.fn.notifyB({description: errorTxt}, 'failure')
             return false
         }
         if (getIdx !== undefined && typeof parseInt(getIdx) === 'number')
@@ -1048,11 +1048,11 @@ $(document).ready(function () {
             item.after = item.after.hasOwnProperty('value') ? item.after.value : item.after
         }
         if (!_form.dataForm['title']) {
-            $.fn.notifyPopup({description: "Title is required"}, 'failure');
+            $.fn.notifyB({description: "Title is required"}, 'failure');
             return false
         }
         if (!tableTerms.length) {
-            $.fn.notifyPopup({description: "Term must be at least one rows"}, 'failure');
+            $.fn.notifyB({description: "Term must be at least one rows"}, 'failure');
             return false
         }
         _form.dataForm['term'] = tableTerms;
@@ -1073,7 +1073,7 @@ $(document).ready(function () {
                         if (formID) {
                             data_item = _form.dataForm
                         }
-                        $.fn.notifyPopup({description: data.message}, 'success')
+                        $.fn.notifyB({description: data.message}, 'success')
                         $('#btn-back-payment').trigger('click');
                         let $table = $('#datatable-payment-terms');
                         let defaultData = $table.DataTable().data().toArray();

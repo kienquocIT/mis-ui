@@ -188,7 +188,7 @@ $(function () {
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            $.fn.notifyPopup({description: data.message}, 'success')
+                            $.fn.notifyB({description: data.message}, 'success')
                             $.fn.redirectUrl($(this).attr('data-url-redirect'), 1000);
                         }
                     },
@@ -700,7 +700,7 @@ $(function () {
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            $.fn.notifyPopup({description: data.message}, 'success')
+                            $.fn.notifyB({description: data.message}, 'success')
                             $.fn.redirectUrl(url_redirect, 1000);
                         }
                     },
@@ -727,7 +727,7 @@ $(function () {
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            $.fn.notifyPopup({description: data.message}, 'success')
+                            $.fn.notifyB({description: data.message}, 'success')
                             $.fn.redirectUrl(url_redirect, 1000);
                         }
                     },
@@ -753,7 +753,7 @@ $(function () {
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            $.fn.notifyPopup({description: data.message}, 'success')
+                            $.fn.notifyB({description: data.message}, 'success')
                             $.fn.redirectUrl(url_redirect, 1000);
                         }
                     },
@@ -786,7 +786,7 @@ $(function () {
                             (resp) => {
                                 let data = $.fn.switcherResp(resp);
                                 if (data) {
-                                    $.fn.notifyPopup({description: data.message}, 'success')
+                                    $.fn.notifyB({description: data.message}, 'success')
                                     $.fn.redirectUrl(url_redirect, 1000);
                                 }
                             },

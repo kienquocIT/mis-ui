@@ -2369,7 +2369,7 @@ class dataTableHandle {
                             self.dataTableShipping(passList, 'datable-quotation-create-shipping');
                         } else {
                             self.dataTableShipping(passList, 'datable-quotation-create-shipping');
-                            $.fn.notifyPopup({description: $.fn.transEle.attr('data-check-if-shipping-address')}, 'failure');
+                            $.fn.notifyB({description: $.fn.transEle.attr('data-check-if-shipping-address')}, 'failure');
                         }
                     }
                 }

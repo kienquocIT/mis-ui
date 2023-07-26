@@ -105,7 +105,7 @@ $(document).ready(function () {
                 $('#modal-shipping-address').modal('hide');
                 $('#detail-modal-shipping-address').val('');
             } else {
-                $.fn.notifyPopup({description: "Missing address information!"}, 'failure');
+                $.fn.notifyB({description: "Missing address information!"}, 'failure');
             }
 
             if (shipping_address !== '') {
@@ -138,7 +138,7 @@ $(document).ready(function () {
                 })
             }
         } catch (error) {
-            $.fn.notifyPopup({description: "No address information!"}, 'failure');
+            $.fn.notifyB({description: "No address information!"}, 'failure');
         }
     })
 
@@ -160,7 +160,7 @@ $(document).ready(function () {
                 billing_address = acc_name + ', ' + account_address + ' (email: ' + email_address + ', tax code: ' + tax_code + ')';
                 $('#modal-billing-address').modal('hide');
             } else {
-                $.fn.notifyPopup({description: "Missing address information!"}, 'failure');
+                $.fn.notifyB({description: "Missing address information!"}, 'failure');
             }
 
             if (billing_address !== '') {
@@ -192,7 +192,7 @@ $(document).ready(function () {
                 })
             }
         } catch (error) {
-            $.fn.notifyPopup({description: "No address information!"}, 'failure');
+            $.fn.notifyB({description: "No address information!"}, 'failure');
         }
     })
 
@@ -635,7 +635,7 @@ $(document).ready(function () {
             }
         });
         // if (!allFieldsFilled) {
-        //     $.fn.notifyPopup({description: "Not yet filled"}, 'warning')
+        //     $.fn.notifyB({description: "Not yet filled"}, 'warning')
         //     $('#offcanvasRight').offcanvas('hide');
         // } else {
         //     $('#offcanvasRight').offcanvas('show');
@@ -722,12 +722,12 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyPopup({description: "Đang tạo account"}, 'success')
+                        $.fn.notifyB({description: "Đang tạo account"}, 'success')
                         $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
                     }
                 },
                 (errs) => {
-                    $.fn.notifyPopup({description: errs.data.errors}, 'failure');
+                    $.fn.notifyB({description: errs.data.errors}, 'failure');
                 }
             )
     });
@@ -844,7 +844,7 @@ $(document).ready(function () {
                 }
             },
             (errs) => {
-                $.fn.notifyPopup({description: errs.data.errors}, 'failure');
+                $.fn.notifyB({description: errs.data.errors}, 'failure');
             })
     })
 

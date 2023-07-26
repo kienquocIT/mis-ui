@@ -99,7 +99,7 @@ function selectStatusAvatar(performAction) {
 
 function loadBookmarkList() {
     let boxBMDisplayData = $('#boxBookmarkDisplayData');
-    boxBMDisplay.showLoadingWaitResponse();
+    WindowControl.showLoadingWaitResponse(boxBMDisplay);
     $.fn.callAjax(boxBMDisplay.attr('data-url'), 'GET',).then((resp) => {
         boxBMDisplayData.children(':not(#boxBtnAddNewBM)').remove();
         boxBMDisplayData.prop('data-loaded', true);
@@ -110,7 +110,7 @@ function loadBookmarkList() {
                 let scriptStorageItemData = jQuery(`<script>`);
                 scriptStorageItemData.addClass("bookmark-item-data hidden");
                 scriptStorageItemData.attr("type", "application/json");
-                scriptStorageItemData.text($.fn.dumpJsonDefault(item));
+                scriptStorageItemData.text(UtilControl.dumpJsonDefault(item));
 
                 let btnActionHtml = $(`
                                         <div class="bookmark-item-action">
@@ -160,7 +160,7 @@ function loadBookmarkList() {
                 boxBMDisplayData.prepend(itemHTML);
             })
         }
-        boxBMDisplay.hideLoadingWaitResponse();
+        WindowControl.hideLoadingWaitResponse(boxBMDisplay);
     },)
 }
 
@@ -169,7 +169,7 @@ function loadTabTodo() {
     let dataLoaded = tbl.attr('data-loaded');
     if (!dataLoaded) {
         tbl.attr('data-loaded', true);
-        tbl.showLoadingWaitResponse();
+        WindowControl.showLoadingWaitResponse(tbl);
         let frm = new SetupFormSubmit(tbl);
         tbl.DataTableDefault({
             pageLength: 5,
@@ -182,7 +182,7 @@ function loadTabTodo() {
                 },
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
-                    tbl.hideLoadingWaitResponse();
+                    WindowControl.hideLoadingWaitResponse(tbl);
                     if (data && data.hasOwnProperty('task_list')) {
                         return resp.data['task_list'] ? resp.data['task_list'] : [];
                     }
@@ -224,7 +224,7 @@ function loadTabTodo() {
                     render: (data, type, row) => {
                         let avaHTML = `
                                     <div class="avatar avatar-xs avatar-light avatar-rounded"><span class="initial-wrap">${$.fn.shortName(data['full_name'])}</span></div>
-                                    <span class="ml-1">${$.fn.parseDateTime(row['date_created'])}</span>
+                                    <span class="ml-1">${UtilControl.parseDateTime(row['date_created'])}</span>
                                 `;
                         return data ? avaHTML : '';
                     }
@@ -250,7 +250,7 @@ function loadTabFollowing() {
     let dataLoaded = tbl.attr('data-loaded');
     if (!dataLoaded) {
         tbl.attr('data-loaded', true);
-        tbl.showLoadingWaitResponse();
+        WindowControl.showLoadingWaitResponse(tbl);
         let frm = new SetupFormSubmit(tbl);
         tbl.DataTableDefault({
             pageLength: 5,
@@ -260,7 +260,7 @@ function loadTabFollowing() {
                 type: frm.dataMethod,
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
-                    tbl.hideLoadingWaitResponse();
+                    WindowControl.hideLoadingWaitResponse(tbl);
                     if (data && data.hasOwnProperty('runtime_list')) {
                         return resp.data['runtime_list'] ? resp.data['runtime_list'] : [];
                     }
@@ -306,7 +306,7 @@ function loadTabFollowing() {
                     className: 'wrap-text',
                     width: "15%",
                     render: (data, type, row) => {
-                        return `<span class="ml-1">${$.fn.parseDateTime(data)}</span>`;
+                        return `<span class="ml-1">${UtilControl.parseDateTime(data)}</span>`;
                     }
                 }, {
                     className: 'wrap-text',
@@ -329,7 +329,7 @@ function loadTabPined() {
     let dataLoaded = tbl_pined.attr('data-loaded');
     if (!dataLoaded) {
         tbl_pined.attr('data-loaded', true);
-        tbl_pined.showLoadingWaitResponse();
+        WindowControl.showLoadingWaitResponse(tbl_pined);
         tbl_pined.DataTableDefault({
             pageLength: 5,
             rowIdx: false,
@@ -338,7 +338,7 @@ function loadTabPined() {
                 type: frm_pined.dataMethod,
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
-                    tbl_pined.hideLoadingWaitResponse();
+                    WindowControl.hideLoadingWaitResponse(tbl_pined);
                     if (data && data.hasOwnProperty('pin_doc_list')) {
                         return resp.data['pin_doc_list'] ? resp.data['pin_doc_list'] : [];
                     }
@@ -399,7 +399,7 @@ function loadTabPined() {
                     width: "15%",
                     data: 'date_created',
                     render: (data, type, row) => {
-                        return $.fn.parseDateTime(data);
+                        return UtilControl.parseDateTime(data);
                     }
                 }, {
                     className: 'wrap-text',
@@ -459,10 +459,10 @@ function initEventElement() {
 
     });
     $('#frmAddNewBookMark').submit(function (event) {
-        $.fn.showLoading();
+        WindowControl.showLoading();
         event.preventDefault();
         let frmSetup = new SetupFormSubmit($(this));
-        frmSetup.dataForm['box_style'] = $.fn.groupDataFromPrefix(frmSetup.dataForm, 'box_style__');
+        frmSetup.dataForm['box_style'] = SetupFormSubmit.groupDataFromPrefix(frmSetup.dataForm, 'box_style__');
         $.fn.callAjax(boxBMDisplay.attr('data-url'), 'POST', frmSetup.dataForm, true,).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
@@ -471,10 +471,10 @@ function initEventElement() {
                 }, 'success');
                 loadBookmarkList();
             }
-            $.fn.hideLoading();
+            WindowControl.hideLoading();
             $('#modalAddBookMark').hide();
         }, (errs) => {
-            $.fn.hideLoading();
+            WindowControl.hideLoading();
         })
     });
 
@@ -486,7 +486,7 @@ function initEventElement() {
         let customizeUrl = bookmarkItem.attr('data-customize_url');
         if (kind === '0' && viewName) {
             let urlData = $.fn.storageSystemData.attr('data-GatewayViewNameParseView').replaceAll('_view_name_', viewName);
-            $.fn.eleHrefActive(urlData + "?redirect=true");
+            WindowControl.eleHrefActive(urlData + "?redirect=true");
         } else if (kind === '1' && customizeUrl) {
             window.location.href = customizeUrl;
         }
@@ -505,7 +505,7 @@ function initEventElement() {
             confirmButtonText: $.fn.transEle.attr('data-confirm'),
         }).then((result) => {
             if (result.dismiss === Swal.DismissReason.timer || result.value) {
-                $.fn.showLoading();
+                WindowControl.showLoading();
                 let dataUrl = SetupFormSubmit.getUrlDetailWithID(boxBMDisplay.attr('data-url-delete'), dataId);
                 if (dataId && dataUrl) {
                     $.fn.callAjax(dataUrl, 'DELETE', {}, true,).then((resp) => {
@@ -513,9 +513,9 @@ function initEventElement() {
                         if (data && data['status'] === 204) {
                             loadBookmarkList();
                         }
-                        $.fn.hideLoading();
+                        WindowControl.hideLoading();
                     }, (errs) => {
-                        $.fn.hideLoading();
+                        WindowControl.hideLoading();
                     })
                 }
             }
@@ -588,7 +588,7 @@ function initEventElement() {
         let runtime_id = $(this).attr('data-runtime-id');
         let pined_id = $(this).attr('data-pin-id');
         if (runtime_id && !pined_id) {
-            $.fn.showLoading();
+            WindowControl.showLoading();
             $.fn.callAjax(frm_pined.dataUrl, 'POST', {'runtime_id': runtime_id}, true,).then((resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
@@ -600,11 +600,11 @@ function initEventElement() {
                     }, 1000);
                 }
                 setTimeout(() => {
-                    $.fn.hideLoading();
+                    WindowControl.hideLoading();
                 }, 1000)
             }, (errs) => {
                 setTimeout(() => {
-                    $.fn.hideLoading();
+                    WindowControl.hideLoading();
                 }, 1000)
             })
         }
@@ -612,7 +612,7 @@ function initEventElement() {
     });
 
     $(document).on('click', '.btnDocUnPined', function (event) {
-        $.fn.showLoading();
+        WindowControl.showLoading();
         let id = $(this).attr('data-pin-id');
         let dataUrl = SetupFormSubmit.getUrlDetailWithID(tbl_pined.attr('data-url-detail'), id);
         if (id && dataUrl) {
@@ -624,11 +624,11 @@ function initEventElement() {
                     }, 1000)
                 }
                 setTimeout(() => {
-                    $.fn.hideLoading();
+                    WindowControl.hideLoading();
                 }, 1000)
             }, (errs) => {
                 setTimeout(() => {
-                    $.fn.hideLoading();
+                    WindowControl.hideLoading();
                 }, 1000)
             })
         }

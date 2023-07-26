@@ -311,7 +311,7 @@ $(function () {
                         _this.reloadCountParent()
                         // count task in task status
                         countSTT()
-                        $.fn.notifyPopup({description: res.message}, 'success')
+                        $.fn.notifyB({description: res.message}, 'success')
                     }
                 })
             })

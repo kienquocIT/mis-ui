@@ -3664,3 +3664,7 @@ msgstr "Phạm vi quyền hạn"
 #
 msgid "Setup permission pre-commitment"
 msgstr "Cấu hình quyền trước khi thêm vào"
+
+#
+msgid "You will be redirected to the previous page"
+msgstr "Bạn sẽ được chuyển hướng đến trang trước"

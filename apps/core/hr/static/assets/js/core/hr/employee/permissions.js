@@ -166,7 +166,7 @@ class HandlePermissions {
                         let app_data = row['app_data'];
                         let plan_data = row['plan_data'];
                         return `
-                            <span class="badge badge-${$.fn.classOfPlan(plan_data.code)}">${plan_data.title} - ${app_data.title}</span>
+                            <span class="badge badge-${DocumentControl.classOfPlan(plan_data.code)}">${plan_data.title} - ${app_data.title}</span>
                             <input 
                                 type="text" 
                                 name="permission-app" 
@@ -267,7 +267,6 @@ class HandlePermissions {
                                 </select>
                             `);
                             ele.find('option').each(function () {
-                                console.log(row['app_data']['title'], row['app_data']['option_permission'], arrValueAllowed, $(this));
                                 $(this).attr('selected', false);
                                 if (arrValueAllowed.includes($(this).attr('value'))) {
                                     $(this).attr('disabled', false);
@@ -318,7 +317,7 @@ class HandlePermissions {
         this.tbl.find('tbody tr').each(function () {
             let countNum = parseInt($(this).find('td.row-data-counter').text());
             if (countNum) {
-                let rowData = $(this).getRowData();
+                let rowData = DTBControl.getRowData($(this));
                 let realId = rowData.hasOwnProperty('id') ? rowData['id'] : null;
                 let inputPlanAppEle = $(this).find('td input[name="permission-app"]');
                 let inputAppId = inputPlanAppEle.attr('data-app-id');
@@ -421,7 +420,7 @@ tbl.on('click', '.btnRemoveRow', function () {
         cancelButtonText: msgPerm.attr('data-msg-cancel'),
     }).then((result) => {
         if (result.isConfirmed) {
-            $(this).deleteRow();
+            DTBControl.deleteRow($(this));
         }
     })
 })

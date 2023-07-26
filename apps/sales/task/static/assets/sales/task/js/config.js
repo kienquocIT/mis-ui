@@ -3,7 +3,7 @@ $(function(){
     const $form = $('#formOpportunityTaskConfig')
 
     // get config detail
-    $.fn.showLoading();
+    WindowControl.showLoading();
     $.fn.callAjax($form.attr('data-url'),'GET',).then(
         (resp) => {
             const $todoElm = $('#todo_list')
@@ -65,11 +65,11 @@ $(function(){
                     placeholder: 'ui-state-highlight',
                     cancel: '.icon-close,[contenteditable]'
                 });
-                $.fn.hideLoading();
+                WindowControl.hideLoading();
             }
         },
         (errs) => {
-            $.fn.hideLoading();
+            WindowControl.hideLoading();
         }
     );
 
@@ -104,7 +104,7 @@ $(function(){
 
     $form.on('submit', function(e){
         const $todoElm = $('#todo_list')
-        $.fn.showLoading();
+        WindowControl.showLoading();
         e.preventDefault();
         let list_status = []
         let order = 1
@@ -139,14 +139,14 @@ $(function(){
                 (resp) => {
                     const data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.hideLoading();
-                        $.fn.notifyPopup({description: data.message}, 'success');
+                        WindowControl.hideLoading();
+                        $.fn.notifyB({description: data.message}, 'success');
                     }
                 }
             )
             .catch((err) => {
                 console.log(err)
-                $.fn.hideLoading();
+                WindowControl.hideLoading();
             })
     })
 }, jQuery);

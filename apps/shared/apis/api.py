@@ -186,6 +186,15 @@ class RespData:
                     data_all[key] = func_call(data_all[key])
         return data_all
 
+    def auto_return(self, key_success):
+        if self.state:
+            return {key_success: self.result}
+        elif self.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        elif self.status == 403:
+            return {}, status.HTTP_403_FORBIDDEN
+        return {'errors': self.errors}, status.HTTP_400_BAD_REQUEST
+
 
 class DictFillResp(dict):
     """fill data for response request"""
@@ -495,6 +504,15 @@ class ServerAPI:
 
         self.is_minimal = kwargs.get('is_minimal', False)
         self.is_secret_ui = kwargs.get('is_secret_ui', False)
+        self.request = kwargs.get('request', None)
+
+    @property
+    def setup_header_dropdown(self):
+        if self.request:
+            data_is_dd = self.request.META.get('HTTP_DTISDD', None)
+            if data_is_dd:
+                return {'DATAISDD': data_is_dd}
+        return {}
 
     @property
     def headers(self) -> dict:
@@ -507,6 +525,7 @@ class ServerAPI:
         data = {
             'content-type': 'application/json',
             'Accept-Language': 'vi',
+            **self.setup_header_dropdown,
         }
         if self.user and getattr(self.user, 'access_token', None):
             data.update(APIUtil.key_authenticated(access_token=self.user.access_token))

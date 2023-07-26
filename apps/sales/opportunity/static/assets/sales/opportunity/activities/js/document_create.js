@@ -73,7 +73,7 @@ $(document).ready(function () {
         event.preventDefault();
         let csr = $("input[name=csrfmiddlewaretoken]").val();
         let frm = new SetupFormSubmit($(this));
-
+        frm.dataForm['opportunity'] = $('#box-select-opportunity').val();
         frm.dataForm['person_in_charge'] = $('#box-select-person-in-charge').val();
         let list_doc = []
         let cnt = 1;

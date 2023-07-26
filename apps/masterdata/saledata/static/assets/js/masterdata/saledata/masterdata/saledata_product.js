@@ -256,27 +256,6 @@ $(document).ready(function () {
                             throw Error('Call data raise errors.')
                         },
                     },
-                    drawCallback: function (settings) {
-                        let api = this.api();
-                        let rows = api.rows({page: 'current'}).nodes();
-                        let last = null;
-
-                        api
-                            .column(3, {page: 'current'})
-                            .data()
-                            .each(function (group, i) {
-                                if (last !== group.title) {
-                                    $(rows)
-                                        .eq(i)
-                                        .before(
-                                            '<tr class="group">' +
-                                            '<td><span class="badge badge-outline badge-soft-success w-100">' + group.title + '</span></td>' +
-                                            '</tr>'
-                                        );
-                                    last = group.title;
-                                }
-                            });
-                    },
                     columns: [
                         {
                             render: (data, type, row, meta) => {

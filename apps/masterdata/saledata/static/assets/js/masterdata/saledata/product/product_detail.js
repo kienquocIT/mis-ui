@@ -303,7 +303,7 @@ $(document).ready(function () {
                 let product_detail = data?.['product'];
 
                 $.fn.compareStatusShowPageAction(product_detail);
-                $('#product-code').val(product_detail.code);
+                $('#product-code').text(product_detail.code);
                 $('#product-title').val(product_detail.title);
                 loadProductCategory(product_detail.general_information.product_category.id);
                 loadProductType(product_detail.general_information.product_type.id);
@@ -331,6 +331,7 @@ $(document).ready(function () {
                             } else {
                                 let warehouse_stock_list = GetProductFromWareHouseStockList(pk, product_detail.inventory_information.uom.id);
                                 loadWareHouseList(warehouse_stock_list);
+                                loadWareHouseOverView(warehouse_stock_list);
                             }
                             if (!product_detail.product_choice.includes(0)) {
                                 $('#link-tab-sale').addClass('disabled');
@@ -671,12 +672,13 @@ $(document).ready(function () {
             let calculated_ratio = ConvertToUnitUoM(product_get_from_wh_product_list[i].uom, uom_id_des);
             let raw_stock_quantity = calculated_ratio * product_get_from_wh_product_list[i].stock_amount;
             let delivered_quantity = calculated_ratio * product_get_from_wh_product_list[i].sold_amount;
+            let ready_quantity = calculated_ratio * product_get_from_wh_product_list[i].picked_ready;
 
             warehouse_stock_list.push(
                 {
                     'warehouse_id': product_get_from_wh_product_list[i].warehouse,
                     'stock': raw_stock_quantity - delivered_quantity,
-                    'wait_for_delivery': 0,
+                    'wait_for_delivery': ready_quantity,
                     'wait_for_receipt': 0,
                 }
             );
@@ -689,7 +691,8 @@ $(document).ready(function () {
             let dtb = $('#datatable-warehouse-list');
             let frm = new SetupFormSubmit(dtb);
             dtb.DataTableDefault({
-                pageLength: 5,
+                dom: '',
+                paging: false,
                 ajax: {
                     url: frm.dataUrl,
                     type: frm.dataMethod,
@@ -742,27 +745,7 @@ $(document).ready(function () {
                         data: 'stock_value',
                         className: 'wrap-text text-center w-15',
                         render: (data, type, row, meta) => {
-                            return `<center><span>` + row.stock_value + `</span></center>`
-                        }
-                    },
-                    {
-                        data: 'wait_for_delivery_value',
-                        className: 'wrap-text text-center w-15',
-                        render: (data, type, row, meta) => {
-                            return `<center><span>` + row.wait_for_delivery_value + `</span></center>`
-                        }
-                    },
-                    {
-                        data: 'wait_for_receipt_value',
-                        className: 'wrap-text text-center w-15',
-                        render: (data, type, row, meta) => {
-                            return `<center><span>` + row.wait_for_receipt_value + `</span></center>`
-                        }
-                    }, {
-                        data: 'available_value',
-                        className: 'wrap-text text-center w-15',
-                        render: (data, type, row, meta) => {
-                            return `<center><span>` + row.available_value + `</span></center>`
+                            return `<span>` + row.stock_value + `</span>`
                         }
                     },
                 ],
@@ -775,30 +758,114 @@ $(document).ready(function () {
                         .reduce(function (a, b) {
                             return parseFloat(a) + parseFloat(b);
                         }, 0);
-                    let sum3 = api
-                        .column(3, {page: 'current'})
-                        .data()
-                        .reduce(function (a, b) {
-                            return parseFloat(a) + parseFloat(b);
-                        }, 0);
-                    let sum4 = api
-                        .column(4, {page: 'current'})
-                        .data()
-                        .reduce(function (a, b) {
-                            return parseFloat(a) + parseFloat(b);
-                        }, 0);
-                    let sum5 = api
-                        .column(5, {page: 'current'})
-                        .data()
-                        .reduce(function (a, b) {
-                            return parseFloat(a) + parseFloat(b);
-                        }, 0);
 
-                    $(api.column(2).footer()).html(`<span class="w-50 badge badge-soft-primary badge-outline">` + sum2 + `</span>`);
-                    $(api.column(3).footer()).html(`<span class="w-50 badge badge-soft-primary badge-outline">` + sum3 + `</span>`);
-                    $(api.column(4).footer()).html(`<span class="w-50 badge badge-soft-primary badge-outline">` + sum4 + `</span>`);
-                    $(api.column(5).footer()).html(`<span class="w-50 badge badge-soft-primary badge-outline">` + sum5 + `</span>`);
+                    $(api.column(2).footer()).html(`<span style="font-weight: bolder">` + sum2 + `</span>`);
                 }
+            });
+        }
+    }
+
+    function loadWareHouseOverView(warehouse_stock_list) {
+        if (!$.fn.DataTable.isDataTable('#datatable-warehouse-overview')) {
+            let dtb = $('#datatable-warehouse-overview');
+            let frm = new SetupFormSubmit(dtb);
+            dtb.DataTableDefault({
+                dom: '',
+                paging: false,
+                ajax: {
+                    url: frm.dataUrl,
+                    type: frm.dataMethod,
+                    dataSrc: function (resp) {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            if (data.warehouse_list.length > 0) {
+                                let sum_stock = 0;
+                                let sum_wait_for_delivery_value = 0;
+                                let sum_wait_for_receipt_value = 0;
+                                let sum_available_value = 0;
+
+                                for (let i = 0; i < data.warehouse_list.length; i++) {
+                                    let value_list = warehouse_stock_list.filter(function (item) {
+                                        return item.warehouse_id === data.warehouse_list[i].id;
+                                    });
+                                    let stock_value = 0;
+                                    let wait_for_delivery_value = 0;
+                                    let wait_for_receipt_value = 0;
+                                    for (let i = 0; i < value_list.length; i++) {
+                                        stock_value = stock_value + value_list[i].stock;
+                                        wait_for_delivery_value = wait_for_delivery_value + value_list[i].wait_for_delivery;
+                                        wait_for_receipt_value = wait_for_receipt_value + value_list[i].wait_for_receipt;
+                                    }
+                                    let available_value = stock_value - wait_for_delivery_value + wait_for_receipt_value;
+
+                                    sum_stock = sum_stock + stock_value;
+                                    sum_wait_for_delivery_value = sum_wait_for_delivery_value + wait_for_delivery_value;
+                                    sum_wait_for_receipt_value = sum_wait_for_receipt_value + wait_for_receipt_value;
+                                    sum_available_value = sum_available_value + available_value;
+                                }
+                                return [{
+                                    'sum_stock': sum_stock,
+                                    'sum_wait_for_delivery_value': sum_wait_for_delivery_value,
+                                    'sum_wait_for_receipt_value': sum_wait_for_receipt_value,
+                                    'sum_available_value': sum_available_value
+                                }];
+                            } else {
+                                return [];
+                            }
+                        }
+                        return [];
+                    },
+                },
+                columns: [
+                    {
+                        data: 'sum_stock',
+                        className: 'wrap-text text-center w-25',
+                        render: (data, type, row, meta) => {
+                            if (row.sum_stock > 0) {
+                                return `<span style="font-weight: bolder" class="text-primary">${row.sum_stock}</span>`
+                            }
+                            else {
+                                return `<span style="font-weight: bolder" class="text-danger">${row.sum_stock}</span>`
+                            }
+                        }
+                    },
+                    {
+                        data: 'sum_wait_for_delivery_value',
+                        className: 'wrap-text text-center w-25',
+                        render: (data, type, row, meta) => {
+                            if (row.sum_wait_for_delivery_value > 0) {
+                                return `<span style="font-weight: bolder" class="text-primary">${row.sum_wait_for_delivery_value}</span>`
+                            }
+                            else {
+                                return `<span style="font-weight: bolder" class="text-danger">${row.sum_wait_for_delivery_value}</span>`
+                            }
+                        }
+                    },
+                    {
+                        data: 'sum_wait_for_receipt_value',
+                        className: 'wrap-text text-center w-25',
+                        render: (data, type, row, meta) => {
+                            if (row.sum_wait_for_receipt_value > 0) {
+                                return `<span style="font-weight: bolder" class="text-primary">${row.sum_wait_for_receipt_value}</span>`
+                            }
+                            else {
+                                return `<span style="font-weight: bolder" class="text-danger">${row.sum_wait_for_receipt_value}</span>`
+                            }
+                        }
+                    },
+                    {
+                        data: 'sum_available_value',
+                        className: 'wrap-text text-center w-25',
+                        render: (data, type, row, meta) => {
+                            if (row.sum_available_value > 0) {
+                                return `<span style="font-weight: bolder" class="text-primary">${row.sum_available_value}</span>`
+                            }
+                            else {
+                                return `<span style="font-weight: bolder" class="text-danger">${row.sum_available_value}</span>`
+                            }
+                        }
+                    },
+                ],
             });
         }
     }

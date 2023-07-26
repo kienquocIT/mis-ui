@@ -204,13 +204,6 @@
                                             <i class="bi bi-telephone-fill"></i>
                                         </span>
                                     </a>
-                                    <a href="#"><span class="ml-2"><i class="bi bi-envelope"></i></span></a>
-                                    <a href="#" class="current-create-task">
-                                        <span class="ml-2 ntt-drawer-toggle-link"
-                                              data-drawer-target="#drawer_task_create"
-                                              data-drawer-active="false">
-                                            <i class="bi bi-file-earmark-arrow-up"></i></span></a>
-                                    <a href="#"><span class="ml-2"><i class="bi bi-pip"></i></span></a>
                                     <a href="" data-bs-toggle="modal" data-bs-target="#send-email" class="send-email-button">
                                         <span class="ml-3"
                                               data-bs-toggle="tooltip"
@@ -225,6 +218,16 @@
                                               data-bs-placement="top"
                                               data-bs-original-title="{% trans 'New Meeting' %}">
                                             <i class="bi bi-person-workspace"></i>
+                                        </span>
+                                    </a>
+                                    <a href="#" class="current-create-task">
+                                        <span class="ml-3 ntt-drawer-toggle-link"
+                                              data-drawer-target="#drawer_task_create"
+                                              data-drawer-active="false"
+                                              data-bs-toggle="tooltip"
+                                              data-bs-placement="top"
+                                              data-bs-original-title="{% trans 'New Task' %}">
+                                            <i class="fa-solid fa-list-check"></i>
                                         </span>
                                     </a>
                                 </div>
@@ -256,6 +259,16 @@
                                               data-bs-placement="top"
                                               data-bs-original-title="{% trans 'New Meeting' %}">
                                             <i class="bi bi-person-workspace"></i>
+                                        </span>
+                                    </a>
+                                    <a href="#" class="current-create-task">
+                                        <span class="ml-3 ntt-drawer-toggle-link"
+                                              data-drawer-target="#drawer_task_create"
+                                              data-drawer-active="false"
+                                              data-bs-toggle="tooltip"
+                                              data-bs-placement="top"
+                                              data-bs-original-title="{% trans 'New Task' %}">
+                                            <i class="fa-solid fa-list-check"></i>
                                         </span>
                                     </a>
                                 </div>
@@ -347,6 +360,7 @@
                                            data-url-call-log="{% url 'OpportunityCallLogListAPI' %}"
                                            data-url-email="{% url 'OpportunityEmailListAPI' %}"
                                            data-url-meeting="{% url 'OpportunityMeetingListAPI' %}"
+                                           data-url-task="{% url 'OpportunityActivityLogTaskListAPI' %}"
                                            data-method="GET">
                                         <thead>
                                         <tr>
@@ -891,7 +905,7 @@
                         </div>
                         <div class="mb-3">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="repeat-activity">
+                                <input class="form-check-input" type="checkbox" id="call-log-repeat-activity">
                                 <label class="form-check-label"
                                        for="repeat-activity">{% trans 'Need to repeat activity' %}</label>
                             </div>
@@ -924,19 +938,13 @@
                           id="form-new-email"
                           method="post">
                         {% csrf_token %}
-                        <div class="row form-group mb-3">
-                            <div class="col-2"></div>
-                            <div class="col-10">
-                                <span id="email-sale-code-span" class="badge badge-primary badge-outline" style="font-size: larger">OPP.CODE.XXX</span>
-                            </div>
-                        </div>
-                        <div class="row form-group mb-3">
+                        <div class="row form-group mt-3 mb-3">
                             <label class="col-2 col-form-label required">{% trans 'To' %}</label>
                             <div class="col-10">
                                 <select id="email-to-select-box" class="form-select" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
                                 <input class="form-control" hidden id="inputEmailTo" placeholder="Enter email">
-                                <a id="email-to-input-btn" class="text-primary form-text text-muted text-right" href="#">to input</a>
-                                <a id="email-to-select-btn" class="text-primary form-text text-muted text-right" href="#" hidden>to select</a>
+                                <a id="email-to-input-btn" class="text-primary form-text text-muted text-right" href="#">{% trans 'to input' %}</a>
+                                <a id="email-to-select-btn" class="text-primary form-text text-muted text-right" href="#" hidden>{% trans 'to select' %}</a>
                             </div>
                         </div>
                         <div class="row form-group mb-3">
@@ -946,10 +954,10 @@
                                 <input id="inputEmailCc" hidden class="mt-1 form-control" placeholder="Enter email">
 
                                 <a class="text-primary form-text text-muted text-right" href="#">
-                                    <span id="email-cc-add" hidden class="badge badge-primary">Add</span>
+                                    <span id="email-cc-add" hidden class="icon"><i class="text-primary bi bi-plus-circle"></i></span>
                                     <span id="email-cc-remove" hidden class="icon"><i class="text-danger bi bi-x-circle-fill"></i></span>
                                 </a>
-                                <a id="email-cc-input-btn" class="text-primary form-text text-muted text-right" href="#">input email</a>
+                                <a id="email-cc-input-btn" class="text-primary form-text text-muted text-right" href="#">{% trans 'input email' %}</a>
                             </div>
                         </div>
                         <div class="row form-group mb-3">
@@ -959,7 +967,7 @@
                             </div>
                         </div>
                         <div class="row form-group mb-3">
-                            <label class="col-2 col-form-label">{% trans 'Content' %}</label>
+                            <label class="col-2 col-form-label required">{% trans 'Content' %}</label>
                             <div class="col-10">
                                 <textarea id="email-content-area" class="form-control" style="min-height: 200px"></textarea>
                             </div>
@@ -1018,6 +1026,9 @@
                                 <div class="mb-3">
                                     <label class="form-label required">{% trans 'Meeting address' %}</label>
                                     <select id="meeting-address-select-box" class="form-select"></select>
+                                    <a id="meeting-address-input-btn" class="text-primary form-text text-muted text-right" href="#">input address</a>
+                                    <input hidden id="meeting-address-input" placeholder="Input meeting address" class="form-control">
+                                    <a hidden id="meeting-address-select-btn" class="text-primary form-text text-muted text-right" href="#">select address</a>
                                 </div>
                             </div>
                         </div>
@@ -1059,7 +1070,7 @@
                             <div class="col-12">
                                 <div class="mb-3">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="repeat-activity">
+                                        <input class="form-check-input" type="checkbox" id="meeting-repeat-activity">
                                         <label class="form-check-label" for="repeat-activity">{% trans 'Need to repeat activity' %}</label>
                                     </div>
                                 </div>
@@ -1074,6 +1085,17 @@
             </div>
         </div>
     </div>
+{% endblock %}
+{% block dataHiddenGroup %}
+    <input type="text" id="url-factory"
+           data-task_detail="{% url 'OpportunityTaskDetailAPI' 1 %}"
+           data-task_list="{% url 'OpportunityTaskListAPI' %}"
+    >
+    <input type="text" id="trans-factory"
+           data-activity-type01="{% trans 'Call to customer' %}"
+           data-activity-type02="{% trans 'Send email' %}"
+           data-activity-type03="{% trans 'Meeting with customer' %}"
+    >
 {% endblock %}
 {% block jsFooter %}
 

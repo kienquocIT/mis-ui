@@ -89,8 +89,8 @@
                             <div class="col-10">
                                 <select id="email-to-select-box" class="form-select" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
                                 <input class="form-control" hidden id="inputEmailTo" placeholder="Enter email">
-                                <a id="email-to-input-btn" class="text-primary form-text text-muted text-right" href="#">to input</a>
-                                <a id="email-to-select-btn" class="text-primary form-text text-muted text-right" href="#" hidden>to select</a>
+                                <a id="email-to-input-btn" class="text-primary form-text text-muted text-right" href="#">{% trans 'to input' %}</a>
+                                <a id="email-to-select-btn" class="text-primary form-text text-muted text-right" href="#" hidden>{% trans 'to select' %}</a>
                             </div>
                         </div>
                         <div class="row form-group mb-3">
@@ -103,7 +103,7 @@
                                     <span id="email-cc-add" hidden class="icon"><i class="text-primary bi bi-plus-circle"></i></span>
                                     <span id="email-cc-remove" hidden class="icon"><i class="text-danger bi bi-x-circle"></i></span>
                                 </a>
-                                <a id="email-cc-input-btn" class="text-primary form-text text-muted text-right" href="#">add email</a>
+                                <a id="email-cc-input-btn" class="text-primary form-text text-muted text-right" href="#">{% trans 'add email' %}</a>
                             </div>
                         </div>
                         <div class="row form-group mb-3">
@@ -113,7 +113,7 @@
                             </div>
                         </div>
                         <div class="row form-group mb-3">
-                            <label class="col-2 col-form-label">{% trans 'Content' %}</label>
+                            <label class="col-2 col-form-label required">{% trans 'Content' %}</label>
                             <div class="col-10">
                                 <textarea id="email-content-area" class="form-control" style="min-height: 200px"></textarea>
                             </div>
@@ -164,7 +164,7 @@
                         </div>
                     </div>
                     <div class="row form-group mb-3">
-                        <label class="col-2 col-form-label">{% trans 'Content' %}</label>
+                        <label class="col-2 col-form-label required">{% trans 'Content' %}</label>
                         <div class="col-10">
                             <textarea readonly id="detail-email-content-area" class="form-control" style="min-height: 200px"></textarea>
                         </div>

@@ -44,7 +44,7 @@ $(function () {
     }
     
     function countSTT() {
-        $('.tasklist').each(function(){
+        $('#tasklist_wrap .tasklist').each(function(){
             const item = $('.wrap-child .tasklist-card', $(this)).length
             $(this).find('.task-count').text(item)
         })
@@ -204,12 +204,18 @@ $(function () {
                 // toggle Sub task layout
                 if ($(this).hasClass('opened')){
                     $(this).removeClass('opened')
-                    $('#tab_block_1').removeClass('isOpened')
+                    $('#tab_block_1').removeClass('isOpened').css('min-height', 'auto')
                     // restore default
                     $('.tasklist-wrap .tasklist-card').removeClass('hidden')
                 }else {
+                    const $tab1 = $('#tab_block_1'), $subTaskWrap = $('.sub-tasklist-wrap')
                     $(this).addClass('opened')
-                    $('#tab_block_1').addClass('isOpened')
+                    $tab1.addClass('isOpened')
+                    let distanceBt = $(document).height() - $tab1.offset().top
+                    $tab1.css( 'min-height', `${distanceBt}px`)
+                    $subTaskWrap.css('min-height',
+                        `${distanceBt - $('.tasklist-wrap').outerHeight()}px`
+                        )
                     const taskID = $(this).parents('.tasklist-card').find('.card-title').attr('data-task-id')
                     // show/hide parent-task and child-task
                     $('.tasklist-card').addClass('hidden')
@@ -361,6 +367,9 @@ $(function () {
                     const fileDetail = newData.attach[0]?.['files']
                     FileUtils.init($(`[name="attach"]`, childHTML).siblings('button'), fileDetail);
                 }
+
+                if(Object.keys(newData.parent_n).length)
+                    childHTML.find('.task-discuss').remove()
 
                 if (isReturn) return childHTML
                 else {
@@ -530,15 +539,20 @@ $(function () {
                 // call form create-task.js
                 const taskID = $(this).closest('form').find('[name="id"]').val()
                 const $oppElm = $('#selectOpportunity')
-                const oppData = {
-                    "id": $oppElm.select2('data')[0].id,
-                    "title": $oppElm.select2('data')[0].text,
+                let oppData = {}
+                if ($oppElm.val()){
+                    oppData = {
+                        "id": $oppElm.select2('data')[0].id,
+                        "title": $oppElm.select2('data')[0].text,
+                    }
                 }
-                if (taskID && taskID !== '') {
+                if (taskID) {
                     resetFormTask()
                     // after reset
                     $formElm.append(`<input type="hidden" name="parent_n" value="${taskID}"/>`)
-                    $oppElm.attr('data-onload', JSON.stringify(oppData)).attr('disabled', true)
+                    if (Object.keys(oppData).length)
+                        $oppElm.attr('data-onload', JSON.stringify(oppData)).attr('disabled', true)
+                    else $oppElm.removeAttr('data-onload')
                     initSelectBox($oppElm)
                 }
             })
@@ -570,37 +584,61 @@ $(function () {
 
     // drag handle
     class dragHandle {
+        onDrop(el, target, source, isSub=false){
+            const dataSttUpdate = {
+                "id": $(el).find('.card-title').attr('data-task-id'),
+                "task_status": $(target).attr('id').split('taskID-')[1],
+            }
+            $.fn.callAjax($urlFact.attr('data-change-stt'), 'PUT', dataSttUpdate, true)
+                .then(
+                    (req) => {
+                        const res = $.fn.switcherResp(req)
+                        if (res.status === 200){
+                            const taskID = $('.card-title', el).attr('data-task-id')
+                            if (isSub){
+                                const taskTargetID = $(target).attr('id').split('sub-')[1]
+                                const taskEl = $(`[data-task-id="${taskID}"]`, '#tasklist_wrap').closest('.tasklist-card')
+                                // nếu kéo task từ sub -> lấy task ẩn của task chính kéo sang cột tương ứng
+                                $(taskEl).appendTo($(`#${taskTargetID}`))
+                            }else{
+                                const taskTargetID = $(target).attr('id')
+                                const taskEl = $(`[data-task-id="${taskID}"]`, '#sub-tasklist_wrap').closest('.tasklist-card')
+                                $(taskEl).appendTo($(`#sub-${taskTargetID}`))
+                            }
+                            countSTT()
+                        }
+                        else drake.cancel(el)
+                    },
+                    (errs) => {
+                        $(el, target).appendTo(source);
+                    }
+                )
+        }
 
         init() {
             let dragArray = []
             const _this = this
-            $('.wrap-child').each(function () {
+            $('#kb_scroll .wrap-child').each(function () {
                 if ($(this).attr('id') !== '') {
                     dragArray.push(this)
                 }
             })
             let drake = dragula(dragArray)
-
             // handle event on drag change task status
-            drake.on('drop', function (el, target, source, sibling) {
-                const dataSttUpdate = {
-                    "id": $(el).find('.card-title').attr('data-task-id'),
-                    "task_status": $(target).attr('id').split('taskID-')[1],
+            drake.on('drop', function (el, target, source) {
+                _this.onDrop(el, target, source)
+            });
+
+            // sub task setup
+            let dragArraySub = []
+            $('#kb_sub_scroll .wrap-child').each(function () {
+                if ($(this).attr('id') !== '') {
+                    dragArraySub.push(this)
                 }
-                $.fn.callAjax($urlFact.attr('data-change-stt'), 'PUT', dataSttUpdate, true)
-                    .then(
-                        (req) => {
-                            const res = $.fn.switcherResp(req)
-                            if (res.status === 200)
-                                countSTT()
-                            else
-                                drake.cancel(el)
-                        },
-                        (errs) => {
-                            $(el).remove();
-                            $(source).append(el);
-                        }
-                    )
+            })
+            let drakeSub = dragula(dragArraySub)
+            drakeSub.on('drop', function (el, target, source) {
+                _this.onDrop(el, target, source, true)
             });
         }
     }

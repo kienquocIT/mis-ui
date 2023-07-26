@@ -12,6 +12,7 @@ function resetFormTask() {
     $('.create-subtask').addClass('hidden')
     $('[name="parent_n"]').remove();
     window.editor.setData('')
+    $('.create-task').attr('disabled', false)
 }
 function logworkSubmit(){
     $('#save-logtime').off().on('click', function () {

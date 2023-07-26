@@ -248,9 +248,33 @@
                                 disabled name="valuation_method"></select>
                     </div>
                 </div>
-                <div class="row mt-5 mb-20">
+                <div class="row mb-20">
+                    <div class="col-5 mt-8">
+                        <div>
+                            <span class="mb-3 badge-status">
+                                <span class="badge badge-danger badge-indicator"></span>
+                                <span class="badge-label text-secondary">{% trans 'Product warehouse overview' %}</span>
+                            </span>
+                        </div>
+                        <table id="datatable-warehouse-overview" class="table nowrap w-100">
+                            <thead>
+                            <th>{% trans "Stock" %}</th>
+                            <th>{% trans "Wait for delivery" %}</th>
+                            <th>{% trans "Wait for receipt" %}</th>
+                            <th>{% trans "Available" %}</th>
+                            </thead>
+                            <tfoot>
+                            </tfoot>
+                        </table>
+                    </div>
                     <div class="col-1"></div>
-                    <div class="col-10">
+                    <div class="col-6 mt-8">
+                        <div>
+                            <span class="mb-3 badge-status">
+                                <span class="badge badge-danger badge-indicator"></span>
+                                <span class="badge-label text-secondary">{% trans 'Product warehouse detail' %}</span>
+                            </span>
+                        </div>
                         <table id="datatable-warehouse-list" class="table nowrap w-100"
                                data-url="{% url "WareHouseListAPI" %}"
                                data-method="GET">
@@ -258,33 +282,20 @@
                             <th>{% trans "Warehouse Code" %}</th>
                             <th>{% trans "Warehouse Name" %}</th>
                             <th>{% trans "Stock" %}</th>
-                            <th>{% trans "wait for delivery" %}</th>
-                            <th>{% trans "wait for receipt" %}</th>
-                            <th>{% trans "Available" %}</th>
                             </thead>
                             <tfoot>
-                            <tr>
-                                <th></th>
-                                <th class="text-primary text-center" style="font-weight: bolder; font-size: larger">
-                                    TOTAL
-                                </th>
-                                <th class="text-primary text-center" style="font-weight: bolder; font-size: larger">
-                                    <span class="w-50 badge badge-soft-primary badge-outline">0</span>
-                                </th>
-                                <th class="text-primary text-center" style="font-weight: bolder; font-size: larger">
-                                    <span class="w-50 badge badge-soft-primary badge-outline">0</span>
-                                </th>
-                                <th class="text-primary text-center" style="font-weight: bolder; font-size: larger">
-                                    <span class="w-50 badge badge-soft-primary badge-outline">0</span>
-                                </th>
-                                <th class="text-primary text-center" style="font-weight: bolder; font-size: larger">
-                                    <span class="w-50 badge badge-soft-primary badge-outline">0</span>
-                                </th>
-                            </tr>
+                                <tr style="background-color: #ebf5f5">
+                                    <th class="text-primary text-center wrap-text w-15" style="font-weight: bolder; font-size: larger" rowspan="1" colspan="1"></th>
+                                    <th class="text-primary text-center wrap-text w-25" style="font-weight: bolder; font-size: larger" rowspan="1" colspan="1">
+                                        {% trans 'TOTAL' %}
+                                    </th>
+                                    <th class="text-primary text-center wrap-text w-15" style="font-weight: bolder; font-size: larger" rowspan="1" colspan="1">
+                                        <span style="font-weight: bolder">0</span>
+                                    </th>
+                                </tr>
                             </tfoot>
                         </table>
                     </div>
-                    <div class="col-1"></div>
                 </div>
             </div>
             <div class="tab-pane fade" id="tab_purchase"></div>

@@ -46,6 +46,20 @@ $(document).ready(function () {
 
     loadPersonInCharge();
 
+    $(document).on('click', '#btn-add-document', function () {
+        let html = $('.document-hidden').html();
+        let ele_doc = $('.document-content');
+        ele_doc.append(html);
+        let ele_sub_doc = ele_doc.find('.sub-document');
+        let ele_last_doc = ele_sub_doc.last();
+        let ele_button = ele_last_doc.find('button')
+        ele_button.addClass('btn-file-upload');
+        ele_button.attr('data-f-input-name', 'attachments' + ele_sub_doc.length.toString())
+        ele_button.attr('data-f-name-ele-id', '#documentDisplay' + ele_sub_doc.length.toString());
+        ele_last_doc.find('p').attr('id', 'documentDisplay' + ele_sub_doc.length.toString());
+        FileUtils.init(ele_button);
+    })
+
     let frmCreate = $('#frm-create-opportunity-document')
     frmCreate.submit(function (event) {
         event.preventDefault();
@@ -54,13 +68,15 @@ $(document).ready(function () {
 
         frm.dataForm['person_in_charge'] = $('#box-select-person-in-charge').val();
         let list_doc = []
-        $('.sub-document').each(function (){
+        let cnt = 1;
+        $('.document-content .sub-document').each(function () {
             list_doc.push(
                 {
-                    'attachment': $(this).find('[name="attachments"]').val(),
+                    'attachment': $(this).find(`[name="attachments${cnt}"]`).val(),
                     'description': $(this).find('textarea').val(),
                 }
             )
+            cnt += 1;
         })
         frm.dataForm['data_documents'] = list_doc;
 
@@ -77,4 +93,5 @@ $(document).ready(function () {
                 }
             )
     })
+
 })

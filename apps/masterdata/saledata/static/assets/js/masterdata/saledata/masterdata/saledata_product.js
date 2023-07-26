@@ -239,10 +239,6 @@ $(document).ready(function () {
                         "searchable": false,
                         "orderable": false, // "targets": [0,1,3,4,5,6,7,8,9]
                     },
-                        {
-                            visible: false,
-                            targets: 3
-                        }
                     ],
                     rowIdx: true,
                     ajax: {
@@ -256,27 +252,27 @@ $(document).ready(function () {
                             throw Error('Call data raise errors.')
                         },
                     },
-                    drawCallback: function (settings) {
-                        let api = this.api();
-                        let rows = api.rows({page: 'current'}).nodes();
-                        let last = null;
-
-                        api
-                            .column(3, {page: 'current'})
-                            .data()
-                            .each(function (group, i) {
-                                if (last !== group.title) {
-                                    $(rows)
-                                        .eq(i)
-                                        .before(
-                                            '<tr class="group">' +
-                                            '<td><span class="badge badge-outline badge-soft-success w-100">' + group.title + '</span></td>' +
-                                            '</tr>'
-                                        );
-                                    last = group.title;
-                                }
-                            });
-                    },
+                    // drawCallback: function (settings) {
+                    //     let api = this.api();
+                    //     let rows = api.rows({page: 'current'}).nodes();
+                    //     let last = null;
+                    //
+                    //     api
+                    //         .column(3, {page: 'current'})
+                    //         .data()
+                    //         .each(function (group, i) {
+                    //             if (last !== group.title) {
+                    //                 $(rows)
+                    //                     .eq(i)
+                    //                     .before(
+                    //                         '<tr class="group">' +
+                    //                         '<td><span class="badge badge-outline badge-soft-success w-100">' + group.title + '</span></td>' +
+                    //                         '</tr>'
+                    //                     );
+                    //                 last = group.title;
+                    //             }
+                    //         });
+                    // },
                     columns: [
                         {
                             render: (data, type, row, meta) => {
@@ -305,7 +301,7 @@ $(document).ready(function () {
                             className: 'wrap-text',
                             render: (data, type, row, meta) => {
                                 return `<span class="initial-wrap"></span></div>{0}`.format_by_idx(
-                                    data
+                                    row.group.title
                                 )
                             }
                         }, {

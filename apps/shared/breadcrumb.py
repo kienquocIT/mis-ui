@@ -165,7 +165,6 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     MEETING_LIST_PAGE = BreadcrumbChildren(_('Meeting list'), 'OpportunityMeetingList')
 
     OPPORTUNITY_DOCUMENT_LIST_PAGE = BreadcrumbChildren(_('Document List'), 'OpportunityDocumentList')
-    OPPORTUNITY_DOCUMENT_CREATE_PAGE = BreadcrumbChildren(_('Document List'), 'OpportunityDocumentCreate')
 
 
 class BreadcrumbView:
@@ -449,4 +448,5 @@ class BreadcrumbView:
         BreadcrumbItem.OPPORTUNITY_DOCUMENT_LIST_PAGE
     ]
 
-    OPPORTUNITY_DOCUMENT_CREATE_PAGE = OPPORTUNITY_DOCUMENT_LIST_PAGE + [BreadcrumbItem.OPPORTUNITY_DOCUMENT_CREATE_PAGE]
+    OPPORTUNITY_DOCUMENT_CREATE_PAGE = OPPORTUNITY_DOCUMENT_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+    OPPORTUNITY_DOCUMENT_DETAIL_PAGE = OPPORTUNITY_DOCUMENT_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]

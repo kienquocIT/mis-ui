@@ -525,7 +525,18 @@ class OpportunityDocumentCreate(View):
         auth_require=True,
         template='sales/opportunity/activities/document_create.html',
         menu_active='menu_opportunity_document',
-        breadcrumb='OPPORTUNITY_DOCUMENT_LIST_PAGE',
+        breadcrumb='OPPORTUNITY_DOCUMENT_CREATE_PAGE',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
+class OpportunityDocumentDetail(View):
+    @mask_view(
+        auth_require=True,
+        template='sales/opportunity/activities/document_detail.html',
+        menu_active='menu_opportunity_document',
+        breadcrumb='OPPORTUNITY_DOCUMENT_DETAIL_PAGE',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -563,3 +574,17 @@ class OpportunityDocumentListAPI(APIView):
                 return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
             return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
         return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+
+
+class OpportunityDocumentDetailAPI(APIView):
+    @mask_view(
+        is_api=True,
+        auth_require=True
+    )
+    def get(self, request, pk, *arg, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_DOCUMENT_DETAIL.fill_key(pk=pk)).get()
+        if resp.state:
+            return {'opportunity_doc': resp.result}, status.HTTP_200_OK
+        elif resp.status == 401:
+            return {}, status.HTTP_401_UNAUTHORIZED
+        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST

@@ -686,7 +686,7 @@ $(document).ready(function () {
                     let emp_current = data.employee_list.find(obj => obj.id === employee_current_id);
                     ele_emp_current_group.val(emp_current.group.id);
                     data.employee_list.map(function (employee) {
-                        if (employee.id === employee_current_id) {
+                        if (employee.id === sale_person.id) {
                             ele.append(`<option value="${employee.id}" selected>${employee.full_name}</option>`);
                         }
                     })

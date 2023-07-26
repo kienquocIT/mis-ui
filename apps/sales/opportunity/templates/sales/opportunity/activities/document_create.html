@@ -14,7 +14,7 @@
                     </i>
                 </span>
                 <span class="font-3 ml-1">
-                    {% trans 'Save' %}
+                    {% trans 'Create' %}
                 </span>
             </span>
     </button>
@@ -93,13 +93,13 @@
                                 <button
                                         type="button"
                                         class="form-control btn btn-primary btn-file-upload"
-                                        data-f-input-name="attachments"
+                                        data-f-input-name="attachments1"
                                         data-f-input-required="true"
                                         data-f-input-disabled="false"
-                                        data-f-name-ele-id="#documentDisplay"
+                                        data-f-name-ele-id="#documentDisplay1"
                                 >{% trans 'Click here to upload file' %}
                                 </button>
-                                <p id="documentDisplay"></p>
+                                <p id="documentDisplay1"></p>
                             </div>
 
                         </div>
@@ -124,22 +124,32 @@
                     </span>
                     </button>
                 </div>
-                {#                <div class="document-hidden hidden">#}
-                {#                    <div class="row sub-document mt-3">#}
-                {#                        <div class="col-4">#}
-                {#                            <div class="form-group">#}
-                {#                                <label class="form-label">{% trans "Document" %}</label>#}
-                {#                                <input class="form-control form-control-lg mt-3" type="file"/>#}
-                {#                            </div>#}
-                {#                        </div>#}
-                {#                        <div class="col-8">#}
-                {#                            <div class="form-group">#}
-                {#                                <label class="form-label">{% trans "Description" %}</label>#}
-                {#                                <textarea class="form-control"></textarea>#}
-                {#                            </div>#}
-                {#                        </div>#}
-                {#                    </div>#}
-                {#                </div>#}
+                <div class="document-hidden hidden">
+                    <div class="row sub-document">
+                        <div class="col-4">
+                            <div class="form-group">
+                                <label class="form-label">{% trans 'Upload Document' %}</label>
+                                <button
+                                        type="button"
+                                        class="form-control btn btn-primary"
+                                        data-f-input-name="attachments0"
+                                        data-f-input-required="true"
+                                        data-f-input-disabled="false"
+                                        data-f-name-ele-id="#documentDisplay0"
+                                >{% trans 'Click here to upload file' %}
+                                </button>
+                                <p id="documentDisplay0"></p>
+                            </div>
+
+                        </div>
+                        <div class="col-8">
+                            <div class="form-group">
+                                <label class="form-label">{% trans "Description" %}</label>
+                                <textarea class="form-control"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </form>

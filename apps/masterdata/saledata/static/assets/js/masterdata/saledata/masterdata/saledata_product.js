@@ -238,8 +238,16 @@ $(document).ready(function () {
                     columnDefs: [{
                         "searchable": false,
                         "orderable": false, // "targets": [0,1,3,4,5,6,7,8,9]
-                    }],
+                    },
+                        {
+                            targets: [3],
+                            visible: false
+                        }
+                    ],
                     rowIdx: true,
+                    rowGroup: {
+                        dataSrc: 'group.title'
+                    },
                     ajax: {
                         url: frm.dataUrl,
                         type: frm.dataMethod,

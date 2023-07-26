@@ -2281,7 +2281,9 @@ $(document).ready(function () {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         // enable side panel
-                        if (!$('#drawer_task_create').hasClass('open')) $('.current-create-task span').trigger('click')
+                        if (!$('#drawer_task_create').hasClass('open')){
+                            $('.current-create-task span').trigger('click')
+                        }
                         $('#inputTextTitle').val(data.title)
                         $('#inputTextCode').val(data.code)
                         $('#selectStatus').attr('data-onload', JSON.stringify(data.task_status))

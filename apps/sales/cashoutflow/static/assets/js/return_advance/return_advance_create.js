@@ -139,7 +139,7 @@ $(function () {
             let total = 0;
             let ele = $(this).closest('tr').find('span.mask-money');
             if ($(this).valCurrency() > ele.attr('data-init-money')) {
-                $.fn.notifyPopup({description: 'return value: not greater than remain value'}, 'failure');
+                $.fn.notifyB({description: 'return value: not greater than remain value'}, 'failure');
                 $(this).attr('value', '');
             }
             $('.return-price').each(function () {
@@ -177,12 +177,12 @@ $(function () {
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            $.fn.notifyPopup({description: "Successfully"}, 'success')
+                            $.fn.notifyB({description: "Successfully"}, 'success')
                             $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
                         }
                     },
                     (errs) => {
-                        // $.fn.notifyPopup({description: errs.data.errors}, 'failure');
+                        // $.fn.notifyB({description: errs.data.errors}, 'failure');
                     }
                 )
         })

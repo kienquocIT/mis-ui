@@ -1196,12 +1196,12 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyPopup({description: "Successfully"}, 'success')
+                        $.fn.notifyB({description: "Successfully"}, 'success')
                         $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
                     }
                 },
                 (errs) => {
-                    // $.fn.notifyPopup({description: errs.data.errors}, 'failure');
+                    // $.fn.notifyB({description: errs.data.errors}, 'failure');
                 }
             )
     })

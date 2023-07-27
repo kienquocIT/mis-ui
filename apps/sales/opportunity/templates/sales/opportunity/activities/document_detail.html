@@ -1,0 +1,175 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'Document For Customer' %}{% endblock %}
+{% block cssHeader %}
+    <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}"/>
+{% endblock %}
+{% block pageAction %}
+{#    <button class="btn btn-outline-primary btn-animated btn-xs" form="frm-create-opportunity-document"#}
+{#            href="" data-bs-original-title="Save Document">#}
+{#            <span class="icon">#}
+{#                <span class="feather-icon">#}
+{#                    <i#}
+{#                            data-feather="plus">#}
+{#                    </i>#}
+{#                </span>#}
+{#                <span class="font-3 ml-1">#}
+{#                    {% trans 'Save' %}#}
+{#                </span>#}
+{#            </span>#}
+{#    </button>#}
+{% endblock %}
+{% block pageContent %}
+    <form id="frm-detail-opportunity-document" data-method="POST"
+          data-url="{% url 'OpportunityDocumentDetailAPI' pk=0 %}">
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-label">{% trans 'Sale Code' %}</label>
+                    <div class="readonly">
+                        <select
+                                class="form-control dropdown-select_two"
+                                id="box-select-opportunity"
+                                data-url="{% url 'OpportunityListAPI' %}"
+                                data-method="GET"
+                                name="opportunity"
+                                disabled
+                        >
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-label">{% trans 'Request Completed Date' %}</label>
+                    <div class="readonly">
+                        <input class="form-control" type="text" id="input-request-completed-date"
+                               name="request_completed_date" readonly/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-label">{% trans 'Subject' %}</label>
+                    <div class="readonly">
+                        <input class="form-control" name="subject" readonly>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-label">{% trans 'Person In Charge' %}</label>
+                    <div class="readonly">
+                        <select class="form-control select2" disabled
+                                name="person_in_charge"
+                                id="box-select-person-in-charge"
+                                multiple
+                                data-method="GET"
+                                data-url="{% url 'EmployeeListAPI' %}"
+                        >
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-label">{% trans 'Kind Of Products' %}</label>
+                    <div class="readonly">
+                        <input class="form-control" name="kind_of_product" readonly/>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <ul class="nav nav-light nav-tabs" id="tab-select-table">
+                <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#tab_detail">
+                        <span class="nav-link-text">{% trans 'Detail' %}</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="tab_detail">
+                <div class="document-content">
+                    {#                    <div class="row sub-document">#}
+                    {#                        <div class="col-4">#}
+                    {#                            <div class="form-group">#}
+                    {#                                <label class="form-label">{% trans 'Upload Document' %}</label>#}
+                    {#                                <button#}
+                    {#                                        type="button"#}
+                    {#                                        class="form-control btn btn-primary btn-file-upload"#}
+                    {#                                        data-f-input-name="attachments1"#}
+                    {#                                        data-f-input-required="true"#}
+                    {#                                        data-f-input-disabled="false"#}
+                    {#                                        data-f-name-ele-id="#documentDisplay1"#}
+                    {#                                >{% trans 'Click here to upload file' %}#}
+                    {#                                </button>#}
+                    {#                                <p id="documentDisplay1"></p>#}
+                    {#                            </div>#}
+                    {##}
+                    {#                        </div>#}
+                    {#                        <div class="col-8">#}
+                    {#                            <div class="form-group">#}
+                    {#                                <label class="form-label">{% trans "Description" %}</label>#}
+                    {#                                <textarea class="form-control"></textarea>#}
+                    {#                            </div>#}
+                    {#                        </div>#}
+                    {#                    </div>#}
+                </div>
+
+                <div class="mt-3 hidden">
+                    <button type="button" class="btn btn-link btn-animated" id="btn-add-document">
+                    <span>
+                        <span class="icon">
+                            <span class="feather-icon">
+                                <i data-feather="plus"></i>
+                            </span>
+                        </span>
+                        <span>{% trans 'Add Document' %}</span>
+                    </span>
+                    </button>
+                </div>
+                <div class="document-hidden hidden">
+                    <div class="row sub-document">
+                        <div class="col-4">
+                            <div class="form-group">
+                                <label class="form-label">{% trans 'Upload Document' %}</label>
+                                <button
+                                        type="button"
+                                        class="form-control btn btn-primary"
+                                        data-f-input-name="attachments0"
+                                        data-f-input-required="true"
+                                        data-f-input-disabled="true"
+                                        data-f-name-ele-id="#documentDisplay0"
+                                >{% trans 'Click here to upload file' %}
+                                </button>
+                                <p id="documentDisplay0"></p>
+                            </div>
+
+                        </div>
+                        <div class="col-8">
+                            <div class="form-group">
+                                <label class="form-label">{% trans "Description" %}</label>
+                                <div class="readonly">
+                                    <textarea class="form-control" readonly></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'assets/sales/opportunity/activities/js/document_detail.js' %}"></script>
+{% endblock %}

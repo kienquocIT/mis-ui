@@ -71,11 +71,11 @@ $(function () {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     console.log(resp);
-                    $.fn.notifyPopup({description: "Thành công"}, 'success')
+                    $.fn.notifyB({description: "Thành công"}, 'success')
                     $.fn.redirectUrl(location.pathname, 1000);
                 }
             }, (errs) => {
-                $.fn.notifyPopup({description: "Thất bại"}, 'failure')
+                $.fn.notifyB({description: "Thất bại"}, 'failure')
             },)
         }
     });

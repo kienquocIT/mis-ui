@@ -2124,7 +2124,7 @@ $(document).ready(function () {
             $.fn.initMaskMoney2();
         }
         else {
-            $.fn.notifyPopup({description: "Warning: You have not selected Sale Code yet!"}, 'warning');
+            $.fn.notifyB({description: "Warning: You have not selected Sale Code yet!"}, 'warning');
         }
     });
 
@@ -2399,7 +2399,7 @@ $(document).ready(function () {
 
                 if (price_after_tax_value !== product_detail_value) {
                     can_submit = 0;
-                    $.fn.notifyPopup({description: 'Detail tab - line ' + i.toString() + ': product value must be equal to sum Sale Code value.'}, 'failure');
+                    $.fn.notifyB({description: 'Detail tab - line ' + i.toString() + ': product value must be equal to sum Sale Code value.'}, 'failure');
                 }
             }
         }
@@ -2484,12 +2484,12 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyPopup({description: "Successfully"}, 'success')
+                        $.fn.notifyB({description: "Successfully"}, 'success')
                         $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
                     }
                 },
                 (errs) => {
-                    // $.fn.notifyPopup({description: errs.data.errors}, 'failure');
+                    // $.fn.notifyB({description: errs.data.errors}, 'failure');
                 }
             )
         }

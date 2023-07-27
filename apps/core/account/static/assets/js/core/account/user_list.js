@@ -57,7 +57,7 @@ $(function () {
     });
 
     $(document).on('click', '.btn-modal-change-passwd', function (event){
-        let rowData = $(this).getRowData();
+        let rowData = DTBControl.getRowData($(this));
         $('#modalChangePasswordUserText').text(rowData?.['full_name']);
         $('#btnSaveNewPassword').attr('data-id', rowData?.['id']);
     });
@@ -118,7 +118,7 @@ $(function () {
         if (newPassword === re_password){
             let urlData = $(this).attr('data-url');
             let dataID = $(this).attr('data-id');
-            $.fn.showLoading();
+            WindowControl.showLoading();
             $.fn.callAjax(
                 SetupFormSubmit.getUrlDetailWithID(urlData, dataID),
                 'PUT',
@@ -139,12 +139,12 @@ $(function () {
                         )
                     }
                     setTimeout(
-                        ()=>{$.fn.hideLoading()},
+                        ()=>{WindowControl.hideLoading()},
                         1500
                     )
                 },
                 (errs)=>{
-                    $.fn.hideLoading();
+                    WindowControl.hideLoading();
                 }
             )
         } else {

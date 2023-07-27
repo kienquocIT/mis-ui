@@ -480,14 +480,14 @@ $(function () {
         const $tableElm = $('#line_detail_table')
         let lineDetail = $tableElm.DataTable().data().toArray()
         if (!lineDetail) {
-            $.fn.notifyPopup({description: $transFactory.attr('data-product')}, 'failure')
+            $.fn.notifyB({description: $transFactory.attr('data-product')}, 'failure')
             return false
         }
         else {
             let temp = []
             for (let [idx, val] of lineDetail.entries()) {
                 if (!val?.quantity || !val?.unit_price || !val?.product?.id || !val?.warehouse?.id)
-                    $.fn.notifyPopup({description: $transFactory.attr('data-row-error').replace('{}', idx)}, 'failure')
+                    $.fn.notifyB({description: $transFactory.attr('data-row-error').replace('{}', idx)}, 'failure')
                 temp[idx] = {
                     product: val.product.id,
                     warehouse: val.warehouse.id,
@@ -520,7 +520,7 @@ $(function () {
 
         if ($form.hasClass('.detail-form')){
             if (!getAttach){
-                $.fn.notifyPopup({description: $transFactory.attr('data-valid_attachment')}, 'success')
+                $.fn.notifyB({description: $transFactory.attr('data-valid_attachment')}, 'success')
                 return false
             }
             dataSubmit = {'attachments': attach}
@@ -533,7 +533,7 @@ $(function () {
                     const data = $.fn.switcherResp(resp);
                     const description = (_form.dataMethod.toLowerCase() === 'put') ? data.detail : data.message;
                     if (data) {
-                        $.fn.notifyPopup({description: description}, 'success')
+                        $.fn.notifyB({description: description}, 'success')
                         $.fn.redirectUrl($($form).attr('data-url-redirect'), 3000);
                     }
                 },

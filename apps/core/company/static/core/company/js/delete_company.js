@@ -13,7 +13,7 @@ $("tbody").on("click", "#del-company-button", function (event){
                         setTimeout(location.reload.bind(location), 1000);
                     }
                 }, (errs) => {
-                    $.fn.notifyPopup({description: errs.detail}, 'failure')
+                    $.fn.notifyB({description: errs.detail}, 'failure')
                 }
             )
     }

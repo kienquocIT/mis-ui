@@ -355,7 +355,7 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyPopup({description: data.message}, 'success')
+                        $.fn.notifyB({description: data.message}, 'success')
                         $.fn.redirectUrl($(this).attr('data-url-redirect'), 1000);
                     }
                 },

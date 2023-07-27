@@ -456,7 +456,7 @@ $(async function () {
                     })
             }
             if (!prodSub || !prodSub.length) {
-                $.fn.notifyPopup({description: $transElm.attr('data-error-done')}, 'failure')
+                $.fn.notifyB({description: $transElm.attr('data-error-done')}, 'failure')
                 return false
             }
             putData.products = prodSub
@@ -465,7 +465,7 @@ $(async function () {
                     (resp) => {
                         const data = $.fn.switcherResp(resp);
                         if (data) {
-                            $.fn.notifyPopup({description: data.detail}, 'success')
+                            $.fn.notifyB({description: data.detail}, 'success')
                             $.fn.redirectUrl($($form).attr('data-url-redirect'), 3000);
                         }
                     }
@@ -560,7 +560,7 @@ $(async function () {
                 }
             }
             if (!flag) {
-                $.fn.notifyPopup({description: $('#trans-factory').attr('data-outstock')}, 'failure')
+                $.fn.notifyB({description: $('#trans-factory').attr('data-outstock')}, 'failure')
             }
         }
         prodTable.setProdList = tableData

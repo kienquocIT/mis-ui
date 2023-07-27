@@ -90,19 +90,19 @@ $(document).ready(function () {
         let csr = $("input[name=csrfmiddlewaretoken]").val();
         let frm = new SetupFormSubmit($(this));
         if ($("#password").val() != $("#confirm-password").val()) {
-            $.fn.notifyPopup({description: 'mật khẩu không trùng khớp'}, 'warning')
+            $.fn.notifyB({description: 'mật khẩu không trùng khớp'}, 'warning')
         } else {
             $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
                 .then(
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            $.fn.notifyPopup({description: "Successfully"}, 'success')
+                            $.fn.notifyB({description: "Successfully"}, 'success')
                             $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
                         }
                     },
                     (errs) => {
-                        // $.fn.notifyPopup({description: errs.data.errors}, 'failure');
+                        // $.fn.notifyB({description: errs.data.errors}, 'failure');
                     }
                 )
         }

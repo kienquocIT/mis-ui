@@ -149,12 +149,12 @@ $("#form-update-role").submit(function (event) {
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            $.fn.notifyPopup({description: "Đang cập nhật Role"}, 'success');
+                            $.fn.notifyB({description: "Đang cập nhật Role"}, 'success');
                             $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
                         }
                     },
                     (errs) => {
-                        // $.fn.notifyPopup({description: errs.data}, 'failure')
+                        // $.fn.notifyB({description: errs.data}, 'failure')
                     }
                 )
         }

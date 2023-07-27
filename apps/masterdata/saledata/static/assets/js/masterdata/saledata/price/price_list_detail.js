@@ -539,7 +539,7 @@ $(document).ready(function () {
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            $.fn.notifyPopup({description: "Successfully"}, 'success')
+                            $.fn.notifyB({description: "Successfully"}, 'success')
                             setTimeout(function () {
                                 location.reload()
                             }, 1000);
@@ -585,7 +585,7 @@ $(document).ready(function () {
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            $.fn.notifyPopup({description: "Successfully"}, 'success')
+                            $.fn.notifyB({description: "Successfully"}, 'success')
                             setTimeout(function () {
                                 location.reload()
                             }, 1000);
@@ -660,7 +660,7 @@ $(document).ready(function () {
                         (resp) => {
                             let data = $.fn.switcherResp(resp);
                             if (data) {
-                                $.fn.notifyPopup({description: "Successfully"}, 'success')
+                                $.fn.notifyB({description: "Successfully"}, 'success')
                                 setTimeout(function () {
                                     location.reload()
                                 }, 1000);
@@ -732,14 +732,14 @@ $(document).ready(function () {
                         (resp) => {
                             let data = $.fn.switcherResp(resp);
                             if (data) {
-                                $.fn.notifyPopup({description: "Successfully"}, 'success')
+                                $.fn.notifyB({description: "Successfully"}, 'success')
                                 setTimeout(function () {
                                     location.reload()
                                 }, 1000);
                             }
                         },
                         (errs) => {
-                            // $.fn.notifyPopup({description: errs.data.errors}, 'failure');
+                            // $.fn.notifyB({description: errs.data.errors}, 'failure');
                             Swal.fire({
                                 html:
                                     '<div><h6 class="text-danger mb-0">Can not delete this item!</h6></div>',

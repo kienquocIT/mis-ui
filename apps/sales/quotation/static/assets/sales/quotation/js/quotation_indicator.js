@@ -407,7 +407,7 @@ $(function () {
         $('#btn-refresh-quotation-indicator').on('click', function (e) {
             document.getElementById('quotation-indicator-data').value = "";
             indicatorClass.loadQuotationIndicator('quotation-indicator-data');
-            $.fn.notifyPopup({description: $.fn.transEle.attr('data-refreshed')}, 'success');
+            $.fn.notifyB({description: $.fn.transEle.attr('data-refreshed')}, 'success');
         });
 
     });

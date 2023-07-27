@@ -131,7 +131,7 @@ $(function () {
                 ],
                 rowCallback: (row, data) => {
                     $('#create_delivery', row).off().on('click', function () {
-                        $.fn.showLoading();
+                        WindowControl.showLoading();
                         const url = $('#sale-order-link').attr('data-create-delivery').replace('1', data.id);
                         $.fn.callAjax(
                             url,
@@ -149,7 +149,7 @@ $(function () {
                                 }
                             },
                             (errs) => {
-                                $.fn.hideLoading();
+                                WindowControl.hideLoading();
                             }
                         )
                     })

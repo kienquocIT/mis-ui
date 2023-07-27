@@ -58,8 +58,8 @@ $(document).ready(function () {
                                 tbl.attr('data-url-sale-order-detail'),
                                 data['id']
                             ),
-                            $.fn.getValueOrEmpty(data, 'title'),
-                            $.fn.getValueOrEmpty(data, 'code'),
+                            UtilControl.getValueOrEmpty(data, 'title'),
+                            UtilControl.getValueOrEmpty(data, 'code'),
                         );
                     }
                     return '';
@@ -180,7 +180,7 @@ $(document).ready(function () {
         const row = $('input[type="checkbox"]:checked', $('#sale_order_approved'))
         const isData = $Table.DataTable().row(row.closest('tr')).data();
         if (isData && isData.hasOwnProperty('id')){
-            $.fn.showLoading();
+            WindowControl.showLoading();
             const url = $('#url-factory').attr('data-create-delivery').replace('1', isData.id);
             $.fn.callAjax(
                 url,
@@ -196,13 +196,13 @@ $(document).ready(function () {
                             }, 1000);
                         }
                         else{
-                            $.fn.hideLoading();
+                            WindowControl.hideLoading();
                             $('#dtbDeliveryList').DataTable().ajax.reload();
                         }
                     }
                 },
                 (errs) => {
-                    $.fn.hideLoading();
+                    WindowControl.hideLoading();
                 }
             )
         }

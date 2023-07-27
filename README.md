@@ -125,7 +125,7 @@ urlpatterns = [
 ### Notify:
 
 1. Sử dụng $.fn.notifyB({'title': '','description': ""|[""]) [recommend]
-2. Sử dụng $.fn.notifyPopup({'title': '','description': ""|[""])
+2. Sử dụng $.fn.notifyB({'title': '','description': ""|[""])
 
 ### Tham khảo các thiết kế UI tại template đã mua:
 
@@ -425,7 +425,7 @@ $.fn.callAjax(url_loaded, 'GET').then(
     (resp) => {
         let data = $.fn.switcherResp(resp);
         if (data) {
-            $.fn.setWFRuntimeID(data['x_detail']?.['workflow_runtime_id']);
+            WFRTControl.setWFRuntimeID(data['x_detail']?.['workflow_runtime_id']);
         }
     }
 );
@@ -507,7 +507,7 @@ let data = {'first_name': '', 'last_name': '', 'avatar': ''}
 ```
 2. JS
 ```js
-$.fn.renderAvatar(data, clsName="some class name is size, color of avatar...")
+PersonControl.renderAvatar(data, clsName="some class name is size, color of avatar...")
 // result: <div class="avatar avatar-rounded {clsName if clsName else 'avatar-xs avatar-primary'}">...</div>
 ```
 
@@ -524,5 +524,37 @@ $.fn.reloadWithHashID('id_tab_need_active');
 // cách 2 đang trỏ đến 1 element nằm trong tab, ví thẻ dụ <span id="ss1"></span> nằm trong tag
 $('#ss1').reloadWithHashID();
 ```
+
+---
+
+## NEW version 2.0
+
+> - Thêm một thứ gì đó xử lý riêng biệt nên sử dụng class (thêm nếu chưa có)
+> - Thêm class vào $x.cls và $x.fn để sử dụng nhanh (giống $ của jquery)
+
+I. Cài đặt
+1. init-setup.js
+> - Nơi thiết lập các class xử lý mọi thứ cần thiết ở mọi page
+> - Thêm hàm xử lý vào class nếu hàm đó thuộc phạm vi các class có sẵn. Chưa có class thì thêm vào - nhưng hạn chế, tránh rác
+2. init-loader.js
+> - Nơi thêm các hàm xử lý vào jquery.fn và lắng nghe sự kiện document.ready
+> - Có thể thêm các hàm xử lý vào jquery.fn nếu nó sử dụng đối tượng jquery để xử lý. VD: $('#btnABC').loadFail() để thêm chính hiệu ứng vào nút này.
+> - Các xử lý khác nên thêm vào $x để sử dụng tránh jquery quá tải/tải lâu khi khởi tạo jquery cho 1 đối tượng.
+
+II. Sử dụng
+> - Sử dụng các hàm nào trong jquery.fn.extends bằng $.fn.xxx
+> - Sử dụng các hàm trong $x bằng $x.fn.xxx
+> - Sử dụng các class trong $x bằng $x.cls.XXX
+
+III. Lưu ý
+> Khi thêm 1 class vào init-setup thì nên thêm class đó vào $x.cls
+> Thêm các hàm sử dụng nhanh vào $x.fn để sử dụng nhanh không cần nhớ tên class
+> Khuyến nghị sử dụng $x để trỏ đến class và fn thay vì nhớ tên class (tận dụng tối đa suggestion của trình biên dịch)
+
+
+---
+
+Tài liệu này sẽ được làm lại khi mọi thứ đã ổn định!
+Nên vui lòng không xóa những gì đang có và thêm những gì vừa được tạo ra vào đây để lưu trữ tránh thiếu tài liệu! 
 
 ---

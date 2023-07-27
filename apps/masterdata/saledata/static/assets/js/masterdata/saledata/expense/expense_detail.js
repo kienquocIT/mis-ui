@@ -336,7 +336,7 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyPopup({description: "Successfully"}, 'success')
+                        $.fn.notifyB({description: "Successfully"}, 'success')
                         $.fn.redirectUrl(window.location, 1000);
                     }
                 },

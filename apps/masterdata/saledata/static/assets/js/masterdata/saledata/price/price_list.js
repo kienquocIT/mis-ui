@@ -173,11 +173,11 @@ $(document).ready(function () {
             .then((resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
-                    $.fn.notifyPopup({description: "Successfully"}, 'success')
+                    $.fn.notifyB({description: "Successfully"}, 'success')
                     $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
                 }
             }, (errs) => {
-                // $.fn.notifyPopup({description: errs.data.errors}, 'failure');
+                // $.fn.notifyB({description: errs.data.errors}, 'failure');
             })
     });
 
@@ -229,13 +229,13 @@ $(document).ready(function () {
                     .then((resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            $.fn.notifyPopup({description: "Successfully"}, 'success')
+                            $.fn.notifyB({description: "Successfully"}, 'success')
                             setTimeout(function () {
                                 location.reload()
                             }, 1000);
                         }
                     }, (errs) => {
-                        // $.fn.notifyPopup({description: errs.data.errors}, 'failure');
+                        // $.fn.notifyB({description: errs.data.errors}, 'failure');
                         Swal.fire({
                             html: '<div><h6 class="text-danger mb-0">Source/Non-empty Price List can not be deleted!</h6></div>',
                             customClass: {

@@ -94,7 +94,7 @@ $(document).ready(function () {
                 $('#modal-work-address').modal('hide');
                 $('#detail-modal-work-address').val('');
             } else {
-                $.fn.notifyPopup({description: "Missing address information!"}, 'failure');
+                $.fn.notifyB({description: "Missing address information!"}, 'failure');
             }
 
             if (work_address !== '') {
@@ -108,7 +108,7 @@ $(document).ready(function () {
                 })
             }
         } catch (error) {
-            $.fn.notifyPopup({description: "No address information!"}, 'failure');
+            $.fn.notifyB({description: "No address information!"}, 'failure');
         }
     })
 
@@ -204,7 +204,7 @@ $(document).ready(function () {
                 $('#modal-home-address').modal('hide');
                 $('#detail-modal-home-address').val('');
             } else {
-                $.fn.notifyPopup({description: "Missing address information!"}, 'failure');
+                $.fn.notifyB({description: "Missing address information!"}, 'failure');
             }
 
             if (home_address !== '') {
@@ -221,7 +221,7 @@ $(document).ready(function () {
                 }
             }
         } catch (error) {
-            $.fn.notifyPopup({description: "No address information!"}, 'failure');
+            $.fn.notifyB({description: "No address information!"}, 'failure');
         }
     })
 
@@ -393,7 +393,7 @@ $(document).ready(function () {
 
         frm.dataForm['system_status'] = 1; // save, not draft
 
-        $.fn.showLoading();
+        WindowControl.showLoading();
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
             .then((resp) => {
                 let data = $.fn.switcherResp(resp);
@@ -407,7 +407,7 @@ $(document).ready(function () {
                 }
             }, (err) => {
                 setTimeout(() => {
-                    $.fn.hideLoading();
+                    WindowControl.hideLoading();
                 }, 1000)
             })
     })

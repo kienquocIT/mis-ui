@@ -119,12 +119,12 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyPopup({description: "Đang tạo role mới"}, 'success');
+                        $.fn.notifyB({description: "Đang tạo role mới"}, 'success');
                         $.fn.redirectUrl(frm.dataUrlRedirect, 2000);
                     }
                 },
                 (errs) => {
-                    // $.fn.notifyPopup({description: "Thất bại"}, 'failure');
+                    // $.fn.notifyB({description: "Thất bại"}, 'failure');
                 }
             )
     });

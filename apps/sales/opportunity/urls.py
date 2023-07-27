@@ -7,7 +7,8 @@ from apps.sales.opportunity.views import (
     OpportunityConfigStageDetailAPI, RestoreDefaultStageAPI,
     OpportunityCallLogList, OpportunityCallLogListAPI, OpportunityCallLogDeleteAPI,
     OpportunityEmailList, OpportunityEmailListAPI, OpportunityEmailDeleteAPI,
-    OpportunityMeetingList, OpportunityMeetingListAPI, OpportunityMeetingDeleteAPI, OpportunityActivityLogTaskListAPI
+    OpportunityMeetingList, OpportunityMeetingListAPI, OpportunityMeetingDeleteAPI,
+    OpportunityActivityLogListAPI
 )
 
 urlpatterns = [
@@ -58,7 +59,7 @@ urlpatterns = [
     path('api/delete/meeting/<str:pk>', OpportunityMeetingDeleteAPI.as_view(), name='OpportunityMeetingDeleteAPI'),
 
     path(
-        'api/activity-log/task/lists', OpportunityActivityLogTaskListAPI.as_view(),
-        name='OpportunityActivityLogTaskListAPI'
+        'api/activity-log/lists', OpportunityActivityLogListAPI.as_view(),
+        name='OpportunityActivityLogListAPI'
     ),
 ]

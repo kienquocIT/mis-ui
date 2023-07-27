@@ -344,8 +344,8 @@ $(function () {
             })
         })
 
-        if (!formData.opportunity) delete formData.opportunitys
-        if ($('#selectOpportunity').val()) formData.opportunitys = $('#selectOpportunity').val()
+        if (!formData.opportunity) delete formData.opportunity
+        if ($('#selectOpportunity').val()) formData.opportunity = $('#selectOpportunity').val()
 
         if ($('[name="attach"]').val()){
             let list = []

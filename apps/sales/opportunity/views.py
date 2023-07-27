@@ -406,15 +406,17 @@ class OpportunityMeetingDeleteAPI(APIView):
         return resp.auto_return()
 
 
-class OpportunityActivityLogTaskListAPI(APIView):
+
+
+class OpportunityActivityLogListAPI(APIView):
     @mask_view(
         auth_require=True,
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
         params = request.query_params.dict()
-        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_ACTIVITY_LOGS_TASK).get(params)
-        return resp.auto_return(key_success='log_task_list')
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_ACTIVITY_LOGS).get(params)
+        return resp.auto_return(key_success='activity_logs_list')
 
 
 class OpportunityDocumentList(View):

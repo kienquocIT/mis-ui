@@ -220,7 +220,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     OPPORTUNITY_EMAIL_DELETE = StringUrl('opportunity/delete-email/{pk}')
     OPPORTUNITY_MEETING_LIST = StringUrl('opportunity/meeting/lists')
     OPPORTUNITY_MEETING_DELETE = StringUrl('opportunity/delete-meeting/{pk}')
-    OPPORTUNITY_ACTIVITY_LOGS_TASK = StringUrl('opportunity/task/lists')
+    OPPORTUNITY_ACTIVITY_LOGS = StringUrl('opportunity/activity-log/lists')
 
     # quotation
     QUOTATION_LIST = StringUrl('quotation/lists')

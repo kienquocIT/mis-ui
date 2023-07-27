@@ -343,7 +343,7 @@
                                         </div>
                                     </div>
                                     <div class="col-3">
-                                        <span id="tooltip-btn-copy" class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="Copy to sale order">
+                                        <span id="tooltip-btn-copy" class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="{% trans 'Copy to sale order' %}">
                                             <button
                                                     type="button"
                                                     class="btn btn-soft-primary"
@@ -1038,6 +1038,7 @@
             data-more-information="{% trans 'More information' %}"
             data-apply="{% trans 'Apply' %}"
             data-refreshed="{% trans 'Data is refreshed.' %}"
+            data-valid-btn-copy="{% trans 'Opportunity is closed or had sale order' %}"
         >
     </form>
 {% endblock %}

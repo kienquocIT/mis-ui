@@ -33,7 +33,7 @@ class loadDataHandle {
                         if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list)) {
                             if (valueToSelect) {
                                 data.opportunity_list.push(valueToSelect);
-                                // check opp has sale order or closed => disabled button copy to
+                                // check opp has sale order or closed => disabled button copy to (Only for page quotation detail)
                                 if (is_load_detail === true) {
                                     if (!$('#frm_quotation_create')[0].classList.contains('sale-order')) {
                                         if (valueToSelect.is_close_lost === true || valueToSelect.is_deal_close === true || valueToSelect.sale_order_id !== null) {
@@ -42,7 +42,7 @@ class loadDataHandle {
                                             btnCopy.setAttribute('disabled', 'true');
                                             eleTooltipBtnCopy.removeAttribute('data-bs-original-title');
                                             eleTooltipBtnCopy.setAttribute('data-bs-placement', 'top');
-                                            eleTooltipBtnCopy.setAttribute('title', 'Opportunity is closed');
+                                            eleTooltipBtnCopy.setAttribute('title', $.fn.transEle.attr('data-valid-btn-copy'));
                                         }
                                     }
                                 }

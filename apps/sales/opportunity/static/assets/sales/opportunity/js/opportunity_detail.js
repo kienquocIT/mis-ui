@@ -686,7 +686,7 @@ $(document).ready(function () {
                     let emp_current = data.employee_list.find(obj => obj.id === employee_current_id);
                     ele_emp_current_group.val(emp_current.group.id);
                     data.employee_list.map(function (employee) {
-                        if (employee.id === employee_current_id) {
+                        if (employee.id === sale_person.id) {
                             ele.append(`<option value="${employee.id}" selected>${employee.full_name}</option>`);
                         }
                     })
@@ -2109,7 +2109,7 @@ $(document).ready(function () {
                     targets: 3,
                     width: "10%",
                     render: (data, type, row) => {
-                        return `<btn type="button" class="btn action act-edit" data-row-id="${data}"><i class="fa-solid fa-pencil"></i></btn>`;
+                        return ''
                     }
                 }
             ]
@@ -2124,7 +2124,7 @@ $(document).ready(function () {
                     if (data) {
                         // enable side panel
                         if (!$('#drawer_task_create').hasClass('open')){
-                            $('.current-create-task span').trigger('click')
+                            $($('.current-create-task span')[0]).trigger('click')
                         }
                         $('#inputTextTitle').val(data.title)
                         $('#inputTextCode').val(data.code)
@@ -2310,7 +2310,7 @@ $(document).ready(function () {
             }
         })
         Promise.all([call_1, call_2, call_3, call_4]).then((results) => {
-        let sorted = results.flat().sort(function(a, b) {
+            let sorted = results.flat().sort(function (a, b) {
                 return new Date(b.date) - new Date(a.date);
             })
             loadTimelineList(sorted);
@@ -2319,4 +2319,11 @@ $(document).ready(function () {
         });
     }
     callAjaxtoLoadTimeLineList();
+
+    const ele_move_doc_page = $('.btn-add-document')
+    let url_doc_page = ele_move_doc_page.attr('href');
+    const paramString = $.param({
+        'opportunity': pk,
+    })
+    ele_move_doc_page.attr('href', url_doc_page + "?" + paramString);
 })

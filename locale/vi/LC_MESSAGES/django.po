@@ -3672,3 +3672,31 @@ msgstr "Cấu hình quyền trước khi thêm vào"
 #
 msgid "You will be redirected to the previous page"
 msgstr "Bạn sẽ được chuyển hướng đến trang trước"
+#
+
+msgid "Upload Document"
+msgstr "Tải lên tài liệu"
+
+#
+msgid "Click here to upload file"
+msgstr "Chọn ở đây để tải lên tài liệu"
+
+#
+msgid "Add Document"
+msgstr "Thêm tài liệu"
+
+#
+msgid "Product introduction document for customers"
+msgstr "Tài liệu giới thiệu sản phẩm cho khách hàng"
+
+#
+msgid "Document For Customer"
+msgstr "Tài liệu cho khách hàng"
+
+#
+msgid "Copy to sale order"
+msgstr "Sao chép đến đơn hàng"
+
+#
+msgid "Opportunity was closed or had sale order"
+msgstr "Cơ hội kinh doanh đã đóng hoặc đã có đơn hàng"

@@ -166,7 +166,8 @@ class MenusCRM:
         name='Product', code='id_menu_product_list', view_name='ProductList', icon='<i class="bi bi-archive-fill"></i>',
     )
     EXPENSE = MenuCommon(
-        name='Internal Expense Items', code='id_menu_expense_list', view_name='ExpenseList', icon='<i class="bi bi-cash-coin"></i>',
+        name='Internal Expense Items', code='id_menu_expense_list', view_name='ExpenseList',
+        icon='<i class="bi bi-cash-coin"></i>',
     )
     INVENTORY = MenuCommon(
         name='Inventory', code='menu_inventory', view_name='#', icon='<i class="fas fa-clipboard-list"></i>',
@@ -238,6 +239,12 @@ class MenusCRM:
                 name='Meeting', code='id_menu_meeting', view_name='OpportunityMeetingList',
                 icon='<i class="bi bi-person-workspace"></i>',
             ),
+            MenuCommon(
+                name='Document For Customer', code='menu_opportunity_document',
+                view_name='OpportunityDocumentList',
+                icon='<i class="bi bi-file-earmark"></i>',
+            ),
+
         ],
     )
 

@@ -18,6 +18,7 @@
         .sub-stage .dropdown {
             margin-top: auto;
         }
+        .view_task_log{cursor:pointer}
     </style>
 {% endblock %}
 {% block jsHeader %}
@@ -298,16 +299,18 @@
                                     <div class="bg-blue-light-4 mt-1 mb-1 h-90">
                                         <div class="row">
                                             <div class="col-10">
-                                                <span class="text-black ml-1">Presentation Document</span>
+                                                <span class="text-black ml-1">{% trans "Document For Customer" %}</span>
                                             </div>
                                             <div class="col-2 text-right mt-2">
-                                                <a href="#" class="mr-2">
+                                                <a href="{% url "OpportunityDocumentCreate" %}" target="_blank" class="mr-2 btn-add-document">
                                                     <span class="badge badge-primary w-50">{% trans 'Do' %}</span>
                                                 </a>
                                             </div>
                                         </div>
                                         <div class="row mt-2">
-                                            <div class="col-10"></div>
+                                            <div class="col-10">
+                                                <span class="text-black ml-1">{% trans "Product introduction document for customers" %}</span>
+                                            </div>
                                             <div class="col-2 text-right">
                                                 <a href="#" class="mr-2">
                                                     <span class="badge badge-orange w-50">{% trans 'Skip' %}</span>
@@ -907,7 +910,7 @@
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="call-log-repeat-activity">
                                 <label class="form-check-label"
-                                       for="repeat-activity">{% trans 'Need to repeat activity' %}</label>
+                                       for="call-log-repeat-activity">{% trans 'Need to repeat activity' %}</label>
                             </div>
                         </div>
                     </form>
@@ -1071,7 +1074,7 @@
                                 <div class="mb-3">
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" id="meeting-repeat-activity">
-                                        <label class="form-check-label" for="repeat-activity">{% trans 'Need to repeat activity' %}</label>
+                                        <label class="form-check-label" for="meeting-repeat-activity">{% trans 'Need to repeat activity' %}</label>
                                     </div>
                                 </div>
                             </div>

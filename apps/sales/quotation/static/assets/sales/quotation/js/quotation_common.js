@@ -14,7 +14,16 @@ class loadDataHandle {
             sale_person = $('#select-box-quotation-create-sale-person').val(); // filter by sale_person
         }
         if (sale_person) {
-            let data_filter = {'sale_person_id': sale_person};
+            let data_filter = {
+                'sale_person_id': sale_person,
+                'is_close_lost': false,
+                'is_deal_close': false,
+            };
+            if ($('#frm_quotation_create')[0].classList.contains('sale-order')) {
+                data_filter['sale_order__isnull'] = true;
+            } else {
+                data_filter['quotation__isnull'] = true;
+            }
             ele.empty();
             ele.append(`<option value=""></option>`);
             $.fn.callAjax(url, method, data_filter).then(
@@ -22,36 +31,44 @@ class loadDataHandle {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list)) {
-                            data.opportunity_list.map(function (item) {
-                                let check_used = item.quotation_id;
-                                let check_close = false;
-                                if ($('#frm_quotation_create')[0].classList.contains('sale-order')) {
-                                    check_used = item.sale_order_id
-                                }
-                                check_close = item.is_close;
-                                if ((check_used === null && check_close === false) || valueToSelect === item.id) {
-                                    let dataStr = JSON.stringify({
-                                        'id': item.id,
-                                        'title': item.title,
-                                        'code': item.code,
-                                        'customer': item.customer.title
-                                    }).replace(/"/g, "&quot;");
-                                    let opportunity_data = JSON.stringify(item).replace(/"/g, "&quot;");
-                                    let data_show = `${item.code}` + ` - ` + `${item.title}`;
-                                    let option = `<option value="${item.id}">
-                                                <span class="opp-title">${data_show}</span>
-                                                <input type="hidden" class="data-default" value="${opportunity_data}">
-                                                <input type="hidden" class="data-info" value="${dataStr}">
-                                            </option>`
-                                    if (valueToSelect && valueToSelect === item.id) {
-                                        option = `<option value="${item.id}" selected>
-                                                <span class="opp-title">${data_show}</span>
-                                                <input type="hidden" class="data-default" value="${opportunity_data}">
-                                                <input type="hidden" class="data-info" value="${dataStr}">
-                                            </option>`
+                            if (valueToSelect) {
+                                data.opportunity_list.push(valueToSelect);
+                                // check opp has sale order or closed => disabled button copy to (Only for page quotation detail)
+                                if (is_load_detail === true) {
+                                    if (!$('#frm_quotation_create')[0].classList.contains('sale-order')) {
+                                        if (valueToSelect.is_close_lost === true || valueToSelect.is_deal_close === true || valueToSelect.sale_order_id !== null) {
+                                            let btnCopy = document.getElementById('btn-copy-quotation');
+                                            let eleTooltipBtnCopy = document.getElementById('tooltip-btn-copy');
+                                            btnCopy.setAttribute('disabled', 'true');
+                                            eleTooltipBtnCopy.removeAttribute('data-bs-original-title');
+                                            eleTooltipBtnCopy.setAttribute('data-bs-placement', 'top');
+                                            eleTooltipBtnCopy.setAttribute('title', $.fn.transEle.attr('data-valid-btn-copy'));
+                                        }
                                     }
-                                    ele.append(option)
                                 }
+                            }
+                            data.opportunity_list.map(function (item) {
+                                let dataStr = JSON.stringify({
+                                    'id': item.id,
+                                    'title': item.title,
+                                    'code': item.code,
+                                    'customer': item.customer.title
+                                }).replace(/"/g, "&quot;");
+                                let opportunity_data = JSON.stringify(item).replace(/"/g, "&quot;");
+                                let data_show = `${item.code}` + ` - ` + `${item.title}`;
+                                let option = `<option value="${item.id}">
+                                            <span class="opp-title">${data_show}</span>
+                                            <input type="hidden" class="data-default" value="${opportunity_data}">
+                                            <input type="hidden" class="data-info" value="${dataStr}">
+                                        </option>`
+                                if (valueToSelect && valueToSelect.id === item.id) {
+                                    option = `<option value="${item.id}" selected>
+                                            <span class="opp-title">${data_show}</span>
+                                            <input type="hidden" class="data-default" value="${opportunity_data}">
+                                            <input type="hidden" class="data-info" value="${dataStr}">
+                                        </option>`
+                                }
+                                ele.append(option)
                             })
                             self.loadInformationSelectBox(ele);
                         }
@@ -540,6 +557,7 @@ class loadDataHandle {
                     'code': data[i].code,
                     'unit of measure': uom_title,
                     'expense type': expense_type_title,
+                    'is_product': false,
                 }).replace(/"/g, "&quot;");
                 let expense_data = JSON.stringify({
                     'id': data[i].id,
@@ -570,70 +588,69 @@ class loadDataHandle {
         }
     }
 
-    // loadBoxQuotationProductPurchasing(product_id, box_id, valueToSelect = null) {
-    //     let self = this;
-    //     let ele = document.getElementById(product_id);
-    //     let jqueryId = '#' + box_id;
-    //     let eleBox = $(jqueryId);
-    //     if (ele && eleBox) {
-    //         let linkDetail = ele.getAttribute('data-link-detail');
-    //         eleBox.attr('data-link-detail', linkDetail);
-    //         let data = JSON.parse(ele.value);
-    //         eleBox.empty();
-    //         for (let i = 0; i < data.length; i++) {
-    //             let uom_title = "";
-    //             let expense_type_title = "";
-    //             let expense_type = {};
-    //             let default_uom = {};
-    //             let uom_group = {};
-    //             let tax_code = {};
-    //             let price_list = [];
-    //             if (Object.keys(data[i].uom).length !== 0) {
-    //                 uom_title = data[i].uom.title
-    //             }
-    //             if (Object.keys(data[i].expense_type).length !== 0) {
-    //                 expense_type = data[i].expense_type;
-    //                 expense_type_title = data[i].expense_type.title;
-    //             }
-    //             default_uom = data[i].uom;
-    //             tax_code = data[i].tax_code;
-    //             price_list = data[i].price_list;
-    //             uom_group = data[i].uom_group;
-    //             let dataStr = JSON.stringify({
-    //                 'id': data[i].id,
-    //                 'title': data[i].title,
-    //                 'code': data[i].code,
-    //                 'unit of measure': uom_title,
-    //                 'expense type': expense_type_title,
-    //             }).replace(/"/g, "&quot;");
-    //             let expense_data = JSON.stringify({
-    //                 'id': data[i].id,
-    //                 'title': data[i].title,
-    //                 'code': data[i].code,
-    //                 'expense_type': expense_type,
-    //                 'unit_of_measure': default_uom,
-    //                 'uom_group': uom_group,
-    //                 'price_list': price_list,
-    //                 'tax': tax_code,
-    //             }).replace(/"/g, "&quot;");
-    //             let option = `<button type="button" class="btn btn-white dropdown-item table-row-expense-option" data-value="${data[i].id}">
-    //                             <div class="float-left"><span class="expense-title">${data[i].title}</span></div>
-    //                             <input type="hidden" class="data-default" value="${expense_data}">
-    //                             <input type="hidden" class="data-info" value="${dataStr}">
-    //                         </button>`
-    //             if (valueToSelect && valueToSelect === data[i].id) {
-    //                 option = `<button type="button" class="btn btn-white dropdown-item table-row-expense-option option-btn-checked" data-value="${data[i].id}">
-    //                             <div class="float-left"><span class="expense-title">${data[i].title}</span></div>
-    //                             <input type="hidden" class="data-default" value="${expense_data}">
-    //                             <input type="hidden" class="data-info" value="${dataStr}">
-    //                         </button>`
-    //             }
-    //             eleBox.append(option);
-    //         }
-    //         // load data information
-    //         self.loadInformationSelectBox(eleBox, true);
-    //     }
-    // }
+    loadBoxQuotationProductPurchasing(product_id, box_id, valueToSelect = null) {
+        let self = this;
+        let ele = document.getElementById(product_id);
+        let jqueryId = '#' + box_id;
+        let eleBox = $(jqueryId);
+        if (ele && eleBox) {
+            let linkDetail = ele.getAttribute('data-link-detail');
+            eleBox.attr('data-link-detail', linkDetail);
+            let data = JSON.parse(ele.value);
+            for (let i = 0; i < data.length; i++) {
+                if (Array.isArray(data[i].product_choice)) {
+                    if (data[i].product_choice.includes(2)) {
+                        let uom_title = "";
+                        let default_uom = {};
+                        let uom_group = {};
+                        let tax_code = {};
+                        if (Object.keys(data[i].sale_information).length !== 0) {
+                            if (Object.keys(data[i].sale_information.default_uom).length !== 0) {
+                                uom_title = data[i].sale_information.default_uom.title
+                            }
+                            default_uom = data[i].sale_information.default_uom;
+                            tax_code = data[i].sale_information.tax_code;
+                        }
+                        if (Object.keys(data[i].general_information).length !== 0) {
+                            uom_group = data[i].general_information.uom_group;
+                        }
+                        let dataStr = JSON.stringify({
+                            'id': data[i].id,
+                            'title': data[i].title,
+                            'code': data[i].code,
+                            'unit of measure': uom_title,
+                            'is_product': true,
+                        }).replace(/"/g, "&quot;");
+                        let product_data = JSON.stringify({
+                            'id': data[i].id,
+                            'title': data[i].title,
+                            'code': data[i].code,
+                            'unit_of_measure': default_uom,
+                            'uom_group': uom_group,
+                            'price_list': data[i].price_list,
+                            'cost_price': data[i].cost_price,
+                            'tax': tax_code,
+                        }).replace(/"/g, "&quot;");
+                        let option = `<button type="button" class="btn btn-white dropdown-item table-row-expense-option" data-value="${data[i].id}">
+                                        <div class="float-left"><span class="expense-title">${data[i].title}</span></div>
+                                        <input type="hidden" class="data-default" value="${product_data}">
+                                        <input type="hidden" class="data-info" value="${dataStr}">
+                                    </button>`
+                        if (valueToSelect && valueToSelect === data[i].id) {
+                            option = `<button type="button" class="btn btn-white dropdown-item table-row-expense-option option-btn-checked" data-value="${data[i].id}">
+                                        <div class="float-left"><span class="expense-title">${data[i].title}</span></div>
+                                        <input type="hidden" class="data-default" value="${product_data}">
+                                        <input type="hidden" class="data-info" value="${dataStr}">
+                                    </button>`
+                        }
+                        eleBox.append(option);
+                    }
+                }
+            }
+            // load data information
+            self.loadInformationSelectBox(eleBox, true);
+        }
+    }
 
     loadDataProductSelect(ele, is_change_item = true, is_expense = false) {
         let self = this;
@@ -920,9 +937,9 @@ class loadDataHandle {
         }
         if (data.opportunity) {
             if (data.sale_person) {
-                self.loadBoxQuotationOpportunity('select-box-quotation-create-opportunity', data.opportunity.id, data.sale_person.id, true, is_copy);
+                self.loadBoxQuotationOpportunity('select-box-quotation-create-opportunity', data.opportunity, data.sale_person.id, true, is_copy);
             } else {
-                self.loadBoxQuotationOpportunity('select-box-quotation-create-opportunity', data.opportunity.id, null, true, is_copy);
+                self.loadBoxQuotationOpportunity('select-box-quotation-create-opportunity', data.opportunity, null, true, is_copy);
             }
         }
         if (data.customer) {
@@ -949,6 +966,28 @@ class loadDataHandle {
         }
         if (data.is_customer_confirm && is_copy === false) {
             $('#quotation-customer-confirm')[0].checked = data.is_customer_confirm;
+        }
+        if (data.system_status) {
+            let data_status = {
+                'Draft': 0,
+                'Created': 1,
+                'Added': 2,
+                'Finish': 3,
+                'Cancel': 4,
+            }
+            let css_status = {
+                'Draft': 'status-draft',
+                'Created': 'status-created',
+                'Added': 'status-added',
+                'Finish': 'status-finish',
+                'Cancel': 'status-cancel',
+            }
+            let eleStatus = $('#quotation-create-status');
+            eleStatus.val(data.system_status);
+            eleStatus[0].setAttribute('data-value', data_status[data.system_status]);
+            eleStatus[0].className = '';
+            eleStatus[0].classList.add('form-control');
+            eleStatus[0].classList.add(css_status[data.system_status]);
         }
         if (is_copy === true) {
             let boxQuotation = $('#select-box-quotation');
@@ -1012,12 +1051,20 @@ class loadDataHandle {
 
     loadDataTableAndDropDown(data) {
         let self = this;
+        let products_data = data.quotation_products_data;
+        let costs_data = data.quotation_costs_data;
+        let expenses_data = data.quotation_expenses_data;
+        if (data.hasOwnProperty('sale_order_products_data') && data.hasOwnProperty('sale_order_costs_data') && data.hasOwnProperty('sale_order_expenses_data')) {
+            products_data = data.sale_order_products_data;
+            costs_data = data.sale_order_costs_data;
+            expenses_data = data.sale_order_expenses_data;
+        }
         $('#datable-quotation-create-product').DataTable().destroy();
         $('#datable-quotation-create-cost').DataTable().destroy();
         $('#datable-quotation-create-expense').DataTable().destroy();
-        dataTableClass.dataTableProduct(data.quotation_products_data, 'datable-quotation-create-product');
-        dataTableClass.dataTableCost(data.quotation_costs_data, 'datable-quotation-create-cost');
-        dataTableClass.dataTableExpense(data.quotation_expenses_data, 'datable-quotation-create-expense');
+        dataTableClass.dataTableProduct(products_data, 'datable-quotation-create-product');
+        dataTableClass.dataTableCost(costs_data, 'datable-quotation-create-cost');
+        dataTableClass.dataTableExpense(expenses_data, 'datable-quotation-create-expense');
         // load data dropdown for Tabs
         let tableProduct = document.getElementById('datable-quotation-create-product');
         let tableCost = document.getElementById('datable-quotation-create-cost');
@@ -1056,6 +1103,7 @@ class loadDataHandle {
             let row = tableExpense.tBodies[0].rows[i];
             if (row.querySelector('.table-row-item')) {
                 self.loadBoxQuotationExpense('data-init-quotation-create-tables-expense', row.querySelector('.expense-option-list').id, row.querySelector('.table-row-item').getAttribute('data-value'));
+                self.loadBoxQuotationProductPurchasing('data-init-quotation-create-tables-product', row.querySelector('.expense-option-list').id, row.querySelector('.table-row-item').getAttribute('data-value'));
                 // check expense selected to get uom group filter uom data
                 let optionSelected = row.querySelector('.expense-option-list').querySelector('.option-btn-checked');
                 if (optionSelected) {
@@ -1067,6 +1115,7 @@ class loadDataHandle {
                 self.loadBoxQuotationTax('data-init-quotation-create-tables-tax', row.querySelector('.table-row-tax').id, row.querySelector('.table-row-tax').value);
             }
         }
+        return true;
     }
 }
 
@@ -1094,13 +1143,14 @@ class dataTableHandle {
             columns: [
                 {
                     targets: 0,
-                    width: "1%",
+                    width: "3%",
                     render: (data, type, row) => {
                         return `<span class="table-row-order">${row.order}</span>`
                     }
                 },
                 {
                     targets: 1,
+                    width: "20%",
                     render: (data, type, row) => {
                         if (!row.hasOwnProperty('is_promotion') && !row.hasOwnProperty('is_shipping')) {
                             if (is_load_detail === false) {
@@ -1206,6 +1256,7 @@ class dataTableHandle {
                 },
                 {
                     targets: 2,
+                    width: "11%",
                     render: (data, type, row) => {
                         if (!row.hasOwnProperty('is_promotion') && !row.hasOwnProperty('is_shipping')) {
                             if (is_load_detail === false) {
@@ -1226,7 +1277,7 @@ class dataTableHandle {
                 },
                 {
                     targets: 3,
-                    width: "1%",
+                    width: "5%",
                     render: (data, type, row) => {
                         if (!row.hasOwnProperty('is_promotion') && !row.hasOwnProperty('is_shipping')) {
                             if (is_load_detail === false) {
@@ -1256,7 +1307,7 @@ class dataTableHandle {
                 },
                 {
                     targets: 4,
-                    width: "1%",
+                    width: "5%",
                     render: (data, type, row) => {
                         if (!row.hasOwnProperty('is_promotion') && !row.hasOwnProperty('is_shipping')) {
                             if (is_load_detail === false) {
@@ -1277,6 +1328,7 @@ class dataTableHandle {
                 },
                 {
                     targets: 5,
+                    width: "18%",
                     render: (data, type, row) => {
                         if (!row.hasOwnProperty('is_promotion') && !row.hasOwnProperty('is_shipping')) {
                             if (is_load_detail === false) {
@@ -1344,6 +1396,7 @@ class dataTableHandle {
                 },
                 {
                     targets: 6,
+                    width: "10%",
                     render: (data, type, row) => {
                         if (!row.hasOwnProperty('is_promotion') && !row.hasOwnProperty('is_shipping')) {
                             if (is_load_detail === false) {
@@ -1397,6 +1450,7 @@ class dataTableHandle {
                 },
                 {
                     targets: 7,
+                    width: "10%",
                     render: (data, type, row) => {
                         let selectTaxID = 'quotation-create-product-box-tax-' + String(row.order);
                         let taxID = "";
@@ -1469,6 +1523,7 @@ class dataTableHandle {
                 },
                 {
                     targets: 8,
+                    width: "15%",
                     render: (data, type, row) => {
                         return `<div class="row">
                                 <input 
@@ -1489,7 +1544,7 @@ class dataTableHandle {
                 },
                 {
                     targets: 9,
-                    width: "1%",
+                    width: "3%",
                     render: () => {
                         if (is_load_detail === false) {
                             return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`
@@ -1525,13 +1580,14 @@ class dataTableHandle {
             columns: [
                 {
                     targets: 0,
-                    width: "1%",
+                    width: "5%",
                     render: (data, type, row) => {
                         return `<span class="table-row-order">${row.order}</span>`
                     }
                 },
                 {
                     targets: 1,
+                    width: "25%",
                     render: (data, type, row) => {
                         if (!row.hasOwnProperty('is_shipping')) {
                             let selectProductID = 'quotation-create-cost-box-product-' + String(row.order);
@@ -1581,7 +1637,7 @@ class dataTableHandle {
                 },
                 {
                     targets: 2,
-                    width: "1%",
+                    width: "5%",
                     render: (data, type, row) => {
                         let selectUOMID = 'quotation-create-cost-box-uom-' + String(row.order);
                         return `<div class="row">
@@ -1593,7 +1649,7 @@ class dataTableHandle {
                 },
                 {
                     targets: 3,
-                    width: "1%",
+                    width: "10%",
                     render: (data, type, row) => {
                         return `<div class="row">
                                 <input type="text" class="form-control table-row-quantity disabled-custom-show" value="${row.product_quantity}" disabled>
@@ -1602,6 +1658,7 @@ class dataTableHandle {
                 },
                 {
                     targets: 4,
+                    width: "20%",
                     render: (data, type, row) => {
                         if (is_load_detail === false) {
                             return `<div class="row">
@@ -1629,6 +1686,7 @@ class dataTableHandle {
                 },
                 {
                     targets: 5,
+                    width: "10%",
                     render: (data, type, row) => {
                         if (is_load_detail === false) {
                             let selectTaxID = 'quotation-create-cost-box-tax-' + String(row.order);
@@ -1687,6 +1745,7 @@ class dataTableHandle {
                 },
                 {
                     targets: 6,
+                    width: "20%",
                     render: (data, type, row) => {
                         return `<div class="row">
                                 <input 
@@ -1707,7 +1766,7 @@ class dataTableHandle {
                 },
                 {
                     targets: 7,
-                    width: "1%",
+                    width: "5%",
                     render: () => {
                         let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-row" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><i class="fa-regular fa-trash-can"></i></span></a>`;
                         return `${bt3}`
@@ -1739,17 +1798,24 @@ class dataTableHandle {
             columns: [
                 {
                     targets: 0,
-                    width: "1%",
+                    width: "5%",
                     render: (data, type, row) => {
                         return `<span class="table-row-order">${row.order}</span>`
                     }
                 },
                 {
                     targets: 1,
+                    width: "25%",
                     render: (data, type, row) => {
                         let selectExpenseID = 'quotation-create-expense-box-expense-' + String(row.order);
                         let checkboxExpenseItemID = 'check-box-expense-item-' + String(row.order);
                         let checkboxPurchaseItemID = 'check-box-purchase-item-' + String(row.order);
+                        let data_title = row.expense.title;
+                        let data_id = row.expense.id;
+                        if (row.is_product === true) {
+                            data_title = row.product.title;
+                            data_id = row.product.id;
+                        }
                         if (is_load_detail === false) {
                             return `<div class="row dropdown-expense">
                                         <div class="input-group">
@@ -1774,8 +1840,8 @@ class dataTableHandle {
                                                             <input 
                                                                 type="text" 
                                                                 class="form-control table-row-item disabled-show-normal" 
-                                                                value="${row.expense.title}"
-                                                                data-value="${row.expense.id}"
+                                                                value="${data_title}"
+                                                                data-value="${data_id}"
                                                                 style="padding-left: 38px"
                                                                 disabled
                                                             >
@@ -1788,13 +1854,13 @@ class dataTableHandle {
                                                         <div class="row mb-2">
                                                             <div class="col-6">
                                                                 <div class="form-check">
-                                                                    <input type="checkbox" class="form-check-input" id="${checkboxExpenseItemID}" checked>
+                                                                    <input type="checkbox" class="form-check-input checkbox-expense-item" id="${checkboxExpenseItemID}" checked>
                                                                     <label class="form-check-label" for="${checkboxExpenseItemID}">Expense items</label>
                                                                 </div>
                                                             </div>
                                                             <div class="col-6">
                                                                 <div class="form-check">
-                                                                    <input type="checkbox" class="form-check-input" id="${checkboxPurchaseItemID}" checked>
+                                                                    <input type="checkbox" class="form-check-input checkbox-purchasing-item" id="${checkboxPurchaseItemID}" checked>
                                                                     <label class="form-check-label" for="${checkboxPurchaseItemID}">Purchasing items</label>
                                                                 </div>
                                                             </div>
@@ -1829,8 +1895,8 @@ class dataTableHandle {
                                                             <input 
                                                                 type="text" 
                                                                 class="form-control table-row-item disabled-show-normal" 
-                                                                value="${row.expense.title}"
-                                                                data-value="${row.expense.id}"
+                                                                value="${data_title}"
+                                                                data-value="${data_id}"
                                                                 style="padding-left: 38px"
                                                                 disabled
                                                             >
@@ -1865,7 +1931,7 @@ class dataTableHandle {
                 },
                 {
                     targets: 2,
-                    width: "1%",
+                    width: "5%",
                     render: (data, type, row) => {
                         if (is_load_detail === false) {
                             let selectUOMID = 'quotation-create-expense-box-uom-' + String(row.order);
@@ -1886,7 +1952,7 @@ class dataTableHandle {
                 },
                 {
                     targets: 3,
-                    width: "1%",
+                    width: "10%",
                     render: (data, type, row) => {
                         if (is_load_detail === false) {
                             return `<div class="row">
@@ -1901,6 +1967,7 @@ class dataTableHandle {
                 },
                 {
                     targets: 4,
+                    width: "20%",
                     render: (data, type, row) => {
                         if (is_load_detail === false) {
                             return `<div class="row">
@@ -1946,7 +2013,7 @@ class dataTableHandle {
                 },
                 {
                     targets: 5,
-                    width: "1%",
+                    width: "10%",
                     render: (data, type, row) => {
                         if (is_load_detail === false) {
                             let selectTaxID = 'quotation-create-expense-box-tax-' + String(row.order);
@@ -2005,6 +2072,7 @@ class dataTableHandle {
                 },
                 {
                     targets: 6,
+                    width: "20%",
                     render: (data, type, row) => {
                         return `<div class="row">
                                 <input 
@@ -2025,7 +2093,7 @@ class dataTableHandle {
                 },
                 {
                     targets: 7,
-                    width: "1%",
+                    width: "5%",
                     render: () => {
                         if (is_load_detail === false) {
                             return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`
@@ -2206,12 +2274,14 @@ class dataTableHandle {
         let method = ele.attr('data-method');
         $('#datable-copy-quotation').DataTable().destroy();
         if (sale_person_id) {
-            let data_filter = {'sale_person': sale_person_id};
+            let data_filter = {
+                'sale_person': sale_person_id,
+                'opportunity__sale_order__isnull': true,
+                'opportunity__is_close_lost': false,
+                'opportunity__is_deal_close': false,
+            };
             if (opp_id) {
-                data_filter = {
-                    'sale_person': sale_person_id,
-                    'opportunity': opp_id
-                }
+                data_filter['opportunity'] = opp_id;
             }
             $.fn.callAjax(url, method, data_filter).then(
                 (resp) => {
@@ -3161,10 +3231,20 @@ class submitHandle {
                 if (optionSelected) {
                     if (optionSelected.querySelector('.data-info')) {
                         let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
-                        rowData['expense'] = dataInfo.id;
-                        rowData['expense_title'] = dataInfo.title;
-                        rowData['expense_code'] = dataInfo.code;
-                        rowData['expense_type_title'] = dataInfo['expense type'];
+                        if (dataInfo.is_product === false) {
+                            rowData['expense'] = dataInfo.id;
+                            rowData['product'] = null;
+                            rowData['expense_title'] = dataInfo.title;
+                            rowData['expense_code'] = dataInfo.code;
+                            rowData['expense_type_title'] = dataInfo['expense type'];
+                            rowData['is_product'] = false;
+                        } else {
+                            rowData['product'] = dataInfo.id;
+                            rowData['expense'] = null;
+                            rowData['product_title'] = dataInfo.title;
+                            rowData['product_code'] = dataInfo.code;
+                            rowData['is_product'] = true;
+                        }
                     }
                 }
             }

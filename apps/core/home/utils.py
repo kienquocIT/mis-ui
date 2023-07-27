@@ -12,9 +12,9 @@ class ReverseUrlCommon:
     def update_done_notify(cls, user, notify_id):
         if user and notify_id:
             try:
-                resp = ServerAPI(user=user, url=ApiURL.LOG_MY_NOTIFY_DETAIL.fill_key(pk=notify_id)).put(
-                    data={'is_done': True}
-                )
+                url = ApiURL.LOG_MY_NOTIFY_DETAIL.fill_key(pk=notify_id)
+                data = {'is_done': True}
+                ServerAPI(user=user, url=url).put(data=data)
             except Exception as _err:
                 pass
         return True

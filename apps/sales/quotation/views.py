@@ -12,9 +12,7 @@ def create_quotation(request, url, msg):
     if resp.state:
         resp.result['message'] = msg
         return resp.result, status.HTTP_201_CREATED
-    elif resp.status == 401:
-        return {}, status.HTTP_401_UNAUTHORIZED
-    return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+    return resp.auto_return()
 
 
 def update_quotation(request, url, pk, msg):
@@ -22,9 +20,7 @@ def update_quotation(request, url, pk, msg):
     if resp.state:
         resp.result['message'] = msg
         return resp.result, status.HTTP_201_CREATED
-    elif resp.status == 401:
-        return {}, status.HTTP_401_UNAUTHORIZED
-    return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+    return resp.auto_return()
 
 
 class QuotationList(View):
@@ -48,9 +44,7 @@ class QuotationCreate(View):
         breadcrumb='QUOTATION_CREATE_PAGE',
     )
     def get(self, request, *args, **kwargs):
-        return {
-                   'data': {'employee_current_id': request.user.employee_current_data.get('id', None)}
-               }, status.HTTP_200_OK
+        return {'data': {'employee_current_id': request.user.employee_current_data.get('id', None)}}, status.HTTP_200_OK
 
 
 class QuotationListAPI(APIView):
@@ -61,12 +55,7 @@ class QuotationListAPI(APIView):
     def get(self, request, *args, **kwargs):
         data = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.QUOTATION_LIST).get(data)
-        if resp.state:
-            return {'quotation_list': resp.result}, status.HTTP_200_OK
-
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST
+        return resp.auto_return(key_success='quotation_list')
 
     @mask_view(
         auth_require=True,
@@ -90,9 +79,7 @@ class QuotationDetail(View):
         breadcrumb='QUOTATION_DETAIL_PAGE',
     )
     def get(self, request, pk, *args, **kwargs):
-        return {
-                   'data': {'doc_id': pk},
-               }, status.HTTP_200_OK
+        return {'data': {'doc_id': pk}}, status.HTTP_200_OK
 
 
 class QuotationDetailAPI(APIView):
@@ -102,12 +89,8 @@ class QuotationDetailAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, pk, **kwargs):
-        res = ServerAPI(user=request.user, url=ApiURL.QUOTATION_DETAIL.push_id(pk)).get()
-        if res.state:
-            return res.result, status.HTTP_200_OK
-        elif res.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': res.errors}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(user=request.user, url=ApiURL.QUOTATION_DETAIL.push_id(pk)).get()
+        return resp.auto_return()
 
     @mask_view(
         auth_require=True,
@@ -130,11 +113,7 @@ class QuotationExpenseListAPI(APIView):
     def get(self, request, *args, **kwargs):
         data = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.QUOTATION_EXPENSE_LIST).get(data)
-        if resp.state:
-            return {'quotation_expense_list': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST
+        return resp.auto_return(key_success='quotation_expense_list')
 
 
 # Config
@@ -158,12 +137,8 @@ class QuotationConfigDetailAPI(APIView):
         is_api=True
     )
     def get(self, request, *args, **kwargs):
-        res = ServerAPI(user=request.user, url=ApiURL.QUOTATION_CONFIG).get()
-        if res.state:
-            return res.result, status.HTTP_200_OK
-        elif res.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': res.errors}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(user=request.user, url=ApiURL.QUOTATION_CONFIG).get()
+        return resp.auto_return()
 
     @mask_view(
         login_require=True,
@@ -171,13 +146,11 @@ class QuotationConfigDetailAPI(APIView):
         is_api=True,
     )
     def put(self, request, *args, **kwargs):
-        res = ServerAPI(user=request.user, url=ApiURL.QUOTATION_CONFIG).put(request.data)
-        if res.state:
-            res.result['message'] = SaleMsg.QUOTATION_CONFIG_UPDATE
-            return res.result, status.HTTP_200_OK
-        elif res.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': res.errors}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(user=request.user, url=ApiURL.QUOTATION_CONFIG).put(request.data)
+        if resp.state:
+            resp.result['message'] = SaleMsg.QUOTATION_CONFIG_UPDATE
+            return resp.result, status.HTTP_200_OK
+        return resp.auto_return()
 
 
 # QUOTATION INDICATOR
@@ -189,12 +162,7 @@ class QuotationIndicatorListAPI(APIView):
     def get(self, request, *args, **kwargs):
         data = {'application_code': 'quotation'}
         resp = ServerAPI(user=request.user, url=ApiURL.QUOTATION_INDICATOR_LIST).get(data)
-        if resp.state:
-            return {'quotation_indicator_list': resp.result}, status.HTTP_200_OK
-
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST
+        return resp.auto_return(key_success='quotation_indicator_list')
 
     @mask_view(
         auth_require=True,
@@ -215,12 +183,8 @@ class QuotationIndicatorDetailAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, pk, **kwargs):
-        res = ServerAPI(user=request.user, url=ApiURL.QUOTATION_INDICATOR_DETAIL.push_id(pk)).get()
-        if res.state:
-            return res.result, status.HTTP_200_OK
-        elif res.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': res.errors}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(user=request.user, url=ApiURL.QUOTATION_INDICATOR_DETAIL.push_id(pk)).get()
+        return resp.auto_return()
 
     @mask_view(
         auth_require=True,

@@ -3674,6 +3674,10 @@ msgid "You will be redirected to the previous page"
 msgstr "Bạn sẽ được chuyển hướng đến trang trước"
 #
 
+#
+msgid "Previous page"
+msgstr "Trang trước"
+
 msgid "Upload Document"
 msgstr "Tải lên tài liệu"
 

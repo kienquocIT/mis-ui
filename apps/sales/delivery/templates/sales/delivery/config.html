@@ -69,26 +69,6 @@
             let $frm = $('#formDeliveryConfig');
             let frmSetup = new SetupFormSubmit($frm);
 
-            WindowControl.showLoading();
-            $.fn.callAjax(
-                frmSetup.dataUrl,
-                'GET',
-            ).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data?.['status'] === 200) {
-                        if (data?.['config']?.['is_picking']) eleInputPicking.prop('checked', true);
-                        if (data?.['config']?.['is_partial_ship']) eleInputPartial.prop('checked', true);
-                    }
-
-                },
-                (errs) => {
-
-                }
-            ).then((data) => {
-                WindowControl.hideLoading();
-            });
-
             $frm.submit(function (event) {
                 event.preventDefault();
                 WindowControl.showLoading();

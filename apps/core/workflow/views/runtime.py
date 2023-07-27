@@ -12,10 +12,9 @@ class FlowRuntimeListAPI(APIView):
     )
     def get(self, request, *args, flow_id, **kwargs):
         if TypeCheck.check_uuid(flow_id):
-            resp = ServerAPI(user=request.user, url=ApiURL.RUNTIME_LIST).get(data={'flow_id': flow_id})
-            if resp.state:
-                return {'runtime_list': resp.result}, status.HTTP_200_OK
-            return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+            data = {'flow_id': flow_id}
+            resp = ServerAPI(request=request, user=request.user, url=ApiURL.RUNTIME_LIST).get(data=data)
+            return resp.auto_return(key_success='runtime_list')
         return {'errors': BaseMsg.NOT_FOUND}, status.HTTP_400_BAD_REQUEST
 
 
@@ -25,12 +24,8 @@ class FlowRuntimeMeListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.RUNTIME_LIST_ME).get(data=request.query_params)
-        if resp.state:
-            return {'runtime_list': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.RUNTIME_LIST_ME).get(data=request.query_params)
+        return resp.auto_return(key_success='runtime_list')
 
 
 class FlowRuntimeDetailAPI(APIView):
@@ -40,10 +35,9 @@ class FlowRuntimeDetailAPI(APIView):
     )
     def get(self, request, *args, pk, **kwargs):
         if TypeCheck.check_uuid(pk):
-            resp = ServerAPI(user=request.user, url=ApiURL.RUNTIME_DETAIL.fill_key(pk=pk)).get()
-            if resp.state:
-                return {'runtime_detail': resp.result}, status.HTTP_200_OK
-            return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+            url = ApiURL.RUNTIME_DETAIL.fill_key(pk=pk)
+            resp = ServerAPI(request=request, user=request.user, url=url).get()
+            return resp.auto_return(key_success='runtime_detail')
         return {'errors': BaseMsg.NOT_FOUND}, status.HTTP_400_BAD_REQUEST
 
 
@@ -54,10 +48,9 @@ class FlowRuntimeDiagramDetailAPI(APIView):
     )
     def get(self, request, *args, pk, **kwargs):
         if TypeCheck.check_uuid(pk):
-            resp = ServerAPI(user=request.user, url=ApiURL.RUNTIME_DIAGRAM_DETAIL.fill_key(pk=pk)).get()
-            if resp.state:
-                return {'diagram_data': resp.result}, status.HTTP_200_OK
-            return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+            url = ApiURL.RUNTIME_DIAGRAM_DETAIL.fill_key(pk=pk)
+            resp = ServerAPI(request=request, user=request.user, url=url).get()
+            return resp.auto_return(key_success='diagram_data')
         return {'errors': BaseMsg.NOT_FOUND}, status.HTTP_400_BAD_REQUEST
 
 
@@ -68,12 +61,10 @@ class FlowRuntimeTaskListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.RUNTIME_TASK_LIST).get(data=request.query_params)
-        if resp.state:
-            return {'task_list': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.RUNTIME_TASK_LIST).get(
+            data=request.query_params
+        )
+        return resp.auto_return(key_success='task_list')
 
 
 class FlowRuntimeTaskDetailAPI(APIView):
@@ -83,10 +74,7 @@ class FlowRuntimeTaskDetailAPI(APIView):
     )
     def put(self, request, *args, pk, **kwargs):
         if TypeCheck.check_uuid(pk):
-            resp = ServerAPI(user=request.user, url=ApiURL.RUNTIME_TASK_DETAIL.fill_key(pk=pk)).put(
-                data=request.data
-            )
-            if resp.state:
-                return {'result': resp.result}, status.HTTP_200_OK
-            return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+            url = ApiURL.RUNTIME_TASK_DETAIL.fill_key(pk=pk)
+            resp = ServerAPI(request=request, user=request.user, url=url).put(data=request.data)
+            return resp.auto_return(key_success='result')
         return {'errors': BaseMsg.NOT_FOUND}, status.HTTP_400_BAD_REQUEST

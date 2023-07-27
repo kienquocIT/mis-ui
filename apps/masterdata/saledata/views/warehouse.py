@@ -24,29 +24,15 @@ class WareHouseListAPI(APIView):
     )
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.WAREHOUSE_LIST).get()
-        if resp.state:
-            return {'warehouse_list': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        return resp.auto_return(key_success='warehouse_list')
 
     @mask_view(
         auth_require=True,
         is_api=True,
     )
     def post(self, request, *arg, **kwargs):
-        response = ServerAPI(user=request.user, url=ApiURL.WAREHOUSE_LIST).post(request.data)
-        if response.state:
-            return response.result, status.HTTP_201_CREATED
-        if response.errors:
-            if isinstance(response.errors, dict):
-                err_msg = ""
-                for key, value in response.errors.items():
-                    err_msg += str(key) + ': ' + str(value)
-                    break
-                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
-            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
-        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        resp = ServerAPI(user=request.user, url=ApiURL.WAREHOUSE_LIST).post(request.data)
+        return resp.auto_return(status_success=status.HTTP_201_CREATED)
 
 
 class WareHouseDetailAPI(APIView):
@@ -57,11 +43,7 @@ class WareHouseDetailAPI(APIView):
     )
     def get(self, request, *args, pk, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.WAREHOUSE_DETAIL.fill_key(pk=pk)).get()
-        if resp.state:
-            return {'warehouse_list': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        return resp.auto_return(key_success='warehouse_list')
 
     @mask_view(
         login_require=True,
@@ -70,11 +52,7 @@ class WareHouseDetailAPI(APIView):
     )
     def put(self, request, *args, pk, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.WAREHOUSE_DETAIL.fill_key(pk=pk)).put(request.data)
-        if resp.state:
-            return {'detail': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        return resp.auto_return(key_success='detail')
 
     @mask_view(
         login_require=True,
@@ -83,11 +61,7 @@ class WareHouseDetailAPI(APIView):
     )
     def delete(self, request, *args, pk, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.WAREHOUSE_DETAIL.fill_key(pk=pk)).delete()
-        if resp.state:
-            return {'result': resp.result}, status.HTTP_204_NO_CONTENT
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        return resp.auto_return(key_success='result')
 
 
 class WarehouseProductAPI(APIView):
@@ -97,12 +71,6 @@ class WarehouseProductAPI(APIView):
     )
     def get(self, request, *args, **kwargs):
         params = request.query_params.dict()
-        resp = ServerAPI(
-            user=request.user,
-            url=ApiURL.WAREHOUSE_STOCK_PRODUCT.fill_key(product_id=params['product_id'], uom_id=params['uom_id'])
-        ).get(params)
-        if resp.state:
-            return {'warehouse_stock': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        url = ApiURL.WAREHOUSE_STOCK_PRODUCT.fill_key(product_id=params['product_id'], uom_id=params['uom_id'])
+        resp = ServerAPI(user=request.user, url=url).get(params)
+        return resp.auto_return(key_success='warehouse_stock')

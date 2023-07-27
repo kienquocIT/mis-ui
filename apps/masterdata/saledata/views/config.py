@@ -10,27 +10,19 @@ class PaymentsTermsListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.PAYMENT_TERMS).get()
-        if resp.state:
-            return {'payment_terms_list': resp.result}, status.HTTP_200_OK
-
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.PAYMENT_TERMS).get()
+        return resp.auto_return(key_success='payment_terms_list')
 
     @mask_view(
         auth_require=True,
         is_api=True,
     )
     def post(self, request, *args, **kwargs):
-        data = request.data
-        resp = ServerAPI(user=request.user, url=ApiURL.PAYMENT_TERMS).post(data)
+        resp = ServerAPI(user=request.user, url=ApiURL.PAYMENT_TERMS).post(request.data)
         if resp.state:
             resp.result['message'] = MDConfigMsg.PT_CREATE
             return resp.result, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        return resp.auto_return()
 
 
 class PaymentsTermsDetailAPI(APIView):
@@ -42,12 +34,8 @@ class PaymentsTermsDetailAPI(APIView):
         # check request is not ajax return false
         if 'application/json' not in request.META.get('HTTP_ACCEPT', ''):
             return {'errors': 'this request not support'}, status.HTTP_400_BAD_REQUEST
-        res = ServerAPI(user=request.user, url=ApiURL.PAYMENT_TERMS.push_id(pk)).get()
-        if res.state:
-            return res.result, status.HTTP_200_OK
-        elif res.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': res.errors}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(user=request.user, url=ApiURL.PAYMENT_TERMS.push_id(pk)).get()
+        return resp.auto_return()
 
     @mask_view(
         auth_require=True,
@@ -58,9 +46,7 @@ class PaymentsTermsDetailAPI(APIView):
         if resp.state:
             resp.result['message'] = MDConfigMsg.PT_UPDATE
             return resp.result, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        return resp.auto_return()
 
     @mask_view(
         auth_require=True,
@@ -71,6 +57,4 @@ class PaymentsTermsDetailAPI(APIView):
         if resp.state:
             resp.result['message'] = MDConfigMsg.PT_DELETE
             return resp.result, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        return resp.auto_return()

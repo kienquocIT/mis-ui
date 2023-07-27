@@ -38,25 +38,26 @@ class AdvancePaymentCreate(View):
         resp8 = ServerAPI(user=request.user, url=ApiURL.TAX_LIST).get()
         resp9 = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE).get()
         resp10 = ServerAPI(user=request.user, url=ApiURL.PAYMENT_COST_ITEMS_LIST).get()
-        return {'data':
-            {
-                'employee_current_id': request.user.employee_current_data.get('id', None),
-                'sale_order_list': resp1.result,
-                'quotation_list': resp2.result,
-                'product_list': resp3.result,
-                'account_list': resp4.result,
-                'advance_payment_list': resp5.result,
-                'opportunity_list': resp6.result,
-                'employee_list': resp7.result,
-                'tax_list': resp8.result,
-                'unit_of_measure': resp9.result,
-                'payment_cost_items_list': resp10.result
-            }
-        }, status.HTTP_200_OK
+        return {
+                   'data':
+                       {
+                           'employee_current_id': request.user.employee_current_data.get('id', None),
+                           'sale_order_list': resp1.result,
+                           'quotation_list': resp2.result,
+                           'product_list': resp3.result,
+                           'account_list': resp4.result,
+                           'advance_payment_list': resp5.result,
+                           'opportunity_list': resp6.result,
+                           'employee_list': resp7.result,
+                           'tax_list': resp8.result,
+                           'unit_of_measure': resp9.result,
+                           'payment_cost_items_list': resp10.result
+                       }
+               }, status.HTTP_200_OK
 
 
 class AdvancePaymentListAPI(APIView):
-    permission_classes = [IsAuthenticated] # noqa
+    permission_classes = [IsAuthenticated]  # noqa
 
     @mask_view(
         auth_require=True,
@@ -64,25 +65,18 @@ class AdvancePaymentListAPI(APIView):
     )
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.ADVANCE_PAYMENT_LIST).get()
-        if resp.state:
-            return {'advance_payment_list': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        return resp.auto_return(key_success='advance_payment_list')
 
     @mask_view(
         auth_require=True,
         is_api=True,
     )
     def post(self, request, *arg, **kwargs):
-        data = request.data
-        response = ServerAPI(user=request.user, url=ApiURL.ADVANCE_PAYMENT_LIST).post(data)
-        if response.state:
-            response.result['message'] = SaleMsg.ADVANCE_PAYMENT_CREATE
-            return response.result, status.HTTP_201_CREATED
-        elif response.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': response.errors}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(user=request.user, url=ApiURL.ADVANCE_PAYMENT_LIST).post(request.data)
+        if resp.state:
+            resp.result['message'] = SaleMsg.ADVANCE_PAYMENT_CREATE
+            return resp.result, status.HTTP_201_CREATED
+        return resp.auto_return()
 
 
 class AdvancePaymentDetail(View):
@@ -104,20 +98,21 @@ class AdvancePaymentDetail(View):
         resp8 = ServerAPI(user=request.user, url=ApiURL.TAX_LIST).get()
         resp9 = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE).get()
         resp10 = ServerAPI(user=request.user, url=ApiURL.PAYMENT_COST_ITEMS_LIST).get()
-        return {'data':
-            {
-                'employee_current_id': request.user.employee_current_data.get('id', None),
-                'sale_order_list': resp1.result,
-                'quotation_list': resp2.result,
-                'product_list': resp3.result,
-                'account_list': resp4.result,
-                'advance_payment_list': resp5.result,
-                'employee_list': resp7.result,
-                'tax_list': resp8.result,
-                'unit_of_measure': resp9.result,
-                'payment_cost_items_list': resp10.result
-            }
-        }, status.HTTP_200_OK
+        return {
+                   'data':
+                       {
+                           'employee_current_id': request.user.employee_current_data.get('id', None),
+                           'sale_order_list': resp1.result,
+                           'quotation_list': resp2.result,
+                           'product_list': resp3.result,
+                           'account_list': resp4.result,
+                           'advance_payment_list': resp5.result,
+                           'employee_list': resp7.result,
+                           'tax_list': resp8.result,
+                           'unit_of_measure': resp9.result,
+                           'payment_cost_items_list': resp10.result
+                       }
+               }, status.HTTP_200_OK
 
 
 class AdvancePaymentDetailAPI(APIView):
@@ -129,11 +124,7 @@ class AdvancePaymentDetailAPI(APIView):
     )
     def get(self, request, pk, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.ADVANCE_PAYMENT_DETAIL.push_id(pk)).get()
-        if resp.state:
-            return {'advance_payment_detail': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        return resp.auto_return(key_success='advance_payment_detail')
 
     @mask_view(
         auth_require=True,
@@ -141,10 +132,8 @@ class AdvancePaymentDetailAPI(APIView):
     )
     def put(self, request, pk, *arg, **kwargs):
         data = request.data
-        response = ServerAPI(user=request.user, url=ApiURL.ADVANCE_PAYMENT_DETAIL.push_id(pk)).put(data)
-        if response.state:
-            response.result['message'] = SaleMsg.ADVANCE_PAYMENT_UPDATE
-            return response.result, status.HTTP_200_OK
-        elif response.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': response.errors}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(user=request.user, url=ApiURL.ADVANCE_PAYMENT_DETAIL.push_id(pk)).put(data)
+        if resp.state:
+            resp.result['message'] = SaleMsg.ADVANCE_PAYMENT_UPDATE
+            return resp.result, status.HTTP_200_OK
+        return resp.auto_return()

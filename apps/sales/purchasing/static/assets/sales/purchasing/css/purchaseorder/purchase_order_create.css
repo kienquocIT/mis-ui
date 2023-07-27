@@ -1,0 +1,135 @@
+.input-affix-wrapper .input-suffix {
+    padding: unset;
+}
+
+.div-input {
+    height: 38px;
+    margin-top: -0.4px
+}
+
+.div-checkbox {
+    margin-top: -1px;
+    background-color: #ebfcf5;
+    border-radius: 0.5rem;
+    padding: 1.5px;
+    font-size: 70%;
+    min-width: 25px;
+    display: inline-block;
+    text-align: center;
+    text-transform: capitalize;
+}
+
+.disabled-show-normal:disabled {
+    color: #0c0c0c;
+    background-color: white;
+}
+
+.fa-angle-double-up {
+    color: #007D88;
+    text-align: center;
+    font-size: x-large;
+}
+
+.fa-angle-double-down {
+    color: #007D88;
+    text-align: center;
+    font-size: x-large;
+}
+
+ul.quotation-tabs {
+  display: flex;
+  justify-content: center;
+}
+
+ul.quotation-tabs li.quotation-tab-item {
+  margin-right: 10px;
+}
+
+a.dropdown-item.table-row-price-option:hover {
+    background-color: blue;
+    color: white;
+}
+
+.fa-info-circle {
+    color: #298dff;
+}
+
+.fa-gift {
+    color: #e92990;
+}
+
+.fa-shipping-fast {
+    color: #c39749;
+}
+
+.modal-body-invalid-promotion {
+    text-align: center;
+}
+
+.row.modal-footer-invalid-promotion {
+    position: relative;
+    padding: 10px;
+    text-align: center;
+    border-top: 1px solid #c7c7c7;
+}
+
+.row.modal-footer-invalid-promotion::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1px;
+    height: 100%;
+    background-color: #b5b5b5;
+}
+
+.btn-remove-promotion {
+    color: red;
+}
+
+.btn-see-promotion {
+    color: #00D67F;
+}
+
+.option-btn-checked {
+    background-color: #f7f7f7;
+}
+
+.expired-price {
+    color: #EB5757CC;
+}
+
+.valid-price {
+    color: #00D67F;
+}
+
+.fa-angle-down {
+    font-size: x-small;
+    color: #c7c7c7;
+}
+
+.status-draft:disabled {
+    background-color: #f7f7f7;
+    color: #6f6f6f;
+}
+
+.status-created:disabled {
+    background-color: #ebf5f5;
+    color: #007D88;
+}
+
+.status-added:disabled {
+    background-color: #edfcfe;
+    color: #18DDEF;
+}
+
+.status-finish:disabled {
+    background-color: #ebfcf5;
+    color: #00ab66;
+}
+
+.status-cancel:disabled {
+    background-color: #ffebeb;
+    color: #e60000;
+}

@@ -2,7 +2,7 @@ function resetFormTask() {
     // clean html select etc.
     $('#formOpportunityTask').trigger('reset').removeClass('task_edit')
     $('#selectAssignTo').val(null).trigger('change');
-    if ($('.current-create-task').length !== 1)
+    if ($('.current-create-task').length <= 0)
         $('#selectOpportunity').val(null).trigger('change').attr('disabled', false);
     $('.label-mark, .wrap-checklist, .wrap-subtask').html('');
     $('#inputLabel').val(null);
@@ -345,6 +345,7 @@ $(function () {
         })
 
         if (!formData.opportunity) delete formData.opportunitys
+        if ($('#selectOpportunity').val()) formData.opportunitys = $('#selectOpportunity').val()
 
         if ($('[name="attach"]').val()){
             let list = []

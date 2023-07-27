@@ -1826,6 +1826,11 @@ $(document).ready(function () {
             let data_email = $('#inputEmailCc').val();
             $('#email-cc-select-box').append(`<option selected value="` + data_email + `">` + data_email + `</option>`);
             $('#inputEmailCc').val('');
+
+            $('#email-cc-input-btn').prop('hidden', false);
+            $('#inputEmailCc').prop('hidden', true);
+            $('#email-cc-add').prop('hidden', true);
+            $('#email-cc-remove').prop('hidden', true);
         }
     })
 

@@ -3689,5 +3689,10 @@ msgstr "Tài liệu giới thiệu sản phẩm cho khách hàng"
 msgid "Document For Customer"
 msgstr "Tài liệu cho khách hàng"
 
+#
+msgid "Copy to sale order"
+msgstr "Sao chép đến đơn hàng"
 
-
+#
+msgid "Opportunity was closed or had sale order"
+msgstr "Cơ hội kinh doanh đã đóng hoặc đã có đơn hàng"

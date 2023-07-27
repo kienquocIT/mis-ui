@@ -186,13 +186,30 @@ class RespData:
                     data_all[key] = func_call(data_all[key])
         return data_all
 
-    def auto_return(self, key_success):
+    def auto_return(
+            self,
+            key_success: str = None,
+            callback_success: callable = None,
+            status_success: int = None,
+            callback_errors: callable = None,
+    ):
+        if not status_success:
+            status_success = status.HTTP_200_OK
+
         if self.state:
-            return {key_success: self.result}
+            if callback_success:
+                return callback_success(self.result), status_success
+            if key_success:
+                return {key_success: self.result}, status_success
+            return self.result, status_success
         elif self.status == 401:
             return {}, status.HTTP_401_UNAUTHORIZED
         elif self.status == 403:
             return {}, status.HTTP_403_FORBIDDEN
+        elif self.status >= 500:
+            return {'errors': 'Failed to load resource'}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        if callback_errors:
+            return callback_errors(self.errors), status.HTTP_400_BAD_REQUEST
         return {'errors': self.errors}, status.HTTP_400_BAD_REQUEST
 
 

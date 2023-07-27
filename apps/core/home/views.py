@@ -21,12 +21,8 @@ class HomeView(View):
 class BookMarkListAPI(APIView):
     @mask_view(is_api=True, login_require=True, auth_require=True)
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(url=ApiURL.BOOKMARKS_LIST, user=request.user).get()
-        if resp.state:
-            return {'bookmarks_list': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(request=request, url=ApiURL.BOOKMARKS_LIST, user=request.user).get()
+        return resp.auto_return(key_success='bookmarks_list')
 
     @mask_view(is_api=True, login_require=True, auth_require=True)
     def post(self, request, *args, **kwargs):
@@ -39,63 +35,42 @@ class BookMarkListAPI(APIView):
             elif customize_url and not customize_url.startswith('/'):
                 errors['customize_url'] = ServerMsg.URL_INVALID
         if not errors:
-            resp = ServerAPI(user=request.user, url=ApiURL.BOOKMARKS_LIST).post(request.data)
-            if resp.state:
-                return resp.result, status.HTTP_200_OK
-            elif resp.status == 401:
-                return {}, status.HTTP_401_UNAUTHORIZED
-            return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+            resp = ServerAPI(request=request, user=request.user, url=ApiURL.BOOKMARKS_LIST).post(request.data)
+            return resp.auto_return()
         return {'errors': errors}, status.HTTP_400_BAD_REQUEST
 
 
 class BookMarkDetailAPI(APIView):
     @mask_view(is_api=True, login_require=True, auth_require=True)
     def put(self, request, *args, pk, **kwargs):
-        data = request.data
-        response = ServerAPI(user=request.user, url=ApiURL.BOOKMARKS_DETAIL.fill_key(pk=pk)).put(data)
-        if response.state:
-            return response.result, status.HTTP_200_OK
-        return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.BOOKMARKS_DETAIL.fill_key(pk=pk)).put(
+            request.data
+        )
+        return resp.auto_return()
 
     @mask_view(is_api=True, login_require=True, auth_require=True)
     def delete(self, request, *args, pk, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.BOOKMARKS_DETAIL.fill_key(pk=pk)).delete()
-        if resp.state:
-            return {'result': resp.result}, status.HTTP_204_NO_CONTENT
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.BOOKMARKS_DETAIL.fill_key(pk=pk)).delete()
+        return resp.auto_return(key_success='result', status_success=status.HTTP_204_NO_CONTENT)
 
 
 class DocPinedListAPI(APIView):
     @mask_view(login_require=True, auth_require=True, is_api=True)
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(url=ApiURL.PIN_DOC_LIST, user=request.user).get()
-        if resp.state:
-            return {'pin_doc_list': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(request=request, url=ApiURL.PIN_DOC_LIST, user=request.user).get()
+        return resp.auto_return(key_success='pin_doc_list')
 
     @mask_view(login_require=True, auth_require=True, is_api=True)
     def post(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.PIN_DOC_LIST).post(request.data)
-        if resp.state:
-            return resp.result, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.PIN_DOC_LIST).post(request.data)
+        return resp.auto_return()
 
 
 class DocPinedDetailAPI(APIView):
     @mask_view(login_require=True, auth_require=True, is_api=True)
     def delete(self, request, *args, pk, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.PIN_DOC_DETAIL.fill_key(pk=pk)).delete()
-        if resp.state:
-            return {'result': resp.result}, status.HTTP_204_NO_CONTENT
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.PIN_DOC_DETAIL.fill_key(pk=pk)).delete()
+        return resp.auto_return(key_success='result', status_success=status.HTTP_204_NO_CONTENT)
 
 
 class ComponentCollections(View):

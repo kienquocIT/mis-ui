@@ -12,9 +12,7 @@ def create_update_opportunity(request, url, msg):
     if resp.state:
         resp.result['message'] = msg
         return resp.result, status.HTTP_201_CREATED
-    elif resp.status == 401:
-        return {}, status.HTTP_401_UNAUTHORIZED
-    return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+    return resp.auto_return()
 
 
 class OpportunityList(View):
@@ -29,13 +27,15 @@ class OpportunityList(View):
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CONFIG).get()
         if resp.state:
-            return {
-                       'employee_current_id': request.user.employee_current_data.get('id', None),
-                       'config': resp.result
-                   }, status.HTTP_200_OK
-        return {
-                   'employee_current_id': request.user.employee_current_data.get('id', None),
-               }, status.HTTP_200_OK
+            result = {
+                'employee_current_id': request.user.employee_current_data.get('id', None),
+                'config': resp.result
+            }
+        else:
+            result = {
+                'employee_current_id': request.user.employee_current_data.get('id', None),
+            }
+        return result, status.HTTP_200_OK
 
 
 class OpportunityListAPI(APIView):
@@ -47,12 +47,7 @@ class OpportunityListAPI(APIView):
     def get(self, request, *args, **kwargs):
         data = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_LIST).get(data)
-        if resp.state:
-            return {'opportunity_list': resp.result}, status.HTTP_200_OK
-
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST
+        return resp.auto_return(key_success='opportunity_list')
 
     @mask_view(
         auth_require=True,
@@ -83,18 +78,17 @@ class OpportunityDetail(View):
         resp4 = ServerAPI(user=request.user, url=ApiURL.EMPLOYEE_LIST).get()
         resp5 = ServerAPI(user=request.user, url=ApiURL.ACCOUNTS_MAP_EMPLOYEES).get()
         if resp0.state and resp1.state and resp2.state and resp3.state and resp4.state and resp5.state:
-            return {
-                       'employee_current_id': request.user.employee_current_data.get('id', None),
-                       'config': resp0.result,
-                       'account_list': resp1.result,
-                       'contact_list': resp2.result,
-                       'opportunity_list': resp3.result,
-                       'employee_list': resp4.result,
-                       'account_map_employees': resp5.result,
-            }, status.HTTP_200_OK
-        return {
-                   'employee_current_id': request.user.employee_current_data.get('id', None),
-               }, status.HTTP_200_OK
+            result = {
+                'employee_current_id': request.user.employee_current_data.get('id', None),
+                'config': resp0.result,
+                'account_list': resp1.result,
+                'contact_list': resp2.result,
+                'opportunity_list': resp3.result,
+                'employee_list': resp4.result,
+                'account_map_employees': resp5.result,
+            }
+            return result, status.HTTP_200_OK
+        return {'employee_current_id': request.user.employee_current_data.get('id', None), }, status.HTTP_200_OK
 
 
 class OpportunityDetailAPI(APIView):
@@ -104,11 +98,7 @@ class OpportunityDetailAPI(APIView):
     )
     def get(self, request, pk, *arg, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_DETAIL.fill_key(pk=pk)).get()
-        if resp.state:
-            return {'opportunity': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        return resp.auto_return(key_success='opportunity')
 
     @mask_view(
         auth_require=True,
@@ -116,17 +106,7 @@ class OpportunityDetailAPI(APIView):
     )
     def put(self, request, pk, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_DETAIL.fill_key(pk=pk)).put(request.data)
-        if resp.state:
-            return {'opportunity': resp.result}, status.HTTP_200_OK
-        if resp.errors:  # noqa
-            if isinstance(resp.errors, dict):
-                err_msg = ""
-                for key, value in resp.errors.items():
-                    err_msg += str(key) + ': ' + str(value)
-                    break
-                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
-            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
-        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        return resp.auto_return(key_success='opportunity')
 
 
 class OpportunityCustomerDecisionFactorListAPI(APIView):
@@ -136,42 +116,23 @@ class OpportunityCustomerDecisionFactorListAPI(APIView):
     )
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CUSTOMER_DECISION_FACTOR).get()
-        if resp.state:
-            return {'opportunity_decision_factor': resp.result}, status.HTTP_200_OK
-
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST
+        return resp.auto_return(key_success='opportunity_decision_factor')
 
     @mask_view(
         auth_require=True,
         is_api=True,
     )
     def post(self, request, *arg, **kwargs):
-        data = request.data  # noqa
-        response = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CUSTOMER_DECISION_FACTOR).post(data)
-        if response.state:
-            return response.result, status.HTTP_200_OK
-        if response.errors:
-            if isinstance(response.errors, dict):
-                err_msg = ""
-                for key, value in response.errors.items():
-                    err_msg += str(key) + ': ' + str(value)
-                    break
-                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
-            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
-        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CUSTOMER_DECISION_FACTOR).post(request.data)
+        return resp.auto_return()
 
 
 class OpportunityCustomerDecisionFactorDetailAPI(APIView):
     @mask_view(auth_require=True, is_api=True)
     def delete(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(
-            user=request.user, url=ApiURL.OPPORTUNITY_CUSTOMER_DECISION_FACTOR_DETAIL.fill_key(pk=pk)
-        ).delete(request.data)
-        if resp.state:
-            return {}, status.HTTP_200_OK
-        return {'detail': resp.errors}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        url = ApiURL.OPPORTUNITY_CUSTOMER_DECISION_FACTOR_DETAIL.fill_key(pk=pk)
+        resp = ServerAPI(user=request.user, url=url).delete(request.data)
+        return resp.auto_return()
 
 
 class OpportunityConfig(View):
@@ -183,9 +144,7 @@ class OpportunityConfig(View):
     )
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.APPLICATION_PROPERTY_OPPORTUNITY_LIST).get()
-        if resp.state:
-            return {'property_opportunity_list': resp.result[::-1]}, status.HTTP_200_OK
-        return {}, status.HTTP_200_OK
+        return resp.auto_return(key_success='property_opportunity_list')
 
 
 class OpportunityConfigAPI(APIView):
@@ -195,12 +154,8 @@ class OpportunityConfigAPI(APIView):
         is_api=True
     )
     def get(self, request, *args, **kwargs):
-        res = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CONFIG).get()
-        if res.state:
-            return res.result, status.HTTP_200_OK
-        elif res.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': res.errors}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CONFIG).get()
+        return resp.auto_return()
 
     @mask_view(
         login_require=True,
@@ -208,13 +163,11 @@ class OpportunityConfigAPI(APIView):
         is_api=True,
     )
     def put(self, request, *args, **kwargs):
-        res = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CONFIG).put(request.data)
-        if res.state:
-            res.result['message'] = SaleMsg.OPPORTUNITY_CONFIG_UPDATE
-            return res.result, status.HTTP_200_OK
-        elif res.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': res.errors}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CONFIG).put(request.data)
+        if resp.state:
+            resp.result['message'] = SaleMsg.OPPORTUNITY_CONFIG_UPDATE
+            return resp.result, status.HTTP_200_OK
+        return resp.auto_return()
 
 
 class OpportunityConfigStageListAPI(APIView):
@@ -225,12 +178,7 @@ class OpportunityConfigStageListAPI(APIView):
     )
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CONFIG_STAGE).get()
-        if resp.state:
-            return {'opportunity_config_stage': resp.result}, status.HTTP_200_OK
-
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST
+        return resp.auto_return(key_success='opportunity_config_stage')
 
     @mask_view(
         auth_require=True,
@@ -238,19 +186,8 @@ class OpportunityConfigStageListAPI(APIView):
         login_require=True,
     )
     def post(self, request, *arg, **kwargs):
-        data = request.data  # noqa
-        response = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CONFIG_STAGE).post(data)
-        if response.state:
-            return response.result, status.HTTP_200_OK
-        if response.errors:
-            if isinstance(response.errors, dict):
-                err_msg = ""
-                for key, value in response.errors.items():
-                    err_msg += str(key) + ': ' + str(value)
-                    break
-                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
-            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
-        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CONFIG_STAGE).post(request.data)
+        return resp.auto_return()
 
 
 class OpportunityConfigStageDetailAPI(APIView):
@@ -260,12 +197,8 @@ class OpportunityConfigStageDetailAPI(APIView):
         is_api=True
     )
     def get(self, request, pk, *args, **kwargs):
-        res = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CONFIG_STAGE_DETAIL.fill_key(pk=pk)).get()
-        if res.state:
-            return res.result, status.HTTP_200_OK
-        elif res.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': res.errors}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CONFIG_STAGE_DETAIL.fill_key(pk=pk)).get()
+        return resp.auto_return()
 
     @mask_view(
         login_require=True,
@@ -273,24 +206,18 @@ class OpportunityConfigStageDetailAPI(APIView):
         is_api=True,
     )
     def put(self, request, pk, *args, **kwargs):
-        res = ServerAPI(
-            user=request.user, url=ApiURL.OPPORTUNITY_CONFIG_STAGE_DETAIL.fill_key(pk=pk)
-        ).put(request.data)
-        if res.state:
-            res.result['message'] = SaleMsg.OPPORTUNITY_CONFIG_UPDATE
-            return res.result, status.HTTP_200_OK
-        elif res.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': res.errors}, status.HTTP_400_BAD_REQUEST
+        url = ApiURL.OPPORTUNITY_CONFIG_STAGE_DETAIL.fill_key(pk=pk)
+        resp = ServerAPI(user=request.user, url=url).put(request.data)
+        if resp.state:
+            resp.result['message'] = SaleMsg.OPPORTUNITY_CONFIG_UPDATE
+            return resp.result, status.HTTP_200_OK
+        return resp.auto_return()
 
     @mask_view(auth_require=True, is_api=True)
     def delete(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(
-            user=request.user, url=ApiURL.OPPORTUNITY_CONFIG_STAGE_DETAIL.fill_key(pk=pk)
-        ).delete(request.data)
-        if resp.state:
-            return {}, status.HTTP_200_OK
-        return {'detail': resp.errors}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        url = ApiURL.OPPORTUNITY_CONFIG_STAGE_DETAIL.fill_key(pk=pk)
+        resp = ServerAPI(user=request.user, url=url).delete(request.data)
+        return resp.auto_return()
 
 
 class RestoreDefaultStageAPI(APIView):
@@ -300,23 +227,9 @@ class RestoreDefaultStageAPI(APIView):
     )
     def put(self, request, pk, *args, **kwargs):
         company_current_id = request.user.company_current_data.get('id', None)
-        resp = ServerAPI(
-            user=request.user,
-            url=ApiURL.RESTORE_DEFAULT_OPPORTUNITY_CONFIG_STAGE.fill_key(pk=company_current_id)
-        ).put(  # noqa
-            request.data
-        )
-        if resp.state:
-            return resp.result, status.HTTP_200_OK
-        if resp.errors:  # noqa
-            if isinstance(resp.errors, dict):
-                err_msg = ""
-                for key, value in resp.errors.items():
-                    err_msg += str(key) + ': ' + str(value)
-                    break
-                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
-            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
-        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        url = ApiURL.RESTORE_DEFAULT_OPPORTUNITY_CONFIG_STAGE.fill_key(pk=company_current_id)
+        resp = ServerAPI(user=request.user, url=url).put(request.data)
+        return resp.auto_return()
 
 
 class OpportunityCallLogList(View):
@@ -335,16 +248,17 @@ class OpportunityCallLogList(View):
         resp3 = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_LIST).get()
         resp4 = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CALL_LOG_LIST).get()
         if resp0.state and resp1.state and resp2.state and resp3.state and resp4.state:
-            return {
-                       'employee_current_id': request.user.employee_current_data.get('id', None),
-                       'account_list': resp1.result,
-                       'contact_list': resp2.result,
-                       'opportunity_list': resp3.result,
-                       'call_log_list': resp4.result,
-                   }, status.HTTP_200_OK
-        return {
-                   'employee_current_id': request.user.employee_current_data.get('id', None),
-               }, status.HTTP_200_OK
+            result = {
+                'employee_current_id': request.user.employee_current_data.get('id', None),
+                'account_list': resp1.result,
+                'contact_list': resp2.result,
+                'opportunity_list': resp3.result,
+                'call_log_list': resp4.result,
+            }
+
+        else:
+            result = {'employee_current_id': request.user.employee_current_data.get('id', None)}
+        return result, status.HTTP_200_OK
 
 
 class OpportunityCallLogListAPI(APIView):
@@ -354,12 +268,7 @@ class OpportunityCallLogListAPI(APIView):
     )
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CALL_LOG_LIST).get()
-        if resp.state:
-            return {'call_log_list': resp.result}, status.HTTP_200_OK
-
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST
+        return resp.auto_return(key_success='call_log_list')
 
     @mask_view(
         auth_require=True,
@@ -375,9 +284,7 @@ class OpportunityCallLogDeleteAPI(APIView):
     @mask_view(auth_require=True, is_api=True)
     def delete(self, request, pk, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CALL_LOG_DELETE.fill_key(pk=pk)).delete(request.data)
-        if resp.state:
-            return {}, status.HTTP_200_OK
-        return {'detail': resp.errors}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        return resp.auto_return()
 
 
 class OpportunityEmailList(View):
@@ -396,16 +303,18 @@ class OpportunityEmailList(View):
         resp3 = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_LIST).get()
         resp4 = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_EMAIL_LIST).get()
         if resp0.state and resp1.state and resp2.state and resp3.state and resp4.state:
-            return {
-                       'employee_current_id': request.user.employee_current_data.get('id', None),
-                       'account_list': resp1.result,
-                       'contact_list': resp2.result,
-                       'opportunity_list': resp3.result,
-                       'email_list': resp4.result,
-                   }, status.HTTP_200_OK
-        return {
-                   'employee_current_id': request.user.employee_current_data.get('id', None),
-               }, status.HTTP_200_OK
+            result = {
+                'employee_current_id': request.user.employee_current_data.get('id', None),
+                'account_list': resp1.result,
+                'contact_list': resp2.result,
+                'opportunity_list': resp3.result,
+                'email_list': resp4.result,
+            }
+        else:
+            result = {
+                'employee_current_id': request.user.employee_current_data.get('id', None),
+            }
+        return result, status.HTTP_200_OK
 
 
 class OpportunityEmailListAPI(APIView):
@@ -415,12 +324,7 @@ class OpportunityEmailListAPI(APIView):
     )
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_EMAIL_LIST).get()
-        if resp.state:
-            return {'email_list': resp.result}, status.HTTP_200_OK
-
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST
+        return resp.auto_return(key_success='email_list')
 
     @mask_view(
         auth_require=True,
@@ -433,12 +337,10 @@ class OpportunityEmailListAPI(APIView):
 
 
 class OpportunityEmailDeleteAPI(APIView):
-    @mask_view(auth_require=True, is_api=True,)
+    @mask_view(auth_require=True, is_api=True, )
     def delete(self, request, pk, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_EMAIL_DELETE.fill_key(pk=pk)).delete(request.data)
-        if resp.state:
-            return {}, status.HTTP_200_OK
-        return {'detail': resp.errors}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        return resp.auto_return()
 
 
 class OpportunityMeetingList(View):
@@ -459,18 +361,20 @@ class OpportunityMeetingList(View):
         resp5 = ServerAPI(user=request.user, url=ApiURL.EMPLOYEE_LIST).get()
         resp6 = ServerAPI(user=request.user, url=ApiURL.ACCOUNTS_MAP_EMPLOYEES).get()
         if resp0.state and resp1.state and resp2.state and resp3.state and resp4.state and resp5.state and resp6.result:
-            return {
-                       'employee_current_id': request.user.employee_current_data.get('id', None),
-                       'account_list': resp1.result,
-                       'contact_list': resp2.result,
-                       'opportunity_list': resp3.result,
-                       'meeting_list': resp4.result,
-                       'employee_list': resp5.result,
-                       'account_map_employees': resp6.result
-                   }, status.HTTP_200_OK
-        return {
-                   'employee_current_id': request.user.employee_current_data.get('id', None),
-               }, status.HTTP_200_OK
+            result = {
+                'employee_current_id': request.user.employee_current_data.get('id', None),
+                'account_list': resp1.result,
+                'contact_list': resp2.result,
+                'opportunity_list': resp3.result,
+                'meeting_list': resp4.result,
+                'employee_list': resp5.result,
+                'account_map_employees': resp6.result
+            }
+        else:
+            result = {
+                'employee_current_id': request.user.employee_current_data.get('id', None),
+            }
+        return result, status.HTTP_200_OK
 
 
 class OpportunityMeetingListAPI(APIView):
@@ -480,12 +384,7 @@ class OpportunityMeetingListAPI(APIView):
     )
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_MEETING_LIST).get()
-        if resp.state:
-            return {'meeting_list': resp.result}, status.HTTP_200_OK
-
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST
+        return resp.auto_return(key_success='meeting_list')
 
     @mask_view(
         auth_require=True,
@@ -504,9 +403,9 @@ class OpportunityMeetingDeleteAPI(APIView):
     )
     def delete(self, request, pk, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_MEETING_DELETE.fill_key(pk=pk)).delete(request.data)
-        if resp.state:
-            return {}, status.HTTP_200_OK
-        return {'detail': resp.errors}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        return resp.auto_return()
+
+
 class OpportunityActivityLogTaskListAPI(APIView):
     @mask_view(
         auth_require=True,
@@ -515,12 +414,7 @@ class OpportunityActivityLogTaskListAPI(APIView):
     def get(self, request, *args, **kwargs):
         params = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_ACTIVITY_LOGS_TASK).get(params)
-        if resp.state:
-            return {'log_task_list': resp.result}, status.HTTP_200_OK
-
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST
+        return resp.auto_return(key_success='log_task_list')
 
 
 class OpportunityDocumentList(View):
@@ -563,31 +457,15 @@ class OpportunityDocumentListAPI(APIView):
     )
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_DOCUMENT_LIST).get()
-        if resp.state:
-            return {'document_list': resp.result}, status.HTTP_200_OK
-
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST
+        return resp.auto_return(key_success='document_list')
 
     @mask_view(
         auth_require=True,
         is_api=True,
     )
     def post(self, request, *arg, **kwargs):
-        data = request.data  # noqa
-        response = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_DOCUMENT_LIST).post(data)
-        if response.state:
-            return response.result, status.HTTP_200_OK
-        if response.errors:
-            if isinstance(response.errors, dict):
-                err_msg = ""
-                for key, value in response.errors.items():
-                    err_msg += str(key) + ': ' + str(value)
-                    break
-                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
-            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
-        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_DOCUMENT_LIST).post(request.data)
+        return resp.auto_return()
 
 
 class OpportunityDocumentDetailAPI(APIView):
@@ -597,8 +475,4 @@ class OpportunityDocumentDetailAPI(APIView):
     )
     def get(self, request, pk, *arg, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_DOCUMENT_DETAIL.fill_key(pk=pk)).get()
-        if resp.state:
-            return {'opportunity_doc': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        return resp.auto_return(key_success='opportunity_doc')

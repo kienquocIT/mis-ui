@@ -72,11 +72,7 @@ class WorkflowOfAppListAPI(APIView):
     )
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.WORKFLOW_OF_APPS).get()
-        if resp.state:
-            return {'app_list': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        return resp.auto_return(key_success='app_list')
 
 
 class WorkflowOfAppDetailAPI(APIView):
@@ -87,14 +83,9 @@ class WorkflowOfAppDetailAPI(APIView):
     )
     def put(self, request, *args, pk, **kwargs):
         if TypeCheck.check_uuid(pk):
-            resp = ServerAPI(user=request.user, url=ApiURL.WORKFLOW_OF_APP_DETAIL.fill_key(pk=pk)).put(
-                data=request.data
-            )
-            if resp.state:
-                return {'app_list': resp.result}, status.HTTP_200_OK
-            elif resp.status == 401:
-                return {}, status.HTTP_401_UNAUTHORIZED
-            return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+            url = ApiURL.WORKFLOW_OF_APP_DETAIL.fill_key(pk=pk)
+            resp = ServerAPI(user=request.user, url=url).put(data=request.data)
+            return resp.auto_return(key_success='app_list')
         return {'errors': BaseMsg.NOT_FOUND}, status.HTTP_400_BAD_REQUEST
 
 
@@ -118,11 +109,7 @@ class WorkflowListAPI(APIView):
     )
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.WORKFLOW_LIST).get(data=request.query_params.dict())
-        if resp.state:
-            return {'workflow_list': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        return resp.auto_return(key_success='workflow_list')
 
 
 class WorkflowCreate(View):
@@ -149,15 +136,11 @@ class WorkflowCreateAPI(APIView):
         is_api=True,
     )
     def post(self, request, *args, **kwargs):
-        data = request.data
-        resp = ServerAPI(user=request.user, url=ApiURL.WORKFLOW_LIST).post(data)
+        resp = ServerAPI(user=request.user, url=ApiURL.WORKFLOW_LIST).post(request.data)
         if resp.state:
             resp.result['message'] = WorkflowMsg.WORKFLOW_CREATE
             return resp.result, status.HTTP_200_OK
-
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        return resp.auto_return()
 
 
 class WorkflowDetail(View):
@@ -178,15 +161,11 @@ class WorkflowDetail(View):
                }, status.HTTP_200_OK
 
     def put(self, request, *args, **kwargs):
-        data = request.data
-        resp = ServerAPI(user=request.user, url=ApiURL.WORKFLOW).put(data)
+        resp = ServerAPI(user=request.user, url=ApiURL.WORKFLOW).put(request.data)
         if resp.state:
             resp.result['message'] = WorkflowMsg.WORKFLOW_UPDATE
             return resp.result, status.HTTP_200_OK
-
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        return resp.auto_return()
 
 
 class WorkflowDetailAPI(APIView):
@@ -195,26 +174,19 @@ class WorkflowDetailAPI(APIView):
         is_api=True,
     )
     def get(self, request, pk, *args, **kwargs):
-        res = ServerAPI(user=request.user, url=ApiURL.WORKFLOW.push_id(pk)).get()
-        if res.state:
-            return res.result, status.HTTP_200_OK
-        elif res.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': res.errors}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(user=request.user, url=ApiURL.WORKFLOW.push_id(pk)).get()
+        return resp.auto_return()
 
     @mask_view(
         auth_require=True,
         is_api=True,
     )
     def put(self, request, pk, *args, **kwargs):
-        data = request.data
-        res = ServerAPI(user=request.user, url=ApiURL.WORKFLOW.push_id(pk)).put(data)
-        if res.state:
-            res.result['message'] = WorkflowMsg.WORKFLOW_UPDATE
-            return res.result, status.HTTP_200_OK
-        elif res.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': res.errors}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(user=request.user, url=ApiURL.WORKFLOW.push_id(pk)).put(request.data)
+        if resp.state:
+            resp.result['message'] = WorkflowMsg.WORKFLOW_UPDATE
+            return resp.result, status.HTTP_200_OK
+        return resp.auto_return()
 
 
 class NodeSystemListAPI(APIView):

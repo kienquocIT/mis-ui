@@ -5,14 +5,10 @@ from apps.shared import mask_view, ServerAPI
 
 
 class DefaultDataView(View):
-    @mask_view(
-        auth_require=True,
-        template='shareapp/default_data.html',
-    )
-    def get(self, request, *args, **kwargs):
-        data_list = ServerAPI(user=request.user, url='private-system/default-data').get()
-        result = []
-        for plan, plan_data in data_list.result.items():
+    @classmethod
+    def callback_success(cls, result):
+        rs = []
+        for plan, plan_data in result.items():
             for feature, feature_data in plan_data.items():
                 row = []
                 data_tmp = []
@@ -25,7 +21,7 @@ class DefaultDataView(View):
                     if not row:
                         row = row_tmp
                     data_tmp.append(arr_tmp)
-                result.append(
+                rs.append(
                     {
                         'plan': plan,
                         'feature': feature,
@@ -33,4 +29,12 @@ class DefaultDataView(View):
                         'data': data_tmp,
                     }
                 )
-        return {'default_data': result}, status.HTTP_200_OK
+        return {'default_data': rs}
+
+    @mask_view(
+        auth_require=True,
+        template='shareapp/default_data.html',
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(request=request, user=request.user, url='private-system/default-data').get()
+        return resp.auto_return(callback_success=self.callback_success)

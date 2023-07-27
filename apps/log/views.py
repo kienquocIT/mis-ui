@@ -39,53 +39,45 @@ class TicketErrorCreateAPI(APIView):
 class ActivityLogListAPI(APIView):
     @mask_view(login_require=True, auth_require=True, is_api=True)
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(url=ApiURL.LOG_ACTIVITIES, user=request.user).get(data=request.query_params)
-        if resp.state:
-            return {'log_data': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(request=request, url=ApiURL.LOG_ACTIVITIES, user=request.user).get(data=request.query_params)
+        return resp.auto_return(key_success='log_data')
 
 
 class MyNotifyNoDoneCountAPI(APIView):
+    @classmethod
+    def callback_success(cls, result):
+        return {'count': result.get('count', 0)}
+
     @mask_view(login_require=True, auth_require=True, is_api=True)
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(url=ApiURL.LOG_MY_NOTIFY_COUNT, user=request.user).get()
-        if resp.state:
-            return {'count': resp.result.get('count', 0)}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(request=request, url=ApiURL.LOG_MY_NOTIFY_COUNT, user=request.user).get()
+        return resp.auto_return(callback_success=self.callback_success)
 
 
 class MyNotifyAllAPI(APIView):
     @mask_view(login_require=True, auth_require=True, is_api=True)
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(url=ApiURL.LOG_MY_NOTIFY_DATA_ALL, user=request.user).get()
-        if resp.state:
-            return {'notify_data': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(request=request, url=ApiURL.LOG_MY_NOTIFY_DATA_ALL, user=request.user).get()
+        return resp.auto_return(key_success='notify_data')
 
 
 class MyNotifySeenAllAPI(APIView):
+    @classmethod
+    def callback_success(cls, result):
+        return {'detail': BaseMsg.SUCCESS}
+
     @mask_view(login_require=True, auth_require=True, is_api=True)
     def put(self, request, *args, **kwargs):
-        resp = ServerAPI(url=ApiURL.LOG_MY_NOTIFY_SEEN_ALL, user=request.user).put(data={})
-        if resp.state:
-            return {'detail': BaseMsg.SUCCESS}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(request=request, url=ApiURL.LOG_MY_NOTIFY_SEEN_ALL, user=request.user).put(data={})
+        return resp.auto_return(callback_success=self.callback_success)
 
 
 class MyNotifyCleanAllAPI(APIView):
+    @classmethod
+    def callback_success(cls, result):
+        return {'detail': BaseMsg.SUCCESS}
+
     @mask_view(login_require=True, auth_require=True, is_api=True)
     def delete(self, request, *args, **kwargs):
-        resp = ServerAPI(url=ApiURL.LOG_MY_NOTIFY_CLEAN_ALL, user=request.user).delete()
-        if resp.state:
-            return {'detail': BaseMsg.SUCCESS}, status.HTTP_204_NO_CONTENT
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(request=request, url=ApiURL.LOG_MY_NOTIFY_CLEAN_ALL, user=request.user).delete()
+        return resp.auto_return(callback_success=self.callback_success)

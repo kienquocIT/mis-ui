@@ -2,10 +2,7 @@ $(document).ready(function () {
     let letStateChoices = JSON.parse($('#dataStateChoices').text());
     let tbl = $('#dtbDeliveryList');
     let frm = new SetupFormSubmit(tbl);
-    tbl.DataTable({
-        searching: false,
-        ordering: false,
-        paginate: true,
+    tbl.DataTableDefault({
         ajax: {
             url: frm.dataUrl,
             type: frm.dataMethod,
@@ -17,7 +14,6 @@ $(document).ready(function () {
                 throw Error('Call data raise errors.')
             },
         },
-        rowIdx: false,
         columnDefs: [
             {
                 "width": "30%",
@@ -111,8 +107,10 @@ $(document).ready(function () {
                             </div>`;
                 }
             }
-        ]
-    }, false)
+        ],
+        visibleSearchField: false,
+        rowIdx: false,
+    })
 
     const $Table = $('#sale_order_approved');
     $('#sale_order_select').on('shown.bs.modal', function (e) {

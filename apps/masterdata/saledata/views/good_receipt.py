@@ -26,31 +26,19 @@ class GoodReceiptListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.GOOD_RECEIPT_API).get()
-        if resp.state:
-            return {'good_receipt_list': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.GOOD_RECEIPT_API).get()
+        return resp.auto_return(key_success='good_receipt_list')
 
     @mask_view(
         auth_require=True,
         is_api=True,
     )
     def post(self, request, *arg, **kwargs):
-        response = ServerAPI(user=request.user, url=ApiURL.GOOD_RECEIPT_API).post(request.data)
-        if response.state:
-            response.result['message'] = GRMsg.MS_CREATE
-            return response.result, status.HTTP_201_CREATED
-        if response.errors:
-            if isinstance(response.errors, dict):
-                err_msg = ""
-                for key, value in response.errors.items():
-                    err_msg += str(key) + ': ' + str(value)
-                    break
-                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
-            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
-        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.GOOD_RECEIPT_API).post(request.data)
+        if resp.state:
+            resp.result['message'] = GRMsg.MS_CREATE
+            return resp.result, status.HTTP_201_CREATED
+        return resp.auto_return()
 
 
 class GoodReceiptCreate(View):
@@ -83,36 +71,28 @@ class GoodReceiptDetailAPI(APIView):
         is_api=True,
     )
     def get(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.GOOD_RECEIPT_API.push_id(pk)).get()
-        if resp.state:
-            return resp.result, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.GOOD_RECEIPT_API.push_id(pk)).get()
+        return resp.auto_return()
 
     @mask_view(
         auth_require=True,
         is_api=True,
     )
     def put(self, request, pk, *args, **kwargs):
-        req = ServerAPI(user=request.user, url=ApiURL.GOOD_RECEIPT_API.push_id(pk)).put(request.data)
-        if req.state:
-            req.result['message'] = GRMsg.MS_UPDATE
-            return req.result, status.HTTP_200_OK
-        elif req.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': req.errors}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.GOOD_RECEIPT_API.push_id(pk)).put(request.data)
+        if resp.state:
+            resp.result['message'] = GRMsg.MS_UPDATE
+            return resp.result, status.HTTP_200_OK
+        return resp.auto_return()
 
     @mask_view(
         auth_require=True,
         is_api=True
     )
     def delete(self, request, pk, *args, **kwargs):
-        req = ServerAPI(user=request.user, url=ApiURL.GOOD_RECEIPT_API.push_id(pk)).delete(request.data)
-        if req.state:
-            req.result['detail'] = GRMsg.MS_DELETE
-            return req.result, status.HTTP_200_OK
-        elif req.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': req.errors}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.GOOD_RECEIPT_API.push_id(pk)).delete(request.data)
+        if resp.state:
+            resp.result['detail'] = GRMsg.MS_DELETE
+            return resp.result, status.HTTP_200_OK
+        return resp.auto_return()
 

@@ -310,6 +310,9 @@ $(async function () {
                                 + `<i class="bi bi-three-dots font-3 ${isDisabled}"></i></button></div>`;
                             if (delivery_config.is_picking && !delivery_config.is_partial_ship)
                                 html = `<p class="text-center">${quantity}<p/>`
+                            if (data?.is_not_inventory){
+
+                            }
                             return html
                         }
                     },

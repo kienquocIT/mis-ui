@@ -2482,8 +2482,16 @@ msgid "detail"
 msgstr "Chi tiết"
 
 #
-msgid "The session login was expired."
-msgstr "Phiên đăng nhập đã hết hạn."
+msgid "The session login was expired"
+msgstr "Phiên đăng nhập đã hết hạn"
+
+#
+msgid "Login page"
+msgstr "Trang đăng nhập"
+
+#
+msgid "Internal Server Errors"
+msgstr "Đã có lỗi xảy ra"
 
 #
 msgid "Username and password are incorrect."

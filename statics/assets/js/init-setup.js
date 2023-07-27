@@ -1966,6 +1966,81 @@ class WindowControl {
             ...opts
         });
     }
+
+    static showForbidden() {
+        Swal.fire({
+            title: $.fn.storageSystemData.attr('data-msg-403'),
+            icon: 'error',
+            // text: $.fn.storageSystemData.attr('data-msg-contact-admin-403'),
+            allowOutsideClick: false,
+            showDenyButton: true,
+            denyButtonText: $.fn.storageSystemData.attr('data-msg-home-page'),
+            confirmButtonColor: '#3085d6',
+            showConfirmButton: true,
+            confirmButtonText: $.fn.storageSystemData.attr('data-msg-previous-page'),
+            denyButtonColor: '#21b48f',
+            preConfirm: function (opts) {
+                window.location.href = document.referrer;
+            },
+            preDeny: function () {
+                window.location.href = '/';
+            },
+        })
+    }
+
+    static showNotFound(){
+        Swal.fire({
+            title: $.fn.storageSystemData.attr('data-msg-404'),
+            icon: 'question',
+            allowOutsideClick: false,
+            showDenyButton: true,
+            denyButtonText: $.fn.storageSystemData.attr('data-msg-home-page'),
+            confirmButtonColor: '#3085d6',
+            showConfirmButton: true,
+            confirmButtonText: $.fn.storageSystemData.attr('data-msg-previous-page'),
+            denyButtonColor: '#21b48f',
+            preConfirm: function (opts) {
+                window.location.href = document.referrer;
+            },
+            preDeny: function () {
+                window.location.href = '/';
+            },
+        })
+    }
+
+    static showUnauthenticated(){
+        Swal.fire({
+            title: $.fn.storageSystemData.attr('data-msg-login-expired'),
+            icon: 'error',
+            allowOutsideClick: false,
+            confirmButtonColor: '#3085d6',
+            showConfirmButton: true,
+            confirmButtonText: $.fn.storageSystemData.attr('data-msg-login-page'),
+            preConfirm: function (opts) {
+                return $x.fn.redirectLogin();
+            },
+        })
+    }
+
+    static showSVErrors(){
+        Swal.fire({
+            title: $.fn.storageSystemData.attr('data-msg-500'),
+            icon: 'error',
+            allowOutsideClick: false,
+            showDenyButton: true,
+            denyButtonText: $.fn.storageSystemData.attr('data-msg-home-page'),
+            confirmButtonColor: '#3085d6',
+            showConfirmButton: true,
+            confirmButtonText: $.fn.storageSystemData.attr('data-msg-previous-page'),
+            denyButtonColor: '#21b48f',
+            preConfirm: function (opts) {
+                window.location.href = document.referrer;
+            },
+            preDeny: function () {
+                window.location.href = '/';
+            },
+        })
+    }
 }
 
 class PersonControl {

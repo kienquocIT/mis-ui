@@ -24,8 +24,8 @@ class DeliveryConfigDetail(View):
         breadcrumb='DELIVERY_CONFIG',
     )
     def get(self, request, *args, **kwargs):
-        res = ServerAPI(user=request.user, url=ApiURL.DELIVERY_CONFIG).get()
-        return {'config_data': res.result}, status.HTTP_200_OK
+        resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_CONFIG).get()
+        return resp.auto_return(key_success='config_data')
 
 
 class DeliveryConfigDetailAPI(APIView):

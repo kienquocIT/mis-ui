@@ -203,14 +203,16 @@ class RespData:
                 return {key_success: self.result}, status_success
             return self.result, status_success
         elif self.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
+            return {}, status.HTTP_401_UNAUTHORIZED  # mask_view return 302 (redirect to log in)
         elif self.status == 403:
-            return {}, status.HTTP_403_FORBIDDEN
+            return {'render_api_status': 1403}, status.HTTP_403_FORBIDDEN
+        elif self.status == 404:
+            return {'render_api_status': 1404}, status.HTTP_404_NOT_FOUND
         elif self.status >= 500:
-            return {'errors': 'Failed to load resource'}, status.HTTP_500_INTERNAL_SERVER_ERROR
+            return {'render_api_status': 1500}, status.HTTP_500_INTERNAL_SERVER_ERROR
         if callback_errors:
-            return callback_errors(self.errors), status.HTTP_400_BAD_REQUEST
-        return {'errors': self.errors}, status.HTTP_400_BAD_REQUEST
+            return {'render_api_status': 1400, **callback_errors(self.errors)}, status.HTTP_400_BAD_REQUEST
+        return {'render_api_status': 1400, 'errors': self.errors}, status.HTTP_400_BAD_REQUEST
 
 
 class DictFillResp(dict):

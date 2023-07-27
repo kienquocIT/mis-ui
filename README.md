@@ -586,6 +586,18 @@ class YYY(APIView):
 
 ```
 
+III. Sử dụng cho các view sử dụng gọi API render context
+```python
+class ZZZ(View):
+    @mask_view(...)
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url='').get()
+        return resp.auto_return(key_success='x')
+# Tự động thêm "render_api_status" vào body khi tải page
+# base.html sẽ dựa vào "render_api_status" để hiển thị các popup tương ứng với giá trị
+# đã xử lý với 401, 403, 404, 500
+```
+
 ---
 
 Tài liệu này sẽ được làm lại khi mọi thứ đã ổn định!

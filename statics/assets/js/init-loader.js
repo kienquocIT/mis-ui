@@ -187,24 +187,7 @@ $.fn.extend({
                     return WindowControl.redirectLogin(500);
                 case 403:
                     // if (isNotify === true) $.fn.notifyB({'description': resp.data.errors}, 'failure');
-                    Swal.fire({
-                        title: $.fn.storageSystemData.attr('data-msg-403'),
-                        icon: 'error',
-                        // text: $.fn.storageSystemData.attr('data-msg-contact-admin-403'),
-                        allowOutsideClick: false,
-                        showDenyButton: true,
-                        denyButtonText: $.fn.storageSystemData.attr('data-msg-home-page'),
-                        confirmButtonColor: '#3085d6',
-                        showConfirmButton: true,
-                        confirmButtonText: $.fn.storageSystemData.attr('data-msg-previous-page'),
-                        denyButtonColor: '#21b48f',
-                        preConfirm: function (opts) {
-                            window.location.href = document.referrer;
-                        },
-                        preDeny: function (){
-                            window.location.href = '/';
-                        },
-                    })
+                    WindowControl.showForbidden();
                     return {};
                 case 500:
                     return {};

@@ -701,8 +701,8 @@ class FileUtils {
         }, (errs) => {
             progressBarEle.remove();
             let existData = errs?.data?.['errors']?.['exist'];
-            let nameFile = existData['name'].split(".")[0];
-            let extFile = existData['name'].split(".").pop();
+            let nameFile = existData?.['name'].split(".")[0];
+            let extFile = existData?.['name'].split(".").pop();
             if (existData) {
                 let newFileNameIDRandom = 'newFileName_' + UtilControl.generateRandomString(12);
                 Swal.fire({
@@ -1900,16 +1900,24 @@ class WindowControl {
         }
     }
 
-    static showLoading(timeout) {
-        $('#loadingContainer').removeClass('hidden');
-        if (timeout) {
-            setTimeout(WindowControl.hideLoading, (timeout > 100 ? timeout : 1000));
-        }
+    static showLoading() {
+        Swal.fire({
+            icon: 'info',
+            title: `${$.fn.transEle.attr('data-loading')}`,
+            text: `${$.fn.transEle.attr('data-wait')}...`,
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            timerProgressBar: true,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
     }
 
     static hideLoading() {
         setTimeout(() => {
-            $('#loadingContainer').addClass('hidden');
+            Swal.hideLoading();
+            swal.close();
         }, 250,)
     }
 
@@ -2157,6 +2165,39 @@ class DocumentControl {
         let tenant_code_active = nav_data.attr('data-nav-tenant');
         if (tenant_code_active) $('#menu-tenant').children('option[value=' + tenant_code_active + ']').attr('selected', 'selected');
     }
+}
+
+let $x = {
+    cls: {
+        frm: SetupFormSubmit,
+        window: WindowControl,
+        file: FileUtils,
+        wf: WFRTControl,
+        util: UtilControl,
+        dtb: DTBControl,
+        person: PersonControl,
+        doc: DocumentControl,
+    },
+    fn: {
+        fileInit: FileUtils.init,
+
+        setWFRuntimeID: WFRTControl.setWFRuntimeID,
+
+        getRowData: DTBControl.getRowData,
+        deleteRow: DTBControl.deleteRow,
+
+        redirectLogin: WindowControl.redirectLogin,
+
+        showLoadingButton: WindowControl.showLoadingButton,
+        hideLoadingButton: WindowControl.hideLoadingButton,
+        showLoadingPage: WindowControl.showLoading,
+        hideLoadingPage: WindowControl.hideLoading,
+        showLoadingWaitResponse: WindowControl.showLoadingWaitResponse,
+        hideLoadingWaitResponse: WindowControl.hideLoadingWaitResponse,
+
+        shortNameGlobe: PersonControl.shortNameGlobe,
+        renderAvatar: PersonControl.renderAvatar,
+    },
 }
 
 

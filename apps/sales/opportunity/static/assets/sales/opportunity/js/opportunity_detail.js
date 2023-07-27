@@ -2109,7 +2109,7 @@ $(document).ready(function () {
                     targets: 3,
                     width: "10%",
                     render: (data, type, row) => {
-                        return `<btn type="button" class="btn action act-edit" data-row-id="${data}"><i class="fa-solid fa-pencil"></i></btn>`;
+                        return ''
                     }
                 }
             ]
@@ -2124,7 +2124,7 @@ $(document).ready(function () {
                     if (data) {
                         // enable side panel
                         if (!$('#drawer_task_create').hasClass('open')){
-                            $('.current-create-task span').trigger('click')
+                            $($('.current-create-task span')[0]).trigger('click')
                         }
                         $('#inputTextTitle').val(data.title)
                         $('#inputTextCode').val(data.code)
@@ -2310,7 +2310,7 @@ $(document).ready(function () {
             }
         })
         Promise.all([call_1, call_2, call_3, call_4]).then((results) => {
-        let sorted = results.flat().sort(function(a, b) {
+            let sorted = results.flat().sort(function (a, b) {
                 return new Date(b.date) - new Date(a.date);
             })
             loadTimelineList(sorted);

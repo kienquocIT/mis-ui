@@ -306,8 +306,8 @@ $.fn.extend({
                 let csrfToken = opts?.['csrf_token'] || $("input[name=csrfmiddlewaretoken]").val();
                 let headers = opts?.['headers'] || {}
                 let data = opts?.['data'];
-                if (method.toLowerCase() !== 'put' && typeof data === 'object') {
-                    data = WFRTControl.appendBodyCheckWFTask(data, method);
+                if (method.toLowerCase() === 'put' && typeof data === 'object') {
+                    data = WFRTControl.appendBodyCheckWFTask(method, data);
                 }
                 if (method.toLowerCase() !== 'get' && contentType === "application/json") {
                     data = JSON.stringify(data);
@@ -390,6 +390,7 @@ $.fn.extend({
                         }, ...statusCodeCallback,
                     },
                 };
+                console.log(ctx);
                 return $.ajax(ctx);
             }
             throw Error('Ajax must be url setup before send');

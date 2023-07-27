@@ -2782,6 +2782,10 @@ msgid "Loading"
 msgstr "Đang tải"
 
 #
+msgid "Please wait"
+msgstr "Vui lòng đợi"
+
+#
 msgid "Diagram Workflow"
 msgstr "Biểu đồ quy trình"
 

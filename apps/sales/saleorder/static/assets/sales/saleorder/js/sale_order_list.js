@@ -141,8 +141,9 @@ $(function () {
                                 let data = $.fn.switcherResp(resp);
                                 if (data?.['status'] === 200) {
                                     const config = data?.config
-                                    let url_redirect = config?.is_picking ? $('#sale-order-link').attr('data-picking') :
-                                        $('#sale-order-link').attr('data-delivery')
+                                    let url_redirect = $('#sale-order-link').attr('data-delivery')
+                                    if (config?.is_picking && !data?.is_not_picking)
+                                        url_redirect = $('#sale-order-link').attr('data-picking')
                                     setTimeout(() => {
                                         window.location.href = url_redirect
                                     }, 1000);

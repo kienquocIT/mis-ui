@@ -598,6 +598,46 @@ class ZZZ(View):
 # đã xử lý với 401, 403, 404, 500
 ```
 
+IV. Kiểm tra để truy cập vào các page không có tương tác với API để kiểm tra quyền
+```python
+class XXX:
+    def get(self,...):
+        resp = ServerAPI(..., is_check_perm=True).post() # post đến URL cần kiểm tra quyền
+        if resp.state:
+            ...
+            # tiếp tục render
+            return {}, status.HTTP_200_OK
+        return resp.auto_return() # để class tự động trả mã lỗi
+```
+
+V. Kiểm tra quyền trước khi cho render các page không tương tác với API (tạo mới, cập nhật,...)
+> Này là tính năng nâng cao. 
+> Sử dụng cho các page "cần thiết" kiểm tra quyền trước khi cho người dùng thao tác có giao tiếp với API, 
+> giống như vào được page tạo nhưng khi bấm tạo thì báo lỗi
+
+1. Tự động kiểm tra theo cấu hình mask_view:
+```python
+@mask_view(..., perm_check=PermCheck(url=ApiURL.XXX, method='post'),...)
+def get(...):
+    ...
+```
+2. Tự kiểm tra trong view:
+```python
+class X:
+   @mask_view()
+   def get(self, request, *args, **kwargs):
+        # state: bool : trạng thái kiểm tra quyền
+        # resp_data: nếu state = false thì resp_data sẽ được tự động triển khai
+        state, resp_data = PermCheck(url=AipURL.XXX, method='post').valid(request=request, view_kwargs=kwargs)
+        if state:
+            return ServerAPI.empty_200()
+        return resp_data
+```
+3. Các argument của hàm PermCheck khác:
+> - fill_key: list[str] : danh sách key sẽ được lấy từ kwargs từ view để đẩy vào URL kiểm tra quyền
+> - fixed_fill_key : dict[str, str] : các key và value mặc định cần đẩy vào URL kiểm tra quyền
+
+
 ---
 
 Tài liệu này sẽ được làm lại khi mọi thứ đã ổn định!

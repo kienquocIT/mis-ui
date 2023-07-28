@@ -92,10 +92,7 @@
                             <div class="row">
                                 <div class="col-6">
                                     <div class="form-group">
-                                        <label class="form-label">
-                                            {% trans 'First Name' %}
-                                            <span class="field-required">(*)</span>
-                                        </label>
+                                        <label class="form-label required">{% trans 'First Name' %}</label>
                                         <input
                                                 type="text" class="form-control"
                                                 placeholder="A"
@@ -108,10 +105,7 @@
                                 </div>
                                 <div class="col-6">
                                     <div class="form-group">
-                                        <label class="form-label">
-                                            {% trans 'Last Name' %}
-                                            <span class="field-required">(*)</span>
-                                        </label>
+                                        <label class="form-label required">{% trans 'Last Name' %}</label>
                                         <input
                                                 type="text" placeholder="Nguyen Van"
                                                 class="form-control"
@@ -139,9 +133,7 @@
                     <div class="row">
                         <div class="col-4">
                             <div class="form-group">
-                                <label class="form-label">{% trans 'Email' %}<span
-                                        class="field-required"
-                                >(*)</span></label>
+                                <label class="form-label required">{% trans 'Email' %}</label>
                                 <input
                                         type="email" class="form-control"
                                         placeholder="customer@mtsolution.com.vn"
@@ -155,9 +147,7 @@
                         <div class="col-4">
 
                             <div class="form-group">
-                                <label class="form-label">{% trans 'Phone' %}<span
-                                        class="field-required"
-                                >(*)</span></label>
+                                <label class="form-label required">{% trans 'Phone' %}</label>
                                 <input
                                         type="text" placeholder="(+84) 987-654-321"
 {#                                        data-mask="(999) 999-999-999"#}
@@ -171,11 +161,7 @@
                         </div>
                         <div class="col-4">
                             <div class="form-group">
-                                <label class="form-label">{% trans 'Department' %}
-{#                                    <span#}
-{#                                        class="field-required"#}
-{#                                >(*)</span>#}
-                                </label>
+                                <label class="form-label">{% trans 'Department' %}</label>
                                 <select
                                         class="form-select"
                                         name="group"
@@ -191,18 +177,6 @@
                     </div>
                     <div class="row">
                         <div class="col-4">
-{#                            <div class="form-group">#}
-{#                                <label class="form-label">{% trans 'Date of Birthday' %}<span#}
-{#                                        class="field-required"#}
-{#                                >(*)</span></label>#}
-{#                                <input#}
-{#                                        type="text" placeholder="01/01/2023" data-mask="99/99/9999" class="form-control"#}
-{#                                        name="dob"#}
-{#                                        required#}
-{#                                >#}
-{#                                <span class="form-text text-muted">dd/mm/yyyy</span>#}
-{#                            </div>#}
-
                             <div class="form-group">
                                 <label class="form-label">{% trans 'Date of Birthday' %}</label>
                                 <input
@@ -214,18 +188,6 @@
                             </div>
                         </div>
                         <div class="col-4">
-{#                            <div class="form-group">#}
-{#                                <label class="form-label">{% trans 'Date Joined' %}<span#}
-{#                                        class="field-required"#}
-{#                                >(*)</span></label>#}
-{#                                <input#}
-{#                                        type="text" placeholder="" data-mask="99/99/9999" class="form-control"#}
-{#                                        name="date_joined"#}
-{#                                        required#}
-{#                                >#}
-{#                                <span class="form-text text-muted">dd/mm/yyyy</span>#}
-{#                            </div>#}
-
                             <div class="form-group">
                                 <label class="form-label">{% trans 'Date Joined' %}</label>
                                 <input
@@ -255,9 +217,8 @@
                     <div class="row">
                         <div class="form-group">
                             <div class="form-check form-switch form-switch-lg mb-1" style="padding-left: 0">
-                                <label class="form-label">
+                                <label class="form-label required">
                                     {% trans 'Active the employee after created' %}
-                                    <span class="field-required">(*)</span>
                                 </label>
                                 <input
                                         type="checkbox"

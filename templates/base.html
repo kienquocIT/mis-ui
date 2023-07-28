@@ -172,7 +172,10 @@
                                 {% include 'extends/breadcrumb.html' %}
                             </div>
                             <div class="blog-options-wrap" id="idxPageAction">
-                                <div class="{% if pk %}hidden{% endif %}" id="idxRealAction">
+                                <div
+{#                                        class="{% if pk %}hidden{% endif %}" #}
+                                        id="idxRealAction"
+                                >
                                     {% block pageAction %}{% endblock %}
                                 </div>
                                 <button

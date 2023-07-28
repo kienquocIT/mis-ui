@@ -24,7 +24,9 @@ class FlowRuntimeMeListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(request=request, user=request.user, url=ApiURL.RUNTIME_LIST_ME).get(data=request.query_params)
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.RUNTIME_LIST_ME).get(
+            data=request.query_params.dict()
+        )
         return resp.auto_return(key_success='runtime_list')
 
 
@@ -62,7 +64,7 @@ class FlowRuntimeTaskListAPI(APIView):
     )
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(request=request, user=request.user, url=ApiURL.RUNTIME_TASK_LIST).get(
-            data=request.query_params
+            data=request.query_params.dict()
         )
         return resp.auto_return(key_success='task_list')
 

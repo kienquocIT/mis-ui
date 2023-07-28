@@ -1,5 +1,6 @@
 function loadDatePicker() {
     $('input[type=text].date-picker').dateRangePickerDefault();
+    $('input[type=text].date-picker').val(null);
 }
 
 class pickupUtil {

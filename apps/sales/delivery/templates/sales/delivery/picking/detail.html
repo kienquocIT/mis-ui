@@ -56,10 +56,12 @@
                 <div class="form-group">
                     <label for="inputEstimateDeliveryDate"
                            class="form-label">{% trans 'Estimate Delivery Date' %}</label>
-                    <input
-                            type="text" name="estimated_delivery_date" id="inputEstimateDeliveryDate"
-                            class="form-control date-picker"
-                    />
+                    <div class="input-affix-wrapper">
+                        <input type="text" name="estimated_delivery_date" id="inputEstimateDeliveryDate"
+                                class="form-control date-picker" autocomplete="off"/>
+                        <span class="input-suffix"><i class="bi bi-calendar-week"></i></span>
+                    </div>
+
                 </div>
             </div>
             <div class="col-xl-3  col-lg-4 col-md-6 col-12 mb-3">

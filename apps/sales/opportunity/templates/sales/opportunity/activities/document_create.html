@@ -20,7 +20,8 @@
     </button>
 {% endblock %}
 {% block pageContent %}
-    <form id="frm-create-opportunity-document" data-method="POST" data-url="{% url 'OpportunityDocumentListAPI' %}">
+    <form id="frm-create-opportunity-document" data-method="POST" data-url="{% url 'OpportunityDocumentListAPI' %}"
+    data-url-redirect="{% url 'OpportunityDocumentList' %}">
         <div class="row">
             <div class="col-6">
                 <div class="form-group">
@@ -89,10 +90,9 @@
                     <div class="row sub-document">
                         <div class="col-4">
                             <div class="form-group">
-                                <label class="form-label required">{% trans 'Upload Document' %}</label>
-                                <button
+                                <button style="height: 62px"
                                         type="button"
-                                        class="form-control btn btn-primary btn-file-upload"
+                                        class="form-control btn btn-outline-primary btn-file-upload"
                                         data-f-input-name="attachments1"
                                         data-f-input-required="true"
                                         data-f-input-disabled="false"
@@ -105,9 +105,17 @@
                         </div>
                         <div class="col-7">
                             <div class="form-group">
-                                <label class="form-label">{% trans "Description" %}</label>
-                                <textarea class="form-control"></textarea>
+                                <textarea class="form-control" style="min-height: 62px" placeholder="{% trans 'Description' %}"></textarea>
                             </div>
+                        </div>
+                        <div class="col-1 text-center">
+                            <a class="btn btn-icon btn-del btn btn-icon btn-flush-danger flush-soft-hover btn-rounded btn-del-doc mt-2">
+                                <span class="btn-icon-wrap">
+                                    <span class="feather-icon">
+                                        <i data-feather="trash-2"></i>
+                                    </span>
+                                </span>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -128,10 +136,9 @@
                     <div class="row sub-document">
                         <div class="col-4">
                             <div class="form-group">
-                                <label class="form-label">{% trans 'Upload Document' %}</label>
-                                <button
+                                <button style="height: 62px"
                                         type="button"
-                                        class="form-control btn btn-primary"
+                                        class="form-control btn btn-outline-primary btn-file-upload"
                                         data-f-input-name="attachments0"
                                         data-f-input-required="true"
                                         data-f-input-disabled="false"
@@ -144,12 +151,11 @@
                         </div>
                         <div class="col-7">
                             <div class="form-group">
-                                <label class="form-label">{% trans "Description" %}</label>
-                                <textarea class="form-control"></textarea>
+                                <textarea class="form-control" style="min-height: 62px" placeholder="{% trans 'Description' %}"></textarea>
                             </div>
                         </div>
-                        <div class="col-1 mt-2">
-                            <a class="btn btn-icon btn-del btn btn-icon btn-flush-danger flush-soft-hover btn-rounded btn-del-doc mt-5">
+                        <div class="col-1 text-center">
+                            <a class="btn btn-icon btn-del btn btn-icon btn-flush-danger flush-soft-hover btn-rounded btn-del-doc mt-2">
                                 <span class="btn-icon-wrap">
                                     <span class="feather-icon">
                                         <i data-feather="trash-2"></i>

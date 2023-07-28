@@ -506,11 +506,13 @@ $(document).ready(function () {
         $('#select-box-parent-account').prop('selectedIndex', -1);
         $('#select-box-parent-account').attr('disabled', true);
         $("#tax-code-label").removeClass("required");
+        $("#total_employees_label").removeClass("required");
     })
 
     $('#inp-organization').on('change', function () {
         $('#select-box-parent-account').attr('disabled', false);
         $("#tax-code-label").addClass("required");
+        $("#total_employees_label").addClass("required");
     })
 
     // Button add shipping address

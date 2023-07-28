@@ -31,9 +31,6 @@ class PaymentsTermsDetailAPI(APIView):
         is_api=True,
     )
     def get(self, request, pk, *args, **kwargs):
-        # check request is not ajax return false
-        if 'application/json' not in request.META.get('HTTP_ACCEPT', ''):
-            return {'errors': 'this request not support'}, status.HTTP_400_BAD_REQUEST
         resp = ServerAPI(user=request.user, url=ApiURL.PAYMENT_TERMS.push_id(pk)).get()
         return resp.auto_return()
 

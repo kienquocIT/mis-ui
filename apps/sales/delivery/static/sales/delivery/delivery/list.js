@@ -2,7 +2,7 @@ $(document).ready(function () {
     let letStateChoices = JSON.parse($('#dataStateChoices').text());
     let tbl = $('#dtbDeliveryList');
     let frm = new SetupFormSubmit(tbl);
-    tbl.DataTable({
+    tbl.DataTableDefault({
         searching: false,
         ordering: false,
         paginate: true,

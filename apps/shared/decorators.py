@@ -88,7 +88,9 @@ class ArgumentDecorator:
                 'space_list': space_list,
                 'space_current_detail': space_current_detail,
                 'menus': space_menus,
-                'avatar': user.avatar_url
+                'avatar': user.avatar_url,
+                'domain_cloud': f'{settings.MEDIA_PUBLIC_DOMAIN}',
+                'avatar_prefix': 'p/f/avatar/',
             }
         return {}
 

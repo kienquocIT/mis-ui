@@ -11,14 +11,11 @@ function renderCollaborationHTML(data) {
         let iconHtml = dataPared[1];
         let employeeData = item?.['employee_data'];
         if (employeeData) {
-            $(`
-                            <div class="avatar avatar-xs avatar-primary avatar-rounded position-relative mr-1 mb-1">
-                                <span class="initial-wrap">${$.fn.shortName(employeeData['full_name'])}</span>
-                                <span class="badge ${bgColorStatus} badge-indicator badge-indicator-xl position-bottom-end-overflow-1">
-                                    ${iconHtml}
-                                </span>
-                            </div>
-                        `).appendTo(flexDiv);
+            $($x.fn.renderAvatar(
+                employeeData,
+                'avatar-xs avatar-primary avatar-rounded position-relative mr-1 mb-1',
+                `<span class="badge ${bgColorStatus} badge-indicator badge-indicator-xl position-bottom-end-overflow-1">${iconHtml}</span>`,
+            )).appendTo(flexDiv)
         }
     })
     return flexDiv.prop('outerHTML');
@@ -222,11 +219,7 @@ function loadTabTodo() {
                     width: "25%",
                     data: 'employee',
                     render: (data, type, row) => {
-                        let avaHTML = `
-                                    <div class="avatar avatar-xs avatar-light avatar-rounded"><span class="initial-wrap">${$.fn.shortName(data['full_name'])}</span></div>
-                                    <span class="ml-1">${UtilControl.parseDateTime(row['date_created'])}</span>
-                                `;
-                        return data ? avaHTML : '';
+                        return $x.fn.renderAvatar(data, 'avatar-xs');
                     }
                 }, {
                     className: 'wrap-text',

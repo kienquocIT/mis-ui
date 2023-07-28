@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 from apps.shared import mask_view, ApiURL, ServerAPI
 
-__all__ = ['WareHouseList', 'WareHouseListAPI', 'WareHouseDetailAPI', 'WarehouseProductAPI', 'WarehouseStockListAPI']
+__all__ = ['WareHouseList', 'WareHouseListAPI', 'WareHouseDetailAPI', 'WarehouseProductAPI']
 
 
 class WareHouseList(View):
@@ -74,13 +74,3 @@ class WarehouseProductAPI(APIView):
         url = ApiURL.WAREHOUSE_STOCK_PRODUCT.fill_key(product_id=params['product_id'], uom_id=params['uom_id'])
         resp = ServerAPI(user=request.user, url=url).get(params)
         return resp.auto_return(key_success='warehouse_stock')
-
-
-class WarehouseStockListAPI(APIView):
-    @mask_view(
-        auth_require=True,
-        is_api=True,
-    )
-    def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.WAREHOUSE_STOCK_LIST).get()
-        return resp.auto_return(key_success='warehouse_stock_list')

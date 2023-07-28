@@ -39,7 +39,7 @@ class TicketErrorCreateAPI(APIView):
 class ActivityLogListAPI(APIView):
     @mask_view(login_require=True, auth_require=True, is_api=True)
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(url=ApiURL.LOG_ACTIVITIES, user=request.user).get(data=request.query_params)
+        resp = ServerAPI(url=ApiURL.LOG_ACTIVITIES, user=request.user).get(data=request.query_params.dict())
         if resp.state:
             return {'log_data': resp.result}, status.HTTP_200_OK
         elif resp.status == 401:

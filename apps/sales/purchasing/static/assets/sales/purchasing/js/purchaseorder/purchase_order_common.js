@@ -52,9 +52,12 @@ class loadDataHandle {
                 if (row.querySelector('.table-row-checkbox').checked === true) {
                     is_checked = true;
                     let link = "";
-                    eleAppend += `<a href="${link}" target="_blank" class="link-primary underline_hover div-checkbox mr-2">
-                                        <span>${row.querySelector('.table-row-code').innerHTML}</span>
-                                    </a>`;
+                    eleAppend += `<div class="inline-elements-badge mr-2">
+                                    <a href="${link}" target="_blank" class="link-primary underline_hover"><span>${row.querySelector('.table-row-code').innerHTML}</span></a>
+                                    <button type="button" class="btn btn-link btn-sm custom-btn" aria-label="Close">
+                                        <span aria-hidden="true"><i class="fas fa-times"></i></span>
+                                    </button>
+                                </div>`;
                 }
             }
             if (is_checked === true) {
@@ -64,40 +67,171 @@ class loadDataHandle {
         }
     };
 
+    loadModalPurchaseRequest(tablePurchaseRequest, tablePurchaseRequestProduct) {
+        if (tablePurchaseRequest[0].querySelector('.dataTables_empty') && tablePurchaseRequestProduct[0].querySelector('.dataTables_empty')) {
+            // load dataTablePurchaseRequest
+            tablePurchaseRequest.DataTable().destroy();
+            dataTableClass.dataTablePurchaseRequest([{
+                'order': 1,
+                'title': 'Yeu cau mua hang hoa',
+                'code': 'PR0001',
+            },
+                {
+                    'order': 2,
+                    'title': 'Yeu cau mua hang hoa',
+                    'code': 'PR0002',
+                },
+                {
+                    'order': 3,
+                    'title': 'Yeu cau mua hang hoa',
+                    'code': 'PR0003',
+                }]);
+            // load dataTablePurchaseRequestProduct
+            tablePurchaseRequestProduct.DataTable().destroy();
+            dataTableClass.dataTablePurchaseRequestProduct([{
+                'id': 1,
+                'title': 'Yeu cau mua linh kien',
+                'code': 'PR0001',
+                'uom': 'chai',
+                'quantity': 10,
+                'remain': 5,
+                'quantity_purchase': 3,
+            },
+                {
+                    'id': 1,
+                    'title': 'Yeu cau mua linh kien',
+                    'code': 'PR0002',
+                    'uom': 'chai',
+                    'quantity': 10,
+                    'remain': 5,
+                    'quantity_purchase': 3,
+                },
+                {
+                    'id': 3,
+                    'title': 'Yeu cau mua laptop',
+                    'code': 'PR0003',
+                    'uom': 'chai',
+                    'quantity': 10,
+                    'remain': 5,
+                    'quantity_purchase': 3,
+                },
+                {
+                    'id': 4,
+                    'title': 'Yeu cau mua may in',
+                    'code': 'PR0004',
+                    'uom': 'chai',
+                    'quantity': 10,
+                    'remain': 5,
+                    'quantity_purchase': 3,
+                }]);
+        }
+    };
+
+    loadMergeProduct(eleCheckbox, tablePurchaseRequestProductMerge, tablePurchaseRequestProduct) {
+        if (eleCheckbox[0].checked === true) {
+            let data = [];
+            let dataJson = {};
+            $('#sroll-datable-purchase-request-product')[0].setAttribute('hidden', 'true');
+            $('#sroll-datable-purchase-request-product-merge')[0].removeAttribute('hidden');
+            tablePurchaseRequestProductMerge.DataTable().destroy();
+            if (!tablePurchaseRequestProduct[0].querySelector('.dataTables_empty')) {
+                for (let i = 0; i < tablePurchaseRequestProduct[0].tBodies[0].rows.length; i++) {
+                    let row = tablePurchaseRequestProduct[0].tBodies[0].rows[i];
+                    if (row.querySelector('.table-row-checkbox').checked === true) {
+                        if (!dataJson.hasOwnProperty(row.querySelector('.table-row-checkbox').id)) {
+                            dataJson[row.querySelector('.table-row-checkbox').id] = {
+                                'id': row.querySelector('.table-row-checkbox').id,
+                                'title': row.querySelector('.table-row-title').innerHTML,
+                                'code_list': [row.querySelector('.table-row-code').innerHTML],
+                                'uom': row.querySelector('.table-row-uom').innerHTML,
+                                'quantity': parseFloat(row.querySelector('.table-row-quantity').innerHTML),
+                                'remain': parseFloat(row.querySelector('.table-row-remain').innerHTML),
+                                'quantity_purchase': parseFloat(row.querySelector('.table-row-quantity-purchase').innerHTML),
+                            }
+                        } else {
+                            dataJson[row.querySelector('.table-row-checkbox').id].code_list.push(row.querySelector('.table-row-code').innerHTML);
+                            dataJson[row.querySelector('.table-row-checkbox').id].quantity += parseFloat(row.querySelector('.table-row-quantity').innerHTML);
+                            dataJson[row.querySelector('.table-row-checkbox').id].remain += parseFloat(row.querySelector('.table-row-remain').innerHTML);
+                            dataJson[row.querySelector('.table-row-checkbox').id].quantity_purchase += parseFloat(row.querySelector('.table-row-quantity-purchase').innerHTML);
+                        }
+                    }
+                }
+                for (let key in dataJson) {
+                    data.push(dataJson[key]);
+                }
+            }
+            dataTableClass.dataTablePurchaseRequestProductMerge(data);
+        } else {
+            $('#sroll-datable-purchase-request-product-merge')[0].setAttribute('hidden', 'true');
+            $('#sroll-datable-purchase-request-product')[0].removeAttribute('hidden');
+        }
+    };
+
+    loadModalPurchaseQuotation(tablePurchaseQuotation) {
+        if (tablePurchaseQuotation[0].querySelector('.dataTables_empty')) {
+            tablePurchaseQuotation.DataTable().destroy();
+            dataTableClass.dataTablePurchaseQuotation([{
+                'id': 1,
+                'code': 'PQ0001',
+                'title': 'Bao gia mua hang so 1',
+                'supplier': {'id': 1, 'title': 'Cong ty Unilever'},
+                'purchase_quotation_request': {'id': 1, 'code': 'PR0001'},
+            }, {
+                'id': 2,
+                'code': 'PQ0002',
+                'title': 'Bao gia mua hang so 2',
+                'supplier': {'id': 1, 'title': 'Cong ty Apple'},
+                'purchase_quotation_request': {'id': 1, 'code': 'PR0002'},
+            }, {
+                'id': 3,
+                'code': 'PQ0003',
+                'title': 'Bao gia mua hang so 3',
+                'supplier': {'id': 1, 'title': 'Cong ty Lenovo'},
+                'purchase_quotation_request': {'id': 1, 'code': 'PR0003'},
+            }, {
+                'id': 4,
+                'code': 'PQ0004',
+                'title': 'Bao gia mua hang so 4',
+                'supplier': {'id': 1, 'title': 'Cong ty Hao Hao'},
+                'purchase_quotation_request': {'id': 1, 'code': 'PR0004'},
+            }]);
+        }
+    };
+
+    loadDataShowPurchaseQuotation(elePurchaseQuotation, tablePurchaseQuotation) {
+        if (!tablePurchaseQuotation[0].querySelector('.dataTables_empty')) {
+            let eleAppend = ``;
+            let is_checked = false;
+            for (let i = 0; i < tablePurchaseQuotation[0].tBodies[0].rows.length; i++) {
+                let row = tablePurchaseQuotation[0].tBodies[0].rows[i];
+                if (row.querySelector('.table-row-checkbox').checked === true) {
+                    is_checked = true;
+                    let link = "";
+                    eleAppend += `<div class="inline-elements-badge mr-2">
+                                    <input type="checkbox" class="custom-checkbox" id="customCheck1">
+                                    <a href="${link}" target="_blank" class="link-primary underline_hover"><span>${row.querySelector('.table-row-code').innerHTML}</span></a>
+                                    <button type="button" class="btn btn-link btn-sm custom-btn" aria-label="Close">
+                                        <span aria-hidden="true"><i class="fas fa-times"></i></span>
+                                    </button>
+                                </div>`;
+                }
+            }
+            if (is_checked === true) {
+                elePurchaseQuotation.empty();
+                elePurchaseQuotation.append(eleAppend);
+            }
+        }
+    };
+
 }
 
 // DataTable
 class dataTableHandle {
-    dataTablePurchaseRequest() {
+    dataTablePurchaseRequest(data) {
         let $table = $('#datable-purchase-request');
         let frm = new SetupFormSubmit($table);
         $table.DataTableDefault({
-            data: [{
-            'order': 1,
-            'title': 'Yeu cau mua hang hoa',
-            'code': 'PR0001',
-        },
-        {
-            'order': 2,
-            'title': 'Yeu cau mua hang hoa',
-            'code': 'PR0002',
-        },
-        {
-            'order': 3,
-            'title': 'Yeu cau mua hang hoa',
-            'code': 'PR0003',
-        }],
-            // ajax: {
-            //     url: frm.dataUrl,
-            //     type: frm.dataMethod,
-            //     dataSrc: function (resp) {
-            //         let data = $.fn.switcherResp(resp);
-            //         if (data && resp.data.hasOwnProperty('sale_order_list')) {
-            //             return resp.data['sale_order_list'] ? resp.data['sale_order_list'] : []
-            //         }
-            //         throw Error('Call data raise errors.')
-            //     },
-            // },
+            data: data ? data : [],
             searching: false,
             paging: false,
             ordering: false,
@@ -134,57 +268,11 @@ class dataTableHandle {
         });
     };
 
-    dataTablePurchaseRequestProduct() {
+    dataTablePurchaseRequestProduct(data) {
         let $table = $('#datable-purchase-request-product');
         let frm = new SetupFormSubmit($table);
         $table.DataTableDefault({
-            data: [{
-                'id': 1,
-                'title': 'Yeu cau mua linh kien',
-                'code': 'PR0001',
-                'uom': 'chai',
-                'quantity': 10,
-                'remain': 5,
-                'quantity_purchase': 3,
-            },
-                {
-                    'id': 1,
-                    'title': 'Yeu cau mua linh kien',
-                    'code': 'PR0002',
-                    'uom': 'chai',
-                    'quantity': 10,
-                    'remain': 5,
-                    'quantity_purchase': 3,
-                },
-                {
-                    'id': 3,
-                    'title': 'Yeu cau mua laptop',
-                    'code': 'PR0003',
-                    'uom': 'chai',
-                    'quantity': 10,
-                    'remain': 5,
-                    'quantity_purchase': 3,
-                },
-                {
-                    'id': 4,
-                    'title': 'Yeu cau mua may in',
-                    'code': 'PR0004',
-                    'uom': 'chai',
-                    'quantity': 10,
-                    'remain': 5,
-                    'quantity_purchase': 3,
-                }],
-            // ajax: {
-            //     url: frm.dataUrl,
-            //     type: frm.dataMethod,
-            //     dataSrc: function (resp) {
-            //         let data = $.fn.switcherResp(resp);
-            //         if (data && resp.data.hasOwnProperty('sale_order_list')) {
-            //             return resp.data['sale_order_list'] ? resp.data['sale_order_list'] : []
-            //         }
-            //         throw Error('Call data raise errors.')
-            //     },
-            // },
+            data: data ? data : [],
             searching: false,
             paging: false,
             ordering: false,
@@ -250,17 +338,6 @@ class dataTableHandle {
         let frm = new SetupFormSubmit($table);
         $table.DataTableDefault({
             data: data ? data : [],
-            // ajax: {
-            //     url: frm.dataUrl,
-            //     type: frm.dataMethod,
-            //     dataSrc: function (resp) {
-            //         let data = $.fn.switcherResp(resp);
-            //         if (data && resp.data.hasOwnProperty('sale_order_list')) {
-            //             return resp.data['sale_order_list'] ? resp.data['sale_order_list'] : []
-            //         }
-            //         throw Error('Call data raise errors.')
-            //     },
-            // },
             searching: false,
             paging: false,
             ordering: false,
@@ -276,7 +353,7 @@ class dataTableHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" id="${row.id}"></div>`
+                        return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" id="${row.id}" checked disabled></div>`
                     }
                 },
                 {
@@ -331,5 +408,55 @@ class dataTableHandle {
             drawCallback: function () {
             },
         });
-    }
+    };
+
+    dataTablePurchaseQuotation(data) {
+        let $table = $('#datable-purchase-quotation');
+        let frm = new SetupFormSubmit($table);
+        $table.DataTableDefault({
+            data: data ? data : [],
+            searching: false,
+            paging: false,
+            ordering: false,
+            info: false,
+            columnDefs: [],
+            columns: [
+                {
+                    targets: 0,
+                    render: (data, type, row) => {
+                        return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" id="${row.id}"></div>`
+                    }
+                },
+                {
+                    targets: 1,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-code">${row.code}</span>`
+                    },
+                },
+                {
+                    targets: 2,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-title">${row.title}</span>`
+                    }
+                },
+                {
+                    targets: 3,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-supplier">${row.supplier.title}</span>`
+                    }
+                },
+                {
+                    targets: 4,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-purchase-quotation-request">${row.purchase_quotation_request.code}</span>`
+                    }
+                },
+            ],
+            drawCallback: function () {
+            },
+        });
+    };
+
 }
+
+let dataTableClass = new dataTableHandle();

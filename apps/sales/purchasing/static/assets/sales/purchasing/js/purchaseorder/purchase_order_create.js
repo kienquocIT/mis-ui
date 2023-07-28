@@ -7,63 +7,37 @@ $(function () {
         let dataTableClass = new dataTableHandle();
         // Elements
         let elePurchaseRequest = $('#purchase-order-purchase-request');
+        let elePurchaseQuotation = $('#purchase-order-purchase-quotation');
         // Tables
         let tablePurchaseRequest = $('#datable-purchase-request');
         let tablePurchaseRequestProduct = $('#datable-purchase-request-product');
         let tablePurchaseRequestProductMerge = $('#datable-purchase-request-product-merge');
+        let tablePurchaseQuotation = $('#datable-purchase-quotation');
+
+        dataTableClass.dataTablePurchaseRequest();
+        dataTableClass.dataTablePurchaseRequestProduct();
+        dataTableClass.dataTablePurchaseQuotation();
 
 
 // Action on click
-        $('#btn-purchase-request-modal').on('click', function() {
-            // load dataTablePurchaseRequest
-            tablePurchaseRequest.DataTable().destroy();
-            dataTableClass.dataTablePurchaseRequest();
-            // load dataTablePurchaseRequestProduct
-            tablePurchaseRequestProduct.DataTable().destroy();
-            dataTableClass.dataTablePurchaseRequestProduct();
+        $('#btn-purchase-request-modal').on('click', function () {
+            loadDataClass.loadModalPurchaseRequest(tablePurchaseRequest, tablePurchaseRequestProduct);
         });
 
         $('#merge-same-product').on('click', function() {
-            if ($(this)[0].checked === true) {
-                let data = [];
-                let dataJson = {};
-                $('#sroll-datable-purchase-request-product')[0].setAttribute('hidden', 'true');
-                $('#sroll-datable-purchase-request-product-merge')[0].removeAttribute('hidden');
-                tablePurchaseRequestProductMerge.DataTable().destroy();
-                if (!tablePurchaseRequestProduct[0].querySelector('.dataTables_empty')) {
-            for (let i = 0; i < tablePurchaseRequestProduct[0].tBodies[0].rows.length; i++) {
-                let row = tablePurchaseRequestProduct[0].tBodies[0].rows[i];
-                if (row.querySelector('.table-row-checkbox').checked === true) {
-                    if (!dataJson.hasOwnProperty(row.querySelector('.table-row-checkbox').id)) {
-                        dataJson[row.querySelector('.table-row-checkbox').id] = {
-                            'id': row.querySelector('.table-row-checkbox').id,
-                            'title': row.querySelector('.table-row-title').innerHTML,
-                            'code_list': [row.querySelector('.table-row-code').innerHTML],
-                            'uom': row.querySelector('.table-row-uom').innerHTML,
-                            'quantity': parseFloat(row.querySelector('.table-row-quantity').innerHTML),
-                            'remain': parseFloat(row.querySelector('.table-row-remain').innerHTML),
-                            'quantity_purchase': parseFloat(row.querySelector('.table-row-quantity-purchase').innerHTML),
-                        }
-                    } else {
-                        dataJson[row.querySelector('.table-row-checkbox').id].code_list.push(row.querySelector('.table-row-code').innerHTML);
-                        dataJson[row.querySelector('.table-row-checkbox').id].quantity += parseFloat(row.querySelector('.table-row-quantity').innerHTML);
-                        dataJson[row.querySelector('.table-row-checkbox').id].quantity_purchase += parseFloat(row.querySelector('.table-row-quantity-purchase').innerHTML);
-                    }
-                }
-            }
-            for (let key in dataJson) {
-                data.push(dataJson[key]);
-            }
-        }
-                dataTableClass.dataTablePurchaseRequestProductMerge(data);
-            } else {
-                $('#sroll-datable-purchase-request-product-merge')[0].setAttribute('hidden', 'true');
-                $('#sroll-datable-purchase-request-product')[0].removeAttribute('hidden');
-            }
+            loadDataClass.loadMergeProduct($(this), tablePurchaseRequestProductMerge, tablePurchaseRequestProduct);
         });
 
         $('#btn-confirm-add-purchase-request').on('click', function () {
             loadDataClass.loadDataShowPurchaseRequest(elePurchaseRequest, tablePurchaseRequest);
+        });
+
+        $('#btn-purchase-quotation-modal').on('click', function () {
+            loadDataClass.loadModalPurchaseQuotation(tablePurchaseQuotation);
+        });
+
+        $('#btn-confirm-add-purchase-quotation').on('click', function () {
+            loadDataClass.loadDataShowPurchaseQuotation(elePurchaseQuotation, tablePurchaseQuotation);
         });
 
 // Submit form

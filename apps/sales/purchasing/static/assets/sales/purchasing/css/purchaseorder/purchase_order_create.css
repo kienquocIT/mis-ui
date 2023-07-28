@@ -7,16 +7,28 @@
     margin-top: -0.4px
 }
 
-.div-checkbox {
-    margin-top: -1px;
+.inline-elements-badge {
+    display: inline-block;
     background-color: #ebfcf5;
     border-radius: 0.5rem;
     padding: 5px;
-    font-size: 70%;
+    font-size: 80%;
     min-width: 25px;
-    display: inline-block;
     text-align: center;
     text-transform: capitalize;
+}
+
+.select-filter {
+    margin-left: -35px;
+}
+
+.custom-btn {
+    padding: unset;
+    font-size: 14px;
+}
+
+.custom-checkbox {
+    margin-top: 5px;
 }
 
 .disabled-show-normal:disabled {

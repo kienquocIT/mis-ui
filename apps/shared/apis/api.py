@@ -537,6 +537,12 @@ class ServerAPI:
         Returns: APIUtil --> call_get()
         """
         safe_url = self.url
+
+        if isinstance(data, dict):
+            data['pageSize'] = '-1'
+        else:
+            data = {'pageSize': '-1'}
+
         if data and isinstance(data, dict):
             url_encode = [f"{key}={val}" for key, val in data.items()]
             safe_url += f'?{"&".join(url_encode)}'

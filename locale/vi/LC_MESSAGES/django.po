@@ -2482,8 +2482,16 @@ msgid "detail"
 msgstr "Chi tiết"
 
 #
-msgid "The session login was expired."
-msgstr "Phiên đăng nhập đã hết hạn."
+msgid "The session login was expired"
+msgstr "Phiên đăng nhập đã hết hạn"
+
+#
+msgid "Login page"
+msgstr "Trang đăng nhập"
+
+#
+msgid "Internal Server Errors"
+msgstr "Đã có lỗi xảy ra"
 
 #
 msgid "Username and password are incorrect."
@@ -2780,6 +2788,10 @@ msgstr "Kết thúc"
 #
 msgid "Loading"
 msgstr "Đang tải"
+
+#
+msgid "Please wait"
+msgstr "Vui lòng đợi"
 
 #
 msgid "Diagram Workflow"
@@ -3669,6 +3681,10 @@ msgstr "Cấu hình quyền trước khi thêm vào"
 msgid "You will be redirected to the previous page"
 msgstr "Bạn sẽ được chuyển hướng đến trang trước"
 #
+
+#
+msgid "Previous page"
+msgstr "Trang trước"
 
 msgid "Upload Document"
 msgstr "Tải lên tài liệu"

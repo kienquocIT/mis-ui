@@ -24,8 +24,8 @@ class DeliveryConfigDetail(View):
         breadcrumb='DELIVERY_CONFIG',
     )
     def get(self, request, *args, **kwargs):
-        res = ServerAPI(user=request.user, url=ApiURL.DELIVERY_CONFIG).get()
-        return {'config_data': res.result}, status.HTTP_200_OK
+        resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_CONFIG).get()
+        return resp.auto_return(key_success='config_data')
 
 
 class DeliveryConfigDetailAPI(APIView):
@@ -35,12 +35,8 @@ class DeliveryConfigDetailAPI(APIView):
         is_api=True
     )
     def get(self, request, *args, **kwargs):
-        res = ServerAPI(user=request.user, url=ApiURL.DELIVERY_CONFIG).get()
-        if res.state:
-            return {'config': res.result}, status.HTTP_200_OK
-        elif res.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': res.errors}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_CONFIG).get()
+        return resp.auto_return(key_success='config')
 
     @mask_view(
         login_require=True,
@@ -48,12 +44,8 @@ class DeliveryConfigDetailAPI(APIView):
         is_api=True,
     )
     def put(self, request, *args, **kwargs):
-        res = ServerAPI(user=request.user, url=ApiURL.DELIVERY_CONFIG).put(request.data)
-        if res.state:
-            return {'result': res.result}, status.HTTP_200_OK
-        elif res.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': res.errors}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_CONFIG).put(request.data)
+        return resp.auto_return(key_success='result')
 
 
 class OrderPickingList(View):
@@ -79,9 +71,7 @@ class OrderPickingListAPI(APIView):
             for item in resp.result:
                 list_sub.extend(item.get('sub_list', []))
             return {'picking_list': list_sub}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        return resp.auto_return()
 
 
 class OrderPickingDetail(View):
@@ -92,10 +82,11 @@ class OrderPickingDetail(View):
         menu_active='menu_order_picking_list',
     )
     def get(self, request, *args, pk, **kwargs):
-        return {
-                   'pk': pk,
-                   'state_choices': {key: value for key, value in PICKING_STATE},
-               }, status.HTTP_200_OK
+        result = {
+            'pk': pk,
+            'state_choices': {key: value for key, value in PICKING_STATE},
+        }
+        return result, status.HTTP_200_OK
 
 
 class OrderPickingDetailAPI(APIView):
@@ -106,11 +97,7 @@ class OrderPickingDetailAPI(APIView):
     )
     def get(self, request, *args, pk, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_PICKING_DETAIL.fill_key(pk=pk)).get()
-        if resp.state:
-            return {'picking_detail': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        return resp.auto_return(key_success='picking_detail')
 
     @mask_view(
         login_require=True,
@@ -119,11 +106,7 @@ class OrderPickingDetailAPI(APIView):
     )
     def put(self, request, *args, pk, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_PICKING_DETAIL.fill_key(pk=pk)).put(request.data)
-        if resp.state:
-            return resp.result, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        return resp.auto_return()
 
 
 class OrderDeliveryList(View):
@@ -150,9 +133,7 @@ class OrderDeliveryListAPI(APIView):
             for item in resp.result:
                 list_sub.extend(item.get('sub_list', []))
             return {'delivery_list': list_sub}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        return resp.auto_return()
 
     @mask_view(
         login_require=True,
@@ -163,9 +144,7 @@ class OrderDeliveryListAPI(APIView):
         resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_LIST.push_id(pk=pk)).put(request.data)
         if resp.state:
             return resp.result, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        return resp.auto_return()
 
 
 class OrderDeliveryDetail(View):
@@ -176,10 +155,11 @@ class OrderDeliveryDetail(View):
         menu_active='menu_order_delivery_list',
     )
     def get(self, request, *args, pk, **kwargs):
-        return {
-                   'pk': pk,
-                   'state_choices': {key: value for key, value in DELIVERY_STATE},
-               }, status.HTTP_200_OK
+        result = {
+            'pk': pk,
+            'state_choices': {key: value for key, value in DELIVERY_STATE},
+        }
+        return result, status.HTTP_200_OK
 
 
 class OrderDeliveryDetailAPI(APIView):
@@ -190,11 +170,7 @@ class OrderDeliveryDetailAPI(APIView):
     )
     def get(self, request, pk, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_SUB_LIST.push_id(pk)).get()
-        if resp.state:
-            return resp.result, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        return resp.auto_return()
 
     @mask_view(
         login_require=True,
@@ -203,11 +179,4 @@ class OrderDeliveryDetailAPI(APIView):
     )
     def put(self, request, *args, pk, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_SUB_LIST.push_id(pk)).put(request.data)
-        if resp.state:
-            return resp.result, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        err = resp.errors
-        if 'detail' in err:
-            err = err.get('detail', '')
-        return {'errors': err}, status.HTTP_400_BAD_REQUEST
+        return resp.auto_return()

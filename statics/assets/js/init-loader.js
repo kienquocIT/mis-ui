@@ -187,15 +187,7 @@ $.fn.extend({
                     return WindowControl.redirectLogin(500);
                 case 403:
                     // if (isNotify === true) $.fn.notifyB({'description': resp.data.errors}, 'failure');
-                    Swal.fire({
-                        title: $.fn.storageSystemData.attr('data-msg-403'),
-                        icon: 'error',
-                        text: $.fn.storageSystemData.attr('data-msg-contact-admin-403'),
-                        allowOutsideClick: false,
-                        preConfirm: function (opts) {
-                            window.location.href = document.referrer;
-                        },
-                    })
+                    WindowControl.showForbidden();
                     return {};
                 case 500:
                     return {};
@@ -306,8 +298,8 @@ $.fn.extend({
                 let csrfToken = opts?.['csrf_token'] || $("input[name=csrfmiddlewaretoken]").val();
                 let headers = opts?.['headers'] || {}
                 let data = opts?.['data'];
-                if (method.toLowerCase() !== 'put' && typeof data === 'object') {
-                    data = WFRTControl.appendBodyCheckWFTask(data, method);
+                if (method.toLowerCase() === 'put' && typeof data === 'object') {
+                    data = WFRTControl.appendBodyCheckWFTask(method, data);
                 }
                 if (method.toLowerCase() !== 'get' && contentType === "application/json") {
                     data = JSON.stringify(data);
@@ -390,6 +382,7 @@ $.fn.extend({
                         }, ...statusCodeCallback,
                     },
                 };
+                console.log(ctx);
                 return $.ajax(ctx);
             }
             throw Error('Ajax must be url setup before send');

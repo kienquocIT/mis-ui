@@ -48,12 +48,8 @@ class EmployeeListAPI(APIView):
 
     @mask_view(auth_require=True, is_api=True)
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(url=ApiURL.EMPLOYEE_LIST, user=request.user).get()
-        if resp.state:
-            return {'employee_list': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(request=request, url=ApiURL.EMPLOYEE_LIST, user=request.user).get()
+        return resp.auto_return(key_success='employee_list', callback_success=None, status_success=status.HTTP_200_OK)
 # DATA RETURN:
 # {}: dữ liệu trả về cho request.
 #   VD: {"user_list": [1]} => phần $.fn.callAjax resolve{} sẽ trả về data này để xử lý.
@@ -524,5 +520,87 @@ $.fn.reloadWithHashID('id_tab_need_active');
 // cách 2 đang trỏ đến 1 element nằm trong tab, ví thẻ dụ <span id="ss1"></span> nằm trong tag
 $('#ss1').reloadWithHashID();
 ```
+
+---
+
+## NEW version 2.0
+
+### JS General
+> - Thêm một thứ gì đó xử lý riêng biệt nên sử dụng class (thêm nếu chưa có)
+> - Thêm class vào $x.cls và $x.fn để sử dụng nhanh (giống $ của jquery)
+
+I. Cài đặt
+1. init-setup.js
+> - Nơi thiết lập các class xử lý mọi thứ cần thiết ở mọi page
+> - Thêm hàm xử lý vào class nếu hàm đó thuộc phạm vi các class có sẵn. Chưa có class thì thêm vào - nhưng hạn chế, tránh rác
+2. init-loader.js
+> - Nơi thêm các hàm xử lý vào jquery.fn và lắng nghe sự kiện document.ready
+> - Có thể thêm các hàm xử lý vào jquery.fn nếu nó sử dụng đối tượng jquery để xử lý. VD: $('#btnABC').loadFail() để thêm chính hiệu ứng vào nút này.
+> - Các xử lý khác nên thêm vào $x để sử dụng tránh jquery quá tải/tải lâu khi khởi tạo jquery cho 1 đối tượng.
+
+II. Sử dụng
+> - Sử dụng các hàm nào trong jquery.fn.extends bằng $.fn.xxx
+> - Sử dụng các hàm trong $x bằng $x.fn.xxx
+> - Sử dụng các class trong $x bằng $x.cls.XXX
+
+III. Lưu ý
+> Khi thêm 1 class vào init-setup thì nên thêm class đó vào $x.cls
+> Thêm các hàm sử dụng nhanh vào $x.fn để sử dụng nhanh không cần nhớ tên class
+> Khuyến nghị sử dụng $x để trỏ đến class và fn thay vì nhớ tên class (tận dụng tối đa suggestion của trình biên dịch)
+
+
+### Call API in VIEW
+
+I. Mô tả
+> - ServerAPI().get() hoặc post(),... đều trả về 1 đối tượng RespData
+> - RespData có hàm xử lý trả về tự động theo state và status ở RespData.auto_return()
+```text
+auto_return() có các tham số: 
+- key_success [is string, not required, default None]: sử dụng khi trả về với statue=true 
+- callback_success [is function, not required, default None]: một hàm xử lý tùy chỉnh nhận vào result và trả ra dữ liệu. (nên tận dụng viết thêm function trong view để sử dụng biến con trỏ của view để lấy ra các thông tin request)
+- status_success [is int, not required, default None]: mặc định HTTP_200_OK, thay đổi nếu trả về status khác ở trường hợp state=true
+- callback_errors [is function, not required, default None]: hàm xử lý trả về lỗi nếu cần thay đổi cấu trúc trả lỗi
+
+Không yêu cầu tham số nào thì sẽ trả ra mặc định (resp.result, status.HTTP_200_OK)
+
+** Đọc thêm hàm này để sử dụng nếu cần thiết nâng cao hơn.
+```
+
+II. Ví dụ mẫu
+```python
+class XXX(APIView):
+    @mask_view(login_require=True, auth_require=True, is_api=True)
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.DELIVERY_LIST).get()
+        return resp.auto_return(key_success='delivery_list') # return {'delivery_list': resp.result}, status.HTTP_200_OK
+
+    
+class YYY(APIView):
+    @mask_view(login_require=True, auth_require=True, is_api=True)
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.DELIVERY_LIST).get()
+        if resp.status:
+           # handle data
+            return {'delivery_list': resp.result}, status.HTTP_200_OK
+        return resp.auto_return() # auto handle state = false
+
+```
+
+III. Sử dụng cho các view sử dụng gọi API render context
+```python
+class ZZZ(View):
+    @mask_view(...)
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url='').get()
+        return resp.auto_return(key_success='x')
+# Tự động thêm "render_api_status" vào body khi tải page
+# base.html sẽ dựa vào "render_api_status" để hiển thị các popup tương ứng với giá trị
+# đã xử lý với 401, 403, 404, 500
+```
+
+---
+
+Tài liệu này sẽ được làm lại khi mọi thứ đã ổn định!
+Nên vui lòng không xóa những gì đang có và thêm những gì vừa được tạo ra vào đây để lưu trữ tránh thiếu tài liệu! 
 
 ---

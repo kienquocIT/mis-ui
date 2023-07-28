@@ -64,8 +64,6 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # state of task background
     TASK_BG = StringUrl('task-bg/{pk}')
 
-    XXX = StringUrl('company/overview/{id}/{option}')
-
     # tenant
     TENANT_PLAN_LIST = StringUrl('tenant/tenant-plans')
 
@@ -77,6 +75,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     EMPLOYEE_UPLOAD_AVATAR = StringUrl('hr/employee/upload-avatar')
     EMPLOYEE_LIST = StringUrl('hr/employees')
     EMPLOYEE_DETAIL = StringUrl('hr/employee')
+    EMPLOYEE_DETAIL_PK = StringUrl('hr/employee/{pk}')
     EMPLOYEE_COMPANY = StringUrl('hr/employee/company')
     EMPLOYEE_COMPANY_NEW = StringUrl('hr/employee/company/{company_id}')
     EMPLOYEE_TENANT = StringUrl('hr/employee/tenant')
@@ -86,7 +85,9 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     GROUP_LEVEL_DETAIL = StringUrl('hr/level')
     GROUP_LIST = StringUrl('hr/groups')
     GROUP_DETAIL = StringUrl('hr/group')
+    GROUP_DETAIL_PK = StringUrl('hr/group/{pk}')
     GROUP_PARENT = StringUrl('hr/group/parent')
+    GROUP_PARENT_PK = StringUrl('hr/group/parent/{level}')
 
     # home/company
     COMPANY_CONFIG = StringUrl('company/config')
@@ -99,6 +100,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # organization/role
     ROLE_LIST = StringUrl('hr/roles')
     ROLE_DETAIL = StringUrl('hr/role')
+    ROLE_DETAIL_PK = StringUrl('hr/role/{pk}')
 
     # base
     PLAN_LIST = StringUrl('base/plans')
@@ -140,6 +142,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     SALUTATION_LIST = StringUrl('saledata/salutations')
     INTERESTS_LIST = StringUrl('saledata/interests')
     SALUTATION_DETAIL = StringUrl('saledata/salutation/')
+    SALUTATION_DETAIL_PK = StringUrl('saledata/salutation/{pk}')
     INTEREST_DETAIL = StringUrl('saledata/interest/')
 
     # masterdata/lookup/account
@@ -217,7 +220,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     OPPORTUNITY_EMAIL_DELETE = StringUrl('opportunity/delete-email/{pk}')
     OPPORTUNITY_MEETING_LIST = StringUrl('opportunity/meeting/lists')
     OPPORTUNITY_MEETING_DELETE = StringUrl('opportunity/delete-meeting/{pk}')
-    OPPORTUNITY_ACTIVITY_LOGS_TASK = StringUrl('opportunity/task/lists')
+    OPPORTUNITY_ACTIVITY_LOGS = StringUrl('opportunity/activity-log/lists')
 
     # quotation
     QUOTATION_LIST = StringUrl('quotation/lists')

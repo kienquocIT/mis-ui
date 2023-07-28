@@ -22,8 +22,8 @@ class AuthOAuth2Login(APIView):
     def get(cls, request):
         ctx = {'is_notify_key': False}
         if request.user and request.user.is_authenticated and isinstance(request.user, User):
-            resp_data = ServerAPI(user=request.user, url=ApiURL.ALIVE_CHECK).get()
-            if resp_data.state is True:
+            resp = ServerAPI(request=request, user=request.user, url=ApiURL.ALIVE_CHECK).get()
+            if resp.state is True:
                 ctx['user_data'] = {
                     'id': request.user.id,
                     'first_name': request.user.first_name,
@@ -34,6 +34,14 @@ class AuthOAuth2Login(APIView):
         # request.session.flush()
         # request.user = AnonymousUser
         return render(request, 'auths/login_OAuth2.html', ctx)
+
+    @classmethod
+    def post_callback_success(cls, result):
+        return {
+                    'id': result['id'],
+                    'access_code': result['code'],
+                    'secret_token_regis': result['access_token_regis'],
+                }
 
     @mask_view(auth_require=True, is_api=True)
     def post(self, request, *args, **kwargs):
@@ -50,21 +58,15 @@ class AuthOAuth2Login(APIView):
         if company_id and TypeCheck.check_uuid(company_id) and access_id and TypeCheck.check_uuid(
                 access_id
         ) and public_ip and user_agent:
-            resp_data = ServerAPI(user=request.user, url=ApiURL.API_FORWARD_ACCESS_TOKEN_MEDIA).post(
-                data={
-                    "company_id": company_id,
-                    "access_id": access_id,
-                    "user_agent": user_agent,
-                    "public_ip": public_ip
-                }
-            )
-            if resp_data.state is True:
-                result = {
-                    'id': resp_data.result['id'],
-                    'access_code': resp_data.result['code'],
-                    'secret_token_regis': resp_data.result['access_token_regis'],
-                }
-                return result, status.HTTP_200_OK
+            data = {
+                "company_id": company_id,
+                "access_id": access_id,
+                "user_agent": user_agent,
+                "public_ip": public_ip
+            }
+            url = ApiURL.API_FORWARD_ACCESS_TOKEN_MEDIA
+            resp = ServerAPI(request=request, user=request.user, url=url).post(data=data)
+            return resp.auto_return(callback_success=self.post_callback_success)
         return {}, status.HTTP_403_FORBIDDEN
 
 
@@ -74,8 +76,8 @@ class AuthLogin(APIView):
     @classmethod
     def get(cls, request):
         if request.user and not isinstance(request.user, AnonymousUser):
-            resp_data = ServerAPI(user=request.user, url=ApiURL.ALIVE_CHECK).get()
-            if resp_data.state is True:
+            resp = ServerAPI(request=request, user=request.user, url=ApiURL.ALIVE_CHECK).get()
+            if resp.state is True:
                 return redirect(request.query_params.get('next', reverse('HomeView')))
         request.session.flush()
         request.user = AnonymousUser
@@ -92,10 +94,10 @@ class AuthLogin(APIView):
 
         frm = AuthLoginForm(data=request.data)
         frm.is_valid()
-        resp_data = ServerAPI(user=None, url=ApiURL.login).post(frm.cleaned_data)
-        match resp_data.state:
+        resp = ServerAPI(request=request, user=None, url=ApiURL.login).post(frm.cleaned_data)
+        match resp.state:
             case True:
-                user = User.regis_with_api_result(resp_data.result)
+                user = User.regis_with_api_result(resp.result)
                 if user:
                     if not frm.cleaned_data.get('remember'):
                         request.session.set_expiry(0)
@@ -111,9 +113,9 @@ class AuthLogin(APIView):
                         } if is_oauth2 is True else {}
                     }
                     return ctx, status.HTTP_200_OK
-                return {'detail': AuthMsg.login_exc, 'data': resp_data.result}, status.HTTP_400_BAD_REQUEST
+                return {'detail': AuthMsg.login_exc, 'data': resp.result}, status.HTTP_400_BAD_REQUEST
             case False:
-                return resp_data.errors, status.HTTP_400_BAD_REQUEST
+                return resp.errors, status.HTTP_400_BAD_REQUEST
         return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_400_BAD_REQUEST
 
 
@@ -130,20 +132,17 @@ class TenantLoginChoice(APIView):
 
     @mask_view(auth_require=False, is_api=True)
     def get(self, request):
-        resp_data = ServerAPI(user=None, url=ApiURL.tenants).get()
-        if resp_data.state:
-            return Response({'result': resp_data.result}, status=200)
-        return Response({'detail': resp_data.errors}, status=400)
+        resp = ServerAPI(request=request, user=None, url=ApiURL.tenants).get()
+        if resp.state:
+            return Response({'result': resp.result}, status=200)
+        return Response({'result': []}, status=200)
 
 
 class SwitchCompanyCurrentView(APIView):
     @mask_view(login_require=True, is_api=True)
     def put(self, request, *args, **kwargs):
-        data = request.data
-        response = ServerAPI(user=request.user, url=ApiURL.SWITCH_COMPANY).put(data)
-        if response.state:
-            return response.result, status.HTTP_200_OK
-        return {'detail': ServerMsg.SERVER_ERR}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.SWITCH_COMPANY).put(request.data)
+        return resp.auto_return()
 
 
 class SpaceChangeView(APIView):

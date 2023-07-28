@@ -403,6 +403,21 @@
     <!-- // Init JS -->
 
     <script type="application/javascript">
+        const apiStatusOfRender = "{{ data.render_api_status }}";
+        switch (apiStatusOfRender) {
+            case "1401":
+                WindowControl.showUnauthenticated();
+                break;
+            case "1403":
+                WindowControl.showForbidden();
+                break;
+            case "1404":
+                WindowControl.showNotFound();
+                break;
+            case "1500":
+                WindowControl.showSVErrors();
+                break;
+        }
         $(window).on("load", function () {
             if (!$('#menu-tenant').attr('data-space-selected')) {
                 hopscotch.startTour({

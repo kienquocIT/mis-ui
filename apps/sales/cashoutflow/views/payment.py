@@ -65,25 +65,18 @@ class PaymentListAPI(APIView):
     )
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.PAYMENT_LIST).get()
-        if resp.state:
-            return {'payment_list': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        return resp.auto_return(key_success='payment_list')
 
     @mask_view(
         auth_require=True,
         is_api=True,
     )
     def post(self, request, *arg, **kwargs):
-        data = request.data
-        response = ServerAPI(user=request.user, url=ApiURL.PAYMENT_LIST).post(data)
-        if response.state:
-            response.result['message'] = SaleMsg.PAYMENT_CREATE
-            return response.result, status.HTTP_200_OK
-        elif response.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': response.errors}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(user=request.user, url=ApiURL.PAYMENT_LIST).post(request.data)
+        if resp.state:
+            resp.result['message'] = SaleMsg.PAYMENT_CREATE
+            return resp.result, status.HTTP_200_OK
+        return resp.auto_return()
 
 
 class PaymentDetail(View):
@@ -133,30 +126,7 @@ class PaymentDetailAPI(APIView):
     )
     def get(self, request, pk, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.PAYMENT_DETAIL.push_id(pk)).get()
-        if resp.state:
-            return {'payment_detail': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
-
-    # @mask_view(
-    #     auth_require=True,
-    #     is_api=True,
-    # )
-    # def put(self, request, pk, *arg, **kwargs):
-    #     data = request.data
-    #     response = ServerAPI(user=request.user, url=ApiURL.PAYMENT_DETAIL + pk).put(data)
-    #     if response.state:
-    #         return response.result, status.HTTP_200_OK
-    #     if response.errors:
-    #         if isinstance(response.errors, dict):
-    #             err_msg = ""
-    #             for key, value in response.errors.items():
-    #                 err_msg += str(key) + ': ' + str(value)
-    #                 break
-    #             return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
-    #         return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
-    #     return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        return resp.auto_return(key_success='payment_detail')
 
 
 class PaymentCostItemsListAPI(APIView):
@@ -167,8 +137,4 @@ class PaymentCostItemsListAPI(APIView):
     def get(self, request, *args, **kwargs):
         data = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.PAYMENT_COST_ITEMS_LIST).get(data)
-        if resp.state:
-            return {'payment_cost_items_list': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST
+        return resp.auto_return(key_success='payment_cost_items_list')

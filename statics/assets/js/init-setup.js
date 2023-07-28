@@ -701,8 +701,8 @@ class FileUtils {
         }, (errs) => {
             progressBarEle.remove();
             let existData = errs?.data?.['errors']?.['exist'];
-            let nameFile = existData['name'].split(".")[0];
-            let extFile = existData['name'].split(".").pop();
+            let nameFile = existData?.['name'].split(".")[0];
+            let extFile = existData?.['name'].split(".").pop();
             if (existData) {
                 let newFileNameIDRandom = 'newFileName_' + UtilControl.generateRandomString(12);
                 Swal.fire({
@@ -1900,16 +1900,24 @@ class WindowControl {
         }
     }
 
-    static showLoading(timeout) {
-        $('#loadingContainer').removeClass('hidden');
-        if (timeout) {
-            setTimeout(WindowControl.hideLoading, (timeout > 100 ? timeout : 1000));
-        }
+    static showLoading() {
+        Swal.fire({
+            icon: 'info',
+            title: `${$.fn.transEle.attr('data-loading')}`,
+            text: `${$.fn.transEle.attr('data-wait')}...`,
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            timerProgressBar: true,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
     }
 
     static hideLoading() {
         setTimeout(() => {
-            $('#loadingContainer').addClass('hidden');
+            Swal.hideLoading();
+            swal.close();
         }, 250,)
     }
 
@@ -1957,6 +1965,81 @@ class WindowControl {
             // },
             ...opts
         });
+    }
+
+    static showForbidden() {
+        Swal.fire({
+            title: $.fn.storageSystemData.attr('data-msg-403'),
+            icon: 'error',
+            // text: $.fn.storageSystemData.attr('data-msg-contact-admin-403'),
+            allowOutsideClick: false,
+            showDenyButton: true,
+            denyButtonText: $.fn.storageSystemData.attr('data-msg-home-page'),
+            confirmButtonColor: '#3085d6',
+            showConfirmButton: true,
+            confirmButtonText: $.fn.storageSystemData.attr('data-msg-previous-page'),
+            denyButtonColor: '#21b48f',
+            preConfirm: function (opts) {
+                window.location.href = document.referrer;
+            },
+            preDeny: function () {
+                window.location.href = '/';
+            },
+        })
+    }
+
+    static showNotFound(){
+        Swal.fire({
+            title: $.fn.storageSystemData.attr('data-msg-404'),
+            icon: 'question',
+            allowOutsideClick: false,
+            showDenyButton: true,
+            denyButtonText: $.fn.storageSystemData.attr('data-msg-home-page'),
+            confirmButtonColor: '#3085d6',
+            showConfirmButton: true,
+            confirmButtonText: $.fn.storageSystemData.attr('data-msg-previous-page'),
+            denyButtonColor: '#21b48f',
+            preConfirm: function (opts) {
+                window.location.href = document.referrer;
+            },
+            preDeny: function () {
+                window.location.href = '/';
+            },
+        })
+    }
+
+    static showUnauthenticated(){
+        Swal.fire({
+            title: $.fn.storageSystemData.attr('data-msg-login-expired'),
+            icon: 'error',
+            allowOutsideClick: false,
+            confirmButtonColor: '#3085d6',
+            showConfirmButton: true,
+            confirmButtonText: $.fn.storageSystemData.attr('data-msg-login-page'),
+            preConfirm: function (opts) {
+                return $x.fn.redirectLogin();
+            },
+        })
+    }
+
+    static showSVErrors(){
+        Swal.fire({
+            title: $.fn.storageSystemData.attr('data-msg-500'),
+            icon: 'error',
+            allowOutsideClick: false,
+            showDenyButton: true,
+            denyButtonText: $.fn.storageSystemData.attr('data-msg-home-page'),
+            confirmButtonColor: '#3085d6',
+            showConfirmButton: true,
+            confirmButtonText: $.fn.storageSystemData.attr('data-msg-previous-page'),
+            denyButtonColor: '#21b48f',
+            preConfirm: function (opts) {
+                window.location.href = document.referrer;
+            },
+            preDeny: function () {
+                window.location.href = '/';
+            },
+        })
     }
 }
 
@@ -2157,6 +2240,39 @@ class DocumentControl {
         let tenant_code_active = nav_data.attr('data-nav-tenant');
         if (tenant_code_active) $('#menu-tenant').children('option[value=' + tenant_code_active + ']').attr('selected', 'selected');
     }
+}
+
+let $x = {
+    cls: {
+        frm: SetupFormSubmit,
+        window: WindowControl,
+        file: FileUtils,
+        wf: WFRTControl,
+        util: UtilControl,
+        dtb: DTBControl,
+        person: PersonControl,
+        doc: DocumentControl,
+    },
+    fn: {
+        fileInit: FileUtils.init,
+
+        setWFRuntimeID: WFRTControl.setWFRuntimeID,
+
+        getRowData: DTBControl.getRowData,
+        deleteRow: DTBControl.deleteRow,
+
+        redirectLogin: WindowControl.redirectLogin,
+
+        showLoadingButton: WindowControl.showLoadingButton,
+        hideLoadingButton: WindowControl.hideLoadingButton,
+        showLoadingPage: WindowControl.showLoading,
+        hideLoadingPage: WindowControl.hideLoading,
+        showLoadingWaitResponse: WindowControl.showLoadingWaitResponse,
+        hideLoadingWaitResponse: WindowControl.hideLoadingWaitResponse,
+
+        shortNameGlobe: PersonControl.shortNameGlobe,
+        renderAvatar: PersonControl.renderAvatar,
+    },
 }
 
 

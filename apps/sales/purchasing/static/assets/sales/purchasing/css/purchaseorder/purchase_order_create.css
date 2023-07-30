@@ -3,7 +3,7 @@
 }
 
 .div-input {
-    height: 38px;
+    height: 39px;
     margin-top: -0.4px
 }
 
@@ -18,23 +18,34 @@
     text-transform: capitalize;
 }
 
-.select-filter {
-    margin-left: -35px;
-}
-
-.custom-btn {
+.custom-btn-remove {
     padding: unset;
-    font-size: 14px;
+    font-size: 13px;
+    color: #EB5757CC;
 }
 
 .custom-checkbox {
     margin-top: 5px;
 }
 
+
+
+
+
+
+.select-filter {
+    margin-left: -35px;
+}
+
 .disabled-show-normal:disabled {
     color: #0c0c0c;
     background-color: white;
 }
+
+
+
+
+
 
 .fa-angle-double-up {
     color: #007D88;
@@ -48,60 +59,12 @@
     font-size: x-large;
 }
 
-ul.quotation-tabs {
-  display: flex;
-  justify-content: center;
-}
-
 ul.quotation-tabs li.quotation-tab-item {
   margin-right: 10px;
 }
 
-a.dropdown-item.table-row-price-option:hover {
-    background-color: blue;
-    color: white;
-}
-
 .fa-info-circle {
     color: #298dff;
-}
-
-.fa-gift {
-    color: #e92990;
-}
-
-.fa-shipping-fast {
-    color: #c39749;
-}
-
-.modal-body-invalid-promotion {
-    text-align: center;
-}
-
-.row.modal-footer-invalid-promotion {
-    position: relative;
-    padding: 10px;
-    text-align: center;
-    border-top: 1px solid #c7c7c7;
-}
-
-.row.modal-footer-invalid-promotion::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 1px;
-    height: 100%;
-    background-color: #b5b5b5;
-}
-
-.btn-remove-promotion {
-    color: red;
-}
-
-.btn-see-promotion {
-    color: #00D67F;
 }
 
 .option-btn-checked {

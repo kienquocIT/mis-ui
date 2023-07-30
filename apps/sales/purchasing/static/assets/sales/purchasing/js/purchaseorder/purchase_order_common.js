@@ -54,7 +54,7 @@ class loadDataHandle {
                     let link = "";
                     eleAppend += `<div class="inline-elements-badge mr-2">
                                     <a href="${link}" target="_blank" class="link-primary underline_hover"><span>${row.querySelector('.table-row-code').innerHTML}</span></a>
-                                    <button type="button" class="btn btn-link btn-sm custom-btn" aria-label="Close">
+                                    <button type="button" class="btn btn-link btn-sm custom-btn-remove" aria-label="Close">
                                         <span aria-hidden="true"><i class="fas fa-times"></i></span>
                                     </button>
                                 </div>`;
@@ -208,9 +208,8 @@ class loadDataHandle {
                     is_checked = true;
                     let link = "";
                     eleAppend += `<div class="inline-elements-badge mr-2">
-                                    <input type="checkbox" class="custom-checkbox" id="customCheck1">
                                     <a href="${link}" target="_blank" class="link-primary underline_hover"><span>${row.querySelector('.table-row-code').innerHTML}</span></a>
-                                    <button type="button" class="btn btn-link btn-sm custom-btn" aria-label="Close">
+                                    <button type="button" class="btn btn-link btn-sm custom-btn-remove" aria-label="Close">
                                         <span aria-hidden="true"><i class="fas fa-times"></i></span>
                                     </button>
                                 </div>`;

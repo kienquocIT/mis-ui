@@ -145,7 +145,7 @@ class CompanyUserNotMapEmployeeListAPI(APIView):
 class EmployeeOfTenantListAPI(APIView):
     @mask_view(auth_require=True, is_api=True)
     def get(self, request, *args, **kwargs):
-        query_params = request.query_params
+        query_params = request.query_params.dict()
         company_id = query_params.get('company_id', None)
         user_is_null = query_params.get('user_is_null', None)
         if company_id:

@@ -12,6 +12,8 @@
                 {% static 'assets/js/cdn-clone/datatable/i18n/vi.json' %}
             {% endif %}
         "
+        data-domain-cloud="{{ base.domain_cloud }}"
+        data-cloud-avatar="{{ base.avatar_prefix }}"
         data-urlCompanyConfig="{% url 'CompanyConfigDetailAPI' %}"
         data-urlCompanyConfigData=""
         data-flagIsDebug="{{ is_debug }}"

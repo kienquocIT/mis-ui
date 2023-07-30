@@ -1988,7 +1988,7 @@ class WindowControl {
         })
     }
 
-    static showNotFound(){
+    static showNotFound() {
         Swal.fire({
             title: $.fn.storageSystemData.attr('data-msg-404'),
             icon: 'question',
@@ -2008,7 +2008,7 @@ class WindowControl {
         })
     }
 
-    static showUnauthenticated(){
+    static showUnauthenticated() {
         Swal.fire({
             title: $.fn.storageSystemData.attr('data-msg-login-expired'),
             icon: 'error',
@@ -2022,7 +2022,7 @@ class WindowControl {
         })
     }
 
-    static showSVErrors(){
+    static showSVErrors() {
         Swal.fire({
             title: $.fn.storageSystemData.attr('data-msg-500'),
             icon: 'error',
@@ -2055,13 +2055,18 @@ class PersonControl {
         return '';
     }
 
-    static renderAvatar(personData, clsName = "") {
+    static renderAvatar(personData, clsName = "", appendHtml = "") {
         let avatar = personData?.['avatar'];
+        let htmlTooltipFullname = `data-bs-toggle="tooltip" data-bs-placement="bottom" title="${personData?.['full_name']}"`;
         let shortName = PersonControl.shortNameGlobe(personData);
-        if (avatar) return `<div class="avatar"><img src="${avatar}" alt="${shortName}" class="avatar-img"></div>`;
+        if (avatar && avatar !== 'None' && avatar !== 'none') {
+            let avatarFullUrl = $.fn.storageSystemData.attr('data-domain-cloud') + $.fn.storageSystemData.attr('data-cloud-avatar') + avatar + '?alt=' + shortName;
+            return `<div class="avatar ${clsName ? clsName : 'avatar-xs avatar-primary'}" ${htmlTooltipFullname}><img src="${avatarFullUrl}" alt="${shortName}" class="avatar-img">${appendHtml}</div>`;
+        }
         return `
-            <div class="avatar avatar-rounded ${clsName ? clsName : 'avatar-xs avatar-primary'}">
-                <span class="initial-wrap">${shortName}</span>
+            <div class="avatar avatar-rounded ${clsName ? clsName : 'avatar-xs avatar-primary'}" ${htmlTooltipFullname}>
+                <span class="initial-wrap" >${shortName}</span>
+                ${appendHtml}
             </div>
         `;
     }

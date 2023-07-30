@@ -17,6 +17,7 @@ $(function () {
         dataTableClass.dataTablePurchaseRequest();
         dataTableClass.dataTablePurchaseRequestProduct();
         dataTableClass.dataTablePurchaseQuotation();
+        dataTableClass.dataTablePurchaseOrderProduct();
 
 
 // Action on click

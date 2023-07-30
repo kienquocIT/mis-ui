@@ -203,18 +203,8 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" data-bs-toggle="tab" href="#tab_logistic">
-                                    <span class="nav-link-text">{% trans 'Logistics' %}</span>
-                                </a>
-                            </li>
-                            <li class="nav-item quotation-cost">
-                                <a class="nav-link" data-bs-toggle="tab" href="#tab_cost">
-                                    <span class="nav-link-text">{% trans 'Cost' %}</span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" data-bs-toggle="tab" href="#tab_expense">
-                                    <span class="nav-link-text">{% trans 'Expense' %}</span>
+                                <a class="nav-link" data-bs-toggle="tab" href="#tab_attachment">
+                                    <span class="nav-link-text">{% trans 'Attachment' %}</span>
                                 </a>
                             </li>
                         </ul>
@@ -249,21 +239,24 @@
                     <div class="tab-pane fade show active" id="tab_line_detail">
                         <div class="row">
                             <table
-                                    id="datable-quotation-create-product"
-                                    class="table nowrap w-100 mb-5"
+                                id="datable-purchase-order-product"
+                                class="table nowrap w-100 mb-5"
+                                data-url=""
+                                data-method="get"
                             >
                                 <thead>
                                 <tr>
                                     <th>STT</th>
                                     <th>{% trans 'Product' %}<span class="required"></span></th>
                                     <th>{% trans 'Description' %}</th>
-                                    <th>{% trans 'Unit Of Measure' %}<span class="required"></span></th>
-                                    <th>{% trans 'Quantity' %}<span class="required"></span></th>
-                                    <th>{% trans 'Unit Price' %}<span class="required"></span></th>
-                                    <th>{% trans 'Discount' %}</th>
+                                    <th>{% trans 'Unit Of Measure' %}(PR)<span class="required"></span></th>
+                                    <th>{% trans 'Quantity' %}(PR)<span class="required"></span></th>
+                                    <th>{% trans 'Stock' %}<span class="required"></span></th>
+                                    <th>{% trans 'Unit Of Measure' %}(PO)</th>
+                                    <th>{% trans 'Quantity' %}(PO)</th>
+                                    <th>{% trans 'Unit Price' %}</th>
                                     <th>{% trans 'Tax' %}</th>
                                     <th>{% trans 'Subtotal Price' %}</th>
-                                    <th>{% trans 'Actions' %}</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -357,36 +350,6 @@
                                         <input
                                             type="hidden"
                                             id="quotation-final-revenue-before-tax"
-                                        >
-                                    </div>
-                                </div>
-                                <div class="row mb-2">
-                                    <div class="col-3"><p>{% trans 'Discount' %}</p></div>
-                                    <div class="col-3">
-                                        <div class="row">
-                                            <div class="input-group">
-                                                <span class="input-affix-wrapper">
-                                                    <input type="text" class="form-control validated-number" id="quotation-create-product-discount">
-                                                    <span class="input-suffix">%</span>
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <input
-                                            id="quotation-create-product-discount-amount"
-                                            type="text"
-                                            class="form-control mask-money disabled-custom-show"
-                                            data-return-type="number"
-                                            name="total_product_discount"
-                                            disabled
-                                        >
-                                        <input
-                                            id="quotation-create-product-discount-amount-raw"
-                                            type="text"
-                                            class="form-control"
-                                            value="0"
-                                            hidden
                                         >
                                     </div>
                                 </div>
@@ -487,7 +450,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="tab-pane fade" id="tab_logistic">
+                    <div class="tab-pane fade" id="tab_attachment">
                         <div class="row logistics-body">
                             <div class="form-group">
                                 <label class="form-label">{% trans 'Shipping Address' %}
@@ -552,199 +515,6 @@
                                                     data-bs-dismiss="modal"
                                             >{% trans 'Close' %}</button>
                                         </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="tab-pane fade" id="tab_cost">
-                        <div class="row">
-                            <table
-                                    id="datable-quotation-create-cost"
-                                    class="table nowrap w-100 mb-5"
-                            >
-                                <thead>
-                                <tr>
-                                    <th>STT</th>
-                                    <th>{% trans 'Product' %}</th>
-                                    <th>{% trans 'Unit Of Measure' %}</th>
-                                    <th>{% trans 'Quantity' %}</th>
-                                    <th>{% trans 'Cost Price' %}<span class="required"></span></th>
-                                    <th>{% trans 'Tax' %}</th>
-                                    <th>{% trans 'Subtotal Price' %}</th>
-                                    <th>{% trans 'Actions' %}</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                            </table>
-                        </div>
-                        <br>
-                        <div class="row">
-                            <div class="col-7"></div>
-                            <div class="col-5" id="quotation-tab-cost-totals">
-                                <div class="row mb-2">
-                                    <div class="col-3"><p>{% trans 'Pretax Amount' %}</p></div>
-                                    <div class="col-3"></div>
-                                    <div class="col-6">
-                                        <input
-                                            id="quotation-create-cost-pretax-amount"
-                                            type="text"
-                                            class="form-control mask-money disabled-custom-show"
-                                            data-return-type="number"
-                                            name="total_cost_pretax_amount"
-                                            disabled
-                                        >
-                                        <input
-                                            id="quotation-create-cost-pretax-amount-raw"
-                                            type="text"
-                                            class="form-control"
-                                            value="0"
-                                            hidden
-                                        >
-                                    </div>
-                                </div>
-                                <div class="row mb-2">
-                                    <div class="col-3"><p>{% trans 'Taxes' %}</p></div>
-                                    <div class="col-3"></div>
-                                    <div class="col-6">
-                                        <input
-                                            id="quotation-create-cost-taxes"
-                                            type="text"
-                                            class="form-control mask-money disabled-custom-show"
-                                            data-return-type="number"
-                                            name="total_cost_tax"
-                                            disabled
-                                        >
-                                        <input
-                                            id="quotation-create-cost-taxes-raw"
-                                            type="text"
-                                            class="form-control"
-                                            value="0"
-                                            hidden
-                                        >
-                                    </div>
-                                </div>
-                                <hr class="quotation-horizon">
-                                <div class="row mb-2">
-                                    <div class="col-3"><b>{% trans 'Total' %}</b></div>
-                                    <div class="col-3"></div>
-                                    <div class="col-6">
-                                        <input
-                                            id="quotation-create-cost-total"
-                                            type="text"
-                                            class="form-control mask-money disabled-custom-show"
-                                            data-return-type="number"
-                                            name="total_cost"
-                                            disabled
-                                        >
-                                        <input
-                                            id="quotation-create-cost-total-raw"
-                                            type="text"
-                                            class="form-control"
-                                            value="0"
-                                            hidden
-                                        >
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="tab-pane fade" id="tab_expense">
-                        <div class="row">
-                            <table
-                                    id="datable-quotation-create-expense"
-                                    class="table nowrap w-100 mb-5"
-                            >
-                                <thead>
-                                <tr>
-                                    <th>STT</th>
-                                    <th>{% trans 'Expense' %}<span class="required"></span></th>
-                                    <th>{% trans 'Unit Of Measure' %}<span class="required"></span></th>
-                                    <th>{% trans 'Quantity' %}<span class="required"></span></th>
-                                    <th>{% trans 'Expense Price' %}<span class="required"></span></th>
-                                    <th>{% trans 'Tax' %}</th>
-                                    <th>{% trans 'Subtotal Price' %}</th>
-                                    <th>{% trans 'Actions' %}</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                            </table>
-                            <div class="row">
-                                <div class="col-2">
-                                    <button type="button" class="btn btn-link btn-animated" id="btn-add-expense-quotation-create">
-                                        <span><span class="icon"><span class="feather-icon"><i class="fa-regular fa-square-plus"></i></span></span><span>{% trans 'Add Expense' %}</span></span>
-                                    </button>
-                                </div>
-                                <div class="col-10"></div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-7"></div>
-                            <div class="col-5" id="quotation-tab-expense-totals">
-                                <div class="row mb-2">
-                                    <div class="col-3"><p>{% trans 'Pretax Amount' %}</p></div>
-                                    <div class="col-3"></div>
-                                    <div class="col-6">
-                                        <input
-                                            id="quotation-create-expense-pretax-amount"
-                                            type="text"
-                                            class="form-control mask-money disabled-custom-show"
-                                            data-return-type="number"
-                                            name="total_expense_pretax_amount"
-                                            disabled
-                                        >
-                                        <input
-                                            id="quotation-create-expense-pretax-amount-raw"
-                                            type="text"
-                                            class="form-control"
-                                            value="0"
-                                            hidden
-                                        >
-                                    </div>
-                                </div>
-                                <div class="row mb-2">
-                                    <div class="col-3"><p>{% trans 'Taxes' %}</p></div>
-                                    <div class="col-3"></div>
-                                    <div class="col-6">
-                                        <input
-                                            id="quotation-create-expense-taxes"
-                                            type="text"
-                                            class="form-control mask-money disabled-custom-show"
-                                            data-return-type="number"
-                                            name="total_expense_tax"
-                                            disabled
-                                        >
-                                        <input
-                                            id="quotation-create-expense-taxes-raw"
-                                            type="text"
-                                            class="form-control"
-                                            value="0"
-                                            hidden
-                                        >
-                                    </div>
-                                </div>
-                                <hr class="quotation-horizon">
-                                <div class="row mb-2">
-                                    <div class="col-3"><b>{% trans 'Total' %}</b></div>
-                                    <div class="col-3"></div>
-                                    <div class="col-6">
-                                        <input
-                                            id="quotation-create-expense-total"
-                                            type="text"
-                                            class="form-control mask-money disabled-custom-show"
-                                            data-return-type="number"
-                                            name="total_expense"
-                                            disabled
-                                        >
-                                        <input
-                                            id="quotation-create-expense-total-raw"
-                                            type="text"
-                                            class="form-control"
-                                            value="0"
-                                            hidden
-                                        >
                                     </div>
                                 </div>
                             </div>

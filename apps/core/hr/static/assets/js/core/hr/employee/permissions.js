@@ -417,7 +417,9 @@ $('#btnAddNewRowPerms').click(function () {
     let newRowRange = $('#newRowRange');
     if (newRowCreateCheck.prop('checked') || newRowViewCheck.prop('checked') || newRowEditCheck.prop('checked') || newRowDeleteCheck.prop('checked')) {
         let appSelected = newRowApp.find(":selected");
-        $('#permissions_list').DataTable().row.add({
+
+        let tbl = $('#permissions_list').DataTable();
+        tbl.row.add({
             "id": null,
             "app_data": {
                 "id": appSelected.attr('data-app-id'),
@@ -436,6 +438,16 @@ $('#btnAddNewRowPerms').click(function () {
             "delete": newRowDeleteCheck.prop('checked'),
             "range": newRowRange.val(),
         }).draw(false);
+
+        // switch to end page.
+        let totalPages = tbl.page.info().pages;
+        let currentPages = tbl.page.info().page;
+        if (totalPages - 1 > currentPages){
+            $.fn.notifyB({
+                'description': $.fn.storageSystemData.attr('data-msg-goto-end-page'),
+            }, 'info')
+        }
+        tbl.page(totalPages - 1).draw('page');
     } else {
         hopscotch.startTour({
             id: "hopscotch-light",

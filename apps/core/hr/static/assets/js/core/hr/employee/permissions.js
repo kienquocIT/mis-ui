@@ -30,6 +30,19 @@ class HandleWhenAllFalse {
 }
 
 class HandlePermissions {
+    static updateDataRow(clsThis) {
+        $x.fn.updateDataRow(clsThis, function (clsThat, rowIdx, rowData) {
+            return {
+                ...rowData,
+                'view': $(clsThat).find('[name="allow-view"]').prop('checked'),
+                'create': $(clsThat).find('[name="allow-create"]').prop('checked'),
+                'edit': $(clsThat).find('[name="allow-edit"]').prop('checked'),
+                'delete': $(clsThat).find('[name="allow-delete"]').prop('checked'),
+                'range': $(clsThat).find('[name="permission-range"]').val(),
+            }
+        })
+    }
+
     static returnValueAllowRange(opt_perm) {
         // check range allow for option permission
         if (opt_perm === 0 || opt_perm === '0') return ['1', '2', '3', '4'];
@@ -308,11 +321,14 @@ class HandlePermissions {
             drawCallback: function () {
                 $(clsThis.tbl).find('input[type=checkbox].row-style-child').trigger('change');
             },
+            rowCallback: function () {
+
+            },
         }).column(-1).visible(clsThis.enableChange);
     }
 
     combinesData() {
-        let arr = this.tbl.DataTable().rows().data().toArray().map((item)=>{
+        let arr = this.tbl.DataTable().rows().data().toArray().map((item) => {
             return {
                 app_id: item?.['app_data']?.['id'],
                 plan_id: item?.['plan_data']?.['id'],
@@ -343,6 +359,8 @@ tbl.on('click', '.row-e-child', function () {
 });
 
 tbl.on('change', '.row-style-all', function () {
+    HandlePermissions.updateDataRow($(this));
+
     let stateCheck = $(this).prop('checked');
 
     if (stateCheck !== $.fn.parseBoolean($(this).attr('data-init'), true)) {
@@ -353,6 +371,8 @@ tbl.on('change', '.row-style-all', function () {
 })
 
 tbl.on('change', '.row-style-child', function () {
+    HandlePermissions.updateDataRow($(this));
+
     if ($(this).prop('checked') !== $.fn.parseBoolean($(this).attr('data-init'), true)) {
         $(this).addClass('border-warning');
     } else {
@@ -362,12 +382,13 @@ tbl.on('change', '.row-style-child', function () {
 })
 
 tbl.on('change', '.row-perm-range', function () {
+    HandlePermissions.updateDataRow($(this));
+
     if ($(this).attr('data-init') !== $(this).val()) {
         $(this).addClass('border-warning');
     } else {
         $(this).removeClass('border-warning');
     }
-
 });
 
 tbl.on('click', '.btnRemoveRow', function () {
@@ -442,7 +463,7 @@ $('#btnAddNewRowPerms').click(function () {
         // switch to end page.
         let totalPages = tbl.page.info().pages;
         let currentPages = tbl.page.info().page;
-        if (totalPages - 1 > currentPages){
+        if (totalPages - 1 > currentPages) {
             $.fn.notifyB({
                 'description': $.fn.storageSystemData.attr('data-msg-goto-end-page'),
             }, 'info')

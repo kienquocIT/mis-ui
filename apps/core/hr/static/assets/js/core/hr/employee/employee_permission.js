@@ -32,7 +32,6 @@ function PermissionsInit(plan_app, perm_by_cfg) {
                     }
                 }
                 else if (Object.keys(perm_by_cfg).length > 0) {
-                    console.log('perm_by_cfg',perm_by_cfg)
                     let app_follow_by_plan = {}
                     for (let app of plan.application){
                         // loop app list filter by plan ID ==> app name add to app_follow_by_plan

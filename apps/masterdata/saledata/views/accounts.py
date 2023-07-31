@@ -2,7 +2,7 @@ from django.views import View
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from apps.shared import mask_view, ApiURL, ServerAPI, InputMappingProperties
+from apps.shared import mask_view, ApiURL, ServerAPI, InputMappingProperties, PermCheck
 from apps.shared.constant import COMPANY_SIZE, CUSTOMER_REVENUE
 
 
@@ -128,7 +128,7 @@ class ContactListAPI(APIView):
 
     @mask_view(auth_require=True, is_api=True)
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.CONTACT_LIST).get(request.query_params.dict())
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.CONTACT_LIST).get(request.query_params.dict())
         return resp.auto_return(key_success='contact_list')
 
 
@@ -140,6 +140,7 @@ class ContactCreate(View):
         template='masterdata/saledata/accounts/contact_create.html',
         breadcrumb='CONTACT_CREATE_PAGE',
         menu_active='menu_contact_list',
+        perm_check=PermCheck(url=ApiURL.CONTACT_LIST, method='post'),
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -181,7 +182,7 @@ class ContactDetailAPI(APIView):
         is_api=True,
     )
     def get(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.CONTACT_DETAIL + '/' + pk).get()
+        resp = ServerAPI(user=request.user, url=ApiURL.CONTACT_DETAIL.fill_key(pk=pk)).get()
         return resp.auto_return(key_success='contact_detail')
 
 
@@ -190,8 +191,9 @@ class ContactUpdate(View):
         auth_require=True, template='masterdata/saledata/accounts/contact_update.html',
         breadcrumb='CONTACT_DETAIL_PAGE',
         menu_active='menu_contact_detail',
+        perm_check=PermCheck(url=ApiURL.CONTACT_DETAIL, method='put', fill_key=['pk']),
     )
-    def get(self, request, *args, **kwargs):
+    def get(self, request, *args, pk, **kwargs):
         input_mapping_properties = InputMappingProperties.SALE_DATA_CONTACT
         return {
                    'input_mapping_properties': input_mapping_properties, 'form_id': 'form-create-contact'
@@ -202,7 +204,7 @@ class ContactUpdateAPI(APIView):
 
     @mask_view(auth_require=True, is_api=True)
     def put(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.CONTACT_DETAIL + '/' + pk).put(request.data)
+        resp = ServerAPI(user=request.user, url=ApiURL.CONTACT_DETAIL.fill_key(pk=pk)).put(request.data)
         return resp.auto_return()
 
 
@@ -381,7 +383,7 @@ class AccountListAPI(APIView):
         filter = request.query_params.dict()
         if 'account_types_mapped__account_type_order' in filter:
             filter['account_types_mapped__account_type_order'] = int(filter['account_types_mapped__account_type_order'])
-        resp = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_LIST).get(filter)
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.ACCOUNT_LIST).get(filter)
         return resp.auto_return(key_success='account_list')
 
 
@@ -393,6 +395,7 @@ class AccountCreate(View):
         template='masterdata/saledata/accounts/account_create.html',
         breadcrumb='ACCOUNT_CREATE_PAGE',
         menu_active='menu_account_list',
+        perm_check=PermCheck(url=ApiURL.ACCOUNT_LIST, method='post'),
     )
     def get(self, request, *args, **kwargs):
         return {'company_size': COMPANY_SIZE, 'customer_revenue': CUSTOMER_REVENUE}, status.HTTP_200_OK

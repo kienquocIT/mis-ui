@@ -3712,3 +3712,7 @@ msgstr "Sao chép đến đơn hàng"
 #
 msgid "Opportunity was closed or had sale order"
 msgstr "Cơ hội kinh doanh đã đóng hoặc đã có đơn hàng"
+
+#
+msgid "Is admin"
+msgstr "Là quản trị viên"

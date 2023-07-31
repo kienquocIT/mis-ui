@@ -9,7 +9,11 @@ $(document).ready(function () {
         let ele = $('#workcity');
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then((resp) => {
+        $.fn.callAjax2({
+            url: url,
+            method: method,
+            isDropdown: true,
+        }).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 ele.text("");
@@ -30,7 +34,11 @@ $(document).ready(function () {
         let ele = $('#workdistrict');
         let url = ele.attr('data-url').replace('pk', $('#workcity').val())
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then((resp) => {
+        $.fn.callAjax2({
+            url: url,
+            method: method,
+            isDropdown: true,
+        }).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 ele.text("");
@@ -49,7 +57,11 @@ $(document).ready(function () {
         let ele = $('#workward');
         let url = ele.attr('data-url').replace('pk', $('#workdistrict').val())
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then((resp) => {
+        $.fn.callAjax2({
+            url: url,
+            method: method,
+            isDropdown: true,
+        }).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 ele.text("");
@@ -119,7 +131,11 @@ $(document).ready(function () {
         let ele = $('#homecity');
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then((resp) => {
+        $.fn.callAjax2({
+            url: url,
+            method: method,
+            isDropdown: true,
+        }).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 ele.text("");
@@ -140,7 +156,11 @@ $(document).ready(function () {
         let ele = $('#homedistrict');
         let url = ele.attr('data-url').replace('pk', $('#homecity').val())
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then((resp) => {
+        $.fn.callAjax2({
+            url: url,
+            method: method,
+            isDropdown: true,
+        }).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 ele.text("");
@@ -159,7 +179,11 @@ $(document).ready(function () {
         let ele = $('#homeward');
         let url = ele.attr('data-url').replace('pk', $('#homedistrict').val())
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then((resp) => {
+        $.fn.callAjax2({
+            url: url,
+            method: method,
+            isDropdown: true,
+        }).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 ele.text("");
@@ -229,7 +253,11 @@ $(document).ready(function () {
         let ele = $('#select-box-salutation');
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then((resp) => {
+        $.fn.callAjax2({
+            url: url,
+            method: method,
+            isDropdown: true,
+        }).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 ele.text("");
@@ -247,7 +275,11 @@ $(document).ready(function () {
         let ele = $('#select-box-interests');
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then((resp) => {
+        $.fn.callAjax2({
+            url: url,
+            method: method,
+            isDropdown: true,
+        }).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 ele.text("");
@@ -265,7 +297,11 @@ $(document).ready(function () {
         let ele = $('#select-box-emp');
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then((resp) => {
+        $.fn.callAjax2({
+            url: url,
+            method: method,
+            isDropdown: true,
+        }).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 ele.text("");
@@ -283,7 +319,11 @@ $(document).ready(function () {
         let ele = $('#select-box-account_name');
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then((resp) => {
+        $.fn.callAjax2({
+            url: url,
+            method: method,
+            isDropdown: true,
+        }).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 ele.text("");
@@ -302,7 +342,11 @@ $(document).ready(function () {
         ele.attr('disabled', false);
         let url = ele.attr('data-url').replace('0', id);
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then((resp) => {
+        $.fn.callAjax2({
+            url: url,
+            method: method,
+            isDropdown: true,
+        }).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 ele.text("");

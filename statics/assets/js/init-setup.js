@@ -1843,6 +1843,11 @@ class DTBControl {
         // ajax delete data
         if (configFinal?.['ajax'] && configFinal.hasOwnProperty('data')) delete configFinal['data'];
 
+        if (isDenied){
+            if (configFinal.hasOwnProperty('ajax')) delete configFinal['ajax'];
+            configFinal['data'] = [];
+        }
+
         // returned
         return configFinal;
     }
@@ -1854,7 +1859,7 @@ class DTBControl {
     }
 
     static deleteRow(ele$) {
-        $(ele$).closest('table').DataTable().row($(this).parents('tr')).remove().draw();
+        $(ele$).closest('table').DataTable().row($(ele$).parents('tr')).remove().draw();
     }
 
     constructor(dtb$) {

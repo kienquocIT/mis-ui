@@ -923,11 +923,17 @@ $(document).ready(function () {
                         $('#table_terms').DataTable().clear().draw();
                         $('#table_terms').DataTable().rows.add(data.term).draw();
                         let temp = []
+                        let total_type_0 = 0
                         for (let item of data.term) {
                             temp.push(item.unit_type)
+                            if (item.unit_type === 0)
+                                total_type_0 += item.value
                         }
                         term_type_list = [...new Set(temp)]
-                        $('[data-bs-target="#modal-add-table"]').prop('disabled', term_type_list.indexOf(2) !== -1)
+                        // nếu type = balance thì khoá btn
+                        // nếu type = 0 thì total value = 100 => khoá
+                        if (total_type_0 >= 100 || term_type_list.indexOf(2) !== -1)
+                            $('[data-bs-target="#modal-add-table"]').prop('disabled', true)
                     }
                 }
             )

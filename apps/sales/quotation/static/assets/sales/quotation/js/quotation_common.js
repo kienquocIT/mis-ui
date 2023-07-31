@@ -191,7 +191,14 @@ class loadDataHandle {
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
         if (customerID) {
-            $.fn.callAjax(url, method, {'account_name_id': customerID}).then(
+            $.fn.callAjax2({
+                    'url': url,
+                    'method': method,
+                    'data': {'account_name_id': customerID},
+                    'isDropdown': true,
+                }
+                // url, method, {'account_name_id': customerID}
+            ).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
@@ -231,7 +238,13 @@ class loadDataHandle {
         let ele = $('#select-box-quotation-create-sale-person');
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then(
+        $.fn.callAjax2({
+                'url': url,
+                'method': method,
+                'isDropdown': true,
+            }
+            // url, method
+        ).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
@@ -277,7 +290,13 @@ class loadDataHandle {
         let ele = $('#select-box-quotation-create-payment-term');
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then(
+        $.fn.callAjax2({
+                'url': url,
+                'method': method,
+                'isDropdown': true,
+            }
+            // url, method
+        ).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
@@ -286,18 +305,18 @@ class loadDataHandle {
                         ele.append(`<option value=""></option>`);
                         data.payment_terms_list.map(function (item) {
                             let dataStr = JSON.stringify(item).replace(/"/g, "&quot;");
-                            // let option = `<option value="${item.id}">
-                            //                 <span class="opp-title">${item.title}</span>
-                            //                 <input type="hidden" class="data-info" value="${dataStr}">
-                            //             </option>`
-                            if (valueToSelect && valueToSelect === item.id) {
-                                let option = `<option value="${item.id}" selected>
+                            let option = `<option value="${item.id}">
                                             <span class="opp-title">${item.title}</span>
                                             <input type="hidden" class="data-info" value="${dataStr}">
-                                        </option>`;
-                                ele.append(option);
+                                        </option>`
+                            if (valueToSelect && valueToSelect === item.id) {
+                                option = `<option value="${item.id}" selected>
+                                                <span class="opp-title">${item.title}</span>
+                                                <input type="hidden" class="data-info" value="${dataStr}">
+                                            </option>`;
+                                // ele.append(option);
                             }
-                            // ele.append(option)
+                            ele.append(option);
                         });
                         self.loadInformationSelectBox(ele);
                     }
@@ -306,12 +325,17 @@ class loadDataHandle {
         )
     }
 
-    loadBoxQuotationPrice(price_id) {
-        let jqueryId = '#' + price_id;
-        let ele = $(jqueryId);
+    loadBoxQuotationPrice() {
+        let ele = $('#select-box-quotation-create-price-list');
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then(
+        $.fn.callAjax2({
+                'url': url,
+                'method': method,
+                'isDropdown': true,
+            }
+            // url, method
+        ).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
@@ -330,12 +354,17 @@ class loadDataHandle {
         )
     }
 
-    loadInitQuotationProduct(product_id) {
-        let jqueryId = '#' + product_id;
-        let ele = $(jqueryId);
+    loadInitQuotationProduct() {
+        let ele = $('#data-init-quotation-create-tables-product');
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then(
+        $.fn.callAjax2({
+                'url': url,
+                'method': method,
+                'isDropdown': true,
+            }
+            // url, method
+        ).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
@@ -408,12 +437,17 @@ class loadDataHandle {
         }
     }
 
-    loadInitQuotationUOM(uom_id) {
-        let jqueryId = '#' + uom_id;
-        let ele = $(jqueryId);
+    loadInitQuotationUOM() {
+        let ele = $('#data-init-quotation-create-tables-uom');
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then(
+        $.fn.callAjax2({
+                'url': url,
+                'method': method,
+                'isDropdown': true,
+            }
+            // url, method
+        ).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
@@ -468,12 +502,17 @@ class loadDataHandle {
         }
     }
 
-    loadInitQuotationTax(tax_id) {
-        let jqueryId = '#' + tax_id;
-        let ele = $(jqueryId);
+    loadInitQuotationTax() {
+        let ele = $('#data-init-quotation-create-tables-tax');
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then(
+        $.fn.callAjax2({
+                'url': url,
+                'method': method,
+                'isDropdown': true,
+            }
+            // url, method
+        ).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
@@ -1071,9 +1110,9 @@ class loadDataHandle {
         $('#datable-quotation-create-product').DataTable().destroy();
         $('#datable-quotation-create-cost').DataTable().destroy();
         $('#datable-quotation-create-expense').DataTable().destroy();
-        dataTableClass.dataTableProduct(products_data, 'datable-quotation-create-product');
-        dataTableClass.dataTableCost(costs_data, 'datable-quotation-create-cost');
-        dataTableClass.dataTableExpense(expenses_data, 'datable-quotation-create-expense');
+        dataTableClass.dataTableProduct(products_data);
+        dataTableClass.dataTableCost(costs_data);
+        dataTableClass.dataTableExpense(expenses_data);
         // load data dropdown for Tabs
         let tableProduct = document.getElementById('datable-quotation-create-product');
         let tableCost = document.getElementById('datable-quotation-create-cost');
@@ -1130,17 +1169,16 @@ class loadDataHandle {
 
 // DataTable
 class dataTableHandle {
-    dataTableProduct(data, table_id, is_load_detail = false) {
+    dataTableProduct(data, is_load_detail = false) {
         // init dataTable
-        let listData = data ? data : [];
-        let jqueryId = '#' + table_id;
-        let $tables = $(jqueryId);
-        $tables.DataTable({
-            data: listData,
+        let $tables = $('#datable-quotation-create-product');
+        $tables.DataTableDefault({
+            data: data ? data : [],
             searching: false,
+            paging: false,
             ordering: false,
-            paginate: false,
             info: false,
+            columnDefs: [],
             drawCallback: function (row, data) {
                 // render icon after table callback
                 feather.replace();
@@ -1567,17 +1605,16 @@ class dataTableHandle {
 
     }
 
-    dataTableCost(data, table_id, is_load_detail = false) {
+    dataTableCost(data, is_load_detail = false) {
         // init dataTable
-        let listData = data ? data : [];
-        let jqueryId = '#' + table_id;
-        let $tables = $(jqueryId);
-        $tables.DataTable({
-            data: listData,
+        let $tables = $('#datable-quotation-create-cost');
+        $tables.DataTableDefault({
+            data: data ? data : [],
             searching: false,
+            paging: false,
             ordering: false,
-            paginate: false,
             info: false,
+            columnDefs: [],
             drawCallback: function (row, data) {
                 // render icon after table callback
                 feather.replace();
@@ -1785,17 +1822,16 @@ class dataTableHandle {
         });
     }
 
-    dataTableExpense(data, table_id, is_load_detail = false) {
+    dataTableExpense(data, is_load_detail = false) {
         // init dataTable
-        let listData = data ? data : [];
-        let jqueryId = '#' + table_id;
-        let $tables = $(jqueryId);
-        $tables.DataTable({
-            data: listData,
+        let $tables = $('#datable-quotation-create-expense');
+        $tables.DataTableDefault({
+            data: data ? data : [],
             searching: false,
+            paging: false,
             ordering: false,
-            paginate: false,
             info: false,
+            columnDefs: [],
             drawCallback: function (row, data) {
                 // render icon after table callback
                 feather.replace();
@@ -2115,17 +2151,16 @@ class dataTableHandle {
         });
     }
 
-    dataTablePromotion(data, table_id) {
+    dataTablePromotion(data) {
         // init dataTable
-        let listData = data ? data : [];
-        let jqueryId = '#' + table_id;
-        let $tables = $(jqueryId);
-        $tables.DataTable({
-            data: listData,
+        let $tables = $('#datable-quotation-create-promotion');
+        $tables.DataTableDefault({
+            data: data ? data : [],
             searching: false,
+            paging: false,
             ordering: false,
-            paginate: false,
             info: false,
+            columnDefs: [],
             drawCallback: function (row, data) {
                 // render icon after table callback
                 feather.replace();
@@ -2173,7 +2208,14 @@ class dataTableHandle {
                 'customer_type': 0,
                 'customers_map_promotion__id': customer_id
             };
-            $.fn.callAjax(url, method, data_filter).then(
+            $.fn.callAjax2({
+                    'url': url,
+                    'method': method,
+                    'data': data_filter,
+                    'isDropdown': true,
+                }
+                // url, method, data_filter
+            ).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
@@ -2210,7 +2252,7 @@ class dataTableHandle {
                                 }
                             })
                             passList = passList.concat(failList);
-                            self.dataTablePromotion(passList, 'datable-quotation-create-promotion');
+                            self.dataTablePromotion(passList);
                         }
                     }
                 }
@@ -2219,27 +2261,16 @@ class dataTableHandle {
         return true
     }
 
-    dataTableCopyQuotation(data, table_id) {
+    dataTableCopyQuotation(data) {
         // init dataTable
-        let listData = data ? data : [];
-        let jqueryId = '#' + table_id;
-        let $tables = $(jqueryId);
-        $tables.DataTable({
-            data: listData,
+        let $tables = $('#datable-copy-quotation');
+        $tables.DataTableDefault({
+            data: data ? data : [],
             searching: false,
-            language: {
-                // search: "_INPUT_",
-                // searchPlaceholder: "Search...",
-                paginate: {
-                    "previous": '<i data-feather="chevron-left"></i>',
-                    "next": '<i data-feather="chevron-right"></i>'
-                },
-                info: 'Showing _START_ to _END_ of _TOTAL_ rows',
-                lengthMenu: '_MENU_ rows per page',
-            },
+            paging: false,
             ordering: false,
-            // paginate: false,
             info: false,
+            columnDefs: [],
             drawCallback: function (row, data) {
                 // render icon after table callback
                 feather.replace();
@@ -2297,27 +2328,26 @@ class dataTableHandle {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         if (data.hasOwnProperty('quotation_list') && Array.isArray(data.quotation_list)) {
-                            self.dataTableCopyQuotation(data.quotation_list, 'datable-copy-quotation');
+                            self.dataTableCopyQuotation(data.quotation_list);
                         }
                     }
                 }
             )
         } else {
-            self.dataTableCopyQuotation([], 'datable-copy-quotation');
+            self.dataTableCopyQuotation();
         }
     }
 
-    dataTableCopyQuotationProduct(data, table_id) {
+    dataTableCopyQuotationProduct(data) {
         // init dataTable
-        let listData = data ? data : [];
-        let jqueryId = '#' + table_id;
-        let $tables = $(jqueryId);
-        $tables.DataTable({
-            data: listData,
+        let $tables = $('#datable-copy-quotation-product');
+        $tables.DataTableDefault({
+            data: data ? data : [],
             searching: false,
+            paging: false,
             ordering: false,
-            paginate: false,
             info: false,
+            columnDefs: [],
             drawCallback: function (row, data) {
                 // render icon after table callback
                 feather.replace();
@@ -2365,17 +2395,16 @@ class dataTableHandle {
         });
     }
 
-    dataTableShipping(data, table_id) {
+    dataTableShipping(data) {
         // init dataTable
-        let listData = data ? data : [];
-        let jqueryId = '#' + table_id;
-        let $tables = $(jqueryId);
-        $tables.DataTable({
-            data: listData,
+        let $tables = $('#datable-quotation-create-shipping');
+        $tables.DataTableDefault({
+            data: data ? data : [],
             searching: false,
+            paging: false,
             ordering: false,
-            paginate: false,
             info: false,
+            columnDefs: [],
             drawCallback: function (row, data) {
                 // render icon after table callback
                 feather.replace();
@@ -2419,8 +2448,13 @@ class dataTableHandle {
         let passList = [];
         let failList = [];
         let checkList = [];
-        let data_filter = {};
-        $.fn.callAjax(url, method).then(
+        $.fn.callAjax2({
+                'url': url,
+                'method': method,
+                'isDropdown': true,
+            }
+            // url, method
+        ).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
@@ -2445,9 +2479,9 @@ class dataTableHandle {
                                 }
                             })
                             passList = passList.concat(failList);
-                            self.dataTableShipping(passList, 'datable-quotation-create-shipping');
+                            self.dataTableShipping(passList);
                         } else {
-                            self.dataTableShipping(passList, 'datable-quotation-create-shipping');
+                            self.dataTableShipping(passList);
                             $.fn.notifyB({description: $.fn.transEle.attr('data-check-if-shipping-address')}, 'failure');
                         }
                     }
@@ -2863,7 +2897,13 @@ class indicatorHandle {
         if (!ele.val()) {
             let url = ele.attr('data-url');
             let method = ele.attr('data-method');
-            $.fn.callAjax(url, method).then(
+            $.fn.callAjax2({
+                    'url': url,
+                    'method': method,
+                    'isDropdown': true,
+                }
+                // url, method
+            ).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {

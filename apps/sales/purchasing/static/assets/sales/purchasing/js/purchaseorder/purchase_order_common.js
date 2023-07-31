@@ -49,7 +49,14 @@ class loadDataHandle {
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
         if (customerID) {
-            $.fn.callAjax(url, method, {'account_name_id': customerID}).then(
+            $.fn.callAjax2({
+                    'url': url,
+                    'method': method,
+                    'data': {'account_name_id': customerID},
+                    'isDropdown': true,
+                }
+                // url, method, {'account_name_id': customerID}
+            ).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {

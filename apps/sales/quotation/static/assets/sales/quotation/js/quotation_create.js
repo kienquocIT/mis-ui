@@ -23,18 +23,18 @@ $(function () {
         let boxQuotation = $('#select-box-quotation');
         let tabPrice = $('#tab_terms');
         loadDataClass.loadBoxQuotationSalePerson(null, true);
-        loadDataClass.loadInitQuotationProduct('data-init-quotation-create-tables-product');
-        loadDataClass.loadInitQuotationUOM('data-init-quotation-create-tables-uom');
-        loadDataClass.loadInitQuotationTax('data-init-quotation-create-tables-tax');
+        loadDataClass.loadInitQuotationProduct();
+        loadDataClass.loadInitQuotationUOM();
+        loadDataClass.loadInitQuotationTax();
         loadDataClass.loadInitQuotationExpense('data-init-quotation-create-tables-expense');
         // load config
         loadDataClass.loadInitQuotationConfig('quotation-config-data', formSubmit.attr('data-method'));
         // load first time indicator
         indicatorClass.loadQuotationIndicator('quotation-indicator-data', true);
 
-        dataTableClass.dataTableProduct(data,'datable-quotation-create-product');
-        dataTableClass.dataTableCost(data, 'datable-quotation-create-cost');
-        dataTableClass.dataTableExpense(data, 'datable-quotation-create-expense');
+        dataTableClass.dataTableProduct();
+        dataTableClass.dataTableCost();
+        dataTableClass.dataTableExpense();
         let tableProduct = $('#datable-quotation-create-product');
         let tableCost = $('#datable-quotation-create-cost');
         let tableExpense = $('#datable-quotation-create-expense');
@@ -163,7 +163,7 @@ $(function () {
 // Action on click dropdown price list
         tabPrice.on('click', function() {
             if (!boxPriceList[0].innerHTML) {
-                loadDataClass.loadBoxQuotationPrice('select-box-quotation-create-price-list');
+                loadDataClass.loadBoxQuotationPrice();
             }
         });
 
@@ -739,7 +739,7 @@ $(function () {
                 tableCopyQuotationProduct.DataTable().destroy();
                 // Filter all data is not Promotion from quotation_products_data
                 let finalList = filterDataProductNotPromotion(dataCopy.quotation_products_data);
-                dataTableClass.dataTableCopyQuotationProduct(finalList, 'datable-copy-quotation-product');
+                dataTableClass.dataTableCopyQuotationProduct(finalList);
             }
         });
 
@@ -762,7 +762,7 @@ $(function () {
             tableCopyQuotationProduct.DataTable().destroy();
             // Filter all data is not Promotion from quotation_products_data
             let finalList = filterDataProductNotPromotion(dataCopy.quotation_products_data);
-            dataTableClass.dataTableCopyQuotationProduct(finalList, 'datable-copy-quotation-product');
+            dataTableClass.dataTableCopyQuotationProduct(finalList);
 
             // dataTableClass.dataTableCopyQuotationProduct(dataCopy.quotation_products_data, 'datable-copy-quotation-product');
             $('#btn-select-quotation-copy')[0].setAttribute('hidden', true);
@@ -910,7 +910,8 @@ $(function () {
                 // destroy dataTable then call API load-check again
                 dataTableClass.loadTableQuotationPromotion('data-init-quotation-create-promotion', boxCustomer.val())
             } else {
-                dataTableClass.dataTablePromotion([], 'datable-quotation-create-promotion');
+                $('#datable-quotation-create-promotion').DataTable().destroy();
+                dataTableClass.dataTablePromotion();
             }
         });
 

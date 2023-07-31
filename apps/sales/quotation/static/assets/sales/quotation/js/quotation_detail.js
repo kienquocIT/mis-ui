@@ -22,13 +22,13 @@ $(function () {
                     $('#datable-quotation-create-cost').DataTable().destroy();
                     $('#datable-quotation-create-expense').DataTable().destroy();
                     if (!$form.hasClass('sale-order')) {
-                        dataTableClass.dataTableProduct(data.quotation_products_data, 'datable-quotation-create-product', true);
-                        dataTableClass.dataTableCost(data.quotation_costs_data, 'datable-quotation-create-cost', true);
-                        dataTableClass.dataTableExpense(data.quotation_expenses_data, 'datable-quotation-create-expense', true);
+                        dataTableClass.dataTableProduct(data.quotation_products_data, true);
+                        dataTableClass.dataTableCost(data.quotation_costs_data, true);
+                        dataTableClass.dataTableExpense(data.quotation_expenses_data, true);
                     } else {
-                        dataTableClass.dataTableProduct(data.sale_order_products_data, 'datable-quotation-create-product', true);
-                        dataTableClass.dataTableCost(data.sale_order_costs_data, 'datable-quotation-create-cost', true);
-                        dataTableClass.dataTableExpense(data.sale_order_expenses_data, 'datable-quotation-create-expense', true);
+                        dataTableClass.dataTableProduct(data.sale_order_products_data, true);
+                        dataTableClass.dataTableCost(data.sale_order_costs_data, true);
+                        dataTableClass.dataTableExpense(data.sale_order_expenses_data, true);
                     }
                     // prepare for copy quotation to sale order
                     if (!$form.hasClass('sale-order')) {

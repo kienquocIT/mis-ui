@@ -53,7 +53,6 @@
                                     <label class="form-label" for="quotation-create-title">{% trans 'Title' %}<span class="required"></span></label>
                                     <input
                                             type="text" class="form-control"
-                                            placeholder="input title"
                                             name="title"
                                             id="quotation-create-title"
                                             required
@@ -244,8 +243,7 @@
                             </div>
                         </div>
                     </div>
-                    <br>
-                    <div class="row collapse-arrow">
+                    <div class="row collapse-arrow mb-2 mt-2">
                         <i
                             class="fas fa-angle-double-up"
                             data-bs-toggle="collapse"
@@ -256,7 +254,6 @@
                             id="quotation-info-collapse"
                         ></i>
                     </div>
-                    <br>
                     <div class="row">
                         <div class="row">
                             <div class="col-7">
@@ -291,7 +288,7 @@
                                     <div class="col-3">
                                         <button type="button" class="btn btn-soft-primary">{% trans 'Send Email' %}</button>
                                     </div>
-                                    <div class="col-4">
+                                    <div class="col-5">
                                         <div class="form-check mt-2">
                                             <input
                                                     type="checkbox" class="form-check-input disabled-but-edit"
@@ -303,7 +300,7 @@
                                             >{% trans 'Customer Confirm' %}</label>
                                         </div>
                                     </div>
-                                    <div class="col-3">
+                                    <div class="col-2">
                                     </div>
                                 </div>
                             </div>
@@ -343,7 +340,7 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-7">
+                                    <div class="col-6">
                                         <div class="row mt-8">
                                             <div class="col-4">
                                                 <button
@@ -398,10 +395,10 @@
                                             <div class="col-8"></div>
                                         </div>
                                     </div>
-                                    <div class="col-5" id="quotation-tab-product-totals">
+                                    <div class="col-6" id="quotation-tab-product-totals">
                                         <div class="row mb-2">
-                                            <div class="col-3"><p>{% trans 'Pretax Amount' %}</p></div>
-                                            <div class="col-3"></div>
+                                            <div class="col-4"><p>{% trans 'Pretax Amount' %}</p></div>
+                                            <div class="col-2"></div>
                                             <div class="col-6">
                                                 <input
                                                     id="quotation-create-product-pretax-amount"
@@ -425,8 +422,8 @@
                                             </div>
                                         </div>
                                         <div class="row mb-2">
-                                            <div class="col-3"><p>{% trans 'Discount' %}</p></div>
-                                            <div class="col-3">
+                                            <div class="col-4"><p>{% trans 'Discount' %}</p></div>
+                                            <div class="col-2">
                                                 <div class="row">
                                                     <div class="input-group">
                                                         <span class="input-affix-wrapper">
@@ -455,8 +452,8 @@
                                             </div>
                                         </div>
                                         <div class="row mb-2">
-                                            <div class="col-3"><p>{% trans 'Taxes' %}</p></div>
-                                            <div class="col-3"></div>
+                                            <div class="col-4"><p>{% trans 'Taxes' %}</p></div>
+                                            <div class="col-2"></div>
                                             <div class="col-6">
                                                 <input
                                                     id="quotation-create-product-taxes"
@@ -477,8 +474,8 @@
                                         </div>
                                         <hr class="quotation-horizon">
                                         <div class="row mb-2">
-                                            <div class="col-3"><b>{% trans 'Total' %}</b></div>
-                                            <div class="col-3"></div>
+                                            <div class="col-4"><b>{% trans 'Total' %}</b></div>
+                                            <div class="col-2"></div>
                                             <div class="col-6">
                                                 <input
                                                     id="quotation-create-product-total"
@@ -645,12 +642,12 @@
                                 </div>
                                 <br>
                                 <div class="row">
-                                    <div class="col-7"></div>
-                                    <div class="col-5" id="quotation-tab-cost-totals">
+                                    <div class="col-6"></div>
+                                    <div class="col-6" id="quotation-tab-cost-totals">
                                         <div class="row mb-2">
-                                            <div class="col-3"><p>{% trans 'Pretax Amount' %}</p></div>
-                                            <div class="col-3"></div>
-                                            <div class="col-6">
+                                            <div class="col-4"><p>{% trans 'Pretax Amount' %}</p></div>
+                                            <div class="col-1"></div>
+                                            <div class="col-7">
                                                 <input
                                                     id="quotation-create-cost-pretax-amount"
                                                     type="text"
@@ -669,9 +666,9 @@
                                             </div>
                                         </div>
                                         <div class="row mb-2">
-                                            <div class="col-3"><p>{% trans 'Taxes' %}</p></div>
-                                            <div class="col-3"></div>
-                                            <div class="col-6">
+                                            <div class="col-4"><p>{% trans 'Taxes' %}</p></div>
+                                            <div class="col-1"></div>
+                                            <div class="col-7">
                                                 <input
                                                     id="quotation-create-cost-taxes"
                                                     type="text"
@@ -691,9 +688,9 @@
                                         </div>
                                         <hr class="quotation-horizon">
                                         <div class="row mb-2">
-                                            <div class="col-3"><b>{% trans 'Total' %}</b></div>
-                                            <div class="col-3"></div>
-                                            <div class="col-6">
+                                            <div class="col-4"><b>{% trans 'Total' %}</b></div>
+                                            <div class="col-1"></div>
+                                            <div class="col-7">
                                                 <input
                                                     id="quotation-create-cost-total"
                                                     type="text"
@@ -745,12 +742,12 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-7"></div>
-                                    <div class="col-5" id="quotation-tab-expense-totals">
+                                    <div class="col-6"></div>
+                                    <div class="col-6" id="quotation-tab-expense-totals">
                                         <div class="row mb-2">
-                                            <div class="col-3"><p>{% trans 'Pretax Amount' %}</p></div>
-                                            <div class="col-3"></div>
-                                            <div class="col-6">
+                                            <div class="col-4"><p>{% trans 'Pretax Amount' %}</p></div>
+                                            <div class="col-1"></div>
+                                            <div class="col-7">
                                                 <input
                                                     id="quotation-create-expense-pretax-amount"
                                                     type="text"
@@ -769,9 +766,9 @@
                                             </div>
                                         </div>
                                         <div class="row mb-2">
-                                            <div class="col-3"><p>{% trans 'Taxes' %}</p></div>
-                                            <div class="col-3"></div>
-                                            <div class="col-6">
+                                            <div class="col-4"><p>{% trans 'Taxes' %}</p></div>
+                                            <div class="col-1"></div>
+                                            <div class="col-7">
                                                 <input
                                                     id="quotation-create-expense-taxes"
                                                     type="text"
@@ -791,9 +788,9 @@
                                         </div>
                                         <hr class="quotation-horizon">
                                         <div class="row mb-2">
-                                            <div class="col-3"><b>{% trans 'Total' %}</b></div>
-                                            <div class="col-3"></div>
-                                            <div class="col-6">
+                                            <div class="col-4"><b>{% trans 'Total' %}</b></div>
+                                            <div class="col-1"></div>
+                                            <div class="col-7">
                                                 <input
                                                     id="quotation-create-expense-total"
                                                     type="text"

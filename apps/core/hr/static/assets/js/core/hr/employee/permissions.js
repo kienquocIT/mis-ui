@@ -312,53 +312,15 @@ class HandlePermissions {
     }
 
     combinesData() {
-        let hasChange = false;
-        let arr = [];
-        this.tbl.find('tbody tr').each(function () {
-            let countNum = parseInt($(this).find('td.row-data-counter').text());
-            if (countNum) {
-                let rowData = DTBControl.getRowData($(this));
-                let realId = rowData.hasOwnProperty('id') ? rowData['id'] : null;
-                let inputPlanAppEle = $(this).find('td input[name="permission-app"]');
-                let inputAppId = inputPlanAppEle.attr('data-app-id');
-                let inputPlanId = inputPlanAppEle.attr('data-plan-id');
-
-                let allowCreateEle = $(this).find('td input[name="allow-create"]');
-                let allowCreate = allowCreateEle.prop('checked');
-
-                let allowViewEle = $(this).find('td input[name="allow-view"]');
-                let allowView = allowViewEle.prop('checked');
-
-                let allowEditEle = $(this).find('td input[name="allow-edit"]');
-                let allowEdit = allowEditEle.prop('checked');
-
-                let allowDeleteEle = $(this).find('td input[name="allow-delete"]');
-                let allowDelete = allowDeleteEle.prop('checked');
-
-                let inputRangeEle = $(this).find('td select[name="permission-range"]');
-                let inputRange = inputRangeEle.val();
-
-                if (hasChange === false) {
-                    if ((allowCreate !== $.fn.parseBoolean($(allowCreateEle).attr('data-init'), true)) || (allowView !== $.fn.parseBoolean($(allowViewEle).attr('data-init'), true)) || (allowEdit !== $.fn.parseBoolean($(allowEditEle).attr('data-init'), true)) || (allowDelete !== $.fn.parseBoolean($(allowDeleteEle).attr('data-init'), true)) || ($(inputRangeEle).attr('data-init') !== inputRange)) {
-                        hasChange = true;
-                    }
-                }
-
-                arr.push({
-                    'id': realId ? realId : null,
-                    'counter': countNum,
-                    'app_id': inputAppId,
-                    'plan_id': inputPlanId,
-                    'create': allowCreate,
-                    'view': allowView,
-                    'edit': allowEdit,
-                    'delete': allowDelete,
-                    'range': inputRange,
-                });
+        let arr = this.tbl.DataTable().rows().data().toArray().map((item)=>{
+            return {
+                app_id: item?.['app_data']?.['id'],
+                plan_id: item?.['plan_data']?.['id'],
+                ...item
             }
         });
         return {
-            'hasChanged': hasChange,
+            'hasChanged': false,
             'data': arr,
         };
     }

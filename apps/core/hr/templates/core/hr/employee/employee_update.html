@@ -219,6 +219,23 @@
                         </div>
                     </div>
                     <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <div class="form-check form-switch">
+                                    <input
+                                            type="checkbox"
+                                            class="form-check-input"
+                                            name="is_admin_company"
+                                            id="idx_is_admin_company"
+                                    >
+                                    <label class="form-check-label required" for="idx_is_admin_company">
+                                        {% trans 'Is admin' %}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="form-group">
                             <div class="form-check form-switch">
                                 <input
@@ -226,7 +243,6 @@
                                         class="form-check-input"
                                         name="is_active"
                                         checked
-                                        required
                                 >
                                 <label class="form-label required">
                                     {% trans 'Active the employee after created' %}

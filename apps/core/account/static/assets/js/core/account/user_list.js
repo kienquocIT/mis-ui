@@ -2,6 +2,7 @@
 $(function () {
     let tb = $('#datatable_user_list');
     tb.DataTableDefault({
+        rowIdx: true,
         ajax: {
             url: tb.attr('data-url'),
             type: tb.attr('data-method'),
@@ -16,8 +17,9 @@ $(function () {
         columns: [
             {
                 'render': (data, type, row, meta) => {
-                    let currentId = "chk_sel_" + String(meta.row + 1)
-                    return `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select" id="${currentId}" data-id=` + row.id + `><label class="form-check-label" for="${currentId}"></label></span>`;
+                    // let currentId = "chk_sel_" + String(meta.row + 1)
+                    // return `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select" id="${currentId}" data-id=` + row.id + `><label class="form-check-label" for="${currentId}"></label></span>`;
+                    return ''
                 }
             }, {
                 'data': 'full_name',

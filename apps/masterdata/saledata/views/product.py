@@ -2,7 +2,7 @@ from django.views import View
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from apps.shared import mask_view, ApiURL, ServerAPI
+from apps.shared import mask_view, ApiURL, ServerAPI, PermCheck
 
 
 class ProductMasterDataList(View):
@@ -230,6 +230,7 @@ class ProductCreate(View):
         template='masterdata/saledata/product/product_create.html',
         breadcrumb='PRODUCT_CREATE_PAGE',
         menu_active='menu_product_list',
+        perm_check=PermCheck(url=ApiURL.PRODUCT_LIST, method='post'),
     )
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(url=ApiURL.ITEM_UNIT_LIST, user=request.user).get()

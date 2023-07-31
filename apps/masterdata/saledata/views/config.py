@@ -18,7 +18,7 @@ class PaymentsTermsListAPI(APIView):
         is_api=True,
     )
     def post(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.PAYMENT_TERMS).post(request.data)
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.PAYMENT_TERMS).post(request.data)
         if resp.state:
             resp.result['message'] = MDConfigMsg.PT_CREATE
             return resp.result, status.HTTP_200_OK

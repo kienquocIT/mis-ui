@@ -2,6 +2,7 @@
 $(function () {
     let tb = $('#datable_employee_list');
     tb.DataTableDefault({
+        rowIdx: true,
         ajax: {
             url: tb.attr('data-url'),
             type: tb.attr('data-method'),
@@ -16,8 +17,9 @@ $(function () {
         columns: [
             {
                 'render': (data, type, row, meta) => {
-                    let currentId = "chk_sel_" + String(meta.row + 1)
-                    return `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select" id="${currentId}"><label class="form-check-label" for="${currentId}"></label></span>`;
+                    // let currentId = "chk_sel_" + String(meta.row + 1)
+                    // return `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select" id="${currentId}"><label class="form-check-label" for="${currentId}"></label></span>`;
+                    return '';
                 }
             }, {
                 'data': 'code',
@@ -83,6 +85,15 @@ $(function () {
                     return '';
                 }
             }, {
+            data: 'is_admin_company',
+            render: (data, type, row, meta) =>{
+                return `
+                    <div class="form-check form-switch mb-1">
+                        <input type="checkbox" class="form-check-input" ${data ? "checked": ""} readonly disabled>
+                    </div>
+                `;
+            }
+            },{
                 'className': 'action-center',
                 'render': (data, type, row, meta) => {
                     let urlDetail = "/hr/employee/" + row.id

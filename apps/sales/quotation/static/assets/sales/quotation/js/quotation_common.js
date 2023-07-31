@@ -4,10 +4,9 @@ let finalRevenueBeforeTax = document.getElementById('quotation-final-revenue-bef
 
 // Load data
 class loadDataHandle {
-    loadBoxQuotationOpportunity(opp_id, valueToSelect = null, sale_person = null, is_load_detail = false, is_copy = false) {
+    loadBoxQuotationOpportunity(valueToSelect = null, sale_person = null, is_load_detail = false, is_copy = false) {
         let self = this;
-        let jqueryId = '#' + opp_id;
-        let ele = $(jqueryId);
+        let ele = $('#select-box-quotation-create-opportunity');
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
         if (!sale_person) {
@@ -95,10 +94,9 @@ class loadDataHandle {
         }
     }
 
-    loadBoxQuotationCustomer(customer_id, valueToSelect = null, modalShipping = null, modalBilling = null, sale_person = null, is_load_detail = false) {
+    loadBoxQuotationCustomer(valueToSelect = null, modalShipping = null, modalBilling = null, sale_person = null, is_load_detail = false) {
         let self = this;
-        let jqueryId = '#' + customer_id;
-        let ele = $(jqueryId);
+        let ele = $('#select-box-quotation-create-customer');
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
         if (!sale_person) {
@@ -149,10 +147,10 @@ class loadDataHandle {
                                     self.loadShippingBillingCustomer(modalShipping, modalBilling, item);
                                     // load Contact by Customer
                                     if (item.id && item.owner) {
-                                        self.loadBoxQuotationContact('select-box-quotation-create-contact', item.owner.id, item.id);
+                                        self.loadBoxQuotationContact(item.owner.id, item.id);
                                     }
                                     // load Payment Term by Customer
-                                    self.loadBoxQuotationPaymentTerm('select-box-quotation-create-payment-term', item.payment_term_mapped.id);
+                                    self.loadBoxQuotationPaymentTerm(item.payment_term_mapped.id);
                                     // Store Account Price List
                                     document.getElementById('customer-price-list').value = item.price_list_mapped.id;
                                     // load again price of product by customer price list then Re Calculate
@@ -168,9 +166,9 @@ class loadDataHandle {
                                     ele.append(dataAppend);
                                 }
                                 // load Contact no Customer
-                                self.loadBoxQuotationContact('select-box-quotation-create-contact');
+                                self.loadBoxQuotationContact();
                                 // load Payment Term no Customer
-                                self.loadBoxQuotationPaymentTerm('select-box-quotation-create-payment-term')
+                                self.loadBoxQuotationPaymentTerm();
                                 // Store Account Price List
                                 document.getElementById('customer-price-list').value = "";
                                 // load again price of product by customer price list then Re Calculate
@@ -187,10 +185,9 @@ class loadDataHandle {
         }
     }
 
-    loadBoxQuotationContact(contact_id, valueToSelect = null, customerID = null) {
+    loadBoxQuotationContact(valueToSelect = null, customerID = null) {
         let self = this;
-        let jqueryId = '#' + contact_id;
-        let ele = $(jqueryId);
+        let ele = $('#select-box-quotation-create-contact');
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
         if (customerID) {
@@ -229,10 +226,9 @@ class loadDataHandle {
         }
     }
 
-    loadBoxQuotationSalePerson(sale_person_id, valueToSelect = null, is_load_init = false) {
+    loadBoxQuotationSalePerson(valueToSelect = null, is_load_init = false) {
         let self = this;
-        let jqueryId = '#' + sale_person_id;
-        let ele = $(jqueryId);
+        let ele = $('#select-box-quotation-create-sale-person');
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
         $.fn.callAjax(url, method).then(
@@ -276,10 +272,9 @@ class loadDataHandle {
         )
     }
 
-    loadBoxQuotationPaymentTerm(term_id, valueToSelect = null) {
+    loadBoxQuotationPaymentTerm(valueToSelect = null) {
         let self = this;
-        let jqueryId = '#' + term_id;
-        let ele = $(jqueryId);
+        let ele = $('#select-box-quotation-create-payment-term');
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
         $.fn.callAjax(url, method).then(
@@ -951,26 +946,26 @@ class loadDataHandle {
         }
         if (data.opportunity) {
             if (data.sale_person) {
-                self.loadBoxQuotationOpportunity('select-box-quotation-create-opportunity', data.opportunity, data.sale_person.id, true, is_copy);
+                self.loadBoxQuotationOpportunity(data.opportunity, data.sale_person.id, true, is_copy);
             } else {
-                self.loadBoxQuotationOpportunity('select-box-quotation-create-opportunity', data.opportunity, null, true, is_copy);
+                self.loadBoxQuotationOpportunity(data.opportunity, null, true, is_copy);
             }
         }
         if (data.customer) {
             if (data.sale_person) {
-                self.loadBoxQuotationCustomer('select-box-quotation-create-customer', data.customer.id, $('#quotation-create-modal-shipping-body'), $('#quotation-create-modal-billing-body'), data.sale_person.id, true);
+                self.loadBoxQuotationCustomer(data.customer.id, $('#quotation-create-modal-shipping-body'), $('#quotation-create-modal-billing-body'), data.sale_person.id, true);
             } else {
-                self.loadBoxQuotationCustomer('select-box-quotation-create-customer', data.customer.id, $('#quotation-create-modal-shipping-body'), $('#quotation-create-modal-billing-body'), null, true);
+                self.loadBoxQuotationCustomer(data.customer.id, $('#quotation-create-modal-shipping-body'), $('#quotation-create-modal-billing-body'), null, true);
             }
         }
         // if (data.contact) {
-        //     self.loadBoxQuotationContact('select-box-quotation-create-contact', data.contact.id, data.customer.id)
+        //     self.loadBoxQuotationContact(data.contact.id, data.customer.id)
         // }
         if (data.sale_person) {
-            self.loadBoxQuotationSalePerson('select-box-quotation-create-sale-person', data.sale_person.id)
+            self.loadBoxQuotationSalePerson(data.sale_person.id)
         }
         // if (data.payment_term) {
-        //     self.loadBoxQuotationPaymentTerm('select-box-quotation-create-payment-term', data.payment_term.id)
+        //     self.loadBoxQuotationPaymentTerm(data.payment_term.id)
         // }
         if (data.quotation && data.sale_person) {
             self.loadBoxSaleOrderQuotation('select-box-quotation', data.quotation.id, null, data.sale_person.id)

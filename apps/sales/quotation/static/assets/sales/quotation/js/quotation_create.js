@@ -22,7 +22,7 @@ $(function () {
         let boxPaymentTerm = $('#select-box-quotation-create-payment-term');
         let boxQuotation = $('#select-box-quotation');
         let tabPrice = $('#tab_terms');
-        loadDataClass.loadBoxQuotationSalePerson('select-box-quotation-create-sale-person', null, true);
+        loadDataClass.loadBoxQuotationSalePerson(null, true);
         loadDataClass.loadInitQuotationProduct('data-init-quotation-create-tables-product');
         loadDataClass.loadInitQuotationUOM('data-init-quotation-create-tables-uom');
         loadDataClass.loadInitQuotationTax('data-init-quotation-create-tables-tax');
@@ -63,7 +63,7 @@ $(function () {
 // Action on click dropdown opportunity
         boxOpportunity.on('click', function() {
             if (!$(this)[0].innerHTML) {
-                loadDataClass.loadBoxQuotationOpportunity('select-box-quotation-create-opportunity');
+                loadDataClass.loadBoxQuotationOpportunity();
             }
         });
 
@@ -74,10 +74,10 @@ $(function () {
                 let data = JSON.parse(eleData.value);
                 if (data.customer) {
                     let valueToSelect = data.customer.id;
-                    loadDataClass.loadBoxQuotationCustomer('select-box-quotation-create-customer', valueToSelect, modalShipping, modalBilling);
+                    loadDataClass.loadBoxQuotationCustomer(valueToSelect, modalShipping, modalBilling);
                 }
             } else { // No Value => load again dropdowns
-                loadDataClass.loadBoxQuotationCustomer('select-box-quotation-create-customer', null, modalShipping, modalBilling);
+                loadDataClass.loadBoxQuotationCustomer(null, modalShipping, modalBilling);
             }
             loadDataClass.loadInformationSelectBox($(this));
             // Delete all promotion rows
@@ -91,7 +91,7 @@ $(function () {
 // Action on click dropdown customer
         boxCustomer.on('click', function() {
             if (!$(this)[0].innerHTML) {
-                loadDataClass.loadBoxQuotationCustomer('select-box-quotation-create-customer', null, modalShipping, modalBilling);
+                loadDataClass.loadBoxQuotationCustomer(null, modalShipping, modalBilling);
             }
         });
 
@@ -106,17 +106,17 @@ $(function () {
                     loadDataClass.loadShippingBillingCustomer(modalShipping, modalBilling, data);
                     // load Contact by Customer
                     if (data.id && data.owner) {
-                        loadDataClass.loadBoxQuotationContact('select-box-quotation-create-contact', data.owner.id, data.id);
+                        loadDataClass.loadBoxQuotationContact(data.owner.id, data.id);
                     }
                     // load Payment Term by Customer
-                    loadDataClass.loadBoxQuotationPaymentTerm('select-box-quotation-create-payment-term', data.payment_term_mapped.id);
+                    loadDataClass.loadBoxQuotationPaymentTerm(data.payment_term_mapped.id);
                     // Store Account Price List
                     if (Object.keys(data.price_list_mapped).length !== 0) {
                         document.getElementById('customer-price-list').value = data.price_list_mapped.id;
                     }
                 } else { // No Value => load again dropdowns
-                    loadDataClass.loadBoxQuotationContact('select-box-quotation-create-contact');
-                    loadDataClass.loadBoxQuotationPaymentTerm('select-box-quotation-create-payment-term');
+                    loadDataClass.loadBoxQuotationContact();
+                    loadDataClass.loadBoxQuotationPaymentTerm();
                     document.getElementById('customer-price-list').value = "";
                 }
             }
@@ -170,7 +170,7 @@ $(function () {
 // Action on click dropdown payment term
         boxPaymentTerm.on('click', function(e) {
             if (!$(this)[0].innerHTML) {
-                loadDataClass.loadBoxQuotationPaymentTerm('select-box-quotation-create-payment-term');
+                loadDataClass.loadBoxQuotationPaymentTerm();
             }
         });
 

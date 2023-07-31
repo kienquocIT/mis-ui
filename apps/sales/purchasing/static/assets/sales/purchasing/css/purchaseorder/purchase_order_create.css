@@ -3,7 +3,7 @@
 }
 
 .div-input {
-    height: 39px;
+    min-height: 38px;
     margin-top: -0.4px
 }
 
@@ -16,6 +16,11 @@
     min-width: 25px;
     text-align: center;
     text-transform: capitalize;
+}
+
+.inline-elements-badge input {
+    display: inline-block;
+    margin-left: unset;
 }
 
 .custom-btn-remove {

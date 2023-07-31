@@ -2,6 +2,7 @@
 {% load static i18n %}
 {% block cssHeader %}
     <link href="{% static 'assets/sales/purchasing/css/purchaseorder/purchase_order_create.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
 {% block pageAction %}
@@ -40,14 +41,13 @@
                                 <span class="input-affix-wrapper">
                                     <input
                                         type="text" class="form-control"
-                                        placeholder="input title"
                                         name="title"
                                         id="quotation-create-title"
                                         required
                                     >
                                 </span>
                             </div>
-                            <small class="form-text text-muted">{% trans 'Opportunity link to quotation' %}</small>
+{#                            <small class="form-text text-muted">{% trans 'Opportunity link to quotation' %}</small>#}
                         </div>
                         <div class="form-group">
                             <label class="form-label" for="purchase-order-purchase-request">{% trans 'Purchase request' %}</label>
@@ -65,7 +65,7 @@
                                     </span>
                                 </span>
                             </div>
-                            <small class="form-text text-muted">{% trans 'Purchase request link to purchase order' %}</small>
+{#                            <small class="form-text text-muted">{% trans 'Purchase request link to purchase order' %}</small>#}
                         </div>
                         <div class="form-group">
                             <label class="form-label" for="purchase-order-purchase-request">{% trans 'Purchase quotation' %}</label>
@@ -83,10 +83,10 @@
                                     </span>
                                 </span>
                             </div>
-                            <small class="form-text text-muted">{% trans 'Purchase quotation link to purchase order' %}</small>
+{#                            <small class="form-text text-muted">{% trans 'Purchase quotation link to purchase order' %}</small>#}
                         </div>
                         <div class="form-group">
-                            <label class="form-label" for="select-box-quotation-create-contact">{% trans 'Select Contact' %}<span class="required"></span></label>
+                            <label class="form-label" for="box-purchase-order-contact">{% trans 'Select Contact' %}<span class="required"></span></label>
                             <div class="input-group">
                                 <span class="input-affix-wrapper">
                                     <span class="input-prefix">
@@ -103,35 +103,30 @@
                                         </div>
                                     </span>
                                     <select
-                                        class="form-select"
-                                        id="select-box-quotation-create-contact"
-                                        data-url="{% url "ContactListAPI" %}"
-                                        data-method="GET"
-                                        data-link-detail="{% url 'ContactDetail' 1 %}"
-                                        name="contact"
-                                        required
+                                            class="form-control select2"
+                                            id="box-purchase-order-contact"
+                                            data-url="{% url "ContactListAPI" %}"
+                                            data-method="GET"
+                                            data-link-detail="{% url 'ContactDetail' 1 %}"
+                                            name="contact"
+                                            required
                                     ></select>
                                 </span>
                             </div>
-                            <small class="form-text text-muted">{% trans 'Contact link to quotation' %}</small>
+{#                            <small class="form-text text-muted">{% trans 'Contact link to quotation' %}</small>#}
                         </div>
                     </div>
 
                     <div class="col-6">
                         <div class="form-group">
-                            <label class="form-label" for="quotation-create-date-created">{% trans 'Date Created' %}</label>
-                            <div class="input-group">
-                                <span class="input-affix-wrapper">
-                                    <input
-                                        type="text" class="form-control disabled-custom-show"
-                                        placeholder="dd/mm/yyyy"
-                                        name="date_created"
-                                        id="quotation-create-date-created"
-                                        disabled
-                                    >
+                            <label class="form-label" for="purchase-order-date-delivered">{% trans 'Delivered date' %}</label>
+                            <div class="input-affix-wrapper">
+                                <input type="text" name="estimated_delivery_date" id="purchase-order-date-delivered"
+                                       class="form-control date-picker" autocomplete="off">
+                                <span class="input-suffix">
+                                    <i class="bi bi-calendar-week"></i>
                                 </span>
                             </div>
-                            <span class="form-text text-muted">{% trans 'Date create quotation' %}</span>
                         </div>
                         <div class="form-group">
                             <label class="form-label" for="quotation-create-status">{% trans 'Status' %}</label>
@@ -147,7 +142,7 @@
                                     >
                                 </span>
                             </div>
-                            <small class="form-text text-muted">{% trans 'Status of quotation' %}</small>
+{#                            <small class="form-text text-muted">{% trans 'Status of quotation' %}</small>#}
                         </div>
                         <div class="form-group">
                             <label class="form-label" for="quotation-create-status">{% trans 'Delivered status' %}</label>
@@ -161,27 +156,12 @@
                                     >
                                 </span>
                             </div>
-                            <small class="form-text text-muted">{% trans 'Delivered status of purchase order' %}</small>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" for="quotation-create-status">{% trans 'Delivered status' %}</label>
-                            <div class="input-group">
-                                <span class="input-affix-wrapper">
-                                    <input
-                                        type="text" class="form-control"
-                                        data-value="0"
-                                        name="status_delivered"
-                                        id="purchase-order-status-delivered"
-                                    >
-                                </span>
-                            </div>
-                            <small class="form-text text-muted">{% trans 'Delivered status of purchase order' %}</small>
+{#                            <small class="form-text text-muted">{% trans 'Delivered status of purchase order' %}</small>#}
                         </div>
                     </div>
                 </div>
             </div>
-            <br>
-            <div class="row collapse-arrow">
+            <div class="row collapse-arrow mt-2 mb-2">
                 <i
                     class="fas fa-angle-double-up"
                     data-bs-toggle="collapse"
@@ -189,50 +169,23 @@
                     data-bs-placement="top"
                     aria-expanded="false"
                     aria-controls="collapseExample"
-                    id="quotation-info-collapse"
+                    id="info-collapse"
                 ></i>
             </div>
-            <br>
             <div class="row">
                 <div class="row">
-                    <div class="col-7">
-                        <ul class="nav nav-light nav-tabs" id="quotation-tabs">
-                            <li class="nav-item">
-                                <a class="nav-link active" data-bs-toggle="tab" href="#tab_line_detail">
-                                    <span class="nav-link-text">{% trans 'Line Detail' %}</span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" data-bs-toggle="tab" href="#tab_attachment">
-                                    <span class="nav-link-text">{% trans 'Attachment' %}</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="col-5">
-                        <div class="row">
-                            <div class="col-2">
-                                <button type="button" class="btn btn-soft-primary">{% trans 'Print' %}</button>
-                            </div>
-                            <div class="col-3">
-                                <button type="button" class="btn btn-soft-primary">{% trans 'Send Email' %}</button>
-                            </div>
-                            <div class="col-4">
-                                <div class="form-check mt-2">
-                                    <input
-                                            type="checkbox" class="form-check-input disabled-but-edit"
-                                            id="quotation-customer-confirm"
-                                    >
-                                    <label
-                                            class="form-check-label disabled-label"
-                                            for="quotation-customer-confirm"
-                                    >{% trans 'Customer Confirm' %}</label>
-                                </div>
-                            </div>
-                            <div class="col-3">
-                            </div>
-                        </div>
-                    </div>
+                    <ul class="nav nav-light nav-tabs" id="quotation-tabs">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-bs-toggle="tab" href="#tab_line_detail">
+                                <span class="nav-link-text">{% trans 'Line Detail' %}</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#tab_attachment">
+                                <span class="nav-link-text">{% trans 'Attachment' %}</span>
+                            </a>
+                        </li>
+                    </ul>
                 </div>
 
                 <div class="tab-content" id="tab-content-quotation-product">
@@ -264,7 +217,7 @@
                             </table>
                             <div class="row">
                                 <div class="col-2">
-                                    <button type="button" class="btn btn-link btn-animated" id="btn-add-product-quotation-create">
+                                    <button type="button" class="btn btn-link btn-animated" id="btn-add-product-purchase-order">
                                         <span><span class="icon"><span class="feather-icon"><i class="fa-regular fa-square-plus"></i></span></span><span>{% trans 'Add Product' %}</span></span>
                                     </button>
                                 </div>
@@ -272,66 +225,12 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-7">
-                                <div class="row mt-8">
-                                    <div class="col-4">
-                                        <button
-                                            type="button"
-                                            class="btn btn-soft-info"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#shippingFeeModalCenter"
-                                            id="btn-add-shipping"
-                                    >{% trans 'Add Shipping Fee' %}</button>
-                                    <div
-                                            class="modal fade" id="shippingFeeModalCenter" tabindex="-1"
-                                            role="dialog" aria-labelledby="shippingFeeModalCenter"
-                                            aria-hidden="true"
-                                    >
-                                        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title">{% trans 'Shipping' %}</h5>
-                                                    <button
-                                                            type="button" class="btn-close"
-                                                            data-bs-dismiss="modal" aria-label="Close"
-                                                    >
-                                                        <span aria-hidden="true">&times;</span>
-                                                    </button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <table
-                                                            id="datable-quotation-create-shipping"
-                                                            class="table nowrap w-100 mb-5"
-                                                    >
-                                                        <thead>
-                                                        <tr>
-                                                            <th>STT</th>
-                                                            <th>{% trans 'Title' %}</th>
-                                                            <th>{% trans 'Actions' %}</th>
-                                                        </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button
-                                                            type="button" class="btn btn-secondary"
-                                                            data-bs-dismiss="modal"
-                                                    >{% trans 'Close' %}</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    </div>
-                                    <div class="col-8"></div>
-                                </div>
-                            </div>
+                            <div class="col-7"></div>
                             <div class="col-5" id="quotation-tab-product-totals">
                                 <div class="row mb-2">
-                                    <div class="col-3"><p>{% trans 'Pretax Amount' %}</p></div>
-                                    <div class="col-3"></div>
-                                    <div class="col-6">
+                                    <div class="col-4"><p>{% trans 'Pretax Amount' %}</p></div>
+                                    <div class="col-1"></div>
+                                    <div class="col-7">
                                         <input
                                             id="quotation-create-product-pretax-amount"
                                             type="text"
@@ -354,9 +253,9 @@
                                     </div>
                                 </div>
                                 <div class="row mb-2">
-                                    <div class="col-3"><p>{% trans 'Taxes' %}</p></div>
-                                    <div class="col-3"></div>
-                                    <div class="col-6">
+                                    <div class="col-4"><p>{% trans 'Taxes' %}</p></div>
+                                    <div class="col-1"></div>
+                                    <div class="col-7">
                                         <input
                                             id="quotation-create-product-taxes"
                                             type="text"
@@ -376,9 +275,9 @@
                                 </div>
                                 <hr class="quotation-horizon">
                                 <div class="row mb-2">
-                                    <div class="col-3"><b>{% trans 'Total' %}</b></div>
-                                    <div class="col-3"></div>
-                                    <div class="col-6">
+                                    <div class="col-4"><b>{% trans 'Total' %}</b></div>
+                                    <div class="col-1"></div>
+                                    <div class="col-7">
                                         <input
                                             id="quotation-create-product-total"
                                             type="text"
@@ -396,126 +295,22 @@
                                         >
                                     </div>
                                 </div>
-                                <div class="row mb-2">
-                                    <button
-                                            type="button"
-                                            class="btn btn-soft-success"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#promotionModalCenter"
-                                            id="btn-check-promotion"
-                                    >{% trans 'Check available promotion' %}</button>
-                                    <div
-                                            class="modal fade" id="promotionModalCenter" tabindex="-1"
-                                            role="dialog" aria-labelledby="promotionModalCenter"
-                                            aria-hidden="true"
-                                    >
-                                        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title">{% trans 'Promotion' %}</h5>
-                                                    <button
-                                                            type="button" class="btn-close"
-                                                            data-bs-dismiss="modal" aria-label="Close"
-                                                    >
-                                                        <span aria-hidden="true">&times;</span>
-                                                    </button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <table
-                                                            id="datable-quotation-create-promotion"
-                                                            class="table nowrap w-100 mb-5"
-                                                    >
-                                                        <thead>
-                                                        <tr>
-                                                            <th>STT</th>
-                                                            <th>{% trans 'Title' %}</th>
-                                                            <th>{% trans 'Actions' %}</th>
-                                                        </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button
-                                                            type="button" class="btn btn-secondary"
-                                                            data-bs-dismiss="modal"
-                                                    >{% trans 'Close' %}
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
                     <div class="tab-pane fade" id="tab_attachment">
-                        <div class="row logistics-body">
-                            <div class="form-group">
-                                <label class="form-label">{% trans 'Shipping Address' %}
-                                    <button type="button" class="btn btn-icon btn-rounded flush-soft-hover" data-bs-toggle="modal" data-bs-target="#shippingModalCenter"><span class="icon"><i class="fa-regular fa-pen-to-square"></i></span></button>
-                                </label>
-                                <textarea class="form-control" rows="3" cols="50" name="" id="quotation-create-shipping-address"></textarea>
-                            </div>
-                            <div
-                                    class="modal fade" id="shippingModalCenter" tabindex="-1"
-                                    role="dialog" aria-labelledby="shippingModalCenter"
-                                    aria-hidden="true"
-                            >
-                                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                                    <div class="modal-content" id="quotation-create-modal-shipping-body">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title">{% trans 'Shipping Address' %}</h5>
-                                            <button
-                                                    type="button" class="btn-close"
-                                                    data-bs-dismiss="modal" aria-label="Close"
-                                            >
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body"></div>
-                                        <div class="modal-footer">
-                                            <button
-                                                    type="button" class="btn btn-secondary"
-                                                    data-bs-dismiss="modal"
-                                            >{% trans 'Close' %}</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-
-                            <div class="form-group">
-                                <label class="form-label">{% trans 'Billing Address' %}
-                                    <button type="button" class="btn btn-icon btn-rounded flush-soft-hover" data-bs-toggle="modal" data-bs-target="#billingModalCenter"><span class="icon"><i class="fa-regular fa-pen-to-square"></i></span></button>
-                                </label>
-                                <textarea class="form-control" rows="3" cols="50" name="" id="quotation-create-billing-address"></textarea>
-                            </div>
-                            <div
-                                    class="modal fade" id="billingModalCenter" tabindex="-1"
-                                    role="dialog" aria-labelledby="billingModalCenter"
-                                    aria-hidden="true"
-                            >
-                                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                                    <div class="modal-content" id="quotation-create-modal-billing-body">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title">{% trans 'Billing Address' %}</h5>
-                                            <button
-                                                    type="button" class="btn-close"
-                                                    data-bs-dismiss="modal" aria-label="Close"
-                                            >
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body"></div>
-                                        <div class="modal-footer">
-                                            <button
-                                                    type="button" class="btn btn-secondary"
-                                                    data-bs-dismiss="modal"
-                                            >{% trans 'Close' %}</button>
-                                        </div>
-                                    </div>
+                        <div class="form-group">
+                            <div class="col-4">
+                                <div class="form-group">
+                                    <button
+                                            type="button"
+                                            class="form-control btn btn-info btn-file-upload text-white"
+                                            data-f-input-name="attachments"
+                                            data-f-input-required="false"
+                                            data-f-input-disabled="false"
+                                            data-f-name-ele-id="#fileNameTestDisplay"
+                                    >{% trans 'Click here to upload image' %}</button>
+                                    <p id="fileNameTestDisplay"></p>
                                 </div>
                             </div>
                         </div>
@@ -553,7 +348,7 @@
                         </div>
                         <div class="row">
                             <div class="col-5">
-                                <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-340p position-relative overflow-y-scroll expense-option-list" id="${selectExpenseID}">
+                                <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-400p position-relative overflow-y-scroll">
                                     <table
                                         id="datable-purchase-request"
                                         class="table nowrap w-100"
@@ -563,7 +358,7 @@
                                         <thead>
                                         <tr>
                                             <th class="w-5">STT</th>
-                                            <th class="w-5"></th>
+                                            <th class="w-5"><div class="form-check"><input type="checkbox" class="form-check-input" id="table-purchase-reqeust-checkbox-all"></div></th>
                                             <th>{% trans 'Title' %}</th>
                                             <th>{% trans 'Code' %}</th>
                                         </tr>
@@ -574,7 +369,7 @@
                                 </div>
                             </div>
                             <div class="col-7">
-                                <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-340p position-relative overflow-y-scroll expense-option-list" id="sroll-datable-purchase-request-product">
+                                <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-400p position-relative overflow-y-scroll" id="sroll-datable-purchase-request-product">
                                     <table
                                         id="datable-purchase-request-product"
                                         class="table nowrap w-100"
@@ -597,7 +392,7 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-340p position-relative overflow-y-scroll expense-option-list" id="sroll-datable-purchase-request-product-merge" hidden>
+                                <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-400p position-relative overflow-y-scroll" id="sroll-datable-purchase-request-product-merge" hidden>
                                     <table
                                         id="datable-purchase-request-product-merge"
                                         class="table nowrap w-100"
@@ -652,7 +447,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-340p position-relative overflow-y-scroll expense-option-list" id="sroll-datable-purchase-quotation">
+                        <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-400p position-relative overflow-y-scroll expense-option-list" id="sroll-datable-purchase-quotation">
                             <table
                                 id="datable-purchase-quotation"
                                 class="table nowrap w-100"
@@ -685,12 +480,10 @@
 
 
 {% block jsFooter %}
-    <!-- Select2 -->
-    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
-
-    <!-- Daterangepicker JS -->
     <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
 
     <script src="{% static 'assets/sales/purchasing/js/purchaseorder/purchase_order_common.js' %}"></script>
     <script src="{% static 'assets/sales/purchasing/js/purchaseorder/purchase_order_create.js' %}"></script>

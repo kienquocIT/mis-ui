@@ -26,7 +26,14 @@ class loadDataHandle {
             }
             ele.empty();
             ele.append(`<option value=""></option>`);
-            $.fn.callAjax(url, method, data_filter).then(
+            $.fn.callAjax2({
+                    'url': url,
+                    'method': method,
+                    'data': data_filter,
+                    'isDropdown': true,
+                }
+                // url, method, data_filter
+            ).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
@@ -102,7 +109,14 @@ class loadDataHandle {
             self.loadShippingBillingCustomer(modalShipping, modalBilling);
             ele.empty();
             ele.append(`<option value=""></option>`);
-            $.fn.callAjax(url, method, data_filter).then(
+            $.fn.callAjax2({
+                    'url': url,
+                    'method': method,
+                    'data': data_filter,
+                    'isDropdown': true,
+                }
+                // url, method, data_filter
+            ).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {

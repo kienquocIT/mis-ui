@@ -168,11 +168,11 @@ $(function () {
         });
 
 // Action on click dropdown payment term
-//         boxPaymentTerm.on('click', function(e) {
-//             if (!$(this)[0].innerHTML) {
-//                 loadDataClass.loadBoxQuotationPaymentTerm('select-box-quotation-create-payment-term');
-//             }
-//         });
+        boxPaymentTerm.on('click', function(e) {
+            if (!$(this)[0].innerHTML) {
+                loadDataClass.loadBoxQuotationPaymentTerm('select-box-quotation-create-payment-term');
+            }
+        });
 
 // Action on change dropdown payment term
 //         boxPaymentTerm.on('change', function(e) {

@@ -13,35 +13,75 @@ $(function () {
         let tablePurchaseRequestProduct = $('#datable-purchase-request-product');
         let tablePurchaseRequestProductMerge = $('#datable-purchase-request-product-merge');
         let tablePurchaseQuotation = $('#datable-purchase-quotation');
+        let tablePurchaseOrderProduct = $('#datable-purchase-order-product');
 
         dataTableClass.dataTablePurchaseRequest();
         dataTableClass.dataTablePurchaseRequestProduct();
         dataTableClass.dataTablePurchaseQuotation();
         dataTableClass.dataTablePurchaseOrderProduct();
 
+        // run datetimepicker
+        $('input[type=text].date-picker').daterangepicker({
+            minYear: 1901,
+            singleDatePicker: true,
+            timePicker: true,
+            showDropdowns: true,
+            // "cancelClass": "btn-secondary",
+            // maxYear: parseInt(moment().format('YYYY'), 10)
+            locale: {
+                format: 'DD/MM/YYYY hh:mm A'
+            }
+        });
+        $('#purchase-order-date-delivered').val(null).trigger('change');
 
-// Action on click
+// EVENTS
+        // Purchase request modal
         $('#btn-purchase-request-modal').on('click', function () {
             loadDataClass.loadModalPurchaseRequest(tablePurchaseRequest, tablePurchaseRequestProduct);
         });
 
+        // Checkbox merge product
         $('#merge-same-product').on('click', function() {
             loadDataClass.loadMergeProduct($(this), tablePurchaseRequestProductMerge, tablePurchaseRequestProduct);
         });
 
-        $('#btn-confirm-add-purchase-request').on('click', function () {
-            loadDataClass.loadDataShowPurchaseRequest(elePurchaseRequest, tablePurchaseRequest);
+        // Checkbox all
+        $('#table-purchase-reqeust-checkbox-all').on('click', function() {
+            clickCheckBoxAll($(this), tablePurchaseRequest);
         });
 
+        // Btn add purchase request
+        $('#btn-confirm-add-purchase-request').on('click', function () {
+            loadDataClass.loadDataShowPurchaseRequest(elePurchaseRequest, tablePurchaseRequest);
+            loadDataClass.loadTableProductByPurchaseRequest(tablePurchaseOrderProduct);
+        });
+
+        // Btn remove purchase request
+        elePurchaseRequest.on('click', '.custom-btn-remove', function() {
+            loadDataClass.loadDataAfterClickRemove($(this), elePurchaseRequest, tablePurchaseRequest, "purchase_request");
+        });
+
+        // Purchase quotation modal
         $('#btn-purchase-quotation-modal').on('click', function () {
             loadDataClass.loadModalPurchaseQuotation(tablePurchaseQuotation);
         });
 
+        // Btn add purchase quotation
         $('#btn-confirm-add-purchase-quotation').on('click', function () {
             loadDataClass.loadDataShowPurchaseQuotation(elePurchaseQuotation, tablePurchaseQuotation);
         });
 
-// Submit form
+        // Btn remove purchase quotation
+        elePurchaseQuotation.on('click', '.custom-btn-remove', function() {
+            loadDataClass.loadDataAfterClickRemove($(this), elePurchaseQuotation, tablePurchaseQuotation, "purchase_quotation");
+        });
+
+        // Action on click button collapse
+        $('#info-collapse').click(function () {
+            $(this).toggleClass('fa-angle-double-up fa-angle-double-down');
+        });
+
+// SUBMIT FORM
         formSubmit.submit(function (e) {
             e.preventDefault();
             let _form = new SetupFormSubmit(formSubmit);

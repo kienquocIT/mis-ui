@@ -43,6 +43,47 @@ class loadDataHandle {
         }
     };
 
+    loadBoxQuotationContact(valueToSelect = null, customerID = null) {
+        let self = this;
+        let ele = $('#box-purchase-order-contact');
+        let url = ele.attr('data-url');
+        let method = ele.attr('data-method');
+        if (customerID) {
+            $.fn.callAjax(url, method, {'account_name_id': customerID}).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        ele.empty();
+                        if (data.hasOwnProperty('contact_list') && Array.isArray(data.contact_list)) {
+                            ele.append(`<option value=""></option>`);
+                            data.contact_list.map(function (item) {
+                                let dataStr = JSON.stringify({
+                                    'id': item.id,
+                                    'Name': item.fullname,
+                                    'Job title': item.job_title,
+                                    'Mobile': item.mobile,
+                                    'Email': item.email
+                                }).replace(/"/g, "&quot;");
+                                let dataAppend = `<option value="${item.id}">
+                                                <span class="contact-title">${item.fullname}</span>
+                                                <input type="hidden" class="data-info" value="${dataStr}">
+                                            </option>`
+                                if (item.id === valueToSelect) {
+                                    dataAppend = `<option value="${item.id}" selected>
+                                                <span class="contact-title">${item.fullname}</span>
+                                                <input type="hidden" class="data-info" value="${dataStr}">
+                                            </option>`;
+                                }
+                                ele.append(dataAppend);
+                            })
+                            self.loadInformationSelectBox(ele);
+                        }
+                    }
+                }
+            )
+        }
+    }
+
     loadDataShowPurchaseRequest(elePurchaseRequest, tablePurchaseRequest) {
         if (!tablePurchaseRequest[0].querySelector('.dataTables_empty')) {
             let eleAppend = ``;
@@ -52,7 +93,7 @@ class loadDataHandle {
                 if (row.querySelector('.table-row-checkbox').checked === true) {
                     is_checked = true;
                     let link = "";
-                    eleAppend += `<div class="inline-elements-badge mr-2">
+                    eleAppend += `<div class="inline-elements-badge mr-2 mb-1" id="${row.querySelector('.table-row-checkbox').id}">
                                     <a href="${link}" target="_blank" class="link-primary underline_hover"><span>${row.querySelector('.table-row-code').innerHTML}</span></a>
                                     <button type="button" class="btn btn-link btn-sm custom-btn-remove" aria-label="Close">
                                         <span aria-hidden="true"><i class="fas fa-times"></i></span>
@@ -63,6 +104,10 @@ class loadDataHandle {
             if (is_checked === true) {
                 elePurchaseRequest.empty();
                 elePurchaseRequest.append(eleAppend);
+                // hidden btn add product
+                document.getElementById('btn-add-product-purchase-order').setAttribute('hidden', 'true');
+            } else {
+                elePurchaseRequest.empty();
             }
         }
     };
@@ -72,17 +117,65 @@ class loadDataHandle {
             // load dataTablePurchaseRequest
             tablePurchaseRequest.DataTable().destroy();
             dataTableClass.dataTablePurchaseRequest([{
+                'id': 1,
                 'order': 1,
                 'title': 'Yeu cau mua hang hoa',
                 'code': 'PR0001',
             },
                 {
+                    'id': 2,
                     'order': 2,
                     'title': 'Yeu cau mua hang hoa',
                     'code': 'PR0002',
                 },
                 {
+                    'id': 3,
                     'order': 3,
+                    'title': 'Yeu cau mua hang hoa',
+                    'code': 'PR0003',
+                },{
+                    'id': 4,
+                    'order': 4,
+                    'title': 'Yeu cau mua hang hoa',
+                    'code': 'PR0003',
+                },{
+                    'id': 5,
+                    'order': 5,
+                    'title': 'Yeu cau mua hang hoa',
+                    'code': 'PR0003',
+                },{
+                    'id': 6,
+                    'order': 6,
+                    'title': 'Yeu cau mua hang hoa',
+                    'code': 'PR0003',
+                },{
+                    'id': 7,
+                    'order': 7,
+                    'title': 'Yeu cau mua hang hoa',
+                    'code': 'PR0003',
+                },{
+                    'id': 8,
+                    'order': 8,
+                    'title': 'Yeu cau mua hang hoa',
+                    'code': 'PR0003',
+                },{
+                    'id': 9,
+                    'order': 9,
+                    'title': 'Yeu cau mua hang hoa',
+                    'code': 'PR0003',
+                },{
+                    'id': 10,
+                    'order': 10,
+                    'title': 'Yeu cau mua hang hoa',
+                    'code': 'PR0003',
+                },{
+                    'id': 11,
+                    'order': 11,
+                    'title': 'Yeu cau mua hang hoa',
+                    'code': 'PR0003',
+                },{
+                    'id': 12,
+                    'order': 12,
                     'title': 'Yeu cau mua hang hoa',
                     'code': 'PR0003',
                 }]);
@@ -207,8 +300,9 @@ class loadDataHandle {
                 if (row.querySelector('.table-row-checkbox').checked === true) {
                     is_checked = true;
                     let link = "";
-                    eleAppend += `<div class="inline-elements-badge mr-2">
-                                    <a href="${link}" target="_blank" class="link-primary underline_hover"><span>${row.querySelector('.table-row-code').innerHTML}</span></a>
+                    eleAppend += `<div class="inline-elements-badge mr-2 mb-1" id="${row.querySelector('.table-row-checkbox').id}">
+                                    <input class="form-check-input" type="checkbox" id="inlinewlable1" value="option1">
+                                    <a href="${link}" target="_blank" class="link-primary underline_hover ml-3"><span>${row.querySelector('.table-row-code').innerHTML}</span></a>
                                     <button type="button" class="btn btn-link btn-sm custom-btn-remove" aria-label="Close">
                                         <span aria-hidden="true"><i class="fas fa-times"></i></span>
                                     </button>
@@ -218,10 +312,75 @@ class loadDataHandle {
             if (is_checked === true) {
                 elePurchaseQuotation.empty();
                 elePurchaseQuotation.append(eleAppend);
+            } else {
+                elePurchaseQuotation.empty();
             }
         }
     };
 
+    loadDataAfterClickRemove(ele, eleShow, table, code) {
+        let self = this;
+        let targetID = ele[0].closest('.inline-elements-badge').id;
+        for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
+            let row = table[0].tBodies[0].rows[i];
+            if (row.querySelector('.table-row-checkbox').checked === true) {
+                if (row.querySelector('.table-row-checkbox').id === targetID) {
+                    row.querySelector('.table-row-checkbox').checked = false;
+                    break;
+                }
+            }
+        }
+        if (code === "purchase_request") {
+            self.loadDataShowPurchaseRequest(eleShow, table);
+        } else if (code === "purchase_quotation") {
+            self.loadDataShowPurchaseQuotation(eleShow, table);
+        }
+    }
+
+    loadTableProductByPurchaseRequest(tablePurchaseOrderProduct) {
+        let data = [
+            {
+                'id': 1,
+                'product': {'id': 1},
+                'uom_request': {'id': 1},
+                'uom_order': {'id': 1},
+                'tax': {'id': 1, 'value': 10},
+                'stock': 3,
+                'product_title': 'SP A',
+                'product_description': 'xxxxx',
+                'product_uom_request_title': 'chai',
+                'product_uom_order_title': 'box20',
+                'product_quantity_request': 17,
+                'product_quantity_order': 1,
+                'product_unit_price': 1800000,
+                'product_tax_title': 'vat-10',
+                'product_tax_amount': 0,
+                'product_subtotal_price': 1800000,
+                'order': 1,
+            },
+            {
+                'id': 2,
+                'product': {'id': 2},
+                'uom_request': {'id': 2},
+                'uom_order': {'id': 2},
+                'tax': {'id': 2, 'value': 10},
+                'stock': 0,
+                'product_title': 'SP B',
+                'product_description': 'xxxxx',
+                'product_uom_request_title': 'chai',
+                'product_uom_order_title': 'chai',
+                'product_quantity_request': 2,
+                'product_quantity_order': 2,
+                'product_unit_price': 60000,
+                'product_tax_title': 'vat-10',
+                'product_tax_amount': 0,
+                'product_subtotal_price': 120000,
+                'order': 2,
+            }
+        ];
+        tablePurchaseOrderProduct.DataTable().destroy();
+        dataTableClass.dataTablePurchaseOrderProduct(data);
+    }
 }
 
 // DataTable
@@ -269,7 +428,6 @@ class dataTableHandle {
 
     dataTablePurchaseRequestProduct(data) {
         let $table = $('#datable-purchase-request-product');
-        let frm = new SetupFormSubmit($table);
         $table.DataTableDefault({
             data: data ? data : [],
             searching: false,
@@ -334,7 +492,6 @@ class dataTableHandle {
 
     dataTablePurchaseRequestProductMerge(data) {
         let $table = $('#datable-purchase-request-product-merge');
-        let frm = new SetupFormSubmit($table);
         $table.DataTableDefault({
             data: data ? data : [],
             searching: false,
@@ -476,7 +633,8 @@ class dataTableHandle {
                     targets: 1,
                     render: (data, type, row) => {
                         let selectProductID = 'line-product-item' + String(row.order);
-                                return `<div class="row">
+
+                        let ele = `<div class="row">
                                 <div class="input-group">
                                     <span class="input-affix-wrapper">
                                         <span class="input-prefix">
@@ -497,38 +655,58 @@ class dataTableHandle {
                                         class="form-select table-row-item" 
                                         id="${selectProductID}"
                                         required>
-                                            <option value="${row.product.id}">${row.product.title}</option>
+                                            <option value="${row.product.id}">${row.product_title}</option>
                                         </select>
                                     </span>
                                 </div>
                             </div>`;
+                        return `<div class="row">
+                                    <div class="col-3">
+                                        <div class="btn-group dropstart">
+                                            <i
+                                                class="fas fa-info-circle"
+                                                data-bs-toggle="dropdown"
+                                                data-dropdown-animation
+                                                aria-haspopup="true"
+                                                aria-expanded="false"
+                                                disabled
+                                            >
+                                            </i>
+                                            <div class="dropdown-menu w-210p mt-4"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-9"><span id="${row.product.id}">${row.product_title}</span></div>
+                                </div>`
                     },
                 },
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        return `<div class="row">
+                        let ele = `<div class="row">
                                     <input type="text" class="form-control table-row-description" value="${row.product_description}">
                                 </div>`;
+                        return `<span>${row.product_description}</span>`
                     }
                 },
                 {
                     targets: 3,
                     render: (data, type, row) => {
-                        let selectUOMID = 'line-product-uom-pr' + String(row.order);
-                        return `<div class="row">
-                                <select class="form-select table-row-uom" id="${selectUOMID}" required>
-                                    <option value="${row.unit_of_measure.id}">${row.unit_of_measure.title}</option>
+                        let selectUOMID = 'line-product-uom-request' + String(row.order);
+                        let ele = `<div class="row">
+                                <select class="form-select table-row-uom-request" id="${selectUOMID}" required>
+                                    <option value="${row.uom_request.id}">${row.product_uom_request_title}</option>
                                 </select>
                             </div>`;
+                        return `<span id="${row.uom_request.id}">${row.product_uom_request_title}</span>`
                     }
                 },
                 {
                     targets: 4,
                     render: (data, type, row) => {
-                        return `<div class="row">
-                                    <input type="text" class="form-control table-row-quantity-pr validated-number" value="${row.product_quantity}" required>
+                        let ele = `<div class="row">
+                                    <input type="text" class="form-control table-row-quantity-request validated-number" value="${row.product_quantity}" required>
                                 </div>`;
+                        return `<span>${row.product_quantity_request}</span>`
                     }
                 },
                 {
@@ -540,26 +718,28 @@ class dataTableHandle {
                 {
                     targets: 6,
                     render: (data, type, row) => {
-                        let selectUOMID = 'line-product-uom-' + String(row.order);
-                        return `<div class="row">
-                                <select class="form-select table-row-uom" id="${selectUOMID}" required>
-                                    <option value="${row.unit_of_measure.id}">${row.unit_of_measure.title}</option>
+                        let selectUOMID = 'line-product-uom-order' + String(row.order);
+                        let ele = `<div class="row">
+                                <select class="form-select table-row-uom-order" id="${selectUOMID}" required>
+                                    <option value="${row.uom_order.id}">${row.product_uom_order_title}</option>
                                 </select>
                             </div>`;
+                        return `<span id="${row.uom_order.id}">${row.product_uom_order_title}</span>`
                     }
                 },
                 {
                     targets: 7,
                     render: (data, type, row) => {
-                        return `<div class="row">
-                                    <input type="text" class="form-control table-row-quantity validated-number" value="${row.product_quantity}" required>
+                        let ele = `<div class="row">
+                                    <input type="text" class="form-control table-row-quantity-order validated-number" value="${row.product_quantity}" required>
                                 </div>`;
+                        return `<span>${row.product_quantity_order}</span>`
                     }
                 },
                 {
                     targets: 8,
                     render: (data, type, row) => {
-                        return `<div class="row">
+                        let ele = `<div class="row">
                                 <div class="dropdown">
                                     <div class="input-group dropdown-action" aria-expanded="false" data-bs-toggle="dropdown">
                                     <span class="input-affix-wrapper">
@@ -577,6 +757,20 @@ class dataTableHandle {
                                     </div>
                                 </div>
                             </div>`;
+                        return `<div class="row">
+<div class="col-8"><span class="mask-money mr-4" data-init-money="${parseFloat(row.product_unit_price)}"></span></div>
+<div class="col-4">
+<button 
+aria-expanded="false"
+data-bs-toggle="dropdown"
+class="btn btn-link btn-sm"
+type="button">
+<i class="fas fa-angle-down"></i>
+</button>
+<div role="menu" class="dropdown-menu w-460p">
+</div>
+</div>
+</div>`;
                     }
                 },
                 {
@@ -589,7 +783,7 @@ class dataTableHandle {
                             taxID = row.tax.id;
                             taxRate = row.tax.value;
                         }
-                        return `<div class="row">
+                        let ele = `<div class="row">
                                 <select class="form-select table-row-tax" id="${selectTaxID}">
                                     <option value="${taxID}" data-value="${taxRate}">${taxRate} %</option>
                                 </select>
@@ -607,12 +801,13 @@ class dataTableHandle {
                                     hidden
                                 >
                             </div>`;
+                        return `<span id="${row.tax.id}">${row.product_tax_title}</span>`
                     }
                 },
                 {
                     targets: 10,
                     render: (data, type, row) => {
-                        return `<div class="row">
+                        let ele = `<div class="row">
                                 <input 
                                     type="text" 
                                     class="form-control mask-money table-row-subtotal disabled-custom-show" 
@@ -627,10 +822,13 @@ class dataTableHandle {
                                     hidden
                                 >
                             </div>`;
+                        return `<span class="mask-money" data-init-money="${parseFloat(row.product_subtotal_price)}"></span>`
                     }
                 },
             ],
             drawCallback: function () {
+                // mask money
+                $.fn.initMaskMoney2();
             },
         });
     };
@@ -638,3 +836,18 @@ class dataTableHandle {
 }
 
 let dataTableClass = new dataTableHandle();
+
+// COMMON FUNCTION
+function clickCheckBoxAll(ele, table) {
+    if (ele[0].checked === true) {
+        for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
+            let row = table[0].tBodies[0].rows[i];
+            row.querySelector('.table-row-checkbox').checked = true;
+        }
+    } else {
+        for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
+            let row = table[0].tBodies[0].rows[i];
+            row.querySelector('.table-row-checkbox').checked = false;
+        }
+    }
+}

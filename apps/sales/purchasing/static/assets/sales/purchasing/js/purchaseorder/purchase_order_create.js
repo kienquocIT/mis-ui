@@ -11,10 +11,11 @@ $(function () {
         // Tables
         let tablePurchaseRequest = $('#datable-purchase-request');
         let tablePurchaseRequestProduct = $('#datable-purchase-request-product');
-        let tablePurchaseRequestProductMerge = $('#datable-purchase-request-product-merge');
         let tablePurchaseQuotation = $('#datable-purchase-quotation');
 
-
+        // Load init
+        loadDataClass.loadInitUOM();
+        loadDataClass.loadInitTax();
         dataTableClass.dataTablePurchaseRequest();
         dataTableClass.dataTablePurchaseRequestProduct();
         dataTableClass.dataTablePurchaseQuotation();
@@ -42,7 +43,7 @@ $(function () {
 
         // Checkbox merge product
         $('#merge-same-product').on('click', function() {
-            loadDataClass.loadMergeProductTable($(this), tablePurchaseRequestProductMerge, tablePurchaseRequestProduct);
+            loadDataClass.loadMergeProductTable($(this));
         });
 
         // Checkbox all

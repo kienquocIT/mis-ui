@@ -199,13 +199,13 @@
                             >
                                 <thead>
                                 <tr>
-                                    <th>STT</th>
+                                    <th>#</th>
                                     <th>{% trans 'Product' %}<span class="required"></span></th>
                                     <th>{% trans 'Description' %}</th>
-                                    <th>{% trans 'Unit Of Measure' %}(PR)<span class="required"></span></th>
+                                    <th>UoM(PR)<span class="required"></span></th>
                                     <th>{% trans 'Quantity' %}(PR)<span class="required"></span></th>
                                     <th>{% trans 'Stock' %}<span class="required"></span></th>
-                                    <th>{% trans 'Unit Of Measure' %}(PO)</th>
+                                    <th>UoM(PO)</th>
                                     <th>{% trans 'Quantity' %}(PO)</th>
                                     <th>{% trans 'Unit Price' %}</th>
                                     <th>{% trans 'Tax' %}</th>
@@ -318,9 +318,22 @@
                 </div>
             </div>
         </div>
+
         <input
             type="hidden"
             id="base-trans-factory"
+        >
+        <input
+            type="hidden"
+            id="data-init-uom"
+            data-url="{% url "UnitOfMeasureListAPI" %}"
+            data-method="GET"
+        >
+        <input
+            type="hidden"
+            id="data-init-tax"
+            data-url="{% url "TaxListAPI" %}"
+            data-method="GET"
         >
 
 

@@ -104,12 +104,27 @@ $(document).ready(function () {
     loadDtb(url_detail);
 
     function changeHrefCreate(url_create, paramString) {
+        alert(url_create + "?" + paramString);
         window.location.href = url_create + "?" + paramString;
     }
 
-    $(document).on('click', '#btn-create-for-so', function () {
+    $(document).on('click', '#btn-create-for-sale-order', function () {
         let paramString = $.param({
             'type': 'sale-order',
+        })
+        changeHrefCreate(url_create, paramString);
+    })
+
+    $(document).on('click', '#btn-create-for-stock', function () {
+        let paramString = $.param({
+            'type': 'stock',
+        })
+        changeHrefCreate(url_create, paramString);
+    })
+
+    $(document).on('click', '#btn-create-for-other', function () {
+        let paramString = $.param({
+            'type': 'other',
         })
         changeHrefCreate(url_create, paramString);
     })

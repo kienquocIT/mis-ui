@@ -56,13 +56,13 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-4">
-                            <button type="button" class="btn btn-info w-100" id="btn-create-for-so">{% trans 'For Sale Order' %}</button>
+                            <button type="button" class="btn btn-info w-100" id="btn-create-for-sale-order">{% trans 'For Sale Order' %}</button>
                         </div>
                         <div class="col-4">
-                            <a class="btn btn-primary w-100 text-white" href="{% url 'PurchaseRequestCreate' %}">{% trans 'For Stock' %}</a>
+                            <a class="btn btn-primary w-100 text-white" id="btn-create-for-stock">{% trans 'For Stock' %}</a>
                         </div>
                         <div class="col-4">
-                            <a class="btn btn-warning w-100 text-white" href="{% url 'PurchaseRequestCreate' %}">{% trans 'For Other' %}</a>
+                            <a class="btn btn-warning w-100 text-white" id="btn-create-for-other">{% trans 'For Other' %}</a>
                         </div>
                     </div>
                 </div>

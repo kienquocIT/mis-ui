@@ -127,7 +127,6 @@ $(document).ready(function () {
         }
     }
 
-
     function loadSaleOrder() {
         if (!$.fn.DataTable.isDataTable('#datatable-sale-order')) {
             let $table = $('#datatable-sale-order')

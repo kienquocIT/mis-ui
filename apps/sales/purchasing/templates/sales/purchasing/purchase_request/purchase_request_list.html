@@ -41,7 +41,7 @@
         </thead>
     </table>
 
-    <div id="url-data" class="hidden" data-url-create="{% url 'PurchaseRequestCreate' %}"></div>
+    <div id="url-data" class="hidden" ></div>
 
     <div class="modal fade" id="modal-create-pr" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
          aria-hidden="true">
@@ -72,6 +72,9 @@
             </div>
         </div>
     </div>
+{% endblock %}
+{% block dataHiddenGroup %}
+    <input id="url-factory" data-url-create="{% url 'PurchaseRequestCreate' %}" data-url-detail="{% url 'PurchaseRequestDetail' pk=0 %}"/>
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'assets/sales/purchasing/purchase_request/js/purchase_request_list.js' %}"></script>

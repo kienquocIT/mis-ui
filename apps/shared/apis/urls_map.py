@@ -311,3 +311,4 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # Purchase
     PURCHASE_REQUEST_LIST = StringUrl('purchasing/purchase-request/list')
+    PURCHASE_REQUEST_DETAIL = StringUrl('purchasing/purchase-request/{pk}')

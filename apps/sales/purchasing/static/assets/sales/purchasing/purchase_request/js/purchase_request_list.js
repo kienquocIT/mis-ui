@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    const ele_url = $('#url-data');
+    const ele_url = $('#url-factory');
     const url_detail = ele_url.data('url-detail');
     const url_create = ele_url.data('url-create');
 
@@ -25,7 +25,7 @@ $(document).ready(function () {
                         targets: 0,
                         className: 'wrap-text',
                         render: (data, type, row) => {
-                            return `<a href="#">${data}</a>`
+                            return `<a href="${url_detail.format_url_with_uuid(row.id)}">${data}</a>`
                         }
                     },
                     {
@@ -104,7 +104,6 @@ $(document).ready(function () {
     loadDtb(url_detail);
 
     function changeHrefCreate(url_create, paramString) {
-        alert(url_create + "?" + paramString);
         window.location.href = url_create + "?" + paramString;
     }
 

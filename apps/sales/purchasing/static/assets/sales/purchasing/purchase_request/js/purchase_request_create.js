@@ -250,7 +250,7 @@ $(document).ready(function () {
                         targets: 4,
                         className: 'wrap-text',
                         render: (data, type, row) => {
-                            return `<p>${data}</p>`
+                            return `<p class="p-so-product-remain">${data}</p>`
                         }
                     },
                     {
@@ -266,7 +266,7 @@ $(document).ready(function () {
         }
     }
 
-    function getHtmlProductTitle(product) {
+    function getHtmlProductTitle(row, product) {
         let ele_trans = $('#trans-factory');
         let ele_url = $('#url-factory');
         return `<span class="input-affix-wrapper">
@@ -302,7 +302,7 @@ $(document).ready(function () {
                         </div>
                     </span>
                 </span>
-                <input class="form-control" data-id="${product.id}" value="${product.title}" readonly/>
+                <input class="form-control inp-product" data-so-product-id="${row.id}" data-id="${product.id}" value="${product.title}" readonly/>
             </span>`
     }
 
@@ -330,7 +330,7 @@ $(document).ready(function () {
                             if (data === undefined) {
                                 return $('#box-select-so-product').html()
                             }
-                            return getHtmlProductTitle(data);
+                            return getHtmlProductTitle(row,data);
                         }
                     },
                     {
@@ -348,7 +348,7 @@ $(document).ready(function () {
                             if (row.product === undefined) {
                                 return $('#box-select-so-product-uom').html();
                             }
-                            return `<p class="uom" data-id="${data.uom.id}">${data.uom.title}</p>`
+                            return `<p class="inp-uom" data-id="${data.uom.id}">${data.uom.title}</p>`
                         }
                     },
                     {
@@ -433,7 +433,7 @@ $(document).ready(function () {
 
     loadSupplier();
     loadContact();
-    // loadSOProduct();
+    loadSOProduct();
     loadTax();
     loadDtbPRProduct();
 
@@ -490,6 +490,17 @@ $(document).ready(function () {
         ele_so.attr('data-id', ele_so_selected.data('id'));
 
         $('#modal-select-sale-order').modal('hide');
+    })
+
+    $(document).on('change', '.inp-request-so-product', function (){
+        let ele_trans = $('#trans-factory');
+        if ( parseInt($(this).val()) > parseInt($(this).closest('tr').find('.p-so-product-remain').text())){
+            Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: ele_trans.data('trans-request-greater-remain'),
+                })
+        }
     })
 
 
@@ -682,20 +693,43 @@ $(document).ready(function () {
         return list_product_data
     }
 
+    function getProductDataForSaleOrder(){
+        let list_product_data = []
+        let ele_tr = $('#datatable-pr-product tbody tr');
+        ele_tr.each(function (){
+            let data = {
+                'sale_order_product': $(this).find('.inp-product').data('so-product-id'),
+                'product': $(this).find('.inp-product').data('id'),
+                'description': $(this).find('.inp-description').val(),
+                'uom': $(this).find('.inp-uom').data('id'),
+                'quantity': $(this).find('.inp-quantity').val(),
+                'unit_price': $(this).find('.inp-unit-price').valCurrency(),
+                'tax': $(this).find('.box-select-tax').val(),
+                'sub_total_price': $(this).find('.inp-subtotal').attr('data-init-money'),
+            }
+            list_product_data.push(data)
+        })
+
+        return list_product_data
+    }
+
     function getDataForm(dataForm) {
         dataForm['supplier'] = $('#box-select-supplier').val();
         dataForm['contact'] = $('#box-select-contact').val();
         dataForm['request_for'] = ele_request_for.data('id');
-        if (ele_sale_order.val() !== '') {
-            dataForm['sale_order'] = ele_sale_order.val();
+        if (ele_sale_order.data('id') !== '') {
+            dataForm['sale_order'] = ele_sale_order.data('id');
         } else {
             dataForm['sale_order'] = null;
         }
         dataForm['system_status'] = 0;
         dataForm['purchase_status'] = 0;
 
-        if (dataForm['request_for'] !== '0'){
+        if (dataForm['request_for'] !== 0){
             dataForm['purchase_request_product_datas'] = getProductDataForStockAndOther();
+        }
+        else{
+            dataForm['purchase_request_product_datas'] = getProductDataForSaleOrder();
         }
 
         dataForm['pretax_amount'] = $('#input-product-pretax-amount').valCurrency();
@@ -710,11 +744,13 @@ $(document).ready(function () {
         let frm = new SetupFormSubmit(frm_create);
         let csr = $("[name=csrfmiddlewaretoken]").val();
         let frm_data = getDataForm(frm.dataForm);
+        console.log(frm.dataForm)
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm_data, csr).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     $.fn.notifyB({description: data.message}, 'success')
+                    $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
                 }
             }, (errs) => {
                 console.log(errs)

@@ -849,8 +849,6 @@ $(document).ready(function () {
         list_product_remove.map(function (item) {
             $(`.select-box-product option[value="${item.id}"]`).remove();
         })
-
-
     });
 
     ele_select_product_category.on('select2:select', function (e) {

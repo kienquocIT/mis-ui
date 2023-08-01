@@ -236,7 +236,7 @@ $(function () {
 
         function loadSalePerson() {
             let ele = $('#select-box-sale-person');
-            $.fn.callAjax(ele.data('url'), ele.data('method')).then((resp) => {
+            $.fn.callAjax2({'url':ele.data('url'), 'method': ele.data('method'), 'isDropdown': true}).then((resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('employee_list')) {

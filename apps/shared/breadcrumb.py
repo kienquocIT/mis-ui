@@ -166,6 +166,9 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
 
     OPPORTUNITY_DOCUMENT_LIST_PAGE = BreadcrumbChildren(_('Document List'), 'OpportunityDocumentList')
 
+    # Purchase
+    # PURCHASE_REQUEST_LIST_PAGE = BreadcrumbChildren(_('Purchase Request List'), 'PurchaseRequestList'),
+
 
 class BreadcrumbView:
     """menu vertical item view"""
@@ -450,3 +453,9 @@ class BreadcrumbView:
 
     OPPORTUNITY_DOCUMENT_CREATE_PAGE = OPPORTUNITY_DOCUMENT_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
     OPPORTUNITY_DOCUMENT_DETAIL_PAGE = OPPORTUNITY_DOCUMENT_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+
+    # Purchase
+    # PURCHASE_REQUEST_LIST_PAGE = [
+    #     BreadcrumbItem.PURCHASE_REQUEST_LIST_PAGE
+    # ]
+    # PURCHASE_REQUEST_CREATE_PAGE = PURCHASE_REQUEST_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]

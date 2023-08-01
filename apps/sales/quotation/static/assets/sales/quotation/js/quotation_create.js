@@ -13,7 +13,6 @@ $(function () {
 
         let formSubmit = $('#frm_quotation_create');
 
-        let data = JSON.parse($('#data-quotation').val());
         let boxOpportunity = $('#select-box-quotation-create-opportunity');
         let boxCustomer = $('#select-box-quotation-create-customer');
         let boxContact = $('#select-box-quotation-create-contact');
@@ -26,7 +25,7 @@ $(function () {
         loadDataClass.loadInitQuotationProduct();
         loadDataClass.loadInitQuotationUOM();
         loadDataClass.loadInitQuotationTax();
-        loadDataClass.loadInitQuotationExpense('data-init-quotation-create-tables-expense');
+        loadDataClass.loadInitQuotationExpense();
         // load config
         loadDataClass.loadInitQuotationConfig('quotation-config-data', formSubmit.attr('data-method'));
         // load first time indicator
@@ -61,10 +60,8 @@ $(function () {
         $('.daterangepicker').remove();
 
 // Action on click dropdown opportunity
-        boxOpportunity.on('click', function() {
-            if (!$(this)[0].innerHTML) {
-                loadDataClass.loadBoxQuotationOpportunity();
-            }
+        boxOpportunity.on('click', function () {
+            loadDataClass.loadBoxQuotationOpportunity();
         });
 
 // Action on change dropdown opportunity
@@ -77,6 +74,7 @@ $(function () {
                     loadDataClass.loadBoxQuotationCustomer(valueToSelect, modalShipping, modalBilling);
                 }
             } else { // No Value => load again dropdowns
+                $('#select-box-quotation-create-customer').empty();
                 loadDataClass.loadBoxQuotationCustomer(null, modalShipping, modalBilling);
             }
             loadDataClass.loadInformationSelectBox($(this));
@@ -90,9 +88,7 @@ $(function () {
 
 // Action on click dropdown customer
         boxCustomer.on('click', function() {
-            if (!$(this)[0].innerHTML) {
-                loadDataClass.loadBoxQuotationCustomer(null, modalShipping, modalBilling);
-            }
+            loadDataClass.loadBoxQuotationCustomer(null, modalShipping, modalBilling);
         });
 
 // Action on change dropdown customer
@@ -169,9 +165,7 @@ $(function () {
 
 // Action on click dropdown payment term
         boxPaymentTerm.on('click', function(e) {
-            if (!$(this)[0].innerHTML) {
-                loadDataClass.loadBoxQuotationPaymentTerm();
-            }
+            loadDataClass.loadBoxQuotationPaymentTerm();
         });
 
 // Action on change dropdown payment term
@@ -732,7 +726,7 @@ $(function () {
                 if (boxSalePerson.val()) {
                     sale_person_id = boxSalePerson.val()
                 }
-                dataTableClass.loadTableCopyQuotation('data-init-copy-quotation', opp_id, sale_person_id)
+                dataTableClass.loadTableCopyQuotation(opp_id, sale_person_id);
             } else if (type === 'copy-to') {
                 // load data product for table datable-copy-quotation-product
                 let dataCopy = JSON.parse($('#data-copy-quotation-detail')[0].value);

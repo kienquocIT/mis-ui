@@ -135,7 +135,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # crm/contact
     CONTACT_LIST = StringUrl('saledata/contacts')
-    CONTACT_DETAIL = StringUrl('saledata/contact')
+    CONTACT_DETAIL = StringUrl('saledata/contact/{pk}')
     CONTACT_LIST_NOT_MAP_ACCOUNT = StringUrl('saledata/contacts-not-map-account')
 
     # masterdata/lookup/contact

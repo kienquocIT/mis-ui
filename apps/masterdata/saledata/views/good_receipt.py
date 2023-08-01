@@ -2,7 +2,7 @@ import datetime
 from django.views import View
 from rest_framework import status
 from rest_framework.views import APIView
-from apps.shared import mask_view, ApiURL, ServerAPI
+from apps.shared import mask_view, ApiURL, ServerAPI, PermCheck
 
 __all__ = ['GoodReceiptList', 'GoodReceiptListAPI', 'GoodReceiptCreate', 'GoodReceiptDetail', 'GoodReceiptDetailAPI']
 
@@ -47,6 +47,7 @@ class GoodReceiptCreate(View):
         template='masterdata/saledata/good_receipt/create.html',
         breadcrumb='GOOD_RECEIPT_CREATE_PAGE',
         menu_active='menu_good_receipt_list',
+        perm_check=PermCheck(url=ApiURL.GOOD_RECEIPT_API, method='post'),
     )
     def get(self, request, *args, **kwargs):
         date_created = datetime.datetime.now().strftime("%d/%m/%Y")

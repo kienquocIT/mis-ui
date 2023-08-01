@@ -4,7 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
 from apps.core.workflow.initial_data import Node_data
-from apps.shared import mask_view, ServerAPI, ApiURL, WorkflowMsg, ConditionFormset, TypeCheck
+from apps.shared import mask_view, ServerAPI, ApiURL, WorkflowMsg, ConditionFormset, TypeCheck, PermCheck
 from apps.shared.msg import BaseMsg
 
 WORKFLOW_ACTION = {
@@ -97,6 +97,7 @@ class WorkflowList(View):
         template='core/workflow/workflow_list_new.html',
         menu_active='menu_workflow_list',
         breadcrumb='WORKFLOW_LIST_PAGE',
+        perm_check=PermCheck(url=ApiURL.WORKFLOW_LIST, method='get'),
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -119,6 +120,7 @@ class WorkflowCreate(View):
         auth_require=True,
         template='core/workflow/workflow_create.html',
         breadcrumb='WORKFLOW_CREATE_PAGE',
+        perm_check=PermCheck(url=ApiURL.WORKFLOW_LIST, method='post'),
     )
     def get(self, request, *args, **kwargs):
         return {
@@ -153,13 +155,15 @@ class WorkflowDetail(View):
         breadcrumb='WORKFLOW_DETAIL_PAGE',
     )
     def get(self, request, pk, *args, **kwargs):
-        return {
-                   'data': {'doc_id': pk},
-                   'wf_actions': WORKFLOW_ACTION,
-                   'form': ConditionFormset(),
-                   'wf_data_type': WORKFLOW_TYPE
-               }, status.HTTP_200_OK
+        result = {
+            'data': {'doc_id': pk},
+            'wf_actions': WORKFLOW_ACTION,
+            'form': ConditionFormset(),
+            'wf_data_type': WORKFLOW_TYPE
+        }
+        return result, status.HTTP_200_OK
 
+    @mask_view(login_require=True)
     def put(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.WORKFLOW).put(request.data)
         if resp.state:

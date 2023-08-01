@@ -1827,9 +1827,9 @@ class DTBControl {
                 }, 0);
 
                 // drawCallback manual
-                if (drawCallback && typeof drawCallback === 'function') {
-                    drawCallback();
-                }
+                // if (drawCallback && typeof drawCallback === 'function') {
+                //     drawCallback(false);
+                // }
             },
             initComplete: function () {
                 $(this.api().table().container()).find('input').attr('autocomplete', 'off');
@@ -1843,6 +1843,11 @@ class DTBControl {
         // ajax delete data
         if (configFinal?.['ajax'] && configFinal.hasOwnProperty('data')) delete configFinal['data'];
 
+        if (isDenied){
+            if (configFinal.hasOwnProperty('ajax')) delete configFinal['ajax'];
+            configFinal['data'] = [];
+        }
+
         // returned
         return configFinal;
     }
@@ -1854,7 +1859,15 @@ class DTBControl {
     }
 
     static deleteRow(ele$) {
-        $(ele$).closest('table').DataTable().row($(this).parents('tr')).remove().draw();
+        $(ele$).closest('table').DataTable().row($(ele$).parents('tr')).remove().draw();
+    }
+
+    static updateDataRow(clsThis, func){
+        clsThis = $(clsThis).closest('tr');
+        let rowIdx = tbl.DataTable().row(clsThis).index();
+        let rowData = $x.fn.getRowData($(clsThis));
+        let newData = func(clsThis, rowIdx, rowData);
+        tbl.DataTable().row(rowIdx).data(newData);
     }
 
     constructor(dtb$) {
@@ -2265,6 +2278,7 @@ let $x = {
 
         getRowData: DTBControl.getRowData,
         deleteRow: DTBControl.deleteRow,
+        updateDataRow: DTBControl.updateDataRow,
 
         redirectLogin: WindowControl.redirectLogin,
 

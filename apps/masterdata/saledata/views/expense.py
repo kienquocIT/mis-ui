@@ -1,7 +1,7 @@
 from django.views import View
 from rest_framework import status
 from rest_framework.views import APIView
-from apps.shared import mask_view, ApiURL, ServerAPI
+from apps.shared import mask_view, ApiURL, ServerAPI, PermCheck
 
 
 class ExpenseList(View):
@@ -21,6 +21,7 @@ class ExpenseCreate(View):
         template='masterdata/saledata/expense/expense_create.html',
         breadcrumb='EXPENSE_CREATE_PAGE',
         menu_active='id_menu_expense_list',
+        perm_check=PermCheck(url=ApiURL.EXPENSE_LIST, method='post'),
     )
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.PRICE_LIST).get()

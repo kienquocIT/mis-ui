@@ -404,17 +404,23 @@
 
     <script type="application/javascript">
         const apiStatusOfRender = "{{ data.render_api_status }}";
+        const urlNotDeny = ['/log/notify/me/count'];
+        let isDenied = false;
         switch (apiStatusOfRender) {
             case "1401":
+                isDenied = true;
                 WindowControl.showUnauthenticated();
                 break;
             case "1403":
+                isDenied = true;
                 WindowControl.showForbidden();
                 break;
             case "1404":
+                isDenied = true;
                 WindowControl.showNotFound();
                 break;
             case "1500":
+                isDenied = true;
                 WindowControl.showSVErrors();
                 break;
         }

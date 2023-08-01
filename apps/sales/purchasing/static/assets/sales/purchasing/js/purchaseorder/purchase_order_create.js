@@ -13,12 +13,12 @@ $(function () {
         let tablePurchaseRequestProduct = $('#datable-purchase-request-product');
         let tablePurchaseRequestProductMerge = $('#datable-purchase-request-product-merge');
         let tablePurchaseQuotation = $('#datable-purchase-quotation');
-        let tablePurchaseOrderProduct = $('#datable-purchase-order-product');
+
 
         dataTableClass.dataTablePurchaseRequest();
         dataTableClass.dataTablePurchaseRequestProduct();
         dataTableClass.dataTablePurchaseQuotation();
-        dataTableClass.dataTablePurchaseOrderProduct();
+        dataTableClass.dataTablePurchaseOrderProductRequest();
 
         // run datetimepicker
         $('input[type=text].date-picker').daterangepicker({
@@ -42,7 +42,7 @@ $(function () {
 
         // Checkbox merge product
         $('#merge-same-product').on('click', function() {
-            loadDataClass.loadMergeProduct($(this), tablePurchaseRequestProductMerge, tablePurchaseRequestProduct);
+            loadDataClass.loadMergeProductTable($(this), tablePurchaseRequestProductMerge, tablePurchaseRequestProduct);
         });
 
         // Checkbox all
@@ -53,7 +53,7 @@ $(function () {
         // Btn add purchase request
         $('#btn-confirm-add-purchase-request').on('click', function () {
             loadDataClass.loadDataShowPurchaseRequest(elePurchaseRequest, tablePurchaseRequest);
-            loadDataClass.loadTableProductByPurchaseRequest(tablePurchaseOrderProduct);
+            loadDataClass.loadTableProductByPurchaseRequest();
         });
 
         // Btn remove purchase request

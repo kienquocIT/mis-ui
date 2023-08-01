@@ -7,5 +7,5 @@ urlpatterns = [
     # purchase quotation request
     # purchase quotation
     # purchase order
-    path('create', PurchaseOrderCreate.as_view(), name='PurchaseOrderCreate'),
+    path('purchase-order/create', PurchaseOrderCreate.as_view(), name='PurchaseOrderCreate'),
 ]

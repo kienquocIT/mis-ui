@@ -190,6 +190,7 @@ class loadDataHandle {
             tablePurchaseRequestProduct.DataTable().destroy();
             dataTableClass.dataTablePurchaseRequestProduct([{
                 'id': 1,
+                'purchase_request': {'id': 1, 'code': 'PR0001'},
                 'title': 'Yeu cau mua linh kien',
                 'code': 'PR0001',
                 'uom': 'chai',
@@ -198,7 +199,8 @@ class loadDataHandle {
                 'quantity_purchase': 3,
             },
                 {
-                    'id': 1,
+                    'id': 2,
+                    'purchase_request': {'id': 2, 'code': 'PR0002'},
                     'title': 'Yeu cau mua linh kien',
                     'code': 'PR0002',
                     'uom': 'chai',
@@ -208,6 +210,7 @@ class loadDataHandle {
                 },
                 {
                     'id': 3,
+                    'purchase_request': {'id': 3, 'code': 'PR0003'},
                     'title': 'Yeu cau mua laptop',
                     'code': 'PR0003',
                     'uom': 'chai',
@@ -217,6 +220,7 @@ class loadDataHandle {
                 },
                 {
                     'id': 4,
+                    'purchase_request': {'id': 4, 'code': 'PR0004'},
                     'title': 'Yeu cau mua may in',
                     'code': 'PR0004',
                     'uom': 'chai',
@@ -227,39 +231,12 @@ class loadDataHandle {
         }
     };
 
-    loadMergeProduct(eleCheckbox, tablePurchaseRequestProductMerge, tablePurchaseRequestProduct) {
+    loadMergeProductTable(eleCheckbox, tablePurchaseRequestProductMerge, tablePurchaseRequestProduct) {
         if (eleCheckbox[0].checked === true) {
-            let data = [];
-            let dataJson = {};
             $('#sroll-datable-purchase-request-product')[0].setAttribute('hidden', 'true');
             $('#sroll-datable-purchase-request-product-merge')[0].removeAttribute('hidden');
             tablePurchaseRequestProductMerge.DataTable().destroy();
-            if (!tablePurchaseRequestProduct[0].querySelector('.dataTables_empty')) {
-                for (let i = 0; i < tablePurchaseRequestProduct[0].tBodies[0].rows.length; i++) {
-                    let row = tablePurchaseRequestProduct[0].tBodies[0].rows[i];
-                    if (row.querySelector('.table-row-checkbox').checked === true) {
-                        if (!dataJson.hasOwnProperty(row.querySelector('.table-row-checkbox').id)) {
-                            dataJson[row.querySelector('.table-row-checkbox').id] = {
-                                'id': row.querySelector('.table-row-checkbox').id,
-                                'title': row.querySelector('.table-row-title').innerHTML,
-                                'code_list': [row.querySelector('.table-row-code').innerHTML],
-                                'uom': row.querySelector('.table-row-uom').innerHTML,
-                                'quantity': parseFloat(row.querySelector('.table-row-quantity').innerHTML),
-                                'remain': parseFloat(row.querySelector('.table-row-remain').innerHTML),
-                                'quantity_purchase': parseFloat(row.querySelector('.table-row-quantity-purchase').innerHTML),
-                            }
-                        } else {
-                            dataJson[row.querySelector('.table-row-checkbox').id].code_list.push(row.querySelector('.table-row-code').innerHTML);
-                            dataJson[row.querySelector('.table-row-checkbox').id].quantity += parseFloat(row.querySelector('.table-row-quantity').innerHTML);
-                            dataJson[row.querySelector('.table-row-checkbox').id].remain += parseFloat(row.querySelector('.table-row-remain').innerHTML);
-                            dataJson[row.querySelector('.table-row-checkbox').id].quantity_purchase += parseFloat(row.querySelector('.table-row-quantity-purchase').innerHTML);
-                        }
-                    }
-                }
-                for (let key in dataJson) {
-                    data.push(dataJson[key]);
-                }
-            }
+            let data = setupMergeProduct(tablePurchaseRequestProduct);
             dataTableClass.dataTablePurchaseRequestProductMerge(data);
         } else {
             $('#sroll-datable-purchase-request-product-merge')[0].setAttribute('hidden', 'true');
@@ -275,25 +252,29 @@ class loadDataHandle {
                 'code': 'PQ0001',
                 'title': 'Bao gia mua hang so 1',
                 'supplier': {'id': 1, 'title': 'Cong ty Unilever'},
-                'purchase_quotation_request': {'id': 1, 'code': 'PR0001'},
+                'purchase_quotation_request': {'id': 1, 'code': 'PQR0001'},
+                'purchase_request': {'id': 1, 'code': 'PR0001'},
             }, {
                 'id': 2,
                 'code': 'PQ0002',
                 'title': 'Bao gia mua hang so 2',
                 'supplier': {'id': 1, 'title': 'Cong ty Apple'},
-                'purchase_quotation_request': {'id': 1, 'code': 'PR0002'},
+                'purchase_quotation_request': {'id': 1, 'code': 'PQR0002'},
+                'purchase_request': {'id': 2, 'code': 'PR0002'},
             }, {
                 'id': 3,
                 'code': 'PQ0003',
                 'title': 'Bao gia mua hang so 3',
                 'supplier': {'id': 1, 'title': 'Cong ty Lenovo'},
-                'purchase_quotation_request': {'id': 1, 'code': 'PR0003'},
+                'purchase_quotation_request': {'id': 1, 'code': 'PQR0003'},
+                'purchase_request': {'id': 3, 'code': 'PR0003'},
             }, {
                 'id': 4,
                 'code': 'PQ0004',
                 'title': 'Bao gia mua hang so 4',
                 'supplier': {'id': 1, 'title': 'Cong ty Hao Hao'},
-                'purchase_quotation_request': {'id': 1, 'code': 'PR0004'},
+                'purchase_quotation_request': {'id': 1, 'code': 'PQR0004'},
+                'purchase_request': {'id': 4, 'code': 'PR0004'},
             }]);
         }
     };
@@ -328,24 +309,27 @@ class loadDataHandle {
     loadDataAfterClickRemove(ele, eleShow, table, code) {
         let self = this;
         let targetID = ele[0].closest('.inline-elements-badge').id;
-        for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
-            let row = table[0].tBodies[0].rows[i];
-            if (row.querySelector('.table-row-checkbox').checked === true) {
-                if (row.querySelector('.table-row-checkbox').id === targetID) {
-                    row.querySelector('.table-row-checkbox').checked = false;
-                    break;
-                }
-            }
-        }
+        uncheckRowTableByID(table, targetID);
         if (code === "purchase_request") {
             self.loadDataShowPurchaseRequest(eleShow, table);
+            // Remove relate purchase quotation
+            let tablePQ = $('#datable-purchase-quotation');
+            let eleShowPQ = $('#purchase-order-purchase-quotation');
+            uncheckRowTableRelate(tablePQ, targetID);
+            self.loadDataShowPurchaseQuotation(eleShowPQ, tablePQ);
+            // Remove relate purchase request product
+            let tablePRProduct = $('#datable-purchase-request-product');
+            uncheckRowTableRelate(tablePRProduct, targetID);
+            let dataProdOrder = setupMergeProduct(tablePRProduct);
+            self.loadTableProductByPurchaseRequest(dataProdOrder);
         } else if (code === "purchase_quotation") {
             self.loadDataShowPurchaseQuotation(eleShow, table);
         }
     }
 
-    loadTableProductByPurchaseRequest(tablePurchaseOrderProduct) {
-        let data = [
+    loadTableProductByPurchaseRequest(data) {
+        let tablePurchaseOrderProductRequest = $('#datable-purchase-order-product-request');
+        data = [
             {
                 'id': 1,
                 'product': {'id': 1},
@@ -385,8 +369,8 @@ class loadDataHandle {
                 'order': 2,
             }
         ];
-        tablePurchaseOrderProduct.DataTable().destroy();
-        dataTableClass.dataTablePurchaseOrderProduct(data);
+        tablePurchaseOrderProductRequest.DataTable().destroy();
+        dataTableClass.dataTablePurchaseOrderProductRequest(data);
     }
 }
 
@@ -452,7 +436,11 @@ class dataTableHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" id="${row.id}"></div>`
+                        let purchase_request_id = "";
+                        if (Object.keys(row.purchase_request).length !== 0) {
+                            purchase_request_id = row.purchase_request.id;
+                        }
+                        return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" id="${row.id}" data-purchase-request-id="${purchase_request_id}"></div>`
                     }
                 },
                 {
@@ -587,7 +575,11 @@ class dataTableHandle {
                 {
                     targets: 0,
                     render: (data, type, row) => {
-                        return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" id="${row.id}"></div>`
+                        let purchase_request_id = "";
+                        if (Object.keys(row.purchase_request).length !== 0) {
+                            purchase_request_id = row.purchase_request.id;
+                        }
+                        return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" id="${row.id}" data-purchase-request-id="${purchase_request_id}"></div>`
                     }
                 },
                 {
@@ -620,7 +612,7 @@ class dataTableHandle {
         });
     };
 
-    dataTablePurchaseOrderProduct(data) {
+    dataTablePurchaseOrderProductRequest(data) {
         let $table = $('#datable-purchase-order-product');
         $table.DataTableDefault({
             data: data ? data : [],
@@ -857,4 +849,57 @@ function clickCheckBoxAll(ele, table) {
             row.querySelector('.table-row-checkbox').checked = false;
         }
     }
+}
+
+function uncheckRowTableByID(table, targetID) {
+    for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
+        let row = table[0].tBodies[0].rows[i];
+        if (row.querySelector('.table-row-checkbox').checked === true) {
+            if (row.querySelector('.table-row-checkbox').id === targetID) {
+                row.querySelector('.table-row-checkbox').checked = false;
+                break;
+            }
+        }
+    }
+}
+
+function uncheckRowTableRelate(table, targetID) {
+    for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
+        let row = table[0].tBodies[0].rows[i];
+        if (row.querySelector('.table-row-checkbox').getAttribute('data-purchase-request-id') === targetID) {
+            row.querySelector('.table-row-checkbox').checked = false;
+        }
+    }
+}
+
+function setupMergeProduct(table) {
+    let data = [];
+    let dataJson = {};
+    if (!table[0].querySelector('.dataTables_empty')) {
+        for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
+            let row = table[0].tBodies[0].rows[i];
+            if (row.querySelector('.table-row-checkbox').checked === true) {
+                if (!dataJson.hasOwnProperty(row.querySelector('.table-row-checkbox').id)) {
+                    dataJson[row.querySelector('.table-row-checkbox').id] = {
+                        'id': row.querySelector('.table-row-checkbox').id,
+                        'title': row.querySelector('.table-row-title').innerHTML,
+                        'code_list': [row.querySelector('.table-row-code').innerHTML],
+                        'uom': row.querySelector('.table-row-uom').innerHTML,
+                        'quantity': parseFloat(row.querySelector('.table-row-quantity').innerHTML),
+                        'remain': parseFloat(row.querySelector('.table-row-remain').innerHTML),
+                        'quantity_purchase': parseFloat(row.querySelector('.table-row-quantity-purchase').innerHTML),
+                    }
+                } else {
+                    dataJson[row.querySelector('.table-row-checkbox').id].code_list.push(row.querySelector('.table-row-code').innerHTML);
+                    dataJson[row.querySelector('.table-row-checkbox').id].quantity += parseFloat(row.querySelector('.table-row-quantity').innerHTML);
+                    dataJson[row.querySelector('.table-row-checkbox').id].remain += parseFloat(row.querySelector('.table-row-remain').innerHTML);
+                    dataJson[row.querySelector('.table-row-checkbox').id].quantity_purchase += parseFloat(row.querySelector('.table-row-quantity-purchase').innerHTML);
+                }
+            }
+        }
+        for (let key in dataJson) {
+            data.push(dataJson[key]);
+        }
+    }
+    return data
 }

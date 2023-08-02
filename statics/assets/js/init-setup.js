@@ -1867,7 +1867,7 @@ class DTBControl {
         let rowIdx = tbl.DataTable().row(clsThis).index();
         let rowData = $x.fn.getRowData($(clsThis));
         let newData = func(clsThis, rowIdx, rowData);
-        tbl.DataTable().row(rowIdx).data(newData);
+        tbl.DataTable().row(rowIdx).data(newData).draw(false);
     }
 
     constructor(dtb$) {

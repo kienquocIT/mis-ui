@@ -1,13 +1,30 @@
 $(document).ready(function () {
     let tbl = $('#datatable_account_list');
-    tbl.DataTableDefault({
+    let tbl2 = tbl.DataTableDefault({
+        processing: true,
+        serverSide: true,
         ajax: {
+            debug: true,
             url: tbl.attr('data-url'),
             type: tbl.attr('data-method'),
+            data: function (d) {
+                let pageInfo = tbl2.page.info();
+                return {
+                    'page': pageInfo.page + 1,
+                    'pageSize': pageInfo.length,
+                    'search': d.search.value,
+                }
+            },
             dataSrc: function (resp) {
                 let data = $.fn.switcherResp(resp);
                 if (data && data.hasOwnProperty('account_list')) return data['account_list'];
-                return [];
+            },
+            dataFilter: function (data) {
+                let dataJson = JSON.parse(data);
+                // dataJson['draw'] = dataJson.data['page_previous'] + 1;
+                dataJson['recordsTotal'] = dataJson.data['page_count'];
+                dataJson['recordsFiltered'] = dataJson.data['page_count'];
+                return JSON.stringify(dataJson);
             }
         },
         columns: [
@@ -68,21 +85,20 @@ $(document).ready(function () {
                     return '';
                 }
             },
-        ]
-
-    })
+        ],
+    });
 
     let tbl_draft = $('#datatable_account_list_draft');
     tbl_draft.DataTableDefault({
-        ajax: {
-            url: tbl_draft.attr('data-url'),
-            type: tbl_draft.attr('data-method'),
-            dataSrc: function (resp) {
-                let data = $.fn.switcherResp(resp);
-                if (data && data.hasOwnProperty('account_list_draft')) return data['account_list_draft'];
-                return [];
-            },
-        },
+        // ajax: {
+        //     url: tbl_draft.attr('data-url'),
+        //     type: tbl_draft.attr('data-method'),
+        //     dataSrc: function (resp) {
+        //         let data = $.fn.switcherResp(resp);
+        //         if (data && data.hasOwnProperty('account_list_draft')) return data['account_list_draft'];
+        //         return [];
+        //     },
+        // },
         columns: [
             {
                 'render': (data, type, row, meta) => {

@@ -262,7 +262,7 @@ class MenusPurchase:
     )
 
     PURCHASE = MenuCommon(
-        name='Purchase', code='menu_purchase_activities', view_name='', icon='<i class="bi bi-cart-check"></i>',
+        name='Purchase', code='menu_purchase_activities', view_name='', icon='<i class="fas fa-shopping-cart"></i>',
         child=[
             MenuCommon(
                 name='Purchase Request', code='menu_purchase_request_list', view_name='PurchaseRequestList',

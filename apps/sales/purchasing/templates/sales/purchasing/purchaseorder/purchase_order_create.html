@@ -196,6 +196,7 @@
                                 class="table nowrap w-100 mb-5"
                                 data-url=""
                                 data-method="get"
+                                hidden
                             >
                                 <thead>
                                 <tr>
@@ -221,7 +222,6 @@
                                 class="table nowrap w-100 mb-5"
                                 data-url=""
                                 data-method="get"
-                                hidden
                             >
                                 <thead>
                                 <tr>
@@ -508,6 +508,26 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
                         <button type="button" class="btn btn-primary" id="btn-confirm-add-purchase-quotation" data-bs-dismiss="modal">{% trans 'Next' %}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button type="button" class="btn btn-primary" id="btn-warning-add-product" data-bs-toggle="modal" data-bs-target="#warningAddProductModalCenter" hidden></button>
+        <div class="modal fade" id="warningAddProductModalCenter" tabindex="-1" role="dialog" aria-labelledby="warningAddProductModalCenter" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-body modal-body-warning-add-product mb-2">
+                        <h6 class="mb-3">{% trans 'Warning' %}</h6>
+                        <p>{% trans 'Add product will remove all purchase requests' %}</p>
+                    </div>
+                    <div class="row modal-footer-warning-add-product">
+                        <div class="col-6">
+                            <button type="button" class="btn btn-link btn-cancel-add-product" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
+                        </div>
+                        <div class="col-6">
+                            <button type="button" class="btn btn-link btn-continue-add-product" data-bs-dismiss="modal" id="btn-continue-add-product">{% trans 'Continue' %}</button>
+                        </div>
                     </div>
                 </div>
             </div>

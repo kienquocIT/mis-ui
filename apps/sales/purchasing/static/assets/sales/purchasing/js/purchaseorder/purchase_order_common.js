@@ -197,6 +197,7 @@ class loadDataHandle {
     }
 
     loadDataShowPurchaseRequest(elePurchaseRequest, tablePurchaseRequest) {
+        let self = this;
         if (!tablePurchaseRequest[0].querySelector('.dataTables_empty')) {
             let eleAppend = ``;
             let is_checked = false;
@@ -216,10 +217,10 @@ class loadDataHandle {
             if (is_checked === true) {
                 elePurchaseRequest.empty();
                 elePurchaseRequest.append(eleAppend);
-                // hidden btn add product
-                document.getElementById('btn-add-product-purchase-order').setAttribute('hidden', 'true');
+                self.loadTableProductByPurchaseRequest();
             } else {
                 elePurchaseRequest.empty();
+                self.loadTableProductByPurchaseRequest();
             }
         }
     };
@@ -430,9 +431,49 @@ class loadDataHandle {
     }
 
     loadTableProductByPurchaseRequest() {
+        let tablePurchaseOrderProductRequest = $('#datable-purchase-order-product-request');
+        let tablePurchaseOrderProductAdd = $('#datable-purchase-order-product-add');
+        if (tablePurchaseOrderProductRequest[0].hasAttribute('hidden')) {
+            tablePurchaseOrderProductAdd.DataTable().destroy();
+            tablePurchaseOrderProductAdd[0].setAttribute('hidden', 'true');
+            tablePurchaseOrderProductRequest[0].removeAttribute('hidden');
+        }
         let data = setupMergeProduct();
-        $('#datable-purchase-order-product-request').DataTable().destroy();
+        tablePurchaseOrderProductRequest.DataTable().destroy();
         dataTableClass.dataTablePurchaseOrderProductRequest(data);
+    };
+
+    loadTableProductNoPurchaseRequest() {
+        $('#purchase-order-purchase-request').empty();
+        $('#purchase-order-purchase-quotation').empty();
+        let tablePurchaseOrderProductRequest = $('#datable-purchase-order-product-request');
+        let tablePurchaseOrderProductAdd = $('#datable-purchase-order-product-add');
+        if (tablePurchaseOrderProductAdd[0].hasAttribute('hidden')) {
+            tablePurchaseOrderProductRequest.DataTable().destroy();
+            tablePurchaseOrderProductRequest[0].setAttribute('hidden', 'true');
+            tablePurchaseOrderProductAdd[0].removeAttribute('hidden');
+            dataTableClass.dataTablePurchaseOrderProductAdd();
+        }
+        let data = {
+            'product': {'id': 1},
+            'uom_request': {'id': 1},
+            'uom_order': {'id': 1},
+            'tax': {'id': 1, 'value': 10},
+            'stock': 3,
+            'product_title': '',
+            'product_description': 'xxxxx',
+            'product_uom_request_title': '',
+            'product_uom_order_title': '',
+            'product_quantity_request': 0,
+            'product_quantity_order': 0,
+            'remain': 0,
+            'product_unit_price': 1800000,
+            'product_tax_title': 'vat-10',
+            'product_tax_amount': 0,
+            'product_subtotal_price': 1800000,
+            'order': 1,
+        }
+        tablePurchaseOrderProductAdd.DataTable().row.add(data).draw().node();
     }
 }
 
@@ -735,96 +776,41 @@ class dataTableHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        let selectProductID = 'line-product-item' + String(row.order);
-                        let is_add_product = ($('#btn-add-product-purchase-order').attr('hidden'));
-                        if (!is_add_product) {
-                            return `<div class="row">
-                                <div class="input-group">
-                                    <span class="input-affix-wrapper">
-                                        <span class="input-prefix">
-                                            <div class="btn-group dropstart">
-                                                <i
-                                                    class="fas fa-info-circle"
-                                                    data-bs-toggle="dropdown"
-                                                    data-dropdown-animation
-                                                    aria-haspopup="true"
-                                                    aria-expanded="false"
-                                                    disabled
-                                                >
-                                                </i>
-                                                <div class="dropdown-menu w-210p mt-4"></div>
-                                            </div>
-                                        </span>
-                                        <select 
-                                        class="form-select table-row-item" 
-                                        id="${selectProductID}"
-                                        required>
-                                            <option value="${row.product.id}">${row.product_title}</option>
-                                        </select>
-                                    </span>
-                                </div>
-                            </div>`;
-                        } else {
-                            return `<div class="row">
-                                    <div class="col-3">
-                                        <div class="btn-group dropstart">
-                                            <i
-                                                class="fas fa-info-circle"
-                                                data-bs-toggle="dropdown"
-                                                data-dropdown-animation
-                                                aria-haspopup="true"
-                                                aria-expanded="false"
-                                                disabled
-                                            >
-                                            </i>
-                                            <div class="dropdown-menu w-210p mt-4"></div>
-                                        </div>
+                        return `<div class="row">
+                                <div class="col-3">
+                                    <div class="btn-group dropstart">
+                                        <i
+                                            class="fas fa-info-circle"
+                                            data-bs-toggle="dropdown"
+                                            data-dropdown-animation
+                                            aria-haspopup="true"
+                                            aria-expanded="false"
+                                            disabled
+                                        >
+                                        </i>
+                                        <div class="dropdown-menu w-210p mt-4"></div>
                                     </div>
-                                    <div class="col-9" style="margin-left: -20px"><span id="${row.product.id}">${row.product_title}</span></div>
-                                </div>`
-                        }
+                                </div>
+                                <div class="col-9" style="margin-left: -20px"><span id="${row.product.id}">${row.product_title}</span></div>
+                            </div>`
                     },
                 },
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        let is_add_product = ($('#btn-add-product-purchase-order').attr('hidden'));
-                        if (!is_add_product) {
-                            return `<div class="row">
-                                    <input type="text" class="form-control table-row-description" value="${row.product_description}">
-                                </div>`;
-                        } else {
-                            return `<span>${row.product_description}</span>`
-                        }
+                        return `<span>${row.product_description}</span>`;
                     }
                 },
                 {
                     targets: 3,
                     render: (data, type, row) => {
-                        let selectUOMID = 'line-product-uom-request' + String(row.order);
-                        let is_add_product = ($('#btn-add-product-purchase-order').attr('hidden'));
-                        if (!is_add_product) {
-                            return `<div class="row">
-                                        <select class="form-select table-row-uom-request" id="${selectUOMID}" required>
-                                            <option value="${row.uom_request.id}">${row.product_uom_request_title}</option>
-                                        </select>
-                                    </div>`;
-                        } else {
-                            return `<span id="${row.uom_request.id}">${row.product_uom_request_title}</span>`
-                        }
+                        return `<span id="${row.uom_request.id}">${row.product_uom_request_title}</span>`;
                     }
                 },
                 {
                     targets: 4,
                     render: (data, type, row) => {
-                        let is_add_product = ($('#btn-add-product-purchase-order').attr('hidden'));
-                        if (!is_add_product) {
-                            return `<div class="row">
-                                        <input type="text" class="form-control table-row-quantity-request validated-number" value="${row.product_quantity}" required>
-                                    </div>`;
-                        } else {
-                            return `<span>${row.product_quantity_request}</span>`
-                        }
+                        return `<span>${row.product_quantity_request}</span>`;
                     }
                 },
                 {
@@ -855,42 +841,20 @@ class dataTableHandle {
                 {
                     targets: 8,
                     render: (data, type, row) => {
-                        let is_add_product = ($('#btn-add-product-purchase-order').attr('hidden'));
-                        if (!is_add_product) {
-                            return `<div class="row">
-                                        <div class="dropdown">
-                                            <div class="input-group dropdown-action" aria-expanded="false" data-bs-toggle="dropdown">
-                                            <span class="input-affix-wrapper">
-                                                <input 
-                                                    type="text" 
-                                                    class="form-control mask-money table-row-price" 
-                                                    value="${row.product_unit_price}"
-                                                    data-return-type="number"
-                                                >
-                                                <span class="input-suffix table-row-btn-dropdown-price-list"><i class="fas fa-angle-down"></i></span>
-                                            </span>
-                                            </div>
-                                            <div role="menu" class="dropdown-menu table-row-price-list w-460p">
-                                            <a class="dropdown-item" data-value=""></a>
-                                            </div>
-                                        </div>
-                                    </div>`;
-                        } else {
-                            return `<div class="row">
+                        return `<div class="row">
                                     <div class="col-8"><span class="mask-money mr-4" data-init-money="${parseFloat(row.product_unit_price)}"></span></div>
-                                        <div class="col-4">
-                                            <button 
-                                            aria-expanded="false"
-                                            data-bs-toggle="dropdown"
-                                            class="btn btn-link btn-sm"
-                                            type="button">
-                                            <i class="fas fa-angle-down"></i>
-                                            </button>
-                                            <div role="menu" class="dropdown-menu w-460p">
-                                            </div>
+                                    <div class="col-4">
+                                        <button 
+                                        aria-expanded="false"
+                                        data-bs-toggle="dropdown"
+                                        class="btn btn-link btn-sm"
+                                        type="button">
+                                        <i class="fas fa-angle-down"></i>
+                                        </button>
+                                        <div role="menu" class="dropdown-menu w-460p">
                                         </div>
-                                    </div>`;
-                        }
+                                    </div>
+                                </div>`;
                     }
                 },
                 {
@@ -926,33 +890,13 @@ class dataTableHandle {
                 {
                     targets: 10,
                     render: (data, type, row) => {
-                        let is_add_product = ($('#btn-add-product-purchase-order').attr('hidden'));
-                        if (!is_add_product) {
-                            return `<div class="row">
-                                        <input 
-                                            type="text" 
-                                            class="form-control mask-money table-row-subtotal disabled-custom-show" 
-                                            value="${row.product_subtotal_price}"
-                                            data-return-type="number"
-                                            disabled
-                                        >
-                                        <input
-                                            type="text"
-                                            class="form-control table-row-subtotal-raw"
-                                            value="${row.product_subtotal_price}"
-                                            hidden
-                                        >
-                                    </div>`;
-                        } else {
-                            return `<span class="mask-money" data-init-money="${parseFloat(row.product_subtotal_price)}"></span>`
-                        }
+                        return `<span class="mask-money" data-init-money="${parseFloat(row.product_subtotal_price)}"></span>`;
                     }
                 },
             ],
             drawCallback: function () {
                 // mask money
                 $.fn.initMaskMoney2();
-
                 // callBack Row to load data for select box
                 let $table = $('#datable-purchase-order-product-request')
                 $table.DataTable().rows().every(function () {

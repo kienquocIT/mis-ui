@@ -12,8 +12,6 @@ $(function () {
         let tablePurchaseRequest = $('#datable-purchase-request');
         let tablePurchaseRequestProduct = $('#datable-purchase-request-product');
         let tablePurchaseQuotation = $('#datable-purchase-quotation');
-        let tablePurchaseOrderProductRequest = $('#datable-purchase-order-product-request');
-        let tablePurchaseOrderProductAdd = $('#datable-purchase-order-product-add');
 
         // Load init
         loadDataClass.loadInitUOM();
@@ -21,7 +19,7 @@ $(function () {
         dataTableClass.dataTablePurchaseRequest();
         dataTableClass.dataTablePurchaseRequestProduct();
         dataTableClass.dataTablePurchaseQuotation();
-        dataTableClass.dataTablePurchaseOrderProductRequest();
+        // dataTableClass.dataTablePurchaseOrderProductRequest();
         dataTableClass.dataTablePurchaseOrderProductAdd();
 
         // run datetimepicker
@@ -54,13 +52,20 @@ $(function () {
             clickCheckBoxAll($(this), tablePurchaseRequest);
         });
 
-        // Btn add purchase request
-        $('#btn-confirm-add-purchase-request').on('click', function () {
-            loadDataClass.loadDataShowPurchaseRequest(elePurchaseRequest, tablePurchaseRequest);
-            loadDataClass.loadTableProductByPurchaseRequest();
+        // Action on click .table-row-checkbox of tablePurchaseRequest
+        tablePurchaseRequest.on('click', '.table-row-checkbox', function() {
+            if ($(this)[0].checked === false) {
+                let targetID = $(this)[0].id;
+                uncheckRowTableRelate(tablePurchaseRequestProduct, targetID)
+            }
         });
 
-        // Btn remove purchase request
+        // Action on click btn add purchase request
+        $('#btn-confirm-add-purchase-request').on('click', function () {
+            loadDataClass.loadDataShowPurchaseRequest(elePurchaseRequest, tablePurchaseRequest);
+        });
+
+        // Action on click btn remove purchase request
         elePurchaseRequest.on('click', '.custom-btn-remove', function() {
             loadDataClass.loadDataAfterClickRemove($(this), elePurchaseRequest, tablePurchaseRequest, "purchase_request");
         });
@@ -70,12 +75,12 @@ $(function () {
             loadDataClass.loadModalPurchaseQuotation(tablePurchaseQuotation);
         });
 
-        // Btn add purchase quotation
+        // Action on click add purchase quotation
         $('#btn-confirm-add-purchase-quotation').on('click', function () {
             loadDataClass.loadDataShowPurchaseQuotation(elePurchaseQuotation, tablePurchaseQuotation);
         });
 
-        // Btn remove purchase quotation
+        // Action on click btn remove purchase quotation
         elePurchaseQuotation.on('click', '.custom-btn-remove', function() {
             loadDataClass.loadDataAfterClickRemove($(this), elePurchaseQuotation, tablePurchaseQuotation, "purchase_quotation");
         });
@@ -85,29 +90,18 @@ $(function () {
             $(this).toggleClass('fa-angle-double-up fa-angle-double-down');
         });
 
-        //
+        // Action on click button add product
         $('#btn-add-product-purchase-order').on('click', function() {
-            $('#datable-purchase-order-product-add')[0].removeAttribute('hidden');
-            let data = {
-                'product': {'id': 1},
-                'uom_request': {'id': 1},
-                'uom_order': {'id': 1},
-                'tax': {'id': 1, 'value': 10},
-                'stock': 3,
-                'product_title': '',
-                'product_description': 'xxxxx',
-                'product_uom_request_title': '',
-                'product_uom_order_title': '',
-                'product_quantity_request': 0,
-                'product_quantity_order': 0,
-                'remain': 0,
-                'product_unit_price': 1800000,
-                'product_tax_title': 'vat-10',
-                'product_tax_amount': 0,
-                'product_subtotal_price': 1800000,
-                'order': 1,
+            if (elePurchaseRequest[0].innerHTML) {
+                $('#btn-warning-add-product').click();
+            } else {
+                loadDataClass.loadTableProductNoPurchaseRequest();
             }
-            tablePurchaseOrderProductAdd.DataTable().row.add(data).draw().node();
+        });
+
+        // Action on click btn continue to add product
+        $('#btn-continue-add-product').on('click', function() {
+            loadDataClass.loadTableProductNoPurchaseRequest();
         });
 
 // SUBMIT FORM

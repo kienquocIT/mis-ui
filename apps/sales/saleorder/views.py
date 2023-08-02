@@ -238,3 +238,13 @@ class SaleOrderIndicatorRestoreAPI(APIView):
             pk=pk,
             msg=SaleMsg.SALE_ORDER_INDICATOR_RESTORE
         )
+
+
+class SaleOrderProductListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.SALE_ORDER_PRODUCT_LIST).get()
+        return resp.auto_return(key_success='so_product_list')

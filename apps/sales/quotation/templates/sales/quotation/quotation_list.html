@@ -5,21 +5,20 @@
 {% endblock %}
 
 {% block pageAction %}
-    <a class="btn btn-outline-primary btn-animated btn-xs"
-       href="{% url 'QuotationCreate' %}"
+    <a href="{% url 'QuotationCreate' %}"
        data-bs-toggle="tooltip"
        data-bs-placement="top"
        title="{% trans 'Create Quotation' %}"
        id="create_quotation_button"
        data-bs-original-title="Add Quotation">
-            <span class="icon">
-                <span class="feather-icon">
-                    <i data-feather="plus"></i>
+            <button class="btn btn-outline-primary">
+                <span>
+                    <span>{% trans 'Add' %}</span>
+                    <span class="icon">
+                        <i class="fa-solid fa-plus"></i>
+                    </span>
                 </span>
-                <span class="font-3 ml-1">
-                    {% trans 'New' %}
-                </span>
-            </span>
+            </button>
     </a>
 {% endblock %}
 

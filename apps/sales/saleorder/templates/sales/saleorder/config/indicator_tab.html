@@ -6,7 +6,7 @@
     <div class="col-6">
         <div class="row float-left">
             <button type="button" class="btn btn-link btn-animated" id="btn-add-indicator" data-bs-toggle="modal"
-                    data-bs-target="#indicatorCreateModalCenter">
+                    data-bs-target="#indicatorCreateModalCenter" hidden>
                 <span><span class="icon"><span class="feather-icon"><i class="fa-regular fa-square-plus"></i></span></span><span>{% trans 'Add indicator' %}</span></span>
             </button>
         </div>
@@ -19,6 +19,7 @@
                     data-bs-toggle="modal"
                     data-bs-target="#restoreIndicatorModalCenter"
                     id="btn-add-shipping"
+                    hidden
             >
             <span><span class="icon"><span class="feather-icon"><i class="fa-solid fa-arrow-rotate-left"></i></span></span><span>{% trans 'Restore default' %}</span></span>
             </button>
@@ -35,7 +36,7 @@
 <table
         id="table_indicator_list"
         class="table nowrap w-100 mb-5"
-        data-url="{% url 'SaleOrderIndicatorListAPI' %}"
+        data-url="{% url 'QuotationIndicatorListAPI' %}"
         data-method="get"
 >
     <thead>

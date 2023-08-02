@@ -2,46 +2,6 @@ $(document).ready(function () {
     const frmDetail = $('#frm-detail-pr');
     const pk = $.fn.getPkDetail();
 
-    function getHtmlProductTitle(product) {
-        let ele_trans = $('#trans-factory');
-        let ele_url = $('#url-factory');
-        return `<span class="input-affix-wrapper">
-                <span class="input-prefix" id="dropdownBeneficiary">
-                    <i class="fas fa-info-circle text-primary" aria-expanded="false"
-                       data-bs-toggle="dropdown"></i>
-                    <span role="menu" class="dropdown-menu ml-4 pl-3 pr-3 pt-3 pb-3"
-                          style="width: 25rem;">
-                        <div class="row">
-                            <span class="col-7">${ele_trans.data('trans-more-info')}</span>
-                            <a class="col-5 text-right" target="_blank"
-                               href="${ele_url.data('url-product-detail')}">
-                                <span class="badge btn-outline-primary">${ele_trans.data('trans-more')}&nbsp;<i
-                                    class="bi bi-arrow-right"></i></span>
-                            </a>
-                        </div>
-                        <div class="dropdown-divider"></div>
-                        <div class="row">
-                            <span class="col-5">${ele_trans.data('trans-product-name')}</span>
-                            <span class="col-7 text-primary span-product-name"></span>
-                        </div>
-                        <div class="row">
-                            <span class="col-5">${ele_trans.data('trans-code')}</span>
-                            <span class="col-7 text-primary span-product-code"></span>
-                        </div>
-                        <div class="row">
-                            <span class="col-5">UoM Group</span>
-                            <span class="col-7 text-primary span-product-uom-group"></span>
-                        </div>
-                        <div class="row">
-                            <span class="col-5">UoM</span>
-                            <span class="col-7 text-primary span-product-uom"></span>
-                        </div>
-                    </span>
-                </span>
-                <input class="form-control inp-product" data-id="${product.id}" value="${product.title}" readonly/>
-            </span>`
-    }
-
     function loadDtbPrProduct(product_datas){
         if (!$.fn.DataTable.isDataTable('#datatable-pr-product')) {
             let $table = $('#datatable-pr-product')
@@ -63,7 +23,7 @@ $(document).ready(function () {
                         data: 'product',
                         targets: 1,
                         render: (data, type, row) => {
-                            return getHtmlProductTitle(data);
+                            return `<div class="readonly"><input class="form-control inp-product" data-id="${data.id}" value="${data.title}" readonly/></div>`
                         }
                     },
                     {

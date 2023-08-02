@@ -1,33 +1,123 @@
 let msgPerm = $('#idBlockRangeMasterElement');
 let tbl = $('#permissions_list');
 
-class HandleWhenAllFalse {
-    constructor(rowEle) {
-        this.rowEle = $(rowEle);
-    }
+tbl.on('click', '.row-e-all', function () {
+    let stateCheck = $(this).prop('checked');
+    $(this).closest('tr').find('.row-e-child').prop('checked', stateCheck).trigger('change');
+});
 
-    valid() {
-        let stateCheck = true;
-        this.rowEle.find('.row-e-child').each(function () {
-            if ($(this).prop('checked') === true) {
-                // one true -> don't raise
-                stateCheck = false;
-            }
-        })
-        return stateCheck;
-    }
+tbl.on('click', '.row-e-child', function () {
+    $(this).trigger('change');
+    let rowEle = $(this).closest('tr');
+    let allCheck = rowEle.find('.row-e-all');
+    let allTrue = true;
+    rowEle.find('.row-e-child').each(function () {
+        if ($(this).prop('checked') !== true) allTrue = false;
+    })
+    if (allTrue === true) allCheck.prop('checked', true); else allCheck.prop('checked', false);
+    $(allCheck).trigger('change');
+});
 
-    active() {
-        let stateFalse = this.valid();
-        if (stateFalse === true) {
-            this.rowEle.attr('data-bs-toggle', 'tooltip').attr('data-bs-placement', 'bottom').attr('title', msgPerm.attr('data-msg-need-drop'));
-            this.rowEle.addClass('bg-sun-light-5');
-        } else {
-            this.rowEle.removeClass('bg-sun-light-5');
-            this.rowEle.removeAttr('data-bs-toggle').removeAttr('data-bs-placement').removeAttr('title');
+tbl.on('change', '.row-style-all', function () {
+    HandlePermissions.updateDataRow($(this));
+})
+
+tbl.on('change', '.row-style-child', function () {
+    HandlePermissions.updateDataRow($(this));
+})
+
+tbl.on('change', '.row-perm-range', function () {
+    HandlePermissions.updateDataRow($(this));
+});
+
+tbl.on('click', '.btnRemoveRow', function () {
+    Swal.fire({
+        title: msgPerm.attr('data-msg-are-u-sure'),
+        text: msgPerm.attr('data-msg-not-revert'),
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: msgPerm.attr('data-msg-yes-delete-it'),
+        cancelButtonText: msgPerm.attr('data-msg-cancel'),
+    }).then((result) => {
+        if (result.isConfirmed) {
+            DTBControl.deleteRow($(this));
         }
+    })
+})
+
+tbl.on('change', '#newRowApp', function () {
+    let selectRangeEle = $('#newRowRange');
+    let optSelected = $(this).find('option:selected');
+    selectRangeEle.find(":selected").prop('selected', false);
+    let rangeAllow = $(optSelected).attr('data-range-allow').split(",");
+    $(selectRangeEle).find('option').each(function () {
+        if (rangeAllow.includes($(this).attr('value'))) {
+            $(this).prop('disabled', false).removeClass('hidden');
+        } else {
+            $(this).prop('disabled', true).addClass('hidden');
+        }
+    });
+    selectRangeEle.val(selectRangeEle.find('option:not([disabled]):first').attr('value')).trigger('change');
+})
+
+$('#btnAddNewRowPerms').click(function () {
+    let newRowApp = $('#newRowApp');
+    let newRowCreateCheck = $('#newRowCreateCheck');
+    let newRowViewCheck = $('#newRowViewCheck');
+    let newRowEditCheck = $('#newRowEditCheck');
+    let newRowDeleteCheck = $('#newRowDeleteCheck');
+    let newRowRange = $('#newRowRange');
+    if (newRowCreateCheck.prop('checked') || newRowViewCheck.prop('checked') || newRowEditCheck.prop('checked') || newRowDeleteCheck.prop('checked')) {
+        let appSelected = newRowApp.find(":selected");
+
+        let tbl = $('#permissions_list').DataTable();
+        tbl.row.add({
+            "id": null,
+            "app_data": {
+                "id": appSelected.attr('data-app-id'),
+                "title": appSelected.attr('data-app-title'),
+                "code": appSelected.attr('data-app-code'),
+                "option_permission": appSelected.attr('data-opt-perm'),
+                "range_allow": appSelected.attr('data-range-allow').split(','),
+            },
+            "plan_data": {
+                "id": appSelected.attr('data-plan-id'),
+                "title": appSelected.attr('data-plan-title'),
+                "code": appSelected.attr('data-plan-code'),
+            },
+            "create": newRowCreateCheck.prop('checked'),
+            "view": newRowViewCheck.prop('checked'),
+            "edit": newRowEditCheck.prop('checked'),
+            "delete": newRowDeleteCheck.prop('checked'),
+            "range": newRowRange.val(),
+        }).draw(false);
+
+        // switch to end page.
+        let totalPages = tbl.page.info().pages;
+        let currentPages = tbl.page.info().page;
+        if (totalPages - 1 > currentPages) {
+            $.fn.notifyB({
+                'description': $.fn.storageSystemData.attr('data-msg-goto-end-page'),
+            }, 'info')
+        }
+        tbl.page(totalPages - 1).draw('page');
+    } else {
+        hopscotch.startTour({
+            id: "hopscotch-light",
+            steps: [
+                {
+                    target: "btnAddNewRowPerms",
+                    placement: 'left',
+                    content: msgPerm.attr('data-msg-least-one'),
+                },
+            ],
+            showPrevButton: false,
+            showNextButton: false,
+        });
     }
-}
+});
 
 class HandlePermissions {
     static updateDataRow(clsThis) {
@@ -43,7 +133,7 @@ class HandlePermissions {
         })
     }
 
-    static returnValueAllowRange(opt_perm) {
+    static returnValueAllowRange(opt_perm, range_allow) {
         // check range allow for option permission
         if (opt_perm === 0 || opt_perm === '0') return ['1', '2', '3', '4'];
         if (opt_perm === 1 || opt_perm === '1') return ['4'];
@@ -53,6 +143,7 @@ class HandlePermissions {
     constructor() {
         this.tbl = tbl;
         this.initDataStorage = $('#tblPermissionInitData');
+        this.initDataByKeyStorage = $('#tblPermissionInitDataByKey');
         this.enableChange = $.fn.parseBoolean(this.tbl.attr('data-change-enable'), true);
         this.textEnabled = this.enableChange === false ? "readonly disabled" : "";
         this.dataDemo = [
@@ -111,6 +202,7 @@ class HandlePermissions {
                                 data-plan-title="${item.title}" 
                                 data-plan-code="${item.code}"
                                 data-opt-perm="${childItem?.['option_permission']}"
+                                data-range-allow="${childItem?.['range_allow'].join(',')}"
                             >${item.title} - ${childItem.title}</option>`;
                     })
                 }
@@ -149,19 +241,38 @@ class HandlePermissions {
         return idsCompared.length !== ids.length;
     }
 
-    getInitData() {
-        return JSON.parse(this.initDataStorage.text());
+    static getInitData() {
+        return JSON.parse(new HandlePermissions().initDataStorage.text());
+    }
+
+    static getInitDataByKey(idx = null) {
+        let data = JSON.parse(new HandlePermissions().initDataByKeyStorage.text());
+        if (idx) return data[idx];
+        return data;
     }
 
     _testCallCheckChange() {
         // constructor is not required when call it
-        console.log(HandlePermissions.checkChangeData(this.getInitData(), this.combinesData()['data'],))
+        console.log(HandlePermissions.checkChangeData(HandlePermissions.getInitData(), this.combinesData()['data'],))
+    }
+
+    static getClassNameWarningOfRow(row, data, key) {
+        if (row['id']) {
+            if (HandlePermissions.getInitDataByKey(row['id'])[key] !== row[key]) return 'border-warning';
+        } else {
+            if (row[key] === true || key === 'range') return 'border-warning';
+        }
+        return '';
     }
 
     loadData(planAppData, permData = []) {
         let clsThis = this;
         HandlePermissions.loadAppNewRow(planAppData);
         clsThis.initDataStorage.text(JSON.stringify(HandlePermissions.convertDictToKeyValue(permData)));
+        clsThis.initDataByKeyStorage.text(JSON.stringify(permData.reduce((acc, item) => {
+            acc[item.id.toString()] = item;
+            return acc;
+        }, {})))
         clsThis.tbl.DataTableDefault({
             rowIdx: true,
             data: permData,
@@ -203,7 +314,6 @@ class HandlePermissions {
                                 type="checkbox" 
                                 class="form-check-input row-e-all row-style-all" 
                                 name="all-1" ${checkAll === true ? "checked" : ""}
-                                data-init="${checkAll}"
                                 ${clsThis.textEnabled}
                             >
                         </div>`;
@@ -215,7 +325,7 @@ class HandlePermissions {
                         return `<div class="form-check form-switch">
                             <input 
                                 type="checkbox" 
-                                class="form-check-input row-e-child row-style-child" 
+                                class="form-check-input row-e-child row-style-child ${HandlePermissions.getClassNameWarningOfRow(row, data, 'create')}" 
                                 name="allow-create"
                                 data-init="${row.id ? data : false}" 
                                 ${data === true ? "checked" : ""}
@@ -230,9 +340,8 @@ class HandlePermissions {
                         return `<div class="form-check form-switch">
                             <input 
                                 type="checkbox" 
-                                class="form-check-input row-e-child row-style-child" 
+                                class="form-check-input row-e-child row-style-child ${HandlePermissions.getClassNameWarningOfRow(row, data, 'view')}" 
                                 name="allow-view"
-                                data-init="${row.id ? data : false}" 
                                 ${data === true ? "checked" : ""}
                                 ${clsThis.textEnabled}
                             />
@@ -245,9 +354,8 @@ class HandlePermissions {
                         return `<div class="form-check form-switch">
                             <input 
                                 type="checkbox" 
-                                class="form-check-input row-e-child row-style-child" 
+                                class="form-check-input row-e-child row-style-child ${HandlePermissions.getClassNameWarningOfRow(row, data, 'edit')}" 
                                 name="allow-edit"
-                                data-init="${row.id ? data : false}" 
                                 ${data === true ? "checked" : ""}
                                 ${clsThis.textEnabled}
                             />
@@ -260,9 +368,8 @@ class HandlePermissions {
                         return `<div class="form-check form-switch">
                             <input 
                                 type="checkbox" 
-                                class="form-check-input row-e-child row-style-child" 
+                                class="form-check-input row-e-child row-style-child ${HandlePermissions.getClassNameWarningOfRow(row, data, 'delete')}" 
                                 name="allow-delete"
-                                data-init="${row.id ? data : false}" 
                                 ${data === true ? "checked" : ""}
                                 ${clsThis.textEnabled}
                             />
@@ -272,22 +379,25 @@ class HandlePermissions {
                     data: "range",
                     width: "15%",
                     render: (data, type, row) => {
-                        let arrValueAllowed = HandlePermissions.returnValueAllowRange(row['app_data']['option_permission']);
+                        let arrValueAllowed = HandlePermissions.returnValueAllowRange(row['app_data']['option_permission'], row['app_data']['range_allow']);
                         if (clsThis.enableChange === true) {
                             let ele = $(`
-                                <select class="form-control row-perm-range" data-init="${data}" name="permission-range" ${clsThis.textEnabled}>
+                                <select 
+                                    class="form-control row-perm-range ${HandlePermissions.getClassNameWarningOfRow(row, data, 'range')}"
+                                    name="permission-range" 
+                                    ${clsThis.textEnabled}
+                                >
                                     ${$('#newRowRange').html()}
                                 </select>
                             `);
                             ele.find('option').each(function () {
                                 $(this).attr('selected', false);
                                 if (arrValueAllowed.includes($(this).attr('value'))) {
-                                    $(this).attr('disabled', false);
+                                    $(this).attr('disabled', false).removeClass('hidden');
                                 } else {
-                                    $(this).attr('disabled', true);
+                                    $(this).attr('disabled', true).addClass('hidden');
                                 }
                             });
-                            ele.val(data);
                             ele.find('option[value="' + data + '"]').attr('selected', true);
                             return ele.prop('outerHTML');
                         } else {
@@ -318,12 +428,16 @@ class HandlePermissions {
                     }
                 },
             ],
-            drawCallback: function () {
-                $(clsThis.tbl).find('input[type=checkbox].row-style-child').trigger('change');
-            },
-            rowCallback: function () {
-
-            },
+            rowCallback(row, data, displayNum, displayIndex, dataIndex) {
+                let stateFalse = !data['view'] && !data['edit'] && !data['create'] && !data['delete'];
+                if (stateFalse === true) {
+                    $(row).attr('data-bs-toggle', 'tooltip').attr('data-bs-placement', 'bottom').attr('title', msgPerm.attr('data-msg-need-drop'));
+                    $(row).addClass('bg-sun-light-5');
+                } else {
+                    $(row).removeClass('bg-sun-light-5');
+                    $(row).removeAttr('data-bs-toggle').removeAttr('data-bs-placement').removeAttr('title');
+                }
+            }
         }).column(-1).visible(clsThis.enableChange);
     }
 
@@ -331,8 +445,7 @@ class HandlePermissions {
         let arr = this.tbl.DataTable().rows().data().toArray().map((item) => {
             return {
                 app_id: item?.['app_data']?.['id'],
-                plan_id: item?.['plan_data']?.['id'],
-                ...item
+                plan_id: item?.['plan_data']?.['id'], ...item
             }
         });
         return {
@@ -341,147 +454,3 @@ class HandlePermissions {
         };
     }
 }
-
-tbl.on('click', '.row-e-all', function () {
-    let stateCheck = $(this).prop('checked');
-    $(this).closest('tr').find('.row-e-child').prop('checked', stateCheck).trigger('change');
-});
-
-tbl.on('click', '.row-e-child', function () {
-    let rowEle = $(this).closest('tr');
-    let allCheck = rowEle.find('.row-e-all');
-    let allTrue = true;
-    rowEle.find('.row-e-child').each(function () {
-        if ($(this).prop('checked') !== true) allTrue = false;
-    })
-    if (allTrue === true) allCheck.prop('checked', true); else allCheck.prop('checked', false);
-    $(allCheck).trigger('change');
-});
-
-tbl.on('change', '.row-style-all', function () {
-    HandlePermissions.updateDataRow($(this));
-
-    let stateCheck = $(this).prop('checked');
-
-    if (stateCheck !== $.fn.parseBoolean($(this).attr('data-init'), true)) {
-        $(this).addClass('border-warning');
-    } else $(this).removeClass('border-warning');
-
-    new HandleWhenAllFalse($(this).closest('tr')).active();
-})
-
-tbl.on('change', '.row-style-child', function () {
-    HandlePermissions.updateDataRow($(this));
-
-    if ($(this).prop('checked') !== $.fn.parseBoolean($(this).attr('data-init'), true)) {
-        $(this).addClass('border-warning');
-    } else {
-        $(this).removeClass('border-warning');
-    }
-    new HandleWhenAllFalse($(this).closest('tr')).active();
-})
-
-tbl.on('change', '.row-perm-range', function () {
-    HandlePermissions.updateDataRow($(this));
-
-    if ($(this).attr('data-init') !== $(this).val()) {
-        $(this).addClass('border-warning');
-    } else {
-        $(this).removeClass('border-warning');
-    }
-});
-
-tbl.on('click', '.btnRemoveRow', function () {
-    Swal.fire({
-        title: msgPerm.attr('data-msg-are-u-sure'),
-        text: msgPerm.attr('data-msg-not-revert'),
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: msgPerm.attr('data-msg-yes-delete-it'),
-        cancelButtonText: msgPerm.attr('data-msg-cancel'),
-    }).then((result) => {
-        if (result.isConfirmed) {
-            DTBControl.deleteRow($(this));
-        }
-    })
-})
-
-tbl.on('change', '#newRowApp', function () {
-    let selectRangeEle = $('#newRowRange');
-    selectRangeEle.find(":selected").prop('selected', false);
-    let optPerm = $(this).find(":selected").attr('data-opt-perm');
-    if (optPerm === '0') {
-        $(selectRangeEle).find('option').each(function () {
-            $(this).prop('disabled', false);
-        });
-    } else if (optPerm === '1') {
-        $(selectRangeEle).find('option').each(function () {
-            if ($(this).attr('value') === '4') {
-                $(this).prop('disabled', false);
-            } else {
-                $(this).prop('disabled', true);
-            }
-        });
-    }
-    selectRangeEle.val(selectRangeEle.find('option:not([disabled]):first').attr('value')).trigger('change');
-})
-
-$('#btnAddNewRowPerms').click(function () {
-    let newRowApp = $('#newRowApp');
-    let newRowAllCheck = $('#newRowAllCheck');
-    let newRowCreateCheck = $('#newRowCreateCheck');
-    let newRowViewCheck = $('#newRowViewCheck');
-    let newRowEditCheck = $('#newRowEditCheck');
-    let newRowDeleteCheck = $('#newRowDeleteCheck');
-    let newRowRange = $('#newRowRange');
-    if (newRowCreateCheck.prop('checked') || newRowViewCheck.prop('checked') || newRowEditCheck.prop('checked') || newRowDeleteCheck.prop('checked')) {
-        let appSelected = newRowApp.find(":selected");
-
-        let tbl = $('#permissions_list').DataTable();
-        tbl.row.add({
-            "id": null,
-            "app_data": {
-                "id": appSelected.attr('data-app-id'),
-                "title": appSelected.attr('data-app-title'),
-                "code": appSelected.attr('data-app-code'),
-                "option_permission": appSelected.attr('data-opt-perm'),
-            },
-            "plan_data": {
-                "id": appSelected.attr('data-plan-id'),
-                "title": appSelected.attr('data-plan-title'),
-                "code": appSelected.attr('data-plan-code'),
-            },
-            "create": newRowCreateCheck.prop('checked'),
-            "view": newRowViewCheck.prop('checked'),
-            "edit": newRowEditCheck.prop('checked'),
-            "delete": newRowDeleteCheck.prop('checked'),
-            "range": newRowRange.val(),
-        }).draw(false);
-
-        // switch to end page.
-        let totalPages = tbl.page.info().pages;
-        let currentPages = tbl.page.info().page;
-        if (totalPages - 1 > currentPages) {
-            $.fn.notifyB({
-                'description': $.fn.storageSystemData.attr('data-msg-goto-end-page'),
-            }, 'info')
-        }
-        tbl.page(totalPages - 1).draw('page');
-    } else {
-        hopscotch.startTour({
-            id: "hopscotch-light",
-            steps: [
-                {
-                    target: "btnAddNewRowPerms",
-                    placement: 'left',
-                    content: msgPerm.attr('data-msg-least-one'),
-                },
-            ],
-            showPrevButton: false,
-            showNextButton: false,
-            timeout: 1,
-        });
-    }
-});

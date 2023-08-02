@@ -304,15 +304,7 @@ $(document).ready(function () {
 
     loadDefaultData();
 
-    jQuery.validator.setDefaults({
-        debug: true,
-        success: "valid"
-    });
     let frm = $('#frm_employee_update');
-    frm.validate({
-        errorElement: 'p',
-        errorClass: 'is-invalid cl-red',
-    })
     frm.submit(function (event) {
         event.preventDefault();
 

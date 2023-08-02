@@ -5,6 +5,7 @@ $(function () {
         let formSubmit = $('#frm_purchase_order_create');
         let loadDataClass = new loadDataHandle();
         let dataTableClass = new dataTableHandle();
+        let submitClass = new submitHandle();
         // Elements
         let elePurchaseRequest = $('#purchase-order-purchase-request');
         let elePurchaseQuotation = $('#purchase-order-purchase-quotation');
@@ -19,7 +20,6 @@ $(function () {
         dataTableClass.dataTablePurchaseRequest();
         dataTableClass.dataTablePurchaseRequestProduct();
         dataTableClass.dataTablePurchaseQuotation();
-        // dataTableClass.dataTablePurchaseOrderProductRequest();
         dataTableClass.dataTablePurchaseOrderProductAdd();
 
         // run datetimepicker
@@ -108,7 +108,22 @@ $(function () {
         formSubmit.submit(function (e) {
             e.preventDefault();
             let _form = new SetupFormSubmit(formSubmit);
-            let submitFields = ['title']
+            submitClass.setupDataSubmit(_form);
+            let submitFields = [
+                'title',
+                'purchase_requests_data',
+                'supplier',
+                'contact',
+                // total amount
+                'total_product_pretax_amount',
+                'total_product_tax',
+                'total_product',
+                'total_product_revenue_before_tax',
+                // purchase order tabs
+                'purchase_order_products_data',
+                // system
+                'system_status',
+            ]
             if (_form.dataForm) {
                 for (let key in _form.dataForm) {
                     if (!submitFields.includes(key)) delete _form.dataForm[key]

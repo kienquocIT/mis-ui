@@ -47,13 +47,13 @@
                                     >
                                 </span>
                             </div>
-{#                            <small class="form-text text-muted">{% trans 'Opportunity link to quotation' %}</small>#}
                         </div>
                         <div class="form-group">
                             <label class="form-label" for="purchase-order-purchase-request">{% trans 'Purchase request' %}</label>
                             <div class="input-group">
                                 <span class="input-affix-wrapper">
                                     <div class="form-control div-input" id="purchase-order-purchase-request"></div>
+                                    <input type="hidden" id="purchase_requests_data">
                                     <span class="input-suffix">
                                         <button
                                             type="button"
@@ -65,13 +65,13 @@
                                     </span>
                                 </span>
                             </div>
-{#                            <small class="form-text text-muted">{% trans 'Purchase request link to purchase order' %}</small>#}
                         </div>
                         <div class="form-group">
                             <label class="form-label" for="purchase-order-purchase-request">{% trans 'Purchase quotation' %}</label>
                             <div class="input-group">
                                 <span class="input-affix-wrapper">
                                     <div class="form-control div-input" id="purchase-order-purchase-quotation"></div>
+                                    <input type="hidden" id="purchase_quotations_data">
                                     <span class="input-suffix">
                                         <button
                                             type="button"
@@ -83,7 +83,6 @@
                                     </span>
                                 </span>
                             </div>
-{#                            <small class="form-text text-muted">{% trans 'Purchase quotation link to purchase order' %}</small>#}
                         </div>
                         <div class="form-group">
                             <label class="form-label" for="box-purchase-order-contact">{% trans 'Select Contact' %}<span class="required"></span></label>
@@ -113,7 +112,6 @@
                                     ></select>
                                 </span>
                             </div>
-{#                            <small class="form-text text-muted">{% trans 'Contact link to quotation' %}</small>#}
                         </div>
                     </div>
 
@@ -142,10 +140,9 @@
                                     >
                                 </span>
                             </div>
-{#                            <small class="form-text text-muted">{% trans 'Status of quotation' %}</small>#}
                         </div>
                         <div class="form-group">
-                            <label class="form-label" for="quotation-create-status">{% trans 'Delivered status' %}</label>
+                            <label class="form-label" for="purchase-order-create-status">{% trans 'Delivered status' %}</label>
                             <div class="input-group">
                                 <span class="input-affix-wrapper">
                                     <input
@@ -156,7 +153,6 @@
                                     >
                                 </span>
                             </div>
-{#                            <small class="form-text text-muted">{% trans 'Delivered status of purchase order' %}</small>#}
                         </div>
                     </div>
                 </div>

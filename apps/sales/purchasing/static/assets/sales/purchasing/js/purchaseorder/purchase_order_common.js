@@ -198,6 +198,7 @@ class loadDataHandle {
 
     loadDataShowPurchaseRequest(elePurchaseRequest, tablePurchaseRequest) {
         let self = this;
+        let purchase_requests_data = [];
         if (!tablePurchaseRequest[0].querySelector('.dataTables_empty')) {
             let eleAppend = ``;
             let is_checked = false;
@@ -205,6 +206,7 @@ class loadDataHandle {
                 let row = tablePurchaseRequest[0].tBodies[0].rows[i];
                 if (row.querySelector('.table-row-checkbox').checked === true) {
                     is_checked = true;
+                    purchase_requests_data.push(row.querySelector('.table-row-checkbox').id);
                     let link = "";
                     eleAppend += `<div class="inline-elements-badge mr-2 mb-1" id="${row.querySelector('.table-row-checkbox').id}">
                                     <a href="${link}" target="_blank" class="link-primary underline_hover"><span>${row.querySelector('.table-row-code').innerHTML}</span></a>
@@ -223,6 +225,7 @@ class loadDataHandle {
                 self.loadTableProductByPurchaseRequest();
             }
         }
+        $('#purchase_quotations_data').val(JSON.stringify(purchase_requests_data));
     };
 
     loadModalPurchaseRequest(tablePurchaseRequest, tablePurchaseRequestProduct) {
@@ -776,6 +779,7 @@ class dataTableHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
+                        let dataStr = JSON.stringify(row.product).replace(/"/g, "&quot;");
                         return `<div class="row">
                                 <div class="col-3">
                                     <div class="btn-group dropstart">
@@ -791,7 +795,9 @@ class dataTableHandle {
                                         <div class="dropdown-menu w-210p mt-4"></div>
                                     </div>
                                 </div>
-                                <div class="col-9" style="margin-left: -20px"><span id="${row.product.id}">${row.product_title}</span></div>
+                                <div class="col-9" style="margin-left: -20px">
+                                    <span class="table-row-item" id="${row.product.id}">${row.product_title}<input type="hidden" class="data-info" value="${dataStr}"></span>
+                                </div>
                             </div>`
                     },
                 },
@@ -804,7 +810,8 @@ class dataTableHandle {
                 {
                     targets: 3,
                     render: (data, type, row) => {
-                        return `<span id="${row.uom_request.id}">${row.product_uom_request_title}</span>`;
+                        let dataStr = JSON.stringify(row.uom_request).replace(/"/g, "&quot;");
+                        return `<span class="table-row-uom-request" id="${row.uom_request.id}">${row.product_uom_request_title}<input type="hidden" class="data-info" value="${dataStr}"></span>`;
                     }
                 },
                 {
@@ -1115,6 +1122,120 @@ class dataTableHandle {
 }
 
 let dataTableClass = new dataTableHandle();
+
+// Submit Form
+class submitHandle {
+    setupDataProduct() {
+        let result = [];
+        let is_by_request = false;
+        let table = document.getElementById('datable-purchase-order-product-add');
+        if (document.getElementById('purchase-order-purchase-request').innerHTML) {
+            table = document.getElementById('datable-purchase-order-product-request');
+            is_by_request = true;
+        }
+        if (table.querySelector('.dataTables_empty')) {
+            return []
+        }
+        let tableBody = table.tBodies[0];
+        for (let i = 0; i < tableBody.rows.length; i++) {
+            let rowData = {};
+            let row = tableBody.rows[i];
+            let eleProduct = row.querySelector('.table-row-item');
+            if (eleProduct) { // PRODUCT
+                let optionSelected = eleProduct;
+                if (is_by_request === true) {
+                    optionSelected = eleProduct;
+                } else {
+                    optionSelected = eleProduct.options[eleProduct.selectedIndex];
+                }
+                if (optionSelected) {
+                    if (optionSelected.querySelector('.data-info')) {
+                        let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
+                        rowData['product'] = dataInfo.id;
+                        rowData['product_title'] = dataInfo.title;
+                        rowData['product_code'] = dataInfo.code;
+                    }
+                }
+                let eleDescription = row.querySelector('.table-row-description');
+                if (eleDescription) {
+                    rowData['product_description'] = eleDescription.value;
+                }
+                if (is_by_request === true) {
+                    let eleUOMRequest = row.querySelector('.table-row-uom-request');
+                    let dataInfo = JSON.parse(eleUOMRequest.querySelector('.data-info').value);
+                    rowData['uom_request'] = dataInfo.id;
+                    rowData['product_uom_request_title'] = dataInfo.title;
+                }
+                let eleUOMOrder = row.querySelector('.table-row-uom-order');
+                if (eleUOMOrder) {
+                    let optionSelected = eleUOMOrder.options[eleUOMOrder.selectedIndex];
+                    if (optionSelected) {
+                        if (optionSelected.querySelector('.data-info')) {
+                            let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
+                            rowData['uom_order'] = dataInfo.id;
+                            rowData['product_uom_order_title'] = dataInfo.title;
+                        }
+                    }
+                }
+                let eleTax = row.querySelector('.table-row-tax');
+                if (eleTax) {
+                    let optionSelected = eleTax.options[eleTax.selectedIndex];
+                    if (optionSelected) {
+                        if (optionSelected.querySelector('.data-info')) {
+                            let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
+                            rowData['tax'] = dataInfo.id;
+                            rowData['product_tax_title'] = dataInfo.title;
+                            rowData['product_tax_value'] = dataInfo.value;
+                        } else {
+                            rowData['product_tax_value'] = 0;
+                        }
+                    }
+                }
+                let eleTaxAmount = row.querySelector('.table-row-tax-amount-raw');
+                if (eleTaxAmount) {
+                    rowData['product_tax_amount'] = parseFloat(eleTaxAmount.value);
+                }
+                let eleQuantityRequest = row.querySelector('.table-row-quantity-request');
+                if (eleQuantityRequest) {
+                    rowData['product_quantity_request'] = parseFloat(eleQuantityRequest.value);
+                }
+                let eleQuantityOrder = row.querySelector('.table-row-quantity-order');
+                if (eleQuantityOrder) {
+                    rowData['product_quantity_order'] = parseFloat(eleQuantityOrder.value);
+                }
+                let elePrice = row.querySelector('.table-row-price');
+                if (elePrice) {
+                    rowData['product_unit_price'] = $(elePrice).valCurrency();
+                }
+                let eleSubtotal = row.querySelector('.table-row-subtotal-raw');
+                if (eleSubtotal) {
+                    rowData['product_subtotal_price'] = parseFloat(eleSubtotal.value);
+                }
+                if (rowData.hasOwnProperty('product_subtotal_price') && rowData.hasOwnProperty('product_tax_amount')) {
+                    rowData['product_subtotal_price_after_tax'] = rowData['product_subtotal_price'] + rowData['product_tax_amount']
+                }
+                let eleOrder = row.querySelector('.table-row-order');
+                if (eleOrder) {
+                    rowData['order'] = parseInt(eleOrder.innerHTML);
+                }
+            }
+            result.push(rowData);
+        }
+        return result
+    }
+
+    setupDataSubmit(_form) {
+        let self = this;
+        let dateDeliveredVal = $('#purchase-order-date-delivered').val();
+        if (dateDeliveredVal) {
+            _form.dataForm['date_delivered'] = moment(dateDeliveredVal).format('YYYY-MM-DD HH:mm:ss')
+        }
+        let products_data_setup = self.setupDataProduct();
+        if (products_data_setup.length > 0) {
+            _form.dataForm['purchase_order_products_data'] = products_data_setup
+        }
+    }
+}
 
 // COMMON FUNCTION
 function clickCheckBoxAll(ele, table) {

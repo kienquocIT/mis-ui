@@ -266,7 +266,6 @@ $(function () {
             }
             let list_customer_am = dict_customer[$(this).val()].manager.map(obj => obj.id)
 
-            console.log(list_sale_person)
             list_sale_person.map(function (item) {
                 if (item.group.id === group_id && list_customer_am.includes(item.id)) {
                     select_box_sale_person.append(`<option value="${item.id}">${item.full_name}</option>`)

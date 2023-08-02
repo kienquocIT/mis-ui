@@ -212,6 +212,10 @@ $(function () {
         }
 
 
+        let dict_customer = {}
+        let dict_sale_person = {}
+        let list_sale_person = []
+
         function loadSalePerson() {
             let ele = $('#select-box-sale-person');
             $.fn.callAjax2({
@@ -223,7 +227,7 @@ $(function () {
                 if (data) {
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('employee_list')) {
                         is_load_sale_person = true;
-                        $('#data-sale-person').val(JSON.stringify(data.employee_list));
+                        list_sale_person = data.employee_list;
                         // if (config_is_AM_create) {
                         data.employee_list.map(function (employee) {
                             if (employee.id === employee_current_id) {
@@ -231,71 +235,43 @@ $(function () {
                                 $('#group_id_emp_login').val(employee.group.id);
                             }
                         })
-                        // } else {
-                        //     let emp_current = data.employee_list.find(obj => obj.id === employee_current_id);
-                        //     let group_id = emp_current.group.id
-                        //     $('#group_id_emp_login').val(group_id);
-                        //     data.employee_list.map(function (employee) {
-                        //         if (employee.group.id === group_id) {
-                        //             if (employee.id === employee_current_id)
-                        //                 ele.append(`<option value="${employee.id}" selected>${employee.full_name}</option>`);
-                        //             else {
-                        //                 ele.append(`<option value="${employee.id}">${employee.full_name}</option>`);
-                        //             }
-                        //         }
-                        //     })
-                        // }
                     }
                 }
             }, (errs) => {
             },)
         }
 
+        loadSalePerson();
 
-        let dict_customer = {}
-        let dict_sale_person = {}
         boxCustomer.on('change', function () {
-            if (!config_is_AM_create) {
-                if (Object.keys(dict_customer).length === 0) {
-                    dict_customer = JSON.parse($('#data-customer').val()).reduce((obj, item) => {
-                        obj[item.id] = item;
-                        return obj;
-                    }, {});
-                }
-
-                let list_sale_person = JSON.parse($('#data-sale-person').val());
-                if (Object.keys(dict_sale_person).length === 0) {
-                    dict_sale_person = list_sale_person.reduce((obj, item) => {
-                        obj[item.id] = item;
-                        return obj;
-                    }, {});
-                }
-
-                let group_id = $('#group_id_emp_login').val();
-                let select_box_sale_person = $("#select-box-sale-person");
-                select_box_sale_person.html('');
-                if (group_id === '') {
-                    let emp_current = dict_sale_person[employee_current_id];
-                    select_box_sale_person.append(`<option value="${emp_current.id}" selected">${emp_current.full_name}</option>`)
-                }
-                let list_customer_am = dict_customer[$(this).val()].manager.map(obj => obj.id)
-                if (config_is_AM_create) {
-                    list_sale_person.map(function (item) {
-                        if (item.group.id === group_id && list_customer_am.includes(item.id)) {
-                            select_box_sale_person.append(`<option value="${item.id}">${item.full_name}</option>`)
-                        }
-                    })
-                }
-                else{
-                    list_sale_person.map(function (item) {
-                        if (item.group.id === group_id) {
-                            select_box_sale_person.append(`<option value="${item.id}">${item.full_name}</option>`)
-                        }
-                    })
-                }
-
-                select_box_sale_person.val(employee_current_id).trigger('change');
+            if (Object.keys(dict_customer).length === 0) {
+                dict_customer = JSON.parse($('#data-customer').val()).reduce((obj, item) => {
+                    obj[item.id] = item;
+                    return obj;
+                }, {});
             }
+            if (Object.keys(dict_sale_person).length === 0) {
+                dict_sale_person = list_sale_person.reduce((obj, item) => {
+                    obj[item.id] = item;
+                    return obj;
+                }, {});
+            }
+
+            let group_id = $('#group_id_emp_login').val();
+            let select_box_sale_person = $("#select-box-sale-person");
+            select_box_sale_person.html('');
+            if (group_id === '') {
+                let emp_current = dict_sale_person[employee_current_id];
+                select_box_sale_person.append(`<option value="${emp_current.id}" selected">${emp_current.full_name}</option>`)
+            }
+            let list_customer_am = dict_customer[$(this).val()].manager.map(obj => obj.id)
+
+            console.log(list_sale_person)
+            list_sale_person.map(function (item) {
+                if (item.group.id === group_id && list_customer_am.includes(item.id)) {
+                    select_box_sale_person.append(`<option value="${item.id}">${item.full_name}</option>`)
+                }
+            })
         })
         $(document).on('click', '#create_opportunity_button', function () {
             if (!is_load_customer) {

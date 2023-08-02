@@ -7,6 +7,7 @@ from django.conf import settings
 from django.http import response
 from requests_toolbelt import MultipartEncoder
 from rest_framework import status
+from rest_framework.views import APIView
 
 from .urls_map import ApiURL, StringUrl
 
@@ -38,10 +39,16 @@ class PermCheck:
 
         return self.url
 
-    def valid(self, request, view_kwargs: dict = None) -> (bool, tuple):
+    def valid(self, cls_view_self, request, view_kwargs: dict = None) -> (bool, tuple):
         real_url = self.parse_url(view_kwargs=view_kwargs if isinstance(view_kwargs, dict) else {})
         if real_url:
-            cls_api = ServerAPI(request=request, user=request.user, url=real_url, is_check_perm=True)
+            cls_api = ServerAPI(
+                request=request,
+                user=request.user,
+                url=real_url,
+                is_check_perm=True,
+                is_drf_api=issubclass(cls_view_self.__class__, APIView),
+            )
             if self.method == 'GET':
                 resp = cls_api.get(data=self.data)
             elif self.method == 'POST':
@@ -599,6 +606,7 @@ class ServerAPI:
         self.is_secret_ui = kwargs.get('is_secret_ui', False)
         self.request = kwargs.get('request', None)
         self.is_check_perm = kwargs.get('is_check_perm', False)
+        self.is_drf_api = kwargs.get('is_drf_api', True)    # confirm class view extends from APIView
 
     @property
     def setup_header_dropdown(self):
@@ -611,8 +619,8 @@ class ServerAPI:
     @property
     def setup_header_dtb(self):
         ctx = {}
-        if self.request:
-            query_params = self.request.query_params.dict()
+        if self.request and self.is_drf_api:
+            query_params = self.request.query_params
             page = query_params.get('page', None)
             if page and isinstance(page, int):
                 ctx['page'] = page

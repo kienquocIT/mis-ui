@@ -94,7 +94,10 @@ function initSelectBox(selectBoxElement = null) {
                 url: $thisURL,
                 data: function (params) {
                     let query = params
-                    query['is_ajax'] = true
+                    query.isDropdown = true
+                    if (params.term) query.search = params.term
+                    query.page = params.page || 1
+                    query.pageSize = params.pageSize || 10
                     if ($this.attr('data-params')) {
                         let strParams = $this.attr('data-params').replaceAll("'",'"')
                         let data_params = JSON.parse(strParams);
@@ -102,7 +105,7 @@ function initSelectBox(selectBoxElement = null) {
                     }
                     return query
                 },
-                processResults: function (res) {
+                processResults: function (res, params) {
                     let data_original = res.data[$this.attr('data-prefix')];
                     let data_convert = []
                     if (data_original.length) {
@@ -129,17 +132,27 @@ function initSelectBox(selectBoxElement = null) {
                             && $this.attr('data-virtual') !== "[]")
                             data_convert.push(JSON.parse($this.attr('data-virtual')))
                     }
+                    params.page = params.page || 1;
                     return {
-                        results: data_convert
+                        results: data_convert,
+                        pagination: {
+                            more: (params.page * 10) < res?.data?.count // Calculate if there are more pages
+                        }
                     };
                 }
             },
             multiple: false,
             tags:false,
             closeOnSelect: !!$this.attr('data-select2-closeOnSelect'),
+            language: {
+                loadingMore: function () {
+                    return $.fn.transEle.attr('data-select2-loadmore'); // Replace with your translated text
+                }
+            }
         }
         if ($this.attr('data-multiple') === 'true'){
             options['multiple'] = true
+            options['allowClear'] = true
             options['tags'] = true
             $this.prop('multiple', true)
         }

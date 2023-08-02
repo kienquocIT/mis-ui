@@ -406,8 +406,6 @@ class OpportunityMeetingDeleteAPI(APIView):
         return resp.auto_return()
 
 
-
-
 class OpportunityActivityLogListAPI(APIView):
     @mask_view(
         auth_require=True,

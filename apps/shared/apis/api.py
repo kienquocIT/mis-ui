@@ -244,6 +244,16 @@ class RespData:
             if callback_success:
                 return callback_success(self.result), status_success
             if key_success:
+                if self.page_count:
+                    return {
+                               'count': self.page_count,
+                               'next': self.page_next,
+                               'previous': self.page_previous,
+                               'draw': 1,
+                               'recordsTotal': self.page_count,
+                               'recordsFiltered': 10,
+                               key_success: self.result
+                           }, status_success
                 return {key_success: self.result}, status_success
             return self.result, status_success
         elif self.status == 401:
@@ -649,7 +659,7 @@ class ServerAPI:
         safe_url = self.url
 
         if isinstance(data, dict):
-            data['pageSize'] = '-1'
+            data['pageSize'] = data['pageSize'] if 'pageSize' in data else '-1'
         else:
             data = {'pageSize': '-1'}
 

@@ -37,7 +37,6 @@ $(function () {
                         }
                         ele_benefication.empty();
                         ele_benefication.append(`<option value="${data.advance_payment_detail.beneficiary.id}">${data.advance_payment_detail.beneficiary.name}</option>`);
-                        loadProductTable(data.advance_payment_detail.product_items)
                         loadDetailBeneficiary(data.advance_payment_detail.beneficiary.id);
                     }
                 }

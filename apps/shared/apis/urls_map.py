@@ -258,6 +258,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     SALE_ORDER_INDICATOR_LIST = StringUrl('saleorder/indicators')
     SALE_ORDER_INDICATOR_DETAIL = StringUrl('saleorder/indicator')
     SALE_ORDER_INDICATOR_RESTORE = StringUrl('saleorder/indicator-restore')
+    SALE_ORDER_PRODUCT_LIST = StringUrl('saleorder/product/list')
 
     # warehouse
     WAREHOUSE_LIST = StringUrl('saledata/warehouses')
@@ -307,3 +308,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     OPPORTUNITY_DOCUMENT_LIST = StringUrl('opportunity/document/list')
     OPPORTUNITY_DOCUMENT_DETAIL = StringUrl('opportunity/document/{pk}')
+
+    # Purchase
+    PURCHASE_REQUEST_LIST = StringUrl('purchasing/purchase-request/list')
+    PURCHASE_REQUEST_DETAIL = StringUrl('purchasing/purchase-request/{pk}')

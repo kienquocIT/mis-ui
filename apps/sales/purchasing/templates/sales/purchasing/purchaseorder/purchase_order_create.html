@@ -215,6 +215,30 @@
                                 <tbody>
                                 </tbody>
                             </table>
+
+                            <table
+                                id="datable-purchase-order-product-add"
+                                class="table nowrap w-100 mb-5"
+                                data-url=""
+                                data-method="get"
+                                hidden
+                            >
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>{% trans 'Product' %}<span class="required"></span></th>
+                                    <th>{% trans 'Description' %}</th>
+                                    <th>UoM<span class="required"></span></th>
+                                    <th>{% trans 'Quantity' %}<span class="required"></span></th>
+                                    <th>{% trans 'Unit Price' %}</th>
+                                    <th>{% trans 'Tax' %}</th>
+                                    <th>{% trans 'Subtotal Price' %}</th>
+                                    <th>{% trans 'Actions' %}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
                             <div class="row">
                                 <div class="col-2">
                                     <button type="button" class="btn btn-link btn-animated" id="btn-add-product-purchase-order">
@@ -337,8 +361,8 @@
         >
 
 
-        <div class="modal fade" id="purchaseRequestModalCenter" tabindex="-1" role="dialog" aria-labelledby="purchaseRequestModalCenter" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+        <div class="modal fade mt-5" id="purchaseRequestModalCenter" tabindex="-1" role="dialog" aria-labelledby="purchaseRequestModalCenter" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-xl w-lg-100" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">Select items from purchase request</h5>
@@ -439,7 +463,7 @@
             </div>
         </div>
 
-        <div class="modal fade" id="purchaseQuotationModalCenter" tabindex="-1" role="dialog" aria-labelledby="purchaseQuotationModalCenter" aria-hidden="true">
+        <div class="modal fade mt-5" id="purchaseQuotationModalCenter" tabindex="-1" role="dialog" aria-labelledby="purchaseQuotationModalCenter" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">

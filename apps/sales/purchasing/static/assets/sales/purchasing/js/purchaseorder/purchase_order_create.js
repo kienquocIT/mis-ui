@@ -12,6 +12,8 @@ $(function () {
         let tablePurchaseRequest = $('#datable-purchase-request');
         let tablePurchaseRequestProduct = $('#datable-purchase-request-product');
         let tablePurchaseQuotation = $('#datable-purchase-quotation');
+        let tablePurchaseOrderProductRequest = $('#datable-purchase-order-product-request');
+        let tablePurchaseOrderProductAdd = $('#datable-purchase-order-product-add');
 
         // Load init
         loadDataClass.loadInitUOM();
@@ -20,6 +22,7 @@ $(function () {
         dataTableClass.dataTablePurchaseRequestProduct();
         dataTableClass.dataTablePurchaseQuotation();
         dataTableClass.dataTablePurchaseOrderProductRequest();
+        dataTableClass.dataTablePurchaseOrderProductAdd();
 
         // run datetimepicker
         $('input[type=text].date-picker').daterangepicker({
@@ -80,6 +83,31 @@ $(function () {
         // Action on click button collapse
         $('#info-collapse').click(function () {
             $(this).toggleClass('fa-angle-double-up fa-angle-double-down');
+        });
+
+        //
+        $('#btn-add-product-purchase-order').on('click', function() {
+            $('#datable-purchase-order-product-add')[0].removeAttribute('hidden');
+            let data = {
+                'product': {'id': 1},
+                'uom_request': {'id': 1},
+                'uom_order': {'id': 1},
+                'tax': {'id': 1, 'value': 10},
+                'stock': 3,
+                'product_title': '',
+                'product_description': 'xxxxx',
+                'product_uom_request_title': '',
+                'product_uom_order_title': '',
+                'product_quantity_request': 0,
+                'product_quantity_order': 0,
+                'remain': 0,
+                'product_unit_price': 1800000,
+                'product_tax_title': 'vat-10',
+                'product_tax_amount': 0,
+                'product_subtotal_price': 1800000,
+                'order': 1,
+            }
+            tablePurchaseOrderProductAdd.DataTable().row.add(data).draw().node();
         });
 
 // SUBMIT FORM

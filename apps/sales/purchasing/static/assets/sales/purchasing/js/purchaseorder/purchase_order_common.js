@@ -736,8 +736,9 @@ class dataTableHandle {
                     targets: 1,
                     render: (data, type, row) => {
                         let selectProductID = 'line-product-item' + String(row.order);
-
-                        let ele = `<div class="row">
+                        let is_add_product = ($('#btn-add-product-purchase-order').attr('hidden'));
+                        if (!is_add_product) {
+                            return `<div class="row">
                                 <div class="input-group">
                                     <span class="input-affix-wrapper">
                                         <span class="input-prefix">
@@ -763,7 +764,8 @@ class dataTableHandle {
                                     </span>
                                 </div>
                             </div>`;
-                        return `<div class="row">
+                        } else {
+                            return `<div class="row">
                                     <div class="col-3">
                                         <div class="btn-group dropstart">
                                             <i
@@ -780,36 +782,49 @@ class dataTableHandle {
                                     </div>
                                     <div class="col-9" style="margin-left: -20px"><span id="${row.product.id}">${row.product_title}</span></div>
                                 </div>`
+                        }
                     },
                 },
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        let ele = `<div class="row">
+                        let is_add_product = ($('#btn-add-product-purchase-order').attr('hidden'));
+                        if (!is_add_product) {
+                            return `<div class="row">
                                     <input type="text" class="form-control table-row-description" value="${row.product_description}">
                                 </div>`;
-                        return `<span>${row.product_description}</span>`
+                        } else {
+                            return `<span>${row.product_description}</span>`
+                        }
                     }
                 },
                 {
                     targets: 3,
                     render: (data, type, row) => {
                         let selectUOMID = 'line-product-uom-request' + String(row.order);
-                        let ele = `<div class="row">
-                                <select class="form-select table-row-uom-request" id="${selectUOMID}" required>
-                                    <option value="${row.uom_request.id}">${row.product_uom_request_title}</option>
-                                </select>
-                            </div>`;
-                        return `<span id="${row.uom_request.id}">${row.product_uom_request_title}</span>`
+                        let is_add_product = ($('#btn-add-product-purchase-order').attr('hidden'));
+                        if (!is_add_product) {
+                            return `<div class="row">
+                                        <select class="form-select table-row-uom-request" id="${selectUOMID}" required>
+                                            <option value="${row.uom_request.id}">${row.product_uom_request_title}</option>
+                                        </select>
+                                    </div>`;
+                        } else {
+                            return `<span id="${row.uom_request.id}">${row.product_uom_request_title}</span>`
+                        }
                     }
                 },
                 {
                     targets: 4,
                     render: (data, type, row) => {
-                        let ele = `<div class="row">
-                                    <input type="text" class="form-control table-row-quantity-request validated-number" value="${row.product_quantity}" required>
-                                </div>`;
-                        return `<span>${row.product_quantity_request}</span>`
+                        let is_add_product = ($('#btn-add-product-purchase-order').attr('hidden'));
+                        if (!is_add_product) {
+                            return `<div class="row">
+                                        <input type="text" class="form-control table-row-quantity-request validated-number" value="${row.product_quantity}" required>
+                                    </div>`;
+                        } else {
+                            return `<span>${row.product_quantity_request}</span>`
+                        }
                     }
                 },
                 {
@@ -840,38 +855,42 @@ class dataTableHandle {
                 {
                     targets: 8,
                     render: (data, type, row) => {
-                        let ele = `<div class="row">
-                                <div class="dropdown">
-                                    <div class="input-group dropdown-action" aria-expanded="false" data-bs-toggle="dropdown">
-                                    <span class="input-affix-wrapper">
-                                        <input 
-                                            type="text" 
-                                            class="form-control mask-money table-row-price" 
-                                            value="${row.product_unit_price}"
-                                            data-return-type="number"
-                                        >
-                                        <span class="input-suffix table-row-btn-dropdown-price-list"><i class="fas fa-angle-down"></i></span>
-                                    </span>
-                                    </div>
-                                    <div role="menu" class="dropdown-menu table-row-price-list w-460p">
-                                    <a class="dropdown-item" data-value=""></a>
-                                    </div>
-                                </div>
-                            </div>`;
-                        return `<div class="row">
-<div class="col-8"><span class="mask-money mr-4" data-init-money="${parseFloat(row.product_unit_price)}"></span></div>
-<div class="col-4">
-<button 
-aria-expanded="false"
-data-bs-toggle="dropdown"
-class="btn btn-link btn-sm"
-type="button">
-<i class="fas fa-angle-down"></i>
-</button>
-<div role="menu" class="dropdown-menu w-460p">
-</div>
-</div>
-</div>`;
+                        let is_add_product = ($('#btn-add-product-purchase-order').attr('hidden'));
+                        if (!is_add_product) {
+                            return `<div class="row">
+                                        <div class="dropdown">
+                                            <div class="input-group dropdown-action" aria-expanded="false" data-bs-toggle="dropdown">
+                                            <span class="input-affix-wrapper">
+                                                <input 
+                                                    type="text" 
+                                                    class="form-control mask-money table-row-price" 
+                                                    value="${row.product_unit_price}"
+                                                    data-return-type="number"
+                                                >
+                                                <span class="input-suffix table-row-btn-dropdown-price-list"><i class="fas fa-angle-down"></i></span>
+                                            </span>
+                                            </div>
+                                            <div role="menu" class="dropdown-menu table-row-price-list w-460p">
+                                            <a class="dropdown-item" data-value=""></a>
+                                            </div>
+                                        </div>
+                                    </div>`;
+                        } else {
+                            return `<div class="row">
+                                    <div class="col-8"><span class="mask-money mr-4" data-init-money="${parseFloat(row.product_unit_price)}"></span></div>
+                                        <div class="col-4">
+                                            <button 
+                                            aria-expanded="false"
+                                            data-bs-toggle="dropdown"
+                                            class="btn btn-link btn-sm"
+                                            type="button">
+                                            <i class="fas fa-angle-down"></i>
+                                            </button>
+                                            <div role="menu" class="dropdown-menu w-460p">
+                                            </div>
+                                        </div>
+                                    </div>`;
+                        }
                     }
                 },
                 {
@@ -907,22 +926,230 @@ type="button">
                 {
                     targets: 10,
                     render: (data, type, row) => {
-                        let ele = `<div class="row">
-                                <input 
-                                    type="text" 
-                                    class="form-control mask-money table-row-subtotal disabled-custom-show" 
-                                    value="${row.product_subtotal_price}"
+                        let is_add_product = ($('#btn-add-product-purchase-order').attr('hidden'));
+                        if (!is_add_product) {
+                            return `<div class="row">
+                                        <input 
+                                            type="text" 
+                                            class="form-control mask-money table-row-subtotal disabled-custom-show" 
+                                            value="${row.product_subtotal_price}"
+                                            data-return-type="number"
+                                            disabled
+                                        >
+                                        <input
+                                            type="text"
+                                            class="form-control table-row-subtotal-raw"
+                                            value="${row.product_subtotal_price}"
+                                            hidden
+                                        >
+                                    </div>`;
+                        } else {
+                            return `<span class="mask-money" data-init-money="${parseFloat(row.product_subtotal_price)}"></span>`
+                        }
+                    }
+                },
+            ],
+            drawCallback: function () {
+                // mask money
+                $.fn.initMaskMoney2();
+
+                // callBack Row to load data for select box
+                let $table = $('#datable-purchase-order-product-request')
+                $table.DataTable().rows().every(function () {
+                    let row = this.node();
+                    loadDataClass.loadBoxUOM(row.querySelector('.table-row-uom-order').id);
+                    loadDataClass.loadBoxTax(row.querySelector('.table-row-tax').id);
+                });
+            },
+        });
+    };
+
+    dataTablePurchaseOrderProductAdd(data) {
+        let $table = $('#datable-purchase-order-product-add');
+        $table.DataTableDefault({
+            data: data ? data : [],
+            searching: false,
+            paging: false,
+            ordering: false,
+            info: false,
+            columnDefs: [
+                {
+                    "width": "5%",
+                    "targets": 0
+                }, {
+                    "width": "20%",
+                    "targets": 1
+                }, {
+                    "width": "10%",
+                    "targets": 2
+                }, {
+                    "width": "10%",
+                    "targets": 3,
+                },
+                {
+                    "width": "10%",
+                    "targets": 4,
+                },
+                {
+                    "width": "15%",
+                    "targets": 5,
+                },
+                {
+                    "width": "10%",
+                    "targets": 6,
+                },
+                {
+                    "width": "15%",
+                    "targets": 7,
+                },
+                {
+                    "width": "5%",
+                    "targets": 8,
+                }
+            ],
+            columns: [
+                {
+                    targets: 0,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-order" id="${row.id}">${row.order}</span>`
+                    }
+                },
+                {
+                    targets: 1,
+                    render: (data, type, row) => {
+                        let selectProductID = 'line-product-item' + String(row.order);
+                            return `<div class="row">
+                                        <div class="input-group">
+                                            <span class="input-affix-wrapper">
+                                                <span class="input-prefix">
+                                                    <div class="btn-group dropstart">
+                                                        <i
+                                                            class="fas fa-info-circle"
+                                                            data-bs-toggle="dropdown"
+                                                            data-dropdown-animation
+                                                            aria-haspopup="true"
+                                                            aria-expanded="false"
+                                                            disabled
+                                                        >
+                                                        </i>
+                                                        <div class="dropdown-menu w-210p mt-4"></div>
+                                                    </div>
+                                                </span>
+                                                <select 
+                                                class="form-select table-row-item" 
+                                                id="${selectProductID}"
+                                                required>
+                                                    <option value="${row.product.id}">${row.product_title}</option>
+                                                </select>
+                                            </span>
+                                        </div>
+                                    </div>`;
+                    },
+                },
+                {
+                    targets: 2,
+                    render: (data, type, row) => {
+                        return `<div class="row">
+                                    <input type="text" class="form-control table-row-description" value="${row.product_description}">
+                                </div>`;
+                    }
+                },
+                {
+                    targets: 3,
+                    render: (data, type, row) => {
+                        let selectUOMID = 'line-product-uom-order' + String(row.order);
+                        return `<div class="row">
+                                    <select class="form-control select2 table-row-uom-order" id="${selectUOMID}" required>
+                                        <option value="${row.uom_order.id}">${row.product_uom_order_title}</option>
+                                    </select>
+                                </div>`;
+                    }
+                },
+                {
+                    targets: 4,
+                    render: (data, type, row) => {
+                        return `<div class="row">
+                                    <input type="text" class="form-control table-row-quantity-order validated-number" value="${row.product_quantity_order}" required>
+                                </div>`;
+                    }
+                },
+                {
+                    targets: 5,
+                    render: (data, type, row) => {
+                        return `<div class="row">
+                                    <div class="dropdown">
+                                        <div class="input-group dropdown-action" aria-expanded="false" data-bs-toggle="dropdown">
+                                        <span class="input-affix-wrapper">
+                                            <input 
+                                                type="text" 
+                                                class="form-control mask-money table-row-price" 
+                                                value="${row.product_unit_price}"
+                                                data-return-type="number"
+                                            >
+                                            <span class="input-suffix table-row-btn-dropdown-price-list"><i class="fas fa-angle-down"></i></span>
+                                        </span>
+                                        </div>
+                                        <div role="menu" class="dropdown-menu table-row-price-list w-460p">
+                                        <a class="dropdown-item" data-value=""></a>
+                                        </div>
+                                    </div>
+                                </div>`;
+                    }
+                },
+                {
+                    targets: 6,
+                    render: (data, type, row) => {
+                        let selectTaxID = 'line-product-tax-' + String(row.order);
+                        let taxID = "";
+                        let taxRate = "0";
+                        if (row.tax) {
+                            taxID = row.tax.id;
+                            taxRate = row.tax.value;
+                        }
+                        return `<div class="row">
+                                <select class="form-control select2 table-row-tax" id="${selectTaxID}">
+                                    <option value="${taxID}" data-value="${taxRate}">${taxRate} %</option>
+                                </select>
+                                <input
+                                    type="text"
+                                    class="form-control mask-money table-row-tax-amount"
+                                    value="${row.product_tax_amount}"
                                     data-return-type="number"
-                                    disabled
+                                    hidden
                                 >
                                 <input
                                     type="text"
-                                    class="form-control table-row-subtotal-raw"
-                                    value="${row.product_subtotal_price}"
+                                    class="form-control table-row-tax-amount-raw"
+                                    value="${row.product_tax_amount}"
                                     hidden
                                 >
                             </div>`;
-                        return `<span class="mask-money" data-init-money="${parseFloat(row.product_subtotal_price)}"></span>`
+                    }
+                },
+                {
+                    targets: 7,
+                    render: (data, type, row) => {
+                        return `<div class="row">
+                                    <input 
+                                        type="text" 
+                                        class="form-control mask-money table-row-subtotal disabled-custom-show" 
+                                        value="${row.product_subtotal_price}"
+                                        data-return-type="number"
+                                        disabled
+                                    >
+                                    <input
+                                        type="text"
+                                        class="form-control table-row-subtotal-raw"
+                                        value="${row.product_subtotal_price}"
+                                        hidden
+                                    >
+                                </div>`;
+                    }
+                },
+                {
+                    targets: 8,
+                    render: () => {
+                        return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`
                     }
                 },
             ],

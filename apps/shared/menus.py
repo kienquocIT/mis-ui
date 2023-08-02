@@ -268,6 +268,10 @@ class MenusPurchase:
                 name='Purchase Request', code='menu_purchase_request_list', view_name='PurchaseRequestList',
                 icon='<i class="bi bi-currency-exchange"></i>',
             ),
+            MenuCommon(
+                name='Purchase Order', code='menu_purchase_order_list', view_name='PurchaseOrderList',
+                icon='<i class="fas fa-money-check"></i>',
+            ),
         ],
     )
 

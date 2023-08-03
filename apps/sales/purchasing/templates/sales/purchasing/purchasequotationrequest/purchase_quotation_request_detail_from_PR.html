@@ -21,7 +21,6 @@
     {{ data.data.purchase_request_list | json_script:"purchase_request_list" }}
 
     <form id="form-detail-purchase-quotation-request"
-          data-url="{% url 'PurchaseQuotationRequestCreateFromPRAPI' %}" data-method="POST"
           data-url-redirect="{% url "PurchaseQuotationRequestList" %}"
           data-url-detail="{% url 'PurchaseQuotationRequestDetailFromPRAPI' '0' %}">
         {% csrf_token %}

@@ -53,10 +53,22 @@
             <div class="modal-content">
                 <div class="modal-body">
                     <div class="row mr-1 ml-1">
-                        <a style="font-size: larger" href="#" data-redirect="{% url "PurchaseQuotationRequestCreateFromPR" %}" class="badge badge-soft-primary badge-outline w-100" id="btn_redirect_create_new_purchase_quotation_request_from_pr">{% trans 'From PR' %}</a>
+                        <button class="btn btn-outline-primary"
+                                data-redirect="{% url "PurchaseQuotationRequestCreateFromPR" %}"
+                                id="btn_redirect_create_new_purchase_quotation_request_from_pr">
+                            <span>
+                                <span style="font-size: xx-large">{% trans 'From PR' %}</span>
+                            </span>
+                        </button>
                     </div>
                     <div class="row mt-2 mr-1 ml-1">
-                        <a style="font-size: larger" class="badge badge-soft-indigo badge-outline w-100" href="#" id="btn_redirect_create_new_purchase_quotation_request_manual">{% trans 'Manual' %}</a>
+                        <button class="btn btn-outline-secondary"
+                                data-redirect="{% url "PurchaseQuotationRequestCreateFromPR" %}"
+                                id="btn_redirect_create_new_purchase_quotation_request_manual">
+                            <span>
+                                <span style="font-size: xx-large">{% trans 'Manual' %}</span>
+                            </span>
+                        </button>
                     </div>
                 </div>
             </div>

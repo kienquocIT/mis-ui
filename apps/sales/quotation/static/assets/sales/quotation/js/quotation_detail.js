@@ -45,6 +45,7 @@ $(function () {
                 }
             }
         )
+        // mask money
         $.fn.initMaskMoney2();
 
         // enable edit
@@ -53,10 +54,8 @@ $(function () {
             $('#btn-create_quotation')[0].removeAttribute('hidden');
             $form.find('.disabled-but-edit').removeAttr('disabled').removeClass('disabled-but-edit');
             $form.find('#quotation-customer-confirm').removeAttr('disabled');
-            $('#datable-quotation-create-product').find('.disabled-but-edit').removeAttr('disabled').removeClass('disabled-but-edit');
-            $('#datable-quotation-create-cost').find('.disabled-but-edit').removeAttr('disabled').removeClass('disabled-but-edit');
-            $('#datable-quotation-create-expense').find('.disabled-but-edit').removeAttr('disabled').removeClass('disabled-but-edit');
-            // load data dropdown for Tabs
+
+            // Render dataTable again then load data dropdown for Tabs
             let data = JSON.parse(eleDataDetail.val());
             loadDataClass.loadDataTableAndDropDown(data);
 

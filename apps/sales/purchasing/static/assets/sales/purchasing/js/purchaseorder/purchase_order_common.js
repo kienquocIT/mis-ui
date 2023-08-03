@@ -582,14 +582,13 @@ class loadDataHandle {
         let tablePurchaseOrderProductRequest = $('#datable-purchase-order-product-request');
         let tablePurchaseOrderProductAdd = $('#datable-purchase-order-product-add');
         if (tablePurchaseOrderProductRequest[0].hasAttribute('hidden')) {
-            tablePurchaseOrderProductAdd.DataTable().clear();
-            tablePurchaseOrderProductAdd.DataTable().destroy();
+            tablePurchaseOrderProductAdd.DataTable().clear().destroy();
             tablePurchaseOrderProductAdd[0].setAttribute('hidden', 'true');
             tablePurchaseOrderProductRequest[0].removeAttribute('hidden');
         }
         let data = setupMergeProduct();
-        tablePurchaseOrderProductRequest.DataTable().destroy();
-        dataTableClass.dataTablePurchaseOrderProductRequest(data);
+        dataTableClass.dataTablePurchaseOrderProductRequest();
+        tablePurchaseOrderProductRequest.DataTable().rows.add(data).draw();
         self.loadDataRowTable(tablePurchaseOrderProductRequest);
     };
 
@@ -599,13 +598,6 @@ class loadDataHandle {
         $('#purchase-order-purchase-quotation').empty();
         let tablePurchaseOrderProductRequest = $('#datable-purchase-order-product-request');
         let tablePurchaseOrderProductAdd = $('#datable-purchase-order-product-add');
-        if (tablePurchaseOrderProductAdd[0].hasAttribute('hidden')) {
-            tablePurchaseOrderProductRequest.DataTable().clear();
-            tablePurchaseOrderProductRequest.DataTable().destroy();
-            tablePurchaseOrderProductRequest[0].setAttribute('hidden', 'true');
-            tablePurchaseOrderProductAdd[0].removeAttribute('hidden');
-            dataTableClass.dataTablePurchaseOrderProductAdd();
-        }
         let order = 1;
         let tableEmpty = tablePurchaseOrderProductAdd[0].querySelector('.dataTables_empty');
         let tableLen = tablePurchaseOrderProductAdd[0].tBodies[0].rows.length;
@@ -631,14 +623,18 @@ class loadDataHandle {
             'product_subtotal_price': 0,
             'order': order,
         }
+        if (tablePurchaseOrderProductAdd[0].hasAttribute('hidden')) {
+            tablePurchaseOrderProductRequest.DataTable().clear().destroy();
+            tablePurchaseOrderProductRequest[0].setAttribute('hidden', 'true');
+            tablePurchaseOrderProductAdd[0].removeAttribute('hidden');
+            dataTableClass.dataTablePurchaseOrderProductAdd();
+        }
         let newRow = tablePurchaseOrderProductAdd.DataTable().row.add(data).draw().node();
         self.loadDataRow(newRow, 'datable-purchase-order-product-add');
     };
 
     loadDataRowTable($table) {
         let self = this;
-        // mask money
-        $.fn.initMaskMoney2();
         // callBack Row to load data for select box
         for (let i = 0; i < $table[0].tBodies[0].rows.length; i++) {
             let row = $table[0].tBodies[0].rows[i];
@@ -649,12 +645,11 @@ class loadDataHandle {
 
     loadDataRow(row, table_id) {
         let self = this;
+        // mask money
+        $.fn.initMaskMoney2();
         if (table_id === 'datable-purchase-order-product-add') {
-            // $(row.querySelector('.table-row-item')).initSelect2();
             self.loadBoxProduct($(row.querySelector('.table-row-item')));
         }
-        // $(row.querySelector('.table-row-uom-order')).initSelect2();
-        // $(row.querySelector('.table-row-tax')).initSelect2();
         self.loadBoxUOM($(row.querySelector('.table-row-uom-order')));
         self.loadBoxTax($(row.querySelector('.table-row-tax')));
     }
@@ -1116,9 +1111,8 @@ class dataTableHandle {
                 {
                     targets: 6,
                     render: (data, type, row) => {
-                        let selectUOMID = 'line-product-uom-order' + String(row.order);
                         return `<div class="row">
-                                    <select class="form-control select2 table-row-uom-order" id="${selectUOMID}" required>
+                                    <select class="form-control select2 table-row-uom-order" required>
                                         <option value="${row.uom_order.id}" selected>${row.product_uom_order_title}</option>
                                     </select>
                                 </div>`;
@@ -1163,7 +1157,6 @@ class dataTableHandle {
                 {
                     targets: 9,
                     render: (data, type, row) => {
-                        let selectTaxID = 'line-product-tax-' + String(row.order);
                         let taxID = "";
                         let taxRate = "0";
                         if (row.tax) {
@@ -1171,7 +1164,7 @@ class dataTableHandle {
                             taxRate = row.tax.value;
                         }
                         return `<div class="row">
-                                <select class="form-control select2 table-row-tax" id="${selectTaxID}">
+                                <select class="form-control select2 table-row-tax">
                                     <option value="${taxID}" data-value="${taxRate}">${taxRate} %</option>
                                 </select>
                                 <input
@@ -1260,7 +1253,6 @@ class dataTableHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        let selectProductID = 'line-product-item' + String(row.order);
                             return `<div class="row">
                                         <div class="input-group">
                                             <span class="input-affix-wrapper">
@@ -1278,10 +1270,7 @@ class dataTableHandle {
                                                         <div class="dropdown-menu w-210p mt-4"></div>
                                                     </div>
                                                 </span>
-                                                <select 
-                                                class="form-select table-row-item" 
-                                                id="${selectProductID}"
-                                                required>
+                                                <select class="form-select select2 table-row-item" required>
                                                     <option value="${row.product.id}">${row.product_title}</option>
                                                 </select>
                                             </span>
@@ -1300,9 +1289,8 @@ class dataTableHandle {
                 {
                     targets: 3,
                     render: (data, type, row) => {
-                        let selectUOMID = 'line-product-uom-order' + String(row.order);
                         return `<div class="row">
-                                    <select class="form-control select2 table-row-uom-order" id="${selectUOMID}" required>
+                                    <select class="form-control select2 table-row-uom-order" required>
                                         <option value="${row.uom_order.id}">${row.product_uom_order_title}</option>
                                     </select>
                                 </div>`;
@@ -1342,7 +1330,6 @@ class dataTableHandle {
                 {
                     targets: 6,
                     render: (data, type, row) => {
-                        let selectTaxID = 'line-product-tax-' + String(row.order);
                         let taxID = "";
                         let taxRate = "0";
                         if (row.tax) {
@@ -1350,7 +1337,7 @@ class dataTableHandle {
                             taxRate = row.tax.value;
                         }
                         return `<div class="row">
-                                <select class="form-control select2 table-row-tax" id="${selectTaxID}">
+                                <select class="form-control select2 table-row-tax">
                                     <option value="${taxID}" data-value="${taxRate}">${taxRate} %</option>
                                 </select>
                                 <input

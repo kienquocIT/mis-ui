@@ -246,9 +246,9 @@ $(function () {
             let selectProductID = 'quotation-create-product-box-product-' + String(order);
             let selectUOMID = 'quotation-create-product-box-uom-' + String(order);
             let selectTaxID = 'quotation-create-product-box-tax-' + String(order);
-            loadDataClass.loadBoxQuotationProduct('data-init-quotation-create-tables-product', selectProductID);
-            loadDataClass.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', selectUOMID);
-            loadDataClass.loadBoxQuotationTax('data-init-quotation-create-tables-tax', selectTaxID);
+            loadDataClass.loadBoxQuotationProduct(selectProductID);
+            loadDataClass.loadBoxQuotationUOM(selectUOMID);
+            loadDataClass.loadBoxQuotationTax(selectTaxID);
             // Clear table COST if add new row Product
             tableCost.DataTable().clear().draw();
             document.getElementById('quotation-create-cost-pretax-amount').innerHTML = "0";
@@ -395,10 +395,10 @@ $(function () {
             let selectExpenseID = 'quotation-create-expense-box-expense-' + String(order);
             let selectUOMID = 'quotation-create-expense-box-uom-' + String(order);
             let selectTaxID = 'quotation-create-expense-box-tax-' + String(order);
-            loadDataClass.loadBoxQuotationExpense('data-init-quotation-create-tables-expense', selectExpenseID);
-            loadDataClass.loadBoxQuotationProductPurchasing('data-init-quotation-create-tables-product', selectExpenseID);
-            loadDataClass.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', selectUOMID);
-            loadDataClass.loadBoxQuotationTax('data-init-quotation-create-tables-tax', selectTaxID);
+            loadDataClass.loadBoxQuotationExpense(selectExpenseID);
+            loadDataClass.loadBoxQuotationProductPurchasing(selectExpenseID);
+            loadDataClass.loadBoxQuotationUOM(selectUOMID);
+            loadDataClass.loadBoxQuotationTax(selectTaxID);
 
             // check disable
             tableExpense.find('.disabled-but-edit').removeAttr('disabled').removeClass('disabled-but-edit');
@@ -436,28 +436,28 @@ $(function () {
                 let otherCheckbox = $(this)[0].closest('tr').querySelector('.checkbox-purchasing-item');
                 if ($(this)[0].checked === true) {
                     if (otherCheckbox.checked === true) {
-                        loadDataClass.loadBoxQuotationExpense('data-init-quotation-create-tables-expense', eleExpenseDropDownID);
-                        loadDataClass.loadBoxQuotationProductPurchasing('data-init-quotation-create-tables-product', eleExpenseDropDownID);
+                        loadDataClass.loadBoxQuotationExpense(eleExpenseDropDownID);
+                        loadDataClass.loadBoxQuotationProductPurchasing(eleExpenseDropDownID);
                     } else if (otherCheckbox.checked === false) {
-                        loadDataClass.loadBoxQuotationExpense('data-init-quotation-create-tables-expense', eleExpenseDropDownID);
+                        loadDataClass.loadBoxQuotationExpense(eleExpenseDropDownID);
                     }
                 } else if ($(this)[0].checked === false) {
                     if (otherCheckbox.checked === true) {
-                        loadDataClass.loadBoxQuotationProductPurchasing('data-init-quotation-create-tables-product', eleExpenseDropDownID);
+                        loadDataClass.loadBoxQuotationProductPurchasing(eleExpenseDropDownID);
                     }
                 }
            } else if ($(this).hasClass('checkbox-purchasing-item')) {
                 let otherCheckbox = $(this)[0].closest('tr').querySelector('.checkbox-expense-item');
                 if ($(this)[0].checked === true) {
                     if (otherCheckbox.checked === true) {
-                        loadDataClass.loadBoxQuotationExpense('data-init-quotation-create-tables-expense', eleExpenseDropDownID);
-                        loadDataClass.loadBoxQuotationProductPurchasing('data-init-quotation-create-tables-product', eleExpenseDropDownID);
+                        loadDataClass.loadBoxQuotationExpense(eleExpenseDropDownID);
+                        loadDataClass.loadBoxQuotationProductPurchasing(eleExpenseDropDownID);
                     } else if (otherCheckbox.checked === false) {
-                        loadDataClass.loadBoxQuotationProductPurchasing('data-init-quotation-create-tables-product', eleExpenseDropDownID);
+                        loadDataClass.loadBoxQuotationProductPurchasing(eleExpenseDropDownID);
                     }
                 } else if ($(this)[0].checked === false) {
                     if (otherCheckbox.checked === true) {
-                        loadDataClass.loadBoxQuotationExpense('data-init-quotation-create-tables-expense', eleExpenseDropDownID);
+                        loadDataClass.loadBoxQuotationExpense(eleExpenseDropDownID);
                     }
                 }
            }
@@ -601,9 +601,9 @@ $(function () {
                             "product_subtotal_price": valueSubtotal
                         }
                         tableCost.DataTable().row.add(dataAdd).draw();
-                        loadDataClass.loadBoxQuotationProduct('data-init-quotation-create-tables-product', selectProductID, valueProduct);
-                        loadDataClass.loadBoxQuotationUOM('data-init-quotation-create-tables-uom', selectUOMID, valueUOM, valueUOMGroup);
-                        loadDataClass.loadBoxQuotationTax('data-init-quotation-create-tables-tax', selectTaxID, valueTax);
+                        loadDataClass.loadBoxQuotationProduct(selectProductID, valueProduct);
+                        loadDataClass.loadBoxQuotationUOM(selectUOMID, valueUOM, valueUOMGroup);
+                        loadDataClass.loadBoxQuotationTax(selectTaxID, valueTax);
                     } else if (shipping) { // SHIPPING
                         let shippingID = shipping.getAttribute('data-id');
                         let shippingTitle = shipping.value;
@@ -969,7 +969,7 @@ $(function () {
                 if (promotionResult.row_apply_index !== null) { // on Specific product
                     let selectTaxID = 'quotation-create-product-box-tax-' + String(order);
                     let newRow = tableProduct.DataTable().row.add(dataAdd).draw().node();
-                    loadDataClass.loadBoxQuotationTax('data-init-quotation-create-tables-tax', selectTaxID, promotionResult.value_tax);
+                    loadDataClass.loadBoxQuotationTax(selectTaxID, promotionResult.value_tax);
                     // Get the desired position
                     let afterRow = tableProduct.DataTable().row(promotionResult.row_apply_index).node();
                     // Remove the new row and re-insert it at the desired position

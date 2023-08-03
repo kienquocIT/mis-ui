@@ -10,6 +10,7 @@ $(function () {
         // Elements
         let elePurchaseRequest = $('#purchase-order-purchase-request');
         let elePurchaseQuotation = $('#purchase-order-purchase-quotation');
+        let eleBoxSupplier = $('#box-purchase-order-supplier');
         // Tables
         let tablePurchaseRequest = $('#datable-purchase-request');
         let tablePurchaseRequestProduct = $('#datable-purchase-request-product');
@@ -41,6 +42,28 @@ $(function () {
         $('#purchase-order-date-delivered').val(null).trigger('change');
 
 // EVENTS
+        // Action on click dropdown supplier
+        eleBoxSupplier.on('click', function() {
+            loadDataClass.loadBoxSupplier(null);
+        });
+
+        // Action on change dropdown supplier
+        eleBoxSupplier.on('change', function () {
+            let optionSelected = eleBoxSupplier[0].options[eleBoxSupplier[0].selectedIndex];
+            if (optionSelected) {
+                if (optionSelected.querySelector('.data-default')) {
+                    let data = JSON.parse(optionSelected.querySelector('.data-default').value);
+                    // load Contact by supplier
+                    if (data.id && data.owner) {
+                        loadDataClass.loadBoxQuotationContact(data.owner.id, data.id);
+                    }
+                } else { // No Value => load again dropdowns
+                    loadDataClass.loadBoxQuotationContact();
+                }
+            }
+            // loadDataClass.loadInformationSelectBox($(this));
+        });
+
         // Purchase request modal
         $('#btn-purchase-request-modal').on('click', function () {
             loadDataClass.loadModalPurchaseRequest(tablePurchaseRequest, tablePurchaseRequestProduct);
@@ -86,14 +109,31 @@ $(function () {
 
         // Action on click btn remove purchase quotation
         elePurchaseQuotation.on('click', '.custom-btn-remove', function() {
+            let checked_id = null;
+            for (let item of elePurchaseQuotation[0].querySelectorAll('.checkbox-quotation')) {
+                if (item.checked === true) {
+                    checked_id = item.id;
+                }
+            }
             loadDataClass.loadDataAfterClickRemove($(this), elePurchaseQuotation, tablePurchaseQuotation, "purchase_quotation");
+            if (checked_id) {
+                for (let item of elePurchaseQuotation[0].querySelectorAll('.checkbox-quotation')) {
+                    if (item.id === checked_id) {
+                        item.checked = true;
+                        loadDataClass.loadPriceByCheckedQuotation($(item));
+                    }
+                }
+            }
         });
 
-        //
-        elePurchaseQuotation.on('click', '.checkbox-quotation', function() {
-           if ($(this)[0].checked === true) {
-               loadDataClass.loadPriceByCheckedQuotation($(this)[0].id);
-           }
+        // Action on click checkbox purchase quotation
+        elePurchaseQuotation.on('click', '.checkbox-quotation', function () {
+            for (let item of elePurchaseQuotation[0].querySelectorAll('.checkbox-quotation')) {
+                if (item.id !== $(this)[0].id) {
+                    item.checked = false;
+                }
+            }
+            loadDataClass.loadPriceByCheckedQuotation($(this));
         });
 
         // Action on click button collapse
@@ -115,6 +155,7 @@ $(function () {
             loadDataClass.loadTableProductNoPurchaseRequest();
         });
 
+        // Action on change data on row of tablePurchaseOrderProductAdd
         tablePurchaseOrderProductAdd.on('change', '.table-row-item, .table-row-quantity-order, .table-row-price, .table-row-tax', function () {
             let row = $(this)[0].closest('tr');
             if ($(this).hasClass('table-row-item')) {
@@ -124,9 +165,10 @@ $(function () {
             }
         });
 
+        // Action on change data on row of tablePurchaseOrderProductRequest
         tablePurchaseOrderProductRequest.on('change', '.table-row-quantity-order, .table-row-price, .table-row-tax', function () {
             let row = $(this)[0].closest('tr');
-            calculateClass.calculateMain(tablePurchaseOrderProductAdd, row);
+            calculateClass.calculateMain(tablePurchaseOrderProductRequest, row);
         });
 
 // SUBMIT FORM

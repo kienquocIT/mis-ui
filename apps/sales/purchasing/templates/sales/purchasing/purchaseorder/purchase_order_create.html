@@ -85,6 +85,35 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <label class="form-label" for="box-purchase-order-supplier">{% trans 'Select Supplier' %}</label>
+                            <div class="input-group">
+                                <span class="input-affix-wrapper">
+                                    <span class="input-prefix">
+                                        <div class="btn-group dropstart">
+                                            <i
+                                                    class="fas fa-info-circle"
+                                                    data-bs-toggle="dropdown"
+                                                    data-dropdown-animation
+                                                    aria-haspopup="true"
+                                                    aria-expanded="false"
+                                                    disabled
+                                            ></i>
+                                            <div class="dropdown-menu w-210p mt-4"></div>
+                                        </div>
+                                    </span>
+                                    <select
+                                            class="form-select select2"
+                                            id="box-purchase-order-supplier"
+                                            data-url="{% url "AccountForSaleListAPI" %}"
+                                            data-method="GET"
+                                            data-link-detail="{% url "AccountDetail" 1 %}"
+                                            name="customer"
+                                            required
+                                    ></select>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label class="form-label" for="box-purchase-order-contact">{% trans 'Select Contact' %}</label>
                             <div class="input-group">
                                 <span class="input-affix-wrapper">
@@ -368,7 +397,7 @@
 
 
         <div class="modal fade mt-5" id="purchaseRequestModalCenter" tabindex="-1" role="dialog" aria-labelledby="purchaseRequestModalCenter" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-xl w-lg-100" role="document">
+            <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">Select items from purchase request</h5>
@@ -470,7 +499,7 @@
         </div>
 
         <div class="modal fade mt-5" id="purchaseQuotationModalCenter" tabindex="-1" role="dialog" aria-labelledby="purchaseQuotationModalCenter" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">Select purchase quotation</h5>

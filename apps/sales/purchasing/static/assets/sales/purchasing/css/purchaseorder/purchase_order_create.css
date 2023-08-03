@@ -63,6 +63,16 @@
     color: #00D67F;
 }
 
+.disabled-custom-show:disabled {
+    color: #0c0c0c;
+}
+
+.modal-xlg-custom {
+    max-width: 1280px;
+}
+
+
+
 
 
 
@@ -84,14 +94,12 @@
 
 .fa-angle-double-up {
     color: #007D88;
-    text-align: center;
-    font-size: x-large;
+    text-align: right;
 }
 
 .fa-angle-double-down {
     color: #007D88;
-    text-align: center;
-    font-size: x-large;
+    text-align: right;
 }
 
 ul.quotation-tabs li.quotation-tab-item {

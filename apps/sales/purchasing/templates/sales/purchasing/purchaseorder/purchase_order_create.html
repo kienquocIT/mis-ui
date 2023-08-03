@@ -36,7 +36,7 @@
                 <div class="row">
                     <div class="col-6">
                         <div class="form-group">
-                            <label class="form-label" for="purchase-order-purchase-quotation">{% trans 'Title' %}</label>
+                            <label class="form-label" for="purchase-order-purchase-quotation">{% trans 'Title' %}<span class="required"></span></label>
                             <div class="input-group">
                                 <span class="input-affix-wrapper">
                                     <input
@@ -85,7 +85,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="form-label" for="box-purchase-order-contact">{% trans 'Select Contact' %}<span class="required"></span></label>
+                            <label class="form-label" for="box-purchase-order-contact">{% trans 'Select Contact' %}</label>
                             <div class="input-group">
                                 <span class="input-affix-wrapper">
                                     <span class="input-prefix">
@@ -252,15 +252,16 @@
                                     <div class="col-1"></div>
                                     <div class="col-7">
                                         <input
-                                            id="quotation-create-product-pretax-amount"
+                                            id="purchase-order-product-pretax-amount"
                                             type="text"
                                             class="form-control mask-money disabled-custom-show"
                                             data-return-type="number"
                                             name="total_product_pretax_amount"
+                                            value="0"
                                             disabled
                                         >
                                         <input
-                                            id="quotation-create-product-pretax-amount-raw"
+                                            id="purchase-order-product-pretax-amount-raw"
                                             type="text"
                                             class="form-control"
                                             value="0"
@@ -268,7 +269,7 @@
                                         >
                                         <input
                                             type="hidden"
-                                            id="quotation-final-revenue-before-tax"
+                                            id="purchase-order-final-revenue-before-tax"
                                         >
                                     </div>
                                 </div>
@@ -277,15 +278,16 @@
                                     <div class="col-1"></div>
                                     <div class="col-7">
                                         <input
-                                            id="quotation-create-product-taxes"
+                                            id="purchase-order-product-taxes"
                                             type="text"
                                             class="form-control mask-money disabled-custom-show"
                                             data-return-type="number"
                                             name="total_product_tax"
+                                            value="0"
                                             disabled
                                         >
                                         <input
-                                            id="quotation-create-product-taxes-raw"
+                                            id="purchase-order-product-taxes-raw"
                                             type="text"
                                             class="form-control"
                                             value="0"
@@ -299,15 +301,16 @@
                                     <div class="col-1"></div>
                                     <div class="col-7">
                                         <input
-                                            id="quotation-create-product-total"
+                                            id="purchase-order-product-total"
                                             type="text"
                                             class="form-control mask-money disabled-custom-show"
                                             data-return-type="number"
                                             name="total_product"
+                                            value="0"
                                             disabled
                                         >
                                         <input
-                                            id="quotation-create-product-total-raw"
+                                            id="purchase-order-product-total-raw"
                                             type="text"
                                             class="form-control"
                                             value="0"
@@ -342,6 +345,13 @@
         <input
             type="hidden"
             id="base-trans-factory"
+        >
+        <input
+            type="hidden"
+            id="data-init-product"
+            data-url="{% url "ProductForSaleListAPI" %}"
+            data-link-detail="{% url "ProductDetail" 1 %}"
+            data-method="GET"
         >
         <input
             type="hidden"

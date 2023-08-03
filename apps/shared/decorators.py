@@ -11,6 +11,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.response import Response
 
+from .apis import RespData, PermCheck
 from .msg import AuthMsg, ServerMsg
 from .breadcrumb import BreadcrumbView
 from .menus import SpaceItem, SpaceGroup
@@ -87,7 +88,9 @@ class ArgumentDecorator:
                 'space_list': space_list,
                 'space_current_detail': space_current_detail,
                 'menus': space_menus,
-                'avatar': user.avatar_url
+                'avatar': user.avatar_url,
+                'domain_cloud': f'{settings.MEDIA_PUBLIC_DOMAIN}',
+                'avatar_prefix': 'p/f/avatar/',
             }
         return {}
 
@@ -136,15 +139,7 @@ def mask_view(**parent_kwargs):
             )
             url_pattern_keys = parent_kwargs.get('url_pattern_keys', [])
 
-            # is_ajax in request._meta
-            # check is_ajax vs view config
-            #   if is_ajax = True
-            #       if is_api = True ==> pass
-            #       else return Response 403 (http status 200, msg = 'View dont support call ajax)
-            #   else
-            #       if is_api = False ==> pass
-            #       else return Response 403 (http status 200, msg = 'View dont support call render)
-
+            # check login with request.user | auto redirect login page when expired
             if login_require:
                 if not request.user or isinstance(request.user, AnonymousUser):
                     if is_api:
@@ -160,14 +155,36 @@ def mask_view(**parent_kwargs):
                     request.user = AnonymousUser
                     return redirect(path_redirect)
 
+            # fake call check permission to post, put, delete
+            # fake call to URL then handle resp
+            # call don't change or new data, API will return resp after check perm
+            check_perm_state, check_perm_return = True, (None, 200)
+            perm_check_cls: PermCheck = parent_kwargs.get('perm_check', None)
+            if perm_check_cls and is_api is False:
+                check_perm_state, check_perm_return = perm_check_cls.valid(
+                    request=request,
+                    view_kwargs=kwargs,
+                )
+                if check_perm_state is False:
+                    if isinstance(check_perm_return, Response):
+                        return check_perm_return
+                    elif not (
+                            check_perm_return and isinstance(check_perm_return, tuple) and len(check_perm_return) == 2
+                    ):
+                        check_perm_return = RespData.resp_403()
+
             # redirect or next step with is_auth
             # must be return ({Data|Dict}, {Http Status|Number}) or HttpResponse
-            view_return = func_view(self, request, *args, **kwargs)  # --> {'user_list': user_list}
+            if check_perm_state:
+                view_return = func_view(self, request, *args, **kwargs)  # --> {'user_list': user_list}
+            else:
+                view_return = check_perm_return
+
             if isinstance(view_return, HttpResponse):  # pylint: disable=R1705
                 return view_return
             else:
-                # parse data
                 data, http_status = None, 200
+                # parse data
                 if isinstance(view_return, (list, tuple)) and len(view_return) == 2:
                     data, http_status = view_return
                 else:

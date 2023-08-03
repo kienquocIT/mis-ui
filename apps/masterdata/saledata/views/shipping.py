@@ -1,7 +1,7 @@
 from django.views import View
 from rest_framework import status
 from rest_framework.views import APIView
-from apps.shared import mask_view, ApiURL, ServerAPI
+from apps.shared import mask_view, ApiURL, ServerAPI, PermCheck
 from django.utils.translation import gettext_lazy as _
 
 
@@ -22,6 +22,7 @@ class ShippingCreate(View):
         template='masterdata/saledata/shipping/shipping_create.html',
         breadcrumb='SHIPPING_CREATE_PAGE',
         menu_active='menu_shipping_list',
+        perm_check=PermCheck(url=ApiURL.SHIPPING_LIST, method='post'),
     )
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(url=ApiURL.CITIES, user=request.user).get()

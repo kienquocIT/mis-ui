@@ -203,6 +203,10 @@ $(function () {
         function loadIndicatorDbl() {
             let $table = tableIndicator;
             let frm = new SetupFormSubmit($table);
+            let is_sale_order = false;
+            if ($form[0].classList.contains('sale-order')) {
+                is_sale_order = true;
+            }
             $table.DataTableDefault({
                 ajax: {
                     url: frm.dataUrl,
@@ -238,13 +242,17 @@ $(function () {
                     {
                         targets: 0,
                         render: (data, type, row) => {
-                            return `<input type="text" class="form-control table-row-order" value="${row.order}">`
+                            if (is_sale_order === false) {
+                                return `<input type="text" class="form-control table-row-order" value="${row.order}">`;
+                            } else {
+                                return `<span>${row.order}</span>`;
+                            }
                         }
                     },
                     {
                         targets: 1,
                         render: (data, type, row) => {
-                            return `<input type="text" class="form-control table-row-title" value="${row.title}" hidden><span>${row.title}</span>`
+                            return `<input type="text" class="form-control table-row-title" value="${row.title}" hidden><span>${row.title}</span>`;
                         }
                     },
                     {
@@ -260,7 +268,7 @@ $(function () {
                             let tabFunctionHref = "#tab_function_" + String(row.order);
                             let tabOperatorID = "tab_operator_" + String(row.order);
                             let tabOperatorHref = "#tab_operator_" + String(row.order);
-                            return `<button
+                            let ele = `<button
                                         type="button"
                                         class="btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover modal-edit-formula"
                                         data-bs-toggle="modal"
@@ -355,13 +363,22 @@ $(function () {
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>`
+                                    </div>`;
+                            if (is_sale_order === false) {
+                                return ele;
+                            } else {
+                                return ``;
+                            }
                         }
                     },
                     {
                         targets: 3,
                         render: (data, type, row) => {
-                            return `<input type="text" class="form-control table-row-description" value="${row.remark}">`
+                            if (is_sale_order === false) {
+                                return `<input type="text" class="form-control table-row-description" value="${row.remark}">`;
+                            } else {
+                                return `<span>${row.remark}</span>`;
+                            }
                         }
                     },
                     {
@@ -369,7 +386,11 @@ $(function () {
                         render: (data, type, row) => {
                             let btn_edit = `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover table-row-save" data-id="${row.id}" disabled><span class="icon"><i class="fa-regular fa-floppy-disk"></i></span></button>`;
                             let btn_delete = `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row" data-id="${row.id}" disabled><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`;
-                            return btn_edit + btn_delete;
+                            if (is_sale_order === false) {
+                                return btn_edit + btn_delete;
+                            } else {
+                                return ``;
+                            }
                         }
                     }
                 ],

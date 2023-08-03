@@ -4,6 +4,7 @@ $(function () {
     let dtb = $('#datable_company_list');
     let frm = new SetupFormSubmit(dtb);
     dtb.DataTableDefault({
+        rowIdx: true,
         ajax: {
             url: frm.dataUrl,
             type: frm.dataMethod,

@@ -6,7 +6,7 @@ from rest_framework.parsers import MultiPartParser
 
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from apps.shared import mask_view, ServerAPI, ApiURL, ServerMsg, HRMsg, PermsMsg
+from apps.shared import mask_view, ServerAPI, ApiURL, PermCheck, HRMsg, PermsMsg
 
 BELONG_LIST = [
     {'value': 1, "name": PermsMsg.USER},
@@ -85,9 +85,10 @@ class EmployeeCreate(View):
         template='core/hr/employee/employee_create.html',
         breadcrumb='EMPLOYEE_CREATE_PAGE',
         menu_active='menu_employee_list',
+        perm_check=PermCheck(url=ApiURL.EMPLOYEE_LIST, method='post'),
     )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        return ServerAPI.empty_200()
 
 
 class EmployeeDetail(View):
@@ -160,7 +161,7 @@ class EmployeeCompanyListAPI(APIView):
         is_api=True
     )
     def get(self, request, company_id, *args, **kwargs):
-        resp = ServerAPI(url=(ApiURL.EMPLOYEE_COMPANY_NEW.fill_key(company_id=company_id)), user=request.user).get()
+        resp = ServerAPI(request=request, url=(ApiURL.EMPLOYEE_COMPANY_NEW.fill_key(company_id=company_id)), user=request.user).get()
         return resp.auto_return(key_success='employee_company_list')
 
 

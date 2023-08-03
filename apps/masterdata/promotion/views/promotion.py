@@ -5,7 +5,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 
 from apps.core.workflow.views.config import WORKFLOW_TYPE
-from apps.shared import mask_view, ServerAPI, ApiURL, PromotionMsg, CUSTOMER_REVENUE, COMPANY_SIZE
+from apps.shared import mask_view, ServerAPI, ApiURL, PromotionMsg, CUSTOMER_REVENUE, COMPANY_SIZE, PermCheck
 from django.utils.translation import gettext_lazy as _
 
 __all__ = ['PromotionList', 'PromotionCreate', 'PromotionListAPI', 'PromotionCreateAPI',
@@ -39,6 +39,7 @@ class PromotionCreate(View):
         template='masterdata/promotion/promotion_create.html',
         breadcrumb='PROMOTION_CREATE_PAGE',
         menu_active='menu_pricing',
+        perm_check=PermCheck(url=ApiURL.PROMOTION_LIST, method='post',),
     )
     def get(self, request, *args, **kwargs):
         return {

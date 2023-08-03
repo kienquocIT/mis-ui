@@ -16,6 +16,7 @@ $(document).ready(function () {
         let eleDob = $('#employee-dob-update');
         let eleDateJoined = $('#employee-date-joined-update');
         let eleRole = $('#select-box-role-employee-update');
+        let eleIsAdmin = $('#idx_is_admin_company');
 
         $.fn.callAjax2({
             'url': url,
@@ -24,47 +25,49 @@ $(document).ready(function () {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 if (data.hasOwnProperty('employee')) {
-                    new HandlePermissions().loadData(data.employee.plan_app, data.employee.permission_by_configured || []);
+                    let employeeData = data.employee;
 
-                    if (data.employee.user.hasOwnProperty('full_name')) {
+                    new HandlePermissions().loadData(employeeData.plan_app, employeeData.permission_by_configured || []);
+
+                    if (employeeData.user.hasOwnProperty('full_name')) {
                         eleUser.text("");
-                        eleUser.append(`<option value="` + data.employee.user.id + `" data-first-name="${data.employee.user.first_name}" data-last-name="${data.employee.user.last_name}" data-email="${data.employee.user.email}" data-phone="${data.employee.user.phone}">` + data.employee.user.full_name + `</option>`)
+                        eleUser.append(`<option value="` + employeeData.user.id + `" data-first-name="${employeeData.user.first_name}" data-last-name="${employeeData.user.last_name}" data-email="${employeeData.user.email}" data-phone="${employeeData.user.phone}">` + employeeData.user.full_name + `</option>`)
                     } else {
                         eleUser.text("");
                         eleUser.append(`<option>` + `</option>`)
                     }
                     loadUserList();
 
-                    eleFirstName.val(data.employee.first_name);
-                    eleLastName.val(data.employee.last_name);
-                    eleEmail.val(data.employee.email);
-                    elePhone.val(data.employee.phone);
+                    eleFirstName.val(employeeData.first_name);
+                    eleLastName.val(employeeData.last_name);
+                    eleEmail.val(employeeData.email);
+                    elePhone.val(employeeData.phone);
 
-                    if (data.employee.group.hasOwnProperty('title')) {
+                    if (employeeData.group.hasOwnProperty('title')) {
                         eleDepartment.text("");
-                        eleDepartment.append(`<option value="` + data.employee.group.id + `">` + data.employee.group.title + `</option>`)
+                        eleDepartment.append(`<option value="` + employeeData.group.id + `">` + employeeData.group.title + `</option>`)
                     } else {
                         eleDepartment.text("");
                         eleDepartment.append(`<option>` + `</option>`)
                     }
                     loadGroupList();
 
-                    if (data.employee.dob) {
-                        eleDob.val(moment(data.employee.dob).format('YYYY-MM-DD'));
+                    if (employeeData.dob) {
+                        eleDob.val(moment(employeeData.dob).format('YYYY-MM-DD'));
                     } else {
                         eleDob.val(null);
                     }
 
-                    if (data.employee.date_joined) {
-                        eleDateJoined.val(moment(data.employee.date_joined).format('YYYY-MM-DD'));
+                    if (employeeData.date_joined) {
+                        eleDateJoined.val(moment(employeeData.date_joined).format('YYYY-MM-DD'));
                     } else {
                         eleDateJoined.val(null);
                     }
 
                     let dataRoleInstance = [];
-                    if (typeof data.employee.role !== 'undefined' && data.employee.role.length > 0) {
-                        for (let r = 0; r < data.employee.role.length; r++) {
-                            dataRoleInstance.push(data.employee.role[r].id);
+                    if (typeof employeeData.role !== 'undefined' && employeeData.role.length > 0) {
+                        for (let r = 0; r < employeeData.role.length; r++) {
+                            dataRoleInstance.push(employeeData.role[r].id);
                         }
                         eleRole.val(dataRoleInstance);
                         instanceData['role'] = dataRoleInstance;
@@ -72,19 +75,19 @@ $(document).ready(function () {
 
                     $('#select-box-role-employee-update').select2();
 
-                    if (typeof data.employee.plan_app !== 'undefined' && data.employee.plan_app.length > 0) {
+                    if (typeof employeeData.plan_app !== 'undefined' && employeeData.plan_app.length > 0) {
                         let flag_check = $('#is-check-app-employee-update');
                         let flag_update = 0;
-                        for (let t = 0; t < data.employee.plan_app.length; t++) {
-                            let planCode = "#" + data.employee.plan_app[t].code
+                        for (let t = 0; t < employeeData.plan_app.length; t++) {
+                            let planCode = "#" + employeeData.plan_app[t].code
                             let instancePlan = $(planCode)
-                            if (data.employee.plan_app[t].application && Array.isArray(data.employee.plan_app[t].application)) {
-                                let appLength = data.employee.plan_app[t].application.length;
+                            if (employeeData.plan_app[t].application && Array.isArray(employeeData.plan_app[t].application)) {
+                                let appLength = employeeData.plan_app[t].application.length;
                                 for (let i = 0; i < appLength; i++) {
                                     let planAppInstance = instancePlan.closest('td').find('.employee-application');
                                     let planAppInstanceList = planAppInstance[0].children;
                                     for (let app = 0; app < planAppInstanceList.length; app++) {
-                                        if (planAppInstanceList[app].id === data.employee.plan_app[t].application[i].id) {
+                                        if (planAppInstanceList[app].id === employeeData.plan_app[t].application[i].id) {
                                             let appInput = planAppInstanceList[app].querySelector('.check-plan-application');
                                             appInput.checked = true;
                                             flag_update++;
@@ -95,6 +98,8 @@ $(document).ready(function () {
                         }
                         flag_check.val(String(flag_update));
                     }
+
+                    eleIsAdmin.prop('checked', employeeData.is_admin_company ? employeeData.is_admin_company : false);
                 }
             }
         })
@@ -299,22 +304,25 @@ $(document).ready(function () {
 
     loadDefaultData();
 
-    jQuery.validator.setDefaults({
-        debug: true,
-        success: "valid"
-    });
     let frm = $('#frm_employee_update');
-    frm.validate({
-        errorElement: 'p',
-        errorClass: 'is-invalid cl-red',
-    })
     frm.submit(function (event) {
+        event.preventDefault();
+
         let frm = new SetupFormSubmit($(this));
         let permGet = new HandlePermissions().combinesData();
         frm.dataForm['permission_by_configured'] = permGet['data'];
 
-        event.preventDefault();
-        let csr = $("input[name=csrfmiddlewaretoken]").val();
+        if (frm.dataForm.hasOwnProperty('is_active')) {
+            if (frm.dataForm['is_active'] === 'on') {
+                frm.dataForm['is_active'] = true;
+            } else frm.dataForm['is_active'] = false;
+        }
+        if (frm.dataForm.hasOwnProperty('is_admin_company')) {
+            if (frm.dataForm['is_admin_company'] === 'on') {
+                frm.dataForm['is_admin_company'] = true;
+            } else frm.dataForm['is_admin_company'] = false;
+        } else frm.dataForm['is_admin_company'] = false;
+
         // check data submit user-app
         let flag_check_app = Number($('#is-check-app-employee-update').val());
         if (frm.dataForm.hasOwnProperty('user')) {
@@ -351,29 +359,33 @@ $(document).ready(function () {
         if (frm.dataForm) {
             for (let key in frm.dataForm) {
                 if (frm.dataForm[key] === '') {
+                    console.log(key);
                     delete frm.dataForm[key]
                 }
             }
         }
 
-        $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
-            .then((resp) => {
+        $.fn.callAjax2({
+            url: frm.dataUrl,
+            method: frm.dataMethod,
+            data: frm.dataForm,
+        }).then(
+            (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     $.fn.notifyB({description: data.message}, 'success');
-                    setTimeout(
-                        ()=>{
-                            window.location.reload();
-                        },
-                        1000
-                    )
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000)
                     // $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
                 }
-            }, (errs) => {
+            },
+            (errs) => {
                 if (errs.data.errors.hasOwnProperty('detail')) {
                     $.fn.notifyB({description: String(errs.data.errors['detail'])}, 'failure');
                 }
-            })
+            }
+        )
     });
 });
 

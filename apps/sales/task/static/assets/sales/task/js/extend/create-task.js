@@ -256,7 +256,8 @@ $(function () {
         .create(document.querySelector('.ck5-rich-txt'),
             {
                 toolbar: {
-                    items: ['heading', '|', 'bold', 'italic', '|', 'numberedList', 'bulletedList']
+                    items: ['heading', '|', 'bold', 'italic', 'strikethrough', 'underline',
+                        '|', 'numberedList', 'bulletedList']
                 },
             },
         )

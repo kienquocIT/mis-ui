@@ -226,167 +226,172 @@ $.fn.extend({
         }
     },
     callAjax: function (url, method, data = {}, csrfToken = null, headers = {}, content_type = "application/json", opts = {}) {
-        let isDropdown = opts['isDropdown'];
-        let isNotify = opts['isNotify'];
-        if (!$.fn.isBoolean(isNotify)) isNotify = true;
-        return new Promise(function (resolve, reject) {
-            let ctx = {
-                url: url,
-                type: method, // dataType: 'json',
-                contentType: content_type === "multipart/form-data" ? false : content_type,
-                processData: content_type !== "multipart/form-data",
-                data: content_type === "application/json" ? JSON.stringify(data) : WFRTControl.appendBodyCheckWFTask(data, method),
-                headers: {
-                    "X-CSRFToken": (csrfToken === true ? $("input[name=csrfmiddlewaretoken]").val() : csrfToken),
-                    "DTISDD": isDropdown ? 'true' : '', ...headers
-                },
-                success: function (rest, textStatus, jqXHR) {
-                    let data = $.fn.switcherResp(rest, isNotify);
-                    if (data) {
-                        if (DocumentControl.getBtnIDLastSubmit() === 'idxSaveInZoneWFThenNext') {
-                            let btnSubmit = $('#idxSaveInZoneWFThenNext');
-                            let dataWFAction = btnSubmit.attr('data-wf-action');
-                            if (btnSubmit && dataWFAction) {
-                                let eleActionDoneTask = $('.btn-action-wf[data-value=' + dataWFAction + ']');
-                                if (eleActionDoneTask.length > 0) {
-                                    DocumentControl.setBtnIDLastSubmit(null);
-                                    $(eleActionDoneTask[0]).attr('data-success-reload', false)
-                                    WFRTControl.callActionWF($(eleActionDoneTask[0])).then(() => {
+        if (isDenied && !urlNotDeny.includes(url)) return new Promise(function (resolve, reject) {});
+        else {
+            let isDropdown = opts['isDropdown'];
+            let isNotify = opts['isNotify'];
+            if (!$.fn.isBoolean(isNotify)) isNotify = true;
+            return new Promise(function (resolve, reject) {
+                let ctx = {
+                    url: url,
+                    type: method, // dataType: 'json',
+                    contentType: content_type === "multipart/form-data" ? false : content_type,
+                    processData: content_type !== "multipart/form-data",
+                    data: content_type === "application/json" ? JSON.stringify(data) : WFRTControl.appendBodyCheckWFTask(data, method),
+                    headers: {
+                        "X-CSRFToken": (csrfToken === true ? $("input[name=csrfmiddlewaretoken]").val() : csrfToken),
+                        "DTISDD": isDropdown ? 'true' : '', ...headers
+                    },
+                    success: function (rest, textStatus, jqXHR) {
+                        let data = $.fn.switcherResp(rest, isNotify);
+                        if (data) {
+                            if (DocumentControl.getBtnIDLastSubmit() === 'idxSaveInZoneWFThenNext') {
+                                let btnSubmit = $('#idxSaveInZoneWFThenNext');
+                                let dataWFAction = btnSubmit.attr('data-wf-action');
+                                if (btnSubmit && dataWFAction) {
+                                    let eleActionDoneTask = $('.btn-action-wf[data-value=' + dataWFAction + ']');
+                                    if (eleActionDoneTask.length > 0) {
+                                        DocumentControl.setBtnIDLastSubmit(null);
+                                        $(eleActionDoneTask[0]).attr('data-success-reload', false)
+                                        WFRTControl.callActionWF($(eleActionDoneTask[0])).then(() => {
+                                            resolve(rest);
+                                        })
+                                    } else {
                                         resolve(rest);
-                                    })
+                                    }
                                 } else {
                                     resolve(rest);
                                 }
                             } else {
                                 resolve(rest);
                             }
-                        } else {
-                            resolve(rest);
-                        }
 
-                    } else resolve({'status': jqXHR.status});
+                        } else resolve({'status': jqXHR.status});
 
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    let resp_data = jqXHR.responseJSON;
-                    if (resp_data && typeof resp_data === 'object') {
-                        $.fn.switcherResp(resp_data, isNotify);
-                        reject(resp_data);
-                    } else if (jqXHR.status === 204) reject({'status': 204});
-                },
-            };
-            if (method.toLowerCase() === 'get') ctx.data = data
-            $.ajax(ctx);
-        });
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        let resp_data = jqXHR.responseJSON;
+                        if (resp_data && typeof resp_data === 'object') {
+                            $.fn.switcherResp(resp_data, isNotify);
+                            reject(resp_data);
+                        } else if (jqXHR.status === 204) reject({'status': 204});
+                    },
+                };
+                if (method.toLowerCase() === 'get') ctx.data = data
+                $.ajax(ctx);
+            });
+        }
     },
     callAjax2: function (opts = {}) {
-        let isDropdown = UtilControl.popKey(opts, 'isDropdown', false, true);
-        let isNotify = UtilControl.popKey(opts, 'isNotify', false, true);
-        if (!$.fn.isBoolean(isNotify)) isNotify = true;
-        return new Promise(function (resolve, reject) {
-            // Setup then Call Ajax
-            let url = opts?.['url'] || null;
-            if (url) {
-                let method = opts?.['method'] || 'GET';
-                let processData = opts?.['processData'] || true;
-                let contentType = opts?.['contentType'] || "application/json";
-                if (contentType === "multipart/form-data") {
-                    contentType = false;
-                    processData = false;
-                }
+        if (isDenied && !urlNotDeny.includes(url)) return new Promise(function (resolve, reject) {});
+        else {
+            let isDropdown = UtilControl.popKey(opts, 'isDropdown', false, true);
+            let isNotify = UtilControl.popKey(opts, 'isNotify', false, true);
+            if (!$.fn.isBoolean(isNotify)) isNotify = true;
+            return new Promise(function (resolve, reject) {
+                // Setup then Call Ajax
+                let url = opts?.['url'] || null;
+                if (url) {
+                    let method = opts?.['method'] || 'GET';
+                    let processData = opts?.['processData'] || true;
+                    let contentType = opts?.['contentType'] || "application/json";
+                    if (contentType === "multipart/form-data") {
+                        contentType = false;
+                        processData = false;
+                    }
 
-                let csrfToken = opts?.['csrf_token'] || $("input[name=csrfmiddlewaretoken]").val();
-                let headers = opts?.['headers'] || {}
-                let data = opts?.['data'];
-                if (method.toLowerCase() === 'put' && typeof data === 'object') {
-                    data = WFRTControl.appendBodyCheckWFTask(method, data);
-                }
-                if (method.toLowerCase() !== 'get' && contentType === "application/json") {
-                    data = JSON.stringify(data);
-                }
+                    let csrfToken = opts?.['csrf_token'] || $("input[name=csrfmiddlewaretoken]").val();
+                    let headers = opts?.['headers'] || {}
+                    let data = opts?.['data'];
+                    if (method.toLowerCase() === 'put' && typeof data === 'object') {
+                        data = WFRTControl.appendBodyCheckWFTask(method, data);
+                    }
+                    if (method.toLowerCase() !== 'get' && contentType === "application/json") {
+                        data = JSON.stringify(data);
+                    }
 
-                let successCallback = opts?.['success'] || null;
-                let onlySuccessCallback = UtilControl.popKey(opts, 'successOnly', false);
-                let errorCallback = opts?.['error'] || null;
-                let onlyErrorCallback = UtilControl.popKey(opts, 'errorOnly', false);
-                let statusCodeCallback = opts?.['statusCode'] || {};
+                    let successCallback = opts?.['success'] || null;
+                    let onlySuccessCallback = UtilControl.popKey(opts, 'successOnly', false);
+                    let errorCallback = opts?.['error'] || null;
+                    let onlyErrorCallback = UtilControl.popKey(opts, 'errorOnly', false);
+                    let statusCodeCallback = opts?.['statusCode'] || {};
 
-                let ctx = {
-                    ...opts,
-                    success: function (rest, textStatus, jqXHR) {
-                        if (successCallback) successCallback(rest, textStatus, jqXHR);
-                        if (onlySuccessCallback === false) {
-                            let data = $.fn.switcherResp(rest, isNotify);
-                            if (data) {
-                                if (DocumentControl.getBtnIDLastSubmit() === 'idxSaveInZoneWFThenNext') {
-                                    let btnSubmit = $('#idxSaveInZoneWFThenNext');
-                                    let dataWFAction = btnSubmit.attr('data-wf-action');
-                                    if (btnSubmit && dataWFAction) {
-                                        let eleActionDoneTask = $('.btn-action-wf[data-value=' + dataWFAction + ']');
-                                        if (eleActionDoneTask.length > 0) {
-                                            DocumentControl.setBtnIDLastSubmit(null);
-                                            $(eleActionDoneTask[0]).attr('data-success-reload', false)
-                                            WFRTControl.callActionWF($(eleActionDoneTask[0])).then(() => {
+                    let ctx = {
+                        ...opts,
+                        success: function (rest, textStatus, jqXHR) {
+                            if (successCallback) successCallback(rest, textStatus, jqXHR);
+                            if (onlySuccessCallback === false) {
+                                let data = $.fn.switcherResp(rest, isNotify);
+                                if (data) {
+                                    if (DocumentControl.getBtnIDLastSubmit() === 'idxSaveInZoneWFThenNext') {
+                                        let btnSubmit = $('#idxSaveInZoneWFThenNext');
+                                        let dataWFAction = btnSubmit.attr('data-wf-action');
+                                        if (btnSubmit && dataWFAction) {
+                                            let eleActionDoneTask = $('.btn-action-wf[data-value=' + dataWFAction + ']');
+                                            if (eleActionDoneTask.length > 0) {
+                                                DocumentControl.setBtnIDLastSubmit(null);
+                                                $(eleActionDoneTask[0]).attr('data-success-reload', false)
+                                                WFRTControl.callActionWF($(eleActionDoneTask[0])).then(() => {
+                                                    resolve(rest);
+                                                })
+                                            } else {
                                                 resolve(rest);
-                                            })
+                                            }
                                         } else {
                                             resolve(rest);
                                         }
-                                    } else {
-                                        resolve(rest);
-                                    }
-                                } else resolve(rest);
-                            } else resolve({'status': jqXHR.status});
-                        }
-                    },
-                    error: function (jqXHR, textStatus, errorThrown) {
-                        if (errorCallback) errorCallback(jqXHR, textStatus, errorThrown);
-                        if (onlyErrorCallback === false) {
-                            let resp_data = jqXHR.responseJSON;
-                            if (resp_data && typeof resp_data === 'object') {
-                                $.fn.switcherResp(resp_data, isNotify);
-                                reject(resp_data);
-                            } else if (jqXHR.status === 204) reject({'status': 204});
-                        }
-                    },
-                    url: url,
-                    type: method,
-                    contentType: processData,
-                    processData: processData,
-                    data: data,
-                    headers: {
-                        "DTISDD": isDropdown === true ? 'true' : '',
-                        "X-CSRFToken": csrfToken, ...headers
-                    },
-                    statusCode: {
-                        204: function () {
-                            if (isNotify === true) $.fn.notifyB({
-                                'description': $.fn.transEle.attr('data-success'),
-                            }, 'success');
+                                    } else resolve(rest);
+                                } else resolve({'status': jqXHR.status});
+                            }
                         },
-                        401: function () {
-                            if (isNotify === true) $.fn.notifyB({
-                                'description': $.fn.storageSystemData.attr('data-msg-login-expired')
-                            }, 'failure');
-                            return WindowControl.redirectLogin(1000);
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            if (errorCallback) errorCallback(jqXHR, textStatus, errorThrown);
+                            if (onlyErrorCallback === false) {
+                                let resp_data = jqXHR.responseJSON;
+                                if (resp_data && typeof resp_data === 'object') {
+                                    $.fn.switcherResp(resp_data, isNotify);
+                                    reject(resp_data);
+                                } else if (jqXHR.status === 204) reject({'status': 204});
+                            }
                         },
-                        403: function () {
-                            if (isNotify === true) $.fn.notifyB({
-                                'description': $.fn.storageSystemData.attr('data-msg-403')
-                            }, 'failure');
+                        url: url,
+                        type: method,
+                        contentType: contentType,
+                        processData: processData,
+                        data: data,
+                        headers: {
+                            "DTISDD": isDropdown === true ? 'true' : '',
+                            "X-CSRFToken": csrfToken, ...headers
                         },
-                        404: function () {
-                            if (isNotify === true) $.fn.notifyB({
-                                'description': $.fn.storageSystemData.attr('data-msg-404')
-                            }, 'failure');
-                        }, ...statusCodeCallback,
-                    },
-                };
-                console.log(ctx);
-                return $.ajax(ctx);
-            }
-            throw Error('Ajax must be url setup before send');
-        });
+                        statusCode: {
+                            204: function () {
+                                if (isNotify === true) $.fn.notifyB({
+                                    'description': $.fn.transEle.attr('data-success'),
+                                }, 'success');
+                            },
+                            401: function () {
+                                if (isNotify === true) $.fn.notifyB({
+                                    'description': $.fn.storageSystemData.attr('data-msg-login-expired')
+                                }, 'failure');
+                                return WindowControl.redirectLogin(1000);
+                            },
+                            403: function () {
+                                if (isNotify === true) $.fn.notifyB({
+                                    'description': $.fn.storageSystemData.attr('data-msg-403')
+                                }, 'failure');
+                            },
+                            404: function () {
+                                if (isNotify === true) $.fn.notifyB({
+                                    'description': $.fn.storageSystemData.attr('data-msg-404')
+                                }, 'failure');
+                            }, ...statusCodeCallback,
+                        },
+                    };
+                    return $.ajax(ctx);
+                }
+                throw Error('Ajax must be url setup before send');
+            });
+        }
     },
     DataTableDefault: function (opts) {
         return new DTBControl($(this)).init(opts);

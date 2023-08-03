@@ -1827,9 +1827,9 @@ class DTBControl {
                 }, 0);
 
                 // drawCallback manual
-                if (drawCallback && typeof drawCallback === 'function') {
-                    drawCallback();
-                }
+                // if (drawCallback && typeof drawCallback === 'function') {
+                //     drawCallback(false);
+                // }
             },
             initComplete: function () {
                 $(this.api().table().container()).find('input').attr('autocomplete', 'off');
@@ -1843,6 +1843,11 @@ class DTBControl {
         // ajax delete data
         if (configFinal?.['ajax'] && configFinal.hasOwnProperty('data')) delete configFinal['data'];
 
+        if (isDenied){
+            if (configFinal.hasOwnProperty('ajax')) delete configFinal['ajax'];
+            configFinal['data'] = [];
+        }
+
         // returned
         return configFinal;
     }
@@ -1854,7 +1859,15 @@ class DTBControl {
     }
 
     static deleteRow(ele$) {
-        $(ele$).closest('table').DataTable().row($(this).parents('tr')).remove().draw();
+        $(ele$).closest('table').DataTable().row($(ele$).parents('tr')).remove().draw();
+    }
+
+    static updateDataRow(clsThis, func){
+        clsThis = $(clsThis).closest('tr');
+        let rowIdx = tbl.DataTable().row(clsThis).index();
+        let rowData = $x.fn.getRowData($(clsThis));
+        let newData = func(clsThis, rowIdx, rowData);
+        tbl.DataTable().row(rowIdx).data(newData).draw(false);
     }
 
     constructor(dtb$) {
@@ -1988,7 +2001,7 @@ class WindowControl {
         })
     }
 
-    static showNotFound(){
+    static showNotFound() {
         Swal.fire({
             title: $.fn.storageSystemData.attr('data-msg-404'),
             icon: 'question',
@@ -2008,7 +2021,7 @@ class WindowControl {
         })
     }
 
-    static showUnauthenticated(){
+    static showUnauthenticated() {
         Swal.fire({
             title: $.fn.storageSystemData.attr('data-msg-login-expired'),
             icon: 'error',
@@ -2022,7 +2035,7 @@ class WindowControl {
         })
     }
 
-    static showSVErrors(){
+    static showSVErrors() {
         Swal.fire({
             title: $.fn.storageSystemData.attr('data-msg-500'),
             icon: 'error',
@@ -2055,13 +2068,18 @@ class PersonControl {
         return '';
     }
 
-    static renderAvatar(personData, clsName = "") {
+    static renderAvatar(personData, clsName = "", appendHtml = "") {
         let avatar = personData?.['avatar'];
+        let htmlTooltipFullname = `data-bs-toggle="tooltip" data-bs-placement="bottom" title="${personData?.['full_name']}"`;
         let shortName = PersonControl.shortNameGlobe(personData);
-        if (avatar) return `<div class="avatar"><img src="${avatar}" alt="${shortName}" class="avatar-img"></div>`;
+        if (avatar && avatar !== 'None' && avatar !== 'none') {
+            let avatarFullUrl = $.fn.storageSystemData.attr('data-domain-cloud') + $.fn.storageSystemData.attr('data-cloud-avatar') + avatar + '?alt=' + shortName;
+            return `<div class="avatar ${clsName ? clsName : 'avatar-xs avatar-primary'}" ${htmlTooltipFullname}><img src="${avatarFullUrl}" alt="${shortName}" class="avatar-img">${appendHtml}</div>`;
+        }
         return `
-            <div class="avatar avatar-rounded ${clsName ? clsName : 'avatar-xs avatar-primary'}">
-                <span class="initial-wrap">${shortName}</span>
+            <div class="avatar avatar-rounded ${clsName ? clsName : 'avatar-xs avatar-primary'}" ${htmlTooltipFullname}>
+                <span class="initial-wrap" >${shortName}</span>
+                ${appendHtml}
             </div>
         `;
     }
@@ -2260,6 +2278,7 @@ let $x = {
 
         getRowData: DTBControl.getRowData,
         deleteRow: DTBControl.deleteRow,
+        updateDataRow: DTBControl.updateDataRow,
 
         redirectLogin: WindowControl.redirectLogin,
 

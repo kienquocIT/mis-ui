@@ -39,7 +39,9 @@ class TicketErrorCreateAPI(APIView):
 class ActivityLogListAPI(APIView):
     @mask_view(login_require=True, auth_require=True, is_api=True)
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(request=request, url=ApiURL.LOG_ACTIVITIES, user=request.user).get(data=request.query_params)
+        resp = ServerAPI(request=request, url=ApiURL.LOG_ACTIVITIES, user=request.user).get(
+            data=request.query_params.dict()
+        )
         return resp.auto_return(key_success='log_data')
 
 

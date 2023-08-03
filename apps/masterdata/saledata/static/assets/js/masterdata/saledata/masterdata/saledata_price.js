@@ -654,25 +654,18 @@ $(document).ready(function () {
         $.fn.callAjax($tables.attr('data-url'), 'GET')
             .then((res) => {
                 let data = $.fn.switcherResp(res);
-                if (data) $tables.DataTable({
+                if (data) $tables.DataTableDefault({
                     data: data.payment_terms_list,
                     searching: false,
                     ordering: false,
                     paginate: false,
                     info: false,
-                    drawCallback: function (row, data) { // two parameter is row, data is available
+                    drawCallback: function () { // two parameter is row, data is available
                         // render icon after table callback
                         feather.replace();
-                        // generator index of row
-                        let api = this.api();
-                        let rows = api.rows({page: 'current'}).nodes();
-                        let column = 0; // declare row index who want to auto generator index
-                        api.column(column, {page: 'current'}).data().each(function (group, i) {
-                            // auto increase index row
-                            $(rows).eq(i).find('td').eq(column).text(i + 1);
-                        });
                     },
-                    rowCallback: function (row, data) {
+                    rowCallback: function (row, data, index) {
+                        $('td:eq(0)', row).html(index + 1);
                         // handle onclick btn
                         $('.actions-btn a', row).off().on('click', function (e) {
                             e.stopPropagation();
@@ -930,11 +923,17 @@ $(document).ready(function () {
                         $('#table_terms').DataTable().clear().draw();
                         $('#table_terms').DataTable().rows.add(data.term).draw();
                         let temp = []
+                        let total_type_0 = 0
                         for (let item of data.term) {
                             temp.push(item.unit_type)
+                            if (item.unit_type === 0)
+                                total_type_0 += item.value
                         }
                         term_type_list = [...new Set(temp)]
-                        $('[data-bs-target="#modal-add-table"]').prop('disabled', term_type_list.indexOf(2) !== -1)
+                        // nếu type = balance thì khoá btn
+                        // nếu type = 0 thì total value = 100 => khoá
+                        if (total_type_0 >= 100 || term_type_list.indexOf(2) !== -1)
+                            $('[data-bs-target="#modal-add-table"]').prop('disabled', true)
                     }
                 }
             )

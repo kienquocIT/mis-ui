@@ -4,6 +4,10 @@ $(function () {
             $.fn.redirectUrl($(this).attr('data-redirect'), 500);
         })
 
+        $('#btn_redirect_create_new_purchase_quotation_request_manual').on('click', function () {
+            $.fn.redirectUrl($(this).attr('data-redirect'), 500);
+        })
+
         function loadPQRList() {
             if (!$.fn.DataTable.isDataTable('#datatable_pqr_list')) {
                 let dtb = $('#datatable_pqr_list');

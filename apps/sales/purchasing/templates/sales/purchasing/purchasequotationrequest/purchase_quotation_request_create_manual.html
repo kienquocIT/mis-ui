@@ -5,7 +5,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}"/>
     <style>
         .select2-container--default.select2-container--disabled .select2-selection--multiple {
-            background-color: #f7f7f7;
+            background-color: white;
         }
         .select2-container--default .select2-selection--multiple .select2-selection__choice {
             border: 1px solid black;
@@ -15,34 +15,27 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
+    <button class="btn btn-flush-primary flush-soft-hover"
+            type="submit" form="form-create-purchase-quotation-request" data-bs-toggle="tooltip" data-bs-placement="top" title="Save"
+            data-bs-original-title="Save">
+        <span class="icon">
+            <span class="feather-icon">
+                <i data-feather="save"></i>
+            </span>
+            <span class="font-3 ml-1">
+                {% trans 'Save' %}
+            </span>
+        </span>
+    </button>
 {% endblock %}
 {% block pageContent %}
     {{ data.data.tax_list | json_script:"tax_list" }}
+    {{ data.data.product_list | json_script:"product_list" }}
+    {{ data.data.unit_of_measure_list | json_script:"unit_of_measure_list" }}
     {{ data.data.purchase_request_list | json_script:"purchase_request_list" }}
 
-    <form id="form-detail-purchase-quotation-request"
-          data-url-redirect="{% url "PurchaseQuotationRequestList" %}"
-          data-url-detail="{% url 'PurchaseQuotationRequestDetailFromPRAPI' '0' %}">
-        {% csrf_token %}
-        <div class="row mr-3">
-            <div class="col-7 mb-1 pr-5 text-right">
-                <h4><span id="code-span" class="badge badge-soft-primary badge-outline text-primary"></span></h4>
-            </div>
-            <div class="col-5 mb-1 pr-4 text-right">
-                <button disabled class="btn btn-outline-primary">
-                    <span>
-                        <span>{% trans 'Print' %}</span>
-                        <span class="icon"><i class="bi bi-printer-fill"></i></span>
-                    </span>
-                </button>
-                <button disabled class="btn btn-outline-primary">
-                    <span>
-                        <span>{% trans 'Send Email' %}</span>
-                        <span class="icon"><i class="bi bi-envelope-fill"></i></span>
-                    </span>
-                </button>
-            </div>
-        </div>
+    <form id="form-create-purchase-quotation-request" data-url="{% url 'PurchaseQuotationRequestListAPI' %}" data-method="POST" data-url-redirect="{% url "PurchaseQuotationRequestList" %}">
+
         <div class="row mt-1 ml-1 mr-1 collapse multi-collapse show" id="collapse-area">
             <div class="row">
                 <div class="col-7 pr-5">
@@ -50,16 +43,6 @@
                         <label class="col-3 col-form-label required">{% trans "Name" %}</label>
                         <div class="col-9">
                             <input class="form-control" id="title">
-                        </div>
-                    </div>
-                    <div class="row form-group" id="pr-div">
-                        <label class="col-3 col-form-label required">{% trans "Purchase request" %}</label>
-                        <div class="col-9" id="purchase-request-select-box-div">
-                            <select id="purchase-request-select-box" class="select2 select-multiple"
-                                    multiple
-                                    type="button"
-                                    data-placeholder="Select Purchase request">
-                            </select>
                         </div>
                     </div>
                     <div class="row form-group">
@@ -111,33 +94,50 @@
                             <div class="tab-pane fade show active" id="tab_line_detail">
                                 <table class="table nowrap w-100" id="table-purchase-quotation-request-products-selected">
                                     <thead>
-                                    <th>#</th>
-                                    <th>{% trans "Product" %}</th>
-                                    <th>{% trans "Description" %}</th>
-                                    <th>{% trans "UoM" %}</th>
-                                    <th>{% trans "Quantity" %}</th>
-                                    <th>{% trans "PR Unit Price" %}
+                                    <th class="w-5">#</th>
+                                    <th class="w-15">{% trans "Product" %}</th>
+                                    <th class="w-10">{% trans "Description" %}</th>
+                                    <th class="w-10">{% trans "UoM" %}</th>
+                                    <th class="w-10">{% trans "Quantity" %}</th>
+                                    <th class="w-15">{% trans "PR Unit Price" %}
                                         <i class="fas fa-info-circle icon-info"
                                            data-bs-toggle="tooltip"
                                            data-bs-placement="top"
                                            title="{% trans 'If the products are merged, Default Unit Price will be got from the smallest UoM ratio product.' %}">
                                         </i>
                                     </th>
-                                    <th>{% trans "Tax" %}
+                                    <th class="w-15">{% trans "Tax" %}
                                         <i class="fas fa-info-circle icon-info"
                                            data-bs-toggle="tooltip"
                                            data-bs-placement="top"
                                            title="{% trans 'If the products are merged, Default Tax will be got from the smallest UoM ratio product.' %}">
                                         </i>
                                     </th>
-                                    <th>{% trans "Subtotal Price" %}</th>
+                                    <th class="w-15">{% trans "Subtotal Price" %}</th>
+                                    <th class="w-5">{% trans "Action" %}</th>
                                     </thead>
+                                    <tbody></tbody>
                                 </table>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-8"></div>
+                        <div class="col-2">
+                            <div class="btn-group" role="group">
+                                <button id="btn-add-product" type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    {% trans "Add product" %}
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                                    <a class="dropdown-item" id="new-product-btn" href="#">
+                                        <i class="bi bi-plus-square"></i>&nbsp;&nbsp;<span>{% trans "New product" %}</span>
+                                    </a>
+                                    <a class="dropdown-item" id="group-title-btn" href="#">
+                                        <i class="bi bi-collection"></i>&nbsp;&nbsp;<span>{% trans "Group title" %}</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6"></div>
                         <div class="col-4">
                             <div class="row">
                                 <div class="col-12">
@@ -239,7 +239,7 @@
         </div>
 {% endblock %}
 {% block jsFooter %}
-    <script src="{% static 'assets/sales/purchasing/js/purchasequotationrequest/purchase_quotation_request_detail_from_PR.js' %}"></script>
+    <script src="{% static 'assets/sales/purchasing/js/purchasequotationrequest/purchase_quotation_request_create_manual.js' %}"></script>
     <!-- Daterangepicker JS -->
     <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>

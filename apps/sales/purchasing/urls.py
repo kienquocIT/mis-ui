@@ -5,7 +5,7 @@ from apps.sales.purchasing.views import PurchaseOrderCreate, PurchaseRequestList
 from apps.sales.purchasing.views import (
     PurchaseOrderCreate, PurchaseQuotationRequestList, PurchaseQuotationRequestCreateFromPR,
     PurchaseQuotationRequestListAPI, PurchaseQuotationRequestDetailFromPR,
-    PurchaseQuotationRequestDetailFromPRAPI
+    PurchaseQuotationRequestDetailFromPRAPI, PurchaseQuotationRequestCreateManual
 )
 from apps.sales.purchasing.views.purchase_request import PurchaseRequestList, PurchaseRequestCreate, \
     PurchaseRequestListAPI
@@ -37,6 +37,11 @@ urlpatterns = [
         'purchase-quotation-request/create-from-pr',
         PurchaseQuotationRequestCreateFromPR.as_view(),
         name='PurchaseQuotationRequestCreateFromPR'
+    ),
+    path(
+        'purchase-quotation-request/create-manual',
+        PurchaseQuotationRequestCreateManual.as_view(),
+        name='PurchaseQuotationRequestCreateManual'
     ),
     path(
         'purchase-quotation-request/detail-from-pr/<str:pk>',

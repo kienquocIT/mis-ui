@@ -32,7 +32,7 @@
     {{ data.data.tax_list | json_script:"tax_list" }}
     {{ data.data.purchase_request_list | json_script:"purchase_request_list" }}
 
-    <form id="form-create-purchase-quotation-request" data-url="{% url 'PurchaseQuotationRequestCreateFromPRAPI' %}" data-method="POST" data-url-redirect="{% url "PurchaseQuotationRequestList" %}">
+    <form id="form-create-purchase-quotation-request" data-url="{% url 'PurchaseQuotationRequestListAPI' %}" data-method="POST" data-url-redirect="{% url "PurchaseQuotationRequestList" %}">
 
         <div class="row mt-1 ml-1 mr-1 collapse multi-collapse show" id="collapse-area">
             <div class="row">

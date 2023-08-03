@@ -166,6 +166,17 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
 
     OPPORTUNITY_DOCUMENT_LIST_PAGE = BreadcrumbChildren(_('Document List'), 'OpportunityDocumentList')
 
+    # Purchase Quotation Request
+    PURCHASE_QUOTATION_REQUEST = BreadcrumbChildren(
+        _('Purchase Quotation Request list'), 'PurchaseQuotationRequestList'
+    )
+    PURCHASE_QUOTATION_REQUEST_CREATE = BreadcrumbChildren(
+        _('Purchase Quotation Request create from Purchase Request'), 'PurchaseQuotationRequestCreateFromPR'
+    )
+    PURCHASE_QUOTATION_REQUEST_DETAIL = BreadcrumbChildren(
+        _('Purchase Quotation Request detail'),
+    )
+
 
 class BreadcrumbView:
     """menu vertical item view"""
@@ -450,3 +461,13 @@ class BreadcrumbView:
 
     OPPORTUNITY_DOCUMENT_CREATE_PAGE = OPPORTUNITY_DOCUMENT_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
     OPPORTUNITY_DOCUMENT_DETAIL_PAGE = OPPORTUNITY_DOCUMENT_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+
+    PURCHASE_QUOTATION_REQUEST_LIST_PAGE = [
+        BreadcrumbItem.PURCHASE_QUOTATION_REQUEST
+    ]
+    PURCHASE_QUOTATION_REQUEST_CREATE_PAGE = PURCHASE_QUOTATION_REQUEST_LIST_PAGE + [
+        BreadcrumbItem.PURCHASE_QUOTATION_REQUEST_CREATE
+    ]
+    PURCHASE_QUOTATION_REQUEST_DETAIL_PAGE = PURCHASE_QUOTATION_REQUEST_LIST_PAGE + [
+        BreadcrumbItem.PURCHASE_QUOTATION_REQUEST_DETAIL
+    ]

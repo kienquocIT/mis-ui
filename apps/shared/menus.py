@@ -256,6 +256,30 @@ class MenusCRM:
     )
 
 
+class MenusPurchase:
+    HOME = MenuCommon(
+        name='Home', code='id_menu_home_page', view_name='HomeView', icon='<i class="fas fa-home"></i>',
+    )
+
+    PURCHASE = MenuCommon(
+        name='Purchase', code='menu_purchase_activities', view_name='', icon='<i class="bi bi-cart-fill"></i>',
+        child=[
+            MenuCommon(
+                name='Purchase request',
+                code='menu_purchase_request_list',
+                view_name='PurchaseRequestList',
+                icon='<i class="bi bi-dice-1"></i>',
+            ),
+            MenuCommon(
+                name='Purchase quotation request',
+                code='id_menu_purchase_quotation_request_list',
+                view_name='PurchaseQuotationRequestList',
+                icon='<i class="bi bi-dice-2"></i>',
+            ),
+        ],
+    )
+
+
 # Space Setup
 class SpaceCommon:
     name: str  # 'Sale'
@@ -320,7 +344,10 @@ class SpaceItem:
             'Purchase',
             'purchase',
             icon='<i class="fas fa-cash-register"></i>',
-            menus=[],
+            menus=[
+                MenusPurchase.HOME,
+                MenusPurchase.PURCHASE,
+            ],
         ),
         'hrm': SpaceCommon(
             'HRM',

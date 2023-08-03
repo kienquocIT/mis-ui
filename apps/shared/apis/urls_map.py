@@ -307,3 +307,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     OPPORTUNITY_DOCUMENT_LIST = StringUrl('opportunity/document/list')
     OPPORTUNITY_DOCUMENT_DETAIL = StringUrl('opportunity/document/{pk}')
+
+    # Purchasing
+    PURCHASE_REQUEST_LIST = StringUrl('purchasing/purchase-request/list')
+    PURCHASE_QUOTATION_REQUEST_LIST = StringUrl('purchasing/purchase-quotation-request/list')
+    PURCHASE_QUOTATION_REQUEST_DETAIL = StringUrl('purchasing/purchase-quotation-request')

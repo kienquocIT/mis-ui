@@ -48,7 +48,7 @@ class PurchaseQuotationRequestCreateFromPR(View):
     )
     def get(self, request, *args, **kwargs):
         resp1 = ServerAPI(user=request.user, url=ApiURL.TAX_LIST).get()
-        resp2 = ServerAPI(user=request.user, url=ApiURL.PURCHASE_REQUEST_LIST).get()
+        resp2 = ServerAPI(user=request.user, url=ApiURL.PURCHASE_REQUEST_LIST_FOR_PQR).get()
         return {
                    'data':
                        {
@@ -84,7 +84,7 @@ class PurchaseQuotationRequestCreateManual(View):
     )
     def get(self, request, *args, **kwargs):
         resp1 = ServerAPI(user=request.user, url=ApiURL.TAX_LIST).get()
-        resp2 = ServerAPI(user=request.user, url=ApiURL.PURCHASE_REQUEST_LIST).get()
+        resp2 = ServerAPI(user=request.user, url=ApiURL.PURCHASE_REQUEST_LIST_FOR_PQR).get()
         resp3 = ServerAPI(user=request.user, url=ApiURL.PRODUCT_LIST).get()
         resp4 = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE).get()
         return {
@@ -125,7 +125,7 @@ class PurchaseQuotationRequestDetailFromPR(View):
     )
     def get(self, request, *args, **kwargs):
         resp1 = ServerAPI(user=request.user, url=ApiURL.TAX_LIST).get()
-        resp2 = ServerAPI(user=request.user, url=ApiURL.PURCHASE_REQUEST_LIST).get()
+        resp2 = ServerAPI(user=request.user, url=ApiURL.PURCHASE_REQUEST_LIST_FOR_PQR).get()
         return {
                    'data':
                        {

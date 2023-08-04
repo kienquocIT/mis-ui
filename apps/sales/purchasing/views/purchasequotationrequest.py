@@ -119,7 +119,7 @@ class PurchaseQuotationRequestDetailFromPR(View):
 
     @mask_view(
         auth_require=True,
-        template='sales/purchasing/purchasequotationrequest/purchase_quotation_request_detail_from_PR.html',
+        template='sales/purchasing/purchasequotationrequest/purchase_quotation_request_detail.html',
         menu_active='',
         breadcrumb='PURCHASE_QUOTATION_REQUEST_DETAIL_PAGE',
     )

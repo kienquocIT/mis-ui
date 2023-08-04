@@ -1111,7 +1111,14 @@ class loadDataHandle {
         }
     }
 
-    loadDataTableAndDropDown(data) {
+    loadDataTablesAndDropDowns(data) {
+        let self = this;
+        self.loadDataTables(data);
+        self.loadDropDowns();
+        return true;
+    };
+
+    loadDataTables(data, is_detail = false) {
         let self = this;
         let tableProduct = $('#datable-quotation-create-product');
         let tableCost = $('#datable-quotation-create-cost');
@@ -1133,6 +1140,21 @@ class loadDataHandle {
         tableProduct.DataTable().rows.add(products_data).draw();
         tableCost.DataTable().rows.add(costs_data).draw();
         tableExpense.DataTable().rows.add(expenses_data).draw();
+        //
+        if (is_detail === true) {
+            self.loadTableDisabled(tableProduct);
+            self.loadTableDisabled(tableCost);
+            self.loadTableDisabled(tableExpense);
+            // mask money
+            $.fn.initMaskMoney2();
+        }
+    };
+
+    loadDropDowns() {
+        let self = this;
+        let tableProduct = $('#datable-quotation-create-product');
+        let tableCost = $('#datable-quotation-create-cost');
+        let tableExpense = $('#datable-quotation-create-expense');
         for (let i = 0; i < tableProduct[0].tBodies[0].rows.length; i++) {
             let row = tableProduct[0].tBodies[0].rows[i];
             if (row.querySelector('.table-row-item')) {
@@ -1179,8 +1201,28 @@ class loadDataHandle {
                 self.loadBoxQuotationTax(row.querySelector('.table-row-tax').id, row.querySelector('.table-row-tax').value);
             }
         }
-        return true;
-    }
+    };
+
+    loadTableDisabled(table) {
+        for (let ele of table[0].querySelectorAll('.table-row-item')) {
+            ele.setAttribute('disabled', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-description')) {
+            ele.setAttribute('disabled', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-uom')) {
+            ele.setAttribute('disabled', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-quantity')) {
+            ele.setAttribute('disabled', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-price')) {
+            ele.setAttribute('disabled', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-tax')) {
+            ele.setAttribute('disabled', 'true');
+        }
+    };
 }
 
 // DataTable

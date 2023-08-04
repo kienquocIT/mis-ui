@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load i18n static %}
-{% block title %}{% trans 'Purchase Quotation Request Detail' %}{% endblock %}
+{% block title %}{% trans 'Purchase Quotation Detail' %}{% endblock %}
 {% block cssHeader %}
     <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}"/>
     <style>
@@ -239,7 +239,7 @@
         </div>
 {% endblock %}
 {% block jsFooter %}
-    <script src="{% static 'assets/sales/purchasing/js/purchasequotationrequest/purchase_quotation_request_detail.js' %}"></script>
+    <script src="{% static 'assets/sales/purchasing/js/purchasequotation/purchase_quotation_detail.js' %}"></script>
     <!-- Daterangepicker JS -->
     <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>

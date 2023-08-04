@@ -114,7 +114,7 @@ class PurchaseQuotationRequestCreateManualAPI(APIView):
         return resp.auto_return()
 
 
-class PurchaseQuotationRequestDetailFromPR(View):
+class PurchaseQuotationRequestDetail(View):
     permission_classes = [IsAuthenticated]
 
     @mask_view(
@@ -136,7 +136,7 @@ class PurchaseQuotationRequestDetailFromPR(View):
                }, status.HTTP_200_OK
 
 
-class PurchaseQuotationRequestDetailFromPRAPI(APIView):
+class PurchaseQuotationRequestDetailAPI(APIView):
     permission_classes = [IsAuthenticated]
 
     @mask_view(

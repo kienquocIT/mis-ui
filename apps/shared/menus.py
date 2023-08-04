@@ -276,6 +276,12 @@ class MenusPurchase:
                 view_name='PurchaseQuotationRequestList',
                 icon='<i class="bi bi-dice-2"></i>',
             ),
+            MenuCommon(
+                name='Purchase quotation',
+                code='id_menu_purchase_quotation_list',
+                view_name='PurchaseQuotationList',
+                icon='<i class="bi bi-dice-3"></i>',
+            ),
         ],
     )
 

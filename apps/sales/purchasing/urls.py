@@ -1,14 +1,14 @@
 from django.urls import path
-
-from apps.sales.purchasing.views import PurchaseOrderCreate, PurchaseRequestList, PurchaseRequestCreate, \
-    PurchaseRequestListAPI, PurchaseRequestDetailAPI, PurchaseRequestDetail
 from apps.sales.purchasing.views import (
-    PurchaseOrderCreate, PurchaseQuotationRequestList, PurchaseQuotationRequestCreateFromPR,
-    PurchaseQuotationRequestListAPI, PurchaseQuotationRequestDetailFromPR,
-    PurchaseQuotationRequestDetailFromPRAPI, PurchaseQuotationRequestCreateManual
+    PurchaseOrderCreate,
+    PurchaseQuotationRequestList, PurchaseQuotationRequestListAPI,
+    PurchaseQuotationRequestCreateFromPR, PurchaseQuotationRequestCreateManual,
+    PurchaseQuotationRequestDetail, PurchaseQuotationRequestDetailAPI,
+    PurchaseRequestDetailAPI, PurchaseRequestDetail, PurchaseRequestList,
+    PurchaseRequestListAPI, PurchaseRequestCreate,
+    PurchaseQuotationList, PurchaseQuotationCreate, PurchaseQuotationListAPI,
+    PurchaseQuotationDetail, PurchaseQuotationDetailAPI
 )
-from apps.sales.purchasing.views.purchase_request import PurchaseRequestList, PurchaseRequestCreate, \
-    PurchaseRequestListAPI
 
 urlpatterns = [
     # purchase request
@@ -44,13 +44,39 @@ urlpatterns = [
         name='PurchaseQuotationRequestCreateManual'
     ),
     path(
-        'purchase-quotation-request/detail-from-pr/<str:pk>',
-        PurchaseQuotationRequestDetailFromPR.as_view(),
-        name='PurchaseQuotationRequestDetailFromPR'
+        'purchase-quotation-request/detail/<str:pk>',
+        PurchaseQuotationRequestDetail.as_view(),
+        name='PurchaseQuotationRequestDetail'
     ),
     path(
-        'purchase-quotation-request/detail-from-pr/api/<str:pk>',
-        PurchaseQuotationRequestDetailFromPRAPI.as_view(),
-        name='PurchaseQuotationRequestDetailFromPRAPI'
+        'purchase-quotation-request/detail/api/<str:pk>',
+        PurchaseQuotationRequestDetailAPI.as_view(),
+        name='PurchaseQuotationRequestDetailAPI'
+    ),
+] + [
+    path(
+        'purchase-quotation/lists',
+        PurchaseQuotationList.as_view(),
+        name='PurchaseQuotationList',
+    ),
+    path(
+        'purchase-quotation/list/api',
+        PurchaseQuotationListAPI.as_view(),
+        name='PurchaseQuotationListAPI'
+    ),
+    path(
+        'purchase-quotation/create',
+        PurchaseQuotationCreate.as_view(),
+        name='PurchaseQuotationCreate'
+    ),
+    path(
+        'purchase-quotation/detail/<str:pk>',
+        PurchaseQuotationDetail.as_view(),
+        name='PurchaseQuotationDetail'
+    ),
+    path(
+        'purchase-quotation/detail/api/<str:pk>',
+        PurchaseQuotationDetailAPI.as_view(),
+        name='PurchaseQuotationDetailAPI'
     ),
 ]

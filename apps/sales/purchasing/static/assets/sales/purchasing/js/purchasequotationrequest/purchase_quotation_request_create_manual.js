@@ -478,7 +478,7 @@ $(function () {
             let sum_price_after_tax_value = 0;
             table_tr.each(function (index, element) {
                 let quantity = $(this).find('.product-quantity').val();
-                let pr_unit_price = $(this).find('.manual-pr-unit-price-input').attr('value');
+                let pr_unit_price = $(this).find('.pr-unit-price-input').attr('value');
                 let tax_value = $(this).find('.product-tax-select-box option:selected').attr('data-rate');
                 let current_pre_tax_value = parseFloat(quantity) * parseFloat(pr_unit_price);
                 sum_price_pre_tax_value += current_pre_tax_value;
@@ -491,7 +491,7 @@ $(function () {
         }
 
         $(document).on("change", '.pr-unit-price-input', function () {
-            let quantity = $(this).closest('tr').find('.product-quantity').text();
+            let quantity = $(this).closest('tr').find('.product-quantity').val();
             let pr_unit_price = $(this).closest('tr').find('.pr-unit-price-input').attr('value');
             let tax_value = $(this).closest('tr').find('.product-tax-select-box option:selected').attr('data-rate');
             let new_sub_total_price = parseFloat(pr_unit_price) * parseFloat(quantity) + parseFloat(pr_unit_price) * parseFloat(quantity) * parseFloat(tax_value) / 100;
@@ -500,9 +500,9 @@ $(function () {
             $.fn.initMaskMoney2();
         })
 
-        $(document).on("change", '.manual-pr-unit-price-input', function () {
+        $(document).on("change", '.product-tax-select-box', function () {
             let quantity = $(this).closest('tr').find('.product-quantity').val();
-            let pr_unit_price = $(this).closest('tr').find('.manual-pr-unit-price-input').attr('value');
+            let pr_unit_price = $(this).closest('tr').find('.pr-unit-price-input').attr('value');
             let tax_value = $(this).closest('tr').find('.product-tax-select-box option:selected').attr('data-rate');
             let new_sub_total_price = parseFloat(pr_unit_price) * parseFloat(quantity) + parseFloat(pr_unit_price) * parseFloat(quantity) * parseFloat(tax_value) / 100;
             $(this).closest('tr').find('.pr-subtotal-price-input').attr('data-init-money', new_sub_total_price)
@@ -510,8 +510,8 @@ $(function () {
             $.fn.initMaskMoney2();
         })
 
-        $(document).on("change", '.product-tax-select-box', function () {
-            let quantity = $(this).closest('tr').find('.product-quantity').text();
+        $(document).on("change", '.product-quantity', function () {
+            let quantity = $(this).closest('tr').find('.product-quantity').val();
             let pr_unit_price = $(this).closest('tr').find('.pr-unit-price-input').attr('value');
             let tax_value = $(this).closest('tr').find('.product-tax-select-box option:selected').attr('data-rate');
             let new_sub_total_price = parseFloat(pr_unit_price) * parseFloat(quantity) + parseFloat(pr_unit_price) * parseFloat(quantity) * parseFloat(tax_value) / 100;
@@ -575,7 +575,7 @@ $(function () {
                     <td><textarea class="form-control product-description" style="height: 38px"></textarea></td>
                     <td><select class="form-select product-uom-select-box" data-method="GET"><option selected></option></select></td>
                     <td><input type="number" min="1" onchange="this.value=checkInputQuantity(this.value)" class="form-control product-quantity" value="1"></td>
-                    <td><input type="text" data-return-type="number" class="form-control manual-pr-unit-price-input mask-money" style="color: black; background: none"></td>
+                    <td><input type="text" data-return-type="number" class="form-control pr-unit-price-input mask-money" style="color: black; background: none"></td>
                     <td><select class="form-select product-tax-select-box" data-method="GET"><option selected></option></select></td>
                     <td><span class="pr-subtotal-price-input mask-money text-primary" data-init-money=""></span></td>
                     <td><button class="btn-del-line-detail btn text-danger btn-link btn-animated" title="Delete row"><span class="icon"><i class="bi bi-dash-circle"></i></span></button></td>

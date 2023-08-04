@@ -182,6 +182,16 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
         _('Purchase Quotation Request detail'),
     )
 
+    PURCHASE_QUOTATION = BreadcrumbChildren(
+        _('Purchase Quotation list'), 'PurchaseQuotationList'
+    )
+    PURCHASE_QUOTATION_CREATE = BreadcrumbChildren(
+        _('Purchase Quotation create '), 'PurchaseQuotationCreate'
+    )
+    PURCHASE_QUOTATION_DETAIL = BreadcrumbChildren(
+        _('Purchase Quotation detail'),
+    )
+
 
 class BreadcrumbView:
     """menu vertical item view"""
@@ -484,4 +494,14 @@ class BreadcrumbView:
     ]
     PURCHASE_QUOTATION_REQUEST_DETAIL_PAGE = PURCHASE_QUOTATION_REQUEST_LIST_PAGE + [
         BreadcrumbItem.PURCHASE_QUOTATION_REQUEST_DETAIL
+    ]
+
+    PURCHASE_QUOTATION_LIST_PAGE = [
+        BreadcrumbItem.PURCHASE_QUOTATION
+    ]
+    PURCHASE_QUOTATION_CREATE_PAGE = PURCHASE_QUOTATION_LIST_PAGE + [
+        BreadcrumbItem.PURCHASE_QUOTATION_CREATE
+    ]
+    PURCHASE_QUOTATION_DETAIL_PAGE = PURCHASE_QUOTATION_LIST_PAGE + [
+        BreadcrumbItem.PURCHASE_QUOTATION_DETAIL
     ]

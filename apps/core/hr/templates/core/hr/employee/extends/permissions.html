@@ -16,7 +16,8 @@
 {#        <small class="text-danger">** {% trans 'Order will be arranged and grouped by app when updated' %}</small>#}
 {#    </p>#}
 {#{% endif %}#}
-<script type="application/json" id="tblPermissionInitData"></script>
+<script class="hidden" type="application/json" id="tblPermissionInitData"></script>
+<script class="hidden" type="application/json" id="tblPermissionInitDataByKey"></script>
 <table
         id="permissions_list" class="table nowrap w-100"
         data-change-enable="{% if add_new_enabled == "true" %} true {% else %} false {% endif %}"

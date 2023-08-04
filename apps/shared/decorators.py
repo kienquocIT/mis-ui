@@ -161,7 +161,10 @@ def mask_view(**parent_kwargs):
             check_perm_state, check_perm_return = True, (None, 200)
             perm_check_cls: PermCheck = parent_kwargs.get('perm_check', None)
             if perm_check_cls and is_api is False:
-                check_perm_state, check_perm_return = perm_check_cls.valid(request=request, view_kwargs=kwargs)
+                check_perm_state, check_perm_return = perm_check_cls.valid(
+                    request=request,
+                    view_kwargs=kwargs,
+                )
                 if check_perm_state is False:
                     if isinstance(check_perm_return, Response):
                         return check_perm_return

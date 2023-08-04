@@ -41,7 +41,12 @@ class PermCheck:
     def valid(self, request, view_kwargs: dict = None) -> (bool, tuple):
         real_url = self.parse_url(view_kwargs=view_kwargs if isinstance(view_kwargs, dict) else {})
         if real_url:
-            cls_api = ServerAPI(request=request, user=request.user, url=real_url, is_check_perm=True)
+            cls_api = ServerAPI(
+                request=request,
+                user=request.user,
+                url=real_url,
+                is_check_perm=True,
+            )
             if self.method == 'GET':
                 resp = cls_api.get(data=self.data)
             elif self.method == 'POST':
@@ -241,10 +246,16 @@ class RespData:
             status_success = status.HTTP_200_OK
 
         if self.state:
+            page_info = {
+                settings.UI_RESP_KEY_PAGE_SIZE: self.page_size,
+                settings.UI_RESP_KEY_PAGE_COUNT: self.page_count,
+                settings.UI_RESP_KEY_PAGE_NEXT: self.page_next,
+                settings.UI_RESP_KEY_PAGE_PREVIOUS: self.page_previous,
+            }
             if callback_success:
-                return callback_success(self.result), status_success
+                return {**callback_success(self.result), **page_info}, status_success
             if key_success:
-                return {key_success: self.result}, status_success
+                return {key_success: self.result, **page_info}, status_success
             return self.result, status_success
         elif self.status == 401:
             return self.resp_401()
@@ -429,7 +440,7 @@ class APIUtil:
             _result=resp_json.get(cls.key_response_data, {}),
             _errors=resp_json.get(cls.key_response_err, {}),
             _status=resp_json.get(cls.key_response_status, resp.status_code),
-            _page_size=resp_json.get(cls.key_response_status, resp.status_code),
+            _page_size=resp_json.get(cls.key_response_page_size, resp.status_code),
             _page_count=resp_json.get(cls.key_response_page_count, None),
             _page_next=resp_json.get(cls.key_response_page_next, None),
             _page_previous=resp_json.get(cls.key_response_page_previous, None),
@@ -594,6 +605,11 @@ class ServerAPI:
         self.request = kwargs.get('request', None)
         self.is_check_perm = kwargs.get('is_check_perm', False)
 
+        if self.request:
+            self.query_params = getattr(self.request, 'query_params', {})
+        else:
+            self.query_params = {}
+
     @property
     def setup_header_dropdown(self):
         if self.request:
@@ -601,6 +617,23 @@ class ServerAPI:
             if data_is_dd == 'true':
                 return {'DATAISDD': 'true'}
         return {}
+
+    @property
+    def setup_header_dtb(self):
+        ctx = {}
+        if self.query_params:
+            page = self.query_params.get('page', None)
+            if page and isinstance(page, int):
+                ctx['page'] = page
+
+            page_size = self.query_params.get('pageSize', None)
+            if page_size and isinstance(page_size, int):
+                ctx['pageSize'] = page_size
+
+            page_search = self.query_params.get('search', None)
+            if page_search:
+                ctx['search'] = page_search
+        return ctx
 
     @property
     def headers(self) -> dict:
@@ -614,6 +647,7 @@ class ServerAPI:
             'content-type': 'application/json',
             'Accept-Language': 'vi',
             **self.setup_header_dropdown,
+            **self.setup_header_dtb,
         }
         if self.user and getattr(self.user, 'access_token', None):
             data.update(APIUtil.key_authenticated(access_token=self.user.access_token))
@@ -648,10 +682,10 @@ class ServerAPI:
         """
         safe_url = self.url
 
-        if isinstance(data, dict):
-            data['pageSize'] = '-1'
-        else:
-            data = {'pageSize': '-1'}
+        # if isinstance(data, dict):
+        #     data['pageSize'] = '-1'
+        # else:
+        #     data = {'pageSize': '-1'}
 
         if data and isinstance(data, dict):
             url_encode = [f"{key}={val}" for key, val in data.items()]

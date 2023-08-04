@@ -7,7 +7,6 @@ $(function () {
         $.fn.callAjax(url_detail, 'GET').then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
-                console.log(data)
                 let data_detail = data.purchase_quotation_request_detail;
                 if (data_detail.purchase_quotation_request_type) {
                     $('#pr-div').prop('hidden', true);

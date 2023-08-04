@@ -132,7 +132,7 @@ $(function () {
                     },
                     {
                         data: 'purchase_request_code',
-                        className: 'wrap-text w-25 text-center',
+                        className: 'wrap-text w-20 text-center',
                         render: (data, type, row, meta) => {
                             if (last_purchase_request_code !== row.purchase_request_code) {
                                 last_purchase_request_code = row.purchase_request_code;
@@ -150,7 +150,7 @@ $(function () {
                     },
                     {
                         data: 'quantity',
-                        className: 'wrap-text w-15 text-center',
+                        className: 'wrap-text w-20 text-center',
                         render: (data, type, row, meta) => {
                             return row.quantity;
                         }
@@ -257,7 +257,7 @@ $(function () {
                     },
                     {
                         data: 'purchase_request_code_list',
-                        className: 'wrap-text w-25 text-center',
+                        className: 'wrap-text w-20 text-center',
                         render: (data, type, row, meta) => {
                             let html = ``;
                             for (let i = 0; i < row.purchase_request_code_list.length; i++) {
@@ -281,7 +281,7 @@ $(function () {
                     },
                     {
                         data: 'quantity',
-                        className: 'wrap-text w-15 text-center',
+                        className: 'wrap-text w-20 text-center',
                         render: (data, type, row, meta) => {
                             return row.quantity;
                         }

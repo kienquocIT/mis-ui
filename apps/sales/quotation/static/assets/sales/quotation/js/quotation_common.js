@@ -1206,21 +1206,27 @@ class loadDataHandle {
     loadTableDisabled(table) {
         for (let ele of table[0].querySelectorAll('.table-row-item')) {
             ele.setAttribute('disabled', 'true');
+            ele.classList.add('disabled-but-edit');
         }
         for (let ele of table[0].querySelectorAll('.table-row-description')) {
             ele.setAttribute('disabled', 'true');
+            ele.classList.add('disabled-but-edit');
         }
         for (let ele of table[0].querySelectorAll('.table-row-uom')) {
             ele.setAttribute('disabled', 'true');
+            ele.classList.add('disabled-but-edit');
         }
         for (let ele of table[0].querySelectorAll('.table-row-quantity')) {
             ele.setAttribute('disabled', 'true');
+            ele.classList.add('disabled-but-edit');
         }
         for (let ele of table[0].querySelectorAll('.table-row-price')) {
             ele.setAttribute('disabled', 'true');
+            ele.classList.add('disabled-but-edit');
         }
         for (let ele of table[0].querySelectorAll('.table-row-tax')) {
             ele.setAttribute('disabled', 'true');
+            ele.classList.add('disabled-but-edit');
         }
     };
 }

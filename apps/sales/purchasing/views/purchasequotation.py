@@ -62,7 +62,7 @@ class PurchaseQuotationCreate(View):
                            'account_list': resp3.result,
                            'product_list': resp4.result,
                            'contact_list': resp5.result,
-                           'uom_list': resp6.result
+                           'uom_list': resp6.result,
                        }
                }, status.HTTP_200_OK
 

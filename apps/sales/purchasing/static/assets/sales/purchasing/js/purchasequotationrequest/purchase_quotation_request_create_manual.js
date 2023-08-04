@@ -595,7 +595,7 @@ $(function () {
             $('.btn-del-line-detail').on('click', function () {
                 $(this).closest('tr').remove();
                 count_row(table_body, 2);
-                calculate_price($('#tab_line_detail tbody'), $('#pretax-value'), $('#taxes-value'), $('#total-value'));
+                calculate_price($('#table-purchase-quotation-request-products-selected tbody tr'));
             })
 
             $('#row-' + row_count + ' .product-select-box').on('change', function () {
@@ -607,7 +607,7 @@ $(function () {
                 $('#' + parent_tr.attr('id') + ' .product-quantity').val(1);
                 $('#' + parent_tr.attr('id') + ' .product-subtotal-price').attr('value', '');
                 $('#' + parent_tr.attr('id') + ' .product-subtotal-price-after-tax').attr('value', '');
-                calculate_price($('#tab_line_detail tbody'), $('#pretax-value'), $('#taxes-value'), $('#total-value'));
+                calculate_price($('#table-purchase-quotation-request-products-selected tbody tr'));
 
                 if ($(this).find('option:selected').val() !== '') {
                     loadProductUomList(parent_tr.attr('id'), $(this).find('option:selected').attr('data-uom-group-id'));

@@ -37,7 +37,7 @@ $(function () {
             $('#pqr-select-box option').remove();
             $('#pqr-select-box').append(`<option selected></option>`)
             for (let i = 0; i < pqr_list.length; i++) {
-                $('#pqr-select-box').append(`<option value="${pqr_list[i].id}">(${pqr_list[i].code}) ${pqr_list[i].title}</option>`)
+                $('#pqr-select-box').append(`<option value="${pqr_list[i].id}"">(${pqr_list[i].code}) ${pqr_list[i].title}</option>`)
             }
             $('#pqr-select-box').select2();
         }
@@ -84,7 +84,8 @@ $(function () {
             $('.btn-del-line-detail').on('click', function () {
                 $(this).closest('tr').remove();
                 count_row(table_body, 2);
-                calculate_price($('#tab_line_detail tbody'), $('#pretax-value'), $('#taxes-value'), $('#total-value'));
+                calculate_price($('#table-purchase-quotation-products-selected tbody tr'));
+                $.fn.initMaskMoney2();
             })
 
             $('#row-' + row_count + ' .product-select-box').on('change', function () {
@@ -96,7 +97,7 @@ $(function () {
                 $('#' + parent_tr.attr('id') + ' .product-quantity').val(1);
                 $('#' + parent_tr.attr('id') + ' .product-subtotal-price').attr('value', '');
                 $('#' + parent_tr.attr('id') + ' .product-subtotal-price-after-tax').attr('value', '');
-                calculate_price($('#tab_line_detail tbody'), $('#pretax-value'), $('#taxes-value'), $('#total-value'));
+                calculate_price($('#table-purchase-quotation-products-selected tbody tr'));
 
                 if ($(this).find('option:selected').val() !== '') {
                     loadProductUomList(parent_tr.attr('id'), $(this).find('option:selected').attr('data-uom-group-id'));
@@ -146,6 +147,20 @@ $(function () {
             })
         }
 
+        function loadProductTaxListForAuto(row_id, selected) {
+            let ele = $('#' + row_id + ' .product-tax-select-box');
+            ele.html('');
+            ele.append(`<option data-rate="0" selected></option>`);
+            tax_list.map(function (item) {
+                if (item.id === selected) {
+                    ele.append(`<option selected data-rate="` + item.rate + `" value="` + item.id + `">` + item.title + ` (` + item.rate + `%)</option>`);
+                }
+                else {
+                    ele.append(`<option data-rate="` + item.rate + `" value="` + item.id + `">` + item.title + ` (` + item.rate + `%)</option>`);
+                }
+            })
+        }
+
         function loadProductUomList(row_id, uom_group_id) {
             let ele = $('#' + row_id + ' .product-uom-select-box');
             ele.html('');
@@ -153,6 +168,22 @@ $(function () {
             uom_list.map(function (item) {
                 if (item.group.id === uom_group_id) {
                     ele.append(`<option value="` + item.id + `">` + item.title + `</option>`);
+                }
+            })
+        }
+
+        function loadProductUomListForAuto(row_id, uom_group_id, selected) {
+            let ele = $('#' + row_id + ' .product-uom-select-box');
+            ele.html('');
+            ele.append(`<option></option>`);
+            uom_list.map(function (item) {
+                if (item.group.id === uom_group_id) {
+                    if (item.id === selected) {
+                        ele.append(`<option selected value="` + item.id + `">` + item.title + `</option>`);
+                    }
+                    else {
+                        ele.append(`<option value="` + item.id + `">` + item.title + `</option>`);
+                    }
                 }
             })
         }
@@ -196,6 +227,57 @@ $(function () {
         })
 
         $(document).on("change", '.product-quantity', function () {
+            let quantity = $(this).closest('tr').find('.product-quantity').val();
+            let pr_unit_price = $(this).closest('tr').find('.pr-unit-price-input').attr('value');
+            let tax_value = $(this).closest('tr').find('.product-tax-select-box option:selected').attr('data-rate');
+            let new_sub_total_price = parseFloat(pr_unit_price) * parseFloat(quantity) + parseFloat(pr_unit_price) * parseFloat(quantity) * parseFloat(tax_value) / 100;
+            $(this).closest('tr').find('.pr-subtotal-price-input').attr('data-init-money', new_sub_total_price)
+            calculate_price($('#table-purchase-quotation-products-selected tbody tr'));
+            $.fn.initMaskMoney2();
+        })
+
+        $(document).on("change", '#pqr-select-box', function () {
+            $('#btn-add-product').prop('hidden', true);
+            let pqr_selected = $('#pqr-select-box option:selected').attr('value');
+            let product_list_get = [];
+            $.each(pqr_list, function (index, item) {
+                if ($(this)[0].id === pqr_selected) {
+                    product_list_get = $(this)[0].product_list
+                    return
+                }
+            });
+
+            let table_body = $('#table-purchase-quotation-products-selected tbody');
+            table_body.html(``);
+            for (let i = 0; i < product_list_get.length; i++) {
+                table_body.append(`<tr id="row-${i}" class="row-number">
+                            <td class="number text-center">${i+1}</td>
+                            <td><select class="form-select product-select-box" disabled data-method="GET"><option selected data-tax-id="${product_list_get[i].tax.id}" data-uom-id="${product_list_get[i].uom.id}" data-uom-group-id="${product_list_get[i].uom.group_id}" value="${product_list_get[i].id}">${product_list_get[i].title}</option></select></td>
+                            <td><textarea class="form-control product-description" readonly style="height: 38px">${product_list_get[i].description}</textarea></td>
+                            <td><select class="form-select product-uom-select-box" data-method="GET"><option selected></option></select></td>
+                            <td><input type="number" min="1" onchange="this.value=checkInputQuantity(this.value)" class="form-control product-quantity" value="${product_list_get[i].quantity}"></td>
+                            <td><input type="text" data-return-type="number" class="form-control pr-unit-price-input mask-money" style="color: black; background: none" value="${product_list_get[i].product_unit_price}"></td>
+                            <td><select class="form-select product-tax-select-box" data-method="GET"><option selected></option></select></td>
+                            <td><span class="pr-subtotal-price-input mask-money text-primary" data-init-money="${product_list_get[i].product_subtotal_price}"></span></td>
+                            <td><button class="btn-del-line-detail btn text-danger btn-link btn-animated" title="Delete row"><span class="icon"><i class="bi bi-dash-circle"></i></span></button></td>
+                        </tr>
+                        <script>
+                            function checkInputQuantity(value) {
+                                if (parseInt(value) < 0) {
+                                    return value*(-1);
+                                }
+                                return value;
+                            }
+                        </script>`);
+                $('.btn-del-line-detail').on('click', function () {
+                    $(this).closest('tr').remove();
+                    count_row(table_body, 2);
+                    calculate_price($('#table-purchase-quotation-products-selected tbody tr'));
+                    $.fn.initMaskMoney2();
+                })
+                loadProductUomListForAuto('row-'+i, $('#row-'+i).find('.product-select-box option:selected').attr('data-uom-group-id'), $('#row-'+i).find('.product-select-box option:selected').attr('data-uom-id'));
+                loadProductTaxListForAuto('row-'+i, $('#row-'+i).find('.product-select-box option:selected').attr('data-tax-id'));
+            }
             let quantity = $(this).closest('tr').find('.product-quantity').val();
             let pr_unit_price = $(this).closest('tr').find('.pr-unit-price-input').attr('value');
             let tax_value = $(this).closest('tr').find('.product-tax-select-box option:selected').attr('data-rate');

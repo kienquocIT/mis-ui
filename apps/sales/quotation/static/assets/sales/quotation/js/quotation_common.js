@@ -30,7 +30,6 @@ class loadDataHandle {
                         'data': data_filter,
                         'isDropdown': true,
                     }
-                    // url, method, data_filter
                 ).then(
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
@@ -55,27 +54,28 @@ class loadDataHandle {
                                 }
                                 let eleHTML = ``;
                                 data.opportunity_list.map(function (item) {
-                                    let dataStr = JSON.stringify({
-                                        'id': item.id,
-                                        'title': item.title,
-                                        'code': item.code,
-                                        'customer': item.customer.title
-                                    }).replace(/"/g, "&quot;");
-                                    let opportunity_data = JSON.stringify(item).replace(/"/g, "&quot;");
-                                    let data_show = `${item.code}` + ` - ` + `${item.title}`;
-                                    eleHTML += `<option value="${item.id}">
-                                                <span class="opp-title">${data_show}</span>
-                                                <input type="hidden" class="data-default" value="${opportunity_data}">
-                                                <input type="hidden" class="data-info" value="${dataStr}">
-                                            </option>`
-                                    if (valueToSelect && valueToSelect.id === item.id) {
-                                        eleHTML += `<option value="${item.id}" selected>
-                                                <span class="opp-title">${data_show}</span>
-                                                <input type="hidden" class="data-default" value="${opportunity_data}">
-                                                <input type="hidden" class="data-info" value="${dataStr}">
-                                            </option>`
-                                    }
-                                })
+                                    if (item.id) {
+                                        let dataStr = JSON.stringify({
+                                            'id': item.id,
+                                            'title': item.title,
+                                            'code': item.code,
+                                            'customer': item.customer?.title
+                                        }).replace(/"/g, "&quot;");
+                                        let opportunity_data = JSON.stringify(item).replace(/"/g, "&quot;");
+                                        let data_show = `${item.code}` + ` - ` + `${item.title}`;
+                                        eleHTML += `<option value="${item.id}">
+                                                        <span class="opp-title">${data_show}</span>
+                                                        <input type="hidden" class="data-default" value="${opportunity_data}">
+                                                        <input type="hidden" class="data-info" value="${dataStr}">
+                                                    </option>`
+                                        if (valueToSelect && valueToSelect.id === item.id) {
+                                            eleHTML += `<option value="${item.id}" selected>
+                                                            <span class="opp-title">${data_show}</span>
+                                                            <input type="hidden" class="data-default" value="${opportunity_data}">
+                                                            <input type="hidden" class="data-info" value="${dataStr}">
+                                                        </option>`
+                                        }
+                                    }})
                                 ele.append(`<option value=""></option>`);
                                 ele.append(eleHTML);
                                 self.loadInformationSelectBox(ele);
@@ -115,7 +115,6 @@ class loadDataHandle {
                         'data': data_filter,
                         'isDropdown': true,
                     }
-                    // url, method, data_filter
                 ).then(
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
@@ -202,7 +201,6 @@ class loadDataHandle {
                     'data': {'account_name_id': customerID},
                     'isDropdown': true,
                 }
-                // url, method, {'account_name_id': customerID}
             ).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
@@ -251,17 +249,16 @@ class loadDataHandle {
                 'method': method,
                 'isDropdown': true,
             }
-            // url, method
         ).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
-                    ele.empty();
                     if (data.hasOwnProperty('employee_list') && Array.isArray(data.employee_list)) {
                         let initEmployee = $('#data-init-quotation-create-request-employee-id');
                         if (initEmployee.val() && is_load_init === true) {
                             valueToSelect = initEmployee.val();
                         }
+                        ele.empty();
                         ele.append(`<option value=""></option>`);
                         data.employee_list.map(function (item) {
                             let group = '';
@@ -283,8 +280,9 @@ class loadDataHandle {
                                             <span class="employee-title">${item.full_name}</span>
                                             <input type="hidden" class="data-info" value="${dataStr}">
                                         </option>`
+                                ele.append(option);
                             }
-                            ele.append(option)
+                            // ele.append(option);
                         });
                         self.loadInformationSelectBox(ele);
                     }

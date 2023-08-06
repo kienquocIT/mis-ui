@@ -75,7 +75,7 @@ $(function () {
 
         // Purchase request modal
         $('#btn-purchase-request-modal').on('click', function () {
-            loadDataClass.loadModalPurchaseRequest(tablePurchaseRequest, tablePurchaseRequestProduct);
+            loadDataClass.loadModalPurchaseRequestTable();
         });
 
         // Checkbox merge product
@@ -90,10 +90,11 @@ $(function () {
 
         // Action on click .table-row-checkbox of tablePurchaseRequest
         tablePurchaseRequest.on('click', '.table-row-checkbox', function() {
-            if ($(this)[0].checked === false) {
-                let targetID = $(this)[0].id;
-                uncheckRowTableRelate(tablePurchaseRequestProduct, targetID)
-            }
+            loadDataClass.loadModalPurchaseRequestProductTable();
+            // if ($(this)[0].checked === false) {
+            //     let targetID = $(this)[0].id;
+            //     uncheckRowTableRelate(tablePurchaseRequestProduct, targetID)
+            // }
         });
 
         // Action on click btn add purchase request

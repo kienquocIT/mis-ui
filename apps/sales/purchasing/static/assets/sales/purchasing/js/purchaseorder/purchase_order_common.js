@@ -443,6 +443,76 @@ class loadDataHandle {
         }
     };
 
+    loadModalPurchaseRequestTable() {
+        let tablePurchaseRequest = $('#datable-purchase-request');
+        if (tablePurchaseRequest[0].querySelector('.dataTables_empty')) {
+            tablePurchaseRequest.DataTable().destroy();
+            dataTableClass.dataTablePurchaseRequest();
+        }
+    };
+
+    loadModalPurchaseRequestProductTable() {
+        let tablePurchaseRequest = $('#datable-purchase-request');
+        let tablePurchaseRequestProduct = $('#datable-purchase-request-product');
+        let frm = new SetupFormSubmit(tablePurchaseRequestProduct);
+        let request_id_list = [];
+        let product_checked_list = [];
+        for (let i = 0; i < tablePurchaseRequest[0].tBodies[0].rows.length; i++) {
+            let row = tablePurchaseRequest[0].tBodies[0].rows[i];
+            if (row.querySelector('.table-row-checkbox').checked === true) {
+                request_id_list.push(row.querySelector('.table-row-checkbox').id);
+            }
+        }
+        for (let idx = 0; idx < tablePurchaseRequestProduct[0].tBodies[0].rows.length; idx++) {
+            let row = tablePurchaseRequestProduct[0].tBodies[0].rows[idx];
+            if (row.querySelector('.table-row-checkbox').checked === true) {
+                product_checked_list.push({
+                    'id': row.querySelector('.table-row-checkbox').id,
+                    'quantity_order': row.querySelector('.table-row-quantity-order').value,
+                });
+            }
+        }
+        $.fn.callAjax2({
+                'url': frm.dataUrl,
+                'method': frm.dataMethod,
+                'data': {'purchase_request_id__in': request_id_list},
+                'isDropdown': true,
+            }
+        ).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (data.hasOwnProperty('purchase_request_product_list') && Array.isArray(data.purchase_request_product_list)) {
+                        tablePurchaseRequestProduct.DataTable().destroy();
+                        dataTableClass.dataTablePurchaseRequestProduct(data.purchase_request_product_list);
+                        for (let idx = 0; idx < tablePurchaseRequestProduct[0].tBodies[0].rows.length; idx++) {
+                            let row = tablePurchaseRequestProduct[0].tBodies[0].rows[idx];
+                            for (let data_prod of product_checked_list) {
+                                if (row.querySelector('.table-row-checkbox').id === data_prod.id) {
+                                    row.querySelector('.table-row-checkbox').checked = true;
+                                    row.querySelector('.table-row-quantity-order').value = data_prod.quantity_order;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        )
+    };
+
+    loadMergeProductTable(eleCheckbox) {
+        if (eleCheckbox[0].checked === true) {
+            $('#sroll-datable-purchase-request-product')[0].setAttribute('hidden', 'true');
+            $('#sroll-datable-purchase-request-product-merge')[0].removeAttribute('hidden');
+            $('#datable-purchase-request-product-merge').DataTable().destroy();
+            let data = setupMergeProduct();
+            dataTableClass.dataTablePurchaseRequestProductMerge(data);
+        } else {
+            $('#sroll-datable-purchase-request-product-merge')[0].setAttribute('hidden', 'true');
+            $('#sroll-datable-purchase-request-product')[0].removeAttribute('hidden');
+        }
+    };
+
     loadDataShowPurchaseRequest(elePurchaseRequest, tablePurchaseRequest) {
         let self = this;
         let purchase_requests_data = [];
@@ -473,127 +543,6 @@ class loadDataHandle {
             }
         }
         $('#purchase_quotations_data').val(JSON.stringify(purchase_requests_data));
-    };
-
-    loadModalPurchaseRequest(tablePurchaseRequest, tablePurchaseRequestProduct) {
-        if (tablePurchaseRequest[0].querySelector('.dataTables_empty') && tablePurchaseRequestProduct[0].querySelector('.dataTables_empty')) {
-            // load dataTablePurchaseRequest
-            tablePurchaseRequest.DataTable().destroy();
-            dataTableClass.dataTablePurchaseRequest([{
-                'id': 1,
-                'order': 1,
-                'title': 'Yeu cau mua hang hoa',
-                'code': 'PR0001',
-            },
-                {
-                    'id': 2,
-                    'order': 2,
-                    'title': 'Yeu cau mua hang hoa',
-                    'code': 'PR0002',
-                },
-                {
-                    'id': 3,
-                    'order': 3,
-                    'title': 'Yeu cau mua hang hoa',
-                    'code': 'PR0003',
-                },{
-                    'id': 4,
-                    'order': 4,
-                    'title': 'Yeu cau mua hang hoa',
-                    'code': 'PR0003',
-                },{
-                    'id': 5,
-                    'order': 5,
-                    'title': 'Yeu cau mua hang hoa',
-                    'code': 'PR0003',
-                },{
-                    'id': 6,
-                    'order': 6,
-                    'title': 'Yeu cau mua hang hoa',
-                    'code': 'PR0003',
-                },{
-                    'id': 7,
-                    'order': 7,
-                    'title': 'Yeu cau mua hang hoa',
-                    'code': 'PR0003',
-                },{
-                    'id': 8,
-                    'order': 8,
-                    'title': 'Yeu cau mua hang hoa',
-                    'code': 'PR0003',
-                },{
-                    'id': 9,
-                    'order': 9,
-                    'title': 'Yeu cau mua hang hoa',
-                    'code': 'PR0003',
-                },{
-                    'id': 10,
-                    'order': 10,
-                    'title': 'Yeu cau mua hang hoa',
-                    'code': 'PR0003',
-                },{
-                    'id': 11,
-                    'order': 11,
-                    'title': 'Yeu cau mua hang hoa',
-                    'code': 'PR0003',
-                },{
-                    'id': 12,
-                    'order': 12,
-                    'title': 'Yeu cau mua hang hoa',
-                    'code': 'PR0003',
-                }]);
-            // load dataTablePurchaseRequestProduct
-            tablePurchaseRequestProduct.DataTable().destroy();
-            dataTableClass.dataTablePurchaseRequestProduct([{
-                'id': 1,
-                'purchase_request': {'id': 1, 'code': 'PR0001'},
-                'title': 'Yeu cau mua linh kien',
-                'code': 'PR0001',
-                'uom': 'chai',
-                'quantity': 10,
-                'remain': 5,
-            },
-                {
-                    'id': 1,
-                    'purchase_request': {'id': 2, 'code': 'PR0002'},
-                    'title': 'Yeu cau mua linh kien',
-                    'code': 'PR0002',
-                    'uom': 'chai',
-                    'quantity': 10,
-                    'remain': 5,
-                },
-                {
-                    'id': 3,
-                    'purchase_request': {'id': 3, 'code': 'PR0003'},
-                    'title': 'Yeu cau mua laptop',
-                    'code': 'PR0003',
-                    'uom': 'chai',
-                    'quantity': 10,
-                    'remain': 5,
-                },
-                {
-                    'id': 4,
-                    'purchase_request': {'id': 4, 'code': 'PR0004'},
-                    'title': 'Yeu cau mua may in',
-                    'code': 'PR0004',
-                    'uom': 'chai',
-                    'quantity': 10,
-                    'remain': 5,
-                }]);
-        }
-    };
-
-    loadMergeProductTable(eleCheckbox) {
-        if (eleCheckbox[0].checked === true) {
-            $('#sroll-datable-purchase-request-product')[0].setAttribute('hidden', 'true');
-            $('#sroll-datable-purchase-request-product-merge')[0].removeAttribute('hidden');
-            $('#datable-purchase-request-product-merge').DataTable().destroy();
-            let data = setupMergeProduct();
-            dataTableClass.dataTablePurchaseRequestProductMerge(data);
-        } else {
-            $('#sroll-datable-purchase-request-product-merge')[0].setAttribute('hidden', 'true');
-            $('#sroll-datable-purchase-request-product')[0].removeAttribute('hidden');
-        }
     };
 
     loadModalPurchaseQuotation(tablePurchaseQuotation) {
@@ -871,11 +820,21 @@ class loadDataHandle {
 
 // DataTable
 class dataTableHandle {
-    dataTablePurchaseRequest(data) {
+    dataTablePurchaseRequest() {
         let $table = $('#datable-purchase-request');
         let frm = new SetupFormSubmit($table);
         $table.DataTableDefault({
-            data: data ? data : [],
+            ajax: {
+                url: frm.dataUrl,
+                type: frm.dataMethod,
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && resp.data.hasOwnProperty('purchase_request_list')) {
+                        return resp.data['purchase_request_list'] ? resp.data['purchase_request_list'] : []
+                    }
+                    throw Error('Call data raise errors.')
+                },
+            },
             searching: false,
             paging: false,
             ordering: false,
@@ -941,7 +900,7 @@ class dataTableHandle {
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        return `<span class="table-row-title">${row.title}</span>`
+                        return `<span class="table-row-title">${row.product.title}</span>`
                     },
                 },
                 {
@@ -953,7 +912,7 @@ class dataTableHandle {
                 {
                     targets: 4,
                     render: (data, type, row) => {
-                        return `<span class="table-row-uom-request">${row.uom}</span>`
+                        return `<span class="table-row-uom-request">${row.uom.title}</span>`
                     }
                 },
                 {

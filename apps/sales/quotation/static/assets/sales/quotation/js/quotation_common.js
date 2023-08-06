@@ -788,13 +788,10 @@ class loadDataHandle {
                     }
                 }
                 info += `<div class="dropdown-divider"></div>
-                    <div class="row">
-                        <div class="col-4"></div>
-                        <div class="col-8">
-                            <a href="${link}" target="_blank" class="link-primary underline_hover">
-                                <span><span>${$.fn.transEle.attr('data-view-detail-info')}</span><span class="icon ml-1"><span class="feather-icon"><i class="fas fa-arrow-circle-right"></i></span></span></span>
-                            </a>
-                        </div>
+                    <div class="row float-right">
+                        <a href="${link}" target="_blank" class="link-primary underline_hover">
+                            <span><span>${$.fn.transEle.attr('data-view-detail-info')}</span><span class="icon ml-1"><span class="feather-icon"><i class="fas fa-arrow-circle-right"></i></span></span></span>
+                        </a>
                     </div>`;
                 dropdownContent.innerHTML = info;
             }

@@ -11,6 +11,7 @@ $(function () {
         let elePurchaseRequest = $('#purchase-order-purchase-request');
         let elePurchaseQuotation = $('#purchase-order-purchase-quotation');
         let eleBoxSupplier = $('#box-purchase-order-supplier');
+        let eleCommonArea = $('#common-information-area');
         // Tables
         let tablePurchaseRequest = $('#datable-purchase-request');
         let tablePurchaseRequestProduct = $('#datable-purchase-request-product');
@@ -43,25 +44,33 @@ $(function () {
 
 // EVENTS
         // Action on click dropdown supplier
-        eleBoxSupplier.on('click', function() {
-            loadDataClass.loadBoxSupplier(null);
+        // eleBoxSupplier.on('click', function() {
+        //     loadDataClass.loadBoxSupplier(null);
+        // });
+
+        // Action on click dropdown supplier
+        eleCommonArea.on('click', '.select2-selection', function() {
+            let eleSelect = $(this)[0].closest('.form-group').querySelector('.form-select');
+            if (eleSelect.id === 'box-purchase-order-supplier') {
+                loadDataClass.loadBoxSupplier(null);
+            }
         });
 
         // Action on change dropdown supplier
         eleBoxSupplier.on('change', function () {
             let optionSelected = eleBoxSupplier[0].options[eleBoxSupplier[0].selectedIndex];
             if (optionSelected) {
-                if (optionSelected.querySelector('.data-default')) {
-                    let data = JSON.parse(optionSelected.querySelector('.data-default').value);
+                if (optionSelected.querySelector('.data-info')) {
+                    let data = JSON.parse(optionSelected.querySelector('.data-info').value);
                     // load Contact by supplier
                     if (data.id && data.owner) {
-                        loadDataClass.loadBoxQuotationContact(data.owner.id, data.id);
+                        loadDataClass.loadBoxContact(data.owner.id, data.id);
                     }
                 } else { // No Value => load again dropdowns
-                    loadDataClass.loadBoxQuotationContact();
+                    loadDataClass.loadBoxContact();
                 }
             }
-            // loadDataClass.loadInformationSelectBox($(this));
+            loadDataClass.loadMoreInformation($(this));
         });
 
         // Purchase request modal

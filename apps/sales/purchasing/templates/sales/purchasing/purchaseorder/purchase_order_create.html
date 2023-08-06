@@ -33,7 +33,7 @@
         {% csrf_token %}
         <div class="container-fluid">
             <div class="collapse multi-collapse show" id="collapseExample">
-                <div class="row">
+                <div class="row" id="common-information-area">
                     <div class="col-6">
                         <div class="form-group">
                             <label class="form-label" for="purchase-order-purchase-quotation">{% trans 'Title' %}<span class="required"></span></label>
@@ -91,7 +91,7 @@
                                     <span class="input-prefix">
                                         <div class="btn-group dropstart">
                                             <i
-                                                    class="fas fa-info-circle"
+                                                    class="fas fa-info-circle more-information"
                                                     data-bs-toggle="dropdown"
                                                     data-dropdown-animation
                                                     aria-haspopup="true"
@@ -120,7 +120,7 @@
                                     <span class="input-prefix">
                                         <div class="btn-group dropstart">
                                             <i
-                                                    class="fas fa-info-circle more-information-btn"
+                                                    class="fas fa-info-circle more-information"
                                                     data-bs-toggle="dropdown"
                                                     data-dropdown-animation
                                                     aria-haspopup="true"
@@ -131,7 +131,7 @@
                                         </div>
                                     </span>
                                     <select
-                                            class="form-control select2"
+                                            class="form-select select2"
                                             id="box-purchase-order-contact"
                                             data-url="{% url "ContactListAPI" %}"
                                             data-method="GET"
@@ -374,6 +374,8 @@
         <input
             type="hidden"
             id="base-trans-factory"
+            data-view-detail-info="{% trans 'View detail' %}"
+            data-more-information="{% trans 'More information' %}"
         >
         <input
             type="hidden"

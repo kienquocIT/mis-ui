@@ -41,7 +41,7 @@ $(function () {
             $('#pqr-select-box').append(`<option selected></option>`)
             for (let i = 0; i < pqr_list.length; i++) {
                 if (purchase_quotation_request_selected === pqr_list[i].id) {
-                    $('#pqr-select-box').append(`<option selected value="${pqr_list[i].id}"">(${pqr_list[i].code}) ${pqr_list[i].title}</option>`);
+                    $('#pqr-select-box').append(`<option selected value="${pqr_list[i].id}">(${pqr_list[i].code}) ${pqr_list[i].title}</option>`);
                     $('#btn-add-product').prop('hidden', true);
                     let pqr_selected = $('#pqr-select-box option:selected').attr('value');
                     let product_list_get = [];
@@ -92,7 +92,7 @@ $(function () {
                     $.fn.initMaskMoney2();
                 }
                 else {
-                    $('#pqr-select-box').append(`<option value="${pqr_list[i].id}"">(${pqr_list[i].code}) ${pqr_list[i].title}</option>`);
+                    $('#pqr-select-box').append(`<option value="${pqr_list[i].id}">(${pqr_list[i].code}) ${pqr_list[i].title}</option>`);
                 }
             }
             $('#pqr-select-box').select2();

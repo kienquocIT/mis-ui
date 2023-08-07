@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load i18n static %}
+{% block title %}{% trans 'Purchase Quotation Request List' %}{% endblock %}
+{% block cssHeader %}
+    <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}"/>
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <a class="btn btn-outline-primary btn-animated btn-xs"
+       data-bs-toggle="modal"
+       data-bs-placement="top"
+       title="{% trans 'Select Create Purchase Quotation Request' %}"
+       data-bs-target="#select_create_purchase_quotation_request_button_modal"
+       id="select_create_purchase_quotation_request_button">
+        <span class="icon">
+            <span class="feather-icon">
+                <i data-feather="plus"></i>
+            </span>
+            <span class="font-3 ml-1">
+                {% trans 'New' %}
+            </span>
+        </span>
+    </a>
+{% endblock %}
+{% block pageContent %}
+    <div id="section-advance-list">
+        <table id="datatable_pqr_list" class="table nowrap w-100 mb-5" data-method="GET"
+               data-url="{% url 'PurchaseQuotationRequestListAPI' %}"
+               data-url-detail="{% url "PurchaseQuotationRequestDetail" '0' %}"
+        >
+            <thead>
+            <th>{% trans "Code" %}</th>
+            <th>{% trans "Name" %}
+                <i class="fas fa-info-circle icon-info"
+                   data-bs-toggle="tooltip"
+                   data-bs-placement="bottom"
+                   title="{% trans 'Press row here to open detail page.' %}">
+                </i>
+            </th>
+            <th>{% trans "Purchase request" %}</th>
+            <th>{% trans "Delivered date" %}</th>
+            <th>{% trans "Status" %}</th>
+            <th>{% trans "Response status" %}</th>
+            </thead>
+        </table>
+    </div>
+
+    <div class="modal fade mt-10" id="select_create_purchase_quotation_request_button_modal"
+         tabindex="-1" role="dialog"
+         aria-labelledby="SelectCreatePurchaseQuotationRequestModalModalForms" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="row mr-1 ml-1">
+                        <button class="btn btn-outline-primary"
+                                data-redirect="{% url "PurchaseQuotationRequestCreateFromPR" %}"
+                                id="btn_redirect_create_new_purchase_quotation_request_from_pr">
+                            <span>
+                                <span style="font-size: xx-large">{% trans 'From PR' %}</span>
+                            </span>
+                        </button>
+                    </div>
+                    <div class="row mt-2 mr-1 ml-1">
+                        <button class="btn btn-outline-secondary"
+                                data-redirect="{% url "PurchaseQuotationRequestCreateManual" %}"
+                                id="btn_redirect_create_new_purchase_quotation_request_manual">
+                            <span>
+                                <span style="font-size: xx-large">{% trans 'Manual' %}</span>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/sales/purchasing/js/purchasequotationrequest/purchase_quotation_request_list.js' %}"></script>
+{% endblock %}

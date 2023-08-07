@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load i18n static %}
+{% block title %}{% trans 'Purchase Quotation List' %}{% endblock %}
+{% block cssHeader %}
+    <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}"/>
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <a class="btn btn-outline-primary btn-animated btn-xs"
+       data-bs-placement="top"
+       title="{% trans 'Create New Purchase Quotation' %}"
+       data-redirect="{% url "PurchaseQuotationCreate" %}"
+       id="create_purchase_quotation_button">
+        <span class="icon">
+            <span class="feather-icon">
+                <i data-feather="plus"></i>
+            </span>
+            <span class="font-3 ml-1">
+                {% trans 'New' %}
+            </span>
+        </span>
+    </a>
+{% endblock %}
+{% block pageContent %}
+    <div id="section-advance-list">
+        <table id="datatable_pqr_list" class="table nowrap w-100 mb-5" data-method="GET"
+               data-url="{% url 'PurchaseQuotationRequestListAPI' %}"
+               data-url-detail="{% url "PurchaseQuotationRequestDetail" '0' %}"
+        >
+            <thead>
+            <th>{% trans "Code" %}</th>
+            <th>{% trans "Name" %}
+                <i class="fas fa-info-circle icon-info"
+                   data-bs-toggle="tooltip"
+                   data-bs-placement="bottom"
+                   title="{% trans 'Press row here to open detail page.' %}">
+                </i>
+            </th>
+            <th>{% trans "Purchase request" %}</th>
+            <th>{% trans "Delivered date" %}</th>
+            <th>{% trans "Status" %}</th>
+            <th>{% trans "Response status" %}</th>
+            </thead>
+        </table>
+    </div>
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/sales/purchasing/js/purchasequotation/purchase_quotation_list.js' %}"></script>
+{% endblock %}

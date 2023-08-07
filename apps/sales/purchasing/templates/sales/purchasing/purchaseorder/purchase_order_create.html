@@ -33,10 +33,10 @@
         {% csrf_token %}
         <div class="container-fluid">
             <div class="collapse multi-collapse show" id="collapseExample">
-                <div class="row">
+                <div class="row" id="common-information-area">
                     <div class="col-6">
                         <div class="form-group">
-                            <label class="form-label" for="purchase-order-purchase-quotation">{% trans 'Title' %}</label>
+                            <label class="form-label" for="purchase-order-purchase-quotation">{% trans 'Title' %}<span class="required"></span></label>
                             <div class="input-group">
                                 <span class="input-affix-wrapper">
                                     <input
@@ -47,13 +47,13 @@
                                     >
                                 </span>
                             </div>
-{#                            <small class="form-text text-muted">{% trans 'Opportunity link to quotation' %}</small>#}
                         </div>
                         <div class="form-group">
                             <label class="form-label" for="purchase-order-purchase-request">{% trans 'Purchase request' %}</label>
                             <div class="input-group">
                                 <span class="input-affix-wrapper">
                                     <div class="form-control div-input" id="purchase-order-purchase-request"></div>
+                                    <input type="hidden" id="purchase_requests_data">
                                     <span class="input-suffix">
                                         <button
                                             type="button"
@@ -65,13 +65,13 @@
                                     </span>
                                 </span>
                             </div>
-{#                            <small class="form-text text-muted">{% trans 'Purchase request link to purchase order' %}</small>#}
                         </div>
                         <div class="form-group">
                             <label class="form-label" for="purchase-order-purchase-request">{% trans 'Purchase quotation' %}</label>
                             <div class="input-group">
                                 <span class="input-affix-wrapper">
                                     <div class="form-control div-input" id="purchase-order-purchase-quotation"></div>
+                                    <input type="hidden" id="purchase_quotations_data">
                                     <span class="input-suffix">
                                         <button
                                             type="button"
@@ -83,16 +83,44 @@
                                     </span>
                                 </span>
                             </div>
-{#                            <small class="form-text text-muted">{% trans 'Purchase quotation link to purchase order' %}</small>#}
                         </div>
                         <div class="form-group">
-                            <label class="form-label" for="box-purchase-order-contact">{% trans 'Select Contact' %}<span class="required"></span></label>
+                            <label class="form-label" for="box-purchase-order-supplier">{% trans 'Select Supplier' %}</label>
                             <div class="input-group">
                                 <span class="input-affix-wrapper">
                                     <span class="input-prefix">
                                         <div class="btn-group dropstart">
                                             <i
-                                                    class="fas fa-info-circle more-information-btn"
+                                                    class="fas fa-info-circle more-information"
+                                                    data-bs-toggle="dropdown"
+                                                    data-dropdown-animation
+                                                    aria-haspopup="true"
+                                                    aria-expanded="false"
+                                                    disabled
+                                            ></i>
+                                            <div class="dropdown-menu w-210p mt-4"></div>
+                                        </div>
+                                    </span>
+                                    <select
+                                            class="form-select select2"
+                                            id="box-purchase-order-supplier"
+                                            data-url="{% url "AccountForSaleListAPI" %}"
+                                            data-method="GET"
+                                            data-link-detail="{% url "AccountDetail" 1 %}"
+                                            name="customer"
+                                            required
+                                    ></select>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="box-purchase-order-contact">{% trans 'Select Contact' %}</label>
+                            <div class="input-group">
+                                <span class="input-affix-wrapper">
+                                    <span class="input-prefix">
+                                        <div class="btn-group dropstart">
+                                            <i
+                                                    class="fas fa-info-circle more-information"
                                                     data-bs-toggle="dropdown"
                                                     data-dropdown-animation
                                                     aria-haspopup="true"
@@ -103,7 +131,7 @@
                                         </div>
                                     </span>
                                     <select
-                                            class="form-control select2"
+                                            class="form-select select2"
                                             id="box-purchase-order-contact"
                                             data-url="{% url "ContactListAPI" %}"
                                             data-method="GET"
@@ -113,7 +141,6 @@
                                     ></select>
                                 </span>
                             </div>
-{#                            <small class="form-text text-muted">{% trans 'Contact link to quotation' %}</small>#}
                         </div>
                     </div>
 
@@ -121,7 +148,7 @@
                         <div class="form-group">
                             <label class="form-label" for="purchase-order-date-delivered">{% trans 'Delivered date' %}</label>
                             <div class="input-affix-wrapper">
-                                <input type="text" name="estimated_delivery_date" id="purchase-order-date-delivered"
+                                <input type="text" name="delivered-date" id="purchase-order-date-delivered"
                                        class="form-control date-picker" autocomplete="off">
                                 <span class="input-suffix">
                                     <i class="bi bi-calendar-week"></i>
@@ -142,10 +169,9 @@
                                     >
                                 </span>
                             </div>
-{#                            <small class="form-text text-muted">{% trans 'Status of quotation' %}</small>#}
                         </div>
                         <div class="form-group">
-                            <label class="form-label" for="quotation-create-status">{% trans 'Delivered status' %}</label>
+                            <label class="form-label" for="purchase-order-create-status">{% trans 'Delivered status' %}</label>
                             <div class="input-group">
                                 <span class="input-affix-wrapper">
                                     <input
@@ -156,7 +182,6 @@
                                     >
                                 </span>
                             </div>
-{#                            <small class="form-text text-muted">{% trans 'Delivered status of purchase order' %}</small>#}
                         </div>
                     </div>
                 </div>
@@ -196,6 +221,7 @@
                                 class="table nowrap w-100 mb-5"
                                 data-url=""
                                 data-method="get"
+                                hidden
                             >
                                 <thead>
                                 <tr>
@@ -210,6 +236,29 @@
                                     <th>{% trans 'Unit Price' %}</th>
                                     <th>{% trans 'Tax' %}</th>
                                     <th>{% trans 'Subtotal Price' %}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+
+                            <table
+                                id="datable-purchase-order-product-add"
+                                class="table nowrap w-100 mb-5"
+                                data-url=""
+                                data-method="get"
+                            >
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>{% trans 'Product' %}<span class="required"></span></th>
+                                    <th>{% trans 'Description' %}</th>
+                                    <th>UoM<span class="required"></span></th>
+                                    <th>{% trans 'Quantity' %}<span class="required"></span></th>
+                                    <th>{% trans 'Unit Price' %}</th>
+                                    <th>{% trans 'Tax' %}</th>
+                                    <th>{% trans 'Subtotal Price' %}</th>
+                                    <th>{% trans 'Actions' %}</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -232,15 +281,16 @@
                                     <div class="col-1"></div>
                                     <div class="col-7">
                                         <input
-                                            id="quotation-create-product-pretax-amount"
+                                            id="purchase-order-product-pretax-amount"
                                             type="text"
                                             class="form-control mask-money disabled-custom-show"
                                             data-return-type="number"
                                             name="total_product_pretax_amount"
+                                            value="0"
                                             disabled
                                         >
                                         <input
-                                            id="quotation-create-product-pretax-amount-raw"
+                                            id="purchase-order-product-pretax-amount-raw"
                                             type="text"
                                             class="form-control"
                                             value="0"
@@ -248,7 +298,7 @@
                                         >
                                         <input
                                             type="hidden"
-                                            id="quotation-final-revenue-before-tax"
+                                            id="purchase-order-final-revenue-before-tax"
                                         >
                                     </div>
                                 </div>
@@ -257,15 +307,16 @@
                                     <div class="col-1"></div>
                                     <div class="col-7">
                                         <input
-                                            id="quotation-create-product-taxes"
+                                            id="purchase-order-product-taxes"
                                             type="text"
                                             class="form-control mask-money disabled-custom-show"
                                             data-return-type="number"
                                             name="total_product_tax"
+                                            value="0"
                                             disabled
                                         >
                                         <input
-                                            id="quotation-create-product-taxes-raw"
+                                            id="purchase-order-product-taxes-raw"
                                             type="text"
                                             class="form-control"
                                             value="0"
@@ -279,15 +330,16 @@
                                     <div class="col-1"></div>
                                     <div class="col-7">
                                         <input
-                                            id="quotation-create-product-total"
+                                            id="purchase-order-product-total"
                                             type="text"
                                             class="form-control mask-money disabled-custom-show"
                                             data-return-type="number"
                                             name="total_product"
+                                            value="0"
                                             disabled
                                         >
                                         <input
-                                            id="quotation-create-product-total-raw"
+                                            id="purchase-order-product-total-raw"
                                             type="text"
                                             class="form-control"
                                             value="0"
@@ -322,6 +374,15 @@
         <input
             type="hidden"
             id="base-trans-factory"
+            data-view-detail-info="{% trans 'View detail' %}"
+            data-more-information="{% trans 'More information' %}"
+        >
+        <input
+            type="hidden"
+            id="data-init-product"
+            data-url="{% url "ProductForSaleListAPI" %}"
+            data-link-detail="{% url "ProductDetail" 1 %}"
+            data-method="GET"
         >
         <input
             type="hidden"
@@ -337,7 +398,7 @@
         >
 
 
-        <div class="modal fade" id="purchaseRequestModalCenter" tabindex="-1" role="dialog" aria-labelledby="purchaseRequestModalCenter" aria-hidden="true">
+        <div class="modal fade mt-5" id="purchaseRequestModalCenter" tabindex="-1" role="dialog" aria-labelledby="purchaseRequestModalCenter" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -365,8 +426,8 @@
                                     <table
                                         id="datable-purchase-request"
                                         class="table nowrap w-100"
-                                        data-url="{% url 'SaleOrderListAPI' %}"
-                                        data-method="get"
+                                        data-url="{% url "PurchaseRequestListAPI" %}"
+                                        data-method="GET"
                                     >
                                         <thead>
                                         <tr>
@@ -386,8 +447,8 @@
                                     <table
                                         id="datable-purchase-request-product"
                                         class="table nowrap w-100"
-                                        data-url="{% url 'SaleOrderListAPI' %}"
-                                        data-method="get"
+                                        data-url="{% url 'PurchaseRequestProductListAPI' %}"
+                                        data-method="GET"
                                     >
                                         <thead>
                                         <tr>
@@ -439,8 +500,8 @@
             </div>
         </div>
 
-        <div class="modal fade" id="purchaseQuotationModalCenter" tabindex="-1" role="dialog" aria-labelledby="purchaseQuotationModalCenter" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal fade mt-5" id="purchaseQuotationModalCenter" tabindex="-1" role="dialog" aria-labelledby="purchaseQuotationModalCenter" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">Select purchase quotation</h5>
@@ -484,6 +545,26 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
                         <button type="button" class="btn btn-primary" id="btn-confirm-add-purchase-quotation" data-bs-dismiss="modal">{% trans 'Next' %}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button type="button" class="btn btn-primary" id="btn-warning-add-product" data-bs-toggle="modal" data-bs-target="#warningAddProductModalCenter" hidden></button>
+        <div class="modal fade" id="warningAddProductModalCenter" tabindex="-1" role="dialog" aria-labelledby="warningAddProductModalCenter" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-body modal-body-warning-add-product mb-2">
+                        <h6 class="mb-3">{% trans 'Warning' %}</h6>
+                        <p>{% trans 'Add product will remove all purchase requests' %}</p>
+                    </div>
+                    <div class="row modal-footer-warning-add-product">
+                        <div class="col-6">
+                            <button type="button" class="btn btn-link btn-cancel-add-product" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
+                        </div>
+                        <div class="col-6">
+                            <button type="button" class="btn btn-link btn-continue-add-product" data-bs-dismiss="modal" id="btn-continue-add-product">{% trans 'Continue' %}</button>
+                        </div>
                     </div>
                 </div>
             </div>

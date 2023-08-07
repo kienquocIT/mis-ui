@@ -48,7 +48,7 @@ class PurchaseQuotationCreate(View):
     )
     def get(self, request, *args, **kwargs):
         resp1 = ServerAPI(user=request.user, url=ApiURL.TAX_LIST).get()
-        resp2 = ServerAPI(user=request.user, url=ApiURL.PURCHASE_QUOTATION_REQUEST_LIST).get()
+        resp2 = ServerAPI(user=request.user, url=ApiURL.PURCHASE_QUOTATION_REQUEST_LIST_FOR_PQ).get()
         resp3 = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_LIST).get()
         resp4 = ServerAPI(user=request.user, url=ApiURL.PRODUCT_LIST).get()
         resp5 = ServerAPI(user=request.user, url=ApiURL.CONTACT_LIST).get()
@@ -93,13 +93,13 @@ class PurchaseQuotationDetail(View):
     )
     def get(self, request, *args, **kwargs):
         resp1 = ServerAPI(user=request.user, url=ApiURL.TAX_LIST).get()
-        resp2 = ServerAPI(user=request.user, url=ApiURL.PURCHASE_REQUEST_LIST_FOR_PQR).get()
+        # resp2 = ServerAPI(user=request.user, url=ApiURL.PURCHASE_QUOTATION_REQUEST_LIST).get()
         return {
                    'data':
                        {
                            'employee_current_id': request.user.employee_current_data.get('id', None),
                            'tax_list': resp1.result,
-                           'purchase_request_list': resp2.result,
+                           # 'purchase_quotation_request_list': resp2.result,
                        }
                }, status.HTTP_200_OK
 

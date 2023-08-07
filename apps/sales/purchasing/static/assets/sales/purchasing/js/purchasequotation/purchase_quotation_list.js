@@ -5,8 +5,8 @@ $(function () {
         })
 
         function loadPQRList() {
-            if (!$.fn.DataTable.isDataTable('#datatable_pqr_list')) {
-                let dtb = $('#datatable_pqr_list');
+            if (!$.fn.DataTable.isDataTable('#datatable_pq_list')) {
+                let dtb = $('#datatable_pq_list');
                 let frm = new SetupFormSubmit(dtb);
                 dtb.DataTableDefault({
                     reloadCurrency: true,
@@ -16,8 +16,8 @@ $(function () {
                         dataSrc: function (resp) {
                             let data = $.fn.switcherResp(resp);
                             if (data) {
-                                console.log(data)
-                                return resp.data['purchase_quotation_request_list'] ? resp.data['purchase_quotation_request_list'] : [];
+                                console.log(resp.data['purchase_quotation_list'])
+                                return resp.data['purchase_quotation_list'] ? resp.data['purchase_quotation_list'] : [];
                             }
                             return [];
                         },
@@ -32,27 +32,35 @@ $(function () {
                         },
                         {
                             data: 'title',
-                            className: 'wrap-text w-25purchase_quotation_request_create_from_PR.html',
+                            className: 'wrap-text w-25',
                             render: (data, type, row, meta) => {
-                                return `<a class="link-primary underline_hover" target="_blank" href="` + $('#datatable_pqr_list').attr('data-url-detail').replace('0', row.id) + `"><span><b>` + row.title + `</b></span></a>`
+                                return `<a class="link-primary underline_hover" target="_blank" href="` + $('#datatable_pq_list').attr('data-url-detail').replace('0', row.id) + `"><span><b>` + row.title + `</b></span></a>`
                             }
                         },
                         {
-                            data: 'purchase_requests w-25',
+                            data: 'purchase_quotation_request w-25',
                             className: 'wrap-text',
                             render: (data, type, row, meta) => {
-                                let html = ``;
-                                for (let i = 0; i < row.purchase_requests.length; i++) {
-                                    html += `<span class="badge badge-secondary mr-1 mb-1 w-30">${row.purchase_requests[i].code}</span>`;
+                                if (Object.keys(row.purchase_quotation_request_mapped).length != 0) {
+                                    return `<span class="badge badge-secondary mr-1 mb-1 w-80">${row.purchase_quotation_request_mapped.code}</span>`;
                                 }
-                                return html;
+                                else {
+                                    return ``;
+                                }
                             }
                         },
                         {
-                            data: 'delivered_date w-15',
+                            data: 'supplier_mapped w-15',
                             className: 'wrap-text',
                             render: (data, type, row, meta) => {
-                                return row.delivered_date.split(' ')[0];
+                                return row.supplier_mapped.name;
+                            }
+                        },
+                        {
+                            data: 'expiration_date w-15',
+                            className: 'wrap-text',
+                            render: (data, type, row, meta) => {
+                                return row.expiration_date.split(' ')[0];
                             }
                         },
                         {
@@ -62,13 +70,6 @@ $(function () {
                                 return `<span class="text-success" id="status">Open</span>`
                             }
                         },
-                        {
-                            data: 'response_status w-10',
-                            className: 'wrap-text',
-                            render: (data, type, row, meta) => {
-                                return `<span class="text-primary" id="response_status">Wait</span>`
-                            }
-                        }
                     ],
                 });
             }

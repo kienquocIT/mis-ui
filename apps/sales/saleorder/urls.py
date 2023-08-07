@@ -4,7 +4,7 @@ from apps.sales.saleorder.views import (
     SaleOrderCreate, SaleOrderList, SaleOrderListAPI, SaleOrderDetail,
     SaleOrderDetailAPI, SaleOrderExpenseListAPI, SaleOrderDetailDeliveryAPI, SaleOrderConfigDetail,
     SaleOrderConfigDetailAPI, SaleOrderIndicatorListAPI, SaleOrderIndicatorDetailAPI, SaleOrderIndicatorRestoreAPI,
-    SaleOrderProductListAPI
+    ProductListSaleOrderAPI
 )
 
 urlpatterns = [
@@ -21,5 +21,5 @@ urlpatterns = [
     path('detail-api/<str:pk>', SaleOrderDetailAPI.as_view(), name='SaleOrderDetailAPI'),
     path('sale-order-expense-list', SaleOrderExpenseListAPI.as_view(), name='SaleOrderExpenseListAPI'),
     path('detail-api/<str:pk>/delivery', SaleOrderDetailDeliveryAPI.as_view(), name='SaleOrderDetailDeliveryAPI'),
-    path('product/list/api', SaleOrderProductListAPI.as_view(), name='SaleOrderProductListAPI')
+    path('product/list/api/<str:pk>', ProductListSaleOrderAPI.as_view(), name='ProductListSaleOrderAPI')
 ]

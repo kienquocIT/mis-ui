@@ -65,7 +65,7 @@
                         </div>
                     </div>
                     <div class="row form-group">
-                        <label class="col-3 col-form-label required">{% trans "PQ Request" %}</label>
+                        <label class="col-3 col-form-label">{% trans "PQ Request" %}</label>
                         <div class="col-9">
                             <select id="pqr-select-box" class="select2"
                                     type="button"
@@ -212,72 +212,6 @@
             </div>
         </div>
     </form>
-
-    <div class="modal fade mt-10" id="create_purchase_quotation_request_modal" tabindex="-1" role="dialog"
-             aria-labelledby="CreatePurchaseQuotationRequestModalModalForms" aria-hidden="true">
-            <div class="modal-dialog modal-xl" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">{% trans 'Select items from Purchase Request' %}</h5>
-                        <button type="button" class="btn-close" id="close_modal_create_purchase_quotation_request" data-bs-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">×</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row mb-3">
-                            <div class="col-5"></div>
-                            <div class="col-7">
-                                <div class="form-check mt-2">
-                                    <input disabled type="checkbox" class="form-check-input" id="merge">
-                                    <label for="merge" class="text-primary">{% trans "merge same products in 1 line, convert to reference unit if there is more than 1 UoM" %}</label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row" id="table-select-purchase-request-div">
-                            <div class="col-5" style="overflow: auto; height: 55vh; border: solid 1px rgba(91, 91, 91, 0.35); border-radius: 5px">
-                                <table id="table-select-purchase-request"
-                                       class="table nowrap w-100" data-method="GET"
-                                       data-url="{% url 'PurchaseRequestListAPI' %}"
-                                >
-                                    <thead>
-                                    <th>{% trans '#' %}</th>
-                                    <th>{% trans 'Code' %}</th>
-                                    <th>{% trans 'Name' %}</th>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div id="table-select-purchase-request-products-div" class="col-7" style="overflow: auto; height: 55vh; border: solid 1px rgba(91, 91, 91, 0.35); border-radius: 5px">
-                                <table id="table-select-purchase-request-products" class="table nowrap w-100" data-method="GET">
-                                    <thead>
-                                    <th>{% trans '#' %}</th>
-                                    <th>{% trans 'Product' %}</th>
-                                    <th>{% trans 'PR code' %}</th>
-                                    <th>{% trans 'UoM' %}</th>
-                                    <th>{% trans 'Quantity' %}</th>
-                                    </thead>
-                                </table>
-                            </div>
-                            <div id="table-select-purchase-request-products-for-merge-div" class="col-7" hidden style="overflow: auto; height: 55vh; border: solid 1px rgba(91, 91, 91, 0.35); border-radius: 5px">
-                                <table id="table-select-purchase-request-products-for-merge" class="table nowrap w-100" data-method="GET">
-                                    <thead>
-                                    <th>{% trans '#' %}</th>
-                                    <th>{% trans 'Product' %}</th>
-                                    <th>{% trans 'PR code' %}</th>
-                                    <th>{% trans 'UoM' %}</th>
-                                    <th>{% trans 'Quantity' %}</th>
-                                    </thead>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button class="btn btn-primary disabled" data-bs-dismiss="modal" aria-label="Close" id="btn_create_new_purchase_quotation_request">{% trans 'Next' %}</button>
-                    </div>
-                </div>
-            </div>
-        </div>
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'assets/sales/purchasing/js/purchasequotation/purchase_quotation_create.js' %}"></script>

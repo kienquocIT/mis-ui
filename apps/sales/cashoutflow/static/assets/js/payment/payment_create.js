@@ -1308,63 +1308,69 @@ $(document).ready(function () {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         if (resp.data['advance_payment_list']) {
-                            // if sale_code_id is so_id
-                            let so_filter = sale_order_list.filter(function(item) {
-                                return item.id === sale_code_id[0];
-                            });
-                            // if sale_code_id is quo_id
-                            let quo_filter = quotation_list.filter(function(item) {
-                                return item.id === sale_code_id[0];
-                            });
-                            // find quotation mapped with this sale_order_id (if sale_order_id is opp_id)
-                            let opp_filter = opportunity_list.filter(function(item) {
-                                return item.id === sale_code_id[0];
-                            });
+                            let all = [];
+                            for (let i = 0; i < sale_code_id.length; i++) {
+                                // if sale_code_id is so_id
+                                let so_filter = sale_order_list.filter(function (item) {
+                                    return item.id === sale_code_id[i];
+                                });
+                                // if sale_code_id is quo_id
+                                let quo_filter = quotation_list.filter(function (item) {
+                                    return item.id === sale_code_id[i];
+                                });
+                                // find quotation mapped with this sale_order_id (if sale_order_id is opp_id)
+                                let opp_filter = opportunity_list.filter(function (item) {
+                                    return item.id === sale_code_id[i];
+                                });
 
-                            let sale_order_mapped = null;
-                            let quotation_mapped = null;
-                            let opportunity_mapped = null;
-                            if (opp_filter.length > 0) {
-                                sale_order_mapped = opp_filter[0].sale_order_id;
-                                quotation_mapped = opp_filter[0].quotation_id;
-                                opportunity_mapped = opp_filter[0].id;
-                            }
-                            else if (quo_filter.length > 0) {
-                                quotation_mapped = quo_filter[0].id;
-                                if (Object.keys(quo_filter[0].opportunity).length !== 0) {
-                                    opportunity_mapped = quo_filter[0].opportunity.id;
+                                let sale_order_mapped = null;
+                                let quotation_mapped = null;
+                                let opportunity_mapped = null;
+                                if (opp_filter.length > 0) {
+                                    sale_order_mapped = opp_filter[0].sale_order_id;
+                                    quotation_mapped = opp_filter[0].quotation_id;
+                                    opportunity_mapped = opp_filter[0].id;
+                                } else if (quo_filter.length > 0) {
+                                    quotation_mapped = quo_filter[0].id;
+                                    if (Object.keys(quo_filter[0].opportunity).length !== 0) {
+                                        opportunity_mapped = quo_filter[0].opportunity.id;
+                                    }
+                                } else if (so_filter.length > 0) {
+                                    sale_order_mapped = so_filter[0].id;
+                                    if (Object.keys(so_filter[0].quotation).length !== 0) {
+                                        quotation_mapped = so_filter[0].quotation.id;
+                                    }
+                                    if (Object.keys(so_filter[0].opportunity).length !== 0) {
+                                        opportunity_mapped = so_filter[0].opportunity.id;
+                                    }
                                 }
-                            }
-                            else if (so_filter.length > 0) {
-                                sale_order_mapped = so_filter[0].id;
-                                if (Object.keys(so_filter[0].quotation).length !== 0) {
-                                    quotation_mapped = so_filter[0].quotation.id;
-                                }
-                                if (Object.keys(so_filter[0].opportunity).length !== 0) {
-                                    opportunity_mapped = so_filter[0].opportunity.id;
-                                }
-                            }
 
-                            // find ap mapped with this sale_order_mapped
-                            let sale_order_mapped_ap = resp.data['advance_payment_list'].filter(function(item) {
-                                if (item.sale_order_mapped) {
-                                    return item.sale_order_mapped.id === sale_order_mapped;
-                                }
-                            });
-                            // find ap mapped with this quotation_mapped
-                            let quotation_mapped_ap = resp.data['advance_payment_list'].filter(function(item) {
-                                if (item.quotation_mapped) {
-                                    return item.quotation_mapped.id === quotation_mapped;
-                                }
-                            });
-                            // find ap mapped with this opportunity_mapped
-                            let opportunity_mapped_ap = resp.data['advance_payment_list'].filter(function(item) {
-                                if (item.opportunity_mapped) {
-                                    return item.opportunity_mapped.id === opportunity_mapped;
-                                }
-                            });
+                                console.log(sale_order_mapped)
+                                console.log(quotation_mapped)
+                                console.log(opportunity_mapped)
 
-                            return sale_order_mapped_ap.concat(quotation_mapped_ap).concat(opportunity_mapped_ap)
+                                // find ap mapped with this sale_order_mapped
+                                let sale_order_mapped_ap = resp.data['advance_payment_list'].filter(function (item) {
+                                    if (item.sale_order_mapped) {
+                                        return item.sale_order_mapped.id === sale_order_mapped;
+                                    }
+                                });
+                                // find ap mapped with this quotation_mapped
+                                let quotation_mapped_ap = resp.data['advance_payment_list'].filter(function (item) {
+                                    if (item.quotation_mapped) {
+                                        return item.quotation_mapped.id === quotation_mapped;
+                                    }
+                                });
+                                // find ap mapped with this opportunity_mapped
+                                let opportunity_mapped_ap = resp.data['advance_payment_list'].filter(function (item) {
+                                    if (item.opportunity_mapped) {
+                                        return item.opportunity_mapped.id === opportunity_mapped;
+                                    }
+                                });
+
+                                all = all.concat(sale_order_mapped_ap).concat(quotation_mapped_ap).concat(opportunity_mapped_ap)
+                            }
+                            return all
                         }
                         else {
                             return [];
@@ -1774,12 +1780,12 @@ $(document).ready(function () {
             $('#sale-code-select-box option:selected').each(function (index, element) {
                 if ($(this).attr('data-type') !== '2') {
                     $('#tab_plan_datatable tbody').append(`<tr>
-                            <td colspan="1" data-type="` + $(this).attr('data-type') + `" data-sale-code-id="` + $(this).attr('data-sale-code-id') + `" data-sale-code="` + $(this).attr('data-sale-code') + `">
-                            <span class="badge badge-primary w-100">` + $(this).attr('data-sale-code') + `</span>
-                            <a class="btn-load-detail-multi" data-detail-view="hide" href="#"><i class="bi bi-caret-down-square"></i></a>
-                            </td>
-                            <td colspan="7"></td>
-                        </tr>`)
+                        <td colspan="1" data-type="` + $(this).attr('data-type') + `" data-sale-code-id="` + $(this).attr('data-sale-code-id') + `" data-sale-code="` + $(this).attr('data-sale-code') + `">
+                        <span class="badge badge-primary w-100">` + $(this).attr('data-sale-code') + `</span>
+                        <a class="btn-load-detail-multi" data-detail-view="hide" href="#"><i class="bi bi-caret-down-square"></i></a>
+                        </td>
+                        <td colspan="7"></td>
+                    </tr>`)
                 }
             })
 

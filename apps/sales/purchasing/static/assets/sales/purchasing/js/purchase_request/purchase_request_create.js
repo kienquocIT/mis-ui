@@ -8,7 +8,7 @@ $(document).ready(function () {
     let ele_request_for = $('[name="request_for"]')
     let ele_sale_order = $('[name="sale_order"]')
     let btn_change_pr_product = $('.btn-change-pr-product');
-    let btn_add_pr_product = $('.btn-add-pr-product');
+    let btn_add_product = $('.btn-add-product');
 
     let dict_supplier = {};
 
@@ -27,7 +27,9 @@ $(document).ready(function () {
                     ele.append(`<option></option>`)
                     data.account_list.map(function (item) {
                         dict_supplier[item.id] = item;
-                        ele.append(`<option value="${item.id}">${item.name}</option>`);
+                        if (item.account_type.includes("Supplier")) {
+                            ele.append(`<option value="${item.id}">${item.name}</option>`);
+                        }
                     })
                 }
             }
@@ -99,7 +101,7 @@ $(document).ready(function () {
         }
     }
 
-    // let list_product = []
+    let list_product = []
     let dict_product = {}
 
     function loadProduct() {
@@ -116,16 +118,16 @@ $(document).ready(function () {
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product_list')) {
                         ele.append(`<option></option>`);
                         data.product_list.map(function (item) {
+                            list_product.push(item)
                             dict_product[item.id] = item;
-                            if (item.product_choice.includes(2)) {
-                                ele.append(`<option value="${item.id}">${item.title}</option>`);
-                            }
+                            ele.append(`<option value="${item.id}">${item.title}</option>`);
                         })
                     }
                 }
             })
         }
     }
+
 
     function loadSaleOrder() {
         if (!$.fn.DataTable.isDataTable('#datatable-sale-order')) {
@@ -183,26 +185,51 @@ $(document).ready(function () {
         }
     }
 
-    let list_so_product = [];
-    let dict_so_product = {}
+    let dict_so_product = {} // {product_of_so_id: {.....}}
+    let dict_so = {} // { sale_order_id: {...} }
 
-    function loadSOProduct() {
-        let url = $('#url-factory').data('url-so-product');
-        $.fn.callAjax2({
-            'url': url,
-            'method': 'GET',
-        }).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                if (resp.data.hasOwnProperty('so_product_list') && Array.isArray(resp.data.so_product_list)) {
-                    list_so_product = data.so_product_list;
-                    dict_so_product = list_so_product.reduce((obj, item) => {
-                        obj[item.id] = item;
-                        return obj;
-                    }, {});
+    function loadSOProduct(id, table) {
+        table.clear().draw();
+        if (dict_so.hasOwnProperty(id)) {
+            let so_product_datas = dict_so[id].product_data;
+            so_product_datas.map(function (item) {
+                let data_temp = {
+                    'id': item.id,
+                    'title': item.product.title,
+                    'quantity': item.product_quantity,
+                    'remain': item.remain_for_purchase_request,
                 }
+                table.row.add(data_temp).draw().node();
+            })
+        } else {
+            if (id !== undefined) {
+                let url = $('#url-factory').data('url-so-product').format_url_with_uuid(id);
+                $.fn.callAjax2({
+                    'url': url,
+                    'method': 'GET',
+                }).then((resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (resp.data.hasOwnProperty('so_product_list')) {
+                            dict_so[data.so_product_list.id] = data.so_product_list;
+                            let so_product_datas = data.so_product_list.product_data;
+                            so_product_datas.map(function (item) {
+                                dict_so_product[item.id] = item;
+                                if (item.product.product_choice.includes(2)) {
+                                    let data_temp = {
+                                        'id': item.id,
+                                        'title': item.product.title,
+                                        'quantity': item.product_quantity,
+                                        'remain': item.remain_for_purchase_request,
+                                    }
+                                    table.row.add(data_temp).draw().node();
+                                }
+                            })
+                        }
+                    }
+                })
             }
-        })
+        }
     }
 
     function loadDtbSOProduct(product_datas) {
@@ -330,7 +357,7 @@ $(document).ready(function () {
                             if (data === undefined) {
                                 return $('#box-select-so-product').html()
                             }
-                            return getHtmlProductTitle(row,data);
+                            return getHtmlProductTitle(row, data);
                         }
                     },
                     {
@@ -352,7 +379,7 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        data: 'quantity',
+                        data: 'request',
                         targets: 4,
                         className: 'wrap-text',
                         render: (data, type, row) => {
@@ -396,7 +423,7 @@ $(document).ready(function () {
             ele_request_for.val('Sale Order');
             ele_request_for.attr('data-id', 0);
             ele_sale_order.closest('.form-group').removeClass('hidden');
-            btn_add_pr_product.addClass('hidden');
+            btn_add_product.addClass('hidden');
             loadSaleOrder();
             loadDtbSOProduct([]);
             break;
@@ -433,7 +460,6 @@ $(document).ready(function () {
 
     loadSupplier();
     loadContact();
-    loadSOProduct();
     loadTax();
     loadDtbPRProduct();
 
@@ -442,17 +468,7 @@ $(document).ready(function () {
         let table_so_product = $('#datatable-product-of-so').DataTable();
         if ($(this).is(':checked')) {
             $('.inp-check-so').not($(this)).prop('checked', false);
-            table_so_product.clear().draw();
-            let so_product_datas = list_so_product.filter(obj => obj.sale_order === $(this).data('id') && obj.product.product_choice.includes(2));
-            so_product_datas.map(function (item) {
-                let data_temp = {
-                    'id': item.id,
-                    'title': item.product.title,
-                    'quantity': item.product_quantity,
-                    'remain': item.remain_for_purchase_request,
-                }
-                table_so_product.row.add(data_temp).draw().node();
-            })
+            loadSOProduct($(this).data('id'), table_so_product);
         } else {
 
         }
@@ -462,7 +478,6 @@ $(document).ready(function () {
         let ele_url = $('#url-factory');
         let table_pr_product = $('#datatable-pr-product').DataTable();
         $('.inp-check-so-product:checked').each(function () {
-            let ele_tr_current = $(this).closest('tr')
             let num_request = $(this).closest('tr').find('.inp-request-so-product').val();
             let product = dict_so_product[$(this).data('id')];
             let data_temp = {
@@ -472,7 +487,6 @@ $(document).ready(function () {
                     'title': product.product.title,
                     'uom': product.product.uom,
                 },
-                'quantity': product.product_quantity,
                 'request': num_request,
             }
             table_pr_product.row.add(data_temp).draw().node();
@@ -482,6 +496,7 @@ $(document).ready(function () {
             ele_new_product.find('.span-product-code').text(product.product.code);
             ele_new_product.find('.span-product-uom').text(product.product.uom.title);
             ele_new_product.find('.span-product-uom-group').text(product.product.uom_group);
+            ele_new_product.find('.box-select-tax').val(product.product.tax_code);
         })
 
         let ele_so_selected = $('.inp-check-so:checked');
@@ -492,14 +507,14 @@ $(document).ready(function () {
         $('#modal-select-sale-order').modal('hide');
     })
 
-    $(document).on('change', '.inp-request-so-product', function (){
+    $(document).on('change', '.inp-request-so-product', function () {
         let ele_trans = $('#trans-factory');
-        if ( parseInt($(this).val()) > parseInt($(this).closest('tr').find('.p-so-product-remain').text())){
+        if (parseInt($(this).val()) > parseInt($(this).closest('tr').find('.p-so-product-remain').text())) {
             Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: ele_trans.data('trans-request-greater-remain'),
-                })
+                icon: 'error',
+                title: 'Oops...',
+                text: ele_trans.data('trans-request-greater-remain'),
+            })
         }
     })
 
@@ -568,8 +583,15 @@ $(document).ready(function () {
         let ele_tr_current = $(this).closest('tr');
         let ele_uom = ele_tr_current.find('.box-select-uom');
         list_uom.filter(obj => obj.group.id === product.general_information.uom_group.id).map(function (item) {
-            ele_uom.append(`<option value="${item.id}">${item.title}</option>`)
+            if (product.sale_information.hasOwnProperty('default_uom') && product.sale_information.default_uom.id === item.id) {
+                ele_uom.append(`<option value="${item.id}" selected>${item.title}</option>`);
+            }
+            ele_uom.append(`<option value="${item.id}">${item.title}</option>`);
         })
+
+        let ele_tax = ele_tr_current.find('.box-select-tax');
+        ele_tax.val(product.sale_information.tax_code.id);
+
         let ele_url = $('#url-factory');
         ele_tr_current.find('.input-affix-wrapper a').attr('href', ele_url.data('url-product-detail').format_url_with_uuid(product.id));
         ele_tr_current.find('.span-product-name').text(product.title);
@@ -581,12 +603,16 @@ $(document).ready(function () {
     // event change supplier
     $(document).on('change', '#box-select-supplier', function () {
         let supplier_id = $(this).val();
+        let supplier_obj = dict_supplier[supplier_id];
         let ele_contact = $('#box-select-contact');
         ele_contact.empty();
-        ele_contact.append(`<option></option>`)
         list_contact.map(function (item) {
             if (item.account_name.id === supplier_id) {
-                ele_contact.append(`<option value="${item.id}">${item.fullname}</option>`)
+                if (supplier_obj.owner.id === item.id) {
+                    ele_contact.append(`<option value="${item.id}" selected>${item.fullname}</option>`)
+                } else {
+                    ele_contact.append(`<option value="${item.id}">${item.fullname}</option>`)
+                }
             }
         })
         let ele_url = $('#url-factory');
@@ -625,7 +651,7 @@ $(document).ready(function () {
         ele_request_for.val('Sale Order');
         ele_request_for.attr('data-id', 0);
         ele_sale_order.closest('.form-group').removeClass('hidden');
-        btn_add_pr_product.addClass('hidden');
+        btn_add_product.addClass('hidden');
         btn_change_pr_product.removeClass('hidden');
         loadSaleOrder();
         loadDtbSOProduct([]);
@@ -639,8 +665,11 @@ $(document).ready(function () {
         ele_request_for.attr('data-id', 1);
         ele_sale_order.closest('.form-group').addClass('hidden');
         btn_change_pr_product.addClass('hidden');
-        btn_add_pr_product.removeClass('hidden');
-        loadProduct();
+        btn_add_product.removeClass('hidden');
+        // reloadEleProduct('stock');
+        if (Object.keys(dict_product).length === 0) {
+            loadProduct();
+        }
         loadUoM();
         deleteDtbPRProduct();
         $(this).closest('.modal').modal('hide');
@@ -652,8 +681,10 @@ $(document).ready(function () {
         ele_request_for.attr('data-id', 2);
         ele_sale_order.closest('.form-group').addClass('hidden');
         btn_change_pr_product.addClass('hidden');
-        btn_add_pr_product.removeClass('hidden');
-        loadProduct();
+        btn_add_product.removeClass('hidden');
+        if (Object.keys(dict_product).length === 0) {
+            loadProduct();
+        }
         loadUoM();
         deleteDtbPRProduct();
         $(this).closest('.modal').modal('hide');
@@ -673,10 +704,10 @@ $(document).ready(function () {
         ele_parent.find('.span-contact-report-to').text(contact_current.report_to.name);
     })
 
-    function getProductDataForStockAndOther(){
+    function getProductDataForStockAndOther() {
         let list_product_data = []
         let ele_tr = $('#datatable-pr-product tbody tr');
-        ele_tr.each(function (){
+        ele_tr.each(function () {
             let data = {
                 'sale_order_product': null,
                 'product': $(this).find('.box-select-product').val(),
@@ -693,10 +724,10 @@ $(document).ready(function () {
         return list_product_data
     }
 
-    function getProductDataForSaleOrder(){
+    function getProductDataForSaleOrder() {
         let list_product_data = []
         let ele_tr = $('#datatable-pr-product tbody tr');
-        ele_tr.each(function (){
+        ele_tr.each(function () {
             let data = {
                 'sale_order_product': $(this).find('.inp-product').data('so-product-id'),
                 'product': $(this).find('.inp-product').data('id'),
@@ -725,10 +756,9 @@ $(document).ready(function () {
         dataForm['system_status'] = 0;
         dataForm['purchase_status'] = 0;
 
-        if (dataForm['request_for'] !== 0){
+        if (dataForm['request_for'] !== 0) {
             dataForm['purchase_request_product_datas'] = getProductDataForStockAndOther();
-        }
-        else{
+        } else {
             dataForm['purchase_request_product_datas'] = getProductDataForSaleOrder();
         }
 
@@ -744,7 +774,6 @@ $(document).ready(function () {
         let frm = new SetupFormSubmit(frm_create);
         let csr = $("[name=csrfmiddlewaretoken]").val();
         let frm_data = getDataForm(frm.dataForm);
-        console.log(frm.dataForm)
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm_data, csr).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
@@ -758,4 +787,56 @@ $(document).ready(function () {
             }
         )
     })
+
+    let list_uom_group = []
+
+    function loadUoMGroup() {
+        let url = $('#url-factory').data('url-uom-group');
+        let ele = $('.dropdown-select-uom-group');
+        $.fn.callAjax2({
+            'url': url,
+            'method': 'GET',
+        }).then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('unit_of_measure_group')) {
+                    list_uom_group = data.unit_of_measure_group
+                    data.unit_of_measure_group.map(function (item) {
+                        ele.append(`<a class="dropdown-item btn-add-by-group" href="#" data-id="${item.id}">${item.title}</a>`)
+                    })
+                }
+            }
+        })
+    }
+
+    $(document).on('click', btn_add_product, function () {
+        if (list_uom_group.length === 0) {
+            loadUoMGroup();
+        }
+    })
+
+    $(document).on('click', '.btn-add-by-group', function () {
+        let group_id = $(this).data('id');
+        let list_product_by_gr = list_product.filter(obj => obj.general_information.uom_group.id === group_id);
+        let table_pr_product = $('#datatable-pr-product').DataTable();
+        table_pr_product.clear().draw();
+        list_product_by_gr.map(function (item) {
+            let product = dict_product[item.id];
+            table_pr_product.row.add([]).draw().node();
+            let last_ele_tr = $('#datatable-pr-product tbody tr').last();
+            last_ele_tr.find('.box-select-product').val(product.id);
+            let ele_uom = last_ele_tr.find('.box-select-uom');
+            list_uom.filter(obj => obj.group.id === product.general_information.uom_group.id).map(function (item) {
+                if (product.sale_information.hasOwnProperty('default_uom') && product.sale_information.default_uom.id === item.id) {
+                    ele_uom.append(`<option value="${item.id}" selected>${item.title}</option>`);
+                }
+                ele_uom.append(`<option value="${item.id}">${item.title}</option>`);
+            })
+            last_ele_tr.find('.box-select-tax').val(product.sale_information.tax_code.id);
+        })
+
+
+    })
+
+
 })

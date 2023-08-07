@@ -36,13 +36,13 @@ $(function () {
                         },
                         {
                             data: 'title',
-                            className: 'wrap-text w-25purchase_quotation_request_create_from_PR.html',
+                            className: 'wrap-text w-25',
                             render: (data, type, row, meta) => {
                                 return `<a class="link-primary underline_hover" target="_blank" href="` + $('#datatable_pqr_list').attr('data-url-detail').replace('0', row.id) + `"><span><b>` + row.title + `</b></span></a>`
                             }
                         },
                         {
-                            data: 'purchase_requests w-25',
+                            data: 'purchase_requests w-15',
                             className: 'wrap-text',
                             render: (data, type, row, meta) => {
                                 let html = ``;
@@ -61,7 +61,7 @@ $(function () {
                         },
                         {
                             data: 'status',
-                            className: 'wrap-text w-10',
+                            className: 'wrap-text w-15',
                             render: (data, type, row, meta) => {
                                 return `<span class="text-success" id="status">Open</span>`
                             }
@@ -71,6 +71,18 @@ $(function () {
                             className: 'wrap-text',
                             render: (data, type, row, meta) => {
                                 return `<span class="text-primary" id="response_status">Wait</span>`
+                            }
+                        },
+                        {
+                            data: '',
+                            className: 'wrap-text w-5',
+                            render: (data, type, row, meta) => {
+                                return `<div class="dropdown">
+                                            <a type="button" data-bs-toggle="dropdown"><i class="bi bi-three-dots-vertical"></i></a>
+                                            <div class="dropdown-menu">
+                                                 <a href="` + $('#datatable_pqr_list').attr('data-url-purchase-quotation') + `?purchase-quotation-request=` + row.id + `" class="dropdown-item" href="{1}">Purchase Quotation</a>
+                                            </div>
+                                        </div>`;
                             }
                         }
                     ],

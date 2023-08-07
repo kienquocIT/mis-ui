@@ -73,7 +73,8 @@ class MenusCompanySystem:
                 icon='<i class="fas fa-shapes"></i>'
             ),
             MenuCommon(
-                name='Business Process', code='', view_name='#', icon='<i class="fab fa-phabricator"></i>',
+                name='Business Process', code='menu_sale_process', view_name='SaleProcess',
+                icon='<i class="fab fa-phabricator"></i>',
             ),
             MenuCommon(
                 name='Automation', code='', view_name='#', icon='<i class="fas fa-robot"></i>',
@@ -262,11 +263,29 @@ class MenusPurchase:
     )
 
     PURCHASE = MenuCommon(
-        name='Purchase', code='menu_purchase_activities', view_name='', icon='<i class="bi bi-cart-check"></i>',
+        name='Purchase', code='menu_purchase_activities', view_name='', icon='<i class="fas fa-shopping-cart"></i>',
         child=[
             MenuCommon(
-                name='Purchase Request', code='menu_purchase_request_list', view_name='PurchaseRequestList',
-                icon='<i class="bi bi-currency-exchange"></i>',
+                name='Purchase Request',
+                code='menu_purchase_request_list',
+                view_name='PurchaseRequestList',
+                icon='<i class="bi bi-mailbox2"></i>',
+            ),
+            MenuCommon(
+                name='Purchase Quotation Request',
+                code='id_menu_purchase_quotation_request_list',
+                view_name='PurchaseQuotationRequestList',
+                icon='<i class="bi bi-file-text-fill"></i>',
+            ),
+            MenuCommon(
+                name='Purchase Quotation',
+                code='id_menu_purchase_quotation_list',
+                view_name='PurchaseQuotationList',
+                icon='<i class="bi bi-credit-card-2-front-fill"></i>',
+            ),
+            MenuCommon(
+                name='Purchase Order', code='menu_purchase_order_list', view_name='PurchaseOrderList',
+                icon='<i class="bi bi-credit-card-2-back-fill"></i>',
             ),
         ],
     )

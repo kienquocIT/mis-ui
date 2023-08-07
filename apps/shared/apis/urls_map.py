@@ -223,7 +223,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     OPPORTUNITY_ACTIVITY_LOGS = StringUrl('opportunity/activity-log/lists')
 
     # quotation
-    QUOTATION_LIST = StringUrl('quotation/lists')
+    QUOTATION_LIST = StringUrl('quotation/list')
     QUOTATION_LIST_FOR_CASH_OUTFLOW = StringUrl('quotation/list-for-cashoutflow')
     QUOTATION_DETAIL = StringUrl('quotation')
     QUOTATION_EXPENSE_LIST = StringUrl('quotation/quotation-expense-list/lists')
@@ -250,7 +250,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     SHIPPING_CHECK_LIST = StringUrl('saledata/shippings-check')
 
     # sale order
-    SALE_ORDER_LIST = StringUrl('saleorder/lists')
+    SALE_ORDER_LIST = StringUrl('saleorder/list')
     SALE_ORDER_LIST_FOR_CASH_OUTFLOW = StringUrl('saleorder/list-for-cashoutflow')
     SALE_ORDER_DETAIL = StringUrl('saleorder')
     SALE_ORDER_EXPENSE_LIST = StringUrl('saleorder/saleorder-expense-list/lists')
@@ -258,7 +258,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     SALE_ORDER_INDICATOR_LIST = StringUrl('saleorder/indicators')
     SALE_ORDER_INDICATOR_DETAIL = StringUrl('saleorder/indicator')
     SALE_ORDER_INDICATOR_RESTORE = StringUrl('saleorder/indicator-restore')
-    SALE_ORDER_PRODUCT_LIST = StringUrl('saleorder/product/list')
+    PRODUCT_LIST_SALE_ORDER = StringUrl('saleorder/product/list/{pk}')
 
     # warehouse
     WAREHOUSE_LIST = StringUrl('saledata/warehouses')
@@ -312,3 +312,17 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # Purchase
     PURCHASE_REQUEST_LIST = StringUrl('purchasing/purchase-request/list')
     PURCHASE_REQUEST_DETAIL = StringUrl('purchasing/purchase-request/{pk}')
+    PURCHASE_ORDER_LIST = StringUrl('purchasing/purchase-order/list')
+    PURCHASE_ORDER_DETAIL = StringUrl('purchasing/purchase-order')
+    PURCHASE_REQUEST_LIST_FOR_PQR = StringUrl('purchasing/purchase-request-for-pqr/list')
+    PURCHASE_REQUEST_PRODUCT_LIST = StringUrl('purchasing/purchase-request-product/list')
+
+    # Purchasing
+    PURCHASE_QUOTATION_REQUEST_LIST = StringUrl('purchasing/purchase-quotation-request/list')
+    PURCHASE_QUOTATION_REQUEST_DETAIL = StringUrl('purchasing/purchase-quotation-request')
+    PURCHASE_QUOTATION_REQUEST_LIST_FOR_PQ = StringUrl('purchasing/purchase-quotation-request-for-pq/list')
+    PURCHASE_QUOTATION_LIST = StringUrl('purchasing/purchase-quotation/list')
+    PURCHASE_QUOTATION_DETAIL = StringUrl('purchasing/purchase-quotation')
+
+    # Process
+    FUNCTION_PROCESS_LIST = StringUrl('process/function/list')

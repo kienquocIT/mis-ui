@@ -18,7 +18,8 @@
     </button>
 {% endblock %}
 {% block pageContent %}
-    <form id="form-create-pr" data-url="{% url "PurchaseRequestListAPI" %}" data-method="POST" data-url-redirect="{% url "PurchaseRequestList" %}">
+    <form id="form-create-pr" data-url="{% url "PurchaseRequestListAPI" %}" data-method="POST"
+          data-url-redirect="{% url "PurchaseRequestList" %}">
         <div class="row">
             <div class="col-6">
                 <div class="form-group">
@@ -186,7 +187,7 @@
         </div>
 
         <div class="row mt-3">
-            <ul class="nav nav-light nav-tabs" id="quotation-tabs">
+            <ul class="nav nav-light nav-tabs" id="purchase-request-tabs">
                 <li class="nav-item">
                     <a class="nav-link active" data-bs-toggle="tab" href="#tab_line_detail">
                         <span class="nav-link-text">{% trans 'Line Detail' %}</span>
@@ -222,10 +223,17 @@
                                 data-bs-target="#modal-select-sale-order"
                         >{% trans 'Change' %}</button>
 
-                        <button
-                                type="button"
-                                class="btn btn-primary btn-add-pr-product"
-                        >{% trans 'Add' %}</button>
+                        <div class="dropdown">
+                            <button
+                                    type="button" data-bs-toggle="dropdown"
+                                    class="btn btn-primary btn-add-product dropdown-toggle"
+                            >{% trans 'Add' %}</button>
+                            <div role="menu" class="dropdown-menu dropdown-select-uom-group">
+                                <a class="dropdown-item btn-add-pr-product" href="#">{% trans "New Product" %}</a>
+                                <div class="dropdown-divider"></div>
+                            </div>
+                        </div>
+
                     </div>
                     <div class="col-7 mt-5">
                         <div class="row mb-2">
@@ -301,7 +309,7 @@
                         <div class="col-7 border">
                             <table id="datatable-product-of-so" class="table nowrap mb-5 w-lg-630p"
                                    data-method="GET"
-                                   data-url="{% url 'SaleOrderProductListAPI' %}"
+                                   data-url="{% url 'ProductListSaleOrderAPI' pk=0 %}"
                             >
                                 <thead>
                                 <th class="w-5">#</th>
@@ -426,12 +434,13 @@
            data-url-product-detail="{% url 'ProductDetail' pk=0 %}"
            data-url-account-detail="{% url 'AccountDetail' pk=0 %}"
            data-url-contact-detail="{% url 'ContactDetail' pk=0 %}"
-           data-url-so-product="{% url 'SaleOrderProductListAPI' %}"
+           data-url-so-product="{% url 'ProductListSaleOrderAPI' pk=0 %}"
+           data-url-uom-group="{% url 'UnitOfMeasureGroupListAPI' %}"
     >
 {% endblock %}
 
 {% block jsFooter %}
     <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
-    <script src="{% static 'assets/sales/purchasing/purchase_request/js/purchase_request_create.js' %}"></script>
+    <script src="{% static 'assets/sales/purchasing/js/purchase_request/purchase_request_create.js' %}"></script>
 {% endblock %}

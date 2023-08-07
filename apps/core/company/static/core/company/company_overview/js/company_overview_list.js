@@ -2,7 +2,7 @@
 $(function () {
     $(document).ready(function () {
         // INIT LOAD | multiple select company popup info
-        $(".select2").select2();
+        $(".select2").initSelect2();
 
         const msgLinkedEmployee = $('#notify-employee-mapped-text').text();
         const msgNoLinked = $('#notify-employee-not-mapped-text').text();

@@ -1672,10 +1672,14 @@ class UtilControl {
             if (typeof errs === 'object') {
                 let errors_converted = UtilControl.cleanDataNotify(errs);
                 Object.keys(errors_converted).map((key) => {
-                    let notify_data = $.fn.storageSystemData.attr('data-flagNotifyKey') === '1' ? {
+                    // let notify_data = $.fn.storageSystemData.attr('data-flagNotifyKey') === '1' ? {
+                    //     'title': key,
+                    //     'description': errors_converted[key]
+                    // } : {
+                    //     'description': errors_converted[key]
+                    // };
+                    let notify_data = {
                         'title': key,
-                        'description': errors_converted[key]
-                    } : {
                         'description': errors_converted[key]
                     };
                     jQuery.fn.notifyB(notify_data, 'failure');
@@ -1843,7 +1847,7 @@ class DTBControl {
         // ajax delete data
         if (configFinal?.['ajax'] && configFinal.hasOwnProperty('data')) delete configFinal['data'];
 
-        if (isDenied){
+        if (isDenied) {
             if (configFinal.hasOwnProperty('ajax')) delete configFinal['ajax'];
             configFinal['data'] = [];
         }
@@ -1862,12 +1866,16 @@ class DTBControl {
         $(ele$).closest('table').DataTable().row($(ele$).parents('tr')).remove().draw();
     }
 
-    static updateDataRow(clsThis, func){
+    static updateDataRow(clsThis, func, isDraw = false) {
         clsThis = $(clsThis).closest('tr');
-        let rowIdx = tbl.DataTable().row(clsThis).index();
+        let dtb = $(clsThis).closest('table').DataTable();
+        let rowIdx = dtb.row(clsThis).index();
         let rowData = $x.fn.getRowData($(clsThis));
         let newData = func(clsThis, rowIdx, rowData);
-        tbl.DataTable().row(rowIdx).data(newData).draw(false);
+        let dtbAfter = dtb.row(rowIdx).data(newData);
+        if (isDraw === true) {
+            dtbAfter.draw(false);
+        }
     }
 
     constructor(dtb$) {
@@ -1887,7 +1895,7 @@ class DTBControl {
                     $('.dataTables_filter input').removeClass('form-control-sm');
                 }
             }
-            $(this).closest('.dataTables_wrapper').find('.select2:not(:disabled)').select2();
+            $(this).closest('.dataTables_wrapper').find('.select2:not(:disabled)').initSelect2();
         });
         return tbl;
     }

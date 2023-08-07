@@ -1,0 +1,34 @@
+{% load i18n %}
+
+<table
+        class="table nowrap w-100"
+        id="dtb-plan-app"
+        data-url="{% url 'TenantPlanListAPI' %}"
+        data-method="GET"
+        data-is-edit="{{ add_new_enabled }}"
+>
+    <thead>
+    <tr>
+        <th>{% trans 'Plan' %}</th>
+        <th>{% trans 'Application' %}</th>
+        <th>
+            {% trans 'License' %}
+            <i
+                    class="ml-1 fa-solid fa-circle-info"
+                    data-bs-toggle="tooltip" data-bs-placement="bottom"
+                    title="{% trans 'License Used' %} / {% trans 'Limited' %}"
+            ></i>
+        </th>
+    </tr>
+    </thead>
+    <tbody></tbody>
+    <tfoot>
+    {% if add_new_enabled == 'true' %}
+        <tr>
+            <td colspan="3">
+                <small class="text-warning">{% trans 'Notes' %}: {% trans "Data of this tab will be used on 'Permission` tab after saving." %}</small>
+            </td>
+        </tr>
+    {% endif %}
+    </tfoot>
+</table>

@@ -3720,3 +3720,18 @@ msgstr "Là quản trị viên"
 #
 msgid "Current page automatically goes to end page after the new row was added"
 msgstr "Tự động chuyển đến trang cuối sau khi thêm dòng mới thành công"
+
+#
+msgid "Permissions Settings"
+msgstr "Phân quyền"
+
+msgid "Limited"
+msgstr "Giới hạn"
+
+#
+msgid "Unlimited"
+msgstr "Không giới hạn"
+
+#
+msgid "Data of this tab will be used on 'Permission` tab after saving."
+msgstr "Dữ liệu của tab này sẽ được sử dụng trên tab 'Quyền` sau khi lưu."

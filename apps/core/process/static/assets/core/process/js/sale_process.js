@@ -1,5 +1,4 @@
 $(document).ready(function () {
-    // class support design layout
     class designFormUtils {
         // ----------------------------------------- //
         //
@@ -10,7 +9,7 @@ $(document).ready(function () {
 
         // template of row and item element
         rowData = '<div class="my-row row mb-1"><div class="utils-form absolute-top-over"><div class="util-form-control util-form-row"><i class="fas fa-times btn btn-xs util-form-control-btn util-row-remove "></i><i class="fas fa-caret-up btn btn-xs util-form-control-btn util-row-caret-up"></i><i class="fas fa-caret-down btn btn-xs util-form-control-btn util-row-caret-down"></i></div></div>{0}</div>';
-        htmlChildItem = '<div class="util-child-group mb-3"><div class="utils-form"><div class="util-form-control util-form-cell"><i class="fas fa-times btn btn-xs util-form-control-btn util-cell-remove"></i><i class="fas fa-cog btn btn-xs util-form-control-btn util-cell-config"></i><i class="fas fa-caret-up btn btn-xs util-form-control-btn util-cell-caret-up"></i><i class="fas fa-caret-down btn btn-xs util-form-control-btn util-cell-caret-down"></i></div></div><div class="form-group"><label for="" class="form-label">Label input</label>{0}<small class="form-text text-muted">Descriptions.</small></div></div>';
+        htmlChildItem = '<div class="util-child-group mb-3"><div class="utils-form"><div class="util-form-control util-form-cell"><i class="fas fa-times btn btn-xs util-form-control-btn util-cell-remove"></i><i class="fas fa-cog btn btn-xs util-form-control-btn util-cell-config"></i><i class="fas fa-caret-up btn btn-xs util-form-control-btn util-cell-caret-up"></i><i class="fas fa-caret-down btn btn-xs util-form-control-btn util-cell-caret-down"></i></div></div><div class="form-group">{0}</div></div>';
 
         static parseDesignForm() {
             // DnD design is success -> call this for get HTML designed!
@@ -46,7 +45,8 @@ $(document).ready(function () {
         static getElementWhereIsDroppedRow(event) {
             const classFindRow = '.my-row';
             let dropPosition = {
-                x: event.pageX, y: event.pageY
+                x: event.pageX,
+                y: event.pageY
             };
             let placeInsert = 'after';
             let elementDrop = document.elementFromPoint(dropPosition.x, dropPosition.y);
@@ -112,6 +112,11 @@ $(document).ready(function () {
             return ui.draggable.data("originalId");
         }
 
+        static getComponentTextDropped(ui) {
+            // get ID in drop of droppable (data from setComponentIDDropped
+            return ui.draggable.text();
+        }
+
 
         static hiddeDragAfterDrop(ui) {
             // when we want to hide drag component dropped.
@@ -170,9 +175,15 @@ $(document).ready(function () {
                             let element = document.elementFromPoint(position.left, position.top);
 
                             // real target
-                            if ($(element).closest($(event.target)).length > 0){
-                                console.log('True', element);
-                                new designFormUtils().generateItemCell(this, event, ui, element);
+                            if ($(element).closest($(event.target)).length > 0) {
+                                if ($(element).children().length === 0) {
+                                    console.log('True', element);
+                                    new designFormUtils().generateItemCell(this, event, ui, element);
+                                } else {
+                                    $.fn.notifyB({
+                                        'description': "Bạn chỉ có thể thả một phần tử vào một row"
+                                    }, 'warning')
+                                }
                             } else {
                                 console.log('False location!');
                                 // $(ui.draggable).draggable("cancel");
@@ -201,44 +212,9 @@ $(document).ready(function () {
             let [childRowDrop, isTab, placeInsert] = designFormUtils.getElementWhereIsDroppedCell(event, realThis, elementAtDroppedArea);
             if (childRowDrop) {
                 let componentId = designFormUtils.getComponentIDDropped(ui);
-                let eleSelected = componentId.split("component-child-")[1];
-                let dataAppend = '';
-                switch (eleSelected) {
-                    case 'span-text':
-                        dataAppend = this.htmlChildItem.format_by_idx(`<span class="text-primary">Nam nè</span>`);
-                        break
-                    case 'input-text':
-                        dataAppend = this.htmlChildItem.format_by_idx(`<input type="text" class="form-control">`);
-                        break
-                    case 'select':
-                        dataAppend = this.htmlChildItem.format_by_idx('<select class="form-select"><option selected>Select</option><option value="1">One</option><option value="2">Two</option><option value="3">Three</option></select>');
-                        break
-                    case 'multiple-select':
-                        dataAppend = this.htmlChildItem.format_by_idx('<select class="form-select select2" multiple><option selected>Multiple Select Menu</option><option value="1">One</option><option value="2">Two</option><option value="3">Three</option></select>');
-                        break
-                    case 'text-area':
-                        dataAppend = this.htmlChildItem.format_by_idx('<textarea class="form-control" rows="3" placeholder="Textarea"></textarea>');
-                        break
-                    case 'read-only-plain-text':
-                        dataAppend = this.htmlChildItem.format_by_idx('<input type="text" readonly class="form-control-plaintext" value="email@example.com">');
-                        break
-                    case 'file-browser':
-                        dataAppend = this.htmlChildItem.format_by_idx('<input class="form-control"  type="file">');
-                        break
-                    case 'checkbox':
-                        dataAppend = this.htmlChildItem.format_by_idx('<div class="form-check"><input type="checkbox" class="form-check-input"><label class="form-check-label" for="">Checkbox Static</label></div>');
-                        break
-                    case 'radio':
-                        dataAppend = this.htmlChildItem.format_by_idx('<div class="form-check"><input type="radio" name="customRadio" class="form-check-input"><label class="form-check-label" for="">Radio Static</label></div><div class="form-check"><input type="radio" name="customRadio" class="form-check-input"><label class="form-check-label" for="">Radio Static 2</label></div>');
-                        break
-                    case 'tabs':
-                        dataAppend = this.htmlChildItem.format_by_idx('<ul class="nav nav-light nav-tabs">' + '<li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#tab_block_1"><span class="nav-link-text">Active</span></a></li>' + '<li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab_block_2"><span class="nav-link-text">Link</span></a></li>' + '</ul>' + '<div class="tab-content">' + '<div class="tab-pane fade show active" id="tab_block_1">' + '<p>assumenda labore aesthetic magna delectus mollit. </p>' + '<div class="container drop-content drop-content-dnd-tab"></div>' + '</div>' + '<div class="tab-pane fade" id="tab_block_2"><p>Pitchfork sustainable tofu synth chambray yr.</p></div>' + '</div>')
-                        break
-                    case 'data-table':
-                        dataAppend = this.htmlChildItem.format_by_idx('<table class="table nowrap"><thead><tr><th>Seq.</th><th>Name</th><th>Position</th><th>Office</th><th>Start date</th><th>Salary</th></tr></thead><tbody></tbody></table>')
-                        break
-                }
+                let componentText = designFormUtils.getComponentTextDropped(ui);
 
+                let dataAppend = this.htmlChildItem.format_by_idx(`<span class="text-primary text-function-child" data-id="${componentId}">${componentText}</span>`);
                 if (isTab === true) {
                     switch (placeInsert) {
                         case 'append':
@@ -261,7 +237,7 @@ $(document).ready(function () {
                 }
             } else $.fn.notifyB({
                 // 'description': "You must drop inside the cell or row -  don't drop the mouse too close to the partitions. Please try again."
-                'description': "Bạn phải thả chuột vào bên trong ô hoặc hàng - không thả chuột quá gần các phân vùng. Vui lòng thử lại."
+                'description': "Bạn phải thả chuột vào bên  trong ô hoặc hàng - không thả chuột quá gần các phân vùng. Vui lòng thử lại."
             }, 'warning')
         }
     }
@@ -319,7 +295,9 @@ $(document).ready(function () {
         $(document).on('click', '.util-cell-config', function (e) {
             e.preventDefault();
             let parentEle = $(this).closest('.util-child-group');
-            alert("Setting dialog is open! " + parentEle.find('input').val());
+            let functionEle = parentEle.find('.text-function-child');
+            eventForProcess.showModalEditComponent(functionEle);
+            // alert("Setting dialog is open! " + parentEle.find('input').val());
         });
         $(document).on('click', '.util-cell-caret-up', function (e) {
             e.preventDefault();
@@ -357,6 +335,71 @@ $(document).ready(function () {
             link.click();
             URL.revokeObjectURL(url);
         });
+
+        $(document).on('click', '#btn-save-subject-function', function () {
+            let function_id = $('#id-function').val();
+            let functionEle = $(`.text-function-child[data-id="${function_id}"]`);
+            let content = $('#content-function').val();
+            eventForProcess.hideModelEditComponent($(this));
+            eventForProcess.saveEditComponent(functionEle, content);
+        })
+
+        const frmUpdateProcess = $('#frm-update-process');
+        frmUpdateProcess.submit(function (event) {
+            event.preventDefault();
+            let list_process = [];
+            let processEle = $('#drop-container .my-row');
+            processEle.each(function () {
+                list_process.push(eventForProcess.getChildRowProcess($(this), cnt));
+            })
+            console.log(list_process);
+        })
+    }
+
+    class eventForProcess {
+        getChildCol(realThis) {
+            let list_col = [];
+            $(realThis).each(function () {
+                let childEle = $(this).find('.text-function-child');
+                let subject = '';
+                if (childEle.next().length > 0) {
+                    subject = childEle.next().text();
+                }
+                let data = {
+                    'id': childEle.data('id'),
+                    'title': childEle.text(),
+                    'subject': subject,
+                }
+                list_col.push(data)
+            })
+            return list_col
+        }
+
+        static showModalEditComponent(realThis) {
+            let contentEle = realThis.next();
+            $('#modal-subject-process').modal('show');
+            $('#id-function').val(realThis.data('id'));
+            if (contentEle.length > 0) {
+                $('#content-function').val(contentEle.text());
+            } else {
+                $('#content-function').val('');
+            }
+        }
+
+        static saveEditComponent(realThis, content) {
+            $(`<script class="text-content" type="application/json">${content}</script>`).insertAfter(realThis);
+        }
+
+        static getChildRowProcess(realThis, cnt) {
+            return {
+                'num': cnt,
+                'sub_process': new eventForProcess().getChildCol($(realThis).find('.my-col')),
+            }
+        }
+
+        static hideModelEditComponent(realThis){
+            $(realThis).closest('.modal').modal('hide');
+        }
     }
 
     function loadDnD() {
@@ -366,76 +409,47 @@ $(document).ready(function () {
         //
         // ----------------------------------------- //
 
-
         $(".drag-component").draggable({
-            cursor: "crosshair", cursorAt: {top: -5, left: -5},
-            revert: "invalid", helper: "clone", start: function (event, ui) {
+            cursor: "crosshair",
+            cursorAt: {
+                top: -5,
+                left: -5
+            },
+            revert: "invalid",
+            helper: "clone",
+            start: function (event, ui) {
                 designFormUtils.setComponentIDropped($(this))
-            }, stop: function (event, ui) {
+            },
+            stop: function (event, ui) {
                 designFormUtils.activeDropStop();
             },
         });
 
         $('.drag-component-child').draggable({
-            cursor: "crosshair", cursorAt: {top: 0, left: 0},
-            revert: "invalid", helper: function () {
+            cursor: "crosshair",
+            cursorAt: {
+                top: 0,
+                left: 0
+            },
+            revert: "invalid",
+            helper: function () {
                 return $(this).clone().appendTo("body").css({
                     "position": "absolute",
                     "z-index": 9999
                 });
-            }, start: function (event, ui) {
-                ui.helper.data("initialPos", ui.position);
-                designFormUtils.setComponentIDropped($(this))
-            }, stop: function (event, ui) {
-                designFormUtils.activeDropStop()
             },
-        });
-        $('.drop-content-dnd').droppable({
-            accept: ".drag-component", drop: function (event, ui) {
-                // stop drag component!
-                event.stopPropagation();
-
-                let stateRow = new designFormUtils().generateColumn($(this), event, ui);
-                // right negative float util row
-                if (stateRow === true) $('.absolute-top-over').css('right', '-' + ($('.util-form-row').first().width() + 1.1 + 6) + 'px');
-            }
-        });
-    }
-
-    function loadDnDx() {
-        // ----------------------------------------- //
-        //
-        //  Group DnD handle in here
-        //
-        // ----------------------------------------- //
-
-
-        $(".drag-component").draggable({
-            cursor: "crosshair", cursorAt: {top: -5, left: -5},
-            revert: "invalid", helper: "clone", start: function (event, ui) {
-                designFormUtils.setComponentIDropped($(this))
-            }, stop: function (event, ui) {
-                designFormUtils.activeDropStop();
-            },
-        });
-
-        $('.drag-component-child').draggable({
-            cursor: "crosshair", cursorAt: {top: 0, left: 0},
-            revert: "invalid", helper: function () {
-                return $(this).clone().appendTo("body").css({
-                    "position": "absolute",
-                    "z-index": 9999
-                });
-            }, start: function (event, ui) {
+            start: function (event, ui) {
                 ui.helper.data("initialPos", ui.position);
                 designFormUtils.setComponentChildIDDropped($(this))
-            }, stop: function (event, ui) {
+            },
+            stop: function (event, ui) {
                 designFormUtils.activeDropStop()
             },
         });
 
         $('.drop-content-dnd').droppable({
-            accept: ".drag-component", drop: function (event, ui) {
+            accept: ".drag-component",
+            drop: function (event, ui) {
                 // stop drag component!
                 event.stopPropagation();
 
@@ -446,7 +460,99 @@ $(document).ready(function () {
         });
     }
 
-    // call all function need active
     loadEvents();
-    loadDnDx();
-});
+    loadDnD();
+
+
+    function loadFunctionInProcess(data) {
+        let ele_list_function = $('.function-list');
+        let ele_child = $('#function-child').children().first();
+        ele_child.attr('data-id', data.id);
+        ele_child.text(data.function.title);
+        ele_list_function.append(ele_child);
+    }
+
+    function loadFunctionProcess() {
+        if (!$.fn.DataTable.isDataTable('#datatable-function-process')) {
+            let $table = $('#datatable-function-process')
+            let frm = new SetupFormSubmit($table);
+            $table.DataTableDefault({
+                rowIdx: true,
+                ajax: {
+                    url: frm.dataUrl,
+                    type: frm.dataMethod,
+                    dataSrc: function (resp) {
+                        let data = $.fn.switcherResp(resp);
+                        if (data && resp.data.hasOwnProperty('function_list')) {
+                            if (resp.data['function_list']) {
+                                resp.data['function_list'].map(function (item) {
+                                    if (item.is_in_process) {
+                                        loadFunctionInProcess(item);
+                                    }
+                                })
+                                return resp.data['function_list']
+                            } else {
+                                return []
+                            }
+                        }
+                        throw Error('Call data raise errors.')
+                    },
+                },
+                columns: [
+                    {
+                        targets: 0,
+                        className: 'wrap-text',
+                        render: (data, type, row) => {
+                            return ``
+                        }
+                    },
+                    {
+                        data: 'function',
+                        targets: 1,
+                        className: 'wrap-text',
+                        render: (data, type, row) => {
+                            return `<p>${data.title}</p>`
+                        }
+                    },
+                    {
+                        data: 'is_in_process',
+                        targets: 2,
+                        className: 'wrap-text',
+                        render: (data, type, row) => {
+                            if (data) {
+                                return '<div class="form-check"><input class="form-check-input" type="checkbox" disabled checked>'
+                            } else {
+                                return '<div class="form-check"><input class="form-check-input" type="checkbox" disabled>'
+                            }
+                        }
+                    },
+                    {
+                        data: 'is_free',
+                        targets: 3,
+                        className: 'wrap-text',
+                        render: (data, type, row) => {
+                            if (data) {
+                                return '<div class="form-check"><input class="form-check-input" type="checkbox" disabled checked>'
+                            } else {
+                                return '<div class="form-check"><input class="form-check-input" type="checkbox" disabled>'
+                            }
+                        }
+                    },
+                    {
+                        targets: 4,
+                        className: 'wrap-text',
+                        render: (data, type, row) => {
+                            return `<div><a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" `
+                                + `data-bs-original-title="Delete" href="javascript:void(0)"`
+                                + `data-method="DELETE"><span class="btn-icon-wrap"><span class="feather-icon">`
+                                + `<i data-feather="trash-2"></i></span></span></a></div>`;
+                        }
+                    },
+                ],
+            });
+        }
+    }
+
+    loadFunctionProcess();
+
+})

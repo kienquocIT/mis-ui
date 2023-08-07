@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'Purchase Request Create' %}{% endblock %}
+{% block cssHeader %}
+    <link href="{% static 'assets/css/plugins/form-layout.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+{% block pageAction %}
+    <button class="btn btn-outline-primary btn-animated btn-xs" form="frm-update-process"
+            data-bs-original-title="Add New Purchase Request">
+            <span class="icon">
+                <span class="feather-icon">
+                    <i data-feather="plus"></i>
+                </span>
+                <span class="font-3 ml-1">
+                    {% trans 'Save' %}
+                </span>
+            </span>
+    </button>
+{% endblock %}
+{% block pageContent %}
+    <div>
+        <ul class="nav nav-light nav-tabs" id="process-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" data-bs-toggle="tab" href="#tab_long_sale">
+                    <span class="nav-link-text">{% trans 'Long Sale' %}</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#tab_function">
+                    <span class="nav-link-text">{% trans 'Function List' %}</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="tab-content">
+        <div class="tab-pane fade show active" id="tab_long_sale">
+            <form id="frm-update-process" data-method="PUT" data-url="">
+                <div class="container">
+                    <div class="row mb-1">
+                        <div class="col-2">
+                            <div id="drag-container" class="overflow-auto">
+                                <div class="drag-component" id="component-1"><i class="fas fa-columns"></i> 1</div>
+                                <div class="drag-component" id="component-2"><i class="fas fa-columns"></i> 2</div>
+                                <div class="drag-component" id="component-3"><i class="fas fa-columns"></i> 3</div>
+                                <span id="all-drag-component">...more</span>
+                                <div class="drag-component hidden" id="component-4"><i class="fas fa-columns"></i> 4
+                                </div>
+                                <div class="drag-component hidden" id="component-5"><i class="fas fa-columns"></i> 5
+                                </div>
+                                <div class="drag-component hidden" id="component-6"><i class="fas fa-columns"></i> 6
+                                </div>
+                                <div class="border function-list m-1 mt-3">
+
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="col-10">
+                            <div id="drop-container" class="container drop-content drop-content-dnd "></div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="tab-pane fade" id="tab_function">
+            <table id="datatable-function-process" class="table nowrap w-100 mb-5" data-method="GET"
+                   data-url="{% url 'FunctionProcessListAPI' %}">
+                <thead>
+                <th class="w-5">#</th>
+                <th class="w-65">{% trans "Function Name" %}</th>
+                <th class="w-10">{% trans "Im Process" %}</th>
+                <th class="w-10">{% trans "Free" %}</th>
+                <th class="w-10"></th>
+                </thead>
+            </table>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal-subject-process" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'Edit Function' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input id="id-function" class="hidden"/>
+                    <div class="form-group">
+                        <label class="form-label">{% trans 'Subject' %}</label>
+                        <input class="form-control" id="content-function"/>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary"
+                            data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
+                    <button type="button" class="btn btn-primary"
+                            id="btn-save-subject-function">{% trans 'Save' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+{% block dataHiddenGroup %}
+    <div id="function-child">
+        <div class="drag-component-child"></div>
+        <div class="drag-component-child"></div>
+        <div class="drag-component-child"></div>
+        <div class="drag-component-child"></div>
+        <div class="drag-component-child"></div>
+        <div class="drag-component-child"></div>
+        <div class="drag-component-child"></div>
+        <div class="drag-component-child"></div>
+        <div class="drag-component-child"></div>
+        <div class="drag-component-child"></div>
+        <div class="drag-component-child"></div>
+        <div class="drag-component-child"></div>
+        <div class="drag-component-child"></div>
+        <div class="drag-component-child"></div>
+        <div class="drag-component-child"></div>
+        <div class="drag-component-child"></div>
+        <div class="drag-component-child"></div>
+        <div class="drag-component-child"></div>
+        <div class="drag-component-child"></div>
+        <div class="drag-component-child"></div>
+        <div class="drag-component-child"></div>
+        <div class="drag-component-child"></div>
+        <div class="drag-component-child"></div>
+        <div class="drag-component-child"></div>
+        <div class="drag-component-child"></div>
+        <div class="drag-component-child"></div>
+        <div class="drag-component-child"></div>
+    </div>
+{% endblock %}
+
+{% block jsFooter %}
+    <!--CONDITIONS--- required js file for component conditions -->
+    <script src="{% static 'vendors/formset/jquery.formset.min.js' %}"></script>
+    <script src="{% static 'assets/js/plugins/conditions/conditions.js' %}"></script>
+    <!--END CONDITIONS -->
+
+    <script src="{% static 'vendors/jquery/dist/jquery-ui.min.js' %}"></script>
+    <script src="{% static 'assets/core/process/js/sale_process.js' %}"></script>
+{% endblock %}

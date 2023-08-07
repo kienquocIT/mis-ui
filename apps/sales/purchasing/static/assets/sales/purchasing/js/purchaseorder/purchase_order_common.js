@@ -484,33 +484,33 @@ class loadDataHandle {
         tablePurchaseRequestProduct.DataTable().clear().destroy();
         dataTableClass.dataTablePurchaseRequestProduct();
         if (request_id_list.length > 0) {
-        $.fn.callAjax2({
-                'url': frm.dataUrl,
-                'method': frm.dataMethod,
-                'data': {'purchase_request_id__in': request_id_list},
-                'isDropdown': true,
-            }
-        ).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (data.hasOwnProperty('purchase_request_product_list') && Array.isArray(data.purchase_request_product_list)) {
-                        tablePurchaseRequestProduct.DataTable().clear().destroy();
-                        dataTableClass.dataTablePurchaseRequestProduct(data.purchase_request_product_list);
-                        for (let idx = 0; idx < tablePurchaseRequestProduct[0].tBodies[0].rows.length; idx++) {
-                            let row = tablePurchaseRequestProduct[0].tBodies[0].rows[idx];
-                            for (let data_prod of product_checked_list) {
-                                if (row.querySelector('.table-row-checkbox').id === data_prod.id) {
-                                    row.querySelector('.table-row-checkbox').checked = true;
-                                    row.querySelector('.table-row-quantity-order').value = data_prod.quantity_order;
+            $.fn.callAjax2({
+                    'url': frm.dataUrl,
+                    'method': frm.dataMethod,
+                    'data': {'purchase_request_id__in': request_id_list},
+                    'isDropdown': true,
+                }
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('purchase_request_product_list') && Array.isArray(data.purchase_request_product_list)) {
+                            tablePurchaseRequestProduct.DataTable().clear().destroy();
+                            dataTableClass.dataTablePurchaseRequestProduct(data.purchase_request_product_list);
+                            for (let idx = 0; idx < tablePurchaseRequestProduct[0].tBodies[0].rows.length; idx++) {
+                                let row = tablePurchaseRequestProduct[0].tBodies[0].rows[idx];
+                                for (let data_prod of product_checked_list) {
+                                    if (row.querySelector('.table-row-checkbox').id === data_prod.id) {
+                                        row.querySelector('.table-row-checkbox').checked = true;
+                                        row.querySelector('.table-row-quantity-order').value = data_prod.quantity_order;
+                                    }
                                 }
                             }
                         }
                     }
                 }
-            }
-        )
-            }
+            )
+        }
     };
 
     loadMergeProductTable(eleCheckbox) {
@@ -555,46 +555,40 @@ class loadDataHandle {
                 self.loadTableProductByPurchaseRequest();
             }
         }
-        $('#purchase_quotations_data').val(JSON.stringify(purchase_requests_data));
+        $('#purchase_requests_data').val(JSON.stringify(purchase_requests_data));
     };
 
-    loadModalPurchaseQuotation(tablePurchaseQuotation) {
+    loadModalPurchaseQuotation() {
+        let tablePurchaseQuotation = $('#datable-purchase-quotation');
         if (tablePurchaseQuotation[0].querySelector('.dataTables_empty')) {
-            tablePurchaseQuotation.DataTable().destroy();
-            dataTableClass.dataTablePurchaseQuotation([{
-                'id': 1,
-                'code': 'PQ0001',
-                'title': 'Bao gia mua hang so 1',
-                'supplier': {'id': 1, 'title': 'Cong ty Unilever'},
-                'purchase_quotation_request': {'id': 1, 'code': 'PQR0001'},
-                'purchase_request': {'id': 1, 'code': 'PR0001'},
-            }, {
-                'id': 2,
-                'code': 'PQ0002',
-                'title': 'Bao gia mua hang so 2',
-                'supplier': {'id': 1, 'title': 'Cong ty Apple'},
-                'purchase_quotation_request': {'id': 1, 'code': 'PQR0002'},
-                'purchase_request': {'id': 2, 'code': 'PR0002'},
-            }, {
-                'id': 3,
-                'code': 'PQ0003',
-                'title': 'Bao gia mua hang so 3',
-                'supplier': {'id': 1, 'title': 'Cong ty Lenovo'},
-                'purchase_quotation_request': {'id': 1, 'code': 'PQR0003'},
-                'purchase_request': {'id': 3, 'code': 'PR0003'},
-            }, {
-                'id': 4,
-                'code': 'PQ0004',
-                'title': 'Bao gia mua hang so 4',
-                'supplier': {'id': 1, 'title': 'Cong ty Hao Hao'},
-                'purchase_quotation_request': {'id': 1, 'code': 'PQR0004'},
-                'purchase_request': {'id': 4, 'code': 'PR0004'},
-            }]);
+            let frm = new SetupFormSubmit(tablePurchaseQuotation);
+            let purchase_requests_data = $('#purchase_requests_data');
+            if (JSON.parse(purchase_requests_data.val()).length > 0) {
+                $.fn.callAjax2({
+                        'url': frm.dataUrl,
+                        'method': frm.dataMethod,
+                        'data': {'purchase_quotation_request_mapped__purchase_request_mapped_id__in': JSON.parse(purchase_requests_data.val())},
+                        'isDropdown': true,
+                    }
+                ).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            if (data.hasOwnProperty('purchase_quotation_list') && Array.isArray(data.purchase_quotation_list)) {
+                                tablePurchaseQuotation.DataTable().clear().destroy();
+                                dataTableClass.dataTablePurchaseQuotation(data.purchase_quotation_list);
+                            }
+                        }
+                    }
+                )
+            }
         }
     };
 
     loadDataShowPurchaseQuotation(elePurchaseQuotation, tablePurchaseQuotation) {
         let self = this;
+        let purchase_quotations_data = [];
+        let purchase_quotations_id_list = [];
         if (!tablePurchaseQuotation[0].querySelector('.dataTables_empty')) {
             let eleAppend = ``;
             let is_checked = false;
@@ -610,6 +604,11 @@ class loadDataHandle {
                                         <span aria-hidden="true"><i class="fas fa-times"></i></span>
                                     </button>
                                 </div>`;
+                    purchase_quotations_data.push({
+                        'purchase_quotation': row.querySelector('.table-row-checkbox').id,
+                        'is_use': false
+                    })
+                    purchase_quotations_id_list.push(row.querySelector('.table-row-checkbox').id)
                 }
             }
             if (is_checked === true) {
@@ -619,7 +618,8 @@ class loadDataHandle {
                 elePurchaseQuotation.empty();
             }
         }
-        self.loadPriceListByPurchaseQuotation(null);
+        $('#purchase_quotations_data').val(JSON.stringify(purchase_quotations_data));
+        self.loadPriceListByPurchaseQuotation(purchase_quotations_id_list);
     };
 
     loadDataAfterClickRemove(ele, eleShow, table, code) {
@@ -725,91 +725,126 @@ class loadDataHandle {
         self.loadBoxTax($(row.querySelector('.table-row-tax')));
     }
 
-    loadPriceListByPurchaseQuotation(purchase_quotation_list) {
-        let data = {
-            "07481eec-aa25-4a1c-a88c-c0d3341092ea": [
-                {
-                    'quotation_id': 1,
-                    'title': 'Bao gia so 1',
-                    'quotation_price': 1000000,
-                },
-                {
-                    'quotation_id': 2,
-                    'title': 'Bao gia so 2',
-                    'quotation_price': 2000000,
-                },
-                {
-                    'quotation_id': 3,
-                    'title': 'Bao gia so 3',
-                    'quotation_price': 3000000,
+    loadPriceListByPurchaseQuotation(purchase_quotations_id_list) {
+        let eleQuotationProduct = $('#data-purchase-quotation-products');
+        if (purchase_quotations_id_list.length > 0) {
+            $.fn.callAjax2({
+                    'url': eleQuotationProduct.attr('data-url'),
+                    'method': eleQuotationProduct.attr('data-method'),
+                    'data': {'purchase_quotation_id__in': purchase_quotations_id_list},
+                    'isDropdown': true,
                 }
-            ],
-            "1b55b1f8-117b-4f5c-86db-3f96623da1e5": [
-                {
-                    'quotation_id': 1,
-                    'title': 'Bao gia so 1',
-                    'quotation_price': 1500000,
-                },
-                {
-                    'quotation_id': 2,
-                    'title': 'Bao gia so 2',
-                    'quotation_price': 2500000,
-                },
-                {
-                    'quotation_id': 3,
-                    'title': 'Bao gia so 3',
-                    'quotation_price': 3500000,
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('purchase_quotation_product_list') && Array.isArray(data.purchase_quotation_product_list)) {
+                            let data = {};
+                            for (let result of data.purchase_quotation_product_list) {
+                                if (!data.hasOwnProperty(result.product_id)) {
+                                    data[result.product_id] = [{
+                                        'purchase_quotation': result.purchase_quotation,
+                                        'unit_price': result.unit_price
+                                    }]
+                                } else {
+                                    data[result.product_id].push({
+                                        'purchase_quotation': result.purchase_quotation,
+                                        'unit_price': result.unit_price
+                                    })
+                                }
+                            }
+                            let $table = $('#datable-purchase-order-product-request');
+                            $table.DataTable().rows().every(function () {
+                                let row = this.node();
+                                let priceListData = data[row.querySelector('.table-row-item').id];
+                                let elePrice = row.querySelector('.table-row-price');
+                                let elePriceShow = row.querySelector('.table-row-price-show');
+                                let elePriceList = row.querySelector('.table-row-price-list');
+                                row.querySelector('.table-row-price-show-area').removeAttribute('hidden');
+                                elePrice.setAttribute('hidden', 'true');
+                                $(elePrice).attr('value', String(0));
+                                $(elePriceShow).attr('data-init-money', String(0));
+                                if (elePriceList) {
+                                    $(elePriceList).empty();
+                                    for (let price of priceListData) {
+                                        $(elePriceList).append(`<div class="dropdown-item disabled text-black border border-grey mb-1" id="${price.purchase_quotation.id}" data-value="${parseFloat(price.unit_price)}">
+                                                                    <div class="row">
+                                                                        <div class="col-7"><span>${price.purchase_quotation.title}</span></div>
+                                                                        <div class="col-5"><span
+                                                                            class="mask-money" data-init-money="${parseFloat(price.unit_price)}"
+                                                                        ></span></div>
+                                                                    </div>
+                                                                </div>`);
+                                    }
+                                }
+                            });
+                            // mask money
+                            $.fn.initMaskMoney2();
+                        }
+                    }
                 }
-            ],
-            "dc67e8e5-bae7-44a4-84a9-8e3812b4aed6": [
-                {
-                    'quotation_id': 1,
-                    'title': 'Bao gia so 1',
-                    'quotation_price': 1800000,
-                },
-                {
-                    'quotation_id': 2,
-                    'title': 'Bao gia so 2',
-                    'quotation_price': 2800000,
-                },
-                {
-                    'quotation_id': 3,
-                    'title': 'Bao gia so 3',
-                    'quotation_price': 3800000,
-                }
-            ],
+            )
         }
-        let $table = $('#datable-purchase-order-product-request');
-        $table.DataTable().rows().every(function () {
-            let row = this.node();
-            let priceListData = data[row.querySelector('.table-row-item').id];
-            let elePrice = row.querySelector('.table-row-price');
-            let elePriceShow = row.querySelector('.table-row-price-show');
-            let elePriceList = row.querySelector('.table-row-price-list');
-            row.querySelector('.table-row-price-show-area').removeAttribute('hidden');
-            elePrice.setAttribute('hidden', 'true');
-            $(elePrice).attr('value', String(0));
-            $(elePriceShow).attr('data-init-money', String(0));
-            if (elePriceList) {
-                $(elePriceList).empty();
-                for (let price of priceListData) {
-                    $(elePriceList).append(`<div class="dropdown-item disabled text-black border border-grey mb-1" id="${price.quotation_id}" data-value="${parseFloat(price.quotation_price)}">
-                                                <div class="row">
-                                                    <div class="col-7"><span>${price.title}</span></div>
-                                                    <div class="col-5"><span
-                                                        class="mask-money" data-init-money="${parseFloat(price.quotation_price)}"
-                                                    ></span></div>
-                                                </div>
-                                            </div>`);
-                }
-            }
-        });
-        // mask money
-        $.fn.initMaskMoney2();
+        // let data = {
+        //     "07481eec-aa25-4a1c-a88c-c0d3341092ea": [
+        //         {
+        //             'purchase_quotation_id': 1,
+        //             'title': 'Bao gia so 1',
+        //             'quotation_price': 1000000,
+        //         },
+        //         {
+        //             'quotation_id': 2,
+        //             'title': 'Bao gia so 2',
+        //             'quotation_price': 2000000,
+        //         },
+        //         {
+        //             'quotation_id': 3,
+        //             'title': 'Bao gia so 3',
+        //             'quotation_price': 3000000,
+        //         }
+        //     ],
+        //     "1b55b1f8-117b-4f5c-86db-3f96623da1e5": [
+        //         {
+        //             'quotation_id': 1,
+        //             'title': 'Bao gia so 1',
+        //             'quotation_price': 1500000,
+        //         },
+        //         {
+        //             'quotation_id': 2,
+        //             'title': 'Bao gia so 2',
+        //             'quotation_price': 2500000,
+        //         },
+        //         {
+        //             'quotation_id': 3,
+        //             'title': 'Bao gia so 3',
+        //             'quotation_price': 3500000,
+        //         }
+        //     ],
+        //     "dc67e8e5-bae7-44a4-84a9-8e3812b4aed6": [
+        //         {
+        //             'quotation_id': 1,
+        //             'title': 'Bao gia so 1',
+        //             'quotation_price': 1800000,
+        //         },
+        //         {
+        //             'quotation_id': 2,
+        //             'title': 'Bao gia so 2',
+        //             'quotation_price': 2800000,
+        //         },
+        //         {
+        //             'quotation_id': 3,
+        //             'title': 'Bao gia so 3',
+        //             'quotation_price': 3800000,
+        //         }
+        //     ],
+        // }
     };
 
     loadPriceByCheckedQuotation(ele) {
         let checked_id = ele[0].id;
+        for (let purchase_quotation of JSON.parse($('#purchase_quotations_data').val())) {
+            purchase_quotation.is_use = (purchase_quotation.purchase_quotation === checked_id);
+        }
         let $table = $('#datable-purchase-order-product-request');
         $table.DataTable().rows().every(function () {
             let row = this.node();
@@ -1145,6 +1180,7 @@ class dataTableHandle {
                     targets: 1,
                     render: (data, type, row) => {
                         let dataStr = JSON.stringify(row.product).replace(/"/g, "&quot;");
+                        let purchase_request_product_datas = JSON.stringify(row.purchase_request_product_datas).replace(/"/g, "&quot;");
                         return `<div class="row more-information-group">
                                 <div class="col-3">
                                     <div class="btn-group dropstart">
@@ -1161,7 +1197,7 @@ class dataTableHandle {
                                     </div>
                                 </div>
                                 <div class="col-9" style="margin-left: -20px">
-                                    <span class="table-row-item" id="${row.product.id}" data-purchase-request-product-id="${row.purchase_request_product}">${row.product_title}<input type="hidden" class="data-info" value="${dataStr}"></span>
+                                    <span class="table-row-item" id="${row.product.id}" data-purchase-request-product-datas="${purchase_request_product_datas}">${row.product_title}<input type="hidden" class="data-info" value="${dataStr}"></span>
                                 </div>
                             </div>`
                     },
@@ -1626,6 +1662,9 @@ class submitHandle {
                         rowData['product'] = dataInfo.id;
                         rowData['product_title'] = dataInfo.title;
                         rowData['product_code'] = dataInfo.code;
+                        if (optionSelected.getAttribute('data-purchase-request-product-datas')) {
+                            rowData['purchase_request_product_datas'] = JSON.parse(optionSelected.getAttribute('data-purchase-request-product-datas'));
+                        }
                     }
                 }
                 let eleDescription = row.querySelector('.table-row-description');
@@ -1698,7 +1737,8 @@ class submitHandle {
 
     setupDataSubmit(_form) {
         let self = this;
-        _form.dataForm['purchase_requests_data'] = JSON.parse($('#purchase_quotations_data').val());
+        _form.dataForm['purchase_requests_data'] = JSON.parse($('#purchase_requests_data').val());
+        _form.dataForm['purchase_quotations_data'] = JSON.parse($('#purchase_quotations_data').val());
         let dateDeliveredVal = $('#purchase-order-date-delivered').val();
         if (dateDeliveredVal) {
             _form.dataForm['delivered_date'] = moment(dateDeliveredVal).format('YYYY-MM-DD HH:mm:ss');
@@ -1760,11 +1800,16 @@ function setupMergeProduct() {
         for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
             let row = table[0].tBodies[0].rows[i];
             if (row.querySelector('.table-row-checkbox').checked === true) {
-                if (!dataJson.hasOwnProperty(row.querySelector('.table-row-checkbox').id)) {
+                if (!dataJson.hasOwnProperty(row.querySelector('.table-row-item').id)) {
                     order++
                     dataJson[row.querySelector('.table-row-item').id] = {
                         'id': row.querySelector('.table-row-checkbox').id,
-                        'purchase_request_product': row.querySelector('.table-row-checkbox').id,
+                        'purchase_request_product_datas': [{
+                            'purchase_request_product': row.querySelector('.table-row-checkbox').id,
+                            'sale_order_product': row.querySelector('.table-row-checkbox').getAttribute('data-sale-order-product-id'),
+                            'quantity_order': parseFloat(row.querySelector('.table-row-quantity-order').value),
+                            'quantity_remain': parseFloat(row.querySelector('.table-row-remain').innerHTML),
+                        }],
                         'product': {
                             'id': row.querySelector('.table-row-item').id,
                             'title': row.querySelector('.table-row-item').innerHTML,
@@ -1788,10 +1833,12 @@ function setupMergeProduct() {
                         'order': order,
                     };
                 } else {
-                    dataJson[row.querySelector('.table-row-checkbox').id].code_list.push(row.querySelector('.table-row-code').innerHTML);
-                    dataJson[row.querySelector('.table-row-checkbox').id].product_quantity_request += parseFloat(row.querySelector('.table-row-quantity-request').innerHTML);
-                    dataJson[row.querySelector('.table-row-checkbox').id].remain += parseFloat(row.querySelector('.table-row-remain').innerHTML);
-                    dataJson[row.querySelector('.table-row-checkbox').id].product_quantity_order += parseFloat(row.querySelector('.table-row-quantity-order').value);
+                    if (!dataJson[row.querySelector('.table-row-item').id].code_list.includes(row.querySelector('.table-row-code').innerHTML)) {
+                        dataJson[row.querySelector('.table-row-item').id].code_list.push(row.querySelector('.table-row-code').innerHTML);
+                    }
+                    dataJson[row.querySelector('.table-row-item').id].product_quantity_request += parseFloat(row.querySelector('.table-row-quantity-request').innerHTML);
+                    dataJson[row.querySelector('.table-row-item').id].remain += parseFloat(row.querySelector('.table-row-remain').innerHTML);
+                    dataJson[row.querySelector('.table-row-item').id].product_quantity_order += parseFloat(row.querySelector('.table-row-quantity-order').value);
                 }
             }
         }

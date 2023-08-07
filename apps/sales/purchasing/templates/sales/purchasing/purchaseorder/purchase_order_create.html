@@ -397,6 +397,12 @@
             data-url="{% url "TaxListAPI" %}"
             data-method="GET"
         >
+        <input
+            type="hidden"
+            id="data-purchase-quotation-products"
+            data-url="{% url "PurchaseQuotationProductListAPI" %}"
+            data-method="GET"
+        >
 
 
         <div class="modal fade mt-5" id="purchaseRequestModalCenter" tabindex="-1" role="dialog" aria-labelledby="purchaseRequestModalCenter" aria-hidden="true">
@@ -526,7 +532,7 @@
                             <table
                                 id="datable-purchase-quotation"
                                 class="table nowrap w-100"
-                                data-url="{% url 'SaleOrderListAPI' %}"
+                                data-url="{% url 'PurchaseQuotationListAPI' %}"
                                 data-method="get"
                             >
                                 <thead>

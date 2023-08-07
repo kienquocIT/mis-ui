@@ -117,7 +117,7 @@ $(function () {
 
         // Purchase quotation modal
         $('#btn-purchase-quotation-modal').on('click', function () {
-            loadDataClass.loadModalPurchaseQuotation(tablePurchaseQuotation);
+            loadDataClass.loadModalPurchaseQuotation();
         });
 
         // Action on click add purchase quotation

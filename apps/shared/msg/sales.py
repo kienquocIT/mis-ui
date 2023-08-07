@@ -32,3 +32,4 @@ class SaleMsg:  # pylint: disable=too-few-public-methods
     OPPORTUNITY_TASK_DELETE = _('Task delete successfully')
     OPPORTUNITY_TASK_LOG = _('Log time successfully')
     PURCHASE_QUOTATION_REQUEST = _('Purchase Quotation Request create successfully')
+    PURCHASE_QUOTATION = _('Purchase Quotation create successfully')

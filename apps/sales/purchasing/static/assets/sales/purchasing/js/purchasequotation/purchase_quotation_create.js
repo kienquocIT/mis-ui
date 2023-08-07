@@ -286,5 +286,56 @@ $(function () {
             calculate_price($('#table-purchase-quotation-products-selected tbody tr'));
             $.fn.initMaskMoney2();
         })
+
+        $('#form-create-purchase-quotation').submit(function (event) {
+            event.preventDefault();
+            let csr = $("input[name=csrfmiddlewaretoken]").val();
+            let frm = new SetupFormSubmit($(this));
+
+            frm.dataForm['title'] = $('#title').val();
+            frm.dataForm['supplier_mapped'] = $('#supplier-select-box option:selected').val();
+            frm.dataForm['contact_mapped'] = $('#contact-select-box option:selected').val();
+            frm.dataForm['purchase_quotation_request_mapped'] = $('#pqr-select-box option:selected').val();
+            frm.dataForm['expiration_date'] = $('#expiration_date').val();
+            frm.dataForm['lead_time_from'] = $('#lead-time-from').val();
+            frm.dataForm['lead_time_to'] = $('#lead-time-to').val();
+            frm.dataForm['lead_time_type'] = $('#lead-time-type option:selected').val();
+            frm.dataForm['note'] = $('#note').val();
+
+            frm.dataForm['products_selected'] = []
+            $('#table-purchase-quotation-products-selected tbody tr').each(function (index, element) {
+                frm.dataForm['products_selected'].push(
+                    {
+                        'product_id': $(this).find('.product-select-box option:selected').attr('value'),
+                        'product_description': $(this).find('.product-description').val(),
+                        'product_uom_id': $(this).find('.product-uom-select-box option:selected').attr('value'),
+                        'product_quantity': $(this).find('.product-quantity').attr('value'),
+                        'product_unit_price': $(this).find('.pr-unit-price-input').attr('value'),
+                        'product_taxes': $(this).find('.product-tax-select-box option:selected').attr('value'),
+                        'product_subtotal_price': $(this).find('.pr-subtotal-price-input').attr('data-init-money'),
+                    }
+                )
+            })
+
+            frm.dataForm['pretax_price'] = $('#pretax-value').attr('data-init-money');
+            frm.dataForm['taxes_price'] = $('#taxes-value').attr('data-init-money');
+            frm.dataForm['total_price'] = $('#total-value').attr('data-init-money');
+
+            console.log(frm.dataForm)
+
+            $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
+            .then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: "Successfully"}, 'success')
+                        $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
+                    }
+                },
+                (errs) => {
+                    // $.fn.notifyB({description: errs.data.errors}, 'failure');
+                }
+            )
+        })
     })
 })

@@ -24,9 +24,9 @@
 {% endblock %}
 {% block pageContent %}
     <div id="section-advance-list">
-        <table id="datatable_pqr_list" class="table nowrap w-100 mb-5" data-method="GET"
-               data-url="{% url 'PurchaseQuotationRequestListAPI' %}"
-               data-url-detail="{% url "PurchaseQuotationRequestDetail" '0' %}"
+        <table id="datatable_pq_list" class="table nowrap w-100 mb-5" data-method="GET"
+               data-url="{% url 'PurchaseQuotationListAPI' %}"
+               data-url-detail="{% url "PurchaseQuotationDetail" '0' %}"
         >
             <thead>
             <th>{% trans "Code" %}</th>
@@ -37,10 +37,10 @@
                    title="{% trans 'Press row here to open detail page.' %}">
                 </i>
             </th>
-            <th>{% trans "Purchase request" %}</th>
-            <th>{% trans "Delivered date" %}</th>
+            <th>{% trans "Purchase quotation request" %}</th>
+            <th>{% trans "Supplier" %}</th>
+            <th>{% trans "Expiration date" %}</th>
             <th>{% trans "Status" %}</th>
-            <th>{% trans "Response status" %}</th>
             </thead>
         </table>
     </div>

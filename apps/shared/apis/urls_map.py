@@ -316,4 +316,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # Purchasing
     PURCHASE_QUOTATION_REQUEST_LIST = StringUrl('purchasing/purchase-quotation-request/list')
+    PURCHASE_QUOTATION_REQUEST_LIST_FOR_PQ = StringUrl('purchasing/purchase-quotation-request-for-pq/list')
     PURCHASE_QUOTATION_REQUEST_DETAIL = StringUrl('purchasing/purchase-quotation-request')
+    PURCHASE_QUOTATION_LIST = StringUrl('purchasing/purchase-quotation/list')
+    PURCHASE_QUOTATION_DETAIL = StringUrl('purchasing/purchase-quotation')

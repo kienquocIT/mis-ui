@@ -1,9 +1,16 @@
+let finalRevenueBeforeTax = document.getElementById('purchase-order-final-revenue-before-tax');
+
 // LoadData
 class loadDataHandle {
-    loadMoreInformation(ele) {
-        let optionSelected = ele[0].options[ele[0].selectedIndex];
-        let eleInfo = ele[0].closest('.input-affix-wrapper').querySelector('.more-information');
-        let dropdownContent = ele[0].closest('.input-affix-wrapper').querySelector('.dropdown-menu');
+    loadMoreInformation(ele, is_span = false) {
+        let optionSelected = null;
+        if (is_span === false) {
+            optionSelected = ele[0].options[ele[0].selectedIndex];
+        } else {
+            optionSelected = ele[0]
+        }
+        let eleInfo = ele[0].closest('.more-information-group').querySelector('.more-information');
+        let dropdownContent = ele[0].closest('.more-information-group').querySelector('.dropdown-menu');
         dropdownContent.innerHTML = ``;
         eleInfo.setAttribute('disabled', true);
         let link = "";
@@ -647,6 +654,7 @@ class loadDataHandle {
             tablePurchaseOrderProductRequest[0].removeAttribute('hidden');
         }
         let data = setupMergeProduct();
+        tablePurchaseOrderProductRequest.DataTable().clear().destroy();
         dataTableClass.dataTablePurchaseOrderProductRequest();
         tablePurchaseOrderProductRequest.DataTable().rows.add(data).draw();
         self.loadDataRowTable(tablePurchaseOrderProductRequest);
@@ -709,14 +717,17 @@ class loadDataHandle {
         $.fn.initMaskMoney2();
         if (table_id === 'datable-purchase-order-product-add') {
             self.loadBoxProduct($(row.querySelector('.table-row-item')));
+            self.loadBoxUOM($(row.querySelector('.table-row-uom-order')));
+        } else if (table_id === 'datable-purchase-order-product-request') {
+            self.loadMoreInformation($(row.querySelector('.table-row-item')), true);
+            self.loadBoxUOM($(row.querySelector('.table-row-uom-order')), row.querySelector('.table-row-uom-request').id);
         }
-        self.loadBoxUOM($(row.querySelector('.table-row-uom-order')));
         self.loadBoxTax($(row.querySelector('.table-row-tax')));
     }
 
     loadPriceListByPurchaseQuotation(purchase_quotation_list) {
         let data = {
-            1: [
+            "07481eec-aa25-4a1c-a88c-c0d3341092ea": [
                 {
                     'quotation_id': 1,
                     'title': 'Bao gia so 1',
@@ -733,7 +744,7 @@ class loadDataHandle {
                     'quotation_price': 3000000,
                 }
             ],
-            2: [
+            "1b55b1f8-117b-4f5c-86db-3f96623da1e5": [
                 {
                     'quotation_id': 1,
                     'title': 'Bao gia so 1',
@@ -750,7 +761,7 @@ class loadDataHandle {
                     'quotation_price': 3500000,
                 }
             ],
-            3: [
+            "dc67e8e5-bae7-44a4-84a9-8e3812b4aed6": [
                 {
                     'quotation_id': 1,
                     'title': 'Bao gia so 1',
@@ -775,6 +786,8 @@ class loadDataHandle {
             let elePrice = row.querySelector('.table-row-price');
             let elePriceShow = row.querySelector('.table-row-price-show');
             let elePriceList = row.querySelector('.table-row-price-list');
+            row.querySelector('.table-row-price-show-area').removeAttribute('hidden');
+            elePrice.setAttribute('hidden', 'true');
             $(elePrice).attr('value', String(0));
             $(elePriceShow).attr('data-init-money', String(0));
             if (elePriceList) {
@@ -906,7 +919,7 @@ class dataTableHandle {
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        return `<span class="table-row-title">${row.product.title}</span>`
+                        return `<span class="table-row-item" id="${row.product.id}" data-purchase-request-product-id="${row.id}">${row.product.title}</span>`
                     },
                 },
                 {
@@ -918,7 +931,7 @@ class dataTableHandle {
                 {
                     targets: 4,
                     render: (data, type, row) => {
-                        return `<span class="table-row-uom-request">${row.uom.title}</span>`
+                        return `<span class="table-row-uom-request" id="${row.uom.id}">${row.uom.title}</span>`
                     }
                 },
                 {
@@ -930,7 +943,7 @@ class dataTableHandle {
                 {
                     targets: 6,
                     render: (data, type, row) => {
-                        return `<span class="table-row-remain">${row.sale_order_product.remain_for_purchase_order}</span>`
+                        return `<span class="table-row-remain">${row.remain_for_purchase_order}</span>`
                     }
                 },
                 {
@@ -1132,7 +1145,7 @@ class dataTableHandle {
                     targets: 1,
                     render: (data, type, row) => {
                         let dataStr = JSON.stringify(row.product).replace(/"/g, "&quot;");
-                        return `<div class="row">
+                        return `<div class="row more-information-group">
                                 <div class="col-3">
                                     <div class="btn-group dropstart">
                                         <i
@@ -1148,7 +1161,7 @@ class dataTableHandle {
                                     </div>
                                 </div>
                                 <div class="col-9" style="margin-left: -20px">
-                                    <span class="table-row-item" id="${row.product.id}">${row.product_title}<input type="hidden" class="data-info" value="${dataStr}"></span>
+                                    <span class="table-row-item" id="${row.product.id}" data-purchase-request-product-id="${row.purchase_request_product}">${row.product_title}<input type="hidden" class="data-info" value="${dataStr}"></span>
                                 </div>
                             </div>`
                     },
@@ -1156,7 +1169,7 @@ class dataTableHandle {
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        return `<span>${row.product_description}</span>`;
+                        return `<span class="table-row-description">${row.product_description}</span>`;
                     }
                 },
                 {
@@ -1200,27 +1213,25 @@ class dataTableHandle {
                     targets: 8,
                     render: (data, type, row) => {
                         return `<div class="row">
-                                    <div class="col-8">
-                                    <span class="mask-money mr-4 table-row-price-show" data-init-money="${parseFloat(row.product_unit_price)}"></span>
+                                    <div class="row table-row-price-show-area inline-elements" hidden>
+                                        <span class="mask-money mr-4 table-row-price-show" data-init-money="${parseFloat(row.product_unit_price)}"></span>
+                                        <button 
+                                            aria-expanded="false"
+                                            data-bs-toggle="dropdown"
+                                            class="btn btn-link btn-sm w-10"
+                                            type="button"
+                                            style="margin-left: -40px"
+                                        >
+                                        <i class="fas fa-angle-down"></i>
+                                        </button>
+                                        <div role="menu" class="dropdown-menu dropdown-bordered table-row-price-list w-460p"></div>
+                                    </div>
                                     <input 
                                         type="text" 
                                         class="form-control mask-money table-row-price" 
                                         value="${row.product_unit_price}"
                                         data-return-type="number"
-                                        hidden
                                     >
-                                    </div>
-                                    <div class="col-4">
-                                        <button 
-                                        aria-expanded="false"
-                                        data-bs-toggle="dropdown"
-                                        class="btn btn-link btn-sm"
-                                        type="button">
-                                        <i class="fas fa-angle-down"></i>
-                                        </button>
-                                        <div role="menu" class="dropdown-menu dropdown-bordered table-row-price-list w-460p">
-                                        </div>
-                                    </div>
                                 </div>`;
                     }
                 },
@@ -1323,7 +1334,7 @@ class dataTableHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                            return `<div class="row">
+                            return `<div class="row more-information-group">
                                         <div class="input-group">
                                             <span class="input-affix-wrapper">
                                                 <span class="input-prefix">
@@ -1377,7 +1388,7 @@ class dataTableHandle {
                 {
                     targets: 5,
                     render: (data, type, row) => {
-                        return `<div class="row">
+                        return `<div class="row more-information-group">
                                     <div class="dropdown">
                                         <div class="input-group dropdown-action" aria-expanded="false" data-bs-toggle="dropdown">
                                         <span class="input-affix-wrapper">
@@ -1572,6 +1583,14 @@ class validateHandle {
         value = value.replace("-", "").replace(/^0+(?=\d)/, '');
         // Update value of input
         ele.value = value;
+    };
+
+    validateQuantyOrder(ele) {
+        let remain = parseFloat(ele.closest('tr').querySelector('.table-row-remain').innerHTML);
+        if (parseFloat(ele.value) > remain) {
+            ele.value = '0';
+            $.fn.notifyB({description: 'Quantity order must be less than quantity remain'}, 'failure');
+        }
     }
 }
 
@@ -1601,6 +1620,7 @@ class submitHandle {
                     optionSelected = eleProduct.options[eleProduct.selectedIndex];
                 }
                 if (optionSelected) {
+                    rowData['purchase_request_product'] = optionSelected.getAttribute('data-purchase-request-product-id');
                     if (optionSelected.querySelector('.data-info')) {
                         let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
                         rowData['product'] = dataInfo.id;
@@ -1678,14 +1698,20 @@ class submitHandle {
 
     setupDataSubmit(_form) {
         let self = this;
+        _form.dataForm['purchase_requests_data'] = JSON.parse($('#purchase_quotations_data').val());
         let dateDeliveredVal = $('#purchase-order-date-delivered').val();
         if (dateDeliveredVal) {
-            _form.dataForm['date_delivered'] = moment(dateDeliveredVal).format('YYYY-MM-DD HH:mm:ss')
+            _form.dataForm['delivered_date'] = moment(dateDeliveredVal).format('YYYY-MM-DD HH:mm:ss');
         }
+        _form.dataForm['status_delivered'] = 0;
         let products_data_setup = self.setupDataProduct();
         if (products_data_setup.length > 0) {
-            _form.dataForm['purchase_order_products_data'] = products_data_setup
+            _form.dataForm['purchase_order_products_data'] = products_data_setup;
         }
+        _form.dataForm['total_product_pretax_amount'] = parseFloat($('#purchase-order-product-pretax-amount-raw').val());
+        _form.dataForm['total_product_tax'] = parseFloat($('#purchase-order-product-taxes-raw').val());
+        _form.dataForm['total_product'] = parseFloat($('#purchase-order-product-total-raw').val());
+        _form.dataForm['total_product_revenue_before_tax'] = parseFloat(finalRevenueBeforeTax.value);
     }
 }
 
@@ -1738,12 +1764,16 @@ function setupMergeProduct() {
                     order++
                     dataJson[row.querySelector('.table-row-checkbox').id] = {
                         'id': row.querySelector('.table-row-checkbox').id,
-                        'product': {'id': order},
-                        'uom_request': {'id': 1},
-                        'uom_order': {'id': 1},
+                        'purchase_request_product': row.querySelector('.table-row-item').getAttribute('data-purchase-request-product-id'),
+                        'product': {
+                            'id': row.querySelector('.table-row-item').id,
+                            'title': row.querySelector('.table-row-item').innerHTML,
+                        },
+                        'uom_request': {'id': row.querySelector('.table-row-uom-request').id},
+                        'uom_order': {'id': row.querySelector('.table-row-uom-request').id},
                         'tax': {'id': 1, 'value': 10},
                         'stock': 3,
-                        'product_title': row.querySelector('.table-row-title').innerHTML,
+                        'product_title': row.querySelector('.table-row-item').innerHTML,
                         'code_list': [row.querySelector('.table-row-code').innerHTML],
                         'product_description': 'xxxxx',
                         'product_uom_request_title': row.querySelector('.table-row-uom-request').innerHTML,

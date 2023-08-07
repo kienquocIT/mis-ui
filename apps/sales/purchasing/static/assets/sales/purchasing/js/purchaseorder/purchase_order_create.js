@@ -7,6 +7,7 @@ $(function () {
         let dataTableClass = new dataTableHandle();
         let submitClass = new submitHandle();
         let calculateClass = new calculateHandle();
+        let validateClass = new validateHandle();
         // Elements
         let elePurchaseRequest = $('#purchase-order-purchase-request');
         let elePurchaseQuotation = $('#purchase-order-purchase-quotation');
@@ -86,6 +87,7 @@ $(function () {
         // Checkbox all
         $('#table-purchase-reqeust-checkbox-all').on('click', function() {
             clickCheckBoxAll($(this), tablePurchaseRequest);
+            loadDataClass.loadModalPurchaseRequestProductTable();
         });
 
         // Action on click .table-row-checkbox of tablePurchaseRequest
@@ -105,6 +107,12 @@ $(function () {
         // Action on click btn remove purchase request
         elePurchaseRequest.on('click', '.custom-btn-remove', function() {
             loadDataClass.loadDataAfterClickRemove($(this), elePurchaseRequest, tablePurchaseRequest, "purchase_request");
+        });
+
+        // Action on change quantity order of tablePurchaseRequestProduct
+        tablePurchaseRequestProduct.on('change', '.table-row-quantity-order', function() {
+            validateClass.validateNumber(this);
+            validateClass.validateQuantyOrder(this);
         });
 
         // Purchase quotation modal
@@ -191,13 +199,15 @@ $(function () {
                 'purchase_requests_data',
                 'supplier',
                 'contact',
+                'delivered_date',
+                'status_delivered',
+                // purchase order tabs
+                'purchase_order_products_data',
                 // total amount
                 'total_product_pretax_amount',
                 'total_product_tax',
                 'total_product',
                 'total_product_revenue_before_tax',
-                // purchase order tabs
-                'purchase_order_products_data',
                 // system
                 'system_status',
             ]

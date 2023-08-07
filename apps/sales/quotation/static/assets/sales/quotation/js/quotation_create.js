@@ -819,7 +819,7 @@ $(function () {
                 // Begin load data copy FROM
                 document.getElementById('customer-price-list').value = dataCopy.customer.customer_price_list;
                 loadDataClass.loadDetailQuotation(dataCopy, true);
-                loadDataClass.loadDataTableAndDropDown(dataCopy);
+                loadDataClass.loadDataTablesAndDropDowns(dataCopy);
 
             } else if (type === 'copy-to') { // COPY TO (QUOTATION DETAIL -> SALE ORDER CREATE)
                 // create URL and add to href
@@ -874,7 +874,7 @@ $(function () {
                     }
                     // Begin load data copy TO
                     document.getElementById('customer-price-list').value = dataCopy.customer.customer_price_list;
-                    loadDataClass.loadDataTableAndDropDown(dataCopy);
+                    loadDataClass.loadDataTablesAndDropDowns(dataCopy);
                 }
             }
         }

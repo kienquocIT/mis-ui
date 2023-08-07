@@ -919,7 +919,7 @@ class dataTableHandle {
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        return `<span class="table-row-item" id="${row.product.id}" data-purchase-request-product-id="${row.id}">${row.product.title}</span>`
+                        return `<span class="table-row-item" id="${row.product.id}">${row.product.title}</span>`
                     },
                 },
                 {
@@ -1762,9 +1762,9 @@ function setupMergeProduct() {
             if (row.querySelector('.table-row-checkbox').checked === true) {
                 if (!dataJson.hasOwnProperty(row.querySelector('.table-row-checkbox').id)) {
                     order++
-                    dataJson[row.querySelector('.table-row-checkbox').id] = {
+                    dataJson[row.querySelector('.table-row-item').id] = {
                         'id': row.querySelector('.table-row-checkbox').id,
-                        'purchase_request_product': row.querySelector('.table-row-item').getAttribute('data-purchase-request-product-id'),
+                        'purchase_request_product': row.querySelector('.table-row-checkbox').id,
                         'product': {
                             'id': row.querySelector('.table-row-item').id,
                             'title': row.querySelector('.table-row-item').innerHTML,

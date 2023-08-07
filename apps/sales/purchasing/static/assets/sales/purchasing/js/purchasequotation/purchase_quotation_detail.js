@@ -48,14 +48,14 @@ $(function () {
                         },
                         {
                             data: 'description',
-                            className: 'wrap-text w-15',
+                            className: 'wrap-text w-10',
                             render: (data, type, row, meta) => {
                                 return `<textarea readonly class="product-description form-control" style="height: 38px">${row.description}</textarea>`;
                             }
                         },
                         {
                             data: 'uom',
-                            className: 'wrap-text w-10 text-center',
+                            className: 'wrap-text w-15 text-center',
                             render: (data, type, row, meta) => {
                                 return `<span class="product-uom" data-product-uom-id="${row.product.uom.id}">${row.product.uom.title}</span>`;
                             }
@@ -76,7 +76,7 @@ $(function () {
                         },
                         {
                             data: 'tax',
-                            className: 'wrap-text w-15',
+                            className: 'wrap-text w-10',
                             render: (data, type, row, meta) => {
                                 let html = ``;
                                 html += `<option data-rate="0"></option>`;

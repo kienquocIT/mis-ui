@@ -73,7 +73,8 @@ class MenusCompanySystem:
                 icon='<i class="fas fa-shapes"></i>'
             ),
             MenuCommon(
-                name='Business Process', code='', view_name='#', icon='<i class="fab fa-phabricator"></i>',
+                name='Business Process', code='menu_sale_process', view_name='SaleProcess',
+                icon='<i class="fab fa-phabricator"></i>',
             ),
             MenuCommon(
                 name='Automation', code='', view_name='#', icon='<i class="fas fa-robot"></i>',

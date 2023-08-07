@@ -73,9 +73,12 @@ $(function () {
                     let valueToSelect = data.customer.id;
                     loadDataClass.loadBoxQuotationCustomer(valueToSelect, modalShipping, modalBilling);
                 }
+                // Load again dropdown sale_person only valueSelected
+                loadDataClass.loadBoxQuotationSalePerson($('#select-box-quotation-create-sale-person').val());
             } else { // No Value => load again dropdowns
                 $('#select-box-quotation-create-customer').empty();
                 loadDataClass.loadBoxQuotationCustomer(null, modalShipping, modalBilling);
+                loadDataClass.loadBoxQuotationSalePerson($('#select-box-quotation-create-sale-person').val(), true);
             }
             loadDataClass.loadInformationSelectBox($(this));
             // Delete all promotion rows
@@ -110,10 +113,15 @@ $(function () {
                     if (Object.keys(data.price_list_mapped).length !== 0) {
                         document.getElementById('customer-price-list').value = data.price_list_mapped.id;
                     }
+                    // Load again dropdown sale_person only valueSelected
+                    loadDataClass.loadBoxQuotationSalePerson($('#select-box-quotation-create-sale-person').val());
                 } else { // No Value => load again dropdowns
                     loadDataClass.loadBoxQuotationContact();
                     loadDataClass.loadBoxQuotationPaymentTerm();
                     document.getElementById('customer-price-list').value = "";
+                    if (!$('#select-box-quotation-create-opportunity').val()) {
+                        loadDataClass.loadBoxQuotationSalePerson($('#select-box-quotation-create-sale-person').val(), true);
+                    }
                 }
             }
             loadDataClass.loadInformationSelectBox($(this));
@@ -164,7 +172,7 @@ $(function () {
         });
 
 // Action on click dropdown payment term
-        boxPaymentTerm.on('click', function(e) {
+        boxPaymentTerm.on('click', function() {
             loadDataClass.loadBoxQuotationPaymentTerm();
         });
 

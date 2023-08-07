@@ -463,15 +463,20 @@ class loadDataHandle {
                 request_id_list.push(row.querySelector('.table-row-checkbox').id);
             }
         }
-        for (let idx = 0; idx < tablePurchaseRequestProduct[0].tBodies[0].rows.length; idx++) {
-            let row = tablePurchaseRequestProduct[0].tBodies[0].rows[idx];
-            if (row.querySelector('.table-row-checkbox').checked === true) {
-                product_checked_list.push({
-                    'id': row.querySelector('.table-row-checkbox').id,
-                    'quantity_order': row.querySelector('.table-row-quantity-order').value,
-                });
+        if (!tablePurchaseRequestProduct[0].querySelector('.dataTables_empty')) {
+            for (let idx = 0; idx < tablePurchaseRequestProduct[0].tBodies[0].rows.length; idx++) {
+                let row = tablePurchaseRequestProduct[0].tBodies[0].rows[idx];
+                if (row.querySelector('.table-row-checkbox').checked === true) {
+                    product_checked_list.push({
+                        'id': row.querySelector('.table-row-checkbox').id,
+                        'quantity_order': row.querySelector('.table-row-quantity-order').value,
+                    });
+                }
             }
         }
+        tablePurchaseRequestProduct.DataTable().clear().destroy();
+        dataTableClass.dataTablePurchaseRequestProduct();
+        if (request_id_list.length > 0) {
         $.fn.callAjax2({
                 'url': frm.dataUrl,
                 'method': frm.dataMethod,
@@ -483,7 +488,7 @@ class loadDataHandle {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     if (data.hasOwnProperty('purchase_request_product_list') && Array.isArray(data.purchase_request_product_list)) {
-                        tablePurchaseRequestProduct.DataTable().destroy();
+                        tablePurchaseRequestProduct.DataTable().clear().destroy();
                         dataTableClass.dataTablePurchaseRequestProduct(data.purchase_request_product_list);
                         for (let idx = 0; idx < tablePurchaseRequestProduct[0].tBodies[0].rows.length; idx++) {
                             let row = tablePurchaseRequestProduct[0].tBodies[0].rows[idx];
@@ -498,6 +503,7 @@ class loadDataHandle {
                 }
             }
         )
+            }
     };
 
     loadMergeProductTable(eleCheckbox) {
@@ -906,7 +912,7 @@ class dataTableHandle {
                 {
                     targets: 3,
                     render: (data, type, row) => {
-                        return `<span class="table-row-code">${row.code}</span>`
+                        return `<span class="table-row-code">${row.purchase_request.code}</span>`
                     }
                 },
                 {
@@ -924,7 +930,7 @@ class dataTableHandle {
                 {
                     targets: 6,
                     render: (data, type, row) => {
-                        return `<span class="table-row-remain">${row.remain}</span>`
+                        return `<span class="table-row-remain">${row.sale_order_product.remain_for_purchase_order}</span>`
                     }
                 },
                 {
@@ -1555,6 +1561,19 @@ class calculateHandle {
 }
 
 let calculateClass = new calculateHandle();
+
+// Validate
+class validateHandle {
+    validateNumber(ele) {
+        let value = ele.value;
+        // Replace non-digit characters with an empty string
+        value = value.replace(/[^0-9.]/g, '');
+        // Remove unnecessary zeros from the integer part
+        value = value.replace("-", "").replace(/^0+(?=\d)/, '');
+        // Update value of input
+        ele.value = value;
+    }
+}
 
 // Submit Form
 class submitHandle {

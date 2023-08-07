@@ -135,16 +135,16 @@ class loadDataHandle {
                                     }).replace(/"/g, "&quot;");
                                     let customer_data = JSON.stringify(item).replace(/"/g, "&quot;");
                                     dataAppend += `<option value="${item.id}">
-                                                <span class="account-title">${item.name}</span>
-                                                <input type="hidden" class="data-default" value="${customer_data}">
-                                                <input type="hidden" class="data-info" value="${dataStr}">
-                                            </option>`
+                                                        <span class="account-title">${item.name}</span>
+                                                        <input type="hidden" class="data-default" value="${customer_data}">
+                                                        <input type="hidden" class="data-info" value="${dataStr}">
+                                                    </option>`;
                                     if (item.id === valueToSelect) {
                                         dataMapOpp = `<option value="${item.id}" selected>
-                                                <span class="account-title">${item.name}</span>
-                                                <input type="hidden" class="data-default" value="${customer_data}">
-                                                <input type="hidden" class="data-info" value="${dataStr}">
-                                            </option>`
+                                                        <span class="account-title">${item.name}</span>
+                                                        <input type="hidden" class="data-default" value="${customer_data}">
+                                                        <input type="hidden" class="data-info" value="${dataStr}">
+                                                    </option>`;
                                         // load Shipping & Billing by Customer
                                         self.loadShippingBillingCustomer(modalShipping, modalBilling, item);
                                         // load Contact by Customer
@@ -258,6 +258,7 @@ class loadDataHandle {
                         if (initEmployee.val() && is_load_init === true) {
                             valueToSelect = initEmployee.val();
                         }
+                        let optionSelected = ``;
                         ele.empty();
                         ele.append(`<option value=""></option>`);
                         data.employee_list.map(function (item) {
@@ -271,19 +272,23 @@ class loadDataHandle {
                                 'Code': item.code,
                                 'Group': group
                             }).replace(/"/g, "&quot;");
-                            let option = `<option value="${item.id}">
-                                            <span class="employee-title">${item.full_name}</span>
-                                            <input type="hidden" class="data-info" value="${dataStr}">
-                                        </option>`
                             if (valueToSelect && valueToSelect === item.id) {
-                                option = `<option value="${item.id}" selected>
-                                            <span class="employee-title">${item.full_name}</span>
-                                            <input type="hidden" class="data-info" value="${dataStr}">
-                                        </option>`
-                                ele.append(option);
+                                optionSelected = `<option value="${item.id}" selected>
+                                                        <span class="employee-title">${item.full_name}</span>
+                                                        <input type="hidden" class="data-info" value="${dataStr}">
+                                                    </option>`;
+                                ele.append(optionSelected);
+                            } else {
+                                ele.append(`<option value="${item.id}">
+                                                <span class="employee-title">${item.full_name}</span>
+                                                <input type="hidden" class="data-info" value="${dataStr}">
+                                            </option>`);
                             }
-                            // ele.append(option);
                         });
+                        if (is_load_init === false && valueToSelect) {
+                            ele.empty();
+                            ele.append(optionSelected);
+                        }
                         self.loadInformationSelectBox(ele);
                     }
                 }
@@ -302,7 +307,6 @@ class loadDataHandle {
                     'method': method,
                     'isDropdown': true,
                 }
-                // url, method
             ).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
@@ -341,7 +345,6 @@ class loadDataHandle {
                 'method': method,
                 'isDropdown': true,
             }
-            // url, method
         ).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
@@ -370,7 +373,6 @@ class loadDataHandle {
                 'method': method,
                 'isDropdown': true,
             }
-            // url, method
         ).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
@@ -453,7 +455,6 @@ class loadDataHandle {
                 'method': method,
                 'isDropdown': true,
             }
-            // url, method
         ).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
@@ -518,7 +519,6 @@ class loadDataHandle {
                 'method': method,
                 'isDropdown': true,
             }
-            // url, method
         ).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
@@ -569,7 +569,6 @@ class loadDataHandle {
                 'method': method,
                 'isDropdown': true,
             }
-            // url, method
         ).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);

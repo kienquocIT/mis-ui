@@ -3,7 +3,7 @@ $(function () {
     $(document).ready(function () {
 
         function loadDbl() {
-            let $table = $('#table_quotation_list')
+            let $table = $('#table_purchase_order_list')
             let frm = new SetupFormSubmit($table);
             $table.DataTableDefault({
                 ajax: {
@@ -11,15 +11,15 @@ $(function () {
                     type: frm.dataMethod,
                     dataSrc: function (resp) {
                         let data = $.fn.switcherResp(resp);
-                        if (data && resp.data.hasOwnProperty('quotation_list')) {
-                            return resp.data['quotation_list'] ? resp.data['quotation_list'] : []
+                        if (data && resp.data.hasOwnProperty('purchase_order_list')) {
+                            return resp.data['purchase_order_list'] ? resp.data['purchase_order_list'] : []
                         }
                         throw Error('Call data raise errors.')
                     },
                 },
                 columnDefs: [
                     {
-                        "width": "10%",
+                        "width": "15%",
                         "targets": 0
                     }, {
                         "width": "20%",
@@ -28,10 +28,10 @@ $(function () {
                         "width": "20%",
                         "targets": 2
                     }, {
-                        "width": "15%",
+                        "width": "10%",
                         "targets": 3
                     }, {
-                        "width": "10%",
+                        "width": "15%",
                         "targets": 4
                     }, {
                         "width": "15%",
@@ -41,23 +41,19 @@ $(function () {
                         "width": "5%",
                         "targets": 6,
                     },
-                    {
-                        "width": "5%",
-                        "targets": 7,
-                    }
                 ],
                 columns: [
                     {
                         targets: 0,
                         render: (data, type, row) => {
-                            const link = $('#quotation-link').data('link-update').format_url_with_uuid(row.id);
+                            let link = $('#purchase-order-link').data('link-update').format_url_with_uuid(row.id);
                             return `<a href="${link}" target="_blank" class="link-primary underline_hover"><span class="badge badge-soft-primary">${row.code}</span></a>`
                         }
                     },
                     {
                         targets: 1,
                         render: (data, type, row) => {
-                            const link = $('#quotation-link').data('link-update').format_url_with_uuid(row.id)
+                            const link = $('#purchase-order-link').data('link-update').format_url_with_uuid(row.id)
                             return `<a href="${link}" target="_blank" class="link-primary underline_hover">${row.title}</a>`
                         }
                     },
@@ -65,18 +61,8 @@ $(function () {
                         targets: 2,
                         render: (data, type, row) => {
                             let ele = `<p></p>`;
-                            if (Object.keys(row.customer).length !== 0) {
-                                ele = `<p>${row.customer.title}</p>`;
-                            }
-                            return ele;
-                        }
-                    },
-                    {
-                        targets: 3,
-                        render: (data, type, row) => {
-                            let ele = `<p></p>`;
-                            if (Object.keys(row.sale_person).length !== 0) {
-                                ele = `<p>${row.sale_person.full_name}</p>`;
+                            if (Object.keys(row.supplier).length !== 0) {
+                                ele = `<p>${row.supplier.title}</p>`;
                             }
                             return ele;
                         }
@@ -84,14 +70,8 @@ $(function () {
                     {
                         targets: 4,
                         render: (data, type, row) => {
-                            let date_created = moment(row.date_created).format('YYYY-MM-DD');
-                            return `<p>${date_created}</p>`
-                        }
-                    },
-                    {
-                        targets: 5,
-                        render: (data, type, row) => {
-                            return `<span class="mask-money" data-init-money="${parseFloat(row.total_product)}"></span>`
+                            let date_delivered = moment(row.date_delivered).format('YYYY-MM-DD');
+                            return `<p>${date_delivered}</p>`
                         }
                     },
                     {
@@ -108,10 +88,22 @@ $(function () {
                         }
                     },
                     {
+                        targets: 6,
+                        render: (data, type, row) => {
+                            let status_data = {
+                                "Wait": "badge badge-soft-light",
+                                "Partially received": "badge badge-soft-info",
+                                "Received": "badge badge-soft-success",
+                                "None": "badge badge-soft-danger",
+                            }
+                            return `<span class="${status_data[row.status_delivered]}">${row.status_delivered}</span>`;
+                        }
+                    },
+                    {
                         targets: 7,
                         className: 'action-center',
                         render: (data, type, row) => {
-                            const link = $('#quotation-link').data('link-update').format_url_with_uuid(row.id)
+                            const link = $('#purchase-order-link').data('link-update').format_url_with_uuid(row.id)
                             return `<div class="dropdown">
                                     <i class="far fa-window-maximize" aria-expanded="false" data-bs-toggle="dropdown"></i>
                                     <div role="menu" class="dropdown-menu">
@@ -123,19 +115,8 @@ $(function () {
                         },
                     }
                 ],
-                drawCallback: function () {
-                    loadDataRowTable();
-                },
+                drawCallback: function () {},
             });
-        }
-
-        function loadDataRowTable() {
-            let $table = $('#table_quotation_list');
-            // callBack Row to load data
-            for (let i = 0; i < $table[0].tBodies[0].rows.length; i++) {
-                // mask money
-                $.fn.initMaskMoney2();
-            }
         }
 
         loadDbl();

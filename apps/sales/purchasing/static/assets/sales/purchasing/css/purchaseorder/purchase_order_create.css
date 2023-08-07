@@ -33,6 +33,46 @@
     margin-top: 5px;
 }
 
+.modal-body-warning-add-product {
+    text-align: center;
+}
+
+.row.modal-footer-warning-add-product {
+    position: relative;
+    padding: 10px;
+    text-align: center;
+    border-top: 1px solid #c7c7c7;
+}
+
+.row.modal-footer-warning-add-product::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1px;
+    height: 100%;
+    background-color: #b5b5b5;
+}
+
+.btn-cancel-add-product {
+    color: red;
+}
+
+.btn-continue-add-product {
+    color: #00D67F;
+}
+
+.disabled-custom-show:disabled {
+    color: #0c0c0c;
+}
+
+.modal-xlg-custom {
+    max-width: 1280px;
+}
+
+
+
 
 
 
@@ -54,14 +94,12 @@
 
 .fa-angle-double-up {
     color: #007D88;
-    text-align: center;
-    font-size: x-large;
+    text-align: right;
 }
 
 .fa-angle-double-down {
     color: #007D88;
-    text-align: center;
-    font-size: x-large;
+    text-align: right;
 }
 
 ul.quotation-tabs li.quotation-tab-item {

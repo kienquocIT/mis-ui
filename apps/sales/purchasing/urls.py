@@ -1,14 +1,11 @@
 from django.urls import path
-from apps.sales.purchasing.views import (
-    PurchaseOrderCreate,
-    PurchaseQuotationRequestList, PurchaseQuotationRequestListAPI,
-    PurchaseQuotationRequestCreateFromPR, PurchaseQuotationRequestCreateManual,
-    PurchaseQuotationRequestDetail, PurchaseQuotationRequestDetailAPI,
-    PurchaseRequestDetailAPI, PurchaseRequestDetail, PurchaseRequestList,
-    PurchaseRequestListAPI, PurchaseRequestCreate,
-    PurchaseQuotationList, PurchaseQuotationCreate, PurchaseQuotationListAPI,
-    PurchaseQuotationDetail, PurchaseQuotationDetailAPI
-)
+
+from apps.sales.purchasing.views import PurchaseOrderCreate, PurchaseRequestList, PurchaseRequestCreate, \
+    PurchaseRequestListAPI, PurchaseRequestDetailAPI, PurchaseRequestDetail, PurchaseOrderDetailAPI, \
+    PurchaseOrderDetail, PurchaseOrderListAPI, PurchaseOrderList, PurchaseQuotationRequestList, \
+    PurchaseQuotationRequestListAPI, PurchaseQuotationRequestCreateFromPR, PurchaseQuotationRequestCreateManual, \
+    PurchaseQuotationRequestDetail, PurchaseQuotationRequestDetailAPI, PurchaseQuotationList, PurchaseQuotationCreate, \
+    PurchaseQuotationListAPI, PurchaseQuotationDetail, PurchaseQuotationDetailAPI, PurchaseRequestProductListAPI
 
 urlpatterns = [
     # purchase request
@@ -17,11 +14,20 @@ urlpatterns = [
     path('purchase-request/list/api', PurchaseRequestListAPI.as_view(), name='PurchaseRequestListAPI'),
     path('purchase-request/<str:pk>', PurchaseRequestDetail.as_view(), name='PurchaseRequestDetail'),
     path('purchase-request/api/<str:pk>', PurchaseRequestDetailAPI.as_view(), name='PurchaseRequestDetailAPI'),
+    path(
+        'purchase-request-product/list',
+        PurchaseRequestProductListAPI.as_view(),
+        name='PurchaseRequestProductListAPI'
+    ),
 
     # purchase quotation request
     # purchase quotation
     # purchase order
+    path('purchase-order/list', PurchaseOrderList.as_view(), name='PurchaseOrderList'),
+    path('purchase-order/api/lists', PurchaseOrderListAPI.as_view(), name='PurchaseOrderListAPI'),
     path('purchase-order/create', PurchaseOrderCreate.as_view(), name='PurchaseOrderCreate'),
+    path('purchase-order/update/<str:pk>', PurchaseOrderDetail.as_view(), name='PurchaseOrderDetail'),
+    path('purchase-order/update-api/<str:pk>', PurchaseOrderDetailAPI.as_view(), name='PurchaseOrderDetailAPI'),
 ] + [
     path(
         'purchase-quotation-request/lists',

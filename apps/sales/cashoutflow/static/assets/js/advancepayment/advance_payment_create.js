@@ -26,21 +26,13 @@ $(document).ready(function () {
             <td><select class="form-select product-select-box" data-method="GET"><option selected></option></select></td>
             <td><input class="form-control product-type" style="color: black; background: none" disabled></td>
             <td><select class="form-select product-uom-select-box" data-method="GET"><option selected></option></select></td>
-            <td><input type="number" min="1" onchange="this.value=checkInputQuantity(this.value)" class="form-control product-quantity" value="1"></td>
+            <td><input type="number" min="1" class="form-control product-quantity" value="1"></td>
             <td><input data-return-type="number" type="text" class="form-control product-unit-price-select-box mask-money"></td>
             <td><select class="form-select product-tax-select-box" data-method="GET"><option selected></option></select></td>
             <td><input type="text" data-return-type="number" class="form-control product-subtotal-price mask-money" style="color: black; background: none" disabled></td>
             <td><input type="text" data-return-type="number" class="form-control product-subtotal-price-after-tax mask-money" style="color: black; background: none" disabled></td>
             <td><button class="btn-del-line-detail btn text-danger btn-link btn-animated" title="Delete row"><span class="icon"><i class="bi bi-dash-circle"></i></span></button></td>
-        </tr>
-        <script>
-            function checkInputQuantity(value) {
-                if (parseInt(value) < 0) {
-                    return value*(-1);
-                }
-                return value;
-            }
-        </script>`);
+        </tr>`);
         $.fn.initMaskMoney2();
         let row_count = count_row(table_body, 1);
 

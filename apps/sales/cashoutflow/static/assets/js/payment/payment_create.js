@@ -1246,6 +1246,7 @@ $(document).ready(function () {
     let AP_db = $('#advance_payment_list_datatable');
 
     function loadAPList(sale_code_id) {
+        console.log(sale_code_id)
         $('#advance_payment_list_datatable').DataTable().destroy();
         let AP_db = $('#advance_payment_list_datatable');
         AP_db.DataTableDefault({
@@ -1297,6 +1298,10 @@ $(document).ready(function () {
                                         opportunity_mapped = so_filter[0].opportunity.id;
                                     }
                                 }
+
+                                console.log(sale_order_mapped)
+                                console.log(quotation_mapped)
+                                console.log(opportunity_mapped)
 
                                 // find ap mapped with this sale_order_mapped
                                 let sale_order_mapped_ap = resp.data['advance_payment_list'].filter(function (item) {
@@ -1915,7 +1920,7 @@ $(document).ready(function () {
                 <td><select class="form-select product-select-box" data-method="GET"><option selected></option></select></td>
                 <td><input class="form-control product-type" style="color: black; background: none" disabled></td>
                 <td><select class="form-select product-uom-select-box" data-method="GET"><option selected></option></select></td>
-                <td><input type="number" min="1" onchange="this.value=checkInputQuantity(this.value)" class="form-control product-quantity" value="1"></td>
+                <td><input type="number" min="1" class="form-control product-quantity" value="1"></td>
                 <td><input data-return-type="number" type="text" class="form-control product-unit-price-select-box mask-money"></td>
                 <td><select class="form-select product-tax-select-box" data-method="GET"><option selected></option></select></td>
                 <td><input type="text" data-return-type="number" class="form-control product-subtotal-price mask-money" style="color: black; background: none" disabled></td>
@@ -1925,15 +1930,7 @@ $(document).ready(function () {
                     <a class="btn-del-line-detail btn text-danger btn-link btn-animated" title="Delete row"><span class="icon"><i class="bi bi-dash-circle"></i></span></a>
                     <a class="row-toggle btn text-primary btn-link btn-animated" title="Toggle row"><span class="icon"><i class="bi bi-caret-down-square"></i></span></a>
                 </td>
-            </tr>
-            <script>
-                function checkInputQuantity(value) {
-                    if (parseInt(value) < 0) {
-                        return value*(-1);
-                    }
-                    return value;
-                }
-            </script>`);
+            </tr>`);
 
             table_body.append(`<tr class="" hidden>
                 <td colspan="1"></td>

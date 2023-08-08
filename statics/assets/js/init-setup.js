@@ -1079,7 +1079,7 @@ class ListeningEventController {
     }
 
     avatarUpload() {
-        $('.my-upload-avatar').click(function () {
+        $('#btnUploadMyAvatar').click(function () {
             Swal.fire({
                 html: `
                     <h4>${$.fn.transEle.attr('data-choose-avatar-image')}</h4>
@@ -1097,12 +1097,21 @@ class ListeningEventController {
                 preConfirm: (file) => {
                     let formData = new FormData();
                     formData.append('file', file);
-                    return $.fn.callAjax($.fn.storageSystemData.attr('data-url-avatar-upload'), 'POST', formData, true, {}, 'multipart/form-data', {'isNotify': false},).then((resp) => {
+                    return $.fn.callAjax2({
+                        url: $.fn.storageSystemData.attr('data-url-avatar-upload'),
+                        method: 'POST',
+                        data: formData,
+                        contentType: 'multipart/form-data',
+                        isNotify: false,
+                    }).then(
+                        (resp) => {
                         $.fn.switcherResp(resp);
                         return true;
-                    }, (errs) => {
+                    },
+                        (errs) => {
                         return false;
-                    })
+                    }
+                    )
                 },
                 allowOutsideClick: () => !Swal.isLoading()
             }).then((result) => {

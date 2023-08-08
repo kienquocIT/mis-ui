@@ -54,7 +54,7 @@ $(document).ready(function () {
             calculate_price($('#tab_line_detail tbody'), $('#pretax-value'), $('#taxes-value'), $('#total-value'));
 
             if ($(this).find('option:selected').val() !== '') {
-                loadProductUomList(parent_tr.attr('id'), $(this).find('option:selected').attr('data-uom-group-id'));
+                loadProductUomList(parent_tr.attr('id'), $(this).find('option:selected').attr('data-uom-id'), $(this).find('option:selected').attr('data-uom-group-id'));
                 changeUnitPrice(parent_tr.attr('id'), $(this).find('option:selected').val());
             }
             else {
@@ -305,18 +305,27 @@ $(document).ready(function () {
             if (item.sale_information.tax_code) {
                 tax_code_id = item.sale_information.tax_code.id;
             }
-            ele.append(`<option data-uom-group-id="` + item.general_information.uom_group.id + `" data-type="` + item.general_information.product_type.title + `" data-tax-id="` + tax_code_id + `" value="` + item.id + `">` + item.title + `</option>`);
+            let uom_id = '';
+            if (item.sale_information.default_uom) {
+                uom_id = item.sale_information.default_uom.id;
+            }
+            ele.append(`<option data-uom-id="` + uom_id + `" data-uom-group-id="` + item.general_information.uom_group.id + `" data-type="` + item.general_information.product_type.title + `" data-tax-id="` + tax_code_id + `" value="` + item.id + `">` + item.title + `</option>`);
         })
     }
 
     // (col-3) load UoM SelectBox for product Items
-    function loadProductUomList(row_id, uom_group_id) {
+    function loadProductUomList(row_id, uom_id, uom_group_id) {
         let ele = $('#' + row_id + ' .product-uom-select-box');
         ele.html('');
         ele.append(`<option></option>`);
         unit_of_measure.map(function (item) {
             if (item.group.id === uom_group_id) {
-                ele.append(`<option value="` + item.id + `">` + item.title + `</option>`);
+                if (uom_id === item.id) {
+                    ele.append(`<option selected value="` + item.id + `">` + item.title + `</option>`);
+                }
+                else {
+                    ele.append(`<option value="` + item.id + `">` + item.title + `</option>`);
+                }
             }
         })
     }

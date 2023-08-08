@@ -4,7 +4,6 @@ $(function () {
     $(document).ready(function () {
         let $form = $('#frm_quotation_create');
         let eleDataDetail = $('#quotation-detail-data');
-        let dataTableClass = new dataTableHandle();
         let loadDataClass = new loadDataHandle();
         let configClass = new checkConfigHandle();
 

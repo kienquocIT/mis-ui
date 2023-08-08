@@ -323,6 +323,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PURCHASE_QUOTATION_REQUEST_LIST_FOR_PQ = StringUrl('purchasing/purchase-quotation-request-for-pq/list')
     PURCHASE_QUOTATION_LIST = StringUrl('purchasing/purchase-quotation/list')
     PURCHASE_QUOTATION_DETAIL = StringUrl('purchasing/purchase-quotation')
+    PURCHASE_QUOTATION_PRODUCT_LIST = StringUrl('purchasing/purchase-quotation-product/list')
 
     # Process
     FUNCTION_PROCESS_LIST = StringUrl('process/function/list')

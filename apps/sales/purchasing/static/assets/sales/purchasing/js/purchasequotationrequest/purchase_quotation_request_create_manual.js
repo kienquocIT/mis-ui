@@ -465,7 +465,7 @@ $(function () {
                         data: 'pr_subtotal_price',
                         className: 'wrap-text w-15 text-center',
                         render: (data, type, row, meta) => {
-                            return `<span class="pr-subtotal-price-input mask-money text-primary" data-init-money="${row.pr_subtotal_price}"></span>`;
+                            return `<span class="mask-money text-primary" data-init-money="${row.pr_subtotal_price}"></span>`;
                         }
                     },
                 ],

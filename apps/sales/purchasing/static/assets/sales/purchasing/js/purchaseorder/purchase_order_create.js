@@ -170,7 +170,7 @@ $(function () {
         });
 
         // Action on change data on row of tablePurchaseOrderProductAdd
-        tablePurchaseOrderProductAdd.on('change', '.table-row-item, .table-row-quantity-order, .table-row-price, .table-row-tax', function () {
+        tablePurchaseOrderProductAdd.on('change', '.table-row-item, .table-row-quantity-order-actual, .table-row-price, .table-row-tax', function () {
             let row = $(this)[0].closest('tr');
             if ($(this).hasClass('table-row-item')) {
                 loadDataClass.loadDataProductSelect($(this));
@@ -180,11 +180,11 @@ $(function () {
         });
 
         // Action on change data on row of tablePurchaseOrderProductRequest
-        tablePurchaseOrderProductRequest.on('change', '.table-row-quantity-order, .table-row-price, .table-row-tax', function () {
+        tablePurchaseOrderProductRequest.on('change', '.table-row-quantity-order-actual, .table-row-price, .table-row-tax', function () {
             let row = $(this)[0].closest('tr');
-            if ($(this).hasClass('table-row-quantity-order')) {
+            if ($(this).hasClass('table-row-quantity-order-actual')) {
                 validateClass.validateNumber(this);
-                let order_on_request = parseFloat(row.querySelector('.table-row-quantity-order-request').innerHTML)
+                let order_on_request = parseFloat(row.querySelector('.table-row-quantity-order-request').innerHTML);
                 validateClass.validateQuantityOrderFinal(this, order_on_request);
             }
             calculateClass.calculateMain(tablePurchaseOrderProductRequest, row);
@@ -198,6 +198,7 @@ $(function () {
             let submitFields = [
                 'title',
                 'purchase_requests_data',
+                'purchase_quotations_data',
                 'supplier',
                 'contact',
                 'delivered_date',

@@ -53,7 +53,7 @@ class loadDataHandle {
         let ele = $('#box-purchase-order-supplier');
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
-        if (!ele[0].innerHTML || valueToSelect) {
+        if (ele[0].options.length <= 1 || valueToSelect) {
             $.fn.callAjax2({
                     'url': url,
                     'method': method,
@@ -69,10 +69,6 @@ class loadDataHandle {
                             let dataAppend = ``;
                             let dataMapOpp = ``;
                             data.account_sale_list.map(function (item) {
-                                let ownerName = "";
-                                if (item.owner) {
-                                    ownerName = item.owner.fullname;
-                                }
                                 let dataStr = JSON.stringify(item).replace(/"/g, "&quot;");
                                 dataAppend += `<option value="${item.id}">
                                                 <span class="account-title">${item.name}</span>
@@ -532,19 +528,18 @@ class loadDataHandle {
         if (!tablePurchaseRequest[0].querySelector('.dataTables_empty')) {
             let eleAppend = ``;
             let is_checked = false;
-            for (let i = 0; i < tablePurchaseRequest[0].tBodies[0].rows.length; i++) {
-                let row = tablePurchaseRequest[0].tBodies[0].rows[i];
-                if (row.querySelector('.table-row-checkbox').checked === true) {
-                    is_checked = true;
-                    purchase_requests_data.push(row.querySelector('.table-row-checkbox').id);
-                    let link = "";
-                    eleAppend += `<div class="inline-elements-badge mr-2 mb-1" id="${row.querySelector('.table-row-checkbox').id}">
-                                    <a href="${link}" target="_blank" class="link-primary underline_hover"><span>${row.querySelector('.table-row-code').innerHTML}</span></a>
+            for (let eleChecked of tablePurchaseRequest[0].querySelectorAll('.table-row-checkbox:checked')) {
+                is_checked = true;
+                let prID = eleChecked.id;
+                let prCode = eleChecked.closest('tr').querySelector('.table-row-code').innerHTML;
+                let link = "";
+                eleAppend += `<div class="inline-elements-badge mr-2 mb-1" id="${prID}">
+                                    <a href="${link}" target="_blank" class="link-primary underline_hover"><span>${prCode}</span></a>
                                     <button type="button" class="btn btn-link btn-sm custom-btn-remove" aria-label="Close">
                                         <span aria-hidden="true"><i class="fas fa-times"></i></span>
                                     </button>
                                 </div>`;
-                }
+                purchase_requests_data.push(prID);
             }
             if (is_checked === true) {
                 elePurchaseRequest.empty();
@@ -592,24 +587,23 @@ class loadDataHandle {
         if (!tablePurchaseQuotation[0].querySelector('.dataTables_empty')) {
             let eleAppend = ``;
             let is_checked = false;
-            for (let i = 0; i < tablePurchaseQuotation[0].tBodies[0].rows.length; i++) {
-                let row = tablePurchaseQuotation[0].tBodies[0].rows[i];
-                if (row.querySelector('.table-row-checkbox').checked === true) {
-                    is_checked = true;
-                    let link = "";
-                    eleAppend += `<div class="inline-elements-badge mr-2 mb-1" id="${row.querySelector('.table-row-checkbox').id}">
-                                    <input class="form-check-input checkbox-circle checkbox-quotation" type="checkbox" id="${row.querySelector('.table-row-checkbox').id}" value="option1">
-                                    <a href="${link}" target="_blank" class="link-primary underline_hover ml-3"><span>${row.querySelector('.table-row-code').innerHTML}</span></a>
+            for (let eleChecked of tablePurchaseQuotation[0].querySelectorAll('.table-row-checkbox:checked')) {
+                is_checked = true;
+                let pqID = eleChecked.id;
+                let pqCode = eleChecked.closest('tr').querySelector('.table-row-code').innerHTML;
+                let link = "";
+                eleAppend += `<div class="inline-elements-badge mr-2 mb-1" id="${pqID}">
+                                    <input class="form-check-input checkbox-circle checkbox-quotation" type="checkbox" id="${pqID}" value="option1">
+                                    <a href="${link}" target="_blank" class="link-primary underline_hover ml-3"><span>${pqCode}</span></a>
                                     <button type="button" class="btn btn-link btn-sm custom-btn-remove" aria-label="Close">
                                         <span aria-hidden="true"><i class="fas fa-times"></i></span>
                                     </button>
                                 </div>`;
-                    purchase_quotations_data.push({
-                        'purchase_quotation': row.querySelector('.table-row-checkbox').id,
-                        'is_use': false
-                    })
-                    purchase_quotations_id_list.push(row.querySelector('.table-row-checkbox').id)
-                }
+                purchase_quotations_data.push({
+                    'purchase_quotation': pqID,
+                    'is_use': false
+                })
+                purchase_quotations_id_list.push(pqID);
             }
             if (is_checked === true) {
                 elePurchaseQuotation.empty();
@@ -717,10 +711,10 @@ class loadDataHandle {
         $.fn.initMaskMoney2();
         if (table_id === 'datable-purchase-order-product-add') {
             self.loadBoxProduct($(row.querySelector('.table-row-item')));
-            self.loadBoxUOM($(row.querySelector('.table-row-uom-order')));
+            self.loadBoxUOM($(row.querySelector('.table-row-uom-order-actual')));
         } else if (table_id === 'datable-purchase-order-product-request') {
             self.loadMoreInformation($(row.querySelector('.table-row-item')), true);
-            self.loadBoxUOM($(row.querySelector('.table-row-uom-order')), row.querySelector('.table-row-uom-request').id);
+            self.loadBoxUOM($(row.querySelector('.table-row-uom-order-actual')), row.querySelector('.table-row-uom-order-request').id);
         }
         self.loadBoxTax($(row.querySelector('.table-row-tax')));
     }
@@ -813,9 +807,9 @@ class loadDataHandle {
                     $(elePriceShow).attr('data-init-money', String(0));
                 }
             }
+            $.fn.initMaskMoney2();
             calculateClass.calculateMain($table, row);
         });
-        $.fn.initMaskMoney2();
     }
 }
 
@@ -895,7 +889,15 @@ class dataTableHandle {
                         if (Object.keys(row.purchase_request).length !== 0) {
                             purchase_request_id = row.purchase_request.id;
                         }
-                        return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" id="${row.id}" data-purchase-request-id="${purchase_request_id}"></div>`
+                        return `<div class="form-check">
+                                    <input 
+                                        type="checkbox" 
+                                        class="form-check-input table-row-checkbox" 
+                                        id="${row.id}" 
+                                        data-purchase-request-id="${purchase_request_id}"
+                                        data-sale-order-product-id="${row.sale_order_product_id}"
+                                    >
+                                </div>`
                     }
                 },
                 {
@@ -1349,8 +1351,8 @@ class dataTableHandle {
                     targets: 3,
                     render: (data, type, row) => {
                         return `<div class="row">
-                                    <select class="form-control select2 table-row-uom-order" required>
-                                        <option value="${row.uom_order.id}">${row.product_uom_order_title}</option>
+                                    <select class="form-control select2 table-row-uom-order-actual" required>
+                                        <option value="${row.uom_order_actual.id}">${row.uom_order_actual.title}</option>
                                     </select>
                                 </div>`;
                     }
@@ -1359,7 +1361,7 @@ class dataTableHandle {
                     targets: 4,
                     render: (data, type, row) => {
                         return `<div class="row">
-                                    <input type="text" class="form-control table-row-quantity-order validated-number" value="${row.product_quantity_order}" required>
+                                    <input type="text" class="form-control table-row-quantity-order-actual validated-number" value="${row.product_quantity_order_actual}" required>
                                 </div>`;
                     }
                 },
@@ -1454,7 +1456,6 @@ let dataTableClass = new dataTableHandle();
 class calculateHandle {
     calculateTotal(table) {
         let pretaxAmount = 0;
-        let discountAmount = 0;
         let taxAmount = 0;
         let elePretaxAmount = document.getElementById('purchase-order-product-pretax-amount');
         let eleTaxes = document.getElementById('purchase-order-product-taxes');
@@ -1482,7 +1483,7 @@ class calculateHandle {
                     }
                 }
             }
-            let totalFinal = (pretaxAmount - discountAmount + taxAmount);
+            let totalFinal = (pretaxAmount + taxAmount);
             $(elePretaxAmount).attr('value', String(pretaxAmount));
             elePretaxAmountRaw.value = pretaxAmount;
             finalRevenueBeforeTax.value = pretaxAmount;
@@ -1502,7 +1503,7 @@ class calculateHandle {
         if (elePrice) {
             price = $(elePrice).valCurrency();
         }
-        let eleQuantity = row.querySelector('.table-row-quantity-order');
+        let eleQuantity = row.querySelector('.table-row-quantity-order-actual');
         if (eleQuantity) {
             if (eleQuantity.value) {
                 quantity = parseFloat(eleQuantity.value)
@@ -1547,6 +1548,13 @@ class calculateHandle {
         return true;
     };
 
+    // calculateTable(table) {
+    //     let self = this;
+    //     for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
+    //         let row = table[0].tBodies[0].rows[i];
+    //         self.calculateMain(table, row)
+    //     }
+    // }
 }
 
 let calculateClass = new calculateHandle();
@@ -1572,7 +1580,7 @@ class validateHandle {
 
     validateQuantityOrderFinal(ele, order_on_request) {
         if (parseFloat(ele.value) < order_on_request) {
-            ele.value = '0';
+            ele.value = String(order_on_request);
             $.fn.notifyB({description: 'Quantity order actually must be equal or greater than quantity order on request'}, 'failure');
         }
     };
@@ -1604,7 +1612,7 @@ class submitHandle {
                     optionSelected = eleProduct.options[eleProduct.selectedIndex];
                 }
                 if (optionSelected) {
-                    rowData['purchase_request_product'] = optionSelected.getAttribute('data-purchase-request-product-id');
+                    // rowData['purchase_request_product'] = optionSelected.getAttribute('data-purchase-request-product-id');
                     if (optionSelected.querySelector('.data-info')) {
                         let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
                         rowData['product'] = dataInfo.id;
@@ -1619,20 +1627,18 @@ class submitHandle {
                 if (eleDescription) {
                     rowData['product_description'] = eleDescription.value;
                 }
-                let eleUOMRequest = row.querySelector('.table-row-uom-request');
+                let eleUOMRequest = row.querySelector('.table-row-uom-order-request');
                 if (eleUOMRequest) {
                     let dataInfo = JSON.parse(eleUOMRequest.querySelector('.data-info').value);
-                    rowData['uom_request'] = dataInfo.id;
-                    rowData['product_uom_request_title'] = dataInfo.title;
+                    rowData['uom_order_request'] = dataInfo.id;
                 }
-                let eleUOMOrder = row.querySelector('.table-row-uom-order');
+                let eleUOMOrder = row.querySelector('.table-row-uom-order-actual');
                 if (eleUOMOrder) {
                     let optionSelected = eleUOMOrder.options[eleUOMOrder.selectedIndex];
                     if (optionSelected) {
                         if (optionSelected.querySelector('.data-info')) {
                             let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
-                            rowData['uom_order'] = dataInfo.id;
-                            rowData['product_uom_order_title'] = dataInfo.title;
+                            rowData['uom_order_actual'] = dataInfo.id;
                         }
                     }
                 }
@@ -1654,13 +1660,13 @@ class submitHandle {
                 if (eleTaxAmount) {
                     rowData['product_tax_amount'] = parseFloat(eleTaxAmount.value);
                 }
-                let eleQuantityRequest = row.querySelector('.table-row-quantity-request');
+                let eleQuantityRequest = row.querySelector('.table-row-quantity-order-request');
                 if (eleQuantityRequest) {
-                    rowData['product_quantity_request'] = parseFloat(eleQuantityRequest.value);
+                    rowData['product_quantity_order_request'] = parseFloat(eleQuantityRequest.innerHTML);
                 }
-                let eleQuantityOrder = row.querySelector('.table-row-quantity-order');
+                let eleQuantityOrder = row.querySelector('.table-row-quantity-order-actual');
                 if (eleQuantityOrder) {
-                    rowData['product_quantity_order'] = parseFloat(eleQuantityOrder.value);
+                    rowData['product_quantity_order_actual'] = parseFloat(eleQuantityOrder.value);
                 }
                 let elePrice = row.querySelector('.table-row-price');
                 if (elePrice) {
@@ -1747,6 +1753,10 @@ function setupMergeProduct() {
         let order = 0;
         for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
             let row = table[0].tBodies[0].rows[i];
+            let sale_order_id = row.querySelector('.table-row-checkbox').getAttribute('data-sale-order-product-id');
+            if (sale_order_id === "null") {
+                sale_order_id = null;
+            }
             if (row.querySelector('.table-row-checkbox').checked === true) {
                 if (!dataJson.hasOwnProperty(row.querySelector('.table-row-item').id)) {
                     order++
@@ -1754,7 +1764,7 @@ function setupMergeProduct() {
                         'id': row.querySelector('.table-row-checkbox').id,
                         'purchase_request_product_datas': [{
                             'purchase_request_product': row.querySelector('.table-row-checkbox').id,
-                            'sale_order_product': row.querySelector('.table-row-checkbox').getAttribute('data-sale-order-product-id'),
+                            'sale_order_product': sale_order_id,
                             'quantity_order': parseFloat(row.querySelector('.table-row-quantity-order').value),
                             'quantity_remain': parseFloat(row.querySelector('.table-row-remain').innerHTML),
                         }],

@@ -15,13 +15,17 @@ $(function () {
             loadGroupListFilter(level)
         });
 
+        $('#btn-add-employee-to-group').on('click', function() {
+            loadCheckboxTableEmployee();
+        });
+
         $('#btn-confirm-add-purchase-request').on('click', function() {
             loadDataEmployeeShow();
-        })
+        });
 
         $('#datable_employee_show_list').on('click', '.del-row', function() {
             deleteEmployeeShow(this.id);
-        })
+        });
 
 // SUBMIT FORM
         frm.submit(function (e) {
@@ -93,12 +97,15 @@ function loadDataCommon(frm) {
     }
 }
 
-function loadDetailCheckboxTableEmployee() {
-    let table = document.getElementById('datable_employee_list');
-    let eleCheckboxList = table.querySelectorAll('.table-row-checkbox');
-    for (let item of eleCheckboxList) {
-        if (JSON.parse($('#data-group_employee').val()).includes(item.id)) {
-            item.checked = true;
+function loadCheckboxTableEmployee() {
+    let emp_list = $('#data-group_employee').val();
+    if (emp_list) {
+        let table = document.getElementById('datable_employee_list');
+        let eleCheckboxList = table.querySelectorAll('.table-row-checkbox');
+        for (let item of eleCheckboxList) {
+            if (JSON.parse(emp_list).includes(item.id)) {
+                item.checked = true;
+            }
         }
     }
 }
@@ -351,9 +358,7 @@ function dataTableEmployee() {
                 }
             },
         ],
-        drawCallback: function () {
-            loadDetailCheckboxTableEmployee();
-        },
+        drawCallback: function () {},
     });
 }
 

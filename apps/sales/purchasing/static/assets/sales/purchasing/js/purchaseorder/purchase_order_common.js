@@ -754,14 +754,15 @@ class loadDataHandle {
                                 let elePrice = row.querySelector('.table-row-price');
                                 let elePriceShow = row.querySelector('.table-row-price-show');
                                 let elePriceList = row.querySelector('.table-row-price-list');
-                                row.querySelector('.table-row-price-show-area').removeAttribute('hidden');
-                                elePrice.setAttribute('hidden', 'true');
-                                $(elePrice).attr('value', String(0));
-                                $(elePriceShow).attr('data-init-money', String(0));
-                                if (elePriceList) {
-                                    $(elePriceList).empty();
-                                    for (let price of priceListData) {
-                                        $(elePriceList).append(`<div class="dropdown-item disabled text-black border border-grey mb-1" id="${price.purchase_quotation.id}" data-value="${parseFloat(price.unit_price)}">
+                                if (priceListData) {
+                                    row.querySelector('.table-row-price-show-area').removeAttribute('hidden');
+                                    elePrice.setAttribute('hidden', 'true');
+                                    $(elePrice).attr('value', String(0));
+                                    $(elePriceShow).attr('data-init-money', String(0));
+                                    if (elePriceList) {
+                                        $(elePriceList).empty();
+                                        for (let price of priceListData) {
+                                            $(elePriceList).append(`<div class="dropdown-item disabled text-black border border-grey mb-1" id="${price.purchase_quotation.id}" data-value="${parseFloat(price.unit_price)}">
                                                                     <div class="row">
                                                                         <div class="col-7"><span>${price.purchase_quotation.title}</span></div>
                                                                         <div class="col-5"><span
@@ -769,6 +770,7 @@ class loadDataHandle {
                                                                         ></span></div>
                                                                     </div>
                                                                 </div>`);
+                                        }
                                     }
                                 }
                             });

@@ -51,6 +51,10 @@
         {{ data.opportunity_list | json_script:"opportunity_list" }}
         {{ data.employee_list | json_script:"employee_list" }}
         {{ data.account_map_employees | json_script:"account_map_employees" }}
+
+        {{ data.opportunity_call_log_list | json_script:"opportunity_call_log_list" }}
+        {{ data.opportunity_email_list | json_script:"opportunity_email_list" }}
+        {{ data.opportunity_meeting_list | json_script:"opportunity_meeting_list" }}
     </div>
     <div id="text-notify" hidden>
         <span id="limit-rate">{% trans "rate must not be less than 0 or greater than 100" %}</span>
@@ -822,7 +826,7 @@
                         <span aria-hidden="true"></span>
                     </button>
                 </div>
-                <div class="modal-body" style="overflow: auto; height: 58vh">
+                <div class="modal-body" style="overflow: auto; height: 62vh">
                     <form data-url="{% url 'OpportunityCallLogListAPI' %}"
                           data-url-redirect="{% url 'OpportunityCallLogList' %}"
                           data-method="POST"
@@ -919,6 +923,101 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade mt-10" id="detail-call-log" tabindex="-1" role="dialog"
+         aria-labelledby="detailOpportunityCallLogModalForms" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'Detail Call Log' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="overflow: auto; height: 62vh">
+                    <div class="mb-3">
+                        <label class="form-label required">
+                            {% trans 'Subject' %}
+                        </label>
+                        <input readonly id="detail-subject-input" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label required">
+                            {% trans 'Sale Code' %}
+                        </label>
+                        <select disabled style="color: #6f6f6f" id="detail-sale-code-select-box" class="form-select" data-url="{% url 'OpportunityListAPI' %}" data-method="GET"></select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label required">
+                            {% trans 'Customer' %}
+                        </label>
+                        <select disabled style="color: #6f6f6f" id="detail-account-select-box" class="form-select" data-url="{% url 'AccountListAPI' %}" data-method="GET"></select>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <label class="form-label required">
+                                {% trans 'Contact' %}
+                            </label>
+                            <span class="input-affix-wrapper">
+                                <span class="input-prefix" id="detail-call-log-contact-detail-span">
+                                    <i class="fas fa-info-circle text-primary" aria-expanded="false" data-bs-toggle="dropdown"></i>
+                                    <span role="menu" class="dropdown-menu ml-4 pl-3 pr-3 pt-3 pb-3" style="width: 25rem;">
+                                        <div class="row">
+                                            <span class="col-7" style="font-style: italic; font-weight: bold">{% trans "More information" %}</span>
+                                            <a id="detail-btn-detail-call-log-contact-tab" class="col-5 text-right" data-url="{% url 'ContactDetail' '0' %}" target="_blank">
+                                                <span class="badge btn-outline-primary">{% trans "More" %}&nbsp;<i class="bi bi-arrow-right"></i></span>
+                                            </a>
+                                        </div>
+                                        <div class="dropdown-divider"></div>
+                                        <div class="row">
+                                            <span class="col-5" style="font-style: italic">{% trans "Contact name" %}</span>
+                                            <span class="col-7 text-primary" id="detail-call-log-contact-name"></span>
+                                        </div>
+                                        <div class="row">
+                                            <span class="col-5" style="font-style: italic">{% trans "Job title" %}</span>
+                                            <span class="col-7 text-primary" id="detail-call-log-contact-job-title"></span>
+                                        </div>
+                                        <div class="row">
+                                            <span class="col-5" style="font-style: italic">{% trans "Mobile" %}</span>
+                                            <span class="col-7 text-primary" id="detail-call-log-contact-mobile"></span>
+                                        </div>
+                                        <div class="row">
+                                            <span class="col-5" style="font-style: italic">{% trans "Email" %}</span>
+                                            <span class="col-7 text-primary" id="detail-call-log-contact-email"></span>
+                                        </div>
+                                        <div class="row">
+                                            <span class="col-5" style="font-style: italic">{% trans "Report to" %}</span>
+                                            <span class="col-7 text-primary" id="detail-call-log-contact-report-to"></span>
+                                        </div>
+                                    </span>
+                                </span>
+                                <select disabled style="color: #6f6f6f" id="detail-contact-select-box" class="form-select" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
+                            </span>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label required">
+                                {% trans 'Date' %}
+                            </label>
+                            <input readonly id="detail-date-input" class="form-control">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label required">
+                            {% trans 'Input Result' %}
+                        </label>
+                        <textarea readonly id="detail-result-text-area" class="form-control" style="min-height: 100px"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input disabled class="form-check-input" type="checkbox" id="detail-repeat-activity">
+                            <label for="detail-repeat-activity">{% trans 'Need to repeat activity' %}</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     {% include 'sales/task/extend/task-form.html' %}
 
     <div class="modal fade mt-10" id="send-email" tabindex="-1" role="dialog"
@@ -931,7 +1030,7 @@
                         <span aria-hidden="true"></span>
                     </button>
                 </div>
-                <div class="modal-body" style="overflow: auto; height: 58vh">
+                <div class="modal-body" style="overflow: auto; height: 48vh">
                     <form data-url="{% url 'OpportunityEmailListAPI' %}"
                           data-url-redirect="{% url 'OpportunityEmailList' %}"
                           data-method="POST"
@@ -941,23 +1040,13 @@
                         <div class="row form-group mt-3 mb-3">
                             <label class="col-2 col-form-label required">{% trans 'To' %}</label>
                             <div class="col-10">
-                                <select id="email-to-select-box" class="form-select" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
-                                <input class="form-control" hidden id="inputEmailTo" placeholder="Enter email">
-                                <a id="email-to-input-btn" class="text-primary form-text text-muted text-right" href="#">{% trans 'to input' %}</a>
-                                <a id="email-to-select-btn" class="text-primary form-text text-muted text-right" href="#" hidden>{% trans 'to select' %}</a>
+                                <select id="email-to-select-box" class="form-control" multiple="multiple" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
                             </div>
                         </div>
                         <div class="row form-group mb-3">
                             <label class="col-2 col-form-label">{% trans 'Cc' %}</label>
                             <div class="col-10">
-                                <select id="email-cc-select-box" multiple class="select2 select-multiple" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
-                                <input id="inputEmailCc" hidden class="mt-1 form-control" placeholder="Enter email">
-
-                                <a class="text-primary form-text text-muted text-right" href="#">
-                                    <span id="email-cc-add" hidden class="icon"><i class="text-primary bi bi-plus-circle"></i></span>
-                                    <span id="email-cc-remove" hidden class="icon"><i class="text-danger bi bi-x-circle"></i></span>
-                                </a>
-                                <a id="email-cc-input-btn" class="text-primary form-text text-muted text-right" href="#">{% trans 'add email' %}</a>
+                                <select id="email-cc-select-box" class="form-control" multiple="multiple" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
                             </div>
                         </div>
                         <div class="row form-group mb-3">
@@ -977,6 +1066,46 @@
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary" form="form-new-email"
                                 id="btn-send-email">{% trans 'Send' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade mt-10" id="detail-send-email" tabindex="-1" role="dialog"
+         aria-labelledby="detailOpportunityEmailModalForms" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'Detail Email' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true"></span>
+                    </button>
+                </div>
+                <div class="modal-body" style="overflow: auto; height: 48vh">
+                    <div class="row form-group mb-3">
+                        <label class="col-2 col-form-label required">{% trans 'To' %}</label>
+                        <div class="col-10">
+                            <select disabled style="color: #6f6f6f" id="detail-email-to-select-box" class="form-control" multiple="multiple" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
+                        </div>
+                    </div>
+                    <div class="row form-group mb-3">
+                        <label class="col-2 col-form-label">{% trans 'Cc' %}</label>
+                        <div class="col-10">
+                            <select disabled style="color: #6f6f6f" id="detail-email-cc-select-box" class="form-control" multiple="multiple" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
+                        </div>
+                    </div>
+                    <div class="row form-group mb-3">
+                        <label class="col-2 col-form-label required">{% trans 'Subject' %}</label>
+                        <div class="col-10">
+                            <input readonly id="detail-email-subject-input" class="form-control">
+                        </div>
+                    </div>
+                    <div class="row form-group mb-3">
+                        <label class="col-2 col-form-label required">{% trans 'Content' %}</label>
+                        <div class="col-10">
+                            <textarea readonly id="detail-email-content-area" class="form-control" style="min-height: 200px"></textarea>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1081,6 +1210,96 @@
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary" form="form-new-meeting"
                             id="btn-create-meeting">{% trans 'Save' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade mt-10" id="detail-meeting" tabindex="-1" role="dialog"
+         aria-labelledby="detailOpportunityMeetingModalForms" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'Detail Meeting' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true"></span>
+                    </button>
+                </div>
+                <div class="modal-body" style="overflow: auto; height: 58vh">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <label class="form-label required">{% trans 'Subject' %}</label>
+                                <input disabled style="color: #6f6f6f" id="detail-meeting-subject-input" placeholder="{% trans 'Input subject' %}" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label class="form-label required">{% trans 'Sale Code' %}</label>
+                                <select disabled style="color: #6f6f6f" id="detail-meeting-sale-code-select-box" class="form-select"></select>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label class="form-label required">{% trans 'Date' %}</label>
+                                <input disabled style="color: #6f6f6f" id="detail-meeting-date-input" placeholder="{% trans 'Input date' %}" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <label class="form-label required">{% trans 'Meeting address' %}</label>
+                                <select disabled style="color: #6f6f6f" id="detail-meeting-address-select-box" class="form-select"></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <label class="form-label">{% trans 'Room location' %}</label>
+                                <input disabled style="color: #6f6f6f" id="detail-meeting-room-location-input" placeholder="{% trans 'Input location' %}" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <label class="form-label required">{% trans 'Employee attended' %}</label>
+                                <select disabled style="color: #6f6f6f" id="detail-meeting-employee-attended-select-box" multiple class="select2 select-multiple"></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <label class="form-label required">{% trans 'Customer member' %}</label>
+                                <select disabled style="color: #6f6f6f" id="detail-meeting-customer-member-select-box" multiple class="select2 select-multiple"></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <label class="form-label required">
+                                    {% trans 'Input Result' %}
+                                </label>
+                                <textarea disabled style="color: #6f6f6f" id="detail-meeting-result-text-area" placeholder="{% trans 'Input result' %}" class="form-control" style="min-height: 100px"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input disabled class="form-check-input" type="checkbox" id="detail-repeat-activity-2">
+                                    <label for="detail-repeat-activity-2">{% trans 'Need to repeat activity' %}</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

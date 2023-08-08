@@ -27,11 +27,7 @@ $(document).ready(function () {
             <td><input class="form-control product-type" style="color: black; background: none" disabled></td>
             <td><select class="form-select product-uom-select-box" data-method="GET"><option selected></option></select></td>
             <td><input type="number" min="1" onchange="this.value=checkInputQuantity(this.value)" class="form-control product-quantity" value="1"></td>
-            <td><div class="input-group dropdown" aria-expanded="false" data-bs-toggle="dropdown">
-                    <span class="input-affix-wrapper">
-                        <input disabled data-return-type="number" type="text" class="form-control product-unit-price-select-box mask-money" style="color: black; background: none" placeholder="Select a price or enter">
-                    </span>
-                </div><div style="min-width: 25%" class="dropdown-menu" data-method="GET"></div></td>
+            <td><input data-return-type="number" type="text" class="form-control product-unit-price-select-box mask-money"></td>
             <td><select class="form-select product-tax-select-box" data-method="GET"><option selected></option></select></td>
             <td><input type="text" data-return-type="number" class="form-control product-subtotal-price mask-money" style="color: black; background: none" disabled></td>
             <td><input type="text" data-return-type="number" class="form-control product-subtotal-price-after-tax mask-money" style="color: black; background: none" disabled></td>
@@ -67,7 +63,7 @@ $(document).ready(function () {
 
             if ($(this).find('option:selected').val() !== '') {
                 loadProductUomList(parent_tr.attr('id'), $(this).find('option:selected').attr('data-uom-group-id'));
-                loadUnitPriceList(parent_tr.attr('id'), $(this).find('option:selected').val());
+                changeUnitPrice(parent_tr.attr('id'), $(this).find('option:selected').val());
             }
             else {
                 $('#' + parent_tr.attr('id') + ' .product-uom-select-box').empty();
@@ -334,104 +330,61 @@ $(document).ready(function () {
     }
 
     // (col-4) load Unit Price List for product Items or Enter
-    function loadUnitPriceList(row_id, product_item_id) {
-        let ele = $('#' + row_id + ' .dropdown-menu');
-        ele.html('');
-        $.fn.callAjax($('#tab_line_detail_datatable').attr('data-url-unit-price-list').replace('/0', '/' + product_item_id), ele.attr('data-method')).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product')) {
-                    let primary_currency = 'VND';
-                    resp.data.product.sale_information.price_list.map(function (item) {
-                        if (item.is_primary === true) {
-                            primary_currency = item.currency_using;
-                            ele.append(`<a data-id="` + item.id + `" data-value="` + item.price + `" class="dropdown-item"><div class="row">
-                                        <div class="col-7 text-left"><span>` + item.title + `:</span></div>
-                                        <div class="col-5 text-right"><span class="mask-money" data-init-money="` + item.price + `"></span></div>
-                                        </div></a>`)
-                            $.fn.initMaskMoney2();
-                            $(`a[data-id=` + item.id + `]`).on('click', function () {
-                                let tr = $(this).closest('tr');
-                                let input_show = tr.find('.product-unit-price-select-box');
-                                let subtotal_show = tr.find('.product-subtotal-price');
-                                let subtotal_after_tax_show = tr.find('.product-subtotal-price-after-tax');
-                                let quantity = tr.find('.product-quantity');
-                                let tax = tr.find('.product-tax-select-box option:selected');
-                                input_show.attr('value', $(this).attr('data-value'));
-                                $.fn.initMaskMoney2();
-                                if (input_show.attr('value') && quantity.val() && tax.attr('data-rate')) {
-                                    subtotal_show.attr('value', parseFloat(input_show.attr('value')) * parseInt(quantity.val()));
-                                    let tax_value = parseFloat(tax.attr('data-rate')) / 100;
-                                    subtotal_after_tax_show.attr('value', parseFloat(subtotal_show.attr('value')) + parseFloat(subtotal_show.attr('value')) * parseFloat(tax_value));
-                                }
-                                calculate_price($('#tab_line_detail tbody'), $('#pretax-value'), $('#taxes-value'), $('#total-value'));
-                            })
-                        }
-                    })
-                    ele.append(`<div class="dropdown-divider"></div>`)
-                    ele.append(`<a data-id="unit-price-a-` + product_item_id + `" data-value=""><div class="row">
-                                <div class="col-5 text-left col-form-label"><span style="color: #007D88">Enter price in <b>` + primary_currency + `</b>:</span></div>
-                                <div class="col-7 text-right"><input type="text" id="unit-price-input-` + product_item_id + `" class="form-control mask-money" data-return-type="number"></div>
-                                </div></a>`)
-                    $.fn.initMaskMoney2();
-                    $('#' + row_id + ' #unit-price-input-' + product_item_id).on('change', function () {
-                        let tr = $(this).closest('tr');
-                        let input_show = tr.find('.product-unit-price-select-box');
-                        let quantity = tr.find('.product-quantity');
-                        let tax = tr.find('.product-tax-select-box option:selected');
-                        let subtotal_show = tr.find('.product-subtotal-price');
-                        let subtotal_after_tax_show = tr.find('.product-subtotal-price-after-tax');
-                        input_show.attr('value', $(this).attr('value'));
-                        $(`a[data-id="unit-price-a-` + product_item_id + `"]`).attr('data-value', $(this).attr('value'));
-                        $.fn.initMaskMoney2();
-                        if ($(this).attr('value') && input_show.attr('value') && quantity.val() && tax.attr('data-rate')) {
-                            subtotal_show.attr('value', parseFloat(input_show.attr('value')) * parseInt(quantity.val()));
-                            let tax_value = parseFloat(tax.attr('data-rate')) / 100;
-                            subtotal_after_tax_show.attr('value',parseFloat(subtotal_show.attr('value')) + parseFloat(subtotal_show.attr('value')) * parseFloat(tax_value));
-                        }
-                        else {
-                            input_show.attr('value', '');
-                            subtotal_show.attr('value', '');
-                            subtotal_after_tax_show.attr('value', '');
-                        }
-                        calculate_price($('#tab_line_detail tbody'), $('#pretax-value'), $('#taxes-value'), $('#total-value'));
-                    })
-                    $('#' + row_id + ' .product-quantity').on('change', function () {
-                        let tr = $(this).closest('tr');
-                        let input_show = tr.find('.product-unit-price-select-box');
-                        let tax = tr.find('.product-tax-select-box option:selected');
-                        let subtotal_show = tr.find('.product-subtotal-price');
-                        let subtotal_after_tax_show = tr.find('.product-subtotal-price-after-tax');
-                        $.fn.initMaskMoney2();
-                        if (input_show.attr('value') && $(this).attr('value') && tax.attr('data-rate')) {
-                            subtotal_show.attr('value', parseFloat(input_show.attr('value')) * parseInt($(this).val()));
-                            let tax_value = parseFloat(tax.attr('data-rate')) / 100;
-                            subtotal_after_tax_show.attr('value', parseFloat(subtotal_show.attr('value')) + parseFloat(subtotal_show.attr('value')) * parseFloat(tax_value));
-                        }
-                        else {
-                            input_show.attr('value', '');
-                            subtotal_show.attr('value', '');
-                            subtotal_after_tax_show.attr('value', '');
-                        }
-                        calculate_price($('#tab_line_detail tbody'), $('#pretax-value'), $('#taxes-value'), $('#total-value'));
-                    })
-                    $('#' + row_id + ' .product-tax-select-box').on('change', function () {
-                        let tr = $(this).closest('tr');
-                        let tax = $(this).find('option:selected');
-                        let quantity = tr.find('.product-quantity');
-                        let subtotal_show = tr.find('.product-subtotal-price');
-                        let subtotal_after_tax_show = tr.find('.product-subtotal-price-after-tax');
-                        $.fn.initMaskMoney2();
-                        if (quantity.val() && tax.attr('data-rate')) {
-                            let tax_value = parseFloat(tax.attr('data-rate')) / 100;
-                            subtotal_after_tax_show.attr('value', parseFloat(subtotal_show.attr('value')) + parseFloat(subtotal_show.attr('value')) * parseFloat(tax_value));
-                        }
-                        calculate_price($('#tab_line_detail tbody'), $('#pretax-value'), $('#taxes-value'), $('#total-value'));
-                    })
-                }
+    function changeUnitPrice(row_id, product_item_id) {
+        $('#' + row_id + ' .product-unit-price-select-box').on('change', function () {
+            let tr = $(this).closest('tr');
+            let input_show = tr.find('.product-unit-price-select-box');
+            let quantity = tr.find('.product-quantity');
+            let tax = tr.find('.product-tax-select-box option:selected');
+            let subtotal_show = tr.find('.product-subtotal-price');
+            let subtotal_after_tax_show = tr.find('.product-subtotal-price-after-tax');
+            input_show.attr('value', $(this).attr('value'));
+            $(`a[data-id="unit-price-a-` + product_item_id + `"]`).attr('data-value', $(this).attr('value'));
+            $.fn.initMaskMoney2();
+            if ($(this).attr('value') && input_show.attr('value') && quantity.val() && tax.attr('data-rate')) {
+                subtotal_show.attr('value', parseFloat(input_show.attr('value')) * parseInt(quantity.val()));
+                let tax_value = parseFloat(tax.attr('data-rate')) / 100;
+                subtotal_after_tax_show.attr('value',parseFloat(subtotal_show.attr('value')) + parseFloat(subtotal_show.attr('value')) * parseFloat(tax_value));
             }
-        }, (errs) => {
-        },)
+            else {
+                input_show.attr('value', '');
+                subtotal_show.attr('value', '');
+                subtotal_after_tax_show.attr('value', '');
+            }
+            calculate_price($('#tab_line_detail tbody'), $('#pretax-value'), $('#taxes-value'), $('#total-value'));
+        })
+        $('#' + row_id + ' .product-quantity').on('change', function () {
+            let tr = $(this).closest('tr');
+            let input_show = tr.find('.product-unit-price-select-box');
+            let tax = tr.find('.product-tax-select-box option:selected');
+            let subtotal_show = tr.find('.product-subtotal-price');
+            let subtotal_after_tax_show = tr.find('.product-subtotal-price-after-tax');
+            $.fn.initMaskMoney2();
+            if (input_show.attr('value') && $(this).attr('value') && tax.attr('data-rate')) {
+                subtotal_show.attr('value', parseFloat(input_show.attr('value')) * parseInt($(this).val()));
+                let tax_value = parseFloat(tax.attr('data-rate')) / 100;
+                subtotal_after_tax_show.attr('value', parseFloat(subtotal_show.attr('value')) + parseFloat(subtotal_show.attr('value')) * parseFloat(tax_value));
+            }
+            else {
+                input_show.attr('value', '');
+                subtotal_show.attr('value', '');
+                subtotal_after_tax_show.attr('value', '');
+            }
+            calculate_price($('#tab_line_detail tbody'), $('#pretax-value'), $('#taxes-value'), $('#total-value'));
+        })
+        $('#' + row_id + ' .product-tax-select-box').on('change', function () {
+            let tr = $(this).closest('tr');
+            let tax = $(this).find('option:selected');
+            let quantity = tr.find('.product-quantity');
+            let subtotal_show = tr.find('.product-subtotal-price');
+            let subtotal_after_tax_show = tr.find('.product-subtotal-price-after-tax');
+            $.fn.initMaskMoney2();
+            if (quantity.val() && tax.attr('data-rate')) {
+                let tax_value = parseFloat(tax.attr('data-rate')) / 100;
+                subtotal_after_tax_show.attr('value', parseFloat(subtotal_show.attr('value')) + parseFloat(subtotal_show.attr('value')) * parseFloat(tax_value));
+            }
+            calculate_price($('#tab_line_detail tbody'), $('#pretax-value'), $('#taxes-value'), $('#total-value'));
+        })
     }
 
     // (col-5) load Tax code for product Items or null

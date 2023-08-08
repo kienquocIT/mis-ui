@@ -567,7 +567,7 @@ class loadDataHandle {
                 $.fn.callAjax2({
                         'url': frm.dataUrl,
                         'method': frm.dataMethod,
-                        'data': {'purchase_quotation_request_mapped__purchase_request_mapped_id__in': JSON.parse(purchase_requests_data.val())},
+                        'data': {'purchase_quotation_request_mapped__purchase_request_mapped__id__in': JSON.parse(purchase_requests_data.val())},
                         'isDropdown': true,
                     }
                 ).then(
@@ -739,15 +739,15 @@ class loadDataHandle {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         if (data.hasOwnProperty('purchase_quotation_product_list') && Array.isArray(data.purchase_quotation_product_list)) {
-                            let data = {};
+                            let dataProduct = {};
                             for (let result of data.purchase_quotation_product_list) {
                                 if (!data.hasOwnProperty(result.product_id)) {
-                                    data[result.product_id] = [{
+                                    dataProduct[result.product_id] = [{
                                         'purchase_quotation': result.purchase_quotation,
                                         'unit_price': result.unit_price
                                     }]
                                 } else {
-                                    data[result.product_id].push({
+                                    dataProduct[result.product_id].push({
                                         'purchase_quotation': result.purchase_quotation,
                                         'unit_price': result.unit_price
                                     })
@@ -756,7 +756,7 @@ class loadDataHandle {
                             let $table = $('#datable-purchase-order-product-request');
                             $table.DataTable().rows().every(function () {
                                 let row = this.node();
-                                let priceListData = data[row.querySelector('.table-row-item').id];
+                                let priceListData = dataProduct[row.querySelector('.table-row-item').id];
                                 let elePrice = row.querySelector('.table-row-price');
                                 let elePriceShow = row.querySelector('.table-row-price-show');
                                 let elePriceList = row.querySelector('.table-row-price-list');
@@ -785,59 +785,6 @@ class loadDataHandle {
                 }
             )
         }
-        // let data = {
-        //     "07481eec-aa25-4a1c-a88c-c0d3341092ea": [
-        //         {
-        //             'purchase_quotation_id': 1,
-        //             'title': 'Bao gia so 1',
-        //             'quotation_price': 1000000,
-        //         },
-        //         {
-        //             'quotation_id': 2,
-        //             'title': 'Bao gia so 2',
-        //             'quotation_price': 2000000,
-        //         },
-        //         {
-        //             'quotation_id': 3,
-        //             'title': 'Bao gia so 3',
-        //             'quotation_price': 3000000,
-        //         }
-        //     ],
-        //     "1b55b1f8-117b-4f5c-86db-3f96623da1e5": [
-        //         {
-        //             'quotation_id': 1,
-        //             'title': 'Bao gia so 1',
-        //             'quotation_price': 1500000,
-        //         },
-        //         {
-        //             'quotation_id': 2,
-        //             'title': 'Bao gia so 2',
-        //             'quotation_price': 2500000,
-        //         },
-        //         {
-        //             'quotation_id': 3,
-        //             'title': 'Bao gia so 3',
-        //             'quotation_price': 3500000,
-        //         }
-        //     ],
-        //     "dc67e8e5-bae7-44a4-84a9-8e3812b4aed6": [
-        //         {
-        //             'quotation_id': 1,
-        //             'title': 'Bao gia so 1',
-        //             'quotation_price': 1800000,
-        //         },
-        //         {
-        //             'quotation_id': 2,
-        //             'title': 'Bao gia so 2',
-        //             'quotation_price': 2800000,
-        //         },
-        //         {
-        //             'quotation_id': 3,
-        //             'title': 'Bao gia so 3',
-        //             'quotation_price': 3800000,
-        //         }
-        //     ],
-        // }
     };
 
     loadPriceByCheckedQuotation(ele) {
@@ -1042,7 +989,7 @@ class dataTableHandle {
                 {
                     targets: 4,
                     render: (data, type, row) => {
-                        return `<span class="table-row-uom-request">${row.product_uom_request_title}</span>`
+                        return `<span class="table-row-uom-request">${row.uom_order_request.title}</span>`
                     }
                 },
                 {
@@ -1060,7 +1007,7 @@ class dataTableHandle {
                 {
                     targets: 7,
                     render: (data, type, row) => {
-                        return `<span class="table-row-quantity-order">${row.product_quantity_order}</span>`
+                        return `<span class="table-row-quantity-order">${row.product_quantity_order_actual}</span>`
                     }
                 },
             ],
@@ -1071,7 +1018,6 @@ class dataTableHandle {
 
     dataTablePurchaseQuotation(data) {
         let $table = $('#datable-purchase-quotation');
-        let frm = new SetupFormSubmit($table);
         $table.DataTableDefault({
             data: data ? data : [],
             searching: false,
@@ -1083,11 +1029,7 @@ class dataTableHandle {
                 {
                     targets: 0,
                     render: (data, type, row) => {
-                        let purchase_request_id = "";
-                        if (Object.keys(row.purchase_request).length !== 0) {
-                            purchase_request_id = row.purchase_request.id;
-                        }
-                        return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" id="${row.id}" data-purchase-request-id="${purchase_request_id}"></div>`
+                        return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" id="${row.id}"></div>`
                     }
                 },
                 {
@@ -1105,13 +1047,13 @@ class dataTableHandle {
                 {
                     targets: 3,
                     render: (data, type, row) => {
-                        return `<span class="table-row-supplier">${row.supplier.title}</span>`
+                        return `<span class="table-row-supplier">${row.supplier_mapped.name}</span>`
                     }
                 },
                 {
                     targets: 4,
                     render: (data, type, row) => {
-                        return `<span class="table-row-purchase-quotation-request">${row.purchase_quotation_request.code}</span>`
+                        return `<span class="table-row-purchase-quotation-request">${row.purchase_quotation_request_mapped.code}</span>`
                     }
                 },
             ],
@@ -1211,14 +1153,14 @@ class dataTableHandle {
                 {
                     targets: 3,
                     render: (data, type, row) => {
-                        let dataStr = JSON.stringify(row.uom_request).replace(/"/g, "&quot;");
-                        return `<span class="table-row-uom-request" id="${row.uom_request.id}">${row.product_uom_request_title}<input type="hidden" class="data-info" value="${dataStr}"></span>`;
+                        let dataStr = JSON.stringify(row.uom_order_request).replace(/"/g, "&quot;");
+                        return `<span class="table-row-uom-order-request" id="${row.uom_order_request.id}">${row.uom_order_request.title}<input type="hidden" class="data-info" value="${dataStr}"></span>`;
                     }
                 },
                 {
                     targets: 4,
                     render: (data, type, row) => {
-                        return `<span>${row.product_quantity_request}</span>`;
+                        return `<span class="table-row-quantity-order-request">${row.product_quantity_order_request}</span>`;
                     }
                 },
                 {
@@ -1231,8 +1173,8 @@ class dataTableHandle {
                     targets: 6,
                     render: (data, type, row) => {
                         return `<div class="row">
-                                    <select class="form-control select2 table-row-uom-order" required>
-                                        <option value="${row.uom_order.id}" selected>${row.product_uom_order_title}</option>
+                                    <select class="form-control select2 table-row-uom-order-actual" required>
+                                        <option value="${row.uom_order_actual.id}" selected>${row.uom_order_actual.title}</option>
                                     </select>
                                 </div>`;
                     }
@@ -1241,7 +1183,7 @@ class dataTableHandle {
                     targets: 7,
                     render: (data, type, row) => {
                         return `<div class="row">
-                                    <input type="text" class="form-control table-row-quantity-order validated-number" value="${row.product_quantity_order}" required>
+                                    <input type="text" class="form-control table-row-quantity-order-actual validated-number" value="${row.product_quantity_order_actual}" required>
                                 </div>`;
                     }
                 },
@@ -1621,13 +1563,19 @@ class validateHandle {
         ele.value = value;
     };
 
-    validateQuantyOrder(ele) {
-        let remain = parseFloat(ele.closest('tr').querySelector('.table-row-remain').innerHTML);
+    validateQuantityOrderAndRemain(ele, remain) {
         if (parseFloat(ele.value) > remain) {
             ele.value = '0';
             $.fn.notifyB({description: 'Quantity order must be less than quantity remain'}, 'failure');
         }
-    }
+    };
+
+    validateQuantityOrderFinal(ele, order_on_request) {
+        if (parseFloat(ele.value) < order_on_request) {
+            ele.value = '0';
+            $.fn.notifyB({description: 'Quantity order actually must be equal or greater than quantity order on request'}, 'failure');
+        }
+    };
 }
 
 // Submit Form
@@ -1814,17 +1762,22 @@ function setupMergeProduct() {
                             'id': row.querySelector('.table-row-item').id,
                             'title': row.querySelector('.table-row-item').innerHTML,
                         },
-                        'uom_request': {'id': row.querySelector('.table-row-uom-request').id},
-                        'uom_order': {'id': row.querySelector('.table-row-uom-request').id},
+                        'uom_order_request': {
+                            'id': row.querySelector('.table-row-uom-request').id,
+                            'title': row.querySelector('.table-row-uom-request').innerHTML,
+                        },
+                        'uom_order_actual': {
+                            'id': row.querySelector('.table-row-uom-request').id,
+                            'title': row.querySelector('.table-row-uom-request').innerHTML,
+                        },
                         'tax': {'id': 1, 'value': 10},
-                        'stock': 3,
+                        'stock': 0,
                         'product_title': row.querySelector('.table-row-item').innerHTML,
                         'code_list': [row.querySelector('.table-row-code').innerHTML],
                         'product_description': 'xxxxx',
-                        'product_uom_request_title': row.querySelector('.table-row-uom-request').innerHTML,
-                        'product_uom_order_title': row.querySelector('.table-row-uom-request').innerHTML,
                         'product_quantity_request': parseFloat(row.querySelector('.table-row-quantity-request').innerHTML),
-                        'product_quantity_order': parseFloat(row.querySelector('.table-row-quantity-order').value),
+                        'product_quantity_order_request': parseFloat(row.querySelector('.table-row-quantity-order').value),
+                        'product_quantity_order_actual': parseFloat(row.querySelector('.table-row-quantity-order').value),
                         'remain': parseFloat(row.querySelector('.table-row-remain').innerHTML),
                         'product_unit_price': 0,
                         'product_tax_title': 'vat-10',
@@ -1837,8 +1790,9 @@ function setupMergeProduct() {
                         dataJson[row.querySelector('.table-row-item').id].code_list.push(row.querySelector('.table-row-code').innerHTML);
                     }
                     dataJson[row.querySelector('.table-row-item').id].product_quantity_request += parseFloat(row.querySelector('.table-row-quantity-request').innerHTML);
+                    dataJson[row.querySelector('.table-row-item').id].product_quantity_order_request += parseFloat(row.querySelector('.table-row-quantity-order').value);
                     dataJson[row.querySelector('.table-row-item').id].remain += parseFloat(row.querySelector('.table-row-remain').innerHTML);
-                    dataJson[row.querySelector('.table-row-item').id].product_quantity_order += parseFloat(row.querySelector('.table-row-quantity-order').value);
+                    dataJson[row.querySelector('.table-row-item').id].product_quantity_order_actual += parseFloat(row.querySelector('.table-row-quantity-order').value);
                 }
             }
         }

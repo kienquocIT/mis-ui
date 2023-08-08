@@ -201,40 +201,30 @@
                                     <span class="text-primary">{% trans 'Current action' %}</span>
                                 </div>
                                 <div class="col-9">
-                                    <a href="#" data-bs-toggle="modal" data-bs-target="#create-new-call-log" class="create-new-call-log-button">
-                                        <span class="ml-3"
-                                              data-bs-toggle="tooltip"
-                                              data-bs-placement="top"
-                                              data-bs-original-title="{% trans 'New call log' %}">
-                                            <i class="bi bi-telephone-fill"></i>
-                                        </span>
-                                    </a>
-                                    <a href="" data-bs-toggle="modal" data-bs-target="#send-email" class="send-email-button">
-                                        <span class="ml-3"
-                                              data-bs-toggle="tooltip"
-                                              data-bs-placement="top"
-                                              data-bs-original-title="{% trans 'Send Email' %}">
-                                            <i class="bi bi-envelope-fill"></i>
-                                        </span>
-                                    </a>
-                                    <a href="" data-bs-toggle="modal" data-bs-target="#create-meeting" class="new-meeting-button">
-                                        <span class="ml-3"
-                                              data-bs-toggle="tooltip"
-                                              data-bs-placement="top"
-                                              data-bs-original-title="{% trans 'New Meeting' %}">
-                                            <i class="bi bi-person-workspace"></i>
-                                        </span>
-                                    </a>
-                                    <a href="#" class="current-create-task">
-                                        <span class="ml-3 ntt-drawer-toggle-link"
-                                              data-drawer-target="#drawer_task_create"
-                                              data-drawer-active="false"
-                                              data-bs-toggle="tooltip"
-                                              data-bs-placement="top"
-                                              data-bs-original-title="{% trans 'New Task' %}">
-                                            <i class="fa-solid fa-list-check"></i>
-                                        </span>
-                                    </a>
+                                    <div class="btn-group dropdown">
+                                        <button type="button" class="btn btn-primary btn-xs dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{% trans 'New Log' %}</button>
+                                        <div class="dropdown-menu dropdown-bordered">
+                                            <a data-bs-toggle="modal" data-bs-target="#create-new-call-log" class="dropdown-item create-new-call-log-button" href="#">
+                                                <i class="dropdown-icon bi bi-telephone-fill text-primary"></i>
+                                                <span class="text-primary">{% trans 'New Call Log' %}</span>
+                                            </a>
+                                            <div class="dropdown-divider"></div>
+                                            <a data-bs-toggle="modal" data-bs-target="#send-email" class="dropdown-item send-email-button" href="#">
+                                                <i class="dropdown-icon bi bi-envelope-fill text-primary"></i>
+                                                <span class="text-primary">{% trans 'Send Email' %}</span>
+                                            </a>
+                                            <div class="dropdown-divider"></div>
+                                            <a data-bs-toggle="modal" data-bs-target="#create-meeting" class="dropdown-item new-meeting-button" href="#">
+                                                <i class="dropdown-icon bi bi-person-workspace text-primary"></i>
+                                                <span class="text-primary">{% trans 'New Meeting' %}</span>
+                                            </a>
+                                            <div class="dropdown-divider"></div>
+                                            <a data-drawer-target="#drawer_task_create" data-drawer-active="false" class="dropdown-item ntt-drawer-toggle-link current-create-task" href="#">
+                                                <i class="dropdown-icon fa-solid fa-list-check text-primary"></i>
+                                                <span class="text-primary">{% trans 'New Task' %}</span>
+                                            </a>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="row div-activity hidden">
@@ -242,40 +232,30 @@
                                     <span class="text-primary">{% trans "Activity logs" %}</span>
                                 </div>
                                 <div class="col-9">
-                                    <a href="#" data-bs-toggle="modal" data-bs-target="#create-new-call-log" class="create-new-call-log-button">
-                                        <span class="ml-3"
-                                              data-bs-toggle="tooltip"
-                                              data-bs-placement="top"
-                                              data-bs-original-title="{% trans 'New call log' %}">
-                                            <i class="bi bi-telephone-fill"></i>
-                                        </span>
-                                    </a>
-                                    <a href="" data-bs-toggle="modal" data-bs-target="#send-email" class="send-email-button">
-                                        <span class="ml-3"
-                                              data-bs-toggle="tooltip"
-                                              data-bs-placement="top"
-                                              data-bs-original-title="{% trans 'Send Email' %}">
-                                            <i class="bi bi-envelope-fill"></i>
-                                        </span>
-                                    </a>
-                                    <a href="" data-bs-toggle="modal" data-bs-target="#create-meeting" class="new-meeting-button">
-                                        <span class="ml-3"
-                                              data-bs-toggle="tooltip"
-                                              data-bs-placement="top"
-                                              data-bs-original-title="{% trans 'New Meeting' %}">
-                                            <i class="bi bi-person-workspace"></i>
-                                        </span>
-                                    </a>
-                                    <a href="#" class="current-create-task">
-                                        <span class="ml-3 ntt-drawer-toggle-link"
-                                              data-drawer-target="#drawer_task_create"
-                                              data-drawer-active="false"
-                                              data-bs-toggle="tooltip"
-                                              data-bs-placement="top"
-                                              data-bs-original-title="{% trans 'New Task' %}">
-                                            <i class="fa-solid fa-list-check"></i>
-                                        </span>
-                                    </a>
+                                    <div class="btn-group dropdown">
+                                        <button type="button" class="btn btn-primary btn-xs dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{% trans 'New Log' %}</button>
+                                        <div class="dropdown-menu dropdown-bordered">
+                                            <a data-bs-toggle="modal" data-bs-target="#create-new-call-log" class="dropdown-item create-new-call-log-button" href="#">
+                                                <i class="dropdown-icon bi bi-telephone-fill text-primary"></i>
+                                                <span class="text-primary">{% trans 'New Call Log' %}</span>
+                                            </a>
+                                            <div class="dropdown-divider"></div>
+                                            <a data-bs-toggle="modal" data-bs-target="#send-email" class="dropdown-item send-email-button" href="#">
+                                                <i class="dropdown-icon bi bi-envelope-fill text-primary"></i>
+                                                <span class="text-primary">{% trans 'Send Email' %}</span>
+                                            </a>
+                                            <div class="dropdown-divider"></div>
+                                            <a data-bs-toggle="modal" data-bs-target="#create-meeting" class="dropdown-item new-meeting-button" href="#">
+                                                <i class="dropdown-icon bi bi-person-workspace text-primary"></i>
+                                                <span class="text-primary">{% trans 'New Meeting' %}</span>
+                                            </a>
+                                            <div class="dropdown-divider"></div>
+                                            <a data-drawer-target="#drawer_task_create" data-drawer-active="false" class="dropdown-item ntt-drawer-toggle-link current-create-task" href="#">
+                                                <i class="dropdown-icon fa-solid fa-list-check text-primary"></i>
+                                                <span class="text-primary">{% trans 'New Task' %}</span>
+                                            </a>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -370,7 +350,13 @@
                                         <tr>
                                             <th>{% trans "Activity" %}</th>
                                             <th class="text-center">{% trans "Type" %}</th>
-                                            <th>{% trans 'Subject' %}</th>
+                                            <th>{% trans 'Subject' %}
+                                                <i class="fas fa-info-circle icon-info"
+                                                   data-bs-toggle="tooltip"
+                                                   data-bs-placement="bottom"
+                                                   title="{% trans 'Press row here to see detail.' %}">
+                                                </i>
+                                            </th>
                                             <th>{% trans "Date" %}</th>
                                         </tr>
                                         </thead>

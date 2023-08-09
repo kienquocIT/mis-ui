@@ -62,8 +62,8 @@ $.fn.extend({
         if (!value && no_value_is_false === true) return false;
         return null;
     },
-    dateRangePickerDefault: function (opts) {
-        $(this).daterangepicker({
+    dateRangePickerDefault: function (opts, funcCallback) {
+        return $(this).daterangepicker({
             singleDatePicker: true,
             timePicker: true,
             startDate: moment().startOf('hour'),
@@ -73,6 +73,7 @@ $.fn.extend({
             locale: {
                 format: 'MM/DD/YYYY hh:mm A'
             }, ...(opts && typeof opts === 'object' ? opts : {})
+        }, funcCallback ? funcCallback : function () {
         });
     },
     notifyB: function (option, typeAlert = null) {
@@ -189,6 +190,9 @@ $.fn.extend({
                     // if (isNotify === true) $.fn.notifyB({'description': resp.data.errors}, 'failure');
                     WindowControl.showForbidden();
                     return {};
+                case 404:
+                    WindowControl.showNotFound();
+                    return {};
                 case 500:
                     return {};
                 default:
@@ -226,7 +230,8 @@ $.fn.extend({
         }
     },
     callAjax: function (url, method, data = {}, csrfToken = null, headers = {}, content_type = "application/json", opts = {}) {
-        if (isDenied && !urlNotDeny.includes(url)) return new Promise(function (resolve, reject) {});
+        if (isDenied && !urlNotDeny.includes(url)) return new Promise(function (resolve, reject) {
+        });
         else {
             let isDropdown = opts['isDropdown'];
             let isNotify = opts['isNotify'];
@@ -283,7 +288,8 @@ $.fn.extend({
         }
     },
     callAjax2: function (opts = {}) {
-        if (isDenied && !urlNotDeny.includes(url)) return new Promise(function (resolve, reject) {});
+        if (isDenied && !urlNotDeny.includes(url)) return new Promise(function (resolve, reject) {
+        });
         else {
             let isDropdown = UtilControl.popKey(opts, 'isDropdown', false, true);
             let isNotify = UtilControl.popKey(opts, 'isNotify', false, true);
@@ -416,7 +422,14 @@ $.fn.extend({
             if (dropdownParent.length > 0) opts['dropdownParent'] = $(dropdownParent[0]);
         }
         // -- fix select2 for bootstrap modal
+        if ($(this).find('option').length <= 0){
+            $(this).append(`<option value=""></option>`);
+        }
         $(this).select2({
+            placeholder: {
+                id: '', // the value of the option
+                text: $.fn.transEle.attr('data-select-placeholder')
+            },
             multiple: !!$(this).attr('multiple') || !!$(this).attr('data-select2-multiple'),
             closeOnSelect: closeOnSelect === null ? true : closeOnSelect,
             allowClear: allowClear === null ? false : allowClear,

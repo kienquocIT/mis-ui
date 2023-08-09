@@ -9,13 +9,12 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('opportunity_list')) {
-                        ele.append(`<option></option>`);
                         data.opportunity_list.map(function (item) {
                             if (item.id === opportunityParam) {
-                                ele.append(`<option value="${item.id}" selected>(${item.code})&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${item.title}</option>`);
+                                ele.append(`<option value="${item.id}" selected>${item.title}</option>`);
                                 ele.prop('disabled', true);
                             } else {
-                                ele.append(`<option value="${item.id}">(${item.code})&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${item.title}</option>`);
+                                ele.append(`<option value="${item.id}">${item.title}</option>`);
                             }
                         })
                     }
@@ -37,7 +36,6 @@ $(document).ready(function () {
         "cancelClass": "btn-secondary",
         maxYear: parseInt(moment().format('YYYY-MM-DD'), 10) + 100
     });
-    $('#input-request-completed-date').val('');
 
     function loadPersonInCharge() {
         let ele = $('#box-select-person-in-charge');
@@ -96,7 +94,7 @@ $(document).ready(function () {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         $.fn.notifyB({description: "Successfully"}, 'success')
-                        $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
+                        $.fn.redirectUrl(frm.dataUrlRedirect, 1000)
                     }
                 },
                 (errs) => {

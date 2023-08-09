@@ -387,7 +387,7 @@ $(function () {
                     'tax_id': $(this).attr('data-tax-id'),
                     'tax_value': $(this).attr('data-tax-value'),
                     'tax_code': $(this).attr('data-tax-code'),
-                    'pr_subtotal_price': current_pretax_value + current_pretax_value * tax_value / 100,
+                    'pr_subtotal_price': current_pretax_value,
                 })
             })
 
@@ -465,7 +465,7 @@ $(function () {
                         data: 'pr_subtotal_price',
                         className: 'wrap-text w-15 text-center',
                         render: (data, type, row, meta) => {
-                            return `<span class="pr-subtotal-price-input mask-money text-primary" data-init-money="${row.pr_subtotal_price}"></span>`;
+                            return `<span class="mask-money text-primary" data-init-money="${row.pr_subtotal_price}"></span>`;
                         }
                     },
                 ],
@@ -494,7 +494,7 @@ $(function () {
             let quantity = $(this).closest('tr').find('.product-quantity').val();
             let pr_unit_price = $(this).closest('tr').find('.pr-unit-price-input').attr('value');
             let tax_value = $(this).closest('tr').find('.product-tax-select-box option:selected').attr('data-rate');
-            let new_sub_total_price = parseFloat(pr_unit_price) * parseFloat(quantity) + parseFloat(pr_unit_price) * parseFloat(quantity) * parseFloat(tax_value) / 100;
+            let new_sub_total_price = parseFloat(pr_unit_price) * parseFloat(quantity);
             $(this).closest('tr').find('.pr-subtotal-price-input').attr('data-init-money', new_sub_total_price)
             calculate_price($('#table-purchase-quotation-request-products-selected tbody tr'));
             $.fn.initMaskMoney2();
@@ -504,7 +504,7 @@ $(function () {
             let quantity = $(this).closest('tr').find('.product-quantity').val();
             let pr_unit_price = $(this).closest('tr').find('.pr-unit-price-input').attr('value');
             let tax_value = $(this).closest('tr').find('.product-tax-select-box option:selected').attr('data-rate');
-            let new_sub_total_price = parseFloat(pr_unit_price) * parseFloat(quantity) + parseFloat(pr_unit_price) * parseFloat(quantity) * parseFloat(tax_value) / 100;
+            let new_sub_total_price = parseFloat(pr_unit_price) * parseFloat(quantity);
             $(this).closest('tr').find('.pr-subtotal-price-input').attr('data-init-money', new_sub_total_price)
             calculate_price($('#table-purchase-quotation-request-products-selected tbody tr'));
             $.fn.initMaskMoney2();
@@ -514,7 +514,7 @@ $(function () {
             let quantity = $(this).closest('tr').find('.product-quantity').val();
             let pr_unit_price = $(this).closest('tr').find('.pr-unit-price-input').attr('value');
             let tax_value = $(this).closest('tr').find('.product-tax-select-box option:selected').attr('data-rate');
-            let new_sub_total_price = parseFloat(pr_unit_price) * parseFloat(quantity) + parseFloat(pr_unit_price) * parseFloat(quantity) * parseFloat(tax_value) / 100;
+            let new_sub_total_price = parseFloat(pr_unit_price) * parseFloat(quantity);
             $(this).closest('tr').find('.pr-subtotal-price-input').attr('data-init-money', new_sub_total_price)
             calculate_price($('#table-purchase-quotation-request-products-selected tbody tr'));
             $.fn.initMaskMoney2();

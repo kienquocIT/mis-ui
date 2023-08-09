@@ -52,16 +52,16 @@
 
 {% block pageContent %}
     <ul class="nav nav-light nav-tabs">
-	<li class="nav-item">
-		<a class="nav-link active" data-bs-toggle="tab" href="#tab_block_1">
-			<span class="nav-link-text">Information</span>
-		</a>
-	</li>
-	<li class="nav-item">
-		<a class="nav-link" data-bs-toggle="tab" href="#tab_block_2">
-			<span class="nav-link-text">Plan-Application</span>
-		</a>
-	</li>
+        <li class="nav-item">
+            <a class="nav-link active" data-bs-toggle="tab" href="#tab-info">
+                <span class="nav-link-text">{% trans 'General Information' %}</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#tab-app">
+                <span class="nav-link-text">{% trans 'Plan-Application' %}</span>
+            </a>
+        </li>
     </ul>
 
     <form
@@ -71,7 +71,7 @@
     >
         {% csrf_token %}
         <div class="tab-content">
-            <div class="tab-pane fade show active" id="tab_block_1">
+            <div class="tab-pane fade show active" id="tab-info">
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-8">
@@ -150,7 +150,6 @@
                                 <label class="form-label required">{% trans 'Phone' %}</label>
                                 <input
                                         type="text" placeholder="(+84) 987-654-321"
-{#                                        data-mask="(999) 999-999-999"#}
                                         class="form-control"
                                         name="phone"
                                         id="employee-phone"
@@ -168,7 +167,6 @@
                                         id="select-box-group-employee"
                                         data-url="{% url 'GroupListAPI' %}"
                                         data-method="GET"
-{#                                        required#}
                                 >
                                 </select>
                                 <span class="form-text text-muted">{% trans 'Department of the employee' %}</span>
@@ -181,6 +179,7 @@
                                 <label class="form-label">{% trans 'Date of Birthday' %}</label>
                                 <input
                                         class="form-control"
+                                        id="employee-dob"
                                         type="text"
                                         name="dob"
                                         required
@@ -193,6 +192,7 @@
                                 <input
                                         class="form-control"
                                         type="text"
+                                        id="employee-date-joined"
                                         name="date_joined"
                                         required
                                 />
@@ -202,11 +202,10 @@
                             <div class="form-group">
                                 <label class="form-label">{% trans 'Role' %}</label>
                                 <select
-                                        class="form-control select2 select2-multiple"
+                                        class="form-control"
                                         multiple
-                                        data-placeholder="{% trans 'Choose' %}"
                                         name="role"
-                                        id="select-box-role"
+                                        id="select-box-role-employee"
                                         data-url="{% url 'RoleListAPI' %}"
                                         data-method="GET"
                                 >
@@ -216,32 +215,38 @@
                     </div>
                     <div class="row">
                         <div class="form-group">
-                            <div class="form-check form-switch form-switch-lg mb-1" style="padding-left: 0">
-                                <label class="form-label required">
-                                    {% trans 'Active the employee after created' %}
-                                </label>
+                            <div class="form-check form-switch">
                                 <input
                                         type="checkbox"
                                         class="form-check-input"
-                                        name="is_active" checked
-                                        required
-                                        style="margin-left: 0"
+                                        name="is_admin_company"
+                                        id="idx_is_admin_company"
                                 >
+                                <label class="form-check-label" for="idx_is_admin_company">
+                                    {% trans 'Is admin' %}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <div class="form-check form-switch">
+                                <input
+                                        type="checkbox"
+                                        class="form-check-input"
+                                        name="is_active"
+                                        id="is_active"
+                                        checked
+                                        required
+                                >
+                                <label class="form-label required">{% trans 'Active the employee after created' %}</label>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="tab-pane fade" id="tab_block_2">
-                <table
-                        id="datable-employee-plan-app"
-                        data-url="{% url 'TenantPlanListAPI' %}"
-                        data-method="GET"
-                        style="width: 100%"
-                >
-                    <tbody></tbody>
-                </table>
-                <input type="hidden" id="is-check-app-employee-create" value="0">
+            <div class="tab-pane fade" id="tab-app">
+                {% include 'core/hr/employee/extends/plan_apps.html' with add_new_enabled="true" warning_enabled="true" %}
             </div>
         </div>
     </form>
@@ -267,7 +272,8 @@
     <!-- Daterangepicker JS -->
     <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
-
+    <script src="{% static 'assets/js/core/hr/employee/employee_pk.js' %}"></script>
     <script src="{% static 'assets/js/core/hr/employee/employee_create.js' %}"></script>
 
+    <script src="{% static 'assets/js/core/hr/plan_app.js' %}"></script>
 {% endblock %}

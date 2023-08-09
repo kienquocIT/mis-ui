@@ -15,18 +15,30 @@ $(function () {
             $('#supplier-select-box option').remove();
             $('#supplier-select-box').append(`<option selected></option>`)
             for (let i = 0; i < account_list.length; i++) {
-                $('#supplier-select-box').append(`<option value="${account_list[i].id}" data-contact="${account_list[i].contact_mapped}" data-code="${account_list[i].code}">${account_list[i].name}</option>`)
+                if (account_list[i].account_type.includes('Supplier')) {
+                    $('#supplier-select-box').append(`<option value="${account_list[i].id}" data-contact="${account_list[i].contact_mapped}" data-code="${account_list[i].code}">${account_list[i].name}</option>`)
+                }
             }
             $('#supplier-select-box').select2();
         }
         LoadSupplierSelectBox();
 
         function LoadContactSelectBox(filter) {
+            filter = [].concat(filter);
             $('#contact-select-box option').remove();
-            $('#contact-select-box').append(`<option selected></option>`)
-            for (let i = 0; i < contact_list.length; i++) {
-                if (filter.includes(contact_list[i].id)) {
-                    $('#contact-select-box').append(`<option value="${contact_list[i].id}">${contact_list[i].fullname}</option>`)
+            if (filter.length === 1) {
+                for (let i = 0; i < contact_list.length; i++) {
+                    if (filter.includes(contact_list[i].id)) {
+                        $('#contact-select-box').append(`<option selected value="${contact_list[i].id}">${contact_list[i].fullname}</option>`)
+                    }
+                }
+            }
+            else {
+                $('#contact-select-box').append(`<option selected></option>`)
+                for (let i = 0; i < contact_list.length; i++) {
+                    if (filter.includes(contact_list[i].id)) {
+                        $('#contact-select-box').append(`<option value="${contact_list[i].id}">${contact_list[i].fullname}</option>`)
+                    }
                 }
             }
             $('#contact-select-box').select2();
@@ -86,7 +98,7 @@ $(function () {
                     let quantity = $(this).closest('tr').find('.product-quantity').val();
                     let pr_unit_price = $(this).closest('tr').find('.pr-unit-price-input').attr('value');
                     let tax_value = $(this).closest('tr').find('.product-tax-select-box option:selected').attr('data-rate');
-                    let new_sub_total_price = parseFloat(pr_unit_price) * parseFloat(quantity) + parseFloat(pr_unit_price) * parseFloat(quantity) * parseFloat(tax_value) / 100;
+                    let new_sub_total_price = parseFloat(pr_unit_price) * parseFloat(quantity);
                     $(this).closest('tr').find('.pr-subtotal-price-input').attr('data-init-money', new_sub_total_price)
                     calculate_price($('#table-purchase-quotation-products-selected tbody tr'));
                     $.fn.initMaskMoney2();
@@ -266,7 +278,7 @@ $(function () {
             let quantity = $(this).closest('tr').find('.product-quantity').val();
             let pr_unit_price = $(this).closest('tr').find('.pr-unit-price-input').attr('value');
             let tax_value = $(this).closest('tr').find('.product-tax-select-box option:selected').attr('data-rate');
-            let new_sub_total_price = parseFloat(pr_unit_price) * parseFloat(quantity) + parseFloat(pr_unit_price) * parseFloat(quantity) * parseFloat(tax_value) / 100;
+            let new_sub_total_price = parseFloat(pr_unit_price) * parseFloat(quantity);
             $(this).closest('tr').find('.pr-subtotal-price-input').attr('data-init-money', new_sub_total_price)
             calculate_price($('#table-purchase-quotation-products-selected tbody tr'));
             $.fn.initMaskMoney2();
@@ -276,7 +288,7 @@ $(function () {
             let quantity = $(this).closest('tr').find('.product-quantity').val();
             let pr_unit_price = $(this).closest('tr').find('.pr-unit-price-input').attr('value');
             let tax_value = $(this).closest('tr').find('.product-tax-select-box option:selected').attr('data-rate');
-            let new_sub_total_price = parseFloat(pr_unit_price) * parseFloat(quantity) + parseFloat(pr_unit_price) * parseFloat(quantity) * parseFloat(tax_value) / 100;
+            let new_sub_total_price = parseFloat(pr_unit_price) * parseFloat(quantity);
             $(this).closest('tr').find('.pr-subtotal-price-input').attr('data-init-money', new_sub_total_price)
             calculate_price($('#table-purchase-quotation-products-selected tbody tr'));
             $.fn.initMaskMoney2();
@@ -286,7 +298,7 @@ $(function () {
             let quantity = $(this).closest('tr').find('.product-quantity').val();
             let pr_unit_price = $(this).closest('tr').find('.pr-unit-price-input').attr('value');
             let tax_value = $(this).closest('tr').find('.product-tax-select-box option:selected').attr('data-rate');
-            let new_sub_total_price = parseFloat(pr_unit_price) * parseFloat(quantity) + parseFloat(pr_unit_price) * parseFloat(quantity) * parseFloat(tax_value) / 100;
+            let new_sub_total_price = parseFloat(pr_unit_price) * parseFloat(quantity);
             $(this).closest('tr').find('.pr-subtotal-price-input').attr('data-init-money', new_sub_total_price)
             calculate_price($('#table-purchase-quotation-products-selected tbody tr'));
             $.fn.initMaskMoney2();
@@ -337,7 +349,7 @@ $(function () {
             let quantity = $(this).closest('tr').find('.product-quantity').val();
             let pr_unit_price = $(this).closest('tr').find('.pr-unit-price-input').attr('value');
             let tax_value = $(this).closest('tr').find('.product-tax-select-box option:selected').attr('data-rate');
-            let new_sub_total_price = parseFloat(pr_unit_price) * parseFloat(quantity) + parseFloat(pr_unit_price) * parseFloat(quantity) * parseFloat(tax_value) / 100;
+            let new_sub_total_price = parseFloat(pr_unit_price) * parseFloat(quantity);
             $(this).closest('tr').find('.pr-subtotal-price-input').attr('data-init-money', new_sub_total_price)
             calculate_price($('#table-purchase-quotation-products-selected tbody tr'));
             $.fn.initMaskMoney2();

@@ -587,11 +587,11 @@ msgstr "Chỉ Định"
 
 #
 msgid "Role name"
-msgstr "Vai Trò"
+msgstr "Tên vai trò"
 
 #
 msgid "Abbreviation"
-msgstr ""
+msgstr "Viết tắt"
 
 #
 msgid "Select from Employee List"
@@ -2976,6 +2976,10 @@ msgid "Are you sure about this change?"
 msgstr "Bạn chắc chắn về sự thay đổi này?"
 
 #
+msgid "Are you sure about this delete?"
+msgstr "Bạn chắc chắn xoá dữ liệu này?"
+
+#
 msgid "View all notifications"
 msgstr "Xem tất cả các thông báo"
 
@@ -3720,3 +3724,22 @@ msgstr "Là quản trị viên"
 #
 msgid "Current page automatically goes to end page after the new row was added"
 msgstr "Tự động chuyển đến trang cuối sau khi thêm dòng mới thành công"
+
+#
+msgid "Permissions Settings"
+msgstr "Phân quyền"
+
+msgid "Limited"
+msgstr "Giới hạn"
+
+#
+msgid "Unlimited"
+msgstr "Không giới hạn"
+
+#
+msgid "Data of this tab will be used on 'Permission` tab after saving."
+msgstr "Dữ liệu của tab này sẽ được sử dụng trên tab 'Quyền` sau khi lưu."
+
+#
+msgid "The used license will be total member multiplication with role used license."
+msgstr "Giấy phép đã sử dụng sẽ là tổng số thành viên nhân với giấy phép đã sử dụng trong vai trò."

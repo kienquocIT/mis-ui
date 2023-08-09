@@ -10,6 +10,10 @@ $(document).ready(function () {
     const employee_list = JSON.parse($('#employee_list').text());
     const account_map_employees = JSON.parse($('#account_map_employees').text());
 
+    const opportunity_call_log_list = JSON.parse($('#opportunity_call_log_list').text());
+    const opportunity_email_list = JSON.parse($('#opportunity_email_list').text());
+    const opportunity_meeting_list = JSON.parse($('#opportunity_meeting_list').text());
+
     const config_is_select_stage = config.is_select_stage;
     const config_is_AM_create = config.is_account_manager_create;
     const config_is_input_rate = config.is_input_win_rate;
@@ -1738,36 +1742,56 @@ $(document).ready(function () {
 
     // for send email
 
-    function LoadEmailToList(contact_list_id) {
+    $('#email-to-select-box').select2({
+        dropdownParent: $("#send-email"),
+        tags: true,
+        tokenSeparators: [',', ' ']
+    });
+
+    $('#email-cc-select-box').select2({
+        dropdownParent: $("#send-email"),
+        tags: true,
+        tokenSeparators: [',', ' '],
+    });
+
+    $('#detail-email-to-select-box').select2({
+        dropdownParent: $("#detail-send-email"),
+        tags: true,
+        tokenSeparators: [',', ' ']
+    });
+
+    $('#detail-email-cc-select-box').select2({
+        dropdownParent: $("#detail-send-email"),
+        tags: true,
+        tokenSeparators: [',', ' '],
+    });
+
+    function LoadEmailToList(contact_id_list) {
         let $to_sb = $('#email-to-select-box');
         $to_sb.html(``);
-        $to_sb.append(`<option></option>`)
         contact_list.map(function (item) {
-            if (contact_list_id.includes(item.id)) {
+            if (contact_id_list.includes(item.id)) {
                 if (item.email === null) {
                     $to_sb.append(`<option disabled>${item.fullname}</option>`);
                 } else {
-                    $to_sb.append(`<option data-email-to-contact="${item.id}" value="${item.email}">${item.fullname}&nbsp;&nbsp;&nbsp;(${item.email})</option>`);
+                    $to_sb.append(`<option value="${item.email}" data-bs-toggle="tooltip" data-bs-placement="top" title="${item.fullname}">${item.email}</option>`);
                 }
             }
         });
-        $to_sb.select2({dropdownParent: $("#send-email")});
     }
 
-    function LoadEmailCcList(contact_list_id) {
+    function LoadEmailCcList(contact_id_list) {
         let $cc_sb = $('#email-cc-select-box');
         $cc_sb.html(``);
-        $cc_sb.append(`<option></option>`)
         contact_list.map(function (item) {
-            if (contact_list_id.includes(item.id)) {
+            if (contact_id_list.includes(item.id)) {
                 if (item.email === null) {
                     $cc_sb.append(`<option disabled>${item.fullname}</option>`);
                 } else {
-                    $cc_sb.append(`<option value="${item.email}">${item.fullname}&nbsp;&nbsp;&nbsp;(${item.email})</option>`);
+                    $cc_sb.append(`<option value="${item.email}" data-bs-toggle="tooltip" data-bs-placement="top" title="${item.fullname}">${item.email}</option>`);
                 }
             }
         });
-        $cc_sb.select2({dropdownParent: $("#send-email")});
     }
 
     $('.send-email-button').on('click', function () {
@@ -1792,60 +1816,14 @@ $(document).ready(function () {
         LoadEmailCcList(contact_list_id);
     })
 
-    $('#email-to-input-btn').on('click', function() {
-        $('#email-to-select-box').prop('hidden', true);
-        $('#email-to-select-box').next(1).prop('hidden', true);
-        $('#inputEmailTo').prop('hidden', false);
-        $('#email-to-select-btn').prop('hidden', false);
-        $('#email-to-input-btn').prop('hidden', true);
-    })
-    $('#email-to-select-btn').on('click', function() {
-        $('#email-to-select-box').prop('hidden', false);
-        $('#email-to-select-box').next(1).prop('hidden', false);
-        $('#inputEmailTo').prop('hidden', true);
-        $('#email-to-select-btn').prop('hidden', true);
-        $('#email-to-input-btn').prop('hidden', false);
-    })
-
-    $('#email-cc-input-btn').on('click', function() {
-        $('#inputEmailCc').prop('hidden', false);
-        $('#email-cc-add').prop('hidden', false);
-        $('#email-cc-remove').prop('hidden', false);
-        $(this).prop('hidden', true);
-    })
-    $('#email-cc-remove').on('click', function() {
-        $('#email-cc-input-btn').prop('hidden', false);
-        $('#inputEmailCc').prop('hidden', true);
-        $('#email-cc-add').prop('hidden', true);
-        $(this).prop('hidden', true);
-    })
-    $('#email-cc-add').on('click', function() {
-        if ($('#inputEmailCc').val()) {
-            let data_email = $('#inputEmailCc').val();
-            $('#email-cc-select-box').append(`<option selected value="` + data_email + `">` + data_email + `</option>`);
-            $('#inputEmailCc').val('');
-
-            $('#email-cc-input-btn').prop('hidden', false);
-            $('#inputEmailCc').prop('hidden', true);
-            $('#email-cc-add').prop('hidden', true);
-            $('#email-cc-remove').prop('hidden', true);
-        }
-    })
-
     $('#form-new-email').submit(function (event) {
         event.preventDefault();
         let csr = $("input[name=csrfmiddlewaretoken]").val();
         let frm = new SetupFormSubmit($(this));
 
-        frm.dataForm['subject'] = $('#email-subject-input').val();
-        if ($('#inputEmailTo').attr('hidden') !== 'hidden') {
-            frm.dataForm['email_to'] = $('#inputEmailTo').val();
-        }
-        if ($('#email-to-select-box').attr('hidden') !== 'hidden') {
-            frm.dataForm['email_to'] = $('#email-to-select-box option:selected').attr('value');
-        }
-        frm.dataForm['email_to_contact'] = $('#email-to-select-box option:selected').attr('data-email-to-contact');
         frm.dataForm['opportunity'] = pk;
+        frm.dataForm['subject'] = $('#email-subject-input').val();
+        frm.dataForm['email_to_list'] = $('#email-to-select-box').val();
         frm.dataForm['email_cc_list'] = $('#email-cc-select-box').val();
         frm.dataForm['content'] = $('#email-content-area').val();
 
@@ -2452,6 +2430,7 @@ $(document).ready(function () {
                 }
             })
     }
+
     function tabLogWork(dataList){
         let $table = $('#table_log-work')
         if ($table.hasClass('datatable')) $table.DataTable().clear().draw();
@@ -2616,7 +2595,24 @@ $(document).ready(function () {
                     data: 'subject',
                     className: 'wrap-text w-50',
                     render: (data, type, row, meta) => {
-                        return `<span class="text-primary" style="font-weight: bold">${row.subject}</span>`
+                        let modal_detail_target = '';
+                        let modal_detail_class = '';
+                        if (row.type === 'call') {
+                            modal_detail_target = '#detail-call-log';
+                            modal_detail_class = 'detail-call-log-button';
+                        }
+                        else if (row.type === 'email') {
+                            modal_detail_target = '#detail-send-email';
+                            modal_detail_class = 'detail-email-button';
+                        }
+                        else if (row.type === 'meeting') {
+                            modal_detail_target = '#detail-meeting';
+                            modal_detail_class = 'detail-meeting-button';
+                        }
+                        return `<a data-type="${row.type}" class="${modal_detail_class} text-primary link-primary underline_hover"
+                                   href="" data-bs-toggle="modal" data-id="${row.id}"data-bs-target="${modal_detail_target}">
+                                    <span><b>${row.subject}</b></span>
+                                </a>`
                     }
                 },
                 {
@@ -2636,6 +2632,7 @@ $(document).ready(function () {
             },
         });
     }
+
     function callAjaxtoLoadTimeLineList() {
         // let call_1 = $.fn.callAjax($('#table-timeline').attr('data-url-call-log'), $('#table-timeline').attr('data-method')).then((resp) => {
         //     let data = $.fn.switcherResp(resp);
@@ -2769,4 +2766,104 @@ $(document).ready(function () {
         'opportunity': pk,
     })
     ele_move_doc_page.attr('href', url_doc_page + "?" + paramString);
+
+    $(document).on('click', '#table-timeline .detail-call-log-button', function () {
+        let call_log_id = $(this).attr('data-id');
+        let call_log_obj = JSON.parse($('#opportunity_call_log_list').text()).filter(function(item) {
+            return item.id === call_log_id;
+        })[0]
+        $('#detail-subject-input').val(call_log_obj.subject);
+
+        $('#detail-sale-code-select-box option').remove();
+        $('#detail-sale-code-select-box').append(`<option selected>(${call_log_obj.opportunity.code})&nbsp;&nbsp;&nbsp;${call_log_obj.opportunity.title}</option>`);
+
+        $('#detail-account-select-box option').remove();
+        $('#detail-account-select-box').append(`<option selected>${call_log_obj.customer.title}</option>`);
+
+        $('#detail-contact-select-box option').remove();
+        $('#detail-contact-select-box').append(`<option selected>${call_log_obj.contact.fullname}</option>`);
+
+        let contact_get = contact_list.filter(function(item) {
+            return item.id === call_log_obj.contact.id;
+        })
+        if (contact_get.length > 0) {
+            contact_get = contact_get[0];
+            $('#detail-call-log-contact-name').text(contact_get.fullname);
+            $('#detail-call-log-contact-job-title').text(contact_get.job_title);
+            $('#detail-call-log-contact-mobile').text(contact_get.mobile);
+            $('#detail-call-log-contact-email').text(contact_get.email);
+            let report_to = null;
+            if (Object.keys(contact_get.report_to).length !== 0) {
+                report_to = contact_get.report_to.name;
+            }
+            $('#detail-call-log-contact-report-to').text(report_to);
+            let url = $('#detail-btn-detail-call-log-contact-tab').attr('data-url').replace('0', contact_get.id);
+            $('#detail-btn-detail-call-log-contact-tab').attr('href', url);
+            $('#detail-call-log-contact-detail-span').prop('hidden', false);
+        }
+
+        $('#detail-date-input').val(call_log_obj.call_date.split(' ')[0]);
+        $('#detail-repeat-activity').prop('checked', call_log_obj.repeat);
+        $('#detail-result-text-area').val(call_log_obj.input_result);
+    })
+
+    $(document).on('click', '#table-timeline .detail-email-button', function () {
+        let email_id = $(this).attr('data-id');
+        let email_obj = JSON.parse($('#opportunity_email_list').text()).filter(function(item) {
+            return item.id === email_id;
+        })[0]
+        $('#detail-email-subject-input').val(email_obj.subject);
+
+        $('#detail-email-sale-code-select-box option').remove();
+        $('#detail-email-sale-code-select-box').append(`<option selected>(${email_obj.opportunity.code})&nbsp;&nbsp;&nbsp;${email_obj.opportunity.title}</option>`);
+
+        $('#detail-email-to-select-box option').remove();
+        for (let i = 0; i < email_obj.email_to_list.length; i++) {
+            $('#detail-email-to-select-box').append(`<option selected>${email_obj.email_to_list[i]}</option>`);
+        }
+
+        $('#detail-email-cc-select-box option').remove();
+        for (let i = 0; i < email_obj.email_cc_list.length; i++) {
+            $('#detail-email-cc-select-box').append(`<option selected>${email_obj.email_cc_list[i]}</option>`);
+        }
+
+        $('#detail-email-content-area').val(email_obj.content);
+    })
+
+    $(document).on('click', '#table-timeline .detail-meeting-button', function () {
+        let meeting_id = $(this).attr('data-id');
+        let meeting_obj = JSON.parse($('#opportunity_meeting_list').text()).filter(function(item) {
+            return item.id === meeting_id;
+        })[0]
+        $('#detail-meeting-subject-input').val(meeting_obj.subject);
+
+        $('#detail-meeting-sale-code-select-box option').remove();
+        $('#detail-meeting-sale-code-select-box').append(`<option selected>(${meeting_obj.opportunity.code})&nbsp;&nbsp;&nbsp;${meeting_obj.opportunity.title}</option>`);
+
+        $('#detail-meeting-address-select-box option').remove();
+        $('#detail-meeting-address-select-box').append(`<option selected>${meeting_obj.meeting_address}</option>`);
+
+        $('#detail-meeting-room-location-input').val(meeting_obj.room_location);
+
+        $('#detail-meeting-employee-attended-select-box option').remove();
+        for (let i = 0; i < meeting_obj.employee_attended_list.length; i++) {
+            let employee_attended_item = meeting_obj.employee_attended_list[i];
+            $('#detail-meeting-employee-attended-select-box').append(`<option selected>${employee_attended_item.fullname}</option>`);
+        }
+        $('#detail-meeting-employee-attended-select-box').prop('disabled', true);
+
+        $('#detail-meeting-customer-member-select-box option').remove();
+        for (let i = 0; i < meeting_obj.customer_member_list.length; i++) {
+            let customer_member_item = meeting_obj.customer_member_list[i];
+            $('#detail-meeting-customer-member-select-box').append(`<option selected>${customer_member_item.fullname}</option>`);
+        }
+        $('#detail-meeting-customer-member-select-box').prop('disabled', true);
+
+        $('#detail-meeting-date-input').val(meeting_obj.meeting_date.split(' ')[0]);
+
+        $('#detail-repeat-activity-2').prop('checked', meeting_obj.repeat);
+
+        $('#detail-meeting-result-text-area').val(meeting_obj.input_result);
+    })
+
 })

@@ -68,7 +68,7 @@
     </ul>
 
     <form
-            id="frm_employee_update" class="needs-validation" data-url="/hr/employee/{{ data.data.doc_id }}"
+            id="frm_employee_update" class="needs-validation" data-url="{% url 'EmployeeDetailAPI' pk=pk %}"
             data-method="PUT"
             data-url-redirect="{% url 'EmployeeList' %}"
             novalidate
@@ -84,13 +84,11 @@
                                 <div class="form-group">
                                     <label class="form-label">{% trans 'Select User' %}</label>
                                     <select
-                                            class="form-select" id="select-box-user-update"
+                                            class="form-select select2" id="select-box-user"
                                             data-url="{% url 'CompanyUserNotMapEmployeeListAPI' %}"
                                             data-method="GET"
                                             name="user"
-                                    >
-                                        <option selected>Select...</option>
-                                    </select>
+                                    ></select>
                                     <span class="form-text text-muted">{% trans 'User link to the employee' %}</span>
                                 </div>
                             </div>
@@ -102,7 +100,7 @@
                                                 type="text" class="form-control"
                                                 placeholder="A"
                                                 name="first_name"
-                                                id="employee-first-name-update"
+                                                id="employee-first-name"
                                                 required
                                         >
                                         <span class="form-text text-muted">{% trans 'Name of Person' %}</span>
@@ -115,7 +113,7 @@
                                                 type="text" placeholder="Nguyen Van"
                                                 class="form-control"
                                                 name="last_name"
-                                                id="employee-last-name-update"
+                                                id="employee-last-name"
                                                 required
                                         >
                                         <span class="form-text text-muted">{% trans 'Surname and Middle Names' %}</span>
@@ -143,7 +141,7 @@
                                         type="email" class="form-control"
                                         placeholder="customer@mtsolution.com.vn"
                                         name="email"
-                                        id="employee-email-update"
+                                        id="employee-email"
                                         required
                                 >
                                 <span class="form-text text-muted">{% trans 'Contact to email address' %}</span>
@@ -157,7 +155,7 @@
                                         type="text" placeholder="(+84) 987-654-321"
                                         class="form-control"
                                         name="phone"
-                                        id="employee-phone-update"
+                                        id="employee-phone"
                                         required
                                 >
                                 <span class="form-text text-muted">{% trans 'Contact to phone number' %}</span>
@@ -170,7 +168,7 @@
                                 <select
                                         class="form-select"
                                         name="group"
-                                        id="select-box-group-employee-update"
+                                        id="select-box-group-employee"
                                         data-url="{% url 'GroupListAPI' %}"
                                         data-method="GET"
                                 >
@@ -187,7 +185,7 @@
                                         class="form-control"
                                         type="text"
                                         name="dob"
-                                        id="employee-dob-update"
+                                        id="employee-dob"
                                 />
                             </div>
                         </div>
@@ -198,7 +196,7 @@
                                         class="form-control"
                                         type="text"
                                         name="date_joined"
-                                        id="employee-date-joined-update"
+                                        id="employee-date-joined"
                                 />
                             </div>
                         </div>
@@ -210,7 +208,7 @@
                                         multiple
                                         data-placeholder="{% trans 'Choose' %}"
                                         name="role"
-                                        id="select-box-role-employee-update"
+                                        id="select-box-role-employee"
                                         data-url="{% url 'RoleListAPI' %}"
                                         data-method="GET"
                                 >
@@ -253,15 +251,7 @@
                 </div>
             </div>
             <div class="tab-pane fade" id="tab-app">
-                <table
-                        id="datable-employee-plan-app-update"
-                        data-url="{% url 'TenantPlanListAPI' %}"
-                        data-method="GET"
-                        style="width: 100%"
-                >
-                    <tbody></tbody>
-                </table>
-                <input type="hidden" id="is-check-app-employee-update" value="0">
+                {% include 'core/hr/employee/extends/plan_apps.html' with add_new_enabled="true" warning_enabled="true" %}
             </div>
             <div class="tab-pane fade" id="tab-permissions">
                 {% include 'core/hr/employee/extends/permissions.html' with add_new_enabled="true" %}
@@ -291,7 +281,9 @@
     <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
 
+    <script src="{% static 'assets/js/core/hr/employee/employee_pk.js' %}"></script>
     <script src="{% static 'assets/js/core/hr/employee/employee_update.js' %}"></script>
 
     <script src="{% static 'assets/js/core/hr/employee/permissions.js' %}"></script>
+    <script src="{% static 'assets/js/core/hr/plan_app.js' %}"></script>
 {% endblock %}

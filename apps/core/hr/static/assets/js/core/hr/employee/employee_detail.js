@@ -1,96 +1,39 @@
-$(document).ready(function () {
+$(function () {
+    function renderDetailData(data) {
+        if (data && data.hasOwnProperty('employee')) {
+            let employeeData = data.employee;
 
-    /***
-     * @param {{first_name:string, last_name:string}} data
-     */
-    // load instance data
-    function loadDetailData() {
-        let ele = $('#employee-detail-page');
-        let url = ele.attr('data-url');
-        let method = ele.attr('data-method');
+            new HandlePermissions().loadData(employeeData.plan_app, employeeData.permission_by_configured || []);
+            new HandlePlanApp().appendPlanAppOfEmployee(employeeData.plan_app);
 
-        let eleUser = $('#select-box-user-detail');
-        let eleFirstName = $('#employee-first-name-detail');
-        let eleLastName = $('#employee-last-name-detail');
-        let eleEmail = $('#employee-email-detail');
-        let elePhone = $('#employee-phone-detail');
-        let eleDepartment = $('#select-box-group-employee-detail');
-        let eleDob = $('#employee-dob-detail');
-        let eleDateJoined = $('#employee-date-joined-detail');
-        let eleRole = $('#select-box-role-employee-detail');
-        $.fn.callAjax(url, method).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (data.hasOwnProperty('employee')) {
-                        new HandlePermissions().loadData(data.employee.plan_app, data.employee.permission_by_configured || []);
-                        if (data.employee.user.hasOwnProperty('full_name')) {
-                            eleUser.val(data.employee.user.full_name)
-                        }
-
-                        eleFirstName.val(data.employee.first_name);
-                        eleLastName.val(data.employee.last_name);
-                        eleEmail.val(data.employee.email);
-                        elePhone.val(data.employee.phone);
-
-                        if (data.employee.group.hasOwnProperty('title')) {
-                            eleDepartment.val(data.employee.group.title)
-                        }
-
-                        eleDob.val(moment(data.employee.dob).format('DD-MM-YYYY'));
-                        eleDateJoined.val(moment(data.employee.date_joined).format('DD-MM-YYYY'));
-
-                        // load data for field Role
-                        if (typeof data.employee.role !== 'undefined' && data.employee.role.length > 0) {
-                            let dataRoleEmp = ""
-                            for (let r = 0; r < data.employee.role.length; r++) {
-                                if (r !== (data.employee.role.length - 1)) {
-                                    dataRoleEmp += data.employee.role[r].title + ", "
-                                } else {
-                                    dataRoleEmp += data.employee.role[r].title
-                                }
-                            }
-                            eleRole.val(dataRoleEmp)
-                        }
-
-                        // load permission table
-                        // call function handle permissions function
-                        PermissionsInit(data.employee.plan_app, data.employee.permission_by_configured)
-                    }
-                } // end if data available
-            } // end response
-        )
+            EmployeeLoadPage.firstNameEle.val(employeeData.first_name);
+            EmployeeLoadPage.lastNameEle.val(employeeData.last_name);
+            EmployeeLoadPage.emailEle.val(employeeData.email);
+            EmployeeLoadPage.phoneEle.val(employeeData.phone);
+            EmployeeLoadPage.isAdminEle.prop('checked', employeeData.is_admin_company);
+            EmployeeLoadPage.isActive.prop('checked', employeeData.is_active);
+            EmployeeLoadPage.loadUserList(employeeData.user);
+            EmployeeLoadPage.loadGroupList(employeeData.group);
+            EmployeeLoadPage.loadRoleList(employeeData.role);
+            EmployeeLoadPage.loadDob(employeeData.dob);
+            EmployeeLoadPage.loadDateJoined(employeeData.date_joined);
+        }
     }
 
-    loadDetailData();
-
-    $('#input-avatar').on('change', function () {
-        let upload_img = $('#upload-area');
-        upload_img.text("");
-        upload_img.css('background-image', "url(" + URL.createObjectURL(this.files[0]) + ")");
+    $(document).ready(function () {
+        $x.fn.showLoadingPage();
+        Promise.all([
+            callAppList(), callDetailData($('#employee-detail-page').attr('data-url'), 'GET')
+        ]).then((results) => {
+            renderAppList(results[0]);
+            return results;
+        }).then((results) => {
+            renderDetailData(results[1]);
+            return results;
+        }).then(
+            (results)=>{
+                $x.fn.hideLoadingPage();
+            }
+        );
     });
-    $('#upload-area').click(function () {
-        $('#input-avatar').click();
-    });
-
-    $('#languages').select2();
-
-
-    jQuery.validator.setDefaults({
-        debug: true,
-        success: "valid"
-    });
-
-    /***
-     * on click set permission button
-     */
-    $('#btn-edit-emp-permission').on('click', function () {
-        $(this).addClass("hidden")
-        $('#button-save-employee-permission').removeClass('hidden');
-        $('#employee-perm-detail input').attr('disabled', false);
-        $('.select_range').prop("disabled", false);
-        $('.add-new-perm').removeClass("hidden");
-        addNewPermission();
-        PermUpdateBtn();
-    })
 });

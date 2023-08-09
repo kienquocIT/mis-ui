@@ -23,179 +23,234 @@
 
 {% endblock %}
 {% block pageAction %}
-    <a
-            class="btn btn-icon btn-rounded bg-dark-hover mr-1"
-            href="{% url 'EmployeeUpdate' pk=pk %}"
-            data-bs-toggle="tooltip"
-            data-bs-placement="top"
-            title="{% trans 'Edit' %}"
-    >
-        <span class="icon"><i class="fa-regular fa-pen-to-square"></i></span>
+    <a href="{% url 'EmployeeUpdate' pk=pk %}">
+        <button class="btn btn-outline-primary">
+            <span>
+                <span>{% trans 'Edit' %}</span>
+                <span class="icon">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                </span>
+            </span>
+        </button>
     </a>
 {% endblock %}
 
 {% block pageContent %}
+    <ul class="nav nav-light nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" data-bs-toggle="tab" href="#tab-info">
+                <span class="nav-link-text">{% trans 'General Information' %}</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#tab-app">
+                <span class="nav-link-text">{% trans 'Plan-Application' %}</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#tab-permissions">
+                <span class="nav-link-text">{% trans 'Permissions' %}</span>
+            </a>
+        </li>
+    </ul>
     <div
-            id="employee-detail-page" class="needs-validation" data-url="/hr/employee/{{ data.data.doc_id }}"
-            data-method="GET" data-url-redirect="{% url 'EmployeeList' %}" data-doc-id="{{ data.data.doc_id }}"
+            id="employee-detail-page" class="needs-validation"
+            data-url="{% url 'EmployeeDetailAPI' pk=pk %}"
+            data-method="GET"
+            data-url-redirect="{% url 'EmployeeList' %}"
+            data-doc-id="{{ data.data.doc_id }}"
     >
         {% csrf_token %}
         <div class="tab-content">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="row">
-                            <div class="col-8">
-                                <div class="row">
+            <div class="tab-pane fade show active" id="tab-info">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="row">
+                                <div class="col-8">
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label class="form-label">{% trans 'User' %}</label>
+                                            <select
+                                                    class="form-select"
+                                                    name="title" id="select-box-user"
+                                                    readonly
+                                                    disabled
+                                            ></select>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div class="form-group">
+                                                <label class="form-label">
+                                                    {% trans 'First Name' %}
+                                                </label>
+                                                <input
+                                                        type="text" class="form-control"
+                                                        name="first_name"
+                                                        id="employee-first-name"
+                                                        readonly
+                                                        disabled
+                                                >
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="form-group">
+                                                <label class="form-label">
+                                                    {% trans 'Last Name' %}
+                                                </label>
+                                                <input
+                                                        type="text" placeholder=""
+                                                        class="form-control"
+                                                        name="last_name"
+                                                        id="employee-last-name"
+                                                        readonly
+                                                        disabled
+                                                >
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="col-4">
                                     <div class="form-group">
-                                        <label class="form-label">{% trans 'User' %}</label>
+                                        <label class="form-label">{% trans 'Avatar' %}</label>
+                                        <div id="upload-area" class="form-control">
+                                            Click here to upload image
+                                        </div>
+                                        <input id="input-avatar" type="file" class="hidden" name="avatar">
+                                        <span class="form-text text-muted">{% trans 'Avatar of emloyee' %}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label class="form-label">{% trans 'Email' %}</label>
                                         <input
-                                                type="text" class="form-control" placeholder=""
-                                                name="title" id="select-box-user-detail"
-                                                style="background-color: white;"
+                                                type="email"
+                                                class="form-select"
+                                                name="email"
+                                                id="employee-email"
                                                 readonly
+                                                disabled
+                                        />
+                                    </div>
+                                </div>
+                                <div class="col-4">
+
+                                    <div class="form-group">
+                                        <label class="form-label">{% trans 'Phone' %}</label>
+                                        <input
+                                                type="text"
+                                                class="form-control"
+                                                name="phone"
+                                                id="employee-phone"
+                                                readonly
+                                                disabled
                                         >
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="col-6">
-                                        <div class="form-group">
-                                            <label class="form-label">
-                                                {% trans 'First Name' %}
-                                            </label>
-                                            <input
-                                                    type="text" class="form-control"
-                                                    placeholder=""
-                                                    name="first_name"
-                                                    id="employee-first-name-detail"
-                                                    style="background-color: white;"
-                                                    readonly
-                                            >
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="form-group">
-                                            <label class="form-label">
-                                                {% trans 'Last Name' %}
-                                            </label>
-                                            <input
-                                                    type="text" placeholder=""
-                                                    class="form-control"
-                                                    name="last_name"
-                                                    id="employee-last-name-detail"
-                                                    style="background-color: white;"
-                                                    readonly
-                                            >
-                                        </div>
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label class="form-label">{% trans 'Department' %}
+                                        </label>
+                                        <select
+                                                class="form-select"
+                                                name="group"
+                                                id="select-box-group-employee"
+                                                readonly
+                                                disabled
+                                        ></select>
                                     </div>
                                 </div>
-
                             </div>
-                            <div class="col-4">
-                                <div class="form-group">
-                                    <label class="form-label">{% trans 'Avatar' %}</label>
-                                    <div id="upload-area" class="form-control">
-                                        Click here to upload image
+                            <div class="row">
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label class="form-label">{% trans 'Date of Birthday' %}</label>
+                                        <input
+                                                class="form-control"
+                                                type="text"
+                                                id="employee-dob"
+                                                readonly
+                                                disabled
+                                        />
                                     </div>
-                                    <input id="input-avatar" type="file" class="hidden" name="avatar">
-                                    <span class="form-text text-muted">{% trans 'Avatar of emloyee' %}</span>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label class="form-label">{% trans 'Date Joined' %}</label>
+                                        <input
+                                                class="form-control"
+                                                type="text"
+                                                id="employee-date-joined"
+                                                readonly
+                                                disabled
+                                        />
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label class="form-label">{% trans 'Role' %}</label>
+                                        <select
+                                                class="form-select"
+                                                name="role"
+                                                id="select-box-role-employee"
+                                                readonly
+                                                disabled
+                                                multiple
+                                        ></select>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-4">
-                                <div class="form-group">
-                                    <label class="form-label">{% trans 'Email' %}</label>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <div class="form-check form-switch">
                                     <input
-                                            type="email"
-                                            class="form-control"
-                                            placeholder=""
-                                            name="email"
-                                            id="employee-email-detail"
-                                            style="background-color: white;"
+                                            type="checkbox"
+                                            class="form-check-input"
+                                            name="is_admin_company"
+                                            id="idx_is_admin_company"
+                                            disabled
                                             readonly
                                     >
-                                </div>
-                            </div>
-                            <div class="col-4">
-
-                                <div class="form-group">
-                                    <label class="form-label">{% trans 'Phone' %}</label>
-                                    <input
-                                            type="text"
-                                            placeholder=""
-                                            class="form-control"
-                                            name="phone"
-                                            id="employee-phone-detail"
-                                            style="background-color: white;"
-                                            readonly
-                                    >
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <div class="form-group">
-                                    <label class="form-label">{% trans 'Department' %}
+                                    <label class="form-check-label" for="idx_is_admin_company">
+                                        {% trans 'Is admin' %}
                                     </label>
-                                    <input
-                                            type="text"
-                                            placeholder=""
-                                            class="form-control"
-                                            name="group"
-                                            id="select-box-group-employee-detail"
-                                            style="background-color: white;"
-                                            readonly
-                                    >
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-4">
-                                <div class="form-group">
-                                    <label class="form-label">{% trans 'Date of Birthday' %}</label>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <div class="form-check form-switch">
                                     <input
-                                            class="form-control"
-                                            type="text"
-                                            id="employee-dob-detail"
-                                            style="background-color: white;"
-                                            readonly
-                                    />
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <div class="form-group">
-                                    <label class="form-label">{% trans 'Date Joined' %}</label>
-                                    <input
-                                            class="form-control"
-                                            type="text"
-                                            id="employee-date-joined-detail"
-                                            style="background-color: white;"
-                                            readonly
-                                    />
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <div class="form-group">
-                                    <label class="form-label">{% trans 'Role' %}</label>
-                                    <input
-                                            type="text"
-                                            placeholder=""
-                                            class="form-control"
-                                            name="role"
-                                            id="select-box-role-employee-detail"
-                                            style="background-color: white;"
+                                            type="checkbox"
+                                            class="form-check-input"
+                                            name="is_active"
+                                            id="is_active"
+                                            disabled
                                             readonly
                                     >
+                                    <label class="form-check-label" for="is_active">
+                                        {% trans 'Active' %}
+                                    </label>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="separator separator-light"></div>
-                <div class="row">
-                    <div class="col-12">
-                        {% include 'core/hr/employee/extends/permissions.html' with add_new_enabled="false" %}
-                    </div>
-                </div>
+            </div>
+            <div class="tab-pane fade" id="tab-app">
+                {% include 'core/hr/employee/extends/plan_apps.html' with add_new_enabled="false" %}
+            </div>
+            <div class="tab-pane fade" id="tab-permissions">
+                {% include 'core/hr/employee/extends/permissions.html' with add_new_enabled="false" %}
             </div>
         </div>
     </div>
@@ -245,8 +300,9 @@
     <script src="{% static 'assets/js/additional-methods.min.js' %}"></script>
 
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
-    <script src="{% static 'assets/js/core/hr/employee/employee_permission.js' %}"></script>
+    <script src="{% static 'assets/js/core/hr/employee/employee_pk.js' %}"></script>
     <script src="{% static 'assets/js/core/hr/employee/employee_detail.js' %}"></script>
 
     <script src="{% static 'assets/js/core/hr/employee/permissions.js' %}"></script>
+    <script src="{% static 'assets/js/core/hr/plan_app.js' %}"></script>
 {% endblock %}

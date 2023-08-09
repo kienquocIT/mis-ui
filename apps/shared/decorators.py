@@ -22,9 +22,26 @@ __all__ = [
     'mask_view',
 ]
 
+HEADERS_KEY_CACHED_ENABLE = 'HTTP_ENABLEXCACHECONTROL'
+
 
 class ArgumentDecorator:
     """argument decorator"""
+
+    @classmethod
+    def get_headers_cached_enable(cls, request):
+        if (
+                request.method == 'GET' and
+                hasattr(request, 'META') and
+                isinstance(request.META, dict) and
+                request.META.get(HEADERS_KEY_CACHED_ENABLE, None) == 'true'
+        ):
+            print('cache enabled!')
+            return {
+                'Cache-Control': 'public, max-age=60',  # 1 minutes
+                'Expires': 'max-age=60',
+            }
+        return {}
 
     def __init__(self, login_require, auth_require, **kwargs):
         self.login_require = login_require
@@ -227,7 +244,9 @@ def mask_view(**parent_kwargs):
                                 {
                                     'data': data,
                                     'status': http_status
-                                }, status=http_status
+                                },
+                                headers=cls_check.get_headers_cached_enable(request=request),
+                                status=http_status
                             )
                 elif cls_check.template_path:
                     if request.user and not isinstance(request.user, AnonymousUser) and request.user.is_authenticated:

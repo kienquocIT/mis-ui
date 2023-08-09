@@ -15,15 +15,11 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-flush-primary flush-soft-hover"
-            type="submit" form="form-create-purchase-quotation" data-bs-toggle="tooltip" data-bs-placement="top" title="Save"
-            data-bs-original-title="Save">
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="save"></i>
-            </span>
-            <span class="font-3 ml-1">
-                {% trans 'Save' %}
+    <button class="btn btn-outline-primary" type="submit" form="form-create-purchase-quotation">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
             </span>
         </span>
     </button>
@@ -84,11 +80,11 @@
                     <div class="row form-group">
                         <label class="col-3 col-form-label required">{% trans "Lead time" %}</label>
                         <div class="col-2">
-                            <input type="number" class="form-control" id="lead-time-from">
+                            <input type="number" min="1" class="form-control" id="lead-time-from">
                         </div>
                         <label class="col-1 col-form-label text-center">{% trans "to" %}</label>
                         <div class="col-2">
-                            <input type="number" class="form-control" id="lead-time-to">
+                            <input type="number" min="1" class="form-control" id="lead-time-to">
                         </div>
                         <div class="col-2">
                             <select class="form-select" id="lead-time-type">

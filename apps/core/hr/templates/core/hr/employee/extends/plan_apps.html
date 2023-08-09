@@ -23,10 +23,17 @@
     </thead>
     <tbody></tbody>
     <tfoot>
-    {% if add_new_enabled == 'true' %}
+    {% if warning_enabled == 'true' %}
         <tr>
             <td colspan="3">
                 <small class="text-warning">{% trans 'Notes' %}: {% trans "Data of this tab will be used on 'Permission` tab after saving." %}</small>
+            </td>
+        </tr>
+    {% endif %}
+    {% if warning_license == 'true' %}
+    <tr>
+            <td colspan="3">
+                <small class="text-warning">{% trans 'Notes' %}: {% trans "The used license will be total member multiplication with role used license." %}</small>
             </td>
         </tr>
     {% endif %}

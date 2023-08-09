@@ -190,6 +190,9 @@ $.fn.extend({
                     // if (isNotify === true) $.fn.notifyB({'description': resp.data.errors}, 'failure');
                     WindowControl.showForbidden();
                     return {};
+                case 404:
+                    WindowControl.showNotFound();
+                    return {};
                 case 500:
                     return {};
                 default:

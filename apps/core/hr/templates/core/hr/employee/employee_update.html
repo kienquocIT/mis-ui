@@ -251,7 +251,7 @@
                 </div>
             </div>
             <div class="tab-pane fade" id="tab-app">
-                {% include 'core/hr/employee/extends/plan_apps.html' with add_new_enabled="true" %}
+                {% include 'core/hr/employee/extends/plan_apps.html' with add_new_enabled="true" warning_enabled="true" %}
             </div>
             <div class="tab-pane fade" id="tab-permissions">
                 {% include 'core/hr/employee/extends/permissions.html' with add_new_enabled="true" %}
@@ -285,5 +285,5 @@
     <script src="{% static 'assets/js/core/hr/employee/employee_update.js' %}"></script>
 
     <script src="{% static 'assets/js/core/hr/employee/permissions.js' %}"></script>
-    <script src="{% static 'assets/js/core/hr/employee/plan_app.js' %}"></script>
+    <script src="{% static 'assets/js/core/hr/plan_app.js' %}"></script>
 {% endblock %}

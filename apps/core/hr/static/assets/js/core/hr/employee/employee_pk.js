@@ -1,21 +1,3 @@
-function callAppList() {
-    let tableApply = $('#dtb-plan-app');
-    let frm = new SetupFormSubmit(tableApply);
-    return $.fn.callAjax2({
-        'url': frm.dataUrl,
-        'method': frm.dataMethod,
-        'isDropdown': true,
-    }).then((resp) => {
-        return $.fn.switcherResp(resp);
-    });
-}
-
-function renderAppList(data) {
-    if (data && data.hasOwnProperty('tenant_plan_list') && Array.isArray(data.tenant_plan_list)) {
-        new HandlePlanApp().loadData(data.tenant_plan_list);
-    }
-}
-
 function callDetailData(url, method) {
     return $.fn.callAjax2({
         url: url,

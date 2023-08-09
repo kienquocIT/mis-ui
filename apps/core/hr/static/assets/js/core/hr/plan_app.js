@@ -1,5 +1,22 @@
 let dtb = $('#dtb-plan-app');
 
+function callAppList() {
+    let frm = new SetupFormSubmit(dtb);
+    return $.fn.callAjax2({
+        'url': frm.dataUrl,
+        'method': frm.dataMethod,
+        'isDropdown': true,
+    }).then((resp) => {
+        return $.fn.switcherResp(resp);
+    });
+}
+
+function renderAppList(data) {
+    if (data && data.hasOwnProperty('tenant_plan_list') && Array.isArray(data.tenant_plan_list)) {
+        new HandlePlanApp().loadData(data.tenant_plan_list);
+    }
+}
+
 class HandlePlanApp {
     static convertToIDPlan(planMapped) {
         let result = {};
@@ -75,7 +92,7 @@ class HandlePlanApp {
                     render: function (data, type, row, meta) {
                         let license_quantity = row?.['license_quantity'];
                         let license_used = row?.['license_used'];
-                        if (clsThis.eleUserSelected.val()){
+                        if (clsThis.eleUserSelected.val()) {
                             license_used += (row?.['mathAdd'] || 0);
                         }
                         return `
@@ -145,7 +162,7 @@ class HandlePlanApp {
                     if (baseAppData && Array.isArray(baseAppData) && appData && typeof appData === 'object') {
                         baseAppData.map((item2) => {
                             let mappedApp2 = appData[item2.id];
-                            if (!!mappedApp2){
+                            if (!!mappedApp2) {
                                 item2['checked'] = true;
                                 item['hasCheckInit'] = true;
                             } else {

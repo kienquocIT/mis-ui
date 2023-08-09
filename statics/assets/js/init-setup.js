@@ -985,6 +985,7 @@ class ListeningEventController {
 
                     // show loading tbody table
                     WindowControl.showLoadingWaitResponse($(tbl).find('tbody'));
+                    // $x.fn.showLoadingPage();
                 });
                 $(tbl).on('draw.dt', () => {
                     // hide loading full page
@@ -992,6 +993,7 @@ class ListeningEventController {
 
                     // hide loading tbody table
                     WindowControl.hideLoadingWaitResponse($(tbl).find('tbody'));
+                    // $x.fn.hideLoadingPage();
                 });
             }
         });

@@ -1162,7 +1162,11 @@ $(document).ready(function () {
             if (item.sale_information.tax_code) {
                 tax_code_id = item.sale_information.tax_code.id;
             }
-            ele.append(`<option data-uom-group-id="` + item.general_information.uom_group.id + `" data-type="` + item.general_information.product_type.title + `" data-tax-id="` + tax_code_id + `" value="` + item.id + `">` + item.title + `</option>`);
+            let uom_id = '';
+            if (item.sale_information.default_uom) {
+                uom_id = item.sale_information.default_uom.id;
+            }
+            ele.append(`<option data-uom-id="` + uom_id + `" data-uom-group-id="` + item.general_information.uom_group.id + `" data-type="` + item.general_information.product_type.title + `" data-tax-id="` + tax_code_id + `" value="` + item.id + `">` + item.title + `</option>`);
         })
     }
 
@@ -1175,118 +1179,77 @@ $(document).ready(function () {
         })
     }
 
-    function loadProductUomList(row_id, uom_group_id) {
+    function loadProductUomList(row_id, uom_id, uom_group_id) {
         let ele = $('#' + row_id + ' .product-uom-select-box');
         ele.html('');
         ele.append(`<option></option>`);
         unit_of_measure.map(function (item) {
             if (item.group.id === uom_group_id) {
-                ele.append(`<option value="` + item.id + `">` + item.title + `</option>`);
+                if (uom_id === item.id) {
+                    ele.append(`<option selected value="` + item.id + `">` + item.title + `</option>`);
+                }
+                else {
+                    ele.append(`<option value="` + item.id + `">` + item.title + `</option>`);
+                }
             }
         })
     }
 
-    function loadUnitPriceList(row_id, product_item_id) {
-        let ele = $('#' + row_id + ' .dropdown-menu');
-        ele.html('');
-        $.fn.callAjax($('#tab_line_detail_datatable').attr('data-url-unit-price-list').replace('/0', '/' + product_item_id), ele.attr('data-method')).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product')) {
-                    let primary_currency = 'VND';
-                    resp.data.product.sale_information.price_list.map(function (item) {
-                        if (item.is_primary === true) {
-                            primary_currency = item.currency_using;
-                            ele.append(`<a data-id="` + item.id + `" data-value="` + item.price + `" class="dropdown-item"><div class="row">
-                                        <div class="col-7 text-left"><span>` + item.title + `:</span></div>
-                                        <div class="col-5 text-right"><span class="mask-money" data-init-money="` + item.price + `"></span></div></div></a>`)
-                            $.fn.initMaskMoney2();
-                            $(`a[data-id=` + item.id + `]`).on('click', function () {
-                                let tr = $(this).closest('tr');
-                                let input_show = tr.find('.product-unit-price-select-box');
-                                let subtotal_show = tr.find('.product-subtotal-price');
-                                let subtotal_after_tax_show = tr.find('.product-subtotal-price-after-tax');
-                                let quantity = tr.find('.product-quantity');
-                                let tax = tr.find('.product-tax-select-box option:selected');
-                                input_show.attr('value', $(this).attr('data-value'));
-                                $.fn.initMaskMoney2();
-                                if (input_show.attr('value') && quantity.val() && tax.attr('data-rate')) {
-                                    subtotal_show.attr('value', parseFloat(input_show.attr('value')) * parseInt(quantity.val()));
-                                    let tax_value = parseFloat(tax.attr('data-rate')) / 100;
-                                    subtotal_after_tax_show.attr('value', parseFloat(subtotal_show.attr('value')) + parseFloat(subtotal_show.attr('value')) * parseFloat(tax_value));
-                                }
-                                // calculate_price($('#tab_line_detail tbody'), $('#pretax-value'), $('#taxes-value'), $('#total-value'));
-                            })
-                        }
-                    })
-                    ele.append(`<div class="dropdown-divider"></div>`)
-                    ele.append(`<a data-id="unit-price-a-` + product_item_id + `" data-value=""><div class="row">
-                                <div class="col-7 text-left col-form-label"><span style="color: #007D88">Enter price in <b>` + primary_currency + `</b>:</span></div>
-                                <div class="col-5 text-right"><input type="text" id="unit-price-input-` + product_item_id + `" class="form-control mask-money" data-return-type="number"></div>
-                                </div></a>`)
-
-                    $.fn.initMaskMoney2();
-
-                    $('#' + row_id + ' #unit-price-input-' + product_item_id).on('change', function () {
-                        let tr = $(this).closest('tr');
-                        let input_show = tr.find('.product-unit-price-select-box');
-                        let quantity = tr.find('.product-quantity');
-                        let tax = tr.find('.product-tax-select-box option:selected');
-                        let subtotal_show = tr.find('.product-subtotal-price');
-                        let subtotal_after_tax_show = tr.find('.product-subtotal-price-after-tax');
-                        input_show.attr('value', $(this).attr('value'));
-                        $(`a[data-id="unit-price-a-` + product_item_id + `"]`).attr('data-value', $(this).attr('value'));
-                        $.fn.initMaskMoney2();
-                        if ($(this).attr('value') && input_show.attr('value') && quantity.val() && tax.attr('data-rate')) {
-                            subtotal_show.attr('value', parseFloat(input_show.attr('value')) * parseInt(quantity.val()));
-                            let tax_value = parseFloat(tax.attr('data-rate')) / 100;
-                            subtotal_after_tax_show.attr('value',parseFloat(subtotal_show.attr('value')) + parseFloat(subtotal_show.attr('value')) * parseFloat(tax_value));
-                        }
-                        else {
-                            input_show.attr('value', '');
-                            subtotal_show.attr('value', '');
-                            subtotal_after_tax_show.attr('value', '');
-                        }
-                        // calculate_price($('#tab_line_detail tbody'), $('#pretax-value'), $('#taxes-value'), $('#total-value'));
-                    })
-
-                    $('#' + row_id + ' .product-quantity').on('change', function () {
-                        let tr = $(this).closest('tr');
-                        let input_show = tr.find('.product-unit-price-select-box');
-                        let tax = tr.find('.product-tax-select-box option:selected');
-                        let subtotal_show = tr.find('.product-subtotal-price');
-                        let subtotal_after_tax_show = tr.find('.product-subtotal-price-after-tax');
-                        $.fn.initMaskMoney2();
-                        if (input_show.attr('value') && $(this).attr('value') && tax.attr('data-rate')) {
-                            subtotal_show.attr('value', parseFloat(input_show.attr('value')) * parseInt($(this).val()));
-                            let tax_value = parseFloat(tax.attr('data-rate')) / 100;
-                            subtotal_after_tax_show.attr('value', parseFloat(subtotal_show.attr('value')) + parseFloat(subtotal_show.attr('value')) * parseFloat(tax_value));
-                        }
-                        else {
-                            input_show.attr('value', '');
-                            subtotal_show.attr('value', '');
-                            subtotal_after_tax_show.attr('value', '');
-                        }
-                        // calculate_price($('#tab_line_detail tbody'), $('#pretax-value'), $('#taxes-value'), $('#total-value'));
-                    })
-
-                    $('#' + row_id + ' .product-tax-select-box').on('change', function () {
-                        let tr = $(this).closest('tr');
-                        let tax = $(this).find('option:selected');
-                        let quantity = tr.find('.product-quantity');
-                        let subtotal_show = tr.find('.product-subtotal-price');
-                        let subtotal_after_tax_show = tr.find('.product-subtotal-price-after-tax');
-                        $.fn.initMaskMoney2();
-                        if (quantity.val() && tax.attr('data-rate')) {
-                            let tax_value = parseFloat(tax.attr('data-rate')) / 100;
-                            subtotal_after_tax_show.attr('value', parseFloat(subtotal_show.attr('value')) + parseFloat(subtotal_show.attr('value')) * parseFloat(tax_value));
-                        }
-                        // calculate_price($('#tab_line_detail tbody'), $('#pretax-value'), $('#taxes-value'), $('#total-value'));
-                    })
-                }
+    function changeUnitPrice(row_id, product_item_id) {
+        $('#' + row_id + ' .product-unit-price-select-box').on('change', function () {
+            let tr = $(this).closest('tr');
+            let input_show = tr.find('.product-unit-price-select-box');
+            let quantity = tr.find('.product-quantity');
+            let tax = tr.find('.product-tax-select-box option:selected');
+            let subtotal_show = tr.find('.product-subtotal-price');
+            let subtotal_after_tax_show = tr.find('.product-subtotal-price-after-tax');
+            input_show.attr('value', $(this).attr('value'));
+            $(`a[data-id="unit-price-a-` + product_item_id + `"]`).attr('data-value', $(this).attr('value'));
+            $.fn.initMaskMoney2();
+            if ($(this).attr('value') && input_show.attr('value') && quantity.val() && tax.attr('data-rate')) {
+                subtotal_show.attr('value', parseFloat(input_show.attr('value')) * parseInt(quantity.val()));
+                let tax_value = parseFloat(tax.attr('data-rate')) / 100;
+                subtotal_after_tax_show.attr('value',parseFloat(subtotal_show.attr('value')) + parseFloat(subtotal_show.attr('value')) * parseFloat(tax_value));
             }
-        }, (errs) => {
-        },)
+            else {
+                input_show.attr('value', '');
+                subtotal_show.attr('value', '');
+                subtotal_after_tax_show.attr('value', '');
+            }
+            // calculate_price($('#tab_line_detail tbody'), $('#pretax-value'), $('#taxes-value'), $('#total-value'));
+        })
+        $('#' + row_id + ' .product-quantity').on('change', function () {
+            let tr = $(this).closest('tr');
+            let input_show = tr.find('.product-unit-price-select-box');
+            let tax = tr.find('.product-tax-select-box option:selected');
+            let subtotal_show = tr.find('.product-subtotal-price');
+            let subtotal_after_tax_show = tr.find('.product-subtotal-price-after-tax');
+            $.fn.initMaskMoney2();
+            if (input_show.attr('value') && $(this).attr('value') && tax.attr('data-rate')) {
+                subtotal_show.attr('value', parseFloat(input_show.attr('value')) * parseInt($(this).val()));
+                let tax_value = parseFloat(tax.attr('data-rate')) / 100;
+                subtotal_after_tax_show.attr('value', parseFloat(subtotal_show.attr('value')) + parseFloat(subtotal_show.attr('value')) * parseFloat(tax_value));
+            }
+            else {
+                input_show.attr('value', '');
+                subtotal_show.attr('value', '');
+                subtotal_after_tax_show.attr('value', '');
+            }
+            // calculate_price($('#tab_line_detail tbody'), $('#pretax-value'), $('#taxes-value'), $('#total-value'));
+        })
+        $('#' + row_id + ' .product-tax-select-box').on('change', function () {
+            let tr = $(this).closest('tr');
+            let tax = $(this).find('option:selected');
+            let quantity = tr.find('.product-quantity');
+            let subtotal_show = tr.find('.product-subtotal-price');
+            let subtotal_after_tax_show = tr.find('.product-subtotal-price-after-tax');
+            $.fn.initMaskMoney2();
+            if (quantity.val() && tax.attr('data-rate')) {
+                let tax_value = parseFloat(tax.attr('data-rate')) / 100;
+                subtotal_after_tax_show.attr('value', parseFloat(subtotal_show.attr('value')) + parseFloat(subtotal_show.attr('value')) * parseFloat(tax_value));
+            }
+            // calculate_price($('#tab_line_detail tbody'), $('#pretax-value'), $('#taxes-value'), $('#total-value'));
+        })
     }
 
     let AP_db = $('#advance_payment_list_datatable');
@@ -1308,63 +1271,69 @@ $(document).ready(function () {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         if (resp.data['advance_payment_list']) {
-                            // if sale_code_id is so_id
-                            let so_filter = sale_order_list.filter(function(item) {
-                                return item.id === sale_code_id[0];
-                            });
-                            // if sale_code_id is quo_id
-                            let quo_filter = quotation_list.filter(function(item) {
-                                return item.id === sale_code_id[0];
-                            });
-                            // find quotation mapped with this sale_order_id (if sale_order_id is opp_id)
-                            let opp_filter = opportunity_list.filter(function(item) {
-                                return item.id === sale_code_id[0];
-                            });
+                            let all = [];
+                            for (let i = 0; i < sale_code_id.length; i++) {
+                                // if sale_code_id is so_id
+                                let so_filter = sale_order_list.filter(function (item) {
+                                    return item.id === sale_code_id[i];
+                                });
+                                // if sale_code_id is quo_id
+                                let quo_filter = quotation_list.filter(function (item) {
+                                    return item.id === sale_code_id[i];
+                                });
+                                // find quotation mapped with this sale_order_id (if sale_order_id is opp_id)
+                                let opp_filter = opportunity_list.filter(function (item) {
+                                    return item.id === sale_code_id[i];
+                                });
 
-                            let sale_order_mapped = null;
-                            let quotation_mapped = null;
-                            let opportunity_mapped = null;
-                            if (opp_filter.length > 0) {
-                                sale_order_mapped = opp_filter[0].sale_order_id;
-                                quotation_mapped = opp_filter[0].quotation_id;
-                                opportunity_mapped = opp_filter[0].id;
-                            }
-                            else if (quo_filter.length > 0) {
-                                quotation_mapped = quo_filter[0].id;
-                                if (Object.keys(quo_filter[0].opportunity).length !== 0) {
-                                    opportunity_mapped = quo_filter[0].opportunity.id;
+                                let sale_order_mapped = null;
+                                let quotation_mapped = null;
+                                let opportunity_mapped = null;
+                                if (opp_filter.length > 0) {
+                                    sale_order_mapped = opp_filter[0].sale_order_id;
+                                    quotation_mapped = opp_filter[0].quotation_id;
+                                    opportunity_mapped = opp_filter[0].id;
+                                } else if (quo_filter.length > 0) {
+                                    quotation_mapped = quo_filter[0].id;
+                                    if (Object.keys(quo_filter[0].opportunity).length !== 0) {
+                                        opportunity_mapped = quo_filter[0].opportunity.id;
+                                    }
+                                } else if (so_filter.length > 0) {
+                                    sale_order_mapped = so_filter[0].id;
+                                    if (Object.keys(so_filter[0].quotation).length !== 0) {
+                                        quotation_mapped = so_filter[0].quotation.id;
+                                    }
+                                    if (Object.keys(so_filter[0].opportunity).length !== 0) {
+                                        opportunity_mapped = so_filter[0].opportunity.id;
+                                    }
                                 }
-                            }
-                            else if (so_filter.length > 0) {
-                                sale_order_mapped = so_filter[0].id;
-                                if (Object.keys(so_filter[0].quotation).length !== 0) {
-                                    quotation_mapped = so_filter[0].quotation.id;
-                                }
-                                if (Object.keys(so_filter[0].opportunity).length !== 0) {
-                                    opportunity_mapped = so_filter[0].opportunity.id;
-                                }
-                            }
 
-                            // find ap mapped with this sale_order_mapped
-                            let sale_order_mapped_ap = resp.data['advance_payment_list'].filter(function(item) {
-                                if (item.sale_order_mapped) {
-                                    return item.sale_order_mapped.id === sale_order_mapped;
-                                }
-                            });
-                            // find ap mapped with this quotation_mapped
-                            let quotation_mapped_ap = resp.data['advance_payment_list'].filter(function(item) {
-                                if (item.quotation_mapped) {
-                                    return item.quotation_mapped.id === quotation_mapped;
-                                }
-                            });
-                            // find ap mapped with this opportunity_mapped
-                            let opportunity_mapped_ap = resp.data['advance_payment_list'].filter(function(item) {
-                                if (item.opportunity_mapped) {
-                                    return item.opportunity_mapped.id === opportunity_mapped;
-                                }
-                            });
+                                console.log(sale_order_mapped)
+                                console.log(quotation_mapped)
+                                console.log(opportunity_mapped)
 
-                            return sale_order_mapped_ap.concat(quotation_mapped_ap).concat(opportunity_mapped_ap)
+                                // find ap mapped with this sale_order_mapped
+                                let sale_order_mapped_ap = resp.data['advance_payment_list'].filter(function (item) {
+                                    if (item.sale_order_mapped) {
+                                        return item.sale_order_mapped.id === sale_order_mapped;
+                                    }
+                                });
+                                // find ap mapped with this quotation_mapped
+                                let quotation_mapped_ap = resp.data['advance_payment_list'].filter(function (item) {
+                                    if (item.quotation_mapped) {
+                                        return item.quotation_mapped.id === quotation_mapped;
+                                    }
+                                });
+                                // find ap mapped with this opportunity_mapped
+                                let opportunity_mapped_ap = resp.data['advance_payment_list'].filter(function (item) {
+                                    if (item.opportunity_mapped) {
+                                        return item.opportunity_mapped.id === opportunity_mapped;
+                                    }
+                                });
+
+                                all = all.concat(sale_order_mapped_ap).concat(quotation_mapped_ap).concat(opportunity_mapped_ap)
+                            }
+                            return all
                         }
                         else {
                             return [];
@@ -1774,12 +1743,12 @@ $(document).ready(function () {
             $('#sale-code-select-box option:selected').each(function (index, element) {
                 if ($(this).attr('data-type') !== '2') {
                     $('#tab_plan_datatable tbody').append(`<tr>
-                            <td colspan="1" data-type="` + $(this).attr('data-type') + `" data-sale-code-id="` + $(this).attr('data-sale-code-id') + `" data-sale-code="` + $(this).attr('data-sale-code') + `">
-                            <span class="badge badge-primary w-100">` + $(this).attr('data-sale-code') + `</span>
-                            <a class="btn-load-detail-multi" data-detail-view="hide" href="#"><i class="bi bi-caret-down-square"></i></a>
-                            </td>
-                            <td colspan="7"></td>
-                        </tr>`)
+                        <td colspan="1" data-type="` + $(this).attr('data-type') + `" data-sale-code-id="` + $(this).attr('data-sale-code-id') + `" data-sale-code="` + $(this).attr('data-sale-code') + `">
+                        <span class="badge badge-primary w-100">` + $(this).attr('data-sale-code') + `</span>
+                        <a class="btn-load-detail-multi" data-detail-view="hide" href="#"><i class="bi bi-caret-down-square"></i></a>
+                        </td>
+                        <td colspan="7"></td>
+                    </tr>`)
                 }
             })
 
@@ -1960,13 +1929,8 @@ $(document).ready(function () {
                 <td><select class="form-select product-select-box" data-method="GET"><option selected></option></select></td>
                 <td><input class="form-control product-type" style="color: black; background: none" disabled></td>
                 <td><select class="form-select product-uom-select-box" data-method="GET"><option selected></option></select></td>
-                <td><input type="number" min="1" onchange="this.value=checkInputQuantity(this.value)" class="form-control product-quantity" value="1"></td>
-                <td><div class="input-group dropdown" aria-expanded="false" data-bs-toggle="dropdown">
-                        <span class="input-affix-wrapper">
-                            <input disabled data-return-type="number" type="text" class="form-control product-unit-price-select-box mask-money" style="color: black; background: none" placeholder="Select a price or enter">
-                        </span>
-                    </div>
-                    <div style="min-width: 25%" class="dropdown-menu" data-method="GET"></div></td>
+                <td><input type="number" min="1" class="form-control product-quantity" value="1"></td>
+                <td><input data-return-type="number" type="text" class="form-control product-unit-price-select-box mask-money"></td>
                 <td><select class="form-select product-tax-select-box" data-method="GET"><option selected></option></select></td>
                 <td><input type="text" data-return-type="number" class="form-control product-subtotal-price mask-money" style="color: black; background: none" disabled></td>
                 <td><input type="text" data-return-type="number" class="form-control product-subtotal-price-after-tax mask-money" style="color: black; background: none" disabled></td>
@@ -2112,8 +2076,8 @@ $(document).ready(function () {
                 // calculate_price($('#tab_line_detail tbody'), $('#pretax-value'), $('#taxes-value'), $('#total-value'));
 
                 if ($(this).find('option:selected').val() !== '') {
-                    loadProductUomList(parent_tr.attr('id'), $(this).find('option:selected').attr('data-uom-group-id'), $(this).find('option:selected').attr('data-uom-id'));
-                    loadUnitPriceList(parent_tr.attr('id'), $(this).find('option:selected').val());
+                    loadProductUomList(parent_tr.attr('id'), $(this).find('option:selected').attr('data-uom-id'), $(this).find('option:selected').attr('data-uom-group-id'));
+                    changeUnitPrice(parent_tr.attr('id'), $(this).find('option:selected').val());
                 }
                 else {
                     $('#' + parent_tr.attr('id') + ' .product-uom-select-box').empty();

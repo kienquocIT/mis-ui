@@ -41,7 +41,12 @@ class PermCheck:
     def valid(self, request, view_kwargs: dict = None) -> (bool, tuple):
         real_url = self.parse_url(view_kwargs=view_kwargs if isinstance(view_kwargs, dict) else {})
         if real_url:
-            cls_api = ServerAPI(request=request, user=request.user, url=real_url, is_check_perm=True)
+            cls_api = ServerAPI(
+                request=request,
+                user=request.user,
+                url=real_url,
+                is_check_perm=True,
+            )
             if self.method == 'GET':
                 resp = cls_api.get(data=self.data)
             elif self.method == 'POST':
@@ -600,6 +605,11 @@ class ServerAPI:
         self.request = kwargs.get('request', None)
         self.is_check_perm = kwargs.get('is_check_perm', False)
 
+        if self.request:
+            self.query_params = getattr(self.request, 'query_params', {})
+        else:
+            self.query_params = {}
+
     @property
     def setup_header_dropdown(self):
         if self.request:
@@ -617,11 +627,11 @@ class ServerAPI:
             if page and isinstance(page, int):
                 ctx['page'] = page
 
-            page_size = query_params.get('pageSize', None)
+            page_size = self.query_params.get('pageSize', None)
             if page_size and isinstance(page_size, int):
                 ctx['pageSize'] = page_size
 
-            page_search = query_params.get('search', None)
+            page_search = self.query_params.get('search', None)
             if page_search:
                 ctx['search'] = page_search
         return ctx

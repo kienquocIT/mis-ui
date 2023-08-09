@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static i18n %}
-{% block title %}{% trans 'Opportunity list' %}{% endblock %}
+{% block title %}{% trans 'Call Log list' %}{% endblock %}
 {% block cssHeader %}
     <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}"/>
 {% endblock %}
@@ -71,7 +71,7 @@
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
-                <div class="modal-body" style="overflow: auto; height: 58vh">
+                <div class="modal-body" style="overflow: auto; height: 62vh">
                     <form data-url="{% url 'OpportunityCallLogListAPI' %}"
                           data-url-redirect="{% url 'OpportunityCallLogList' %}"
                           data-method="POST"

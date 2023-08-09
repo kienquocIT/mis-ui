@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% load static %}
+
+{% block pageAction %}
+    <a href="{% url 'RoleUpdateView' pk=pk %}">
+        <button class="btn btn-outline-primary">
+            <span>
+                <span>{% trans 'Edit' %}</span>
+                <span class="icon">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                </span>
+            </span>
+        </button>
+    </a>
+{% endblock %}
+
+{% block pageContent %}
+    <div class="row">
+        <div class="col-12 col-xs-6 col-md-4 form-group">
+            <label class="form-label required" for="title">{% trans 'Role name' %}</label>
+            <input class="form-control" name="title" id="title" disabled required>
+        </div>
+        <div class="col-12 col-xs-6 col-md-4 form-group">
+            <label class="form-label required" for="abbreviation">{% trans 'Abbreviation' %}</label>
+            <input class="form-control" name="abbreviation" id="abbreviation" disabled required>
+        </div>
+        <div class="col-12 col-xs-6 col-md-4 form-group">
+            <label class="form-label" for="selectMembers">{% trans 'Member' %}</label>
+            <select
+                    id="selectMembers"
+                    data-url="{% url 'EmployeeListAPI' %}"
+                    data-method="GET"
+                    multiple
+                    disabled
+            ></select>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            {% include 'core/hr/employee/extends/plan_apps.html' %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block jsFooter %}
+    <script>
+        let urlDetail = "{% url 'RoleDetailAPI' pk=pk %}";
+    </script>
+    <script src="{% static 'assets/js/core/hr/role/role_detail.js' %}"></script>
+    <script src="{% static 'assets/js/core/hr/plan_app.js' %}"></script>
+    <script src="{% static 'assets/js/core/hr/role/roles_common.js' %}"></script>
+{% endblock %}

@@ -985,6 +985,7 @@ class ListeningEventController {
 
                     // show loading tbody table
                     WindowControl.showLoadingWaitResponse($(tbl).find('tbody'));
+                    // $x.fn.showLoadingPage();
                 });
                 $(tbl).on('draw.dt', () => {
                     // hide loading full page
@@ -992,6 +993,7 @@ class ListeningEventController {
 
                     // hide loading tbody table
                     WindowControl.hideLoadingWaitResponse($(tbl).find('tbody'));
+                    // $x.fn.hideLoadingPage();
                 });
             }
         });
@@ -1079,7 +1081,7 @@ class ListeningEventController {
     }
 
     avatarUpload() {
-        $('.my-upload-avatar').click(function () {
+        $('#btnUploadMyAvatar').click(function () {
             Swal.fire({
                 html: `
                     <h4>${$.fn.transEle.attr('data-choose-avatar-image')}</h4>
@@ -1097,12 +1099,21 @@ class ListeningEventController {
                 preConfirm: (file) => {
                     let formData = new FormData();
                     formData.append('file', file);
-                    return $.fn.callAjax($.fn.storageSystemData.attr('data-url-avatar-upload'), 'POST', formData, true, {}, 'multipart/form-data', {'isNotify': false},).then((resp) => {
+                    return $.fn.callAjax2({
+                        url: $.fn.storageSystemData.attr('data-url-avatar-upload'),
+                        method: 'POST',
+                        data: formData,
+                        contentType: 'multipart/form-data',
+                        isNotify: false,
+                    }).then(
+                        (resp) => {
                         $.fn.switcherResp(resp);
                         return true;
-                    }, (errs) => {
+                    },
+                        (errs) => {
                         return false;
-                    })
+                    }
+                    )
                 },
                 allowOutsideClick: () => !Swal.isLoading()
             }).then((result) => {
@@ -1551,6 +1562,14 @@ class UtilControl {
         return result;
     }
 
+    static generateUUID4() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            let r = Math.random() * 16 | 0,
+                v = c === 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+    }
+
     static arraysEqual(a, b) {
         if (a.length !== b.length) return false;
         return a.every((value, index) => value === b[index]);
@@ -1672,10 +1691,14 @@ class UtilControl {
             if (typeof errs === 'object') {
                 let errors_converted = UtilControl.cleanDataNotify(errs);
                 Object.keys(errors_converted).map((key) => {
-                    let notify_data = $.fn.storageSystemData.attr('data-flagNotifyKey') === '1' ? {
+                    // let notify_data = $.fn.storageSystemData.attr('data-flagNotifyKey') === '1' ? {
+                    //     'title': key,
+                    //     'description': errors_converted[key]
+                    // } : {
+                    //     'description': errors_converted[key]
+                    // };
+                    let notify_data = {
                         'title': key,
-                        'description': errors_converted[key]
-                    } : {
                         'description': errors_converted[key]
                     };
                     jQuery.fn.notifyB(notify_data, 'failure');
@@ -1964,7 +1987,7 @@ class DTBControl {
         // ajax delete data
         if (configFinal?.['ajax'] && configFinal.hasOwnProperty('data')) delete configFinal['data'];
 
-        if (isDenied){
+        if (isDenied) {
             if (configFinal.hasOwnProperty('ajax')) delete configFinal['ajax'];
             configFinal['data'] = [];
         }
@@ -1983,17 +2006,21 @@ class DTBControl {
         $(ele$).closest('table').DataTable().row($(ele$).parents('tr')).remove().draw();
     }
 
-    static updateDataRow(clsThis, func){
+    static updateDataRow(clsThis, func, isDraw = false) {
         clsThis = $(clsThis).closest('tr');
-        let rowIdx = tbl.DataTable().row(clsThis).index();
+        let dtb = $(clsThis).closest('table').DataTable();
+        let rowIdx = dtb.row(clsThis).index();
         let rowData = $x.fn.getRowData($(clsThis));
         let newData = func(clsThis, rowIdx, rowData);
-        tbl.DataTable().row(rowIdx).data(newData).draw(false);
+        let dtbAfter = dtb.row(rowIdx).data(newData);
+        if (isDraw === true) {
+            dtbAfter.draw(false);
+        }
     }
 
     checkRowSelect(opts){
         let $this = this
-        if (opts?.['countSelected'] === true)
+        if (opts?.['fullToolbar'] === true)
             // init on click when enable count select
             $('.check-select, .check-select-all', this.dtb$).on('change', function (e) {
                 e.stopPropagation()
@@ -2098,7 +2125,7 @@ class DTBControl {
                     $('.dataTables_filter input').removeClass('form-control-sm');
                 }
             }
-
+            $(this).closest('.dataTables_wrapper').find('.select2:not(:disabled)').initSelect2();
             if (opts?.['fullToolbar'] === true){
                 // load toolbar if setup is true
                 DTBControl.prepareHTMLToolbar(divWrap, settings)

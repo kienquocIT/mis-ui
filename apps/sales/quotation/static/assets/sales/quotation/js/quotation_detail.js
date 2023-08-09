@@ -4,7 +4,6 @@ $(function () {
     $(document).ready(function () {
         let $form = $('#frm_quotation_create');
         let eleDataDetail = $('#quotation-detail-data');
-        let dataTableClass = new dataTableHandle();
         let loadDataClass = new loadDataHandle();
         let configClass = new checkConfigHandle();
 
@@ -16,20 +15,8 @@ $(function () {
                     $.fn.compareStatusShowPageAction(data);
                     // store data detail
                     eleDataDetail.val(JSON.stringify(data));
-
                     loadDataClass.loadDetailQuotation(data);
-                    $('#datable-quotation-create-product').DataTable().destroy();
-                    $('#datable-quotation-create-cost').DataTable().destroy();
-                    $('#datable-quotation-create-expense').DataTable().destroy();
-                    if (!$form.hasClass('sale-order')) {
-                        dataTableClass.dataTableProduct(data.quotation_products_data, true);
-                        dataTableClass.dataTableCost(data.quotation_costs_data, true);
-                        dataTableClass.dataTableExpense(data.quotation_expenses_data, true);
-                    } else {
-                        dataTableClass.dataTableProduct(data.sale_order_products_data, true);
-                        dataTableClass.dataTableCost(data.sale_order_costs_data, true);
-                        dataTableClass.dataTableExpense(data.sale_order_expenses_data, true);
-                    }
+                    loadDataClass.loadDataTables(data, true);
                     // prepare for copy quotation to sale order
                     if (!$form.hasClass('sale-order')) {
                         $('#data-copy-quotation-detail').val(JSON.stringify(data))
@@ -45,6 +32,7 @@ $(function () {
                 }
             }
         )
+        // mask money
         $.fn.initMaskMoney2();
 
         // enable edit
@@ -53,12 +41,10 @@ $(function () {
             $('#btn-create_quotation')[0].removeAttribute('hidden');
             $form.find('.disabled-but-edit').removeAttr('disabled').removeClass('disabled-but-edit');
             $form.find('#quotation-customer-confirm').removeAttr('disabled');
-            $('#datable-quotation-create-product').find('.disabled-but-edit').removeAttr('disabled').removeClass('disabled-but-edit');
-            $('#datable-quotation-create-cost').find('.disabled-but-edit').removeAttr('disabled').removeClass('disabled-but-edit');
-            $('#datable-quotation-create-expense').find('.disabled-but-edit').removeAttr('disabled').removeClass('disabled-but-edit');
-            // load data dropdown for Tabs
+
+            // Render dataTable again then load data dropdown for Tabs
             let data = JSON.parse(eleDataDetail.val());
-            loadDataClass.loadDataTableAndDropDown(data);
+            loadDataClass.loadDataTablesAndDropDowns(data);
 
             // Check config when begin edit
             let check_config = configClass.checkConfig(true);

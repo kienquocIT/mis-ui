@@ -124,10 +124,18 @@ $(function () {
                     }
                 ],
                 drawCallback: function () {
-                    // mask money
-                    $.fn.initMaskMoney2();
+                    loadDataRowTable();
                 },
             });
+        }
+
+        function loadDataRowTable() {
+            let $table = $('#table_quotation_list');
+            // callBack Row to load data
+            for (let i = 0; i < $table[0].tBodies[0].rows.length; i++) {
+                // mask money
+                $.fn.initMaskMoney2();
+            }
         }
 
         loadDbl();

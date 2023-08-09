@@ -161,7 +161,9 @@ class EmployeeCompanyListAPI(APIView):
         is_api=True
     )
     def get(self, request, company_id, *args, **kwargs):
-        resp = ServerAPI(request=request, url=(ApiURL.EMPLOYEE_COMPANY_NEW.fill_key(company_id=company_id)), user=request.user).get()
+        resp = ServerAPI(
+            request=request, url=(ApiURL.EMPLOYEE_COMPANY_NEW.fill_key(company_id=company_id)), user=request.user
+        ).get()
         return resp.auto_return(key_success='employee_company_list')
 
 
@@ -170,7 +172,7 @@ class RoleList(View):
 
     @mask_view(
         auth_require=True,
-        template='core/hr/role/list_role.html',
+        template='core/hr/role/role_list.html',
         breadcrumb='ROLE_LIST_PAGE',
         menu_active='menu_role_list',
     )
@@ -181,7 +183,7 @@ class RoleList(View):
 class RoleCreate(View):
     @mask_view(
         auth_require=True,
-        template='core/hr/role/create_role.html',
+        template='core/hr/role/role_create.html',
         breadcrumb="ROLE_CREATE_PAGE",
         menu_active='menu_role_list',
     )
@@ -189,10 +191,31 @@ class RoleCreate(View):
         return {}, status.HTTP_200_OK
 
 
+class RoleUpdateView(View):
+    @mask_view(
+        auth_require=True,
+        template='core/hr/role/role_update.html',
+        breadcrumb="ROLE_UPDATE_PAGE",
+        menu_active='menu_role_list',
+    )
+    def get(self, request, *args, pk, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
+class RoleUpdateAPI(APIView):
+    @mask_view(auth_require=True, is_api=True)
+    def put(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.ROLE_DETAIL_PK.fill_key(pk=pk)).put(
+            request.data
+        )
+        return resp.auto_return()
+
+
 class RoleDetail(View):
     @mask_view(
         auth_require=True,
-        template='core/hr/role/update_role.html',
+        template='core/hr/role/role_detail.html',
+        breadcrumb="ROLE_DETAIL_PAGE",
         menu_active='menu_role_list',
     )
     def get(self, request, *args, **kwargs):

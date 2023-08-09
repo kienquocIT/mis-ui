@@ -265,7 +265,23 @@ class HandlePermissions {
         return '';
     }
 
+    static makeSurePermHasIdx(permData){
+        return permData.map(
+            (item)=>{
+                if (item.id){
+                    return item
+                } else {
+                    return {
+                        ...item,
+                        id: $x.cls.util.generateUUID4(),
+                    }
+                }
+            }
+        )
+    }
+
     loadData(planAppData, permData = []) {
+        permData = HandlePermissions.makeSurePermHasIdx(permData);
         let clsThis = this;
         HandlePermissions.loadAppNewRow(planAppData);
         clsThis.initDataStorage.text(JSON.stringify(HandlePermissions.convertDictToKeyValue(permData)));

@@ -168,6 +168,29 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
 
     # Purchase
     # PURCHASE_REQUEST_LIST_PAGE = BreadcrumbChildren(_('Purchase Request List'), 'PurchaseRequestList'),
+    # Purchase Quotation Request
+    PURCHASE_QUOTATION_REQUEST = BreadcrumbChildren(
+        _('Purchase Quotation Request list'), 'PurchaseQuotationRequestList'
+    )
+    PURCHASE_QUOTATION_REQUEST_CREATE_FROM_PR = BreadcrumbChildren(
+        _('Purchase Quotation Request create (From PR)'), 'PurchaseQuotationRequestCreateFromPR'
+    )
+    PURCHASE_QUOTATION_REQUEST_CREATE_MANUAL = BreadcrumbChildren(
+        _('Purchase Quotation Request create (Manual)'), 'PurchaseQuotationRequestCreateManual'
+    )
+    PURCHASE_QUOTATION_REQUEST_DETAIL = BreadcrumbChildren(
+        _('Purchase Quotation Request detail'),
+    )
+
+    PURCHASE_QUOTATION = BreadcrumbChildren(
+        _('Purchase Quotation list'), 'PurchaseQuotationList'
+    )
+    PURCHASE_QUOTATION_CREATE = BreadcrumbChildren(
+        _('Purchase Quotation create '), 'PurchaseQuotationCreate'
+    )
+    PURCHASE_QUOTATION_DETAIL = BreadcrumbChildren(
+        _('Purchase Quotation detail'),
+    )
 
 
 class BreadcrumbView:
@@ -294,6 +317,8 @@ class BreadcrumbView:
     ]
 
     ROLE_CREATE_PAGE = ROLE_LIST_PAGE + [BreadcrumbItem.ROLE_CREATE_PAGE]
+    ROLE_DETAIL_PAGE = ROLE_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    ROLE_UPDATE_PAGE = ROLE_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
     # TENANT_INFORMATION_PAGE = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.TENANT_INFORMATION_PAGE]
     WORKFLOW_LIST_PAGE = [
@@ -459,3 +484,26 @@ class BreadcrumbView:
     #     BreadcrumbItem.PURCHASE_REQUEST_LIST_PAGE
     # ]
     # PURCHASE_REQUEST_CREATE_PAGE = PURCHASE_REQUEST_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+
+    PURCHASE_QUOTATION_REQUEST_LIST_PAGE = [
+        BreadcrumbItem.PURCHASE_QUOTATION_REQUEST
+    ]
+    PURCHASE_QUOTATION_REQUEST_CREATE_PAGE_FROM_PR = PURCHASE_QUOTATION_REQUEST_LIST_PAGE + [
+        BreadcrumbItem.PURCHASE_QUOTATION_REQUEST_CREATE_FROM_PR
+    ]
+    PURCHASE_QUOTATION_REQUEST_CREATE_PAGE_MANUAL = PURCHASE_QUOTATION_REQUEST_LIST_PAGE + [
+        BreadcrumbItem.PURCHASE_QUOTATION_REQUEST_CREATE_MANUAL
+    ]
+    PURCHASE_QUOTATION_REQUEST_DETAIL_PAGE = PURCHASE_QUOTATION_REQUEST_LIST_PAGE + [
+        BreadcrumbItem.PURCHASE_QUOTATION_REQUEST_DETAIL
+    ]
+
+    PURCHASE_QUOTATION_LIST_PAGE = [
+        BreadcrumbItem.PURCHASE_QUOTATION
+    ]
+    PURCHASE_QUOTATION_CREATE_PAGE = PURCHASE_QUOTATION_LIST_PAGE + [
+        BreadcrumbItem.PURCHASE_QUOTATION_CREATE
+    ]
+    PURCHASE_QUOTATION_DETAIL_PAGE = PURCHASE_QUOTATION_LIST_PAGE + [
+        BreadcrumbItem.PURCHASE_QUOTATION_DETAIL
+    ]

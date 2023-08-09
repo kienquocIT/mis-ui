@@ -405,12 +405,12 @@
            data-url-product-detail="{% url 'ProductDetail' pk=0 %}"
            data-url-account-detail="{% url 'AccountDetail' pk=0 %}"
            data-url-contact-detail="{% url 'ContactDetail' pk=0 %}"
-           data-url-so-product="{% url 'SaleOrderProductListAPI' %}"
+           data-url-so-product="{% url 'ProductListSaleOrderAPI' pk=0 %}"
     >
 {% endblock %}
 
 {% block jsFooter %}
     <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
-    <script src="{% static 'assets/sales/purchasing/purchase_request/js/purchase_request_detail.js' %}"></script>
+    <script src="{% static 'assets/sales/purchasing/js/purchase_request/purchase_request_detail.js' %}"></script>
 {% endblock %}

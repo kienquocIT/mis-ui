@@ -92,6 +92,9 @@ function initSelectBox(selectBoxElement = null) {
         let options = {
             ajax: {
                 url: $thisURL,
+                headers: {
+                    "ENABLEXCACHECONTROL": true
+                },
                 data: function (params) {
                     let query = params
                     query.isDropdown = true
@@ -113,15 +116,11 @@ function initSelectBox(selectBoxElement = null) {
                             let text = 'title';
                             if ($this.attr('data-format'))
                                 text = $this.attr('data-format')
-                            else
-                                if(item.hasOwnProperty('full_name')) text = 'full_name';
+                            else if(item.hasOwnProperty('full_name')) text = 'full_name';
                             try{
-                                if (default_data && default_data.hasOwnProperty('id')
-                                    && default_data.id === item.id
-                                )
+                                if (default_data && default_data.hasOwnProperty('id') && default_data.id === item.id)
                                     data_convert.push({...item, 'text': item[text], 'selected': true})
                                 else data_convert.push({...item, 'text': item[text]})
-
                             }
                             catch (e) {
                                 console.log(e)
@@ -136,7 +135,7 @@ function initSelectBox(selectBoxElement = null) {
                     return {
                         results: data_convert,
                         pagination: {
-                            more: (params.page * 10) < res?.data?.count // Calculate if there are more pages
+                            more: (params.page * 10) < res?.data?.page_count // Calculate if there are more pages
                         }
                     };
                 }

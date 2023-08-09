@@ -32,8 +32,7 @@
 
     <div class="row mb-3">
         <h1>Diagram</h1>
-        <div
-        ></div>
+        <div></div>
         <p id="doc-data"></p>
         <p id="doc-app"></p>
         <p id="doc-state-current"></p>
@@ -56,6 +55,19 @@
             </tbody>
         </table>
     </div>
+    <div class="row mb-3">
+        <h1 class="h1">DataTable</h1>
+        <hr>
+        <table id="table_districts_list" class="table nowrap w-100 mb-5" data-url="{% url 'DistrictListAPI' "4d57babb-a28d-45ba-b2ba-a48400ea4af9" %}">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>{% trans 'City' %}</th>
+                    <th>{% trans 'Name' %}</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
     {% csrf_token %}
 {% endblock %}
 
@@ -70,6 +82,61 @@
             event.preventDefault();
             $('#enterCurrency').attr('value', 1234.56);
             $.fn.initMaskMoney2();
+        });
+
+        // setup datatable
+        $(document).ready(function(){
+            let tbl = $('#table_districts_list');
+            let url_list = tbl.attr('data-url');
+            tbl.DataTableDefault({
+                useDataServer: true,
+                fullToolbar: true,
+                columnSearching: {
+                    1: {
+                        "table_keyword": "city_id", // this keywork name of table display in table
+                        "search_key": "city_id", // this keyword for search in API ex. ?code="lorem ipsum"
+                        "url": url_list, // url to select call ajax
+                        "url_req_key": "districts", // get data key when receive response in ajax call
+                        "select_text": "city_id", // text show in select2 dropdown. supersede for [title, full_name]
+                        "select_allow_clear": true // select2 allow clear attribute
+                    },
+                    2: {
+                        "table_keyword": "title",
+                        "search_key": "title",
+                        "url": url_list,
+                        "url_req_key": "districts",
+                        "select_allow_clear": true,
+                    }
+                },
+                ajax: {
+                    url: url_list,
+                    type: 'GET',
+                    dataSrc: "data.districts"
+                },
+                columns: [
+                    {
+                        "orderable": false,
+                        'render': (row, type, data, meta) => {
+                            let currentId = "chk_sel_" + String(meta.row + 1)
+                            return `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select" id="${
+                                currentId}" data-id=` + data.id + `><label class="form-check-label" for="${
+                                currentId}"></label></span>`;
+                        }
+                    },
+                    {
+                        'data': 'city_id',
+                        render: (row, type, data, meta) => {
+                            return `${row}`
+                        }
+                    },
+                    {
+                        'data': 'title',
+                        render: (row, type, data, meta) => {
+                            return `<span><b>${row}</b></span>`
+                        }
+                    }
+                ],
+            })
         });
     </script>
 

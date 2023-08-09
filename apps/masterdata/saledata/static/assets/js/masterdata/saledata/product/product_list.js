@@ -5,14 +5,11 @@ $(document).ready(function () {
         ajax: {
             url: tbl.attr('data-url'),
             type: tbl.attr('data-method'),
-            dataSrc: function (resp) {
-                let data = $.fn.switcherResp(resp);
-                if (data && data.hasOwnProperty('product_list')) return data['product_list'];
-                return [];
-            },
+            dataSrc: "data.product_list"
         },
         columns: [
             {
+                "orderable": false,
                 'render': (data, type, row, meta) => {
                     let currentId = "chk_sel_" + String(meta.row + 1)
                     return `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select" id="${currentId}" data-id=` + row.id + `><label class="form-check-label" for="${currentId}"></label></span>`;
@@ -28,22 +25,25 @@ $(document).ready(function () {
                     return `<a href="${url_detail.replace(0, row.id)}"><span><b>${row.title}</b></span></a>`
                 }
             }, {
-                'data': 'product_type',
-                'render': (data, type, row, meta) => {
-                    if (row.general_information?.product_type.title) {
-                        return `<span class="badge badge-soft-danger badge-pill span-product-type" style="min-width: max-content; width: 50%">${row.general_information?.product_type?.title}</span>`
+                'data': 'general_information.product_type',
+                render: (row, type, data, meta) => {
+                    if (row?.title) {
+                        return `<span class="badge badge-soft-danger badge-pill span-product-type" style="min-width: max-content; width: 50%">${
+                            data.general_information?.product_type?.title}</span>`
                     }
                     return ``;
                 }
             }, {
-                'data': 'product_category',
-                'render': (data, type, row, meta) => {
-                    if (row.general_information?.product_category.title) {
-                        return `<span class="badge badge-soft-indigo badge-pill span-product-category" style="min-width: max-content; width: 50%">${row.general_information?.product_category?.title}</span>`
+                'data': 'general_information.product_category',
+                'render': (row, type, data, meta) => {
+                    if (row?.title) {
+                        return `<span class="badge badge-soft-indigo badge-pill span-product-category" style="min-width: max-content; width: 50%">${
+                            row?.title}</span>`
                     }
                     return ``;
                 }
             }, {
+                "orderable": false,
                 'className': 'action-center',
                 'render': (data, type, row, meta) => {
                     // let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="/saledata/contact/update/` + row.id + `"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
@@ -51,6 +51,6 @@ $(document).ready(function () {
                     return '';
                 }
             },
-        ]
+        ],
     })
 })

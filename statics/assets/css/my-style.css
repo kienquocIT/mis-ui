@@ -206,3 +206,17 @@ div.inline {
     background-color: #f2f5f6 !important;
 }
 /* -- button upload file */
+
+.count_selected{
+    margin-top: 1rem;
+}
+
+.dropdown.ct_toolbar-columns{
+    text-align: right;
+}
+.select2-container--bootstrap4 .select2-selection__clear{
+    padding-left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

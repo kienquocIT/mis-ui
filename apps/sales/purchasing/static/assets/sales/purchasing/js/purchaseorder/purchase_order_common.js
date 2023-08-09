@@ -564,17 +564,20 @@ class loadDataHandle {
     loadModalPurchaseQuotation() {
         let tablePurchaseQuotation = $('#datable-purchase-quotation');
         let checked_list = [];
-        if (tablePurchaseQuotation[0].querySelector('.dataTables_empty')) {
+        if (!tablePurchaseQuotation[0].querySelector('.dataTables_empty')) {
             for (let eleChecked of tablePurchaseQuotation[0].querySelectorAll('.table-row-checkbox:checked')) {
                 checked_list.push(eleChecked.id);
             }
-            let frm = new SetupFormSubmit(tablePurchaseQuotation);
-            let purchase_requests_data = $('#purchase_requests_data');
+        }
+        let frm = new SetupFormSubmit(tablePurchaseQuotation);
+        let purchase_requests_data = $('#purchase_requests_data');
+        if (purchase_requests_data.val()) {
+            let purchase_requests_data_parse = JSON.parse(purchase_requests_data.val());
             if (JSON.parse(purchase_requests_data.val()).length > 0) {
                 $.fn.callAjax2({
                         'url': frm.dataUrl,
                         'method': frm.dataMethod,
-                        'data': {'purchase_quotation_request_mapped__purchase_request_mapped__id__in': JSON.parse(purchase_requests_data.val()).join(',')},
+                        'data': {'purchase_quotation_request_mapped__purchase_request_mapped__id__in': purchase_requests_data_parse.join(',')},
                         'isDropdown': true,
                     }
                 ).then(
@@ -606,34 +609,45 @@ class loadDataHandle {
         let tablePurchaseQuotation = $('#datable-purchase-quotation');
         let purchase_quotations_data = [];
         let purchase_quotations_id_list = [];
-        if (!tablePurchaseQuotation[0].querySelector('.dataTables_empty')) {
-            let eleAppend = ``;
-            let is_checked = false;
-            for (let eleChecked of tablePurchaseQuotation[0].querySelectorAll('.table-row-checkbox:checked')) {
-                is_checked = true;
-                let pqID = eleChecked.id;
-                let pqCode = eleChecked.closest('tr').querySelector('.table-row-code').innerHTML;
-                let pqSupplierID = eleChecked.closest('tr').querySelector('.table-row-supplier').id;
-                let link = "";
-                eleAppend += `<div class="inline-elements-badge mr-2 mb-1" id="${pqID}">
+        let eleAppend = ``;
+        let is_check = false;
+        let checked_id = null;
+        if (elePurchaseQuotation[0].innerHTML) {
+            for (let eleChecked of elePurchaseQuotation[0].querySelectorAll('.checkbox-quotation:checked')) {
+                checked_id = eleChecked.id;
+            }
+        }
+        for (let eleChecked of tablePurchaseQuotation[0].querySelectorAll('.table-row-checkbox:checked')) {
+            is_check = true;
+            let pqID = eleChecked.id;
+            let pqCode = eleChecked.closest('tr').querySelector('.table-row-code').innerHTML;
+            let pqSupplierID = eleChecked.closest('tr').querySelector('.table-row-supplier').id;
+            let link = "";
+            eleAppend += `<div class="inline-elements-badge mr-2 mb-1" id="${pqID}">
                                     <input class="form-check-input checkbox-circle checkbox-quotation" type="checkbox" id="${pqID}" data-supplier-id="${pqSupplierID}" value="option1">
                                     <a href="${link}" target="_blank" class="link-primary underline_hover ml-3"><span>${pqCode}</span></a>
                                     <button type="button" class="btn btn-link btn-sm custom-btn-remove" id="${pqID}" aria-label="Close">
                                         <span aria-hidden="true"><i class="fas fa-times"></i></span>
                                     </button>
                                 </div>`;
-                purchase_quotations_data.push({
-                    'purchase_quotation': pqID,
-                    'is_use': false
-                })
-                purchase_quotations_id_list.push(pqID);
+            purchase_quotations_data.push({
+                'purchase_quotation': pqID,
+                'is_use': false
+            })
+            purchase_quotations_id_list.push(pqID);
+        }
+        if (is_check === true) {
+            elePurchaseQuotation.empty();
+            elePurchaseQuotation.append(eleAppend);
+            if (checked_id) {
+                for (let eleCheck of elePurchaseQuotation[0].querySelectorAll('.checkbox-quotation')) {
+                    if (eleCheck.id === checked_id) {
+                        $(eleCheck).click();
+                    }
+                }
             }
-            if (is_checked === true) {
-                elePurchaseQuotation.empty();
-                elePurchaseQuotation.append(eleAppend);
-            } else {
-                elePurchaseQuotation.empty();
-            }
+        } else {
+            elePurchaseQuotation.empty();
         }
         $('#purchase_quotations_data').val(JSON.stringify(purchase_quotations_data));
         self.loadPriceListByPurchaseQuotation(purchase_quotations_id_list);

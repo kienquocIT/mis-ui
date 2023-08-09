@@ -278,7 +278,10 @@ class LogController {
                     if (!runtimeID) runtimeID = WFRTControl.getWFRuntimeID();
                     if (runtimeID) {
                         clearInterval(intervalShowWfHistory);
-                        $.fn.callAjax(SetupFormSubmit.getUrlDetailWithID(this.logUrl, runtimeID), 'GET',).then((resp) => {
+                        $.fn.callAjax2({
+                            url: SetupFormSubmit.getUrlDetailWithID(this.logUrl, runtimeID),
+                            method: 'GET',
+                        }).then((resp) => {
                             this.groupLogEle.attr('data-log-runtime-loaded', true);
                             let data = $.fn.switcherResp(resp);
                             if (data && $.fn.hasOwnProperties(data, ['diagram_data'])) {
@@ -300,7 +303,11 @@ class LogController {
             if (!pkID) pkID = this.tabActivityLog.attr('data-id-value');
             if (this.activityUrl && pkID && (!this.groupLogEle.attr('data-log-activity-loaded') || forceLoad === true)) {
                 clearInterval(intervalDataActivity);
-                $.fn.callAjax(this.activityUrl, 'GET', {'doc_id': pkID}, true,).then((resp) => {
+                $.fn.callAjax2({
+                    url: this.activityUrl,
+                    method: 'GET',
+                    data: {'doc_id': pkID},
+                }).then((resp) => {
                     this.groupLogEle.attr('data-log-activity-loaded', true);
                     let data = $.fn.switcherResp(resp);
                     if (data && data['status'] === 200 && data.hasOwnProperty('log_data')) {
@@ -309,7 +316,7 @@ class LogController {
                     }
                 }, (errs) => {
 
-                })
+                });
             }
         }, 1000)
     }
@@ -327,13 +334,16 @@ class NotifyController {
     }
 
     checkNotifyCount() {
-        $.fn.callAjax(this.notifyCountUrl, 'GET',).then((resp) => {
+        $.fn.callAjax2({
+            url: this.notifyCountUrl,
+            method: 'GET',
+        }).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data && data.hasOwnProperty('count') && data['count'] > 0) {
                 this.bellCount.text(data['count']);
                 this.bellIdxIcon.addClass('my-bell-ring');
             }
-        })
+        });
     }
 
     // main
@@ -349,7 +359,10 @@ class NotifyController {
             let dataUrl = $(this).attr('data-url');
             let dataMethod = $(this).attr('data-method');
 
-            $.fn.callAjax(dataUrl, dataMethod).then((resp) => {
+            $.fn.callAjax2({
+                url: dataUrl,
+                method: dataMethod,
+            }).then((resp) => {
                 let data = $.fn.switcherResp(resp);
                 let arr_no_seen = [];
                 let arr_seen = [];
@@ -399,14 +412,17 @@ class NotifyController {
                 WindowControl.hideLoadingWaitResponse(dataArea);
             }, (errs) => {
                 WindowControl.hideLoadingWaitResponse(dataArea);
-            })
+            });
         });
         realThis.btnSeenAll.click(function (event) {
             event.preventDefault();
             let dataUrl = $(this).attr('data-url');
             let dataMethod = $(this).attr('data-method');
             if (dataUrl && dataMethod) {
-                $.fn.callAjax(dataUrl, dataMethod, {}, true,).then((resp) => {
+                $.fn.callAjax2({
+                    url: dataUrl,
+                    method: dataMethod,
+                }).then((resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         realThis.bellIdxIcon.removeClass('my-bell-ring');
@@ -421,12 +437,15 @@ class NotifyController {
             let dataUrl = $(this).attr('data-url');
             let dataMethod = $(this).attr('data-method');
             if (dataUrl && dataMethod) {
-                $.fn.callAjax(dataUrl, dataMethod, {}, true,).then((resp) => {
+                $.fn.callAjax2({
+                    url: dataUrl,
+                    method: dataMethod,
+                }).then((resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data['status'] === 204) {
                         realThis.checkNotifyCount();
                     }
-                },)
+                });
             }
         });
     }
@@ -728,7 +747,13 @@ class FileUtils {
                             });
                             let formDataNewName = new FormData();
                             formDataNewName.append('file', newFile);
-                            return $.fn.callAjax(dataUrl, 'POST', formDataNewName, true, {}, 'multipart/form-data', {'isNotify': false},).then((resp) => {
+                            return $.fn.callAjax2({
+                                url: dataUrl,
+                                method: 'POST',
+                                data: formDataNewName,
+                                contentType: 'multipart/form-data',
+                                isNotify: false,
+                            }).then((resp) => {
                                 let detailNewFile = resp?.data?.detail;
                                 clsThis.setIdFile(detailNewFile?.['id']);
                                 clsThis.setFileNameUploaded(detailNewFile?.['file_name'], detailNewFile?.['file_size']);
@@ -737,7 +762,7 @@ class FileUtils {
                                 if ($.fn.isDebug() === true) console.log(errs);
                                 clsThis.showErrsUploadFile(newFileNewEle);
                                 return false;
-                            })
+                            });
                         } else {
                             clsThis.showErrsUploadFile(newFileNewEle);
                             return false;
@@ -785,9 +810,13 @@ class ListeningEventController {
             let current_company_id = $('#company-current-id').attr('data-id');
             let company_id_selected = $("input[name='switch_current_company']:checked").val();
             if (current_company_id !== company_id_selected) {
-                $.fn.callAjax($(this).attr('data-url'), $(this).attr('data-method'), {
-                    'company': company_id_selected
-                }, $('input[name=csrfmiddlewaretoken]').val(),).then((resp) => {
+                $.fn.callAjax2({
+                    url: $(this).attr('data-url'),
+                    method: $(this).attr('data-method'),
+                    data: {
+                        'company': company_id_selected
+                    },
+                }).then((resp) => {
                     $.fn.notifyB({
                         'description': resp.data.detail
                     }, 'success');
@@ -812,7 +841,10 @@ class ListeningEventController {
                 let urlData = $(this).attr('data-url') + '?' + $(this).attr('data-params');
                 let keyResult = $(this).attr('data-result-key');
                 $(this).append(`<option class="x-item-loading" value="x-item-loading" disabled>` + $.fn.transEle.attr('data-loading') + '...' + `</option>`);
-                $.fn.callAjax(urlData, 'GET').then((resp) => {
+                $.fn.callAjax2({
+                    url: urlData,
+                    method: 'GET',
+                }).then((resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data && typeof data === 'object' && data.hasOwnProperty(keyResult)) {
                         let selectedVal = $(this).find(":selected").val();
@@ -826,7 +858,7 @@ class ListeningEventController {
                             $(this).find('option.x-item-loading').attr('disable', 'disable').remove();
                         }
                     }
-                },)
+                });
             }
         });
         // -- Listen event select and select2-init-v1 for set previous selected data
@@ -1107,12 +1139,12 @@ class ListeningEventController {
                         isNotify: false,
                     }).then(
                         (resp) => {
-                        $.fn.switcherResp(resp);
-                        return true;
-                    },
+                            $.fn.switcherResp(resp);
+                            return true;
+                        },
                         (errs) => {
-                        return false;
-                    }
+                            return false;
+                        }
                     )
                 },
                 allowOutsideClick: () => !Swal.isLoading()
@@ -2147,7 +2179,10 @@ class DocumentControl {
         if (!dataText || dataText === '') {
             let companyConfigUrl = $.fn.storageSystemData.attr('data-urlCompanyConfig');
             if (companyConfigUrl) {
-                return await $.fn.callAjax(companyConfigUrl, 'GET').then((resp) => {
+                return await $.fn.callAjax2({
+                    url: companyConfigUrl,
+                    method: 'GET',
+                }).then((resp) => {
                     let data = $.fn.switcherResp(resp);
                     dataText = JSON.stringify(data);
                     $.fn.storageSystemData.attr('data-urlCompanyConfigData', dataText);
@@ -2230,7 +2265,11 @@ class DocumentControl {
 
         function callChangeSpaceAndReload(urlData, methodData, spaceCode, urlRedirectData) {
             WindowControl.showLoading();
-            $.fn.callAjax(urlData, methodData, {'space_code': spaceCode}, true,).then((resp) => {
+            $.fn.callAjax2({
+                url: urlData,
+                method: methodData,
+                data: {'space_code': spaceCode},
+            }).then((resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data && data['status'] === 200) {
                     $.fn.notifyB({
@@ -2245,7 +2284,7 @@ class DocumentControl {
                 }, 1000);
             }, (errs) => {
                 WindowControl.hideLoading();
-            })
+            });
         }
 
         $('.space-item').click(function (event) {
@@ -2402,8 +2441,11 @@ var DataTableAction = {
         div.modal('show');
         div.find('.btn').off().on('click', function (e) {
             if ($(this).attr('data-type') === 'cancel') div.remove(); else {
-                $.fn.callAjax(url, 'DELETE', data, crf)
-                    .then((res) => {
+                $.fn.callAjax2({
+                    url: url,
+                    method: 'DELETE',
+                    data: data,
+                }).then((res) => {
                         if (res.hasOwnProperty('status')) {
                             div.modal('hide');
                             div.remove();
@@ -2412,7 +2454,7 @@ var DataTableAction = {
                                 description: res?.data?.message ? res.data.message : 'Delete item successfully'
                             }, 'success')
                         }
-                    })
+                    });
             }
         })
     },

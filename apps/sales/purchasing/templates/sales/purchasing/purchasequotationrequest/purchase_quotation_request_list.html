@@ -7,20 +7,19 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <a class="btn btn-outline-primary btn-animated btn-xs"
-       data-bs-toggle="modal"
+    <a data-bs-toggle="modal"
        data-bs-placement="top"
        title="{% trans 'Select Create Purchase Quotation Request' %}"
        data-bs-target="#select_create_purchase_quotation_request_button_modal"
        id="select_create_purchase_quotation_request_button">
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="plus"></i>
+        <button class="btn btn-outline-primary">
+            <span>
+                <span>{% trans 'Add' %}</span>
+                <span class="icon">
+                    <i class="fa-solid fa-plus"></i>
+                </span>
             </span>
-            <span class="font-3 ml-1">
-                {% trans 'New' %}
-            </span>
-        </span>
+        </button>
     </a>
 {% endblock %}
 {% block pageContent %}

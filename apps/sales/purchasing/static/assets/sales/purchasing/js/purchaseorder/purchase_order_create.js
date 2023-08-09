@@ -45,11 +45,6 @@ $(function () {
 
 // EVENTS
         // Action on click dropdown supplier
-        // eleBoxSupplier.on('click', function() {
-        //     loadDataClass.loadBoxSupplier(null);
-        // });
-
-        // Action on click dropdown supplier
         eleCommonArea.on('click', '.select2-selection', function() {
             let eleSelect = $(this)[0].closest('.form-group').querySelector('.form-select');
             if (eleSelect.id === 'box-purchase-order-supplier') {
@@ -112,12 +107,13 @@ $(function () {
         // Action on change quantity order of tablePurchaseRequestProduct
         tablePurchaseRequestProduct.on('change', '.table-row-quantity-order', function() {
             validateClass.validateNumber(this);
-            validateClass.validateQuantyOrder(this);
+            let remain = parseFloat(this.closest('tr').querySelector('.table-row-remain').innerHTML);
+            validateClass.validateQuantityOrderAndRemain(this, remain);
         });
 
         // Purchase quotation modal
         $('#btn-purchase-quotation-modal').on('click', function () {
-            loadDataClass.loadModalPurchaseQuotation(tablePurchaseQuotation);
+            loadDataClass.loadModalPurchaseQuotation();
         });
 
         // Action on click add purchase quotation
@@ -174,7 +170,7 @@ $(function () {
         });
 
         // Action on change data on row of tablePurchaseOrderProductAdd
-        tablePurchaseOrderProductAdd.on('change', '.table-row-item, .table-row-quantity-order, .table-row-price, .table-row-tax', function () {
+        tablePurchaseOrderProductAdd.on('change', '.table-row-item, .table-row-quantity-order-actual, .table-row-price, .table-row-tax', function () {
             let row = $(this)[0].closest('tr');
             if ($(this).hasClass('table-row-item')) {
                 loadDataClass.loadDataProductSelect($(this));
@@ -184,8 +180,13 @@ $(function () {
         });
 
         // Action on change data on row of tablePurchaseOrderProductRequest
-        tablePurchaseOrderProductRequest.on('change', '.table-row-quantity-order, .table-row-price, .table-row-tax', function () {
+        tablePurchaseOrderProductRequest.on('change', '.table-row-quantity-order-actual, .table-row-price, .table-row-tax', function () {
             let row = $(this)[0].closest('tr');
+            if ($(this).hasClass('table-row-quantity-order-actual')) {
+                validateClass.validateNumber(this);
+                let order_on_request = parseFloat(row.querySelector('.table-row-quantity-order-request').innerHTML);
+                validateClass.validateQuantityOrderFinal(this, order_on_request);
+            }
             calculateClass.calculateMain(tablePurchaseOrderProductRequest, row);
         });
 
@@ -197,6 +198,7 @@ $(function () {
             let submitFields = [
                 'title',
                 'purchase_requests_data',
+                'purchase_quotations_data',
                 'supplier',
                 'contact',
                 'delivered_date',

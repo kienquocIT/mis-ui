@@ -1,4 +1,3 @@
-"use strict";
 $(function () {
     $(document).ready(function () {
         let employee_current_id = $('#employee_current_id').val();
@@ -6,6 +5,30 @@ $(function () {
         const contact_list = JSON.parse($('#contact_list').text());
         const opportunity_list = JSON.parse($('#opportunity_list').text());
         const email_list = JSON.parse($('#email_list').text());
+
+        $('#email-to-select-box').select2({
+            dropdownParent: $("#send-email"),
+            tags: true,
+            tokenSeparators: [',', ' ']
+        });
+
+        $('#email-cc-select-box').select2({
+            dropdownParent: $("#send-email"),
+            tags: true,
+            tokenSeparators: [',', ' '],
+        });
+
+        $('#detail-email-to-select-box').select2({
+            dropdownParent: $("#detail-send-email"),
+            tags: true,
+            tokenSeparators: [',', ' ']
+        });
+
+        $('#detail-email-cc-select-box').select2({
+            dropdownParent: $("#detail-send-email"),
+            tags: true,
+            tokenSeparators: [',', ' '],
+        });
 
         function LoadEmailSaleCodeList(employee_current_id) {
             let $sc_sb = $('#email-sale-code-select-box');
@@ -32,36 +55,32 @@ $(function () {
         }
         LoadEmailSaleCodeList(employee_current_id);
 
-        function LoadEmailToList(contact_list_id) {
+        function LoadEmailToList(contact_id_list) {
             let $to_sb = $('#email-to-select-box');
             $to_sb.html(``);
-            $to_sb.append(`<option></option>`)
             contact_list.map(function (item) {
-                if (contact_list_id.includes(item.id)) {
+                if (contact_id_list.includes(item.id)) {
                     if (item.email === null) {
                         $to_sb.append(`<option disabled>${item.fullname}</option>`);
                     } else {
-                        $to_sb.append(`<option value="${item.email}">${item.fullname}&nbsp;&nbsp;&nbsp;(${item.email})</option>`);
+                        $to_sb.append(`<option value="${item.email}" data-bs-toggle="tooltip" data-bs-placement="top" title="${item.fullname}">${item.email}</option>`);
                     }
                 }
             });
-            $to_sb.select2({dropdownParent: $("#send-email")});
         }
 
-        function LoadEmailCcList(contact_list_id) {
+        function LoadEmailCcList(contact_id_list) {
             let $cc_sb = $('#email-cc-select-box');
             $cc_sb.html(``);
-            $cc_sb.append(`<option></option>`)
             contact_list.map(function (item) {
-                if (contact_list_id.includes(item.id)) {
+                if (contact_id_list.includes(item.id)) {
                     if (item.email === null) {
                         $cc_sb.append(`<option disabled>${item.fullname}</option>`);
                     } else {
-                        $cc_sb.append(`<option value="${item.email}">${item.fullname}&nbsp;&nbsp;&nbsp;(${item.email})</option>`);
+                        $cc_sb.append(`<option value="${item.email}" data-bs-toggle="tooltip" data-bs-placement="top" title="${item.fullname}">${item.email}</option>`);
                     }
                 }
             });
-            $cc_sb.select2({dropdownParent: $("#send-email")});
         }
 
         $('#send-email-button').on('click', function () {
@@ -91,46 +110,6 @@ $(function () {
             $('#email-cc-remove').prop('hidden', true);
         })
 
-        $('#email-to-input-btn').on('click', function() {
-            $('#email-to-select-box').prop('hidden', true);
-            $('#email-to-select-box').next(1).prop('hidden', true);
-            $('#inputEmailTo').prop('hidden', false);
-            $('#email-to-select-btn').prop('hidden', false);
-            $('#email-to-input-btn').prop('hidden', true);
-        })
-        $('#email-to-select-btn').on('click', function() {
-            $('#email-to-select-box').prop('hidden', false);
-            $('#email-to-select-box').next(1).prop('hidden', false);
-            $('#inputEmailTo').prop('hidden', true);
-            $('#email-to-select-btn').prop('hidden', true);
-            $('#email-to-input-btn').prop('hidden', false);
-        })
-
-        $('#email-cc-input-btn').on('click', function() {
-            $('#inputEmailCc').prop('hidden', false);
-            $('#email-cc-add').prop('hidden', false);
-            $('#email-cc-remove').prop('hidden', false);
-            $(this).prop('hidden', true);
-        })
-        $('#email-cc-remove').on('click', function() {
-            $('#email-cc-input-btn').prop('hidden', false);
-            $('#inputEmailCc').prop('hidden', true);
-            $('#email-cc-add').prop('hidden', true);
-            $(this).prop('hidden', true);
-        })
-        $('#email-cc-add').on('click', function() {
-            if ($('#inputEmailCc').val()) {
-                let data_email = $('#inputEmailCc').val();
-                $('#email-cc-select-box').append(`<option selected value="` + data_email + `">` + data_email + `</option>`);
-                $('#inputEmailCc').val('');
-
-                $('#email-cc-input-btn').prop('hidden', false);
-                $('#inputEmailCc').prop('hidden', true);
-                $('#email-cc-add').prop('hidden', true);
-                $('#email-cc-remove').prop('hidden', true);
-            }
-        })
-
         $('#form-new-email').submit(function (event) {
             event.preventDefault();
             let csr = $("input[name=csrfmiddlewaretoken]").val();
@@ -140,10 +119,7 @@ $(function () {
             if ($('#inputEmailTo').attr('hidden') !== 'hidden') {
                 frm.dataForm['email_to'] = $('#inputEmailTo').val();
             }
-            if ($('#email-to-select-box').attr('hidden') !== 'hidden') {
-                frm.dataForm['email_to'] = $('#email-to-select-box option:selected').attr('value');
-            }
-            frm.dataForm['email_to_contact'] = $('#email-to-select-box option:selected').attr('data-email-to-contact');
+            frm.dataForm['email_to_list'] = $('#email-to-select-box').val();
             frm.dataForm['opportunity'] = $('#email-sale-code-select-box option:selected').val();
             frm.dataForm['email_cc_list'] = $('#email-cc-select-box').val();
             frm.dataForm['content'] = $('#email-content-area').val();
@@ -172,20 +148,21 @@ $(function () {
                     data: email_list,
                     columns: [
                         {
-                            data: 'email_to',
-                            className: 'wrap-text w-25',
+                            data: 'email_to_list',
+                            className: 'wrap-text w-10',
                             render: (data, type, row, meta) => {
-                                if (Object.keys(row.email_to_contact).length !== 0) {
-                                    return `<a target="_blank" href="` + $('#table_opportunity_email_list').attr('data-url-contact-detail').replace('0', row.email_to_contact.id) + `"><span class="link-secondary underline_hover"><b>` + row.email_to_contact.fullname + `</b></span></a>`
+                                let html = `<div class="btn-group dropdown w-100">
+                                                <a type="button" class="dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></a>
+                                                <div class="dropdown-menu">`;
+                                for (let i = 0; i < row.email_to_list.length; i++) {
+                                    html += `<a class="dropdown-item">` + row.email_to_list[i] + `</a>`
                                 }
-                                else {
-                                    return `<span class="text-secondary">` + row.email_to + `</span>`
-                                }
+                                return html+`</div></div>`;
                             }
                         },
                         {
                             data: 'subject',
-                            className: 'wrap-text w-30',
+                            className: 'wrap-text w-35',
                             render: (data, type, row, meta) => {
                                 return `<a class="text-primary link-primary underline_hover detail-email-button" href="" data-bs-toggle="modal" data-id="` + row.id + `"
                                             data-bs-target="#detail-send-email"><span><b>` + row.subject + `</b></span></a>`
@@ -193,14 +170,14 @@ $(function () {
                         },
                         {
                             data: 'opportunity',
-                            className: 'wrap-text w-20 text-center',
+                            className: 'wrap-text w-25 text-center',
                             render: (data, type, row, meta) => {
                                 return row.opportunity.code
                             }
                         },
                         {
                             data: 'date_created',
-                            className: 'wrap-text w-15 text-center',
+                            className: 'wrap-text w-20 text-center',
                             render: (data, type, row, meta) => {
                                 return row.date_created.split(' ')[0]
                             }
@@ -229,18 +206,14 @@ $(function () {
             $('#detail-email-sale-code-select-box').append(`<option selected>(${email_obj.opportunity.code})&nbsp;&nbsp;&nbsp;${email_obj.opportunity.title}</option>`);
 
             $('#detail-email-to-select-box option').remove();
-            if (Object.keys(email_obj.email_to_contact).length !== 0) {
-                $('#detail-email-to-select-box').append(`<option selected>${email_obj.email_to_contact.fullname}&nbsp;&nbsp;&nbsp;(${email_obj.email_to_contact.email})</option>`);
-            }
-            else {
-                $('#detail-email-to-select-box').append(`<option selected>${email_obj.email_to}</option>`);
+            for (let i = 0; i < email_obj.email_to_list.length; i++) {
+                $('#detail-email-to-select-box').append(`<option selected>${email_obj.email_to_list[i]}</option>`);
             }
 
             $('#detail-email-cc-select-box option').remove();
             for (let i = 0; i < email_obj.email_cc_list.length; i++) {
                 $('#detail-email-cc-select-box').append(`<option selected>${email_obj.email_cc_list[i]}</option>`);
             }
-            $('#detail-email-cc-select-box').prop('disabled', true)
 
             $('#detail-email-content-area').val(email_obj.content);
         })

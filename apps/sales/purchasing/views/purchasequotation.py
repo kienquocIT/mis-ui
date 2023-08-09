@@ -23,7 +23,8 @@ class PurchaseQuotationListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.PURCHASE_QUOTATION_LIST).get()
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.PURCHASE_QUOTATION_LIST).get(data)
         return resp.auto_return(key_success='purchase_quotation_list')
 
     @mask_view(
@@ -114,3 +115,14 @@ class PurchaseQuotationDetailAPI(APIView):
     def get(self, request, pk, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.PURCHASE_QUOTATION_DETAIL.push_id(pk)).get()
         return resp.auto_return(key_success='purchase_quotation_detail')
+
+
+class PurchaseQuotationProductListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.PURCHASE_QUOTATION_PRODUCT_LIST).get(data)
+        return resp.auto_return(key_success='purchase_quotation_product_list')

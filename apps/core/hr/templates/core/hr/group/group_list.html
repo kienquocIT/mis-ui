@@ -17,16 +17,20 @@
             </span>
         </span>
     </a>
-    <a
-            class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
-            href="{% url 'GroupCreate' %}" data-bs-toggle="tooltip" data-bs-placement="top" title=""
-            data-bs-original-title="Add"
-    >
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="plus"></i>
-            </span>
-        </span>
+    <a href="{% url 'GroupCreate' %}"
+       data-bs-toggle="tooltip"
+       data-bs-placement="top"
+       title="{% trans 'Create Group' %}"
+       id="create_group_button"
+       data-bs-original-title="Add Group">
+            <button class="btn btn-outline-primary">
+                <span>
+                    <span>{% trans 'Add' %}</span>
+                    <span class="icon">
+                        <i class="fa-solid fa-plus"></i>
+                    </span>
+                </span>
+            </button>
     </a>
 {% endblock %}
 

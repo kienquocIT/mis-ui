@@ -30,21 +30,15 @@
     {{ data.email_list | json_script:"email_list" }}
 
     <input type="hidden" id="employee_current_id" value="{{ data.employee_current_id }}">
+
     <table id="table_opportunity_email_list" class="table nowrap w-100 mb-5"
-           data-url-contact-detail="{% url 'ContactDetail' '0' %}"
            data-url="{% url 'OpportunityEmailListAPI' %}"
            data-url-delete="{% url 'OpportunityEmailDeleteAPI' '0' %}"
            data-url-redirect="{% url 'OpportunityEmailList' %}"
            data-method="GET">
         <thead>
         <tr>
-            <th>{% trans 'To Contact/Email' %}
-                <i class="fas fa-info-circle icon-info"
-                   data-bs-toggle="tooltip"
-                   data-bs-placement="bottom"
-                   title="{% trans 'Press row here to open detail page.' %}">
-                </i>
-            </th>
+            <th>{% trans 'To Email' %}</th>
             <th>{% trans 'Subject' %}
                 <i class="fas fa-info-circle icon-info"
                    data-bs-toggle="tooltip"
@@ -87,23 +81,13 @@
                         <div class="row form-group mb-3">
                             <label class="col-2 col-form-label required">{% trans 'To' %}</label>
                             <div class="col-10">
-                                <select id="email-to-select-box" class="form-select" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
-                                <input class="form-control" hidden id="inputEmailTo" placeholder="Enter email">
-                                <a id="email-to-input-btn" class="text-primary form-text text-muted text-right" href="#">{% trans 'to input' %}</a>
-                                <a id="email-to-select-btn" class="text-primary form-text text-muted text-right" href="#" hidden>{% trans 'to select' %}</a>
+                                <select id="email-to-select-box" class="form-control" multiple="multiple" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
                             </div>
                         </div>
                         <div class="row form-group mb-3">
                             <label class="col-2 col-form-label">{% trans 'Cc' %}</label>
                             <div class="col-10">
-                                <select id="email-cc-select-box" multiple class="select2 select-multiple" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
-                                <input id="inputEmailCc" hidden class="mt-1 form-control" placeholder="Enter email">
-
-                                <a class="text-primary form-text text-muted text-right" href="#">
-                                    <span id="email-cc-add" hidden class="icon"><i class="text-primary bi bi-plus-circle"></i></span>
-                                    <span id="email-cc-remove" hidden class="icon"><i class="text-danger bi bi-x-circle"></i></span>
-                                </a>
-                                <a id="email-cc-input-btn" class="text-primary form-text text-muted text-right" href="#">{% trans 'add email' %}</a>
+                                <select id="email-cc-select-box" class="form-control" multiple="multiple" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
                             </div>
                         </div>
                         <div class="row form-group mb-3">
@@ -148,13 +132,13 @@
                     <div class="row form-group mb-3">
                         <label class="col-2 col-form-label required">{% trans 'To' %}</label>
                         <div class="col-10">
-                            <select disabled style="color: #6f6f6f" id="detail-email-to-select-box" class="form-select" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
+                            <select disabled style="color: #6f6f6f" id="detail-email-to-select-box" class="form-control" multiple="multiple" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
                         </div>
                     </div>
                     <div class="row form-group mb-3">
                         <label class="col-2 col-form-label">{% trans 'Cc' %}</label>
                         <div class="col-10">
-                            <select style="color: #6f6f6f" id="detail-email-cc-select-box" multiple class="select2 select-multiple" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
+                            <select disabled style="color: #6f6f6f" id="detail-email-cc-select-box" class="form-control" multiple="multiple" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
                         </div>
                     </div>
                     <div class="row form-group mb-3">

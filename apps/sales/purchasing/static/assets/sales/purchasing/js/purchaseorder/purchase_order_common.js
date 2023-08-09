@@ -327,7 +327,7 @@ class loadDataHandle {
                 $(priceList).empty();
                 if (Array.isArray(data.price_list) && data.price_list.length > 0) {
                     for (let i = 0; i < data.price_list.length; i++) {
-                        if (data.price_list[i].price_type === 0) { // PRICE TYPE IS PRODUCT (SALE)
+                        if (data.price_list[i].price_type === 1) { // PRICE TYPE IS PRODUCT (PURCHASE)
                             if (data.price_list[i].is_default === true) { // check & append GENERAL_PRICE_LIST
                                 general_price_id = data.price_list[i].id;
                                 general_price = parseFloat(data.price_list[i].value);
@@ -360,15 +360,6 @@ class loadDataHandle {
                                                     </button>`);
                                 }
                             }
-                        } else if (data.price_list[i].price_type === 2) { // PRICE TYPE IS EXPENSE
-                            general_price = parseFloat(data.price_list[i].value);
-                            $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option" data-value="${parseFloat(data.price_list[i].value)}">
-                                                    <div class="row">
-                                                        <div class="col-5"><span>${data.price_list[i].title}</span></div>
-                                                        <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
-                                                        <div class="col-2"><span class="valid-price">${data.price_list[i].price_status}</span></div>
-                                                    </div>
-                                                </button>`);
                         }
                     }
                 }

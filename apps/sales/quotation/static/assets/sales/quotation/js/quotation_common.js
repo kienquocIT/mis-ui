@@ -4,7 +4,7 @@ let finalRevenueBeforeTax = document.getElementById('quotation-final-revenue-bef
 
 // Load data
 class loadDataHandle {
-    loadBoxQuotationOpportunity(valueToSelect = null, sale_person = null, is_load_detail = false, is_copy = false) {
+    loadBoxQuotationOpportunity(valueToSelect = {}, sale_person = null, is_load_detail = false, is_copy = false) {
         let self = this;
         let ele = $('#select-box-quotation-create-opportunity');
         let url = ele.attr('data-url');
@@ -23,7 +23,7 @@ class loadDataHandle {
             } else {
                 data_filter['quotation__isnull'] = true;
             }
-            if (!ele[0].innerHTML || valueToSelect) {
+            if (!ele[0].innerHTML || Object.keys(valueToSelect).length !== 0) {
                 $.fn.callAjax2({
                         'url': url,
                         'method': method,
@@ -36,7 +36,7 @@ class loadDataHandle {
                         if (data) {
                             if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list)) {
                                 ele.empty();
-                                if (valueToSelect) {
+                                if (Object.keys(valueToSelect).length !== 0) {
                                     data.opportunity_list.push(valueToSelect);
                                     // check opp has sale order or closed => disabled button copy to (Only for page quotation detail)
                                     if (is_load_detail === true) {
@@ -2371,14 +2371,14 @@ class dataTableHandle {
         let method = ele.attr('data-method');
         $('#datable-copy-quotation').DataTable().destroy();
         if (sale_person_id) {
-            let data_filter = {
-                'sale_person': sale_person_id,
-                'opportunity__sale_order__isnull': true,
-                'opportunity__is_close_lost': false,
-                'opportunity__is_deal_close': false,
-            };
+            let data_filter = {'sale_person': sale_person_id};
             if (opp_id) {
                 data_filter['opportunity'] = opp_id;
+                data_filter['opportunity__sale_order__isnull'] = true;
+                data_filter['opportunity__is_close_lost'] = false;
+                data_filter['opportunity__is_deal_close'] = false;
+            } else {
+                data_filter['opportunity__isnull'] = true;
             }
             $.fn.callAjax2({
                     'url': url,
@@ -3609,8 +3609,40 @@ function loadPriceProduct(eleProduct, is_change_item = true, is_expense = false)
                 $(priceList).empty();
                 if (Array.isArray(data.price_list) && data.price_list.length > 0) {
                     for (let i = 0; i < data.price_list.length; i++) {
-                        if (data.price_list[i].is_default === true) { // check & append GENERAL_PRICE_LIST
-                            general_price_id = data.price_list[i].id;
+                        if (data.price_list[i].price_type === 0) { // PRICE TYPE IS PRODUCT (SALE)
+                            if (data.price_list[i].is_default === true) { // check & append GENERAL_PRICE_LIST
+                                general_price_id = data.price_list[i].id;
+                                general_price = parseFloat(data.price_list[i].value);
+                                $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option" data-value="${parseFloat(data.price_list[i].value)}">
+                                                    <div class="row">
+                                                        <div class="col-5"><span>${data.price_list[i].title}</span></div>
+                                                        <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
+                                                        <div class="col-2"><span class="valid-price">${data.price_list[i].price_status}</span></div>
+                                                    </div>
+                                                </button>`);
+                            }
+                            if (data.price_list[i].id === account_price_id && general_price_id !== account_price_id) { // check & append CUSTOMER_PRICE_LIST
+                                if (!["Expired", "Invalid"].includes(data.price_list[i].price_status)) { // Customer price valid
+                                    customer_price = parseFloat(data.price_list[i].value);
+                                    $(priceList).empty();
+                                    $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option option-btn-checked" data-value="${parseFloat(data.price_list[i].value)}">
+                                                        <div class="row">
+                                                            <div class="col-5"><span>${data.price_list[i].title}</span></div>
+                                                            <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
+                                                            <div class="col-2"><span class="valid-price">${data.price_list[i].price_status}</span></div>
+                                                        </div>
+                                                    </button>`);
+                                } else { // Customer price invalid, expired
+                                    $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option option-btn-checked" data-value="${parseFloat(data.price_list[i].value)}" disabled>
+                                                        <div class="row">
+                                                            <div class="col-5"><span>${data.price_list[i].title}</span></div>
+                                                            <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
+                                                            <div class="col-2"><span class="expired-price">${data.price_list[i].price_status}</span></div>
+                                                        </div>
+                                                    </button>`);
+                                }
+                            }
+                        } else if (data.price_list[i].price_type === 2) { // PRICE TYPE IS EXPENSE
                             general_price = parseFloat(data.price_list[i].value);
                             $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option" data-value="${parseFloat(data.price_list[i].value)}">
                                                     <div class="row">
@@ -3619,27 +3651,6 @@ function loadPriceProduct(eleProduct, is_change_item = true, is_expense = false)
                                                         <div class="col-2"><span class="valid-price">${data.price_list[i].price_status}</span></div>
                                                     </div>
                                                 </button>`);
-                        }
-                        if (data.price_list[i].id === account_price_id && general_price_id !== account_price_id) { // check & append CUSTOMER_PRICE_LIST
-                            if (!["Expired", "Invalid"].includes(data.price_list[i].price_status)) { // Customer price valid
-                                customer_price = parseFloat(data.price_list[i].value);
-                                $(priceList).empty();
-                                $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option option-btn-checked" data-value="${parseFloat(data.price_list[i].value)}">
-                                                        <div class="row">
-                                                            <div class="col-5"><span>${data.price_list[i].title}</span></div>
-                                                            <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
-                                                            <div class="col-2"><span class="valid-price">${data.price_list[i].price_status}</span></div>
-                                                        </div>
-                                                    </button>`);
-                            } else { // Customer price invalid, expired
-                                $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option option-btn-checked" data-value="${parseFloat(data.price_list[i].value)}" disabled>
-                                                        <div class="row">
-                                                            <div class="col-5"><span>${data.price_list[i].title}</span></div>
-                                                            <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
-                                                            <div class="col-2"><span class="expired-price">${data.price_list[i].price_status}</span></div>
-                                                        </div>
-                                                    </button>`);
-                            }
                         }
                     }
                 }

@@ -7,19 +7,18 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <a class="btn btn-outline-primary btn-animated btn-xs"
-       data-bs-placement="top"
+    <a data-bs-placement="top"
        title="{% trans 'Create New Purchase Quotation' %}"
        data-redirect="{% url "PurchaseQuotationCreate" %}"
        id="create_purchase_quotation_button">
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="plus"></i>
+        <button class="btn btn-outline-primary">
+            <span>
+                <span>{% trans 'Add' %}</span>
+                <span class="icon">
+                    <i class="fa-solid fa-plus"></i>
+                </span>
             </span>
-            <span class="font-3 ml-1">
-                {% trans 'New' %}
-            </span>
-        </span>
+        </button>
     </a>
 {% endblock %}
 {% block pageContent %}

@@ -278,7 +278,10 @@ class LogController {
                     if (!runtimeID) runtimeID = WFRTControl.getWFRuntimeID();
                     if (runtimeID) {
                         clearInterval(intervalShowWfHistory);
-                        $.fn.callAjax(SetupFormSubmit.getUrlDetailWithID(this.logUrl, runtimeID), 'GET',).then((resp) => {
+                        $.fn.callAjax2({
+                            url: SetupFormSubmit.getUrlDetailWithID(this.logUrl, runtimeID),
+                            method: 'GET',
+                        }).then((resp) => {
                             this.groupLogEle.attr('data-log-runtime-loaded', true);
                             let data = $.fn.switcherResp(resp);
                             if (data && $.fn.hasOwnProperties(data, ['diagram_data'])) {
@@ -300,7 +303,11 @@ class LogController {
             if (!pkID) pkID = this.tabActivityLog.attr('data-id-value');
             if (this.activityUrl && pkID && (!this.groupLogEle.attr('data-log-activity-loaded') || forceLoad === true)) {
                 clearInterval(intervalDataActivity);
-                $.fn.callAjax(this.activityUrl, 'GET', {'doc_id': pkID}, true,).then((resp) => {
+                $.fn.callAjax2({
+                    url: this.activityUrl,
+                    method: 'GET',
+                    data: {'doc_id': pkID},
+                }).then((resp) => {
                     this.groupLogEle.attr('data-log-activity-loaded', true);
                     let data = $.fn.switcherResp(resp);
                     if (data && data['status'] === 200 && data.hasOwnProperty('log_data')) {
@@ -309,7 +316,7 @@ class LogController {
                     }
                 }, (errs) => {
 
-                })
+                });
             }
         }, 1000)
     }
@@ -327,13 +334,16 @@ class NotifyController {
     }
 
     checkNotifyCount() {
-        $.fn.callAjax(this.notifyCountUrl, 'GET',).then((resp) => {
+        $.fn.callAjax2({
+            url: this.notifyCountUrl,
+            method: 'GET',
+        }).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data && data.hasOwnProperty('count') && data['count'] > 0) {
                 this.bellCount.text(data['count']);
                 this.bellIdxIcon.addClass('my-bell-ring');
             }
-        })
+        });
     }
 
     // main
@@ -349,7 +359,10 @@ class NotifyController {
             let dataUrl = $(this).attr('data-url');
             let dataMethod = $(this).attr('data-method');
 
-            $.fn.callAjax(dataUrl, dataMethod).then((resp) => {
+            $.fn.callAjax2({
+                url: dataUrl,
+                method: dataMethod,
+            }).then((resp) => {
                 let data = $.fn.switcherResp(resp);
                 let arr_no_seen = [];
                 let arr_seen = [];
@@ -399,14 +412,17 @@ class NotifyController {
                 WindowControl.hideLoadingWaitResponse(dataArea);
             }, (errs) => {
                 WindowControl.hideLoadingWaitResponse(dataArea);
-            })
+            });
         });
         realThis.btnSeenAll.click(function (event) {
             event.preventDefault();
             let dataUrl = $(this).attr('data-url');
             let dataMethod = $(this).attr('data-method');
             if (dataUrl && dataMethod) {
-                $.fn.callAjax(dataUrl, dataMethod, {}, true,).then((resp) => {
+                $.fn.callAjax2({
+                    url: dataUrl,
+                    method: dataMethod,
+                }).then((resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         realThis.bellIdxIcon.removeClass('my-bell-ring');
@@ -421,12 +437,15 @@ class NotifyController {
             let dataUrl = $(this).attr('data-url');
             let dataMethod = $(this).attr('data-method');
             if (dataUrl && dataMethod) {
-                $.fn.callAjax(dataUrl, dataMethod, {}, true,).then((resp) => {
+                $.fn.callAjax2({
+                    url: dataUrl,
+                    method: dataMethod,
+                }).then((resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data['status'] === 204) {
                         realThis.checkNotifyCount();
                     }
-                },)
+                });
             }
         });
     }
@@ -728,7 +747,13 @@ class FileUtils {
                             });
                             let formDataNewName = new FormData();
                             formDataNewName.append('file', newFile);
-                            return $.fn.callAjax(dataUrl, 'POST', formDataNewName, true, {}, 'multipart/form-data', {'isNotify': false},).then((resp) => {
+                            return $.fn.callAjax2({
+                                url: dataUrl,
+                                method: 'POST',
+                                data: formDataNewName,
+                                contentType: 'multipart/form-data',
+                                isNotify: false,
+                            }).then((resp) => {
                                 let detailNewFile = resp?.data?.detail;
                                 clsThis.setIdFile(detailNewFile?.['id']);
                                 clsThis.setFileNameUploaded(detailNewFile?.['file_name'], detailNewFile?.['file_size']);
@@ -737,7 +762,7 @@ class FileUtils {
                                 if ($.fn.isDebug() === true) console.log(errs);
                                 clsThis.showErrsUploadFile(newFileNewEle);
                                 return false;
-                            })
+                            });
                         } else {
                             clsThis.showErrsUploadFile(newFileNewEle);
                             return false;
@@ -785,9 +810,13 @@ class ListeningEventController {
             let current_company_id = $('#company-current-id').attr('data-id');
             let company_id_selected = $("input[name='switch_current_company']:checked").val();
             if (current_company_id !== company_id_selected) {
-                $.fn.callAjax($(this).attr('data-url'), $(this).attr('data-method'), {
-                    'company': company_id_selected
-                }, $('input[name=csrfmiddlewaretoken]').val(),).then((resp) => {
+                $.fn.callAjax2({
+                    url: $(this).attr('data-url'),
+                    method: $(this).attr('data-method'),
+                    data: {
+                        'company': company_id_selected
+                    },
+                }).then((resp) => {
                     $.fn.notifyB({
                         'description': resp.data.detail
                     }, 'success');
@@ -812,7 +841,10 @@ class ListeningEventController {
                 let urlData = $(this).attr('data-url') + '?' + $(this).attr('data-params');
                 let keyResult = $(this).attr('data-result-key');
                 $(this).append(`<option class="x-item-loading" value="x-item-loading" disabled>` + $.fn.transEle.attr('data-loading') + '...' + `</option>`);
-                $.fn.callAjax(urlData, 'GET').then((resp) => {
+                $.fn.callAjax2({
+                    url: urlData,
+                    method: 'GET',
+                }).then((resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data && typeof data === 'object' && data.hasOwnProperty(keyResult)) {
                         let selectedVal = $(this).find(":selected").val();
@@ -826,7 +858,7 @@ class ListeningEventController {
                             $(this).find('option.x-item-loading').attr('disable', 'disable').remove();
                         }
                     }
-                },)
+                });
             }
         });
         // -- Listen event select and select2-init-v1 for set previous selected data
@@ -985,6 +1017,7 @@ class ListeningEventController {
 
                     // show loading tbody table
                     WindowControl.showLoadingWaitResponse($(tbl).find('tbody'));
+                    // $x.fn.showLoadingPage();
                 });
                 $(tbl).on('draw.dt', () => {
                     // hide loading full page
@@ -992,6 +1025,7 @@ class ListeningEventController {
 
                     // hide loading tbody table
                     WindowControl.hideLoadingWaitResponse($(tbl).find('tbody'));
+                    // $x.fn.hideLoadingPage();
                 });
             }
         });
@@ -1105,12 +1139,12 @@ class ListeningEventController {
                         isNotify: false,
                     }).then(
                         (resp) => {
-                        $.fn.switcherResp(resp);
-                        return true;
-                    },
+                            $.fn.switcherResp(resp);
+                            return true;
+                        },
                         (errs) => {
-                        return false;
-                    }
+                            return false;
+                        }
                     )
                 },
                 allowOutsideClick: () => !Swal.isLoading()
@@ -1719,9 +1753,78 @@ class UtilControl {
 
 class DTBControl {
     // Handle every thing about DataTable
+    set setRowSelected(rowData) {
+        let temp = this.dataSelect
+        if (!temp.hasOwnProperty(rowData.idTable))
+            temp[rowData.idTable] = {}
+        if (rowData.checked)
+            temp[rowData.idTable][rowData.item.id] = rowData.item
+        else
+            delete temp[rowData.idTable][rowData.item.id]
+        this.dataSelect = temp
+        let storeElm = $(`<script id="tbl-stored" type="application/json">`)
+        storeElm.text(JSON.stringify(temp))
+        if ($(`body`).find('#tbl-stored').length === 0){
+            storeElm.insertAfter($.fn.storageSystemData)
+        }
+        else $('#tbl-stored', 'body').text(JSON.stringify(temp))
+    }
+
+    get getRowSelected(){
+        return this.dataSelect
+    }
+
+    static parseHeaderDropdownFilter(opts, settings, api){
+        if (opts.hasOwnProperty('columnSearching')) {
+            const columnSearch = opts['columnSearching']
+            if (columnSearch.length === 0) return false
+            let $thead = api.table().header();
+            let $newRow = $('<tr class="header-column_search">').appendTo($thead);
+            let $htmlTh = ''
+            for (let item of settings.aoColumns) {
+                if (columnSearch[item.idx]){
+                    const columnInfoSetup = columnSearch[item.idx]
+                    $htmlTh += `<th class="flt-select row-column-${columnInfoSetup.table_keyword}"></th>`
+                }
+                else $htmlTh += `<th class="row-column-idx-${item.idx}"></th>`
+            }
+            $('.header-column_search', $thead).append($htmlTh)
+            $('.header-column_search th', $thead).each(function (i) {
+                // kiểm tra xem có setup hay chưa nếu chưa không show dropdown
+                if (columnSearch[i]){
+                    let selectSetup = columnSearch[i]
+                    let column = api.column(i);
+                    let select = $('<select class="form-select"></select>')
+                    if (selectSetup['url']) select.attr('data-url', selectSetup['url'])
+                    if (selectSetup['url_req_key']) select.attr('data-prefix', selectSetup['url_req_key'])
+                    if (selectSetup['select_text']) select.attr('data-format', selectSetup['select_text'])
+                    if (selectSetup['select_allow_clear']){
+                        select.attr('data-select2-allowClear', true)
+                        select.attr('data-select2-placeholder', '')
+                    }
+
+                    select.html('<option value=""></option>')
+                    select.appendTo($(this).empty())
+                    select.on('change', function () {
+                        let val = $.fn.dataTable.util.escapeRegex(
+                            $(this).val()
+                        );
+                        if (val) api.table().ajax.reload()
+                        // column
+                        //     .search(val ? '' + val + '' : '', true, false)
+                        //     .draw();
+                    });
+                }
+            })
+        }
+    }
 
     static parseDomDtl(opts) {
-        let domDTL = "<'row miner-group'<'col-sm-12 col-md-3 col-lg-2 mt-3'f>>" + "<'row mt-3'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'p>>" + "<'row mt-3'<'col-sm-12'tr>>" + "<'row mt-3'<'col-sm-12 col-md-6'i>>";
+        let domDTL = "<'row miner-group'<'col-sm-12 col-md-3 col-lg-2 mt-3'f>>" +
+            "<'row mt-3'<'col-sm-12 col-md-6'<'count_selected'>><'col-sm-12 col-md-6'<'custom_toolbar'>>>" +
+            "<'row mt-3'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'p>>" +
+            "<'row mt-3'<'col-sm-12'tr>>" +
+            "<'row mt-3'<'col-sm-12 col-md-6'i>>";
         let utilsDom = {
             // "l": Đại diện cho thanh điều hướng (paging) của DataTable.
             // "f": Đại diện cho hộp tìm kiếm (filtering) của DataTable.
@@ -1777,6 +1880,13 @@ class DTBControl {
             if (utilsDom.visibleRowQuantity === false) domDTL = domDTL.replace('s>', '>');
             delete opts['visibleRowQuantity']
         }
+        // show/hide custom toolbar
+        if (!opts.hasOwnProperty('fullToolbar') || opts?.fullToolbar === false){
+            // show hide/row selected
+            domDTL = domDTL.replace("<'count_selected'>", '')
+            // show hide custom toolbar
+            domDTL = domDTL.replace("<'custom_toolbar'>", '')
+        }
 
         return [opts, domDTL];
     }
@@ -1808,14 +1918,69 @@ class DTBControl {
                 delete opts['ajax'];
                 opts['data'] = [];
             }
-
         }
 
-        let drawCallback = null;
+        // config server side processing
+        if(opts['useDataServer']){
+            // server side v
+            let setupServerSide = {
+                processing: true,
+                serverSide: true,
+                ordering: true,
+                searchDelay: 1000,
+                order: [[0, "asc"]],
+                ajax: $.extend(opts['ajax'], {
+                    data: function (d) {
+                        let orderTxt = ''
+                        let customFilter = {};
+                        if (d?.order.length) {
+                            const orderKey = d.columns[d.order[0].column].data
+                            const orderVal = d.order[0].dir
+                            if (orderKey && typeof orderKey !== 'number' && orderVal)
+                                orderTxt = orderVal === 'asc' ? orderKey : `-${orderKey}`
+                        }
+                        if (opts['columnSearching']){
+                            let optionList = opts['columnSearching']
+                            for (let idx in optionList){
+                                const item = optionList[idx]
+                                const isVal = $(`.row-column-${item.table_keyword} select`).val()
+                                if (isVal) customFilter[item.search_key] = isVal
+                            }
+                        }
+                        return {
+                            'page': Math.ceil(d.start / d.length) + 1,
+                            'pageSize': d.length,
+                            'search': d?.search?.value ? d.search.value : '',
+                            'ordering': orderTxt, ...customFilter
+                        }
+                    },
+                    dataFilter: function (data) {
+                        let json = JSON.parse(data);
+                        json.recordsTotal = json.data.page_count
+                        json.recordsFiltered = json.data.page_count
+                        return JSON.stringify(json);
+                    }
+                })
+            }
+            opts = $.extend(opts, setupServerSide)
+        }
+
+        // merge two drawCallback function
+        let drawCallback01 = function(){}
         if (opts.hasOwnProperty('drawCallback')) {
-            drawCallback = opts['drawCallback'];
+            drawCallback01 = opts['drawCallback'];
             delete opts['drawCallback'];
         }
+        let drawCallBackDefault = function (settings) {
+            $('.dataTables_paginate > .pagination').addClass('custom-pagination pagination-rounded pagination-simple');
+            feather.replace();
+            // reload all currency
+            if (reloadCurrency === true) $.fn.initMaskMoney2();
+            // buildSelect2();
+            setTimeout(() => DocumentControl.buildSelect2(), 0);
+        }
+
+
 
         // return data
         let configFinal = {
@@ -1827,7 +1992,6 @@ class DTBControl {
             searching: true,
             ordering: false,
             paginate: true,
-            pageLength: 10,
             dom: domDTL,
             language: {
                 url: $.fn.storageSystemData.attr('data-msg-datatable-language-config').trim(),
@@ -1835,25 +1999,16 @@ class DTBControl {
             lengthMenu: [
                 [5, 10, 25, 50, -1], [5, 10, 25, 50, $.fn.transEle.attr('data-all')],
             ],
-            drawCallback: function () {
-                $('.dataTables_paginate > .pagination').addClass('custom-pagination pagination-rounded pagination-simple');
-                feather.replace();
-                if (reloadCurrency === true) {
-                    // reload all currency
-                    $.fn.initMaskMoney2();
-                }
-                // buildSelect2();
-                setTimeout(() => {
-                    DocumentControl.buildSelect2();
-                }, 0);
-
-                // drawCallback manual
-                // if (drawCallback && typeof drawCallback === 'function') {
-                //     drawCallback(false);
-                // }
+            drawCallback: function (settings){
+                drawCallback01(settings)
+                drawCallBackDefault(settings)
             },
-            initComplete: function () {
+            initComplete: function (settings) {
                 $(this.api().table().container()).find('input').attr('autocomplete', 'off');
+
+                // show header select when options is in setup
+                DTBControl.parseHeaderDropdownFilter(opts, settings, this.api())
+                // end if check searching column
             },
             rowCallback: function (row, data, index) {
                 if (rowIdx === true) $('td:eq(0)', row).html(index + 1);
@@ -1895,13 +2050,103 @@ class DTBControl {
         }
     }
 
+    checkRowSelect(opts){
+        let $this = this
+        if (opts?.['fullToolbar'] === true)
+            // init on click when enable count select
+            $('.check-select, .check-select-all', this.dtb$).on('change', function (e) {
+                e.stopPropagation()
+                if ($(this).hasClass('check-select-all')) {
+                    // continue
+                    let listData = $(this).closest('table').DataTable().rows({ page: 'current' }).data().toArray()
+                    $('.check-select', $this.dtb$).prop('checked', this.checked)
+                    for (let item of listData){
+                        $this.setRowSelected = {
+                            item: item,
+                            idTable: $(this).closest('table').attr('id'),
+                            checked: this.checked
+                        }
+                    }
+                }
+                else {
+                    const rowData = $(this).closest('table').DataTable().row($(this).closest('tr')).data();
+                    $this.setRowSelected = {
+                        item: rowData,
+                        idTable: $(this).closest('table').attr('id'),
+                        checked : this.checked
+                    }
+
+                }
+                // count and print to text noti in toolbar
+                const allData = $this.getRowSelected
+                $('.count_selected').html($.fn.transEle.attr('data-datatable-count-txt').replace('{0}',
+                    Object.keys(allData[$(this).closest('table').attr('id')]).length))
+            });
+    }
+
+    reCheckSelect(sgs){
+        const ckAll = $('.check-select-all', $(sgs.oInstance))
+        if (ckAll.length) ckAll.prop('checked', false)
+        let rowSelect = this.getRowSelected
+        rowSelect = rowSelect[sgs.sInstance] || {}
+        let isFull = true
+        if (Object.keys(rowSelect).length > 0){
+            for (let item of sgs?.aoData) {
+                if (rowSelect[item?._aData?.id]){
+                    item._aData.checked = true
+                    $('input', item.anCells[0]).attr('checked', true)
+                }
+                else {
+                    isFull = false
+                    item._aData.checked = false
+                }
+            }
+        }
+        else isFull = false
+        if (isFull) ckAll.prop('checked', true)
+    }
+
+    static getTableSelected(tableID) {
+        let dataList = $('#tbl-stored').text()
+        if (dataList) dataList = JSON.parse(dataList)
+        dataList = dataList[tableID] || {}
+        return dataList
+    }
+
+    static prepareHTMLToolbar(divWrap, _settgs){
+        // show selected show count select is display
+        $('.count_selected', divWrap).html(`<p>${
+            $.fn.transEle.attr('data-datatable-count-txt').replace('{0}', '0')}</p>`)
+        divWrap.find('.select2:not(:disabled)').initSelect2();
+        // show column show/hide
+        const $custom_tb = $('.custom_toolbar', divWrap).append(
+            `<div class="dropdown ct_toolbar-columns">` +
+            `<button data-bs-toggle="dropdown" class="btn btn-outline-light dropdown-toggle" type="button">` +
+            `<i class="fa-solid fa-list"></i></button><div role="menu" class="dropdown-menu p-4"></div></div>`
+        )
+        let columnList = `<div class="form-check form-check-sm">` +
+                `<input type="checkbox" class="form-check-input check_all" id="tb_columns-all" checked>` +
+                `<label class="form-check-label" for="tb_columns-all">${$.fn.transEle.attr('data-all')}</label></div><hr class="mt-1 mb-1">`;
+        for (let item of _settgs.aoColumns){
+            if (item?.data){
+                columnList += `<div class="form-check form-check-sm">` +
+                    `<input type="checkbox" class="form-check-input" data-column="${item.idx}" id="tb_columns-${item.idx}" checked>`+
+                    `<label class="form-check-label" for="customChecks1">${item.sTitle}</label></div>`
+            }
+        }
+        $('.ct_toolbar-columns .dropdown-menu', divWrap).html(columnList)
+    }
+
     constructor(dtb$) {
         this.dtb$ = $(dtb$)
+        this.dataSelect = {}
     }
 
     init(opts) {
         let tbl = this.dtb$.DataTable(DTBControl.parseDtlOpts(opts));
-        tbl.on('init.dt', function () {
+        let $this = this;
+        tbl.on('init.dt', function (event, settings) {
+            let divWrap = $(this).closest('.dataTables_wrapper')
             let minerGroup = $(this).closest('.waiter-miner-group');
             if (minerGroup.length > 0) {
                 let filterGroup = $(minerGroup[0]).find('.miner-group');
@@ -1913,6 +2158,48 @@ class DTBControl {
                 }
             }
             $(this).closest('.dataTables_wrapper').find('.select2:not(:disabled)').initSelect2();
+            if (opts?.['fullToolbar'] === true){
+                // load toolbar if setup is true
+                DTBControl.prepareHTMLToolbar(divWrap, settings)
+                // handle on check on/off column
+                $('.ct_toolbar-columns .dropdown-menu input[type="checkbox"]', divWrap).off().on('change', function (e) {
+                    if ($(this).attr('id') === 'tb_columns-all'){
+                        let listIdx = []
+                        $(this).parent('.form-check').siblings('.form-check').each(function () {
+                            listIdx.push($(this).find('input').attr('data-column'))
+                        })
+                        tbl.columns(listIdx).visible(this.checked)
+                        $('input:not(#tb_columns-all)', $(this).closest('.dropdown-menu')).prop('checked', this.checked)
+                    }
+                    else{
+                        tbl.column($(this).attr('data-column')).visible(this.checked)
+                        if(!this.checked) $('#tb_columns-all', divWrap).prop('checked', false)
+                        else{
+                            let isFull = true
+                            $(this).parent('.form-check').siblings('.form-check').each(function () {
+                                if ($(this).find('input:not(.check_all)').prop('checked') === false){
+                                    isFull = false
+                                    return false
+                                }
+                            })
+                            if (isFull) $('#tb_columns-all', divWrap).prop('checked', true)
+                        }
+                    }
+                });
+            }
+        });
+        tbl.on('draw.dt', function(event, settings) {
+            // init row has checkbox selection
+            $this.checkRowSelect(opts);
+            $this.reCheckSelect(settings);
+            // end init row
+            // select filter in header
+            setTimeout(()=> {
+                $('.header-column_search th.flt-select select', this.dtb$).each(function() {
+                    $(this).initSelect2()
+                })
+            }, 0)
+            // end select filter
         });
         return tbl;
     }
@@ -2145,7 +2432,10 @@ class DocumentControl {
         if (!dataText || dataText === '') {
             let companyConfigUrl = $.fn.storageSystemData.attr('data-urlCompanyConfig');
             if (companyConfigUrl) {
-                return await $.fn.callAjax(companyConfigUrl, 'GET').then((resp) => {
+                return await $.fn.callAjax2({
+                    url: companyConfigUrl,
+                    method: 'GET',
+                }).then((resp) => {
                     let data = $.fn.switcherResp(resp);
                     dataText = JSON.stringify(data);
                     $.fn.storageSystemData.attr('data-urlCompanyConfigData', dataText);
@@ -2228,7 +2518,11 @@ class DocumentControl {
 
         function callChangeSpaceAndReload(urlData, methodData, spaceCode, urlRedirectData) {
             WindowControl.showLoading();
-            $.fn.callAjax(urlData, methodData, {'space_code': spaceCode}, true,).then((resp) => {
+            $.fn.callAjax2({
+                url: urlData,
+                method: methodData,
+                data: {'space_code': spaceCode},
+            }).then((resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data && data['status'] === 200) {
                     $.fn.notifyB({
@@ -2243,7 +2537,7 @@ class DocumentControl {
                 }, 1000);
             }, (errs) => {
                 WindowControl.hideLoading();
-            })
+            });
         }
 
         $('.space-item').click(function (event) {
@@ -2304,6 +2598,7 @@ let $x = {
         getRowData: DTBControl.getRowData,
         deleteRow: DTBControl.deleteRow,
         updateDataRow: DTBControl.updateDataRow,
+        getSelection: DTBControl.getTableSelected,
 
         redirectLogin: WindowControl.redirectLogin,
 
@@ -2400,8 +2695,11 @@ var DataTableAction = {
         div.modal('show');
         div.find('.btn').off().on('click', function (e) {
             if ($(this).attr('data-type') === 'cancel') div.remove(); else {
-                $.fn.callAjax(url, 'DELETE', data, crf)
-                    .then((res) => {
+                $.fn.callAjax2({
+                    url: url,
+                    method: 'DELETE',
+                    data: data,
+                }).then((res) => {
                         if (res.hasOwnProperty('status')) {
                             div.modal('hide');
                             div.remove();
@@ -2410,7 +2708,7 @@ var DataTableAction = {
                                 description: res?.data?.message ? res.data.message : 'Delete item successfully'
                             }, 'success')
                         }
-                    })
+                    });
             }
         })
     },

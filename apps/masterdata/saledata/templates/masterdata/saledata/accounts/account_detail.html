@@ -582,8 +582,8 @@
                                             <div class="form-group">
                                                 <label class="label-field form-label required">{% trans "Province/City" %}</label>
                                                 <select class="form-select" id="shipping-city"
-                                                        data-url="{% url "CityListAPI" %}" data-method="GET"
-                                                        aria-label=".form-select-sm">
+                                                        data-select2-url="{% url "CityListAPI" %}" data-method="GET"
+                                                        aria-label="form-select-sm">
                                                 </select>
                                             </div>
                                         </div>
@@ -591,7 +591,7 @@
                                             <div class="form-group">
                                                 <label class="label-field form-label required">{% trans "District" %}</label>
                                                 <select class="form-select" id="shipping-district"
-                                                        data-url="{% url "DistrictListAPI" 'pk' %}" data-method="GET"
+                                                        data-select2-url="{% url "DistrictListAPI" 'pk' %}" data-method="GET"
                                                         aria-label=".form-select-sm">
                                                 </select>
                                             </div>
@@ -600,7 +600,7 @@
                                             <div class="form-group">
                                                 <label class="label-field form-label">{% trans "Ward" %}</label>
                                                 <select class="form-select" id="shipping-ward"
-                                                        data-url="{% url "WardListAPI" 'pk' %}" data-method="GET"
+                                                        data-select2-url="{% url "WardListAPI" 'pk' %}" data-method="GET"
                                                         aria-label=".form-select-sm">
                                                 </select>
                                             </div>
@@ -647,7 +647,7 @@
                                             <label class="label-field form-label required">{% trans "Account Name" %}</label>
                                             <select class="form-select" id="select-box-account-name"
                                                     data-method="GET"
-                                                    data-url="{% url 'AccountDetailAPI' pk=0 %}">
+                                                    data-select2-url="{% url 'AccountDetailAPI' pk=0 %}">
                                                 <option></option>
                                             </select>
                                         </div>

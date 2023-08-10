@@ -621,8 +621,9 @@ class ServerAPI:
     @property
     def setup_header_dtb(self):
         ctx = {}
-        if self.query_params:
-            page = self.query_params.get('page', None)
+        if hasattr(self.request, 'query_params'):
+            query_params = self.request.query_params.dict()
+            page = query_params.get('page', None)
             if page and isinstance(page, int):
                 ctx['page'] = page
 

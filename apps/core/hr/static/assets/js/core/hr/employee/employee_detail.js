@@ -21,13 +21,19 @@ $(function () {
     }
 
     $(document).ready(function () {
+        $x.fn.showLoadingPage();
         Promise.all([
             callAppList(), callDetailData($('#employee-detail-page').attr('data-url'), 'GET')
         ]).then((results) => {
             renderAppList(results[0]);
             return results;
         }).then((results) => {
-            renderDetailData(results[1])
-        });
+            renderDetailData(results[1]);
+            return results;
+        }).then(
+            (results)=>{
+                $x.fn.hideLoadingPage();
+            }
+        );
     });
 });

@@ -101,7 +101,7 @@
                             <select
                                     class="form-control select2"
                                     id="select-box-opportunity-create-customer"
-                                    data-url="{% url "AccountListAPI" %}"
+                                    data-select2-url="{% url "AccountListAPI" %}"
                                     data-method="GET"
                                     name="customer"
                                     required
@@ -124,7 +124,7 @@
                                     id="select-box-product-category"
                                     multiple
                                     data-method="GET"
-                                    data-url="{% url 'ProductCategoryListAPI' %}"
+                                    data-select2-url="{% url 'ProductCategoryListAPI' %}"
                             >
                             </select>
                         </div>
@@ -136,7 +136,7 @@
                                     id="select-box-sale-person"
                                     data-close-on-select="true"
                                     data-method="GET"
-                                    data-url="{% url 'EmployeeListAPI' %}"
+                                    data-select2-url="{% url 'EmployeeListAPI' %}"
                             >
                             </select>
                         </div>

@@ -364,7 +364,7 @@ $(function () {
             (resp) => {
                 const data = $.fn.switcherResp(resp);
                 if (data) {
-                    $.fn.notifyB({description: data.message}, 'success')
+                    $.fn.notifyB({description: data?.message || data?.detail }, 'success')
                     // if in task page load add task function
                     if ($(document).find('#tasklist_wrap').length) {
                         let elm = $('<input type="hidden" id="addNewTaskData"/>');

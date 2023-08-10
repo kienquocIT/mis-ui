@@ -23,14 +23,15 @@
 
 {% endblock %}
 {% block pageAction %}
-    <a
-            class="btn btn-icon btn-rounded bg-dark-hover mr-1"
-            href="{% url 'EmployeeUpdate' pk=pk %}"
-            data-bs-toggle="tooltip"
-            data-bs-placement="top"
-            title="{% trans 'Edit' %}"
-    >
-        <span class="icon"><i class="fa-regular fa-pen-to-square"></i></span>
+    <a href="{% url 'EmployeeUpdate' pk=pk %}">
+        <button class="btn btn-outline-primary">
+            <span>
+                <span>{% trans 'Edit' %}</span>
+                <span class="icon">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                </span>
+            </span>
+        </button>
     </a>
 {% endblock %}
 
@@ -303,5 +304,5 @@
     <script src="{% static 'assets/js/core/hr/employee/employee_detail.js' %}"></script>
 
     <script src="{% static 'assets/js/core/hr/employee/permissions.js' %}"></script>
-    <script src="{% static 'assets/js/core/hr/employee/plan_app.js' %}"></script>
+    <script src="{% static 'assets/js/core/hr/plan_app.js' %}"></script>
 {% endblock %}

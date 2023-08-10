@@ -88,10 +88,6 @@ $(function () {
         // Action on click .table-row-checkbox of tablePurchaseRequest
         tablePurchaseRequest.on('click', '.table-row-checkbox', function() {
             loadDataClass.loadModalPurchaseRequestProductTable();
-            // if ($(this)[0].checked === false) {
-            //     let targetID = $(this)[0].id;
-            //     uncheckRowTableRelate(tablePurchaseRequestProduct, targetID)
-            // }
         });
 
         // Action on click btn add purchase request

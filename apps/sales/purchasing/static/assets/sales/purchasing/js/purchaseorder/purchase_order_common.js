@@ -448,16 +448,21 @@ class loadDataHandle {
         }
     };
 
-    loadModalPurchaseRequestTable() {
+    loadModalPurchaseRequestTable(is_clear_all = false) {
         let tablePurchaseRequest = $('#datable-purchase-request');
-        if (tablePurchaseRequest[0].querySelector('.dataTables_empty')) {
-            tablePurchaseRequest.DataTable().destroy();
+        if (is_clear_all === false) {
+            if (tablePurchaseRequest[0].querySelector('.dataTables_empty')) {
+                tablePurchaseRequest.DataTable().clear().destroy();
+                dataTableClass.dataTablePurchaseRequest();
+            }
+        } else {
+            tablePurchaseRequest.DataTable().clear().destroy();
             dataTableClass.dataTablePurchaseRequest();
         }
         return true;
     };
 
-    loadModalPurchaseRequestProductTable() {
+    loadModalPurchaseRequestProductTable(is_clear_all = false) {
         let tablePurchaseRequest = $('#datable-purchase-request');
         let tablePurchaseRequestProduct = $('#datable-purchase-request-product');
         let frm = new SetupFormSubmit(tablePurchaseRequestProduct);
@@ -466,7 +471,7 @@ class loadDataHandle {
         for (let eleChecked of tablePurchaseRequest[0].querySelectorAll('.table-row-checkbox:checked')) {
             request_id_list.push(eleChecked.id);
         }
-        if (!tablePurchaseRequestProduct[0].querySelector('.dataTables_empty')) {
+        if (!tablePurchaseRequestProduct[0].querySelector('.dataTables_empty') && is_clear_all === false) {
             for (let eleChecked of tablePurchaseRequestProduct[0].querySelectorAll('.table-row-checkbox:checked')) {
                 checked_data[eleChecked.id] = {
                     'id': eleChecked.id,
@@ -561,10 +566,10 @@ class loadDataHandle {
         return true;
     };
 
-    loadModalPurchaseQuotation() {
+    loadModalPurchaseQuotation(is_clear_all = false) {
         let tablePurchaseQuotation = $('#datable-purchase-quotation');
         let checked_list = [];
-        if (!tablePurchaseQuotation[0].querySelector('.dataTables_empty')) {
+        if (!tablePurchaseQuotation[0].querySelector('.dataTables_empty') && is_clear_all === false) {
             for (let eleChecked of tablePurchaseQuotation[0].querySelectorAll('.table-row-checkbox:checked')) {
                 checked_list.push(eleChecked.id);
             }
@@ -598,6 +603,11 @@ class loadDataHandle {
                         }
                     }
                 )
+            } else {
+                if (is_clear_all === true) {
+                    tablePurchaseQuotation.DataTable().clear().destroy();
+                    dataTableClass.dataTablePurchaseQuotation();
+                }
             }
         }
         return true;
@@ -636,6 +646,7 @@ class loadDataHandle {
             })
             purchase_quotations_id_list.push(pqID);
         }
+        self.loadBoxSupplier();
         if (is_check === true) {
             elePurchaseQuotation.empty();
             elePurchaseQuotation.append(eleAppend);
@@ -695,8 +706,9 @@ class loadDataHandle {
 
     loadTableProductNoPurchaseRequest() {
         let self = this;
-        $('#purchase-order-purchase-request').empty();
-        $('#purchase-order-purchase-quotation').empty();
+        self.loadDataWhenClearAll();
+
+
         let tablePurchaseOrderProductRequest = $('#datable-purchase-order-product-request');
         let tablePurchaseOrderProductAdd = $('#datable-purchase-order-product-add');
         let order = 1;
@@ -706,20 +718,18 @@ class loadDataHandle {
             order = (tableLen + 1);
         }
         let data = {
-            'product': {'id': 1},
-            'uom_request': {'id': 1},
-            'uom_order': {'id': 1},
-            'tax': {'id': 1, 'value': 10},
-            'stock': 3,
+            'product': {},
+            'uom_order_request': {},
+            'uom_order_actual': {},
+            'tax': {},
+            'stock': 0,
             'product_title': '',
-            'product_description': 'xxxxx',
-            'product_uom_request_title': '',
-            'product_uom_order_title': '',
-            'product_quantity_request': 0,
-            'product_quantity_order': 0,
+            'product_description': '',
+            'product_quantity_order_request': 0,
+            'product_quantity_order_actual': 0,
             'remain': 0,
-            'product_unit_price': 1800000,
-            'product_tax_title': 'vat-10',
+            'product_unit_price': 0,
+            'product_tax_title': '',
             'product_tax_amount': 0,
             'product_subtotal_price': 0,
             'order': order,
@@ -875,6 +885,19 @@ class loadDataHandle {
             $.fn.initMaskMoney2();
             calculateClass.calculateMain($table, row);
         });
+        return true
+    }
+
+    loadDataWhenClearAll() {
+        let self = this;
+        $('#purchase-order-purchase-request').empty();
+        $('#purchase-order-purchase-quotation').empty();
+        self.loadModalPurchaseRequestTable(true);
+        $('#table-purchase-reqeust-checkbox-all')[0].checked = false;
+        self.loadModalPurchaseRequestProductTable(true);
+        $('#btn-confirm-add-purchase-request').click();
+        self.loadModalPurchaseQuotation(true);
+        $('#btn-confirm-add-purchase-quotation').click();
         return true
     }
 }
@@ -1361,13 +1384,16 @@ class dataTableHandle {
                 {
                     "width": "5%",
                     "targets": 0
-                }, {
+                },
+                {
                     "width": "20%",
                     "targets": 1
-                }, {
+                },
+                {
                     "width": "10%",
                     "targets": 2
-                }, {
+                },
+                {
                     "width": "10%",
                     "targets": 3,
                 },

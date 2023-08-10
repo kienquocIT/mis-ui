@@ -1,4 +1,6 @@
 $(async function () {
+    const $trans = $('#trans-factory');
+    const $url = $('#url-factory');
     // prod tab handle
     class prodDetailUtil {
         prodList = {}
@@ -31,7 +33,7 @@ $(async function () {
 
         contentModalHandle(idx, config, prod_data) {
             const _this = this
-            let url = $('#url-factory').attr('data-warehouse-prod')
+            let url = $url.attr('data-warehouse-prod')
 
             $.fn.callAjax(url, 'get', {
                 'product_id': prod_data?.product_data?.id,
@@ -230,7 +232,7 @@ $(async function () {
                         class: 'w-30',
                         data: 'product_data',
                         render: (row, type, data) => {
-                            const dataCont = DataTableAction.item_view(row, $('#url-factory').attr('data-prod-detail'))
+                            const dataCont = DataTableAction.item_view(row, $url.attr('data-prod-detail'))
                             let is_gift = ''
                             if (data.is_promotion)
                                 is_gift = '<span class="ml-2"><i class="fa-solid fa-gift text-gift"></i></span>'
@@ -336,7 +338,7 @@ $(async function () {
                         // e.stopPropagation()
                         if (parseFloat(this.value) > data.remaining_quantity){
                             $.fn.notifyB({
-                                    description: $('#trans-factory').attr('data-error-picked-quantity')
+                                    description: $trans.attr('data-error-picked-quantity')
                                 },
                                 'failure')
                             return false
@@ -348,6 +350,31 @@ $(async function () {
             });
         }
 
+        static modalLogistics(customerID) {
+            $.fn.callAjax2({
+                url: $url.attr('data-customer-detail').format_url_with_uuid(customerID),
+                method: 'GET'
+            }).then((resp) => {
+                let data = $.fn.switcherResp(resp);
+                data = data['account_detail']
+                // handle event modal show via btn click
+                $('#modal_choise_logistics').on('shown.bs.modal', function (e) {
+                    let dataLogistics
+                    // show address else show billing
+                    if ($(e.relatedTarget).attr('data-is-address')) dataLogistics = data?.shipping_address
+                    else dataLogistics = data?.billing_address
+                    let htmlTemp = ''
+                    for (let item of dataLogistics){
+                        htmlTemp += `<div class="col mb-3 text-right txt-cl-black"><textarea disabled class="form-control mb-2 txt-cl-black" data-id="${
+                            item?.id ? item.id : item
+                        }">${item}</textarea><button class="btn btn-primary">${
+                            $trans.attr('data-select_address')}</button></div>`
+                    }
+                    $(this).find('.modal-body').html(htmlTemp)
+                });
+                $('#', 'document')
+            });
+        }
     }
 
     let prodTable = new prodDetailUtil();
@@ -369,8 +396,7 @@ $(async function () {
         const $form = $('#delivery_form')
         $.fn.callAjax($form.attr('data-url'), 'get')
             .then((req) => {
-                const $trans = $('#trans-factory');
-                const $url = $('#url-factory');
+
                 const res = $.fn.switcherResp(req);
                 prepareHTMLConfig(res.config_at_that_point)
 
@@ -394,6 +420,9 @@ $(async function () {
                     $cusID.val(res.customer_data.title)
                     const cusContent = DataTableAction.item_view(res.customer_data, $url.attr('data-customer'))
                     $cusID.prev().find('.dropdown-menu').html(cusContent)
+                    prodDetailUtil.modalLogistics(res.customer_data.id, res.sale_order_data)
+                    $('#textareaShippingAddress').val(res.sale_order_data?.shipping_address?.address)
+                    $('#textareaBilling').val(res.sale_order_data?.billing_address?.bill)
                 }
                 if (res.contact_data) {
                     const $conID = $('#contact_id')
@@ -424,8 +453,6 @@ $(async function () {
                 $('#request-data').text(JSON.stringify(res))
                 // run table
                 prodTable.initTableProd()
-                $('#textareaShippingAddress').val(res.sale_order_data?.shipping_address)
-                $('#textareaBilling').val(res.sale_order_data?.billing_address)
                 if (res.attachments){
                     const fileDetail = res.attachments[0]?.['files']
                     FileUtils.init($(`[name="attachments"]`).siblings('button'), fileDetail);
@@ -448,7 +475,6 @@ $(async function () {
             let _form = new SetupFormSubmit($form);
             const csr = $("[name=csrfmiddlewaretoken]").val();
             let putData = {}
-            const $transElm = $('#trans-factory')
             putData['estimated_delivery_date'] = moment(
                 _form.dataForm['estimated_delivery_date'],
                 'DD/MM/YYYY hh:mm A'
@@ -478,7 +504,7 @@ $(async function () {
                     })
             }
             if (!prodSub || !prodSub.length) {
-                $.fn.notifyB({description: $transElm.attr('data-error-done')}, 'failure')
+                $.fn.notifyB({description: $trans.attr('data-error-done')}, 'failure')
                 return false
             }
             putData.products = prodSub
@@ -546,7 +572,7 @@ $(async function () {
             else if (item.is_not_inventory){
                 // cho case có prod trong kho
                 const listPromise = await $.fn.callAjax(
-                    $('#url-factory').attr('data-warehouse-prod'),
+                    $url.attr('data-warehouse-prod'),
                     'GET',
                     {'product_id': item.product_data.id, 'uom_id': item.uom_data.id}
                 )
@@ -582,7 +608,7 @@ $(async function () {
                     }
                 }
                 if (!flag) {
-                    $.fn.notifyB({description: $('#trans-factory').attr('data-outstock')}, 'failure')
+                    $.fn.notifyB({description: $trans.attr('data-outstock')}, 'failure')
                 }
             }
             else if (!item.is_not_inventory){

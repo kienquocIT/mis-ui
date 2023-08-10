@@ -262,13 +262,13 @@ $(document).ready(function () {
                     if (shipping_address.is_default) {
                         list_shipping_address += `<div class="form-check ml-5 mb-2">
                                     <input class="form-check-input" type="radio" name="shippingaddressRadio" checked disabled>
-                                    <label>` + shipping_address.address + `</label>
+                                    <label>` + shipping_address.full_address + `</label>
                                     <a hidden href="#" class="del-address-item"><i class="bi bi-x"></i></a>
                                </div>`;
                     } else {
                         list_shipping_address += `<div class="form-check ml-5 mb-2">
                                     <input class="form-check-input" type="radio" name="shippingaddressRadio" disabled>
-                                    <label>` + shipping_address.address + `</label>
+                                    <label>` + shipping_address.full_address + `</label>
                                     <a hidden href="#" class="del-address-item"><i class="bi bi-x"></i></a>
                                </div>`;
                     }
@@ -281,13 +281,13 @@ $(document).ready(function () {
                     if (billing_address.is_default) {
                         list_billing_address += `<div class="form-check ml-5 mb-2">
                                     <input class="form-check-input" type="radio" name="billingaddressRadio" checked disabled>
-                                    <label>` + billing_address.address + `</label>
+                                    <label>` + billing_address.full_address + `</label>
                                     <a hidden href="#" class="del-address-item"><i class="bi bi-x"></i></a>
                                </div>`;
                     } else {
                         list_billing_address += `<div class="form-check ml-5 mb-2">
                                     <input class="form-check-input" type="radio" name="billingaddressRadio" disabled>
-                                    <label>` + billing_address.address + `</label>
+                                    <label>` + billing_address.full_address + `</label>
                                     <a hidden href="#" class="del-address-item"><i class="bi bi-x"></i></a>
                                </div>`;
                     }

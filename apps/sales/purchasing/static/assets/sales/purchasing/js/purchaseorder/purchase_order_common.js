@@ -327,36 +327,38 @@ class loadDataHandle {
                 $(priceList).empty();
                 if (Array.isArray(data.price_list) && data.price_list.length > 0) {
                     for (let i = 0; i < data.price_list.length; i++) {
-                        if (data.price_list[i].is_default === true) { // check & append GENERAL_PRICE_LIST
-                            general_price_id = data.price_list[i].id;
-                            general_price = parseFloat(data.price_list[i].value);
-                            $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option" data-value="${parseFloat(data.price_list[i].value)}">
+                        if (data.price_list[i].price_type === 1) { // PRICE TYPE IS PRODUCT (PURCHASE)
+                            if (data.price_list[i].is_default === true) { // check & append GENERAL_PRICE_LIST
+                                general_price_id = data.price_list[i].id;
+                                general_price = parseFloat(data.price_list[i].value);
+                                $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option" data-value="${parseFloat(data.price_list[i].value)}">
                                                     <div class="row">
                                                         <div class="col-5"><span>${data.price_list[i].title}</span></div>
                                                         <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
                                                         <div class="col-2"><span class="valid-price">${data.price_list[i].price_status}</span></div>
                                                     </div>
                                                 </button>`);
-                        }
-                        if (data.price_list[i].id === account_price_id && general_price_id !== account_price_id) { // check & append CUSTOMER_PRICE_LIST
-                            if (!["Expired", "Invalid"].includes(data.price_list[i].price_status)) { // Customer price valid
-                                customer_price = parseFloat(data.price_list[i].value);
-                                $(priceList).empty();
-                                $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option option-btn-checked" data-value="${parseFloat(data.price_list[i].value)}">
+                            }
+                            if (data.price_list[i].id === account_price_id && general_price_id !== account_price_id) { // check & append CUSTOMER_PRICE_LIST
+                                if (!["Expired", "Invalid"].includes(data.price_list[i].price_status)) { // Customer price valid
+                                    customer_price = parseFloat(data.price_list[i].value);
+                                    $(priceList).empty();
+                                    $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option option-btn-checked" data-value="${parseFloat(data.price_list[i].value)}">
                                                         <div class="row">
                                                             <div class="col-5"><span>${data.price_list[i].title}</span></div>
                                                             <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
                                                             <div class="col-2"><span class="valid-price">${data.price_list[i].price_status}</span></div>
                                                         </div>
                                                     </button>`);
-                            } else { // Customer price invalid, expired
-                                $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option option-btn-checked" data-value="${parseFloat(data.price_list[i].value)}" disabled>
+                                } else { // Customer price invalid, expired
+                                    $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option option-btn-checked" data-value="${parseFloat(data.price_list[i].value)}" disabled>
                                                         <div class="row">
                                                             <div class="col-5"><span>${data.price_list[i].title}</span></div>
                                                             <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
                                                             <div class="col-2"><span class="expired-price">${data.price_list[i].price_status}</span></div>
                                                         </div>
                                                     </button>`);
+                                }
                             }
                         }
                     }
@@ -452,6 +454,7 @@ class loadDataHandle {
             tablePurchaseRequest.DataTable().destroy();
             dataTableClass.dataTablePurchaseRequest();
         }
+        return true;
     };
 
     loadModalPurchaseRequestProductTable() {
@@ -459,22 +462,16 @@ class loadDataHandle {
         let tablePurchaseRequestProduct = $('#datable-purchase-request-product');
         let frm = new SetupFormSubmit(tablePurchaseRequestProduct);
         let request_id_list = [];
-        let product_checked_list = [];
-        for (let i = 0; i < tablePurchaseRequest[0].tBodies[0].rows.length; i++) {
-            let row = tablePurchaseRequest[0].tBodies[0].rows[i];
-            if (row.querySelector('.table-row-checkbox').checked === true) {
-                request_id_list.push(row.querySelector('.table-row-checkbox').id);
-            }
+        let checked_data = {};
+        for (let eleChecked of tablePurchaseRequest[0].querySelectorAll('.table-row-checkbox:checked')) {
+            request_id_list.push(eleChecked.id);
         }
         if (!tablePurchaseRequestProduct[0].querySelector('.dataTables_empty')) {
-            for (let idx = 0; idx < tablePurchaseRequestProduct[0].tBodies[0].rows.length; idx++) {
-                let row = tablePurchaseRequestProduct[0].tBodies[0].rows[idx];
-                if (row.querySelector('.table-row-checkbox').checked === true) {
-                    product_checked_list.push({
-                        'id': row.querySelector('.table-row-checkbox').id,
-                        'quantity_order': row.querySelector('.table-row-quantity-order').value,
-                    });
-                }
+            for (let eleChecked of tablePurchaseRequestProduct[0].querySelectorAll('.table-row-checkbox:checked')) {
+                checked_data[eleChecked.id] = {
+                    'id': eleChecked.id,
+                    'quantity_order': eleChecked.closest('tr').querySelector('.table-row-quantity-order').value,
+                };
             }
         }
         tablePurchaseRequestProduct.DataTable().clear().destroy();
@@ -483,7 +480,7 @@ class loadDataHandle {
             $.fn.callAjax2({
                     'url': frm.dataUrl,
                     'method': frm.dataMethod,
-                    'data': {'purchase_request_id__in': request_id_list},
+                    'data': {'purchase_request_id__in': request_id_list.join(',')},
                     'isDropdown': true,
                 }
             ).then(
@@ -491,39 +488,49 @@ class loadDataHandle {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         if (data.hasOwnProperty('purchase_request_product_list') && Array.isArray(data.purchase_request_product_list)) {
-                            tablePurchaseRequestProduct.DataTable().clear().destroy();
-                            dataTableClass.dataTablePurchaseRequestProduct(data.purchase_request_product_list);
-                            for (let idx = 0; idx < tablePurchaseRequestProduct[0].tBodies[0].rows.length; idx++) {
-                                let row = tablePurchaseRequestProduct[0].tBodies[0].rows[idx];
-                                for (let data_prod of product_checked_list) {
-                                    if (row.querySelector('.table-row-checkbox').id === data_prod.id) {
-                                        row.querySelector('.table-row-checkbox').checked = true;
-                                        row.querySelector('.table-row-quantity-order').value = data_prod.quantity_order;
+                            if (Object.keys(checked_data).length !== 0) {
+                                for (let prProduct of data.purchase_request_product_list) {
+                                    if (checked_data.hasOwnProperty(prProduct.id)) {
+                                        prProduct['is_checked'] = true;
+                                        prProduct['quantity_order'] = checked_data[prProduct.id].quantity_order;
                                     }
                                 }
                             }
+                            tablePurchaseRequestProduct.DataTable().clear().destroy();
+                            dataTableClass.dataTablePurchaseRequestProduct(data.purchase_request_product_list);
                         }
                     }
                 }
             )
         }
+        return true;
     };
 
-    loadMergeProductTable(eleCheckbox) {
+    loadOrHiddenMergeProductTable() {
+        let self = this;
+        let eleCheckbox = $('#merge-same-product');
         if (eleCheckbox[0].checked === true) {
             $('#sroll-datable-purchase-request-product')[0].setAttribute('hidden', 'true');
             $('#sroll-datable-purchase-request-product-merge')[0].removeAttribute('hidden');
-            $('#datable-purchase-request-product-merge').DataTable().destroy();
-            let data = setupMergeProduct();
-            dataTableClass.dataTablePurchaseRequestProductMerge(data);
+            self.loadDataMergeProductTable();
         } else {
             $('#sroll-datable-purchase-request-product-merge')[0].setAttribute('hidden', 'true');
             $('#sroll-datable-purchase-request-product')[0].removeAttribute('hidden');
         }
+        return true;
+    }
+
+    loadDataMergeProductTable() {
+        $('#datable-purchase-request-product-merge').DataTable().destroy();
+        let data = setupMergeProduct();
+        dataTableClass.dataTablePurchaseRequestProductMerge(data);
+        return true;
     };
 
-    loadDataShowPurchaseRequest(elePurchaseRequest, tablePurchaseRequest) {
+    loadDataShowPurchaseRequest() {
         let self = this;
+        let elePurchaseRequest = $('#purchase-order-purchase-request');
+        let tablePurchaseRequest = $('#datable-purchase-request');
         let purchase_requests_data = [];
         if (!tablePurchaseRequest[0].querySelector('.dataTables_empty')) {
             let eleAppend = ``;
@@ -535,7 +542,7 @@ class loadDataHandle {
                 let link = "";
                 eleAppend += `<div class="inline-elements-badge mr-2 mb-1" id="${prID}">
                                     <a href="${link}" target="_blank" class="link-primary underline_hover"><span>${prCode}</span></a>
-                                    <button type="button" class="btn btn-link btn-sm custom-btn-remove" aria-label="Close">
+                                    <button type="button" class="btn btn-link btn-sm custom-btn-remove" id="${prID}" aria-label="Close">
                                         <span aria-hidden="true"><i class="fas fa-times"></i></span>
                                     </button>
                                 </div>`;
@@ -551,18 +558,23 @@ class loadDataHandle {
             }
         }
         $('#purchase_requests_data').val(JSON.stringify(purchase_requests_data));
+        return true;
     };
 
     loadModalPurchaseQuotation() {
         let tablePurchaseQuotation = $('#datable-purchase-quotation');
+        let checked_list = [];
         if (tablePurchaseQuotation[0].querySelector('.dataTables_empty')) {
+            for (let eleChecked of tablePurchaseQuotation[0].querySelectorAll('.table-row-checkbox:checked')) {
+                checked_list.push(eleChecked.id);
+            }
             let frm = new SetupFormSubmit(tablePurchaseQuotation);
             let purchase_requests_data = $('#purchase_requests_data');
             if (JSON.parse(purchase_requests_data.val()).length > 0) {
                 $.fn.callAjax2({
                         'url': frm.dataUrl,
                         'method': frm.dataMethod,
-                        'data': {'purchase_quotation_request_mapped__purchase_request_mapped__id__in': JSON.parse(purchase_requests_data.val())},
+                        'data': {'purchase_quotation_request_mapped__purchase_request_mapped__id__in': JSON.parse(purchase_requests_data.val()).join(',')},
                         'isDropdown': true,
                     }
                 ).then(
@@ -570,6 +582,13 @@ class loadDataHandle {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             if (data.hasOwnProperty('purchase_quotation_list') && Array.isArray(data.purchase_quotation_list)) {
+                                if (checked_list.length > 0) {
+                                    for (let PQ of data.purchase_quotation_list) {
+                                        if (checked_list.includes(PQ.id)) {
+                                            PQ['is_checked'] = true;
+                                        }
+                                    }
+                                }
                                 tablePurchaseQuotation.DataTable().clear().destroy();
                                 dataTableClass.dataTablePurchaseQuotation(data.purchase_quotation_list);
                             }
@@ -578,10 +597,13 @@ class loadDataHandle {
                 )
             }
         }
+        return true;
     };
 
-    loadDataShowPurchaseQuotation(elePurchaseQuotation, tablePurchaseQuotation) {
+    loadDataShowPurchaseQuotation() {
         let self = this;
+        let elePurchaseQuotation = $('#purchase-order-purchase-quotation');
+        let tablePurchaseQuotation = $('#datable-purchase-quotation');
         let purchase_quotations_data = [];
         let purchase_quotations_id_list = [];
         if (!tablePurchaseQuotation[0].querySelector('.dataTables_empty')) {
@@ -591,11 +613,12 @@ class loadDataHandle {
                 is_checked = true;
                 let pqID = eleChecked.id;
                 let pqCode = eleChecked.closest('tr').querySelector('.table-row-code').innerHTML;
+                let pqSupplierID = eleChecked.closest('tr').querySelector('.table-row-supplier').id;
                 let link = "";
                 eleAppend += `<div class="inline-elements-badge mr-2 mb-1" id="${pqID}">
-                                    <input class="form-check-input checkbox-circle checkbox-quotation" type="checkbox" id="${pqID}" value="option1">
+                                    <input class="form-check-input checkbox-circle checkbox-quotation" type="checkbox" id="${pqID}" data-supplier-id="${pqSupplierID}" value="option1">
                                     <a href="${link}" target="_blank" class="link-primary underline_hover ml-3"><span>${pqCode}</span></a>
-                                    <button type="button" class="btn btn-link btn-sm custom-btn-remove" aria-label="Close">
+                                    <button type="button" class="btn btn-link btn-sm custom-btn-remove" id="${pqID}" aria-label="Close">
                                         <span aria-hidden="true"><i class="fas fa-times"></i></span>
                                     </button>
                                 </div>`;
@@ -614,28 +637,27 @@ class loadDataHandle {
         }
         $('#purchase_quotations_data').val(JSON.stringify(purchase_quotations_data));
         self.loadPriceListByPurchaseQuotation(purchase_quotations_id_list);
+        return true;
     };
 
-    loadDataAfterClickRemove(ele, eleShow, table, code) {
+    loadDataAfterClickRemove(table, removeIDList, code) {
         let self = this;
-        let targetID = ele[0].closest('.inline-elements-badge').id;
-        uncheckRowTableByID(table, targetID);
-        if (code === "purchase_request") {
-            self.loadDataShowPurchaseRequest(eleShow, table);
-            // Remove relate purchase quotation
-            let tablePQ = $('#datable-purchase-quotation');
-            let eleShowPQ = $('#purchase-order-purchase-quotation');
-            uncheckRowTableRelate(tablePQ, targetID);
-            self.loadDataShowPurchaseQuotation(eleShowPQ, tablePQ);
-            // Remove relate purchase request product
-            let tablePRProduct = $('#datable-purchase-request-product');
-            uncheckRowTableRelate(tablePRProduct, targetID);
-            let eleCheckboxMerge = $('#merge-same-product');
-            self.loadMergeProductTable(eleCheckboxMerge);
-            self.loadTableProductByPurchaseRequest();
-        } else if (code === "purchase_quotation") {
-            self.loadDataShowPurchaseQuotation(eleShow, table);
+        for (let eleChecked of table[0].querySelectorAll('.table-row-checkbox:checked')) {
+            if (removeIDList.includes(eleChecked.id)) {
+                eleChecked.checked = false;
+            }
         }
+        if (code === "purchase_request") {
+            self.loadModalPurchaseRequestProductTable();
+            self.loadDataMergeProductTable();
+            self.loadDataShowPurchaseRequest();
+
+            self.loadModalPurchaseQuotation();
+            self.loadDataShowPurchaseQuotation();
+        } else if ("purchase_quotation") {
+
+        }
+        return true
     }
 
     loadTableProductByPurchaseRequest() {
@@ -648,10 +670,13 @@ class loadDataHandle {
             tablePurchaseOrderProductRequest[0].removeAttribute('hidden');
         }
         let data = setupMergeProduct();
-        tablePurchaseOrderProductRequest.DataTable().clear().destroy();
-        dataTableClass.dataTablePurchaseOrderProductRequest();
-        tablePurchaseOrderProductRequest.DataTable().rows.add(data).draw();
-        self.loadDataRowTable(tablePurchaseOrderProductRequest);
+        if (data.length > 0) {
+            tablePurchaseOrderProductRequest.DataTable().clear().destroy();
+            dataTableClass.dataTablePurchaseOrderProductRequest();
+            tablePurchaseOrderProductRequest.DataTable().rows.add(data).draw();
+            self.loadDataRowTable(tablePurchaseOrderProductRequest);
+        }
+        return true;
     };
 
     loadTableProductNoPurchaseRequest() {
@@ -693,6 +718,7 @@ class loadDataHandle {
         }
         let newRow = tablePurchaseOrderProductAdd.DataTable().row.add(data).draw().node();
         self.loadDataRow(newRow, 'datable-purchase-order-product-add');
+        return true;
     };
 
     loadDataRowTable($table) {
@@ -720,12 +746,14 @@ class loadDataHandle {
     }
 
     loadPriceListByPurchaseQuotation(purchase_quotations_id_list) {
+        let self = this;
         let eleQuotationProduct = $('#data-purchase-quotation-products');
+        let pqProductIDList = [];
         if (purchase_quotations_id_list.length > 0) {
             $.fn.callAjax2({
                     'url': eleQuotationProduct.attr('data-url'),
                     'method': eleQuotationProduct.attr('data-method'),
-                    'data': {'purchase_quotation_id__in': purchase_quotations_id_list},
+                    'data': {'purchase_quotation_id__in': purchase_quotations_id_list.join(',')},
                     'isDropdown': true,
                 }
             ).then(
@@ -735,7 +763,8 @@ class loadDataHandle {
                         if (data.hasOwnProperty('purchase_quotation_product_list') && Array.isArray(data.purchase_quotation_product_list)) {
                             let dataProduct = {};
                             for (let result of data.purchase_quotation_product_list) {
-                                if (!data.hasOwnProperty(result.product_id)) {
+                                pqProductIDList.push(result.product_id);
+                                if (!dataProduct.hasOwnProperty(result.product_id)) {
                                     dataProduct[result.product_id] = [{
                                         'purchase_quotation': result.purchase_quotation,
                                         'unit_price': result.unit_price
@@ -747,6 +776,7 @@ class loadDataHandle {
                                     })
                                 }
                             }
+                            self.loadAgainProductPurchaseRequestByQuotation(pqProductIDList);
                             let $table = $('#datable-purchase-order-product-request');
                             $table.DataTable().rows().every(function () {
                                 let row = this.node();
@@ -781,13 +811,32 @@ class loadDataHandle {
                 }
             )
         }
+        return true
     };
 
+    loadAgainProductPurchaseRequestByQuotation(pqProductIDList) {
+        let self = this;
+        let tablePRProduct = $('#datable-purchase-request-product');
+        for (let eleChecked of tablePRProduct[0].querySelectorAll('.table-row-checkbox:checked')) {
+          let productID = eleChecked.closest('tr').querySelector('.table-row-item').id;
+          if (!pqProductIDList.includes(productID)) {
+              eleChecked.checked = false;
+              eleChecked.setAttribute('disabled', 'true');
+          }
+        }
+        self.loadDataShowPurchaseRequest();
+        return true
+    }
+
     loadPriceByCheckedQuotation(ele) {
+        let self = this;
         let checked_id = ele[0].id;
+        let supplierID = ele[0].getAttribute('data-supplier-id');
         for (let purchase_quotation of JSON.parse($('#purchase_quotations_data').val())) {
             purchase_quotation.is_use = (purchase_quotation.purchase_quotation === checked_id);
         }
+        // load supplier by Purchase Quotation
+        self.loadBoxSupplier(supplierID);
         let $table = $('#datable-purchase-order-product-request');
         $table.DataTable().rows().every(function () {
             let row = this.node();
@@ -812,6 +861,7 @@ class loadDataHandle {
             $.fn.initMaskMoney2();
             calculateClass.calculateMain($table, row);
         });
+        return true
     }
 }
 
@@ -891,7 +941,8 @@ class dataTableHandle {
                         if (Object.keys(row.purchase_request).length !== 0) {
                             purchase_request_id = row.purchase_request.id;
                         }
-                        return `<div class="form-check">
+                        if (!row.hasOwnProperty('is_checked')) {
+                            return `<div class="form-check">
                                     <input 
                                         type="checkbox" 
                                         class="form-check-input table-row-checkbox" 
@@ -900,6 +951,19 @@ class dataTableHandle {
                                         data-sale-order-product-id="${row.sale_order_product_id}"
                                     >
                                 </div>`
+                        } else {
+                            return `<div class="form-check">
+                                    <input 
+                                        type="checkbox" 
+                                        class="form-check-input table-row-checkbox" 
+                                        id="${row.id}" 
+                                        data-purchase-request-id="${purchase_request_id}"
+                                        data-sale-order-product-id="${row.sale_order_product_id}"
+                                        checked
+                                    >
+                                </div>`
+                        }
+
                     }
                 },
                 {
@@ -934,8 +998,12 @@ class dataTableHandle {
                 },
                 {
                     targets: 7,
-                    render: () => {
-                        return `<input type="text" class="form-control table-row-quantity-order" value="0">`
+                    render: (data, type, row) => {
+                        if (row.hasOwnProperty('quantity_order')) {
+                            return `<input type="text" class="form-control table-row-quantity-order" value="${row.quantity_order}">`;
+                        } else {
+                            return `<input type="text" class="form-control table-row-quantity-order" value="0">`;
+                        }
                     }
                 },
             ],
@@ -1033,7 +1101,11 @@ class dataTableHandle {
                 {
                     targets: 0,
                     render: (data, type, row) => {
-                        return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" id="${row.id}"></div>`
+                        if (!row.hasOwnProperty('is_checked')) {
+                            return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" id="${row.id}"></div>`;
+                        } else {
+                            return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" id="${row.id}" checked></div>`;
+                        }
                     }
                 },
                 {
@@ -1051,7 +1123,7 @@ class dataTableHandle {
                 {
                     targets: 3,
                     render: (data, type, row) => {
-                        return `<span class="table-row-supplier">${row.supplier_mapped.name}</span>`
+                        return `<span class="table-row-supplier" id="${row.supplier_mapped.id}">${row.supplier_mapped.name}</span>`
                     }
                 },
                 {
@@ -1721,27 +1793,6 @@ function clickCheckBoxAll(ele, table) {
     } else {
         for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
             let row = table[0].tBodies[0].rows[i];
-            row.querySelector('.table-row-checkbox').checked = false;
-        }
-    }
-}
-
-function uncheckRowTableByID(table, targetID) {
-    for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
-        let row = table[0].tBodies[0].rows[i];
-        if (row.querySelector('.table-row-checkbox').checked === true) {
-            if (row.querySelector('.table-row-checkbox').id === targetID) {
-                row.querySelector('.table-row-checkbox').checked = false;
-                break;
-            }
-        }
-    }
-}
-
-function uncheckRowTableRelate(table, targetID) {
-    for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
-        let row = table[0].tBodies[0].rows[i];
-        if (row.querySelector('.table-row-checkbox').getAttribute('data-purchase-request-id') === targetID) {
             row.querySelector('.table-row-checkbox').checked = false;
         }
     }

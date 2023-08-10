@@ -1,7 +1,7 @@
 $(document).ready(function () {
     function loadOpportunity(id) {
         let ele = $('#box-select-opportunity');
-        $.fn.callAjax(ele.data('url'), ele.data('method'))
+        $.fn.callAjax(ele.data('select2-url'), ele.data('method'))
             .then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
@@ -33,7 +33,7 @@ $(document).ready(function () {
 
     function loadPersonInCharge(list_id) {
         let ele = $('#box-select-person-in-charge');
-        $.fn.callAjax(ele.data('url'), ele.data('method'))
+        $.fn.callAjax(ele.data('select2-url'), ele.data('method'))
             .then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);

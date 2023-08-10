@@ -258,16 +258,17 @@ $(document).ready(function () {
 
                 let list_shipping_address = ``;
                 for (let i = 0; i < data.shipping_address.length; i++) {
-                    if (i === 0) {
+                    let shipping_address = data.shipping_address[i];
+                    if (shipping_address.is_default) {
                         list_shipping_address += `<div class="form-check ml-5 mb-2">
                                     <input class="form-check-input" type="radio" name="shippingaddressRadio" checked disabled>
-                                    <label>` + data.shipping_address[i] + `</label>
+                                    <label>` + shipping_address.full_address + `</label>
                                     <a hidden href="#" class="del-address-item"><i class="bi bi-x"></i></a>
                                </div>`;
                     } else {
                         list_shipping_address += `<div class="form-check ml-5 mb-2">
                                     <input class="form-check-input" type="radio" name="shippingaddressRadio" disabled>
-                                    <label>` + data.shipping_address[i] + `</label>
+                                    <label>` + shipping_address.full_address + `</label>
                                     <a hidden href="#" class="del-address-item"><i class="bi bi-x"></i></a>
                                </div>`;
                     }
@@ -277,16 +278,16 @@ $(document).ready(function () {
                 let list_billing_address = ``
                 for (let i = 0; i < data.billing_address.length; i++) {
                     let billing_address = data.billing_address[i];
-                    if (i === 0) {
+                    if (billing_address.is_default) {
                         list_billing_address += `<div class="form-check ml-5 mb-2">
                                     <input class="form-check-input" type="radio" name="billingaddressRadio" checked disabled>
-                                    <label>` + billing_address + `</label>
+                                    <label>` + billing_address.full_address + `</label>
                                     <a hidden href="#" class="del-address-item"><i class="bi bi-x"></i></a>
                                </div>`;
                     } else {
                         list_billing_address += `<div class="form-check ml-5 mb-2">
                                     <input class="form-check-input" type="radio" name="billingaddressRadio" disabled>
-                                    <label>` + billing_address + `</label>
+                                    <label>` + billing_address.full_address + `</label>
                                     <a hidden href="#" class="del-address-item"><i class="bi bi-x"></i></a>
                                </div>`;
                     }

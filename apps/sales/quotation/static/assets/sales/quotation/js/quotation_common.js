@@ -4,7 +4,7 @@ let finalRevenueBeforeTax = document.getElementById('quotation-final-revenue-bef
 
 // Load data
 class loadDataHandle {
-    loadBoxQuotationOpportunity(valueToSelect = null, sale_person = null, is_load_detail = false, is_copy = false) {
+    loadBoxQuotationOpportunity(valueToSelect = {}, sale_person = null, is_load_detail = false, is_copy = false) {
         let self = this;
         let ele = $('#select-box-quotation-create-opportunity');
         let url = ele.attr('data-url');
@@ -23,7 +23,7 @@ class loadDataHandle {
             } else {
                 data_filter['quotation__isnull'] = true;
             }
-            if (!ele[0].innerHTML || valueToSelect) {
+            if (!ele[0].innerHTML || Object.keys(valueToSelect).length !== 0) {
                 $.fn.callAjax2({
                         'url': url,
                         'method': method,
@@ -36,7 +36,7 @@ class loadDataHandle {
                         if (data) {
                             if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list)) {
                                 ele.empty();
-                                if (valueToSelect) {
+                                if (Object.keys(valueToSelect).length !== 0) {
                                     data.opportunity_list.push(valueToSelect);
                                     // check opp has sale order or closed => disabled button copy to (Only for page quotation detail)
                                     if (is_load_detail === true) {
@@ -97,7 +97,7 @@ class loadDataHandle {
         }
     }
 
-    loadBoxQuotationCustomer(valueToSelect = null, modalShipping = null, modalBilling = null, sale_person = null, is_load_detail = false) {
+    loadBoxQuotationCustomer(valueToSelect = null, sale_person = null, is_load_detail = false) {
         let self = this;
         let ele = $('#select-box-quotation-create-customer');
         let url = ele.attr('data-url');
@@ -107,7 +107,6 @@ class loadDataHandle {
         }
         if (sale_person) {
             let data_filter = {'employee__id': sale_person}
-            self.loadShippingBillingCustomer(modalShipping, modalBilling);
             if (!ele[0].innerHTML || valueToSelect) {
                 $.fn.callAjax2({
                         'url': url,
@@ -120,6 +119,7 @@ class loadDataHandle {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             if (data.hasOwnProperty('account_sale_list') && Array.isArray(data.account_sale_list)) {
+                                self.loadShippingBillingCustomer();
                                 ele.empty();
                                 let dataAppend = ``;
                                 let dataMapOpp = ``;
@@ -146,7 +146,7 @@ class loadDataHandle {
                                                         <input type="hidden" class="data-info" value="${dataStr}">
                                                     </option>`;
                                         // load Shipping & Billing by Customer
-                                        self.loadShippingBillingCustomer(modalShipping, modalBilling, item);
+                                        self.loadShippingBillingCustomer(item);
                                         // load Contact by Customer
                                         if (item.id && item.owner) {
                                             self.loadBoxQuotationContact(item.owner.id, item.id);
@@ -797,22 +797,22 @@ class loadDataHandle {
         }
     }
 
-    loadShippingBillingCustomer(modalShipping, modalBilling, item = null) {
-        let modalShippingContent = modalShipping[0].querySelector('.modal-body');
+    loadShippingBillingCustomer(item = null) {
+        let modalShippingContent = $('#quotation-create-modal-shipping-body')[0].querySelector('.modal-body');
         if (modalShippingContent) {
             $(modalShippingContent).empty();
             if (item) {
                 for (let i = 0; i < item.shipping_address.length; i++) {
-                    let address = item.shipping_address[i];
+                    let shipping = item.shipping_address[i];
                     $(modalShippingContent).append(`<div class="row ml-1 shipping-group">
                                                     <div class="row mb-1">
-                                                        <textarea class="form-control show-not-edit shipping-content disabled-custom-show" rows="3" cols="50" name="" disabled>${address}</textarea>
+                                                        <textarea class="form-control show-not-edit shipping-content disabled-custom-show" rows="3" cols="50" id="${shipping.id}" disabled>${shipping.full_address}</textarea>
                                                     </div>
                                                     <div class="row">
                                                         <div class="col-5"></div>
                                                         <div class="col-4"></div>
                                                         <div class="col-3 float-right">
-                                                            <button type="button" class="btn btn-primary choose-shipping" data-bs-dismiss="modal">${$.fn.transEle.attr('data-select-address')}</button>
+                                                            <button type="button" class="btn btn-primary choose-shipping" data-bs-dismiss="modal" id="${shipping.id}" data-address="${shipping.full_address}">${$.fn.transEle.attr('data-select-address')}</button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -820,21 +820,21 @@ class loadDataHandle {
                 }
             }
         }
-        let modalBillingContent = modalBilling[0].querySelector('.modal-body');
+        let modalBillingContent = $('#quotation-create-modal-billing-body')[0].querySelector('.modal-body');
         if (modalBillingContent) {
             $(modalBillingContent).empty();
             if (item) {
                 for (let i = 0; i < item.billing_address.length; i++) {
-                    let address = item.billing_address[i];
+                    let billing = item.billing_address[i];
                     $(modalBillingContent).append(`<div class="row ml-1 billing-group">
                                                     <div class="row mb-1">
-                                                        <textarea class="form-control show-not-edit billing-content disabled-custom-show" rows="3" cols="50" name="" disabled>${address}</textarea>
+                                                        <textarea class="form-control show-not-edit billing-content disabled-custom-show" rows="3" cols="50" id="${billing.id}" disabled>${billing.full_address}</textarea>
                                                     </div>
                                                     <div class="row">
                                                         <div class="col-5"></div>
                                                         <div class="col-4"></div>
                                                         <div class="col-3">
-                                                            <button class="btn btn-primary choose-billing">${$.fn.transEle.attr('data-select-address')}</button>
+                                                            <button type="button" class="btn btn-primary choose-billing" data-bs-dismiss="modal" id="${billing.id}" data-address="${billing.full_address}">${$.fn.transEle.attr('data-select-address')}</button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1000,9 +1000,9 @@ class loadDataHandle {
         }
         if (data.customer) {
             if (data.sale_person) {
-                self.loadBoxQuotationCustomer(data.customer.id, $('#quotation-create-modal-shipping-body'), $('#quotation-create-modal-billing-body'), data.sale_person.id, true);
+                self.loadBoxQuotationCustomer(data.customer.id, data.sale_person.id, true);
             } else {
-                self.loadBoxQuotationCustomer(data.customer.id, $('#quotation-create-modal-shipping-body'), $('#quotation-create-modal-billing-body'), null, true);
+                self.loadBoxQuotationCustomer(data.customer.id, null, true);
             }
         }
         // if (data.contact) {
@@ -1065,6 +1065,8 @@ class loadDataHandle {
             document.getElementById('quotation-create-shipping-address').value = data.sale_order_logistic_data.shipping_address;
             document.getElementById('quotation-create-billing-address').value = data.sale_order_logistic_data.billing_address;
         }
+        $('#quotation-create-customer-shipping').val(data.customer_shipping_id);
+        $('#quotation-create-customer-billing').val(data.customer_billing_id);
         // product totals
         self.loadTotal(data, true, false, false);
         self.loadTotal(data, false, true, false);
@@ -2371,14 +2373,14 @@ class dataTableHandle {
         let method = ele.attr('data-method');
         $('#datable-copy-quotation').DataTable().destroy();
         if (sale_person_id) {
-            let data_filter = {
-                'sale_person': sale_person_id,
-                'opportunity__sale_order__isnull': true,
-                'opportunity__is_close_lost': false,
-                'opportunity__is_deal_close': false,
-            };
+            let data_filter = {'sale_person': sale_person_id};
             if (opp_id) {
                 data_filter['opportunity'] = opp_id;
+                data_filter['opportunity__sale_order__isnull'] = true;
+                data_filter['opportunity__is_close_lost'] = false;
+                data_filter['opportunity__is_deal_close'] = false;
+            } else {
+                data_filter['opportunity__isnull'] = true;
             }
             $.fn.callAjax2({
                     'url': url,
@@ -3523,6 +3525,8 @@ class submitHandle {
         }
 
         _form.dataForm[quotation_logistic_data] = self.setupDataLogistic();
+        _form.dataForm['customer_shipping'] = $('#quotation-create-customer-shipping').val();
+        _form.dataForm['customer_billing'] = $('#quotation-create-customer-billing').val();
 
         let quotation_indicators_data_setup = self.setupDataIndicator();
         if (quotation_indicators_data_setup.length > 0) {
@@ -3609,8 +3613,40 @@ function loadPriceProduct(eleProduct, is_change_item = true, is_expense = false)
                 $(priceList).empty();
                 if (Array.isArray(data.price_list) && data.price_list.length > 0) {
                     for (let i = 0; i < data.price_list.length; i++) {
-                        if (data.price_list[i].is_default === true) { // check & append GENERAL_PRICE_LIST
-                            general_price_id = data.price_list[i].id;
+                        if (data.price_list[i].price_type === 0) { // PRICE TYPE IS PRODUCT (SALE)
+                            if (data.price_list[i].is_default === true) { // check & append GENERAL_PRICE_LIST
+                                general_price_id = data.price_list[i].id;
+                                general_price = parseFloat(data.price_list[i].value);
+                                $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option" data-value="${parseFloat(data.price_list[i].value)}">
+                                                    <div class="row">
+                                                        <div class="col-5"><span>${data.price_list[i].title}</span></div>
+                                                        <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
+                                                        <div class="col-2"><span class="valid-price">${data.price_list[i].price_status}</span></div>
+                                                    </div>
+                                                </button>`);
+                            }
+                            if (data.price_list[i].id === account_price_id && general_price_id !== account_price_id) { // check & append CUSTOMER_PRICE_LIST
+                                if (!["Expired", "Invalid"].includes(data.price_list[i].price_status)) { // Customer price valid
+                                    customer_price = parseFloat(data.price_list[i].value);
+                                    $(priceList).empty();
+                                    $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option option-btn-checked" data-value="${parseFloat(data.price_list[i].value)}">
+                                                        <div class="row">
+                                                            <div class="col-5"><span>${data.price_list[i].title}</span></div>
+                                                            <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
+                                                            <div class="col-2"><span class="valid-price">${data.price_list[i].price_status}</span></div>
+                                                        </div>
+                                                    </button>`);
+                                } else { // Customer price invalid, expired
+                                    $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option option-btn-checked" data-value="${parseFloat(data.price_list[i].value)}" disabled>
+                                                        <div class="row">
+                                                            <div class="col-5"><span>${data.price_list[i].title}</span></div>
+                                                            <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
+                                                            <div class="col-2"><span class="expired-price">${data.price_list[i].price_status}</span></div>
+                                                        </div>
+                                                    </button>`);
+                                }
+                            }
+                        } else if (data.price_list[i].price_type === 2) { // PRICE TYPE IS EXPENSE
                             general_price = parseFloat(data.price_list[i].value);
                             $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option" data-value="${parseFloat(data.price_list[i].value)}">
                                                     <div class="row">
@@ -3619,27 +3655,6 @@ function loadPriceProduct(eleProduct, is_change_item = true, is_expense = false)
                                                         <div class="col-2"><span class="valid-price">${data.price_list[i].price_status}</span></div>
                                                     </div>
                                                 </button>`);
-                        }
-                        if (data.price_list[i].id === account_price_id && general_price_id !== account_price_id) { // check & append CUSTOMER_PRICE_LIST
-                            if (!["Expired", "Invalid"].includes(data.price_list[i].price_status)) { // Customer price valid
-                                customer_price = parseFloat(data.price_list[i].value);
-                                $(priceList).empty();
-                                $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option option-btn-checked" data-value="${parseFloat(data.price_list[i].value)}">
-                                                        <div class="row">
-                                                            <div class="col-5"><span>${data.price_list[i].title}</span></div>
-                                                            <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
-                                                            <div class="col-2"><span class="valid-price">${data.price_list[i].price_status}</span></div>
-                                                        </div>
-                                                    </button>`);
-                            } else { // Customer price invalid, expired
-                                $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option option-btn-checked" data-value="${parseFloat(data.price_list[i].value)}" disabled>
-                                                        <div class="row">
-                                                            <div class="col-5"><span>${data.price_list[i].title}</span></div>
-                                                            <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
-                                                            <div class="col-2"><span class="expired-price">${data.price_list[i].price_status}</span></div>
-                                                        </div>
-                                                    </button>`);
-                            }
                         }
                     }
                 }

@@ -124,7 +124,7 @@ $(function () {
         let is_load_sale_person = false;
 
         function loadCustomer() {
-            let url = boxCustomer.attr('data-url');
+            let url = boxCustomer.attr('data-select2-url');
             let method = boxCustomer.attr('data-method');
             $.fn.callAjax(url, method).then(
                 (resp) => {
@@ -192,7 +192,7 @@ $(function () {
 
         function loadProductCategory() {
             let ele = boxProductCategory;
-            let url = ele.attr('data-url');
+            let url = ele.attr('data-select2-url');
             let method = ele.attr('data-method');
             $.fn.callAjax(url, method).then(
                 (resp) => {
@@ -219,7 +219,7 @@ $(function () {
         function loadSalePerson() {
             let ele = $('#select-box-sale-person');
             $.fn.callAjax2({
-                'url': ele.data('url'),
+                'url': ele.data('select2-url'),
                 'method': ele.data('method'),
                 'isDropdown': true
             }).then((resp) => {

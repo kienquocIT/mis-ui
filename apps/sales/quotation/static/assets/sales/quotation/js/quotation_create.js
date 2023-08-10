@@ -71,13 +71,13 @@ $(function () {
                 let data = JSON.parse(eleData.value);
                 if (data.customer) {
                     let valueToSelect = data.customer.id;
-                    loadDataClass.loadBoxQuotationCustomer(valueToSelect, modalShipping, modalBilling);
+                    loadDataClass.loadBoxQuotationCustomer(valueToSelect);
                 }
                 // Load again dropdown sale_person only valueSelected
                 loadDataClass.loadBoxQuotationSalePerson($('#select-box-quotation-create-sale-person').val());
             } else { // No Value => load again dropdowns
                 $('#select-box-quotation-create-customer').empty();
-                loadDataClass.loadBoxQuotationCustomer(null, modalShipping, modalBilling);
+                loadDataClass.loadBoxQuotationCustomer(null);
                 loadDataClass.loadBoxQuotationSalePerson($('#select-box-quotation-create-sale-person').val(), true);
             }
             loadDataClass.loadInformationSelectBox($(this));
@@ -91,18 +91,18 @@ $(function () {
 
 // Action on click dropdown customer
         boxCustomer.on('click', function() {
-            loadDataClass.loadBoxQuotationCustomer(null, modalShipping, modalBilling);
+            loadDataClass.loadBoxQuotationCustomer(null);
         });
 
 // Action on change dropdown customer
         boxCustomer.on('change', function () {
             let optionSelected = boxCustomer[0].options[boxCustomer[0].selectedIndex];
             if (optionSelected) {
-                loadDataClass.loadShippingBillingCustomer(modalShipping, modalBilling);
+                loadDataClass.loadShippingBillingCustomer();
                 if (optionSelected.querySelector('.data-default')) {
                     let data = JSON.parse(optionSelected.querySelector('.data-default').value);
                     // load Shipping & Billing by Customer
-                    loadDataClass.loadShippingBillingCustomer(modalShipping, modalBilling, data);
+                    loadDataClass.loadShippingBillingCustomer(data);
                     // load Contact by Customer
                     if (data.id && data.owner) {
                         loadDataClass.loadBoxQuotationContact(data.owner.id, data.id);
@@ -684,11 +684,8 @@ $(function () {
             $('.choose-shipping').prop('disabled', false);
             // Disable the clicked button
             $(this).prop('disabled', true);
-            let eleContent = $(this)[0].closest('.shipping-group').querySelector('.shipping-content');
-            let eleShow = $('#quotation-create-shipping-address');
-            if (eleContent && eleShow) {
-                eleShow[0].value = eleContent.value;
-            }
+            $('#quotation-create-shipping-address')[0].value = this.getAttribute('data-address');
+            $('#quotation-create-customer-shipping').val(this.id);
             let rowShipping = tableProduct[0].querySelector('.table-row-shipping');
             if (rowShipping) {
                 // Delete all promotion rows
@@ -706,11 +703,8 @@ $(function () {
             $('.choose-billing').prop('disabled', false);
             // Disable the clicked button
             $(this).prop('disabled', true);
-            let eleContent = $(this)[0].closest('.billing-group').querySelector('.billing-content');
-            let eleShow = $('#quotation-create-billing-address');
-            if (eleContent && eleShow) {
-                eleShow[0].value = eleContent.value;
-            }
+            $('#quotation-create-billing-address')[0].value = this.getAttribute('data-address');
+            $('#quotation-create-customer-billing').val(this.id);
         });
 
 // COPY FROM - TO
@@ -1157,6 +1151,8 @@ $(function () {
                 'quotation_products_data',
                 'quotation_term_data',
                 'quotation_logistic_data',
+                'customer_shipping',
+                'customer_billing',
                 'quotation_costs_data',
                 'quotation_expenses_data',
                 'is_customer_confirm',
@@ -1192,6 +1188,8 @@ $(function () {
                     // sale order tabs
                     'sale_order_products_data',
                     'sale_order_logistic_data',
+                    'customer_shipping',
+                    'customer_billing',
                     'sale_order_costs_data',
                     'sale_order_expenses_data',
                     // indicator tab

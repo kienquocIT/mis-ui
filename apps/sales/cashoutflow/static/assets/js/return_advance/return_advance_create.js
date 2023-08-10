@@ -77,9 +77,8 @@ $(function () {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('advance_payment_detail')) {
-                        let ele_benefication = $('#chooseBeneficiary');
+                        let ele_beneficiary = $('#chooseBeneficiary');
                         let sale_code_ele = $('[name="sale_code"]');
-                        sale_code_ele.val(data.advance_payment_detail.code);
                         if (data.advance_payment_detail.sale_order_mapped.length > 0) {
                             sale_code_ele.val(data.advance_payment_detail.sale_order_mapped[0].opportunity.code);
                         } else if (data.advance_payment_detail.quotation_mapped.length > 0) {
@@ -89,8 +88,8 @@ $(function () {
                         } else {
                             sale_code_ele.val('');
                         }
-                        ele_benefication.empty();
-                        ele_benefication.append(`<option value="${data.advance_payment_detail.beneficiary.id}">${data.advance_payment_detail.beneficiary.name}</option>`);
+                        ele_beneficiary.empty();
+                        ele_beneficiary.append(`<option value="${data.advance_payment_detail.beneficiary.id}">${data.advance_payment_detail.beneficiary.name}</option>`);
                         loadProductTable(data.advance_payment_detail.product_items)
                         loadDetailBeneficiary(data.advance_payment_detail.beneficiary.id);
                     }

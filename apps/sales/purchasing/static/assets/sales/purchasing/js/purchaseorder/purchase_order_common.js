@@ -103,7 +103,7 @@ class loadDataHandle {
                 }
             )
         }
-    }
+    };
 
     loadBoxContact(valueToSelect = null, supplierID = null) {
         let self = this;
@@ -150,7 +150,7 @@ class loadDataHandle {
             ele.empty();
             ele.append(`<option value=""></option>`);
         }
-    }
+    };
 
     loadInitProduct() {
         let ele = $('#data-init-product');
@@ -171,7 +171,7 @@ class loadDataHandle {
                 }
             }
         )
-    }
+    };
 
     loadInitUOM() {
         let ele = $('#data-init-uom');
@@ -192,7 +192,7 @@ class loadDataHandle {
                 }
             }
         )
-    }
+    };
 
     loadInitTax() {
         let ele = $('#data-init-tax');
@@ -213,7 +213,7 @@ class loadDataHandle {
                 }
             }
         )
-    }
+    };
 
     loadBoxProduct(eleBox, valueToSelect = null) {
         let self = this;
@@ -275,7 +275,7 @@ class loadDataHandle {
             eleBox[0].classList.add('select2');
             $(eleBox).initSelect2();
         }
-    }
+    };
 
     loadDataProductSelect(ele, is_change_item = true) {
         let self = this;
@@ -307,7 +307,7 @@ class loadDataHandle {
             self.loadMoreInformation(ele);
         }
         $.fn.initMaskMoney2();
-    }
+    };
 
     loadPriceProduct(eleProduct, is_change_item = true) {
         let optionSelected = eleProduct.options[eleProduct.selectedIndex];
@@ -383,7 +383,7 @@ class loadDataHandle {
             deletePromotionRows($(tableProduct), true, false);
             deletePromotionRows($(tableProduct), false, true);
         }
-    }
+    };
 
     loadBoxUOM(eleBox, valueToSelect = null, uom_group = null) {
         let ele = document.getElementById('data-init-uom');
@@ -462,7 +462,7 @@ class loadDataHandle {
         return true;
     };
 
-    loadModalPurchaseRequestProductTable(is_clear_all = false) {
+    loadModalPurchaseRequestProductTable(is_clear_all = false, is_click = false) {
         let tablePurchaseRequest = $('#datable-purchase-request');
         let tablePurchaseRequestProduct = $('#datable-purchase-request-product');
         let frm = new SetupFormSubmit(tablePurchaseRequestProduct);
@@ -473,6 +473,12 @@ class loadDataHandle {
         }
         if (!tablePurchaseRequestProduct[0].querySelector('.dataTables_empty') && is_clear_all === false) {
             for (let eleChecked of tablePurchaseRequestProduct[0].querySelectorAll('.table-row-checkbox:checked')) {
+                checked_data[eleChecked.id] = {
+                    'id': eleChecked.id,
+                    'quantity_order': eleChecked.closest('tr').querySelector('.table-row-quantity-order').value,
+                };
+            }
+            for (let eleChecked of tablePurchaseRequestProduct[0].querySelectorAll('.disabled-by-pq')) {
                 checked_data[eleChecked.id] = {
                     'id': eleChecked.id,
                     'quantity_order': eleChecked.closest('tr').querySelector('.table-row-quantity-order').value,
@@ -502,7 +508,11 @@ class loadDataHandle {
                                 }
                             }
                             tablePurchaseRequestProduct.DataTable().clear().destroy();
-                            dataTableClass.dataTablePurchaseRequestProduct(data.purchase_request_product_list);
+                            dataTableClass.dataTablePurchaseRequestProduct();
+                            tablePurchaseRequestProduct.DataTable().rows.add(data.purchase_request_product_list).draw();
+                            if (is_click === true) {
+                                $('#btn-confirm-add-purchase-request').click();
+                            }
                         }
                     }
                 }
@@ -523,7 +533,7 @@ class loadDataHandle {
             $('#sroll-datable-purchase-request-product')[0].removeAttribute('hidden');
         }
         return true;
-    }
+    };
 
     loadDataMergeProductTable() {
         $('#datable-purchase-request-product-merge').DataTable().destroy();
@@ -566,7 +576,7 @@ class loadDataHandle {
         return true;
     };
 
-    loadModalPurchaseQuotation(is_clear_all = false) {
+    loadModalPurchaseQuotation(is_clear_all = false, is_click = false) {
         let tablePurchaseQuotation = $('#datable-purchase-quotation');
         let checked_list = [];
         if (!tablePurchaseQuotation[0].querySelector('.dataTables_empty') && is_clear_all === false) {
@@ -598,7 +608,11 @@ class loadDataHandle {
                                     }
                                 }
                                 tablePurchaseQuotation.DataTable().clear().destroy();
-                                dataTableClass.dataTablePurchaseQuotation(data.purchase_quotation_list);
+                                dataTableClass.dataTablePurchaseQuotation();
+                                tablePurchaseQuotation.DataTable().rows.add(data.purchase_quotation_list).draw();
+                                if (is_click === true) {
+                                    $('#btn-confirm-add-purchase-quotation').click();
+                                }
                             }
                         }
                     }
@@ -646,7 +660,8 @@ class loadDataHandle {
             })
             purchase_quotations_id_list.push(pqID);
         }
-        self.loadBoxSupplier();
+        $('#box-purchase-order-supplier').empty();
+        $('#box-purchase-order-contact').empty();
         if (is_check === true) {
             elePurchaseQuotation.empty();
             elePurchaseQuotation.append(eleAppend);
@@ -673,17 +688,12 @@ class loadDataHandle {
             }
         }
         if (code === "purchase_request") {
-            self.loadModalPurchaseRequestProductTable();
-            self.loadDataMergeProductTable();
-            self.loadDataShowPurchaseRequest();
-
-            self.loadModalPurchaseQuotation();
-            self.loadDataShowPurchaseQuotation();
+            self.loadDataWhenClearPR(false);
         } else if ("purchase_quotation") {
-
+            self.loadDataWhenClearPQ();
         }
         return true
-    }
+    };
 
     loadTableProductByPurchaseRequest() {
         let self = this;
@@ -700,15 +710,16 @@ class loadDataHandle {
             dataTableClass.dataTablePurchaseOrderProductRequest();
             tablePurchaseOrderProductRequest.DataTable().rows.add(data).draw();
             self.loadDataRowTable(tablePurchaseOrderProductRequest);
+        } else {
+            tablePurchaseOrderProductRequest.DataTable().clear().destroy();
+            dataTableClass.dataTablePurchaseOrderProductRequest();
         }
         return true;
     };
 
     loadTableProductNoPurchaseRequest() {
         let self = this;
-        self.loadDataWhenClearAll();
-
-
+        self.loadDataWhenClearPR(true);
         let tablePurchaseOrderProductRequest = $('#datable-purchase-order-product-request');
         let tablePurchaseOrderProductAdd = $('#datable-purchase-order-product-add');
         let order = 1;
@@ -767,7 +778,7 @@ class loadDataHandle {
             self.loadBoxUOM($(row.querySelector('.table-row-uom-order-actual')), row.querySelector('.table-row-uom-order-request').id);
         }
         self.loadBoxTax($(row.querySelector('.table-row-tax')));
-    }
+    };
 
     loadPriceListByPurchaseQuotation(purchase_quotations_id_list) {
         let self = this;
@@ -838,20 +849,6 @@ class loadDataHandle {
         return true
     };
 
-    loadAgainProductPurchaseRequestByQuotation(pqProductIDList) {
-        let self = this;
-        let tablePRProduct = $('#datable-purchase-request-product');
-        for (let eleChecked of tablePRProduct[0].querySelectorAll('.table-row-checkbox:checked')) {
-          let productID = eleChecked.closest('tr').querySelector('.table-row-item').id;
-          if (!pqProductIDList.includes(productID)) {
-              eleChecked.checked = false;
-              eleChecked.setAttribute('disabled', 'true');
-          }
-        }
-        self.loadDataShowPurchaseRequest();
-        return true
-    }
-
     loadPriceByCheckedQuotation(ele) {
         let self = this;
         let checked_id = ele[0].id;
@@ -886,20 +883,75 @@ class loadDataHandle {
             calculateClass.calculateMain($table, row);
         });
         return true
-    }
+    };
 
-    loadDataWhenClearAll() {
+    loadDataWhenClearPR(is_clear_all = false) {
         let self = this;
+        // Load again data & events relate with Purchase Request
         $('#purchase-order-purchase-request').empty();
-        $('#purchase-order-purchase-quotation').empty();
-        self.loadModalPurchaseRequestTable(true);
+        self.loadModalPurchaseRequestTable(is_clear_all);
         $('#table-purchase-reqeust-checkbox-all')[0].checked = false;
-        self.loadModalPurchaseRequestProductTable(true);
-        $('#btn-confirm-add-purchase-request').click();
-        self.loadModalPurchaseQuotation(true);
-        $('#btn-confirm-add-purchase-quotation').click();
+        self.loadModalPurchaseRequestProductTable(is_clear_all, true);
+        // Load again data & events relate with Purchase Quotation
+        $('#purchase-order-purchase-quotation').empty();
+        self.loadModalPurchaseQuotation(is_clear_all, true);
+        $('#box-purchase-order-supplier').empty();
+        $('#box-purchase-order-contact').empty();
+        // ReCalculate Totals
+        let table = $('#datable-purchase-order-product-request');
+        if (table[0].querySelector('.dataTables_empty')) {
+            let elePretaxAmount = document.getElementById('purchase-order-product-pretax-amount');
+            let eleTaxes = document.getElementById('purchase-order-product-taxes');
+            let eleTotal = document.getElementById('purchase-order-product-total');
+            let elePretaxAmountRaw = document.getElementById('purchase-order-product-pretax-amount-raw');
+            let eleTaxesRaw = document.getElementById('purchase-order-product-taxes-raw');
+            let eleTotalRaw = document.getElementById('purchase-order-product-total-raw');
+            let finalRevenueBeforeTax = document.getElementById('purchase-order-final-revenue-before-tax');
+            $(elePretaxAmount).attr('value', String(0));
+            elePretaxAmountRaw.value = '0';
+            finalRevenueBeforeTax.value = '0';
+            $(eleTaxes).attr('value', String(0));
+            eleTaxesRaw.value = '0';
+            $(eleTotal).attr('value', String(0));
+            eleTotalRaw.value = '0';
+        } else {
+            calculateClass.calculateTable(table);
+        }
         return true
-    }
+    };
+
+    loadDataWhenClearPQ() {
+        let self = this;
+        // Load again data & events relate with Purchase Request
+        self.loadModalPurchaseRequestProductTable(false, true);
+        // Load again data & events relate with Purchase Quotation
+        $('#purchase-order-purchase-quotation').empty();
+        self.loadModalPurchaseQuotation(false, true);
+        $('#box-purchase-order-supplier').empty();
+        $('#box-purchase-order-contact').empty();
+        return true
+    };
+
+    loadAgainProductPurchaseRequestByQuotation(pqProductIDList) {
+        let self = this;
+        let tablePRProduct = $('#datable-purchase-request-product');
+        for (let eleChecked of tablePRProduct[0].querySelectorAll('.table-row-checkbox:checked')) {
+            let row = eleChecked.closest('tr');
+            let productID = row.querySelector('.table-row-item').id;
+            if (!pqProductIDList.includes(productID)) {
+                eleChecked.checked = false;
+                eleChecked.classList.add('disabled-by-pq');
+                eleChecked.setAttribute('disabled', 'true');
+                row.querySelector('.table-row-quantity-order').setAttribute('disabled', 'true');
+                $(row).css('background-color', '#f7f7f7');
+                row.setAttribute('data-bs-toggle', 'tooltip');
+                row.setAttribute('data-bs-placement', 'top');
+                row.setAttribute('title', 'This product is not in purchase quotation');
+            }
+        }
+        self.loadDataShowPurchaseRequest();
+        return true
+    };
 }
 
 // DataTable
@@ -1662,13 +1714,13 @@ class calculateHandle {
         return true;
     };
 
-    // calculateTable(table) {
-    //     let self = this;
-    //     for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
-    //         let row = table[0].tBodies[0].rows[i];
-    //         self.calculateMain(table, row)
-    //     }
-    // }
+    calculateTable(table) {
+        let self = this;
+        for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
+            let row = table[0].tBodies[0].rows[i];
+            self.calculateMain(table, row)
+        }
+    }
 }
 
 let calculateClass = new calculateHandle();
@@ -1693,9 +1745,13 @@ class validateHandle {
     };
 
     validateQuantityOrderFinal(ele, order_on_request) {
-        if (parseFloat(ele.value) < order_on_request) {
-            ele.value = String(order_on_request);
+        let eleStock = ele.closest('tr').querySelector('.table-row-stock');
+        if (parseFloat(ele.value) < parseFloat(order_on_request)) {
+            ele.value = order_on_request;
+            eleStock.innerHTML = '0';
             $.fn.notifyB({description: 'Quantity order actually must be equal or greater than quantity order on request'}, 'failure');
+        } else {
+            eleStock.innerHTML = String(parseFloat(ele.value) - parseFloat(order_on_request));
         }
     };
 }

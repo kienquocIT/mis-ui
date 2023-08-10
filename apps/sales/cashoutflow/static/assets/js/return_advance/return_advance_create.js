@@ -2,25 +2,78 @@ $(function () {
     $(document).ready(function () {
         const urlParams = new URLSearchParams(window.location.search);
         const advance_payment_id = urlParams.get('advance_payment_id');
+
+        const opportunity_id = urlParams.get('opportunity');
         const choose_AP_ele = $('#chooseAdvancePayment');
         $('#chooseBeneficiary').prop('disabled', true);
 
-        function loadDetailOpp(data) {
-            let dropdown = $('#dropdownOpp');
-            if (data === null) {
-                dropdown.find('.opp-info').addClass('hidden');
-                dropdown.find('.non-opp').removeClass('hidden');
-            } else {
-                dropdown.find('.opp-info').removeClass('hidden');
-                dropdown.find('.non-opp').addClass('hidden');
-                dropdown.find('[name="opp-name"]').text(data.title);
-                dropdown.find('[name="opp-code"]').text(data.code);
-                dropdown.find('[name="opp-customer"]').text(data.customer);
-            }
+
+        function loadAdvancePayment(advance_payment_id, opportunity_id, choose_AP_ele) {
+            let url = choose_AP_ele.data('select2-url');
+            let method = 'GET'
+            $.fn.callAjax2({
+                'url': url,
+                'method': method,
+                isDropdown: true,
+            }).then((resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('advance_payment_list')) {
+                        if (advance_payment_id !== null) {
+                            data.advance_payment_list.map(function (item) {
+                                if (item.id === advance_payment_id) {
+                                    choose_AP_ele.append(`<option value="${item.id}" selected>${item.title}</option>`);
+                                } else {
+                                    choose_AP_ele.append(`<option value="${item.id}">${item.title}</option>`);
+                                }
+                            })
+                        } else if (opportunity_id !== null) {
+                            let opportunityCode = null;
+
+                            for (const item of data.advance_payment_list) {
+                                if (
+                                    item.opportunity_mapped &&
+                                    item.opportunity_mapped.id === opportunity_id
+                                ) {
+                                    choose_AP_ele.append(`<option value="${item.id}">${item.title}</option>`);
+                                    opportunityCode = item.opportunity_mapped.code;
+                                    break;
+                                } else if (
+                                    item.sale_order_mapped &&
+                                    item.sale_order_mapped.opportunity_id === opportunity_id
+                                ) {
+                                    choose_AP_ele.append(`<option value="${item.id}">${item.title}</option>`);
+                                    opportunityCode = item.sale_order_mapped.opportunity_code;
+                                    break;
+                                } else if (
+                                    item.quotation_mapped &&
+                                    item.quotation_mapped.opportunity_id === opportunity_id
+                                ) {
+                                    choose_AP_ele.append(`<option value="${item.id}">${item.title}</option>`);
+                                    opportunityCode = item.quotation_mapped.opportunity_code;
+                                    break;
+                                }
+                            }
+                            $('[name="sale_code"]').val(opportunityCode);
+                        } else {
+                            data.advance_payment_list.map(function (item) {
+                                choose_AP_ele.append(`<option value="${item.id}">${item.title}</option>`);
+                            })
+                        }
+
+                    }
+                }
+            }, (errs) => {
+            },).then((resp) => {
+                loadPageWithParameter(advance_payment_id, choose_AP_ele);
+            })
         }
 
         function loadDetailAdvancePayment(url) {
-            $.fn.callAjax(url, "GET").then((resp) => {
+            $.fn.callAjax2({
+                'url': url,
+                'method': "GET"
+            }).then((resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('advance_payment_detail')) {
@@ -28,13 +81,13 @@ $(function () {
                         let sale_code_ele = $('[name="sale_code"]');
                         sale_code_ele.val(data.advance_payment_detail.code);
                         if (data.advance_payment_detail.sale_order_mapped.length > 0) {
-                            loadDetailOpp(data.advance_payment_detail.sale_order_mapped[0].opportunity);
+                            sale_code_ele.val(data.advance_payment_detail.sale_order_mapped[0].opportunity.code);
                         } else if (data.advance_payment_detail.quotation_mapped.length > 0) {
-                            loadDetailOpp(data.advance_payment_detail.quotation_mapped[0].opportunity);
+                            sale_code_ele.val(data.advance_payment_detail.quotation_mapped[0].opportunity.code);
                         } else if (data.advance_payment_detail.opportunity_mapped.length > 0) {
-                            loadDetailOpp(data.advance_payment_detail.opportunity_mapped[0]);
+                            sale_code_ele.val(data.advance_payment_detail.opportunity_mapped[0].code);
                         } else {
-                            loadDetailOpp(null);
+                            sale_code_ele.val('');
                         }
                         ele_benefication.empty();
                         ele_benefication.append(`<option value="${data.advance_payment_detail.beneficiary.id}">${data.advance_payment_detail.beneficiary.name}</option>`);
@@ -48,20 +101,23 @@ $(function () {
 
         function loadPageWithParameter(advance_payment_id, choose_AP_ele) {
             if (advance_payment_id !== null) {
-                $('#chooseAdvancePayment').prop('disabled', true);
-                $('#chooseBeneficiary').prop('disabled', true);
+                choose_AP_ele.prop('disabled', true);
                 choose_AP_ele.find(`option[value="${advance_payment_id}"]`).prop('selected', true);
                 loadDetailAdvancePayment(choose_AP_ele.attr('data-url-detail').replace(0, advance_payment_id));
             }
-            choose_AP_ele.select2();
         }
 
-        loadPageWithParameter(advance_payment_id, choose_AP_ele);
+        loadAdvancePayment(advance_payment_id, opportunity_id, choose_AP_ele)
+
+        // loadPageWithParameter(advance_payment_id, choose_AP_ele);
 
         function loadDetailBeneficiary(id) {
             let ele = $('[name="creator"]');
             let frm = new SetupFormSubmit(ele);
-            $.fn.callAjax(frm.getUrlDetail(id), frm.dataMethod).then((resp) => {
+            $.fn.callAjax2({
+                'url': frm.getUrlDetail(id),
+                'method': frm.dataMethod
+            }).then((resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('employee')) {
@@ -81,7 +137,10 @@ $(function () {
         function loadCreator() {
             let ele = $('[name="creator"]');
             let frm = new SetupFormSubmit(ele);
-            $.fn.callAjax(frm.getUrlDetail(ele.attr('data-id')), frm.dataMethod).then((resp) => {
+            $.fn.callAjax2({
+                'url': frm.getUrlDetail(ele.attr('data-id')),
+                'method': frm.dataMethod
+            }).then((resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('employee')) {

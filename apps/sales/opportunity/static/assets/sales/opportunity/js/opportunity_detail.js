@@ -2866,4 +2866,11 @@ $(document).ready(function () {
         $('#detail-meeting-result-text-area').val(meeting_obj.input_result);
     })
 
+    // event create related features
+
+    $(document).on('click', '.btn-create-related-feature', function (){
+        let url = $(this).data('url') + "?" + paramString;
+        window.open(url, '_blank');
+    })
+
 })

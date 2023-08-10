@@ -328,3 +328,5 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # Process
     FUNCTION_PROCESS_LIST = StringUrl('process/function/list')
     PROCESS = StringUrl('process/')
+    SKIP_PROCESS_STEP = StringUrl('process/step/skip/{pk}')
+    SET_CURRENT_PROCESS_STEP = StringUrl('process/step/set-current/{pk}')

@@ -9,7 +9,7 @@ $(document).ready(function () {
         $("#shipping-district option:selected").prop("selected", false);
         $("#shipping-ward option:selected").prop("selected", false);
         let ele = $('#shipping-city');
-        let url = ele.attr('data-url');
+        let url = ele.attr('data-select2-url');
         let method = ele.attr('data-method');
         $.fn.callAjax(url, method).then(
             (resp) => {
@@ -32,7 +32,7 @@ $(document).ready(function () {
     // load Districts SelectBox
     function loadDistricts() {
         let ele = $('#shipping-district');
-        let url = ele.attr('data-url').replace('pk', $('#shipping-city').val())
+        let url = ele.attr('data-select2-url').replace('pk', $('#shipping-city').val())
         let method = ele.attr('data-method');
         $.fn.callAjax(url, method).then(
             (resp) => {
@@ -53,7 +53,7 @@ $(document).ready(function () {
     // load Wards SelectBox
     function loadWards() {
         let ele = $('#shipping-ward');
-        let url = ele.attr('data-url').replace('pk', $('#shipping-district').val())
+        let url = ele.attr('data-select2-url').replace('pk', $('#shipping-district').val())
         let method = ele.attr('data-method');
         $.fn.callAjax(url, method).then(
             (resp) => {
@@ -413,11 +413,11 @@ $(document).ready(function () {
                     $('#parent-account-id').select2();
                     $('#account-owner-id').select2();
 
-                    $('#shipping-city').select2();
-                    $('#shipping-district').select2();
-                    $('#shipping-ward').select2();
+                    $('#shipping-city').initSelect2();
+                    $('#shipping-district').initSelect2();
+                    $('#shipping-ward').initSelect2();
 
-                    $('#select-box-account-name').select2();
+                    $('#select-box-account-name').initSelect2();
                 })
 
                 // delete address item
@@ -810,7 +810,7 @@ $(document).ready(function () {
             });
         } else {
             $('#button_add_new_billing_address').prop('hidden', false);
-            let url = $(this).attr('data-url').replace(0, id_account);
+            let url = $(this).attr('data-select2-url').replace(0, id_account);
             let method = $(this).attr('data-method');
             $.fn.callAjax(url, method).then(
                 (resp) => {

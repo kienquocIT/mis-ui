@@ -217,6 +217,7 @@ $(async function () {
             let $table = $('#dtbPickingProductList');
             const delivery_config = this.getProdConfig
             $table.DataTableDefault({
+                info: false,
                 searching: false,
                 ordering: false,
                 paginate: false,
@@ -361,18 +362,32 @@ $(async function () {
                 $('#modal_choise_logistics').on('shown.bs.modal', function (e) {
                     let dataLogistics
                     // show address else show billing
-                    if ($(e.relatedTarget).attr('data-is-address')) dataLogistics = data?.shipping_address
-                    else dataLogistics = data?.billing_address
+                    if ($(e.relatedTarget).attr('data-is-address')){
+                        dataLogistics = data?.shipping_address
+                        $(this).find('.modal-body').attr('data-logistic', 'address')
+                    }
+                    else{
+                        dataLogistics = data?.billing_address
+                        $(this).find('.modal-body').attr('data-logistic', 'bill')
+                    }
                     let htmlTemp = ''
                     for (let item of dataLogistics){
-                        htmlTemp += `<div class="col mb-3 text-right txt-cl-black"><textarea disabled class="form-control mb-2 txt-cl-black" data-id="${
+                        htmlTemp += `<div class="col mb-3 text-right txt-cl-black wrap_logistic"><textarea disabled class="form-control mb-2 txt-cl-black" data-id="${
                             item?.id ? item.id : item
-                        }">${item}</textarea><button class="btn btn-primary">${
+                        }">${item}</textarea><button class="btn btn-primary btn_logistics_choise">${
                             $trans.attr('data-select_address')}</button></div>`
                     }
                     $(this).find('.modal-body').html(htmlTemp)
+                    $('.wrap_logistic button', $(this).find('.modal-body')).on('click', function () {
+                        let val = $(this).parents('.wrap_logistic').find('textarea').val()
+                        if ($(this).closest('.modal-body').attr('data-logistic') === 'address') {
+                            $('#textareaShippingAddress').val(val)
+                        } else {
+                            $('#textareaBilling').val(val)
+                        }
+                        $('#modal_choise_logistics').modal('hide')
+                    });
                 });
-                $('#', 'document')
             });
         }
     }
@@ -421,8 +436,10 @@ $(async function () {
                     const cusContent = DataTableAction.item_view(res.customer_data, $url.attr('data-customer'))
                     $cusID.prev().find('.dropdown-menu').html(cusContent)
                     prodDetailUtil.modalLogistics(res.customer_data.id, res.sale_order_data)
-                    $('#textareaShippingAddress').val(res.sale_order_data?.shipping_address?.address)
-                    $('#textareaBilling').val(res.sale_order_data?.billing_address?.bill)
+                    $('#textareaShippingAddress').val(res.delivery_logistic?.shipping_address ||
+                        res.sale_order_data?.shipping_address?.address)
+                    $('#textareaBilling').val(res.delivery_logistic?.billing_address ||
+                        res.sale_order_data?.billing_address?.bill)
                 }
                 if (res.contact_data) {
                     const $conID = $('#contact_id')
@@ -493,6 +510,10 @@ $(async function () {
             putData['ready_quantity'] = $storedData.ready_quantity
             putData['is_updated'] = $storedData.is_updated
             putData['attachments'] = $('[name="attachments"]').val()
+            putData['delivery_logistic'] = {
+                "shipping_address": $('#textareaShippingAddress').val(),
+                "billing_address": $('#textareaBilling').val(),
+            }
             let prodSub = []
             for (prod of prodTable.getProdList) {
                 if (prod.picked_quantity > 0)

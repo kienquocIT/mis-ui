@@ -13,6 +13,18 @@ $(document).ready(function () {
         }
     }
 
+    $('#input-product-image').dropify({
+        messages: {
+            'default': 'Upload an image',
+            'replace': 'Drag and drop or click to replace',
+            'remove':  'Remove',
+            'error':   'Ooops, something wrong happended.'
+        },
+        tpl: {
+            message:' {{ default }}',
+        }
+    });
+
     $('#check-tab-inventory').change(function () {
         disabledTab(this.checked, '#link-tab-inventory', '#tab_inventory');
         $('#tab_inventory input,#tab_inventory select').val('');

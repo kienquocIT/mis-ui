@@ -121,12 +121,15 @@ $(function () {
 
         // Action on click checkbox purchase quotation
         elePurchaseQuotation.on('click', '.checkbox-quotation', function () {
+            if (this.checked === true) {
+               loadDataClass.loadSupplierContactByCheckedQuotation(this);
+            }
             for (let item of elePurchaseQuotation[0].querySelectorAll('.checkbox-quotation')) {
                 if (item.id !== $(this)[0].id) {
                     item.checked = false;
                 }
             }
-            loadDataClass.loadPriceByCheckedQuotation($(this));
+            loadDataClass.loadCheckProductsByCheckedQuotation(this);
         });
 
         // Action on click btn remove purchase quotation

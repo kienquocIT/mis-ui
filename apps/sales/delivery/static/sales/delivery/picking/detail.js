@@ -310,35 +310,27 @@ $(async function () {
                 $(`.dropdown > i`, row).off().on('show.bs.dropdown', function () {
                     getStockByProdID(data, $(this))
                 })
+
+                $(`#prod_row-${index}`, row).off().on('blur', async function (e) {
+                    if (this.value) {
+                        // format số âm, nhiều số 0. Ex. 0001, số thập phân.
+                        let value = this.value.replace("-", "").replace(/^0+(?=\d)/, '').replace(/\.\d+$/, '');
+                        this.value = value
+                        const listCompare = await pickupInit.getWarehouseStock(data)
+                        if (listCompare > 0 && listCompare >= parseFloat(value)) {
+                            pickupInit.pickedQuantityUtil(value, index);
+                            $(this).removeClass('is-invalid cl-red')
+                        } else {
+                            $.fn.notifyB(
+                                {description: $('#trans-factory').attr('data-outstock')},
+                                'failure'
+                            );
+                            $(this).addClass('is-invalid cl-red')
+                        }
+                    }
+                })
             },
             drawCallback: function () {
-                const table = $(this).DataTable();
-                let data = table.rows().data();
-
-                // loop for all row and init event on change value of picked quantity
-                data.each( function (rowData, idx) {
-                    // Đối với mỗi hàng, bạn có thể lấy được index của nó
-                    $(`#prod_row-${idx}`).off().on('blur',async function (e) {
-                        if (this.value) {
-                            // format số âm, nhiều số 0. Ex. 0001, số thập phân.
-                            let value = this.value.replace("-", "").replace(/^0+(?=\d)/, '').replace(/\.\d+$/, '');
-                            this.value = value
-                            const listCompare = await pickupInit.getWarehouseStock(rowData)
-                            if (listCompare > 0 && listCompare >= parseFloat(value)) {
-                                pickupInit.pickedQuantityUtil(value, idx);
-                                $(this).removeClass('is-invalid cl-red')
-                            }
-                            else {
-                                $.fn.notifyB(
-                                    {description: $('#trans-factory').attr('data-outstock')},
-                                    'failure'
-                                );
-                                $(this).addClass('is-invalid cl-red')
-                            }
-                        }
-                    })
-                });
-
                 // xử lý event check all
                 pickupInit.checkAllHandle();
             }

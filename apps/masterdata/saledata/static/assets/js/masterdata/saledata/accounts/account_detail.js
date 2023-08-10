@@ -9,7 +9,7 @@ $(document).ready(function () {
         $("#shipping-district option:selected").prop("selected", false);
         $("#shipping-ward option:selected").prop("selected", false);
         let ele = $('#shipping-city');
-        let url = ele.attr('data-url');
+        let url = ele.attr('data-select2-url');
         let method = ele.attr('data-method');
         $.fn.callAjax(url, method).then(
             (resp) => {
@@ -32,7 +32,7 @@ $(document).ready(function () {
     // load Districts SelectBox
     function loadDistricts() {
         let ele = $('#shipping-district');
-        let url = ele.attr('data-url').replace('pk', $('#shipping-city').val())
+        let url = ele.attr('data-select2-url').replace('pk', $('#shipping-city').val())
         let method = ele.attr('data-method');
         $.fn.callAjax(url, method).then(
             (resp) => {
@@ -53,7 +53,7 @@ $(document).ready(function () {
     // load Wards SelectBox
     function loadWards() {
         let ele = $('#shipping-ward');
-        let url = ele.attr('data-url').replace('pk', $('#shipping-district').val())
+        let url = ele.attr('data-select2-url').replace('pk', $('#shipping-district').val())
         let method = ele.attr('data-method');
         $.fn.callAjax(url, method).then(
             (resp) => {
@@ -258,16 +258,17 @@ $(document).ready(function () {
 
                 let list_shipping_address = ``;
                 for (let i = 0; i < data.shipping_address.length; i++) {
-                    if (i === 0) {
+                    let shipping_address = data.shipping_address[i];
+                    if (shipping_address.is_default) {
                         list_shipping_address += `<div class="form-check ml-5 mb-2">
                                     <input class="form-check-input" type="radio" name="shippingaddressRadio" checked disabled>
-                                    <label>` + data.shipping_address[i] + `</label>
+                                    <label>` + shipping_address.full_address + `</label>
                                     <a hidden href="#" class="del-address-item"><i class="bi bi-x"></i></a>
                                </div>`;
                     } else {
                         list_shipping_address += `<div class="form-check ml-5 mb-2">
                                     <input class="form-check-input" type="radio" name="shippingaddressRadio" disabled>
-                                    <label>` + data.shipping_address[i] + `</label>
+                                    <label>` + shipping_address.full_address + `</label>
                                     <a hidden href="#" class="del-address-item"><i class="bi bi-x"></i></a>
                                </div>`;
                     }
@@ -277,16 +278,16 @@ $(document).ready(function () {
                 let list_billing_address = ``
                 for (let i = 0; i < data.billing_address.length; i++) {
                     let billing_address = data.billing_address[i];
-                    if (i === 0) {
+                    if (billing_address.is_default) {
                         list_billing_address += `<div class="form-check ml-5 mb-2">
                                     <input class="form-check-input" type="radio" name="billingaddressRadio" checked disabled>
-                                    <label>` + billing_address + `</label>
+                                    <label>` + billing_address.full_address + `</label>
                                     <a hidden href="#" class="del-address-item"><i class="bi bi-x"></i></a>
                                </div>`;
                     } else {
                         list_billing_address += `<div class="form-check ml-5 mb-2">
                                     <input class="form-check-input" type="radio" name="billingaddressRadio" disabled>
-                                    <label>` + billing_address + `</label>
+                                    <label>` + billing_address.full_address + `</label>
                                     <a hidden href="#" class="del-address-item"><i class="bi bi-x"></i></a>
                                </div>`;
                     }
@@ -412,11 +413,11 @@ $(document).ready(function () {
                     $('#parent-account-id').select2();
                     $('#account-owner-id').select2();
 
-                    $('#shipping-city').select2();
-                    $('#shipping-district').select2();
-                    $('#shipping-ward').select2();
+                    $('#shipping-city').initSelect2();
+                    $('#shipping-district').initSelect2();
+                    $('#shipping-ward').initSelect2();
 
-                    $('#select-box-account-name').select2();
+                    $('#select-box-account-name').initSelect2();
                 })
 
                 // delete address item
@@ -809,7 +810,7 @@ $(document).ready(function () {
             });
         } else {
             $('#button_add_new_billing_address').prop('hidden', false);
-            let url = $(this).attr('data-url').replace(0, id_account);
+            let url = $(this).attr('data-select2-url').replace(0, id_account);
             let method = $(this).attr('data-method');
             $.fn.callAjax(url, method).then(
                 (resp) => {

@@ -4,8 +4,10 @@ $(document).ready(function () {
 
     function loadOpportunity(opportunityParam) {
         let ele = $('#box-select-opportunity');
-        $.fn.callAjax(ele.data('select2-url'), ele.data('method'))
-            .then(
+        $.fn.callAjax2({
+            'url': ele.data('select2-url'),
+            'method': ele.data('method')
+        }).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('opportunity_list')) {
@@ -39,7 +41,10 @@ $(document).ready(function () {
 
     function loadPersonInCharge() {
         let ele = $('#box-select-person-in-charge');
-        $.fn.callAjax(ele.data('select2-url'), ele.data('method'))
+        $.fn.callAjax2({
+            'url': ele.data('select2-url'),
+            'method': ele.data('method')
+        })
             .then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);

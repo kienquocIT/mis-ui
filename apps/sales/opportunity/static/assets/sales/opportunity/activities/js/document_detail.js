@@ -1,8 +1,10 @@
 $(document).ready(function () {
     function loadOpportunity(id) {
         let ele = $('#box-select-opportunity');
-        $.fn.callAjax(ele.data('select2-url'), ele.data('method'))
-            .then(
+        $.fn.callAjax({
+            'url': ele.data('select2-url'),
+            'method': ele.data('method')
+        }).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('opportunity_list')) {
@@ -33,21 +35,23 @@ $(document).ready(function () {
 
     function loadPersonInCharge(list_id) {
         let ele = $('#box-select-person-in-charge');
-        $.fn.callAjax(ele.data('select2-url'), ele.data('method'))
-            .then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('employee_list')) {
-                        data.employee_list.map(function (item) {
-                            if (list_id.includes(item.id)) {
-                                ele.append(`<option value="${item.id}" selected>${item.full_name}</option>`);
-                            } else {
-                                ele.append(`<option value="${item.id}">${item.full_name}</option>`);
-                            }
-                        })
-                    }
-                },
-            )
+        $.fn.callAjax2({
+            'url': ele.data('select2-url'),
+            'method': ele.data('method')
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('employee_list')) {
+                    data.employee_list.map(function (item) {
+                        if (list_id.includes(item.id)) {
+                            ele.append(`<option value="${item.id}" selected>${item.full_name}</option>`);
+                        } else {
+                            ele.append(`<option value="${item.id}">${item.full_name}</option>`);
+                        }
+                    })
+                }
+            },
+        )
     }
 
     const frmDetail = $('#frm-detail-opportunity-document');
@@ -56,7 +60,10 @@ $(document).ready(function () {
     function loadDetail() {
         let url = frmDetail.data('url').format_url_with_uuid(pk);
         let method = 'GET';
-        $.fn.callAjax(url, method).then(
+        $.fn.callAjax2({
+            'url': url,
+            'method': method
+        }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
@@ -65,7 +72,7 @@ $(document).ready(function () {
                     $('#input-request-completed-date').val(data.opportunity_doc.request_completed_date.split(' ')[0]);
                     $('[name="subject"]').val(data.opportunity_doc.subject);
                     $('[name="kind_of_product"]').val(data.opportunity_doc.kind_of_product);
-                    data.opportunity_doc.files.map(function (item){
+                    data.opportunity_doc.files.map(function (item) {
                         loadFile(item, data.opportunity_doc.data_documents);
 
                     })
@@ -77,7 +84,7 @@ $(document).ready(function () {
 
     loadDetail();
 
-    function loadFile(file, data_documents){
+    function loadFile(file, data_documents) {
         let html = $('.document-hidden').html();
         let ele_doc = $('.document-content');
         ele_doc.append(html);

@@ -1,4 +1,39 @@
 class SelectDDControl {
+    static get_data_key_map(item, keyMap) {
+        if (item && keyMap && typeof item === 'object') {
+            let arr = keyMap.split('--');
+            if (arr.length === 1) {
+                if (item.hasOwnProperty(keyMap)) {
+                    return item[keyMap];
+                }
+            } else if (arr.length >= 2) {
+                let dataLv = item?.[arr[0]];
+                if (dataLv) {
+                    return SelectDDControl.get_data_key_map(item[arr[0]], arr.slice(1).join('--'));
+                }
+            }
+        }
+        return '';
+    }
+
+    static get_data_from_resp(resp, keyResp) {
+        let result = [];
+        let respTmp = resp?.data;
+        if (respTmp) {
+            let respData = resp?.data[keyResp];
+            if (respData) {
+                if (Array.isArray(respData) && respData.length) {
+                    result = respData;
+                }
+            } else {
+                if (typeof respTmp === 'object' && Object.keys(respTmp).length === 1 && Array.isArray(respTmp[Object.keys(respTmp)[0]])) {
+                    result = respTmp[Object.keys(respTmp)[0]];
+                }
+            }
+        }
+        return result;
+    }
+
     arrDataBackupLoaded = 'data-idx-data-loaded';
     page = 1;
     pageSize = 10;
@@ -9,14 +44,26 @@ class SelectDDControl {
         //  1. Opts
         //  2. attr('data-onload')
         //  3. []
+        let parseData = [];
         let data = this.opts?.data || null;
-        if (data) return data;
-        data = this.ele.attr('data-onload') || '[]';
-        try {
-            return JSON.parse(data);
-        } catch (e) {
+        if (data) {
+            parseData = data;
+        } else {
+            data = this.ele.attr('data-onload') || '[]';
+            try {
+                parseData = JSON.parse(data);
+            } catch (e) {
+            }
         }
-        return null;
+
+        if (Array.isArray(parseData)) {
+            // skip because type is correct!
+        } else if (typeof parseData === 'object') {
+            parseData = [parseData];
+        } else {
+            parseData = [];
+        }
+        return parseData;
     }
 
     get _data_keyResp() {
@@ -75,7 +122,7 @@ class SelectDDControl {
         //  1. Opts
         //  2. attribute('data-cache')
         //  3. true
-        if (this.opts.hasOwnProperty('cache') || this.ele.attr('data-cache') !== undefined){
+        if (this.opts.hasOwnProperty('cache') || this.ele.attr('data-cache') !== undefined) {
             return this.opts?.['cache'] ? this.opts?.['cache'] : (this.ele.attr('data-cache') === 'true');
         }
         return true; // default if not found config
@@ -145,7 +192,8 @@ class SelectDDControl {
         let clsThis = this;
         let data_convert = [];
         let keyResp = this._data_keyResp;
-        let respData = resp?.data[keyResp];
+        // let respData = resp?.data[keyResp];
+        let respData = this.callbackDataResp(resp, keyResp);
         if (respData && Array.isArray(respData) && respData.length) {
             let keyId = this._data_keyId;
             let keyText = this._data_keyText;
@@ -155,16 +203,12 @@ class SelectDDControl {
             let pagePrevious = resp?.data?.['page_previous'];
             if (idsSelected && pagePrevious === 0) {
                 this.ele.find('option:selected').each(function () {
-                    let dataChild = {};
-                    dataChild[keyId] = $(this).val();
-                    dataChild[keyText] = $(this).text();
+                    let idn = $(this).val();
                     data_convert.push({
-                        'id': dataChild[keyId],
-                        'text': dataChild[keyText],
+                        'id': idn,
+                        'text': $(this).text(),
                         'data': {
-                            'idn': dataChild[keyId],
-                            'text': dataChild[keyText],
-                            ...clsThis._getDataBackupLoaded(dataChild[keyId])
+                            ...clsThis._getDataBackupLoaded(idn)
                         },
                         'selected': true,
                     })
@@ -172,19 +216,17 @@ class SelectDDControl {
             }
 
             // append to resp to data with exclude exist selected
-            respData.map(
-                (item) => {
-                    let idn = item?.[keyId];
-                    if (!idsSelected || (idsSelected && !idsSelected.includes(idn))) {
-                        data_convert.push({
-                            'id': idn,
-                            'text': item?.[keyText],
-                            'data': item,
-                            'selected': false,
-                        });
-                    }
+            respData.map((item) => {
+                let idn = this.callbackValueId(item, keyId);
+                if (!idsSelected || (idsSelected && !idsSelected.includes(idn))) {
+                    data_convert.push({
+                        'id': idn,
+                        'text': this.callbackTextDisplay(item, keyText),
+                        'data': item,
+                        'selected': false,
+                    });
                 }
-            )
+            })
         }
         return data_convert;
     }
@@ -222,12 +264,11 @@ class SelectDDControl {
     _ajax_parse_headers(headers) {
         // setup header for ajax call
         return {
-            "ENABLEXCACHECONTROL": true,
-            ...headers || {}
+            "ENABLEXCACHECONTROL": true, ...headers || {}
         }
     }
 
-    get minimumInputLength(){
+    get minimumInputLength() {
         // setup min input length search for multiple
         // Priority:
         //  1. Opts
@@ -235,17 +276,18 @@ class SelectDDControl {
         //  3. 0
 
         let minInpLength = this.opts?.minimumInputLength;
-        if (minInpLength) return {'minimumInputLength': minInpLength};
+        if (minInpLength) return minInpLength;
 
         try {
             minInpLength = this.ele.attr('data-minimumInputLength');
-            if (minInpLength) return {'minimumInputLength': parseInt(minInpLength)};
-        } catch (e){}
+            if (minInpLength) return parseInt(minInpLength);
+        } catch (e) {
+        }
 
-        return {'minimumInputLength': 0};
+        return 0;
     }
 
-    get maximumInputLength(){
+    get maximumInputLength() {
         // setup max input length search for multiple
         // Priority:
         //  1. Opts
@@ -253,17 +295,18 @@ class SelectDDControl {
         //  3. 10 --> set < 1 for unlimited
 
         let maxInpLength = this.opts?.maximumInputLength;
-        if (maxInpLength) return {'maximumInputLength': maxInpLength};
+        if (maxInpLength) return maxInpLength;
 
         try {
             maxInpLength = this.ele.attr('data-maximumInputLength');
-            if (maxInpLength) return {'maximumInputLength': parseInt(maxInpLength)};
-        } catch (e){}
+            if (maxInpLength) return parseInt(maxInpLength);
+        } catch (e) {
+        }
 
-        return {'maximumInputLength': 10};
+        return 10;
     }
 
-    get maximumSelectionLength(){
+    get maximumSelectionLength() {
         // setup maximumSelectionLength for multiple
         // Priority:
         //  1. Opts
@@ -271,26 +314,25 @@ class SelectDDControl {
         //  3. 10 --> set it < 1 for unlimited selection
 
         let maxSelected = this.opts?.maximumSelectionLength;
-        if (maxSelected) return {'maximumSelectionLength': maxSelected};
+        if (maxSelected) return maxSelected;
 
         try {
             maxSelected = this.ele.attr('data-maximumSelectionLength');
-            if (maxSelected) return {'maximumSelectionLength': parseInt(maxSelected)};
-        } catch (e){}
+            if (maxSelected) return parseInt(maxSelected);
+        } catch (e) {
+        }
 
-        return {'maximumSelectionLength': 10};
+        return 10;
     }
 
     get templateResult() {
         // setup templateResult concat default + manual
         let clsThis = this;
-        return {
-            'templateResult': function (state) {
+        return function (state) {
                 if (state.data) clsThis._forceUpdateDataBackupLoaded(state.id, state.data);
                 let setupFunc = clsThis.opts?.['templateResult'];
                 return setupFunc ? setupFunc(state) : state.text;
             }
-        }
     }
 
     get multipleAndAllowClear() {
@@ -345,9 +387,7 @@ class SelectDDControl {
         //  1. attr('disabled')
         //  2. opts
         //  3. false
-        return {
-            'disabled': this.ele.attr('disabled') ? true : !!this.opts?.disabled
-        };
+        return this.ele.attr('disabled') ? true : !!this.opts?.disabled;
     }
 
     get dropdownParent() {
@@ -371,16 +411,14 @@ class SelectDDControl {
         if (data && Array.isArray(data)) {
             let keyId = this._data_keyId;
             let keyText = this._data_keyText;
-            initData = data.map(
-                (item) => {
-                    return {
-                        'id': item?.[keyId],
-                        'text': item?.[keyText],
-                        'data': item,
-                        'selected': true,
-                    }
+            initData = data.map((item) => {
+                return {
+                    'id': this.callbackValueId(item, keyId),
+                    'text': this.callbackTextDisplay(item, keyText),
+                    'data': item,
+                    'selected': true,
                 }
-            )
+            })
         }
         this.initData = initData;
         return {'data': initData.length > 0 ? initData : null};
@@ -409,10 +447,10 @@ class SelectDDControl {
                             // Load More Scrolling | Infinite Scrolling : https://select2.org/data-sources/ajax#count_filtered
                         }
                     };
-                },
-                ...config,
+                }, ...config,
             }
-        };
+        }
+        ;
         return ajaxConfig ? {'ajax': ajaxConfig} : {};
     }
 
@@ -426,6 +464,29 @@ class SelectDDControl {
         this.ele.attr(this.arrDataBackupLoaded, idxDataBackup);
     }
 
+    callbackDataResp(resp, keyResp) {
+        let callback = this.opts?.['callbackDataResp'] || SelectDDControl.get_data_from_resp;
+        if (callback) {
+            let result = callback(resp, keyResp);
+            if (result && Array.isArray(result)) return result;
+        }
+        return [];
+    }
+
+    callbackValueId(item, key) {
+        let callback = this.opts?.['callbackValueId'] || SelectDDControl.get_data_key_map;
+        if (callback) {
+            return callback(item, key)
+        }
+        return '';
+    }
+
+    callbackTextDisplay(item, key) {
+        // callback manual parse data to option text
+        let callback = this.opts?.['callbackTextDisplay'] || SelectDDControl.get_data_key_map;
+        return callback ? callback(item, key) : '';
+    }
+
     renderDataOnload(config) {
         // Concat dataOnload config + option select in HTML ==> Auto selected it after render select2
         // Using return value from
@@ -435,14 +496,14 @@ class SelectDDControl {
         let hasAjax = !!(config?.['ajax']);
         let dataSelected = this._ele_collect_selected(hasAjax);
         let dataOnload = this.initData;
-        if (this.ele && Array.isArray(dataOnload) && Array.isArray(dataOnload)) {
-            let optHTML = this.initData.concat(dataSelected).map(
-                (item) => {
-                    let idn = item?.['id'];
+        if (this.ele && Array.isArray(dataOnload) && Array.isArray(dataSelected)) {
+            let optHTML = this.initData.concat(dataSelected).map((item) => {
+                let idn = item?.['id'];
+                if (idn) {
                     this._forceUpdateDataBackupLoaded(idn, item?.['data'] || {});
                     return `<option value="${idn}" ${item?.selected ? "selected" : ""}>${item?.['text'] || ''}</option>`;
                 }
-            ).join("");
+            }).join("");
             this.ele.html(optHTML);
         }
         return true;
@@ -456,13 +517,13 @@ class SelectDDControl {
             'theme': 'bootstrap4',
             'language': globeLanguage,
             ...this.opts,
-            ...this.minimumInputLength,
-            ...this.maximumInputLength,
-            ...this.maximumSelectionLength,
-            ...this.disabled,
+            'minimumInputLength': this.minimumInputLength,
+            'maximumInputLength': this.maximumInputLength,
+            'maximumSelectionLength': this.maximumSelectionLength,
+            'disabled': this.disabled,
             ...this.multipleAndAllowClear,
             ...this.tagsToken,
-            ...this.templateResult,
+            'templateResult': this.templateResult,
             ...this.dropdownParent,
             ...this.data,
             ...this.ajax,
@@ -471,7 +532,7 @@ class SelectDDControl {
 
     init() {
         if (!this._config) this._config = this.config();
-        this.renderDataOnload();
+        this.renderDataOnload(this._config);
         return this.ele.select2(this._config);
     }
 }

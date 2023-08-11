@@ -48,10 +48,21 @@ tbl.on('click', '.btnRemoveRow', function () {
 })
 
 tbl.on('change', '#newRowApp', function () {
+    let rangeAllow = [];
+    let storageApp = {};
+    let storageAppsEle = $("#" + $(this).attr('data-storage-backup'));
+    if (storageAppsEle && storageAppsEle.length > 0){
+        try {
+            storageApp = JSON.parse(storageAppsEle.text());
+        } catch (e){}
+
+        let dataAppSelected= storageApp?.[$(this).val()];
+        rangeAllow = dataAppSelected ? (dataAppSelected?.['range_allow'] || []) : [];
+    }
+    console.log(storageApp, rangeAllow);
+
     let selectRangeEle = $('#newRowRange');
-    let optSelected = $(this).find('option:selected');
     selectRangeEle.find(":selected").prop('selected', false);
-    let rangeAllow = $(optSelected).attr('data-range-allow').split(",");
     $(selectRangeEle).find('option').each(function () {
         if (rangeAllow.includes($(this).attr('value'))) {
             $(this).prop('disabled', false).removeClass('hidden');
@@ -187,11 +198,13 @@ class HandlePermissions {
 
     static loadAppNewRow(planAppData,) {
         let html = ``;
+        let storageApps = {};
         if (planAppData) {
             planAppData.map((item) => {
                 let applicationData = item.application;
                 if (applicationData && Array.isArray(applicationData)) {
                     applicationData.map((childItem) => {
+                        storageApps[childItem.id] = childItem;
                         html += `
                             <option 
                                 value="${childItem.id}"
@@ -209,6 +222,10 @@ class HandlePermissions {
             })
         }
         let newRowApp = $('#newRowApp');
+        let idxStorageIdx = UtilControl.generateRandomString(32);
+
+        newRowApp.attr('data-storage-backup', idxStorageIdx);
+        $(`<script type="application/json" id="${idxStorageIdx}">${JSON.stringify(storageApps)}</script>`).insertAfter(newRowApp);
         newRowApp.html(html).initSelect2();
         newRowApp.trigger('change');
     }

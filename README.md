@@ -645,36 +645,75 @@ VI. Select2
 <select
         id="selEmployeeList"
         class="form-control"
-        data-url="{% url 'EmployeeListApi' %}"
-        data-keyResp="employee_list"
-        data-keyText="full_name"
-        data-keyId="id"
+        data-url="{% url 'EmployeeListApi' %}"  // url gọi lấy dữ liệu
+        data-keyResp="employee_list"    // key để lấy dữ liệu trừ response.data
+        data-keyText="full_name"    // key để lấy dữ liệu hiển thị ra option
+        data-keyId="id" // key để lấy dữ liệu làm ID cho option
 >
    
 </select>
 ```
 3. Khởi tạo Select2: https://select2.org/configuration/options-api
 ```js
+// thường thứ tự lấy giá trị sẽ ưu tiên (bên trái ưu tiên hơn): opts --> attribute --> mặc định
+let config = {}
+
 // mặc định
-$('#selEmployeeList').initSelect2();
+$('#selEmployeeList').initSelect2(config);
 
 // cài đặt các cấu hình
-$('#selEmployeeList').initSelect2({
+config = {
    'ajax': {
        'url': '',
       'method': '',
       ...
    },
-   'cache': true,
+   'cache': true, // cache trong vòng 1 phút tránh việc spam khi click đi click lại
    ...
-});
+};
 
 // cài đặt có dữ liệu mặc định cho việc selected truớc các option có sẵn
-$('#selEmployeeList').initSelect2({
+config = {
    ...,
    'data': [],
    ...,
-});
+};
+
+// khai báo lấy data-keyId và data-keyText với nhiều cấp (dict lồng nhau)
+// 1 data mẫu trả về: {"a": {"b": {"c": 1, "idx": 99}}}
+// - dữ liệu cần hiển thị text: a.b.c
+// - dữ liệu cần làm ID: a.b.idx
+config = {
+   ...,
+   'dataId': 'a--b--idx',
+   'dataText': 'a--b--c',
+   ...,
+};
+
+// manual việc lọc dữ liệu sau khi nhận phản hồi và hiển thị val|text của option --> trường hợp dữ liệu trả về phức tạp
+config = {
+   ...,
+   'callbackDataResp': function (resp, keyResp){
+        // resp: là response trả về từ API
+        // keyResp: là keyResp được khai báo
+        // return: trả về 1 danh sách (chứa 2 key của dataText và dataId)
+        return [];
+   },
+   'callbackValueId': function (item, key){
+        // item: là 1 item của danh sách trả về sau khi lấy từ data_keyResp
+        // key: là key tương tức của ID được lấy từ data_keyId|"id"
+        // return: trả ra một chuỗi hiển thị cho option.
+      return item?.[key] || '';
+   },
+   'callbackTextDisplay': function (item, key){
+        // item: là 1 item của danh sách trả về sau khi lấy từ data_keyResp
+        // key: là key tương tức của ID được lấy từ data_keyText|"title"
+        // return: trả ra một chuỗi để set value cho option.
+        return item?.[key] || '';
+   },
+   ...,
+};
+
 ```
 
 VII. DataTable

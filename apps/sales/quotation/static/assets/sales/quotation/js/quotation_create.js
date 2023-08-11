@@ -1130,7 +1130,7 @@ $(function () {
                 'opportunity',
                 'customer',
                 'contact',
-                'sale_person',
+                'employee_inherit',
                 'payment_term',
                 // total amount of products
                 'total_product_pretax_amount',
@@ -1167,7 +1167,7 @@ $(function () {
                     'opportunity',
                     'customer',
                     'contact',
-                    'sale_person',
+                    'employee_inherit',
                     'payment_term',
                     'quotation',
                     // total amount of products
@@ -1209,7 +1209,7 @@ $(function () {
                 'opportunity',
                 'customer',
                 'contact',
-                'sale_person',
+                'employee_inherit',
                 'payment_term',
                 'quotation'
             ]

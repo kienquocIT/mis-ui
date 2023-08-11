@@ -3530,8 +3530,15 @@ class submitHandle {
         }
 
         _form.dataForm[quotation_logistic_data] = self.setupDataLogistic();
-        _form.dataForm['customer_shipping'] = $('#quotation-create-customer-shipping').val();
-        _form.dataForm['customer_billing'] = $('#quotation-create-customer-billing').val();
+
+        let customer_shipping = $('#quotation-create-customer-shipping');
+        if (customer_shipping.val()) {
+            _form.dataForm['customer_shipping'] = customer_shipping.val();
+        }
+        let customer_billing = $('#quotation-create-customer-billing');
+        if (customer_billing.val()) {
+            _form.dataForm['customer_billing'] = customer_billing.val();
+        }
 
         let quotation_indicators_data_setup = self.setupDataIndicator();
         if (quotation_indicators_data_setup.length > 0) {

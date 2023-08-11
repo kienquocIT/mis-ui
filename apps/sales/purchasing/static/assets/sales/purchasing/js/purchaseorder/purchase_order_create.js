@@ -76,7 +76,7 @@ $(function () {
 
         // Checkbox merge product
         $('#merge-same-product').on('click', function() {
-            loadDataClass.loadMergeProductTable($(this));
+            loadDataClass.loadOrHiddenMergeProductTable();
         });
 
         // Checkbox all
@@ -87,21 +87,19 @@ $(function () {
 
         // Action on click .table-row-checkbox of tablePurchaseRequest
         tablePurchaseRequest.on('click', '.table-row-checkbox', function() {
+            $('#table-purchase-reqeust-checkbox-all')[0].checked = false;
             loadDataClass.loadModalPurchaseRequestProductTable();
-            // if ($(this)[0].checked === false) {
-            //     let targetID = $(this)[0].id;
-            //     uncheckRowTableRelate(tablePurchaseRequestProduct, targetID)
-            // }
         });
 
         // Action on click btn add purchase request
         $('#btn-confirm-add-purchase-request').on('click', function () {
-            loadDataClass.loadDataShowPurchaseRequest(elePurchaseRequest, tablePurchaseRequest);
+            loadDataClass.loadDataShowPurchaseRequest();
         });
 
         // Action on click btn remove purchase request
         elePurchaseRequest.on('click', '.custom-btn-remove', function() {
-            loadDataClass.loadDataAfterClickRemove($(this), elePurchaseRequest, tablePurchaseRequest, "purchase_request");
+            let removeIDList = [this.id];
+            loadDataClass.loadDataAfterClickRemove(tablePurchaseRequest, removeIDList, "purchase_request");
         });
 
         // Action on change quantity order of tablePurchaseRequestProduct
@@ -118,7 +116,20 @@ $(function () {
 
         // Action on click add purchase quotation
         $('#btn-confirm-add-purchase-quotation').on('click', function () {
-            loadDataClass.loadDataShowPurchaseQuotation(elePurchaseQuotation, tablePurchaseQuotation);
+            loadDataClass.loadDataShowPurchaseQuotation();
+        });
+
+        // Action on click checkbox purchase quotation
+        elePurchaseQuotation.on('click', '.checkbox-quotation', function () {
+            if (this.checked === true) {
+               loadDataClass.loadSupplierContactByCheckedQuotation(this);
+            }
+            for (let item of elePurchaseQuotation[0].querySelectorAll('.checkbox-quotation')) {
+                if (item.id !== $(this)[0].id) {
+                    item.checked = false;
+                }
+            }
+            loadDataClass.loadCheckProductsByCheckedQuotation(this);
         });
 
         // Action on click btn remove purchase quotation
@@ -129,25 +140,15 @@ $(function () {
                     checked_id = item.id;
                 }
             }
-            loadDataClass.loadDataAfterClickRemove($(this), elePurchaseQuotation, tablePurchaseQuotation, "purchase_quotation");
+            let removeIDList = [this.id];
+            loadDataClass.loadDataAfterClickRemove(tablePurchaseQuotation, removeIDList, "purchase_quotation");
             if (checked_id) {
                 for (let item of elePurchaseQuotation[0].querySelectorAll('.checkbox-quotation')) {
                     if (item.id === checked_id) {
-                        item.checked = true;
-                        loadDataClass.loadPriceByCheckedQuotation($(item));
+                        $(item).click();
                     }
                 }
             }
-        });
-
-        // Action on click checkbox purchase quotation
-        elePurchaseQuotation.on('click', '.checkbox-quotation', function () {
-            for (let item of elePurchaseQuotation[0].querySelectorAll('.checkbox-quotation')) {
-                if (item.id !== $(this)[0].id) {
-                    item.checked = false;
-                }
-            }
-            loadDataClass.loadPriceByCheckedQuotation($(this));
         });
 
         // Action on click button collapse
@@ -184,7 +185,7 @@ $(function () {
             let row = $(this)[0].closest('tr');
             if ($(this).hasClass('table-row-quantity-order-actual')) {
                 validateClass.validateNumber(this);
-                let order_on_request = parseFloat(row.querySelector('.table-row-quantity-order-request').innerHTML);
+                let order_on_request = row.querySelector('.table-row-quantity-order-request').innerHTML;
                 validateClass.validateQuantityOrderFinal(this, order_on_request);
             }
             calculateClass.calculateMain(tablePurchaseOrderProductRequest, row);

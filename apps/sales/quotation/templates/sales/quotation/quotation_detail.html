@@ -232,7 +232,7 @@
                                                 data-url="{% url "EmployeeListAPI" %}"
                                                 data-method="GET"
                                                 data-link-detail="{% url 'EmployeeDetail' 1 %}"
-                                                name="sale_person"
+                                                name="employee_inherit"
                                                 required
                                                 disabled
                                             ></select>
@@ -648,6 +648,7 @@
                                             <button type="button" class="btn btn-icon btn-rounded flush-soft-hover disabled-but-edit" data-bs-toggle="modal" data-bs-target="#shippingModalCenter" disabled><span class="icon"><i class="fa-regular fa-pen-to-square"></i></span></button>
                                         </label>
                                         <textarea class="form-control disabled-but-edit" rows="3" cols="50" name="" id="quotation-create-shipping-address" disabled></textarea>
+                                        <input type="hidden" id="quotation-create-customer-shipping">
                                     </div>
                                     <div
                                             class="modal fade" id="shippingModalCenter" tabindex="-1"
@@ -682,6 +683,7 @@
                                             <button type="button" class="btn btn-icon btn-rounded flush-soft-hover disabled-but-edit" data-bs-toggle="modal" data-bs-target="#billingModalCenter" disabled><span class="icon"><i class="fa-regular fa-pen-to-square"></i></span></button>
                                         </label>
                                         <textarea class="form-control disabled-but-edit" rows="3" cols="50" name="" id="quotation-create-billing-address" disabled></textarea>
+                                        <input type="hidden" id="quotation-create-customer-billing">
                                     </div>
                                     <div
                                             class="modal fade" id="billingModalCenter" tabindex="-1"

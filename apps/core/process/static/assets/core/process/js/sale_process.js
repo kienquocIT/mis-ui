@@ -1,4 +1,6 @@
 $(document).ready(function () {
+    const frmUpdateProcess = $('#frm-update-process');
+
     class designFormUtils {
         // ----------------------------------------- //
         //
@@ -9,7 +11,7 @@ $(document).ready(function () {
 
         // template of row and item element
         rowData = '<div class="my-row row mb-1"><div class="utils-form absolute-top-over"><div class="util-form-control util-form-row"><i class="fas fa-times btn btn-xs util-form-control-btn util-row-remove "></i><i class="fas fa-caret-up btn btn-xs util-form-control-btn util-row-caret-up"></i><i class="fas fa-caret-down btn btn-xs util-form-control-btn util-row-caret-down"></i></div></div>{0}</div>';
-        htmlChildItem = '<div class="util-child-group mb-3"><div class="utils-form"><div class="util-form-control util-form-cell"><i class="fas fa-times btn btn-xs util-form-control-btn util-cell-remove"></i><i class="fas fa-cog btn btn-xs util-form-control-btn util-cell-config"></i><i class="fas fa-caret-up btn btn-xs util-form-control-btn util-cell-caret-up"></i><i class="fas fa-caret-down btn btn-xs util-form-control-btn util-cell-caret-down"></i></div></div><div class="form-group">{0}</div></div>';
+        htmlChildItem = '<div class="util-child-group mb-3"><div class="utils-form"><div class="util-form-control util-form-cell"><i class="fas fa-times btn btn-xs util-form-control-btn util-cell-remove"></i><i class="fas fa-cog btn btn-xs util-form-control-btn util-cell-config"></i><i class="fas fa-caret-up btn btn-xs util-form-control-btn util-cell-caret-up"></i><i class="fas fa-caret-down btn btn-xs util-form-control-btn util-cell-caret-down"></i></div></div><div class="form-group">{0}</div><div class="d-flex justify-content-end mt-2"><button type="button" class="btn btn-warning util-current-btn hidden mr-2">Current</button><button type="button" class="btn btn-primary util-skip-btn hidden">Skip</button></div></div>';
 
         static parseDesignForm() {
             // DnD design is success -> call this for get HTML designed!
@@ -117,7 +119,6 @@ $(document).ready(function () {
             return ui.draggable.text();
         }
 
-
         static hiddeDragAfterDrop(ui) {
             // when we want to hide drag component dropped.
             ui.draggable.hide();
@@ -130,7 +131,7 @@ $(document).ready(function () {
                 colNum = 12 / colCount;
             }
             for (let i = 0; i < colCount; i++) {
-                htmlTmp += colNum === null ? '<div class="draggable my-col col"></div>' : '<div class="my-col col-{0}"></div>'.format_by_idx(colNum);
+                htmlTmp += colNum === null ? '<div class="draggable my-col col"></div>' : '<div class="my-col col-{0} bg-light"></div>'.format_by_idx(colNum);
             }
             return htmlTmp;
         }
@@ -242,6 +243,209 @@ $(document).ready(function () {
         }
     }
 
+    class eventForProcess {
+
+        designFormUtil = new designFormUtils()
+
+        getChildCol(realThis) {
+            let list_col = [];
+            $(realThis).each(function () {
+                let is_current = false;
+                let is_completed = false;
+                if ($(this).hasClass('bg-green-light-5')) {
+                    is_current = true;
+                }
+                let childEle = $(this).find('.text-function-child');
+                let subject = '';
+                if (childEle.next().length > 0) {
+                    subject = childEle.next().text();
+                }
+                if (childEle.find('.bi-check2-circle').length !== 0) {
+                    is_completed = true;
+                }
+                let data = {
+                    'function_id': childEle.data('id'),
+                    'function_title': childEle.text(),
+                    'subject': subject,
+                    'is_current': is_current,
+                    'is_completed': is_completed,
+
+                }
+                list_col.push(data)
+            })
+            return list_col
+        }
+
+        static highLightCurrentStep() {
+            let eleRow = $('#drop-container').find('.my-row');
+            if (eleRow.length === 1) {
+                eleRow.find('.my-col').removeClass('bg-light');
+                eleRow.find('.my-col').addClass('bg-green-light-5');
+            }
+        }
+
+        static showModalEditComponent(positionEle, realThis) {
+            let contentEle = realThis.next();
+            $('#modal-subject-process').modal('show');
+            $('#position-process-step').val(JSON.stringify(positionEle));
+            if (contentEle.length > 0) {
+                $('#content-function').val(contentEle.text());
+            } else {
+                $('#content-function').val('');
+            }
+        }
+
+        static saveEditComponent(realThis, content) {
+            if ($(realThis).next().length === 0) {
+                $(`<script class="text-content" type="application/json">${content}</script>`).insertAfter(realThis);
+            } else {
+                $(realThis).next().text(content);
+            }
+        }
+
+        static getChildRowProcess(realThis) {
+            return {
+                'step': new eventForProcess().getChildCol($(realThis).find('.my-col')),
+            }
+        }
+
+        static hideModelEditComponent(realThis) {
+            $(realThis).closest('.modal').modal('hide');
+        }
+
+        appendRow(elementParent, colNum) {
+            let html = this.designFormUtil.rowData.format_by_idx(this.designFormUtil.getHtmlColumn(colNum));
+            elementParent.append(html)
+        }
+
+        appendCol(elementCol, obj) {
+            let html = '';
+            console.log(obj.is_completed)
+            if (obj.is_completed) {
+                html = this.designFormUtil.htmlChildItem.format_by_idx(`<span class="text-primary text-function-child" data-id="${obj.function_id}">${obj.function_title} <i class="bi bi-check2-circle"></i></span>`);
+            } else {
+                html = this.designFormUtil.htmlChildItem.format_by_idx(`<span class="text-primary text-function-child" data-id="${obj.function_id}">${obj.function_title}</span>`);
+            }
+            elementCol.append(html)
+            eventForProcess.saveEditComponent(elementCol.find('.text-function-child'), obj.subject);
+        }
+
+        getLastRow(elementParent) {
+            return elementParent.find('.my-row').last();
+        }
+
+        static getProcess(elementParent, data) {
+            let _this = new eventForProcess();
+            let index_current = 0;
+            data.map(function (obj) {
+                let colNum = Object.keys(obj).length;
+                _this.appendRow(elementParent, colNum);
+
+                let lastRow = _this.getLastRow(elementParent);
+                let eleCols = lastRow.find('.my-col');
+
+                let no_col = 0;
+
+                for (const [key, value] of Object.entries(obj)) {
+                    if (obj.hasOwnProperty(key)) {
+                        _this.appendCol(eleCols.eq(no_col), value);
+                        eleCols.eq(no_col).attr('data-id', key);
+                        if (value.is_current) {
+                            index_current = no_col;
+                            eleCols.eq(no_col).removeClass('bg-light');
+                            eleCols.eq(no_col).addClass('bg-green-light-5');
+                        }
+                        no_col += 1;
+                    }
+                }
+            })
+
+            // init drag for my col
+            $(".my-col").droppable({
+                accept: '.drag-component-child',
+                drop: function (event, ui) {
+                    // stop drag component!
+                    event.stopPropagation();
+
+                    // drag component copyright
+                    let position = ui.helper.position();
+                    ui.helper.remove();
+                    let element = document.elementFromPoint(position.left, position.top);
+
+                    // real target
+                    if ($(element).closest($(event.target)).length > 0) {
+                        if ($(element).children().length === 0) {
+                            console.log('True', element);
+                            new designFormUtils().generateItemCell(this, event, ui, element);
+                        } else {
+                            $.fn.notifyB({
+                                'description': "Bạn chỉ có thể thả một phần tử vào một row"
+                            }, 'warning')
+                        }
+                    } else {
+                        console.log('False location!');
+                        // $(ui.draggable).draggable("cancel");
+                        $(ui.draggable).draggable("option", "revert", true);
+                        // Lưu trữ vị trí ban đầu của phần tử drag component
+                        // var initialPos = ui.helper.data("initialPos");
+
+                        // Thiết lập animation cho phần tử drag component
+                        // ui.draggable.animate({ top: initialPos.top, left: initialPos.left }, 500);
+                    }
+
+                    // cal generate
+                    // new designFormUtils().generateItemCell(this, event, ui, element);
+                }
+            });
+
+            $('.absolute-top-over').css('right', '-' + ($('.util-form-row').first().width() + 1.1 + 6) + 'px');
+            // auto scroll to step current
+            let $targetElement = $('#drop-container .my-row').eq(index_current - 1);
+            if ($targetElement.length !== 0) {
+                let scrollToPosition = $targetElement.position().top;
+                $('#drop-container').scrollTop(scrollToPosition);
+            }
+        }
+
+        static callSkipProcessStep(step_id) {
+            let url = $('#url-factory').data('url-skip-step').format_url_with_uuid(step_id);
+            let method = 'PUT'
+            let csr = $("[name=csrfmiddlewaretoken]").val();
+            $.fn.callAjax(url, method, {}, csr).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: data.message}, 'success');
+                        $.fn.redirectUrl(window.location.href, 1000);
+                    }
+                }, (errs) => {
+                    console.log(errs)
+                    // $.fn.notifyB({description: "PR create fail"}, 'failure')
+                }
+            )
+        }
+
+        static callSetCurrentProcessStep(step_id){
+            let url = $('#url-factory').data('url-set-current-step').format_url_with_uuid(step_id);
+            let method = 'PUT'
+            let csr = $("[name=csrfmiddlewaretoken]").val();
+            $.fn.callAjax(url, method, {}, csr).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: data.message}, 'success');
+                        $.fn.redirectUrl(window.location.href, 1000);
+                    }
+                }, (errs) => {
+                    console.log(errs)
+                    // $.fn.notifyB({description: "PR create fail"}, 'failure')
+                }
+            )
+        }
+
+    }
+
+
     function loadEvents() {
         // ----------------------------------------- //
         //
@@ -260,6 +464,10 @@ $(document).ready(function () {
         // Row control
         $(document).on('click', '.util-row-remove', function (e) {
             e.preventDefault();
+            if ($(this).closest('.my-row').find('.my-col').hasClass('bg-green-light-5')) {
+                $(this).closest('.my-row').next().find('.my-col').removeClass('bg-light');
+                $(this).closest('.my-row').next().find('.my-col').addClass('bg-green-light-5');
+            }
             $(this).closest('.my-row').remove();
             designFormUtils.activeDropStop();
         });
@@ -296,7 +504,12 @@ $(document).ready(function () {
             e.preventDefault();
             let parentEle = $(this).closest('.util-child-group');
             let functionEle = parentEle.find('.text-function-child');
-            eventForProcess.showModalEditComponent(functionEle);
+
+            let positionEle = {
+                'row': $(this).closest('.my-row').index(),
+                'col': $(this).closest('.my-col').index()
+            }
+            eventForProcess.showModalEditComponent(positionEle, functionEle);
             // alert("Setting dialog is open! " + parentEle.find('input').val());
         });
         $(document).on('click', '.util-cell-caret-up', function (e) {
@@ -337,69 +550,68 @@ $(document).ready(function () {
         });
 
         $(document).on('click', '#btn-save-subject-function', function () {
-            let function_id = $('#id-function').val();
-            let functionEle = $(`.text-function-child[data-id="${function_id}"]`);
+            let positionEle = JSON.parse($('#position-process-step').val());
+            let functionEle = $('#drop-container .my-row').eq(positionEle.row).find('.my-col').eq(positionEle.col - 1).find('.text-function-child');
             let content = $('#content-function').val();
             eventForProcess.hideModelEditComponent($(this));
             eventForProcess.saveEditComponent(functionEle, content);
         })
 
-        const frmUpdateProcess = $('#frm-update-process');
+        $(document).on('mouseenter', '.util-child-group', function () {
+            $(this).find('.util-skip-btn, .util-current-btn').removeClass('hidden');
+        })
+
+        $(document).on('mouseleave', '.util-child-group', function () {
+            $(this).find('.util-skip-btn, .util-current-btn').addClass('hidden');
+        })
+
+        $(document).on('click', '.util-skip-btn', function () {
+            Swal.fire({
+                title: 'Do you want to skip this step?',
+                showCancelButton: true,
+                confirmButtonText: 'Yes',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    eventForProcess.callSkipProcessStep($(this).closest('.my-col').data('id'));
+                }
+            })
+        })
+
+        $(document).on('click', '.util-current-btn', function () {
+            Swal.fire({
+                title: 'Do you want to set current for this step?',
+                showCancelButton: true,
+                confirmButtonText: 'Yes',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    eventForProcess.callSetCurrentProcessStep($(this).closest('.my-col').data('id'));
+                }
+            })
+        })
+
         frmUpdateProcess.submit(function (event) {
             event.preventDefault();
+            let frm = new SetupFormSubmit($(this));
+            let csr = $("[name=csrfmiddlewaretoken]").val();
             let list_process = [];
             let processEle = $('#drop-container .my-row');
             processEle.each(function () {
-                list_process.push(eventForProcess.getChildRowProcess($(this), cnt));
+                list_process.push(eventForProcess.getChildRowProcess($(this)));
             })
-            console.log(list_process);
+            frm.dataForm['process_step_datas'] = list_process;
+            $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: data.message}, 'success');
+                        $.fn.redirectUrl(window.location.href, 1000);
+                    }
+                }, (errs) => {
+                    console.log(errs)
+                    // $.fn.notifyB({description: "PR create fail"}, 'failure')
+                }
+            )
         })
-    }
-
-    class eventForProcess {
-        getChildCol(realThis) {
-            let list_col = [];
-            $(realThis).each(function () {
-                let childEle = $(this).find('.text-function-child');
-                let subject = '';
-                if (childEle.next().length > 0) {
-                    subject = childEle.next().text();
-                }
-                let data = {
-                    'id': childEle.data('id'),
-                    'title': childEle.text(),
-                    'subject': subject,
-                }
-                list_col.push(data)
-            })
-            return list_col
-        }
-
-        static showModalEditComponent(realThis) {
-            let contentEle = realThis.next();
-            $('#modal-subject-process').modal('show');
-            $('#id-function').val(realThis.data('id'));
-            if (contentEle.length > 0) {
-                $('#content-function').val(contentEle.text());
-            } else {
-                $('#content-function').val('');
-            }
-        }
-
-        static saveEditComponent(realThis, content) {
-            $(`<script class="text-content" type="application/json">${content}</script>`).insertAfter(realThis);
-        }
-
-        static getChildRowProcess(realThis, cnt) {
-            return {
-                'num': cnt,
-                'sub_process': new eventForProcess().getChildCol($(realThis).find('.my-col')),
-            }
-        }
-
-        static hideModelEditComponent(realThis){
-            $(realThis).closest('.modal').modal('hide');
-        }
     }
 
     function loadDnD() {
@@ -452,8 +664,8 @@ $(document).ready(function () {
             drop: function (event, ui) {
                 // stop drag component!
                 event.stopPropagation();
-
                 let stateRow = new designFormUtils().generateColumn($(this), event, ui);
+                eventForProcess.highLightCurrentStep()
                 // right negative float util row
                 if (stateRow === true) $('.absolute-top-over').css('right', '-' + ($('.util-form-row').first().width() + 1.1 + 6) + 'px');
             }
@@ -553,6 +765,23 @@ $(document).ready(function () {
         }
     }
 
-    loadFunctionProcess();
+    function loadProcess() {
+        let url = frmUpdateProcess.data('url');
+        let method = 'GET';
+        $.fn.callAjax2({
+            'url': url,
+            'method': method,
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    let ele_parent = $('#drop-container');
+                    eventForProcess.getProcess(ele_parent, data.process.process_step_datas);
+                }
+            }
+        )
+    }
 
+    loadProcess();
+    loadFunctionProcess();
 })

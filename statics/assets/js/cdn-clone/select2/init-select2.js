@@ -1,0 +1,477 @@
+class SelectDDControl {
+    arrDataBackupLoaded = 'data-idx-data-loaded';
+    page = 1;
+    pageSize = 10;
+
+    get _data_getDataOnload() {
+        // Get dataOnload from OPTS or attribute data-onload
+        // Priority:
+        //  1. Opts
+        //  2. attr('data-onload')
+        //  3. []
+        let data = this.opts?.data || null;
+        if (data) return data;
+        data = this.ele.attr('data-onload') || '[]';
+        try {
+            return JSON.parse(data);
+        } catch (e) {
+        }
+        return null;
+    }
+
+    get _data_keyResp() {
+        // key of object get data to Response API Ajax (value="")
+        // Priority:
+        //  1. Opts
+        //  2. attr('data-keyResp')
+        //  3. 'data'
+        return this.opts?.['keyResp'] ? this.opts?.['keyResp'] : this.ele.attr('data-keyResp') ? this.ele.attr('data-keyResp') : 'data';
+    }
+
+    get _data_keyId() {
+        // key of object get value to value (value="")
+        // Priority:
+        //  1. Opts
+        //  2. attr('data-keyId')
+        //  3. 'id'
+        return this.opts?.['keyId'] ? this.opts?.['keyId'] : this.ele.attr('data-keyId') ? this.ele.attr('data-keyId') : 'id';
+    }
+
+    get _data_keyText() {
+        // key of object get value to text display
+        // Priority:
+        //  1. Opts
+        //  2. attr('data-keyText')
+        //  3. 'title'
+        return this.opts?.keyText ? this.opts?.keyText : this.ele.attr('data-keyText') ? this.ele.attr('data-keyText') : 'title';
+    }
+
+    get _ajax_url_method_or_full() {
+        // Setup url + method of ajax
+        //      1. if opts['ajax'] ==> return full config of opts
+        //      2. else attribute data-url & data-method
+        //      3. null
+        // Priority:
+        //  1. opts['ajax']
+        //  2. attr('data-url') & attr('data-method')
+        //  3. null
+        let ajaxData = this.opts?.['ajax'];
+        if (ajaxData) return ajaxData;
+
+        let url = this.ele.attr('data-url');
+        let method = this.ele.attr('data-method') || 'GET';
+        if (url && method) {
+            return {
+                'url': url,
+                'method': method,
+            }
+        }
+        return null;
+    }
+
+    get _ajax_cache() {
+        // setup cache for ajax call
+        // Priority:
+        //  1. Opts
+        //  2. attribute('data-cache')
+        //  3. true
+        if (this.opts.hasOwnProperty('cache') || this.ele.attr('data-cache') !== undefined){
+            return this.opts?.['cache'] ? this.opts?.['cache'] : (this.ele.attr('data-cache') === 'true');
+        }
+        return true; // default if not found config
+    }
+
+    _ele_collect_selected(hasAjax) {
+        // Get option:selected in currently
+        // Push data to script id random
+
+        let optionTextFind = 'option';
+        if (hasAjax === true) optionTextFind += ':selected';
+
+        let dataSelected = [];
+        this.ele.find(optionTextFind).each(function () {
+            dataSelected.push({
+                'id': $(this).val(),
+                'text': $(this).text(),
+                'data': {
+                    'id': $(this).val(),
+                    'text': $(this).text(),
+                },
+                'selected': $(this).prop('selected'),
+            })
+        })
+        let idxDataOnLoadForEle = UtilControl.generateRandomString(32);
+        this.ele.attr('data-select-on-load', idxDataOnLoadForEle);
+        $(`<script type="application/json" id="${idxDataOnLoadForEle}">${JSON.stringify(dataSelected)}</script>`).insertAfter($.fn.transEle);
+        return dataSelected;
+    }
+
+    _getDataBackupLoaded(idx = null) {
+        // get Data backup from JSON element
+        let idEle = this.ele.attr(this.arrDataBackupLoaded);
+        let eleJSON = $('#' + idEle);
+        if (eleJSON.length <= 0) {
+            $(`<script type="application/json" id="${idEle}">{}</script>`).insertAfter($.fn.transEle);
+            return {};
+        }
+        let dataBackup = JSON.parse(eleJSON.text());
+        if (idx) return dataBackup?.[idx] || {};
+        return dataBackup;
+    }
+
+    _setDataBackupLoaded(data) {
+        // set Data backup to JSON element
+        if (!data) data = {};
+        let idEle = this.ele.attr(this.arrDataBackupLoaded);
+        let eleJSON = $('#' + idEle);
+        if (eleJSON.length <= 0) {
+            $(`<script type="application/json" id="${idEle}">${JSON.stringify(data)}</script>`).insertAfter($.fn.transEle);
+            return true;
+        }
+        return eleJSON.text(JSON.stringify(data));
+    }
+
+    _forceUpdateDataBackupLoaded(idx, data) {
+        // force update Data backup to JSON element with (idx, data)
+        let dataBackup = this._getDataBackupLoaded();
+        dataBackup[idx] = data;
+        this._setDataBackupLoaded(dataBackup);
+    }
+
+    _ajax_parse_resp_data(resp) {
+        // setup data after receive resp API
+        //      Auto add selected to first load
+        //      Exclude selected from resp data
+        let clsThis = this;
+        let data_convert = [];
+        let keyResp = this._data_keyResp;
+        let respData = resp?.data[keyResp];
+        if (respData && Array.isArray(respData) && respData.length) {
+            let keyId = this._data_keyId;
+            let keyText = this._data_keyText;
+            let idsSelected = this.ele.val();
+
+            // append select to first load
+            let pagePrevious = resp?.data?.['page_previous'];
+            if (idsSelected && pagePrevious === 0) {
+                this.ele.find('option:selected').each(function () {
+                    let dataChild = {};
+                    dataChild[keyId] = $(this).val();
+                    dataChild[keyText] = $(this).text();
+                    data_convert.push({
+                        'id': dataChild[keyId],
+                        'text': dataChild[keyText],
+                        'data': {
+                            'idn': dataChild[keyId],
+                            'text': dataChild[keyText],
+                            ...clsThis._getDataBackupLoaded(dataChild[keyId])
+                        },
+                        'selected': true,
+                    })
+                })
+            }
+
+            // append to resp to data with exclude exist selected
+            respData.map(
+                (item) => {
+                    let idn = item?.[keyId];
+                    if (!idsSelected || (idsSelected && !idsSelected.includes(idn))) {
+                        data_convert.push({
+                            'id': idn,
+                            'text': item?.[keyText],
+                            'data': item,
+                            'selected': false,
+                        });
+                    }
+                }
+            )
+        }
+        return data_convert;
+    }
+
+    _ajax_parse_params_external() {
+        // setup params external from opts or attribute
+        // Priority:
+        //  1. opts.dataParams
+        //  2. attribute('data-params')
+        //  3. {}
+
+        let params = this.opts?.['dataParams'];
+        if (params && typeof params === 'object') return params;
+
+        params = this.ele.attr('data-params');
+        if (params) {
+            try {
+                return JSON.parse(params);
+            } catch (e) {
+            }
+        }
+        return {};
+    }
+
+    _ajax_parse_params(params) {
+        // setup params for ajax call
+        let query = {};
+        query.isDropdown = true;
+        if (params.term) query.search = params.term;
+        query.page = params.page || this.page;
+        query.pageSize = params.pageSize || this.pageSize;
+        return {...query, ...this._ajax_parse_params_external()}
+    }
+
+    _ajax_parse_headers(headers) {
+        // setup header for ajax call
+        return {
+            "ENABLEXCACHECONTROL": true,
+            ...headers || {}
+        }
+    }
+
+    get minimumInputLength(){
+        // setup min input length search for multiple
+        // Priority:
+        //  1. Opts
+        //  2. attr('data-minimumInputLength')
+        //  3. 0
+
+        let minInpLength = this.opts?.minimumInputLength;
+        if (minInpLength) return {'minimumInputLength': minInpLength};
+
+        try {
+            minInpLength = this.ele.attr('data-minimumInputLength');
+            if (minInpLength) return {'minimumInputLength': parseInt(minInpLength)};
+        } catch (e){}
+
+        return {'minimumInputLength': 0};
+    }
+
+    get maximumInputLength(){
+        // setup max input length search for multiple
+        // Priority:
+        //  1. Opts
+        //  2. attr('data-maximumInputLength')
+        //  3. 10 --> set < 1 for unlimited
+
+        let maxInpLength = this.opts?.maximumInputLength;
+        if (maxInpLength) return {'maximumInputLength': maxInpLength};
+
+        try {
+            maxInpLength = this.ele.attr('data-maximumInputLength');
+            if (maxInpLength) return {'maximumInputLength': parseInt(maxInpLength)};
+        } catch (e){}
+
+        return {'maximumInputLength': 10};
+    }
+
+    get maximumSelectionLength(){
+        // setup maximumSelectionLength for multiple
+        // Priority:
+        //  1. Opts
+        //  2. attr('data-maximumSelectionLength')
+        //  3. 10 --> set it < 1 for unlimited selection
+
+        let maxSelected = this.opts?.maximumSelectionLength;
+        if (maxSelected) return {'maximumSelectionLength': maxSelected};
+
+        try {
+            maxSelected = this.ele.attr('data-maximumSelectionLength');
+            if (maxSelected) return {'maximumSelectionLength': parseInt(maxSelected)};
+        } catch (e){}
+
+        return {'maximumSelectionLength': 10};
+    }
+
+    get templateResult() {
+        // setup templateResult concat default + manual
+        let clsThis = this;
+        return {
+            'templateResult': function (state) {
+                if (state.data) clsThis._forceUpdateDataBackupLoaded(state.id, state.data);
+                let setupFunc = clsThis.opts?.['templateResult'];
+                return setupFunc ? setupFunc(state) : state.text;
+            }
+        }
+    }
+
+    get multipleAndAllowClear() {
+        // Setup multiple + allowClear + closeOnSelect
+        // Prepend option empty to first when (!multiple & allowClear)
+        // Priority:
+        //  1. opts
+        //  2. attr('...')
+        //  3. {default}
+        let isMultiple = this.opts?.multiple ? true : !!this.ele.attr('multiple');
+        let isAllowClear = this.opts?.allowClear ? true : (this.ele.attr('data-allowClear') === 'true');
+        if (!isMultiple && isAllowClear) {
+            this.ele.prepend(`<option selected></option>`);
+        }
+        return {
+            'multiple': isMultiple,
+            'closeOnSelect': !isMultiple,
+            'allowClear': isAllowClear,
+        }
+    }
+
+    get tagsToken() {
+        // Setup tags + tokenSeparators
+        // Priority:
+        //  1. opts
+        //  2. attr('...')
+        //  3. false|null
+        let tagsData = this.opts?.tags ? true : (this.ele.attr('data-tags') === 'true');
+        let tokenSeparators = null;
+        if (tagsData) {
+            tokenSeparators = this.ele.attr('data-tokenSeparators');
+            if (tokenSeparators) {
+                try {
+                    tokenSeparators = JSON.parse(tokenSeparators)
+                } catch (e) {
+                }
+            } else if (this.opts?.tags) {
+                tokenSeparators = this.opts.tags || null;
+            } else {
+                tokenSeparators = null;
+            }
+        }
+        return {
+            'tags': tagsData,
+            'tokenSeparators': tokenSeparators,
+        }
+    }
+
+    get disabled() {
+        // Config disabled for select2
+        // Priority:
+        //  1. attr('disabled')
+        //  2. opts
+        //  3. false
+        return {
+            'disabled': this.ele.attr('disabled') ? true : !!this.opts?.disabled
+        };
+    }
+
+    get dropdownParent() {
+        // parent element where select2 render to child of it. --> fix select2 was hidden when outside modal.
+        // if parent is div.modal --> parent div.model
+        // else parent.first
+        if (!this.opts?.['dropdownParent']) {
+            let dropdownParent = $(this.ele).closest('div.modal');
+            if (dropdownParent.length > 0) return {'dropdownParent': $(dropdownParent[0])};
+        } else {
+            return {'dropdownParent': $(this.ele).parent()[0]}
+        }
+        return {};
+    }
+
+    get data() {
+        // Setup data for: 1. don't have ajax | 2. initData when have ajax
+        // Using return value from dataOnload + keyText
+        let initData = [];
+        let data = this._data_getDataOnload;
+        if (data && Array.isArray(data)) {
+            let keyId = this._data_keyId;
+            let keyText = this._data_keyText;
+            initData = data.map(
+                (item) => {
+                    return {
+                        'id': item?.[keyId],
+                        'text': item?.[keyText],
+                        'data': item,
+                        'selected': true,
+                    }
+                }
+            )
+        }
+        this.initData = initData;
+        return {'data': initData.length > 0 ? initData : null};
+    }
+
+    get ajax() {
+        // setup ajax + handle general pagination, filter, cache, ...
+        // using value return from _ajax_url_method_or_full
+        let clsThis = this;
+        let ajaxConfig = null;
+        let config = this._ajax_url_method_or_full;
+        if (config) {
+            ajaxConfig = {
+                'cache': this._ajax_cache,
+                'delay': 250,
+                'headers': clsThis._ajax_parse_headers(),
+                'data': function (params) {
+                    return clsThis._ajax_parse_params(params);
+                },
+                'processResults': function (resp, params) {
+                    params.page = params.page || clsThis.page;
+                    return {
+                        results: clsThis._ajax_parse_resp_data(resp),
+                        pagination: {
+                            more: (params.page * clsThis.pageSize) < (resp?.data?.['page_count'] || 1)
+                            // Load More Scrolling | Infinite Scrolling : https://select2.org/data-sources/ajax#count_filtered
+                        }
+                    };
+                },
+                ...config,
+            }
+        };
+        return ajaxConfig ? {'ajax': ajaxConfig} : {};
+    }
+
+    constructor(selectEle, opts) {
+        this.ele = $(selectEle);    // element init select2
+        this.opts = opts || {};   // opts input at call setup
+        this.initData = []; // ** [private] storage initData of class
+        this._config = null; // ** [private] storage config of class
+
+        let idxDataBackup = UtilControl.generateRandomString(32);
+        this.ele.attr(this.arrDataBackupLoaded, idxDataBackup);
+    }
+
+    renderDataOnload(config) {
+        // Concat dataOnload config + option select in HTML ==> Auto selected it after render select2
+        // Using return value from
+        //      - collect_selected
+        //      - this.initData: value was set at this.data
+        // ** Will be applied templateSelection in the future
+        let hasAjax = !!(config?.['ajax']);
+        let dataSelected = this._ele_collect_selected(hasAjax);
+        let dataOnload = this.initData;
+        if (this.ele && Array.isArray(dataOnload) && Array.isArray(dataOnload)) {
+            let optHTML = this.initData.concat(dataSelected).map(
+                (item) => {
+                    let idn = item?.['id'];
+                    this._forceUpdateDataBackupLoaded(idn, item?.['data'] || {});
+                    return `<option value="${idn}" ${item?.selected ? "selected" : ""}>${item?.['text'] || ''}</option>`;
+                }
+            ).join("");
+            this.ele.html(optHTML);
+        }
+        return true;
+    }
+
+    config() {
+        // Return all config select2
+        return {
+            'placeholder': $.fn.transEle.attr('data-select-placeholder'),
+            'width': "100%",
+            'theme': 'bootstrap4',
+            'language': globeLanguage,
+            ...this.opts,
+            ...this.minimumInputLength,
+            ...this.maximumInputLength,
+            ...this.maximumSelectionLength,
+            ...this.disabled,
+            ...this.multipleAndAllowClear,
+            ...this.tagsToken,
+            ...this.templateResult,
+            ...this.dropdownParent,
+            ...this.data,
+            ...this.ajax,
+        }
+    }
+
+    init() {
+        if (!this._config) this._config = this.config();
+        this.renderDataOnload();
+        return this.ele.select2(this._config);
+    }
+}

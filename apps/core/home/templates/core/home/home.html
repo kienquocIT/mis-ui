@@ -333,6 +333,11 @@
                                         >{% trans 'Application' %}</label>
                                         <select
                                                 name="view_name" id="newBookMarkApplication" class="form-select"
+                                                data-url="{% url 'GatewayViewNameListView' %}"
+                                                data-method="GET"
+                                                data-keyResp="views_name"
+                                                data-keyId="view_name"
+                                                data-keyText="title"
                                                 required
                                         ></select>
                                         <small class="text-muted">{% trans 'Application of link' %}</small>

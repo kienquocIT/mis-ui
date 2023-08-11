@@ -637,6 +637,97 @@ class X:
 > - fill_key: list[str] : danh sách key sẽ được lấy từ kwargs từ view để đẩy vào URL kiểm tra quyền
 > - fixed_fill_key : dict[str, str] : các key và value mặc định cần đẩy vào URL kiểm tra quyền
 
+VI. Select2
+1. Tài liệu tại statics/assets/js/cdn-clone/select2/init-select2.js
+2. Mã HTML
+```html
+// Hướng dẫn xem thêm class SelectDDControl{}.init()
+<select
+        id="selEmployeeList"
+        class="form-control"
+        data-url="{% url 'EmployeeListApi' %}"
+        data-keyResp="employee_list"
+        data-keyText="full_name"
+        data-keyId="id"
+>
+   
+</select>
+```
+3. Khởi tạo Select2: https://select2.org/configuration/options-api
+```js
+// mặc định
+$('#selEmployeeList').initSelect2();
+
+// cài đặt các cấu hình
+$('#selEmployeeList').initSelect2({
+   'ajax': {
+       'url': '',
+      'method': '',
+      ...
+   },
+   'cache': true,
+   ...
+});
+
+// cài đặt có dữ liệu mặc định cho việc selected truớc các option có sẵn
+$('#selEmployeeList').initSelect2({
+   ...,
+   'data': [],
+   ...,
+});
+```
+
+VII. DataTable
+1. Tài liệu tại statics/assets/js/init-setup.js
+2. Hướng dẫn
+```html
+<table
+                id="table_districts_list"
+                class="table nowrap w-100"
+                data-url="{% url 'CityListAPI' %}"
+                data-url-city="{% url 'CityListAPI' %}"
+>
+   <tr class="row-custom-filter">
+      <td colspan="3">
+         <div class="row">
+            <div class="col-3">
+               <div class="form-group">
+                  <label for="CustomSelect2" class="form-label">{% trans 'Country' %}</label>
+                  <select id="CustomSelect2"
+                          data-url="{% url 'CountryListAPI' %}"
+                          data-keyResp="countries"
+                          data-keyParam="country_id__in" multiple
+                  ></select>
+               </div>
+            </div>
+      </td>
+   </tr>
+   <tr>
+      <th>#</th>
+      <th>{% trans 'Name' %}</th>
+      <th>{% trans 'Zip Code' %}</th>
+   </tr>
+   </thead>
+</table>
+```
+```js
+$('#table_districts_list').DataTableDefault({
+   'useDataServer': true, // cho datable Ajax
+   'columns': [
+      {
+          ...,
+         'colFilter': { // cho lọc theo dòng dữ liệu
+            keyText: "title",   // key để lấy dữ liệu hiển thị
+            keyId: "id",    // key để lấy dữ liệu làm "value"
+            keyResp: "cities",  // key để lấy dữ liệu từ response.data
+            dataUrl: tbl.attr('data-url-city'), // url gọi ajax 
+            keyParam: "id__in", // key của params khi gọi lọc lên server
+         },
+      },
+   ]
+})
+```
+3. 
 
 ---
 

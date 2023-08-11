@@ -235,8 +235,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # address
     COUNTRIES = StringUrl('base/location/countries')
     CITIES = StringUrl('base/location/cities')
-    DISTRICTS = StringUrl('base/location/districts?city_id=')
-    WARDS = StringUrl('base/location/wards?district_id=')
+    DISTRICTS = StringUrl('base/location/districts')
+    WARDS = StringUrl('base/location/wards')
     BASE_CURRENCY = StringUrl('base/currencies')
 
     # master-data/ promotion

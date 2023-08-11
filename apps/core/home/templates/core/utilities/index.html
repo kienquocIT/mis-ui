@@ -168,6 +168,36 @@
         </div>
     </div>
     <!-- // Utils -->
+
+    <div class="row mt-5 p-3">
+        <div class="col-6">
+            <select
+                    id="selectX"
+                    data-allowClear="true"
+                    multiple
+                    data-url="{% url 'EmployeeListAPI' %}"
+                    data-keyResp="employee_list"
+                    data-keyId="id"
+                    data-keyText="full_name"
+            >
+                <option value="1" selected>1111</option>
+                <option value="2" selected>2222</option>
+                <option value="3" selected>3333</option>
+            </select>
+        </div>
+        <div class="col-6">
+            <select
+                    id="selectY"
+                    data-allowClear="true"
+                    data-url="{% url 'EmployeeListAPI' %}"
+                    data-keyResp="employee_list"
+                    data-keyId="id"
+                    data-keyText="full_name"
+            >
+                <option value="1" selected>1111</option>
+            </select>
+        </div>
+    </div>
 {% endblock %}
 
 {% block jsFooter %}
@@ -321,8 +351,8 @@
 
             let pc100 = 10;
             let intervalPc = setInterval(
-                ()=>{
-                    if (pc100 >= 100){
+                () => {
+                    if (pc100 >= 100) {
                         clearInterval(intervalPc);
                     }
                     $('#progresBarID').alterClass('w-*', 'w-' + pc100.toString());
@@ -330,6 +360,12 @@
                 },
                 1000
             )
+        })
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('#selectX').initSelect2({cache: true});
+            $('#selectY').initSelect2({});
         })
     </script>
 {% endblock %}

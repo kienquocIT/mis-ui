@@ -178,7 +178,7 @@ class UrlGatewayReverse {
         let arrAppCode = docAppCode.split(".");
         let urlData = '#';
         if (docID && arrAppCode.length === 2) {
-            urlData = $.fn.storageSystemData.attr('data-GatewayMiddleDetailView').replaceAll('_plan_', arrAppCode[0]).replaceAll('_app_', arrAppCode[1]).replaceAll('_pk_', docID) + "?" + $.param(params);
+            urlData = globeGatewayMiddleDetailView.replaceAll('_plan_', arrAppCode[0]).replaceAll('_app_', arrAppCode[1]).replaceAll('_pk_', docID) + "?" + $.param(params);
         }
         return urlData;
     }
@@ -271,7 +271,7 @@ class LogController {
             let intervalShowWfHistory = setInterval(() => {
                 if (dataRuntimeCounter > 5) {
                     clearInterval(intervalShowWfHistory);
-                    this.blockDataRuntime.html(`<span class="text-danger">${$.fn.storageSystemData.attr('data-msg-resource-load-failed')}</span>`).removeClass('hidden');
+                    this.blockDataRuntime.html(`<span class="text-danger">${globeResourceLoadFailed}</span>`).removeClass('hidden');
                     WindowControl.hideLoadingWaitResponse(this.blockDataRuntime);
                 } else {
                     dataRuntimeCounter += 1;
@@ -466,7 +466,7 @@ class FileUtils {
     static clsNameInputFile = 'input-file-upload';
 
     static _getMaxSizeDisplay() {
-        return $.fn.storageSystemData.attr('data-msg-file-max-size').replaceAll("{size}", FileUtils.numberFileSizeMiBMax);
+        return globeMaxFileSize.replaceAll("{size}", FileUtils.numberFileSizeMiBMax);
     }
 
     static _checkTypeFileAllow(file_type, accept_list) {
@@ -488,7 +488,7 @@ class FileUtils {
         if (!FileUtils._checkTypeFileAllow(file.type, acceptArr)) {
             let typeMsgErr = acceptArr.map((item) => `"${item}"`).join(", ");
             $.fn.notifyB({
-                'description': `${$.fn.storageSystemData.attr('data-msg-file-accept-deny')}. <p>${$.fn.storageSystemData.attr('data-msg-file-accept-allow')} ${typeMsgErr}<p>`,
+                'description': `${globeFileDeny}. <p>${globeFileAccept} ${typeMsgErr}<p>`,
             }, 'failure');
             return false;
         }
@@ -667,7 +667,7 @@ class FileUtils {
 
     callUploadFile(file, btnMainEle) {
         let clsThis = this;
-        let dataUrl = $.fn.storageSystemData.attr('data-url-AttachmentUpload');
+        let dataUrl = globeUrlAttachmentUpload;
 
         let formData = new FormData();
         formData.append('file', file);
@@ -1132,7 +1132,7 @@ class ListeningEventController {
                     let formData = new FormData();
                     formData.append('file', file);
                     return $.fn.callAjax2({
-                        url: $.fn.storageSystemData.attr('data-url-avatar-upload'),
+                        url: globeUrlAvatarUpload,
                         method: 'POST',
                         data: formData,
                         contentType: 'multipart/form-data',
@@ -1230,7 +1230,7 @@ class WFRTControl {
         // -- wf call action
         let actionSelected = $(ele$).attr('data-value');
         let taskID = $('#idxGroupAction').attr('data-wf-task-id');
-        let urlBase = $.fn.storageSystemData.attr('data-idUrlTaskDetail');
+        let urlBase = globeTaskDetail;
         if (actionSelected !== undefined && taskID && urlBase) {
             let urlData = SetupFormSubmit.getUrlDetailWithID(urlBase, taskID);
             WindowControl.showLoading();
@@ -1308,11 +1308,11 @@ class WFRTControl {
                 }
             })
         }
-        $.fn.storageSystemData.attr('data-idWFRuntime', runtime_id);
+        globeWFRuntimeID = runtime_id;
     }
 
     static getWFRuntimeID() {
-        return $.fn.storageSystemData.attr('data-idWFRuntime');
+        return globeWFRuntimeID;
     }
 
     static getActionsList() {
@@ -1431,7 +1431,7 @@ class WFRTControl {
 
             // add button save at zones
             // idFormID
-            let idFormID = $.fn.storageSystemData.attr('data-idFormID');
+            let idFormID = globeFormMappedZone;
             if (idFormID) {
                 DocumentControl.getElePageAction().find('[form=' + idFormID + ']').addClass('hidden');
                 $('#idxSaveInZoneWF').attr('form', idFormID).removeClass('hidden');
@@ -1723,12 +1723,6 @@ class UtilControl {
             if (typeof errs === 'object') {
                 let errors_converted = UtilControl.cleanDataNotify(errs);
                 Object.keys(errors_converted).map((key) => {
-                    // let notify_data = $.fn.storageSystemData.attr('data-flagNotifyKey') === '1' ? {
-                    //     'title': key,
-                    //     'description': errors_converted[key]
-                    // } : {
-                    //     'description': errors_converted[key]
-                    // };
                     let notify_data = {
                         'title': key,
                         'description': errors_converted[key]
@@ -1764,59 +1758,56 @@ class DTBControl {
         this.dataSelect = temp
         let storeElm = $(`<script id="tbl-stored" type="application/json">`)
         storeElm.text(JSON.stringify(temp))
-        if ($(`body`).find('#tbl-stored').length === 0){
-            storeElm.insertAfter($.fn.storageSystemData)
-        }
-        else $('#tbl-stored', 'body').text(JSON.stringify(temp))
+        if ($(`body`).find('#tbl-stored').length === 0) {
+            storeElm.insertAfter($.fn.transEle)
+        } else $('#tbl-stored', 'body').text(JSON.stringify(temp))
     }
 
-    get getRowSelected(){
+    get getRowSelected() {
         return this.dataSelect
     }
 
-    static parseHeaderDropdownFilter(opts, settings, api){
-        if (opts.hasOwnProperty('columnSearching')) {
-            const columnSearch = opts['columnSearching']
-            if (columnSearch.length === 0) return false
-            let $thead = api.table().header();
-            let $newRow = $('<tr class="header-column_search">').appendTo($thead);
-            let $htmlTh = ''
-            for (let item of settings.aoColumns) {
-                if (columnSearch[item.idx]){
-                    const columnInfoSetup = columnSearch[item.idx]
-                    $htmlTh += `<th class="flt-select row-column-${columnInfoSetup.table_keyword}"></th>`
+    static parseHeaderDropdownFilter(opts, settings, api) {
+        let $thead = api.table().header();
+        let hasColHeaderFilter = false;
+        let rowColFilterEle = $(`<tr class="row-custom-filter"></tr>`);
+        (opts?.['columns'] || []).map(
+            (item) => {
+                let colFilter = item?.['colFilter'];
+                if (colFilter) {
+                    hasColHeaderFilter = true;
+                    $(`<th>
+                        <select
+                            data-keyParam="${colFilter.keyParam}"
+                            data-url="${colFilter.dataUrl}"
+                            data-keyResp="${colFilter.keyResp}"
+                            multiple
+                        ></select>
+                    </th>`).appendTo(rowColFilterEle);
+                } else {
+                    $(`<th></th>`).appendTo(rowColFilterEle);
                 }
-                else $htmlTh += `<th class="row-column-idx-${item.idx}"></th>`
             }
-            $('.header-column_search', $thead).append($htmlTh)
-            $('.header-column_search th', $thead).each(function (i) {
-                // kiểm tra xem có setup hay chưa nếu chưa không show dropdown
-                if (columnSearch[i]){
-                    let selectSetup = columnSearch[i]
-                    let column = api.column(i);
-                    let select = $('<select class="form-select"></select>')
-                    if (selectSetup['url']) select.attr('data-url', selectSetup['url'])
-                    if (selectSetup['url_req_key']) select.attr('data-prefix', selectSetup['url_req_key'])
-                    if (selectSetup['select_text']) select.attr('data-format', selectSetup['select_text'])
-                    if (selectSetup['select_allow_clear']){
-                        select.attr('data-select2-allowClear', true)
-                        select.attr('data-select2-placeholder', '')
-                    }
-
-                    select.html('<option value=""></option>')
-                    select.appendTo($(this).empty())
-                    select.on('change', function () {
-                        let val = $.fn.dataTable.util.escapeRegex(
-                            $(this).val()
-                        );
-                        if (val) api.table().ajax.reload()
-                        // column
-                        //     .search(val ? '' + val + '' : '', true, false)
-                        //     .draw();
-                    });
-                }
-            })
+        )
+        if (hasColHeaderFilter){
+            rowColFilterEle.appendTo($($thead));
         }
+        setTimeout(
+            () => {
+                $($thead).find('select').each(function () {
+                    $(this).initSelect2({
+                        'maximumSelectionLength': 5,
+                        'allowClear': true,
+                        'cache': true,
+                    });
+                }).on(
+                    'select2:close', function () {
+                        api.table().ajax.reload();
+                    }
+                );
+            },
+            0
+        );
     }
 
     static parseDomDtl(opts) {
@@ -1881,7 +1872,7 @@ class DTBControl {
             delete opts['visibleRowQuantity']
         }
         // show/hide custom toolbar
-        if (!opts.hasOwnProperty('fullToolbar') || opts?.fullToolbar === false){
+        if (!opts.hasOwnProperty('fullToolbar') || opts?.fullToolbar === false) {
             // show hide/row selected
             domDTL = domDTL.replace("<'count_selected'>", '')
             // show hide custom toolbar
@@ -1891,7 +1882,22 @@ class DTBControl {
         return [opts, domDTL];
     }
 
-    static parseDtlOpts(opts) {
+    static cleanParamBeforeCall(params) {
+        let result = {}
+        if (params && typeof params === 'object') {
+            Object.keys(params).map(
+                (key) => {
+                    let val = params[key];
+                    if (val) result[key] = val;
+                }
+            )
+        }
+        return result;
+    }
+
+    parseDtlOpts(opts) {
+        let clsThis = this;
+
         // init table
         let [parsedOpts, domDTL] = DTBControl.parseDomDtl(opts);
 
@@ -1903,6 +1909,10 @@ class DTBControl {
         // row callback |  rowIdx = true
         let rowIdx = opts?.['rowIdx'];
         if (opts.hasOwnProperty('rowIdx')) delete opts['rowIdx'];
+        let callbackRenderIdx = rowIdx === true ? function (pageInfo, row, data, index) {
+            $('td:eq(0)', row).html(pageInfo.start + index + 1)
+        } : function () {
+        };
 
         // ajax
         if (opts?.['ajax']) {
@@ -1921,7 +1931,7 @@ class DTBControl {
         }
 
         // config server side processing
-        if(opts['useDataServer']){
+        if (opts['useDataServer']) {
             // server side v
             let setupServerSide = {
                 processing: true,
@@ -1932,32 +1942,35 @@ class DTBControl {
                 ajax: $.extend(opts['ajax'], {
                     data: function (d) {
                         let orderTxt = ''
-                        let customFilter = {};
                         if (d?.order.length) {
                             const orderKey = d.columns[d.order[0].column].data
                             const orderVal = d.order[0].dir
                             if (orderKey && typeof orderKey !== 'number' && orderVal)
                                 orderTxt = orderVal === 'asc' ? orderKey : `-${orderKey}`
                         }
-                        if (opts['columnSearching']){
-                            let optionList = opts['columnSearching']
-                            for (let idx in optionList){
-                                const item = optionList[idx]
-                                const isVal = $(`.row-column-${item.table_keyword} select`).val()
-                                if (isVal) customFilter[item.search_key] = isVal
+
+                        let customFilter = {};
+                        $(clsThis.dtb$).find('.row-custom-filter select').each(function () {
+                            let val = $(this).val();
+                            if (
+                                (typeof val === "string" && val) ||
+                                (Array.isArray(val) && val.length > 0)
+                            ) {
+                                customFilter[$(this).attr('data-keyParam')] = (!Array.isArray(val) ? [val] : val).join(",");
                             }
-                        }
-                        return {
+                        });
+
+                        return DTBControl.cleanParamBeforeCall({
                             'page': Math.ceil(d.start / d.length) + 1,
                             'pageSize': d.length,
                             'search': d?.search?.value ? d.search.value : '',
                             'ordering': orderTxt, ...customFilter
-                        }
+                        });
                     },
                     dataFilter: function (data) {
                         let json = JSON.parse(data);
-                        json.recordsTotal = json.data.page_count
-                        json.recordsFiltered = json.data.page_count
+                        json.recordsTotal = json?.data?.['page_count']
+                        json.recordsFiltered = json?.data?.['page_count']
                         return JSON.stringify(json);
                     }
                 })
@@ -1966,7 +1979,8 @@ class DTBControl {
         }
 
         // merge two drawCallback function
-        let drawCallback01 = function(){}
+        let drawCallback01 = function () {
+        }
         if (opts.hasOwnProperty('drawCallback')) {
             drawCallback01 = opts['drawCallback'];
             delete opts['drawCallback'];
@@ -1980,7 +1994,11 @@ class DTBControl {
             setTimeout(() => DocumentControl.buildSelect2(), 0);
         }
 
-
+        let rowCallbackManual = function () {
+        };
+        if (parsedOpts.hasOwnProperty('rowCallback')) {
+            rowCallbackManual = parsedOpts?.['rowCallback'];
+        }
 
         // return data
         let configFinal = {
@@ -1994,24 +2012,25 @@ class DTBControl {
             paginate: true,
             dom: domDTL,
             language: {
-                url: $.fn.storageSystemData.attr('data-msg-datatable-language-config').trim(),
+                url: globeDTBLanguageConfig.trim(),
             },
             lengthMenu: [
                 [5, 10, 25, 50, -1], [5, 10, 25, 50, $.fn.transEle.attr('data-all')],
             ],
-            drawCallback: function (settings){
+            drawCallback: function (settings) {
                 drawCallback01(settings)
                 drawCallBackDefault(settings)
             },
             initComplete: function (settings) {
                 $(this.api().table().container()).find('input').attr('autocomplete', 'off');
 
-                // show header select when options is in setup
+                // show header select when options are in setup
                 DTBControl.parseHeaderDropdownFilter(opts, settings, this.api())
                 // end if check searching column
             },
             rowCallback: function (row, data, index) {
-                if (rowIdx === true) $('td:eq(0)', row).html(index + 1);
+                rowCallbackManual(row, data, index);
+                callbackRenderIdx($(this).DataTable().page.info(), row, data, index);
             },
             data: [], ...parsedOpts,
         };
@@ -2050,7 +2069,7 @@ class DTBControl {
         }
     }
 
-    checkRowSelect(opts){
+    checkRowSelect(opts) {
         let $this = this
         if (opts?.['fullToolbar'] === true)
             // init on click when enable count select
@@ -2058,51 +2077,50 @@ class DTBControl {
                 e.stopPropagation()
                 if ($(this).hasClass('check-select-all')) {
                     // continue
-                    let listData = $(this).closest('table').DataTable().rows({ page: 'current' }).data().toArray()
+                    let listData = $(this).closest('table').DataTable().rows({page: 'current'}).data().toArray()
                     $('.check-select', $this.dtb$).prop('checked', this.checked)
-                    for (let item of listData){
+                    for (let item of listData) {
                         $this.setRowSelected = {
                             item: item,
                             idTable: $(this).closest('table').attr('id'),
                             checked: this.checked
                         }
                     }
-                }
-                else {
+                } else {
                     const rowData = $(this).closest('table').DataTable().row($(this).closest('tr')).data();
                     $this.setRowSelected = {
                         item: rowData,
                         idTable: $(this).closest('table').attr('id'),
-                        checked : this.checked
+                        checked: this.checked
                     }
 
                 }
                 // count and print to text noti in toolbar
                 const allData = $this.getRowSelected
-                $('.count_selected').html($.fn.transEle.attr('data-datatable-count-txt').replace('{0}',
-                    Object.keys(allData[$(this).closest('table').attr('id')]).length))
+                $('.count_selected').html($.fn.transEle.attr('data-datatable-count-txt').replace(
+                    '{0}',
+                    Object.keys(allData[$(this).closest('table').attr('id')]).length
+                ))
             });
     }
 
-    reCheckSelect(sgs){
+    reCheckSelect(sgs) {
         const ckAll = $('.check-select-all', $(sgs.oInstance))
         if (ckAll.length) ckAll.prop('checked', false)
         let rowSelect = this.getRowSelected
         rowSelect = rowSelect[sgs.sInstance] || {}
         let isFull = true
-        if (Object.keys(rowSelect).length > 0){
+        if (Object.keys(rowSelect).length > 0) {
             for (let item of sgs?.aoData) {
-                if (rowSelect[item?._aData?.id]){
+                if (rowSelect[item?._aData?.id]) {
                     item._aData.checked = true
                     $('input', item.anCells[0]).attr('checked', true)
-                }
-                else {
+                } else {
                     isFull = false
                     item._aData.checked = false
                 }
             }
-        }
-        else isFull = false
+        } else isFull = false
         if (isFull) ckAll.prop('checked', true)
     }
 
@@ -2113,7 +2131,7 @@ class DTBControl {
         return dataList
     }
 
-    static prepareHTMLToolbar(divWrap, _settgs){
+    static prepareHTMLToolbar(divWrap, _settgs) {
         // show selected show count select is display
         $('.count_selected', divWrap).html(`<p>${
             $.fn.transEle.attr('data-datatable-count-txt').replace('{0}', '0')}</p>`)
@@ -2125,12 +2143,12 @@ class DTBControl {
             `<i class="fa-solid fa-list"></i></button><div role="menu" class="dropdown-menu p-4"></div></div>`
         )
         let columnList = `<div class="form-check form-check-sm">` +
-                `<input type="checkbox" class="form-check-input check_all" id="tb_columns-all" checked>` +
-                `<label class="form-check-label" for="tb_columns-all">${$.fn.transEle.attr('data-all')}</label></div><hr class="mt-1 mb-1">`;
-        for (let item of _settgs.aoColumns){
-            if (item?.data){
+            `<input type="checkbox" class="form-check-input check_all" id="tb_columns-all" checked>` +
+            `<label class="form-check-label" for="tb_columns-all">${$.fn.transEle.attr('data-all')}</label></div><hr class="mt-1 mb-1">`;
+        for (let item of _settgs.aoColumns) {
+            if (item?.data) {
                 columnList += `<div class="form-check form-check-sm">` +
-                    `<input type="checkbox" class="form-check-input" data-column="${item.idx}" id="tb_columns-${item.idx}" checked>`+
+                    `<input type="checkbox" class="form-check-input" data-column="${item.idx}" id="tb_columns-${item.idx}" checked>` +
                     `<label class="form-check-label" for="customChecks1">${item.sTitle}</label></div>`
             }
         }
@@ -2143,7 +2161,7 @@ class DTBControl {
     }
 
     init(opts) {
-        let tbl = this.dtb$.DataTable(DTBControl.parseDtlOpts(opts));
+        let tbl = this.dtb$.DataTable(this.parseDtlOpts(opts));
         let $this = this;
         tbl.on('init.dt', function (event, settings) {
             let divWrap = $(this).closest('.dataTables_wrapper')
@@ -2153,31 +2171,37 @@ class DTBControl {
                 let filterItem = $(minerGroup[0]).find('.waiter-miner-item').children();
                 if (filterGroup.length > 0 && filterItem.length > 0) {
                     filterItem.addClass('col-sm-12 col-md-3 col-lg-2 mt-3');
-                    filterGroup.append(filterItem);
-                    $('.dataTables_filter input').removeClass('form-control-sm');
+                    // filterGroup.append(filterItem);
+                    // filterItem.detach().appendTo(filterGroup);
+                    // $('.dataTables_filter input').removeClass('form-control-sm');
+                    //
+                    // filterItem.find('select').each(function (){
+                    //     console.log(this);
+                    //     $(this).select2();
+                    // });
+
                 }
             }
             $(this).closest('.dataTables_wrapper').find('.select2:not(:disabled)').initSelect2();
-            if (opts?.['fullToolbar'] === true){
+            if (opts?.['fullToolbar'] === true) {
                 // load toolbar if setup is true
                 DTBControl.prepareHTMLToolbar(divWrap, settings)
                 // handle on check on/off column
                 $('.ct_toolbar-columns .dropdown-menu input[type="checkbox"]', divWrap).off().on('change', function (e) {
-                    if ($(this).attr('id') === 'tb_columns-all'){
+                    if ($(this).attr('id') === 'tb_columns-all') {
                         let listIdx = []
                         $(this).parent('.form-check').siblings('.form-check').each(function () {
                             listIdx.push($(this).find('input').attr('data-column'))
                         })
                         tbl.columns(listIdx).visible(this.checked)
                         $('input:not(#tb_columns-all)', $(this).closest('.dropdown-menu')).prop('checked', this.checked)
-                    }
-                    else{
+                    } else {
                         tbl.column($(this).attr('data-column')).visible(this.checked)
-                        if(!this.checked) $('#tb_columns-all', divWrap).prop('checked', false)
-                        else{
+                        if (!this.checked) $('#tb_columns-all', divWrap).prop('checked', false)
+                        else {
                             let isFull = true
                             $(this).parent('.form-check').siblings('.form-check').each(function () {
-                                if ($(this).find('input:not(.check_all)').prop('checked') === false){
+                                if ($(this).find('input:not(.check_all)').prop('checked') === false) {
                                     isFull = false
                                     return false
                                 }
@@ -2188,14 +2212,14 @@ class DTBControl {
                 });
             }
         });
-        tbl.on('draw.dt', function(event, settings) {
+        tbl.on('draw.dt', function (event, settings) {
             // init row has checkbox selection
             $this.checkRowSelect(opts);
             $this.reCheckSelect(settings);
             // end init row
             // select filter in header
-            setTimeout(()=> {
-                $('.header-column_search th.flt-select select', this.dtb$).each(function() {
+            setTimeout(() => {
+                $('.header-column_search th.flt-select select', this.dtb$).each(function () {
                     $(this).initSelect2()
                 })
             }, 0)
@@ -2294,15 +2318,14 @@ class WindowControl {
 
     static showForbidden() {
         Swal.fire({
-            title: $.fn.storageSystemData.attr('data-msg-403'),
+            title: globeMsgHttp403,
             icon: 'error',
-            // text: $.fn.storageSystemData.attr('data-msg-contact-admin-403'),
             allowOutsideClick: false,
             showDenyButton: true,
-            denyButtonText: $.fn.storageSystemData.attr('data-msg-home-page'),
+            denyButtonText: globeHomePage,
             confirmButtonColor: '#3085d6',
             showConfirmButton: true,
-            confirmButtonText: $.fn.storageSystemData.attr('data-msg-previous-page'),
+            confirmButtonText: globePreviousPage,
             denyButtonColor: '#21b48f',
             preConfirm: function (opts) {
                 window.location.href = document.referrer;
@@ -2315,14 +2338,14 @@ class WindowControl {
 
     static showNotFound() {
         Swal.fire({
-            title: $.fn.storageSystemData.attr('data-msg-404'),
+            title: globeMsgHttp404,
             icon: 'question',
             allowOutsideClick: false,
             showDenyButton: true,
-            denyButtonText: $.fn.storageSystemData.attr('data-msg-home-page'),
+            denyButtonText: globeHomePage,
             confirmButtonColor: '#3085d6',
             showConfirmButton: true,
-            confirmButtonText: $.fn.storageSystemData.attr('data-msg-previous-page'),
+            confirmButtonText: globePreviousPage,
             denyButtonColor: '#21b48f',
             preConfirm: function (opts) {
                 window.location.href = document.referrer;
@@ -2335,12 +2358,12 @@ class WindowControl {
 
     static showUnauthenticated() {
         Swal.fire({
-            title: $.fn.storageSystemData.attr('data-msg-login-expired'),
+            title: globeMsgAuthExpires,
             icon: 'error',
             allowOutsideClick: false,
             confirmButtonColor: '#3085d6',
             showConfirmButton: true,
-            confirmButtonText: $.fn.storageSystemData.attr('data-msg-login-page'),
+            confirmButtonText: globeLoginPage,
             preConfirm: function (opts) {
                 return $x.fn.redirectLogin();
             },
@@ -2349,14 +2372,14 @@ class WindowControl {
 
     static showSVErrors() {
         Swal.fire({
-            title: $.fn.storageSystemData.attr('data-msg-500'),
+            title: globeMsgHttp500,
             icon: 'error',
             allowOutsideClick: false,
             showDenyButton: true,
-            denyButtonText: $.fn.storageSystemData.attr('data-msg-home-page'),
+            denyButtonText: globeHomePage,
             confirmButtonColor: '#3085d6',
             showConfirmButton: true,
-            confirmButtonText: $.fn.storageSystemData.attr('data-msg-previous-page'),
+            confirmButtonText: globePreviousPage,
             denyButtonColor: '#21b48f',
             preConfirm: function (opts) {
                 window.location.href = document.referrer;
@@ -2385,7 +2408,7 @@ class PersonControl {
         let htmlTooltipFullname = `data-bs-toggle="tooltip" data-bs-placement="bottom" title="${personData?.['full_name']}"`;
         let shortName = PersonControl.shortNameGlobe(personData);
         if (avatar && avatar !== 'None' && avatar !== 'none') {
-            let avatarFullUrl = $.fn.storageSystemData.attr('data-domain-cloud') + $.fn.storageSystemData.attr('data-cloud-avatar') + avatar + '?alt=' + shortName;
+            let avatarFullUrl = globeMediaDomain + globePrefixAvatar + avatar + '?alt=' + shortName;
             return `<div class="avatar ${clsName ? clsName : 'avatar-xs avatar-primary'}" ${htmlTooltipFullname}><img src="${avatarFullUrl}" alt="${shortName}" class="avatar-img">${appendHtml}</div>`;
         }
         return `
@@ -2412,11 +2435,11 @@ class DocumentControl {
     }
 
     static getBtnIDLastSubmit() {
-        return $.fn.storageSystemData.attr('data-idBtnIDLastSubmit');
+        return globeIDLastSubmit;
     }
 
     static setBtnIDLastSubmit(idx) {
-        $.fn.storageSystemData.attr('data-idBtnIDLastSubmit', idx);
+        globeIDLastSubmit = idx;
     }
 
     static getElePageAction() {
@@ -2428,9 +2451,9 @@ class DocumentControl {
     }
 
     static async getCompanyConfig() {
-        let dataText = $.fn.storageSystemData.attr('data-urlCompanyConfigData');
+        let dataText = globeDataCompanyConfig;
         if (!dataText || dataText === '') {
-            let companyConfigUrl = $.fn.storageSystemData.attr('data-urlCompanyConfig');
+            let companyConfigUrl = globeUrlCompanyConfig;
             if (companyConfigUrl) {
                 return await $.fn.callAjax2({
                     url: companyConfigUrl,
@@ -2438,7 +2461,7 @@ class DocumentControl {
                 }).then((resp) => {
                     let data = $.fn.switcherResp(resp);
                     dataText = JSON.stringify(data);
-                    $.fn.storageSystemData.attr('data-urlCompanyConfigData', dataText);
+                    globeDataCompanyConfig = dataText;
                     return data;
                 }).then((rs) => {
                     return rs
@@ -2700,15 +2723,15 @@ var DataTableAction = {
                     method: 'DELETE',
                     data: data,
                 }).then((res) => {
-                        if (res.hasOwnProperty('status')) {
-                            div.modal('hide');
-                            div.remove();
-                            if ($(row).length) $(row).closest('.table').DataTable().rows(row).remove().draw();
-                            $.fn.notifyB({
-                                description: res?.data?.message ? res.data.message : 'Delete item successfully'
-                            }, 'success')
-                        }
-                    });
+                    if (res.hasOwnProperty('status')) {
+                        div.modal('hide');
+                        div.remove();
+                        if ($(row).length) $(row).closest('.table').DataTable().rows(row).remove().draw();
+                        $.fn.notifyB({
+                            description: res?.data?.message ? res.data.message : 'Delete item successfully'
+                        }, 'success')
+                    }
+                });
             }
         })
     },

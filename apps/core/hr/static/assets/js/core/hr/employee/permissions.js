@@ -99,7 +99,7 @@ $('#btnAddNewRowPerms').click(function () {
         let currentPages = tbl.page.info().page;
         if (totalPages - 1 > currentPages) {
             $.fn.notifyB({
-                'description': $.fn.storageSystemData.attr('data-msg-goto-end-page'),
+                'description': globeGoToEndPage,
             }, 'info')
         }
         tbl.page(totalPages - 1).draw('page');

@@ -1,4 +1,6 @@
 """needed module import"""
+import datetime
+
 from functools import wraps
 
 from django.conf import settings
@@ -17,6 +19,7 @@ from .breadcrumb import BreadcrumbView
 from .menus import SpaceItem, SpaceGroup
 from .caches import CacheController, CacheKeyCollect
 from .constant import WORKFLOW_ACTION
+from .utils import RandomGenerate
 
 __all__ = [
     'mask_view',
@@ -36,10 +39,13 @@ class ArgumentDecorator:
                 isinstance(request.META, dict) and
                 request.META.get(HEADERS_KEY_CACHED_ENABLE, None) == 'true'
         ):
-            print('cache enabled!')
+            expires_string = (
+                    datetime.datetime.now() + datetime.timedelta(minutes=1)
+            ).strftime('%a, %d %b %Y %H:%M:%S GMT')
             return {
                 'Cache-Control': 'public, max-age=60',  # 1 minutes
-                'Expires': 'max-age=60',
+                'Expires': expires_string,
+                'ETag': RandomGenerate.get_string(length=32),
             }
         return {}
 
@@ -142,7 +148,7 @@ def mask_view(**parent_kwargs):
             auth_require = parent_kwargs.get('auth_require', False)
             if auth_require:
                 login_require = True
-            is_notify_key = parent_kwargs.get('is_notify_key', settings.DEBUG_NOTIFY_KEY)  # default: True
+            # is_notify_key = parent_kwargs.get('is_notify_key', settings.DEBUG_NOTIFY_KEY)  # default: True
             is_api = parent_kwargs.get('is_api', False)
             template_path = parent_kwargs.get('template', None)
             breadcrumb_name = parent_kwargs.get('breadcrumb', None)
@@ -261,7 +267,7 @@ def mask_view(**parent_kwargs):
                                 ctx['pk'] = pk
                                 ctx['is_ga_enabled'] = settings.GA_COLLECTION_ENABLED
                                 ctx['is_debug'] = settings.DEBUG_JS
-                                ctx['is_notify_key'] = 1 if is_notify_key is True else 0
+                                # ctx['is_notify_key'] = 1 if is_notify_key is True else 0
                                 ctx['base'] = cls_check.parse_base(request.user)
                                 ctx['base_workflow'] = WORKFLOW_ACTION if pk else {}
                                 ctx['domain'] = {'media': settings.MEDIA_DOMAIN}

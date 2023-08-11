@@ -619,24 +619,6 @@ class ServerAPI:
         return {}
 
     @property
-    def setup_header_dtb(self):
-        ctx = {}
-        if hasattr(self.request, 'query_params'):
-            query_params = self.request.query_params.dict()
-            page = query_params.get('page', None)
-            if page and isinstance(page, int):
-                ctx['page'] = page
-
-            page_size = self.query_params.get('pageSize', None)
-            if page_size and isinstance(page_size, int):
-                ctx['pageSize'] = page_size
-
-            page_search = self.query_params.get('search', None)
-            if page_search:
-                ctx['search'] = page_search
-        return ctx
-
-    @property
     def headers(self) -> dict:
         """
         Setup headers for request
@@ -648,7 +630,6 @@ class ServerAPI:
             'content-type': 'application/json',
             'Accept-Language': 'vi',
             **self.setup_header_dropdown,
-            **self.setup_header_dtb,
         }
         if self.user and getattr(self.user, 'access_token', None):
             data.update(APIUtil.key_authenticated(access_token=self.user.access_token))
@@ -665,13 +646,22 @@ class ServerAPI:
                     settings.MEDIA_KEY_SECRET_TOKEN_UI: settings.MEDIA_SECRET_TOKEN_UI,
                 }
             )
-
         if self.cus_headers:
             return {
                 **data,
                 **self.cus_headers
             }
         return data
+
+    @property
+    def setup_query_params(self):
+        ctx = {}
+        if hasattr(self.request, 'query_params'):
+            return {
+                key: value
+                for key, value in self.request.query_params.dict().items() if key not in ['_'] and value
+            }
+        return ctx
 
     def get(self, data=None):
         """
@@ -681,16 +671,14 @@ class ServerAPI:
 
         Returns: APIUtil --> call_get()
         """
-        safe_url = self.url
 
-        # if isinstance(data, dict):
-        #     data['pageSize'] = '-1'
-        # else:
-        #     data = {'pageSize': '-1'}
+        params = {
+            **self.setup_query_params,
+            **(data if isinstance(data, dict) else {}),
+        }
 
-        if data and isinstance(data, dict):
-            url_encode = [f"{key}={val}" for key, val in data.items()]
-            safe_url += f'?{"&".join(url_encode)}'
+        url_encode = [f"{key}={val}" for key, val in params.items()]
+        safe_url = self.url + f'?{"&".join(url_encode)}'
         return APIUtil(user_obj=self.user).call_get(safe_url=safe_url, headers=self.headers)
 
     def post(self, data) -> RespData:

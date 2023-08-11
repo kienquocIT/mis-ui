@@ -103,6 +103,7 @@ $(function () {
                     }
                 },
             ],
+            useDataServer: true,
         });
     })
 

@@ -2,54 +2,15 @@ class RoleLoadPage {
     static memberEle = $('#selectMembers');
 
     static loadMembers(memberDatas, opts) {
-        memberDatas = memberDatas || [];
-        let dataSelect2 = [];
-        let memberIds = [];
-        memberDatas.map(
-            (item) => {
-                if (item.id) {
-                    memberIds.push(item.id);
-                    dataSelect2.push({
-                        'id': item.id,
-                        'text': item?.['full_name'],
-                        'data': item,
-                        'selected': true,
-                    })
-                }
-            }
-        )
-
-        $.fn.callAjax2({
-            url: RoleLoadPage.memberEle.attr('data-url'),
-            method: RoleLoadPage.memberEle.attr('data-method'),
-        }).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data && data.hasOwnProperty('employee_list')) {
-                let employeeData = data['employee_list'];
-                if (employeeData && Array.isArray(employeeData)) {
-                    employeeData.map((item) => {
-                        if (item.id && !memberIds.includes(item.id)) {
-                            dataSelect2.push({
-                                'id': item.id,
-                                'text': item?.['full_name'],
-                                'data': item,
-                            });
-                        }
-                    })
-                }
-                $('#selectMembers').initSelect2({
-                    data: dataSelect2,
-                    closeOnSelect: false,
-                    multiple: true,
-                    templateResult: function (state) {
-                        let groupHTML = `<span class="badge badge-soft-primary">${state.data?.group?.title ? state.data.group.title : "_"}</span>`
-                        let activeHTML = state.data?.is_active === true ? `<span class="badge badge-success badge-indicator"></span>` : `<span class="badge badge-light badge-indicator"></span>`;
-                        return $(`<span>${state.text} ${activeHTML} ${groupHTML}</span>`);
-                    },
-                    ...opts,
-                });
-            }
-        })
+        RoleLoadPage.memberEle.initSelect2({
+            allowClear: true,
+            data: memberDatas,
+            templateResult: function (state) {
+                let groupHTML = `<span class="badge badge-soft-primary">${state.data?.group?.title ? state.data.group.title : "_"}</span>`
+                let activeHTML = state.data?.is_active === true ? `<span class="badge badge-success badge-indicator"></span>` : `<span class="badge badge-light badge-indicator"></span>`;
+                return $(`<span>${state.text} ${activeHTML} ${groupHTML}</span>`);
+            },
+        });
     }
 
     static combinesMembers() {
@@ -88,11 +49,13 @@ class RoleForm {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             $.fn.notifyB({description: $.fn.transEle.attr('data-success')}, 'success');
-                            if ($(this.frm).attr('data-url-redirect')){
+                            if ($(this.frm).attr('data-url-redirect')) {
                                 $.fn.redirectUrl($(this.frm).attr('data-url-redirect'), 1000);
                             } else {
                                 setTimeout(
-                                    ()=>{window.location.reload()},
+                                    () => {
+                                        window.location.reload()
+                                    },
                                     1000
                                 )
                             }

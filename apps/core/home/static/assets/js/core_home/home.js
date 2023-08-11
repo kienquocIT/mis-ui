@@ -425,31 +425,7 @@ function loadTabDraft() {
 
 function initEventElement() {
     $('#modalAddBookMark').on('shown.bs.modal', function (event) {
-        let selectApp = $('#newBookMarkApplication');
-        if (!selectApp.attr('data-loaded')) {
-            selectApp.attr('data-loaded', true);
-            $.fn.callAjax(
-                $.fn.storageSystemData.attr('data-GatewayViewNameListView'),
-                'GET'
-            ).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data && data.hasOwnProperty('views_name')) {
-                        selectApp.append(
-                            data['views_name'].map(
-                                (item) => {
-                                    return `<option value="${item['view_name']}">${item['title']}</option>`
-                                }
-                            ).join("")
-                        );
-                        selectApp.initSelect2();
-                    }
-                },
-                (errs) => {
-                }
-            )
-        }
-
+        $('#newBookMarkApplication').initSelect2();
     });
     $('#frmAddNewBookMark').submit(function (event) {
         WindowControl.showLoading();
@@ -478,7 +454,7 @@ function initEventElement() {
         let viewName = bookmarkItem.attr('data-view_name');
         let customizeUrl = bookmarkItem.attr('data-customize_url');
         if (kind === '0' && viewName) {
-            let urlData = $.fn.storageSystemData.attr('data-GatewayViewNameParseView').replaceAll('_view_name_', viewName);
+            let urlData = globeGatewayViewNameParseView.replaceAll('_view_name_', viewName);
             WindowControl.eleHrefActive(urlData + "?redirect=true");
         } else if (kind === '1' && customizeUrl) {
             window.location.href = customizeUrl;

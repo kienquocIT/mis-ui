@@ -1,8 +1,9 @@
 
 $(function () {
     $(document).ready(function () {
+        $('#chooseCompanyPage').initSelect2();
         // INIT LOAD | multiple select company popup info
-        $(".select2").initSelect2();
+        // $(".select2").initSelect2();
 
         const msgLinkedEmployee = $('#notify-employee-mapped-text').text();
         const msgNoLinked = $('#notify-employee-not-mapped-text').text();
@@ -203,6 +204,7 @@ $(function () {
                                 if (companyIdSelected) {
                                     d.company_id = companyIdSelected;
                                     let stateUser = $('#chooseStateUser').val();
+                                    console.log(companyIdSelected, stateUser);
                                     switch (stateUser) {
                                         case 'all':
                                             break
@@ -219,6 +221,7 @@ $(function () {
                                     //     description: 'Company ID must be required.'
                                     // }, 'warning');
                                 }
+                                return d;
                             },
                             dataSrc: function (resp) {
                                 let data = $.fn.switcherResp(resp);

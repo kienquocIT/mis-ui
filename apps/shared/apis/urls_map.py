@@ -326,7 +326,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PURCHASE_QUOTATION_PRODUCT_LIST = StringUrl('purchasing/purchase-quotation-product/list')
 
     # Process
-    FUNCTION_PROCESS_LIST = StringUrl('process/function/list')
-    PROCESS = StringUrl('process/')
-    SKIP_PROCESS_STEP = StringUrl('process/step/skip/{pk}')
-    SET_CURRENT_PROCESS_STEP = StringUrl('process/step/set-current/{pk}')
+    FUNCTION_PROCESS_LIST = StringUrl('sale-process/function/list')
+    PROCESS = StringUrl('sale-process/')
+    SKIP_PROCESS_STEP = StringUrl('sale-process/step/skip/{pk}')
+    SET_CURRENT_PROCESS_STEP = StringUrl('sale-process/step/set-current/{pk}')

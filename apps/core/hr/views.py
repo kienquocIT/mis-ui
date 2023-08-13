@@ -322,6 +322,7 @@ class GroupCreate(View):
     @mask_view(
         auth_require=True,
         template='core/hr/group/group_create.html',
+        breadcrumb='GROUP_CREATE',
         menu_active='menu_group_list',
         perm_check=PermCheck(url=ApiURL.ROLE_LIST, method='POST'),
     )
@@ -368,6 +369,7 @@ class GroupDetail(View):
     @mask_view(
         auth_require=True,
         template='core/hr/group/group_detail.html',
+        breadcrumb='GROUP_DETAIL',
         menu_active='menu_group_list',
         perm_check=PermCheck(url=ApiURL.GROUP_DETAIL_PK, method='GET', fill_key=['pk']),
     )
@@ -379,6 +381,7 @@ class GroupUpdate(View):
     @mask_view(
         auth_require=True,
         template='core/hr/group/group_update.html',
+        breadcrumb='GROUP_UPDATE',
         menu_active='menu_group_list',
         perm_check=PermCheck(url=ApiURL.GROUP_DETAIL_PK, method='PUT', fill_key=['pk']),
     )

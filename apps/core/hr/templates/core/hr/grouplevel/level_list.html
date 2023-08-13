@@ -6,17 +6,19 @@
 {% endblock %}
 
 {% block pageAction %}
-    <a
-            class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
-            href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
-            data-bs-original-title="Refresh"
+    <button
+            id="btn-add-group-level"
+            class="btn btn-outline-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#levelGroupCreateModalCenter"
     >
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="refresh-cw"></i>
+        <span>
+            <span>{% trans 'Add' %}</span>
+            <span class="icon">
+                <i class="fa-solid fa-plus"></i>
             </span>
         </span>
-    </a>
+    </button>
 {% endblock %}
 
 {% block pageContent %}
@@ -29,16 +31,7 @@
             id="frm_group_level_create"
             method="post"
     >
-    {% csrf_token %}
-        <button
-                type="button"
-                class="btn btn-link btn-animated"
-                id="btn-add-group-level"
-                data-bs-toggle="modal"
-                data-bs-target="#levelGroupCreateModalCenter"
-        >
-            <span><span class="icon"><span class="feather-icon"><i class="fa-regular fa-square-plus"></i></span></span><span>{% trans 'Add group level' %}</span></span>
-        </button>
+        {% csrf_token %}
         <table
                 id="datable-group-level"
                 class="table nowrap w-100 mb-5"
@@ -61,8 +54,8 @@
             <div class="col-11"></div>
             <div class="col-1 float-right">
                 <button
-                    type="button" class="btn btn-secondary"
-                    id="btn-cancel-group-level"
+                        type="button" class="btn btn-secondary"
+                        id="btn-cancel-group-level"
                 >{% trans 'Cancel' %}</button>
             </div>
         </div>
@@ -84,7 +77,9 @@
                     <div class="modal-body">
                         <div class="row">
                             <div class="form-group">
-                                <label class="form-label" for="group-level-create-description">{% trans 'Description' %}<span class="required"></span></label>
+                                <label class="form-label" for="group-level-create-description">{% trans 'Description' %}<span
+                                        class="required"
+                                ></span></label>
                                 <input
                                         type="text" class="form-control"
                                         placeholder="input description"
@@ -96,7 +91,9 @@
                         </div>
                         <div class="row">
                             <div class="form-group">
-                                <label class="form-label" for="group-level-create-first-manager-description">{% trans 'First manager title' %}</label>
+                                <label
+                                        class="form-label" for="group-level-create-first-manager-description"
+                                >{% trans 'First manager title' %}</label>
                                 <input
                                         type="text" class="form-control"
                                         placeholder="input description"
@@ -108,7 +105,9 @@
                         </div>
                         <div class="row">
                             <div class="form-group">
-                                <label class="form-label" for="group-level-create-second-manager-description">{% trans 'Second manager title' %}</label>
+                                <label
+                                        class="form-label" for="group-level-create-second-manager-description"
+                                >{% trans 'Second manager title' %}</label>
                                 <input
                                         type="text" class="form-control"
                                         placeholder="input description"
@@ -120,11 +119,13 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
                         <button
-                            type="submit"
-                            class="btn btn-primary mr-2"
-                            form="frm_group_level_create"
+                                type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                        >{% trans 'Close' %}</button>
+                        <button
+                                type="submit"
+                                class="btn btn-primary mr-2"
+                                form="frm_group_level_create"
                         >{% trans 'Save' %}</button>
                     </div>
                 </div>

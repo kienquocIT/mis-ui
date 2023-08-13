@@ -31,6 +31,16 @@
     </style>
 {% endblock %}
 {% block pageAction %}
+    <a href="{% url 'GroupUpdate' pk=pk %}">
+        <button class="btn btn-outline-primary">
+            <span>
+                <span>{% trans 'Edit' %}</span>
+                <span class="icon">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                </span>
+            </span>
+        </button>
+    </a>
 {% endblock %}
 
 {% block pageContent %}

@@ -198,6 +198,53 @@
             </select>
         </div>
     </div>
+    <div class="row">
+        <div class="col-3">
+            <div class="input-group">
+                <button class="btn btn-outline-secondary" type="button"><i class="fa-solid fa-info"></i></button>
+                <select
+                        class="form-control-select" id="inputGroupSelect04"
+                        aria-label="Example select with button addon"
+                >
+                    <option selected>Choose...</option>
+                    <option value="1">One</option>
+                    <option value="2">Two</option>
+                    <option value="3">Three</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="form-group">
+                <label for="selectGroupIcon">Select Employee</label>
+                <div class="input-affix-wrapper">
+                    <div class="dropdown input-prefix">
+                        <i
+                                class="fa-solid fa-circle-info" data-bs-toggle="dropdown" aria-haspopup="true"
+                                aria-expanded="false"
+                        ></i>
+                        <div class="dropdown-menu w-210p mt-2">
+                            <label for="">{% trans 'Full name' %}</label>
+                            <input type="text" name="dd-full-name" class="form-control-plaintext" disabled readonly>
+                            <a href="#" data-url="{% url 'EmployeeDetail' pk='__pk__' %}" id="dd-btn-detail">
+                                <button class="btn btn-primary" disabled>{% trans 'Detail' %}</button>
+                            </a>
+                        </div>
+                    </div>
+                    <select
+                            id="selectGroupIcon"
+                            class="input-affix-main"
+                            data-allowClear="true"
+                            data-url="{% url 'EmployeeListAPI' %}"
+                            data-keyResp="employee_list"
+                            data-keyId="id"
+                            data-keyText="full_name"
+                    >
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="mt-50"></div>
 {% endblock %}
 
 {% block jsFooter %}
@@ -363,9 +410,30 @@
         })
     </script>
     <script>
+        function renderDetailInfoEmployee(DDMenuEle, dataBackupOfSelected, selectedVal, selectEle) {
+            // dataBackupOfSelected: object or list[object] by multiple
+            // append HTML or find class/id replace value
+            //      DDMenuEle.html(``);
+            //      [Recommendation] DDMenuEle.find('.dd-full-name').val(dataBackupOfSelected?.['full_name'] || '');
+
+            DDMenuEle.find('input[name="dd-full-name"]').val(dataBackupOfSelected?.['full_name'] || '');
+            let btnDetail = $('#dd-btn-detail');
+            if (dataBackupOfSelected?.['id']){
+                btnDetail.href = btnDetail.attr('data-url').replace('__pk__', dataBackupOfSelected?.['id']);
+                btnDetail.find('button').prop('disabled', false);
+            } else {
+                btnDetail.href = '#';
+                btnDetail.find('button').prop('disabled', true);
+            }
+        }
+
         $(document).ready(function () {
             $('#selectX').initSelect2({cache: true});
             $('#selectY').initSelect2({});
+
+            $('#selectGroupIcon').initSelect2({
+                'callbackInfoDetail': renderDetailInfoEmployee
+            });
         })
     </script>
 {% endblock %}

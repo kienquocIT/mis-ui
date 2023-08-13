@@ -75,6 +75,7 @@
                                 <label for="CustomSelect2" class="form-label">{% trans 'Country' %}</label>
                                 <select
                                         id="CustomSelect2"
+                                        class="select-custom-filter"
                                         data-url="{% url 'CountryListAPI' %}"
                                         data-keyResp="countries"
                                         data-keyParam="country_id__in" multiple
@@ -86,6 +87,7 @@
                                 <label for="CustomSelect1" class="form-label">{% trans 'City' %}</label>
                                 <select
                                         id="CustomSelect1"
+                                        class="select-custom-filter"
                                         data-url="{% url 'CityListAPI' %}"
                                         data-keyResp="cities"
                                         data-keyParam="id__in" multiple
@@ -126,7 +128,6 @@
             let urlCities = tbl.attr('data-url-city');
             tbl.DataTableDefault({
                 useDataServer: true,
-                fullToolbar: true,
                 ajax: {
                     url: url_list,
                     type: 'GET',

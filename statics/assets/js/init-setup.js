@@ -1778,6 +1778,7 @@ class DTBControl {
                     hasColHeaderFilter = true;
                     $(`<th>
                         <select
+                            class="select-custom-filter"
                             data-keyParam="${colFilter.keyParam}"
                             data-url="${colFilter.dataUrl}"
                             data-keyResp="${colFilter.keyResp}"
@@ -1794,10 +1795,9 @@ class DTBControl {
         }
         setTimeout(
             () => {
-                $($thead).find('select').each(function () {
+                $($thead).find('select.select-custom-filter').each(function () {
                     $(this).initSelect2({
                         'maximumSelectionLength': 5,
-                        'allowClear': true,
                         'cache': true,
                     });
                 }).on(
@@ -1882,13 +1882,13 @@ class DTBControl {
         return [opts, domDTL];
     }
 
-    static cleanParamBeforeCall(params) {
+    static cleanParamBeforeCall(params, keyKeepEmpty = []) {
         let result = {}
         if (params && typeof params === 'object') {
             Object.keys(params).map(
                 (key) => {
                     let val = params[key];
-                    if (val) result[key] = val;
+                    if (val || (!val && keyKeepEmpty.includes(key))) result[key] = val;
                 }
             )
         }
@@ -1949,14 +1949,19 @@ class DTBControl {
                                 orderTxt = orderVal === 'asc' ? orderKey : `-${orderKey}`
                         }
 
+                        let keyKeepEmpty = [];
                         let customFilter = {};
                         $(clsThis.dtb$).find('.row-custom-filter select').each(function () {
                             let val = $(this).val();
-                            if (
-                                (typeof val === "string" && val) ||
-                                (Array.isArray(val) && val.length > 0)
-                            ) {
-                                customFilter[$(this).attr('data-keyParam')] = (!Array.isArray(val) ? [val] : val).join(",");
+                            if (val) {
+                                if ((typeof val === "string" && val) || (Array.isArray(val) && val.length > 0)) {
+                                    customFilter[$(this).attr('data-keyParam')] = (!Array.isArray(val) ? [val] : val).join(",");
+                                }
+                            } else {
+                                if ($(this).attr('data-keepIdNullHasText') === 'true'){
+                                    customFilter[$(this).attr('data-keyParam')] = "";
+                                    keyKeepEmpty.push($(this).attr('data-keyParam'))
+                                }
                             }
                         });
 
@@ -1965,7 +1970,7 @@ class DTBControl {
                             'pageSize': d.length,
                             'search': d?.search?.value ? d.search.value : '',
                             'ordering': orderTxt, ...customFilter
-                        });
+                        }, keyKeepEmpty);
                     },
                     dataFilter: function (data) {
                         let json = JSON.parse(data);

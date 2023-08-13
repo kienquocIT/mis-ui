@@ -150,7 +150,7 @@ class EmployeeOfTenantListAPI(APIView):
         user_is_null = query_params.get('user_is_null', None)
         if company_id:
             filter_data = {'company_id': company_id}
-            if user_is_null is not None:
+            if user_is_null and user_is_null is not None and user_is_null not in ['null', 'None']:
                 user_is_null = TypeCheck.get_bool(user_is_null)
                 filter_data['user__isnull'] = user_is_null
             resp = ServerAPI(request=request, user=request.user, url=ApiURL.EMPLOYEE_TENANT, is_minimal=False).get(

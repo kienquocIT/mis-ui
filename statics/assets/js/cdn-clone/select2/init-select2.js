@@ -38,6 +38,16 @@ class SelectDDControl {
     page = 1;
     pageSize = 10;
 
+    get __has_option_empty(){
+        let state = true;
+        this.ele.find('option').each(function (){
+            if ($(this).val() === '' || !$(this)){
+                state = false;
+            }
+        });
+        return state;
+    }
+
     get _data_getDataOnload() {
         // Get dataOnload from OPTS or attribute data-onload
         // Priority:
@@ -268,6 +278,16 @@ class SelectDDControl {
         }
     }
 
+    get keepIdNullHasText(){
+        // flag keep when id = "" but has text display
+        // default: false
+        // Priority:
+        //  1. Opts
+        //  2. attr('data-keepIdNullHasText')
+        //  3. false
+        return this.opts?.['keepIdNullHasText'] ? this.opts?.['keepIdNullHasText'] : (this.ele.attr('data-keepIdNullHasText') === 'true');
+    }
+
     get minimumInputLength() {
         // setup min input length search for multiple
         // Priority:
@@ -344,7 +364,7 @@ class SelectDDControl {
         //  3. {default}
         let isMultiple = this.opts?.multiple ? true : !!this.ele.attr('multiple');
         let isAllowClear = this.opts?.allowClear ? true : (this.ele.attr('data-allowClear') === 'true');
-        if (!isMultiple && isAllowClear) {
+        if (!isMultiple && isAllowClear && this.__has_option_empty !== true) {
             this.ele.prepend(`<option selected></option>`);
         }
         return {
@@ -499,9 +519,10 @@ class SelectDDControl {
         if (this.ele && Array.isArray(dataOnload) && Array.isArray(dataSelected)) {
             let optHTML = this.initData.concat(dataSelected).map((item) => {
                 let idn = item?.['id'];
-                if (idn) {
+                let textShow = item?.['text'];
+                if (idn || (!idn && textShow && this.keepIdNullHasText)) {
                     this._forceUpdateDataBackupLoaded(idn, item?.['data'] || {});
-                    return `<option value="${idn}" ${item?.selected ? "selected" : ""}>${item?.['text'] || ''}</option>`;
+                    return `<option value="${idn}" ${item?.selected ? "selected" : ""}>${textShow || ''}</option>`;
                 }
             }).join("");
             this.ele.html(optHTML);

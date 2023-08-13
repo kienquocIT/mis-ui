@@ -1790,7 +1790,7 @@ class DTBControl {
                 }
             }
         )
-        if (hasColHeaderFilter){
+        if (hasColHeaderFilter) {
             rowColFilterEle.appendTo($($thead));
         }
         setTimeout(
@@ -1958,7 +1958,7 @@ class DTBControl {
                                     customFilter[$(this).attr('data-keyParam')] = (!Array.isArray(val) ? [val] : val).join(",");
                                 }
                             } else {
-                                if ($(this).attr('data-keepIdNullHasText') === 'true'){
+                                if ($(this).attr('data-keepIdNullHasText') === 'true') {
                                     customFilter[$(this).attr('data-keyParam')] = "";
                                     keyKeepEmpty.push($(this).attr('data-keyParam'))
                                 }
@@ -1977,7 +1977,10 @@ class DTBControl {
                         json.recordsTotal = json?.data?.['page_count']
                         json.recordsFiltered = json?.data?.['page_count']
                         return JSON.stringify(json);
-                    }
+                    },
+                    headers: {
+                        "ENABLEXCACHECONTROL": !!(opts?.['ajax']?.['cache']) ? 'true': 'false',
+                    },
                 })
             }
             opts = $.extend(opts, setupServerSide)

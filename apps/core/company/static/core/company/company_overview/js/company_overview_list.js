@@ -145,6 +145,7 @@ $(function () {
         if (!$.fn.DataTable.isDataTable('#tbl-user-of-tenant')) {
             let frm_user_tenant = new SetupFormSubmit(tblUserOfTenant);
             tblUserOfTenant.DataTableDefault({
+                useDataServer: true,
                 ajax: {
                     url: frm_user_tenant.dataUrl,
                     type: frm_user_tenant.dataMethod,
@@ -155,6 +156,7 @@ $(function () {
                         }
                         throw Error('Call data raise errors.')
                     },
+                    cache: true,
                 },
                 columns: [
                     {
@@ -246,6 +248,7 @@ $(function () {
                             }
                             throw Error('Call data raise errors.')
                         },
+                        cache: true,
                     },
                     columns: [
                         {

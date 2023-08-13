@@ -1,5 +1,13 @@
 class SelectDDControl {
+    static get_data_from_idx(selectEle, idx) {
+        // get data of another IDX (loaded from select2)
+        let cls = new SelectDDControl(selectEle);
+        return cls._getDataBackupLoaded(idx);
+    }
+
     static get_data_key_map(item, keyMap) {
+        // get data in object (in object recursive) with  '--'
+        // {'a': {'b': {'c': 1}}} --> get c in b in c --> a--b--c
         if (item && keyMap && typeof item === 'object') {
             let arr = keyMap.split('--');
             if (arr.length === 1) {
@@ -17,6 +25,7 @@ class SelectDDControl {
     }
 
     static get_data_from_resp(resp, keyResp) {
+        // get data from resp by key response
         let result = [];
         let respTmp = resp?.data;
         if (respTmp) {
@@ -38,10 +47,11 @@ class SelectDDControl {
     page = 1;
     pageSize = 10;
 
-    get __has_option_empty(){
+    get __has_option_empty() {
+        // check select allow render option empty value
         let state = true;
-        this.ele.find('option').each(function (){
-            if ($(this).val() === '' || !$(this)){
+        this.ele.find('option').each(function () {
+            if ($(this).val() === '' || !$(this)) {
                 state = false;
             }
         });
@@ -278,7 +288,7 @@ class SelectDDControl {
         }
     }
 
-    get keepIdNullHasText(){
+    get keepIdNullHasText() {
         // flag keep when id = "" but has text display
         // default: false
         // Priority:
@@ -349,10 +359,10 @@ class SelectDDControl {
         // setup templateResult concat default + manual
         let clsThis = this;
         return function (state) {
-                if (state.data) clsThis._forceUpdateDataBackupLoaded(state.id, state.data);
-                let setupFunc = clsThis.opts?.['templateResult'];
-                return setupFunc ? setupFunc(state) : state.text;
-            }
+            if (state.data) clsThis._forceUpdateDataBackupLoaded(state.id, state.data);
+            let setupFunc = clsThis.opts?.['templateResult'];
+            return setupFunc ? setupFunc(state) : state.text;
+        }
     }
 
     get multipleAndAllowClear() {
@@ -480,8 +490,33 @@ class SelectDDControl {
         this.initData = []; // ** [private] storage initData of class
         this._config = null; // ** [private] storage config of class
 
-        let idxDataBackup = UtilControl.generateRandomString(32);
-        this.ele.attr(this.arrDataBackupLoaded, idxDataBackup);
+        if (!this.ele.attr(this.arrDataBackupLoaded)) {
+            let idxDataBackup = UtilControl.generateRandomString(32);
+            this.ele.attr(this.arrDataBackupLoaded, idxDataBackup);
+        }
+    }
+
+    callbackRenderInfoDetail(inputAffixEle$) {
+        // callback of render detail icon in select
+        // return: object or list[object] by multiple select
+        let callback = this.opts?.['callbackInfoDetail'];
+        if (callback) {
+            let DDMenuEle = $(inputAffixEle$).find('.dropdown-menu');
+            let dataBackup = {};
+            let selectedVal = this.ele.val();
+
+            if (Array.isArray(selectedVal)) {
+                dataBackup = [];
+                selectedVal.map(
+                    (idx) => {
+                        dataBackup.push(this._getDataBackupLoaded(idx) || {});
+                    }
+                );
+            } else if (typeof selectedVal === "string") {
+                dataBackup = selectedVal ? this._getDataBackupLoaded(selectedVal) : {};
+            }
+            callback(DDMenuEle, dataBackup, selectedVal, this.ele);
+        }
     }
 
     callbackDataResp(resp, keyResp) {
@@ -552,8 +587,16 @@ class SelectDDControl {
     }
 
     init() {
+        // call this for init select with options
+        let clsThis = this;
+
         if (!this._config) this._config = this.config();
         this.renderDataOnload(this._config);
+
+        this.ele.parent('.input-affix-wrapper').find('.dropdown').on('show.bs.dropdown', function () {
+            clsThis.callbackRenderInfoDetail($(this));
+        });
+
         return this.ele.select2(this._config);
     }
 }

@@ -163,22 +163,9 @@
                 </div>
                 <div class="row" id="add-new-node-workflow-create">
                     <div class="col-12">
-                        <button
-                                type="button"
-                                class="btn btn-flush-success flush-soft-hover open-modal-node"
-                                data-bs-toggle="modal"
-                                data-bs-target="#nodeModalCreate"
-                        >
-                            <span class="icon">
-                                    <span class="feather-icon">
-                                        <i data-feather="plus"></i>
-                                    </span>
-                                    <span class="font-3 ml-1">
-                                        {% trans 'Add new node' %}
-                                    </span>
-                                </span>
+                        <button type="button" class="btn btn-link btn-animated open-modal-node" data-bs-toggle="modal" data-bs-target="#nodeModalCreate">
+                            <span><span class="icon"><span class="feather-icon"><i class="fa-regular fa-square-plus"></i></span></span><span>{% trans 'Add new node' %}</span></span>
                         </button>
-
                         <div
                                 class="modal fade" id="nodeModalCreate" tabindex="-1" role="dialog"
                                 aria-labelledby="exampleModalCenter" aria-hidden="true"
@@ -198,7 +185,7 @@
                                         <div class="form-group">
                                             <label class="form-label">
                                                 {% trans 'Node Name' %}
-                                                <span class="field-required">(*)</span>
+                                                <span class="required"></span>
                                             </label>
                                             <input
                                                     type="text" class="form-control"

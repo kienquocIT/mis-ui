@@ -135,3 +135,7 @@ a.dropdown-item.table-row-price-option:hover {
     background-color: #ffebeb;
     color: #e60000;
 }
+
+.total-area .card {
+    margin-top: unset;
+}

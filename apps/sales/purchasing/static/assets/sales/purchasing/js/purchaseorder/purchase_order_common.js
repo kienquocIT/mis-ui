@@ -937,12 +937,12 @@ class loadDataHandle {
             let eleTaxesRaw = document.getElementById('purchase-order-product-taxes-raw');
             let eleTotalRaw = document.getElementById('purchase-order-product-total-raw');
             let finalRevenueBeforeTax = document.getElementById('purchase-order-final-revenue-before-tax');
-            $(elePretaxAmount).attr('value', String(0));
+            $(elePretaxAmount).attr('data-init-money', String(0));
             elePretaxAmountRaw.value = '0';
             finalRevenueBeforeTax.value = '0';
-            $(eleTaxes).attr('value', String(0));
+            $(eleTaxes).attr('data-init-money', String(0));
             eleTaxesRaw.value = '0';
-            $(eleTotal).attr('value', String(0));
+            $(eleTotal).attr('data-init-money', String(0));
             eleTotalRaw.value = '0';
         } else {
             calculateClass.calculateTable(table);
@@ -1596,13 +1596,7 @@ class dataTableHandle {
                     targets: 7,
                     render: (data, type, row) => {
                         return `<div class="row">
-                                    <input 
-                                        type="text" 
-                                        class="form-control mask-money table-row-subtotal disabled-custom-show" 
-                                        value="${row.product_subtotal_price}"
-                                        data-return-type="number"
-                                        disabled
-                                    >
+                                    <span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row.product_subtotal_price)}"></span>
                                     <input
                                         type="text"
                                         class="form-control table-row-subtotal-raw"
@@ -1659,12 +1653,12 @@ class calculateHandle {
                 }
             }
             let totalFinal = (pretaxAmount + taxAmount);
-            $(elePretaxAmount).attr('value', String(pretaxAmount));
+            $(elePretaxAmount).attr('data-init-money', String(pretaxAmount));
             elePretaxAmountRaw.value = pretaxAmount;
             finalRevenueBeforeTax.value = pretaxAmount;
-            $(eleTaxes).attr('value', String(taxAmount));
+            $(eleTaxes).attr('data-init-money', String(taxAmount));
             eleTaxesRaw.value = taxAmount;
-            $(eleTotal).attr('value', String(totalFinal));
+            $(eleTotal).attr('data-init-money', String(totalFinal));
             eleTotalRaw.value = totalFinal;
         }
         $.fn.initMaskMoney2();

@@ -946,39 +946,39 @@ class loadDataHandle {
         }
         if (pretax && tax && total) {
             if (is_product === true) {
-                $(pretax).attr('value', String(data.total_product_pretax_amount));
+                $(pretax).attr('data-init-money', String(data.total_product_pretax_amount));
                 pretaxRaw.value = data.total_product_pretax_amount
             } else if (is_cost === true) {
-                $(pretax).attr('value', String(data.total_cost_pretax_amount));
+                $(pretax).attr('data-init-money', String(data.total_cost_pretax_amount));
                 pretaxRaw.value = data.total_cost_pretax_amount
             } else if (is_expense === true) {
-                $(pretax).attr('value', String(data.total_expense_pretax_amount));
+                $(pretax).attr('data-init-money', String(data.total_expense_pretax_amount));
                 pretaxRaw.value = data.total_expense_pretax_amount
             }
             let discountRate = document.getElementById('quotation-create-product-discount');
             if (discount && discountRate) {
-                $(discount).attr('value', String(data.total_product_discount));
+                $(discount).attr('data-init-money', String(data.total_product_discount));
                 discountRaw.value = data.total_product_discount;
                 discountRate.value = data.total_product_discount_rate
             }
             if (is_product === true) {
-                $(tax).attr('value', String(data.total_product_tax));
+                $(tax).attr('data-init-money', String(data.total_product_tax));
                 taxRaw.value = data.total_product_tax
             } else if (is_cost === true) {
-                $(tax).attr('value', String(data.total_cost_tax));
+                $(tax).attr('data-init-money', String(data.total_cost_tax));
                 taxRaw.value = data.total_cost_tax
             } else if (is_expense === true) {
-                $(tax).attr('value', String(data.total_expense_tax));
+                $(tax).attr('data-init-money', String(data.total_expense_tax));
                 taxRaw.value = data.total_expense_tax
             }
             if (is_product === true) {
-                $(total).attr('value', String(data.total_product));
+                $(total).attr('data-init-money', String(data.total_product));
                 totalRaw.value = data.total_product
             } else if (is_cost === true) {
-                $(total).attr('value', String(data.total_cost));
+                $(total).attr('data-init-money', String(data.total_cost));
                 totalRaw.value = data.total_cost
             } else if (is_expense === true) {
-                $(total).attr('value', String(data.total_expense));
+                $(total).attr('data-init-money', String(data.total_expense));
                 totalRaw.value = data.total_expense
             }
             // load total revenue before tax for tab product
@@ -1638,13 +1638,7 @@ class dataTableHandle {
                     width: "15%",
                     render: (data, type, row) => {
                         return `<div class="row">
-                                <input 
-                                    type="text" 
-                                    class="form-control mask-money table-row-subtotal disabled-custom-show" 
-                                    value="${row.product_subtotal_price}"
-                                    data-return-type="number"
-                                    disabled
-                                >
+                                <span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row.product_subtotal_price)}"></span>
                                 <input
                                     type="text"
                                     class="form-control table-row-subtotal-raw"
@@ -1859,13 +1853,7 @@ class dataTableHandle {
                     width: "20%",
                     render: (data, type, row) => {
                         return `<div class="row">
-                                <input 
-                                    type="text" 
-                                    class="form-control mask-money table-row-subtotal disabled-custom-show" 
-                                    value="${row.product_subtotal_price}"
-                                    data-return-type="number"
-                                    disabled
-                                >
+                                <span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row.product_subtotal_price)}"></span>
                                 <input
                                     type="text"
                                     class="form-control table-row-subtotal-raw"
@@ -2185,13 +2173,7 @@ class dataTableHandle {
                     width: "20%",
                     render: (data, type, row) => {
                         return `<div class="row">
-                                <input 
-                                    type="text" 
-                                    class="form-control mask-money table-row-subtotal disabled-custom-show" 
-                                    value="${row.expense_subtotal_price}"
-                                    data-return-type="number"
-                                    disabled
-                                >
+                                <span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row.expense_subtotal_price)}"></span>
                                 <input
                                     type="text"
                                     class="form-control table-row-subtotal-raw"
@@ -2656,19 +2638,19 @@ class calculateCaseHandle {
             }
             let totalFinal = (pretaxAmount - discountAmount + taxAmount);
 
-            $(elePretaxAmount).attr('value', String(pretaxAmount));
+            $(elePretaxAmount).attr('data-init-money', String(pretaxAmount));
             elePretaxAmountRaw.value = pretaxAmount;
             if (is_product === true) {
                 finalRevenueBeforeTax.value = pretaxAmount;
             }
             if (eleDiscount) {
-                $(eleDiscount).attr('value', String(discountAmount));
+                $(eleDiscount).attr('data-init-money', String(discountAmount));
                 eleDiscountRaw.value = discountAmount;
                 finalRevenueBeforeTax.value = (pretaxAmount - discountAmount);
             }
-            $(eleTaxes).attr('value', String(taxAmount));
+            $(eleTaxes).attr('data-init-money', String(taxAmount));
             eleTaxesRaw.value = taxAmount;
-            $(eleTotal).attr('value', String(totalFinal));
+            $(eleTotal).attr('data-init-money', String(totalFinal));
             eleTotalRaw.value = totalFinal;
         }
         $.fn.initMaskMoney2();
@@ -2743,7 +2725,7 @@ class calculateCaseHandle {
         let eleSubtotal = row.querySelector('.table-row-subtotal');
         let eleSubtotalRaw = row.querySelector('.table-row-subtotal-raw');
         if (eleSubtotal) {
-            $(eleSubtotal).attr('value', String(subtotal));
+            $(eleSubtotal).attr('data-init-money', String(subtotal));
             eleSubtotalRaw.value = subtotal;
         }
         $.fn.initMaskMoney2();

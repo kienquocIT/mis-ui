@@ -388,18 +388,13 @@
                                         </div>
                                     </div>
                                     <div class="col-6" id="quotation-tab-product-totals">
-                                        <div class="row mb-2">
+                                        <div class="row">
                                             <div class="col-4"><p>{% trans 'Pretax Amount' %}</p></div>
                                             <div class="col-2"></div>
-                                            <div class="col-6">
-                                                <input
-                                                    id="quotation-create-product-pretax-amount"
-                                                    type="text"
-                                                    class="form-control mask-money disabled-custom-show"
-                                                    data-return-type="number"
-                                                    name="total_product_pretax_amount"
-                                                    disabled
-                                                >
+                                            <div class="col-6 total-area">
+                                                <div class="card card-sm">
+                                                    <span class="card-body mask-money" data-init-money="0" id="quotation-create-product-pretax-amount"></span>
+                                                </div>
                                                 <input
                                                     id="quotation-create-product-pretax-amount-raw"
                                                     type="text"
@@ -413,7 +408,7 @@
                                                 >
                                             </div>
                                         </div>
-                                        <div class="row mb-2">
+                                        <div class="row">
                                             <div class="col-4"><p>{% trans 'Discount' %}</p></div>
                                             <div class="col-2">
                                                 <div class="row">
@@ -425,15 +420,10 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-6">
-                                                <input
-                                                    id="quotation-create-product-discount-amount"
-                                                    type="text"
-                                                    class="form-control mask-money disabled-custom-show"
-                                                    data-return-type="number"
-                                                    name="total_product_discount"
-                                                    disabled
-                                                >
+                                            <div class="col-6 total-area">
+                                                <div class="card card-sm">
+                                                    <span class="card-body mask-money" data-init-money="0" id="quotation-create-product-discount-amount"></span>
+                                                </div>
                                                 <input
                                                     id="quotation-create-product-discount-amount-raw"
                                                     type="text"
@@ -443,18 +433,13 @@
                                                 >
                                             </div>
                                         </div>
-                                        <div class="row mb-2">
+                                        <div class="row">
                                             <div class="col-4"><p>{% trans 'Taxes' %}</p></div>
                                             <div class="col-2"></div>
-                                            <div class="col-6">
-                                                <input
-                                                    id="quotation-create-product-taxes"
-                                                    type="text"
-                                                    class="form-control mask-money disabled-custom-show"
-                                                    data-return-type="number"
-                                                    name="total_product_tax"
-                                                    disabled
-                                                >
+                                            <div class="col-6 total-area">
+                                                <div class="card card-sm">
+                                                    <span class="card-body mask-money" data-init-money="0" id="quotation-create-product-taxes"></span>
+                                                </div>
                                                 <input
                                                     id="quotation-create-product-taxes-raw"
                                                     type="text"
@@ -464,19 +449,13 @@
                                                 >
                                             </div>
                                         </div>
-                                        <hr class="quotation-horizon">
-                                        <div class="row mb-2">
+                                        <div class="row">
                                             <div class="col-4"><b>{% trans 'Total' %}</b></div>
                                             <div class="col-2"></div>
-                                            <div class="col-6">
-                                                <input
-                                                    id="quotation-create-product-total"
-                                                    type="text"
-                                                    class="form-control mask-money disabled-custom-show"
-                                                    data-return-type="number"
-                                                    name="total_product"
-                                                    disabled
-                                                >
+                                            <div class="col-6 total-area">
+                                                <div class="card card-sm">
+                                                    <span class="card-body mask-money" data-init-money="0" id="quotation-create-product-total"></span>
+                                                </div>
                                                 <input
                                                     id="quotation-create-product-total-raw"
                                                     type="text"
@@ -638,18 +617,13 @@
                                 <div class="row">
                                     <div class="col-6"></div>
                                     <div class="col-6" id="quotation-tab-cost-totals">
-                                        <div class="row mb-2">
+                                        <div class="row">
                                             <div class="col-4"><p>{% trans 'Pretax Amount' %}</p></div>
                                             <div class="col-1"></div>
-                                            <div class="col-7">
-                                                <input
-                                                    id="quotation-create-cost-pretax-amount"
-                                                    type="text"
-                                                    class="form-control mask-money disabled-custom-show"
-                                                    data-return-type="number"
-                                                    name="total_cost_pretax_amount"
-                                                    disabled
-                                                >
+                                            <div class="col-7 total-area">
+                                                <div class="card card-sm">
+                                                    <span class="card-body mask-money" data-init-money="0" id="quotation-create-cost-pretax-amount"></span>
+                                                </div>
                                                 <input
                                                     id="quotation-create-cost-pretax-amount-raw"
                                                     type="text"
@@ -659,18 +633,13 @@
                                                 >
                                             </div>
                                         </div>
-                                        <div class="row mb-2">
+                                        <div class="row">
                                             <div class="col-4"><p>{% trans 'Taxes' %}</p></div>
                                             <div class="col-1"></div>
-                                            <div class="col-7">
-                                                <input
-                                                    id="quotation-create-cost-taxes"
-                                                    type="text"
-                                                    class="form-control mask-money disabled-custom-show"
-                                                    data-return-type="number"
-                                                    name="total_cost_tax"
-                                                    disabled
-                                                >
+                                            <div class="col-7 total-area">
+                                                <div class="card card-sm">
+                                                    <span class="card-body mask-money" data-init-money="0" id="quotation-create-cost-taxes"></span>
+                                                </div>
                                                 <input
                                                     id="quotation-create-cost-taxes-raw"
                                                     type="text"
@@ -680,19 +649,13 @@
                                                 >
                                             </div>
                                         </div>
-                                        <hr class="quotation-horizon">
-                                        <div class="row mb-2">
+                                        <div class="row">
                                             <div class="col-4"><b>{% trans 'Total' %}</b></div>
                                             <div class="col-1"></div>
-                                            <div class="col-7">
-                                                <input
-                                                    id="quotation-create-cost-total"
-                                                    type="text"
-                                                    class="form-control mask-money disabled-custom-show"
-                                                    data-return-type="number"
-                                                    name="total_cost"
-                                                    disabled
-                                                >
+                                            <div class="col-7 total-area">
+                                                <div class="card card-sm">
+                                                    <span class="card-body mask-money" data-init-money="0" id="quotation-create-cost-total"></span>
+                                                </div>
                                                 <input
                                                     id="quotation-create-cost-total-raw"
                                                     type="text"
@@ -738,18 +701,13 @@
                                 <div class="row">
                                     <div class="col-6"></div>
                                     <div class="col-6" id="quotation-tab-expense-totals">
-                                        <div class="row mb-2">
+                                        <div class="row">
                                             <div class="col-4"><p>{% trans 'Pretax Amount' %}</p></div>
                                             <div class="col-1"></div>
-                                            <div class="col-7">
-                                                <input
-                                                    id="quotation-create-expense-pretax-amount"
-                                                    type="text"
-                                                    class="form-control mask-money disabled-custom-show"
-                                                    data-return-type="number"
-                                                    name="total_expense_pretax_amount"
-                                                    disabled
-                                                >
+                                            <div class="col-7 total-area">
+                                                <div class="card card-sm">
+                                                    <span class="card-body mask-money" data-init-money="0" id="quotation-create-expense-pretax-amount"></span>
+                                                </div>
                                                 <input
                                                     id="quotation-create-expense-pretax-amount-raw"
                                                     type="text"
@@ -759,18 +717,13 @@
                                                 >
                                             </div>
                                         </div>
-                                        <div class="row mb-2">
+                                        <div class="row">
                                             <div class="col-4"><p>{% trans 'Taxes' %}</p></div>
                                             <div class="col-1"></div>
-                                            <div class="col-7">
-                                                <input
-                                                    id="quotation-create-expense-taxes"
-                                                    type="text"
-                                                    class="form-control mask-money disabled-custom-show"
-                                                    data-return-type="number"
-                                                    name="total_expense_tax"
-                                                    disabled
-                                                >
+                                            <div class="col-7 total-area">
+                                                <div class="card card-sm">
+                                                    <span class="card-body mask-money" data-init-money="0" id="quotation-create-expense-taxes"></span>
+                                                </div>
                                                 <input
                                                     id="quotation-create-expense-taxes-raw"
                                                     type="text"
@@ -780,19 +733,13 @@
                                                 >
                                             </div>
                                         </div>
-                                        <hr class="quotation-horizon">
-                                        <div class="row mb-2">
+                                        <div class="row">
                                             <div class="col-4"><b>{% trans 'Total' %}</b></div>
                                             <div class="col-1"></div>
-                                            <div class="col-7">
-                                                <input
-                                                    id="quotation-create-expense-total"
-                                                    type="text"
-                                                    class="form-control mask-money disabled-custom-show"
-                                                    data-return-type="number"
-                                                    name="total_expense"
-                                                    disabled
-                                                >
+                                            <div class="col-7 total-area">
+                                                <div class="card card-sm">
+                                                    <span class="card-body mask-money" data-init-money="0" id="quotation-create-expense-total"></span>
+                                                </div>
                                                 <input
                                                     id="quotation-create-expense-total-raw"
                                                     type="text"

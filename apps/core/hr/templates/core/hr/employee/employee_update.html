@@ -35,17 +35,14 @@
     </style>
 {% endblock %}
 {% block pageAction %}
-    <a
-            class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret d-lg-inline-block d-none btn_support_submit"
-            href="#" data-bs-toggle="tooltip"
-            data-bs-placement="top"
-            title="{% trans 'Save' %}"
-            data-form-id="frm_employee_update"
-    >
-        <span class="icon">
-            <i class="fa-regular fa-floppy-disk"></i>
+    <button class="btn btn-outline-primary" type="submit" form="frm_employee_update">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
+            </span>
         </span>
-    </a>
+    </button>
 {% endblock %}
 
 {% block pageContent %}

@@ -2,7 +2,6 @@ function callDetailData(url, method) {
     return $.fn.callAjax2({
         url: url,
         method: method,
-        isDropdown: true,
     }).then((resp) => {
         return $.fn.switcherResp(resp);
     });

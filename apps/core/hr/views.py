@@ -38,6 +38,7 @@ class EmployeeList(View):
         template='core/hr/employee/employee_list.html',
         breadcrumb='EMPLOYEE_LIST_PAGE',
         menu_active='menu_employee_list',
+        perm_check=PermCheck(url=ApiURL.EMPLOYEE_LIST, method='GET'),
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -85,7 +86,7 @@ class EmployeeCreate(View):
         template='core/hr/employee/employee_create.html',
         breadcrumb='EMPLOYEE_CREATE_PAGE',
         menu_active='menu_employee_list',
-        perm_check=PermCheck(url=ApiURL.EMPLOYEE_LIST, method='post'),
+        perm_check=PermCheck(url=ApiURL.EMPLOYEE_LIST, method='POST'),
     )
     def get(self, request, *args, **kwargs):
         return ServerAPI.empty_200()
@@ -98,6 +99,7 @@ class EmployeeDetail(View):
         template='core/hr/employee/employee_detail.html',
         breadcrumb='EMPLOYEE_DETAIL_PAGE',
         menu_active='menu_employee_list',
+        perm_check=PermCheck(url=ApiURL.EMPLOYEE_DETAIL_PK, method='GET', fill_key=['pk']),
     )
     def get(self, request, pk, *args, **kwargs):
         return {
@@ -118,6 +120,7 @@ class EmployeeUpdate(View):
         template='core/hr/employee/employee_update.html',
         breadcrumb='EMPLOYEE_UPDATE_PAGE',
         menu_active='menu_employee_list',
+        perm_check=PermCheck(url=ApiURL.EMPLOYEE_DETAIL_PK, method='PUT', fill_key=['pk']),
     )
     def get(self, request, pk, *args, **kwargs):
         return {'data': {'doc_id': pk}}, status.HTTP_200_OK
@@ -169,12 +172,12 @@ class EmployeeCompanyListAPI(APIView):
 
 # Role
 class RoleList(View):
-
     @mask_view(
         auth_require=True,
         template='core/hr/role/role_list.html',
         breadcrumb='ROLE_LIST_PAGE',
         menu_active='menu_role_list',
+        perm_check=PermCheck(url=ApiURL.ROLE_LIST, method='GET'),
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -186,6 +189,7 @@ class RoleCreate(View):
         template='core/hr/role/role_create.html',
         breadcrumb="ROLE_CREATE_PAGE",
         menu_active='menu_role_list',
+        perm_check=PermCheck(url=ApiURL.ROLE_LIST, method='POST'),
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -197,6 +201,7 @@ class RoleUpdateView(View):
         template='core/hr/role/role_update.html',
         breadcrumb="ROLE_UPDATE_PAGE",
         menu_active='menu_role_list',
+        perm_check=PermCheck(url=ApiURL.ROLE_DETAIL_PK, method='PUT', fill_key=['pk']),
     )
     def get(self, request, *args, pk, **kwargs):
         return {}, status.HTTP_200_OK
@@ -217,6 +222,7 @@ class RoleDetail(View):
         template='core/hr/role/role_detail.html',
         breadcrumb="ROLE_DETAIL_PAGE",
         menu_active='menu_role_list',
+        perm_check=PermCheck(url=ApiURL.ROLE_DETAIL_PK, method='GET', fill_key=['pk']),
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -266,6 +272,7 @@ class GroupLevelList(View):
         template='core/hr/grouplevel/level_list.html',
         breadcrumb='GROUP_LEVEL_LIST_PAGE',
         menu_active='menu_group_list',
+        perm_check=PermCheck(url=ApiURL.ROLE_LIST, method='GET'),
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -316,6 +323,7 @@ class GroupCreate(View):
         auth_require=True,
         template='core/hr/group/group_create.html',
         menu_active='menu_group_list',
+        perm_check=PermCheck(url=ApiURL.ROLE_LIST, method='POST'),
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -327,6 +335,7 @@ class GroupList(View):
         template='core/hr/group/group_list.html',
         breadcrumb='GROUP_LIST_PAGE',
         menu_active='menu_group_list',
+        perm_check=PermCheck(url=ApiURL.GROUP_LIST, method='GET'),
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -356,22 +365,22 @@ class GroupListAPI(APIView):
 
 
 class GroupDetail(View):
-
     @mask_view(
         auth_require=True,
         template='core/hr/group/group_detail.html',
         menu_active='menu_group_list',
+        perm_check=PermCheck(url=ApiURL.GROUP_DETAIL_PK, method='GET', fill_key=['pk']),
     )
     def get(self, request, pk, *args, **kwargs):
         return {'data': {'doc_id': pk}}, status.HTTP_200_OK
 
 
 class GroupUpdate(View):
-
     @mask_view(
         auth_require=True,
         template='core/hr/group/group_update.html',
         menu_active='menu_group_list',
+        perm_check=PermCheck(url=ApiURL.GROUP_DETAIL_PK, method='PUT', fill_key=['pk']),
     )
     def get(self, request, pk, *args, **kwargs):
         return {'data': {'doc_id': pk}}, status.HTTP_200_OK

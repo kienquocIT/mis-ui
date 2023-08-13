@@ -28,15 +28,14 @@ class PermCheck:
         self.data = data if isinstance(data, dict) else {}
 
     def parse_url(self, view_kwargs: dict):
-        self.url.fill_key(**self.fixed_fill_key)
+        fill_data = {**self.fixed_fill_key}
         for key in self.fill_key:
             data_key = view_kwargs.get(key, None)
             if data_key:
-                self.url.fill_key(**{key: data_key})
+                fill_data[key] = data_key
             else:
                 return None
-
-        return self.url
+        return self.url.fill_key(**fill_data)
 
     def valid(self, request, view_kwargs: dict = None) -> (bool, tuple):
         real_url = self.parse_url(view_kwargs=view_kwargs if isinstance(view_kwargs, dict) else {})
@@ -52,7 +51,7 @@ class PermCheck:
             elif self.method == 'POST':
                 resp = cls_api.post(data=self.data)
             elif self.method == 'PUT':
-                resp = cls_api.post(data=self.data)
+                resp = cls_api.put(data=self.data)
             elif self.method == 'DELETE':
                 resp = cls_api.delete(data=self.data)
             else:
@@ -263,6 +262,8 @@ class RespData:
             return self.resp_403()
         elif self.status == 404:
             return self.resp_404()
+        elif self.status == 405:
+            return self.resp_403()
         elif self.status >= 500:
             return self.resp_500()
         if callback_errors:

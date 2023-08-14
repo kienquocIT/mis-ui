@@ -59,7 +59,6 @@ tbl.on('change', '#newRowApp', function () {
         let dataAppSelected= storageApp?.[$(this).val()];
         rangeAllow = dataAppSelected ? (dataAppSelected?.['range_allow'] || []) : [];
     }
-    console.log(storageApp, rangeAllow);
 
     let selectRangeEle = $('#newRowRange');
     selectRangeEle.find(":selected").prop('selected', false);

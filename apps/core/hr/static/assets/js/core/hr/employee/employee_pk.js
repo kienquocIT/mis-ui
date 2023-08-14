@@ -23,11 +23,9 @@ class EmployeeLoadPage {
     static loadUserList(userData) {
         EmployeeLoadPage.userSelectEle.initSelect2({
             allowClear: true,
-            data: userData,
-            callbackTextDisplay: function (item, key) {
-                if (item.hasOwnProperty('user')) item = item?.['user'];
-                return item?.['full_name'] || '';
-            },
+            keyId: 'user--id',
+            keyText: 'user--full_name',
+            data: (userData ? {'user': userData} : null),
         }).on('change', function () {
             let selectedVal = $(this).val();
             let dataBackup = SelectDDControl.get_data_from_idx($(this), selectedVal);
@@ -109,17 +107,3 @@ class EmployeeLoadPage {
         };
     }
 }
-
-EmployeeLoadPage.userSelectEle.on('change', function (e) {
-    let optSelected = $(this).find(':selected');
-    if (optSelected.length > 0) {
-        let first_name = $(optSelected).attr('data-first-name');
-        let last_name = $(optSelected).attr('data-last-name');
-        let email = $(optSelected).attr('data-email');
-        let phone = $(optSelected).attr('data-phone');
-        EmployeeLoadPage.firstNameEle.val(first_name);
-        EmployeeLoadPage.lastNameEle.val(last_name);
-        EmployeeLoadPage.emailEle.val(email);
-        EmployeeLoadPage.phoneEle.val(phone);
-    }
-});

@@ -3743,3 +3743,7 @@ msgstr "Dữ liệu của tab này sẽ được sử dụng trên tab 'Quyền`
 #
 msgid "The used license will be total member multiplication with role used license."
 msgstr "Giấy phép đã sử dụng sẽ là tổng số thành viên nhân với giấy phép đã sử dụng trong vai trò."
+
+#
+msgid "Main Document"
+msgstr "Tài liệu chính"

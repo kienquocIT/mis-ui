@@ -268,6 +268,7 @@ $(document).ready(function () {
             );
         }
     }
+
     function loadTaxCategory() {
         if (!$.fn.DataTable.isDataTable('#datatable-tax-category')) {
             let tbl = $('#datatable-tax-category');
@@ -337,6 +338,7 @@ $(document).ready(function () {
             );
         }
     }
+
     // load Base Currency (Master data)
     function loadBaseCurrency() {
         let ele = $('#currency_name');
@@ -357,6 +359,7 @@ $(document).ready(function () {
             }
         )
     }
+
     $('#currency_name').on('change', function () {
         $('#abbreviation-id').val($('#currency_name option:selected').attr('data-currency-code'))
     })
@@ -651,72 +654,68 @@ $(document).ready(function () {
     function PaymentTermsList() {
         // init dataTable
         let $tables = $('#datatable-payment-terms');
-        $.fn.callAjax($tables.attr('data-url'), 'GET')
-            .then((res) => {
-                let data = $.fn.switcherResp(res);
-                if (data) $tables.DataTableDefault({
-                    data: data.payment_terms_list,
-                    searching: false,
-                    ordering: false,
-                    paginate: false,
-                    info: false,
-                    drawCallback: function () { // two parameter is row, data is available
-                        // render icon after table callback
-                        feather.replace();
-                    },
-                    rowCallback: function (row, data, index) {
-                        $('td:eq(0)', row).html(index + 1);
-                        // handle onclick btn
-                        $('.actions-btn a', row).off().on('click', function (e) {
-                            e.stopPropagation();
-                            let crf = $('[name=csrfmiddlewaretoken]', '#form-create-payment-term').val()
-                            let url = $('#url-factory').data('detail').format_url_with_uuid(data.id)
-                            DataTableAction.delete(url, data, crf, row)
-                        })
-                        $('.row-title', row).off().on('click', function () {
-                            $('#btn-show-modal-create').trigger('click')
-                            loadDetailPage($(this).attr('data-href'))
-                        })
-                    },
-                    columns: [{
-                        targets: 0,
-                        defaultContent: ''
-                    }, {
-                        targets: 1,
-                        render: (row, type, data) => {
-                            let url = $('#url-factory').data('detail').format_url_with_uuid(data.id);
-                            return `<p><a href="#" data-href="${url}" 
+        $tables.DataTableDefault({
+            ajax: {
+                url: $tables.attr('data-url'),
+                dataSrc: "data.payment_terms_list",
+            },
+            searching: false,
+            ordering: false,
+            paginate: false,
+            info: false,
+            rowCallback: function (row, data, index) {
+                $('td:eq(0)', row).html(index + 1);
+                // handle onclick btn
+                $('.actions-btn a', row).off().on('click', function (e) {
+                    e.stopPropagation();
+                    let crf = $('[name=csrfmiddlewaretoken]', '#form-create-payment-term').val()
+                    let url = $('#url-factory').data('detail').format_url_with_uuid(data.id)
+                    DataTableAction.delete(url, data, crf, row)
+                })
+                $('.row-title', row).off().on('click', function () {
+                    $('#btn-show-modal-create').trigger('click')
+                    loadDetailPage($(this).attr('data-href'))
+                })
+            },
+            columns: [
+                {
+                    targets: 0,
+                    defaultContent: ''
+                },
+                {
+                    targets: 1,
+                    render: (row, type, data) => {
+                        let url = $('#url-factory').data('detail').format_url_with_uuid(data.id);
+                        return `<p><a href="#" data-href="${url}" 
                             class="text-primary text-decoration-underline row-title">${data.title}</a></p>`
+                    }
+                },
+                {
+                    targets: 2,
+                    render: (row, type, data) => {
+                        let DATA_APPLY_FOR = {
+                            0: 'Sale',
+                            1: 'Purchase'
                         }
-                    }, {
-                        targets: 2,
-                        render: (row, type, data) => {
-                            let DATA_APPLY_FOR = {
-                                0: 'Sale',
-                                1: 'Purchase'
-                            }
-                            return `<p>${DATA_APPLY_FOR[data.apply_for]}</p>`
-                        }
-                    }, {
-                        targets: 3,
-                        render: (data, type, row) => {
-                            return `<div class="actions-btn">
+                        return `<p>${DATA_APPLY_FOR[data.apply_for]}</p>`
+                    }
+                },
+                {
+                    targets: 3,
+                    render: (data, type, row) => {
+                        return `<div class="actions-btn">
                                 <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover delete-btn"
                                    title="Delete"
                                    href="#"
                                    data-id="${row.id}"
                                    data-action="delete">
-                                    <span class="btn-icon-wrap">
-                                        <span class="feather-icon">
-                                            <i data-feather="trash-2"></i>
-                                        </span>
-                                    </span>
-                                </a>
+                                   <span class="icon-wrap">
+                                   <i class="fa-regular fa-trash-can"></i></span></a>
                             </div>`;
-                        },
-                    }],
-                });
-            })
+                    },
+                }
+            ],
+        });
     }
 
     function UnitTypeChange() {

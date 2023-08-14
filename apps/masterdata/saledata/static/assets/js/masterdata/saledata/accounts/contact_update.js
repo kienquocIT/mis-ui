@@ -7,7 +7,7 @@ $(document).ready(function () {
             $("#workdistrict option:selected").prop("selected", false);
             $("#workcity option:selected").prop("selected", false);
             let ele = $('#workcity');
-            let url = ele.attr('data-url');
+            let url = ele.attr('data-select2-url');
             let method = ele.attr('data-method');
             $.fn.callAjax2(
                 {
@@ -18,7 +18,7 @@ $(document).ready(function () {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         ele.text("");
-                        ele.append(`<option value="" selected>---</option>`)
+                        ele.append(`<option></option>`)
                         if (data.hasOwnProperty('cities') && Array.isArray(data.cities)) {
                             data.cities.map(function (item) {
                                 ele.append(`<option data-country-id="` + item.country_id + `" value="` + item.id + `">` + item.title + `</option>`)
@@ -34,17 +34,17 @@ $(document).ready(function () {
         // load Districts SelectBox
         function loadDistrictsWork() {
             let ele = $('#workdistrict');
-            let url = ele.attr('data-url').replace('pk', $('#workcity').val())
+            let url = ele.attr('data-select2-url').format_url_with_uuid($('#workcity').val());
             let method = ele.attr('data-method');
             $.fn.callAjax2({
-                'url': method,
+                'url': url,
                 'method': method
             }).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         ele.text("");
-                        ele.append(`<option value="" selected>---</option>`)
+                        ele.append(`<option></option>`)
                         if (data.hasOwnProperty('districts') && Array.isArray(data.districts)) {
                             data.districts.map(function (item) {
                                 ele.append(`<option data-city-id="` + item.city_id + `" value="` + item.id + `">` + item.title + `</option>`)
@@ -58,7 +58,7 @@ $(document).ready(function () {
         // load Wards SelectBox
         function loadWardsWork() {
             let ele = $('#workward');
-            let url = ele.attr('data-url').replace('pk', $('#workdistrict').val())
+            let url = ele.attr('data-select2-url').format_url_with_uuid($('#workdistrict').val());
             let method = ele.attr('data-method');
             $.fn.callAjax2({
                 'url': url,
@@ -133,7 +133,7 @@ $(document).ready(function () {
             $("#homedistrict option:selected").prop("selected", false);
             $("#homecity option:selected").prop("selected", false);
             let ele = $('#homecity');
-            let url = ele.attr('data-url');
+            let url = ele.attr('data-select2-url');
             let method = ele.attr('data-method');
             $.fn.callAjax2({
                 'url': url,
@@ -143,7 +143,7 @@ $(document).ready(function () {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         ele.text("");
-                        ele.append(`<option value="" selected>---</option>`)
+                        ele.append(`<option></option>`)
                         if (data.hasOwnProperty('cities') && Array.isArray(data.cities)) {
                             data.cities.map(function (item) {
                                 ele.append(`<option data-country-id="` + item.country_id + `" value="` + item.id + `">` + item.title + `</option>`)
@@ -159,7 +159,7 @@ $(document).ready(function () {
         // load Districts SelectBox
         function loadDistrictsHome() {
             let ele = $('#homedistrict');
-            let url = ele.attr('data-url').replace('pk', $('#homecity').val())
+            let url = ele.attr('data-select2-url').format_url_with_uuid($('#homecity').val());
             let method = ele.attr('data-method');
             $.fn.callAjax2({
                 'url': url,
@@ -169,7 +169,7 @@ $(document).ready(function () {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         ele.text("");
-                        ele.append(`<option value="" selected>---</option>`)
+                        ele.append(`<option></option>`)
                         if (data.hasOwnProperty('districts') && Array.isArray(data.districts)) {
                             data.districts.map(function (item) {
                                 ele.append(`<option data-city-id="` + item.city_id + `" value="` + item.id + `">` + item.title + `</option>`)
@@ -183,7 +183,7 @@ $(document).ready(function () {
         // load Wards SelectBox
         function loadWardsHome() {
             let ele = $('#homeward');
-            let url = ele.attr('data-url').replace('pk', $('#homedistrict').val())
+            let url = ele.attr('data-select2-url').format_url_with_uuid($('#homedistrict').val());
             let method = ele.attr('data-method');
             $.fn.callAjax2({
                 'url': url,
@@ -193,7 +193,7 @@ $(document).ready(function () {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         ele.text("");
-                        ele.append(`<option value="" selected>---</option>`)
+                        ele.append(`<option></option>`)
                         if (data.hasOwnProperty('wards') && Array.isArray(data.wards)) {
                             data.wards.map(function (item) {
                                 ele.append(`<option data-district-id="` + item.district_id + `" value="` + item.id + `">` + item.title + `</option>`)
@@ -267,7 +267,7 @@ $(document).ready(function () {
 
         function loadSalutationList(id) {
             let ele = $('#select-box-salutation');
-            let url = ele.attr('data-url');
+            let url = ele.attr('data-select2-url');
             let method = ele.attr('data-method');
             $.fn.callAjax2({
                 'url': url,

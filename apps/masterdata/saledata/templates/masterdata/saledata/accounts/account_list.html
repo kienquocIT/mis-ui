@@ -6,7 +6,7 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <a href="{% url 'AccountCreate' %}">
+    <a href="{% url "AccountCreate" %}">
         <button class="btn btn-outline-primary">
             <span>
                 <span>{% trans 'Add' %}</span>
@@ -16,82 +16,68 @@
             </span>
         </button>
     </a>
-
 {% endblock %}
 {% block pageContent %}
 
-    <ul class="nav nav-light nav-tabs" id="tab-select-table">
+    <ul class="nav nav-light nav-tabs">
         <li class="nav-item">
-            <a class="nav-link active" data-bs-toggle="tab" data-collapse="section-account-list">
-                <span class="nav-link-text">Main List</span>
+            <a class="nav-link active" data-bs-toggle="tab" href="#account-list">
+                <span class="nav-link-text">{% trans "Main Document" %}</span>
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="tab" data-collapse="section-account-list-draft">
-                <span class="nav-link-text">Draft List</span>
+            <a class="nav-link" data-bs-toggle="tab" href="#account-draft">
+                <span class="nav-link-text">{% trans 'Draft' %}</span>
             </a>
         </li>
     </ul>
-
-
-    <div id="section-account-list" class="account-list mt-5">
-        <table id="datatable_account_list" class="table nowrap w-100 mb-5" data-url="{% url "AccountListAPI" %}"
-               data-method="GET">
-            <thead>
-            <th class="w-5">
-                <span class="form-check">
-                    <input
-                            type="checkbox"
-                            class="form-check-input check-select-all"
-                            id="customCheck0"
-                    >
-                    <label class="form-check-label" for="customCheck0"></label>
-                </span>
-            </th>
-            <th class="w-20">{% trans "Name" %}</th>
-            <th class="w-10" style="text-align: center">{% trans "Type" %}</th>
-            <th class="w-15" style="text-align: center">{% trans "Account Owner" %}</th>
-            <th class="w-15" style="text-align: center">{% trans "Phone number" %}</th>
-            <th class="w-15" style="text-align: center">{% trans "Website" %}</th>
-            <th class="w-20" style="text-align: center">{% trans "Account Manager" %}</th>
-            <th class="w-5" style="text-align: center"></th>
-            </thead>
-        </table>
-    </div>
-
-    <div id="section-account-list-draft" class="account-list mt-5" style="display: none">
-        <table id="datatable_account_list_draft" class="table nowrap w-100 mb-5" data-url=""
-               data-method="GET">
-            <thead class="align-center">
-            <th class="w-5">
-                <span class="form-check">
-                    <input
-                            type="checkbox"
-                            class="form-check-input check-select-all"
-                            id="customCheck1"
-                    >
-                    <label class="form-check-label" for="customCheck1"></label>
-                </span>
-            </th>
-            <th style="text-align: center">{% trans "Name" %}</th>
-            <th>{% trans "Type" %}</th>
-            <th>{% trans "Industry" %}</th>
-            <th>{% trans "Account Owner" %}</th>
-            <th>{% trans "Phone number" %}</th>
-            <th>{% trans "Website" %}</th>
-            <th>{% trans "Account Manager" %}</th>
-            <th class="w-5 text-left">{% trans "Action" %}</th>
-            </thead>
-        </table>
+    <div class="tab-content">
+        <div class="tab-pane show active" id="account-list">
+            <table
+                    id="datatable_account_list" class="table nowrap w-100 mb-5"
+                    data-url="{% url "AccountListAPI" %}" data-method="GET"
+            >
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th class="w-20">{% trans "Name" %}</th>
+                    <th class="w-10" style="text-align: center">{% trans "Type" %}</th>
+                    <th class="w-15" style="text-align: center">{% trans "Account Owner" %}</th>
+                    <th class="w-15" style="text-align: center">{% trans "Phone number" %}</th>
+                    <th class="w-15" style="text-align: center">{% trans "Website" %}</th>
+                    <th class="w-20" style="text-align: center">{% trans "Account Manager" %}</th>
+                    <th class="w-5" style="text-align: center"></th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+        <div class="tab-pane fade" id="account-draft">
+{#            <table#}
+{#                    id="datatable_account_list_draft" class="table nowrap w-100 mb-5"#}
+{#                    data-url="" data-method="GET"#}
+{#            >#}
+{#                <thead class="align-center">#}
+{#                <tr>#}
+{#                    <th>#</th>#}
+{#                    <th style="text-align: center">{% trans "Name" %}</th>#}
+{#                    <th>{% trans "Type" %}</th>#}
+{#                    <th>{% trans "Industry" %}</th>#}
+{#                    <th>{% trans "Account Owner" %}</th>#}
+{#                    <th>{% trans "Phone number" %}</th>#}
+{#                    <th>{% trans "Website" %}</th>#}
+{#                    <th>{% trans "Account Manager" %}</th>#}
+{#                    <th class="w-5 text-left">{% trans "Action" %}</th>#}
+{#                </tr>#}
+{#                </thead>#}
+{#            </table>#}
+        </div>
     </div>
 
     <input
-        type="hidden"
-        id="account-update-page"
-        data-url="{% url 'AccountDetail' 1 %}"
+            type="hidden"
+            id="account-update-page"
+            data-url="{% url 'AccountDetail' 1 %}"
     >
-
-
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'assets/js/masterdata/saledata/accounts/account_list.js' %}"></script>

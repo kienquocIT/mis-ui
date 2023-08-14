@@ -3,39 +3,13 @@ $(document).ready(function () {
     let tbl = $('#dtbPickingList');
     let frm = new SetupFormSubmit(tbl);
     tbl.DataTableDefault({
+        useDataServer: true,
         ajax: {
             url: frm.dataUrl,
             type: frm.dataMethod,
-            dataSrc: function (resp) {
-                let data = $.fn.switcherResp(resp);
-                if (data && resp.data.hasOwnProperty('picking_list')) {
-                    return resp.data['picking_list'] ? resp.data['picking_list'] : []
-                }
-                throw Error('Call data raise errors.')
-            },
+            dataSrc: "data.picking_list"
         },
         rowIdx: true,
-        columnDefs: [
-            {
-                "width": "10%",
-                "targets": 0
-            }, {
-                "width": "20%",
-                "targets": 1
-            }, {
-                "width": "20%",
-                "targets": 2
-            }, {
-                "width": "20%",
-                "targets": 3
-            }, {
-                "width": "20%",
-                "targets": 4
-            }, {
-                "width": "10%",
-                "targets": 5,
-            }
-        ],
         columns: [
             {
                 render: (data, type, row, meta) => {

@@ -4,7 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from django.utils.translation import gettext_lazy as _
 
-from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg
+from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg, PermCheck
 
 
 def create_update_opportunity(request, url, msg):
@@ -23,6 +23,7 @@ class OpportunityList(View):
         template='sales/opportunity/opportunity_list.html',
         menu_active='menu_opportunity_list',
         breadcrumb='OPPORTUNITY_LIST_PAGE',
+        perm_check=PermCheck(url=ApiURL.OPPORTUNITY_LIST, method='GET'),
     )
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CONFIG).get()
@@ -69,6 +70,7 @@ class OpportunityDetail(View):
         template='sales/opportunity/opportunity_detail.html',
         menu_active='',
         breadcrumb='OPPORTUNITY_DETAIL_PAGE',
+        perm_check=PermCheck(url=ApiURL.OPPORTUNITY_DETAIL, method='GET', fill_key=['pk']),
     )
     def get(self, request, *args, **kwargs):
         resp0 = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CONFIG).get()
@@ -145,6 +147,7 @@ class OpportunityConfig(View):
         template='sales/opportunity/opportunity_config.html',
         menu_active='menu_opportunity_config',
         breadcrumb='OPPORTUNITY_CONFIG_PAGE',
+        perm_check=PermCheck(url=ApiURL.OPPORTUNITY_CONFIG, method='GET'),
     )
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.APPLICATION_PROPERTY_OPPORTUNITY_LIST).get()
@@ -410,6 +413,7 @@ class OpportunityDocumentList(View):
         template='sales/opportunity/activities/document_list.html',
         menu_active='menu_opportunity_document',
         breadcrumb='OPPORTUNITY_DOCUMENT_LIST_PAGE',
+        perm_check=PermCheck(url=ApiURL.OPPORTUNITY_DOCUMENT_LIST, method='GET'),
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -421,6 +425,7 @@ class OpportunityDocumentCreate(View):
         template='sales/opportunity/activities/document_create.html',
         menu_active='menu_opportunity_document',
         breadcrumb='OPPORTUNITY_DOCUMENT_CREATE_PAGE',
+        perm_check=PermCheck(url=ApiURL.OPPORTUNITY_DOCUMENT_LIST, method='POST'),
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -432,6 +437,7 @@ class OpportunityDocumentDetail(View):
         template='sales/opportunity/activities/document_detail.html',
         menu_active='menu_opportunity_document',
         breadcrumb='OPPORTUNITY_DOCUMENT_DETAIL_PAGE',
+        perm_check=PermCheck(url=ApiURL.OPPORTUNITY_DOCUMENT_DETAIL, method='GET', fill_key=['pk']),
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK

@@ -5,18 +5,13 @@
     <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}"/>
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-outline-primary btn-animated btn-xs" form="frm-create-opportunity-document"
-            href="" data-bs-original-title="Save Document">
+    <button class="btn btn-outline-primary" type="submit" form="frm-create-opportunity-document">
+        <span>
+            <span>{% trans 'Save' %}</span>
             <span class="icon">
-                <span class="feather-icon">
-                    <i
-                            data-feather="plus">
-                    </i>
-                </span>
-                <span class="font-3 ml-1">
-                    {% trans 'Create' %}
-                </span>
+                <i class="fa-regular fa-floppy-disk"></i>
             </span>
+        </span>
     </button>
 {% endblock %}
 {% block pageContent %}

@@ -416,9 +416,12 @@ $(document).ready(function () {
             ele_end_customer.attr('disabled', true);
         }
 
-        let url = ele.data('url');
+        let url = ele.data('select2-url');
         let method = ele.data('method');
-        $.fn.callAjax(url, method).then((resp) => {
+        $.fn.callAjax2({
+            'url': url,
+            'method': method
+        }).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('account_list')) {
@@ -452,9 +455,12 @@ $(document).ready(function () {
     function loadProductCategory(list_id) {
         let ele = ele_select_product_category;
         let ele_in_table = $('.box-select-product-category');
-        let url = ele.attr('data-url');
+        let url = ele.attr('data-select2-url');
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then((resp) => {
+        $.fn.callAjax2({
+            'url': url,
+            'method': method
+        }).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product_category_list')) {
@@ -588,7 +594,7 @@ $(document).ready(function () {
     function loadDecisionFactor(list_factor) {
         let ele = $('#box-select-factor');
 
-        let url = ele.data('url');
+        let url = ele.data('select2-url');
         let method = ele.data('method');
 
         $.fn.callAjax(url, method).then((resp) => {
@@ -1571,10 +1577,9 @@ $(document).ready(function () {
         } else {
             $(this).closest('.sub-stage').removeClass('bg-primary-light-5 stage-selected');
             $('.page-content input, .page-content select, .page-content .btn').not($(this)).not($('#rangeInput')).prop('disabled', false);
-            if($('#check-agency-role').is(':checked')){
+            if ($('#check-agency-role').is(':checked')) {
                 $('#select-box-end-customer').prop('disabled', false);
-            }
-            else{
+            } else {
                 $('#select-box-end-customer').prop('disabled', true);
             }
         }
@@ -1664,7 +1669,8 @@ $(document).ready(function () {
         $('#result-text-area').val('');
         $('#call-log-repeat-activity').attr('checked', false);
         $('#sale-code-select-box').prop('disabled', true);
-        $('#account-select-box').prop('disabled', true);;
+        $('#account-select-box').prop('disabled', true);
+        ;
 
         let contact_list_id = account_list.filter(function (item) {
             return item.id === $('#select-box-customer option:selected').attr('value');
@@ -1697,8 +1703,7 @@ $(document).ready(function () {
             let url = $('#btn-detail-call-log-contact-tab').attr('data-url').replace('0', $('#contact-select-box option:selected').attr('value'));
             $('#btn-detail-call-log-contact-tab').attr('href', url);
             $('#call-log-contact-detail-span').prop('hidden', false);
-        }
-        else {
+        } else {
             $('#call-log-contact-name').text('');
             $('#call-log-contact-job-title').text('');
             $('#call-log-contact-mobile').text('');
@@ -1809,7 +1814,7 @@ $(document).ready(function () {
         $('#email-cc-add').prop('hidden', true);
         $('#email-cc-remove').prop('hidden', true);
 
-        let contact_list_id = account_list.filter(function(item) {
+        let contact_list_id = account_list.filter(function (item) {
             return item.id === $('#select-box-customer option:selected').attr('value');
         })[0].contact_mapped;
         LoadEmailToList(contact_list_id);
@@ -1830,20 +1835,20 @@ $(document).ready(function () {
         // console.log(frm.dataForm)
 
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
-        .then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    $.fn.notifyB({description: "Successfully"}, 'success')
-                    $('#send-email').hide();
+            .then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: "Successfully"}, 'success')
+                        $('#send-email').hide();
 
-                    callAjaxtoLoadTimeLineList();
+                        callAjaxtoLoadTimeLineList();
+                    }
+                },
+                (errs) => {
+                    // $.fn.notifyB({description: errs.data.errors}, 'failure');
                 }
-            },
-            (errs) => {
-                // $.fn.notifyB({description: errs.data.errors}, 'failure');
-            }
-        )
+            )
     })
 
 
@@ -1861,22 +1866,22 @@ $(document).ready(function () {
     }
 
     function LoadCustomerMember(customer_id) {
-            let contact_mapped_list = null;
-            account_list.map(function (item) {
-                if (customer_id === item.id) {
-                    contact_mapped_list = item.contact_mapped;
-                }
-            })
-            let $customer_member_sb = $('#meeting-customer-member-select-box');
-            $customer_member_sb.html(``);
-            $customer_member_sb.append(`<option></option>`);
-            contact_list.map(function (item) {
-                if (contact_mapped_list.includes(item.id)) {
-                    $customer_member_sb.append(`<option value="${item.id}">${item.fullname}</option>`);
-                }
-            })
-            $customer_member_sb.select2({dropdownParent: $("#create-meeting")});
-        }
+        let contact_mapped_list = null;
+        account_list.map(function (item) {
+            if (customer_id === item.id) {
+                contact_mapped_list = item.contact_mapped;
+            }
+        })
+        let $customer_member_sb = $('#meeting-customer-member-select-box');
+        $customer_member_sb.html(``);
+        $customer_member_sb.append(`<option></option>`);
+        contact_list.map(function (item) {
+            if (contact_mapped_list.includes(item.id)) {
+                $customer_member_sb.append(`<option value="${item.id}">${item.fullname}</option>`);
+            }
+        })
+        $customer_member_sb.select2({dropdownParent: $("#create-meeting")});
+    }
 
     function LoadEmployeeAttended() {
         let $employee_attended_sb = $('#meeting-employee-attended-select-box');
@@ -1889,7 +1894,7 @@ $(document).ready(function () {
     }
 
     function LoadMeetingAddress(customer_id) {
-        let opportunity_obj = JSON.parse($('#opportunity_list').text()).filter(function(item) {
+        let opportunity_obj = JSON.parse($('#opportunity_list').text()).filter(function (item) {
             return item.customer.id === customer_id;
         })
         let shipping_address_list = opportunity_obj[0].customer.shipping_address;
@@ -1958,8 +1963,7 @@ $(document).ready(function () {
         frm.dataForm['meeting_date'] = $('#meeting-date-input').val();
         if ($('#meeting-address-select-box').is(':hidden')) {
             frm.dataForm['meeting_address'] = $('#meeting-address-input').val();
-        }
-        else {
+        } else {
             frm.dataForm['meeting_address'] = $('#meeting-address-select-box option:selected').val();
         }
         frm.dataForm['room_location'] = $('#meeting-room-location-input').val();
@@ -1967,8 +1971,7 @@ $(document).ready(function () {
 
         if ($('#meeting-repeat-activity').is(':checked')) {
             frm.dataForm['repeat'] = 1;
-        }
-        else {
+        } else {
             frm.dataForm['repeat'] = 0;
         }
 
@@ -1999,42 +2002,43 @@ $(document).ready(function () {
         // console.log(frm.dataForm)
 
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
-        .then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    $.fn.notifyB({description: "Successfully"}, 'success')
-                    $('#create-meeting').hide();
+            .then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: "Successfully"}, 'success')
+                        $('#create-meeting').hide();
 
-                    callAjaxtoLoadTimeLineList();
+                        callAjaxtoLoadTimeLineList();
+                    }
+                },
+                (errs) => {
+                    // $.fn.notifyB({description: errs.data.errors}, 'failure');
                 }
-            },
-            (errs) => {
-                // $.fn.notifyB({description: errs.data.errors}, 'failure');
-            }
-        )
+            )
     })
 
 
     // for task
 
     function resetFormTask() {
-    // clean html select etc.
-    $('#formOpportunityTask').trigger('reset').removeClass('task_edit')
-    $('#selectAssignTo').val(null).trigger('change');
-    if ($('.current-create-task').length <= 0)
-        $('#selectOpportunity').val(null).trigger('change').attr('disabled', false);
-    $('.label-mark, .wrap-checklist, .wrap-subtask').html('');
-    $('#inputLabel').val(null);
-    $('[name="id"]').remove();
-    const $inputAssigner = $('#inputAssigner');
-    $inputAssigner.val($inputAssigner.attr('data-name'))
-    $('.create-subtask').addClass('hidden')
-    $('[name="parent_n"]').remove();
-    window.editor.setData('')
-    $('.create-task').attr('disabled', false)
-}
-    function logworkSubmit(){
+        // clean html select etc.
+        $('#formOpportunityTask').trigger('reset').removeClass('task_edit')
+        $('#selectAssignTo').val(null).trigger('change');
+        if ($('.current-create-task').length <= 0)
+            $('#selectOpportunity').val(null).trigger('change').attr('disabled', false);
+        $('.label-mark, .wrap-checklist, .wrap-subtask').html('');
+        $('#inputLabel').val(null);
+        $('[name="id"]').remove();
+        const $inputAssigner = $('#inputAssigner');
+        $inputAssigner.val($inputAssigner.attr('data-name'))
+        $('.create-subtask').addClass('hidden')
+        $('[name="parent_n"]').remove();
+        window.editor.setData('')
+        $('.create-task').attr('disabled', false)
+    }
+
+    function logworkSubmit() {
         $('#save-logtime').off().on('click', function () {
             const startDate = $('#startDateLogTime').val()
             const endDate = $('#endDateLogTime').val()
@@ -2062,7 +2066,7 @@ $(document).ready(function () {
                             }
                         }
                     )
-            }else{
+            } else {
                 $('[name="log_time"]').attr('value', JSON.stringify(data))
             }
             $('#logWorkModal').modal('hide')
@@ -2204,7 +2208,7 @@ $(document).ready(function () {
         }
 
         /** start run and init all function **/
-        // run status select default
+            // run status select default
         const sttElm = $('#selectStatus');
         sttElm.attr('data-url')
         $.fn.callAjax(sttElm.attr('data-url'), 'get')
@@ -2245,15 +2249,15 @@ $(document).ready(function () {
         const $btnInOpp = $('.current-create-task')
         const $selectElm = $('#selectOpportunity')
 
-        if($btnInOpp.length){
+        if ($btnInOpp.length) {
             const pk = $.fn.getPkDetail()
             let data = {
                 "id": pk,
                 "title": ''
             }
-            const isCheck = setInterval(()=>{
+            const isCheck = setInterval(() => {
                 let oppCode = $('#span-code').text()
-                if (oppCode.length){
+                if (oppCode.length) {
                     clearInterval(isCheck)
                     data.title = oppCode
                     $selectElm.attr('data-onload', JSON.stringify(data)).attr('disabled', true)
@@ -2328,7 +2332,7 @@ $(document).ready(function () {
             }
             if (formData.log_time === "")
                 delete formData.log_time
-            else{
+            else {
                 let temp = formData.log_time.replaceAll("'", '"')
                 temp = JSON.parse(temp)
                 formData.log_time = temp
@@ -2367,7 +2371,7 @@ $(document).ready(function () {
             if (!formData.opportunity) delete formData.opportunity
             if ($('#selectOpportunity').val()) formData.opportunity = $('#selectOpportunity').val()
 
-            if ($('[name="attach"]').val()){
+            if ($('[name="attach"]').val()) {
                 let list = []
                 list.push($('[name="attach"]').val())
                 formData.attach = list
@@ -2375,7 +2379,7 @@ $(document).ready(function () {
 
             let method = 'POST'
             let url = _form.dataUrl
-            if(formData.id && formData.id !== ''){
+            if (formData.id && formData.id !== '') {
                 method = 'PUT'
                 url = $('#url-factory').attr('data-task-detail').format_url_with_uuid(formData.id)
             }
@@ -2410,7 +2414,7 @@ $(document).ready(function () {
 
 
     // TIMELINE
-    function tabSubtask(taskID){
+    function tabSubtask(taskID) {
         if (!taskID) return false
         const $wrap = $('.wrap-subtask')
         const url = $('#url-factory').attr('data-task_list')
@@ -2431,7 +2435,7 @@ $(document).ready(function () {
             })
     }
 
-    function tabLogWork(dataList){
+    function tabLogWork(dataList) {
         let $table = $('#table_log-work')
         if ($table.hasClass('datatable')) $table.DataTable().clear().draw();
         $table.DataTable({
@@ -2491,14 +2495,14 @@ $(document).ready(function () {
         })
     }
 
-    function displayTaskView(url){
+    function displayTaskView(url) {
         if (url)
             $.fn.callAjax(url, 'GET')
                 .then((resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         // enable side panel
-                        if (!$('#drawer_task_create').hasClass('open')){
+                        if (!$('#drawer_task_create').hasClass('open')) {
                             $($('.current-create-task span')[0]).trigger('click')
                         }
                         $('#inputTextTitle').val(data.title)
@@ -2575,17 +2579,13 @@ $(document).ready(function () {
                         let txt = ''
                         if (row.type === 'task') {
                             txt = `<i class="fa-solid fa-list-check"></i>`
-                        }
-                        else if (row.type === 'call') {
+                        } else if (row.type === 'call') {
                             txt = `<i class="bi bi-telephone-fill"></i>`
-                        }
-                        else if (row.type === 'email') {
+                        } else if (row.type === 'email') {
                             txt = `<i class="bi bi-envelope-fill"></i>`
-                        }
-                        else if (row.type === 'meeting') {
+                        } else if (row.type === 'meeting') {
                             txt = `<i class="bi bi-person-workspace"></i>`
-                        }
-                        else if (row.type === 'document') {
+                        } else if (row.type === 'document') {
                             txt = `<i class="bi bi-telephone-fill"></i>`
                         }
                         return txt
@@ -2600,12 +2600,10 @@ $(document).ready(function () {
                         if (row.type === 'call') {
                             modal_detail_target = '#detail-call-log';
                             modal_detail_class = 'detail-call-log-button';
-                        }
-                        else if (row.type === 'email') {
+                        } else if (row.type === 'email') {
                             modal_detail_target = '#detail-send-email';
                             modal_detail_class = 'detail-email-button';
-                        }
-                        else if (row.type === 'meeting') {
+                        } else if (row.type === 'meeting') {
                             modal_detail_target = '#detail-meeting';
                             modal_detail_class = 'detail-meeting-button';
                         }
@@ -2623,7 +2621,7 @@ $(document).ready(function () {
                     }
                 },
             ],
-            rowCallback: function(row, data){
+            rowCallback: function (row, data) {
                 // click show task
                 $('.view_task_log', row).off().on('click', function (e) {
                     e.stopPropagation();
@@ -2693,62 +2691,58 @@ $(document).ready(function () {
         // })
         //
         $.fn.callAjax($('#table-timeline').attr('data-url-logs_list'), 'GET', {'opportunity': pk})
-        .then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                let activity_logs_list = [];
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('activity_logs_list')) {
-                    data.activity_logs_list.map(function (item) {
-                        if (Object.keys(item.task).length > 0) {
-                            activity_logs_list.push({
-                                'id': item.task.id,
-                                'type': item.task.activity_type,
-                                'title': item.task.activity_name,
-                                'subject': item.task.subject,
-                                'date': item.date_created.split(' ')[0],
-                            })
-                        }
-                        else if (Object.keys(item.call_log).length > 0) {
-                            activity_logs_list.push({
-                                'id': item.call_log.id,
-                                'type': item.call_log.activity_type,
-                                'title': item.call_log.activity_name,
-                                'subject': item.call_log.subject,
-                                'date': item.date_created.split(' ')[0],
-                            })
-                        }
-                        else if (Object.keys(item.email).length > 0) {
-                            activity_logs_list.push({
-                                'id': item.email.id,
-                                'type': item.email.activity_type,
-                                'title': item.email.activity_name,
-                                'subject': item.email.subject,
-                                'date': item.date_created.split(' ')[0],
-                            })
-                        }
-                        else if (Object.keys(item.meeting).length > 0) {
-                            activity_logs_list.push({
-                                'id': item.meeting.id,
-                                'type': item.meeting.activity_type,
-                                'title': item.meeting.activity_name,
-                                'subject': item.meeting.subject,
-                                'date': item.date_created.split(' ')[0],
-                            })
-                        }
-                        else if (Object.keys(item.document).length > 0) {
-                            activity_logs_list.push({
-                                'id': item.document.id,
-                                'type': item.document.activity_type,
-                                'title': item.document.activity_name,
-                                'subject': item.document.subject,
-                                'date': item.date_created.split(' ')[0],
-                            })
-                        }
-                    });
+            .then((resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    let activity_logs_list = [];
+                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('activity_logs_list')) {
+                        data.activity_logs_list.map(function (item) {
+                            if (Object.keys(item.task).length > 0) {
+                                activity_logs_list.push({
+                                    'id': item.task.id,
+                                    'type': item.task.activity_type,
+                                    'title': item.task.activity_name,
+                                    'subject': item.task.subject,
+                                    'date': item.date_created.split(' ')[0],
+                                })
+                            } else if (Object.keys(item.call_log).length > 0) {
+                                activity_logs_list.push({
+                                    'id': item.call_log.id,
+                                    'type': item.call_log.activity_type,
+                                    'title': item.call_log.activity_name,
+                                    'subject': item.call_log.subject,
+                                    'date': item.date_created.split(' ')[0],
+                                })
+                            } else if (Object.keys(item.email).length > 0) {
+                                activity_logs_list.push({
+                                    'id': item.email.id,
+                                    'type': item.email.activity_type,
+                                    'title': item.email.activity_name,
+                                    'subject': item.email.subject,
+                                    'date': item.date_created.split(' ')[0],
+                                })
+                            } else if (Object.keys(item.meeting).length > 0) {
+                                activity_logs_list.push({
+                                    'id': item.meeting.id,
+                                    'type': item.meeting.activity_type,
+                                    'title': item.meeting.activity_name,
+                                    'subject': item.meeting.subject,
+                                    'date': item.date_created.split(' ')[0],
+                                })
+                            } else if (Object.keys(item.document).length > 0) {
+                                activity_logs_list.push({
+                                    'id': item.document.id,
+                                    'type': item.document.activity_type,
+                                    'title': item.document.activity_name,
+                                    'subject': item.document.subject,
+                                    'date': item.date_created.split(' ')[0],
+                                })
+                            }
+                        });
+                    }
+                    loadTimelineList(activity_logs_list)
                 }
-                loadTimelineList(activity_logs_list)
-            }
-        })
+            })
         // Promise.all([call_1, call_2, call_3, call_4]).then((results) => {
         //     let sorted = results.flat().sort(function (a, b) {
         //         return new Date(b.date) - new Date(a.date);
@@ -2758,6 +2752,7 @@ $(document).ready(function () {
         //     console.log(error);
         // });
     }
+
     callAjaxtoLoadTimeLineList();
 
     const ele_move_doc_page = $('.btn-add-document')
@@ -2769,7 +2764,7 @@ $(document).ready(function () {
 
     $(document).on('click', '#table-timeline .detail-call-log-button', function () {
         let call_log_id = $(this).attr('data-id');
-        let call_log_obj = JSON.parse($('#opportunity_call_log_list').text()).filter(function(item) {
+        let call_log_obj = JSON.parse($('#opportunity_call_log_list').text()).filter(function (item) {
             return item.id === call_log_id;
         })[0]
         $('#detail-subject-input').val(call_log_obj.subject);
@@ -2783,7 +2778,7 @@ $(document).ready(function () {
         $('#detail-contact-select-box option').remove();
         $('#detail-contact-select-box').append(`<option selected>${call_log_obj.contact.fullname}</option>`);
 
-        let contact_get = contact_list.filter(function(item) {
+        let contact_get = contact_list.filter(function (item) {
             return item.id === call_log_obj.contact.id;
         })
         if (contact_get.length > 0) {
@@ -2809,7 +2804,7 @@ $(document).ready(function () {
 
     $(document).on('click', '#table-timeline .detail-email-button', function () {
         let email_id = $(this).attr('data-id');
-        let email_obj = JSON.parse($('#opportunity_email_list').text()).filter(function(item) {
+        let email_obj = JSON.parse($('#opportunity_email_list').text()).filter(function (item) {
             return item.id === email_id;
         })[0]
         $('#detail-email-subject-input').val(email_obj.subject);
@@ -2832,7 +2827,7 @@ $(document).ready(function () {
 
     $(document).on('click', '#table-timeline .detail-meeting-button', function () {
         let meeting_id = $(this).attr('data-id');
-        let meeting_obj = JSON.parse($('#opportunity_meeting_list').text()).filter(function(item) {
+        let meeting_obj = JSON.parse($('#opportunity_meeting_list').text()).filter(function (item) {
             return item.id === meeting_id;
         })[0]
         $('#detail-meeting-subject-input').val(meeting_obj.subject);
@@ -2868,7 +2863,7 @@ $(document).ready(function () {
 
     // event create related features
 
-    $(document).on('click', '.btn-create-related-feature', function (){
+    $(document).on('click', '.btn-create-related-feature', function () {
         let url = $(this).data('url') + "?" + paramString;
         window.open(url, '_blank');
     })

@@ -8,174 +8,180 @@
             rel="stylesheet"
             type="text/css"
     />
-    <link href="{% static 'assets/css/masterdata/saledata/accounts/contact_create.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'assets/css/masterdata/saledata/accounts/contact_create.css' %}" rel="stylesheet"
+          type="text/css"/>
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <a
-            class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
-            href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
-            data-bs-original-title="Refresh"
-    >
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="refresh-cw"></i>
+    <a href="#" id="btn-edit" data-url="{% url 'ContactUpdate' pk=0 %}">
+        <button class="btn btn-outline-primary">
+        <span>
+            <span>{% trans 'Edit' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-pen-to-square"></i>
             </span>
         </span>
+        </button>
     </a>
 {% endblock %}
 {% block pageContent %}
     <form data-method="get" id="form-detail-contact" data-url="{% url "ContactDetailAPI" pk=0 %}">
-    <!-- Contact Information -->
-    <div class="w-100 p-1 bg-light">
-        <h5>{% trans "Contact Information" %}</h5>
-    </div>
+        <!-- Contact Information -->
+        <div class="w-100 p-1 bg-light">
+            <h5>{% trans "Contact Information" %}</h5>
+        </div>
 
-    <div class="row mt-3">
+        <div class="row mt-3">
+            <div class="row">
+                <div class="col-2 text-center">
+                    <div class="row">
+                        <div class="form-group">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-person-fill"
+                                 viewBox="0 0 16 16">
+                                <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-10">
+                    <div class="row">
+                        <div class="form-group">
+                            <label class="form-label">{% trans "Contact Owner" %}<span
+                                    class="field-required"></span>
+                            </label>
+                            <input name="owner" id="owner_id" type="text" class="form-control" readonly value="">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <label class="form-label">{% trans "Biography" %}</label>
+                            <textarea name="bio" id="bio_id" type="text" class="form-control" readonly></textarea>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-6">
+                            <label class="form-label">{% trans "Full Name" %}<span
+                                    class="field-required"></span></label>
+                            <input type="text" class="form-control" name="fullname" id="full_name_id" readonly value="">
+                        </div>
+
+                        <div class="form-group col-6">
+                            <label class="form-label">{% trans "Salutation" %}</label>
+                            <input type="text" class="form-control" name="salutation" id="salutation_id" readonly
+                                   value="">
+                        </div>
+
+                        <div class="form-group col-6">
+                            <label class="form-label">{% trans "Phone" %}</label>
+                            <input type="text" class="form-control" name="phone" id="phone_id" readonly value="">
+                        </div>
+
+                        <div class="form-group col-6">
+                            <label class="form-label">{% trans "Mobile" %}</label>
+                            <input type="text" class="form-control" name="mobile" id="mobile_id" readonly value="">
+                        </div>
+
+                        <div class="form-group col-6">
+                            <label class="form-label">{% trans "Account Name" %}</label>
+                            <input type="text" class="form-control" name="account_name" id="account_name_id" value=""
+                                   readonly>
+                        </div>
+
+                        <div class="form-group col-6">
+                            <label class="form-label">{% trans "Email" %}</label>
+                            <input type="text" class="form-control" name="email" id="email_id" readonly value="">
+                        </div>
+
+                        <div class="form-group col-6">
+                            <label class="form-label">{% trans "Job Title" %}</label>
+                            <input type="text" class="form-control" name="job_title" id="job_title_id" readonly
+                                   value="">
+                        </div>
+
+                        <div class="form-group col-6">
+                            <label class="form-label">{% trans "Report To" %}</label>
+                            <input type="text" class="form-control" name="report_to" id="report_to_id" readonly
+                                   value="">
+                        </div>
+                    </div>
+                    <br>
+                </div>
+            </div>
+        </div>
+        <!-- End Contact Information -->
+
+        <!-- Address Information -->
+        <div class="w-100 p-1 bg-light">
+            <h5>{% trans "Address Information" %}</h5>
+        </div>
+        <div class="row mt-3">
+            <div class="col-6">
+                <div class="row">
+                    <div class="form-group">
+                        <label class="form-label">{% trans "Work address" %}</label>
+                        <textarea class="form-control" name="work_address" id="work_address_id" readonly></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="form-group">
+                        <label class="form-label">{% trans "Home address" %}</label>
+                        <textarea class="form-control" name="home_address" id="home_address_id" readonly></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+        <!-- End Address Information -->
+
+        <!-- Additional Information -->
+        <div class="w-100 p-1 bg-light">
+            <h5>{% trans "Additional Information" %}</h5>
+        </div>
+        <div class="row mt-3">
+            <div class="col-4">
+                <div class="form-group">
+                    <label class="form-label">Facebook</label><br>
+                    <a target="_blank" type="text" href="" id="facebook_id"></a>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group">
+                    <label class="form-label">Twitter</label><br>
+                    <a target="_blank" type="text" href="" id="twitter_id"></a>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group">
+                    <label class="form-label">Linkedln</label><br>
+                    <a target="_blank" type="text" href="" id="linkedln_id"></a>
+                </div>
+            </div>
+        </div>
         <div class="row">
-            <div class="col-2 text-center">
-                <div class="row">
-                    <div class="form-group">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
-                          <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-            <div class="col-10">
-                <div class="row">
-                    <div class="form-group">
-                        <label class="form-label">{% trans "Contact Owner" %}<span
-                                class="field-required"></span>
-                        </label>
-                        <input name="owner" id="owner_id" type="text" class="form-control" readonly value="">
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="form-group">
-                        <label class="form-label">{% trans "Biography" %}</label>
-                        <textarea name="bio" id="bio_id" type="text" class="form-control" readonly></textarea>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="form-group col-6">
-                        <label class="form-label">{% trans "Full Name" %}<span class="field-required"></span></label>
-                        <input type="text" class="form-control" name="fullname" id="full_name_id" readonly value="">
-                    </div>
-
-                    <div class="form-group col-6">
-                        <label class="form-label">{% trans "Salutation" %}</label>
-                        <input type="text" class="form-control" name="salutation" id="salutation_id" readonly value="">
-                    </div>
-
-                    <div class="form-group col-6">
-                        <label class="form-label">{% trans "Phone" %}</label>
-                        <input type="text" class="form-control" name="phone" id="phone_id" readonly value="">
-                    </div>
-
-                    <div class="form-group col-6">
-                        <label class="form-label">{% trans "Mobile" %}</label>
-                        <input type="text" class="form-control" name="mobile" id="mobile_id" readonly value="">
-                    </div>
-
-                    <div class="form-group col-6">
-                        <label class="form-label">{% trans "Account Name" %}</label>
-                        <input type="text" class="form-control" name="account_name" id="account_name_id" value="" readonly>
-                    </div>
-
-                    <div class="form-group col-6">
-                        <label class="form-label">{% trans "Email" %}</label>
-                        <input type="text" class="form-control" name="email" id="email_id" readonly value="">
-                    </div>
-
-                    <div class="form-group col-6">
-                        <label class="form-label">{% trans "Job Title" %}</label>
-                        <input type="text" class="form-control" name="job_title" id="job_title_id" readonly value="">
-                    </div>
-
-                    <div class="form-group col-6">
-                        <label class="form-label">{% trans "Report To" %}</label>
-                        <input type="text" class="form-control" name="report_to" id="report_to_id" readonly value="">
-                    </div>
-                </div>
-                <br>
-            </div>
-        </div>
-    </div>
-    <!-- End Contact Information -->
-
-    <!-- Address Information -->
-    <div class="w-100 p-1 bg-light">
-        <h5>{% trans "Address Information" %}</h5>
-    </div>
-    <div class="row mt-3">
-        <div class="col-6">
-            <div class="row">
+            <div class="col-4">
                 <div class="form-group">
-                    <label class="form-label">{% trans "Work address" %}</label>
-                    <textarea class="form-control" name="work_address" id="work_address_id" readonly></textarea>
+                    <label class="form-label">Gmail</label>
+                    <input type="text" class="form-control" name="gmail" id="gmail_id" readonly value="">
                 </div>
             </div>
-        </div>
-        <div class="col-6">
-            <div class="row">
+            <div class="col-4">
                 <div class="form-group">
-                    <label class="form-label">{% trans "Home address" %}</label>
-                    <textarea class="form-control" name="home_address" id="home_address_id" readonly></textarea>
+                    <label class="form-label">{% trans "Interests" %}</label>
+                    <select id="input_tags" class="form-control" multiple="multiple" disabled>
+                    </select>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group">
+                    <label class="form-label">Tag</label>
+                    <input type="text" class="form-control" name="tags" id="tag_id" readonly value="">
                 </div>
             </div>
         </div>
-    </div>
-    <br>
-    <!-- End Address Information -->
-
-    <!-- Additional Information -->
-    <div class="w-100 p-1 bg-light">
-        <h5>{% trans "Additional Information" %}</h5>
-    </div>
-    <div class="row mt-3">
-        <div class="col-4">
-            <div class="form-group">
-                <label class="form-label">Facebook</label><br>
-                <a target="_blank" type="text" href="" id="facebook_id"></a>
-            </div>
-        </div>
-        <div class="col-4">
-            <div class="form-group">
-                <label class="form-label">Twitter</label><br>
-                <a target="_blank" type="text" href="" id="twitter_id"></a>
-            </div>
-        </div>
-        <div class="col-4">
-            <div class="form-group">
-                <label class="form-label">Linkedln</label><br>
-                <a target="_blank" type="text" href="" id="linkedln_id"></a>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-4">
-            <div class="form-group">
-                <label class="form-label">Gmail</label>
-                <input type="text" class="form-control" name="gmail" id="gmail_id" readonly value="">
-            </div>
-        </div>
-        <div class="col-4">
-            <div class="form-group">
-                <label class="form-label">{% trans "Interests" %}</label>
-                <select id="input_tags" class="form-control" multiple="multiple" disabled>
-                </select>
-            </div>
-        </div>
-        <div class="col-4">
-            <div class="form-group">
-                <label class="form-label">Tag</label>
-                <input type="text" class="form-control" name="tags" id="tag_id" readonly value="">
-            </div>
-        </div>
-    </div>
-    <!-- End Additional Information -->
+        <!-- End Additional Information -->
     </form>
 {% endblock %}
 {% block jsFooter %}

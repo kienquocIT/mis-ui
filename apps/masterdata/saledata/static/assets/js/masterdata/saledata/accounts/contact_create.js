@@ -7,11 +7,11 @@ $(document).ready(function () {
         $("#workdistrict option:selected").prop("selected", false);
         $("#workcity option:selected").prop("selected", false);
         let ele = $('#workcity');
-        let url = ele.attr('data-url');
+        let url = ele.attr('data-select2-url');
         let method = ele.attr('data-method');
         $.fn.callAjax2({
-            url: url,
-            method: method,
+            'url': url,
+            'method': method,
             isDropdown: true,
         }).then((resp) => {
             let data = $.fn.switcherResp(resp);
@@ -32,11 +32,11 @@ $(document).ready(function () {
     // load Districts SelectBox
     function loadDistrictsWork() {
         let ele = $('#workdistrict');
-        let url = ele.attr('data-url').replace('pk', $('#workcity').val())
+        let url = ele.attr('data-select2-url').replace('pk', $('#workcity').val())
         let method = ele.attr('data-method');
         $.fn.callAjax2({
-            url: url,
-            method: method,
+            'url': url,
+            'method': method,
             isDropdown: true,
         }).then((resp) => {
             let data = $.fn.switcherResp(resp);
@@ -55,11 +55,11 @@ $(document).ready(function () {
     // load Wards SelectBox
     function loadWardsWork() {
         let ele = $('#workward');
-        let url = ele.attr('data-url').replace('pk', $('#workdistrict').val())
+        let url = ele.attr('data-select2-url').replace('pk', $('#workdistrict').val())
         let method = ele.attr('data-method');
         $.fn.callAjax2({
-            url: url,
-            method: method,
+            'url': url,
+            'method': method,
             isDropdown: true,
         }).then((resp) => {
             let data = $.fn.switcherResp(resp);
@@ -129,11 +129,11 @@ $(document).ready(function () {
         $("#homedistrict option:selected").prop("selected", false);
         $("#homecity option:selected").prop("selected", false);
         let ele = $('#homecity');
-        let url = ele.attr('data-url');
+        let url = ele.attr('data-select2-url');
         let method = ele.attr('data-method');
         $.fn.callAjax2({
-            url: url,
-            method: method,
+            'url': url,
+            'method': method,
             isDropdown: true,
         }).then((resp) => {
             let data = $.fn.switcherResp(resp);
@@ -154,11 +154,11 @@ $(document).ready(function () {
     // load Districts SelectBox
     function loadDistrictsHome() {
         let ele = $('#homedistrict');
-        let url = ele.attr('data-url').replace('pk', $('#homecity').val())
+        let url = ele.attr('data-select2-url').replace('pk', $('#homecity').val())
         let method = ele.attr('data-method');
         $.fn.callAjax2({
-            url: url,
-            method: method,
+            'url': url,
+            'method': method,
             isDropdown: true,
         }).then((resp) => {
             let data = $.fn.switcherResp(resp);
@@ -177,11 +177,11 @@ $(document).ready(function () {
     // load Wards SelectBox
     function loadWardsHome() {
         let ele = $('#homeward');
-        let url = ele.attr('data-url').replace('pk', $('#homedistrict').val())
+        let url = ele.attr('data-select2-url').replace('pk', $('#homedistrict').val())
         let method = ele.attr('data-method');
         $.fn.callAjax2({
-            url: url,
-            method: method,
+            'url': url,
+            'method': method,
             isDropdown: true,
         }).then((resp) => {
             let data = $.fn.switcherResp(resp);
@@ -251,11 +251,11 @@ $(document).ready(function () {
 
     function loadSalutationList() {
         let ele = $('#select-box-salutation');
-        let url = ele.attr('data-url');
+        let url = ele.attr('data-select2-url');
         let method = ele.attr('data-method');
         $.fn.callAjax2({
-            url: url,
-            method: method,
+            'url': url,
+            'method': method,
             isDropdown: true,
         }).then((resp) => {
             let data = $.fn.switcherResp(resp);
@@ -273,16 +273,16 @@ $(document).ready(function () {
 
     function loadInterestList() {
         let ele = $('#select-box-interests');
-        let url = ele.attr('data-url');
+        let url = ele.data('select2-url');
         let method = ele.attr('data-method');
         $.fn.callAjax2({
-            url: url,
-            method: method,
+            'url': url,
+            'method': method,
             isDropdown: true,
         }).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
-                ele.text("");
+                ele.html("");
                 if (data.hasOwnProperty('interests_list') && Array.isArray(data.interests_list)) {
                     ele.append(`<option></option>`)
                     data.interests_list.map(function (item) {
@@ -295,11 +295,11 @@ $(document).ready(function () {
 
     function loadEmployee() {
         let ele = $('#select-box-emp');
-        let url = ele.attr('data-url');
+        let url = ele.attr('data-select2-url');
         let method = ele.attr('data-method');
         $.fn.callAjax2({
-            url: url,
-            method: method,
+            'url': url,
+            'method': method,
             isDropdown: true,
         }).then((resp) => {
             let data = $.fn.switcherResp(resp);
@@ -317,11 +317,11 @@ $(document).ready(function () {
 
     function loadAccountName() {
         let ele = $('#select-box-account_name');
-        let url = ele.attr('data-url');
+        let url = ele.attr('data-select2-url');
         let method = ele.attr('data-method');
         $.fn.callAjax2({
-            url: url,
-            method: method,
+            'url': url,
+            'method': method,
             isDropdown: true,
         }).then((resp) => {
             let data = $.fn.switcherResp(resp);
@@ -340,11 +340,11 @@ $(document).ready(function () {
     function loadReportTo(id) {
         let ele = $('#select-box-report-to');
         ele.attr('disabled', false);
-        let url = ele.attr('data-url').replace('0', id);
+        let url = ele.attr('data-select2-url').replace('0', id);
         let method = ele.attr('data-method');
         $.fn.callAjax2({
-            url: url,
-            method: method,
+            'url': url,
+            'method': method,
             isDropdown: true,
         }).then((resp) => {
             let data = $.fn.switcherResp(resp);
@@ -393,10 +393,11 @@ $(document).ready(function () {
         }
     })
 
-    $('#save-contact').on('click', function (event) {
+    const frmCreate = $('#form-create-contact')
+    frmCreate.submit(function (event) {
         event.preventDefault();
         let csr = $("input[name=csrfmiddlewaretoken]").val();
-        let frm = new SetupFormSubmit($('#form-create-contact'));
+        let frm = new SetupFormSubmit($(this));
         frm.dataForm['additional_information'] = {
             'facebook': $('#facebook_id').val(),
             'twitter': $('#twitter_id').val(),
@@ -435,7 +436,7 @@ $(document).ready(function () {
 
         frm.dataForm['work_address_dict'] = work_address_dict;
 
-        frm.dataForm['system_status'] = 1; // save, not draft
+        frm.dataForm['system_status'] = 0; // save, not draft
 
         WindowControl.showLoading();
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)

@@ -11,7 +11,7 @@ class SaleProcess(View):
         auth_require=True,
         template='core/process/sale_process.html',
         menu_active='menu_sale_process',
-        breadcrumb='',
+        breadcrumb='SALE_PROCESS_PAGE',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK

@@ -16,13 +16,13 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <button
-            class="btn btn-icon btn-rounded bg-dark-hover mr-1"
-            type="submit" form="form-create-contact"
-            data-bs-toggle="tooltip" data-bs-placement="bottom"
-            data-bs-original-title="{% trans 'Save' %}"
-    >
-        <span class="icon"><i class="fa-regular fa-floppy-disk"></i></span>
+    <button class="btn btn-outline-primary" type="submit" form="form-create-contact">
+    <span>
+        <span>{% trans 'Save' %}</span>
+        <span class="icon">
+            <i class="fa-regular fa-floppy-disk"></i>
+        </span>
+    </span>
     </button>
 {% endblock %}
 {% block pageContent %}
@@ -44,8 +44,9 @@
                         <div class="form-group">
                             <label class="form-label required">{% trans "Contact Owner" %}</label>
                             <select
-                                    id="select-box-emp" name="owner" class="form-select" data-method="GET" required
-                                    data-url="{% url "EmployeeListAPI" %}"
+                                    id="select-box-emp" name="owner" class="form-control select2" data-method="GET"
+                                    required
+                                    data-select2-url="{% url "EmployeeListAPI" %}"
                             >
                             </select>
                         </div>
@@ -129,8 +130,8 @@
                         <label class="form-label">{% trans "Account Name" %}</label>
                         <input id='account_name_id' value="" hidden>
                         <select
-                                id="select-box-account_name" name="account_name" class="form-select"
-                                data-url="{% url "AccountListAPI" %}"
+                                id="select-box-account_name" name="account_name" class="form-control select2"
+                                data-select2-url="{% url "AccountListAPI" %}"
                                 data-method="GET"
                         >
                         </select>
@@ -153,8 +154,8 @@
                         <label class="form-label">{% trans "Report To" %}</label>
                         <input id="report_to_current" value="" hidden>
                         <select
-                                id="select-box-report-to" class="form-select" data-method="GET"
-                                data-url="{% url "AccountDetailAPI" pk=0 %}" name="report_to"
+                                id="select-box-report-to" class="form-control select2" data-method="GET"
+                                data-select2-url="{% url "AccountDetailAPI" pk=0 %}" name="report_to"
                         >
                             <option></option>
                         </select>
@@ -279,7 +280,7 @@
                     <select
                             class="form-control select2 select2-multiple"
                             multiple name="interests"
-                            id="select-box-interests" data-url="{% url "InterestListAPI" %}" data-method="GET"
+                            id="select-box-interests" data-select2-url="{% url "InterestListAPI" %}" data-method="GET"
                     >
                     </select>
                 </div>
@@ -324,21 +325,24 @@
                             <div class="row">
                                 <div class="form-group">
                                     <label class="form-label">{% trans "Province" %}</label>
-                                    <select class="form-select" id="workcity" aria-label=".form-select-sm" data-url="{% url "CityListAPI" %}" data-method="GET">
+                                    <select class="form-select" id="workcity" aria-label=".form-select-sm"
+                                            data-url="{% url "CityListAPI" %}" data-method="GET">
                                     </select>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="form-group">
                                     <label class="form-label">{% trans "District" %}</label>
-                                    <select class="form-select" id="workdistrict" aria-label=".form-select-sm" data-url="{% url "DistrictListAPI" 'pk' %}" data-method="GET">
+                                    <select class="form-select" id="workdistrict" aria-label=".form-select-sm"
+                                            data-url="{% url "DistrictListAPI" 'pk' %}" data-method="GET">
                                     </select>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="form-group">
                                     <label class="form-label">{% trans "Ward" %}</label>
-                                    <select class="form-select" id="workward" aria-label=".form-select-sm" data-url="{% url "WardListAPI" 'pk' %}" data-method="GET">
+                                    <select class="form-select" id="workward" aria-label=".form-select-sm"
+                                            data-url="{% url "WardListAPI" 'pk' %}" data-method="GET">
                                     </select>
                                 </div>
                             </div>
@@ -384,21 +388,24 @@
                         <div class="row">
                             <div class="form-group">
                                 <label class="form-label">{% trans "Province" %}</label>
-                                <select class="form-select" id="homecity" aria-label=".form-select-sm" data-url="{% url "CityListAPI" %}" data-method="GET">
+                                <select class="form-select" id="homecity" aria-label=".form-select-sm"
+                                        data-url="{% url "CityListAPI" %}" data-method="GET">
                                 </select>
                             </div>
                         </div>
                         <div class="row">
                             <div class="form-group">
                                 <label class="form-label">{% trans "District" %}</label>
-                                <select class="form-select" id="homedistrict" aria-label=".form-select-sm" data-url="{% url "DistrictListAPI" 'pk' %}" data-method="GET">
+                                <select class="form-select" id="homedistrict" aria-label=".form-select-sm"
+                                        data-url="{% url "DistrictListAPI" 'pk' %}" data-method="GET">
                                 </select>
                             </div>
                         </div>
                         <div class="row">
                             <div class="form-group">
                                 <label class="form-label">{% trans "Ward" %}</label>
-                                <select class="form-select" id="homeward" aria-label=".form-select-sm" data-url="{% url "WardListAPI" 'pk' %}" data-method="GET">
+                                <select class="form-select" id="homeward" aria-label=".form-select-sm"
+                                        data-url="{% url "WardListAPI" 'pk' %}" data-method="GET">
                                 </select>
                             </div>
                         </div>

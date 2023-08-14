@@ -6,24 +6,15 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <button class="btn-show-modal" id="btn-show-modal-create" type="button" data-bs-toggle="modal"
-            data-bs-target="#modal-lookup-data"
-            style="background: none; border: none">
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="plus"></i>
+    <a id="btn-show-modal-create" href="#" data-bs-toggle="modal" data-bs-target="#modal-lookup-data">
+        <button class="btn btn-outline-primary">
+            <span>
+                <span>{% trans 'Add' %}</span>
+                <span class="icon">
+                    <i class="fa-solid fa-plus"></i>
+                </span>
             </span>
-        </span>
-    </button>
-
-    <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
-       href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
-       data-bs-original-title="Refresh">
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="refresh-cw"></i>
-            </span>
-        </span>
+        </button>
     </a>
 {% endblock %}
 {% block pageContent %}

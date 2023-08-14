@@ -6,22 +6,17 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <a class="btn btn-outline-primary btn-animated btn-xs"
-       href="{% url "ReturnAdvanceCreate" %}"
-       data-bs-toggle="tooltip"
-       data-bs-placement="top"
-       title="{% trans 'Create Return' %}"
-       id="create_return_button"
-       data-bs-original-title="Add Return">
-            <span class="icon">
-                <span class="feather-icon">
-                    <i data-feather="plus"></i>
-                </span>
-                <span class="font-3 ml-1">
-                    {% trans 'New' %}
+    <a href="{% url "ReturnAdvanceCreate" %}">
+        <button class="btn btn-outline-primary">
+            <span>
+                <span>{% trans 'Add' %}</span>
+                <span class="icon">
+                    <i class="fa-solid fa-plus"></i>
                 </span>
             </span>
+        </button>
     </a>
+
 {% endblock %}
 {% block pageContent %}
     <table id="dtbReturnAdvance" class="table nowrap w-100 mb-5" data-method="GET"

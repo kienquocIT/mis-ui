@@ -14,44 +14,47 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <button id="btn-show-modal-create" type="button" data-bs-toggle="modal" data-bs-target="#modal-section-currency"
-            style="background: none; border: none">
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="plus"></i>
-            </span>
-        </span>
-    </button>
+{#    <button id="btn-show-modal-create" type="button" data-bs-toggle="modal" data-bs-target="#modal-section-currency"#}
+{#            style="background: none; border: none">#}
+{#        <span class="icon">#}
+{#            <span class="feather-icon">#}
+{#                <i data-feather="plus"></i>#}
+{#            </span>#}
+{#        </span>#}
+{#    </button>#}
 
-    <button id="btn-save-payment" type="button" data-bs-toggle="tooltip" data-bs-placement="top" title=""
-            data-bs-original-title="Save"
-            style="background: none; border: none; display: none">
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="save"></i>
+    <a href="#" id="btn-show-modal-create" data-bs-toggle="modal" data-bs-target="#modal-section-currency">
+        <button class="btn btn-outline-primary">
+        <span>
+            <span>{% trans 'Add' %}</span>
+            <span class="icon">
+                <i class="fa-solid fa-plus"></i>
             </span>
         </span>
-    </button>
-
-    <button id="btn-back-payment" type="button" data-bs-toggle="tooltip" data-bs-placement="top" title=""
-            data-bs-original-title="Back"
-            style="background: none; border: none; display: none">
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="arrow-left"></i>
-            </span>
-        </span>
-    </button>
-
-    <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
-       href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
-       data-bs-original-title="Refresh">
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="refresh-cw"></i>
-            </span>
-        </span>
+        </button>
     </a>
+
+
+    <button class="btn btn-outline-primary" type="button" id="btn-save-payment" style="display: none">
+    <span>
+        <span>{% trans 'Save' %}</span>
+        <span class="icon">
+            <i class="fa-regular fa-floppy-disk"></i>
+        </span>
+    </span>
+    </button>
+
+    <a href="#" id="btn-back-payment" style="display: none">
+        <button class="btn btn-outline-primary">
+        <span>
+            <span>{% trans 'Add' %}</span>
+            <span class="icon">
+                <i class="fa-solid fa-plus"></i>
+            </span>
+        </span>
+        </button>
+    </a>
+
 {% endblock %}
 {% block pageContent %}
     <div class="row">
@@ -539,7 +542,7 @@
                                 <label class="form-label">{% trans "Name" %}</label>
                                 <div class="readonly">
                                     <input class="form-control" type="text" name="title"
-                                       placeholder="Input name" id="tax-category-title" readonly>
+                                           placeholder="Input name" id="tax-category-title" readonly>
                                     <span></span>
                                 </div>
 
@@ -548,7 +551,7 @@
                                 <label class="form-label">{% trans "Description" %}</label>
                                 <div class="readonly">
                                     <textarea class="form-control" name="description" id="tax-category-description"
-                                          readonly></textarea>
+                                              readonly></textarea>
                                     <span></span>
                                 </div>
                             </div>

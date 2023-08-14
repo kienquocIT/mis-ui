@@ -13,41 +13,14 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <button id="save-contact" type="submit" form="form-create-contact" style="background: none; border: none">
-        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
-                href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
-                data-bs-original-title="Save">
+    <button class="btn btn-outline-primary" type="submit" form="form-create-contact">
+        <span>
+            <span>{% trans 'Save' %}</span>
             <span class="icon">
-                <span class="feather-icon">
-                    <i data-feather="save"></i>
-                </span>
-            </span>
-        </a>
-    </button>
-
-{#    <button id="save-contact-draft" type="submit" style="background: none; border: none">#}
-{#        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"#}
-{#                href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""#}
-{#                data-bs-original-title="Save Draft">#}
-{#            <span class="icon">#}
-{#                <span class="feather-icon">#}
-{#                    <i class="bi bi-save2"></i>#}
-{#                </span>#}
-{#            </span>#}
-{#        </a>#}
-{#    </button>#}
-
-    <a
-            class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
-            href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
-            data-bs-original-title="Refresh"
-    >
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="refresh-cw"></i>
+                <i class="fa-regular fa-floppy-disk"></i>
             </span>
         </span>
-    </a>
+    </button>
 {% endblock %}
 {% block pageContent %}
     <form
@@ -67,9 +40,9 @@
                             <label class="form-label">{% trans "Contact Owner" %}<span
                                     class="field-required"
                             >(*)</span></label>
-                            <select id="select-box-emp" name="owner" class="form-select"
+                            <select id="select-box-emp" name="owner" class="form-control select2"
                                     data-method="GET" required
-                                    data-url="{% url "EmployeeListAPI" %}">
+                                    data-select2-url="{% url "EmployeeListAPI" %}">
                             </select>
                         </div>
                     </div>
@@ -92,7 +65,7 @@
                 <div class="col-4">
                     <div class="form-group">
                         <label class="form-label">{% trans "Salutation" %}</label>
-                        <select id="select-box-salutation" class="form-select" data-url="{% url "SalutationListAPI" %}"
+                        <select id="select-box-salutation" class="form-control select2" data-select2-url="{% url "SalutationListAPI" %}"
                                 data-method="GET" name="salutation" required>
                         </select>
                     </div>
@@ -140,8 +113,8 @@
                 <div class="col-4">
                     <div class="form-group">
                         <label class="form-label">{% trans "Account Name" %}</label>
-                        <select id="select-box-account_name" name="account_name" class="form-select"
-                                data-url="{% url "AccountListAPI" %}"
+                        <select id="select-box-account_name" name="account_name" class="form-control select2"
+                                data-select2-url="{% url "AccountListAPI" %}"
                                 data-method="GET" required>
                         </select>
                     </div>
@@ -163,8 +136,8 @@
                 <div class="col-8">
                     <div class="form-group">
                         <label class="form-label">{% trans "Report To" %}</label>
-                        <select id="select-box-report-to" class="form-select" data-method="GET"
-                                data-url="{% url "AccountDetailAPI" pk=0 %}" name="report_to" disabled>
+                        <select id="select-box-report-to" class="form-control select2" data-method="GET"
+                                data-select2-url="{% url "AccountDetailAPI" pk=0 %}" name="report_to" disabled>
                         </select>
                     </div>
                 </div>
@@ -265,7 +238,7 @@
                     <select id="select-box-interests"
                             class="form-control select2 select2-multiple"
                             multiple name="interests"
-                            id="select-box-interests" data-url="{% url "InterestListAPI" %}" data-method="GET" >
+                            id="select-box-interests" data-select2-url="{% url "InterestListAPI" %}" data-method="GET" >
                     </select>
                 </div>
             </div>
@@ -301,19 +274,19 @@
                             <div class="row">
                                 <div class="form-group">
                                     <label class="form-label">{% trans "Province" %}</label>
-                                    <select class="form-select" id="workcity" aria-label=".form-select-sm" data-url="{% url "CityListAPI" %}" data-method="GET"></select>
+                                    <select class="form-control select2" id="workcity" aria-label=".form-select-sm" data-select2-url="{% url "CityListAPI" %}" data-method="GET"></select>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="form-group">
                                     <label class="form-label">{% trans "District" %}</label>
-                                    <select class="form-select" id="workdistrict" aria-label=".form-select-sm" data-url="{% url "DistrictListAPI" 'pk' %}" data-method="GET"></select>
+                                    <select class="form-control select2" id="workdistrict" aria-label=".form-select-sm" data-select2-url="{% url "DistrictListAPI" 'pk' %}" data-method="GET"></select>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="form-group">
                                     <label class="form-label">{% trans "Ward" %}</label>
-                                    <select class="form-select" id="workward" aria-label=".form-select-sm" data-url="{% url "WardListAPI" 'pk' %}" data-method="GET"></select>
+                                    <select class="form-control select2" id="workward" aria-label=".form-select-sm" data-select2-url="{% url "WardListAPI" 'pk' %}" data-method="GET"></select>
                                 </div>
                             </div>
                         </div>
@@ -352,19 +325,19 @@
                         <div class="row">
                             <div class="form-group">
                                 <label class="form-label">{% trans "Province" %}</label>
-                                <select class="form-select" id="homecity" aria-label=".form-select-sm" data-url="{% url "CityListAPI" %}" data-method="GET"></select>
+                                <select class="form-control select2" id="homecity" aria-label=".form-select-sm" data-select2-url="{% url "CityListAPI" %}" data-method="GET"></select>
                             </div>
                         </div>
                         <div class="row">
                             <div class="form-group">
                                 <label class="form-label">{% trans "District" %}</label>
-                                <select class="form-select" id="homedistrict" aria-label=".form-select-sm" data-url="{% url "DistrictListAPI" 'pk' %}" data-method="GET"></select>
+                                <select class="form-control select2" id="homedistrict" aria-label=".form-select-sm" data-select2-url="{% url "DistrictListAPI" 'pk' %}" data-method="GET"></select>
                             </div>
                         </div>
                         <div class="row">
                             <div class="form-group">
                                 <label class="form-label">{% trans "Ward" %}</label>
-                                <select class="form-select" id="homeward" aria-label=".form-select-sm" data-url="{% url "WardListAPI" 'pk' %}" data-method="GET"></select>
+                                <select class="form-control select2" id="homeward" aria-label=".form-select-sm" data-select2-url="{% url "WardListAPI" 'pk' %}" data-method="GET"></select>
                             </div>
                         </div>
                     </div>

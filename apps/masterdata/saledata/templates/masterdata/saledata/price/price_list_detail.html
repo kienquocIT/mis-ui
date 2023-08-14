@@ -12,24 +12,14 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <button id="btn-update" type="submit" form="form-update-item-price"
-            style="background: none; border: none">
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="save"></i>
+    <button class="btn btn-outline-primary" type="submit" form="form-update-item-price">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
             </span>
         </span>
     </button>
-
-    <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
-       href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
-       data-bs-original-title="Refresh">
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="refresh-cw"></i>
-            </span>
-        </span>
-    </a>
 {% endblock %}
 {% block pageContent %}
     <div class="row">

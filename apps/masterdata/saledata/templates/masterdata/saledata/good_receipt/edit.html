@@ -1,26 +1,36 @@
 {% extends 'base.html' %}
 {% load i18n static %}
-{% block title %}{% trans 'Good receipt detail' %}{% endblock %}
+{% block title %}{% trans 'Good receipt edit' %}{% endblock %}
 {% block cssHeader %}
     <!-- Daterangepicker CSS -->
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 {% block pageAction %}
-    <a href="{% url 'GoodReceiptEdit' data.doc_id %}">
-    <button class="btn btn-outline-primary">
-        <span>
-            <span>{% trans 'Edit' %}</span>
-            <span class="icon">
-                <i class="fa-regular fa-pen-to-square"></i>
+    <button class="btn btn-flush-success btn-animated mr-1 font-5" type="submit" form="good_receipt_form"
+            data-bs-toggle="tooltip" data-bs-placement="top" title="Save"
+            data-bs-original-title="Save">
+        <span class="icon">
+            <span class="feather-icon">
+                <i data-feather="save"></i>
             </span>
         </span>
-    </button></a>
+    </button>
+    <button class="btn btn-flush-danger btn-animated font-4" type="button" data-bs-toggle="tooltip"
+            data-bs-placement="top" title="Back" data-bs-original-title="Back"
+            onclick="window.history.go(-1); return false;">
+        <span class="icon">
+            <span class="feather-icon">
+                <i class="fas fa-step-backward"></i>
+            </span>
+        </span>
+    </button>
 {% endblock %}
 {% block pageContent %}
     <!-- Form Create-->
-    <form id="good_receipt_form" data-url="{% url 'GoodReceiptDetailAPI' data.doc_id %}"
-          class="detail-form" method="post" autocomplete="off" novalidate>
+    <form id="good_receipt_form" data-url="{% url 'GoodReceiptDetailAPI' data.doc_id %}" data-method="put"
+          class="detail-form" method="post"
+          data-url-redirect="{% url 'GoodReceiptList' %}" autocomplete="off" novalidate>
         {% csrf_token %}
         <div class="row">
             <div class="col-md-6 col-xs-12">
@@ -66,7 +76,7 @@
             <div class="col-md-6 col-xs-12">
                 <div class="form-group">
                     <label class="form-label" for="date_created">{% trans 'Created Date' %}</label>
-                    <input class="form-control" type="text" name="date_created" id="date_created" disabled
+                    <input class="form-control" type="text" name="date_created" id="date_created" readonly
                            placeholder="{% trans 'DD/MM/YYYY' %}" autocomplete="off" value="{{ data.date_created }}">
                 </div>
             </div>
@@ -99,7 +109,7 @@
                     <label class="form-label required" for="posting_date">{% trans 'Posting date' %}</label>
                     <input class="form-control" type="text" name="posting_date" id="posting_date"
                            placeholder="{% trans 'DD/MM/YYYY' %}" autocomplete="off"
-                           required disabled>
+                           required readonly>
                 </div>
             </div>
         </div>

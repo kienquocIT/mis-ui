@@ -71,7 +71,9 @@ class SelectDDControl {
         } else {
             data = this.ele.attr('data-onload') || '[]';
             try {
-                parseData = JSON.parse(data);
+                let temp
+                if (data.indexOf("'") !== -1) temp = data.replaceAll("'", '"');
+                parseData = JSON.parse(temp);
             } catch (e) {
             }
         }

@@ -4,7 +4,8 @@ from rest_framework import status
 from rest_framework.views import APIView
 from apps.shared import mask_view, ApiURL, ServerAPI, PermCheck
 
-__all__ = ['GoodReceiptList', 'GoodReceiptListAPI', 'GoodReceiptCreate', 'GoodReceiptDetail', 'GoodReceiptDetailAPI']
+__all__ = ['GoodReceiptList', 'GoodReceiptListAPI', 'GoodReceiptCreate', 'GoodReceiptDetail', 'GoodReceiptDetailAPI',
+           'GoodReceiptEdit']
 
 from apps.shared.msg.sale import GRMsg
 
@@ -59,6 +60,18 @@ class GoodReceiptDetail(View):
         auth_require=True,
         template='masterdata/saledata/good_receipt/detail.html',
         breadcrumb='GOOD_RECEIPT_DETAIL_PAGE',
+        menu_active='menu_good_receipt_list',
+    )
+    def get(self, request, pk, *args, **kwargs):
+        date_created = datetime.datetime.now().strftime("%d/%m/%Y")
+        return {'date_created': date_created, 'doc_id': pk}, status.HTTP_200_OK
+
+
+class GoodReceiptEdit(View):
+    @mask_view(
+        auth_require=True,
+        template='masterdata/saledata/good_receipt/edit.html',
+        breadcrumb='GOOD_RECEIPT_EDIT_PAGE',
         menu_active='menu_good_receipt_list',
     )
     def get(self, request, pk, *args, **kwargs):

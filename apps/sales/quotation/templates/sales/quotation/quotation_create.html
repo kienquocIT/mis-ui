@@ -77,10 +77,11 @@
                                             </span>
                                             <select
                                                 class="form-select" id="select-box-quotation-create-opportunity"
-                                                data-url="{% url "OpportunityListAPI" %}"
+                                                data-url="{% url "OpportunityForSaleListAPI" %}"
                                                 data-method="GET"
                                                 data-link-detail="{% url "OpportunityDetail" 1 %}"
                                                 name="opportunity"
+                                                data-keyResp="opportunity_sale_list"
                                             ></select>
                                         </span>
                                     </div>
@@ -109,6 +110,7 @@
                                                     data-method="GET"
                                                     data-link-detail="{% url "AccountDetail" 1 %}"
                                                     name="customer"
+                                                    data-keyResp="account_sale_list"
                                                     required
                                             ></select>
                                         </span>
@@ -138,6 +140,7 @@
                                                 data-method="GET"
                                                 data-link-detail="{% url 'ContactDetail' 1 %}"
                                                 name="contact"
+                                                data-keyResp="contact_list"
                                                 required
                                             ></select>
                                         </span>
@@ -198,6 +201,7 @@
                                                 data-method="GET"
                                                 data-link-detail="{% url 'EmployeeDetail' 1 %}"
                                                 name="employee_inherit"
+                                                data-keyResp="employee_list"
                                                 required
                                             ></select>
                                         </span>
@@ -227,6 +231,7 @@
                                                     data-link-detail=""
                                                     data-method="GET"
                                                     name="payment_term"
+                                                    data-keyResp="payment_terms_list"
                                                     required
                                             ></select>
                                         </span>
@@ -781,8 +786,8 @@
                         >
                         <input
                                 type="hidden"
-                                id="data-init-quotation-create-request-employee-id"
-                                value="{{ data.data.employee_current_id }}"
+                                id="data-init-quotation-create-request-employee"
+                                value="{{ data.data.employee_current }}"
                         >
                         <input
                                 type="hidden"

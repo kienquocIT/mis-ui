@@ -3,16 +3,17 @@ let shippingClass = new shippingHandle();
 let finalRevenueBeforeTax = document.getElementById('quotation-final-revenue-before-tax');
 
 // Load data
-class loadDataHandle {
-    loadBoxQuotationOpportunity(valueToSelect = {}, sale_person = null, is_load_detail = false, is_copy = false) {
-        let self = this;
-        let ele = $('#select-box-quotation-create-opportunity');
-        let url = ele.attr('data-url');
-        let method = ele.attr('data-method');
-        if (!sale_person) {
-            sale_person = $('#select-box-quotation-create-sale-person').val(); // filter by sale_person
-        }
-        if (sale_person) {
+class QuotationLoadDataHandle {
+    static opportunitySelectEle = $('#select-box-quotation-create-opportunity');
+    static customerSelectEle = $('#select-box-quotation-create-customer');
+    static contactSelectEle = $('#select-box-quotation-create-contact');
+    static paymentSelectEle = $('#select-box-quotation-create-payment-term');
+    static salePersonSelectEle = $('#select-box-quotation-create-sale-person');
+
+    static loadBoxQuotationOpportunity(dataOpp = {}, sale_person = null, is_load_detail = false, is_copy = false) {
+        let ele = QuotationLoadDataHandle.opportunitySelectEle;
+        let data_filter = {}
+        if ($('#data-init-quotation-create-request-employee').val()) {
             let data_filter = {
                 'sale_person_id': sale_person,
                 'is_close_lost': false,
@@ -23,325 +24,374 @@ class loadDataHandle {
             } else {
                 data_filter['quotation__isnull'] = true;
             }
-            if (!ele[0].innerHTML || Object.keys(valueToSelect).length !== 0) {
-                $.fn.callAjax2({
-                        'url': url,
-                        'method': method,
-                        'data': data_filter,
-                        'isDropdown': true,
-                    }
-                ).then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list)) {
-                                ele.empty();
-                                if (Object.keys(valueToSelect).length !== 0) {
-                                    data.opportunity_list.push(valueToSelect);
-                                    // check opp has sale order or closed => disabled button copy to (Only for page quotation detail)
-                                    if (is_load_detail === true) {
-                                        if (!$('#frm_quotation_create')[0].classList.contains('sale-order')) {
-                                            if (valueToSelect.is_close_lost === true || valueToSelect.is_deal_close === true || valueToSelect.sale_order_id !== null) {
-                                                let btnCopy = document.getElementById('btn-copy-quotation');
-                                                let eleTooltipBtnCopy = document.getElementById('tooltip-btn-copy');
-                                                btnCopy.setAttribute('disabled', 'true');
-                                                eleTooltipBtnCopy.removeAttribute('data-bs-original-title');
-                                                eleTooltipBtnCopy.setAttribute('data-bs-placement', 'top');
-                                                eleTooltipBtnCopy.setAttribute('title', $.fn.transEle.attr('data-valid-btn-copy'));
-                                            }
-                                        }
-                                    }
-                                }
-                                let eleHTML = ``;
-                                data.opportunity_list.map(function (item) {
-                                    if (item.id) {
-                                        let dataStr = JSON.stringify({
-                                            'id': item.id,
-                                            'title': item.title,
-                                            'code': item.code,
-                                            'customer': item.customer?.title
-                                        }).replace(/"/g, "&quot;");
-                                        let opportunity_data = JSON.stringify(item).replace(/"/g, "&quot;");
-                                        let data_show = `${item.code}` + ` - ` + `${item.title}`;
-                                        eleHTML += `<option value="${item.id}">
-                                                        <span class="opp-title">${data_show}</span>
-                                                        <input type="hidden" class="data-default" value="${opportunity_data}">
-                                                        <input type="hidden" class="data-info" value="${dataStr}">
-                                                    </option>`
-                                        if (valueToSelect && valueToSelect.id === item.id) {
-                                            eleHTML += `<option value="${item.id}" selected>
-                                                            <span class="opp-title">${data_show}</span>
-                                                            <input type="hidden" class="data-default" value="${opportunity_data}">
-                                                            <input type="hidden" class="data-info" value="${dataStr}">
-                                                        </option>`
-                                        }
-                                    }})
-                                ele.append(`<option value=""></option>`);
-                                ele.append(eleHTML);
-                                self.loadInformationSelectBox(ele);
-                            }
-                        }
-                        // ReCheck Config when change Opportunity (If not load detail or is copy)
-                        if (is_load_detail === false || is_copy === true) {
-                            configClass.checkConfig(true, null, false, false, is_copy);
-                        }
-                    }
-                )
-            }
-        } else {
-            ele.append(`<option value=""></option>`);
-            // ReCheck Config when change Opportunity (If not load detail or is copy)
-            if (is_load_detail === false || is_copy === true) {
-                configClass.checkConfig(true, null, false, false, is_copy);
-            }
         }
-    }
+        ele.initSelect2({
+            data: dataOpp,
+            dataParams: data_filter,
+            disabled: !(ele.attr('data-url')),
+        });
 
-    loadBoxQuotationCustomer(valueToSelect = null, sale_person = null, is_load_detail = false) {
-        let self = this;
-        let ele = $('#select-box-quotation-create-customer');
-        let url = ele.attr('data-url');
-        let method = ele.attr('data-method');
-        if (!sale_person) {
-            sale_person = $('#select-box-quotation-create-sale-person').val(); // filter by sale_person
-        }
-        if (sale_person) {
-            let data_filter = {'employee__id': sale_person}
-            if (!ele[0].innerHTML || valueToSelect) {
-                $.fn.callAjax2({
-                        'url': url,
-                        'method': method,
-                        'data': data_filter,
-                        'isDropdown': true,
-                    }
-                ).then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            if (data.hasOwnProperty('account_sale_list') && Array.isArray(data.account_sale_list)) {
-                                self.loadShippingBillingCustomer();
-                                ele.empty();
-                                let dataAppend = ``;
-                                let dataSelected = ``;
-                                data.account_sale_list.map(function (item) {
-                                    let ownerName = "";
-                                    if (item.owner) {
-                                        ownerName = item.owner.fullname;
-                                    }
-                                    let dataStr = JSON.stringify({
-                                        'id': item.id,
-                                        'Name': item.name,
-                                        'Owner name': ownerName,
-                                    }).replace(/"/g, "&quot;");
-                                    let customer_data = JSON.stringify(item).replace(/"/g, "&quot;");
-                                    dataAppend += `<option value="${item.id}">
-                                                        <span class="account-title">${item.name}</span>
-                                                        <input type="hidden" class="data-default" value="${customer_data}">
-                                                        <input type="hidden" class="data-info" value="${dataStr}">
-                                                    </option>`;
-                                    if (item.id === valueToSelect) {
-                                        dataSelected = `<option value="${item.id}" selected>
-                                                        <span class="account-title">${item.name}</span>
-                                                        <input type="hidden" class="data-default" value="${customer_data}">
-                                                        <input type="hidden" class="data-info" value="${dataStr}">
-                                                    </option>`;
-                                        // load Shipping & Billing by Customer
-                                        self.loadShippingBillingCustomer(item);
-                                        // load Contact by Customer
-                                        if (item.id && item.owner) {
-                                            self.loadBoxQuotationContact(item.owner.id, item.id);
-                                        }
-                                        // load Payment Term by Customer
-                                        self.loadBoxQuotationPaymentTerm(item.payment_term_mapped.id);
-                                        // Store Account Price List
-                                        document.getElementById('customer-price-list').value = item.price_list_mapped.id;
-                                        // load again price of product by customer price list then Re Calculate
-                                        if (is_load_detail === false) {
-                                            self.loadDataProductAll();
-                                        }
-                                    }
-                                })
-                                ele.append(`<option value=""></option>`);
-                                if (dataSelected) { // if Value to select
-                                    if ($('#select-box-quotation-create-opportunity').val()) { // if page has Opp
-                                        ele.append(dataSelected);
-                                    } else { // if page no Opp
-                                        ele.append(dataSelected);
-                                        ele.append(dataAppend);
-                                    }
-                                } else { // if no Value to select
-                                    if (!valueToSelect) {
-                                        ele.append(dataAppend);
-                                    }
-                                    // load Contact no Customer
-                                    self.loadBoxQuotationContact();
-                                    // load Payment Term no Customer
-                                    self.loadBoxQuotationPaymentTerm();
-                                    // Store Account Price List
-                                    document.getElementById('customer-price-list').value = "";
-                                    // load again price of product by customer price list then Re Calculate
-                                    self.loadDataProductAll();
 
-                                }
-                                self.loadInformationSelectBox(ele);
-                            }
-                        }
-                    }
-                )
-            }
-        } else {
-            ele.append(`<option value=""></option>`);
-        }
+        // if (!sale_person) {
+        //     sale_person = $('#select-box-quotation-create-sale-person').val(); // filter by sale_person
+        // }
+        // if (sale_person) {
+        //     let data_filter = {
+        //         'sale_person_id': sale_person,
+        //         'is_close_lost': false,
+        //         'is_deal_close': false,
+        //     };
+        //     if ($('#frm_quotation_create')[0].classList.contains('sale-order')) {
+        //         data_filter['sale_order__isnull'] = true;
+        //     } else {
+        //         data_filter['quotation__isnull'] = true;
+        //     }
+        //     if (!ele[0].innerHTML || Object.keys(valueToSelect).length !== 0) {
+        //         $.fn.callAjax2({
+        //                 'url': url,
+        //                 'method': method,
+        //                 'data': data_filter,
+        //                 'isDropdown': true,
+        //             }
+        //         ).then(
+        //             (resp) => {
+        //                 let data = $.fn.switcherResp(resp);
+        //                 if (data) {
+        //                     if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list)) {
+        //                         ele.empty();
+        //                         if (Object.keys(valueToSelect).length !== 0) {
+        //                             data.opportunity_list.push(valueToSelect);
+        //                             // check opp has sale order or closed => disabled button copy to (Only for page quotation detail)
+        //                             if (is_load_detail === true) {
+        //                                 if (!$('#frm_quotation_create')[0].classList.contains('sale-order')) {
+        //                                     if (valueToSelect.is_close_lost === true || valueToSelect.is_deal_close === true || valueToSelect.sale_order_id !== null) {
+        //                                         let btnCopy = document.getElementById('btn-copy-quotation');
+        //                                         let eleTooltipBtnCopy = document.getElementById('tooltip-btn-copy');
+        //                                         btnCopy.setAttribute('disabled', 'true');
+        //                                         eleTooltipBtnCopy.removeAttribute('data-bs-original-title');
+        //                                         eleTooltipBtnCopy.setAttribute('data-bs-placement', 'top');
+        //                                         eleTooltipBtnCopy.setAttribute('title', $.fn.transEle.attr('data-valid-btn-copy'));
+        //                                     }
+        //                                 }
+        //                             }
+        //                         }
+        //                         let eleHTML = ``;
+        //                         data.opportunity_list.map(function (item) {
+        //                             if (item.id) {
+        //                                 let dataStr = JSON.stringify({
+        //                                     'id': item.id,
+        //                                     'title': item.title,
+        //                                     'code': item.code,
+        //                                     'customer': item.customer?.title
+        //                                 }).replace(/"/g, "&quot;");
+        //                                 let opportunity_data = JSON.stringify(item).replace(/"/g, "&quot;");
+        //                                 let data_show = `${item.code}` + ` - ` + `${item.title}`;
+        //                                 eleHTML += `<option value="${item.id}">
+        //                                                 <span class="opp-title">${data_show}</span>
+        //                                                 <input type="hidden" class="data-default" value="${opportunity_data}">
+        //                                                 <input type="hidden" class="data-info" value="${dataStr}">
+        //                                             </option>`
+        //                                 if (valueToSelect && valueToSelect.id === item.id) {
+        //                                     eleHTML += `<option value="${item.id}" selected>
+        //                                                     <span class="opp-title">${data_show}</span>
+        //                                                     <input type="hidden" class="data-default" value="${opportunity_data}">
+        //                                                     <input type="hidden" class="data-info" value="${dataStr}">
+        //                                                 </option>`
+        //                                 }
+        //                             }})
+        //                         ele.append(`<option value=""></option>`);
+        //                         ele.append(eleHTML);
+        //                         self.loadInformationSelectBox(ele);
+        //                     }
+        //                 }
+        //                 // ReCheck Config when change Opportunity (If not load detail or is copy)
+        //                 if (is_load_detail === false || is_copy === true) {
+        //                     configClass.checkConfig(true, null, false, false, is_copy);
+        //                 }
+        //             }
+        //         )
+        //     }
+        // } else {
+        //     ele.append(`<option value=""></option>`);
+        //     // ReCheck Config when change Opportunity (If not load detail or is copy)
+        //     if (is_load_detail === false || is_copy === true) {
+        //         configClass.checkConfig(true, null, false, false, is_copy);
+        //     }
+        // }
     };
 
-    loadBoxQuotationContact(valueToSelect = null, customerID = null) {
-        let self = this;
-        let ele = $('#select-box-quotation-create-contact');
-        let url = ele.attr('data-url');
-        let method = ele.attr('data-method');
-        if (customerID) {
-            $.fn.callAjax2({
-                    'url': url,
-                    'method': method,
-                    'data': {'account_name_id': customerID},
-                    'isDropdown': true,
-                }
-            ).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        if (data.hasOwnProperty('contact_list') && Array.isArray(data.contact_list)) {
-                            ele.empty();
-                            ele.append(`<option value=""></option>`);
-                            data.contact_list.map(function (item) {
-                                let dataStr = JSON.stringify({
-                                    'id': item.id,
-                                    'Name': item.fullname,
-                                    'Job title': item.job_title,
-                                    'Mobile': item.mobile,
-                                    'Email': item.email
-                                }).replace(/"/g, "&quot;");
-                                let dataAppend = `<option value="${item.id}">
-                                                <span class="contact-title">${item.fullname}</span>
-                                                <input type="hidden" class="data-info" value="${dataStr}">
-                                            </option>`
-                                if (item.id === valueToSelect) {
-                                    dataAppend = `<option value="${item.id}" selected>
-                                                <span class="contact-title">${item.fullname}</span>
-                                                <input type="hidden" class="data-info" value="${dataStr}">
-                                            </option>`;
-                                }
-                                ele.append(dataAppend);
-                            })
-                            self.loadInformationSelectBox(ele);
-                        }
-                    }
-                }
-            )
-        } else {
-            ele.empty();
-            ele.append(`<option value=""></option>`);
-        }
+    static loadBoxQuotationCustomer(dataCustomer = {}, sale_person = null, is_load_detail = false) {
+        let ele = QuotationLoadDataHandle.customerSelectEle;
+        ele.initSelect2({
+            data: dataCustomer,
+            // dataParams: data_filter,
+            disabled: !(ele.attr('data-url')),
+            callbackTextDisplay: function (item) {
+                return item?.['name'] || '';
+            },
+        });
+
+
+        // if (!sale_person) {
+        //     sale_person = $('#select-box-quotation-create-sale-person').val(); // filter by sale_person
+        // }
+        // if (sale_person) {
+        //     let data_filter = {'employee__id': sale_person}
+        //     if (!ele[0].innerHTML || valueToSelect) {
+        //         $.fn.callAjax2({
+        //                 'url': url,
+        //                 'method': method,
+        //                 'data': data_filter,
+        //                 'isDropdown': true,
+        //             }
+        //         ).then(
+        //             (resp) => {
+        //                 let data = $.fn.switcherResp(resp);
+        //                 if (data) {
+        //                     if (data.hasOwnProperty('account_sale_list') && Array.isArray(data.account_sale_list)) {
+        //                         self.loadShippingBillingCustomer();
+        //                         ele.empty();
+        //                         let dataAppend = ``;
+        //                         let dataSelected = ``;
+        //                         data.account_sale_list.map(function (item) {
+        //                             let ownerName = "";
+        //                             if (item.owner) {
+        //                                 ownerName = item.owner.fullname;
+        //                             }
+        //                             let dataStr = JSON.stringify({
+        //                                 'id': item.id,
+        //                                 'Name': item.name,
+        //                                 'Owner name': ownerName,
+        //                             }).replace(/"/g, "&quot;");
+        //                             let customer_data = JSON.stringify(item).replace(/"/g, "&quot;");
+        //                             dataAppend += `<option value="${item.id}">
+        //                                                 <span class="account-title">${item.name}</span>
+        //                                                 <input type="hidden" class="data-default" value="${customer_data}">
+        //                                                 <input type="hidden" class="data-info" value="${dataStr}">
+        //                                             </option>`;
+        //                             if (item.id === valueToSelect) {
+        //                                 dataSelected = `<option value="${item.id}" selected>
+        //                                                 <span class="account-title">${item.name}</span>
+        //                                                 <input type="hidden" class="data-default" value="${customer_data}">
+        //                                                 <input type="hidden" class="data-info" value="${dataStr}">
+        //                                             </option>`;
+        //                                 // load Shipping & Billing by Customer
+        //                                 self.loadShippingBillingCustomer(item);
+        //                                 // load Contact by Customer
+        //                                 if (item.id && item.owner) {
+        //                                     self.loadBoxQuotationContact(item.owner.id, item.id);
+        //                                 }
+        //                                 // load Payment Term by Customer
+        //                                 self.loadBoxQuotationPaymentTerm(item.payment_term_mapped.id);
+        //                                 // Store Account Price List
+        //                                 document.getElementById('customer-price-list').value = item.price_list_mapped.id;
+        //                                 // load again price of product by customer price list then Re Calculate
+        //                                 if (is_load_detail === false) {
+        //                                     self.loadDataProductAll();
+        //                                 }
+        //                             }
+        //                         })
+        //                         ele.append(`<option value=""></option>`);
+        //                         if (dataSelected) { // if Value to select
+        //                             if ($('#select-box-quotation-create-opportunity').val()) { // if page has Opp
+        //                                 ele.append(dataSelected);
+        //                             } else { // if page no Opp
+        //                                 ele.append(dataSelected);
+        //                                 ele.append(dataAppend);
+        //                             }
+        //                         } else { // if no Value to select
+        //                             if (!valueToSelect) {
+        //                                 ele.append(dataAppend);
+        //                             }
+        //                             // load Contact no Customer
+        //                             self.loadBoxQuotationContact();
+        //                             // load Payment Term no Customer
+        //                             self.loadBoxQuotationPaymentTerm();
+        //                             // Store Account Price List
+        //                             document.getElementById('customer-price-list').value = "";
+        //                             // load again price of product by customer price list then Re Calculate
+        //                             self.loadDataProductAll();
+        //
+        //                         }
+        //                         self.loadInformationSelectBox(ele);
+        //                     }
+        //                 }
+        //             }
+        //         )
+        //     }
+        // } else {
+        //     ele.append(`<option value=""></option>`);
+        // }
+    };
+
+    static loadBoxQuotationContact(dataContact = {}, customerID = null) {
+        let ele = QuotationLoadDataHandle.contactSelectEle;
+        ele.initSelect2({
+            data: dataContact,
+            // dataParams: data_filter,
+            disabled: !(ele.attr('data-url')),
+            callbackTextDisplay: function (item) {
+                return item?.['fullname'] || '';
+            },
+        });
+
+
+        // let url = ele.attr('data-url');
+        // let method = ele.attr('data-method');
+        // if (customerID) {
+        //     $.fn.callAjax2({
+        //             'url': url,
+        //             'method': method,
+        //             'data': {'account_name_id': customerID},
+        //             'isDropdown': true,
+        //         }
+        //     ).then(
+        //         (resp) => {
+        //             let data = $.fn.switcherResp(resp);
+        //             if (data) {
+        //                 if (data.hasOwnProperty('contact_list') && Array.isArray(data.contact_list)) {
+        //                     ele.empty();
+        //                     ele.append(`<option value=""></option>`);
+        //                     data.contact_list.map(function (item) {
+        //                         let dataStr = JSON.stringify({
+        //                             'id': item.id,
+        //                             'Name': item.fullname,
+        //                             'Job title': item.job_title,
+        //                             'Mobile': item.mobile,
+        //                             'Email': item.email
+        //                         }).replace(/"/g, "&quot;");
+        //                         let dataAppend = `<option value="${item.id}">
+        //                                         <span class="contact-title">${item.fullname}</span>
+        //                                         <input type="hidden" class="data-info" value="${dataStr}">
+        //                                     </option>`
+        //                         if (item.id === valueToSelect) {
+        //                             dataAppend = `<option value="${item.id}" selected>
+        //                                         <span class="contact-title">${item.fullname}</span>
+        //                                         <input type="hidden" class="data-info" value="${dataStr}">
+        //                                     </option>`;
+        //                         }
+        //                         ele.append(dataAppend);
+        //                     })
+        //                     self.loadInformationSelectBox(ele);
+        //                 }
+        //             }
+        //         }
+        //     )
+        // } else {
+        //     ele.empty();
+        //     ele.append(`<option value=""></option>`);
+        // }
     }
 
-    loadBoxQuotationSalePerson(valueToSelect = null, is_load_init = false) {
-        let self = this;
-        let ele = $('#select-box-quotation-create-sale-person');
-        let url = ele.attr('data-url');
-        let method = ele.attr('data-method');
-        $.fn.callAjax2({
-                'url': url,
-                'method': method,
-                'isDropdown': true,
-            }
-        ).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (data.hasOwnProperty('employee_list') && Array.isArray(data.employee_list)) {
-                        let initEmployee = $('#data-init-quotation-create-request-employee-id');
-                        if (initEmployee.val() && is_load_init === true) {
-                            valueToSelect = initEmployee.val();
-                        }
-                        let optionSelected = ``;
-                        ele.empty();
-                        ele.append(`<option value=""></option>`);
-                        data.employee_list.map(function (item) {
-                            let group = '';
-                            if (item.group) {
-                                group = item.group.title
-                            }
-                            let dataStr = JSON.stringify({
-                                'id': item.id,
-                                'Name': item.full_name,
-                                'Code': item.code,
-                                'Group': group
-                            }).replace(/"/g, "&quot;");
-                            if (valueToSelect && valueToSelect === item.id) {
-                                optionSelected = `<option value="${item.id}" selected>
-                                                        <span class="employee-title">${item.full_name}</span>
-                                                        <input type="hidden" class="data-info" value="${dataStr}">
-                                                    </option>`;
-                                ele.append(optionSelected);
-                            } else {
-                                ele.append(`<option value="${item.id}">
-                                                <span class="employee-title">${item.full_name}</span>
-                                                <input type="hidden" class="data-info" value="${dataStr}">
-                                            </option>`);
-                            }
-                        });
-                        if (is_load_init === false && valueToSelect) {
-                            ele.empty();
-                            ele.append(optionSelected);
-                        }
-                        self.loadInformationSelectBox(ele);
-                    }
-                }
-            }
-        )
+    static loadBoxQuotationPaymentTerm(dataPayment = null) {
+        let ele = QuotationLoadDataHandle.paymentSelectEle;
+        ele.initSelect2({
+            data: dataPayment,
+            // dataParams: data_filter,
+            disabled: !(ele.attr('data-url')),
+        });
+
+
+
+        // if (!ele[0].innerHTML || valueToSelect) {
+        //     $.fn.callAjax2({
+        //             'url': url,
+        //             'method': method,
+        //             'isDropdown': true,
+        //         }
+        //     ).then(
+        //         (resp) => {
+        //             let data = $.fn.switcherResp(resp);
+        //             if (data) {
+        //                 if (data.hasOwnProperty('payment_terms_list') && Array.isArray(data.payment_terms_list)) {
+        //                     ele.empty();
+        //                     ele.append(`<option value=""></option>`);
+        //                     data.payment_terms_list.map(function (item) {
+        //                         let dataStr = JSON.stringify(item).replace(/"/g, "&quot;");
+        //                         let option = `<option value="${item.id}">
+        //                                     <span class="opp-title">${item.title}</span>
+        //                                     <input type="hidden" class="data-info" value="${dataStr}">
+        //                                 </option>`
+        //                         if (valueToSelect && valueToSelect === item.id) {
+        //                             option = `<option value="${item.id}" selected>
+        //                                         <span class="opp-title">${item.title}</span>
+        //                                         <input type="hidden" class="data-info" value="${dataStr}">
+        //                                     </option>`;
+        //                         }
+        //                         ele.append(option);
+        //                     });
+        //                     self.loadInformationSelectBox(ele);
+        //                 }
+        //             }
+        //         }
+        //     )
+        // }
     }
 
-    loadBoxQuotationPaymentTerm(valueToSelect = null) {
-        let self = this;
-        let ele = $('#select-box-quotation-create-payment-term');
-        let url = ele.attr('data-url');
-        let method = ele.attr('data-method');
-        if (!ele[0].innerHTML || valueToSelect) {
-            $.fn.callAjax2({
-                    'url': url,
-                    'method': method,
-                    'isDropdown': true,
-                }
-            ).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        if (data.hasOwnProperty('payment_terms_list') && Array.isArray(data.payment_terms_list)) {
-                            ele.empty();
-                            ele.append(`<option value=""></option>`);
-                            data.payment_terms_list.map(function (item) {
-                                let dataStr = JSON.stringify(item).replace(/"/g, "&quot;");
-                                let option = `<option value="${item.id}">
-                                            <span class="opp-title">${item.title}</span>
-                                            <input type="hidden" class="data-info" value="${dataStr}">
-                                        </option>`
-                                if (valueToSelect && valueToSelect === item.id) {
-                                    option = `<option value="${item.id}" selected>
-                                                <span class="opp-title">${item.title}</span>
-                                                <input type="hidden" class="data-info" value="${dataStr}">
-                                            </option>`;
-                                }
-                                ele.append(option);
-                            });
-                            self.loadInformationSelectBox(ele);
-                        }
-                    }
-                }
-            )
-        }
+    static loadBoxQuotationSalePerson(dataSalePerson = {}, is_load_init = false) {
+        let ele = QuotationLoadDataHandle.salePersonSelectEle;
+        ele.initSelect2({
+            data: dataSalePerson,
+            disabled: !(ele.attr('data-url')),
+            callbackTextDisplay: function (item) {
+                return item?.['full_name'] || '';
+            },
+        });
+
+
+        // $.fn.callAjax2({
+        //         'url': url,
+        //         'method': method,
+        //         'isDropdown': true,
+        //     }
+        // ).then(
+        //     (resp) => {
+        //         let data = $.fn.switcherResp(resp);
+        //         if (data) {
+        //             if (data.hasOwnProperty('employee_list') && Array.isArray(data.employee_list)) {
+        //                 let initEmployee = $('#data-init-quotation-create-request-employee-id');
+        //                 if (initEmployee.val() && is_load_init === true) {
+        //                     valueToSelect = initEmployee.val();
+        //                 }
+        //                 let optionSelected = ``;
+        //                 ele.empty();
+        //                 ele.append(`<option value=""></option>`);
+        //                 data.employee_list.map(function (item) {
+        //                     let group = '';
+        //                     if (item.group) {
+        //                         group = item.group.title
+        //                     }
+        //                     let dataStr = JSON.stringify({
+        //                         'id': item.id,
+        //                         'Name': item.full_name,
+        //                         'Code': item.code,
+        //                         'Group': group
+        //                     }).replace(/"/g, "&quot;");
+        //                     if (valueToSelect && valueToSelect === item.id) {
+        //                         optionSelected = `<option value="${item.id}" selected>
+        //                                                 <span class="employee-title">${item.full_name}</span>
+        //                                                 <input type="hidden" class="data-info" value="${dataStr}">
+        //                                             </option>`;
+        //                         ele.append(optionSelected);
+        //                     } else {
+        //                         ele.append(`<option value="${item.id}">
+        //                                         <span class="employee-title">${item.full_name}</span>
+        //                                         <input type="hidden" class="data-info" value="${dataStr}">
+        //                                     </option>`);
+        //                     }
+        //                 });
+        //                 if (is_load_init === false && valueToSelect) {
+        //                     ele.empty();
+        //                     ele.append(optionSelected);
+        //                 }
+        //                 self.loadInformationSelectBox(ele);
+        //             }
+        //         }
+        //     }
+        // )
     }
 
-    loadBoxQuotationPrice() {
+    static loadBoxQuotationPrice() {
         let ele = $('#select-box-quotation-create-price-list');
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
@@ -369,7 +419,7 @@ class loadDataHandle {
         )
     }
 
-    loadInitQuotationProduct() {
+    static loadInitQuotationProduct() {
         let ele = $('#data-init-quotation-create-tables-product');
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
@@ -390,7 +440,7 @@ class loadDataHandle {
         )
     }
 
-    loadBoxQuotationProduct(box_id, valueToSelect = null) {
+    static loadBoxQuotationProduct(box_id, valueToSelect = null) {
         let self = this;
         let ele = document.getElementById('data-init-quotation-create-tables-product');
         let jqueryId = '#' + box_id;
@@ -451,7 +501,7 @@ class loadDataHandle {
         }
     }
 
-    loadInitQuotationUOM() {
+    static loadInitQuotationUOM() {
         let ele = $('#data-init-quotation-create-tables-uom');
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
@@ -472,7 +522,7 @@ class loadDataHandle {
         )
     }
 
-    loadBoxQuotationUOM(box_id, valueToSelect = null, uom_group = null) {
+    static loadBoxQuotationUOM(box_id, valueToSelect = null, uom_group = null) {
         let ele = document.getElementById('data-init-quotation-create-tables-uom');
         let jqueryId = '#' + box_id;
         let eleBox = $(jqueryId);
@@ -515,7 +565,7 @@ class loadDataHandle {
         }
     }
 
-    loadInitQuotationTax() {
+    static loadInitQuotationTax() {
         let ele = $('#data-init-quotation-create-tables-tax');
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
@@ -536,7 +586,7 @@ class loadDataHandle {
         )
     }
 
-    loadBoxQuotationTax(box_id, valueToSelect = null) {
+    static loadBoxQuotationTax(box_id, valueToSelect = null) {
         let ele = document.getElementById('data-init-quotation-create-tables-tax');
         let jqueryId = '#' + box_id;
         let eleBox = $(jqueryId);
@@ -565,7 +615,7 @@ class loadDataHandle {
         }
     }
 
-    loadInitQuotationExpense() {
+    static loadInitQuotationExpense() {
         let ele = $('#data-init-quotation-create-tables-expense');
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
@@ -586,7 +636,7 @@ class loadDataHandle {
         )
     }
 
-    loadBoxQuotationExpense(box_id, valueToSelect = null) {
+    static loadBoxQuotationExpense(box_id, valueToSelect = null) {
         let self = this;
         let ele = document.getElementById('data-init-quotation-create-tables-expense');
         let jqueryId = '#' + box_id;
@@ -652,7 +702,7 @@ class loadDataHandle {
         }
     }
 
-    loadBoxQuotationProductPurchasing(box_id, valueToSelect = null) {
+    static loadBoxQuotationProductPurchasing(box_id, valueToSelect = null) {
         let self = this;
         let ele = document.getElementById('data-init-quotation-create-tables-product');
         let jqueryId = '#' + box_id;
@@ -716,7 +766,7 @@ class loadDataHandle {
         }
     }
 
-    loadDataProductSelect(ele, is_change_item = true, is_expense = false) {
+    static loadDataProductSelect(ele, is_change_item = true, is_expense = false) {
         let self = this;
         let optionSelected = null;
         if (is_expense === false) { // PRODUCT
@@ -753,7 +803,7 @@ class loadDataHandle {
         $.fn.initMaskMoney2();
     }
 
-    loadInformationSelectBox(ele, is_expense = false) {
+    static loadInformationSelectBox(ele, is_expense = false) {
         let optionSelected = null;
         let dropdownContent = null;
         let eleInfo = null;
@@ -802,7 +852,7 @@ class loadDataHandle {
         }
     }
 
-    loadShippingBillingCustomer(item = null) {
+    static loadShippingBillingCustomer(item = null) {
         let modalShippingContent = $('#quotation-create-modal-shipping-body')[0].querySelector('.modal-body');
         if (modalShippingContent) {
             $(modalShippingContent).empty();
@@ -849,7 +899,7 @@ class loadDataHandle {
         }
     }
 
-    loadBoxSaleOrderQuotation(quotation_id, valueToSelect = null, opp_id = null, sale_person_id = null) {
+    static loadBoxSaleOrderQuotation(quotation_id, valueToSelect = null, opp_id = null, sale_person_id = null) {
         let self = this;
         let jqueryId = '#' + quotation_id;
         let ele = $(jqueryId);
@@ -896,7 +946,7 @@ class loadDataHandle {
         }
     }
 
-    loadAPIDetailQuotation(quotation_id, select_id) {
+    static loadAPIDetailQuotation(quotation_id, select_id) {
         let jqueryId = '#' + quotation_id;
         let ele = $(jqueryId);
         let url = ele.attr('data-url-detail').format_url_with_uuid(select_id);
@@ -911,7 +961,7 @@ class loadDataHandle {
         )
     }
 
-    loadTotal(data, is_product, is_cost, is_expense) {
+    static loadTotal(data, is_product, is_cost, is_expense) {
         let pretax = null;
         let tax = null;
         let total = null;
@@ -986,7 +1036,7 @@ class loadDataHandle {
         }
     }
 
-    loadDetailQuotation(data, is_copy = false) {
+    static loadDetailQuotation(data, is_copy = false) {
         let self = this;
         if (data.title && is_copy === false) {
             document.getElementById('quotation-create-title').value = data.title;
@@ -1078,7 +1128,7 @@ class loadDataHandle {
         self.loadTotal(data, false, false, true);
     }
 
-    loadDataProductAll() {
+    static loadDataProductAll() {
         let table = document.getElementById('datable-quotation-create-product');
         for (let i = 0; i < table.tBodies[0].rows.length; i++) {
             let row = table.tBodies[0].rows[i];
@@ -1086,12 +1136,12 @@ class loadDataHandle {
             if (eleItem) {
                 loadPriceProduct(eleItem);
                 // Re Calculate all data of rows & total
-                calculateClass.commonCalculate($(table), row, true, false, false);
+                QuotationCalculateCaseHandle.commonCalculate($(table), row, true, false, false);
             }
         }
     }
 
-    loadInitQuotationConfig(config_id, page_method) {
+    static loadInitQuotationConfig(config_id, page_method) {
         let jqueryId = '#' + config_id;
         let ele = $(jqueryId);
         if (ele.hasClass('quotation-config')) {
@@ -1112,14 +1162,14 @@ class loadDataHandle {
         }
     }
 
-    loadDataTablesAndDropDowns(data) {
+    static loadDataTablesAndDropDowns(data) {
         let self = this;
         self.loadDataTables(data);
         self.loadDropDowns();
         return true;
     };
 
-    loadDataTables(data, is_detail = false) {
+    static loadDataTables(data, is_detail = false) {
         let self = this;
         let tableProduct = $('#datable-quotation-create-product');
         let tableCost = $('#datable-quotation-create-cost');
@@ -1135,9 +1185,9 @@ class loadDataHandle {
         tableProduct.DataTable().clear().destroy();
         tableCost.DataTable().clear().destroy();
         tableExpense.DataTable().clear().destroy();
-        dataTableClass.dataTableProduct();
-        dataTableClass.dataTableCost();
-        dataTableClass.dataTableExpense();
+        QuotationDataTableHandle.dataTableProduct();
+        QuotationDataTableHandle.dataTableCost();
+        QuotationDataTableHandle.dataTableExpense();
         tableProduct.DataTable().rows.add(products_data).draw();
         tableCost.DataTable().rows.add(costs_data).draw();
         tableExpense.DataTable().rows.add(expenses_data).draw();
@@ -1151,7 +1201,7 @@ class loadDataHandle {
         }
     };
 
-    loadDropDowns() {
+    static loadDropDowns() {
         let self = this;
         let tableProduct = $('#datable-quotation-create-product');
         let tableCost = $('#datable-quotation-create-cost');
@@ -1204,7 +1254,7 @@ class loadDataHandle {
         }
     };
 
-    loadTableDisabled(table) {
+    static loadTableDisabled(table) {
         for (let ele of table[0].querySelectorAll('.table-row-item')) {
             ele.setAttribute('disabled', 'true');
             ele.classList.add('disabled-but-edit');
@@ -1233,8 +1283,10 @@ class loadDataHandle {
 }
 
 // DataTable
-class dataTableHandle {
-    dataTableProduct(data, is_load_detail = false) {
+class QuotationDataTableHandle {
+    static productInitEle = $('#data-init-quotation-create-tables-product');
+
+    static dataTableProduct(data, is_load_detail = false) {
         // init dataTable
         let $tables = $('#datable-quotation-create-product');
         $tables.DataTableDefault({
@@ -1287,6 +1339,10 @@ class dataTableHandle {
                                         <select 
                                         class="form-select table-row-item" 
                                         id="${selectProductID}"
+                                        data-url="${QuotationDataTableHandle.productInitEle.attr('data-url')}"
+                                        data-link-detail="${QuotationDataTableHandle.productInitEle.attr('data-link-detail')}"
+                                        data-method="${QuotationDataTableHandle.productInitEle.attr('data-method')}"
+                                        data-keyResp="product_sale_list"
                                         required>
                                             <option value="${row.product.id}">${row.product.title}</option>
                                         </select>
@@ -1664,7 +1720,7 @@ class dataTableHandle {
 
     }
 
-    dataTableCost(data, is_load_detail = false) {
+    static dataTableCost(data, is_load_detail = false) {
         // init dataTable
         let $tables = $('#datable-quotation-create-cost');
         $tables.DataTableDefault({
@@ -1875,7 +1931,7 @@ class dataTableHandle {
         });
     }
 
-    dataTableExpense(data, is_load_detail = false) {
+    static dataTableExpense(data, is_load_detail = false) {
         // init dataTable
         let $tables = $('#datable-quotation-create-expense');
         $tables.DataTableDefault({
@@ -2198,7 +2254,7 @@ class dataTableHandle {
         });
     }
 
-    dataTablePromotion(data) {
+    static dataTablePromotion(data) {
         // init dataTable
         let $tables = $('#datable-quotation-create-promotion');
         $tables.DataTableDefault({
@@ -2241,7 +2297,7 @@ class dataTableHandle {
         });
     }
 
-    loadTableQuotationPromotion(promotion_id, customer_id = null, is_submit_check = false) {
+    static loadTableQuotationPromotion(promotion_id, customer_id = null, is_submit_check = false) {
         let self = this;
         let jqueryId = '#' + promotion_id;
         let ele = $(jqueryId);
@@ -2285,7 +2341,7 @@ class dataTableHandle {
                                                 if (item.id === rowPromotion.getAttribute('data-id')) {
                                                     // Delete Promotion Row & ReCalculate Total
                                                     deletePromotionRows($(tableProduct), true, false);
-                                                    calculateClass.updateTotal(tableProduct[0], true, false, false);
+                                                    QuotationCalculateCaseHandle.updateTotal(tableProduct[0], true, false, false);
                                                     return true
                                                 } else {
                                                     return true
@@ -2308,7 +2364,7 @@ class dataTableHandle {
         return true
     }
 
-    dataTableCopyQuotation(data) {
+    static dataTableCopyQuotation(data) {
         // init dataTable
         let $tables = $('#datable-copy-quotation');
         $tables.DataTableDefault({
@@ -2353,7 +2409,7 @@ class dataTableHandle {
         });
     }
 
-    loadTableCopyQuotation(opp_id = null, sale_person_id = null) {
+    static loadTableCopyQuotation(opp_id = null, sale_person_id = null) {
         let self = this;
         let ele = $('#data-init-copy-quotation');
         let url = ele.attr('data-url');
@@ -2391,7 +2447,7 @@ class dataTableHandle {
         }
     }
 
-    dataTableCopyQuotationProduct(data) {
+    static dataTableCopyQuotationProduct(data) {
         // init dataTable
         let $tables = $('#datable-copy-quotation-product');
         $tables.DataTableDefault({
@@ -2448,7 +2504,7 @@ class dataTableHandle {
         });
     }
 
-    dataTableShipping(data) {
+    static dataTableShipping(data) {
         // init dataTable
         let $tables = $('#datable-quotation-create-shipping');
         $tables.DataTableDefault({
@@ -2492,7 +2548,7 @@ class dataTableHandle {
         });
     }
 
-    loadTableQuotationShipping(shipping_id) {
+    static loadTableQuotationShipping(shipping_id) {
         let self = this;
         let jqueryId = '#' + shipping_id;
         let ele = $(jqueryId);
@@ -2544,11 +2600,9 @@ class dataTableHandle {
     }
 }
 
-let dataTableClass = new dataTableHandle();
-
 // Calculate
-class calculateCaseHandle {
-    updateTotal(table, is_product, is_cost, is_expense) {
+class QuotationCalculateCaseHandle {
+    static updateTotal(table, is_product, is_cost, is_expense) {
         let pretaxAmount = 0;
         let discountAmount = 0;
         let taxAmount = 0;
@@ -2656,7 +2710,7 @@ class calculateCaseHandle {
         $.fn.initMaskMoney2();
     }
 
-    calculate(row) {
+    static calculate(row) {
         let price = 0;
         let quantity = 0;
         let elePrice = row.querySelector('.table-row-price');
@@ -2731,7 +2785,7 @@ class calculateCaseHandle {
         $.fn.initMaskMoney2();
     }
 
-    commonCalculate(table, row, is_product = false, is_cost = false, is_expense = false) {
+    static commonCalculate(table, row, is_product = false, is_cost = false, is_expense = false) {
         let self = this;
         self.calculate(row);
         // calculate total
@@ -2746,8 +2800,6 @@ class calculateCaseHandle {
     }
 
 }
-
-let calculateClass = new calculateCaseHandle();
 
 // Config
 class checkConfigHandle {
@@ -2770,7 +2822,7 @@ class checkConfigHandle {
                                 is_make_price_change = self.reCheckTable(config, row, true, false, is_make_price_change);
                                 // Re Calculate all data of rows & total
                                 if (is_copy === false) {
-                                    calculateClass.commonCalculate($(tableProduct), row, true, false, false);
+                                    QuotationCalculateCaseHandle.commonCalculate($(tableProduct), row, true, false, false);
                                 }
                             }
                         }
@@ -2789,7 +2841,7 @@ class checkConfigHandle {
                     }
                     // ReCalculate Total
                     if (is_first_time === false && is_copy === false) {
-                        calculateClass.updateTotal(tableProduct, true, false, false);
+                        QuotationCalculateCaseHandle.updateTotal(tableProduct, true, false, false);
                     }
                 } else {
                     if (new_row) {
@@ -2818,7 +2870,7 @@ class checkConfigHandle {
                                 is_make_price_change = self.reCheckTable(config, row, false, true, is_make_price_change);
                                 // Re Calculate all data of rows & total
                                 if (is_copy === false) {
-                                    calculateClass.commonCalculate($(tableProduct), row, true, false, false);
+                                    QuotationCalculateCaseHandle.commonCalculate($(tableProduct), row, true, false, false);
                                 }
                             }
                         }
@@ -2837,7 +2889,7 @@ class checkConfigHandle {
                     }
                     // ReCalculate Total
                     if (is_first_time === false && is_copy === false) {
-                        calculateClass.updateTotal(tableProduct, true, false, false);
+                        QuotationCalculateCaseHandle.updateTotal(tableProduct, true, false, false);
                     }
                 } else {
                     if (new_row) {
@@ -2982,8 +3034,8 @@ class indicatorHandle {
 let indicatorClass = new indicatorHandle();
 
 // Submit Form
-class submitHandle {
-    setupDataProduct() {
+class QuotationSubmitHandle {
+    static setupDataProduct() {
         let result = [];
         let table = document.getElementById('datable-quotation-create-product');
         let tableEmpty = table.querySelector('.dataTables_empty');
@@ -3190,7 +3242,7 @@ class submitHandle {
         return result
     }
 
-    setupDataCost() {
+    static setupDataCost() {
         let result = [];
         let table = document.getElementById('datable-quotation-create-cost');
         let tableEmpty = table.querySelector('.dataTables_empty');
@@ -3315,7 +3367,7 @@ class submitHandle {
         return result
     }
 
-    setupDataExpense() {
+    static setupDataExpense() {
         let result = [];
         let table = document.getElementById('datable-quotation-create-expense');
         let tableEmpty = table.querySelector('.dataTables_empty');
@@ -3408,14 +3460,14 @@ class submitHandle {
         return result
     }
 
-    setupDataLogistic() {
+    static setupDataLogistic() {
         return {
             'shipping_address': $('#quotation-create-shipping-address').val(),
             'billing_address': $('#quotation-create-billing-address').val(),
         }
     }
 
-    setupDataIndicator() {
+    static setupDataIndicator() {
         let result = [];
         let tableIndicator = document.getElementById('datable-quotation-create-indicator');
         let tableEmpty = tableIndicator.querySelector('.dataTables_empty');
@@ -3450,7 +3502,7 @@ class submitHandle {
         return result
     }
 
-    setupDataSubmit(_form, is_sale_order = false) {
+    static setupDataSubmit(_form, is_sale_order = false) {
         let self = this;
         let quotation_products_data = 'quotation_products_data';
         let quotation_costs_data = 'quotation_costs_data';

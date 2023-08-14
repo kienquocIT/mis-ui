@@ -3,37 +3,38 @@ $(function () {
 
     $(document).ready(function () {
 
-        let loadDataClass = new loadDataHandle();
-        let dataTableClass = new dataTableHandle();
-        let calculateClass = new calculateCaseHandle();
-        let submitClass = new submitHandle();
         let promotionClass = new promotionHandle();
         let shippingClass = new shippingHandle();
         let configClass = new checkConfigHandle();
-
+        // Elements
         let formSubmit = $('#frm_quotation_create');
-
         let boxOpportunity = $('#select-box-quotation-create-opportunity');
         let boxCustomer = $('#select-box-quotation-create-customer');
-        let boxContact = $('#select-box-quotation-create-contact');
         let boxSalePerson = $('#select-box-quotation-create-sale-person');
         let boxPriceList = $('#select-box-quotation-create-price-list');
         let boxPaymentTerm = $('#select-box-quotation-create-payment-term');
         let boxQuotation = $('#select-box-quotation');
         let tabPrice = $('#tab_terms');
-        loadDataClass.loadBoxQuotationSalePerson(null, true);
-        loadDataClass.loadInitQuotationProduct();
-        loadDataClass.loadInitQuotationUOM();
-        loadDataClass.loadInitQuotationTax();
-        loadDataClass.loadInitQuotationExpense();
+
+        // Load init
+        QuotationLoadDataHandle.loadBoxQuotationOpportunity();
+        QuotationLoadDataHandle.loadBoxQuotationCustomer();
+        QuotationLoadDataHandle.loadBoxQuotationContact();
+        QuotationLoadDataHandle.loadBoxQuotationPaymentTerm();
+        QuotationLoadDataHandle.loadBoxQuotationSalePerson(JSON.parse($('#data-init-quotation-create-request-employee').val()));
+
+        QuotationLoadDataHandle.loadInitQuotationProduct();
+        QuotationLoadDataHandle.loadInitQuotationUOM();
+        QuotationLoadDataHandle.loadInitQuotationTax();
+        QuotationLoadDataHandle.loadInitQuotationExpense();
         // load config
-        loadDataClass.loadInitQuotationConfig('quotation-config-data', formSubmit.attr('data-method'));
+        QuotationLoadDataHandle.loadInitQuotationConfig('quotation-config-data', formSubmit.attr('data-method'));
         // load first time indicator
         indicatorClass.loadQuotationIndicator('quotation-indicator-data', true);
 
-        dataTableClass.dataTableProduct();
-        dataTableClass.dataTableCost();
-        dataTableClass.dataTableExpense();
+        QuotationDataTableHandle.dataTableProduct();
+        QuotationDataTableHandle.dataTableCost();
+        QuotationDataTableHandle.dataTableExpense();
         let tableProduct = $('#datable-quotation-create-product');
         let tableCost = $('#datable-quotation-create-cost');
         let tableExpense = $('#datable-quotation-create-expense');
@@ -59,28 +60,21 @@ $(function () {
         });
         $('.daterangepicker').remove();
 
-// Action on click dropdown opportunity
-        boxOpportunity.on('click', function () {
-            loadDataClass.loadBoxQuotationOpportunity();
-        });
-
 // Action on change dropdown opportunity
         boxOpportunity.on('change', function () {
-            let eleData = $(this)[0].options[$(this)[0].selectedIndex].querySelector('.data-default');
-            if (eleData) {
-                let data = JSON.parse(eleData.value);
-                if (data.customer) {
-                    let valueToSelect = data.customer.id;
-                    loadDataClass.loadBoxQuotationCustomer(valueToSelect);
-                }
+            let dataSelected = SelectDDControl.get_data_from_idx(boxOpportunity, $(this).val());
+            if (dataSelected) {
+                QuotationLoadDataHandle.loadBoxQuotationCustomer();
+                QuotationLoadDataHandle.loadBoxQuotationCustomer(dataSelected.customer);
+                boxCustomer.change();
                 // Load again dropdown sale_person only valueSelected
-                loadDataClass.loadBoxQuotationSalePerson($('#select-box-quotation-create-sale-person').val());
+                QuotationLoadDataHandle.loadBoxQuotationSalePerson($('#select-box-quotation-create-sale-person').val());
             } else { // No Value => load again dropdowns
                 $('#select-box-quotation-create-customer').empty();
-                loadDataClass.loadBoxQuotationCustomer(null);
-                loadDataClass.loadBoxQuotationSalePerson($('#select-box-quotation-create-sale-person').val(), true);
+                QuotationLoadDataHandle.loadBoxQuotationCustomer(null);
+                QuotationLoadDataHandle.loadBoxQuotationSalePerson($('#select-box-quotation-create-sale-person').val(), true);
             }
-            loadDataClass.loadInformationSelectBox($(this));
+            QuotationLoadDataHandle.loadInformationSelectBox($(this));
             // Delete all promotion rows
             deletePromotionRows(tableProduct, true, false);
             // Delete all shipping rows
@@ -89,65 +83,45 @@ $(function () {
             configClass.checkConfig(true);
         });
 
-// Action on click dropdown customer
-        boxCustomer.on('click', function() {
-            loadDataClass.loadBoxQuotationCustomer(null);
-        });
-
 // Action on change dropdown customer
         boxCustomer.on('change', function () {
-            let optionSelected = boxCustomer[0].options[boxCustomer[0].selectedIndex];
-            if (optionSelected) {
-                loadDataClass.loadShippingBillingCustomer();
-                if (optionSelected.querySelector('.data-default')) {
-                    let data = JSON.parse(optionSelected.querySelector('.data-default').value);
-                    // load Shipping & Billing by Customer
-                    loadDataClass.loadShippingBillingCustomer(data);
-                    // load Contact by Customer
-                    if (data.id && data.owner) {
-                        loadDataClass.loadBoxQuotationContact(data.owner.id, data.id);
-                    }
-                    // load Payment Term by Customer
-                    loadDataClass.loadBoxQuotationPaymentTerm(data.payment_term_mapped.id);
-                    // Store Account Price List
-                    if (Object.keys(data.price_list_mapped).length !== 0) {
-                        document.getElementById('customer-price-list').value = data.price_list_mapped.id;
-                    }
-                    // Load again dropdown sale_person only valueSelected
-                    loadDataClass.loadBoxQuotationSalePerson($('#select-box-quotation-create-sale-person').val());
-                } else { // No Value => load again dropdowns
-                    loadDataClass.loadBoxQuotationContact();
-                    loadDataClass.loadBoxQuotationPaymentTerm();
-                    document.getElementById('customer-price-list').value = "";
-                    if (!$('#select-box-quotation-create-opportunity').val()) {
-                        loadDataClass.loadBoxQuotationSalePerson($('#select-box-quotation-create-sale-person').val(), true);
-                    }
+            let dataSelected = SelectDDControl.get_data_from_idx(boxCustomer, $(this).val());
+            if (dataSelected) {
+                QuotationLoadDataHandle.loadShippingBillingCustomer();
+                // load Shipping & Billing by Customer
+                QuotationLoadDataHandle.loadShippingBillingCustomer(dataSelected);
+                // load Contact by Customer
+                QuotationLoadDataHandle.loadBoxQuotationContact();
+                QuotationLoadDataHandle.loadBoxQuotationContact(dataSelected.owner, dataSelected.id);
+                // load Payment Term by Customer
+                QuotationLoadDataHandle.loadBoxQuotationPaymentTerm();
+                QuotationLoadDataHandle.loadBoxQuotationPaymentTerm(dataSelected.payment_term_mapped);
+                // Store Account Price List
+                if (Object.keys(dataSelected.price_list_mapped).length !== 0) {
+                    document.getElementById('customer-price-list').value = dataSelected.price_list_mapped.id;
+                }
+                // Load again dropdown sale_person only valueSelected
+                QuotationLoadDataHandle.loadBoxQuotationSalePerson($('#select-box-quotation-create-sale-person').val());
+            } else { // No Value => load again dropdowns
+                QuotationLoadDataHandle.loadBoxQuotationContact();
+                QuotationLoadDataHandle.loadBoxQuotationPaymentTerm();
+                document.getElementById('customer-price-list').value = "";
+                if (!$('#select-box-quotation-create-opportunity').val()) {
+                    QuotationLoadDataHandle.loadBoxQuotationSalePerson($('#select-box-quotation-create-sale-person').val(), true);
                 }
             }
-            loadDataClass.loadInformationSelectBox($(this));
+            QuotationLoadDataHandle.loadInformationSelectBox($(this));
             // Delete all promotion rows
             deletePromotionRows(tableProduct, true, false);
             // Delete all shipping rows
             deletePromotionRows(tableProduct, false, true);
             // load again price of product by customer price list then Re Calculate
-            loadDataClass.loadDataProductAll();
+            QuotationLoadDataHandle.loadDataProductAll();
         });
-
-// Action on click dropdown contact
-//         boxContact.on('click', function(e) {
-//             if (!$(this)[0].innerHTML) {
-//                 loadDataClass.loadBoxQuotationContact('select-box-quotation-create-contact');
-//             }
-//         });
-
-// Action on change dropdown contact
-//         boxContact.on('change', function (e) {
-//             loadDataClass.loadInformationSelectBox($(this));
-//         });
 
 // Action on change dropdown sale person
         boxSalePerson.on('change', function () {
-            loadDataClass.loadInformationSelectBox($(this));
+            QuotationLoadDataHandle.loadInformationSelectBox($(this));
             // clear Customer box & Opportunity box & Contact box & PaymentTerm box & PriceListVal
             $('#select-box-quotation-create-customer').empty();
             $('#select-box-quotation-create-opportunity').empty();
@@ -159,7 +133,7 @@ $(function () {
             // Delete all shipping rows
             deletePromotionRows(tableProduct, false, true);
             // load again price of product by customer price list then Re Calculate
-            loadDataClass.loadDataProductAll();
+            QuotationLoadDataHandle.loadDataProductAll();
             // ReCheck Config when change Opportunity
             configClass.checkConfig(true);
         });
@@ -167,19 +141,14 @@ $(function () {
 // Action on click dropdown price list
         tabPrice.on('click', function() {
             if (!boxPriceList[0].innerHTML) {
-                loadDataClass.loadBoxQuotationPrice();
+                QuotationLoadDataHandle.loadBoxQuotationPrice();
             }
         });
 
 // Action on click dropdown payment term
         boxPaymentTerm.on('click', function() {
-            loadDataClass.loadBoxQuotationPaymentTerm();
+            QuotationLoadDataHandle.loadBoxQuotationPaymentTerm();
         });
-
-// Action on change dropdown payment term
-//         boxPaymentTerm.on('change', function(e) {
-//             loadDataClass.loadInformationSelectBox($(this));
-//         });
 
 // Action on click dropdown contact
         boxQuotation.on('click', function() {
@@ -192,7 +161,7 @@ $(function () {
                 if (boxSalePerson.val()) {
                     sale_person_id = boxSalePerson.val()
                 }
-                loadDataClass.loadBoxSaleOrderQuotation('select-box-quotation', null, opp_id, sale_person_id);
+                QuotationLoadDataHandle.loadBoxSaleOrderQuotation('select-box-quotation', null, opp_id, sale_person_id);
             }
         });
 
@@ -204,7 +173,7 @@ $(function () {
             // Delete all shipping rows
             deletePromotionRows(tableProduct, false, true);
             // ReCalculate Total
-            calculateClass.updateTotal(tableProduct[0], true, false, false);
+            QuotationCalculateCaseHandle.updateTotal(tableProduct[0], true, false, false);
             let order = 1;
             let tableEmpty = tableProduct[0].querySelector('.dataTables_empty');
             let tableLen = tableProduct[0].tBodies[0].rows.length;
@@ -254,9 +223,9 @@ $(function () {
             let selectProductID = 'quotation-create-product-box-product-' + String(order);
             let selectUOMID = 'quotation-create-product-box-uom-' + String(order);
             let selectTaxID = 'quotation-create-product-box-tax-' + String(order);
-            loadDataClass.loadBoxQuotationProduct(selectProductID);
-            loadDataClass.loadBoxQuotationUOM(selectUOMID);
-            loadDataClass.loadBoxQuotationTax(selectTaxID);
+            QuotationLoadDataHandle.loadBoxQuotationProduct(selectProductID);
+            QuotationLoadDataHandle.loadBoxQuotationUOM(selectUOMID);
+            QuotationLoadDataHandle.loadBoxQuotationTax(selectTaxID);
             // Clear table COST if add new row Product
             tableCost.DataTable().clear().draw();
             document.getElementById('quotation-create-cost-pretax-amount').innerHTML = "0";
@@ -274,7 +243,7 @@ $(function () {
             // Delete all shipping rows
             deletePromotionRows(tableProduct, false, true);
             // ReCalculate Total
-            calculateClass.updateTotal(tableProduct[0], true, false, false)
+            QuotationCalculateCaseHandle.updateTotal(tableProduct[0], true, false, false)
         });
 
 // Action on click price list's option
@@ -287,7 +256,7 @@ $(function () {
                     if (elePrice) {
                         $(elePrice).attr('value', String(priceValRaw));
                         $.fn.initMaskMoney2();
-                        calculateClass.commonCalculate(tableProduct, row, true, false, false);
+                        QuotationCalculateCaseHandle.commonCalculate(tableProduct, row, true, false, false);
                     }
                     // make button option checked
                     let allOption = $(row).find('.table-row-price-option');
@@ -303,7 +272,7 @@ $(function () {
         tableProduct.on('change', '.table-row-item, .table-row-quantity, .table-row-price, .table-row-tax, .table-row-discount', function () {
             let row = $(this)[0].closest('tr');
             if ($(this).hasClass('table-row-item')) {
-                loadDataClass.loadDataProductSelect($(this));
+                QuotationLoadDataHandle.loadDataProductSelect($(this));
             }
             // Clear table COST if item or quantity change
             if ($(this).hasClass('table-row-item') || $(this).hasClass('table-row-quantity') || $(this).hasClass('table-row-tax')) {
@@ -317,7 +286,7 @@ $(function () {
             // Delete all shipping rows
             deletePromotionRows(tableProduct, false, true);
             // Re Calculate all data of rows & total
-            calculateClass.commonCalculate(tableProduct, row, true, false, false);
+            QuotationCalculateCaseHandle.commonCalculate(tableProduct, row, true, false, false);
         });
 
 // If change product uom then clear table COST
@@ -349,9 +318,9 @@ $(function () {
             // Calculate with discount on Total
             for (let i = 0; i < tableProduct[0].tBodies[0].rows.length; i++) {
                 let row = tableProduct[0].tBodies[0].rows[i];
-                calculateClass.calculate(row);
+                QuotationCalculateCaseHandle.calculate(row);
             }
-            calculateClass.updateTotal(tableProduct[0], true, false, false)
+            QuotationCalculateCaseHandle.updateTotal(tableProduct[0], true, false, false)
         });
 
 // Action on click button add expense
@@ -403,10 +372,10 @@ $(function () {
             let selectExpenseID = 'quotation-create-expense-box-expense-' + String(order);
             let selectUOMID = 'quotation-create-expense-box-uom-' + String(order);
             let selectTaxID = 'quotation-create-expense-box-tax-' + String(order);
-            loadDataClass.loadBoxQuotationExpense(selectExpenseID);
-            loadDataClass.loadBoxQuotationProductPurchasing(selectExpenseID);
-            loadDataClass.loadBoxQuotationUOM(selectUOMID);
-            loadDataClass.loadBoxQuotationTax(selectTaxID);
+            QuotationLoadDataHandle.loadBoxQuotationExpense(selectExpenseID);
+            QuotationLoadDataHandle.loadBoxQuotationProductPurchasing(selectExpenseID);
+            QuotationLoadDataHandle.loadBoxQuotationUOM(selectUOMID);
+            QuotationLoadDataHandle.loadBoxQuotationTax(selectTaxID);
 
             // check disable
             tableExpense.find('.disabled-but-edit').removeAttr('disabled').removeClass('disabled-but-edit');
@@ -430,7 +399,7 @@ $(function () {
                     }
                     $(this).addClass('option-btn-checked');
                     // load data expense selected
-                    loadDataClass.loadDataProductSelect($(eleExpenseDropdown), true, true);
+                    QuotationLoadDataHandle.loadDataProductSelect($(eleExpenseDropdown), true, true);
                 }
             }
         });
@@ -444,28 +413,28 @@ $(function () {
                 let otherCheckbox = $(this)[0].closest('tr').querySelector('.checkbox-purchasing-item');
                 if ($(this)[0].checked === true) {
                     if (otherCheckbox.checked === true) {
-                        loadDataClass.loadBoxQuotationExpense(eleExpenseDropDownID);
-                        loadDataClass.loadBoxQuotationProductPurchasing(eleExpenseDropDownID);
+                        QuotationLoadDataHandle.loadBoxQuotationExpense(eleExpenseDropDownID);
+                        QuotationLoadDataHandle.loadBoxQuotationProductPurchasing(eleExpenseDropDownID);
                     } else if (otherCheckbox.checked === false) {
-                        loadDataClass.loadBoxQuotationExpense(eleExpenseDropDownID);
+                        QuotationLoadDataHandle.loadBoxQuotationExpense(eleExpenseDropDownID);
                     }
                 } else if ($(this)[0].checked === false) {
                     if (otherCheckbox.checked === true) {
-                        loadDataClass.loadBoxQuotationProductPurchasing(eleExpenseDropDownID);
+                        QuotationLoadDataHandle.loadBoxQuotationProductPurchasing(eleExpenseDropDownID);
                     }
                 }
            } else if ($(this).hasClass('checkbox-purchasing-item')) {
                 let otherCheckbox = $(this)[0].closest('tr').querySelector('.checkbox-expense-item');
                 if ($(this)[0].checked === true) {
                     if (otherCheckbox.checked === true) {
-                        loadDataClass.loadBoxQuotationExpense(eleExpenseDropDownID);
-                        loadDataClass.loadBoxQuotationProductPurchasing(eleExpenseDropDownID);
+                        QuotationLoadDataHandle.loadBoxQuotationExpense(eleExpenseDropDownID);
+                        QuotationLoadDataHandle.loadBoxQuotationProductPurchasing(eleExpenseDropDownID);
                     } else if (otherCheckbox.checked === false) {
-                        loadDataClass.loadBoxQuotationProductPurchasing(eleExpenseDropDownID);
+                        QuotationLoadDataHandle.loadBoxQuotationProductPurchasing(eleExpenseDropDownID);
                     }
                 } else if ($(this)[0].checked === false) {
                     if (otherCheckbox.checked === true) {
-                        loadDataClass.loadBoxQuotationExpense(eleExpenseDropDownID);
+                        QuotationLoadDataHandle.loadBoxQuotationExpense(eleExpenseDropDownID);
                     }
                 }
            }
@@ -476,7 +445,7 @@ $(function () {
             e.stopPropagation();
             e.stopImmediatePropagation();
             deleteRow($(this).closest('tr'), $(this)[0].closest('tbody'), tableExpense);
-            calculateClass.updateTotal(tableExpense[0], false, false, true)
+            QuotationCalculateCaseHandle.updateTotal(tableExpense[0], false, false, true)
         });
 
 // Action on click price list's option
@@ -488,7 +457,7 @@ $(function () {
                 if (elePrice) {
                     $(elePrice).attr('value', String(priceValRaw));
                     $.fn.initMaskMoney2();
-                    calculateClass.commonCalculate(tableExpense, row, false, false, true);
+                    QuotationCalculateCaseHandle.commonCalculate(tableExpense, row, false, false, true);
                 }
             }
         });
@@ -497,9 +466,8 @@ $(function () {
         tableExpense.on('change', '.table-row-item, .table-row-quantity, .table-row-price, .table-row-tax', function () {
             let row = $(this)[0].closest('tr');
             if ($(this).hasClass('table-row-item')) {
-                // loadDataClass.loadDataProductSelect($(this));
             }
-            calculateClass.commonCalculate(tableExpense, row, false, false, true);
+            QuotationCalculateCaseHandle.commonCalculate(tableExpense, row, false, false, true);
         });
 
 // Action on click tab cost (clear table cost & copy product data -> cost data)
@@ -609,9 +577,9 @@ $(function () {
                             "product_subtotal_price": valueSubtotal
                         }
                         tableCost.DataTable().row.add(dataAdd).draw();
-                        loadDataClass.loadBoxQuotationProduct(selectProductID, valueProduct);
-                        loadDataClass.loadBoxQuotationUOM(selectUOMID, valueUOM, valueUOMGroup);
-                        loadDataClass.loadBoxQuotationTax(selectTaxID, valueTax);
+                        QuotationLoadDataHandle.loadBoxQuotationProduct(selectProductID, valueProduct);
+                        QuotationLoadDataHandle.loadBoxQuotationUOM(selectUOMID, valueUOM, valueUOMGroup);
+                        QuotationLoadDataHandle.loadBoxQuotationTax(selectTaxID, valueTax);
                     } else if (shipping) { // SHIPPING
                         let shippingID = shipping.getAttribute('data-id');
                         let shippingTitle = shipping.value;
@@ -660,7 +628,7 @@ $(function () {
                     }
                 }
                 // update total
-                calculateClass.updateTotal(tableCost[0], false, true, false);
+                QuotationCalculateCaseHandle.updateTotal(tableCost[0], false, true, false);
                 // check disable
                 tableCost.find('.disabled-but-edit').removeAttr('disabled').removeClass('disabled-but-edit');
             }
@@ -669,7 +637,7 @@ $(function () {
 // ******** Action on change data of table row COST => calculate data for row & calculate data total
         tableCost.on('change', '.table-row-item, .table-row-quantity, .table-row-price, .table-row-tax', function () {
             let row = $(this)[0].closest('tr');
-            calculateClass.commonCalculate(tableCost, row, false, true, false);
+            QuotationCalculateCaseHandle.commonCalculate(tableCost, row, false, true, false);
         });
 
 // Action on click button collapse
@@ -693,7 +661,7 @@ $(function () {
                 // Delete all shipping rows
                 deletePromotionRows(tableProduct, false, true);
                 // ReCalculate Total
-                calculateClass.updateTotal(tableProduct[0], true, false, false);
+                QuotationCalculateCaseHandle.updateTotal(tableProduct[0], true, false, false);
             }
         });
 
@@ -728,14 +696,14 @@ $(function () {
                 if (boxSalePerson.val()) {
                     sale_person_id = boxSalePerson.val()
                 }
-                dataTableClass.loadTableCopyQuotation(opp_id, sale_person_id);
+                QuotationDataTableHandle.loadTableCopyQuotation(opp_id, sale_person_id);
             } else if (type === 'copy-to') {
                 // load data product for table datable-copy-quotation-product
                 let dataCopy = JSON.parse($('#data-copy-quotation-detail')[0].value);
                 tableCopyQuotationProduct.DataTable().destroy();
                 // Filter all data is not Promotion from quotation_products_data
                 let finalList = filterDataProductNotPromotion(dataCopy.quotation_products_data);
-                dataTableClass.dataTableCopyQuotationProduct(finalList);
+                QuotationDataTableHandle.dataTableCopyQuotationProduct(finalList);
             }
         });
 
@@ -743,7 +711,7 @@ $(function () {
         tableCopyQuotation.on('click', '.table-row-check', function () {
             tableCopyQuotation.find('.table-row-check').prop('checked', false);
             $(this).prop('checked', true);
-            loadDataClass.loadAPIDetailQuotation('data-init-copy-quotation', $(this)[0].getAttribute('data-id'));
+            QuotationLoadDataHandle.loadAPIDetailQuotation('data-init-copy-quotation', $(this)[0].getAttribute('data-id'));
         });
 
 // Action on click button select quotation for copy
@@ -758,9 +726,8 @@ $(function () {
             tableCopyQuotationProduct.DataTable().destroy();
             // Filter all data is not Promotion from quotation_products_data
             let finalList = filterDataProductNotPromotion(dataCopy.quotation_products_data);
-            dataTableClass.dataTableCopyQuotationProduct(finalList);
+            QuotationDataTableHandle.dataTableCopyQuotationProduct(finalList);
 
-            // dataTableClass.dataTableCopyQuotationProduct(dataCopy.quotation_products_data, 'datable-copy-quotation-product');
             $('#btn-select-quotation-copy')[0].setAttribute('hidden', true);
             $('#btn-quotation-copy-confirm')[0].removeAttribute('hidden')
         });
@@ -812,8 +779,8 @@ $(function () {
             if (type === 'copy-from') { // COPY FROM (SALE ORDER CREATE -> CHOOSE QUOTATION)
                 // Begin load data copy FROM
                 document.getElementById('customer-price-list').value = dataCopy.customer.customer_price_list;
-                loadDataClass.loadDetailQuotation(dataCopy, true);
-                loadDataClass.loadDataTablesAndDropDowns(dataCopy);
+                QuotationLoadDataHandle.loadDetailQuotation(dataCopy, true);
+                QuotationLoadDataHandle.loadDataTablesAndDropDowns(dataCopy);
 
             } else if (type === 'copy-to') { // COPY TO (QUOTATION DETAIL -> SALE ORDER CREATE)
                 // create URL and add to href
@@ -831,7 +798,7 @@ $(function () {
             if (eleDataCopy) {
                 if (eleDataCopy.val()) {
                     let dataRaw = JSON.parse(eleDataCopy.val());
-                    loadDataClass.loadAPIDetailQuotation('data-init-copy-quotation', dataRaw.id);
+                    QuotationLoadDataHandle.loadAPIDetailQuotation('data-init-copy-quotation', dataRaw.id);
                     checkElementValuesBeforeLoadDataCopy();
                     checkOppLoaded();
                 }
@@ -844,7 +811,7 @@ $(function () {
             if (eleDataCopy) {
                 if (eleDataCopy.val()) {
                     let dataRaw = JSON.parse(eleDataCopy.val());
-                    loadDataClass.loadDetailQuotation(dataCopy, true);
+                    QuotationLoadDataHandle.loadDetailQuotation(dataCopy, true);
                     if (dataRaw.option === 'custom') { // if option copy is custom then setup data products & costs for load
                         let products = dataRaw.products;
                         let result = [];
@@ -868,7 +835,7 @@ $(function () {
                     }
                     // Begin load data copy TO
                     document.getElementById('customer-price-list').value = dataCopy.customer.customer_price_list;
-                    loadDataClass.loadDataTablesAndDropDowns(dataCopy);
+                    QuotationLoadDataHandle.loadDataTablesAndDropDowns(dataCopy);
                 }
             }
         }
@@ -904,10 +871,10 @@ $(function () {
         $('#btn-check-promotion').on('click', function() {
             if (boxCustomer.val()) {
                 // destroy dataTable then call API load-check again
-                dataTableClass.loadTableQuotationPromotion('data-init-quotation-create-promotion', boxCustomer.val())
+                QuotationDataTableHandle.loadTableQuotationPromotion('data-init-quotation-create-promotion', boxCustomer.val())
             } else {
                 $('#datable-quotation-create-promotion').DataTable().destroy();
-                dataTableClass.dataTablePromotion();
+                QuotationDataTableHandle.dataTablePromotion();
             }
         });
 
@@ -916,7 +883,7 @@ $(function () {
             $(this).prop('disabled', true);
             deletePromotionRows(tableProduct, true, false);
             // ReCalculate Total
-            calculateClass.updateTotal(tableProduct[0], true, false, false);
+            QuotationCalculateCaseHandle.updateTotal(tableProduct[0], true, false, false);
             // get promotion condition to apply
             let promotionCondition = JSON.parse($(this)[0].getAttribute('data-promotion-condition'));
             let promotionResult = promotionClass.getPromotionResult(promotionCondition);
@@ -971,17 +938,17 @@ $(function () {
                 if (promotionResult.row_apply_index !== null) { // on Specific product
                     let selectTaxID = 'quotation-create-product-box-tax-' + String(order);
                     let newRow = tableProduct.DataTable().row.add(dataAdd).draw().node();
-                    loadDataClass.loadBoxQuotationTax(selectTaxID, promotionResult.value_tax);
+                    QuotationLoadDataHandle.loadBoxQuotationTax(selectTaxID, promotionResult.value_tax);
                     // Get the desired position
                     let afterRow = tableProduct.DataTable().row(promotionResult.row_apply_index).node();
                     // Remove the new row and re-insert it at the desired position
                     $(newRow).detach().insertAfter(afterRow);
                     // Re Calculate all data
-                    calculateClass.commonCalculate(tableProduct, newRow, true, false, false);
+                    QuotationCalculateCaseHandle.commonCalculate(tableProduct, newRow, true, false, false);
                 } else { // on Whole order
                     let newRow = tableProduct.DataTable().row.add(dataAdd).draw().node();
                     // Re Calculate all data
-                    calculateClass.commonCalculate(tableProduct, newRow, true, false, false);
+                    QuotationCalculateCaseHandle.commonCalculate(tableProduct, newRow, true, false, false);
                     // Re Calculate Tax on Total
                     if (promotionResult.hasOwnProperty('discount_rate_on_order')) {
                         if (promotionResult.discount_rate_on_order !== null) {
@@ -1014,7 +981,7 @@ $(function () {
 // SHIPPING
 // Action on click button Add Shipping Fee (show list shipping)
         $('#btn-add-shipping').on('click', function() {
-            dataTableClass.loadTableQuotationShipping('data-init-quotation-create-shipping')
+            QuotationDataTableHandle.loadTableQuotationShipping('data-init-quotation-create-shipping')
         });
 
 // Action click Apply Shipping
@@ -1025,7 +992,7 @@ $(function () {
             // Delete all shipping rows
             deletePromotionRows(tableProduct, false, true);
             // ReCalculate Total
-            calculateClass.updateTotal(tableProduct[0], true, false, false)
+            QuotationCalculateCaseHandle.updateTotal(tableProduct[0], true, false, false)
             let shippingPrice = parseFloat($(this)[0].getAttribute('data-shipping-price'));
             let shippingPriceMargin = parseFloat($(this)[0].getAttribute('data-shipping-price-margin'));
             let dataShipping = JSON.parse($(this)[0].getAttribute('data-shipping'));
@@ -1124,7 +1091,7 @@ $(function () {
             // Load again indicator when Submit
             indicatorClass.loadQuotationIndicator('quotation-indicator-data');
 
-            submitClass.setupDataSubmit(_form, is_sale_order);
+            QuotationSubmitHandle.setupDataSubmit(_form, is_sale_order);
             let submitFields = [
                 'title',
                 'opportunity',
@@ -1241,7 +1208,7 @@ $(function () {
             $('#quotation-check-promotion').val("");
             // Delete Promotion Row & ReCalculate Total
             deletePromotionRows(tableProduct, true, false);
-            calculateClass.updateTotal(tableProduct[0], true, false, false);
+            QuotationCalculateCaseHandle.updateTotal(tableProduct[0], true, false, false);
         });
 
         $('#btn-check-another-promotion').on('click', function() {

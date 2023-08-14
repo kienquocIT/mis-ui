@@ -31,7 +31,7 @@ class PriceMasterDataList(View):
     @mask_view(
         auth_require=True,
         template='masterdata/saledata/masterdata/saledata_price.html',
-        breadcrumb='CONTACT_LIST_PAGE',
+        breadcrumb='MASTER_DATA_PRICE_PAGE',
         menu_active='id_menu_master_data_price',
     )
     def get(self, request, *args, **kwargs):

@@ -13,7 +13,7 @@ from apps.masterdata.saledata.views.config import PaymentsTermsListAPI, Payments
 from apps.masterdata.saledata.views.expense import ExpenseList, ExpenseListAPI, ExpenseCreate, ExpenseDetail, \
     ExpenseDetailAPI, ExpenseForSaleListAPI
 from apps.masterdata.saledata.views.good_receipt import GoodReceiptList, GoodReceiptCreate, GoodReceiptListAPI, \
-    GoodReceiptDetailAPI, GoodReceiptDetail
+    GoodReceiptDetailAPI, GoodReceiptDetail, GoodReceiptEdit
 from apps.masterdata.saledata.views.product import (
     ProductMasterDataList, ProductTypeListAPI,
     ProductCategoryListAPI, ExpenseTypeListAPI, UnitOfMeasureListAPI, UnitOfMeasureGroupListAPI,
@@ -174,6 +174,7 @@ urlpatterns += [
     path('good-receipt/api', GoodReceiptListAPI.as_view(), name='GoodReceiptListAPI'),
     path('good-receipt/create', GoodReceiptCreate.as_view(), name='GoodReceiptCreate'),
     path('good-receipt/detail/<str:pk>', GoodReceiptDetail.as_view(), name='GoodReceiptDetail'),
+    path('good-receipt/edit/<str:pk>', GoodReceiptEdit.as_view(), name='GoodReceiptEdit'),
     path('good-receipt/detail/api/<str:pk>', GoodReceiptDetailAPI.as_view(), name='GoodReceiptDetailAPI')
 ]
 # // WareHouse

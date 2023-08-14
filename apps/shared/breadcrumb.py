@@ -291,6 +291,9 @@ class BreadcrumbView:
         BreadcrumbItem.ORGANIZATION_PAGE,
         BreadcrumbItem.GROUP_LIST_PAGE,
     ]
+    GROUP_CREATE = GROUP_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+    GROUP_DETAIL = GROUP_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    GROUP_UPDATE = GROUP_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
     COMPANY_LIST_PAGE = [
         BreadcrumbItem.HOME_PAGE,

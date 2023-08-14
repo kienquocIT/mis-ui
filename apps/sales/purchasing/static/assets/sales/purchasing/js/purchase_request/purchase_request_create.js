@@ -14,7 +14,7 @@ $(document).ready(function () {
 
     function loadSupplier() {
         let ele = $('#box-select-supplier');
-        let url = ele.attr('data-url');
+        let url = ele.attr('data-select2-url');
         let method = ele.attr('data-method');
         $.fn.callAjax2({
             'url': url,
@@ -38,7 +38,7 @@ $(document).ready(function () {
 
     function loadContact() {
         let ele = $('#box-select-contact');
-        let url = ele.attr('data-url');
+        let url = ele.attr('data-select2-url');
         let method = ele.attr('data-method');
         $.fn.callAjax2({
             'url': url,
@@ -787,56 +787,5 @@ $(document).ready(function () {
             }
         )
     })
-
-    let list_uom_group = []
-
-    function loadUoMGroup() {
-        let url = $('#url-factory').data('url-uom-group');
-        let ele = $('.dropdown-select-uom-group');
-        $.fn.callAjax2({
-            'url': url,
-            'method': 'GET',
-        }).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('unit_of_measure_group')) {
-                    list_uom_group = data.unit_of_measure_group
-                    data.unit_of_measure_group.map(function (item) {
-                        ele.append(`<a class="dropdown-item btn-add-by-group" href="#" data-id="${item.id}">${item.title}</a>`)
-                    })
-                }
-            }
-        })
-    }
-
-    $(document).on('click', btn_add_product, function () {
-        if (list_uom_group.length === 0) {
-            loadUoMGroup();
-        }
-    })
-
-    $(document).on('click', '.btn-add-by-group', function () {
-        let group_id = $(this).data('id');
-        let list_product_by_gr = list_product.filter(obj => obj.general_information.uom_group.id === group_id);
-        let table_pr_product = $('#datatable-pr-product').DataTable();
-        table_pr_product.clear().draw();
-        list_product_by_gr.map(function (item) {
-            let product = dict_product[item.id];
-            table_pr_product.row.add([]).draw().node();
-            let last_ele_tr = $('#datatable-pr-product tbody tr').last();
-            last_ele_tr.find('.box-select-product').val(product.id);
-            let ele_uom = last_ele_tr.find('.box-select-uom');
-            list_uom.filter(obj => obj.group.id === product.general_information.uom_group.id).map(function (item) {
-                if (product.sale_information.hasOwnProperty('default_uom') && product.sale_information.default_uom.id === item.id) {
-                    ele_uom.append(`<option value="${item.id}" selected>${item.title}</option>`);
-                }
-                ele_uom.append(`<option value="${item.id}">${item.title}</option>`);
-            })
-            last_ele_tr.find('.box-select-tax').val(product.sale_information.tax_code.id);
-        })
-
-
-    })
-
 
 })

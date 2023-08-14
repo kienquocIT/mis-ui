@@ -26,13 +26,9 @@ class ReturnAdvanceCreate(View):
         menu_active='menu_return_advance_list',
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.ADVANCE_PAYMENT_LIST).get()
-        if resp.state:
-            return {
-                       'employee_current_id': request.user.employee_current_data.get('id', None),
-                       'advance_payment': resp.result
-                   }, status.HTTP_200_OK
-        return {}, status.HTTP_200_OK
+        return {
+                   'employee_current_id': request.user.employee_current_data.get('id', None),
+               }, status.HTTP_200_OK
 
 
 class ReturnAdvanceListAPI(APIView):
@@ -62,14 +58,10 @@ class ReturnAdvanceDetail(View):
         menu_active='menu_return_advance_list',
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.ADVANCE_PAYMENT_LIST).get()
-        if resp.state:
-            result = {
-                'employee_current_id': request.user.employee_current_data.get('id', None),
-                'advance_payment': resp.result
-            }
-            return result, status.HTTP_200_OK
-        return resp.auto_return()
+        result = {
+            'employee_current_id': request.user.employee_current_data.get('id', None),
+        }
+        return result, status.HTTP_200_OK
 
 
 class ReturnAdvanceDetailAPI(APIView):

@@ -9,7 +9,7 @@ $(document).ready(function () {
 
 
         // template of row and item element
-        rowData = '<div class="my-row row mb-1"><div class="utils-form absolute-top-over"><div class="util-form-control util-form-row"><i class="fas fa-times btn btn-xs util-form-control-btn util-row-remove "></i><i class="fas fa-caret-up btn btn-xs util-form-control-btn util-row-caret-up"></i><i class="fas fa-caret-down btn btn-xs util-form-control-btn util-row-caret-down"></i></div></div>{0}</div>';
+        rowData = '<div class="my-row row mb-1"><div class="utils-form absolute-top-over"><div class="util-form-control util-form-row"><i class="fas fa-times btn btn-xs util-form-control-btn util-row-remove "></i><i class="fas fa-cog btn btn-xs util-form-control-btn util-row-config"></i><i class="fas fa-caret-up btn btn-xs util-form-control-btn util-row-caret-up"></i><i class="fas fa-caret-down btn btn-xs util-form-control-btn util-row-caret-down"></i></div></div>{0}</div>';
         htmlChildItem = '<div class="util-child-group mb-3"><div class="utils-form"><div class="util-form-control util-form-cell"><i class="fas fa-times btn btn-xs util-form-control-btn util-cell-remove"></i><i class="fas fa-cog btn btn-xs util-form-control-btn util-cell-config"></i><i class="fas fa-caret-up btn btn-xs util-form-control-btn util-cell-caret-up"></i><i class="fas fa-caret-down btn btn-xs util-form-control-btn util-cell-caret-down"></i></div></div><div class="form-group"><label for="" class="form-label">Label input</label>{0}<small class="form-text text-muted">Descriptions.</small></div></div>';
 
         static parseDesignForm() {
@@ -102,16 +102,10 @@ $(document).ready(function () {
             $(realThis).data("originalId", $(realThis).attr("id"))
         }
 
-        static setComponentChildIDDropped(realThis) {
-            // set ID of component for get ID in droppable
-            $(realThis).data("originalId", $(realThis).attr("data-id"))
-        }
-
         static getComponentIDDropped(ui) {
             // get ID in drop of droppable (data from setComponentIDDropped
             return ui.draggable.data("originalId");
         }
-
 
         static hiddeDragAfterDrop(ui) {
             // when we want to hide drag component dropped.
@@ -204,9 +198,6 @@ $(document).ready(function () {
                 let eleSelected = componentId.split("component-child-")[1];
                 let dataAppend = '';
                 switch (eleSelected) {
-                    case 'span-text':
-                        dataAppend = this.htmlChildItem.format_by_idx(`<span class="text-primary">Nam nè</span>`);
-                        break
                     case 'input-text':
                         dataAppend = this.htmlChildItem.format_by_idx(`<input type="text" class="form-control">`);
                         break
@@ -402,51 +393,7 @@ $(document).ready(function () {
         });
     }
 
-    function loadDnDx() {
-        // ----------------------------------------- //
-        //
-        //  Group DnD handle in here
-        //
-        // ----------------------------------------- //
-
-
-        $(".drag-component").draggable({
-            cursor: "crosshair", cursorAt: {top: -5, left: -5},
-            revert: "invalid", helper: "clone", start: function (event, ui) {
-                designFormUtils.setComponentIDropped($(this))
-            }, stop: function (event, ui) {
-                designFormUtils.activeDropStop();
-            },
-        });
-
-        $('.drag-component-child').draggable({
-            cursor: "crosshair", cursorAt: {top: 0, left: 0},
-            revert: "invalid", helper: function () {
-                return $(this).clone().appendTo("body").css({
-                    "position": "absolute",
-                    "z-index": 9999
-                });
-            }, start: function (event, ui) {
-                ui.helper.data("initialPos", ui.position);
-                designFormUtils.setComponentChildIDDropped($(this))
-            }, stop: function (event, ui) {
-                designFormUtils.activeDropStop()
-            },
-        });
-
-        $('.drop-content-dnd').droppable({
-            accept: ".drag-component", drop: function (event, ui) {
-                // stop drag component!
-                event.stopPropagation();
-
-                let stateRow = new designFormUtils().generateColumn($(this), event, ui);
-                // right negative float util row
-                if (stateRow === true) $('.absolute-top-over').css('right', '-' + ($('.util-form-row').first().width() + 1.1 + 6) + 'px');
-            }
-        });
-    }
-
     // call all function need active
     loadEvents();
-    loadDnDx();
+    loadDnD();
 });

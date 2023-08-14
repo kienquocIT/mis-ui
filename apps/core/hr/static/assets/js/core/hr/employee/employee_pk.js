@@ -2,7 +2,6 @@ function callDetailData(url, method) {
     return $.fn.callAjax2({
         url: url,
         method: method,
-        isDropdown: true,
     }).then((resp) => {
         return $.fn.switcherResp(resp);
     });
@@ -22,133 +21,33 @@ class EmployeeLoadPage {
     static isActive = $('#is_active');
 
     static loadUserList(userData) {
-        // load user list
-        let eleUserList = EmployeeLoadPage.userSelectEle;
-        let userIdCurrent = null;
-        eleUserList.text("");
-        if (userData && userData.hasOwnProperty('id')) {
-            userIdCurrent = userData['id'];
-            eleUserList.append(`
-                <option 
-                    value="${userData.id}" 
-                    data-first-name="${userData.first_name}" 
-                    data-last-name="${userData.last_name}" 
-                    data-email="${userData.email}" 
-                    data-phone="${userData.phone}"
-                >${userData?.['full_name']}</option>`
-            )
-            eleUserList.trigger('change');
-        } else {
-            eleUserList.append(`<option value=""></option>`);
-        }
-
-        let url = eleUserList.attr('data-url');
-        let method = eleUserList.attr('data-method');
-        if (url && method) {
-            $.fn.callAjax2({
-                'url': url,
-                'method': method,
-                'isDropdown': true,
-            }).then((resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (data.hasOwnProperty('company_user_list') && Array.isArray(data.company_user_list)) {
-                        data.company_user_list.map(function (item) {
-                            let userData = item?.user;
-                            if (userData && Object.keys(userData).length > 0) {
-                                if (!userIdCurrent || (userIdCurrent && userIdCurrent !== item.id)) {
-                                    eleUserList.append(`
-                                    <option 
-                                        value="${userData.id}" 
-                                        data-first-name="${userData.first_name}" 
-                                        data-last-name="${userData.last_name}" 
-                                        data-email="${userData.email}" 
-                                        data-phone="${userData.phone}"
-                                    >${userData?.['full_name']}</option>`);
-                                }
-                            }
-                        })
-                    }
-                }
-                eleUserList.initSelect2({
-                    allowClear: true,
-                });
-            })
-        }
+        EmployeeLoadPage.userSelectEle.initSelect2({
+            allowClear: true,
+            data: userData,
+            callbackTextDisplay: function (item, key) {
+                if (item.hasOwnProperty('user')) item = item?.['user'];
+                return item?.['full_name'] || '';
+            },
+        });
     }
 
     static loadRoleList(roleData) {
         let ele = EmployeeLoadPage.roleSelectEle;
-        let url = ele.attr('data-url');
-        let method = ele.attr('data-method');
-
-        let roleCurrentIds = [];
-        if (roleData && Array.isArray(roleData)) {
-            roleData.map((item) => {
-                let idx = item.id;
-                roleCurrentIds.push(idx);
-                if (idx) ele.append(`<option value="${idx}" selected>${item.title}</option>`); else throw Error('Role does not exist.');
-            })
-        } else {
-            ele.append(`<option value=""></option>`);
-        }
-
-        if (url && method) {
-            $.fn.callAjax2({
-                'url': url,
-                'method': method,
-                'isDropdown': true,
-            }).then((resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (data.hasOwnProperty('role_list') && Array.isArray(data.role_list)) {
-                        data.role_list.map(function (item) {
-                            if (!roleCurrentIds.includes(item.id)) ele.append(`<option value="${item.id}">${item.title}</option>`);
-                        });
-                        ele.initSelect2({
-                            'multiple': true,
-                            closeOnSelect: false
-                        });
-                    }
-                }
-            })
-        } else {
-            ele.initSelect2({
-                'multiple': true,
-                disabled: true
-            });
-        }
+        ele.initSelect2({
+            data: roleData,
+            multiple: true,
+            closeOnSelect: false,
+            disabled: !(ele.attr('data-url')),
+        });
     }
 
     static loadGroupList(groupData) {
         let ele = EmployeeLoadPage.groupSelectEle;
-        let url = ele.attr('data-url');
-        let method = ele.attr('data-method');
-        let groupCurrentId = null;
-        if (groupData && groupData.hasOwnProperty('id')) {
-            groupCurrentId = groupData.id;
-            ele.append(`<option value="${groupData.id}" selected>${groupData.title}</option>`)
-        } else {
-            ele.append(`<option value=""></option>`);
-        }
-
-        if (url && method) {
-            $.fn.callAjax2({
-                'url': url,
-                'method': method,
-                'isDropdown': true,
-            }).then((resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (data.hasOwnProperty('group_list') && Array.isArray(data.group_list)) {
-                        data.group_list.map(function (item) {
-                            if (item.id !== groupCurrentId) ele.append(`<option value="${item.id}">${item.title}</option>`);
-                        })
-                        ele.initSelect2({'allowClear': true})
-                    }
-                }
-            })
-        }
+        ele.initSelect2({
+            data: groupData,
+            'allowClear': true,
+            disabled: !(ele.attr('data-url')),
+        })
     }
 
     static loadDob(dobData) {

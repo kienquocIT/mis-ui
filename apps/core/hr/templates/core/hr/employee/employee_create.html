@@ -82,9 +82,9 @@
                                             class="form-select" id="select-box-user"
                                             data-url="{% url 'CompanyUserNotMapEmployeeListAPI' %}"
                                             data-method="GET"
+                                            data-keyResp="company_user_list"
                                             name="user"
                                     >
-                                        <option selected>Select...</option>
                                     </select>
                                     <span class="form-text text-muted">{% trans 'User link to the employee' %}</span>
                                 </div>
@@ -167,6 +167,7 @@
                                         id="select-box-group-employee"
                                         data-url="{% url 'GroupListAPI' %}"
                                         data-method="GET"
+                                        data-keyResp="group_list"
                                 >
                                 </select>
                                 <span class="form-text text-muted">{% trans 'Department of the employee' %}</span>
@@ -208,6 +209,7 @@
                                         id="select-box-role-employee"
                                         data-url="{% url 'RoleListAPI' %}"
                                         data-method="GET"
+                                        data-keyResp="role_list"
                                 >
                                 </select>
                             </div>

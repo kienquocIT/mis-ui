@@ -7,27 +7,15 @@
 {% endblock %}
 
 {% block pageAction %}
-    <a
-            class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
-            href="{% url 'UserCreate' %}" data-bs-toggle="tooltip" data-bs-placement="top" title=""
-            data-bs-original-title="Add"
-    >
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="plus"></i>
+    <a href="{% url 'UserCreate' %}">
+        <button class="btn btn-outline-primary">
+        <span>
+            <span>{% trans 'Add' %}</span>
+            <span class="icon">
+                <i class="fa-solid fa-plus"></i>
             </span>
         </span>
-    </a>
-    <a
-            class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
-            href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
-            data-bs-original-title="Refresh"
-    >
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="refresh-cw"></i>
-            </span>
-        </span>
+        </button>
     </a>
 {% endblock %}
 
@@ -62,7 +50,9 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">{% trans 'Change password of' %} <span id="modalChangePasswordUserText"></span></h5>
+                    <h5 class="modal-title">{% trans 'Change password of' %} <span
+                            id="modalChangePasswordUserText"
+                    ></span></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -71,18 +61,30 @@
                     {% csrf_token %}
                     <div class="form-group">
                         <label for="new-password" class="form-label">{% trans 'New password' %}</label>
-                        <input type="password" class="form-control" name="new-password" id="new-password" autocomplete="false"/>
-                        <div class="form-text">{% trans 'Show password' %} <i style="cursor:pointer;" class="ml-1 fas fa-eye btnShowHidePassword"></i></div>
+                        <input
+                                type="password" class="form-control" name="new-password" id="new-password"
+                                autocomplete="false"
+                        />
+                        <div class="form-text">{% trans 'Show password' %} <i
+                                style="cursor:pointer;" class="ml-1 fas fa-eye btnShowHidePassword"
+                        ></i></div>
                     </div>
                     <div class="form-group">
                         <label for="retype-new-password" class="form-label">{% trans 'New password again' %}</label>
-                        <input type="password" class="form-control" name="retype-new-password" id="retype-new-password"/>
-                        <div class="form-text">{% trans 'Show password' %} <i style="cursor:pointer;" class="ml-1 fas fa-eye btnShowHidePassword"></i></div>
+                        <input
+                                type="password" class="form-control" name="retype-new-password" id="retype-new-password"
+                        />
+                        <div class="form-text">{% trans 'Show password' %} <i
+                                style="cursor:pointer;" class="ml-1 fas fa-eye btnShowHidePassword"
+                        ></i></div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                    <button type="button" class="btn btn-primary" id="btnSaveNewPassword" data-url="{% url 'UserResetPassword' pk=1 %}" data-id disabled="disabled">{% trans 'Save' %}</button>
+                    <button
+                            type="button" class="btn btn-primary" id="btnSaveNewPassword"
+                            data-url="{% url 'UserResetPassword' pk=1 %}" data-id disabled="disabled"
+                    >{% trans 'Save' %}</button>
                 </div>
             </div>
         </div>

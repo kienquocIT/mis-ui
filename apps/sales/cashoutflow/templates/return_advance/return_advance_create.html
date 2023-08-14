@@ -40,62 +40,27 @@
                         <label class="col-3 col-form-label required">{% trans "Advance Payment" %}</label>
                         <div class="col-9">
                             <select id="chooseAdvancePayment" class="select2 form-control" data-method="GET"
-                                data-url="{% url "AdvancePaymentListAPI" %}"
-                                data-url-detail="{% url "AdvancePaymentDetailAPI" pk=0 %}"
-                                data-close-on-select="true"
-                                name="advance_payment">'
-                            <option></option>
-                            {% for item in data.advance_payment %}
-                                {% if item.status == 'Approved' %}
-                                    <option value="{{ item.id }}">{{ item.title }}</option>
-                                {% endif %}
-                            {% endfor %}
-                        </select>
+                                    data-select2-url="{% url "AdvancePaymentListAPI" %}"
+                                    data-url-detail="{% url "AdvancePaymentDetailAPI" pk=0 %}"
+                                    data-close-on-select="true"
+                                    name="advance_payment">'
+                            </select>
                         </div>
                     </div>
                     <div class="row form-group">
                         <label class="col-3 col-form-label required">{% trans "Sale Code" %}</label>
                         <div class="col-9">
-                            <span class="input-affix-wrapper">
-                        <span class="input-prefix" id="dropdownOpp">
-                            <i class="fas fa-info-circle text-primary" aria-expanded="false"
-                               data-bs-toggle="dropdown"></i>
-                            <span role="menu" class="dropdown-menu ml-4 pl-3 pr-3 pt-3 pb-3"
-                                  style="width: 25rem;">
-                                <div class="row">
-                                    <span class="col-7">{% trans "More information" %}</span>
-                                </div>
-                                <div class="opp-info hidden">
-                                    <div class="row">
-                                        <span class="col-5">{% trans "Opportunity Title" %}</span>
-                                        <span class="col-7 text-primary" name="opp-name"></span>
-                                    </div>
-                                    <div class="row">
-                                        <span class="col-5">{% trans "Opportunity Code" %}</span>
-                                        <span class="col-7 text-primary" name="opp-code"></span>
-                                    </div>
-                                    <div class="row ">
-                                        <span class="col-5">{% trans "Customer" %}</span>
-                                        <span class="col-7 text-primary" name="opp-customer"></span>
-                                    </div>
-                                </div>
-                                <div class="non-opp row hidden">
-                                    <span class="text-primary">{% trans "Advance Payment is None Sale" %}</span>
-                                </div>
-                            </span>
-                        </span>
-                        <input class="form-control" type="text" readonly name="sale_code">
-                    </span>
+                            <input class="form-control" type="text" readonly name="sale_code">
                         </div>
                     </div>
                     <div class="row form-group">
                         <label class="col-3 col-form-label required">{% trans "Method" %}</label>
                         <div class="col-9">
                             <select class="form-select" name="method">
-                            <option selected></option>
-                            <option value="0">{% trans "Cash" %}</option>
-                            <option value="1">{% trans "Bank transfer" %}</option>
-                        </select>
+                                <option selected></option>
+                                <option value="0">{% trans "Cash" %}</option>
+                                <option value="1">{% trans "Bank transfer" %}</option>
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -187,7 +152,9 @@
             </div>
         </div>
         <div class="row collapse-arrow text-center">
-            <i class="bi bi-arrows-expand text-primary" data-bs-toggle="collapse" data-bs-target="#collapse-area" data-bs-placement="top" aria-expanded="true" aria-controls="collapse-area" id="advance-info-collapse"></i>
+            <i class="bi bi-arrows-expand text-primary" data-bs-toggle="collapse" data-bs-target="#collapse-area"
+               data-bs-placement="top" aria-expanded="true" aria-controls="collapse-area"
+               id="advance-info-collapse"></i>
         </div>
         <div class="row">
             <div class="row">
@@ -241,7 +208,8 @@
                                             <div class="card-body text-primary">
                                                 <div class="row mb-5">
                                                     <div class="col-4">{% trans "Total" %}</div>
-                                                    <span class="col-8 text-right mask-money" id="total-value" data-init-money="0"></span>
+                                                    <span class="col-8 text-right mask-money" id="total-value"
+                                                          data-init-money="0"></span>
                                                 </div>
                                                 <div class="row mt-5">
                                                     <div class="col-6">

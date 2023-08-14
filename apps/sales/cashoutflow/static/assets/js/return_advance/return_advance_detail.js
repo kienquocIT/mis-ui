@@ -4,18 +4,31 @@ $(function () {
         const frmDetail = $('#frmDetail');
         const choose_AP_ele = $('#chooseAdvancePayment');
 
-        function loadDetailOpp(data) {
-            let dropdown = $('#dropdownOpp');
-            if (data === null) {
-                dropdown.find('.opp-info').addClass('hidden');
-                dropdown.find('.non-opp').removeClass('hidden');
-            } else {
-                dropdown.find('.opp-info').removeClass('hidden');
-                dropdown.find('.non-opp').addClass('hidden');
-                dropdown.find('[name="opp-name"]').text(data.title);
-                dropdown.find('[name="opp-code"]').text(data.code);
-                dropdown.find('[name="opp-customer"]').text(data.customer);
-            }
+
+        function loadAdvancePayment(advance_payment_id) {
+            let url = choose_AP_ele.data('select2-url');
+            let method = 'GET'
+            $.fn.callAjax2({
+                'url': url,
+                'method': method,
+                isDropdown: true,
+            }).then((resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('advance_payment_list')) {
+                        data.advance_payment_list.map(function (item) {
+                            if (item.id === advance_payment_id) {
+                                choose_AP_ele.append(`<option value="${item.id}" selected>${item.title}</option>`);
+                            } else {
+                                choose_AP_ele.append(`<option value="${item.id}">${item.title}</option>`);
+                            }
+                        })
+                    }
+                }
+            }, (errs) => {
+            },).then((resp) => {
+                loadPageWithParameter(advance_payment_id, choose_AP_ele);
+            })
         }
 
         function loadDetailAdvancePayment(url) {
@@ -23,20 +36,19 @@ $(function () {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('advance_payment_detail')) {
-                        let ele_benefication = $('#chooseBeneficiary');
+                        let ele_beneficiary = $('#chooseBeneficiary');
                         let sale_code_ele = $('[name="sale_code"]');
-                        sale_code_ele.val(data.advance_payment_detail.code);
                         if (data.advance_payment_detail.sale_order_mapped.length > 0) {
-                            loadDetailOpp(data.advance_payment_detail.sale_order_mapped[0].opportunity);
+                            sale_code_ele.val(data.advance_payment_detail.sale_order_mapped[0].opportunity.code);
                         } else if (data.advance_payment_detail.quotation_mapped.length > 0) {
-                            loadDetailOpp(data.advance_payment_detail.quotation_mapped[0].opportunity);
+                            sale_code_ele.val(data.advance_payment_detail.quotation_mapped[0].opportunity.code);
                         } else if (data.advance_payment_detail.opportunity_mapped.length > 0) {
-                            loadDetailOpp(data.advance_payment_detail.opportunity_mapped[0]);
+                            sale_code_ele.val(data.advance_payment_detail.opportunity_mapped[0].code);
                         } else {
-                            loadDetailOpp(null);
+                            sale_code_ele.val('');
                         }
-                        ele_benefication.empty();
-                        ele_benefication.append(`<option value="${data.advance_payment_detail.beneficiary.id}">${data.advance_payment_detail.beneficiary.name}</option>`);
+                        ele_beneficiary.empty();
+                        ele_beneficiary.append(`<option value="${data.advance_payment_detail.beneficiary.id}">${data.advance_payment_detail.beneficiary.name}</option>`);
                         loadDetailBeneficiary(data.advance_payment_detail.beneficiary.id);
                     }
                 }
@@ -116,6 +128,7 @@ $(function () {
                     $('.header-code').text(return_advance_detail.code);
                     $('[name="title"]').val(return_advance_detail.title);
                     choose_AP_ele.find(`option[value="${return_advance_detail.advance_payment}"]`).prop('selected', true);
+                    loadAdvancePayment(return_advance_detail.advance_payment);
                     loadDetailAdvancePayment(choose_AP_ele.attr('data-url-detail').replace(0, return_advance_detail.advance_payment));
                     loadDetailBeneficiary(return_advance_detail.beneficiary);
                     loadCreator(return_advance_detail.creator);
@@ -131,7 +144,7 @@ $(function () {
                     } else {
                         $('#money-received').prop('checked', false);
                     }
-                    
+
                 }
             }, (errs) => {
             },)

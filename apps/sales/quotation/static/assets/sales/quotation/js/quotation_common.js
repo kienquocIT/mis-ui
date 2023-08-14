@@ -122,7 +122,7 @@ class loadDataHandle {
                                 self.loadShippingBillingCustomer();
                                 ele.empty();
                                 let dataAppend = ``;
-                                let dataMapOpp = ``;
+                                let dataSelected = ``;
                                 data.account_sale_list.map(function (item) {
                                     let ownerName = "";
                                     if (item.owner) {
@@ -140,7 +140,7 @@ class loadDataHandle {
                                                         <input type="hidden" class="data-info" value="${dataStr}">
                                                     </option>`;
                                     if (item.id === valueToSelect) {
-                                        dataMapOpp = `<option value="${item.id}" selected>
+                                        dataSelected = `<option value="${item.id}" selected>
                                                         <span class="account-title">${item.name}</span>
                                                         <input type="hidden" class="data-default" value="${customer_data}">
                                                         <input type="hidden" class="data-info" value="${dataStr}">
@@ -162,9 +162,14 @@ class loadDataHandle {
                                     }
                                 })
                                 ele.append(`<option value=""></option>`);
-                                if (dataMapOpp) { // if Opportunity has Customer
-                                    ele.append(dataMapOpp);
-                                } else { // if Opportunity doesn't have Customer or Opportunity's customer does not map customer list
+                                if (dataSelected) { // if Value to select
+                                    if ($('#select-box-quotation-create-opportunity').val()) { // if page has Opp
+                                        ele.append(dataSelected);
+                                    } else { // if page no Opp
+                                        ele.append(dataSelected);
+                                        ele.append(dataAppend);
+                                    }
+                                } else { // if no Value to select
                                     if (!valueToSelect) {
                                         ele.append(dataAppend);
                                     }
@@ -187,7 +192,7 @@ class loadDataHandle {
         } else {
             ele.append(`<option value=""></option>`);
         }
-    }
+    };
 
     loadBoxQuotationContact(valueToSelect = null, customerID = null) {
         let self = this;
@@ -3525,8 +3530,15 @@ class submitHandle {
         }
 
         _form.dataForm[quotation_logistic_data] = self.setupDataLogistic();
-        _form.dataForm['customer_shipping'] = $('#quotation-create-customer-shipping').val();
-        _form.dataForm['customer_billing'] = $('#quotation-create-customer-billing').val();
+
+        let customer_shipping = $('#quotation-create-customer-shipping');
+        if (customer_shipping.val()) {
+            _form.dataForm['customer_shipping'] = customer_shipping.val();
+        }
+        let customer_billing = $('#quotation-create-customer-billing');
+        if (customer_billing.val()) {
+            _form.dataForm['customer_billing'] = customer_billing.val();
+        }
 
         let quotation_indicators_data_setup = self.setupDataIndicator();
         if (quotation_indicators_data_setup.length > 0) {

@@ -637,6 +637,136 @@ class X:
 > - fill_key: list[str] : danh sách key sẽ được lấy từ kwargs từ view để đẩy vào URL kiểm tra quyền
 > - fixed_fill_key : dict[str, str] : các key và value mặc định cần đẩy vào URL kiểm tra quyền
 
+VI. Select2
+1. Tài liệu tại statics/assets/js/cdn-clone/select2/init-select2.js
+2. Mã HTML
+```html
+// Hướng dẫn xem thêm class SelectDDControl{}.init()
+<select
+        id="selEmployeeList"
+        class="form-control"
+        data-url="{% url 'EmployeeListApi' %}"  // url gọi lấy dữ liệu
+        data-keyResp="employee_list"    // key để lấy dữ liệu trừ response.data
+        data-keyText="full_name"    // key để lấy dữ liệu hiển thị ra option
+        data-keyId="id" // key để lấy dữ liệu làm ID cho option
+>
+   
+</select>
+```
+3. Khởi tạo Select2: https://select2.org/configuration/options-api
+```js
+// thường thứ tự lấy giá trị sẽ ưu tiên (bên trái ưu tiên hơn): opts --> attribute --> mặc định
+let config = {}
+
+// mặc định
+$('#selEmployeeList').initSelect2(config);
+
+// cài đặt các cấu hình
+config = {
+   'ajax': {
+       'url': '',
+      'method': '',
+      ...
+   },
+   'cache': true, // cache trong vòng 1 phút tránh việc spam khi click đi click lại
+   ...
+};
+
+// cài đặt có dữ liệu mặc định cho việc selected truớc các option có sẵn
+config = {
+   ...,
+   'data': [],
+   ...,
+};
+
+// khai báo lấy data-keyId và data-keyText với nhiều cấp (dict lồng nhau)
+// 1 data mẫu trả về: {"a": {"b": {"c": 1, "idx": 99}}}
+// - dữ liệu cần hiển thị text: a.b.c
+// - dữ liệu cần làm ID: a.b.idx
+config = {
+   ...,
+   'dataId': 'a--b--idx',
+   'dataText': 'a--b--c',
+   ...,
+};
+
+// manual việc lọc dữ liệu sau khi nhận phản hồi và hiển thị val|text của option --> trường hợp dữ liệu trả về phức tạp
+config = {
+   ...,
+   'callbackDataResp': function (resp, keyResp){
+        // resp: là response trả về từ API
+        // keyResp: là keyResp được khai báo
+        // return: trả về 1 danh sách (chứa 2 key của dataText và dataId)
+        return [];
+   },
+   'callbackValueId': function (item, key){
+        // item: là 1 item của danh sách trả về sau khi lấy từ data_keyResp
+        // key: là key tương tức của ID được lấy từ data_keyId|"id"
+        // return: trả ra một chuỗi hiển thị cho option.
+      return item?.[key] || '';
+   },
+   'callbackTextDisplay': function (item, key){
+        // item: là 1 item của danh sách trả về sau khi lấy từ data_keyResp
+        // key: là key tương tức của ID được lấy từ data_keyText|"title"
+        // return: trả ra một chuỗi để set value cho option.
+        return item?.[key] || '';
+   },
+   ...,
+};
+
+```
+
+VII. DataTable
+1. Tài liệu tại statics/assets/js/init-setup.js
+2. Hướng dẫn
+```html
+<table
+                id="table_districts_list"
+                class="table nowrap w-100"
+                data-url="{% url 'CityListAPI' %}"
+                data-url-city="{% url 'CityListAPI' %}"
+>
+   <tr class="row-custom-filter">
+      <td colspan="3">
+         <div class="row">
+            <div class="col-3">
+               <div class="form-group">
+                  <label for="CustomSelect2" class="form-label">{% trans 'Country' %}</label>
+                  <select id="CustomSelect2"
+                          data-url="{% url 'CountryListAPI' %}"
+                          data-keyResp="countries"
+                          data-keyParam="country_id__in" multiple
+                  ></select>
+               </div>
+            </div>
+      </td>
+   </tr>
+   <tr>
+      <th>#</th>
+      <th>{% trans 'Name' %}</th>
+      <th>{% trans 'Zip Code' %}</th>
+   </tr>
+   </thead>
+</table>
+```
+```js
+$('#table_districts_list').DataTableDefault({
+   'useDataServer': true, // cho datable Ajax
+   'columns': [
+      {
+          ...,
+         'colFilter': { // cho lọc theo dòng dữ liệu
+            keyText: "title",   // key để lấy dữ liệu hiển thị
+            keyId: "id",    // key để lấy dữ liệu làm "value"
+            keyResp: "cities",  // key để lấy dữ liệu từ response.data
+            dataUrl: tbl.attr('data-url-city'), // url gọi ajax 
+            keyParam: "id__in", // key của params khi gọi lọc lên server
+         },
+      },
+   ]
+})
+```
+3. 
 
 ---
 

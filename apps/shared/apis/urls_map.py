@@ -235,8 +235,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # address
     COUNTRIES = StringUrl('base/location/countries')
     CITIES = StringUrl('base/location/cities')
-    DISTRICTS = StringUrl('base/location/districts?city_id=')
-    WARDS = StringUrl('base/location/wards?district_id=')
+    DISTRICTS = StringUrl('base/location/districts')
+    WARDS = StringUrl('base/location/wards')
     BASE_CURRENCY = StringUrl('base/currencies')
 
     # master-data/ promotion
@@ -326,4 +326,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PURCHASE_QUOTATION_PRODUCT_LIST = StringUrl('purchasing/purchase-quotation-product/list')
 
     # Process
-    FUNCTION_PROCESS_LIST = StringUrl('process/function/list')
+    FUNCTION_PROCESS_LIST = StringUrl('sale-process/function/list')
+    PROCESS = StringUrl('sale-process/')
+    SKIP_PROCESS_STEP = StringUrl('sale-process/step/skip/{pk}')
+    SET_CURRENT_PROCESS_STEP = StringUrl('sale-process/step/set-current/{pk}')

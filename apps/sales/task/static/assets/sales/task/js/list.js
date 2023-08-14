@@ -343,7 +343,7 @@ $(function () {
                 let date = moment(newData.end_date, 'YYYY-MM-DD hh:mm:ss').format('YYYY/MM/DD')
                 childHTML.find('.task-deadline').text(date)
                 const assign_to = newData.assign_to
-                if (Object.keys(assign_to).length) {
+                if (Object.keys(assign_to).length > 0) {
                     const randomResource = randomColor[Math.floor(Math.random() * randomColor.length)];
                     if (assign_to.avatar) childHTML.find('img').attr('src', assign_to.avatar)
                     else {
@@ -368,7 +368,7 @@ $(function () {
                     FileUtils.init($(`[name="attach"]`, childHTML).siblings('button'), fileDetail);
                 }
 
-                if(Object.keys(newData.parent_n).length)
+                if(newData.parent_n && Object.keys(newData?.parent_n).length)
                     childHTML.find('.task-discuss').remove()
 
                 if (isReturn) return childHTML
@@ -524,9 +524,10 @@ $(function () {
                     // update data to task kanban after
                     if (sameSTT) this.afterUpdate(strData)
                     else {
+                        $(`[data-id="${old_stt}"]`).parents('.tasklist').each(function(){
+                            $(this).find($(`[data-task-id="${strData.id}"]`)).parents('.tasklist-card').remove()
+                        })
                         this.addNewTask(strData)
-                        $(`[data-id="${old_stt}"]`).parents('.tasklist').find($(`[data-task-id="${strData.id}"]`))
-                            .parents('.tasklist-card').remove()
                     }
                 }
             }, 1000)

@@ -45,15 +45,9 @@
                         <label class="col-3 col-form-label required">{% trans "Advance Payment" %}</label>
                         <div class="col-9">
                             <select id="chooseAdvancePayment" class="form-select" data-method="GET"
-                                data-url="{% url "AdvancePaymentListAPI" %}" style="color: black"
+                                data-select2-url="{% url "AdvancePaymentListAPI" %}" style="color: black"
                                 data-url-detail="{% url "AdvancePaymentDetailAPI" pk=0 %}"
                                 name="advance_payment" disabled>
-                            <option></option>
-                            {% for item in data.advance_payment %}
-                                {% if item.status == 'Approved' %}
-                                    <option value="{{ item.id }}">{{ item.title }}</option>
-                                {% endif %}
-                            {% endfor %}
                         </select>
                         </div>
                     </div>

@@ -34,7 +34,10 @@
                 rel="stylesheet" type="text/css"
         />
         <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
-        <link href="{% static 'vendors/select2/dist/css/select2-bootstrap4.min.css' %}" rel="stylesheet" type="text/css">
+        <link
+                href="{% static 'vendors/select2/dist/css/select2-bootstrap4.min.css' %}" rel="stylesheet"
+                type="text/css"
+        >
         <link href="{% static 'vendors/sweetalert2/dist/sweetalert2.min.css' %}" rel="stylesheet" type="text/css">
 
         <!-- Tour -->
@@ -308,10 +311,6 @@
                             {% include "extends/utility/loading.html" %}
                             <!-- /spinner loading -->
 
-                            <!-- Message translate usually -->
-                            {% include 'extends/utility/system_storage.html' %}
-                            <!-- /Message translate usually -->
-
                             <!-- /Message translate base -->
                             {% include 'trans.html' %}
                             <!-- /Message translate base -->
@@ -396,17 +395,71 @@
     <script src="{% static 'assets/js/plugins/drawer.js' %}"></script>
     <script src="{% static 'assets/js/notify.js' %}"></script>
     <script src="{% static 'assets/js/bootstrap-notify.min.js' %}"></script>
+
+    <script type="application/javascript">
+        // all variable data global with CONST!! --> keep don't change value of variable
+        const globeLanguage = "{{ base.language }}";
+        const globeApiStatusOfRender = "{{ data.render_api_status }}";
+        const globeUrlNotDeny = ['/log/notify/me/count'];
+        const globePK = "{{ pk }}";
+        const globeMediaDomain = "{{ base.domain_cloud }}";
+        const globePrefixAvatar = "{{ base.avatar_prefix }}";
+        const globeIsDebug = "{{ is_debug }}";
+
+        // url
+        const globeUrlCompanyConfig = "{% url 'CompanyConfigDetailAPI' %}";
+
+        // DataTable
+        const globeDTBLanguageConfig = "{% if base.language == 'en' %}{% static 'assets/js/cdn-clone/datatable/i18n/en.json' %}{% else %}{% static 'assets/js/cdn-clone/datatable/i18n/vi.json' %}{% endif %}";
+        const globeGoToEndPage = "{% trans 'Current page automatically goes to end page after the new row was added' %}";
+
+        // gateway
+        const globeGatewayMiddleListView = "{% url 'GatewayMiddleListView' plan='_plan_' app='_app_' %}";
+        const globeGatewayMiddleDetailView="{% url 'GatewayMiddleDetailView' plan='_plan_' app='_app_' pk='_pk_' %}";
+        const globeGatewayViewNameListView="{% url 'GatewayViewNameListView' %}";
+        const globeGatewayViewNameParseView="{% url 'GatewayViewNameParseView' view_name='_view_name_' %}";
+
+        // attachment
+        const globeUrlAttachmentUpload = "{% url 'AttachmentUpload' %}";
+        const globeUrlAvatarUpload = "{% url 'EmployeeUploadAvatarAPI' %}";
+        const globeMaxFileSize = "{% trans 'Maximum size {size}MiB' %}.";
+        const globeFileDeny = "{% trans 'File type not allowed for uploading' %}";
+        const globeFileAccept = "{% trans 'It must be one of the following file types:' %}";
+
+        // workflow
+        const globeTaskDetail = "{% url 'FlowRuntimeTaskDetailAPI' pk=1 %}";
+        const globeFormMappedZone = "{% if data.form_id %}{{ data.form_id }}{% endif %}";
+
+        // msg
+        const globeResourceLoadFailed = "{% trans 'Failed to load resource' %}.";
+        const globeMsgAuthExpires = "{% trans 'The session login was expired' %}";
+        const globeLoginPage = "{% trans 'Login page' %}";
+        const globeHomePage = "{% trans 'Home Page' %}";
+        const globePreviousPage = "{% trans 'Previous page' %}";
+        const globeMsgUnlimited = "{% trans 'Unlimited' %}";
+
+        // http msg
+        const globeMsgHttp404 = "{% trans 'Not found' %}";
+        const globeMsgHttp403 = "{% trans 'Forbidden' %}";
+        const globeMsgHttp500 = "{% trans 'Internal Server Errors' %}";
+
+    </script>
+
     <script src="{% static 'assets/js/init.js' %}"></script>
+    {% if base.language == 'vi' %}
+        <script src="{% static 'assets/js/cdn-clone/select2/i18n/vi.js' %}"></script>
+    {% else %}
+        <script src="{% static 'assets/js/cdn-clone/select2/i18n/en.js' %}"></script>
+    {% endif %}
+    <script src="{% static 'assets/js/cdn-clone/select2/init-select2.js' %}"></script>
     <script src="{% static 'assets/js/chips-init.js' %}"></script>
     <script src="{% static 'assets/js/init-setup.js' %}"></script>
     <script src="{% static 'assets/js/init-loader.js' %}"></script>
     <!-- // Init JS -->
 
     <script type="application/javascript">
-        const apiStatusOfRender = "{{ data.render_api_status }}";
-        const urlNotDeny = ['/log/notify/me/count'];
         let isDenied = false;
-        switch (apiStatusOfRender) {
+        switch (globeApiStatusOfRender) {
             case "1401":
                 isDenied = true;
                 WindowControl.showUnauthenticated();
@@ -432,8 +485,8 @@
                         {
                             target: "menu-tenant",
                             placement: 'bottom',
-                            title: $.fn.storageSystemData.attr('data-msg-choose-space'),
-                            content: $.fn.storageSystemData.attr('data-msg-choose-space-instru'),
+                            title: "{% trans 'Choose a space menus' %}",
+                            content: "{% trans 'Each Space has different menus.' %}",
                         },
                     ],
                     showPrevButton: true,

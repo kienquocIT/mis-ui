@@ -88,7 +88,7 @@ class DistrictListAPI(APIView):
         is_api=True,
     )
     def get(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(request=request, user=request.user, url=ApiURL.DISTRICTS + pk).get()  # noqa
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.DISTRICTS).get(data={'city_id': pk})
         return resp.auto_return(key_success='districts')
 
 
@@ -98,7 +98,7 @@ class WardListAPI(APIView):
         is_api=True,
     )
     def get(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(request=request, url=ApiURL.WARDS + pk, user=request.user).get()
+        resp = ServerAPI(request=request, url=ApiURL.WARDS, user=request.user).get(data={'district_id': pk})
         return resp.auto_return(key_success='wards')
 
 

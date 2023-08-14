@@ -98,9 +98,9 @@ $(function () {
             $('.form-tags-input-wrap .btn-add-tag').on('click', function () {
                 const $elmInputLabel = $('#inputLabelName')
                 const newTxt = $elmInputLabel.val()
-                let labelList = $taskLabelElm.val()
+                let labelList = $taskLabelElm.attr('value')
                 if (labelList !== undefined && labelList !== '') labelList = JSON.parse(labelList)
-                if (!labelList.length) labelList = []
+                else labelList = []
                 labelList.push(newTxt)
                 $taskLabelElm.attr('value', JSON.stringify(labelList))
                 const labelHTML = $(`<span class="item-tag"><span>${newTxt}</span><span class="tag-delete">x</span></span>`)
@@ -364,7 +364,7 @@ $(function () {
             (resp) => {
                 const data = $.fn.switcherResp(resp);
                 if (data) {
-                    $.fn.notifyB({description: data.message}, 'success')
+                    $.fn.notifyB({description: data?.message || data?.detail }, 'success')
                     // if in task page load add task function
                     if ($(document).find('#tasklist_wrap').length) {
                         let elm = $('<input type="hidden" id="addNewTaskData"/>');

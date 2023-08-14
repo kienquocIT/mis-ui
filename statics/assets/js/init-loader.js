@@ -1,8 +1,11 @@
+let globeDataCompanyConfig = null;
+let globeWFRuntimeID = null;
+let globeIDLastSubmit = null;
+
 $.fn.extend({
-    storageSystemData: $('#storageSystemData'),
     transEle: $('#base-trans-factory'),
     isDebug: function () {
-        return $.fn.parseBoolean($.fn.storageSystemData.attr('data-flagIsDebug'), false)
+        return $.fn.parseBoolean(globeIsDebug, false)
     },
     alterClass: function (removals, additions) {
         // https://stackoverflow.com/a/8680251/13048590
@@ -28,7 +31,7 @@ $.fn.extend({
         return typeof value === 'boolean';
     },
     getPkDetail: function () {
-        return $.fn.storageSystemData.attr('data-idPKDetail');
+        return globePK;
     },
     hasOwnProperties: function (objData, keys) {
         if (typeof objData === 'object' && Array.isArray(keys)) {
@@ -230,7 +233,7 @@ $.fn.extend({
         }
     },
     callAjax: function (url, method, data = {}, csrfToken = null, headers = {}, content_type = "application/json", opts = {}) {
-        if (isDenied && !urlNotDeny.includes(url)) return new Promise(function (resolve, reject) {
+        if (isDenied && !globeUrlNotDeny.includes(url)) return new Promise(function (resolve, reject) {
         });
         else {
             let isDropdown = opts['isDropdown'];
@@ -288,7 +291,7 @@ $.fn.extend({
         }
     },
     callAjax2: function (opts = {}) {
-        if (isDenied && !urlNotDeny.includes(url)) return new Promise(function (resolve, reject) {
+        if (isDenied && !globeUrlNotDeny.includes(url)) return new Promise(function (resolve, reject) {
         });
         else {
             let isDropdown = UtilControl.popKey(opts, 'isDropdown', false, true);
@@ -377,18 +380,18 @@ $.fn.extend({
                             },
                             401: function () {
                                 if (isNotify === true) $.fn.notifyB({
-                                    'description': $.fn.storageSystemData.attr('data-msg-login-expired')
+                                    'description': globeMsgAuthExpires
                                 }, 'failure');
                                 return WindowControl.redirectLogin(1000);
                             },
                             403: function () {
                                 if (isNotify === true) $.fn.notifyB({
-                                    'description': $.fn.storageSystemData.attr('data-msg-403')
+                                    'description': globeMsgHttp403
                                 }, 'failure');
                             },
                             404: function () {
                                 if (isNotify === true) $.fn.notifyB({
-                                    'description': $.fn.storageSystemData.attr('data-msg-404')
+                                    'description': globeMsgHttp404
                                 }, 'failure');
                             }, ...statusCodeCallback,
                         },
@@ -403,174 +406,7 @@ $.fn.extend({
         return new DTBControl($(this)).init(opts);
     },
     initSelect2: function (opts) {
-        function renderDropdownInfo($elm, data) {
-            let keyArg = [
-                {name: 'Title', value: 'title'},
-                {name: 'Code', value: 'code'},
-            ];
-            const templateFormat = $elm.attr('data-template-format');
-            if (templateFormat) {
-                keyArg = JSON.parse(templateFormat.replace(/'/g, '"'));
-            }
-            let linkDetail = $elm.data('link-detail');
-            let $elmTrans = $('#base-trans-factory');
-            let htmlContent = `<h6 class="dropdown-header header-wth-bg">${$elmTrans.attr('data-more-info')}</h6>`;
-            for (let key of keyArg) {
-                if (data.hasOwnProperty(key.value))
-                    htmlContent += `<div class="row mb-1"><h6><i>${key.name}</i></h6><p>${data[key.value]}</p></div>`;
-            }
-            if (linkDetail) {
-                link = linkDetail.format_url_with_uuid(data['id']);
-                htmlContent += `<div class="dropdown-divider"></div><div class="text-right">
-            <a href="${link}" target="_blank" class="link-primary underline_hover">
-                <span>${$elmTrans.attr('data-view-detail')}</span>
-                <span class="icon ml-1">
-                    <i class="bi bi-arrow-right-circle-fill"></i>
-                </span>
-            </a></div>`;
-            };
-            $elm.parents('.input-affix-wrapper').find('.dropdown-menu').html(htmlContent);
-        }
-
-        if (!opts) opts = {};
-        let currentThis = $(this)
-        let default_data = currentThis.attr('data-onload')
-        // handle default data selected
-        if (default_data && default_data.length) {
-            if (typeof default_data === 'string') {
-                let temp = default_data.replaceAll("'", '"')
-                default_data = temp
-                try {
-                    default_data = JSON.parse(default_data)
-                } catch (e) {
-                    console.log('Warning: ', $this.attr('id'), ' parse data onload is error with this error', e)
-                }
-            }
-            if (default_data) {
-                if (Array.isArray(default_data)) {
-                    let htmlTemp = ''
-                    for (let item of default_data) {
-                        let name = item?.title
-                        if (item?.fist_name && item?.last_name)
-                            name = `${item.last_name}. ${item.fist_name}`
-                        htmlTemp += `<option value="${item.id}" selected>${name}</option>`
-                    }
-                    currentThis.html(htmlTemp)
-                } else {
-                    let name = default_data.title;
-                    if (default_data.first_name && default_data.last_name)
-                        name = `${default_data.last_name}. ${default_data.first_name}`
-                    currentThis.html(`<option value="${default_data.id}" selected>${name}</option>`)
-                }
-            }
-        }
-        // handle ajax config
-        if (opts['ajax'] || $(this).attr('data-url')){
-            opts['ajax'] = $.extend({}, opts['ajax'], {
-                url: opts?.ajax?.url ? opts.ajax.url : $(this).attr('data-url'),
-                headers: {
-                    "ENABLEXCACHECONTROL": true
-                },
-                data: function (params) {
-                    let query = params
-                    query.isDropdown = true
-                    if (params.term) query.search = params.term
-                    query.page = params.page || 1
-                    query.pageSize = params.pageSize || 10
-                    if (currentThis.attr('data-params')) {
-                        let strParams = currentThis.attr('data-params').replaceAll("'",'"')
-                        let data_params = JSON.parse(strParams);
-                        query = {...query, ...data_params}
-                    }
-                    return query
-                },
-                processResults: function (res, params) {
-                    let data_original = res.data[currentThis.attr('data-prefix')];
-                    let data_convert = []
-                    if (data_original.length) {
-                        for (let item of data_original) {
-                            let text = 'title';
-                            if (currentThis.attr('data-format'))
-                                text = currentThis.attr('data-format')
-                            else if(item.hasOwnProperty('full_name')) text = 'full_name';
-                            try{
-                                if (default_data && default_data.hasOwnProperty('id')
-                                    && default_data.id === item.id
-                                )
-                                    data_convert.push({...item, 'text': item[text], 'selected': true})
-                                else data_convert.push({...item, 'text': item[text]})
-
-                            }
-                            catch (e) {
-                                console.log(e)
-                            }
-                        }
-                        if (currentThis.attr('data-virtual') !== undefined
-                            && currentThis.attr('data-virtual') !== ''
-                            && currentThis.attr('data-virtual') !== "[]")
-                            data_convert.push(JSON.parse(currentThis.attr('data-virtual')))
-                    }
-                    params.page = params.page || 1;
-                    return {
-                        results: data_convert,
-                        pagination: {
-                            more: (params.page * 10) < res?.data?.page_count // Calculate if there are more pages
-                        }
-                    };
-                },
-            })
-        }
-        let tokenSeparators = UtilControl.parseJsonDefault($(this).attr('data-select2-tokenSeparators'), null);
-        let closeOnSelect = $.fn.parseBoolean($(this).attr('data-select2-closeOnSelect'));
-        let allowClear = $.fn.parseBoolean($(this).attr('data-select2-allowClear'));
-
-        // placeholder
-        if (!opts['placeholder']) {
-            let placeholder = $(this).attr('data-select2-placeholder')
-            if (placeholder) opts['placeholder'] = placeholder;
-        }
-        // -- placeholder
-
-        // fix select2 for bootstrap modal
-        if (!opts['dropdownParent']) {
-            let dropdownParent = $(this).closest('div.modal');
-            if (dropdownParent.length > 0) opts['dropdownParent'] = $(dropdownParent[0]);
-        }
-        // -- fix select2 for bootstrap modal
-        if ($(this).find('option').length <= 0){
-            $(this).append(`<option value=""></option>`);
-        }
-        $(this).select2({
-            placeholder: {
-                id: '', // the value of the option
-                text: $.fn.transEle.attr('data-select-placeholder')
-            },
-            multiple: !!$(this).attr('multiple') || !!$(this).attr('data-select2-multiple'),
-            closeOnSelect: closeOnSelect === null ? true : closeOnSelect,
-            allowClear: allowClear === null ? false : allowClear,
-            disabled: !!$(this).attr('data-select2-disabled') || $(this).prop('disabled'),
-            tags: !!$(this).attr('data-select2-tags'),
-            tokenSeparators: tokenSeparators ? tokenSeparators : [","],
-            width: "100%",
-            theme: 'bootstrap4',
-            language: {
-                loadingMore: function () {
-                    return $.fn.transEle.attr('data-select2-loadmore'); // Replace with your translated text
-                }
-            },
-            ...opts
-        });
-        if($(this).attr('data-template-format')){
-            $(this).on("select2:select", function (e) {
-                currentThis.parents('.input-affix-wrapper').find('.dropdown i').attr('disabled', false)
-                renderDropdownInfo(currentThis, e.params.data)
-            })
-            if ($(this).attr('data-onload')){
-                let dataOnload = JSON.parse($(this).attr('data-onload').replace(/'/g, '"'));
-                $(this).parents('.input-affix-wrapper').find('.dropdown i').attr('disabled', false)
-                renderDropdownInfo($(this), dataOnload)
-            }
-        }
+        return new SelectDDControl($(this), opts).init();
     },
     compareStatusShowPageAction: function (resultDetail) {
         WFRTControl.compareStatusShowPageAction(resultDetail);
@@ -585,3 +421,184 @@ $(document).ready(function () {
     new NotifyController().active();
     new ListeningEventController().active();
 });
+
+
+// backup zones
+
+// initSelect2: function (opts) {
+//         function renderDropdownInfo($elm, data) {
+//             let keyArg = [
+//                 {
+//                     name: 'Title',
+//                     value: 'title'
+//                 },
+//                 {
+//                     name: 'Code',
+//                     value: 'code'
+//                 },
+//             ];
+//             const templateFormat = $elm.attr('data-template-format');
+//             if (templateFormat) {
+//                 keyArg = JSON.parse(templateFormat.replace(/'/g, '"'));
+//             }
+//             let linkDetail = $elm.data('link-detail');
+//             let $elmTrans = $('#base-trans-factory');
+//             let htmlContent = `<h6 class="dropdown-header header-wth-bg">${$elmTrans.attr('data-more-info')}</h6>`;
+//             for (let key of keyArg) {
+//                 if (data.hasOwnProperty(key.value))
+//                     htmlContent += `<div class="row mb-1"><h6><i>${key.name}</i></h6><p>${data[key.value]}</p></div>`;
+//             }
+//             if (linkDetail) {
+//                 let link = linkDetail.format_url_with_uuid(data['id']);
+//                 htmlContent += `<div class="dropdown-divider"></div><div class="text-right">
+//                     <a href="${link}" target="_blank" class="link-primary underline_hover">
+//                         <span>${$elmTrans.attr('data-view-detail')}</span>
+//                         <span class="icon ml-1">
+//                             <i class="bi bi-arrow-right-circle-fill"></i>
+//                         </span>
+//                     </a>
+//                 </div>`;
+//             }
+//             $elm.parents('.input-affix-wrapper').find('.dropdown-menu').html(htmlContent);
+//         }
+//
+//         if (!opts) opts = {};
+//         let currentThis = $(this)
+//         let default_data = currentThis.attr('data-onload')
+//         // handle default data selected
+//         if (default_data && default_data.length) {
+//             if (typeof default_data === 'string') {
+//                 let temp = default_data.replaceAll("'", '"')
+//                 default_data = temp
+//                 try {
+//                     default_data = JSON.parse(default_data)
+//                 } catch (e) {
+//                     console.log('Warning: ', $this.attr('id'), ' parse data onload is error with this error', e)
+//                 }
+//             }
+//             if (default_data) {
+//                 if (Array.isArray(default_data)) {
+//                     let htmlTemp = ''
+//                     for (let item of default_data) {
+//                         let name = item?.title
+//                         if (item?.fist_name && item?.last_name)
+//                             name = `${item.last_name}. ${item.fist_name}`
+//                         htmlTemp += `<option value="${item.id}" selected>${name}</option>`
+//                     }
+//                     currentThis.html(htmlTemp)
+//                 } else {
+//                     let name = default_data.title;
+//                     if (default_data.first_name && default_data.last_name)
+//                         name = `${default_data.last_name}. ${default_data.first_name}`
+//                     currentThis.html(`<option value="${default_data.id}" selected>${name}</option>`)
+//                 }
+//             }
+//         }
+//         // handle ajax config
+//         if (opts['ajax'] || $(this).attr('data-url')) {
+//             opts['ajax'] = $.extend({}, opts['ajax'], {
+//                 url: opts?.ajax?.url ? opts.ajax.url : $(this).attr('data-url'),
+//                 headers: {
+//                     "ENABLEXCACHECONTROL": true
+//                 },
+//                 data: function (params) {
+//                     let query = params
+//                     query.isDropdown = true
+//                     if (params.term) query.search = params.term
+//                     query.page = params.page || 1
+//                     query.pageSize = params.pageSize || 10
+//                     if (currentThis.attr('data-params')) {
+//                         let strParams = currentThis.attr('data-params').replaceAll("'", '"')
+//                         let data_params = JSON.parse(strParams);
+//                         query = {...query, ...data_params}
+//                     }
+//                     return query
+//                 },
+//                 processResults: function (res, params) {
+//                     let data_original = res.data[currentThis.attr('data-prefix')];
+//                     let data_convert = []
+//                     if (data_original.length) {
+//                         for (let item of data_original) {
+//                             let dataTitleKey = currentThis.attr('data-format') ? currentThis.attr('data-format') : item.hasOwnProperty('full_name') ? 'full_name' : 'title';
+//                             data_convert.push({
+//                                 'text': item[dataTitleKey],
+//                                 'data': item,
+//                                 'selected': !!((default_data && default_data.hasOwnProperty('id') && default_data.id === item.id)),
+//                             });
+//                         }
+//                         if (
+//                             currentThis.attr('data-virtual') !== undefined
+//                             && currentThis.attr('data-virtual') !== ''
+//                             && currentThis.attr('data-virtual') !== "[]"
+//                         ) {
+//
+//                             data_convert.push(JSON.parse(currentThis.attr('data-virtual')))
+//                         }
+//                     }
+//                     params.page = params.page || 1;
+//                     return {
+//                         results: data_convert,
+//                         pagination: {
+//                             more: (params.page * 10) < res?.data?.['page_count'] // Calculate if there are more pages
+//                         }
+//                     };
+//                 },
+//             })
+//         }
+//         let tokenSeparators = UtilControl.parseJsonDefault($(this).attr('data-select2-tokenSeparators'), null);
+//         let closeOnSelect = $.fn.parseBoolean($(this).attr('data-select2-closeOnSelect'));
+//         let allowClear = $.fn.parseBoolean($(this).attr('data-select2-allowClear'));
+//
+//         // placeholder
+//         if (!opts['placeholder']) {
+//             let placeholder = $(this).attr('data-select2-placeholder')
+//             if (placeholder) opts['placeholder'] = placeholder;
+//         }
+//         // -- placeholder
+//
+//         // fix select2 for bootstrap modal
+//         if (!opts['dropdownParent']) {
+//             let dropdownParent = $(this).closest('div.modal');
+//             if (dropdownParent.length > 0) opts['dropdownParent'] = $(dropdownParent[0]);
+//         }
+//         // -- fix select2 for bootstrap modal
+//         if ($(this).find('option').length <= 0) {
+//             $(this).append(`<option value=""></option>`);
+//         }
+//
+//         if (opts?.['data'] && opts?.['ajax']) {
+//             delete opts['data'];
+//         }
+//
+//         $(this).select2({
+//             placeholder: {
+//                 id: '', // the value of the option
+//                 text: $.fn.transEle.attr('data-select-placeholder')
+//             },
+//             multiple: !!$(this).attr('multiple') || !!$(this).attr('data-select2-multiple'),
+//             closeOnSelect: closeOnSelect === null ? true : closeOnSelect,
+//             allowClear: allowClear === null ? false : allowClear,
+//             disabled: !!$(this).attr('data-select2-disabled') || $(this).prop('disabled'),
+//             tags: !!$(this).attr('data-select2-tags'),
+//             tokenSeparators: tokenSeparators ? tokenSeparators : [","],
+//             width: "100%",
+//             theme: 'bootstrap4',
+//             language: {
+//                 loadingMore: function () {
+//                     return $.fn.transEle.attr('data-select2-loadmore'); // Replace with your translated text
+//                 }
+//             },
+//             ...opts
+//         });
+//         if ($(this).attr('data-template-format')) {
+//             $(this).on("select2:select", function (e) {
+//                 currentThis.parents('.input-affix-wrapper').find('.dropdown i').attr('disabled', false)
+//                 renderDropdownInfo(currentThis, e.params.data)
+//             })
+//             if ($(this).attr('data-onload')) {
+//                 let dataOnload = JSON.parse($(this).attr('data-onload').replace(/'/g, '"'));
+//                 $(this).parents('.input-affix-wrapper').find('.dropdown i').attr('disabled', false)
+//                 renderDropdownInfo($(this), dataOnload)
+//             }
+//         }
+//     },

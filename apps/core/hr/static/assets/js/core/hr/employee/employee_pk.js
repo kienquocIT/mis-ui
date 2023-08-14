@@ -28,6 +28,17 @@ class EmployeeLoadPage {
                 if (item.hasOwnProperty('user')) item = item?.['user'];
                 return item?.['full_name'] || '';
             },
+        }).on('change', function () {
+            let selectedVal = $(this).val();
+            let dataBackup = SelectDDControl.get_data_from_idx($(this), selectedVal);
+
+            let userDetail = dataBackup?.['user'] || {};
+            let tabInfoEle = $('#tab-info');
+
+            tabInfoEle.find('input[name="first_name"]').val(userDetail['first_name'] || '');
+            tabInfoEle.find('input[name="last_name"]').val(userDetail['last_name'] || '');
+            tabInfoEle.find('input[name="email"]').val(userDetail['email'] || '');
+            tabInfoEle.find('input[name="phone"]').val(userDetail['phone'] || '');
         });
     }
 

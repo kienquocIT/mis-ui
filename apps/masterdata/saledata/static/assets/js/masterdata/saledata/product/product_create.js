@@ -1,4 +1,12 @@
 $(document).ready(function () {
+    const currency_list = JSON.parse($('#currency_list').text());
+    let currency_primary = null;
+    for (let i = 0; i < currency_list.length; i++) {
+        if (currency_list[i].is_primary) {
+            currency_primary = currency_list[i].id
+        }
+    }
+
     function disabledTab(check, link_tab, id_tab) {
         if (!check) {
             $(link_tab).addClass('disabled');
@@ -146,7 +154,7 @@ $(document).ready(function () {
                                 </div>
                             </div>
                             <div class="col-6 form-group">
-                                <input data-is-default="${item.is_default}" ${is_default} data-source="${item.price_list_mapped}" data-auto-update="${item.auto_update}" data-factor="${item.factor}" data-id="${item.id}" data-return-type="number" type="text" class="form-control mask-money value-price-list input_price_list">
+                                <input data-is-default="${item.is_default}" ${is_default} data-source="${item.price_list_mapped}" data-auto-update="${item.auto_update}" data-factor="${item.factor}" data-id="${item.id}" data-return-type="number" type="text" class="form-control mask-money input_price_list">
                             </div>
                         </div>`;
                     }
@@ -186,7 +194,7 @@ $(document).ready(function () {
         let width = $('#width').val();
         let height = $('#height').val();
         let volume = parseFloat(length) * parseFloat(width) * parseFloat(height);
-        $('#volume').val(volume);
+        $('#volume').val(volume.toFixed(2));
     })
 
     $(document).on("change", '#width', function () {
@@ -194,7 +202,7 @@ $(document).ready(function () {
         let width = $('#width').val();
         let height = $('#height').val();
         let volume = parseFloat(length) * parseFloat(width) * parseFloat(height);
-        $('#volume').val(volume);
+        $('#volume').val(volume.toFixed(2));
     })
 
     $(document).on("change", '#height', function () {
@@ -202,7 +210,7 @@ $(document).ready(function () {
         let width = $('#width').val();
         let height = $('#height').val();
         let volume = parseFloat(length) * parseFloat(width) * parseFloat(height);
-        $('#volume').val(volume);
+        $('#volume').val(volume.toFixed(2));
     })
 
     function loadPriceForChild(element_id, element_value) {
@@ -224,7 +232,7 @@ $(document).ready(function () {
 
     // change select box UoM group tab general
     $('#general-select-box-uom-group').on('change', function () {
-        $('#uom-code').val('');
+        $('#inventory-uom-code').val('');
         let sale_select_box_default_uom = $('#sale-select-box-default-uom');
         let purchase_select_box_default_uom = $('#purchase-select-box-default-uom');
         let inventory_select_box_uom_name = $('#inventory-select-box-uom-name');
@@ -267,83 +275,6 @@ $(document).ready(function () {
         }
     })
 
-    function getDataForm() {
-        let data = {
-            'product_title': $('#title').val(),
-            'product_description': $('#description').val()
-        };
-        data['general_data'] = {
-            'general_product_type': $('#general-select-box-product-type option:selected').attr('value'),
-            'general_product_category': $('#general-select-box-product-category option:selected').attr('value'),
-            'general_product_uom_group': $('#general-select-box-uom-group option:selected').attr('value'),
-            'general_product_size': {
-                'length': $('#length').val(),
-                'width': $('#width').val(),
-                'height': $('#height').val(),
-                'volume': $('#volume').val(),
-                'weight': $('#weight').val(),
-            }
-        }
-        if ($('#check-tab-sale').is(':checked') === true) {
-            let sale_product_price_list = [];
-            $('.ul-price-list').find('.select_price_list').each(function (index, element) {
-                let selected = $(this).is(':checked');
-                if (selected) {
-                    let price_list_id = $(this).closest('.select_price_list_row').find('.input_price_list').attr('data-id');
-                    let price_list_value = $(this).closest('.select_price_list_row').find('.input_price_list').attr('value');
-                    sale_product_price_list.push({'price_list_id': price_list_id, 'price_list_value': price_list_value});
-                }
-            })
-            data['sale_data'] = {
-                'sale_product_default_uom': $('#sale-select-box-default-uom option:selected').attr('value'),
-                'sale_product_tax_code': $('#sale-select-box-tax-code option:selected').attr('value'),
-                'sale_product_cost': $('#sale-cost').attr('value'),
-                'sale_product_price_list': sale_product_price_list
-            }
-        }
-
-        if ($('#check-tab-inventory').is(':checked') === true) {
-            data['inventory_data'] = {
-                'inventory_product_uom': $('#inventory-select-box-uom-name option:selected').attr('value'),
-                'inventory_product_inventory_level_min': $('#inventory-level-min').val(),
-                'inventory_product_inventory_level_max': $('#inventory-level-max').val(),
-            }
-        }
-
-        if ($('#check-tab-purchase').is(':checked') === true) {
-            data['purchase_data'] = {
-                'purchase_product_default_uom': $('#purchase-select-box-default-uom option:selected').attr('value'),
-                'purchase_product_tax_code': $('#purchase-select-box-tax-code option:selected').attr('value'),
-            }
-        }
-
-        return data
-    }
-
-    //submit form create product
-    let form_create_product = $('#form-create-product');
-    form_create_product.submit(function (event) {
-        event.preventDefault();
-        let csr = $("input[name=csrfmiddlewaretoken]").val();
-        let frm = new SetupFormSubmit($(this));
-        let dataForm = getDataForm();
-
-        console.log(dataForm)
-        $.fn.callAjax(frm.dataUrl, frm.dataMethod,  dataForm, csr)
-            .then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        $.fn.notifyB({description: "Successfully"}, 'success')
-                        $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
-                    }
-                },
-                (errs) => {
-                    $.fn.notifyB({description: errs.data.errors}, 'failure');
-                }
-            )
-    })
-
     const item_unit_dict = JSON.parse($('#id-unit-list').text()).reduce((obj, item) => {
         obj[item.title] = item;
         return obj;
@@ -358,6 +289,96 @@ $(document).ready(function () {
         eleWeight.find('input').attr('data-id', item_unit_dict['weight'].id)
     }
     loadBaseItemUnit();
+
+    function getDataForm() {
+        let data = {
+            'title': $('#title').val(),
+            'description': $('#description').val()
+        };
+        data['product_choice'] = []
+
+        data['general_information'] = {
+            'general_product_type': $('#general-select-box-product-type option:selected').attr('value'),
+            'general_product_category': $('#general-select-box-product-category option:selected').attr('value'),
+            'general_product_uom_group': $('#general-select-box-uom-group option:selected').attr('value'),
+            'general_product_size': {
+                'length': $('#length').val(),
+                'width': $('#width').val(),
+                'height': $('#height').val(),
+                'volume': $('#volume').val(),
+                'weight': $('#weight').val(),
+                'volume_id': $('#volume').attr('data-id'),
+                'weight_id': $('#weight').attr('data-id')
+            }
+        }
+
+        if ($('#check-tab-sale').is(':checked') === true) {
+            data['product_choice'].push(0)
+            let sale_product_price_list = [];
+            $('.ul-price-list').find('.select_price_list').each(function (index, element) {
+                let selected = $(this).is(':checked');
+                if (selected) {
+                    let price_list_id = $(this).closest('.select_price_list_row').find('.input_price_list').attr('data-id');
+                    let price_list_value = $(this).closest('.select_price_list_row').find('.input_price_list').attr('value');
+                    let is_auto_update = $(this).closest('.select_price_list_row').find('.input_price_list').attr('data-auto-update');
+                    sale_product_price_list.push({
+                        'price_list_id': price_list_id,
+                        'price_list_value': price_list_value,
+                        'is_auto_update': is_auto_update
+                    });
+                }
+            })
+            data['sale_information'] = {
+                'sale_product_default_uom': $('#sale-select-box-default-uom option:selected').attr('value'),
+                'sale_product_tax': $('#sale-select-box-tax-code option:selected').attr('value'),
+                'sale_product_cost': $('#sale-cost').attr('value'),
+                'sale_product_price_list': sale_product_price_list,
+                'currency_using': currency_primary
+            }
+        }
+
+        if ($('#check-tab-inventory').is(':checked') === true) {
+            data['product_choice'].push(1)
+            data['inventory_information'] = {
+                'inventory_product_uom': $('#inventory-select-box-uom-name option:selected').attr('value'),
+                'inventory_level_min': $('#inventory-level-min').val(),
+                'inventory_level_max': $('#inventory-level-max').val(),
+            }
+        }
+
+        if ($('#check-tab-purchase').is(':checked') === true) {
+            data['product_choice'].push(2)
+            data['purchase_information'] = {
+                'purchase_product_default_uom': $('#purchase-select-box-default-uom option:selected').attr('value'),
+                'purchase_product_tax': $('#purchase-select-box-tax-code option:selected').attr('value'),
+            }
+        }
+        console.log(data)
+        return data
+    }
+
+    //submit form create product
+    let form_create_product = $('#form-create-product');
+    form_create_product.submit(function (event) {
+        event.preventDefault();
+        let csr = $("input[name=csrfmiddlewaretoken]").val();
+        let frm = new SetupFormSubmit($(this));
+        let dataForm = getDataForm();
+
+        $.fn.callAjax(frm.dataUrl, frm.dataMethod,  dataForm, csr)
+            .then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: "Successfully"}, 'success')
+                        $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
+                    }
+                },
+                (errs) => {
+                    // $.fn.notifyB({description: errs.data.errors}, 'failure');
+                }
+            )
+    })
 
     function loadWareHouseList() {
         if (!$.fn.DataTable.isDataTable('#datatable-warehouse-list')) {

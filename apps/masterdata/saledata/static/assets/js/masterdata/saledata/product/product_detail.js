@@ -37,8 +37,22 @@ $(document).ready(function () {
         disabledTab(this.checked, '#link-tab-purchase', '#tab_purchase');
     });
 
-    function loadProductType(id) {
-        let ele = $('#select-box-product-type');
+    let pk = $.fn.getPkDetail()
+
+    $('#product-image').dropify({
+        messages: {
+            'default': 'Upload an image',
+            'replace': 'Drag and drop or click to replace',
+            'remove':  'Remove',
+            'error':   'Ooops, something wrong happended.'
+        },
+        tpl: {
+            message:' {{ default }}',
+        }
+    });
+
+    function loadProductType() {
+        let ele = $('#general-select-box-product-type');
         ele.html('');
         $.fn.callAjax(ele.attr('data-url'), ele.attr('data-method')).then((resp) => {
             let data = $.fn.switcherResp(resp);
@@ -46,10 +60,7 @@ $(document).ready(function () {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product_type_list')) {
                     ele.append(`<option></option>`);
                     resp.data.product_type_list.map(function (item) {
-                        if (item.id === id)
-                            ele.append(`<option value="` + item.id + `" selected>` + item.title + `</option>`);
-                        else
-                            ele.append(`<option value="` + item.id + `">` + item.title + `</option>`);
+                        ele.append(`<option value="` + item.id + `">` + item.title + `</option>`);
                     })
                 }
             }
@@ -57,8 +68,8 @@ $(document).ready(function () {
         },)
     }
 
-    function loadProductCategory(id) {
-        let ele = $('#select-box-product-category');
+    function loadProductCategory() {
+        let ele = $('#general-select-box-product-category');
         ele.html('');
         $.fn.callAjax(ele.attr('data-url'), ele.attr('data-method')).then((resp) => {
             let data = $.fn.switcherResp(resp);
@@ -66,11 +77,7 @@ $(document).ready(function () {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product_category_list')) {
                     ele.append(`<option></option>`);
                     resp.data.product_category_list.map(function (item) {
-                        if (item.id === id) {
-                            ele.append(`<option value="` + item.id + `" selected>` + item.title + `</option>`);
-                        } else {
-                            ele.append(`<option value="` + item.id + `">` + item.title + `</option>`);
-                        }
+                        ele.append(`<option value="` + item.id + `">` + item.title + `</option>`);
                     })
                 }
             }
@@ -78,8 +85,8 @@ $(document).ready(function () {
         },)
     }
 
-    function loadUoMGroup(id) {
-        let ele = $('#select-box-uom-group');
+    function loadUoMGroup() {
+        let ele = $('#general-select-box-uom-group');
         ele.html('');
         $.fn.callAjax(ele.attr('data-url'), ele.attr('data-method')).then((resp) => {
             let data = $.fn.switcherResp(resp);
@@ -88,10 +95,7 @@ $(document).ready(function () {
                     ele.append(`<option></option>`);
                     resp.data.unit_of_measure_group.map(function (item) {
                         if (Object.keys(item.referenced_unit).length !== 0)
-                            if (item.id === id)
-                                ele.append(`<option value="` + item.id + `" selected>` + item.title + `</option>`);
-                            else
-                                ele.append(`<option value="` + item.id + `">` + item.title + `</option>`);
+                            ele.append(`<option value="` + item.id + `">` + item.title + `</option>`);
                     })
                 }
             }
@@ -99,21 +103,21 @@ $(document).ready(function () {
         },)
     }
 
-    function loadTaxCode(id) {
-        let ele = $('#select-box-tax-code');
-        ele.html('');
-        $.fn.callAjax(ele.attr('data-url'), ele.attr('data-method')).then((resp) => {
+    function loadTaxCode() {
+        let ele1 = $('#sale-select-box-tax-code');
+        let ele2 = $('#purchase-select-box-tax-code');
+        ele1.html('');
+        ele2.html('');
+        $.fn.callAjax(ele1.attr('data-url'), ele1.attr('data-method')).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('tax_list')) {
-                    ele.append(`<option></option>`);
+                    ele1.append(`<option></option>`);
+                    ele2.append(`<option></option>`);
                     resp.data.tax_list.map(function (item) {
-                        if (item.type === 0 || item.type === 2) {
-                            if (item.id === id)
-                                ele.append(`<option value="` + item.id + `" selected>` + item.title + `&nbsp;&nbsp;(<span>` + item.code + `</span>)</option>`);
-                            else
-                                ele.append(`<option value="` + item.id + `">` + item.title + `&nbsp;&nbsp;(<span>` + item.code + `</span>)</option>`);
-                        }
+                        if (item.type === 0 || item.type === 2)
+                            ele1.append(`<option value="` + item.id + `">` + item.title + `&nbsp;&nbsp;(<span>` + item.code + `</span>)</option>`);
+                            ele2.append(`<option value="` + item.id + `">` + item.title + `&nbsp;&nbsp;(<span>` + item.code + `</span>)</option>`);
                     })
                 }
             }
@@ -122,177 +126,166 @@ $(document).ready(function () {
 
     }
 
-    function getTreePriceList(dataTree, parent_id, child) {
-        for (let i = 0; i < dataTree.length; i++) {
-            if (dataTree[i].item.id === parent_id) {
-                dataTree[i].child.push({
-                    'item': child,
-                    'child': []
-                })
-            } else {
-                if (dataTree[i].child.length === 0)
-                    continue;
-                else {
-                    getTreePriceList(dataTree[i].child, parent_id, child)
-                }
-            }
-        }
-        return dataTree
-    }
-
-    function appendHtmlForPriceList(dataTree, ele, currency, count) {
-        for (let i = 0; i < dataTree.length; i++) {
-            if (dataTree[i].item.price_list_mapped !== null) {
-                if (dataTree[i].item.auto_update === true) {
-                    ele.find('ul').append(`<div class="row">
-                        <div class="col-6">
-                            <div class="form-check form-check-inline mt-2 ml-5">
-                                <input data-source="` + dataTree[i].item.price_list_mapped + `" class="form-check-input" type="checkbox"
-                                    value="option1" data-check="check-` + count + `" data-id="` + dataTree[i].item.id + `" disabled>
-                                <label class="form-check-label">` + dataTree[i].item.title + `</label>
-                            </div>
-                        </div>
-                        <div class="col-6 form-group">
-                            <span class="input-affix-wrapper affix-wth-text">
-                                <input data-auto-update="` + dataTree[i].item.auto_update + `" data-factor="` + dataTree[i].item.factor + `" data-source="` + dataTree[i].item.price_list_mapped + `" data-text="check-` + count + `" data-id="` + dataTree[i].item.id + `" class="form-control value-price-list number-separator" type="text" value="" readonly>
-                                <span class="input-suffix">` + currency + `</span>
-                            </span>
-                        </div>
-                    </div>`)
-                } else {
-                    ele.find('ul').append(`<div class="row">
-                        <div class="col-6">
-                            <div class="form-check form-check-inline mt-2 ml-5">
-                                <input data-source="` + dataTree[i].item.price_list_mapped + `" class="form-check-input" type="checkbox"
-                                    value="option1" data-check="check-` + count + `" data-id="` + dataTree[i].item.id + `">
-                                <label class="form-check-label">` + dataTree[i].item.title + `</label>
-                            </div>
-                        </div>
-                        <div class="col-6 form-group">
-                            <span class="input-affix-wrapper affix-wth-text">
-                                <input data-auto-update="` + dataTree[i].item.auto_update + `" data-factor="` + dataTree[i].item.factor + `" data-source="` + dataTree[i].item.price_list_mapped + `" data-text="check-` + count + `" data-id="` + dataTree[i].item.id + `" class="form-control value-price-list number-separator" type="text" value="" disabled>
-                                <span class="input-suffix">` + currency + `</span>
-                            </span>
-                        </div>
-                    </div>`)
-                }
-            } else {
-                if (dataTree[i].item.is_default === true) {
-                    ele.find('ul').prepend(`<div class="row">
-                        <div class="col-6">
-                            <div class="form-check form-check-inline mt-2 ml-5">
-                                <input data-is-default="1" class="form-check-input" type="checkbox"
-                                    value="option1" checked data-check="check-` + count + `" disabled data-id="` + dataTree[i].item.id + `">
-                                <label class="form-check-label required">` + dataTree[i].item.title + `</label>
-                            </div>
-                        </div>
-                        <div class="col-6 form-group">
-                            <span class="input-affix-wrapper affix-wth-text">
-                                <input data-is-default="1" data-auto-update="` + dataTree[i].item.auto_update + `" data-factor="` + dataTree[i].item.factor + `" data-text="check-` + count + `" data-id="` + dataTree[i].item.id + `" class="form-control value-price-list number-separator" type="text" value="">
-                                <span class="input-suffix">` + currency + `</span>
-                            </span>
-                        </div>
-                    </div>`)
-                } else {
-                    ele.find('ul').append(`<div class="row">
-                        <div class="col-6">
-                            <div class="form-check form-check-inline mt-2 ml-5">
-                                <input class="form-check-input" type="checkbox"
-                                    value="option1" data-check="check-` + count + `" data-id="` + dataTree[i].item.id + `">
-                                <label class="form-check-label">` + dataTree[i].item.title + `</label>
-                            </div>
-                        </div>
-                        <div class="col-6 form-group">
-                            <span class="input-affix-wrapper affix-wth-text">
-                                <input data-auto-update="` + dataTree[i].item.auto_update + `" data-factor="` + dataTree[i].item.factor + `" data-text="check-` + count + `" data-id="` + dataTree[i].item.id + `" class="form-control value-price-list number-separator" type="text" value="" disabled>
-                                <span class="input-suffix">` + currency + `</span>
-                            </span>
-                        </div>
-                    </div>`)
-                }
-            }
-            count += 1
-            if (dataTree[i].child.length !== 0) {
-                count = appendHtmlForPriceList(dataTree[i].child, ele, currency, count)
-            } else {
-                continue;
-            }
-        }
-        return count
-    }
-
-    let currency_id;
-
-    function loadPriceList(list_price) {
-        let ele = $('#select-price-list');
-        let currency_primary;
-        $.fn.callAjax(ele.attr('data-currency'), ele.attr('data-method')).then((resp) => {
+    function loadPriceList() {
+        let ele = $('#sale-select-price-list');
+        $.fn.callAjax(ele.attr('data-url'), ele.attr('data-method')).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('currency_list')) {
-                    data.currency_list.map(function (item) {
-                        if (item.is_primary === true) {
-                            currency_primary = item.abbreviation;
-                            currency_id = item.id;
+                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('price_list')) {
+                    let html = ``
+                    for (let i = 0; i < data.price_list.length; i++) {
+                        let item = data.price_list[i];
+                        let checked = '';
+                        let disabled = '';
+                        let is_default = 'disabled';
+                        if (item.is_default) {
+                            is_default = ''
                         }
-                    })
+                        if (item.is_default || (item.price_list_mapped !== null && item.auto_update === true)) {
+                            checked = 'checked';
+                            disabled = 'disabled';
+                        }
+                        html += `<div class="row select_price_list_row">
+                            <div class="col-6">
+                                <div class="form-check mt-2">
+                                    <input class="form-check-input select_price_list" type="checkbox" data-id="${item.id}" ${checked} ${disabled}>
+                                    <label>` + item.title + `</label>
+                                </div>
+                            </div>
+                            <div class="col-6 form-group">
+                                <input data-is-default="${item.is_default}" ${is_default} data-source="${item.price_list_mapped}" data-auto-update="${item.auto_update}" data-factor="${item.factor}" data-id="${item.id}" data-return-type="number" type="text" class="form-control mask-money input_price_list">
+                            </div>
+                        </div>`;
+                    }
+                    ele.find('.ul-price-list').html(html);
                 }
             }
         }, (errs) => {
-        },).then((resp) => {
-            let dataTree = []
-            $.fn.callAjax(ele.attr('data-url'), ele.attr('data-method')).then((resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('price_list')) {
-                        data.price_list.map(function (item) {
-                            if (item.price_list_type.value === 0) {
-                                let price_list_exists = list_price.find(function (obj) {
-                                    return obj.id === item.id
-                                })
-                                if (price_list_exists !== undefined) {
-                                    item.auto_update = list_price.find(function (obj) {
-                                        return obj.id === item.id
-                                    }).is_auto_update;
-                                }
-                                if (item.price_list_mapped === null) {
-                                    dataTree.push({
-                                        'item': item,
-                                        'child': []
-                                    })
-                                } else {
-                                    dataTree = getTreePriceList(dataTree, item.price_list_mapped, item)
-                                }
-                            }
-                        })
-                        appendHtmlForPriceList(dataTree, ele, currency_primary, 0);
-                        autoSelectPriceListCopyFromSource()
-                        list_price.map(function (item) {
-                            if (item.currency_using === currency_primary) {
-                                document.querySelector(`input[type="text"][data-id="` + item.id + `"]`).value = item.price.toLocaleString('de-DE', {
-                                    minimumFractionDigits: 2,
-                                    maximumFractionDigits: 2
-                                });
-                            }
-                            if (item.is_auto_update === false) {
-                                document.querySelector(`input[type="checkbox"][data-id="` + item.id + `"]`).checked = true;
-                                document.querySelector(`input[type="checkbox"][data-id="` + item.id + `"]`).disabled = false;
-                                document.querySelector(`input[type="text"][data-id="` + item.id + `"]`).disabled = false;
-                                document.querySelector(`input[type="text"][data-id="` + item.id + `"]`).readOnly = false;
-                                document.querySelector(`input[type="checkbox"][data-is-default="1"]`).disabled = true;
-                            } else {
-                                document.querySelector(`input[type="checkbox"][data-id="` + item.id + `"]`).checked = true;
-                                document.querySelector(`input[type="text"][data-id="` + item.id + `"]`).disabled = true;
-                            }
-                        })
-                    }
-                }
-            })
-        })
+        },)
     }
 
-    let pk = $.fn.getPkDetail()
+    $(document).on("change", '.select_price_list', function () {
+        if ($(this).is(':checked') === true) {
+            $(this).closest('.select_price_list_row').find('.input_price_list').attr('disabled', false);
+        }
+        else {
+            $(this).closest('.select_price_list_row').find('.input_price_list').attr('disabled', true);
+            $(this).closest('.select_price_list_row').find('.input_price_list').attr('value', '');
+            $(this).closest('.select_price_list_row').find('.input_price_list').val('');
+        }
+    })
 
+    $(document).on("change", '.input_price_list', function () {
+        let this_data_id = $(this).attr('data-id');
+        let this_data_value = $(this).attr('value');
+        $('.ul-price-list').find('.input_price_list').each(function (index, element) {
+            if ($(this).attr('data-source') === this_data_id && $(this).attr('data-auto-update') === 'true' && $(this).attr('data-is-default') === 'false') {
+                let value = parseFloat(this_data_value) * parseFloat($(this).attr('data-factor'));
+                $(this).attr('value', parseFloat(value));
+                loadPriceForChild($(this).attr('data-id'), value);
+            }
+        })
+        $.fn.initMaskMoney2();
+    })
+
+    $(document).on("change", '#length', function () {
+        let length = $('#length').val();
+        let width = $('#width').val();
+        let height = $('#height').val();
+        let volume = parseFloat(length) * parseFloat(width) * parseFloat(height);
+        $('#volume').val(volume.toFixed(2));
+    })
+
+    $(document).on("change", '#width', function () {
+        let length = $('#length').val();
+        let width = $('#width').val();
+        let height = $('#height').val();
+        let volume = parseFloat(length) * parseFloat(width) * parseFloat(height);
+        $('#volume').val(volume.toFixed(2));
+    })
+
+    $(document).on("change", '#height', function () {
+        let length = $('#length').val();
+        let width = $('#width').val();
+        let height = $('#height').val();
+        let volume = parseFloat(length) * parseFloat(width) * parseFloat(height);
+        $('#volume').val(volume.toFixed(2));
+    })
+
+    function loadPriceForChild(element_id, element_value) {
+        $('.ul-price-list').find('.input_price_list').each(function (index, element) {
+            if ($(this).attr('data-source') === element_id && $(this).attr('data-auto-update') === 'true' && $(this).attr('data-is-default') === 'false') {
+                let value = parseFloat(element_value) * parseFloat($(this).attr('data-factor'));
+                $(this).attr('value', parseFloat(value));
+                loadPriceForChild($(this).attr('data-id'), value);
+            }
+        })
+        $.fn.initMaskMoney2();
+    }
+
+    loadPriceList();
+    loadProductCategory();
+    loadProductType();
+    loadUoMGroup();
+    loadTaxCode();
+
+    function Load1() {
+        $('#inventory-uom-code').val('');
+        let sale_select_box_default_uom = $('#sale-select-box-default-uom');
+        let purchase_select_box_default_uom = $('#purchase-select-box-default-uom');
+        let inventory_select_box_uom_name = $('#inventory-select-box-uom-name');
+        sale_select_box_default_uom.html('');
+        purchase_select_box_default_uom.html('');
+        inventory_select_box_uom_name.html('');
+        if ($('#general-select-box-uom-group option:selected').attr('value')) {
+            sale_select_box_default_uom.append(`<option></option>`);
+            purchase_select_box_default_uom.append(`<option></option>`);
+            inventory_select_box_uom_name.append(`<option data-code=""></option>`);
+            let unit_of_measure_group_get = unit_of_measure_group.filter(function(element) {
+                return element.id === $('#general-select-box-uom-group option:selected').attr('value');
+            })
+            unit_of_measure_group_get[0].uom.map(function (item) {
+                sale_select_box_default_uom.append(`<option value="` + item.uom_id + `">` + item.uom_title + `</option>`);
+                purchase_select_box_default_uom.append(`<option value="` + item.uom_id + `">` + item.uom_title + `</option>`);
+                inventory_select_box_uom_name.append(`<option value="` + item.uom_id + `" data-code="` + item.uom_code + `">` + item.uom_title + `</option>`);
+            })
+        }
+    }
+    $('#general-select-box-uom-group').on('change', function () {
+        Load1();
+    })
+
+    $('#inventory-select-box-uom-name').on('change', function () {
+        $('#inventory-uom-code').val($(this).find(":selected").attr('data-code'));
+    })
+
+    $('#sale-select-box-default-uom').on('change', function () {
+        $('#inventory-select-box-uom-name').val($(this).val());
+        $('#inventory-uom-code').val(($('#inventory-select-box-uom-name option:selected').attr('data-code')));
+    })
+
+    const item_unit_dict = JSON.parse($('#id-unit-list').text()).reduce((obj, item) => {
+        obj[item.title] = item;
+        return obj;
+    }, {});
+    const unit_of_measure_group = JSON.parse($('#unit_of_measure_group').text());
+    const currency_list = JSON.parse($('#currency_list').text());
+    let currency_primary = null;
+    for (let i = 0; i < currency_list.length; i++) {
+        if (currency_list[i].is_primary) {
+            currency_primary = currency_list[i].id
+        }
+    }
+
+    function loadBaseItemUnit() {
+        let eleVolume = $('#divVolume');
+        let eleWeight = $('#divWeight');
+        eleVolume.find('.input-suffix').text(item_unit_dict['volume'].measure)
+        eleVolume.find('input').attr('data-id', item_unit_dict['volume'].id)
+        eleWeight.find('.input-suffix').text(item_unit_dict['weight'].measure)
+        eleWeight.find('input').attr('data-id', item_unit_dict['weight'].id)
+    }
+    loadBaseItemUnit();
 
     // get detail product
     function loadDetail() {
@@ -300,356 +293,81 @@ $(document).ready(function () {
         $.fn.callAjax(url_detail, 'GET').then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
-                let product_detail = data?.['product'];
-
+                let product_detail = data['product'];
+                console.log(product_detail)
                 $.fn.compareStatusShowPageAction(product_detail);
-                $('#product-code').text(product_detail.code);
-                $('#product-title').val(product_detail.title);
-                loadProductCategory(product_detail.general_information.product_category.id);
-                loadProductType(product_detail.general_information.product_type.id);
-                loadUoMGroup(product_detail.general_information.uom_group.id);
 
-                let ele = $('#select-box-uom-group')
-                let data_url = ele.attr('data-url-detail').replace(0, product_detail.general_information.uom_group.id);
-                let data_method = ele.attr('data-method');
-                let select_box_default_uom = $('#select-box-default-uom');
-                let select_box_uom_name = $('#select-box-uom-name');
-                select_box_default_uom.html('');
-                select_box_uom_name.html('');
+                $('#product-code').text(product_detail['code']);
+                $('#title').val(product_detail['title']);
+                $('#description').val(product_detail['description']);
 
-                $.fn.callAjax(data_url, data_method).then((resp) => {
-                    let data_uom_gr = $.fn.switcherResp(resp);
-                    if (data_uom_gr) {
-                        if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('uom_group')) {
-                            select_box_uom_name.append(`<option data-code=""></option>`);
-                            select_box_default_uom.append(`<option></option>`);
-                            if (!product_detail.product_choice.includes(1)) {
-                                $('#link-tab-inventory').addClass('disabled');
-                                $('#tab_inventory').removeClass('active show');
-                                $('#check-tab-inventory').prop('checked', false);
-                                $('.dimensionControl').hide();
-                            } else {
-                                let warehouse_stock_list = GetProductFromWareHouseStockList(pk, product_detail.inventory_information.uom.id);
-                                loadWareHouseList(warehouse_stock_list);
-                                loadWareHouseOverView(warehouse_stock_list);
-                            }
-                            if (!product_detail.product_choice.includes(0)) {
-                                $('#link-tab-sale').addClass('disabled');
-                                $('#tab_sale').removeClass('active show');
-                                $('#check-tab-sale').prop('checked', false);
-                                loadPriceList([]);
-                                loadTaxCode(null);
-                            } else {
-                                if (product_detail.sale_information.hasOwnProperty('price_list'))
-                                    loadPriceList(product_detail.sale_information.price_list);
-                                else {
-                                    loadPriceList([]);
-                                }
-                                if (product_detail.sale_information.hasOwnProperty('tax_code'))
-                                    loadTaxCode(product_detail.sale_information.tax_code.id);
-                                else
-                                    loadTaxCode(null);
+                if (0 in product_detail['product_choice']) {
+                    $('#check-tab-sale').attr('checked', true);
+                    $('#link-tab-sale').removeClass('disabled');
+                }
+                if (1 in product_detail['product_choice']) {
+                    $('#check-tab-inventory').attr('checked', true);
+                    $('#link-tab-inventory').removeClass('disabled');
+                }
+                if (2 in product_detail['product_choice']) {
+                    $('#check-tab-purchase').attr('checked', true);
+                    $('#link-tab-purchase').removeClass('disabled');
+                }
 
-                                $('[name="length"]').val(product_detail.sale_information.length);
-                                $('[name="width"]').val(product_detail.sale_information.width);
-                                $('[name="height"]').val(product_detail.sale_information.height);
-                                if (product_detail.sale_information.measure !== undefined) {
-                                    product_detail.sale_information.measure.map(function (item) {
-                                        if (item.unit.title === 'volume') {
-                                            $('[name="volume"]').val(item.value);
-                                        } else {
-                                            $('[name="weight"]').val(item.value);
-                                        }
-                                    })
-                                }
-                            }
+                if (Object.keys(product_detail['general_information']).length !== 0) {
+                    let general_information = product_detail['general_information'];
 
-                            if (!product_detail.product_choice.includes(2)) {
-                                $('#link-tab-purchase').addClass('disabled');
-                                $('#check-tab-purchase').prop('checked', false);
-                            }
+                    $('#general-select-box-product-type').val(general_information['product_type']['id']);
+                    $('#general-select-box-product-category').val(general_information['product_category']['id']);
+                    $('#general-select-box-uom-group').val(general_information['uom_group']['id']);
+                    $('#length').val(general_information['product_size']['length']);
+                    $('#width').val(general_information['product_size']['width']);
+                    $('#height').val(general_information['product_size']['height']);
+                    $('#volume').val(general_information['product_size']['volume']['value']);
+                    $('#weight').val(general_information['product_size']['weight']['value']);
+                    Load1();
+                }
 
-                            data_uom_gr.uom_group.uom.map(function (item) {
-                                if ($.fn.hasOwnProperties(product_detail.sale_information, ['default_uom']) && product_detail.sale_information.default_uom !== null) {
-                                    if (item.uom_id === product_detail.sale_information.default_uom.id)
-                                        select_box_default_uom.append(`<option value="` + item.uom_id + `" selected>` + item.uom_title + `</option>`);
-                                    else
-                                        select_box_default_uom.append(`<option value="` + item.uom_id + `">` + item.uom_title + `</option>`);
-                                } else {
-                                    select_box_default_uom.append(`<option value="` + item.uom_id + `">` + item.uom_title + `</option>`);
-                                }
+                if (Object.keys(product_detail['sale_information']).length !== 0) {
+                    let sale_information = product_detail['sale_information'];
 
-                                if ($.fn.hasOwnProperties(product_detail.inventory_information, ['uom']) && product_detail.inventory_information.uom !== null) {
-                                    if (item.uom_id === product_detail.inventory_information.uom.id) {
-                                        select_box_uom_name.append(`<option value="` + item.uom_id + `" data-code="` + item.uom_code + `" selected>` + item.uom_title + `</option>`);
-                                        $('#uom-code').val(item.uom_code);
-                                    } else
-                                        select_box_uom_name.append(`<option value="` + item.uom_id + `" data-code="` + item.uom_code + `">` + item.uom_title + `</option>`);
-                                } else {
-                                    select_box_uom_name.append(`<option value="` + item.uom_id + `" data-code="` + item.uom_code + `">` + item.uom_title + `</option>`);
-                                }
-                            })
+                    $('#sale-select-box-default-uom').val(sale_information['default_uom']['id']);
+                    $('#sale-select-box-tax-code').val(sale_information['tax']['id']);
+                    $('#sale-cost').attr('value', sale_information['sale_product_cost']);
 
-                            $('#inventory-level-max').val(product_detail.inventory_information.inventory_level_max);
-                            $('#inventory-level-min').val(product_detail.inventory_information.inventory_level_min);
-                        }
+                    for (let i = 0; i < sale_information['sale_product_price_list'].length; i++) {
+                        let item = sale_information['sale_product_price_list'][i];
+                        $(`.input_price_list[data-id="` + item.price_list_id + `"]`).attr('value', item.price_list_value);
                     }
-                })
+                    $.fn.initMaskMoney2();
+                }
 
+                if (Object.keys(product_detail['inventory_information']).length !== 0) {
+                    let inventory_information = product_detail['inventory_information'];
+
+                    $('#inventory-select-box-uom-name').val(inventory_information['uom']['id']);
+                    $('#inventory-uom-code').val(inventory_information['uom']['code']);
+                    $('#inventory-level-min').val(inventory_information['inventory_level_min']);
+                    $('#inventory-level-max').val(inventory_information['inventory_level_max']);
+
+                    let warehouse_stock_list = GetProductFromWareHouseStockList(product_detail.id, product_detail.inventory_information['uom']['id']);
+                    loadWareHouseList(warehouse_stock_list);
+                    loadWareHouseOverView(warehouse_stock_list);
+                }
+
+                if (Object.keys(product_detail['purchase_information']).length !== 0) {
+                    let purchase_information = product_detail['purchase_information'];
+
+                    $('#purchase-select-box-default-uom').val(purchase_information['default_uom']['id']);
+                    $('#purchase-select-box-tax-code').val(purchase_information['tax']['id']);
+                }
             }
         })
     }
-
     loadDetail();
 
-    // change select box UoM group tab general
-    $('#select-box-uom-group').on('change', function () {
-        $('#uom-code').val('');
-        let select_box_default_uom = $('#select-box-default-uom');
-        let select_box_uom_name = $('#select-box-uom-name');
-        select_box_default_uom.html('');
-        select_box_uom_name.html('');
-        if ($(this).val()) {
-            let data_url = $(this).attr('data-url-detail').replace(0, $(this).val());
-            let data_method = $(this).attr('data-method');
-            $.fn.callAjax(data_url, data_method).then((resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('uom_group')) {
-                        select_box_default_uom.append(`<option></option>`);
-                        select_box_uom_name.append(`<option data-code=""></option>`);
-                        data.uom_group.uom.map(function (item) {
-                            select_box_default_uom.append(`<option value="` + item.uom_id + `">` + item.uom_title + `</option>`);
-                            select_box_uom_name.append(`<option value="` + item.uom_id + `" data-code="` + item.uom_code + `">` + item.uom_title + `</option>`);
-                        })
-                    }
-                }
-            }, (errs) => {
-            },)
-        }
-    })
-
-    // change select box UoM Name in tab inventory
-    $('#select-box-uom-name').on('change', function () {
-        $('#uom-code').val($(this).find(":selected").attr('data-code'));
-    })
-
-    $('#select-box-default-uom').on('change', function () {
-        if ($('#check-tab-inventory').is(':checked') === true) {
-            if ($('#select-box-uom-name').val() === '') {
-                $('#select-box-uom-name').val($(this).val());
-                $('#uom-code').val(($('#select-box-uom-name option:selected').attr('data-code')));
-            }
-        }
-    })
-
-    //submit form edit product
-    function getDataForm(dataForm) {
-        let list_option = []
-        let price_list = []
-        dataForm['product_type'] = $('#select-box-product-type').val();
-        dataForm['product_category'] = $('#select-box-product-category').val();
-        dataForm['uom_group'] = $('#select-box-uom-group').val();
-
-        dataForm['default_uom'] = $('#select-box-default-uom').val();
-        dataForm['tax_code'] = $('#select-box-tax-code').val();
-
-        dataForm['inventory_uom'] = $('#select-box-uom-name').val();
-
-        $('.ul-price-list .value-price-list').each(function () {
-            let is_auto_update = '1';
-            if ($(this).attr('data-auto-update') === 'false') {
-                is_auto_update = '0';
-            }
-            if ($(`input[type="checkbox"][data-id="` + $(this).attr('data-id') + `"]`).prop('checked') === true) {
-                if ($(this).val() !== '') {
-                    price_list.push(
-                        {
-                            'price_list_id': $(this).attr('data-id'),
-                            'price_value': parseFloat($(this).val().replace(/\./g, '').replace(',', '.')),
-                            'is_auto_update': is_auto_update,
-                        }
-                    )
-                } else {
-                    price_list.push(
-                        {
-                            'price_list_id': $(this).attr('data-id'),
-                            'price_value': 0,
-                            'is_auto_update': is_auto_update,
-                        }
-                    )
-                }
-            }
-        })
-
-        if ($('#check-tab-sale').is(':checked') === true) {
-            dataForm['price_list'] = price_list;
-            let measurementList = []
-            dataForm['currency_using'] = currency_id;
-
-            if ($('[name="length"]').val() === '') {
-                delete dataForm['length']
-            }
-            if ($('[name="width"]').val() === '') {
-                delete dataForm['width']
-            }
-            if ($('[name="height"]').val() === '') {
-                delete dataForm['height']
-            }
-            let inpVolume = $('[name="volume"]');
-            let inpWeight = $('[name="weight"]');
-            if (inpVolume.val() !== '') {
-                measurementList.push({
-                    'unit': inpVolume.attr('data-id'),
-                    'value': parseFloat(inpVolume.val())
-                })
-            }
-            if (inpWeight.val() !== '') {
-                measurementList.push({
-                    'unit': inpWeight.attr('data-id'),
-                    'value': parseFloat(inpWeight.val())
-                })
-            }
-
-
-            dataForm['measure'] = measurementList;
-            list_option.push(0)
-        } else {
-            let list_field_del = ['default_uom', 'tax_code', 'currency_using', 'length', 'width', 'height', 'measure', 'price_list']
-            for (const key of list_field_del) {
-                if (key in dataForm) {
-                    delete dataForm[key];
-                }
-            }
-        }
-
-        if ($('#check-tab-inventory').is(':checked') === true) {
-            if (dataForm['inventory_level_min'] === '') {
-                delete dataForm['inventory_level_min']
-            }
-            if (dataForm['inventory_level_max'] === '') {
-                delete dataForm['inventory_level_max']
-            }
-            list_option.push(1)
-        } else {
-            let list_field_del = ['inventory_uom', 'inventory_level_min', 'inventory_level_max', 'height', 'width', 'length', 'measure']
-            for (const key of list_field_del) {
-                if (key in dataForm) {
-                    delete dataForm[key];
-                }
-            }
-        }
-
-        if ($('#check-tab-purchase').is(':checked') === true) {
-            list_option.push(2)
-        }
-
-        dataForm['product_choice'] = list_option;
-        return dataForm
-    }
-
-
-    form_update_product.submit(function (event) {
-        event.preventDefault();
-        let csr = $("input[name=csrfmiddlewaretoken]").val();
-        let frm = new SetupFormSubmit($(this));
-
-        let dataForm = getDataForm(frm.dataForm);
-
-        $.fn.callAjax(frm.dataUrl.format_url_with_uuid(pk), frm.dataMethod, dataForm, csr)
-            .then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        $.fn.notifyB({description: "Successfully"}, 'success')
-                        $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
-                    }
-                },
-                (errs) => {
-                    $.fn.notifyB({description: errs.data.errors}, 'failure');
-                }
-            )
-    })
-
-    function autoSelectPriceListCopyFromSource() {
-        let element = document.getElementsByClassName('ul-price-list')[0].querySelectorAll('.form-check-input[disabled]')
-        for (let i = 0; i < element.length; i++) {
-            if (element[i].hasAttribute('data-source')) {
-                let data_id = element[i].getAttribute('data-source')
-                element[i].checked = !!document.querySelector(`input[type="checkbox"][data-id="` + data_id + `"]`).checked;
-            }
-        }
-    }
-
-    $(document).on('click', '.ul-price-list .form-check-input', function () {
-        autoSelectPriceListCopyFromSource()
-        if ($(this).prop('checked')) {
-            $(`input[data-text="` + $(this).attr('data-check') + `"]`).prop('disabled', false)
-            $(`input[data-text="` + $(this).attr('data-check') + `"]`).addClass('price-list-change');
-        } else {
-            $(`input[data-text="` + $(this).attr('data-check') + `"]`).prop('disabled', true)
-            let element = document.getElementsByClassName('ul-price-list')[0].querySelectorAll('.form-check-input:not(:checked)')
-            for (let i = 0; i < element.length; i++) {
-                document.querySelector(`input[type="text"][data-text="` + element[i].getAttribute('data-check') + `"]`).value = null;
-            }
-        }
-
-    })
-
-    $(document).on('input', '.ul-price-list .value-price-list', function () {
-        $(this).addClass('price-list-change');
-        let element = document.getElementsByClassName('ul-price-list')[0].querySelectorAll('.value-price-list[readonly]')
-        for (let i = 0; i < element.length; i++) {
-            if (element[i].hasAttribute('data-source')) {
-                let data_id = element[i].getAttribute('data-source')
-                if (document.querySelector(`input[type="text"][data-id="` + data_id + `"]`).value !== '') {
-                    element[i].value = (parseFloat(document.querySelector(`input[type="text"][data-id="` + data_id + `"]`).value.replace(/\./g, '').replace(',', '.')) * element[i].getAttribute('data-factor')).toLocaleString('de-DE', {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2
-                    });
-                    element[i].classList.add('price-list-change');
-                }
-            }
-        }
-    })
-
-    const inpDimensionEle = $('.inpDimension')
-    const inpVolumeEle = $('input[name="volume"]');
-    inpDimensionEle.on('change', function () {
-        let dimensions = $('.inpDimension').map(function () {
-            return $(this).val();
-        }).get();
-
-        let volume = dimensions.reduce(function (a, b) {
-            return (a * b).toFixed(2);
-        }, 1);
-
-        if (volume === (0).toFixed(2)) {
-            inpVolumeEle.val('');
-        } else {
-            inpVolumeEle.val(volume);
-        }
-    });
-
-    const item_unit_list = JSON.parse($('#id-unit-list').text());
-    const item_unit_dict = item_unit_list.reduce((obj, item) => {
-        obj[item.title] = item;
-        return obj;
-    }, {});
     const warehouse_product_list = JSON.parse($('#warehouse_product_list').text());
     const unit_of_measure_list = JSON.parse($('#unit_of_measure').text());
-
-    function loadBaseItemUnit() {
-        let eleVolume = $('#divVolume');
-        let eleWeight = $('#divWeight');
-
-        eleVolume.find('.input-suffix').text(item_unit_dict['volume'].measure)
-        eleVolume.find('input').attr('data-id', item_unit_dict['volume'].id)
-        eleWeight.find('.input-suffix').text(item_unit_dict['weight'].measure)
-        eleWeight.find('input').attr('data-id', item_unit_dict['weight'].id)
-    }
-
-    loadBaseItemUnit()
 
     function ConvertToUnitUoM(uom_id_src, uom_id_des) {
         let get_uom_src_item = unit_of_measure_list.filter(function (item) {
@@ -869,4 +587,93 @@ $(document).ready(function () {
             });
         }
     }
+
+    function getDataForm() {
+        let data = {
+            'title': $('#title').val(),
+            'description': $('#description').val()
+        };
+        data['product_choice'] = []
+
+        data['general_information'] = {
+            'general_product_type': $('#general-select-box-product-type option:selected').attr('value'),
+            'general_product_category': $('#general-select-box-product-category option:selected').attr('value'),
+            'general_product_uom_group': $('#general-select-box-uom-group option:selected').attr('value'),
+            'general_product_size': {
+                'length': $('#length').val(),
+                'width': $('#width').val(),
+                'height': $('#height').val(),
+                'volume': $('#volume').val(),
+                'weight': $('#weight').val(),
+                'volume_id': $('#volume').attr('data-id'),
+                'weight_id': $('#weight').attr('data-id')
+            }
+        }
+
+        if ($('#check-tab-sale').is(':checked') === true) {
+            data['product_choice'].push(0)
+            let sale_product_price_list = [];
+            $('.ul-price-list').find('.select_price_list').each(function (index, element) {
+                let selected = $(this).is(':checked');
+                if (selected) {
+                    let price_list_id = $(this).closest('.select_price_list_row').find('.input_price_list').attr('data-id');
+                    let price_list_value = $(this).closest('.select_price_list_row').find('.input_price_list').attr('value');
+                    let is_auto_update = $(this).closest('.select_price_list_row').find('.input_price_list').attr('data-auto-update');
+                    sale_product_price_list.push({
+                        'price_list_id': price_list_id,
+                        'price_list_value': price_list_value,
+                        'is_auto_update': is_auto_update
+                    });
+                }
+            })
+            data['sale_information'] = {
+                'sale_product_default_uom': $('#sale-select-box-default-uom option:selected').attr('value'),
+                'sale_product_tax': $('#sale-select-box-tax-code option:selected').attr('value'),
+                'sale_product_cost': $('#sale-cost').attr('value'),
+                'sale_product_price_list': sale_product_price_list,
+                'currency_using': currency_primary
+            }
+        }
+
+        if ($('#check-tab-inventory').is(':checked') === true) {
+            data['product_choice'].push(1)
+            data['inventory_information'] = {
+                'inventory_product_uom': $('#inventory-select-box-uom-name option:selected').attr('value'),
+                'inventory_level_min': $('#inventory-level-min').val(),
+                'inventory_level_max': $('#inventory-level-max').val(),
+            }
+        }
+
+        if ($('#check-tab-purchase').is(':checked') === true) {
+            data['product_choice'].push(2)
+            data['purchase_information'] = {
+                'purchase_product_default_uom': $('#purchase-select-box-default-uom option:selected').attr('value'),
+                'purchase_product_tax': $('#purchase-select-box-tax-code option:selected').attr('value'),
+            }
+        }
+        console.log(data)
+        return data
+    }
+
+    //submit form update product
+    form_update_product.submit(function (event) {
+        event.preventDefault();
+        let csr = $("input[name=csrfmiddlewaretoken]").val();
+        let frm = new SetupFormSubmit($(this));
+        let dataForm = getDataForm();
+
+        $.fn.callAjax(frm.dataUrl.format_url_with_uuid(pk), frm.dataMethod, dataForm, csr)
+            .then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: "Successfully"}, 'success')
+                        $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
+                    }
+                },
+                (errs) => {
+                    // $.fn.notifyB({description: errs.data.errors}, 'failure');
+                }
+            )
+    })
 })

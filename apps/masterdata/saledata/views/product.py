@@ -233,8 +233,12 @@ class ProductCreate(View):
         perm_check=PermCheck(url=ApiURL.PRODUCT_LIST, method='post'),
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(url=ApiURL.ITEM_UNIT_LIST, user=request.user).get()
-        return {'unit': resp.result}, status.HTTP_200_OK
+        resp0 = ServerAPI(url=ApiURL.ITEM_UNIT_LIST, user=request.user).get()
+        resp1 = ServerAPI(url=ApiURL.CURRENCY_LIST, user=request.user).get()
+        return {
+            'unit': resp0.result,
+            'currency_list': resp1.result
+        }, status.HTTP_200_OK
 
 
 class ProductListAPI(APIView):
@@ -271,10 +275,14 @@ class ProductDetail(View):
         resp0 = ServerAPI(url=ApiURL.ITEM_UNIT_LIST, user=request.user).get()
         resp1 = ServerAPI(user=request.user, url=ApiURL.WAREHOUSE_PRODUCT_LIST).get()
         resp2 = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE).get()
+        resp3 = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE_GROUP).get()
+        resp4 = ServerAPI(url=ApiURL.CURRENCY_LIST, user=request.user).get()
         result = {
             'unit': resp0.result,
             'warehouse_product_list': resp1.result,
             'unit_of_measure': resp2.result,
+            'unit_of_measure_group': resp3.result,
+            'currency_list': resp4.result
         }
         return result, status.HTTP_200_OK
 

@@ -54,14 +54,13 @@
             </div>
             <div class="col-xl-3 col-lg-4 col-md-6 col-12 mb-3">
                 <div class="form-group">
-                    <label for="inputEstimateDeliveryDate"
-                           class="form-label">{% trans 'Estimate Delivery Date' %}</label>
+                    <label for="inputEstimateDeliveryDate" class="form-label required">
+                        {% trans 'Estimate Delivery Date' %}</label>
                     <div class="input-affix-wrapper">
                         <input type="text" name="estimated_delivery_date" id="inputEstimateDeliveryDate"
                                 class="form-control date-picker" autocomplete="off"/>
                         <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
                     </div>
-
                 </div>
             </div>
             <div class="col-xl-3  col-lg-4 col-md-6 col-12 mb-3">
@@ -167,6 +166,7 @@
            data-warehouse="{% trans 'Warehouse' %}"
            data-stock="{% trans 'Available in Store place' %}"
            data-view-detail="{% trans 'View detail' %}"
+           data-est_invalid="{% trans 'Estimate delivery date is required' %}"
     >
     <input type="hidden" id="url-factory"
            data-warehouse-stock="{% url 'WarehouseProductAPI' %}"

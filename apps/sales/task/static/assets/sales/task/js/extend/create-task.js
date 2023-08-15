@@ -33,7 +33,11 @@ function logworkSubmit(){
         if (taskID && taskID.valid_uuid4()) {
             data.task = taskID
             let url = $('#url-factory').attr('data-logtime')
-            $.fn.callAjax(url, 'POST', data, true)
+            $.fn.callAjax2({
+                'url':url,
+                'method': 'POST',
+                'data': data
+            })
                 .then(
                     (req) => {
                         let data = $.fn.switcherResp(req);
@@ -129,9 +133,7 @@ $(function () {
 
     // checklist handle
     class checklistHandle {
-
         datalist = []
-
         set setDataList(data) {
             this.datalist = data;
         }
@@ -187,13 +189,18 @@ $(function () {
     // run status select default
     const sttElm = $('#selectStatus');
     sttElm.attr('data-url')
-    $.fn.callAjax(sttElm.attr('data-url'), 'get')
+    $.fn.callAjax2({
+        'url': sttElm.attr('data-url'),
+        'method': 'GET'
+    })
         .then(
             (resp) => {
                 const data = $.fn.switcherResp(resp);
-                let todoItem = data[sttElm.attr('data-prefix')][0]
-                sttElm.attr('data-onload', JSON.stringify(todoItem))
-                initSelectBox(sttElm)
+                let todoItem = data[sttElm.attr('data-keyResp')][0]
+                $('.btn-create-todo, .current-create-task').click(()=>{
+                    sttElm.attr('data-onload', JSON.stringify(todoItem))
+                    sttElm.initSelect2()
+                })
             })
 
     // load assigner
@@ -203,15 +210,16 @@ $(function () {
     // assign to me btn
     const $assignBtnElm = $('.btn-assign');
     const $assigneeElm = $('#selectAssignTo')
+    $assigneeElm.initSelect2()
     $assignBtnElm.off().on('click', function () {
         const name = $assignerElm.attr('data-name')
         const id = $assignerElm.attr('data-value-id')
         const infoObj = {
-            'title': name,
-            'id': id
+            "full_name": name,
+            "id": id
         }
         $assigneeElm.attr('data-onload', JSON.stringify(infoObj))
-        initSelectBox($assigneeElm)
+        $assigneeElm.initSelect2()
 
     });
 
@@ -237,9 +245,13 @@ $(function () {
                 clearInterval(isCheck)
                 data.title = oppCode
                 $selectElm.attr('data-onload', JSON.stringify(data)).attr('disabled', true)
-                initSelectBox($selectElm)
+                $selectElm.initSelect2()
             }
         }, 1000)
+    }
+    else{
+        // run init select2 in task page
+        $selectElm.initSelect2()
     }
 
     // click to log-work
@@ -360,7 +372,11 @@ $(function () {
             method = 'PUT'
             url = $('#url-factory').attr('data-task-detail').format_url_with_uuid(formData.id)
         }
-        $.fn.callAjax(url, method, formData, true).then(
+        $.fn.callAjax2({
+            'url': url,
+            'method': method,
+            'data': formData
+        }).then(
             (resp) => {
                 const data = $.fn.switcherResp(resp);
                 if (data) {

@@ -2172,25 +2172,8 @@ class DTBControl {
         let tbl = this.dtb$.DataTable(this.parseDtlOpts(opts));
         let $this = this;
         tbl.on('init.dt', function (event, settings) {
-            let divWrap = $(this).closest('.dataTables_wrapper')
-            let minerGroup = $(this).closest('.waiter-miner-group');
-            if (minerGroup.length > 0) {
-                let filterGroup = $(minerGroup[0]).find('.miner-group');
-                let filterItem = $(minerGroup[0]).find('.waiter-miner-item').children();
-                if (filterGroup.length > 0 && filterItem.length > 0) {
-                    filterItem.addClass('col-sm-12 col-md-3 col-lg-2 mt-3');
-                    // filterGroup.append(filterItem);
-                    // filterItem.detach().appendTo(filterGroup);
-                    // $('.dataTables_filter input').removeClass('form-control-sm');
-                    //
-                    // filterItem.find('select').each(function (){
-                    //     console.log(this);
-                    //     $(this).select2();
-                    // });
-
-                }
-            }
-            $(this).closest('.dataTables_wrapper').find('.select2:not(:disabled)').initSelect2();
+            let divWrap = $(this).closest('.dataTables_wrapper');
+            // $(this).closest('.dataTables_wrapper').find('.select2:not(:disabled)').initSelect2();
             if (opts?.['fullToolbar'] === true) {
                 // load toolbar if setup is true
                 DTBControl.prepareHTMLToolbar(divWrap, settings)
@@ -2224,14 +2207,13 @@ class DTBControl {
             // init row has checkbox selection
             $this.checkRowSelect(opts);
             $this.reCheckSelect(settings);
-            // end init row
+
             // select filter in header
             setTimeout(() => {
                 $('.header-column_search th.flt-select select', this.dtb$).each(function () {
                     $(this).initSelect2()
                 })
             }, 0)
-            // end select filter
         });
         return tbl;
     }

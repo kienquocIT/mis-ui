@@ -124,8 +124,7 @@ class lineDetailUtil {
     initTable() {
         const $tableElm = $('#line_detail_table');
         let _this = this
-        $tableElm.DataTable({
-            scrollX: true,
+        $tableElm.DataTableDefault({
             data: _this.getDatalist,
             searching: false,
             ordering: false,
@@ -156,14 +155,14 @@ class lineDetailUtil {
                         return `<div class="input-group">
                                     <div class="input-affix-wrapper">
                                         <div class="input-prefix dropdown">
-                                            <i class="fas fa-info-circle" data-bs-toggle="dropdown" 
+                                            <i class="fas fa-info-circle text-blue" data-bs-toggle="dropdown" 
                                             data-dropdown-animation aria-haspopup="true" aria-expanded="false" disabled
                                             >
                                             </i>
                                             <div class="dropdown-menu w-210p mt-4"></div>
                                         </div>
                                         <select class="form-select dropdown-select_two" id="product_row_${idx}"
-                                        data-prefix="product_list" data-select2-closeOnSelect="false"
+                                        data-keyResp="product_list" data-select2-closeOnSelect="false"
                                         data-url="${urlSelect}"
                                         data-link-detail="${urlSelectDetail}"
                                         data-onload="${product ? product : ''}"
@@ -190,7 +189,7 @@ class lineDetailUtil {
                             warehouse = temp.replaceAll('"', "'")
                         }
                         return `<select class="form-select dropdown-select_two" id="warehouse_row_${idx}"` +
-                            `data-prefix="warehouse_list" data-select2-closeOnSelect="false" ` +
+                            `data-keyResp="warehouse_list" data-select2-closeOnSelect="false" ` +
                             `data-url="${urlSelect}" ` +
                             `data-onload="${warehouse ? warehouse : ''}"` +
                             `></select>`;
@@ -218,7 +217,7 @@ class lineDetailUtil {
                             params = gTemp.replace(/"/g, "'")
                         }
                         return `<select class="form-select dropdown-select_two" id="uom_row_${idx}"
-                                    data-prefix="unit_of_measure" data-select2-closeOnSelect="false"
+                                    data-keyResp="unit_of_measure" data-select2-closeOnSelect="false"
                                     data-url="${urlSelect}"
                                     data-params="${params}"
                                     data-onload="${uom ? uom : ''}"></select>`;
@@ -261,7 +260,7 @@ class lineDetailUtil {
                             tax = temp.replaceAll('"', "'")
                         }
                         return `<select class="form-select dropdown-select_two w-10" id="tax_row_${idx}" 
-                                    data-prefix="tax_list" data-select2-closeOnSelect="false"
+                                    data-keyResp="tax_list" data-select2-closeOnSelect="false"
                                     data-url="${urlSelect}" 
                                     data-onload="${tax ? tax : ''}"></select>`;
                     }
@@ -301,9 +300,6 @@ class lineDetailUtil {
                 // init currency
                 $.fn.initMaskMoney2()
 
-                // init select 2
-                initSelectBox($('.dropdown-select_two', row))
-
                 // init event on change
                 _this.columnFuncUtil(index, row)
 
@@ -314,6 +310,11 @@ class lineDetailUtil {
                     changeData.splice(index, 1)
                     _this.setDatalist = changeData
                     _this.handleTotal()
+                })
+            },
+            drawCallback: function(settings){
+                $(`.dropdown-select_two`, $(settings.nTable)).each(function(){
+                    $(this).initSelect2()
                 })
             }
         })
@@ -363,7 +364,7 @@ class lineDetailUtil {
 
 function loadDetail(line) {
     const $form = $('#good_receipt_form')
-    if ($form.attr('data-method') === 'put') {
+    if ($form.attr('data-method') !== 'POST') {
         $.fn.callAjax($form.attr('data-url'), 'get')
             .then(
                 (resp) => {

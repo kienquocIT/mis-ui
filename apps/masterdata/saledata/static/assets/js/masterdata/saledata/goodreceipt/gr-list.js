@@ -6,6 +6,7 @@ $(function(){
             type: "GET",
             dataSrc: 'data.good_receipt_list',
         },
+        useDataServer: true,
         columns: [
             {
                 targets: 0,
@@ -57,7 +58,7 @@ $(function(){
                                    data-id="${data?.id ? data.id : ''}"
                                    data-action="delete">
                                     <span class="btn-icon-wrap">
-                                        <i class="bi bi-trash"></i>
+                                        <i class="fa-regular fa-trash-can"></i>
                                     </span>
                                 </a>
                             </div>`;

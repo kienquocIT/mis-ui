@@ -189,7 +189,7 @@ class ContactDetailAPI(APIView):
 class ContactUpdate(View):
     @mask_view(
         auth_require=True, template='masterdata/saledata/accounts/contact_update.html',
-        breadcrumb='CONTACT_DETAIL_PAGE',
+        breadcrumb='CONTACT_UPDATE_PAGE',
         menu_active='menu_contact_detail',
         perm_check=PermCheck(url=ApiURL.CONTACT_DETAIL, method='put', fill_key=['pk']),
     )

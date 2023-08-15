@@ -16,13 +16,13 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <button
-            class="btn btn-icon btn-rounded bg-dark-hover mr-1"
-            type="submit" form="form-create-contact"
-            data-bs-toggle="tooltip" data-bs-placement="bottom"
-            data-bs-original-title="{% trans 'Save' %}"
-    >
-        <span class="icon"><i class="fa-regular fa-floppy-disk"></i></span>
+    <button class="btn btn-outline-primary" type="submit" form="form-create-contact">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
+            </span>
+        </span>
     </button>
 {% endblock %}
 {% block pageContent %}
@@ -324,21 +324,30 @@
                             <div class="row">
                                 <div class="form-group">
                                     <label class="form-label">{% trans "Province" %}</label>
-                                    <select class="form-select" id="workcity" aria-label=".form-select-sm" data-url="{% url "CityListAPI" %}" data-method="GET">
+                                    <select
+                                            class="form-select" id="workcity" aria-label=".form-select-sm"
+                                            data-url="{% url "CityListAPI" %}" data-method="GET"
+                                    >
                                     </select>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="form-group">
                                     <label class="form-label">{% trans "District" %}</label>
-                                    <select class="form-select" id="workdistrict" aria-label=".form-select-sm" data-url="{% url "DistrictListAPI" 'pk' %}" data-method="GET">
+                                    <select
+                                            class="form-select" id="workdistrict" aria-label=".form-select-sm"
+                                            data-url="{% url "DistrictListAPI" 'pk' %}" data-method="GET"
+                                    >
                                     </select>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="form-group">
                                     <label class="form-label">{% trans "Ward" %}</label>
-                                    <select class="form-select" id="workward" aria-label=".form-select-sm" data-url="{% url "WardListAPI" 'pk' %}" data-method="GET">
+                                    <select
+                                            class="form-select" id="workward" aria-label=".form-select-sm"
+                                            data-url="{% url "WardListAPI" 'pk' %}" data-method="GET"
+                                    >
                                     </select>
                                 </div>
                             </div>
@@ -384,21 +393,30 @@
                         <div class="row">
                             <div class="form-group">
                                 <label class="form-label">{% trans "Province" %}</label>
-                                <select class="form-select" id="homecity" aria-label=".form-select-sm" data-url="{% url "CityListAPI" %}" data-method="GET">
+                                <select
+                                        class="form-select" id="homecity" aria-label=".form-select-sm"
+                                        data-url="{% url "CityListAPI" %}" data-method="GET"
+                                >
                                 </select>
                             </div>
                         </div>
                         <div class="row">
                             <div class="form-group">
                                 <label class="form-label">{% trans "District" %}</label>
-                                <select class="form-select" id="homedistrict" aria-label=".form-select-sm" data-url="{% url "DistrictListAPI" 'pk' %}" data-method="GET">
+                                <select
+                                        class="form-select" id="homedistrict" aria-label=".form-select-sm"
+                                        data-url="{% url "DistrictListAPI" 'pk' %}" data-method="GET"
+                                >
                                 </select>
                             </div>
                         </div>
                         <div class="row">
                             <div class="form-group">
                                 <label class="form-label">{% trans "Ward" %}</label>
-                                <select class="form-select" id="homeward" aria-label=".form-select-sm" data-url="{% url "WardListAPI" 'pk' %}" data-method="GET">
+                                <select
+                                        class="form-select" id="homeward" aria-label=".form-select-sm"
+                                        data-url="{% url "WardListAPI" 'pk' %}" data-method="GET"
+                                >
                                 </select>
                             </div>
                         </div>

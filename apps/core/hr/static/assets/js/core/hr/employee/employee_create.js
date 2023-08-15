@@ -29,10 +29,16 @@ $(document).ready(function () {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         $.fn.notifyB({description: data.message}, 'success')
-                        $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
+                        setTimeout(
+                            ()=>{
+                                window.location.href = frm.attr('data-url-redirect');
+                            },
+                            1000
+                        )
                     }
                 },
                 (errs) => {
+                    $.fn.switcherResp(errs);
                     // if (errs.data.errors.hasOwnProperty('detail')) {
                     //     $.fn.notifyB({description: String(errs.data.errors['detail'])}, 'failure')
                     // }

@@ -15,7 +15,8 @@
 }
 
 .disabled-custom-show:disabled {
-    color: #0c0c0c;
+    color: #495057;
+    background-color: #e9ecef;
 }
 
 .disabled-but-edit:disabled {

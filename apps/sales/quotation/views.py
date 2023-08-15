@@ -84,6 +84,17 @@ class QuotationDetail(View):
         return {'data': {'doc_id': pk}}, status.HTTP_200_OK
 
 
+class QuotationUpdate(View):
+    @mask_view(
+        auth_require=True,
+        template='sales/quotation/quotation_update.html',
+        breadcrumb='QUOTATION_UPDATE_PAGE',
+        menu_active='menu_quotation_list',
+    )
+    def get(self, request, pk, *args, **kwargs):
+        return {'data': {'doc_id': pk}}, status.HTTP_200_OK
+
+
 class QuotationDetailAPI(APIView):
 
     @mask_view(

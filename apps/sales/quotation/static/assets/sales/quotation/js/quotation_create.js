@@ -27,8 +27,6 @@ $(function () {
            QuotationLoadDataHandle.loadBoxQuotationSalePerson(JSON.parse($('#data-init-quotation-create-request-employee').val()));
         }
 
-        QuotationLoadDataHandle.loadInitQuotationProduct();
-        QuotationLoadDataHandle.loadInitQuotationExpense();
         // load config
         QuotationLoadDataHandle.loadInitQuotationConfig('quotation-config-data', formSubmit.attr('data-method'));
         // load first time indicator

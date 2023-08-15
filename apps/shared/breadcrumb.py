@@ -112,6 +112,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     PROMOTION_LIST_PAGE = BreadcrumbChildren(_('Promotion List'), 'PromotionList')
     PROMOTION_CREATE_PAGE = BreadcrumbChildren(_('Promotion create'), 'PromotionCreate')
     PROMOTION_DETAIL_PAGE = BreadcrumbChildren(_('Promotion detail'))
+    PROMOTION_EDIT_PAGE = BreadcrumbChildren(_('Promotion edit'))
 
     # Opportunity
     OPPORTUNITY_LIST_PAGE = BreadcrumbChildren(_('Opportunity list'), 'OpportunityList')
@@ -397,6 +398,7 @@ class BreadcrumbView:
 
     PROMOTION_CREATE_PAGE = PROMOTION_LIST_PAGE + [BreadcrumbItem.PROMOTION_CREATE_PAGE]
     PROMOTION_DETAIL_PAGE = PROMOTION_LIST_PAGE + [BreadcrumbItem.PROMOTION_DETAIL_PAGE]
+    PROMOTION_EDIT_PAGE = PROMOTION_LIST_PAGE + [BreadcrumbItem.PROMOTION_EDIT_PAGE]
 
     # Opportunity
     OPPORTUNITY_LIST_PAGE = [

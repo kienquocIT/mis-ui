@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load i18n static %}
-{% block title %}{% trans 'Promotion create' %}{% endblock %}
+{% block title %}{% trans 'Promotion edit' %}{% endblock %}
 {% block cssHeader %}
     <!-- Daterangepicker CSS -->
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
@@ -28,9 +28,10 @@
     </button>
 {% endblock %}
 {% block pageContent %}
-    <!-- Form Create-->
-    <form id="promo_form" data-url="{% url 'PromotionCreateAPI' %}" data-method="POST" method="post" novalidate
-          data-url-redirect="{% url 'PromotionList' %}" autocomplete="off">
+    <!-- Form Create -->
+
+    <form id="promo_form" data-url="{% url 'PromotionDetailAPI' data.doc_id %}" data-method="PUT" method="post"
+          novalidate data-url-redirect="{% url 'PromotionList' %}">
         {% csrf_token %}
         <div class="row">
             <div class="col-md-6 col-xs-12">
@@ -79,9 +80,8 @@
                             {% trans 'Edit' %}
                         </button>
                     </label>
-                    <input type="hidden" name="customer_type" value="0" id="customer_type">
-                    <textarea class="form-control" type="text" name="customer_remark"
-                              id="customer_remark"></textarea>
+                    <input type="hidden" name="customer_type" id="customer_type" value="0">
+                    <textarea class="form-control" type="text" name="customer_remark" id="customer_remark" readonly></textarea>
                 </div>
             </div>
         </div>
@@ -92,7 +92,7 @@
             <div class="row row-cols-md-6 mb-2 row-method">
                 <div class="col">
                     <div class="form-check form-check-lg">
-                        <input type="checkbox" class="form-check-input" name="is_discount" id="is_discount" checked>
+                        <input type="checkbox" class="form-check-input" name="is_discount" id="is_discount">
                         <label class="form-check-label" for="is_discount">{% trans 'Discount' %}</label>
                     </div>
                 </div>
@@ -115,6 +115,7 @@
                         <input type="radio" id="tax_position_01" name="before_after_tax" class="form-check-input"
                                required>
                         <label class="form-check-label" for="tax_position_01">{% trans 'Before Tax' %}</label>
+
                     </div>
                 </div>
                 <div class="col">
@@ -135,13 +136,8 @@
                     <label class="form-check-label" for="percent_02">{% trans 'Fixed Amount' %}</label>
                 </div>
                 <div class="form-group mb-0">
-                    <div class="input-group">
-                        <span class="input-affix-wrapper">
-                            <input class="form-control" type="text" name="percent_value"
-                                   id="percent_value" placeholder="10" data-type_percent="">
-                            <span class="input-suffix">%</span>
-                        </span>
-                    </div>
+                    <input class="form-control" type="text" name="percent_value"
+                           id="percent_value" placeholder="10%" data-type_percent="">
                     <input class="form-control mask-money hidden" type="text" name="fix_value"
                            id="fix_value" data-return-type="number">
                 </div>
@@ -203,13 +199,11 @@
                                        data-bs-toggle="dropdown"
                                        data-dropdown-animation
                                        aria-haspopup="true"
-                                       aria-expanded="false"
-                                       disabled
-                                    ></i>
+                                       aria-expanded="false" disabled></i>
                                     <div class="dropdown-menu w-210p mt-2">
                                     </div>
                                 </div>
-                                <select class="form-control select2"
+                                <select class="form-control"
                                         name="product_selected"
                                         id="product_selected"
                                         data-multiple="false"
@@ -230,14 +224,17 @@
                             {% trans 'Minimum quantity' %}</label>
                     </div>
                     <div class="form-group mb-0">
-                        <input class="form-control" type="text" name="num_minimum"
-                               id="num_minimum">
+                        <input class="form-control" type="text" name="num_minimum" id="num_minimum">
                     </div>
                 </div>
-                <div class="form-check form-check-lg">
-                    <input type="checkbox" class="form-check-input" id="is_free_shipping" name="free_shipping">
-                    <label class="form-check-label" for="is_free_shipping">
-                        {% trans 'Free shipping' %}</label>
+                <div class="row">
+                    <div class="col-md-4 col-xs-12">
+                        <div class="form-check form-check-lg">
+                            <input type="checkbox" class="form-check-input" id="is_free_shipping" name="free_shipping">
+                            <label class="form-check-label" for="is_free_shipping">
+                                {% trans 'Free shipping' %}</label>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="group-gift-box col-md-6 hidden">
@@ -245,12 +242,13 @@
                     <div class="col-md-12 col-xs-6 d-md-flex justify-content-md-evenly align-items-center mb-3">
                         <div class="form-check w-md-40">
                             <input type="checkbox" class="form-check-input" name="is_free_product"
-                                   id="is_free_product" checked>
+                                   id="is_free_product">
                             <label class="form-check-label" for="is_free_product">
                                 {% trans 'Free product' %}</label>
                         </div>
                         <div class="form-group mr-2 mb-0">
-                            <input class="form-control" type="number" min="1" name="num_product_received">
+                            <input class="form-control" type="number" min="1" name="num_product_received"
+                                   id="num_product_received">
                         </div>
                         <div class="input-group w-md-50">
                             <div class="input-affix-wrapper">
@@ -265,7 +263,7 @@
                                     <div class="dropdown-menu w-210p mt-2">
                                     </div>
                                 </div>
-                                <select class="form-control select2"
+                                <select class="form-control"
                                         name="product_received"
                                         id="product_received"
                                         data-multiple="false"
@@ -280,27 +278,26 @@
                     <div class="col-md-11 col-xs-12 offset-md-1 offset-xs-0 d-md-flex justify-content-md-end
                     align-items-center column-gap mb-3">
                         <div class="form-check d-inline-block">
-                            <input type="checkbox" class="form-check-input" id="is_min_purchase" name="is_min_purchase">
+                            <input type="checkbox" class="form-check-input" id="is_min_purchase"
+                                   name="is_min_purchase">
                             <label class="form-check-label" for="is_min_purchase">
                                 {% trans 'When minimum purchase total value' %}</label>
                         </div>
-                        <select class="form-select"
+                        <select class="form-select" id="gift_before_after_tax"
                                 name="gift_before_after_tax">
                             <option value="0">{% trans 'Before tax' %}</option>
                             <option value="1">{% trans 'After tax' %}</option>
                         </select>
                         <input class="form-control mask-money" type="text" name="min_purchase_cost"
-                               data-return-type="number">
-
+                               id="min_purchase_cost" data-return-type="number">
                     </div>
                     <div class="col-md-11 col-xs-12 offset-md-1 offset-xs-0 d-md-flex justify-content-md-end
                     align-items-center column-gap">
                         <div class="form-check d-inline-block">
                             <input type="checkbox" class="form-check-input" id="is_purchase" name="is_purchase">
-                            <label class="form-check-label" for="is_purchase">
-                                {% trans 'When purchase' %}</label>
+                            <label class="form-check-label" for="is_purchase">{% trans 'When purchase' %}</label>
                         </div>
-                        <input class="form-control" type="text" name="purchase_num">
+                        <input class="form-control" type="text" name="purchase_num" id="purchase_num">
                         <div class="w-md-50 input-group">
                             <div class="input-affix-wrapper">
                                 <div class="dropdown input-prefix">
@@ -309,12 +306,10 @@
                                        data-dropdown-animation
                                        aria-haspopup="true"
                                        aria-expanded="false"
-                                       disabled
                                     ></i>
-                                    <div class="dropdown-menu w-210p mt-2">
-                                    </div>
+                                    <div class="dropdown-menu w-210p mt-2"></div>
                                 </div>
-                                <select class="form-control select2"
+                                <select class="form-control" id="purchase_product"
                                         name="purchase_product"
                                         data-multiple="false"
                                         data-keyResp="product_list"
@@ -322,7 +317,6 @@
                                 ></select>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -399,8 +393,8 @@
                                     aria-haspopup="true" aria-expanded="false"
                             >{% trans 'Add' %}</button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="new-cus-cond">
-                                <a class="dropdown-item" href="#" data-operator="and">{% trans 'And' %}</a>
-                                <a class="dropdown-item" href="#" data-operator="or">{% trans 'Or' %}</a>
+                                <a class="dropdown-item click_and" href="#" data-operator="and">{% trans 'And' %}</a>
+                                <a class="dropdown-item click_or" href="#" data-operator="or">{% trans 'Or' %}</a>
                             </div>
                         </div>
                     </div>
@@ -481,4 +475,3 @@
     <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
     <script src="{% static 'assets/masterdata/promotion/js/promotion.js' %}"></script>
 {% endblock %}
-

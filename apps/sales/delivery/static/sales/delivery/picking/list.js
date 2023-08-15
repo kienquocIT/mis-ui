@@ -12,6 +12,7 @@ $(document).ready(function () {
         rowIdx: true,
         columns: [
             {
+                orderable: false,
                 render: (data, type, row, meta) => {
                     return ''
                 },

@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load i18n static %}
-{% block title %}{% trans 'Workflow create' %}{% endblock %}
+{% block title %}{% trans 'Promotion detail' %}{% endblock %}
 {% block cssHeader %}
     <!-- Daterangepicker CSS -->
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
@@ -8,51 +8,36 @@
     <link href="{% static 'assets/masterdata/promotion/css/promotion.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-flush-success btn-animated mr-1 font-5 hidden" type="submit" form="promo_form"
-            data-bs-toggle="tooltip" data-bs-placement="top" title="Save"
-            data-bs-original-title="Save">
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="save"></i>
+    <a href="{% url 'PromotionEdit' data.doc_id %}">
+        <button class="btn btn-outline-primary">
+        <span>
+            <span>{% trans 'Edit' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-pen-to-square"></i>
             </span>
         </span>
-    </button>
-    <button class="btn btn-flush-danger btn-animated font-4" type="button" data-bs-toggle="tooltip"
-            data-bs-placement="top" title="Back" data-bs-original-title="Back"
-            onclick="window.history.go(-1); return false;">
-        <span class="icon">
-            <span class="feather-icon">
-                <i class="fas fa-step-backward"></i>
-            </span>
-        </span>
-    </button>
+        </button>
+    </a>
 {% endblock %}
 {% block pageContent %}
     <!-- Form Create -->
 
     <form id="promo_form" data-url="{% url 'PromotionDetailAPI' data.doc_id %}" data-method="PUT" method="post"
-          novalidate data-url-redirect="{% url 'PromotionList' %}" readonly>
+          novalidate data-url-redirect="{% url 'PromotionList' %}">
         {% csrf_token %}
         <div class="row">
             <div class="col-md-6 col-xs-12">
                 <div class="form-group">
                     <label class="form-label required" for="title">{% trans 'Name' %}</label>
-                    <div class="readonly">
-                        <input class="form-control" type="text" name="title" id="title" required
-                               readonly>
-                        <span></span>
-                    </div>
+                    <input class="form-control" type="text" name="title" id="title" required readonly>
                 </div>
             </div>
             <div class="col-md-4 offset-md-2 col-xs-12 offset-xs-0">
                 <div class="form-group">
                     <label class="form-label required" for="valid_time">{% trans 'Valid time' %}</label>
-                    <div class="readonly">
-                        <input class="form-control" type="text" name="valid_time" id="valid_time"
-                               placeholder="{% trans 'Select valid date' %}" autocomplete="off"
-                               required readonly>
-                        <span></span>
-                    </div>
+                    <input class="form-control" type="text" name="valid_time" id="valid_time"
+                           placeholder="{% trans 'Select valid date' %}" autocomplete="off"
+                           required readonly>
                 </div>
             </div>
         </div>
@@ -60,26 +45,20 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label class="form-label" for="remark">{% trans 'Description' %}</label>
-                    <div class="readonly">
-                        <input class="form-control" type="text" name="remark" id="remark" readonly/>
-                        <span></span>
-                    </div>
+                    <input class="form-control" type="text" name="remark" id="remark" readonly/>
                 </div>
             </div>
             <div class="col-md-4 offset-md-2 col-xs-12 offset-xs-0">
                 <div class="form-group">
                     <label class="form-label" for="currency">{% trans 'Currency' %}</label>
-                    <div class="readonly">
-                        <select class="form-control"
-                                name="currency"
-                                id="currency"
-                                data-multiple="false"
-                                data-prefix="currency_list"
-                                data-url="{% url 'CurrencyListAPI' %}"
-                                disabled
-                        ></select>
-                        <span></span>
-                    </div>
+                    <select class="form-control"
+                            name="currency"
+                            id="currency"
+                            data-multiple="false"
+                            data-keyResp="currency_list"
+                            data-url="{% url 'CurrencyListAPI' %}"
+                            disabled
+                    ></select>
                 </div>
             </div>
         </div>
@@ -95,11 +74,8 @@
                         </button>
                     </label>
                     <input type="hidden" name="customer_type" id="customer_type" value="0">
-                    <div class="readonly">
-                        <textarea class="form-control" type="text" name="customer_remark"
-                                  id="customer_remark" readonly></textarea>
-                        <span></span>
-                    </div>
+                    <textarea class="form-control" type="text" name="customer_remark"
+                              id="customer_remark" readonly></textarea>
                 </div>
             </div>
         </div>
@@ -109,11 +85,10 @@
             </div>
             <div class="row row-cols-md-6 mb-2 row-method">
                 <div class="col">
-                    <div class="form-check form-check-lg readonly">
+                    <div class="form-check form-check-lg">
                         <input type="checkbox" class="form-check-input" name="is_discount" id="is_discount"
                                disabled>
                         <label class="form-check-label" for="is_discount">{% trans 'Discount' %}</label>
-                        <span></span>
                     </div>
                 </div>
                 <div class="col">
@@ -123,70 +98,58 @@
                     </div>
                 </div>
                 <div class="col">
-                    <div class="form-check form-check-lg readonly">
+                    <div class="form-check form-check-lg">
                         <input type="checkbox" class="form-check-input" name="is_gift" id="is_gift" disabled>
                         <label class="form-check-label" for="is_gift">{% trans 'Gift' %}</label>
-                        <span></span>
                     </div>
                 </div>
             </div>
             <div class="row row-cols-md-6 mb-2 row-tax">
                 <div class="col">
-                    <div class="form-check readonly">
+                    <div class="form-check">
                             <input type="radio" id="tax_position_01" name="before_after_tax" class="form-check-input"
                                    required disabled>
-                        <span></span>
                         <label class="form-check-label" for="tax_position_01">{% trans 'Before Tax' %}</label>
 
                     </div>
                 </div>
                 <div class="col">
-                    <div class="form-check readonly">
+                    <div class="form-check">
                         <input type="radio" id="tax_position_02" name="before_after_tax" class="form-check-input"
                                required disabled>
-                        <span></span>
                         <label class="form-check-label" for="tax_position_02">{% trans 'After Tax' %}</label>
                     </div>
                 </div>
             </div>
             <div class="col-md-6 col-xs-12 d-md-flex justify-content-start align-items-center mb-3 row-percent">
-                <div class="form-check mr-4 readonly">
-                        <input type="radio" id="percent_01" name="percent_fix_amount" class="form-check-input" required
-                               disabled>
-                    <span></span>
+                <div class="form-check mr-4">
+                    <input type="radio" id="percent_01" name="percent_fix_amount" class="form-check-input" required
+                           disabled>
                     <label class="form-check-label" for="percent_01">{% trans '%' %}</label>
                 </div>
-                <div class="form-check mr-4 readonly">
-                    <div class="readonly">
-                        <input type="radio" id="percent_02" name="percent_fix_amount" class="form-check-input" required
-                               disabled>
-                    </div>
-                    <span></span>
+                <div class="form-check mr-4">
+                    <input type="radio" id="percent_02" name="percent_fix_amount" class="form-check-input" required
+                           disabled>
                     <label class="form-check-label" for="percent_02">{% trans 'Fixed Amount' %}</label>
                 </div>
-                <div class="form-group mb-0 readonly">
+                <div class="form-group mb-0">
                     <input class="form-control" type="text" name="percent_value"
                            id="percent_value" placeholder="10%" readonly data-type_percent="">
                     <input class="form-control mask-money hidden" type="text" name="fix_value"
                            id="fix_value" data-return-type="number" readonly>
-                    <span></span>
                 </div>
-                <div class="form-group ml-auto mb-0 d-flex align-items-center readonly">
+                <div class="form-group ml-auto mb-0 d-flex align-items-center">
                     <label for="percent_value" class="mr-4">{% trans 'Max amount' %}</label>
                     <input class="form-control mask-money" type="text" name="max_percent_value"
                            data-return-type="number" id="max_percent_value" readonly>
-                    <span></span>
                 </div>
             </div>
             <div class="clearfix"></div>
             <div class="col-md-6 col-xs-12 mb-2">
                 <div class="form-group d-md-flex align-items-center">
-                    <div class="readonly">
-                        <input class="form-control mr-2" type="number" min="1" name="use_count" placeholder="1"
-                               id="use_count" required readonly>
-                        <span></span>
-                    </div>
-                    <label class="mr-4" for="use_count">{% trans 'use  for each customer per' %}</label>
+                    <input class="form-control mr-2" type="number" min="1" name="use_count" placeholder="1"
+                           id="use_count" required readonly>
+                    <label class="mr-4" for="use_count">{% trans 'use for each customer per' %}</label>
                     <div class="readonly">
                         <select name="times_condition" id="times_condition" class="form-select" required disabled>
                             <option value="" selected disabled hidden>{% trans 'Select..' %}</option>
@@ -240,7 +203,7 @@
                         <div class="input-group readonly">
                             <div class="input-affix-wrapper">
                                 <div class="dropdown input-prefix">
-                                    <i class="fas fa-info-circle"
+                                    <i class="fas fa-info-circle text-blue"
                                        data-bs-toggle="dropdown"
                                        data-dropdown-animation
                                        aria-haspopup="true"
@@ -250,11 +213,11 @@
                                     <div class="dropdown-menu w-210p mt-2">
                                     </div>
                                 </div>
-                                <select class="form-control dropdown-select_two" disabled
+                                <select class="form-control select-run" disabled
                                         name="product_selected"
                                         id="product_selected"
                                         data-multiple="false"
-                                        data-prefix="product_list"
+                                        data-keyResp="product_list"
                                         data-url="{% url 'ProductListAPI' %}"
                                         data-link-detail="{% url 'ProductDetail' 1 %}"
                                         data-template-format="[{'name':'Title', 'value': 'title'},{'name':'Code', 'value': 'code'}]"
@@ -309,7 +272,7 @@
                         <div class="input-group w-md-50 readonly">
                             <div class="input-affix-wrapper">
                                 <div class="dropdown input-prefix">
-                                    <i class="fas fa-info-circle"
+                                    <i class="fas fa-info-circle text-blue"
                                        data-bs-toggle="dropdown"
                                        data-dropdown-animation
                                        aria-haspopup="true"
@@ -319,11 +282,10 @@
                                     <div class="dropdown-menu w-210p mt-2">
                                     </div>
                                 </div>
-                                <select class="form-control dropdown-select_two" disabled
+                                <select class="form-control select-run" disabled
                                         name="product_received"
                                         id="product_received"
-                                        data-multiple="false"
-                                        data-prefix="product_list"
+                                        data-keyResp="product_list"
                                         data-url="{% url 'ProductListAPI' %}"
                                         data-link-detail="{% url 'ProductDetail' 1 %}"
                                         data-template-format="[{'name':'Title', 'value': 'title'},{'name':'Code', 'value': 'code'}]"
@@ -372,7 +334,7 @@
                         <div class="w-md-50 input-group readonly">
                             <div class="input-affix-wrapper">
                                 <div class="dropdown input-prefix">
-                                    <i class="fas fa-info-circle"
+                                    <i class="fas fa-info-circle text-blue"
                                        data-bs-toggle="dropdown"
                                        data-dropdown-animation
                                        aria-haspopup="true"
@@ -382,11 +344,11 @@
                                     <div class="dropdown-menu w-210p mt-2">
                                     </div>
                                 </div>
-                                <select class="form-control dropdown-select_two" id="purchase_product"
+                                <select class="form-control select-run" id="purchase_product"
                                         disabled
                                         name="purchase_product"
                                         data-multiple="false"
-                                        data-prefix="product_list"
+                                        data-keyResp="product_list"
                                         data-url="{% url 'ProductListAPI' %}"
                                 ></select>
                             </div>

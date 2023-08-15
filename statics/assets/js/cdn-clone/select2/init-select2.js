@@ -7,10 +7,18 @@ class SelectDDControl {
     }
 
     static get_data_key_map(item, keyMap) {
-        // get data in object (in object recursive) with  '--'
+        // get data in object (in object recursive) with  '--' || '.'
         // {'a': {'b': {'c': 1}}} --> get c in b in c --> a--b--c
         if (item && keyMap && typeof item === 'object') {
-            let arr = keyMap.split('--');
+            let arr = [];
+            if (keyMap.includes('--')) {
+                arr = keyMap.split('--');
+            } else if (keyMap.includes('.')) {
+                arr = keyMap.split('.');
+            } else {
+                arr = [keyMap];
+            }
+
             if (arr.length === 1) {
                 if (item.hasOwnProperty(keyMap)) {
                     return item[keyMap];
@@ -597,6 +605,12 @@ class SelectDDControl {
         this.ele.parent('.input-affix-wrapper').find('.dropdown').on('show.bs.dropdown', function () {
             clsThis.callbackRenderInfoDetail($(this));
         });
-        return this.ele.select2(this._config);
+        return this.ele.select2(this._config).on('change', function (e) {
+            if ($(this).valid()) {
+                $(this).closest(".form-group").removeClass("has-error");
+            } else {
+                $(this).closest(".form-group").addClass("has-error");
+            }
+        });
     }
 }

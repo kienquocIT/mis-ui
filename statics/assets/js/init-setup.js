@@ -60,16 +60,6 @@ class SetupFormSubmit {
         }
     }
 
-    getCtxAjax() {
-        return {
-            url: this.dataUrl,
-            method: this.dataMethod,
-            data: this.dataForm,
-            redirect: this.dataUrlRedirect,
-            redirectTimeout: this.dataRedirectTimeout
-        }
-    }
-
     getUrlDetail(pk) {
         if (this.dataUrlDetail && pk) {
             return this.dataUrlDetail + pk.toString();
@@ -77,24 +67,36 @@ class SetupFormSubmit {
         return null;
     }
 
-    getUrlDetailWithDataUrl(attrName, pk) {
-        let data_url = this.convertUrlDetail(this.formSelected.attr('data-url-' + attrName));
-        return data_url + pk.toString()
-    }
-
-    convertUrlDetail(url) {
-        return url.split("/").slice(0, -1).join("/") + "/";
-    }
-
-    appendFilter(url, filter) {
-        let params = '';
-        Object.keys(filter).map((key) => {
-            params += `{0}={1}`.format_by_idx(key, encodeURIComponent(filter[key]))
-        })
-        if (params) {
-            return '{0}?{1}'.format_by_idx(url, params);
+    validate(opts){
+        if (this.formSelected){
+            let submitHandler = opts?.['submitHandler'];
+            this.formSelected.validate({
+                focusInvalid: true,
+                // validClass: "is-valid",
+                errorClass: "is-invalid",
+                errorElement: "small",
+                showErrors: function (errorMap, errorList) {
+                    this.defaultShowErrors();
+                },
+                errorPlacement: function (error, element) {
+                    element.closest('.form-group').append(error);
+                    // error.insertAfter(element);
+                    error.css({
+                        'color': "red",
+                    })
+                },
+                submitHandler: (
+                    submitHandler ? submitHandler : function (form){form.submit()}
+                ),
+                onsubmit: !!submitHandler,
+            })
+        } else {
+            throw Error('Form element must be required!');
         }
-        return url;
+    }
+
+    static validate(frmEle, opts){
+        return new SetupFormSubmit(frmEle).validate(opts)
     }
 }
 

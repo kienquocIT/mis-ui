@@ -1938,7 +1938,7 @@ class DTBControl {
                 serverSide: true,
                 ordering: true,
                 searchDelay: 1000,
-                order: [[0, "asc"]],
+                order: [],
                 ajax: $.extend(opts['ajax'], {
                     data: function (d) {
                         let orderTxt = ''

@@ -1,6 +1,7 @@
 class SelectDDControl {
     static get_data_from_idx(selectEle, idx) {
         // get data of another IDX (loaded from select2)
+        if (!idx && selectEle) idx = selectEle.val();
         let cls = new SelectDDControl(selectEle);
         return cls._getDataBackupLoaded(idx);
     }
@@ -553,7 +554,7 @@ class SelectDDControl {
         let hasAjax = !!(config?.['ajax']);
         let dataSelected = this._ele_collect_selected(hasAjax);
         let dataOnload = this.initData;
-        if (this.ele && Array.isArray(dataOnload) && Array.isArray(dataSelected)) {
+        if (this.ele && this.ele.length > 0 && Array.isArray(dataOnload) && Array.isArray(dataSelected)) {
             let optHTML = this.initData.concat(dataSelected).map((item) => {
                 let idn = item?.['id'];
                 let textShow = item?.['text'];
@@ -562,7 +563,7 @@ class SelectDDControl {
                     return `<option value="${idn}" ${item?.selected ? "selected" : ""}>${textShow || ''}</option>`;
                 }
             }).join("");
-            this.ele.html(optHTML);
+            if (optHTML) this.ele.html(optHTML);
         }
         return true;
     }
@@ -598,7 +599,6 @@ class SelectDDControl {
         this.ele.parent('.input-affix-wrapper').find('.dropdown').on('show.bs.dropdown', function () {
             clsThis.callbackRenderInfoDetail($(this));
         });
-
         return this.ele.select2(this._config);
     }
 }

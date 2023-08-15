@@ -393,10 +393,9 @@ $(document).ready(function () {
         }
     })
 
-    $('#save-contact').on('click', function (event) {
+    $('#form-create-contact').submit(function (event) {
         event.preventDefault();
-        let csr = $("input[name=csrfmiddlewaretoken]").val();
-        let frm = new SetupFormSubmit($('#form-create-contact'));
+        let frm = new SetupFormSubmit($(this));
         frm.dataForm['additional_information'] = {
             'facebook': $('#facebook_id').val(),
             'twitter': $('#twitter_id').val(),
@@ -438,8 +437,12 @@ $(document).ready(function () {
         frm.dataForm['system_status'] = 1; // save, not draft
 
         WindowControl.showLoading();
-        $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
-            .then((resp) => {
+        $.fn.callAjax2({
+            url: frm.dataUrl,
+            method: frm.dataMethod,
+            data: frm.dataForm,
+        }).then(
+            (resp) => {
                 let data = $.fn.switcherResp(resp);
                 console.log(data);
                 if (data && (data['status'] === 201 || data['status'] === 200)) {
@@ -453,7 +456,8 @@ $(document).ready(function () {
                 setTimeout(() => {
                     WindowControl.hideLoading();
                 }, 1000)
-            })
+            }
+        )
     })
 })
 

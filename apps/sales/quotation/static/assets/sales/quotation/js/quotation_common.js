@@ -587,7 +587,7 @@ class QuotationLoadDataHandle {
         // }
     }
 
-    static loadBoxQuotationUOM(ele, dataUOM = null, uom_group = null) {
+    static loadBoxQuotationUOM(ele, dataUOM = {}, uom_group = null) {
         ele.initSelect2({
             data: dataUOM,
             disabled: !(ele.attr('data-url')),
@@ -630,7 +630,7 @@ class QuotationLoadDataHandle {
         // }
     }
 
-    static loadBoxQuotationTax(ele, dataTax = null) {
+    static loadBoxQuotationTax(ele, dataTax = {}) {
         ele.initSelect2({
             data: dataTax,
             disabled: !(ele.attr('data-url')),
@@ -1173,7 +1173,7 @@ class QuotationLoadDataHandle {
                         ele.val(JSON.stringify(data));
                         // check config first time
                         if (page_method === "POST" && !$('#data-init-quotation-copy-to').val()) {
-                            configClass.checkConfig(true, null, true);
+                            QuotationCheckConfigHandle.checkConfig(true, null, true);
                         }
                     }
                 }
@@ -1232,10 +1232,10 @@ class QuotationLoadDataHandle {
         for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
             let row = table[0].tBodies[0].rows[i];
             let dataRow = JSON.parse(row.querySelector('.table-row-order').getAttribute('data-row'));
-            if (is_expense === false) {
-                QuotationLoadDataHandle.loadBoxQuotationProduct($(row.querySelector('.table-row-item')));
+            if (is_expense === false) { // PRODUCT
+                $(row.querySelector('.table-row-item')).empty();
                 QuotationLoadDataHandle.loadBoxQuotationProduct($(row.querySelector('.table-row-item')), dataRow.product);
-            } else {
+            } else { // EXPENSE
                 QuotationLoadDataHandle.loadBoxQuotationExpense(row.querySelector('.expense-option-list').id, row.querySelector('.table-row-item').getAttribute('data-value'));
                 QuotationLoadDataHandle.loadBoxQuotationProductPurchasing(row.querySelector('.expense-option-list').id, row.querySelector('.table-row-item').getAttribute('data-value'));
             }
@@ -2636,8 +2636,8 @@ class QuotationCalculateCaseHandle {
 }
 
 // Config
-class checkConfigHandle {
-    checkConfig(is_change_opp = false, new_row = null, is_first_time = false, is_has_opp_detail = false, is_copy = false) {
+class QuotationCheckConfigHandle {
+    static checkConfig(is_change_opp = false, new_row = null, is_first_time = false, is_has_opp_detail = false, is_copy = false) {
         let self = this;
         let configRaw = $('#quotation-config-data').val();
         if (configRaw) {
@@ -2750,7 +2750,7 @@ class checkConfigHandle {
         }
     }
 
-    reCheckTable(config, row, is_short_sale = false, is_long_sale = false, is_make_price_change = false) {
+    static reCheckTable(config, row, is_short_sale = false, is_long_sale = false, is_make_price_change = false) {
         if (row) {
             let eleProduct = row.querySelector('.table-row-item');
             if (eleProduct) {
@@ -2825,8 +2825,6 @@ class checkConfigHandle {
     }
 
 }
-
-let configClass = new checkConfigHandle();
 
 // Indicator
 class indicatorHandle {

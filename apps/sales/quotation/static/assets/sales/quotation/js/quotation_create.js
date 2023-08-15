@@ -5,7 +5,6 @@ $(function () {
 
         let promotionClass = new promotionHandle();
         let shippingClass = new shippingHandle();
-        let configClass = new checkConfigHandle();
         // Elements
         let formSubmit = $('#frm_quotation_create');
         let boxOpportunity = $('#select-box-quotation-create-opportunity');
@@ -80,7 +79,7 @@ $(function () {
             // Delete all shipping rows
             deletePromotionRows(tableProduct, false, true);
             // ReCheck Config when change Opportunity
-            configClass.checkConfig(true);
+            QuotationCheckConfigHandle.checkConfig(true);
         });
 
 // Action on change dropdown customer
@@ -133,7 +132,7 @@ $(function () {
             // load again price of product by customer price list then Re Calculate
             QuotationLoadDataHandle.loadDataProductAll();
             // ReCheck Config when change Opportunity
-            configClass.checkConfig(true);
+            QuotationCheckConfigHandle.checkConfig(true);
         });
 
 // Action on click dropdown price list
@@ -216,7 +215,7 @@ $(function () {
             // check disable
             tableProduct.find('.disabled-but-edit').removeAttr('disabled').removeClass('disabled-but-edit');
             // check Config for new row
-            configClass.checkConfig(false, newRow);
+            QuotationCheckConfigHandle.checkConfig(false, newRow);
             // load data dropdown
             QuotationLoadDataHandle.loadBoxQuotationProduct($(newRow.querySelector('.table-row-item')));
             QuotationLoadDataHandle.loadBoxQuotationUOM($(newRow.querySelector('.table-row-uom')));
@@ -796,12 +795,9 @@ $(function () {
         function checkElementValuesBeforeLoadDataCopy() {
             let element0 = $('#data-copy-quotation-detail').val();
             let element1 = $('#data-init-quotation-create-tables-product').val();
-            let element2 = $('#data-init-quotation-create-tables-uom').val();
-            let element3 = $('#data-init-quotation-create-tables-tax').val();
-            let element4 = $('#data-init-quotation-create-tables-expense').val();
 
 
-            if (element0 && element1 && element2 && element3 && element4) {
+            if (element0 && element1) {
                 loadDataCopyTo(JSON.parse(element0));  // call loadDataCopyTo() if all condition pass
             } else {
                 setTimeout(checkElementValuesBeforeLoadDataCopy, 1000);  // call again after 1s if condition not pass yet

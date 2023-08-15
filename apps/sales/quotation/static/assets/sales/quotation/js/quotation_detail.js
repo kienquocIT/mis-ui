@@ -4,7 +4,6 @@ $(function () {
     $(document).ready(function () {
         let $form = $('#frm_quotation_create');
         let eleDataDetail = $('#quotation-detail-data');
-        let configClass = new checkConfigHandle();
 
         // call ajax get info quotation detail
         $.fn.callAjax($form.data('url'), 'GET').then(
@@ -31,7 +30,7 @@ $(function () {
 
                     if ($form.attr('data-method') === 'PUT') {
                         // Check config when begin edit
-                        let check_config = configClass.checkConfig(true);
+                        let check_config = QuotationCheckConfigHandle.checkConfig(true);
                         // load again total products if after check config the price change
                         if (check_config.hasOwnProperty('is_make_price_change')) {
                             if (check_config.is_make_price_change === false) {
@@ -61,7 +60,7 @@ $(function () {
             QuotationLoadDataHandle.loadDataTablesAndDropDowns(data);
 
             // Check config when begin edit
-            let check_config = configClass.checkConfig(true);
+            let check_config = QuotationCheckConfigHandle.checkConfig(true);
 
             // load again total products if after check config the price change
             if (check_config.hasOwnProperty('is_make_price_change')) {

@@ -15,7 +15,7 @@ class HomeView(View):
         menu_active='id_menu_home_page',
     )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        return {'employee_current_data': getattr(request.user, 'employee_current_data', {})}, status.HTTP_200_OK
 
 
 class BookMarkListAPI(APIView):

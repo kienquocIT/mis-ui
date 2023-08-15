@@ -631,6 +631,27 @@ function initEventElement() {
 }
 
 $(document).ready(function () {
+    try {
+        employeeCurrentData = JSON.parse(employeeCurrentData);
+        if (!employeeCurrentData || !employeeCurrentData?.['id']) {
+            Swal.fire({
+                title: msgTitleErrLinked,
+                html: `<p><b>${msgTextErrLinked}</b></p><br/><p>${msgTextErrLinked2}</p>`,
+                icon: 'warning',
+                showConfirmButton: true,
+                confirmButtonText: msgChangeCompany,
+                showDenyButton: true,
+                denyButtonText: $.fn.transEle.attr('data-cancel'),
+            }).then((result)=>{
+                if (result.isConfirmed) {
+                    $('#btnChangeCurrentCompany').trigger('click');
+                }
+            })
+        }
+    } catch (e) {
+    }
+
+
     initEventElement();
     loadTabTodo();
     loadBookmarkList();

@@ -439,8 +439,12 @@ $(document).ready(function () {
         frm.dataForm['system_status'] = 0; // save, not draft
 
         WindowControl.showLoading();
-        $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
-            .then((resp) => {
+        $.fn.callAjax2({
+            url: frm.dataUrl,
+            method: frm.dataMethod,
+            data: frm.dataForm,
+        }).then(
+            (resp) => {
                 let data = $.fn.switcherResp(resp);
                 console.log(data);
                 if (data && (data['status'] === 201 || data['status'] === 200)) {
@@ -454,7 +458,8 @@ $(document).ready(function () {
                 setTimeout(() => {
                     WindowControl.hideLoading();
                 }, 1000)
-            })
+            }
+        )
     })
 })
 

@@ -122,8 +122,11 @@ $(document).ready(function () {
 
         frm.dataForm['role'] = $('#chooseRole').val();
 
-        $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
-            .then(
+        $.fn.callAjax2({
+            'url': frm.dataUrl,
+            'method': frm.dataMethod,
+            'data': frm.dataForm
+        }).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {

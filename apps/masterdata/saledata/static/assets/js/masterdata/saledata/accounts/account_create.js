@@ -739,19 +739,22 @@ $(document).ready(function () {
 
         frm.dataForm['system_status'] = 0; // save, not draft
 
-        $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
-            .then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        $.fn.notifyB({description: "Đang tạo account"}, 'success')
-                        $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
-                    }
-                },
-                (errs) => {
-                    $.fn.notifyB({description: errs.data.errors}, 'failure');
+        $.fn.callAjax2({
+            'url': frm.dataUrl,
+            'method': frm.dataMethod,
+            'data': frm.dataForm
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    $.fn.notifyB({description: "Đang tạo account"}, 'success')
+                    $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
                 }
-            )
+            },
+            (errs) => {
+                $.fn.notifyB({description: errs.data.errors}, 'failure');
+            }
+        )
     });
 
     // process address
@@ -820,7 +823,11 @@ $(document).ready(function () {
         }
     }
 
-    $('#save-modal-add-new-contact').on('click', function () {
+    const frmCreateContact = $('#frm-create-new-contact')
+
+    frmCreateContact.submit(function (event) {
+        event.preventDefault();
+        let frm = new SetupFormSubmit($(this));
         let contact_name = $('#inp-fullname').val();
         let contact_owner = $('#select-box-contact-owner').val();
         let job_title = $('#inp-jobtitle').val();
@@ -836,7 +843,11 @@ $(document).ready(function () {
             'mobile': contact_mobile
         }
         let csr = $("input[name=csrfmiddlewaretoken]").val();
-        $.fn.callAjax($(this).attr('data-url'), $(this).attr('data-method'), data, csr).then(
+        $.fn.callAjax2({
+            'url': frm.dataUrl,
+            'method': frm.dataMethod,
+            'data': data
+        }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {

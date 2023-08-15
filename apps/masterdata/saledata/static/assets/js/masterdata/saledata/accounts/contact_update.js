@@ -547,8 +547,11 @@ $(document).ready(function () {
             let pk = window.location.pathname.split('/').pop();
 
             WindowControl.showLoading();
-            $.fn.callAjax(frm.dataUrl.replace('0', pk), frm.dataMethod, frm.dataForm, csr)
-                .then(
+            $.fn.callAjax2({
+                'url': frm.dataUrl.format_url_with_uuid(pk),
+                'method': frm.dataMethod,
+                'data': frm.dataForm
+            }).then(
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data && data['status'] === 200) {

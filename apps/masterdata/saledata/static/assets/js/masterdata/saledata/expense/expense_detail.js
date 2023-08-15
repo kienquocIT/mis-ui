@@ -266,7 +266,10 @@ $(document).ready(function () {
 
     function loadDetailExpense() {
         let frm = new SetupFormSubmit(frmDetail);
-        $.fn.callAjax(frm.dataUrl.replace('1', pk), 'GET').then((resp) => {
+        $.fn.callAjax2({
+            'url': frm.dataUrl.format_url_with_uuid(pk),
+            'method': 'GET',
+        }).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('expense')) {
@@ -334,19 +337,22 @@ $(document).ready(function () {
         frm.dataForm['currency_using'] = currency_primary.id;
         frm.dataForm['uom'] = $('#chooseUom').val();
 
-        $.fn.callAjax(frm.dataUrl.replace('1', pk), frm.dataMethod, frm.dataForm, csr)
-            .then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        $.fn.notifyB({description: "Successfully"}, 'success')
-                        $.fn.redirectUrl(window.location, 1000);
-                    }
-                },
-                (errs) => {
-                    $.fn.notifyB({description: errs.data.errors}, 'failure');
+        $.fn.callAjax2({
+            'url': frm.dataUrl.format_url_with_uuid(pk),
+            'method': frm.dataMethod,
+            'data': frm.dataForm,
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    $.fn.notifyB({description: "Successfully"}, 'success')
+                    $.fn.redirectUrl(window.location, 1000);
                 }
-            )
+            },
+            (errs) => {
+                $.fn.notifyB({description: errs.data.errors}, 'failure');
+            }
+        )
     })
 
     function loadRole(list_id) {

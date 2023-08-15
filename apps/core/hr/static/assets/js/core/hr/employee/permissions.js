@@ -48,17 +48,8 @@ tbl.on('click', '.btnRemoveRow', function () {
 })
 
 tbl.on('change', '#newRowApp', function () {
-    let rangeAllow = [];
-    let storageApp = {};
-    let storageAppsEle = $("#" + $(this).attr('data-storage-backup'));
-    if (storageAppsEle && storageAppsEle.length > 0){
-        try {
-            storageApp = JSON.parse(storageAppsEle.text());
-        } catch (e){}
-
-        let dataAppSelected= storageApp?.[$(this).val()];
-        rangeAllow = dataAppSelected ? (dataAppSelected?.['range_allow'] || []) : [];
-    }
+    let selectedData = SelectDDControl.get_data_from_idx($(this));
+    let rangeAllow = selectedData?.['app'] ? (selectedData['app']?.['range_allow'] || []) : [];
 
     let selectRangeEle = $('#newRowRange');
     selectRangeEle.find(":selected").prop('selected', false);
@@ -80,22 +71,23 @@ $('#btnAddNewRowPerms').click(function () {
     let newRowDeleteCheck = $('#newRowDeleteCheck');
     let newRowRange = $('#newRowRange');
     if (newRowCreateCheck.prop('checked') || newRowViewCheck.prop('checked') || newRowEditCheck.prop('checked') || newRowDeleteCheck.prop('checked')) {
-        let appSelected = newRowApp.find(":selected");
-
+        let dataPlanApp = SelectDDControl.get_data_from_idx(newRowApp);
+        let appDataBackup = dataPlanApp['app'];
+        let planDataBackup = dataPlanApp['plan'];
         let tbl = $('#permissions_list').DataTable();
         tbl.row.add({
             "id": null,
             "app_data": {
-                "id": appSelected.attr('data-app-id'),
-                "title": appSelected.attr('data-app-title'),
-                "code": appSelected.attr('data-app-code'),
-                "option_permission": appSelected.attr('data-opt-perm'),
-                "range_allow": appSelected.attr('data-range-allow').split(','),
+                "id": appDataBackup['id'],
+                "title": appDataBackup['title'],
+                "code": appDataBackup['code'],
+                "option_permission": appDataBackup['option_permission'],
+                "range_allow": appDataBackup['range_allow'],
             },
             "plan_data": {
-                "id": appSelected.attr('data-plan-id'),
-                "title": appSelected.attr('data-plan-title'),
-                "code": appSelected.attr('data-plan-code'),
+                "id": planDataBackup['id'],
+                "title": planDataBackup['title'],
+                "code": planDataBackup['code'],
             },
             "create": newRowCreateCheck.prop('checked'),
             "view": newRowViewCheck.prop('checked'),
@@ -196,36 +188,27 @@ class HandlePermissions {
     }
 
     static loadAppNewRow(planAppData,) {
-        let html = ``;
-        let storageApps = {};
+        let dataAppPlan = [];
         if (planAppData) {
             planAppData.map((item) => {
                 let applicationData = item.application;
                 if (applicationData && Array.isArray(applicationData)) {
-                    applicationData.map((childItem) => {
-                        storageApps[childItem.id] = childItem;
-                        html += `
-                            <option 
-                                value="${childItem.id}"
-                                data-app-id="${childItem.id}"
-                                data-app-title="${childItem.title}"
-                                data-app-code="${childItem.code}"
-                                data-plan-id="${item.id}"
-                                data-plan-title="${item.title}" 
-                                data-plan-code="${item.code}"
-                                data-opt-perm="${childItem?.['option_permission']}"
-                                data-range-allow="${childItem?.['range_allow'].join(',')}"
-                            >${item.title} - ${childItem.title}</option>`;
+                    applicationData.map(
+                        (childItem) => {
+                            dataAppPlan.push({
+                                id: childItem.id,
+                                title: `${item.title} - ${childItem.title}`,
+                                plan: item,
+                                app: childItem,
+                            })
                     })
                 }
             })
         }
         let newRowApp = $('#newRowApp');
-        let idxStorageIdx = UtilControl.generateRandomString(32);
-
-        newRowApp.attr('data-storage-backup', idxStorageIdx);
-        $(`<script type="application/json" id="${idxStorageIdx}">${JSON.stringify(storageApps)}</script>`).insertAfter(newRowApp);
-        newRowApp.html(html).initSelect2();
+        newRowApp.initSelect2({
+            data: dataAppPlan,
+        });
         newRowApp.trigger('change');
     }
 
@@ -297,15 +280,14 @@ class HandlePermissions {
     }
 
     loadData(planAppData, permData = []) {
-        permData = HandlePermissions.makeSurePermHasIdx(permData);
         let clsThis = this;
-        HandlePermissions.loadAppNewRow(planAppData);
+        permData = HandlePermissions.makeSurePermHasIdx(permData);
         clsThis.initDataStorage.text(JSON.stringify(HandlePermissions.convertDictToKeyValue(permData)));
         clsThis.initDataByKeyStorage.text(JSON.stringify(permData.reduce((acc, item) => {
             acc[item.id.toString()] = item;
             return acc;
         }, {})))
-        clsThis.tbl.DataTableDefault({
+        let dtbEle = clsThis.tbl.DataTableDefault({
             rowIdx: true,
             data: permData,
             columns: [
@@ -469,8 +451,12 @@ class HandlePermissions {
                     $(row).removeClass('bg-sun-light-5');
                     $(row).removeAttr('data-bs-toggle').removeAttr('data-bs-placement').removeAttr('title');
                 }
-            }
-        }).column(-1).visible(clsThis.enableChange);
+            },
+            initComplete: function (settings, json){
+                HandlePermissions.loadAppNewRow(planAppData);
+            },
+        });
+        dtbEle.column(-1).visible(clsThis.enableChange);
     }
 
     combinesData() {

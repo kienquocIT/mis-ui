@@ -6,41 +6,22 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
-       href="{% url "ProductCreate" %}" data-bs-toggle="tooltip" data-bs-placement="top" title=""
-       data-bs-original-title="Add">
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="plus"></i>
+    <a class="btn btn-outline-primary btn-animated btn-xs"
+       href="{% url "ProductCreate" %}"
+       data-bs-toggle="tooltip"
+       data-bs-placement="top"
+       title="{% trans 'Create Product' %}">
+            <span class="icon">
+                <span class="feather-icon">
+                    <i data-feather="plus"></i>
+                </span>
+                <span class="font-3 ml-1">
+                    {% trans 'New' %}
+                </span>
             </span>
-        </span>
-    </a>
-
-    <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
-       href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
-       data-bs-original-title="Refresh">
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="refresh-cw"></i>
-            </span>
-        </span>
     </a>
 {% endblock %}
 {% block pageContent %}
-
-{#    <ul class="nav nav-light nav-tabs" id="tab-select-table">#}
-{#        <li class="nav-item">#}
-{#            <a class="nav-link active" data-bs-toggle="tab" data-collapse="section-account-list">#}
-{#                <span class="nav-link-text">Main List</span>#}
-{#            </a>#}
-{#        </li>#}
-{#        <li class="nav-item">#}
-{#            <a class="nav-link" data-bs-toggle="tab" data-collapse="section-account-list-draft">#}
-{#                <span class="nav-link-text">Draft List</span>#}
-{#            </a>#}
-{#        </li>#}
-{#    </ul>#}
-
     <div id="section-product-list" class="mt-5">
         <table id="datatable_product_list" class="table nowrap w-100 mb-5" data-url="{% url "ProductListAPI" %}"
                data-method="GET" data-url-detail="{% url "ProductDetail" pk=0%}"

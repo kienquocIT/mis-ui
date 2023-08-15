@@ -277,12 +277,13 @@ class ProductDetail(View):
         resp2 = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE).get()
         resp3 = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE_GROUP).get()
         resp4 = ServerAPI(url=ApiURL.CURRENCY_LIST, user=request.user).get()
+        resp5 = ServerAPI(url=ApiURL.PRODUCT_TYPE_LIST, user=request.user).get()
         result = {
             'unit': resp0.result,
             'warehouse_product_list': resp1.result,
             'unit_of_measure': resp2.result,
             'unit_of_measure_group': resp3.result,
-            'currency_list': resp4.result
+            'currency_list': resp4.result,
         }
         return result, status.HTTP_200_OK
 

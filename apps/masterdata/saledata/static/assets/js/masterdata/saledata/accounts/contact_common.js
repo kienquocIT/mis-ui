@@ -64,7 +64,7 @@ function loadInterest(interestData) {
     });
 }
 
-let [wCityEle, wDistrictEle, wWardEle, wWorkAddrDetail] = [$('#workcity'), $("#workdistrict"), $('#workward'), $('#detail-modal-work-address')];
+let [wAddr, wCityEle, wDistrictEle, wWardEle, wWorkAddrDetail] = [$('#work_address_id'), $('#workcity'), $("#workdistrict"), $('#workward'), $('#detail-modal-work-address')];
 
 function loadWCities(cityData) {
     wCityEle.initSelect2({
@@ -108,7 +108,7 @@ $('#save-changes-modal-work-address').click(function () {
             let ward = wWardEle.find(`option[value="` + ward_id + `"]`).text();
 
             if (detail_work_address || city || district || ward) {
-                loadAddressDisplay('#work_address_id', detail_work_address, ward, district, city);
+                loadAddressDisplay(wAddr, detail_work_address, ward, district, city);
                 $(this).closest('div.modal').modal('hide');
             } else {
                 $.fn.notifyB({description: "Missing address information!"}, 'failure');
@@ -121,7 +121,7 @@ $('#save-changes-modal-work-address').click(function () {
     }
 })
 
-let [hCity, hDistrict, hWard, wHomeAddrDetail] = [$('#homecity'), $("#homedistrict"), $("#homeward"), $('#detail-modal-home-address')];
+let [hAddr, hCity, hDistrict, hWard, wHomeAddrDetail] = [$('#home_address_id'), $('#homecity'), $("#homedistrict"), $("#homeward"), $('#detail-modal-home-address')];
 
 function loadHCity(cityData) {
     hCity.initSelect2({
@@ -165,7 +165,7 @@ $('#save-changes-modal-home-address').on('click', function () {
             let ward = hWard.find(`option:selected`).text();
 
             if (detail_home_address || city || district || ward) {
-                loadAddressDisplay('#home_address_id', detail_home_address, ward, district, city);
+                loadAddressDisplay(hAddr, detail_home_address, ward, district, city);
                 $(this).closest('div.modal').modal('hide');
             } else {
                 $.fn.notifyB({description: "Missing address information!"}, 'failure');
@@ -199,13 +199,13 @@ class ContactHandle {
             'twitter': $('#twitter_id').val(),
             'linkedln': $('#linkedln_id').val(),
             'gmail': $('#gmail_id').val(),
-            'interests': $('#select-box-interests').val(),
+            'interests': intEle.val(),
             'tags': $('#tag_id').val(),
         };
 
         frm.dataForm['address_information'] = {
-            'work_address': $('#work_address_id').val(),
-            'home_address': $('#home_address_id').val(),
+            'work_address': wAddr.val(),
+            'home_address': hAddr.val(),
         };
 
         if (frm.dataForm['account_name'] === '') {
@@ -230,7 +230,6 @@ class ContactHandle {
 
         frm.dataForm['system_status'] = 1; // save, not draft
 
-        console.log(frm.dataForm);
         return {
             url: frm.dataUrl,
             method: frm.dataMethod,

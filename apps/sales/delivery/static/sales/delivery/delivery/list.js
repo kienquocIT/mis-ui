@@ -3,38 +3,12 @@ $(document).ready(function () {
     let tbl = $('#dtbDeliveryList');
     let frm = new SetupFormSubmit(tbl);
     tbl.DataTableDefault({
+        useDataServer: true,
         ajax: {
             url: frm.dataUrl,
             type: frm.dataMethod,
-            dataSrc: function (resp) {
-                let data = $.fn.switcherResp(resp);
-                if (data && resp.data.hasOwnProperty('delivery_list')) {
-                    return resp.data['delivery_list'] ? resp.data['delivery_list'] : []
-                }
-                throw Error('Call data raise errors.')
-            },
+            dataSrc: "data.delivery_list"
         },
-        columnDefs: [
-            {
-                "width": "30%",
-                "targets": 0
-            }, {
-                "width": "30%",
-                "targets": 1
-            }, {
-                "width": "10%",
-                "targets": 2
-            }, {
-                "width": "10%",
-                "targets": 3
-            }, {
-                "width": "10%",
-                "targets": 4
-            }, {
-                "width": "10%",
-                "targets": 5,
-            }
-        ],
         columns: [
             {
                 data: 'code',
@@ -117,7 +91,7 @@ $(document).ready(function () {
         e.stopPropagation();
         if ($Table.hasClass('dataTable')) $Table.DataTable().ajax.reload();
         else
-            $Table.not('.dataTable').DataTable({
+            $Table.not('.dataTable').DataTableDefault({
             searching: false,
             ordering: false,
             paginate: true,
@@ -127,23 +101,10 @@ $(document).ready(function () {
                 dataSrc: 'data.sale_order_list',
                 data: function (params) {
                     params['delivery_call'] = true;
-                    params['is_approved'] = true
-                    return params
+                    params['is_approved'] = true;
                 },
             },
             rowIdx: true,
-            columnDefs: [
-                {
-                    "width": "10%",
-                    "targets": 0
-                }, {
-                    "width": "70%",
-                    "targets": 1
-                }, {
-                    "width": "20%",
-                    "targets": 2
-                }
-            ],
             columns: [
                 {
                     defaultContent: '',
@@ -164,7 +125,6 @@ $(document).ready(function () {
                 }
             ],
             rowCallback(row, data, index) {
-                $('td:eq(0)', row).html(index + 1);
                 $('input[type="checkbox"]', row).on('change', function(){
                     $('input[type="checkbox"]', $('#sale_order_approved')).not(this).prop('checked', false);
                 });
@@ -180,10 +140,10 @@ $(document).ready(function () {
         if (isData && isData.hasOwnProperty('id')){
             WindowControl.showLoading();
             const url = $('#url-factory').attr('data-create-delivery').replace('1', isData.id);
-            $.fn.callAjax(
-                url,
-                'POST', {}, true
-            ).then(
+            $.fn.callAjax2({
+                "url": url,
+                "method": "POST"
+            }).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data?.['status'] === 200) {

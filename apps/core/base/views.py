@@ -92,6 +92,16 @@ class DistrictListAPI(APIView):
         return resp.auto_return(key_success='districts')
 
 
+class DistrictAllListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.DISTRICTS).get()
+        return resp.auto_return(key_success='districts')
+
+
 class WardListAPI(APIView):
     @mask_view(
         auth_require=True,
@@ -99,6 +109,16 @@ class WardListAPI(APIView):
     )
     def get(self, request, pk, *args, **kwargs):
         resp = ServerAPI(request=request, url=ApiURL.WARDS, user=request.user).get(data={'district_id': pk})
+        return resp.auto_return(key_success='wards')
+
+
+class WardAllListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(request=request, url=ApiURL.WARDS, user=request.user).get()
         return resp.auto_return(key_success='wards')
 
 

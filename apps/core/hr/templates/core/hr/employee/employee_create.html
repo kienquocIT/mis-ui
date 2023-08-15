@@ -59,9 +59,10 @@
     </ul>
 
     <form
-            id="frm_employee_create" class="needs-validation" data-url="{% url 'EmployeeListAPI' %}" data-method="POST"
+            id="frm_employee_create" class="needs-validation"
+            data-url="{% url 'EmployeeListAPI' %}"
+            data-method="POST"
             data-url-redirect="{% url 'EmployeeList' %}"
-            novalidate
     >
         {% csrf_token %}
         <div class="tab-content">
@@ -154,7 +155,7 @@
                         </div>
                         <div class="col-4">
                             <div class="form-group">
-                                <label class="form-label">{% trans 'Department' %}</label>
+                                <label class="form-label required">{% trans 'Department' %}</label>
                                 <select
                                         class="form-select"
                                         name="group"
@@ -162,6 +163,7 @@
                                         data-url="{% url 'GroupListAPI' %}"
                                         data-method="GET"
                                         data-keyResp="group_list"
+                                        required
                                 >
                                 </select>
                                 <span class="form-text text-muted">{% trans 'Department of the employee' %}</span>
@@ -171,7 +173,7 @@
                     <div class="row">
                         <div class="col-4">
                             <div class="form-group">
-                                <label class="form-label">{% trans 'Date of Birthday' %}</label>
+                                <label class="form-label required">{% trans 'Date of Birthday' %}</label>
                                 <input
                                         class="form-control"
                                         id="employee-dob"
@@ -183,7 +185,7 @@
                         </div>
                         <div class="col-4">
                             <div class="form-group">
-                                <label class="form-label">{% trans 'Date Joined' %}</label>
+                                <label class="form-label required">{% trans 'Date Joined' %}</label>
                                 <input
                                         class="form-control"
                                         type="text"

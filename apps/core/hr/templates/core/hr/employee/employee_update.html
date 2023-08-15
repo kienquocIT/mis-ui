@@ -8,13 +8,6 @@
             type="text/css"
     />
 
-    <!-- Select2 -->
-    <link
-            href="{% static 'vendors/select2/dist/css/select2.min.css' %}"
-            rel="stylesheet"
-            type="text/css"
-    />
-
     <!-- Daterangepicker CSS -->
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
 
@@ -81,7 +74,7 @@
                                 <div class="form-group">
                                     <label class="form-label">{% trans 'Select User' %}</label>
                                     <select
-                                            class="form-select select2" id="select-box-user"
+                                            class="form-select" id="select-box-user"
                                             data-url="{% url 'CompanyUserNotMapEmployeeListAPI' %}"
                                             data-method="GET"
                                             name="user"
@@ -202,7 +195,7 @@
                             <div class="form-group">
                                 <label class="form-label">{% trans 'Role' %}</label>
                                 <select
-                                        class="form-control select2 select2-multiple"
+                                        class="form-control"
                                         multiple
                                         data-placeholder="{% trans 'Choose' %}"
                                         name="role"
@@ -267,9 +260,6 @@
     <script src="{% static 'vendors/datatables.net/js/jquery.dataTables.min.js' %}"></script>
     <script src="{% static 'vendors/datatables.net-bs5/js/dataTables.bootstrap5.min.js' %}"></script>
     <script src="{% static 'vendors/jasny-bootstrap/dist/js/jasny-bootstrap.min.js' %}"></script>
-
-    <!-- Select2 -->
-    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
 
     <!-- Moment JS -->
     <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>

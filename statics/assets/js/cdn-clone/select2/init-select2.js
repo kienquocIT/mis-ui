@@ -1,15 +1,24 @@
 class SelectDDControl {
     static get_data_from_idx(selectEle, idx) {
         // get data of another IDX (loaded from select2)
+        if (!idx && selectEle) idx = selectEle.val();
         let cls = new SelectDDControl(selectEle);
         return cls._getDataBackupLoaded(idx);
     }
 
     static get_data_key_map(item, keyMap) {
-        // get data in object (in object recursive) with  '--'
+        // get data in object (in object recursive) with  '--' || '.'
         // {'a': {'b': {'c': 1}}} --> get c in b in c --> a--b--c
         if (item && keyMap && typeof item === 'object') {
-            let arr = keyMap.split('--');
+            let arr = [];
+            if (keyMap.includes('--')) {
+                arr = keyMap.split('--');
+            } else if (keyMap.includes('.')) {
+                arr = keyMap.split('.');
+            } else {
+                arr = [keyMap];
+            }
+
             if (arr.length === 1) {
                 if (item.hasOwnProperty(keyMap)) {
                     return item[keyMap];
@@ -29,7 +38,7 @@ class SelectDDControl {
         let result = [];
         let respTmp = resp?.data;
         if (respTmp) {
-            let respData = resp?.data[keyResp];
+            let respData = SelectDDControl.get_data_key_map(resp?.data, keyResp);
             if (respData) {
                 if (Array.isArray(respData) && respData.length) {
                     result = respData;
@@ -71,8 +80,7 @@ class SelectDDControl {
         } else {
             data = this.ele.attr('data-onload') || '[]';
             try {
-                let temp
-                if (data.indexOf("'") !== -1) temp = data.replaceAll("'", '"');
+                let temp = data.replaceAll("'", '"');
                 parseData = JSON.parse(temp);
             } catch (e) {
             }
@@ -266,7 +274,8 @@ class SelectDDControl {
         params = this.ele.attr('data-params');
         if (params) {
             try {
-                return JSON.parse(params);
+                const temp = params.replaceAll("'",'"')
+                return JSON.parse(temp);
             } catch (e) {
             }
         }
@@ -482,7 +491,6 @@ class SelectDDControl {
                 }, ...config,
             }
         }
-        ;
         return ajaxConfig ? {'ajax': ajaxConfig} : {};
     }
 
@@ -553,7 +561,7 @@ class SelectDDControl {
         let hasAjax = !!(config?.['ajax']);
         let dataSelected = this._ele_collect_selected(hasAjax);
         let dataOnload = this.initData;
-        if (this.ele && Array.isArray(dataOnload) && Array.isArray(dataSelected)) {
+        if (this.ele && this.ele.length > 0 && Array.isArray(dataOnload) && Array.isArray(dataSelected)) {
             let optHTML = this.initData.concat(dataSelected).map((item) => {
                 let idn = item?.['id'];
                 let textShow = item?.['text'];
@@ -562,7 +570,7 @@ class SelectDDControl {
                     return `<option value="${idn}" ${item?.selected ? "selected" : ""}>${textShow || ''}</option>`;
                 }
             }).join("");
-            this.ele.html(optHTML);
+            if (optHTML) this.ele.html(optHTML);
         }
         return true;
     }
@@ -598,7 +606,12 @@ class SelectDDControl {
         this.ele.parent('.input-affix-wrapper').find('.dropdown').on('show.bs.dropdown', function () {
             clsThis.callbackRenderInfoDetail($(this));
         });
-
-        return this.ele.select2(this._config);
+        return this.ele.select2(this._config).on('change', function (e) {
+            if ($(this).valid()) {
+                $(this).closest(".form-group").removeClass("has-error");
+            } else {
+                $(this).closest(".form-group").addClass("has-error");
+            }
+        });
     }
 }

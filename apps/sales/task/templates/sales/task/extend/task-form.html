@@ -40,30 +40,35 @@
                         <div class="form-group">
                             <label for="selectStatus" class="form-label">{% trans 'Select' %}</label>
                             <select class="form-select" name="task_status" id="selectStatus"
-                                    data-prefix="task_status"
+                                    data-keyResp="task_status"
                                     data-url="{% url 'OpportunityTaskStatusAPI' %}"
-                            >
-                            </select>
+                            ></select>
                         </div>
                     </div>
                     <div class="col-md-6 col-xs-12">
                         <div class="form-group">
                             <label for="inputTextStartDate" class="form-label">{% trans 'Start Date' %}</label>
-                            <input type="text" class="form-control date-picker" name="start_date"
+                            <div class="input-affix-wrapper">
+                                <input type="text" class="form-control date-picker" name="start_date"
                                    id="inputTextStartDate"/>
+                                <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-6 col-xs-12">
                         <div class="form-group">
                             <label for="inputTextEndDate" class="form-label">{% trans 'End Date' %}</label>
-                            <input type="text" class="form-control date-picker" name="end_date" id="inputTextEndDate"/>
+                            <div class="input-affix-wrapper">
+                                <input type="text" class="form-control date-picker" name="end_date" id="inputTextEndDate"/>
+                                <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-6 col-xs-12">
                         <div class="form-group">
                             <label for="inputTextEstimate" class="form-label required">{% trans 'Estimate' %}</label>
                             <input type="text" class="form-control" name="estimate" id="inputTextEstimate"
-                                   placeholder="eg. 3w 4d 12h"/>
+                               placeholder="eg. 3w 4d 12h"/>
                             <p class="form-text text-muted text-blue">
                                 {% trans 'An estimate of how much time you have spent working.' %}</p>
                         </div>
@@ -75,8 +80,8 @@
                     <div class="col-md-6 col-xs-12">
                         <div class="form-group">
                             <label for="selectOpportunity" class="form-label">{% trans 'Sale/Project code' %}</label>
-                            <select class="form-select dropdown-select_two" name="opportunity" id="selectOpportunity"
-                                    data-prefix="opportunity_list"
+                            <select class="form-select" name="opportunity" id="selectOpportunity"
+                                    data-keyResp="opportunity_list"
                                     data-url="{% url 'OpportunityListAPI' %}"
                                     data-select2-closeOnSelect="true"
                                     data-format="code">
@@ -128,8 +133,9 @@
                     <div class="col-md-6 col-xs-12">
                         <div class="form-group">
                             <label for="selectAssignTo" class="form-label">{% trans 'Assignee' %}</label>
-                            <select class="form-control dropdown-select_two" name="assign_to" id="selectAssignTo"
-                                    data-prefix="employee_list"
+                            <select class="form-control" name="assign_to" id="selectAssignTo"
+                                    data-keyResp="employee_list"
+                                    data-keyText="full_name"
                                     data-url="{% url 'EmployeeListAPI' %}"
                             >
                             </select>
@@ -275,7 +281,7 @@
                     <div class="input-affix-wrapper">
                         <input type="text" class="form-control date-picker" name="start_date_logtime"
                                id="startDateLogTime"/>
-                        <span class="input-suffix"><i class="bi bi-calendar-week"></i></span>
+                        <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
                     </div>
                 </div>
                 <div class="form-group">
@@ -283,7 +289,7 @@
                     <div class="input-affix-wrapper">
                         <input type="text" class="form-control date-picker" name="start_date_logtime"
                                id="endDateLogTime"/>
-                        <span class="input-suffix"><i class="bi bi-calendar-week"></i></span>
+                        <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
                     </div>
                 </div>
                 <div class="form-group">

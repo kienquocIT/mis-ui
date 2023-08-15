@@ -4,6 +4,7 @@ $(document).ready(function () {
     let baseUrlUpdate = tbl.attr('data-url-update');
     tbl.DataTableDefault({
         rowIdx: true,
+        useDataServer: true,
         ajax: {
             url: tbl.attr('data-url'),
             type: tbl.attr('data-method'),

@@ -7,9 +7,9 @@ from rest_framework.views import APIView
 from apps.shared import mask_view, ServerAPI, ApiURL, PICKING_STATE
 
 __all__ = [
-    'DeliveryConfigDetail', 'DeliveryConfigDetailAPI',
-    'OrderPickingList', 'OrderPickingListAPI', 'OrderPickingDetail', 'OrderPickingDetailAPI',
-    'OrderDeliveryList', 'OrderDeliveryListAPI', 'OrderDeliveryDetail', 'OrderDeliveryDetailAPI'
+    'DeliveryConfigDetail', 'DeliveryConfigDetailAPI', 'OrderPickingList', 'OrderPickingListAPI', 'OrderPickingDetail',
+    'OrderPickingDetailAPI', 'OrderDeliveryList', 'OrderDeliveryListAPI', 'OrderDeliveryDetail',
+    'OrderDeliveryDetailAPI', 'OrderDeliveryEdit', 'OrderPickingEdit'
 ]
 
 from apps.shared.constant import DELIVERY_STATE
@@ -60,18 +60,21 @@ class OrderPickingList(View):
 
 
 class OrderPickingListAPI(APIView):
+    @classmethod
+    def picking_custom(cls, data):
+        list_sub = []
+        for item in data:
+            list_sub.extend(item.get('sub_list', []))
+        return {'picking_list': list_sub}
+
     @mask_view(
         auth_require=True,
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_PICKING_LIST).get()
-        if resp.state:
-            list_sub = []
-            for item in resp.result:
-                list_sub.extend(item.get('sub_list', []))
-            return {'picking_list': list_sub}, status.HTTP_200_OK
-        return resp.auto_return()
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_PICKING_LIST).get(params)
+        return resp.auto_return(callback_success=self.picking_custom)
 
 
 class OrderPickingDetail(View):
@@ -79,6 +82,21 @@ class OrderPickingDetail(View):
         auth_require=True,
         template='sales/delivery/picking/detail.html',
         breadcrumb='ORDER_PICKING_DETAIL_PAGE',
+        menu_active='menu_order_picking_list',
+    )
+    def get(self, request, *args, pk, **kwargs):
+        result = {
+            'pk': pk,
+            'state_choices': {key: value for key, value in PICKING_STATE},
+        }
+        return result, status.HTTP_200_OK
+
+
+class OrderPickingEdit(View):
+    @mask_view(
+        auth_require=True,
+        template='sales/delivery/picking/edit.html',
+        breadcrumb='ORDER_PICKING_EDIT_PAGE',
         menu_active='menu_order_picking_list',
     )
     def get(self, request, *args, pk, **kwargs):
@@ -121,19 +139,22 @@ class OrderDeliveryList(View):
 
 
 class OrderDeliveryListAPI(APIView):
+    @classmethod
+    def custom_reps(cls, req):
+        list_sub = []
+        for item in req:
+            list_sub.extend(item.get('sub_list', []))
+        return {'delivery_list': list_sub}
+
     @mask_view(
         login_require=True,
         auth_require=True,
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_LIST).get()
-        if resp.state:
-            list_sub = []
-            for item in resp.result:
-                list_sub.extend(item.get('sub_list', []))
-            return {'delivery_list': list_sub}, status.HTTP_200_OK
-        return resp.auto_return()
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_LIST).get(params)
+        return resp.auto_return(callback_success=self.custom_reps)
 
     @mask_view(
         login_require=True,
@@ -152,6 +173,21 @@ class OrderDeliveryDetail(View):
         auth_require=True,
         template='sales/delivery/detail.html',
         breadcrumb='ORDER_DELIVERY_DETAIL_PAGE',
+        menu_active='menu_order_delivery_list',
+    )
+    def get(self, request, *args, pk, **kwargs):
+        result = {
+            'pk': pk,
+            'state_choices': {key: value for key, value in DELIVERY_STATE},
+        }
+        return result, status.HTTP_200_OK
+
+
+class OrderDeliveryEdit(View):
+    @mask_view(
+        auth_require=True,
+        template='sales/delivery/edit.html',
+        breadcrumb='ORDER_DELIVERY_EDIT_PAGE',
         menu_active='menu_order_delivery_list',
     )
     def get(self, request, *args, pk, **kwargs):

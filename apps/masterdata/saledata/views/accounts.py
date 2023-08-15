@@ -447,7 +447,7 @@ class AccountDetailAPI(APIView):
 
     @mask_view(auth_require=True, is_api=True)
     def get(self, request, pk, *arg, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_DETAIL + pk).get()
+        resp = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_DETAIL.fill_key(pk=pk)).get()
         return resp.auto_return(key_success='account_detail')
 
     @mask_view(
@@ -455,7 +455,7 @@ class AccountDetailAPI(APIView):
         is_api=True,
     )
     def put(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_DETAIL + pk).put(request.data)
+        resp = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_DETAIL.fill_key(pk=pk)).put(request.data)
         return resp.auto_return(key_success='account_detail')
 
 

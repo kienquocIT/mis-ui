@@ -72,13 +72,14 @@ class EmployeeLoadPage {
     }
 
     static loadDateJoined(dateJoinedData) {
+        let txtDateJoinedData = dateJoinedData ? moment(dateJoinedData).format('MM/DD/YYYY') : moment().format('MM/DD/YYYY');
         EmployeeLoadPage.dateJoinedEle.dateRangePickerDefault({
             singleDatePicker: true,
             timepicker: false,
             showDropdowns: true,
             minYear: 1901,
             maxYear: parseInt(moment().format('YYYY'), 10)
-        }).val(dateJoinedData ? moment(dateJoinedData).format('MM/DD/YYYY') : null).on('hide.daterangepicker', function () {
+        }).val(txtDateJoinedData).on('hide.daterangepicker', function () {
             $(this).val($(this).val().split(" ")[0])
         });
     }

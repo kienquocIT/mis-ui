@@ -611,11 +611,13 @@ class ServerAPI:
         else:
             self.query_params = {}
 
+        self.is_dropdown = kwargs.get('is_dropdown', False)
+
     @property
     def setup_header_dropdown(self):
         if self.request:
             data_is_dd = self.request.META.get('HTTP_DTISDD', None)
-            if data_is_dd == 'true':
+            if data_is_dd == 'true' or self.is_dropdown is True:
                 return {'DATAISDD': 'true'}
         return {}
 

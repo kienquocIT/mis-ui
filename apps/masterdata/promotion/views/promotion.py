@@ -6,10 +6,9 @@ from rest_framework.views import APIView
 
 from apps.core.workflow.views.config import WORKFLOW_TYPE
 from apps.shared import mask_view, ServerAPI, ApiURL, PromotionMsg, CUSTOMER_REVENUE, COMPANY_SIZE, PermCheck
-from django.utils.translation import gettext_lazy as _
 
 __all__ = ['PromotionList', 'PromotionCreate', 'PromotionListAPI', 'PromotionCreateAPI',
-           'PromotionDetail', 'PromotionDetailAPI', 'PromotionCheckListAPI']
+           'PromotionDetail', 'PromotionDetailAPI', 'PromotionCheckListAPI', 'PromotionEdit']
 
 
 class PromotionList(View):
@@ -68,6 +67,22 @@ class PromotionDetail(View):
         auth_require=True,
         template='masterdata/promotion/promotion_detail.html',
         breadcrumb='PROMOTION_DETAIL_PAGE',
+        menu_active='menu_pricing',
+    )
+    def get(self, request, pk, *args, **kwargs):
+        return {
+                   'doc_id': pk,
+                   'revenue': CUSTOMER_REVENUE,
+                   'company_size': COMPANY_SIZE,
+                   'cus_operator': WORKFLOW_TYPE[4],
+               }, status.HTTP_200_OK
+
+
+class PromotionEdit(View):
+    @mask_view(
+        auth_require=True,
+        template='masterdata/promotion/promotion_edit.html',
+        breadcrumb='PROMOTION_EDIT_PAGE',
         menu_active='menu_pricing',
     )
     def get(self, request, pk, *args, **kwargs):

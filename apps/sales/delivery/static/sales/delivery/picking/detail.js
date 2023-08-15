@@ -363,6 +363,10 @@ $(async function () {
             pickingData['estimated_delivery_date'] = moment(_form.dataForm['estimated_delivery_date'],
                 'MM/DD/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
         }
+        else{
+            $.fn.notifyB({description: $transElm.attr('data-est_invalid')}, 'failure')
+            return false
+        }
         pickingData['ware_house'] = _form.dataForm['warehouse_id']
         pickingData['remarks'] = _form.dataForm['remarks']
         pickingData['to_location'] = _form.dataForm['to_location']

@@ -30,8 +30,14 @@ $(function () {
                     'title': item.name
                 }
                 $('[data-drawer-target="#drawer_task_create"]').trigger('click')
-                $('#selectStatus').attr('data-onload', JSON.stringify(currentData))
-                initSelectBox($('#selectStatus'))
+                // activeDrawer('#drawer_task_create', $('.btn-add-newtask', stt_template));
+                let createFormTask = setInterval(function(){
+                    clearInterval(createFormTask)
+                    const $sttElm = $('#selectStatus')
+                    $sttElm.attr('data-onload', JSON.stringify(currentData))
+                    $sttElm.html('');
+                    $sttElm.initSelect2()
+                }, 1000)
 
             })
 
@@ -240,7 +246,10 @@ $(function () {
             if (newTaskElm) elm = newTaskElm.find('.card-title')
             elm.off().on('click', function () {
                 const taskID = $(this).attr('data-task-id')
-                $.fn.callAjax($urlFact.attr('data-task-detail').format_url_with_uuid(taskID), 'GET')
+                $.fn.callAjax2({
+                    'url': $urlFact.attr('data-task-detail').format_url_with_uuid(taskID),
+                    'method': 'GET'
+                })
                     .then((req) => {
                         let data = $.fn.switcherResp(req);
                         if (data?.['status'] === 200) {
@@ -274,7 +283,9 @@ $(function () {
                             window.editor.setData(data.remark)
                             window.checklist.setDataList = data.checklist
                             window.checklist.render()
-                            initSelectBox($('#selectOpportunity, #selectAssignTo, #selectStatus'))
+                            $('#selectOpportunity, #selectAssignTo, #selectStatus').each(function(){
+                                $(this).initSelect2()
+                            })
                             $formElm.addClass('task_edit')
                             if (Object.keys(data.parent_n).length <= 0) $('.create-subtask').removeClass('hidden')
                             else $('.create-subtask').addClass('hidden')

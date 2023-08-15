@@ -1,14 +1,18 @@
 from django.urls import path
 
-from apps.core.base.views import PlanListAPI, TenantApplicationListAPI, ApplicationPropertyListAPI, \
-    ApplicationPropertyEmployeeListAPI, ApplicationPermissionAPI, \
-    CountryListAPI, CityListAPI, DistrictListAPI, WardListAPI, BaseCurrencyListAPI, BaseItemUnitListAPI, \
-    IndicatorParamListAPI
+from apps.core.base.views import (
+    PlanListAPI, TenantApplicationListAPI, ApplicationPropertyListAPI,
+    ApplicationPropertyEmployeeListAPI, ApplicationPermissionAPI,
+    CountryListAPI, CityListAPI, DistrictListAPI, DistrictAllListAPI, WardListAPI, WardAllListAPI,
+    BaseCurrencyListAPI, BaseItemUnitListAPI, IndicatorParamListAPI,
+)
 
 urlpatterns = [
     path('location/countries/api', CountryListAPI.as_view(), name='CountryListAPI'),
     path('location/cities/api', CityListAPI.as_view(), name='CityListAPI'),
+    path('location/districts/api', DistrictAllListAPI.as_view(), name='DistrictAllListAPI'),
     path('location/districts/api/<str:pk>', DistrictListAPI.as_view(), name='DistrictListAPI'),
+    path('location/wards/api', WardAllListAPI.as_view(), name='WardAllListAPI'),
     path('location/wards/api/<str:pk>', WardListAPI.as_view(), name='WardListAPI'),
     path('currencies/api', BaseCurrencyListAPI.as_view(), name='BaseCurrencyListAPI'),
 

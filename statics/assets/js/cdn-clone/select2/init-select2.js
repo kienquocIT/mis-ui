@@ -30,7 +30,7 @@ class SelectDDControl {
         let result = [];
         let respTmp = resp?.data;
         if (respTmp) {
-            let respData = resp?.data[keyResp];
+            let respData = SelectDDControl.get_data_key_map(resp?.data, keyResp);
             if (respData) {
                 if (Array.isArray(respData) && respData.length) {
                     result = respData;
@@ -482,7 +482,6 @@ class SelectDDControl {
                 }, ...config,
             }
         }
-        ;
         return ajaxConfig ? {'ajax': ajaxConfig} : {};
     }
 

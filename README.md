@@ -768,6 +768,13 @@ $('#table_districts_list').DataTableDefault({
 ```
 3. 
 
+VIII. Validate form khi submit
+1. SetupFormSubmit.validate(formEle, opts)
+2. Tham khảo để cấu hình validate: https://jqueryvalidation.org/validate/
+3. Chú ý cấu hình rules: https://jqueryvalidation.org/validate/#rules
+
+
+
 ---
 
 Tài liệu này sẽ được làm lại khi mọi thứ đã ổn định!

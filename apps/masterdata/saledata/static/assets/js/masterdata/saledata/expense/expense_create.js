@@ -8,16 +8,18 @@ $(document).ready(function () {
 
     const currency_primary = JSON.parse($('#id-currency-list').text()).find(obj => obj.is_primary === true);
 
-    $(".select2").select2();
-
     function loadUoM(group_id) {
         let chooseUom = $('#chooseUom');
-        chooseUom.html('');
-        let frm = new SetupFormSubmit(chooseUom);
-        $.fn.callAjax(frm.dataUrl, frm.dataMethod).then((resp) => {
+        let url = chooseUom.data('select2-url');
+        let method = chooseUom.data('method')
+        $.fn.callAjax2({
+            'url': url,
+            'method': method
+        }).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('unit_of_measure')) {
+                    chooseUom.append(`<option></option>`);
                     resp.data.unit_of_measure.map(function (item) {
                         if (item.group.id === group_id) {
                             chooseUom.append(`<option value="` + item.id + `">` + item.title + `&nbsp;&nbsp;(<span>` + item.code + `</span>)</option>`);
@@ -31,8 +33,12 @@ $(document).ready(function () {
 
     function loadUoMGroup() {
         let chooseUoMGroup = $('#chooseUoMGroup');
-        let frm = new SetupFormSubmit(chooseUoMGroup);
-        $.fn.callAjax(frm.dataUrl, frm.dataMethod).then((resp) => {
+        let url = chooseUoMGroup.data('url');
+        let method = chooseUoMGroup.data('method')
+        $.fn.callAjax2({
+            'url': url,
+            'method': method
+        }).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('unit_of_measure_group')) {
@@ -51,8 +57,12 @@ $(document).ready(function () {
 
     function loadExpenseType() {
         let chooseExpenseType = $('#chooseExpenseType');
-        let frm = new SetupFormSubmit(chooseExpenseType);
-        $.fn.callAjax(frm.dataUrl, frm.dataMethod).then((resp) => {
+        let url = chooseExpenseType.data('select2-url');
+        let method = chooseExpenseType.data('method')
+        $.fn.callAjax2({
+            'url': url,
+            'method': method
+        }).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('expense_type_list')) {
@@ -89,7 +99,7 @@ $(document).ready(function () {
                     price_list.push(
                         {
                             'id': $(this).attr('data-id'),
-                            'value': parseFloat($(this).val().replace(/\./g, '').replace(',', '.')),
+                            'value': $(this).valCurrency(),
                             'is_auto_update': is_auto_update,
                         }
                     )
@@ -135,7 +145,7 @@ $(document).ready(function () {
                     'child': []
                 })
             } else {
-                if (dataTree[i].child.length !== 0){
+                if (dataTree[i].child.length !== 0) {
                     getTreePriceList(dataTree[i].child, parent_id, child)
                 }
             }
@@ -168,10 +178,7 @@ $(document).ready(function () {
                                 </div>
                             </div>
                             <div class="col-6 form-group">
-                                <span class="input-affix-wrapper affix-wth-text inp-can-edit">
-                                    <input data-id="` + dataTree[i].item.id + `" class="form-control value-price-list number-separator" type="text" value="" readonly>
-                                    <span class="input-suffix">` + currency + `</span>
-                                </span>
+                                <input data-id="` + dataTree[i].item.id + `" class="form-control value-price-list mask-money" data-return-type="number" type="text" value="" readonly>
                             </div>
                         </div>`)
                 } else {
@@ -184,10 +191,7 @@ $(document).ready(function () {
                                 </div>
                             </div>
                             <div class="col-6 form-group">
-                                <span class="input-affix-wrapper affix-wth-text inp-can-edit">
-                                    <input data-id="` + dataTree[i].item.id + `" class="form-control value-price-list number-separator" type="text" value="" disabled>
-                                    <span class="input-suffix">` + currency + `</span>
-                                </span>
+                                <input data-id="` + dataTree[i].item.id + `" class="form-control value-price-list mask-money" type="text" data-return-type="number" value="" disabled>
                             </div>
                         </div>`)
                 }
@@ -202,10 +206,7 @@ $(document).ready(function () {
                                 </div>
                             </div>
                             <div class="col-6 form-group">
-                                <span class="input-affix-wrapper affix-wth-text inp-can-edit">
-                                    <input data-id="` + dataTree[i].item.id + `" class="form-control value-price-list number-separator" type="text" value="">
-                                    <span class="input-suffix">` + currency + `</span>
-                                </span>
+                                <input data-id="` + dataTree[i].item.id + `" class="form-control value-price-list mask-money" data-return-type="number" type="text" value="">
                             </div>
                         </div>`)
                 } else {
@@ -218,10 +219,7 @@ $(document).ready(function () {
                                 </div>
                             </div>
                             <div class="col-6 form-group">
-                                <span class="input-affix-wrapper affix-wth-text inp-can-edit">
-                                    <input data-id="` + dataTree[i].item.id + `" class="form-control value-price-list number-separator" type="text" value="" disabled>    
-                                    <span class="input-suffix">` + currency + `</span>
-                                </span>
+                                <input data-id="` + dataTree[i].item.id + `" class="form-control value-price-list mask-money" type="text" data-return-type="number" value="" disabled>    
                             </div>
                         </div>`)
                 }
@@ -286,27 +284,28 @@ $(document).ready(function () {
     })
 
     // auto to input value for price list copy from source
-    $(document).on('input', '.ul-price-list .value-price-list', function () {
+    $(document).on('change', '.ul-price-list .value-price-list', function () {
         let element = document.getElementsByClassName('ul-price-list')[0].querySelectorAll('.value-price-list[readonly]')
         for (let i = 0; i < element.length; i++) {
             let ele_id = element[i].getAttribute('data-id')
             if (price_dict[ele_id] !== undefined && price_dict[ele_id].price_list_mapped !== null) {
                 if (document.querySelector(`input[type="text"][data-id="` + price_dict[ele_id].price_list_mapped + `"]`).value !== '' && price_dict[ele_id].status !== 'Expired') {
-                    element[i].value = (parseFloat(document.querySelector(`input[type="text"][data-id="` + price_dict[ele_id].price_list_mapped + `"]`).value.replace(/\./g, '').replace(',', '.')) * price_dict[ele_id].factor).toLocaleString('de-DE', {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2
-                    });
+                    element[i].setAttribute('value', document.querySelector(`input[type="text"][data-id="` + price_dict[ele_id].price_list_mapped + `"]`).value * price_dict[ele_id].factor)
                 }
             }
+            $.fn.initMaskMoney2();
         }
     })
 
 
     function loadRole() {
         let chooseRole = $('#chooseRole');
-        chooseRole.html('');
-        let frm = new SetupFormSubmit(chooseRole);
-        $.fn.callAjax(frm.dataUrl, frm.dataMethod).then((resp) => {
+        let url = chooseRole.data('select2-url');
+        let method = chooseRole.data('method')
+        $.fn.callAjax2({
+            'url': url,
+            'method': method
+        }).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('role_list')) {

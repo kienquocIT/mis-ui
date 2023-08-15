@@ -302,7 +302,7 @@ class UpdateProductForPriceListAPI(APIView):
         is_api=True,
     )
     def put(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCTS_FOR_PRICE_LIST.fill_key(pk)).put(request.data)
+        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCTS_FOR_PRICE_LIST.fill_key(pk=pk)).put(request.data)
         return resp.auto_return(key_success='price')
 
 

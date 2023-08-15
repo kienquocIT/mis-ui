@@ -44,19 +44,18 @@
                     <div class="form-group col-2">
                         <label class="form-label required">{% trans "Expense Type" %}</label>
                         <select id="chooseExpenseType" class="select2 form-control" data-method="GET"
-                                data-url="{% url 'ExpenseTypeListAPI' %}" name="expense_type"></select>
+                                data-select2-url="{% url 'ExpenseTypeListAPI' %}" name="expense_type"></select>
                     </div>
                     <div class="form-group col-2">
                         <label class="form-label required">{% trans "UoM Group" %}</label>
                         <input id="chooseUoMGroup" data-method="GET" class="form-control" readonly
                                data-url="{% url "UnitOfMeasureGroupListAPI" %}"
-                               data-url-detail="{% url "UnitOfMeasureGroupDetailAPI" pk=0 %}"
                                name="uom_group" data-id=""/>
                     </div>
                     <div class="form-group col-2">
                         <label class="form-label required">{% trans "UoM" %}</label>
                         <select id="chooseUom" class="select2 form-control" data-method="GET"
-                                data-url="{% url "UnitOfMeasureListAPI" %}"
+                                data-select2-url="{% url "UnitOfMeasureListAPI" %}"
                                 name="uom"></select>
                     </div>
                     <div class="col-6 form-group" id="choosePriceList" data-method="GET"
@@ -73,7 +72,7 @@
                     <div class="col-3 form-group">
                         <label class="form-label">{% trans "Role" %}</label>
                         <select class="select2 form-control" id="chooseRole" data-method="GET"
-                                data-url="{% url "RoleListAPI" %}" multiple name="role"></select>
+                                data-select2-url="{% url "RoleListAPI" %}" multiple name="role"></select>
                     </div>
                 </div>
             </div>

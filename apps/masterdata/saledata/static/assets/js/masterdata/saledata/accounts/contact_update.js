@@ -206,7 +206,7 @@ $(document).ready(function () {
 
         $('#homecity').on('change', function () {
             loadDistrictsHome();
-            $('#homeward').html('<option value="" selected>---</option>');
+            $('#homeward').html('<option></option>');
         })
 
         $('#homedistrict').on('change', function () {

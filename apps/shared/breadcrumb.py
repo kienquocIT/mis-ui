@@ -6,11 +6,12 @@ from django.utils.translation import gettext_lazy as _
 class BreadcrumbChildren:  # pylint: disable=too-few-public-methods
     """prepare url breadcrumbs"""
 
-    def __init__(self, title, url=None, arg_pattern=None, kw_pattern=None):
+    def __init__(self, title, url=None, arg_pattern=None, kw_pattern=None, is_append_code=False):
         self.title = title
         self.url = url if url else ''
         self.arg_pattern = arg_pattern if arg_pattern and isinstance(arg_pattern, list) else []
         self.kw_pattern = kw_pattern if kw_pattern and isinstance(kw_pattern, dict) else {}
+        self.is_append_code = is_append_code
 
     @property
     def data(self):
@@ -18,6 +19,7 @@ class BreadcrumbChildren:  # pylint: disable=too-few-public-methods
         return {
             'title': self.title if self.title else '#',
             'url': reverse(self.url, kwargs=self.kw_pattern) if self.url else '#',
+            'is_append_code': self.is_append_code,
         }
 
 
@@ -31,8 +33,8 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     # base
     BASTION_LIST = BreadcrumbChildren(_('List'))
     BASTION_CREATE = BreadcrumbChildren(_('Create'))
-    BASTION_DETAIL = BreadcrumbChildren(_('Detail'))
-    BASTION_UPDATE = BreadcrumbChildren(_('Update'))
+    BASTION_DETAIL = BreadcrumbChildren(_('Detail'), is_append_code=True)
+    BASTION_UPDATE = BreadcrumbChildren(_('Update'), is_append_code=True)
 
     # hr
     HR_PAGE = BreadcrumbChildren(_('HR'))
@@ -256,10 +258,19 @@ class BreadcrumbView:
     @classmethod
     def parsed(cls, name: str) -> list:
         """method parsed data custom"""
+        result = []
         data = getattr(cls, name, [])
         if data and isinstance(data, list):
-            return [item.data for item in data]
-        return []
+            has_append_code = False
+            for item in data[::-1]:
+                item_data = item.data
+                if item_data['is_append_code'] is True:
+                    if has_append_code is False:
+                        has_append_code = True
+                    else:
+                        item_data['is_append_code'] = False
+                result.append(item_data)
+        return result[::-1]
 
     HOME_PAGE = [
         BreadcrumbItem.HOME_PAGE,

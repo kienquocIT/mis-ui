@@ -2592,6 +2592,26 @@ class DocumentControl {
         let tenant_code_active = nav_data.attr('data-nav-tenant');
         if (tenant_code_active) $('#menu-tenant').children('option[value=' + tenant_code_active + ']').attr('selected', 'selected');
     }
+
+    static renderCodeBreadcrumb(detailData, keyCode='code', keyActive='is_active'){
+        if (typeof detailData === 'object'){
+            let [code, is_active] = [detailData?.[keyCode], detailData?.[keyActive]];
+            if (code){
+                let clsState = 'hidden';
+                if (is_active === true) {
+                    clsState = 'badge badge-info badge-indicator';
+                } else if (clsState === false){
+                    clsState = 'badge badge-light badge-indicator';
+                }
+                $('#idx-breadcrumb-current-code').html(
+                    `
+                    <span class="${clsState}"></span>
+                    <span class="badge badge-primary">${code}</span>
+                `
+                ).removeClass('hidden');
+            }
+        }
+    }
 }
 
 let $x = {
@@ -2626,6 +2646,8 @@ let $x = {
 
         shortNameGlobe: PersonControl.shortNameGlobe,
         renderAvatar: PersonControl.renderAvatar,
+
+        renderCodeBreadcrumb: DocumentControl.renderCodeBreadcrumb,
     },
 }
 

@@ -173,7 +173,12 @@
                     <div class="blogapp-detail-wrap">
                         <header class="blog-header">
                             <div class="d-flex align-items-center">
-                                {% include 'extends/breadcrumb.html' %}
+                                <button class="btn mr-1 hidden" id="btn-show-breadcrumb"><i
+                                        class="fa-solid fa-bars"
+                                ></i></button>
+                                <div id="breadcrumb-data">
+                                    {% include 'extends/breadcrumb.html' %}
+                                </div>
                             </div>
                             <div class="blog-options-wrap" id="idxPageAction">
                                 <div class="{% if pk %}hidden{% endif %}" id="idxRealAction">
@@ -415,9 +420,9 @@
 
         // gateway
         const globeGatewayMiddleListView = "{% url 'GatewayMiddleListView' plan='_plan_' app='_app_' %}";
-        const globeGatewayMiddleDetailView="{% url 'GatewayMiddleDetailView' plan='_plan_' app='_app_' pk='_pk_' %}";
-        const globeGatewayViewNameListView="{% url 'GatewayViewNameListView' %}";
-        const globeGatewayViewNameParseView="{% url 'GatewayViewNameParseView' view_name='_view_name_' %}";
+        const globeGatewayMiddleDetailView = "{% url 'GatewayMiddleDetailView' plan='_plan_' app='_app_' pk='_pk_' %}";
+        const globeGatewayViewNameListView = "{% url 'GatewayViewNameListView' %}";
+        const globeGatewayViewNameParseView = "{% url 'GatewayViewNameParseView' view_name='_view_name_' %}";
 
         // attachment
         const globeUrlAttachmentUpload = "{% url 'AttachmentUpload' %}";
@@ -493,7 +498,34 @@
                     showPrevButton: true,
                 });
             }
+        });
+
+        function checkSizeScreen() {
+            let wWidth = $(window).width();
+            if (wWidth < 768) {
+                let realActionEle = $('#idxRealAction');
+                realActionEle.find('.icon').parent('span').each(function () {
+                    let spanShowEle = $(this).children('span:not(.icon)');
+                    $(this).attr('data-bs-toggle', 'tooltip');
+                    $(this).attr('data-bs-placement', 'bottom');
+                    $(this).attr('title', spanShowEle.text());
+                    spanShowEle.remove();
+                });
+                $('#btn-show-breadcrumb').addClass('hidden');
+                $('#breadcrumb-data').addClass('hidden');
+            }
+            if (wWidth < 350) {
+                $('#menu-tenant-text').text("_");
+            }
+        }
+
+        checkSizeScreen();
+
+        $(window).on("resize", function () {
+            checkSizeScreen();
         })
+
+
     </script>
 
     <!-- Customize JS -->

@@ -111,10 +111,11 @@
                                             <select
                                                 class="form-select disabled-but-edit"
                                                 id="select-box-quotation-create-opportunity"
-                                                data-url="{% url "OpportunityListAPI" %}"
+                                                data-url="{% url "OpportunityForSaleListAPI" %}"
                                                 data-method="GET"
                                                 data-link-detail="{% url "OpportunityDetail" 1 %}"
                                                 name="opportunity"
+                                                data-keyResp="opportunity_sale_list"
                                                 disabled
                                             ></select>
                                         </span>
@@ -144,6 +145,7 @@
                                                     data-method="GET"
                                                     data-link-detail="{% url "AccountDetail" 1 %}"
                                                     name="customer"
+                                                    data-keyResp="account_sale_list"
                                                     required
                                                     disabled
                                             ></select>
@@ -174,6 +176,7 @@
                                                 data-method="GET"
                                                 data-link-detail="{% url 'ContactDetail' 1 %}"
                                                 name="contact"
+                                                data-keyResp="contact_list"
                                                 required
                                                 disabled
                                             ></select>
@@ -204,6 +207,7 @@
                                                     data-link-detail=""
                                                     data-method="GET"
                                                     name="payment_term"
+                                                    data-keyResp="payment_terms_list"
                                                     required
                                             ></select>
                                         </span>
@@ -262,6 +266,7 @@
                                                 data-method="GET"
                                                 data-link-detail="{% url 'EmployeeDetail' 1 %}"
                                                 name="employee_inherit"
+                                                data-keyResp="employee_list"
                                                 required
                                                 disabled
                                             ></select>

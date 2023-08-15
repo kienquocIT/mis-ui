@@ -10,6 +10,67 @@ class QuotationLoadDataHandle {
     static paymentSelectEle = $('#select-box-quotation-create-payment-term');
     static salePersonSelectEle = $('#select-box-quotation-create-sale-person');
 
+    static loadInformationSelectBox(ele, is_expense = false) {
+        let optionSelected = null;
+        let dropdownContent = null;
+        let eleInfo = null;
+        if (is_expense === false) { // Normal dropdown
+            optionSelected = ele;
+            eleInfo = ele[0].closest('.input-affix-wrapper').querySelector('.fa-info-circle');
+            let inputWrapper = ele[0].closest('.input-affix-wrapper');
+            dropdownContent = inputWrapper.querySelector('.dropdown-menu');
+        } else { // Expense dropdown
+            optionSelected = ele[0].querySelector('.option-btn-checked');
+            eleInfo = ele[0].closest('.dropdown-expense').querySelector('.fa-info-circle');
+            dropdownContent = ele[0].closest('.dropdown-expense').querySelector('.expense-more-info');
+        }
+        dropdownContent.innerHTML = ``;
+        eleInfo.setAttribute('disabled', true);
+        let link = "";
+        if (optionSelected) {
+            let eleData = null;
+            if (is_expense === false) {
+                eleData = SelectDDControl.get_data_from_idx($(optionSelected), $(optionSelected).val());
+            } else {
+                eleData = optionSelected.querySelector('.data-info');
+            }
+            if (eleData) {
+                // remove attr disabled
+                if (eleInfo) {
+                    eleInfo.removeAttribute('disabled');
+                }
+                // end
+                let data = {};
+                if (is_expense === false) {
+                    data = eleData;
+                } else {
+                    data = JSON.parse(eleData.value);
+                }
+                let info = ``;
+                info += `<h6 class="dropdown-header header-wth-bg">${$.fn.transEle.attr('data-more-information')}</h6>`;
+                for (let key in data) {
+                    if (['id', 'title', 'name', 'fullname', 'full_name', 'code'].includes(key)) {
+                        if (key === 'id') {
+                            let linkDetail = ele.data('link-detail');
+                            if (linkDetail) {
+                                link = linkDetail.format_url_with_uuid(data[key]);
+                            }
+                        } else {
+                            info += `<div class="row mb-1"><h6><i>${key}</i></h6><p>${data[key]}</p></div>`;
+                        }
+                    }
+                }
+                info += `<div class="dropdown-divider"></div>
+                    <div class="row float-right">
+                        <a href="${link}" target="_blank" class="link-primary underline_hover">
+                            <span><span>${$.fn.transEle.attr('data-view-detail-info')}</span><span class="icon ml-1"><span class="feather-icon"><i class="fas fa-arrow-circle-right"></i></span></span></span>
+                        </a>
+                    </div>`;
+                dropdownContent.innerHTML = info;
+            }
+        }
+    }
+
     static loadBoxQuotationOpportunity(dataOpp = {}, sale_person = null, is_load_detail = false, is_copy = false) {
         let ele = QuotationLoadDataHandle.opportunitySelectEle;
         let data_filter = {}
@@ -30,6 +91,7 @@ class QuotationLoadDataHandle {
             dataParams: data_filter,
             disabled: !(ele.attr('data-url')),
         });
+        QuotationLoadDataHandle.loadInformationSelectBox(ele);
 
 
         // if (!sale_person) {
@@ -130,6 +192,7 @@ class QuotationLoadDataHandle {
                 return item?.['name'] || '';
             },
         });
+        QuotationLoadDataHandle.loadInformationSelectBox(ele);
 
 
         // if (!sale_person) {
@@ -234,6 +297,7 @@ class QuotationLoadDataHandle {
                 return item?.['fullname'] || '';
             },
         });
+        QuotationLoadDataHandle.loadInformationSelectBox(ele);
 
 
         // let url = ele.attr('data-url');
@@ -287,9 +351,9 @@ class QuotationLoadDataHandle {
         let ele = QuotationLoadDataHandle.paymentSelectEle;
         ele.initSelect2({
             data: dataPayment,
-            // dataParams: data_filter,
             disabled: !(ele.attr('data-url')),
         });
+        QuotationLoadDataHandle.loadInformationSelectBox(ele);
 
 
 
@@ -337,6 +401,7 @@ class QuotationLoadDataHandle {
                 return item?.['full_name'] || '';
             },
         });
+        QuotationLoadDataHandle.loadInformationSelectBox(ele);
 
 
         // $.fn.callAjax2({
@@ -440,179 +505,149 @@ class QuotationLoadDataHandle {
         )
     }
 
-    static loadBoxQuotationProduct(box_id, valueToSelect = null) {
-        let self = this;
-        let ele = document.getElementById('data-init-quotation-create-tables-product');
-        let jqueryId = '#' + box_id;
-        let eleBox = $(jqueryId);
-        if (ele && eleBox) {
-            let linkDetail = ele.getAttribute('data-link-detail');
-            eleBox.attr('data-link-detail', linkDetail);
-            let data = JSON.parse(ele.value);
-            eleBox.empty();
-            eleBox.append(`<option value=""></option>`);
-            for (let i = 0; i < data.length; i++) {
-                let uom_title = "";
-                let default_uom = {};
-                let uom_group = {};
-                let tax_code = {};
-                if (Object.keys(data[i].sale_information).length !== 0) {
-                    if (Object.keys(data[i].sale_information.default_uom).length !== 0) {
-                        uom_title = data[i].sale_information.default_uom.title
-                    }
-                    default_uom = data[i].sale_information.default_uom;
-                    tax_code = data[i].sale_information.tax_code;
-                }
-                if (Object.keys(data[i].general_information).length !== 0) {
-                    uom_group = data[i].general_information.uom_group;
-                }
-                let dataStr = JSON.stringify({
-                    'id': data[i].id,
-                    'title': data[i].title,
-                    'code': data[i].code,
-                    'unit of measure': uom_title,
-                }).replace(/"/g, "&quot;");
-                let product_data = JSON.stringify({
-                    'id': data[i].id,
-                    'title': data[i].title,
-                    'code': data[i].code,
-                    'unit_of_measure': default_uom,
-                    'uom_group': uom_group,
-                    'price_list': data[i].price_list,
-                    'cost_price': data[i].cost_price,
-                    'tax': tax_code,
-                }).replace(/"/g, "&quot;");
-                let option = `<option value="${data[i].id}">
-                                <span class="product-title">${data[i].title}</span>
-                                <input type="hidden" class="data-default" value="${product_data}">
-                                <input type="hidden" class="data-info" value="${dataStr}">
-                            </option>`
-                if (valueToSelect && valueToSelect === data[i].id) {
-                    option = `<option value="${data[i].id}" selected>
-                                <span class="product-title">${data[i].title}</span>
-                                <input type="hidden" class="data-default" value="${product_data}">
-                                <input type="hidden" class="data-info" value="${dataStr}">
-                            </option>`
-                }
-                eleBox.append(option);
-            }
-            // load data information
-            self.loadInformationSelectBox(eleBox);
-        }
+    static loadBoxQuotationProduct(ele, dataProduct = {}) {
+        ele.initSelect2({
+            data: dataProduct,
+            // dataParams: data_filter,
+            disabled: !(ele.attr('data-url')),
+        });
+
+
+        // let self = this;
+        // let ele = document.getElementById('data-init-quotation-create-tables-product');
+        // let jqueryId = '#' + box_id;
+        // let eleBox = $(jqueryId);
+        // if (ele && eleBox) {
+        //     let linkDetail = ele.getAttribute('data-link-detail');
+        //     eleBox.attr('data-link-detail', linkDetail);
+        //     let data = JSON.parse(ele.value);
+        //     eleBox.empty();
+        //     eleBox.append(`<option value=""></option>`);
+        //     for (let i = 0; i < data.length; i++) {
+        //         let uom_title = "";
+        //         let default_uom = {};
+        //         let uom_group = {};
+        //         let tax_code = {};
+        //         if (Object.keys(data[i].sale_information).length !== 0) {
+        //             if (Object.keys(data[i].sale_information.default_uom).length !== 0) {
+        //                 uom_title = data[i].sale_information.default_uom.title
+        //             }
+        //             default_uom = data[i].sale_information.default_uom;
+        //             tax_code = data[i].sale_information.tax_code;
+        //         }
+        //         if (Object.keys(data[i].general_information).length !== 0) {
+        //             uom_group = data[i].general_information.uom_group;
+        //         }
+        //         let dataStr = JSON.stringify({
+        //             'id': data[i].id,
+        //             'title': data[i].title,
+        //             'code': data[i].code,
+        //             'unit of measure': uom_title,
+        //         }).replace(/"/g, "&quot;");
+        //         let product_data = JSON.stringify({
+        //             'id': data[i].id,
+        //             'title': data[i].title,
+        //             'code': data[i].code,
+        //             'unit_of_measure': default_uom,
+        //             'uom_group': uom_group,
+        //             'price_list': data[i].price_list,
+        //             'cost_price': data[i].cost_price,
+        //             'tax': tax_code,
+        //         }).replace(/"/g, "&quot;");
+        //         let option = `<option value="${data[i].id}">
+        //                         <span class="product-title">${data[i].title}</span>
+        //                         <input type="hidden" class="data-default" value="${product_data}">
+        //                         <input type="hidden" class="data-info" value="${dataStr}">
+        //                     </option>`
+        //         if (valueToSelect && valueToSelect === data[i].id) {
+        //             option = `<option value="${data[i].id}" selected>
+        //                         <span class="product-title">${data[i].title}</span>
+        //                         <input type="hidden" class="data-default" value="${product_data}">
+        //                         <input type="hidden" class="data-info" value="${dataStr}">
+        //                     </option>`
+        //         }
+        //         eleBox.append(option);
+        //     }
+        //     // load data information
+        //     self.loadInformationSelectBox(eleBox);
+        // }
     }
 
-    static loadInitQuotationUOM() {
-        let ele = $('#data-init-quotation-create-tables-uom');
-        let url = ele.attr('data-url');
-        let method = ele.attr('data-method');
-        $.fn.callAjax2({
-                'url': url,
-                'method': method,
-                'isDropdown': true,
-            }
-        ).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (data.hasOwnProperty('unit_of_measure') && Array.isArray(data.unit_of_measure)) {
-                        ele.val(JSON.stringify(data.unit_of_measure))
-                    }
-                }
-            }
-        )
+    static loadBoxQuotationUOM(ele, dataUOM = null, uom_group = null) {
+        ele.initSelect2({
+            data: dataUOM,
+            disabled: !(ele.attr('data-url')),
+        });
+
+
+        // let ele = document.getElementById('data-init-quotation-create-tables-uom');
+        // let jqueryId = '#' + box_id;
+        // let eleBox = $(jqueryId);
+        // if (ele && eleBox && uom_group) {
+        //     let data = JSON.parse(ele.value);
+        //     let optionSelected = ``;
+        //     eleBox.empty();
+        //     eleBox.append(`<option value=""></option>`);
+        //     for (let i = 0; i < data.length; i++) {
+        //         // check uom_group with product
+        //         if (data[i].group.id === uom_group) {
+        //             let dataStr = JSON.stringify({
+        //                 'id': data[i].id,
+        //                 'title': data[i].title,
+        //                 'code': data[i].code,
+        //             }).replace(/"/g, "&quot;");
+        //             let option = `<option value="${data[i].id}">
+        //                             <span class="uom-title">${data[i].title}</span>
+        //                             <input type="hidden" class="data-info" value="${dataStr}">
+        //                         </option>`
+        //             if (valueToSelect && valueToSelect === data[i].id) {
+        //                 // optionSelected = `<option value="${data[i].id}" selected>
+        //                 //             <span class="uom-title">${data[i].title}</span>
+        //                 //             <input type="hidden" class="data-info" value="${dataStr}">
+        //                 //         </option>`
+        //                 option = `<option value="${data[i].id}" selected>
+        //                             <span class="uom-title">${data[i].title}</span>
+        //                             <input type="hidden" class="data-info" value="${dataStr}">
+        //                         </option>`
+        //             }
+        //             eleBox.append(option);
+        //         }
+        //     }
+        // }
     }
 
-    static loadBoxQuotationUOM(box_id, valueToSelect = null, uom_group = null) {
-        let ele = document.getElementById('data-init-quotation-create-tables-uom');
-        let jqueryId = '#' + box_id;
-        let eleBox = $(jqueryId);
-        if (ele && eleBox && uom_group) {
-            let data = JSON.parse(ele.value);
-            let optionSelected = ``;
-            eleBox.empty();
-            eleBox.append(`<option value=""></option>`);
-            for (let i = 0; i < data.length; i++) {
-                // check uom_group with product
-                if (data[i].group.id === uom_group) {
-                    let dataStr = JSON.stringify({
-                        'id': data[i].id,
-                        'title': data[i].title,
-                        'code': data[i].code,
-                    }).replace(/"/g, "&quot;");
-                    let option = `<option value="${data[i].id}">
-                                    <span class="uom-title">${data[i].title}</span>
-                                    <input type="hidden" class="data-info" value="${dataStr}">
-                                </option>`
-                    if (valueToSelect && valueToSelect === data[i].id) {
-                        // optionSelected = `<option value="${data[i].id}" selected>
-                        //             <span class="uom-title">${data[i].title}</span>
-                        //             <input type="hidden" class="data-info" value="${dataStr}">
-                        //         </option>`
-                        option = `<option value="${data[i].id}" selected>
-                                    <span class="uom-title">${data[i].title}</span>
-                                    <input type="hidden" class="data-info" value="${dataStr}">
-                                </option>`
-                    }
-                    eleBox.append(option);
-                }
-            }
-            // check if option selected
-            // if (optionSelected) {
-            //     eleBox.empty();
-            //     eleBox.append(`<option value=""></option>`);
-            //     eleBox.append(optionSelected);
-            // }
-        }
-    }
+    static loadBoxQuotationTax(ele, dataTax = null) {
+        ele.initSelect2({
+            data: dataTax,
+            disabled: !(ele.attr('data-url')),
+        });
 
-    static loadInitQuotationTax() {
-        let ele = $('#data-init-quotation-create-tables-tax');
-        let url = ele.attr('data-url');
-        let method = ele.attr('data-method');
-        $.fn.callAjax2({
-                'url': url,
-                'method': method,
-                'isDropdown': true,
-            }
-        ).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (data.hasOwnProperty('tax_list') && Array.isArray(data.tax_list)) {
-                        ele.val(JSON.stringify(data.tax_list))
-                    }
-                }
-            }
-        )
-    }
-
-    static loadBoxQuotationTax(box_id, valueToSelect = null) {
-        let ele = document.getElementById('data-init-quotation-create-tables-tax');
-        let jqueryId = '#' + box_id;
-        let eleBox = $(jqueryId);
-        if (ele && eleBox) {
-            let data = JSON.parse(ele.value);
-            eleBox.empty();
-            eleBox.append(`<option value="" data-value="0">0 %</option>`);
-            for (let i = 0; i < data.length; i++) {
-                let dataStr = JSON.stringify({
-                    'id': data[i].id,
-                    'title': data[i].title,
-                    'value': data[i].rate,
-                }).replace(/"/g, "&quot;");
-                let option = `<option value="${data[i].id}" data-value="${data[i].rate}">
-                                <span class="tax-title">${data[i].rate} %</span>
-                                <input type="hidden" class="data-info" value="${dataStr}">
-                            </option>`
-                if (valueToSelect && valueToSelect === data[i].id) {
-                    option = `<option value="${data[i].id}" data-value="${data[i].rate}" selected>
-                                <span class="tax-title">${data[i].rate} %</span>
-                                <input type="hidden" class="data-info" value="${dataStr}">
-                            </option>`
-                }
-                eleBox.append(option)
-            }
-        }
+        // let ele = document.getElementById('data-init-quotation-create-tables-tax');
+        // let jqueryId = '#' + box_id;
+        // let eleBox = $(jqueryId);
+        // if (ele && eleBox) {
+        //     let data = JSON.parse(ele.value);
+        //     eleBox.empty();
+        //     eleBox.append(`<option value="" data-value="0">0 %</option>`);
+        //     for (let i = 0; i < data.length; i++) {
+        //         let dataStr = JSON.stringify({
+        //             'id': data[i].id,
+        //             'title': data[i].title,
+        //             'value': data[i].rate,
+        //         }).replace(/"/g, "&quot;");
+        //         let option = `<option value="${data[i].id}" data-value="${data[i].rate}">
+        //                         <span class="tax-title">${data[i].rate} %</span>
+        //                         <input type="hidden" class="data-info" value="${dataStr}">
+        //                     </option>`
+        //         if (valueToSelect && valueToSelect === data[i].id) {
+        //             option = `<option value="${data[i].id}" data-value="${data[i].rate}" selected>
+        //                         <span class="tax-title">${data[i].rate} %</span>
+        //                         <input type="hidden" class="data-info" value="${dataStr}">
+        //                     </option>`
+        //         }
+        //         eleBox.append(option)
+        //     }
+        // }
     }
 
     static loadInitQuotationExpense() {
@@ -768,24 +803,32 @@ class QuotationLoadDataHandle {
 
     static loadDataProductSelect(ele, is_change_item = true, is_expense = false) {
         let self = this;
-        let optionSelected = null;
-        if (is_expense === false) { // PRODUCT
-            optionSelected = ele[0].options[ele[0].selectedIndex];
-        } else { // EXPENSE
+        let optionSelected = ele;
+        let productData = SelectDDControl.get_data_from_idx(optionSelected, optionSelected.val());
+        if (is_expense === true) { // EXPENSE
             optionSelected = ele[0].querySelector('.option-btn-checked');
+            productData = optionSelected.querySelector('.data-default');
         }
-        let productData = optionSelected.querySelector('.data-default');
         if (productData) {
-            let data = JSON.parse(productData.value);
+            let data = productData;
+            if (is_expense === false) {
+                data['unit_of_measure'] = data.sale_information.default_uom;
+                data['uom_group'] = data.general_information.uom_group;
+                data['tax'] = data.sale_information.tax_code;
+            }
+            if (is_expense === true) {
+                data = JSON.parse(productData.value);
+            }
             let uom = ele[0].closest('tr').querySelector('.table-row-uom');
             let price = ele[0].closest('tr').querySelector('.table-row-price');
             let priceList = ele[0].closest('tr').querySelector('.table-row-price-list');
             let tax = ele[0].closest('tr').querySelector('.table-row-tax');
             // load UOM
-            if (uom && Object.keys(data.unit_of_measure).length !== 0 && Object.keys(data.uom_group).length !== 0) {
-                self.loadBoxQuotationUOM(uom.id, data.unit_of_measure.id, data.uom_group.id);
+            if (uom && data.unit_of_measure && data.uom_group) {
+                $(uom).empty();
+                self.loadBoxQuotationUOM($(uom), data.unit_of_measure, data.uom_group.id);
             } else {
-                self.loadBoxQuotationUOM(uom.id);
+                self.loadBoxQuotationUOM($(uom));
             }
             // load PRICE
             if (price && priceList) {
@@ -793,63 +836,15 @@ class QuotationLoadDataHandle {
             }
             // load TAX
             if (tax && data.tax) {
-                self.loadBoxQuotationTax(tax.id, data.tax.id);
+                $(tax).empty();
+                self.loadBoxQuotationTax($(tax), data.tax);
             } else {
-                self.loadBoxQuotationTax(tax.id);
+                self.loadBoxQuotationTax($(tax));
             }
             // load modal more information
             self.loadInformationSelectBox(ele, is_expense);
         }
         $.fn.initMaskMoney2();
-    }
-
-    static loadInformationSelectBox(ele, is_expense = false) {
-        let optionSelected = null;
-        let dropdownContent = null;
-        let eleInfo = null;
-        if (is_expense === false) { // Normal dropdown
-            optionSelected = ele[0].options[ele[0].selectedIndex];
-            eleInfo = ele[0].closest('.input-affix-wrapper').querySelector('.fa-info-circle');
-            let inputWrapper = ele[0].closest('.input-affix-wrapper');
-            dropdownContent = inputWrapper.querySelector('.dropdown-menu');
-        } else { // Expense dropdown
-            optionSelected = ele[0].querySelector('.option-btn-checked');
-            eleInfo = ele[0].closest('.dropdown-expense').querySelector('.fa-info-circle');
-            dropdownContent = ele[0].closest('.dropdown-expense').querySelector('.expense-more-info');
-        }
-        dropdownContent.innerHTML = ``;
-        eleInfo.setAttribute('disabled', true);
-        let link = "";
-        if (optionSelected) {
-            let eleData = optionSelected.querySelector('.data-info');
-            if (eleData) {
-                // remove attr disabled
-                if (eleInfo) {
-                    eleInfo.removeAttribute('disabled');
-                }
-                // end
-                let data = JSON.parse(eleData.value);
-                let info = ``;
-                info += `<h6 class="dropdown-header header-wth-bg">${$.fn.transEle.attr('data-more-information')}</h6>`;
-                for (let key in data) {
-                    if (key === 'id') {
-                        let linkDetail = ele.data('link-detail');
-                        if (linkDetail) {
-                            link = linkDetail.format_url_with_uuid(data[key]);
-                        }
-                    } else {
-                        info += `<div class="row mb-1"><h6><i>${key}</i></h6><p>${data[key]}</p></div>`;
-                    }
-                }
-                info += `<div class="dropdown-divider"></div>
-                    <div class="row float-right">
-                        <a href="${link}" target="_blank" class="link-primary underline_hover">
-                            <span><span>${$.fn.transEle.attr('data-view-detail-info')}</span><span class="icon ml-1"><span class="feather-icon"><i class="fas fa-arrow-circle-right"></i></span></span></span>
-                        </a>
-                    </div>`;
-                dropdownContent.innerHTML = info;
-            }
-        }
     }
 
     static loadShippingBillingCustomer(item = null) {
@@ -1054,21 +1049,23 @@ class QuotationLoadDataHandle {
             }
         }
         if (data.customer) {
+            data.customer['name'] = data.customer.title;
             if (data.sale_person) {
-                self.loadBoxQuotationCustomer(data.customer.id, data.sale_person.id, true);
+                self.loadBoxQuotationCustomer(data.customer, data.sale_person.id, true);
             } else {
-                self.loadBoxQuotationCustomer(data.customer.id, null, true);
+                self.loadBoxQuotationCustomer(data.customer, null, true);
             }
         }
-        // if (data.contact) {
-        //     self.loadBoxQuotationContact(data.contact.id, data.customer.id)
-        // }
-        if (data.sale_person) {
-            self.loadBoxQuotationSalePerson(data.sale_person.id)
+        if (data.contact) {
+            data.contact['fullname'] = data.contact.title;
+            self.loadBoxQuotationContact(data.contact, data.customer.id)
         }
-        // if (data.payment_term) {
-        //     self.loadBoxQuotationPaymentTerm(data.payment_term.id)
-        // }
+        if (data.sale_person) {
+            self.loadBoxQuotationSalePerson(data.sale_person)
+        }
+        if (data.payment_term) {
+            self.loadBoxQuotationPaymentTerm(data.payment_term)
+        }
         if (data.quotation && data.sale_person) {
             self.loadBoxSaleOrderQuotation('select-box-quotation', data.quotation.id, null, data.sale_person.id)
         }
@@ -1165,12 +1162,10 @@ class QuotationLoadDataHandle {
     static loadDataTablesAndDropDowns(data) {
         let self = this;
         self.loadDataTables(data);
-        self.loadDropDowns();
         return true;
     };
 
     static loadDataTables(data, is_detail = false) {
-        let self = this;
         let tableProduct = $('#datable-quotation-create-product');
         let tableCost = $('#datable-quotation-create-cost');
         let tableExpense = $('#datable-quotation-create-expense');
@@ -1191,11 +1186,15 @@ class QuotationLoadDataHandle {
         tableProduct.DataTable().rows.add(products_data).draw();
         tableCost.DataTable().rows.add(costs_data).draw();
         tableExpense.DataTable().rows.add(expenses_data).draw();
-        //
+        // load Dropdowns
+        QuotationLoadDataHandle.loadTableDropDowns(tableProduct);
+        QuotationLoadDataHandle.loadTableDropDowns(tableCost);
+        QuotationLoadDataHandle.loadTableDropDowns(tableExpense, true);
+        // set attr disabled
         if (is_detail === true) {
-            self.loadTableDisabled(tableProduct);
-            self.loadTableDisabled(tableCost);
-            self.loadTableDisabled(tableExpense);
+            QuotationLoadDataHandle.loadTableDisabled(tableProduct);
+            QuotationLoadDataHandle.loadTableDisabled(tableCost);
+            QuotationLoadDataHandle.loadTableDisabled(tableExpense);
             // mask money
             $.fn.initMaskMoney2();
         }
@@ -1280,13 +1279,28 @@ class QuotationLoadDataHandle {
             ele.classList.add('disabled-but-edit');
         }
     };
+
+    static loadTableDropDowns(table, is_expense = false) {
+        for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
+            let row = table[0].tBodies[0].rows[i];
+            let dataRow = JSON.parse(row.querySelector('.table-row-order').getAttribute('data-row'));
+            dataRow.tax['rate'] = dataRow.tax.value;
+            if (is_expense === false) {
+              QuotationLoadDataHandle.loadBoxQuotationProduct($(row.querySelector('.table-row-item')), dataRow.product);
+            }
+            QuotationLoadDataHandle.loadBoxQuotationUOM($(row.querySelector('.table-row-uom')), dataRow.unit_of_measure);
+            QuotationLoadDataHandle.loadBoxQuotationTax($(row.querySelector('.table-row-tax')), dataRow.tax);
+        }
+    }
 }
 
 // DataTable
 class QuotationDataTableHandle {
     static productInitEle = $('#data-init-quotation-create-tables-product');
+    static uomInitEle = $('#data-init-quotation-create-tables-uom');
+    static taxInitEle = $('#data-init-quotation-create-tables-tax');
 
-    static dataTableProduct(data, is_load_detail = false) {
+    static dataTableProduct(data) {
         // init dataTable
         let $tables = $('#datable-quotation-create-product');
         $tables.DataTableDefault({
@@ -1295,31 +1309,69 @@ class QuotationDataTableHandle {
             paging: false,
             ordering: false,
             info: false,
-            columnDefs: [],
             drawCallback: function (row, data) {
                 // render icon after table callback
                 feather.replace();
                 $.fn.initMaskMoney2();
             },
             rowCallback: function (row, data, index) {
-                // $.fn.initMaskMoney2();
             },
+            columnDefs: [
+                {
+                    "width": "5%",
+                    "targets": 0
+                },
+                {
+                    "width": "15%",
+                    "targets": 1
+                },
+                {
+                    "width": "10%",
+                    "targets": 2
+                },
+                {
+                    "width": "5%",
+                    "targets": 3,
+                },
+                {
+                    "width": "5%",
+                    "targets": 4,
+                },
+                {
+                    "width": "20%",
+                    "targets": 5,
+                },
+                {
+                    "width": "10%",
+                    "targets": 6,
+                },
+                {
+                    "width": "10%",
+                    "targets": 7,
+                },
+                {
+                    "width": "15%",
+                    "targets": 8,
+                },
+                {
+                    "width": "5%",
+                    "targets": 9,
+                }
+            ],
             columns: [
                 {
                     targets: 0,
-                    width: "3%",
                     render: (data, type, row) => {
-                        return `<span class="table-row-order">${row.order}</span>`
+                        let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
+                        return `<span class="table-row-order" data-row="${dataRow}">${row.order}</span>`
                     }
                 },
                 {
                     targets: 1,
-                    width: "20%",
                     render: (data, type, row) => {
                         if (!row.hasOwnProperty('is_promotion') && !row.hasOwnProperty('is_shipping')) {
-                            if (is_load_detail === false) {
-                                let selectProductID = 'quotation-create-product-box-product-' + String(row.order);
-                                return `<div class="row">
+                            let selectProductID = 'quotation-create-product-box-product-' + String(row.order);
+                            return `<div class="row">
                                 <div class="input-group">
                                     <span class="input-affix-wrapper">
                                         <span class="input-prefix">
@@ -1344,41 +1396,10 @@ class QuotationDataTableHandle {
                                         data-method="${QuotationDataTableHandle.productInitEle.attr('data-method')}"
                                         data-keyResp="product_sale_list"
                                         required>
-                                            <option value="${row.product.id}">${row.product.title}</option>
                                         </select>
                                     </span>
                                 </div>
                             </div>`;
-                            } else {
-                                let selectProductID = 'quotation-create-product-box-product-' + String(row.order);
-                                return `<div class="row">
-                                <div class="input-group">
-                                    <span class="input-affix-wrapper">
-                                        <span class="input-prefix">
-                                            <div class="btn-group dropstart">
-                                                <i
-                                                    class="fas fa-info-circle"
-                                                    data-bs-toggle="dropdown"
-                                                    data-dropdown-animation
-                                                    aria-haspopup="true"
-                                                    aria-expanded="false"
-                                                    disabled
-                                                >
-                                                </i>
-                                                <div class="dropdown-menu w-210p mt-4"></div>
-                                            </div>
-                                        </span>
-                                        <select 
-                                        class="form-select table-row-item disabled-but-edit" 
-                                        id="${selectProductID}"
-                                        required
-                                        disabled>
-                                            <option value="${row.product.id}">${row.product.title}</option>
-                                        </select>
-                                    </span>
-                                </div>
-                            </div>`;
-                            }
                         } else if (row.hasOwnProperty('is_promotion')) {
                             let link = "";
                             let linkDetail = $('#data-init-quotation-create-promotion').data('link-detail');
@@ -1424,18 +1445,11 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 2,
-                    width: "11%",
                     render: (data, type, row) => {
                         if (!row.hasOwnProperty('is_promotion') && !row.hasOwnProperty('is_shipping')) {
-                            if (is_load_detail === false) {
-                                return `<div class="row">
+                            return `<div class="row">
                                 <input type="text" class="form-control table-row-description" value="${row.product_description}">
                             </div>`;
-                            } else {
-                                return `<div class="row">
-                                <input type="text" class="form-control table-row-description disabled-but-edit" value="${row.product_description}" disabled>
-                            </div>`;
-                            }
                         } else {
                             return `<div class="row">
                                         <input type="text" class="form-control table-row-description disabled-custom-show" value="${row.product_description}" data-bs-toggle="tooltip" title="${row.product_description}" disabled>
@@ -1445,24 +1459,20 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 3,
-                    width: "5%",
                     render: (data, type, row) => {
                         if (!row.hasOwnProperty('is_promotion') && !row.hasOwnProperty('is_shipping')) {
-                            if (is_load_detail === false) {
-                                let selectUOMID = 'quotation-create-product-box-uom-' + String(row.order);
-                                return `<div class="row">
-                                        <select class="form-select table-row-uom" id="${selectUOMID}" required>
-                                            <option value="${row.unit_of_measure.id}">${row.unit_of_measure.title}</option>
+                            let selectUOMID = 'quotation-create-product-box-uom-' + String(row.order);
+                            return `<div class="row">
+                                        <select 
+                                            class="form-select table-row-uom"
+                                            id="${selectUOMID}"
+                                            data-url="${QuotationDataTableHandle.uomInitEle.attr('data-url')}"
+                                            data-method="${QuotationDataTableHandle.uomInitEle.attr('data-method')}"
+                                            data-keyResp="unit_of_measure"
+                                            required
+                                         >
                                         </select>
                                     </div>`;
-                            } else {
-                                let selectUOMID = 'quotation-create-product-box-uom-' + String(row.order);
-                                return `<div class="row">
-                                        <select class="form-select table-row-uom disabled-but-edit" id="${selectUOMID}" required disabled>
-                                            <option value="${row.unit_of_measure.id}">${row.unit_of_measure.title}</option>
-                                        </select>
-                                    </div>`;
-                            }
                         } else {
                             return `<div class="row">
                                         <select class="form-select table-row-uom disabled-custom-show" required disabled>
@@ -1475,18 +1485,11 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 4,
-                    width: "5%",
                     render: (data, type, row) => {
                         if (!row.hasOwnProperty('is_promotion') && !row.hasOwnProperty('is_shipping')) {
-                            if (is_load_detail === false) {
-                                return `<div class="row">
+                            return `<div class="row">
                                 <input type="text" class="form-control table-row-quantity validated-number" value="${row.product_quantity}" required>
                             </div>`;
-                            } else {
-                                return `<div class="row">
-                                <input type="text" class="form-control table-row-quantity validated-number disabled-but-edit" value="${row.product_quantity}" required disabled>
-                            </div>`;
-                            }
                         } else {
                             return `<div class="row">
                                 <input type="text" class="form-control table-row-quantity validated-number disabled-custom-show" value="${row.product_quantity}" disabled>
@@ -1496,11 +1499,9 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 5,
-                    width: "18%",
                     render: (data, type, row) => {
                         if (!row.hasOwnProperty('is_promotion') && !row.hasOwnProperty('is_shipping')) {
-                            if (is_load_detail === false) {
-                                return `<div class="row">
+                            return `<div class="row">
                                 <div class="dropdown">
                                     <div class="input-group dropdown-action" aria-expanded="false" data-bs-toggle="dropdown">
                                     <span class="input-affix-wrapper">
@@ -1518,27 +1519,6 @@ class QuotationDataTableHandle {
                                     </div>
                                 </div>
                             </div>`;
-                            } else {
-                                return `<div class="row">
-                                <div class="dropdown">
-                                    <div class="input-group dropdown-action disabled-but-edit" aria-expanded="false" data-bs-toggle="dropdown" disabled>
-                                    <span class="input-affix-wrapper">
-                                        <input 
-                                            type="text" 
-                                            class="form-control mask-money table-row-price disabled-but-edit" 
-                                            value="${row.product_unit_price}"
-                                            data-return-type="number"
-                                            disabled
-                                        >
-                                        <span class="input-suffix table-row-btn-dropdown-price-list"><i class="fas fa-angle-down"></i></span>
-                                    </span>
-                                    </div>
-                                    <div role="menu" class="dropdown-menu table-row-price-list w-460p">
-                                    <a class="dropdown-item" data-value=""></a>
-                                    </div>
-                                </div>
-                            </div>`;
-                            }
                         } else {
                             return `<div class="row">
                                 <div class="dropdown">
@@ -1564,11 +1544,9 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 6,
-                    width: "10%",
                     render: (data, type, row) => {
                         if (!row.hasOwnProperty('is_promotion') && !row.hasOwnProperty('is_shipping')) {
-                            if (is_load_detail === false) {
-                                return `<div class="row">
+                            return `<div class="row">
                                 <div class="input-group">
                                     <span class="input-affix-wrapper">
                                         <input type="text" class="form-control table-row-discount validated-number" value="${row.product_discount_value}">
@@ -1582,22 +1560,6 @@ class QuotationDataTableHandle {
                                     hidden
                                 >
                             </div>`;
-                            } else {
-                                return `<div class="row">
-                                <div class="input-group">
-                                    <span class="input-affix-wrapper">
-                                        <input type="text" class="form-control table-row-discount validated-number disabled-but-edit" value="${row.product_discount_value}" disabled>
-                                        <span class="input-suffix">%</span>
-                                    </span>
-                                </div>
-                                <input
-                                    type="text"
-                                    class="form-control mask-money table-row-discount-amount"
-                                    data-return-type="number"
-                                    hidden
-                                >
-                            </div>`;
-                            }
                         } else {
                             return `<div class="row">
                                 <div class="input-group">
@@ -1618,7 +1580,6 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 7,
-                    width: "10%",
                     render: (data, type, row) => {
                         let selectTaxID = 'quotation-create-product-box-tax-' + String(row.order);
                         let taxID = "";
@@ -1628,10 +1589,14 @@ class QuotationDataTableHandle {
                             taxRate = row.tax.value;
                         }
                         if (!row.hasOwnProperty('is_promotion') && !row.hasOwnProperty('is_shipping')) {
-                            if (is_load_detail === false) {
-                                return `<div class="row">
-                                <select class="form-select table-row-tax" id="${selectTaxID}">
-                                    <option value="${taxID}" data-value="${taxRate}">${taxRate} %</option>
+                            return `<div class="row">
+                                <select 
+                                    class="form-select table-row-tax"
+                                    id="${selectTaxID}"
+                                    data-url="${QuotationDataTableHandle.taxInitEle.attr('data-url')}"
+                                    data-method="${QuotationDataTableHandle.taxInitEle.attr('data-method')}"
+                                    data-keyResp="tax_list"
+                                 >
                                 </select>
                                 <input
                                     type="text"
@@ -1647,26 +1612,6 @@ class QuotationDataTableHandle {
                                     hidden
                                 >
                             </div>`;
-                            } else { // PROMOTION & SHIPPING
-                                return `<div class="row">
-                                <select class="form-select table-row-tax disabled-but-edit" id="${selectTaxID}" disabled>
-                                    <option value="${taxID}" data-value="${taxRate}">${taxRate} %</option>
-                                </select>
-                                <input
-                                    type="text"
-                                    class="form-control mask-money table-row-tax-amount"
-                                    value="${row.product_tax_amount}"
-                                    data-return-type="number"
-                                    hidden
-                                >
-                                <input
-                                    type="text"
-                                    class="form-control table-row-tax-amount-raw"
-                                    value="${row.product_tax_amount}"
-                                    hidden
-                                >
-                            </div>`;
-                            }
                         } else {
                             return `<div class="row">
                                 <select class="form-select table-row-tax disabled-custom-show" id="${selectTaxID}" disabled>
@@ -1691,7 +1636,6 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 8,
-                    width: "15%",
                     render: (data, type, row) => {
                         return `<div class="row">
                                 <span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row.product_subtotal_price)}"></span>
@@ -1706,13 +1650,8 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 9,
-                    width: "3%",
                     render: () => {
-                        if (is_load_detail === false) {
-                            return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`
-                        } else {
-                            return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row disabled-but-edit" disabled><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`
-                        }
+                        return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`
                     }
                 },
             ],
@@ -1720,7 +1659,7 @@ class QuotationDataTableHandle {
 
     }
 
-    static dataTableCost(data, is_load_detail = false) {
+    static dataTableCost(data) {
         // init dataTable
         let $tables = $('#datable-quotation-create-cost');
         $tables.DataTableDefault({
@@ -1736,14 +1675,14 @@ class QuotationDataTableHandle {
                 $.fn.initMaskMoney2();
             },
             rowCallback: function (row, data) {
-                // $.fn.initMaskMoney2();
             },
             columns: [
                 {
                     targets: 0,
                     width: "5%",
                     render: (data, type, row) => {
-                        return `<span class="table-row-order">${row.order}</span>`
+                        let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
+                        return `<span class="table-row-order" data-row="${dataRow}">${row.order}</span>`
                     }
                 },
                 {
@@ -1769,8 +1708,15 @@ class QuotationDataTableHandle {
                                                 <div class="dropdown-menu w-210p mt-4"></div>
                                             </div>
                                         </span>
-                                        <select class="form-select table-row-item disabled-custom-show" id="${selectProductID}" disabled>
-                                            <option value="${row.product.id}">${row.product.title}</option>
+                                        <select
+                                            class="form-select table-row-item disabled-custom-show"
+                                            id="${selectProductID}" 
+                                            data-url="${QuotationDataTableHandle.productInitEle.attr('data-url')}"
+                                            data-link-detail="${QuotationDataTableHandle.productInitEle.attr('data-link-detail')}"
+                                            data-method="${QuotationDataTableHandle.productInitEle.attr('data-method')}"
+                                            data-keyResp="product_sale_list"
+                                            disabled
+                                        >
                                         </select>
                                     </span>
                                 </div>
@@ -1802,8 +1748,14 @@ class QuotationDataTableHandle {
                     render: (data, type, row) => {
                         let selectUOMID = 'quotation-create-cost-box-uom-' + String(row.order);
                         return `<div class="row">
-                                <select class="form-select table-row-uom disabled-custom-show" id="${selectUOMID}" disabled>
-                                    <option value="${row.unit_of_measure.id}">${row.unit_of_measure.title}</option>
+                                <select 
+                                    class="form-select table-row-uom disabled-custom-show"
+                                    id="${selectUOMID}"
+                                    data-url="${QuotationDataTableHandle.uomInitEle.attr('data-url')}"
+                                    data-method="${QuotationDataTableHandle.uomInitEle.attr('data-method')}"
+                                    data-keyResp="unit_of_measure"
+                                    disabled
+                                >
                                 </select>
                             </div>`;
                     },
@@ -1821,8 +1773,7 @@ class QuotationDataTableHandle {
                     targets: 4,
                     width: "20%",
                     render: (data, type, row) => {
-                        if (is_load_detail === false) {
-                            return `<div class="row">
+                        return `<div class="row">
                                 <input 
                                     type="text" 
                                     class="form-control mask-money table-row-price" 
@@ -1831,77 +1782,42 @@ class QuotationDataTableHandle {
                                     required
                                 >
                             </div>`;
-                        } else {
-                            return `<div class="row">
-                                <input 
-                                    type="text" 
-                                    class="form-control mask-money table-row-price disabled-but-edit" 
-                                    data-return-type="number"
-                                    value="${row.product_cost_price}"
-                                    required
-                                    disabled
-                                >
-                            </div>`;
-                        }
                     }
                 },
                 {
                     targets: 5,
                     width: "10%",
                     render: (data, type, row) => {
-                        if (is_load_detail === false) {
-                            let selectTaxID = 'quotation-create-cost-box-tax-' + String(row.order);
-                            let taxID = "";
-                            let taxRate = "";
-                            if (row.tax) {
-                                taxID = row.tax.id;
-                                taxRate = row.tax.value;
-                            }
-                            return `<div class="row">
-                                <select class="form-select table-row-tax" id="${selectTaxID}">
-                                    <option value="${taxID}" data-value="${taxRate}">${taxRate} %</option>
-                                </select>
-                                <input
-                                    type="text"
-                                    class="form-control mask-money table-row-tax-amount"
-                                    value="${row.product_tax_amount}"
-                                    data-return-type="number"
-                                    hidden
-                                >
-                                <input
-                                    type="text"
-                                    class="form-control table-row-tax-amount-raw"
-                                    value="${row.product_tax_amount}"
-                                    hidden
-                                >
-                            </div>`;
-                        } else {
-                            let selectTaxID = 'quotation-create-cost-box-tax-' + String(row.order);
-                            let taxID = "";
-                            let taxRate = "";
-                            if (row.tax) {
-                                taxID = row.tax.id;
-                                taxRate = row.tax.value;
-                            }
-                            return `<div class="row">
-                                <select class="form-select table-row-tax disabled-but-edit" id="${selectTaxID}" disabled>
-                                    <option value="${taxID}" data-value="${taxRate}">${taxRate} %</option>
-                                </select>
-                                <input
-                                    type="text"
-                                    class="form-control mask-money table-row-tax-amount"
-                                    value="${row.product_tax_amount}"
-                                    data-return-type="number"
-                                    hidden
-                                >
-                                <input
-                                    type="text"
-                                    class="form-control table-row-tax-amount-raw"
-                                    value="${row.product_tax_amount}"
-                                    hidden
-                                >
-                            </div>`;
+                        let selectTaxID = 'quotation-create-cost-box-tax-' + String(row.order);
+                        let taxID = "";
+                        let taxRate = "";
+                        if (row.tax) {
+                            taxID = row.tax.id;
+                            taxRate = row.tax.value;
                         }
+                        return `<div class="row">
+                                <select 
+                                    class="form-select table-row-tax"
+                                    id="${selectTaxID}"
+                                    data-url="${QuotationDataTableHandle.taxInitEle.attr('data-url')}"
+                                    data-method="${QuotationDataTableHandle.taxInitEle.attr('data-method')}"
+                                    data-keyResp="tax_list"
+                                >
+                                </select>
+                                <input
+                                    type="text"
+                                    class="form-control mask-money table-row-tax-amount"
+                                    value="${row.product_tax_amount}"
+                                    data-return-type="number"
+                                    hidden
+                                >
+                                <input
+                                    type="text"
+                                    class="form-control table-row-tax-amount-raw"
+                                    value="${row.product_tax_amount}"
+                                    hidden
+                                >
+                            </div>`;
                     }
                 },
                 {
@@ -1931,7 +1847,7 @@ class QuotationDataTableHandle {
         });
     }
 
-    static dataTableExpense(data, is_load_detail = false) {
+    static dataTableExpense(data) {
         // init dataTable
         let $tables = $('#datable-quotation-create-expense');
         $tables.DataTableDefault({
@@ -1947,14 +1863,14 @@ class QuotationDataTableHandle {
                 $.fn.initMaskMoney2();
             },
             rowCallback: function (row, data) {
-                // $.fn.initMaskMoney2();
             },
             columns: [
                 {
                     targets: 0,
                     width: "5%",
                     render: (data, type, row) => {
-                        return `<span class="table-row-order">${row.order}</span>`
+                        let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
+                        return `<span class="table-row-order" data-row="${dataRow}">${row.order}</span>`
                     }
                 },
                 {
@@ -1970,8 +1886,7 @@ class QuotationDataTableHandle {
                             data_title = row.product.title;
                             data_id = row.product.id;
                         }
-                        if (is_load_detail === false) {
-                            return `<div class="row dropdown-expense">
+                        return `<div class="row dropdown-expense">
                                         <div class="input-group">
                                             <span class="input-affix-wrapper">
                                                 <span class="input-prefix">
@@ -2025,106 +1940,40 @@ class QuotationDataTableHandle {
                                             </span>
                                         </div>
                                 </div>`;
-                        } else {
-                            return `<div class="row dropdown-expense">
-                                        <div class="input-group">
-                                            <span class="input-affix-wrapper">
-                                                <span class="input-prefix">
-                                                    <div class="btn-group dropdown">
-                                                        <i
-                                                            class="fas fa-info-circle"
-                                                            data-bs-toggle="dropdown"
-                                                            data-dropdown-animation
-                                                            aria-haspopup="true"
-                                                            aria-expanded="false"
-                                                            disabled
-                                                        >
-                                                        </i>
-                                                        <div class="dropdown-menu w-210p mt-2 ml-3 expense-more-info"></div>
-                                                    </div>
-                                                </span>
-                                                <div class="dropdown">
-                                                    <div class="input-group disabled-but-edit" aria-expanded="false" data-bs-toggle="dropdown" disabled>
-                                                        <span class="input-affix-wrapper">
-                                                            <input 
-                                                                type="text" 
-                                                                class="form-control table-row-item disabled-show-normal" 
-                                                                value="${data_title}"
-                                                                data-value="${data_id}"
-                                                                style="padding-left: 38px"
-                                                                disabled
-                                                            >
-                                                            <span class="input-suffix">
-                                                                <i class="fas fa-angle-down"></i>
-                                                            </span>
-                                                        </span>
-                                                    </div>
-                                                    <div role="menu" class="dropdown-menu table-row-item-expense w-360p">
-                                                        <div class="row mb-2">
-                                                            <div class="col-6">
-                                                                <div class="form-check">
-                                                                    <input type="checkbox" class="form-check-input" id="${checkboxExpenseItemID}" checked>
-                                                                    <label class="form-check-label" for="${checkboxExpenseItemID}">Expense items</label>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-6">
-                                                                <div class="form-check">
-                                                                    <input type="checkbox" class="form-check-input" id="${checkboxPurchaseItemID}" checked>
-                                                                    <label class="form-check-label" for="${checkboxPurchaseItemID}">Purchasing items</label>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-250p position-relative overflow-y-scroll expense-option-list" id="${selectExpenseID}"></div>
-                                                    </div>
-                                                </div>
-                                            </span>
-                                        </div>
-                                </div>`;
-                        }
                     }
                 },
                 {
                     targets: 2,
                     width: "5%",
                     render: (data, type, row) => {
-                        if (is_load_detail === false) {
-                            let selectUOMID = 'quotation-create-expense-box-uom-' + String(row.order);
-                            return `<div class="row">
-                                <select class="form-select table-row-uom" id="${selectUOMID}" required>
-                                    <option value="${row.unit_of_measure.id}">${row.unit_of_measure.title}</option>
+                        let selectUOMID = 'quotation-create-expense-box-uom-' + String(row.order);
+                        return `<div class="row">
+                                <select 
+                                    class="form-select table-row-uom"
+                                    id="${selectUOMID}"
+                                    data-url="${QuotationDataTableHandle.uomInitEle.attr('data-url')}"
+                                    data-method="${QuotationDataTableHandle.uomInitEle.attr('data-method')}"
+                                    data-keyResp="unit_of_measure"
+                                    required
+                                >
                                 </select>
                             </div>`;
-                        } else {
-                            let selectUOMID = 'quotation-create-expense-box-uom-' + String(row.order);
-                            return `<div class="row">
-                                <select class="form-select table-row-uom disabled-but-edit" id="${selectUOMID}" required disabled>
-                                    <option value="${row.unit_of_measure.id}">${row.unit_of_measure.title}</option>
-                                </select>
-                            </div>`;
-                        }
                     },
                 },
                 {
                     targets: 3,
                     width: "10%",
                     render: (data, type, row) => {
-                        if (is_load_detail === false) {
-                            return `<div class="row">
+                        return `<div class="row">
                                 <input type="text" class="form-control table-row-quantity validated-number" value="${row.expense_quantity}" required>
                             </div>`;
-                        } else {
-                            return `<div class="row">
-                                <input type="text" class="form-control table-row-quantity validated-number disabled-but-edit" value="${row.expense_quantity}" required disabled>
-                            </div>`;
-                        }
                     }
                 },
                 {
                     targets: 4,
                     width: "20%",
                     render: (data, type, row) => {
-                        if (is_load_detail === false) {
-                            return `<div class="row">
+                        return `<div class="row">
                                 <div class="dropdown">
                                     <div class="input-group dropdown-action" aria-expanded="false" data-bs-toggle="dropdown">
                                     <span class="input-affix-wrapper">
@@ -2142,86 +1991,42 @@ class QuotationDataTableHandle {
                                     </div>
                                 </div>
                             </div>`;
-                        } else {
-                            return `<div class="row">
-                                <div class="dropdown">
-                                    <div class="input-group dropdown-action" aria-expanded="false" data-bs-toggle="dropdown">
-                                    <span class="input-affix-wrapper">
-                                        <input 
-                                            type="text" 
-                                            class="form-control mask-money table-row-price disabled-but-edit" 
-                                            value="${row.expense_price}"
-                                            data-return-type="number"
-                                            disabled
-                                        >
-                                        <span class="input-suffix table-row-btn-dropdown-price-list"><i class="fas fa-angle-down"></i></span>
-                                    </span>
-                                    </div>
-                                    <div role="menu" class="dropdown-menu table-row-price-list w-460p">
-                                    <a class="dropdown-item" data-value=""></a>
-                                    </div>
-                                </div>
-                            </div>`;
-                        }
                     }
                 },
                 {
                     targets: 5,
                     width: "10%",
                     render: (data, type, row) => {
-                        if (is_load_detail === false) {
-                            let selectTaxID = 'quotation-create-expense-box-tax-' + String(row.order);
-                            let taxID = "";
-                            let taxRate = "";
-                            if (row.tax) {
-                                taxID = row.tax.id;
-                                taxRate = row.tax.value
-                            }
-                            return `<div class="row">
-                                <select class="form-select table-row-tax" id="${selectTaxID}">
-                                    <option value="${taxID}" data-value="${taxRate}">${taxRate} %</option>
-                                </select>
-                                <input
-                                    type="text"
-                                    class="form-control mask-money table-row-tax-amount"
-                                    value="${row.expense_tax_amount}"
-                                    data-return-type="number"
-                                    hidden
-                                >
-                                <input
-                                    type="text"
-                                    class="form-control table-row-tax-amount-raw"
-                                    value="${row.expense_tax_amount}"
-                                    hidden
-                                >
-                            </div>`;
-                        } else {
-                            let selectTaxID = 'quotation-create-expense-box-tax-' + String(row.order);
-                            let taxID = "";
-                            let taxRate = "";
-                            if (row.tax) {
-                                taxID = row.tax.id;
-                                taxRate = row.tax.value
-                            }
-                            return `<div class="row">
-                                <select class="form-select table-row-tax disabled-but-edit" id="${selectTaxID}" disabled>
-                                    <option value="${taxID}" data-value="${taxRate}">${taxRate} %</option>
-                                </select>
-                                <input
-                                    type="text"
-                                    class="form-control mask-money table-row-tax-amount"
-                                    value="${row.expense_tax_amount}"
-                                    data-return-type="number"
-                                    hidden
-                                >
-                                <input
-                                    type="text"
-                                    class="form-control table-row-tax-amount-raw"
-                                    value="${row.expense_tax_amount}"
-                                    hidden
-                                >
-                            </div>`;
+                        let selectTaxID = 'quotation-create-expense-box-tax-' + String(row.order);
+                        let taxID = "";
+                        let taxRate = "";
+                        if (row.tax) {
+                            taxID = row.tax.id;
+                            taxRate = row.tax.value
                         }
+                        return `<div class="row">
+                                <select 
+                                    class="form-select table-row-tax"
+                                    id="${selectTaxID}"
+                                    data-url="${QuotationDataTableHandle.taxInitEle.attr('data-url')}"
+                                    data-method="${QuotationDataTableHandle.taxInitEle.attr('data-method')}"
+                                    data-keyResp="tax_list"
+                                >
+                                </select>
+                                <input
+                                    type="text"
+                                    class="form-control mask-money table-row-tax-amount"
+                                    value="${row.expense_tax_amount}"
+                                    data-return-type="number"
+                                    hidden
+                                >
+                                <input
+                                    type="text"
+                                    class="form-control table-row-tax-amount-raw"
+                                    value="${row.expense_tax_amount}"
+                                    hidden
+                                >
+                            </div>`;
                     }
                 },
                 {
@@ -2243,11 +2048,7 @@ class QuotationDataTableHandle {
                     targets: 7,
                     width: "5%",
                     render: () => {
-                        if (is_load_detail === false) {
-                            return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`
-                        } else {
-                            return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row disabled-but-edit" disabled><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`
-                        }
+                        return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`
                     }
                 },
             ],
@@ -2731,9 +2532,9 @@ class QuotationCalculateCaseHandle {
         let subtotalPlus = 0;
         let eleTax = row.querySelector('.table-row-tax');
         if (eleTax) {
-            let optionSelected = eleTax.options[eleTax.selectedIndex];
-            if (optionSelected) {
-                tax = parseInt(optionSelected.getAttribute('data-value'));
+            let dataTax = SelectDDControl.get_data_from_idx($(eleTax), $(eleTax).val());
+            if (dataTax) {
+                tax = parseInt(dataTax.rate);
             }
         }
         let eleTaxAmount = row.querySelector('.table-row-tax-amount');
@@ -3050,39 +2851,30 @@ class QuotationSubmitHandle {
             let elePromotion = row.querySelector('.table-row-promotion');
             let eleShipping = row.querySelector('.table-row-shipping');
             if (eleProduct) { // PRODUCT
-                let optionSelected = eleProduct.options[eleProduct.selectedIndex];
-                if (optionSelected) {
-                    if (optionSelected.querySelector('.data-info')) {
-                        let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
-                        rowData['product'] = dataInfo.id;
-                        rowData['product_title'] = dataInfo.title;
-                        rowData['product_code'] = dataInfo.code;
-                    }
+                let dataProduct = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
+                if (dataProduct) {
+                    rowData['product'] = dataProduct.id;
+                    rowData['product_title'] = dataProduct.title;
+                    rowData['product_code'] = dataProduct.code;
                 }
                 let eleUOM = row.querySelector('.table-row-uom');
                 if (eleUOM) {
-                    let optionSelected = eleUOM.options[eleUOM.selectedIndex];
-                    if (optionSelected) {
-                        if (optionSelected.querySelector('.data-info')) {
-                            let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
-                            rowData['unit_of_measure'] = dataInfo.id;
-                            rowData['product_uom_title'] = dataInfo.title;
-                            rowData['product_uom_code'] = dataInfo.code;
-                        }
+                    let dataUOM = SelectDDControl.get_data_from_idx($(eleUOM), $(eleUOM).val());
+                    if (dataUOM) {
+                        rowData['unit_of_measure'] = dataUOM.id;
+                        rowData['product_uom_title'] = dataUOM.title;
+                        rowData['product_uom_code'] = dataUOM.code;
                     }
                 }
                 let eleTax = row.querySelector('.table-row-tax');
                 if (eleTax) {
-                    let optionSelected = eleTax.options[eleTax.selectedIndex];
-                    if (optionSelected) {
-                        if (optionSelected.querySelector('.data-info')) {
-                            let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
-                            rowData['tax'] = dataInfo.id;
-                            rowData['product_tax_title'] = dataInfo.title;
-                            rowData['product_tax_value'] = dataInfo.value;
-                        } else {
-                            rowData['product_tax_value'] = 0;
-                        }
+                    let dataTax = SelectDDControl.get_data_from_idx($(eleTax), $(eleTax).val());
+                    if (dataTax) {
+                        rowData['tax'] = dataTax.id;
+                        rowData['product_tax_title'] = dataTax.title;
+                        rowData['product_tax_value'] = dataTax.rate;
+                    } else {
+                        rowData['product_tax_value'] = 0;
                     }
                 }
                 let eleTaxAmount = row.querySelector('.table-row-tax-amount-raw');
@@ -3256,42 +3048,31 @@ class QuotationSubmitHandle {
             let eleProduct = row.querySelector('.table-row-item');
             let eleShipping = row.querySelector('.table-row-shipping');
             if (eleProduct) { // PRODUCT
-                let optionSelected = eleProduct.options[eleProduct.selectedIndex];
-                if (optionSelected) {
-                    if (optionSelected.querySelector('.data-info')) {
-                        let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
-                        rowData['product'] = dataInfo.id;
-                        rowData['product_title'] = dataInfo.title;
-                        rowData['product_code'] = dataInfo.code;
-                    }
+                let dataProduct = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
+                if (dataProduct) {
+                    rowData['product'] = dataProduct.id;
+                    rowData['product_title'] = dataProduct.title;
+                    rowData['product_code'] = dataProduct.code;
                 }
                 let eleUOM = row.querySelector('.table-row-uom');
                 if (eleUOM) {
-                    let optionSelected = eleUOM.options[eleUOM.selectedIndex];
-                    if (optionSelected) {
-                        if (optionSelected.querySelector('.data-info')) {
-                            let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
-                            rowData['unit_of_measure'] = dataInfo.id;
-                            rowData['product_uom_title'] = dataInfo.title;
-                            rowData['product_uom_code'] = dataInfo.code;
-                        }
+                    let dataUOM = SelectDDControl.get_data_from_idx($(eleUOM), $(eleUOM).val());
+                    if (dataUOM) {
+                        rowData['unit_of_measure'] = dataUOM.id;
+                        rowData['product_uom_title'] = dataUOM.title;
+                        rowData['product_uom_code'] = dataUOM.code;
                     }
-
                 }
                 let eleTax = row.querySelector('.table-row-tax');
                 if (eleTax) {
-                    let optionSelected = eleTax.options[eleTax.selectedIndex];
-                    if (optionSelected) {
-                        if (optionSelected.querySelector('.data-info')) {
-                            let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
-                            rowData['tax'] = dataInfo.id;
-                            rowData['product_tax_title'] = dataInfo.title;
-                            rowData['product_tax_value'] = dataInfo.value;
-                        } else {
-                            rowData['product_tax_value'] = 0;
-                        }
+                    let dataTax = SelectDDControl.get_data_from_idx($(eleTax), $(eleTax).val());
+                    if (dataTax) {
+                        rowData['tax'] = dataTax.id;
+                        rowData['product_tax_title'] = dataTax.title;
+                        rowData['product_tax_value'] = dataTax.rate;
+                    } else {
+                        rowData['product_tax_value'] = 0;
                     }
-
                 }
                 let eleTaxAmount = row.querySelector('.table-row-tax-amount-raw');
                 if (eleTaxAmount) {
@@ -3404,31 +3185,23 @@ class QuotationSubmitHandle {
             }
             let eleUOM = row.querySelector('.table-row-uom');
             if (eleUOM) {
-                let optionSelected = eleUOM.options[eleUOM.selectedIndex];
-                if (optionSelected) {
-                    if (optionSelected.querySelector('.data-info')) {
-                        let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
-                        rowData['unit_of_measure'] = dataInfo.id;
-                        rowData['expense_uom_title'] = dataInfo.title;
-                        rowData['expense_uom_code'] = dataInfo.code;
-                    }
+                let dataUOM = SelectDDControl.get_data_from_idx($(eleUOM), $(eleUOM).val());
+                if (dataUOM) {
+                    rowData['unit_of_measure'] = dataUOM.id;
+                    rowData['product_uom_title'] = dataUOM.title;
+                    rowData['product_uom_code'] = dataUOM.code;
                 }
-
             }
             let eleTax = row.querySelector('.table-row-tax');
             if (eleTax) {
-                let optionSelected = eleTax.options[eleTax.selectedIndex];
-                if (optionSelected) {
-                    if (optionSelected.querySelector('.data-info')) {
-                        let dataInfo = JSON.parse(optionSelected.querySelector('.data-info').value);
-                        rowData['tax'] = dataInfo.id;
-                        rowData['expense_tax_title'] = dataInfo.title;
-                        rowData['expense_tax_value'] = dataInfo.value;
-                    } else {
-                        rowData['expense_tax_value'] = 0;
-                    }
+                let dataTax = SelectDDControl.get_data_from_idx($(eleTax), $(eleTax).val());
+                if (dataTax) {
+                    rowData['tax'] = dataTax.id;
+                    rowData['product_tax_title'] = dataTax.title;
+                    rowData['product_tax_value'] = dataTax.rate;
+                } else {
+                    rowData['product_tax_value'] = 0;
                 }
-
             }
             let eleTaxAmount = row.querySelector('.table-row-tax-amount-raw');
             if (eleTaxAmount) {
@@ -3637,16 +3410,18 @@ function filterDataProductNotPromotion(data_products) {
 }
 
 function loadPriceProduct(eleProduct, is_change_item = true, is_expense = false) {
-        let optionSelected = null;
-        if (is_expense === false) { // PRODUCT
-            optionSelected = eleProduct.options[eleProduct.selectedIndex];
-        } else { // EXPENSE
+        let optionSelected = eleProduct;
+        let productData = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
+        if (is_expense === true) { // EXPENSE
             optionSelected = eleProduct.closest('tr').querySelector('.expense-option-list').querySelector('.option-btn-checked');
+            productData = optionSelected.querySelector('.data-default');
         }
-        let productData = optionSelected.querySelector('.data-default');
         let is_change_price = false;
         if (productData) {
-            let data = JSON.parse(productData.value);
+            let data = productData;
+            if (is_expense === true) {
+                data = JSON.parse(productData.value);
+            }
             let price = eleProduct.closest('tr').querySelector('.table-row-price');
             let priceList = eleProduct.closest('tr').querySelector('.table-row-price-list');
             // load PRICE

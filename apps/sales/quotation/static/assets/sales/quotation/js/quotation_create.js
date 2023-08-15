@@ -10,6 +10,8 @@ $(function () {
         let formSubmit = $('#frm_quotation_create');
         let boxOpportunity = $('#select-box-quotation-create-opportunity');
         let boxCustomer = $('#select-box-quotation-create-customer');
+        let boxContact = $('#select-box-quotation-create-contact');
+        let boxPayment = $('#select-box-quotation-create-payment-term');
         let boxSalePerson = $('#select-box-quotation-create-sale-person');
         let boxPriceList = $('#select-box-quotation-create-price-list');
         let boxPaymentTerm = $('#select-box-quotation-create-payment-term');
@@ -21,11 +23,11 @@ $(function () {
         QuotationLoadDataHandle.loadBoxQuotationCustomer();
         QuotationLoadDataHandle.loadBoxQuotationContact();
         QuotationLoadDataHandle.loadBoxQuotationPaymentTerm();
-        QuotationLoadDataHandle.loadBoxQuotationSalePerson(JSON.parse($('#data-init-quotation-create-request-employee').val()));
+        if (formSubmit.attr('data-method') === 'POST') {
+           QuotationLoadDataHandle.loadBoxQuotationSalePerson(JSON.parse($('#data-init-quotation-create-request-employee').val()));
+        }
 
         QuotationLoadDataHandle.loadInitQuotationProduct();
-        QuotationLoadDataHandle.loadInitQuotationUOM();
-        QuotationLoadDataHandle.loadInitQuotationTax();
         QuotationLoadDataHandle.loadInitQuotationExpense();
         // load config
         QuotationLoadDataHandle.loadInitQuotationConfig('quotation-config-data', formSubmit.attr('data-method'));
@@ -74,7 +76,6 @@ $(function () {
                 QuotationLoadDataHandle.loadBoxQuotationCustomer(null);
                 QuotationLoadDataHandle.loadBoxQuotationSalePerson($('#select-box-quotation-create-sale-person').val(), true);
             }
-            QuotationLoadDataHandle.loadInformationSelectBox($(this));
             // Delete all promotion rows
             deletePromotionRows(tableProduct, true, false);
             // Delete all shipping rows
@@ -91,10 +92,10 @@ $(function () {
                 // load Shipping & Billing by Customer
                 QuotationLoadDataHandle.loadShippingBillingCustomer(dataSelected);
                 // load Contact by Customer
-                QuotationLoadDataHandle.loadBoxQuotationContact();
+                boxContact.empty();
                 QuotationLoadDataHandle.loadBoxQuotationContact(dataSelected.owner, dataSelected.id);
                 // load Payment Term by Customer
-                QuotationLoadDataHandle.loadBoxQuotationPaymentTerm();
+                boxPayment.empty();
                 QuotationLoadDataHandle.loadBoxQuotationPaymentTerm(dataSelected.payment_term_mapped);
                 // Store Account Price List
                 if (Object.keys(dataSelected.price_list_mapped).length !== 0) {
@@ -110,7 +111,6 @@ $(function () {
                     QuotationLoadDataHandle.loadBoxQuotationSalePerson($('#select-box-quotation-create-sale-person').val(), true);
                 }
             }
-            QuotationLoadDataHandle.loadInformationSelectBox($(this));
             // Delete all promotion rows
             deletePromotionRows(tableProduct, true, false);
             // Delete all shipping rows
@@ -121,12 +121,11 @@ $(function () {
 
 // Action on change dropdown sale person
         boxSalePerson.on('change', function () {
-            QuotationLoadDataHandle.loadInformationSelectBox($(this));
             // clear Customer box & Opportunity box & Contact box & PaymentTerm box & PriceListVal
-            $('#select-box-quotation-create-customer').empty();
-            $('#select-box-quotation-create-opportunity').empty();
-            $('#select-box-quotation-create-contact').empty();
-            $('#select-box-quotation-create-payment-term').empty();
+            boxOpportunity.empty();
+            boxCustomer.empty();
+            boxContact.empty();
+            boxPayment.empty();
             document.getElementById('customer-price-list').value = "";
             // Delete all promotion rows
             deletePromotionRows(tableProduct, true, false);
@@ -213,19 +212,14 @@ $(function () {
                 "product_discount_amount": 0
             }
             let newRow = tableProduct.DataTable().row.add(dataAdd).draw().node();
-
             // check disable
             tableProduct.find('.disabled-but-edit').removeAttr('disabled').removeClass('disabled-but-edit');
-
             // check Config for new row
             configClass.checkConfig(false, newRow);
             // load data dropdown
-            let selectProductID = 'quotation-create-product-box-product-' + String(order);
-            let selectUOMID = 'quotation-create-product-box-uom-' + String(order);
-            let selectTaxID = 'quotation-create-product-box-tax-' + String(order);
-            QuotationLoadDataHandle.loadBoxQuotationProduct(selectProductID);
-            QuotationLoadDataHandle.loadBoxQuotationUOM(selectUOMID);
-            QuotationLoadDataHandle.loadBoxQuotationTax(selectTaxID);
+            QuotationLoadDataHandle.loadBoxQuotationProduct($(newRow.querySelector('.table-row-item')));
+            QuotationLoadDataHandle.loadBoxQuotationUOM($(newRow.querySelector('.table-row-uom')));
+            QuotationLoadDataHandle.loadBoxQuotationTax($(newRow.querySelector('.table-row-tax')));
             // Clear table COST if add new row Product
             tableCost.DataTable().clear().draw();
             document.getElementById('quotation-create-cost-pretax-amount').innerHTML = "0";
@@ -367,16 +361,13 @@ $(function () {
                 "expense_subtotal_price": 0,
                 "is_product": false,
             }
-            tableExpense.DataTable().row.add(dataAdd).draw().node();
+            let newRow = tableExpense.DataTable().row.add(dataAdd).draw().node();
             // load data dropdown
             let selectExpenseID = 'quotation-create-expense-box-expense-' + String(order);
-            let selectUOMID = 'quotation-create-expense-box-uom-' + String(order);
-            let selectTaxID = 'quotation-create-expense-box-tax-' + String(order);
             QuotationLoadDataHandle.loadBoxQuotationExpense(selectExpenseID);
             QuotationLoadDataHandle.loadBoxQuotationProductPurchasing(selectExpenseID);
-            QuotationLoadDataHandle.loadBoxQuotationUOM(selectUOMID);
-            QuotationLoadDataHandle.loadBoxQuotationTax(selectTaxID);
-
+            QuotationLoadDataHandle.loadBoxQuotationUOM($(newRow.querySelector('.table-row-uom')));
+            QuotationLoadDataHandle.loadBoxQuotationTax($(newRow.querySelector('.table-row-tax')));
             // check disable
             tableExpense.find('.disabled-but-edit').removeAttr('disabled').removeClass('disabled-but-edit');
         });
@@ -470,83 +461,41 @@ $(function () {
             QuotationCalculateCaseHandle.commonCalculate(tableExpense, row, false, false, true);
         });
 
-// Action on click tab cost (clear table cost & copy product data -> cost data)
+// COPY PRODUCT -> COST
         $('#quotation-tabs').on('click', '.quotation-cost', function () {
             let tableEmpty = tableCost[0].querySelector('.dataTables_empty');
             if (tableEmpty) {
                 // copy data
                 let valueOrder = 0;
                 for (let i = 0; i < tableProduct[0].tBodies[0].rows.length; i++) {
-                    let valueProduct = "";
-                    let showProduct = "";
-                    let product_data = "";
-                    let productDataStr = "";
-                    let optionProduct = ``;
-
-                    let valueUOM = "";
-                    let valueUOMGroup = "";
-                    let showUOM = "";
-                    let uomDataStr = "";
-                    let optionUOM = ``;
-
                     let valueQuantity = 0;
                     let valuePrice = 0;
-                    let valueTax = "";
-                    let valueTaxSelected = 0;
                     let valueTaxAmount = 0;
-                    // let valueOrder = 0;
                     let valueSubtotal = 0;
+                    let dataProduct = {};
+                    let dataUOM = {};
+                    let dataTax = {};
                     let row = tableProduct[0].tBodies[0].rows[i];
                     let product = row.querySelector('.table-row-item');
+                    let uom = row.querySelector('.table-row-uom');
+                    let tax = row.querySelector('.table-row-tax');
                     let shipping = row.querySelector('.table-row-shipping');
                     if (product) { // PRODUCT
-                        valueProduct = product.value;
-                        let optionSelected = product.options[product.selectedIndex];
-                        if (optionSelected) {
-                            showProduct = optionSelected.text;
-                            if (optionSelected.querySelector('.data-default')) {
-                                let product_data_json = JSON.parse(optionSelected.querySelector('.data-default').value);
-                                if (product_data_json.cost_price) {
-                                    valuePrice = parseFloat(product_data_json.cost_price);
-                                }
-                                valueUOMGroup = product_data_json.uom_group.id;
-                                product_data = JSON.stringify(product_data_json).replace(/"/g, "&quot;");
-                            }
-                            if (optionSelected.querySelector('.data-info')) {
-                                let dataStrJson = JSON.parse(optionSelected.querySelector('.data-info').value);
-                                productDataStr = JSON.stringify(dataStrJson).replace(/"/g, "&quot;");
-                            }
-                        }
-                        optionProduct = `<option value="${valueProduct}" selected></option>`
-                        let uom = row.querySelector('.table-row-uom');
+                        dataProduct = SelectDDControl.get_data_from_idx($(product), $(product).val());
                         if (uom) {
-                            valueUOM = uom.value;
-                            let optionSelected = uom.options[uom.selectedIndex];
-                            if (optionSelected) {
-                                showUOM = optionSelected.text;
-                                if (optionSelected.querySelector('.data-info')) {
-                                    let dataStrJson = JSON.parse(optionSelected.querySelector('.data-info').value);
-                                    uomDataStr = JSON.stringify(dataStrJson).replace(/"/g, "&quot;");
-                                }
-                            }
-                            optionUOM = `<option value="${valueUOM}" selected></option>`
+                            dataUOM = SelectDDControl.get_data_from_idx($(uom), $(uom).val());
                         }
-                        let quantity = row.querySelector('.table-row-quantity');
-                        if (quantity) {
-                            valueQuantity = parseFloat(quantity.value);
+                        if (tax) {
+                            dataTax = SelectDDControl.get_data_from_idx($(tax), $(tax).val());
+                            valueTaxAmount = parseFloat(row.querySelector('.table-row-tax-amount-raw').value);
                         }
-                        valueTax = row.querySelector('.table-row-tax').options[row.querySelector('.table-row-tax').selectedIndex].value;
-                        valueTaxSelected = parseInt(row.querySelector('.table-row-tax').options[row.querySelector('.table-row-tax').selectedIndex].getAttribute('data-value'));
-                        if (valuePrice && valueQuantity) {
-                            valueSubtotal = (valuePrice * valueQuantity);
-                            if (valueTaxSelected) {
-                                valueTaxAmount = ((valueSubtotal * valueTaxSelected) / 100);
-                            }
+                        valueQuantity = parseFloat(row.querySelector('.table-row-quantity').value);
+                        let elePrice = row.querySelector('.table-row-price');
+                        if (elePrice) {
+                            valuePrice = $(elePrice).valCurrency();
                         }
+                        valueSubtotal = parseFloat(row.querySelector('.table-row-subtotal-raw').value);
                         valueOrder++
-                        let selectProductID = 'quotation-create-cost-box-product-' + String(valueOrder);
-                        let selectUOMID = 'quotation-create-cost-box-uom-' + String(valueOrder);
-                        let selectTaxID = 'quotation-create-cost-box-tax-' + String(valueOrder);
                         let dataAdd = {
                             "tax": {
                                 "id": "",
@@ -576,10 +525,13 @@ $(function () {
                             "product_tax_amount": valueTaxAmount,
                             "product_subtotal_price": valueSubtotal
                         }
-                        tableCost.DataTable().row.add(dataAdd).draw();
-                        QuotationLoadDataHandle.loadBoxQuotationProduct(selectProductID, valueProduct);
-                        QuotationLoadDataHandle.loadBoxQuotationUOM(selectUOMID, valueUOM, valueUOMGroup);
-                        QuotationLoadDataHandle.loadBoxQuotationTax(selectTaxID, valueTax);
+                        let newRow = tableCost.DataTable().row.add(dataAdd).draw().node();
+                        let eleProduct = newRow.querySelector('.table-row-item');
+                        let eleUOM = newRow.querySelector('.table-row-uom');
+                        let eleTax = newRow.querySelector('.table-row-tax');
+                        QuotationLoadDataHandle.loadBoxQuotationProduct($(eleProduct), dataProduct);
+                        QuotationLoadDataHandle.loadBoxQuotationUOM($(eleUOM), dataUOM);
+                        QuotationLoadDataHandle.loadBoxQuotationTax($(eleTax), dataTax);
                     } else if (shipping) { // SHIPPING
                         let shippingID = shipping.getAttribute('data-id');
                         let shippingTitle = shipping.value;

@@ -26,7 +26,7 @@ class loadDataHandle {
                 let info = ``;
                 info += `<h6 class="dropdown-header header-wth-bg">${$.fn.transEle.attr('data-more-information')}</h6>`;
                 for (let key in data) {
-                    if (['id', 'title', 'name', 'fullname', 'code'].includes(key)) {
+                    if (['id', 'title', 'name', 'fullname', 'full_name', 'code'].includes(key)) {
                         if (key === 'id') {
                             let linkDetail = ele.data('link-detail');
                             if (linkDetail) {
@@ -48,108 +48,30 @@ class loadDataHandle {
         }
     };
 
-    loadBoxSupplier(valueToSelect = null) {
-        let self = this;
-        let ele = $('#box-purchase-order-supplier');
-        let url = ele.attr('data-url');
-        let method = ele.attr('data-method');
-        if (ele[0].options.length <= 1 || valueToSelect) {
-            $.fn.callAjax2({
-                    'url': url,
-                    'method': method,
-                    'isDropdown': true,
-                }
-            ).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        if (data.hasOwnProperty('account_sale_list') && Array.isArray(data.account_sale_list)) {
-                            ele[0].classList.remove('select2');
-                            ele.empty();
-                            let dataAppend = ``;
-                            let dataMapOpp = ``;
-                            data.account_sale_list.map(function (item) {
-                                let dataStr = JSON.stringify(item).replace(/"/g, "&quot;");
-                                dataAppend += `<option value="${item.id}">
-                                                <span class="account-title">${item.name}</span>
-                                                <input type="hidden" class="data-info" value="${dataStr}">
-                                            </option>`;
-                                if (item.id === valueToSelect) {
-                                    dataMapOpp = `<option value="${item.id}" selected>
-                                                    <span class="account-title">${item.name}</span>
-                                                    <input type="hidden" class="data-info" value="${dataStr}">
-                                                </option>`;
-                                    // load Contact by Supplier
-                                    if (item.id && item.owner) {
-                                        self.loadBoxContact(item.owner.id, item.id);
-                                    }
-                                }
-                            })
-                            ele.append(`<option value=""></option>`);
-                            if (dataMapOpp) { // if Purchase quotation has Supplier
-                                ele.append(dataMapOpp);
-                            } else { // if Purchase quotation doesn't have Supplier
-                                if (!valueToSelect) {
-                                    ele.append(dataAppend);
-                                }
-                                // load Contact no Customer
-                                self.loadBoxContact();
-                            }
-                            self.loadMoreInformation(ele);
-                            ele[0].classList.add('select2');
-                            $(ele).initSelect2();
-                        }
-                    }
-                }
-            )
-        }
+    loadBoxSupplier(dataCustomer = {}) {
+        let ele = QuotationLoadDataHandle.customerSelectEle;
+        ele.initSelect2({
+            data: dataCustomer,
+            // dataParams: data_filter,
+            disabled: !(ele.attr('data-url')),
+            callbackTextDisplay: function (item) {
+                return item?.['name'] || '';
+            },
+        });
+        loadInformationSelectBox(ele);
     };
 
-    loadBoxContact(valueToSelect = null, supplierID = null) {
-        let self = this;
-        let ele = $('#box-purchase-order-contact');
-        let url = ele.attr('data-url');
-        let method = ele.attr('data-method');
-        if (supplierID) {
-            $.fn.callAjax2({
-                    'url': url,
-                    'method': method,
-                    'data': {'account_name_id': supplierID},
-                    'isDropdown': true,
-                }
-            ).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        if (data.hasOwnProperty('contact_list') && Array.isArray(data.contact_list)) {
-                            ele[0].classList.remove('select2');
-                            ele.empty();
-                            ele.append(`<option value=""></option>`);
-                            data.contact_list.map(function (item) {
-                                let dataStr = JSON.stringify(item).replace(/"/g, "&quot;");
-                                let dataAppend = `<option value="${item.id}">
-                                                    <span class="contact-title">${item.fullname}</span>
-                                                    <input type="hidden" class="data-info" value="${dataStr}">
-                                                </option>`;
-                                if (item.id === valueToSelect) {
-                                    dataAppend = `<option value="${item.id}" selected>
-                                                    <span class="contact-title">${item.fullname}</span>
-                                                    <input type="hidden" class="data-info" value="${dataStr}">
-                                                </option>`;
-                                    ele.append(dataAppend);
-                                }
-                            })
-                            self.loadMoreInformation(ele);
-                            ele[0].classList.add('select2');
-                            $(ele).initSelect2();
-                        }
-                    }
-                }
-            )
-        } else {
-            ele.empty();
-            ele.append(`<option value=""></option>`);
-        }
+    loadBoxContact(dataContact = {}) {
+        let ele = QuotationLoadDataHandle.contactSelectEle;
+        ele.initSelect2({
+            data: dataContact,
+            // dataParams: data_filter,
+            disabled: !(ele.attr('data-url')),
+            callbackTextDisplay: function (item) {
+                return item?.['fullname'] || '';
+            },
+        });
+        QuotationLoadDataHandle.loadInformationSelectBox(ele);
     };
 
     loadInitProduct() {

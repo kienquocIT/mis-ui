@@ -139,3 +139,7 @@ a.dropdown-item.table-row-price-option:hover {
 .total-area .card {
     margin-top: unset;
 }
+
+.total-area .card .card-sm .card-body {
+    padding: 0.8rem;
+}

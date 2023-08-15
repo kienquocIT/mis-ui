@@ -5,18 +5,18 @@
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-flush-primary flush-soft-hover"
-            type="submit" form="frm_quotation_create" data-bs-toggle="tooltip" data-bs-placement="top" title="Save"
-            data-bs-original-title="Save">
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="save"></i>
+    <a href="#"
+       data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'Save' %}"
+       data-bs-original-title="Save">
+        <button class="btn btn-outline-primary" type="submit" form="frm_quotation_create">
+            <span>
+                <span>{% trans 'Save' %}</span>
+                <span class="icon">
+                    <i class="fa-regular fa-floppy-disk"></i>
+                </span>
             </span>
-            <span class="font-3 ml-1">
-                {% trans 'Save' %}
-            </span>
-        </span>
-    </button>
+        </button>
+    </a>
 {% endblock %}
 
 {% block pageContent %}
@@ -80,10 +80,11 @@
                                             </span>
                                             <select
                                                 class="form-select" id="select-box-quotation-create-opportunity"
-                                                data-url="{% url "OpportunityListAPI" %}"
+                                                data-url="{% url "OpportunityForSaleListAPI" %}"
                                                 data-method="GET"
                                                 data-link-detail="{% url "OpportunityDetail" 1 %}"
                                                 name="opportunity"
+                                                data-keyResp="opportunity_sale_list"
                                             ></select>
                                         </span>
                                     </div>
@@ -112,6 +113,7 @@
                                                     data-method="GET"
                                                     data-link-detail="{% url "AccountDetail" 1 %}"
                                                     name="customer"
+                                                    data-keyResp="account_sale_list"
                                                     required
                                             ></select>
                                         </span>
@@ -141,6 +143,7 @@
                                                 data-method="GET"
                                                 data-link-detail="{% url 'ContactDetail' 1 %}"
                                                 name="contact"
+                                                data-keyResp="contact_list"
                                                 required
                                             ></select>
                                         </span>
@@ -170,6 +173,7 @@
                                                     data-link-detail=""
                                                     data-method="GET"
                                                     name="payment_term"
+                                                    data-keyResp="payment_terms_list"
                                                     required
                                             ></select>
                                         </span>
@@ -230,6 +234,7 @@
                                                 data-method="GET"
                                                 data-link-detail="{% url 'EmployeeDetail' 1 %}"
                                                 name="employee_inherit"
+                                                data-keyResp="employee_list"
                                                 required
                                             ></select>
                                         </span>

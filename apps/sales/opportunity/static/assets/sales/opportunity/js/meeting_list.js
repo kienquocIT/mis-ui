@@ -6,7 +6,6 @@ $(function () {
         const opportunity_list = JSON.parse($('#opportunity_list').text());
         const meeting_list = JSON.parse($('#meeting_list').text());
         const employee_list = JSON.parse($('#employee_list').text());
-        const account_map_employees = JSON.parse($('#account_map_employees').text());
 
         function LoadMeetingSaleCodeList(employee_current_id) {
             let $sc_sb = $('#meeting-sale-code-select-box');
@@ -163,8 +162,14 @@ $(function () {
             if (!$.fn.DataTable.isDataTable('#table_opportunity_meeting_list')) {
                 let dtb = $('#table_opportunity_meeting_list');
                 dtb.DataTableDefault({
+                    rowIdx: true,
                     data: meeting_list,
                     columns: [
+                        {
+                            'render': (data, type, row, meta) => {
+                                return ``;
+                            }
+                        },
                         {
                             data: 'subject',
                             className: 'wrap-text w-35',

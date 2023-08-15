@@ -145,8 +145,14 @@ $(function () {
             if (!$.fn.DataTable.isDataTable('#table_opportunity_email_list')) {
                 let dtb = $('#table_opportunity_email_list');
                 dtb.DataTableDefault({
+                    rowIdx: true,
                     data: email_list,
                     columns: [
+                        {
+                            'render': (data, type, row, meta) => {
+                                return ``;
+                            }
+                        },
                         {
                             data: 'email_to_list',
                             className: 'wrap-text w-10',

@@ -5,23 +5,15 @@
     <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}"/>
 {% endblock %}
 {% block pageAction %}
-    <a class="btn btn-outline-primary btn-animated btn-xs"
-       href=""
-       data-bs-toggle="modal"
-       data-bs-target="#send-email"
-       id="send-email-button"
-       data-bs-original-title="New Email">
+    <button id="send-email-button" class="btn btn-outline-primary" type="button" data-bs-toggle="modal"
+            data-bs-target="#send-email">
+        <span>
+            <span>{% trans 'Add' %}</span>
             <span class="icon">
-                <span class="feather-icon">
-                    <i
-                            data-feather="plus">
-                    </i>
-                </span>
-                <span class="font-3 ml-1">
-                    {% trans 'New' %}
-                </span>
+                <i class="fa-solid fa-plus"></i>
             </span>
-    </a>
+        </span>
+    </button>
 {% endblock %}
 {% block pageContent %}
     {{ data.account_list | json_script:"account_list" }}
@@ -38,6 +30,7 @@
            data-method="GET">
         <thead>
         <tr>
+            <th>#</th>
             <th>{% trans 'To Email' %}</th>
             <th>{% trans 'Subject' %}
                 <i class="fas fa-info-circle icon-info"

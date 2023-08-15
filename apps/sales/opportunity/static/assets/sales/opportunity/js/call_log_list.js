@@ -156,8 +156,14 @@ $(function () {
             if (!$.fn.DataTable.isDataTable('#table_opportunity_call_log_list')) {
                 let dtb = $('#table_opportunity_call_log_list');
                 dtb.DataTableDefault({
+                    rowIdx: true,
                     data: call_log_list,
                     columns: [
+                        {
+                            'render': (data, type, row, meta) => {
+                                return ``;
+                            }
+                        },
                         {
                             data: 'contact',
                             className: 'wrap-text w-20',

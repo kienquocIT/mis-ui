@@ -26,6 +26,7 @@ $(function () {
         if (formSubmit.attr('data-method') === 'POST') {
            QuotationLoadDataHandle.loadBoxQuotationSalePerson(JSON.parse($('#data-init-quotation-create-request-employee').val()));
         }
+        QuotationLoadDataHandle.loadInitQuotationProduct();
 
         // load config
         QuotationLoadDataHandle.loadInitQuotationConfig('quotation-config-data', formSubmit.attr('data-method'));
@@ -207,7 +208,9 @@ $(function () {
                 "product_description": "",
                 "product_discount_value": 0,
                 "product_subtotal_price": 0,
-                "product_discount_amount": 0
+                "product_discount_amount": 0,
+                "is_promotion": false,
+                "is_shipping": false,
             }
             let newRow = tableProduct.DataTable().row.add(dataAdd).draw().node();
             // check disable
@@ -521,15 +524,13 @@ $(function () {
                             "product_uom_title": "",
                             "product_cost_price": valuePrice,
                             "product_tax_amount": valueTaxAmount,
-                            "product_subtotal_price": valueSubtotal
+                            "product_subtotal_price": valueSubtotal,
+                            "is_shipping": false,
                         }
                         let newRow = tableCost.DataTable().row.add(dataAdd).draw().node();
-                        let eleProduct = newRow.querySelector('.table-row-item');
-                        let eleUOM = newRow.querySelector('.table-row-uom');
-                        let eleTax = newRow.querySelector('.table-row-tax');
-                        QuotationLoadDataHandle.loadBoxQuotationProduct($(eleProduct), dataProduct);
-                        QuotationLoadDataHandle.loadBoxQuotationUOM($(eleUOM), dataUOM);
-                        QuotationLoadDataHandle.loadBoxQuotationTax($(eleTax), dataTax);
+                        QuotationLoadDataHandle.loadBoxQuotationProduct($(newRow.querySelector('.table-row-item')), dataProduct);
+                        QuotationLoadDataHandle.loadBoxQuotationUOM($(newRow.querySelector('.table-row-uom')), dataUOM);
+                        QuotationLoadDataHandle.loadBoxQuotationTax($(newRow.querySelector('.table-row-tax')), dataTax);
                     } else if (shipping) { // SHIPPING
                         let shippingID = shipping.getAttribute('data-id');
                         let shippingTitle = shipping.value;
@@ -574,7 +575,9 @@ $(function () {
                             "is_shipping": true,
                             "shipping": {"id": shippingID},
                         }
-                        tableCost.DataTable().row.add(dataAdd).draw();
+                        let newRow = tableCost.DataTable().row.add(dataAdd).draw().node();
+                        QuotationLoadDataHandle.loadBoxQuotationUOM($(newRow.querySelector('.table-row-uom')), dataUOM);
+                        QuotationLoadDataHandle.loadBoxQuotationTax($(newRow.querySelector('.table-row-tax')), dataTax);
                     }
                 }
                 // update total
@@ -882,7 +885,8 @@ $(function () {
                 "product_discount_amount": 0,
                 "is_promotion": true,
                 "is_promotion_on_row": is_promotion_on_row,
-                "promotion": {"id": $(this)[0].getAttribute('data-promotion-id')}
+                "promotion": {"id": $(this)[0].getAttribute('data-promotion-id')},
+                "is_shipping": false,
             };
             if (promotionResult.is_discount === true) { // DISCOUNT
                 if (promotionResult.row_apply_index !== null) { // on Specific product
@@ -897,6 +901,8 @@ $(function () {
                     QuotationCalculateCaseHandle.commonCalculate(tableProduct, newRow, true, false, false);
                 } else { // on Whole order
                     let newRow = tableProduct.DataTable().row.add(dataAdd).draw().node();
+                    QuotationLoadDataHandle.loadBoxQuotationUOM($(newRow.querySelector('.table-row-uom')));
+                    QuotationLoadDataHandle.loadBoxQuotationTax($(newRow.querySelector('.table-row-tax')));
                     // Re Calculate all data
                     QuotationCalculateCaseHandle.commonCalculate(tableProduct, newRow, true, false, false);
                     // Re Calculate Tax on Total
@@ -923,7 +929,6 @@ $(function () {
             }
             // ReOrder STT
             reOrderSTT(tableProduct[0].tBodies[0], tableProduct);
-
             // check disable
             tableProduct.find('.disabled-but-edit').removeAttr('disabled').removeClass('disabled-but-edit');
         });
@@ -983,6 +988,7 @@ $(function () {
                 "product_discount_value": 0,
                 "product_subtotal_price": shippingPrice,
                 "product_discount_amount": 0,
+                "is_promotion": false,
                 "is_shipping": true,
                 "shipping": {
                     "id": $(this)[0].getAttribute('data-shipping-id'),
@@ -990,6 +996,8 @@ $(function () {
                 }
             };
             let newRow = tableProduct.DataTable().row.add(dataAdd).draw().node();
+            QuotationLoadDataHandle.loadBoxQuotationUOM($(newRow.querySelector('.table-row-uom')));
+            QuotationLoadDataHandle.loadBoxQuotationTax($(newRow.querySelector('.table-row-tax')));
             // Re Calculate after add shipping (pretax, discount, total)
             shippingClass.reCalculateIfShipping(shippingPrice);
             // ReOrder STT

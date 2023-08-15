@@ -113,7 +113,7 @@ a.dropdown-item.table-row-price-option:hover {
 }
 
 .status-draft:disabled {
-    background-color: #f7f7f7;
+    background-color: #e9ecef;
     color: #6f6f6f;
 }
 

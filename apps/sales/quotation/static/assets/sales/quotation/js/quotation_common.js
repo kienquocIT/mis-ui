@@ -498,6 +498,27 @@ class QuotationLoadDataHandle {
         )
     }
 
+    static loadInitQuotationProduct() {
+        let ele = $('#data-init-quotation-create-tables-product');
+        let url = ele.attr('data-url');
+        let method = ele.attr('data-method');
+        $.fn.callAjax2({
+                'url': url,
+                'method': method,
+                'isDropdown': true,
+            }
+        ).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (data.hasOwnProperty('product_sale_list') && Array.isArray(data.product_sale_list)) {
+                        ele.val(JSON.stringify(data.product_sale_list))
+                    }
+                }
+            }
+        )
+    }
+
     static loadBoxQuotationProduct(ele, dataProduct = {}) {
         ele.initSelect2({
             data: dataProduct,
@@ -1211,9 +1232,6 @@ class QuotationLoadDataHandle {
         for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
             let row = table[0].tBodies[0].rows[i];
             let dataRow = JSON.parse(row.querySelector('.table-row-order').getAttribute('data-row'));
-            if (dataRow.tax) {
-                dataRow.tax['rate'] = dataRow.tax.value;
-            }
             if (is_expense === false) {
                 QuotationLoadDataHandle.loadBoxQuotationProduct($(row.querySelector('.table-row-item')));
                 QuotationLoadDataHandle.loadBoxQuotationProduct($(row.querySelector('.table-row-item')), dataRow.product);
@@ -1259,6 +1277,9 @@ class QuotationLoadDataHandle {
             ele.classList.add('disabled-custom-show');
         }
         for (let ele of table[0].querySelectorAll('.input-group-price')) {
+            ele.setAttribute('disabled', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.input-group-expense-purchase-product')) {
             ele.setAttribute('disabled', 'true');
         }
         for (let ele of table[0].querySelectorAll('.del-row')) {
@@ -1342,7 +1363,7 @@ class QuotationDataTableHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        if (row.is_promotion === false && row.is_shipping === false) {
+                        if (row.is_promotion === false && row.is_shipping === false) { // PRODUCT
                             let selectProductID = 'quotation-create-product-box-product-' + String(row.order);
                             return `<div class="row">
                                 <div class="input-group">
@@ -1373,7 +1394,7 @@ class QuotationDataTableHandle {
                                     </span>
                                 </div>
                             </div>`;
-                        } else if (row.is_promotion === true && row.is_shipping === false) {
+                        } else if (row.is_promotion === true && row.is_shipping === false) { // PROMOTION
                             let link = "";
                             let linkDetail = $('#data-init-quotation-create-promotion').data('link-detail');
                             if (linkDetail) {
@@ -1391,7 +1412,7 @@ class QuotationDataTableHandle {
                                     </span>
                                 </div>
                                 </div>`;
-                        } else if (row.is_promotion === false && row.is_shipping === true) {
+                        } else if (row.is_promotion === false && row.is_shipping === true) { // SHIPPING
                             let link = "";
                             let linkDetail = $('#data-init-quotation-create-shipping').data('link-detail');
                             if (linkDetail) {
@@ -1473,7 +1494,7 @@ class QuotationDataTableHandle {
                 {
                     targets: 5,
                     render: (data, type, row) => {
-                        if (row.is_promotion === false && row.is_shipping === false) {
+                        if (row.is_promotion === false && row.is_shipping === false) { // PRODUCT
                             return `<div class="row">
                                 <div class="dropdown">
                                     <div class="input-group dropdown-action input-group-price" aria-expanded="false" data-bs-toggle="dropdown">
@@ -1492,10 +1513,10 @@ class QuotationDataTableHandle {
                                     </div>
                                 </div>
                             </div>`;
-                        } else {
+                        } else { // PROMOTION or SHIPPING
                             return `<div class="row">
                                 <div class="dropdown">
-                                    <div class="input-group input-group-price" aria-expanded="false" data-bs-toggle="dropdown">
+                                    <div class="input-group input-group-price" aria-expanded="false" data-bs-toggle="dropdown" disabled>
                                     <span class="input-affix-wrapper">
                                         <input 
                                             type="text" 
@@ -1916,7 +1937,7 @@ class QuotationDataTableHandle {
                                                     </div>
                                                 </span>
                                                 <div class="dropdown">
-                                                    <div class="input-group" aria-expanded="false" data-bs-toggle="dropdown">
+                                                    <div class="input-group input-group-expense-purchase-product" aria-expanded="false" data-bs-toggle="dropdown">
                                                         <span class="input-affix-wrapper">
                                                             <input 
                                                                 type="text" 

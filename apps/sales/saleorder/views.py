@@ -90,6 +90,17 @@ class SaleOrderDetail(View):
         return {'data': {'doc_id': pk}}, status.HTTP_200_OK
 
 
+class SaleOrderUpdate(View):
+    @mask_view(
+        auth_require=True,
+        template='sales/saleorder/sale_order_update.html',
+        breadcrumb='SALE_ORDER_UPDATE_PAGE',
+        menu_active='menu_sale_order_list',
+    )
+    def get(self, request, pk, *args, **kwargs):
+        return {'data': {'doc_id': pk}}, status.HTTP_200_OK
+
+
 class SaleOrderDetailAPI(APIView):
 
     @mask_view(

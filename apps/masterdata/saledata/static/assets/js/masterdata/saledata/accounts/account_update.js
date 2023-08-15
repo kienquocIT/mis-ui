@@ -1076,8 +1076,9 @@ $(document).ready(function () {
         frm.dataForm['shipping_address_id_dict'] = shipping_address_id_dict;
         frm.dataForm['billing_address_id_dict'] = billing_address_id_dict;
 
+        frm.dataUrl = frm.dataUrl.replace('0', window.location.pathname.split('/').pop())
         WindowControl.showLoading();
-        $.fn.callAjax(frm.dataUrl.replace(0, window.location.pathname.split('/').pop()), frm.dataMethod, frm.dataForm, csr)
+        $.fn.callAjax2({url: frm.dataUrl, method: frm.dataMethod, data: frm.dataForm, urlRedirect: frm.dataUrlRedirect})
             .then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
@@ -1095,6 +1096,12 @@ $(document).ready(function () {
                     )
                 },
                 (errs) => {
+                    setTimeout(
+                        () => {
+                            WindowControl.hideLoading();
+                        },
+                        1000
+                    )
                     $.fn.notifyB({description: errs.data.errors}, 'failure');
                 }
             )

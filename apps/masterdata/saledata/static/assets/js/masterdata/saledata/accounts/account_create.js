@@ -719,17 +719,27 @@ $(document).ready(function () {
 
         frm.dataForm['system_status'] = 1; // save, not draft
 
-        $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
+        WindowControl.showLoading();
+        $.fn.callAjax2({url: frm.dataUrl, method:frm.dataMethod, data: frm.dataForm, urlRedirect: frm.dataUrlRedirect})
             .then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyB({description: "Đang tạo account"}, 'success')
-                        $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
+                        $.fn.notifyB({description: "Successfully"}, 'success')
+                        setTimeout(() => {
+                            window.location.replace($(this).attr('data-url-redirect'));
+                            location.reload.bind(location);
+                        }, 1000);
                     }
+
                 },
                 (errs) => {
-                    $.fn.notifyB({description: errs.data.errors}, 'failure');
+                    setTimeout(
+                        () => {
+                            WindowControl.hideLoading();
+                        },
+                        1000
+                    )
                 }
             )
     });

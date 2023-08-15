@@ -72,7 +72,7 @@ class SetupFormSubmit {
             let submitHandler = opts?.['submitHandler'];
             this.formSelected.validate({
                 focusInvalid: true,
-                // validClass: "is-valid",
+                validClass: "is-valid",
                 errorClass: "is-invalid",
                 errorElement: "small",
                 showErrors: function (errorMap, errorList) {

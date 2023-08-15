@@ -426,6 +426,22 @@ class AccountDetail(View):
                }, status.HTTP_200_OK
 
 
+class AccountUpdate(View):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        template='masterdata/saledata/accounts/account_update.html',
+        breadcrumb='ACCOUNT_UPDATE_PAGE',
+        menu_active='menu_account_update',
+    )
+    def get(self, request, *args, **kwargs):
+        input_mapping_properties = InputMappingProperties.SALE_DATA_ACCOUNT
+        return {
+                   'input_mapping_properties': input_mapping_properties, 'form_id': 'form-detail-update-account'
+               }, status.HTTP_200_OK
+
+
 class AccountDetailAPI(APIView):
     permission_classes = [IsAuthenticated]
 

@@ -1,23 +1,14 @@
 $(document).ready(function () {
     $('.select2').select2();
-    let url_item_detail = $('#datatable-item-list').attr('data-url-detail')
     const currency_list = JSON.parse($('#id-currency-list').text());
     const currency_dict = currency_list.reduce((obj, item) => {
         obj[item.id] = item;
         return obj;
     }, {});
     let config = {
-        dom: '<"row"<"col-7"<"blog-toolbar-left">><"col-5"<"blog-toolbar-right"flip>>><"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+        dom: "",
         ordering: false,
         paging: false,
-        columnDefs: [{
-            "searchable": false, "orderable": true, // "targets": [0,1,3,4,5,6,7,8,9]
-        }],
-        order: [[2, 'asc']],
-        language: {
-            search: "",
-            searchPlaceholder: "Search",
-        },
         drawCallback: function () {
             $('.dataTables_paginate > .pagination').addClass('custom-pagination pagination-simple');
             feather.replace();
@@ -63,7 +54,7 @@ $(document).ready(function () {
         /*DataTable Init*/
         let dtb = $(id_table);
         if (dtb.length > 0) {
-            let targetDt = dtb.DataTable(config);
+            dtb.DataTable(config);
         }
     }
 

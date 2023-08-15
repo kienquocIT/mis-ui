@@ -13,24 +13,15 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <button id="btn-show-modal-create" type="button" data-bs-toggle="modal" data-bs-target="#modal-create-price-list"
-            style="background: none; border: none">
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="plus"></i>
+    <button id="btn-show-modal-create" class="btn btn-outline-primary" type="button" data-bs-toggle="modal"
+            data-bs-target="#modal-create-price-list">
+        <span>
+            <span>{% trans 'Add' %}</span>
+            <span class="icon">
+                <i class="fa-solid fa-plus"></i>
             </span>
         </span>
     </button>
-
-    <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
-       href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
-       data-bs-original-title="Refresh">
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="refresh-cw"></i>
-            </span>
-        </span>
-    </a>
 {% endblock %}
 {% block pageContent %}
     <table id="datatable-price-list" class="table nowrap w-100 mb-5" data-url="{% url "PriceListAPI" %}"
@@ -38,26 +29,17 @@
            data-url-delete="{% url "PriceDeleteAPI" pk=0 %}"
            data-method="GET">
         <thead>
-        <th class="w-5">
-            <span class="form-check">
-                <input
-                        type="checkbox"
-                        class="form-check-input check-select-all"
-                        id="customCheck1"
-                >
-                <label class="form-check-label" for="customCheck1"></label>
-            </span>
-        </th>
-        <th class="w-25">{% trans "Name" %}
+        <th class="w-5">#</th>
+        <th class="w-35">{% trans "Name" %}
             <i class="fas fa-info-circle icon-info"
                data-bs-toggle="tooltip"
                data-bs-placement="bottom"
                title="{% trans 'Press row here to open detail page.' %}">
             </i>
         </th>
-        <th class="w-50 text-center">{% trans "Type" %}</th>
-        <th class="w-15">{% trans "Status" %}</th>
-        <th class="w-5"></th>
+        <th class="w-25">{% trans "Type" %}</th>
+        <th class="w-30">{% trans "Status" %}</th>
+        <th class="w-5">{% trans "Action" %}</th>
         </thead>
     </table>
 

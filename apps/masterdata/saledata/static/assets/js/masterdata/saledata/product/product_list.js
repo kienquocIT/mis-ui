@@ -2,6 +2,7 @@ $(document).ready(function () {
     let tbl = $('#datatable_product_list');
     let url_detail = tbl.attr('data-url-detail');
     tbl.DataTableDefault({
+        rowIdx: true,
         ajax: {
             url: tbl.attr('data-url'),
             type: tbl.attr('data-method'),
@@ -9,10 +10,8 @@ $(document).ready(function () {
         },
         columns: [
             {
-                "orderable": false,
                 'render': (data, type, row, meta) => {
-                    let currentId = "chk_sel_" + String(meta.row + 1)
-                    return `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select" id="${currentId}" data-id=` + row.id + `><label class="form-check-label" for="${currentId}"></label></span>`;
+                    return ``;
                 }
             }, {
                 'data': 'code',

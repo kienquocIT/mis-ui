@@ -76,6 +76,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     ACCOUNT_LIST_PAGE = BreadcrumbChildren(_('Account list'), 'AccountList')
     ACCOUNT_CREATE_PAGE = BreadcrumbChildren(_('Account create'), 'AccountCreate')
     ACCOUNT_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+    ACCOUNT_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
 
     # Master data config
     MASTER_DATA_PRICE_PAGE = BreadcrumbChildren(_('Master data price'), 'PriceMasterDataList')
@@ -89,6 +90,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     PRODUCT_LIST_PAGE = BreadcrumbChildren(_('Product list'), 'ProductList')
     PRODUCT_CREATE_PAGE = BreadcrumbChildren(_('Product create'), 'ProductCreate')
     PRODUCT_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+    PRODUCT_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
 
     # Advance
     ADVANCE_PAYMENT_LIST_PAGE = BreadcrumbChildren(_('Advance Payment list'), 'AdvancePaymentList')
@@ -347,6 +349,7 @@ class BreadcrumbView:
     ]
     ACCOUNT_CREATE_PAGE = ACCOUNT_LIST_PAGE + [BreadcrumbItem.ACCOUNT_CREATE_PAGE]
     ACCOUNT_DETAIL_PAGE = ACCOUNT_LIST_PAGE + [BreadcrumbItem.ACCOUNT_DETAIL_PAGE]
+    ACCOUNT_UPDATE_PAGE = ACCOUNT_LIST_PAGE + [BreadcrumbItem.ACCOUNT_UPDATE_PAGE]
 
     MASTER_DATA_PRICE_PAGE = [
         BreadcrumbItem.MASTER_DATA_PRICE_PAGE
@@ -367,6 +370,7 @@ class BreadcrumbView:
     ]
     PRODUCT_CREATE_PAGE = PRODUCT_LIST_PAGE + [BreadcrumbItem.PRODUCT_CREATE_PAGE]
     PRODUCT_DETAIL_PAGE = PRODUCT_LIST_PAGE + [BreadcrumbItem.PRODUCT_DETAIL_PAGE]
+    PRODUCT_UPDATE_PAGE = PRODUCT_LIST_PAGE + [BreadcrumbItem.PRODUCT_UPDATE_PAGE]
 
     ADVANCE_PAYMENT_LIST_PAGE = [
         BreadcrumbItem.ADVANCE_PAYMENT_LIST_PAGE

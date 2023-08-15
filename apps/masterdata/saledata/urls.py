@@ -4,7 +4,7 @@ from apps.masterdata.saledata.views.accounts import (
     SalutationListAPI, InterestListAPI, AccountMasterDataList,
     IndustryListAPI, AccountTypeCreateAPI, IndustryCreateAPI, AccountTypeListAPI, ContactList,
     ContactListAPI, ContactListNotMapAccountAPI, ContactCreate, ContactCreateAPI,
-    ContactUpdateAPI, ContactDetailAPI, AccountList, AccountListAPI, AccountDetailAPI,
+    ContactUpdateAPI, ContactDetailAPI, AccountList, AccountListAPI, AccountDetailAPI, AccountUpdate,
     AccountCreate, AccountCreateAPI, AccountsMapEmployeeAPI, ContactUpdate, AccountTypeDetailAPI,
     IndustryDetailAPI, SalutationDetailAPI, InterestDetailAPI, ContactDetail,
     AccountDetail, AccountGroupListAPI, AccountGroupCreateAPI, AccountGroupDetailAPI, AccountForSaleListAPI
@@ -19,7 +19,7 @@ from apps.masterdata.saledata.views.product import (
     ProductCategoryListAPI, ExpenseTypeListAPI, UnitOfMeasureListAPI, UnitOfMeasureGroupListAPI,
     UnitOfMeasureDetailAPI, ProductTypeDetailAPI, ExpenseTypeDetailAPI, ProductCategoryDetailAPI,
     UnitOfMeasureGroupDetailAPI, ProductList, ProductCreate, ProductListAPI, ProductDetailAPI, ProductDetail,
-    ProductForSaleListAPI,
+    ProductForSaleListAPI, ProductUpdate
 )
 from apps.masterdata.saledata.views.price import (
     PriceMasterDataList, TaxCategoryListAPI, TaxListAPI, TaxDetailAPI, TaxCategoryDetailAPI, CurrencyListAPI,
@@ -69,7 +69,8 @@ urlpatterns = [
     path('account/create', AccountCreate.as_view(), name='AccountCreate'),
     path('account/create/api', AccountCreateAPI.as_view(), name='AccountCreateAPI'),
     path('account/api/<str:pk>', AccountDetailAPI.as_view(), name='AccountDetailAPI'),
-    path('account/update/<str:pk>', AccountDetail.as_view(), name='AccountDetail'),
+    path('account/detail/<str:pk>', AccountDetail.as_view(), name='AccountDetail'),
+    path('account/update/<str:pk>', AccountUpdate.as_view(), name='AccountUpdate'),
 
     path('accounts-map-employees/api', AccountsMapEmployeeAPI.as_view(), name='AccountsMapEmployeeAPI'),
     path('accounts-sale/api', AccountForSaleListAPI.as_view(), name='AccountForSaleListAPI'),
@@ -98,7 +99,8 @@ urlpatterns = [
     path('products', ProductList.as_view(), name='ProductList'),
     path('product/create', ProductCreate.as_view(), name='ProductCreate'),
     path('products/api', ProductListAPI.as_view(), name='ProductListAPI'),
-    path('product/<str:pk>', ProductDetail.as_view(), name='ProductDetail'),
+    path('product/update/<str:pk>', ProductUpdate.as_view(), name='ProductUpdate'),
+    path('product/detail/<str:pk>', ProductDetail.as_view(), name='ProductDetail'),
     path('product/api/<str:pk>', ProductDetailAPI.as_view(), name='ProductDetailAPI'),
     path('products-sale/api', ProductForSaleListAPI.as_view(), name='ProductForSaleListAPI'),
 ] + [

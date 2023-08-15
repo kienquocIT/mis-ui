@@ -1145,14 +1145,23 @@ $(document).ready(function () {
 
         console.log(frm.dataForm)
 
+        WindowControl.showLoading();
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
             .then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         $.fn.notifyB({description: "Successfully"}, 'success')
-                        $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1000);
                     }
+                    setTimeout(
+                        () => {
+                            WindowControl.hideLoading();
+                        },
+                        1000
+                    )
                 },
                 (errs) => {
                     // $.fn.notifyB({description: errs.data.errors}, 'failure');

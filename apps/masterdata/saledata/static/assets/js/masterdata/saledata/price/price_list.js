@@ -25,6 +25,7 @@ $(document).ready(function () {
     let tbl = $('#datatable-price-list');
     let url_detail = tbl.attr('data-url-detail');
     tbl.DataTableDefault({
+        rowIdx: true,
         ajax: {
             url: tbl.attr('data-url'),
             type: tbl.attr('data-method'),
@@ -46,11 +47,11 @@ $(document).ready(function () {
         columns: [
             {
                 'render': (data, type, row, meta) => {
-                    let currentId = "chk_sel_" + String(meta.row + 1)
-                    return `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select" id="${currentId}" data-id=` + row.id + `><label class="form-check-label" for="${currentId}"></label></span>`;
+                    return ``;
                 }
             }, {
                 'data': 'title',
+                'className': 'action-center',
                 render: (data, type, row, meta) => {
                     if (row.is_default) {
                         return `<a class="btn-detail" href="` + url_detail.replace(0, row.id) + `">
@@ -64,37 +65,26 @@ $(document).ready(function () {
                 }
             }, {
                 'data': 'type',
+                'className': 'action-center',
                 render: (data, type, row, meta) => {
-                    if (row.price_list_type.value === 0) {
-                        return `<center><span style="width: 20%; min-width: max-content" class="badge badge-soft-danger badge-pill">` + row.price_list_type.name + `</span></center>`
-                    } else if (row.price_list_type.value === 1) {
-                        return `<center><span style="width: 20%; min-width: max-content" class="badge badge-soft-indigo badge-pill">` + row.price_list_type.name + `</span></center>`
-                    } else if (row.price_list_type.value === 2) {
-                        return `<center><span style="width: 20%; min-width: max-content" class="badge badge-soft-green badge-pill">` + row.price_list_type.name + `</span></center>`
-                    } else {
-                        return ''
-                    }
+                    return `<span class="text-secondary">` + row.price_list_type.name + `</span>`
                 }
             }, {
                 'data': 'status',
+                'className': 'action-center',
                 render: (data, type, row, meta) => {
                     let badge_type = '';
-                    let text_type = '';
                     if (row.status === 'Valid') {
-                        badge_type = 'badge-green'
-                        text_type = 'text-green'
+                        badge_type = 'text-success'
                     } else if (row.status === 'Invalid') {
-                        badge_type = 'badge-orange'
-                        text_type = 'text-orange'
+                        badge_type = 'text-orange'
                     } else if (row.status === 'Expired') {
-                        badge_type = 'badge-red'
-                        text_type = 'text-danger'
+                        badge_type = 'text-danger'
                     } else {
-                        badge_type = 'badge-gray'
-                        text_type = 'text-gray'
+                        badge_type = 'text-gray'
                     }
 
-                    return `<span class="badge badge-indicator badge-indicator-xl ` + badge_type + `"></span><span class="` + text_type + `">&nbsp;` + row.status + `</span>`;
+                    return `<span class="` + badge_type + `">&nbsp;` + row.status + `</span>`;
                 }
             }, {
                 'className': 'action-center',

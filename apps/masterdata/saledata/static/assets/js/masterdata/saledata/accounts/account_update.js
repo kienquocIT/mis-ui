@@ -224,7 +224,6 @@ $(document).ready(function () {
         }
     }
 
-
     // load data detail
     let pk = window.location.pathname.split('/').pop();
     let url_loaded = $('#form-detail-update-account').attr('data-url').replace(0, pk);
@@ -260,15 +259,15 @@ $(document).ready(function () {
                     let shipping_address = data.shipping_address[i];
                     if (shipping_address.is_default) {
                         list_shipping_address += `<div class="form-check ml-5 mb-2">
-                                    <input class="form-check-input" type="radio" name="shippingaddressRadio" checked disabled>
+                                    <input class="form-check-input" type="radio" name="shippingaddressRadio" checked>
                                     <label>` + shipping_address.full_address + `</label>
-                                    <a hidden href="#" class="del-address-item"><i class="bi bi-x"></i></a>
+                                    <a href="#" class="del-address-item"><i class="bi bi-x"></i></a>
                                </div>`;
                     } else {
                         list_shipping_address += `<div class="form-check ml-5 mb-2">
-                                    <input class="form-check-input" type="radio" name="shippingaddressRadio" disabled>
+                                    <input class="form-check-input" type="radio" name="shippingaddressRadio">
                                     <label>` + shipping_address.full_address + `</label>
-                                    <a hidden href="#" class="del-address-item"><i class="bi bi-x"></i></a>
+                                    <a href="#" class="del-address-item"><i class="bi bi-x"></i></a>
                                </div>`;
                     }
                 }
@@ -279,15 +278,15 @@ $(document).ready(function () {
                     let billing_address = data.billing_address[i];
                     if (billing_address.is_default) {
                         list_billing_address += `<div class="form-check ml-5 mb-2">
-                                    <input class="form-check-input" type="radio" name="billingaddressRadio" checked disabled>
+                                    <input class="form-check-input" type="radio" name="billingaddressRadio" checked>
                                     <label>` + billing_address.full_address + `</label>
-                                    <a hidden href="#" class="del-address-item"><i class="bi bi-x"></i></a>
+                                    <a href="#" class="del-address-item"><i class="bi bi-x"></i></a>
                                </div>`;
                     } else {
                         list_billing_address += `<div class="form-check ml-5 mb-2">
-                                    <input class="form-check-input" type="radio" name="billingaddressRadio" disabled>
+                                    <input class="form-check-input" type="radio" name="billingaddressRadio">
                                     <label>` + billing_address.full_address + `</label>
-                                    <a hidden href="#" class="del-address-item"><i class="bi bi-x"></i></a>
+                                    <a href="#" class="del-address-item"><i class="bi bi-x"></i></a>
                                </div>`;
                     }
                 }
@@ -309,10 +308,10 @@ $(document).ready(function () {
                                         <span class="mt-2">
                                             <div class="row">
                                                 <div class="col-6">
-                                                    <a class="btn-del-bank-account" hidden href="#"><i class="bi bi-x"></i></a>
+                                                    <a class="btn-del-bank-account" href="#"><i class="bi bi-x"></i></a>
                                                 </div>
                                                 <div class="col-6 text-right">
-                                                    <input class="form-check-input ratio-select-bank-account-default" disabled type="radio" name="bank-account-select-default"` + is_default + `>
+                                                    <input class="form-check-input ratio-select-bank-account-default" type="radio" name="bank-account-select-default"` + is_default + `>
                                                 </div>
                                             </div>
                                         </span>
@@ -340,10 +339,10 @@ $(document).ready(function () {
                                             <span class="mt-2">
                                                 <div class="row">
                                                     <div class="col-6">
-                                                        <a class="btn-del-credit-card" hidden href="#"><i class="bi bi-x"></i></a>
+                                                        <a class="btn-del-credit-card" href="#"><i class="bi bi-x"></i></a>
                                                     </div>
                                                     <div class="col-6 text-right">
-                                                        <input class="form-check-input credit-card-select-default" disabled type="radio" name="credit-card-select-default"` + is_default + `>
+                                                        <input class="form-check-input credit-card-select-default" type="radio" name="credit-card-select-default"` + is_default + `>
                                                     </div>
                                                 </div>
                                             </span>
@@ -380,45 +379,6 @@ $(document).ready(function () {
                     $('#parent-account-div-id').prop('hidden', true);
                 }
 
-                $('#edit-account-on').on('click', function () {
-                    $('.select2-selection').css({
-                        'border': 'solid #aaa 1px',
-                        'background': 'none'
-                    });
-                    $('#account-type-id').prop('disabled', false);
-                    $('#account-manager-id').prop('disabled', false);
-
-                    $('.form-select').prop('disabled', false);
-                    $('.input-can-edit').prop('readonly', false);
-                    $('.form-check-input').prop('disabled', false);
-                    if ($.inArray("organization", data.account_type.map(obj => obj.detail)) !== -1) {
-                        $('#parent-account-id').attr('disabled', false);
-                    }
-                    $('.view-mode-for-select').hide();
-                    $('#edit-account-on').prop('hidden', true);
-                    $('#save-account-on').prop('hidden', false);
-                    $('#shipping-address-btn').prop('hidden', false);
-                    $('#billing-address-btn').prop('hidden', false);
-                    $('#bank-account-information-btn').prop('hidden', false);
-                    $('#credit-card-information-btn').prop('hidden', false);
-                    $('.del-address-item').prop('hidden', false);
-
-                    $('.bank-account-select-default').prop('disabled', false);
-                    $('.btn-del-bank-account').prop('hidden', false);
-
-                    $('.credit-card-select-default').prop('disabled', false);
-                    $('.btn-del-credit-card').prop('hidden', false);
-
-                    $('#parent-account-id').select2();
-                    $('#account-owner-id').select2();
-
-                    $('#shipping-city').initSelect2();
-                    $('#shipping-district').initSelect2();
-                    $('#shipping-ward').initSelect2();
-
-                    $('#select-box-account-name').initSelect2();
-                })
-
                 // delete address item
                 $('.del-address-item').on('click', function () {
                     $(this).parent().remove();
@@ -449,13 +409,6 @@ $(document).ready(function () {
 
                 $('#credit-limit-id').attr('value', data.credit_limit);
                 $.fn.initMaskMoney2();
-
-                $('#account-type-id').prop('disabled', true);
-                $('#account-manager-id').prop('disabled', true);
-                $('.select2-selection').css({
-                    'border': 'none',
-                    'background': '#f7f7f7'
-                });
             }
         })
 
@@ -663,6 +616,7 @@ $(document).ready(function () {
 
     $('#account-manager-id').select2();
 
+    $('#parent-account-id').select2();
 
     let dict_contact = {};
 
@@ -930,7 +884,7 @@ $(document).ready(function () {
                                                             <a class="btn-del-bank-account" href="#"><i class="bi bi-x"></i></a>
                                                         </div>
                                                         <div class="col-6 text-right">
-                                                            <input class="form-check-input ratio-select-bank-account-default" type="radio" name="bank-account-select-default"` + is_default + `>
+                                                            <input class="form-check-input ratio-select-bank-account-default" type="radio" name="bank-account-select-default" ` + is_default + `>
                                                         </div>
                                                     </div>
                                                 </span>
@@ -1122,6 +1076,7 @@ $(document).ready(function () {
         frm.dataForm['shipping_address_id_dict'] = shipping_address_id_dict;
         frm.dataForm['billing_address_id_dict'] = billing_address_id_dict;
 
+        WindowControl.showLoading();
         $.fn.callAjax(frm.dataUrl.replace(0, window.location.pathname.split('/').pop()), frm.dataMethod, frm.dataForm, csr)
             .then(
                 (resp) => {
@@ -1129,9 +1084,15 @@ $(document).ready(function () {
                     if (data) {
                         $.fn.notifyB({description: "Updating account"}, 'success')
                         setTimeout(function () {
-                            location.reload()
+                            window.location.reload();
                         }, 1000);
                     }
+                    setTimeout(
+                        () => {
+                            WindowControl.hideLoading();
+                        },
+                        1000
+                    )
                 },
                 (errs) => {
                     $.fn.notifyB({description: errs.data.errors}, 'failure');

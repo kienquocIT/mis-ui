@@ -30,8 +30,14 @@ $(function () {
                     'title': item.name
                 }
                 $('[data-drawer-target="#drawer_task_create"]').trigger('click')
-                $('#selectStatus').attr('data-onload', JSON.stringify(currentData))
-                initSelectBox($('#selectStatus'))
+                // activeDrawer('#drawer_task_create', $('.btn-add-newtask', stt_template));
+                let createFormTask = setInterval(function(){
+                    clearInterval(createFormTask)
+                    const $sttElm = $('#selectStatus')
+                    $sttElm.attr('data-onload', JSON.stringify(currentData))
+                    $sttElm.html('');
+                    $sttElm.initSelect2()
+                }, 1000)
 
             })
 
@@ -76,23 +82,17 @@ $(function () {
         }
 
         deleteTaskAPI(taskID) {
-            return $.fn.callAjax(
-                $urlFact.attr('data-task-detail').format_url_with_uuid(taskID),
-                'DELETE',
-                {},
-                true
-            )
+            return $.fn.callAjax2({
+                'url': $urlFact.attr('data-task-detail').format_url_with_uuid(taskID),
+                'method': 'DELETE'
+            })
         }
 
         renderLogWork(logWorkList) {
             // reset datatable
             let $table = $('#table_log-work')
             if ($table.hasClass('datatable')) $table.DataTable().clear().draw();
-            $table.DataTable({
-                searching: false,
-                ordering: false,
-                paginate: false,
-                info: false,
+            $table.DataTableDefault({
                 data: logWorkList,
                 columns: [
                     {
@@ -240,7 +240,10 @@ $(function () {
             if (newTaskElm) elm = newTaskElm.find('.card-title')
             elm.off().on('click', function () {
                 const taskID = $(this).attr('data-task-id')
-                $.fn.callAjax($urlFact.attr('data-task-detail').format_url_with_uuid(taskID), 'GET')
+                $.fn.callAjax2({
+                    'url': $urlFact.attr('data-task-detail').format_url_with_uuid(taskID),
+                    'method': 'GET'
+                })
                     .then((req) => {
                         let data = $.fn.switcherResp(req);
                         if (data?.['status'] === 200) {
@@ -269,12 +272,17 @@ $(function () {
                             $('#inputLabel').attr('value', JSON.stringify(data.label))
                             $('#inputAssigner').val(data.employee_created.last_name + '. ' + data.employee_created.first_name)
                                 .attr('value', data.employee_created.id)
-                            if (data.assign_to.length)
+                            if (data?.assign_to){
+                                data.assign_to.full_name = `${data.assign_to.last_name}. ${data.assign_to.first_name}`
                                 $('#selectAssignTo').attr('data-onload', JSON.stringify(data.assign_to))
+                            }
                             window.editor.setData(data.remark)
                             window.checklist.setDataList = data.checklist
                             window.checklist.render()
-                            initSelectBox($('#selectOpportunity, #selectAssignTo, #selectStatus'))
+                            $('#selectOpportunity, #selectAssignTo, #selectStatus').each(function(){
+                                $(this).html('')
+                                $(this).initSelect2()
+                            })
                             $formElm.addClass('task_edit')
                             if (Object.keys(data.parent_n).length <= 0) $('.create-subtask').removeClass('hidden')
                             else $('.create-subtask').addClass('hidden')
@@ -392,7 +400,7 @@ $(function () {
 
         // on page loaded render task list for task status
         getAndRenderTask() {
-            $.fn.callAjax($urlFact.attr('data-task-list'), 'GET')
+            $.fn.callAjax2({'url':$urlFact.attr('data-task-list'), 'method':'GET'})
                 .then(
                     (req) => {
                         let data = $.fn.switcherResp(req);
@@ -554,7 +562,7 @@ $(function () {
                     if (Object.keys(oppData).length)
                         $oppElm.attr('data-onload', JSON.stringify(oppData)).attr('disabled', true)
                     else $oppElm.removeAttr('data-onload')
-                    initSelectBox($oppElm)
+                    $oppElm.initSelect2()
                 }
             })
         }
@@ -590,7 +598,11 @@ $(function () {
                 "id": $(el).find('.card-title').attr('data-task-id'),
                 "task_status": $(target).attr('id').split('taskID-')[1],
             }
-            $.fn.callAjax($urlFact.attr('data-change-stt'), 'PUT', dataSttUpdate, true)
+            $.fn.callAjax2({
+                'url':$urlFact.attr('data-change-stt'),
+                'method': 'PUT',
+                'data':dataSttUpdate
+            })
                 .then(
                     (req) => {
                         const res = $.fn.switcherResp(req)

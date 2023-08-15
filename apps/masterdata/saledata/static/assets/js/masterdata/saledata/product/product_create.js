@@ -297,11 +297,9 @@ $(document).ready(function () {
         };
         data['product_choice'] = []
 
-        data['general_information'] = {
-            'general_product_type': $('#general-select-box-product-type option:selected').attr('value'),
-            'general_product_category': $('#general-select-box-product-category option:selected').attr('value'),
-            'general_product_uom_group': $('#general-select-box-uom-group option:selected').attr('value'),
-            'general_product_size': {
+        let product_size = {}
+        if ($('#length').val() !== '' && $('#width').val() !== '' && $('#height').val() !== '' && $('#volume') !== '' && $('#weight') !== '') {
+            product_size = {
                 'length': $('#length').val(),
                 'width': $('#width').val(),
                 'height': $('#height').val(),
@@ -310,6 +308,13 @@ $(document).ready(function () {
                 'volume_id': $('#volume').attr('data-id'),
                 'weight_id': $('#weight').attr('data-id')
             }
+        }
+
+        data['general_information'] = {
+            'general_product_type': $('#general-select-box-product-type option:selected').attr('value'),
+            'general_product_category': $('#general-select-box-product-category option:selected').attr('value'),
+            'general_product_uom_group': $('#general-select-box-uom-group option:selected').attr('value'),
+            'general_product_size': product_size
         }
 
         if ($('#check-tab-sale').is(':checked') === true) {

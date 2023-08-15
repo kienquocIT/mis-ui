@@ -48,7 +48,13 @@
                 <label class="form-check-label" for="customCheck1"></label>
             </span>
         </th>
-        <th class="w-25">{% trans "Name" %}</th>
+        <th class="w-25">{% trans "Name" %}
+            <i class="fas fa-info-circle icon-info"
+               data-bs-toggle="tooltip"
+               data-bs-placement="bottom"
+               title="{% trans 'Press row here to open detail page.' %}">
+            </i>
+        </th>
         <th class="w-50 text-center">{% trans "Type" %}</th>
         <th class="w-15">{% trans "Status" %}</th>
         <th class="w-5"></th>

@@ -17,7 +17,7 @@ $(document).ready(function () {
             }, {
                 'data': 'code',
                 render: (data, type, row, meta) => {
-                    return `<a class="badge badge-outline badge-soft-success" style="min-width: 80px; width: 70%" href="${url_detail.replace(0, row.id)}"><center><span><b>${row.code}</b></span></center></a>`
+                    return `<span class="text-secondary">${row.code}</span>`
                 }
             }, {
                 'data': 'title',

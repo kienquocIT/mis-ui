@@ -6,7 +6,6 @@ $(document).ready(function () {
         (resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
-                console.log(data.user);
                 let userData = data?.user || {};
                 if (userData) {
                     $('#inp-first_name').val(userData.first_name);
@@ -18,14 +17,7 @@ $(document).ready(function () {
                     let dtb = $('#datable_company_list');
                     dtb.DataTableDefault({
                         rowIdx: true,
-                        visiblePaging: false,
-                        visibleSearchField: false,
-                        visibleDisplayRowTotal: false,
-                        visiblePagination: false,
-                        visibleOrder: false,
-                        visibleRowQuantity: false,
-                        paginate: false,
-                        pageLength: -1,
+                        stateDefaultPageControl: false,
                         data: userData.company || [],
                         columns: [
                             {

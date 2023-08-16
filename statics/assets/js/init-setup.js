@@ -67,8 +67,8 @@ class SetupFormSubmit {
         return null;
     }
 
-    validate(opts){
-        if (this.formSelected){
+    validate(opts) {
+        if (this.formSelected) {
             let submitHandler = opts?.['submitHandler'];
             this.formSelected.validate({
                 focusInvalid: true,
@@ -86,7 +86,9 @@ class SetupFormSubmit {
                     })
                 },
                 submitHandler: (
-                    submitHandler ? submitHandler : function (form){form.submit()}
+                    submitHandler ? submitHandler : function (form) {
+                        form.submit()
+                    }
                 ),
                 onsubmit: !!submitHandler,
             })
@@ -95,7 +97,7 @@ class SetupFormSubmit {
         }
     }
 
-    static validate(frmEle, opts){
+    static validate(frmEle, opts) {
         return new SetupFormSubmit(frmEle).validate(opts)
     }
 }
@@ -1813,6 +1815,10 @@ class DTBControl {
     }
 
     static parseDomDtl(opts) {
+        // stateDefaultPageControl: disable all toolbar
+        let stateDefaultPageControl = typeof opts?.['stateDefaultPageControl'] === 'boolean' ? opts?.['stateDefaultPageControl'] : true;
+        if (opts.hasOwnProperty('stateDefaultPageControl')) delete opts['stateDefaultPageControl'];
+
         let domDTL = "<'row miner-group'<'col-sm-12 col-md-3 col-lg-2 mt-3'f>>" +
             "<'row mt-3'<'col-sm-12 col-md-6'<'count_selected'>><'col-sm-12 col-md-6'<'custom_toolbar'>>>" +
             "<'row mt-3'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'p>>" +
@@ -1826,55 +1832,63 @@ class DTBControl {
             // "p": Đại diện cho thanh phân trang (pagination).
             // "r": Đại diện cho sắp xếp (ordering) của các cột.
             // "s": Đại diện cho hộp chọn số hàng hiển thị.
-            visiblePaging: true, // "l"
-            visibleSearchField: true,   // "f"
-            visibleDisplayRowTotal: true,   // "i"
-            visiblePagination: true,   // "p"
-            visibleOrder: true,   // "r"
-            visibleRowQuantity: true,   // "s"
+            visiblePaging: stateDefaultPageControl, // "l"
+            visibleSearchField: stateDefaultPageControl,   // "f"
+            visibleDisplayRowTotal: stateDefaultPageControl,   // "i"
+            visiblePagination: stateDefaultPageControl,   // "p"
+            visibleOrder: stateDefaultPageControl,   // "r"
+            visibleRowQuantity: stateDefaultPageControl,   // "s"
         }
 
         // show or hide search field
         if (opts.hasOwnProperty('visiblePaging')) {
             if ($.fn.isBoolean(opts['visiblePaging'])) utilsDom.visiblePaging = opts['visiblePaging'];
-            if (utilsDom.visiblePaging === false) domDTL = domDTL.replace('l>', '>');
-            delete opts['visiblePaging']
+            delete opts['visiblePaging'];
         }
+        if (utilsDom.visiblePaging === false) domDTL = domDTL.replace('l>', '>');
+
         // show or hide search field
         if (opts.hasOwnProperty('visibleSearchField')) {
             if ($.fn.isBoolean(opts['visibleSearchField'])) utilsDom.visibleSearchField = opts['visibleSearchField'];
-            if (utilsDom.visibleSearchField === false) {
-
-                domDTL = domDTL.replace('f>', '>').replaceAll('miner-group', 'miner-group hidden');
-            }
             delete opts['visibleSearchField']
         }
+        if (utilsDom.visibleSearchField === false) {
+            domDTL = domDTL.replace('f>', '>').replaceAll('miner-group', 'miner-group hidden');
+        }
+
         // show or hide search field
         if (opts.hasOwnProperty('visibleDisplayRowTotal')) {
             if ($.fn.isBoolean(opts['visibleDisplayRowTotal'])) utilsDom.visibleDisplayRowTotal = opts['visibleDisplayRowTotal'];
-            if (utilsDom.visibleDisplayRowTotal === false) domDTL = domDTL.replace('i>', '>');
             delete opts['visibleDisplayRowTotal']
         }
+        if (utilsDom.visibleDisplayRowTotal === false) domDTL = domDTL.replace('i>', '>');
+
         // show or hide search field
         if (opts.hasOwnProperty('visiblePagination')) {
             if ($.fn.isBoolean(opts['visiblePagination'])) utilsDom.visiblePagination = opts['visiblePagination'];
-            if (utilsDom.visiblePagination === false) domDTL = domDTL.replace('p>', '>');
             delete opts['visiblePagination']
         }
+        if (utilsDom.visiblePagination === false) {
+            domDTL = domDTL.replace('p>', '>');
+            utilsDom['pageLength'] = -1; // full page
+        }
+
         // show or hide search field
         if (opts.hasOwnProperty('visibleOrder')) {
             if ($.fn.isBoolean(opts['visibleOrder'])) utilsDom.visibleOrder = opts['visibleOrder'];
-            if (utilsDom.visibleOrder === false) domDTL = domDTL.replace('r>', '>');
             delete opts['visibleOrder']
         }
+        if (utilsDom.visibleOrder === false) domDTL = domDTL.replace('r>', '>');
+
         // show or hide search field
         if (opts.hasOwnProperty('visibleRowQuantity')) {
             if ($.fn.isBoolean(opts['visibleRowQuantity'])) utilsDom.visibleRowQuantity = opts['visibleRowQuantity'];
-            if (utilsDom.visibleRowQuantity === false) domDTL = domDTL.replace('s>', '>');
             delete opts['visibleRowQuantity']
         }
+        if (utilsDom.visibleRowQuantity === false) domDTL = domDTL.replace('s>', '>');
+
         // show/hide custom toolbar
-        if (!opts.hasOwnProperty('fullToolbar') || opts?.fullToolbar === false) {
+        if (!opts.hasOwnProperty('fullToolbar') || opts?.['fullToolbar'] === false) {
             // show hide/row selected
             domDTL = domDTL.replace("<'count_selected'>", '')
             // show hide custom toolbar
@@ -1981,7 +1995,7 @@ class DTBControl {
                         return JSON.stringify(json);
                     },
                     headers: {
-                        "ENABLEXCACHECONTROL": !!(opts?.['ajax']?.['cache']) ? 'true': 'false',
+                        "ENABLEXCACHECONTROL": !!(opts?.['ajax']?.['cache']) ? 'true' : 'false',
                     },
                 })
             }
@@ -2594,14 +2608,14 @@ class DocumentControl {
         if (tenant_code_active) $('#menu-tenant').children('option[value=' + tenant_code_active + ']').attr('selected', 'selected');
     }
 
-    static renderCodeBreadcrumb(detailData, keyCode='code', keyActive='is_active'){
-        if (typeof detailData === 'object'){
+    static renderCodeBreadcrumb(detailData, keyCode = 'code', keyActive = 'is_active') {
+        if (typeof detailData === 'object') {
             let [code, is_active] = [detailData?.[keyCode], detailData?.[keyActive]];
-            if (code){
+            if (code) {
                 let clsState = 'hidden';
                 if (is_active === true) {
                     clsState = 'badge badge-info badge-indicator';
-                } else if (clsState === false){
+                } else if (clsState === false) {
                     clsState = 'badge badge-light badge-indicator';
                 }
                 $('#idx-breadcrumb-current-code').html(

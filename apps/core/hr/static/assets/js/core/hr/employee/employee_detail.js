@@ -2,7 +2,7 @@ $(function () {
     function renderDetailData(data) {
         if (data && data.hasOwnProperty('employee')) {
             let employeeData = data.employee;
-
+            $x.fn.renderCodeBreadcrumb(employeeData);
             new HandlePermissions().loadData(employeeData.plan_app, employeeData.permission_by_configured || []);
             new HandlePlanApp().appendPlanAppOfEmployee(employeeData.plan_app);
 

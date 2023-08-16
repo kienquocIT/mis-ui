@@ -9,41 +9,23 @@ $(document).ready(function () {
         renderAppList(result);
     })
 
-    let frm = $('#frm_employee_create');
-    frm.validate({
-        invalidHandler: function (event, validator) {
-            Object.keys(validator.errorMap).map(
-                (key) => {
-                    $.fn.notifyB({
-                        'title': key,
-                        'description': validator.errorMap[key]
-                    }, 'failure');
-                }
-            )
-        },
-        submitHandler: function () {
-            let ajaxConfig = EmployeeLoadPage.combinesForm('#frm_employee_create', false);
-            console.log('ajaxConfig: ', ajaxConfig);
-            $.fn.callAjax2(ajaxConfig).then(
-                (resp) => {
+    SetupFormSubmit.validate(
+        $('#frm_employee_create'),
+        {
+            submitHandler: function (form) {
+                let ajaxConfig = EmployeeLoadPage.combinesForm($(form), false);
+                $.fn.callAjax2(ajaxConfig).then((resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         $.fn.notifyB({description: data.message}, 'success')
-                        setTimeout(
-                            ()=>{
-                                window.location.href = frm.attr('data-url-redirect');
-                            },
-                            1000
-                        )
+                        setTimeout(() => {
+                            window.location.href = $(form).attr('data-url-redirect');
+                        }, 1000)
                     }
-                },
-                (errs) => {
+                }, (errs) => {
                     $.fn.switcherResp(errs);
-                    // if (errs.data.errors.hasOwnProperty('detail')) {
-                    //     $.fn.notifyB({description: String(errs.data.errors['detail'])}, 'failure')
-                    // }
-                }
-            )
-        },
-    })
+                })
+            }
+        }
+    );
 });

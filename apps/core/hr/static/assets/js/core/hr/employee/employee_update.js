@@ -2,7 +2,7 @@ $(function () {
     function renderDetailForUpdate(data) {
         if (data && data.hasOwnProperty('employee')) {
             let employeeData = data.employee;
-
+            $x.fn.renderCodeBreadcrumb(employeeData);
             EmployeeLoadPage.firstNameEle.val(employeeData.first_name);
             EmployeeLoadPage.lastNameEle.val(employeeData.last_name);
             EmployeeLoadPage.emailEle.val(employeeData.email);

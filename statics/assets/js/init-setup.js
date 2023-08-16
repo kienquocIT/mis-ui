@@ -60,16 +60,6 @@ class SetupFormSubmit {
         }
     }
 
-    getCtxAjax() {
-        return {
-            url: this.dataUrl,
-            method: this.dataMethod,
-            data: this.dataForm,
-            redirect: this.dataUrlRedirect,
-            redirectTimeout: this.dataRedirectTimeout
-        }
-    }
-
     getUrlDetail(pk) {
         if (this.dataUrlDetail && pk) {
             return this.dataUrlDetail + pk.toString();
@@ -77,24 +67,38 @@ class SetupFormSubmit {
         return null;
     }
 
-    getUrlDetailWithDataUrl(attrName, pk) {
-        let data_url = this.convertUrlDetail(this.formSelected.attr('data-url-' + attrName));
-        return data_url + pk.toString()
-    }
-
-    convertUrlDetail(url) {
-        return url.split("/").slice(0, -1).join("/") + "/";
-    }
-
-    appendFilter(url, filter) {
-        let params = '';
-        Object.keys(filter).map((key) => {
-            params += `{0}={1}`.format_by_idx(key, encodeURIComponent(filter[key]))
-        })
-        if (params) {
-            return '{0}?{1}'.format_by_idx(url, params);
+    validate(opts) {
+        if (this.formSelected) {
+            let submitHandler = opts?.['submitHandler'];
+            this.formSelected.validate({
+                focusInvalid: true,
+                validClass: "is-valid",
+                errorClass: "is-invalid",
+                errorElement: "small",
+                showErrors: function (errorMap, errorList) {
+                    this.defaultShowErrors();
+                },
+                errorPlacement: function (error, element) {
+                    element.closest('.form-group').append(error);
+                    // error.insertAfter(element);
+                    error.css({
+                        'color': "red",
+                    })
+                },
+                submitHandler: (
+                    submitHandler ? submitHandler : function (form) {
+                        form.submit()
+                    }
+                ),
+                onsubmit: !!submitHandler,
+            })
+        } else {
+            throw Error('Form element must be required!');
         }
-        return url;
+    }
+
+    static validate(frmEle, opts) {
+        return new SetupFormSubmit(frmEle).validate(opts)
     }
 }
 
@@ -1747,314 +1751,6 @@ class UtilControl {
 
 class DTBControl {
     // Handle every thing about DataTable
-    set setRowSelected(rowData) {
-        let temp = this.dataSelect
-        if (!temp.hasOwnProperty(rowData.idTable))
-            temp[rowData.idTable] = {}
-        if (rowData.checked)
-            temp[rowData.idTable][rowData.item.id] = rowData.item
-        else
-            delete temp[rowData.idTable][rowData.item.id]
-        this.dataSelect = temp
-        let storeElm = $(`<script id="tbl-stored" type="application/json">`)
-        storeElm.text(JSON.stringify(temp))
-        if ($(`body`).find('#tbl-stored').length === 0) {
-            storeElm.insertAfter($.fn.transEle)
-        } else $('#tbl-stored', 'body').text(JSON.stringify(temp))
-    }
-
-    get getRowSelected() {
-        return this.dataSelect
-    }
-
-    static parseHeaderDropdownFilter(opts, settings, api) {
-        let $thead = api.table().header();
-        let hasColHeaderFilter = false;
-        let rowColFilterEle = $(`<tr class="row-custom-filter"></tr>`);
-        (opts?.['columns'] || []).map(
-            (item) => {
-                let colFilter = item?.['colFilter'];
-                if (colFilter) {
-                    hasColHeaderFilter = true;
-                    $(`<th>
-                        <select
-                            class="select-custom-filter"
-                            data-keyParam="${colFilter.keyParam}"
-                            data-url="${colFilter.dataUrl}"
-                            data-keyResp="${colFilter.keyResp}"
-                            multiple
-                        ></select>
-                    </th>`).appendTo(rowColFilterEle);
-                } else {
-                    $(`<th></th>`).appendTo(rowColFilterEle);
-                }
-            }
-        )
-        if (hasColHeaderFilter) {
-            rowColFilterEle.appendTo($($thead));
-        }
-        setTimeout(
-            () => {
-                $($thead).find('select.select-custom-filter').each(function () {
-                    $(this).initSelect2({
-                        'maximumSelectionLength': 5,
-                        'cache': true,
-                    });
-                }).on(
-                    'select2:close', function () {
-                        api.table().ajax.reload();
-                    }
-                );
-            },
-            0
-        );
-    }
-
-    static parseDomDtl(opts) {
-        let domDTL = "<'row miner-group'<'col-sm-12 col-md-3 col-lg-2 mt-3'f>>" +
-            "<'row mt-3'<'col-sm-12 col-md-6'<'count_selected'>><'col-sm-12 col-md-6'<'custom_toolbar'>>>" +
-            "<'row mt-3'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'p>>" +
-            "<'row mt-3'<'col-sm-12'tr>>" +
-            "<'row mt-3'<'col-sm-12 col-md-6'i>>";
-        let utilsDom = {
-            // "l": Đại diện cho thanh điều hướng (paging) của DataTable.
-            // "f": Đại diện cho hộp tìm kiếm (filtering) của DataTable.
-            // "t": Đại diện cho bảng (table) chứa dữ liệu.
-            // "i": Đại diện cho thông tin về số hàng hiển thị và tổng số hàng.
-            // "p": Đại diện cho thanh phân trang (pagination).
-            // "r": Đại diện cho sắp xếp (ordering) của các cột.
-            // "s": Đại diện cho hộp chọn số hàng hiển thị.
-            visiblePaging: true, // "l"
-            visibleSearchField: true,   // "f"
-            visibleDisplayRowTotal: true,   // "i"
-            visiblePagination: true,   // "p"
-            visibleOrder: true,   // "r"
-            visibleRowQuantity: true,   // "s"
-        }
-
-        // show or hide search field
-        if (opts.hasOwnProperty('visiblePaging')) {
-            if ($.fn.isBoolean(opts['visiblePaging'])) utilsDom.visiblePaging = opts['visiblePaging'];
-            if (utilsDom.visiblePaging === false) domDTL = domDTL.replace('l>', '>');
-            delete opts['visiblePaging']
-        }
-        // show or hide search field
-        if (opts.hasOwnProperty('visibleSearchField')) {
-            if ($.fn.isBoolean(opts['visibleSearchField'])) utilsDom.visibleSearchField = opts['visibleSearchField'];
-            if (utilsDom.visibleSearchField === false) {
-
-                domDTL = domDTL.replace('f>', '>').replaceAll('miner-group', 'miner-group hidden');
-            }
-            delete opts['visibleSearchField']
-        }
-        // show or hide search field
-        if (opts.hasOwnProperty('visibleDisplayRowTotal')) {
-            if ($.fn.isBoolean(opts['visibleDisplayRowTotal'])) utilsDom.visibleDisplayRowTotal = opts['visibleDisplayRowTotal'];
-            if (utilsDom.visibleDisplayRowTotal === false) domDTL = domDTL.replace('i>', '>');
-            delete opts['visibleDisplayRowTotal']
-        }
-        // show or hide search field
-        if (opts.hasOwnProperty('visiblePagination')) {
-            if ($.fn.isBoolean(opts['visiblePagination'])) utilsDom.visiblePagination = opts['visiblePagination'];
-            if (utilsDom.visiblePagination === false) domDTL = domDTL.replace('p>', '>');
-            delete opts['visiblePagination']
-        }
-        // show or hide search field
-        if (opts.hasOwnProperty('visibleOrder')) {
-            if ($.fn.isBoolean(opts['visibleOrder'])) utilsDom.visibleOrder = opts['visibleOrder'];
-            if (utilsDom.visibleOrder === false) domDTL = domDTL.replace('r>', '>');
-            delete opts['visibleOrder']
-        }
-        // show or hide search field
-        if (opts.hasOwnProperty('visibleRowQuantity')) {
-            if ($.fn.isBoolean(opts['visibleRowQuantity'])) utilsDom.visibleRowQuantity = opts['visibleRowQuantity'];
-            if (utilsDom.visibleRowQuantity === false) domDTL = domDTL.replace('s>', '>');
-            delete opts['visibleRowQuantity']
-        }
-        // show/hide custom toolbar
-        if (!opts.hasOwnProperty('fullToolbar') || opts?.fullToolbar === false) {
-            // show hide/row selected
-            domDTL = domDTL.replace("<'count_selected'>", '')
-            // show hide custom toolbar
-            domDTL = domDTL.replace("<'custom_toolbar'>", '')
-        }
-
-        return [opts, domDTL];
-    }
-
-    static cleanParamBeforeCall(params, keyKeepEmpty = []) {
-        let result = {}
-        if (params && typeof params === 'object') {
-            Object.keys(params).map(
-                (key) => {
-                    let val = params[key];
-                    if (val || (!val && keyKeepEmpty.includes(key))) result[key] = val;
-                }
-            )
-        }
-        return result;
-    }
-
-    parseDtlOpts(opts) {
-        let clsThis = this;
-
-        // init table
-        let [parsedOpts, domDTL] = DTBControl.parseDomDtl(opts);
-
-        // reload currency in table
-        let reloadCurrency = opts?.['reloadCurrency'];
-        if (opts.hasOwnProperty('reloadCurrency')) delete opts['reloadCurrency'];
-        reloadCurrency = $.fn.isBoolean(reloadCurrency) ? reloadCurrency : false;
-
-        // row callback |  rowIdx = true
-        let rowIdx = opts?.['rowIdx'];
-        if (opts.hasOwnProperty('rowIdx')) delete opts['rowIdx'];
-        let callbackRenderIdx = rowIdx === true ? function (pageInfo, row, data, index) {
-            $('td:eq(0)', row).html(pageInfo.start + index + 1)
-        } : function () {
-        };
-
-        // ajax
-        if (opts?.['ajax']) {
-            if (opts['ajax']['url']) {
-                if (!opts['ajax']?.['error']) {
-                    opts['ajax']['error'] = function (xhr, error, thrown) {
-                        $.fn.switcherResp(xhr?.['responseJSON']);
-                        if ($.fn.isDebug() === true) console.log(xhr, error, thrown);
-                    }
-                }
-            } else {
-                if ($.fn.isDebug() === true) console.log('Ajax table cancels load data because config url Ajax is blank. Please config it, then try again!', {...opts});
-                delete opts['ajax'];
-                opts['data'] = [];
-            }
-        }
-
-        // config server side processing
-        if (opts['useDataServer']) {
-            // server side v
-            let setupServerSide = {
-                processing: true,
-                serverSide: true,
-                ordering: true,
-                searchDelay: 1000,
-                order: [],
-                ajax: $.extend(opts['ajax'], {
-                    data: function (d) {
-                        let orderTxt = ''
-                        if (d?.order.length) {
-                            const orderKey = d.columns[d.order[0].column].data
-                            const orderVal = d.order[0].dir
-                            if (orderKey && typeof orderKey !== 'number' && orderVal)
-                                orderTxt = orderVal === 'asc' ? orderKey : `-${orderKey}`
-                        }
-
-                        let keyKeepEmpty = [];
-                        let customFilter = {};
-                        $(clsThis.dtb$).find('.row-custom-filter select').each(function () {
-                            let val = $(this).val();
-                            if (val) {
-                                if ((typeof val === "string" && val) || (Array.isArray(val) && val.length > 0)) {
-                                    customFilter[$(this).attr('data-keyParam')] = (!Array.isArray(val) ? [val] : val).join(",");
-                                }
-                            } else {
-                                if ($(this).attr('data-keepIdNullHasText') === 'true') {
-                                    customFilter[$(this).attr('data-keyParam')] = "";
-                                    keyKeepEmpty.push($(this).attr('data-keyParam'))
-                                }
-                            }
-                        });
-
-                        return DTBControl.cleanParamBeforeCall({
-                            'page': Math.ceil(d.start / d.length) + 1,
-                            'pageSize': d.length,
-                            'search': d?.search?.value ? d.search.value : '',
-                            'ordering': orderTxt, ...customFilter
-                        }, keyKeepEmpty);
-                    },
-                    dataFilter: function (data) {
-                        let json = JSON.parse(data);
-                        json.recordsTotal = json?.data?.['page_count']
-                        json.recordsFiltered = json?.data?.['page_count']
-                        return JSON.stringify(json);
-                    },
-                    headers: {
-                        "ENABLEXCACHECONTROL": !!(opts?.['ajax']?.['cache']) ? 'true': 'false',
-                    },
-                })
-            }
-            opts = $.extend(opts, setupServerSide)
-        }
-
-        // merge two drawCallback function
-        let drawCallback01 = function () {
-        }
-        if (opts.hasOwnProperty('drawCallback')) {
-            drawCallback01 = opts['drawCallback'];
-            delete opts['drawCallback'];
-        }
-        let drawCallBackDefault = function (settings) {
-            $('.dataTables_paginate > .pagination').addClass('custom-pagination pagination-rounded pagination-simple');
-            feather.replace();
-            // reload all currency
-            if (reloadCurrency === true) $.fn.initMaskMoney2();
-            // buildSelect2();
-            setTimeout(() => DocumentControl.buildSelect2(), 0);
-        }
-
-        let rowCallbackManual = function () {
-        };
-        if (parsedOpts.hasOwnProperty('rowCallback')) {
-            rowCallbackManual = parsedOpts?.['rowCallback'];
-        }
-
-        // return data
-        let configFinal = {
-            // scrollY: '400px',
-            // scrollCollapse: true,
-            // fixedHeader: true,
-            autoFill: false,
-            search: $.fn.DataTable.ext.type.search['html-numeric'],
-            searching: true,
-            ordering: false,
-            paginate: true,
-            dom: domDTL,
-            language: {
-                url: globeDTBLanguageConfig.trim(),
-            },
-            lengthMenu: [
-                [5, 10, 25, 50, -1], [5, 10, 25, 50, $.fn.transEle.attr('data-all')],
-            ],
-            drawCallback: function (settings) {
-                drawCallback01(settings)
-                drawCallBackDefault(settings)
-            },
-            initComplete: function (settings) {
-                $(this.api().table().container()).find('input').attr('autocomplete', 'off');
-
-                // show header select when options are in setup
-                DTBControl.parseHeaderDropdownFilter(opts, settings, this.api())
-                // end if check searching column
-            },
-            rowCallback: function (row, data, index) {
-                rowCallbackManual(row, data, index);
-                callbackRenderIdx($(this).DataTable().page.info(), row, data, index);
-            },
-            data: [], ...parsedOpts,
-        };
-
-        // ajax delete data
-        if (configFinal?.['ajax'] && configFinal.hasOwnProperty('data')) delete configFinal['data'];
-
-        if (isDenied) {
-            if (configFinal.hasOwnProperty('ajax')) delete configFinal['ajax'];
-            configFinal['data'] = [];
-        }
-
-        // returned
-        return configFinal;
-    }
-
     static getRowData(ele$) {
         // element call from in row of DataTable
         let row = $(ele$).closest('tr');
@@ -2163,12 +1859,381 @@ class DTBControl {
         $('.ct_toolbar-columns .dropdown-menu', divWrap).html(columnList)
     }
 
+    set setRowSelected(rowData) {
+        let temp = this.dataSelect
+        if (!temp.hasOwnProperty(rowData.idTable))
+            temp[rowData.idTable] = {}
+        if (rowData.checked)
+            temp[rowData.idTable][rowData.item.id] = rowData.item
+        else
+            delete temp[rowData.idTable][rowData.item.id]
+        this.dataSelect = temp
+        let storeElm = $(`<script id="tbl-stored" type="application/json">`)
+        storeElm.text(JSON.stringify(temp))
+        if ($(`body`).find('#tbl-stored').length === 0) {
+            storeElm.insertAfter($.fn.transEle)
+        } else $('#tbl-stored', 'body').text(JSON.stringify(temp))
+    }
+
+    get getRowSelected() {
+        return this.dataSelect
+    }
+
+    static parseHeaderDropdownFilter(columns, settings, api) {
+        let $thead = api.table().header();
+        let hasColHeaderFilter = false;
+        let rowColFilterEle = $(`<tr class="row-custom-filter"></tr>`);
+        (columns || []).map(
+            (item) => {
+                let colFilter = item?.['colFilter'];
+                if (colFilter) {
+                    hasColHeaderFilter = true;
+                    $(`<th>
+                        <select
+                            class="select-custom-filter"
+                            data-keyParam="${colFilter.keyParam}"
+                            data-url="${colFilter.dataUrl}"
+                            data-keyResp="${colFilter.keyResp}"
+                            multiple
+                        ></select>
+                    </th>`).appendTo(rowColFilterEle);
+                } else {
+                    $(`<th></th>`).appendTo(rowColFilterEle);
+                }
+            }
+        )
+        if (hasColHeaderFilter) {
+            rowColFilterEle.appendTo($($thead));
+        }
+        setTimeout(
+            () => {
+                $($thead).find('select.select-custom-filter').each(function () {
+                    $(this).initSelect2({
+                        'maximumSelectionLength': 5,
+                        'cache': true,
+                    });
+                }).on(
+                    'select2:close', function () {
+                        api.table().ajax.reload();
+                    }
+                );
+            },
+            0
+        );
+    }
+
+    static parseDomDtl(opts) {
+        // stateDefaultPageControl: disable all toolbar
+        let stateDefaultPageControl = typeof opts?.['stateDefaultPageControl'] === 'boolean' ? opts?.['stateDefaultPageControl'] : true;
+        if (opts.hasOwnProperty('stateDefaultPageControl')) delete opts['stateDefaultPageControl'];
+
+        let domDTL = "<'row miner-group'<'col-sm-12 col-md-3 col-lg-2 mt-3'f>>" +
+            "<'row mt-3'<'col-sm-12 col-md-6'<'count_selected'>><'col-sm-12 col-md-6'<'custom_toolbar'>>>" +
+            "<'row mt-3'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'p>>" +
+            "<'row mt-3'<'col-sm-12'tr>>" +
+            "<'row mt-3'<'col-sm-12 col-md-6'i>>";
+        let utilsDom = {
+            // "l": Đại diện cho thanh điều hướng (paging) của DataTable.
+            // "f": Đại diện cho hộp tìm kiếm (filtering) của DataTable.
+            // "t": Đại diện cho bảng (table) chứa dữ liệu.
+            // "i": Đại diện cho thông tin về số hàng hiển thị và tổng số hàng.
+            // "p": Đại diện cho thanh phân trang (pagination).
+            // "r": Đại diện cho sắp xếp (ordering) của các cột.
+            // "s": Đại diện cho hộp chọn số hàng hiển thị.
+            visiblePaging: stateDefaultPageControl, // "l"
+            visibleSearchField: stateDefaultPageControl,   // "f"
+            visibleDisplayRowTotal: stateDefaultPageControl,   // "i"
+            visiblePagination: stateDefaultPageControl,   // "p"
+            visibleOrder: stateDefaultPageControl,   // "r"
+            visibleRowQuantity: stateDefaultPageControl,   // "s"
+        }
+
+        // show or hide search field
+        if (opts.hasOwnProperty('visiblePaging')) {
+            if ($.fn.isBoolean(opts['visiblePaging'])) utilsDom.visiblePaging = opts['visiblePaging'];
+            delete opts['visiblePaging'];
+        }
+        if (utilsDom.visiblePaging === false) domDTL = domDTL.replace('l>', '>');
+
+        // show or hide search field
+        if (opts.hasOwnProperty('visibleSearchField')) {
+            if ($.fn.isBoolean(opts['visibleSearchField'])) utilsDom.visibleSearchField = opts['visibleSearchField'];
+            delete opts['visibleSearchField']
+        }
+        if (utilsDom.visibleSearchField === false) {
+            domDTL = domDTL.replace('f>', '>').replaceAll('miner-group', 'miner-group hidden');
+        }
+
+        // show or hide search field
+        if (opts.hasOwnProperty('visibleDisplayRowTotal')) {
+            if ($.fn.isBoolean(opts['visibleDisplayRowTotal'])) utilsDom.visibleDisplayRowTotal = opts['visibleDisplayRowTotal'];
+            delete opts['visibleDisplayRowTotal']
+        }
+        if (utilsDom.visibleDisplayRowTotal === false) domDTL = domDTL.replace('i>', '>');
+
+        // show or hide search field
+        if (opts.hasOwnProperty('visiblePagination')) {
+            if ($.fn.isBoolean(opts['visiblePagination'])) utilsDom.visiblePagination = opts['visiblePagination'];
+            delete opts['visiblePagination']
+        }
+        if (utilsDom.visiblePagination === false) {
+            domDTL = domDTL.replace('p>', '>');
+            utilsDom['pageLength'] = -1; // full page
+        }
+
+        // show or hide search field
+        if (opts.hasOwnProperty('visibleOrder')) {
+            if ($.fn.isBoolean(opts['visibleOrder'])) utilsDom.visibleOrder = opts['visibleOrder'];
+            delete opts['visibleOrder']
+        }
+        if (utilsDom.visibleOrder === false) domDTL = domDTL.replace('r>', '>');
+
+        // show or hide search field
+        if (opts.hasOwnProperty('visibleRowQuantity')) {
+            if ($.fn.isBoolean(opts['visibleRowQuantity'])) utilsDom.visibleRowQuantity = opts['visibleRowQuantity'];
+            delete opts['visibleRowQuantity']
+        }
+        if (utilsDom.visibleRowQuantity === false) domDTL = domDTL.replace('s>', '>');
+
+        // show/hide custom toolbar
+        if (!opts.hasOwnProperty('fullToolbar') || opts?.['fullToolbar'] === false) {
+            // show hide/row selected
+            domDTL = domDTL.replace("<'count_selected'>", '')
+            // show hide custom toolbar
+            domDTL = domDTL.replace("<'custom_toolbar'>", '')
+        }
+
+        return [opts, domDTL];
+    }
+
+    static cleanParamBeforeCall(params, keyKeepEmpty = []) {
+        let result = {}
+        if (params && typeof params === 'object') {
+            Object.keys(params).map(
+                (key) => {
+                    let val = params[key];
+                    if (val || (!val && keyKeepEmpty.includes(key))) result[key] = val;
+                }
+            )
+        }
+        return result;
+    }
+
+    get reloadCurrency() {
+        let reloadCurrency = this.opts?.['reloadCurrency'];
+        return $.fn.isBoolean(reloadCurrency) ? reloadCurrency : false;
+    }
+
+    appendErrorConfirmAjax() {
+        if (this.opts?.['ajax']) {
+            if (this.opts['ajax']['url']) {
+                if (!this.opts['ajax']?.['error']) {
+                    this.opts['ajax']['error'] = function (xhr, error, thrown) {
+                        $.fn.switcherResp(xhr?.['responseJSON']);
+                        if ($.fn.isDebug() === true) console.log(xhr, error, thrown);
+                    }
+                }
+            } else {
+                if ($.fn.isDebug() === true) console.log('Ajax table cancels load data because config url Ajax is blank. Please config it, then try again!', {...this.opts});
+                delete this.opts['ajax'];
+                this.opts['data'] = [];
+            }
+        }
+        if (isDenied) { // global variable
+            // denied ajax and empty data
+            if (this.opts.hasOwnProperty('ajax')) delete this.opts['ajax'];
+            this.opts['data'] = [];
+        } else {
+            if (this.opts?.['ajax']) {
+                // has ajax , remove data
+                if (this.opts.hasOwnProperty('data')) {
+                    delete this.opts['data'];
+                }
+            } else {
+                // hasn't ajax, add data empty
+                this.opts['data'] = [];
+            }
+        }
+
+        return true;
+    }
+
+    setUpUseDataServer() {
+        let clsThis = this;
+        // config server side processing
+        if (this.opts['useDataServer']) {
+            // server side v
+            let setupServerSide = {
+                processing: true,
+                serverSide: true,
+                ordering: true,
+                searchDelay: 1000,
+                order: [],
+                ajax: $.extend(this.opts['ajax'], {
+                    data: function (d) {
+                        let orderTxt = ''
+                        if (d?.order.length) {
+                            const orderKey = d.columns[d.order[0].column].data
+                            const orderVal = d.order[0].dir
+                            if (orderKey && typeof orderKey !== 'number' && orderVal)
+                                orderTxt = orderVal === 'asc' ? orderKey : `-${orderKey}`
+                        }
+
+                        let keyKeepEmpty = [];
+                        let customFilter = {};
+                        $(clsThis.dtb$).find('.row-custom-filter select').each(function () {
+                            let val = $(this).val();
+                            if (val) {
+                                if ((typeof val === "string" && val) || (Array.isArray(val) && val.length > 0)) {
+                                    customFilter[$(this).attr('data-keyParam')] = (!Array.isArray(val) ? [val] : val).join(",");
+                                }
+                            } else {
+                                if ($(this).attr('data-keepIdNullHasText') === 'true') {
+                                    customFilter[$(this).attr('data-keyParam')] = "";
+                                    keyKeepEmpty.push($(this).attr('data-keyParam'))
+                                }
+                            }
+                        });
+
+                        return DTBControl.cleanParamBeforeCall({
+                            'page': Math.ceil(d.start / d.length) + 1,
+                            'pageSize': d.length,
+                            'search': d?.search?.value ? d.search.value : '',
+                            'ordering': orderTxt, ...customFilter
+                        }, keyKeepEmpty);
+                    },
+                    dataFilter: function (data) {
+                        let json = JSON.parse(data);
+                        json.recordsTotal = json?.data?.['page_count']
+                        json.recordsFiltered = json?.data?.['page_count']
+                        return JSON.stringify(json);
+                    },
+                    headers: {
+                        "ENABLEXCACHECONTROL": !!(this.opts?.['ajax']?.['cache']) ? 'true' : 'false',
+                    },
+                })
+            }
+            this.opts = $.extend(this.opts, setupServerSide)
+        }
+    }
+
+    get callbackGetLinkBlank() {
+        return this.opts?.['callbackGetLinkBlank'] || function (rowData) {
+            // return url was converted
+            return null;
+        }
+    }
+
+    get callbackRenderIdx() {
+        let clsThis = this;
+        // row callback |  rowIdx = true
+        let rowIdx = this.opts?.['rowIdx'];
+        if (rowIdx === true) {
+            return function (pageInfo, row, data, index) {
+                let counter = pageInfo.start + index + 1;
+                let htmlDisplay = `${counter}`;
+                let callbackGetLinkBlank = clsThis.callbackGetLinkBlank;
+                let urlTargetHTML = callbackGetLinkBlank ? callbackGetLinkBlank(data) : null;
+                if (urlTargetHTML) {
+                    htmlDisplay = `<a 
+                    href="${urlTargetHTML}" 
+                    target="_blank" 
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="bottom" 
+                    title="${$.fn.transEle.attr('data-msg-open-new-tab')}"
+                >${counter}</a>`;
+                }
+                $('td:eq(0)', row).html(htmlDisplay);
+            }
+        }
+        return function (pageInfo, row, data, index) {
+        };
+    }
+
+    get mergeDrawCallback() {
+        let clsThis = this;
+        // merge two drawCallback function
+        let drawCallback01 = this.opts?.['drawCallback'] || function (settings) {
+        };
+        let drawCallBackDefault = function (settings) {
+            $('.dataTables_paginate > .pagination').addClass('custom-pagination pagination-rounded pagination-simple');
+            feather.replace();
+            // reload all currency
+            if (clsThis.reloadCurrency === true) $.fn.initMaskMoney2();
+            // buildSelect2();
+            setTimeout(() => DocumentControl.buildSelect2(), 0);
+        }
+        return function (settings) {
+            drawCallback01(settings);
+            drawCallBackDefault(settings);
+        }
+    }
+
+    get mergeRowCallback() {
+        let clsThis = this;
+        let rowCallbackManual = this.opts?.['rowCallback'] || function (row, data, index) {
+        };
+        return function (row, data, index) {
+            rowCallbackManual(row, data, index);
+            let callbackRenderIdx = clsThis.callbackRenderIdx;
+            callbackRenderIdx($(this).DataTable().page.info(), row, data, index);
+        }
+    }
+
+    get mergeInitComplete() {
+        return function (settings) {
+            $(this.api().table().container()).find('input').attr('autocomplete', 'off');
+
+            // show header select when options are in setup
+            DTBControl.parseHeaderDropdownFilter(
+                (this.opts?.['columns'] || []), settings, this.api()
+            );
+            // end if check searching column
+        }
+    }
+
+    parseDtlOpts() {
+        // init table
+        let [domOpts, domDTL] = DTBControl.parseDomDtl(this.opts);
+
+        // ajax
+        this.appendErrorConfirmAjax();
+
+        // config server side processing
+        this.setUpUseDataServer();
+
+        return {
+            // scrollY: '400px',
+            // scrollCollapse: true,
+            // fixedHeader: true,
+            autoFill: false,
+            search: $.fn.DataTable.ext.type.search['html-numeric'],
+            searching: true,
+            ordering: false,
+            paginate: true,
+            dom: domDTL,
+            language: {
+                url: globeDTBLanguageConfig.trim(),
+            },
+            lengthMenu: [
+                [5, 10, 25, 50, -1], [5, 10, 25, 50, $.fn.transEle.attr('data-all')],
+            ],
+            pageLength: 5,
+            drawCallback: this.mergeDrawCallback,
+            initComplete: this.mergeInitComplete,
+            rowCallback: this.mergeRowCallback,
+            ...domOpts,
+        };
+    }
+
     constructor(dtb$) {
-        this.dtb$ = $(dtb$)
-        this.dataSelect = {}
+        this.dtb$ = $(dtb$);
+        this.dataSelect = {};
+        this.opts = {};
     }
 
     init(opts) {
+        this.opts = opts;
         let tbl = this.dtb$.DataTable(this.parseDtlOpts(opts));
         let $this = this;
         tbl.on('init.dt', function (event, settings) {
@@ -2590,6 +2655,37 @@ class DocumentControl {
         let tenant_code_active = nav_data.attr('data-nav-tenant');
         if (tenant_code_active) $('#menu-tenant').children('option[value=' + tenant_code_active + ']').attr('selected', 'selected');
     }
+
+    static renderCodeBreadcrumb(detailData, keyCode = 'code', keyActive = 'is_active') {
+        if (typeof detailData === 'object') {
+            let [code, is_active] = [detailData?.[keyCode], detailData?.[keyActive]];
+            if (code) {
+                let clsState = 'hidden';
+                if (is_active === true) {
+                    clsState = 'badge badge-info badge-indicator';
+                } else if (clsState === false) {
+                    clsState = 'badge badge-light badge-indicator';
+                }
+                $('#idx-breadcrumb-current-code').html(
+                    `
+                    <span class="${clsState}"></span>
+                    <span class="badge badge-primary">${code}</span>
+                `
+                ).removeClass('hidden');
+            }
+        }
+    }
+
+    static buttonLinkBlank(url, iconHtml = '<i class="fa-solid fa-arrow-up-right-from-square"></i>') {
+        return `<a href="${url}" target="_blank">
+            <button 
+                class="btn btn-link btn-xs"
+                data-bs-toggle="tooltip"
+                data-bs-placement="bottom" 
+                title="${$.fn.transEle.attr('data-msg-open-new-tab')}"
+            >${iconHtml}</button>
+        </a>`;
+    }
 }
 
 let $x = {
@@ -2624,6 +2720,9 @@ let $x = {
 
         shortNameGlobe: PersonControl.shortNameGlobe,
         renderAvatar: PersonControl.renderAvatar,
+
+        renderCodeBreadcrumb: DocumentControl.renderCodeBreadcrumb,
+        buttonLinkBlank: DocumentControl.buttonLinkBlank,
     },
 }
 

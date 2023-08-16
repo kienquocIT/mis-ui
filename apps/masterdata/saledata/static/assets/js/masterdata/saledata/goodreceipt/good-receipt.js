@@ -50,19 +50,19 @@ class lineDetailUtil {
         $(`#product_row_${rowIdx}`, row).off().on('select2:select', function (e) {
             e.stopPropagation()
             let currentList = _this.getDatalist;
-            const data = e.params.data
-            currentList[rowIdx]['product'] = {id: data.id, 'title': data.title}
-            if (data?.sale_information?.default_uom){
+            const prod = e.params.data
+            currentList[rowIdx]['product'] = {id: prod.id, 'title': prod.title}
+            if (prod?.data?.sale_information?.default_uom){
                 currentList[rowIdx]['uom'] = {
-                    'id': data.sale_information.default_uom.id,
-                    'title': data.sale_information.default_uom.title,
-                    'uom_group': data?.general_information?.uom_group?.id
+                    'id': prod.data.sale_information.default_uom.id,
+                    'title': prod.data.sale_information.default_uom.title,
+                    'uom_group': prod.data?.general_information?.uom_group?.id
                 }
             }
-            if (data?.sale_information?.tax_code) currentList[rowIdx]['tax'] = {
-                'id': data.sale_information.tax_code.id,
-                'title': data.sale_information.tax_code.title,
-                'rate': data?.sale_information?.tax_code?.rate ?? 0
+            if (prod?.data?.sale_information?.tax_code) currentList[rowIdx]['tax'] = {
+                'id': prod.data.sale_information.tax_code.id,
+                'title': prod.data.sale_information.tax_code.title,
+                'rate': prod.data.sale_information?.tax_code?.rate ?? 0
             }
             _this.setDatalist = currentList
             $prodTable.DataTable().cell(rowIdx, 3).data(currentList[rowIdx]['uom']).draw(false);
@@ -75,7 +75,7 @@ class lineDetailUtil {
             const data = e.params.data
             currentList[rowIdx]['warehouse'] = {
                 'id': data.id,
-                'title': data.title
+                'title': data.title || data.text
             }
             _this.setDatalist = currentList
             $prodTable.DataTable().cell(rowIdx, 2).data(currentList[rowIdx]['warehouse']).draw(false);
@@ -87,7 +87,7 @@ class lineDetailUtil {
             const data = e.params.data
             currentList[rowIdx]['uom'] = {
                 'id': data.id,
-                'title': data.title
+                'title': data.title || data.text
             }
             _this.setDatalist = currentList
             $prodTable.DataTable().cell(rowIdx, 3).data(currentList[rowIdx]['uom']).draw(false);
@@ -112,7 +112,7 @@ class lineDetailUtil {
             const data = e.params.data
             currentList[rowIdx]['tax'] = {
                 'id': data.id,
-                'title': data.title,
+                'title': data.title || data.text,
                 'rate': data.rate
             }
             _this.setDatalist = currentList
@@ -188,11 +188,11 @@ class lineDetailUtil {
                             });
                             warehouse = temp.replaceAll('"', "'")
                         }
-                        return `<select class="form-select dropdown-select_two" id="warehouse_row_${idx}"` +
+                        return `<div class="input-group"><select class="form-select dropdown-select_two" id="warehouse_row_${idx}"` +
                             `data-keyResp="warehouse_list" data-select2-closeOnSelect="false" ` +
                             `data-url="${urlSelect}" ` +
                             `data-onload="${warehouse ? warehouse : ''}"` +
-                            `></select>`;
+                            `></select></div>`;
                     }
                 },
                 {

@@ -324,7 +324,7 @@ class GroupCreate(View):
         template='core/hr/group/group_create.html',
         breadcrumb='GROUP_CREATE',
         menu_active='menu_group_list',
-        perm_check=PermCheck(url=ApiURL.ROLE_LIST, method='POST'),
+        perm_check=PermCheck(url=ApiURL.GROUP_LIST, method='POST'),
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK

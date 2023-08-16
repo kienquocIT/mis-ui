@@ -137,17 +137,17 @@
                     <ul class="nav nav-light nav-tabs">
                         <li class="nav-item">
                             <a class="nav-link active" data-bs-toggle="tab" href="#tab_detail">
-                                <span class="nav-link-text">Detail</span>
+                                <span class="nav-link-text">{% trans 'Detail' %}</span>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" data-bs-toggle="tab" href="#tab_contacts">
-                                <span class="nav-link-text">Contacts</span>
+                                <span class="nav-link-text">{% trans 'Contacts' %}</span>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" data-bs-toggle="tab" href="#tab_payment_terms">
-                                <span class="nav-link-text">Payment Terms</span>
+                                <span class="nav-link-text">{% trans 'Payment Terms' %}</span>
                             </a>
                         </li>
                     </ul>
@@ -337,38 +337,53 @@
 
                         <div class="tab-pane fade show" id="tab_payment_terms">
                             <div class="row mt-6">
-                                <div class="row">
-                                    <div class="col-6">
-                                        <div class="form-group">
-                                            <label class="label-field form-label"
-                                                   for="payment-terms-id">{% trans "Payment Terms" %}</label>
-                                            <select id="payment-terms-id" name="payment_term_mapped"
-                                                    class="form-select"
-                                                    data-method="GET"
-                                                    data-url="{% url "PaymentsTermsListAPI" %}">
-                                            </select>
-                                        </div>
+                                <div class="col-6 mb-5" id="role-for-customer" hidden>
+                                    <div class="form-group text-center">
+                                        <h5>{% trans 'Role of Customer' %}</h5>
                                     </div>
-                                    <div class="col-6">
-                                        <div class="form-group">
-                                            <label class="label-field form-label"
-                                                   for="payment-terms-id">{% trans "Price List" %}</label>
-                                            <select id="price-list-id" name="price_list_mapped"
-                                                    class="form-select"
-                                                    data-method="GET"
-                                                    data-url="{% url "PriceListAPI" %}">
-                                            </select>
-                                        </div>
+                                    <div class="form-group">
+                                        <label class="label-field form-label"
+                                               for="payment-terms-id">{% trans "Payment Terms" %}</label>
+                                        <select id="payment-terms-id-customer" name="payment_term_customer_mapped"
+                                                class="form-select"
+                                                data-method="GET"
+                                                data-url="{% url "PaymentsTermsListAPI" %}">
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="label-field form-label"
+                                               for="payment-terms-id">{% trans "Price List" %}</label>
+                                        <select id="price-list-id" name="price_list_mapped"
+                                                class="form-select"
+                                                data-method="GET"
+                                                data-url="{% url "PriceListAPI" %}">
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="label-field form-label"
+                                               for="credit-limit-id">{% trans "Credit Limit" %}</label>
+                                        <input type="text" class="mask-money form-control"
+                                               id="credit-limit-id-customer" name="credit_limit_customer">
                                     </div>
                                 </div>
-                                <div class="row mb-5">
-                                    <div class="col-6">
-                                        <div class="form-group">
-                                            <label class="label-field form-label"
-                                                   for="credit-limit-id">{% trans "Credit Limit" %}</label>
-                                            <input type="text" class="mask-money form-control"
-                                                   id="credit-limit-id" name="credit_limit">
-                                        </div>
+                                <div class="col-6 mb-5" id="role-for-supplier" hidden>
+                                    <div class="form-group text-center">
+                                        <h5>{% trans 'Role of Supplier' %}</h5>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="label-field form-label"
+                                               for="payment-terms-id">{% trans "Payment Terms" %}</label>
+                                        <select id="payment-terms-id-supplier" name="payment_term_supplier_mapped"
+                                                class="form-select"
+                                                data-method="GET"
+                                                data-url="{% url "PaymentsTermsListAPI" %}">
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="label-field form-label"
+                                               for="credit-limit-id">{% trans "Credit Limit" %}</label>
+                                        <input type="text" class="mask-money form-control"
+                                               id="credit-limit-id-supplier" name="credit_limit_supplier">
                                     </div>
                                 </div>
                             </div>

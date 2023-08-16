@@ -401,13 +401,15 @@ $(document).ready(function () {
 
                 loadAccountGroup(data.account_group);
 
-                loadPaymentTerms(data.payment_term_mapped);
+                console.log(data)
+                loadPaymentTerms(data.payment_term_customer_mapped, data.payment_term_supplier_mapped);
 
                 loadPriceList(data.price_list_mapped);
 
                 loadCountries('country_mapped');
 
-                $('#credit-limit-id').attr('value', data.credit_limit);
+                $('#credit-limit-id-customer').attr('value', data.credit_limit_customer);
+                $('#credit-limit-id-supplier').attr('value', data.credit_limit_supplier);
                 $.fn.initMaskMoney2();
             }
         })
@@ -425,9 +427,15 @@ $(document).ready(function () {
                     if (data.hasOwnProperty('account_type_list') && Array.isArray(data.account_type_list)) {
                         data.account_type_list.map(function (item) {
                             if (account_type_mapped.includes(item.id)) {
-                                ele.append(`<option value="` + item.id + `" selected>` + item.title + `</option>`)
+                                ele.append(`<option data-title="${item.title}" value="` + item.id + `" selected>` + item.title + `</option>`)
+                                if (item.title === 'Customer') {
+                                    $('#role-for-customer').prop('hidden', false);
+                                }
+                                if (item.title === 'Supplier') {
+                                    $('#role-for-supplier').prop('hidden', false);
+                                }
                             } else {
-                                ele.append(`<option value="` + item.id + `">` + item.title + `</option>`)
+                                ele.append(`<option data-title="${item.title}" value="` + item.id + `">` + item.title + `</option>`)
                             }
                         })
                     }
@@ -489,8 +497,9 @@ $(document).ready(function () {
     }
 
     // load Payment Terms SelectBox
-    function loadPaymentTerms(payment_term_mapped) {
-        let ele = $('#payment-terms-id');
+    function loadPaymentTerms(payment_term_customer_mapped, payment_term_supplier_mapped) {
+        let ele = $('#payment-terms-id-customer');
+        let ele2 = $('#payment-terms-id-supplier');
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
         $.fn.callAjax(url, method).then(
@@ -499,12 +508,19 @@ $(document).ready(function () {
                 if (data) {
                     ele.text("");
                     ele.append(`<option value="" selected></option>`)
+                    ele2.text("");
+                    ele2.append(`<option value="" selected></option>`)
                     if (data.hasOwnProperty('payment_terms_list') && Array.isArray(data.payment_terms_list)) {
                         data.payment_terms_list.map(function (item) {
-                            if (payment_term_mapped === item.id) {
+                            if (payment_term_customer_mapped === item.id) {
                                 ele.append(`<option value="` + item.id + `" selected>` + item.title + `</option>`)
                             } else {
                                 ele.append(`<option value="` + item.id + `">` + item.title + `</option>`)
+                            }
+                            if (payment_term_supplier_mapped === item.id) {
+                                ele2.append(`<option value="` + item.id + `" selected>` + item.title + `</option>`)
+                            } else {
+                                ele2.append(`<option value="` + item.id + `">` + item.title + `</option>`)
                             }
                         })
                     }
@@ -782,6 +798,27 @@ $(document).ready(function () {
         }
     })
 
+    // onchange account type
+    $('#account-type-id').on('change', function () {
+        let selected_title_list = []
+        $('#account-type-id option:selected').each(function (ele, index) {
+            selected_title_list.push($(this).attr('data-title'))
+        })
+
+        if (selected_title_list.includes('Customer')) {
+            $('#role-for-customer').prop('hidden', false);
+        }
+        else {
+            $('#role-for-customer').prop('hidden', true);
+        }
+        if (selected_title_list.includes('Supplier')) {
+            $('#role-for-supplier').prop('hidden', false);
+        }
+        else {
+            $('#role-for-supplier').prop('hidden', true);
+        }
+    })
+
     // process address
     $('#select-box-address').on('change', function () {
         $('#edited-billing-address').val($(this).find('option:selected').text());
@@ -994,9 +1031,14 @@ $(document).ready(function () {
             frm.dataForm['parent_account'] = null;
         }
 
-        frm.dataForm['credit_limit'] = $('#credit-limit-id').attr('value');
-        if (frm.dataForm['credit_limit'] === 'NaN') {
-            frm.dataForm['credit_limit'] = null;
+        frm.dataForm['credit_limit_supplier'] = $('#credit-limit-id-supplier').attr('value');
+        if (frm.dataForm['credit_limit_supplier'] === 'NaN') {
+            frm.dataForm['credit_limit_supplier'] = null;
+        }
+
+        frm.dataForm['credit_limit_customer'] = $('#credit-limit-id-cutomer').attr('value');
+        if (frm.dataForm['credit_limit_customer'] === 'NaN') {
+            frm.dataForm['credit_limit_customer'] = null;
         }
 
         if ($('#account-owner-id').val() === '') {

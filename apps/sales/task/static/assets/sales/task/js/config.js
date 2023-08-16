@@ -25,6 +25,7 @@ $(function(){
                 for (let item of itemSystem){
                     let elm = $($('#item_config').html())
                     elm.addClass('ui-state-system')
+                    elm.attr('data-id', item.id)
                     elm.find('.hand-drag, .icon-close').addClass('blur-35')
                     elm.find('.status_name, .status_translate_name').attr('contenteditable', false)
                     elm.find('.status_name').html(item.name)

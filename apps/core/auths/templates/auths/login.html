@@ -247,26 +247,11 @@
                 }
             }
 
-            getCtxAjax() {
-                return {
-                    url: this.dataUrl,
-                    method: this.dataMethod,
-                    data: this.dataForm,
-                    redirect: this.dataUrlRedirect,
-                    redirectTimeout: this.dataRedirectTimeout
-                }
-            }
-
             getUrlDetail(pk) {
                 if (this.dataUrlDetail && pk) {
                     return this.dataUrlDetail + pk.toString();
                 }
                 return null;
-            }
-
-            getUrlDetailWithDataUrl(attrName, pk) {
-                let data_url = this.convertUrlDetail(this.formSelected.attr('data-url-' + attrName));
-                return data_url + pk.toString()
             }
 
             static getUrlDetailWithID(url, pk) {
@@ -275,21 +260,6 @@
                     return url + pk.toString();
                 }
                 return null;
-            }
-
-            convertUrlDetail(url) {
-                return url.split("/").slice(0, -1).join("/") + "/";
-            }
-
-            appendFilter(url, filter) {
-                let params = '';
-                Object.keys(filter).map((key) => {
-                    params += `{0}={1}`.format_by_idx(key, encodeURIComponent(filter[key]))
-                })
-                if (params) {
-                    return '{0}?{1}'.format_by_idx(url, params);
-                }
-                return url;
             }
         }
 

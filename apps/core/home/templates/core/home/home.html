@@ -232,35 +232,6 @@
                                         <th></th>
                                     </tr>
                                     </thead>
-                                    <tbody>
-                                    <tr>
-                                        <td>
-                                            Phone Pay
-                                        </td>
-                                        <td>
-                                            <span class="badge badge-soft-light">Sale Order</span>
-                                        </td>
-                                        <td>
-                                        <span class="badge-status">
-                                            21-06-2023 11:20:00
-                                        </span>
-                                        </td>
-                                        <td>
-                                            <div class="d-flex align-items-center justify-content-end">
-                                                <button
-                                                        class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
-                                                        data-bs-toggle="tooltip"
-                                                        data-placement="bottom"
-                                                        data-bs-original-title="{% trans 'Go to detail page' %}"
-                                                >
-                                                <span class="icon">
-                                                    <i class="fa-solid fa-info"></i>
-                                                </span>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    </tbody>
                                 </table>
                             </div>
                         </div>
@@ -450,5 +421,12 @@
 {% endblock %}
 
 {% block jsFooter %}
+    <script>
+        const msgChangeCompany = "{% trans 'Change Company' %}";
+        const msgTitleErrLinked = "{% trans 'Some apps will be working wrong' %}"
+        const msgTextErrLinked = `{% trans "Hasn't link to the employee!" %}`;
+        const msgTextErrLinked2 = "{% trans 'Please switch the current company to the one that already has an employee link or contact the administrator to add an employee to the account.' %}"
+        let employeeCurrentData = "{{ data.employee_current_data }}";
+    </script>
     <script src="{% static 'assets/js/core_home/home.js' %}"></script>
 {% endblock %}

@@ -91040,32 +91040,7 @@ Project:	Jampack
     border-color:rgb(199 199 199 / 25%);
     background-color: rgb(247 247 247 / 15%);
 }
-.readonly:hover [readonly]{
-    border-color: #cdcdcd;
-}
-.readonly{position: relative}
-.readonly:hover > * + span:not(.select2):before {
-    content: "\F4CB";
-    font-family: "bootstrap-icons";
-}
-.readonly:hover > * + span:not(.select2){
-    background-color:#f3f3f3;
-    width: 38px;
-    height: calc(100% - 2px);
-    top:1px;
-    right:1px;
-    position: absolute;
-    border-radius: 0 8px 8px 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    border-left: solid 1px #cdcdcd;
-    z-index:12;
-}
-.readonly.table-readonly:hover > * + span:not(.select2){
-    border-radius: 0;
-}
+
 .readonly.table-readonly:after{
     content: "";
     position: absolute;

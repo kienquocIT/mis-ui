@@ -3,6 +3,7 @@ $(function () {
     let tb = $('#datatable_user_list');
     tb.DataTableDefault({
         rowIdx: true,
+        useDataServer: true,
         ajax: {
             url: tb.attr('data-url'),
             type: tb.attr('data-method'),

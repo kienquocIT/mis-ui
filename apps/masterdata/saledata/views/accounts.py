@@ -189,7 +189,7 @@ class ContactDetailAPI(APIView):
 class ContactUpdate(View):
     @mask_view(
         auth_require=True, template='masterdata/saledata/accounts/contact_update.html',
-        breadcrumb='CONTACT_DETAIL_PAGE',
+        breadcrumb='CONTACT_UPDATE_PAGE',
         menu_active='menu_contact_detail',
         perm_check=PermCheck(url=ApiURL.CONTACT_DETAIL, method='put', fill_key=['pk']),
     )
@@ -431,7 +431,7 @@ class AccountDetailAPI(APIView):
 
     @mask_view(auth_require=True, is_api=True)
     def get(self, request, pk, *arg, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_DETAIL + pk).get()
+        resp = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_DETAIL.fill_key(pk=pk)).get()
         return resp.auto_return(key_success='account_detail')
 
     @mask_view(
@@ -439,7 +439,7 @@ class AccountDetailAPI(APIView):
         is_api=True,
     )
     def put(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_DETAIL + pk).put(request.data)
+        resp = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_DETAIL.fill_key(pk=pk)).put(request.data)
         return resp.auto_return(key_success='account_detail')
 
 

@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static i18n %}
-{% block title %}{% trans 'Opportunity Task List' %}{% endblock %}
+{% block title %}{% trans 'Task list page' %}{% endblock %}
 {% block cssHeader %}
     <link href="{% static 'vendors/dragula/dragula.min.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'assets/css/perfect-scrollbar.css' %}" rel="stylesheet" type="text/css"/>
@@ -11,19 +11,22 @@
 {% endblock %}
 
 {% block pageAction %}
-    <button
-            class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover ntt-drawer-toggle-link"
-            type="button"
-            data-drawer-target="#drawer_task_create"
-            data-drawer-active="false"
-            data-bs-toggle="tooltip"
-            data-bs-placement="top"
-            data-bs-original-title="{% trans 'Create' %}"
-    >
-        <span class="btn-icon-wrap">
-            <i class="fa-solid fa-plus"></i>
+    <a href="#">
+        <button class="btn btn-outline-primary ntt-drawer-toggle-link btn-create-todo"
+                type="button"
+                data-drawer-target="#drawer_task_create"
+                data-drawer-active="false"
+                data-bs-toggle="tooltip"
+                data-bs-placement="top"
+                data-bs-original-title="{% trans 'Create' %}">
+        <span>
+            <span>{% trans 'Create' %}</span>
+            <span class="icon">
+                <i class="fa-solid fa-plus"></i>
+            </span>
         </span>
-    </button>
+        </button>
+    </a>
 {% endblock %}
 
 {% block pageContent %}
@@ -147,7 +150,6 @@
     <script src="{% static 'assets/js/perfect-scrollbar.min.js' %}"></script>
     <script src="{% static 'vendors/dragula/dragula.min.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
-    <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
     <script src="{% static 'assets/sales/task/js/extend/create-task.js' %}"></script>
     <script src="{% static 'assets/sales/task/js/list.js' %}"></script>
 {% endblock %}

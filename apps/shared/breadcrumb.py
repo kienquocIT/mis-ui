@@ -6,11 +6,12 @@ from django.utils.translation import gettext_lazy as _
 class BreadcrumbChildren:  # pylint: disable=too-few-public-methods
     """prepare url breadcrumbs"""
 
-    def __init__(self, title, url=None, arg_pattern=None, kw_pattern=None):
+    def __init__(self, title, url=None, arg_pattern=None, kw_pattern=None, is_append_code=False):
         self.title = title
         self.url = url if url else ''
         self.arg_pattern = arg_pattern if arg_pattern and isinstance(arg_pattern, list) else []
         self.kw_pattern = kw_pattern if kw_pattern and isinstance(kw_pattern, dict) else {}
+        self.is_append_code = is_append_code
 
     @property
     def data(self):
@@ -18,6 +19,7 @@ class BreadcrumbChildren:  # pylint: disable=too-few-public-methods
         return {
             'title': self.title if self.title else '#',
             'url': reverse(self.url, kwargs=self.kw_pattern) if self.url else '#',
+            'is_append_code': self.is_append_code,
         }
 
 
@@ -31,20 +33,16 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     # base
     BASTION_LIST = BreadcrumbChildren(_('List'))
     BASTION_CREATE = BreadcrumbChildren(_('Create'))
-    BASTION_DETAIL = BreadcrumbChildren(_('Detail'))
-    BASTION_UPDATE = BreadcrumbChildren(_('Update'))
+    BASTION_DETAIL = BreadcrumbChildren(_('Detail'), is_append_code=True)
+    BASTION_UPDATE = BreadcrumbChildren(_('Update'), is_append_code=True)
 
     # hr
-    HR_PAGE = BreadcrumbChildren(_('HR'))
     EMPLOYEE_LIST_PAGE = BreadcrumbChildren(_('Employee List'), 'EmployeeList')
     EMPLOYEE_CREATE_PAGE = BreadcrumbChildren(_('Employee Create'), 'EmployeeCreate')
     GROUP_LEVEL_LIST_PAGE = BreadcrumbChildren(_('Organization Level'), 'GroupLevelList')
     GROUP_LIST_PAGE = BreadcrumbChildren(_('Organization Group'), 'GroupList')
     ROLE_LIST_PAGE = BreadcrumbChildren(_('Role List'), 'RoleList')
     ROLE_CREATE_PAGE = BreadcrumbChildren(_("Create Role"), 'RoleCreate')
-
-    # tenant
-    ORGANIZATION_PAGE = BreadcrumbChildren(_('Organization'), 'GroupList')
 
     # user
     USER_LIST_PAGE = BreadcrumbChildren(_('User List'), 'UserList')
@@ -76,6 +74,9 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     ACCOUNT_LIST_PAGE = BreadcrumbChildren(_('Account list'), 'AccountList')
     ACCOUNT_CREATE_PAGE = BreadcrumbChildren(_('Account create'), 'AccountCreate')
     ACCOUNT_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+
+    # Master data config
+    MASTER_DATA_PRICE_PAGE = BreadcrumbChildren(_('Master data price'), 'PriceMasterDataList')
 
     # Master Data
     CONTACT_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Master Data Contact'), 'ContactMasterDataList')
@@ -109,6 +110,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     PROMOTION_LIST_PAGE = BreadcrumbChildren(_('Promotion List'), 'PromotionList')
     PROMOTION_CREATE_PAGE = BreadcrumbChildren(_('Promotion create'), 'PromotionCreate')
     PROMOTION_DETAIL_PAGE = BreadcrumbChildren(_('Promotion detail'))
+    PROMOTION_EDIT_PAGE = BreadcrumbChildren(_('Promotion edit'))
 
     # Opportunity
     OPPORTUNITY_LIST_PAGE = BreadcrumbChildren(_('Opportunity list'), 'OpportunityList')
@@ -138,13 +140,16 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     # Good receipt
     GOOD_RECEIPT_LIST_PAGE = BreadcrumbChildren(_('Good receipt List'), 'GoodReceiptList')
     GOOD_RECEIPT_CREATE_PAGE = BreadcrumbChildren(_('Good receipt create'), 'GoodReceiptCreate')
+    GOOD_RECEIPT_EDIT_PAGE = BreadcrumbChildren(_('Good receipt edit'))
     GOOD_RECEIPT_DETAIL_PAGE = BreadcrumbChildren(_('Good receipt detail'))
     # Transition Data Config
     DELIVERY_CONFIG_PAGE = BreadcrumbChildren(_('Delivery'), 'DeliveryConfigDetail')
     DELIVERY_PICKING_LIST_PAGE = BreadcrumbChildren(_('Picking list'), 'OrderPickingList')
     DELIVERY_PICKING_DETAIL_PAGE = BreadcrumbChildren(_('Picking detail'))
+    DELIVERY_PICKING_EDIT_PAGE = BreadcrumbChildren(_('Picking edit'))
     DELIVERY_LIST_PAGE = BreadcrumbChildren(_('Delivery list'), 'OrderDeliveryList')
     DELIVERY_DETAIL_PAGE = BreadcrumbChildren(_('Delivery Detail'))
+    DELIVERY_EDIT_PAGE = BreadcrumbChildren(_('Delivery edit'))
 
     # Return Advance
     RETURN_ADVANCE_LIST_PAGE = BreadcrumbChildren(_('Return Advance list'), 'ReturnAdvanceList')
@@ -251,10 +256,19 @@ class BreadcrumbView:
     @classmethod
     def parsed(cls, name: str) -> list:
         """method parsed data custom"""
+        result = []
         data = getattr(cls, name, [])
         if data and isinstance(data, list):
-            return [item.data for item in data]
-        return []
+            has_append_code = False
+            for item in data[::-1]:
+                item_data = item.data
+                if item_data['is_append_code'] is True:
+                    if has_append_code is False:
+                        has_append_code = True
+                    else:
+                        item_data['is_append_code'] = False
+                result.append(item_data)
+        return result[::-1]
 
     HOME_PAGE = [
         BreadcrumbItem.HOME_PAGE,
@@ -262,7 +276,6 @@ class BreadcrumbView:
 
     EMPLOYEE_LIST_PAGE = [
         BreadcrumbItem.HOME_PAGE,
-        BreadcrumbItem.HR_PAGE,
         BreadcrumbItem.EMPLOYEE_LIST_PAGE,
     ]
 
@@ -278,19 +291,17 @@ class BreadcrumbView:
 
     USER_CREATE_PAGE = USER_LIST_PAGE + [BreadcrumbItem.USER_CREATE_PAGE]
 
-    USER_DETAIL_PAGE = USER_LIST_PAGE + [BreadcrumbItem.USER_DETAIL_PAGE]
+    USER_DETAIL_PAGE = USER_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
 
-    USER_EDIT_PAGE = USER_LIST_PAGE + [BreadcrumbItem.USER_EDIT_PAGE]
+    USER_EDIT_PAGE = USER_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
     GROUP_LEVEL_LIST_PAGE = [
         BreadcrumbItem.HOME_PAGE,
-        BreadcrumbItem.ORGANIZATION_PAGE,
         BreadcrumbItem.GROUP_LEVEL_LIST_PAGE,
     ]
 
     GROUP_LIST_PAGE = [
         BreadcrumbItem.HOME_PAGE,
-        BreadcrumbItem.ORGANIZATION_PAGE,
         BreadcrumbItem.GROUP_LIST_PAGE,
     ]
     GROUP_CREATE = GROUP_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
@@ -301,6 +312,8 @@ class BreadcrumbView:
         BreadcrumbItem.HOME_PAGE,
         BreadcrumbItem.COMPANY_PAGE,
     ]
+    COMPANY_DETAIL_PAGE = COMPANY_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    COMPANY_UPDATE_PAGE = COMPANY_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
     COMPANY_OVERVIEW_PAGE = [
         BreadcrumbItem.HOME_PAGE,
@@ -317,7 +330,6 @@ class BreadcrumbView:
 
     ROLE_LIST_PAGE = [
         BreadcrumbItem.HOME_PAGE,
-        BreadcrumbItem.HR_PAGE,
         BreadcrumbItem.ROLE_LIST_PAGE,
     ]
 
@@ -345,6 +357,10 @@ class BreadcrumbView:
     ]
     ACCOUNT_CREATE_PAGE = ACCOUNT_LIST_PAGE + [BreadcrumbItem.ACCOUNT_CREATE_PAGE]
     ACCOUNT_DETAIL_PAGE = ACCOUNT_LIST_PAGE + [BreadcrumbItem.ACCOUNT_DETAIL_PAGE]
+
+    MASTER_DATA_PRICE_PAGE = [
+        BreadcrumbItem.MASTER_DATA_PRICE_PAGE
+    ]
 
     CONTACT_MASTER_DATA_LIST_PAGE = [
         BreadcrumbItem.CONTACT_MASTER_DATA_LIST_PAGE
@@ -389,6 +405,7 @@ class BreadcrumbView:
 
     PROMOTION_CREATE_PAGE = PROMOTION_LIST_PAGE + [BreadcrumbItem.PROMOTION_CREATE_PAGE]
     PROMOTION_DETAIL_PAGE = PROMOTION_LIST_PAGE + [BreadcrumbItem.PROMOTION_DETAIL_PAGE]
+    PROMOTION_EDIT_PAGE = PROMOTION_LIST_PAGE + [BreadcrumbItem.PROMOTION_EDIT_PAGE]
 
     # Opportunity
     OPPORTUNITY_LIST_PAGE = [
@@ -429,6 +446,7 @@ class BreadcrumbView:
     ]
 
     GOOD_RECEIPT_CREATE_PAGE = GOOD_RECEIPT_LIST_PAGE + [BreadcrumbItem.GOOD_RECEIPT_CREATE_PAGE]
+    GOOD_RECEIPT_EDIT_PAGE = GOOD_RECEIPT_LIST_PAGE + [BreadcrumbItem.GOOD_RECEIPT_EDIT_PAGE]
     GOOD_RECEIPT_DETAIL_PAGE = GOOD_RECEIPT_LIST_PAGE + [BreadcrumbItem.GOOD_RECEIPT_DETAIL_PAGE]
 
     # Return Advance
@@ -443,10 +461,12 @@ class BreadcrumbView:
         BreadcrumbItem.DELIVERY_PICKING_LIST_PAGE,
     ]
     ORDER_PICKING_DETAIL_PAGE = ORDER_PICKING_LIST_PAGE + [BreadcrumbItem.DELIVERY_PICKING_DETAIL_PAGE]
+    ORDER_PICKING_EDIT_PAGE = ORDER_PICKING_LIST_PAGE + [BreadcrumbItem.DELIVERY_PICKING_EDIT_PAGE]
     ORDER_DELIVERY_LIST_PAGE = [
         BreadcrumbItem.DELIVERY_LIST_PAGE,
     ]
     ORDER_DELIVERY_DETAIL_PAGE = ORDER_DELIVERY_LIST_PAGE + [BreadcrumbItem.DELIVERY_DETAIL_PAGE]
+    ORDER_DELIVERY_EDIT_PAGE = ORDER_DELIVERY_LIST_PAGE + [BreadcrumbItem.DELIVERY_EDIT_PAGE]
 
     # Transition Data Config
     DELIVERY_CONFIG = [

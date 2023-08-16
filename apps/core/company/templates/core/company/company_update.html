@@ -41,12 +41,12 @@
                 </div>
                 <div class="col-6">
                     <div class="form-group">
-                        <label class="form-label"><b>{% trans 'Code' %}</b></label>
+                        <label class="form-label" for="form-code"><b>{% trans 'Code' %}</b></label>
                         <input
                                 class="form-control" type="text"
                                 name="code" value="{{ data.company.code }}"
                                 oninput="this.value=this.value.toUpperCase()"
-                                id="form-edit-code"
+                                id="form-code"
                         >
                     </div>
                 </div>

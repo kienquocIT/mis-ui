@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load i18n static %}
-{% block title %}{% trans 'Workflow create' %}{% endblock %}
+{% block title %}{% trans 'Promotion create' %}{% endblock %}
 {% block cssHeader %}
     <!-- Daterangepicker CSS -->
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
@@ -62,7 +62,7 @@
                             name="currency"
                             id="currency"
                             data-multiple="false"
-                            data-prefix="currency_list"
+                            data-keyResp="currency_list"
                             data-url="{% url 'CurrencyListAPI' %}"
                     ></select>
                 </div>
@@ -199,7 +199,7 @@
                         <div class="input-group">
                             <div class="input-affix-wrapper">
                                 <div class="dropdown input-prefix">
-                                    <i class="fas fa-info-circle"
+                                    <i class="fas fa-info-circle text-blue"
                                        data-bs-toggle="dropdown"
                                        data-dropdown-animation
                                        aria-haspopup="true"
@@ -209,11 +209,11 @@
                                     <div class="dropdown-menu w-210p mt-2">
                                     </div>
                                 </div>
-                                <select class="form-control dropdown-select_two"
+                                <select class="form-control select2"
                                         name="product_selected"
                                         id="product_selected"
                                         data-multiple="false"
-                                        data-prefix="product_list"
+                                        data-keyResp="product_list"
                                         data-url="{% url 'ProductListAPI' %}"
                                         data-link-detail="{% url 'ProductDetail' 1 %}"
                                         data-template-format="[{'name':'Title', 'value': 'title'},{'name':'Code', 'value': 'code'}]"
@@ -255,7 +255,7 @@
                         <div class="input-group w-md-50">
                             <div class="input-affix-wrapper">
                                 <div class="dropdown input-prefix">
-                                    <i class="fas fa-info-circle"
+                                    <i class="fas fa-info-circle text-blue"
                                        data-bs-toggle="dropdown"
                                        data-dropdown-animation
                                        aria-haspopup="true"
@@ -265,11 +265,11 @@
                                     <div class="dropdown-menu w-210p mt-2">
                                     </div>
                                 </div>
-                                <select class="form-control dropdown-select_two"
+                                <select class="form-control select2"
                                         name="product_received"
                                         id="product_received"
                                         data-multiple="false"
-                                        data-prefix="product_list"
+                                        data-keyResp="product_list"
                                         data-url="{% url 'ProductListAPI' %}"
                                         data-link-detail="{% url 'ProductDetail' 1 %}"
                                         data-template-format="[{'name':'Title', 'value': 'title'},{'name':'Code', 'value': 'code'}]"
@@ -304,7 +304,7 @@
                         <div class="w-md-50 input-group">
                             <div class="input-affix-wrapper">
                                 <div class="dropdown input-prefix">
-                                    <i class="fas fa-info-circle"
+                                    <i class="fas fa-info-circle text-blue"
                                        data-bs-toggle="dropdown"
                                        data-dropdown-animation
                                        aria-haspopup="true"
@@ -314,10 +314,10 @@
                                     <div class="dropdown-menu w-210p mt-2">
                                     </div>
                                 </div>
-                                <select class="form-control dropdown-select_two"
+                                <select class="form-control select2"
                                         name="purchase_product"
                                         data-multiple="false"
-                                        data-prefix="product_list"
+                                        data-keyResp="product_list"
                                         data-url="{% url 'ProductListAPI' %}"
                                 ></select>
                             </div>

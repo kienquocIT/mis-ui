@@ -143,7 +143,22 @@ msgstr "Hiển thị mật khẩu"
 
 #
 msgid "New password again"
-msgstr "Nhật lạp mật khẩu mới"
+msgstr "Nhập lại mật khẩu mới"
+
+#
+msgid "Change Company"
+msgstr "Thay đổi công ty"
+
+#
+msgid "Hasn't link to the employee!"
+msgstr "Tài khoản người dùng chưa có liên kết nhân viên"
+
+#
+msgid "Some apps will be working wrong"
+msgstr "Một số ứng dụng sẽ không hoạt động"
+
+msgid "Please switch the current company to the one that already has an employee link or contact the administrator to add an employee to the account."
+msgstr "Vui lòng chuyển công ty hiện tại sang công ty đã có liên kết nhân viên hoặc liên hệ với quản trị viên để thêm nhân viên vào tài khoản."
 
 #
 msgid "Close"
@@ -3743,3 +3758,175 @@ msgstr "Dữ liệu của tab này sẽ được sử dụng trên tab 'Quyền`
 #
 msgid "The used license will be total member multiplication with role used license."
 msgstr "Giấy phép đã sử dụng sẽ là tổng số thành viên nhân với giấy phép đã sử dụng trong vai trò."
+
+#
+msgid "Main Document"
+msgstr "Tài liệu chính"
+
+#
+msgid "Opportunity task config"
+msgstr "Cấu hình giao việc"
+
+#
+msgid "Task config"
+msgstr "Cấu hình giao việc"
+
+#
+msgid "Status setup"
+msgstr "Cấu hình trạng thái"
+
+#
+msgid "Task will change to"
+msgstr "Phiếu sẽ chuyển sang"
+
+#
+msgid "To do Status"
+msgstr "Trạng thái việc cần làm"
+
+#
+msgid " if old status is delete"
+msgstr "nếu trạng thái cũ của phiếu bị xoá"
+
+#
+msgid "Assignee Permission"
+msgstr "Quyền của người được giao việc"
+
+#
+msgid "Assignee can edit Start Date and End Date"
+msgstr "có thể sửa ngày bắt đầu/kết thúc"
+
+#
+msgid "Assignee can edit Estimate"
+msgstr "có thể sửa dự tính hoàn thành"
+
+#
+msgid "Assign task in Opportunity/Project"
+msgstr "Giao việc trong cơ hội kinh doanh (CHKD)/dự án"
+
+#
+msgid "Assigner can assign task to everyone"
+msgstr "Người giao việc có thể giao cho tất cả mọi người"
+
+#
+msgid "(1) Can just assign task to Opp/Pro member"
+msgstr "(1) chỉ có thể giao việc cho người trong CHKD/dự án"
+
+#
+msgid "Can just assign task to his/her staffs in his/her department"
+msgstr "chỉ có thể giao việc cho nhân viên trong phòng ban"
+
+#
+msgid "Assign task not in Opportunity/Project"
+msgstr "Giao task không có CHKD/dự án"
+
+#
+msgid "Can just assign task to his/her department member"
+msgstr "Chỉ có thể giao việc cho người trong phòng ban"
+
+#
+msgid "Color"
+msgstr "Màu sắc"
+
+#
+msgid "Click on text to edit."
+msgstr "Click vào tên để sửa."
+
+#
+msgid "Task"
+msgstr "Giao việc"
+
+#
+msgid "Task list page"
+msgstr "Trang giao việc"
+
+#
+msgid "Task list"
+msgstr "Danh sách giao việc"
+
+#
+msgid "Create Task"
+msgstr "Tạo giao việc"
+
+#
+msgid "Detail Task"
+msgstr "Chi tiết giao việc"
+
+#
+msgid "Start date"
+msgstr "Ngày bắt đầu"
+
+#
+msgid "End date"
+msgstr "Ngày kết thúc"
+
+#
+msgid "Estimate"
+msgstr "Dự tính hoàn thành"
+
+#
+msgid "An estimate of how much time you have spent working."
+msgstr "ước lượng khoảng thời gian bỏ ra để làm việc này"
+
+#
+msgid "Log time"
+msgstr "Ghi nhận giờ làm"
+
+#
+msgid "Opp/Project code"
+msgstr "Mã cơ hội kinh doanh/dự án"
+
+#
+msgid "Priority"
+msgstr "Độ ưu tiên"
+
+#
+msgid "Label"
+msgstr "Nhãn"
+
+#
+msgid "Assigner"
+msgstr "Người giao việc"
+
+#
+msgid "Assignee"
+msgstr "Người nhận việc"
+
+#
+msgid "Assign to me"
+msgstr "Giao cho tôi"
+
+#
+msgid "Checklist"
+msgstr "Danh sách kiểm tra"
+
+#
+msgid "Sub task"
+msgstr "Phiếu giao việc con"
+
+#
+msgid "Log time history"
+msgstr "Lịch sử ghi nhận giờ làm"
+
+#
+msgid "Time spent"
+msgstr "Số giờ đã làm"
+
+#
+msgid "Low"
+msgstr "Thấp"
+
+#
+msgid "Medium"
+msgstr "Trung bình"
+
+#
+msgid "High"
+msgstr "Cao"
+
+#
+msgid "Files"
+msgstr "Đính kèm"
+
+#
+msgid "Open a new tab"
+msgstr "Mở với tab mới"

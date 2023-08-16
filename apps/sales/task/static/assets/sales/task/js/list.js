@@ -19,7 +19,7 @@ $(function () {
             let stt_template = $($('.card-parent_template').html());
             // for kanban main task
             stt_template.find('.btn-add-newtask').attr('data-id', item.id)
-            stt_template.find('.tasklist-name').text(item.name)
+            stt_template.find('.tasklist-name').text(item.name).css('background-color', item.task_color)
             stt_template.find('.task-count').text(item.count)
             stt_template.find('.wrap-child').attr('id', `taskID-${item.id}`)
             $('#tasklist_wrap').append(stt_template)
@@ -30,8 +30,14 @@ $(function () {
                     'title': item.name
                 }
                 $('[data-drawer-target="#drawer_task_create"]').trigger('click')
-                $('#selectStatus').attr('data-onload', JSON.stringify(currentData))
-                initSelectBox($('#selectStatus'))
+                // activeDrawer('#drawer_task_create', $('.btn-add-newtask', stt_template));
+                let createFormTask = setInterval(function(){
+                    clearInterval(createFormTask)
+                    const $sttElm = $('#selectStatus')
+                    $sttElm.attr('data-onload', JSON.stringify(currentData))
+                    $sttElm.html('');
+                    $sttElm.initSelect2()
+                }, 1000)
 
             })
 
@@ -76,19 +82,20 @@ $(function () {
         }
 
         deleteTaskAPI(taskID) {
-            return $.fn.callAjax(
-                $urlFact.attr('data-task-detail').format_url_with_uuid(taskID),
-                'DELETE',
-                {},
-                true
-            )
+            return $.fn.callAjax2({
+                'url': $urlFact.attr('data-task-detail').format_url_with_uuid(taskID),
+                'method': 'DELETE'
+            })
         }
 
         renderLogWork(logWorkList) {
             // reset datatable
             let $table = $('#table_log-work')
-            if ($table.hasClass('datatable')) $table.DataTable().clear().draw();
-            $table.DataTable({
+            if ($table.hasClass('dataTable')){
+                $table.DataTable().clear().draw();
+                $table.DataTable().rows.add(logWorkList).draw();
+            }
+            else $table.DataTableDefault({
                 searching: false,
                 ordering: false,
                 paginate: false,
@@ -240,7 +247,10 @@ $(function () {
             if (newTaskElm) elm = newTaskElm.find('.card-title')
             elm.off().on('click', function () {
                 const taskID = $(this).attr('data-task-id')
-                $.fn.callAjax($urlFact.attr('data-task-detail').format_url_with_uuid(taskID), 'GET')
+                $.fn.callAjax2({
+                    'url': $urlFact.attr('data-task-detail').format_url_with_uuid(taskID),
+                    'method': 'GET'
+                })
                     .then((req) => {
                         let data = $.fn.switcherResp(req);
                         if (data?.['status'] === 200) {
@@ -269,12 +279,17 @@ $(function () {
                             $('#inputLabel').attr('value', JSON.stringify(data.label))
                             $('#inputAssigner').val(data.employee_created.last_name + '. ' + data.employee_created.first_name)
                                 .attr('value', data.employee_created.id)
-                            if (data.assign_to.length)
+                            if (data?.assign_to){
+                                data.assign_to.full_name = `${data.assign_to.last_name}. ${data.assign_to.first_name}`
                                 $('#selectAssignTo').attr('data-onload', JSON.stringify(data.assign_to))
+                            }
                             window.editor.setData(data.remark)
                             window.checklist.setDataList = data.checklist
                             window.checklist.render()
-                            initSelectBox($('#selectOpportunity, #selectAssignTo, #selectStatus'))
+                            $('#selectOpportunity, #selectAssignTo, #selectStatus').each(function(){
+                                $(this).html('')
+                                $(this).initSelect2()
+                            })
                             $formElm.addClass('task_edit')
                             if (Object.keys(data.parent_n).length <= 0) $('.create-subtask').removeClass('hidden')
                             else $('.create-subtask').addClass('hidden')
@@ -392,7 +407,7 @@ $(function () {
 
         // on page loaded render task list for task status
         getAndRenderTask() {
-            $.fn.callAjax($urlFact.attr('data-task-list'), 'GET')
+            $.fn.callAjax2({'url':$urlFact.attr('data-task-list'), 'method':'GET'})
                 .then(
                     (req) => {
                         let data = $.fn.switcherResp(req);
@@ -554,7 +569,7 @@ $(function () {
                     if (Object.keys(oppData).length)
                         $oppElm.attr('data-onload', JSON.stringify(oppData)).attr('disabled', true)
                     else $oppElm.removeAttr('data-onload')
-                    initSelectBox($oppElm)
+                    $oppElm.initSelect2()
                 }
             })
         }
@@ -590,7 +605,11 @@ $(function () {
                 "id": $(el).find('.card-title').attr('data-task-id'),
                 "task_status": $(target).attr('id').split('taskID-')[1],
             }
-            $.fn.callAjax($urlFact.attr('data-change-stt'), 'PUT', dataSttUpdate, true)
+            $.fn.callAjax2({
+                'url':$urlFact.attr('data-change-stt'),
+                'method': 'PUT',
+                'data':dataSttUpdate
+            })
                 .then(
                     (req) => {
                         const res = $.fn.switcherResp(req)
@@ -608,9 +627,12 @@ $(function () {
                             }
                             countSTT()
                         }
-                        else drake.cancel(el)
+                        else{
+                            drake.cancel(el)
+                        }
                     },
                     (errs) => {
+                        $.fn.notifyB({'description': errs?.data?.errors}, 'failure')
                         $(el, target).appendTo(source);
                     }
                 )
@@ -652,8 +674,8 @@ $(function () {
     objTask.init();
 
     // init dragula
-    let objDarg = new dragHandle()
-    objDarg.init()
+    let objDrag = new dragHandle()
+    objDrag.init()
 
     // Horizontal scroll
     new PerfectScrollbar('#kb_scroll, #kb_sub_scroll', {

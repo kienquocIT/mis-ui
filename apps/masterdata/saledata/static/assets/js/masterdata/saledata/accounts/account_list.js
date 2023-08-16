@@ -1,37 +1,20 @@
 $(document).ready(function () {
     let tbl = $('#datatable_account_list');
     let tbl2 = tbl.DataTableDefault({
-        processing: true,
-        serverSide: true,
+        useDataServer: true,
         ajax: {
             debug: true,
             url: tbl.attr('data-url'),
             type: tbl.attr('data-method'),
-            data: function (d) {
-                let pageInfo = tbl2.page.info();
-                return {
-                    'page': pageInfo.page + 1,
-                    'pageSize': pageInfo.length,
-                    'search': d.search.value,
-                }
-            },
             dataSrc: function (resp) {
                 let data = $.fn.switcherResp(resp);
                 if (data && data.hasOwnProperty('account_list')) return data['account_list'];
             },
-            dataFilter: function (data) {
-                let dataJson = JSON.parse(data);
-                // dataJson['draw'] = dataJson.data['page_previous'] + 1;
-                dataJson['recordsTotal'] = dataJson.data['page_count'];
-                dataJson['recordsFiltered'] = dataJson.data['page_count'];
-                return JSON.stringify(dataJson);
-            }
         },
         columns: [
             {
                 'render': (data, type, row, meta) => {
-                    let currentId = "chk_sel_" + String(meta.row + 1)
-                    return `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select" id="${currentId}" data-id=` + row.id + `><label class="form-check-label" for="${currentId}"></label></span>`;
+                    return ``;
                 }
             }, {
                 'data': 'name',
@@ -42,12 +25,15 @@ $(document).ready(function () {
             }, {
                 'data': 'account_type',
                 render: (data, type, row, meta) => {
+                    let clsBadgeCurrent = -1;
                     let list_class_badge = ['badge-soft-danger', 'badge-soft-blue', 'badge-soft-primary', 'badge-soft-secondary']
-                    let element = ''
-                    for (let i = 0; i < row.account_type.length; i++) {
-                        element += `<span class="badge ` + list_class_badge[i] + ` mt-1 ml-1">` + row.account_type[i] + `</span>`;
-                    }
-                    return `<div class="row">` + element + `</div>`
+                    let html = (row?.['account_type'] || []).map(
+                        (item)=>{
+                            clsBadgeCurrent += 1;
+                            return `<span class="badge ${list_class_badge[clsBadgeCurrent]} mt-1 ml-1">${item}</span>`;
+                        }
+                    ).join("");
+                    return `<div class="row">${html}</div>`
                 }
             }, {
                 'data': 'owner',

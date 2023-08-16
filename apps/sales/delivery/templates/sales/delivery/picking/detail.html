@@ -17,24 +17,16 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-flush-success btn-animated mr-1 font-5" type="submit" form="picking_form"
-            data-bs-toggle="tooltip" data-bs-placement="top" title="Save"
-            data-bs-original-title="Save">
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="save"></i>
+    <a href="{% url 'OrderPickingEdit' data.pk %}">
+        <button class="btn btn-outline-primary">
+        <span>
+            <span>{% trans 'Edit' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-pen-to-square"></i>
             </span>
         </span>
-    </button>
-    <button class="btn btn-flush-danger btn-animated font-4" type="button" data-bs-toggle="tooltip"
-            data-bs-placement="top" title="Back" data-bs-original-title="Back"
-            onclick="window.history.go(-1); return false;">
-        <span class="icon">
-            <span class="feather-icon">
-                <i class="fas fa-step-backward"></i>
-            </span>
-        </span>
-    </button>
+        </button>
+    </a>
 {% endblock %}
 {% block pageContent %}
     <form id="picking_form" data-url="{% url 'OrderPickingDetailAPI' data.pk %}" data-method="PUT" method="post"
@@ -58,8 +50,8 @@
                            class="form-label">{% trans 'Estimate Delivery Date' %}</label>
                     <div class="input-affix-wrapper">
                         <input type="text" name="estimated_delivery_date" id="inputEstimateDeliveryDate"
-                                class="form-control date-picker" autocomplete="off"/>
-                        <span class="input-suffix"><i class="bi bi-calendar-week"></i></span>
+                                class="form-control date-picker" autocomplete="off" readonly/>
+                        <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
                     </div>
 
                 </div>
@@ -79,10 +71,11 @@
                                 <div class="dropdown-menu w-210p mt-2"></div>
                             </div>
                             <select class="form-control dropdown-select_two" name="warehouse_id" id="inputWareHouse"
-                                    data-prefix="warehouse_list"
+                                    data-keyResp="warehouse_list"
                                     data-url="{% url 'WareHouseListAPI' %}"
                                     data-link-detail="{% url 'WareHouseList' %}?show_detail=1"
                                     data-template-format="[{'name':'Title', 'value': 'title'},{'name':'Code', 'value': 'code'}]"
+                                    disabled
                             >
                             </select>
                         </div>
@@ -98,13 +91,14 @@
             <div class="col-xl-3 col-lg-4 col-md-6 col-12 mb-3">
                 <div class="form-group">
                     <label for="inputToLocation" class="form-label">{% trans 'To Location' %}</label>
-                    <textarea type="text" class="form-control" name="to_location" id="inputToLocation"></textarea>
+                    <textarea type="text" class="form-control" name="to_location" id="inputToLocation"
+                    readonly></textarea>
                 </div>
             </div>
             <div class="col-xl-3 col-lg-4 col-md-6 col-12 mb-3">
                 <div class="form-group">
                     <label for="inputRemarks" class="form-label">{% trans 'Notes' %}</label>
-                    <textarea class="form-control" name="remarks" id="inputRemarks"></textarea>
+                    <textarea class="form-control" name="remarks" id="inputRemarks" readonly></textarea>
                 </div>
             </div>
         </div>
@@ -143,7 +137,7 @@
                                     {% trans 'Done' %}
                                 </span>
                                 <span class="mr-2">{% trans 'All' %}</span>
-                                <input type="checkbox" id="idxDoneAll"/>
+                                <input type="checkbox" id="idxDoneAll" disabled/>
                             </div>
                         </th>
                     </tr>

@@ -42,26 +42,19 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-flush-success btn-animated mr-1 font-5 fw" type="submit" form="delivery_form"
-            data-bs-toggle="tooltip" data-bs-placement="top" title="Save" data-bs-original-title="Save">
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="save"></i>
+    <a href="{% url 'OrderDeliveryEdit' data.pk %}">
+    <button class="btn btn-outline-primary">
+        <span>
+            <span>{% trans 'Edit' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-pen-to-square"></i>
             </span>
         </span>
     </button>
-    <button class="btn btn-flush-danger btn-animated font-4" type="button" data-bs-toggle="tooltip"
-            data-bs-placement="top" title="Back" data-bs-original-title="Back"
-            onclick="window.history.go(-1); return false;">
-        <span class="icon">
-            <span class="feather-icon">
-                <i class="fas fa-step-backward"></i>
-            </span>
-        </span>
-    </button>
+    </a>
 {% endblock %}
 {% block pageContent %}
-    <form id="delivery_form" data-url="{% url 'OrderDeliveryDetailAPI' data.pk %}" data-method="PUT" method="post"
+    <form id="delivery_form" data-url="{% url 'OrderDeliveryDetailAPI' data.pk %}" method="post"
           novalidate data-url-redirect="{% url 'OrderDeliveryList' %}">
         <div class="row mb-3">
             <div class="col-xs-12 col-sm-3 offset-sm-6 offset-xs-0">
@@ -82,9 +75,9 @@
                            class="form-label">{% trans 'Estimated Delivery Date' %}</label>
                     <div class="input-affix-wrapper">
                         <input type="text" name="estimated_delivery_date" id="inputDeliveryDate"
-                               class="form-control date-picker" autocomplete="off">
+                               class="form-control date-picker" autocomplete="off" readonly>
                         <span class="input-suffix">
-                            <i class="bi bi-calendar-week"></i>
+                            <i class="fa-solid fa-calendar-days"></i>
                         </span>
                     </div>
                 </div>
@@ -94,7 +87,7 @@
                     <label for="customer_id" class="form-label">{% trans 'to Customer' %}</label>
                     <div class="input-group">
                         <div class="dropdown input-group-text pointer">
-                            <i class="fas fa-info-circle"
+                            <i class="fas fa-info-circle text-blue"
                                data-bs-toggle="dropdown"
                                data-dropdown-animation
                                aria-haspopup="true"
@@ -111,9 +104,9 @@
                     <label for="inputActualDate" class="form-label">{% trans 'Actual Date' %}</label>
                     <div class="input-affix-wrapper">
                         <input type="text" name="actual_delivery_date" id="inputActualDate"
-                               class="form-control date-picker" autocomplete="off">
+                               class="form-control date-picker" autocomplete="off" readonly>
                         <span class="input-suffix">
-                            <i class="bi bi-calendar-week"></i>
+                            <i class="fa-solid fa-calendar-days"></i>
                         </span>
                     </div>
                 </div>
@@ -123,7 +116,7 @@
                     <label for="contact_id" class="form-label">{% trans 'Contact name' %}</label>
                     <div class="input-group">
                         <div class="dropdown input-group-text pointer">
-                            <i class="fas fa-info-circle"
+                            <i class="fas fa-info-circle text-blue"
                                data-bs-toggle="dropdown"
                                data-dropdown-animation
                                aria-haspopup="true"
@@ -143,7 +136,7 @@
             <div class="col-xs-12 col-sm-6 offset-sm-6 offset-xs-0">
                 <div class="form-group">
                     <label for="textareaRemarks" class="form-label">{% trans 'Notes' %}</label>
-                    <textarea class="form-control" name="remarks" id="textareaRemarks"></textarea>
+                    <textarea class="form-control" name="remarks" id="textareaRemarks" readonly></textarea>
                 </div>
             </div>
         </div>

@@ -17,11 +17,15 @@ $(document).ready(function () {
         let eleSecondManTitle = $('#group-second-manager-title-detail');
         let eleFirstManAssign = $('#select-box-first-manager-detail');
         let eleSecondManAssign = $('#select-box-second-manager-detail');
-        $.fn.callAjax(url, method).then(
+        $.fn.callAjax2({
+            url: url,
+            method: method,
+        }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     if (data.hasOwnProperty('group')) {
+                        $x.fn.renderCodeBreadcrumb(data?.['group']);
                         eleGroupLevel.val("level " + data.group.group_level.level);
                         eleParent.val(data.group.parent_n.title);
                         eleRefTitle.val(data.group.group_level.description);

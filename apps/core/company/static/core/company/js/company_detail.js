@@ -28,4 +28,9 @@ $(document).ready(function () {
     if ($("input[name=representative_fullname]").val() === '') {
         $("input[name=representative_fullname]").val($("input[name=default_representative_name]").val())
     }
+
+    console.log('renderCodeBreadcrumb: ', $('#form-code').val())
+    $x.fn.renderCodeBreadcrumb({
+        'code': $('#form-code').val(),
+    })
 });

@@ -294,9 +294,9 @@ class BreadcrumbView:
 
     USER_CREATE_PAGE = USER_LIST_PAGE + [BreadcrumbItem.USER_CREATE_PAGE]
 
-    USER_DETAIL_PAGE = USER_LIST_PAGE + [BreadcrumbItem.USER_DETAIL_PAGE]
+    USER_DETAIL_PAGE = USER_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
 
-    USER_EDIT_PAGE = USER_LIST_PAGE + [BreadcrumbItem.USER_EDIT_PAGE]
+    USER_EDIT_PAGE = USER_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
     GROUP_LEVEL_LIST_PAGE = [
         BreadcrumbItem.HOME_PAGE,
@@ -317,6 +317,8 @@ class BreadcrumbView:
         BreadcrumbItem.HOME_PAGE,
         BreadcrumbItem.COMPANY_PAGE,
     ]
+    COMPANY_DETAIL_PAGE = COMPANY_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    COMPANY_UPDATE_PAGE = COMPANY_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
     COMPANY_OVERVIEW_PAGE = [
         BreadcrumbItem.HOME_PAGE,

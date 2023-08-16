@@ -27,6 +27,7 @@ class RoleForm {
     }
 
     static loadDetail(detailData, memberOpts) {
+        $x.fn.renderCodeBreadcrumb(detailData, 'abbreviation');
         RoleForm.titleEle.val(detailData?.title || '');
         RoleForm.codeEle.val(detailData?.abbreviation || '');
         RoleLoadPage.loadMembers(detailData?.holder || [], memberOpts || {});

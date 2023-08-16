@@ -16,7 +16,7 @@
     </a>
 {% endblock %}
 {% block pageContent %}
-    <input type="text" id="inp-company_current_id" hidden>
+    <span id="pageDataHide" data-url="{% url 'UserDetailAPI' pk=pk %}"></span>
     <div class="row">
         <div class="col-6 col-lg-4">
             <div class="form-group">
@@ -95,5 +95,6 @@
 
 {% endblock %}
 {% block jsFooter %}
+    <script src="{% static 'assets/js/core/account/user_common.js' %}"></script>
     <script src="{% static 'assets/js/core/account/user_detail.js' %}"></script>
 {% endblock %}

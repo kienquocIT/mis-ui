@@ -14,7 +14,7 @@
     </button>
 {% endblock %}
 {% block pageContent %}
-    <input type="text" id="inp-company_current_id" hidden>
+    <span id="pageDataHide" data-url="{% url 'UserDetailAPI' pk=pk %}"></span>
     <form data-url="" data-url-redirect="/" data-method="PUT" id="form-edit-user">
         {% csrf_token %}
         <div class="row">
@@ -70,5 +70,6 @@
 
 {% endblock %}
 {% block jsFooter %}
+    <script src="{% static 'assets/js/core/account/user_common.js' %}"></script>
     <script src="{% static 'assets/js/core/account/user_edit.js' %}"></script>
 {% endblock %}

@@ -39,18 +39,18 @@
                             <div class="form-group">
                                 <label class="form-label required">{% trans "Name" %}</label>
                                 <input id="inp-account-name" class="form-control inp-required"
-                                       placeholder="Cong ty phan mem MT Solutions" name="name">
+                                       placeholder="" name="name">
                             </div>
                         </div>
                         <div class="row">
                             <div class="form-group col-5">
                                 <label class="form-label required">{% trans "Account Code" %}</label>
-                                <input id="inp-account-code" class="form-control" placeholder="MT001" name="code"
+                                <input id="inp-account-code" class="form-control" placeholder="" name="code"
                                        oninput="this.value=this.value.toUpperCase()">
                             </div>
                             <div class="form-group col-7">
                                 <label class="form-label">{% trans "Website" %}</label>
-                                <input class="form-control" placeholder="www.mt001.com" name="website">
+                                <input class="form-control" placeholder="" name="website">
                             </div>
                         </div>
                     </div>
@@ -104,7 +104,7 @@
                             <div class="form-group">
                                 <label class="form-label required">{% trans "Account Type" %}</label>
                                 <select id="select-box-acc-type" name=""
-                                        class="form-control select2 select2-multiple select2-required"
+                                        class="form-select select2 select2-multiple select2-required"
                                         multiple
                                         data-method="GET"
                                         data-url="{% url "AccountTypeListAPI" %}">
@@ -153,7 +153,7 @@
                             <div class="form-group col-5">
                                 <label class="form-label" id="tax-code-label">{% trans "Tax Code" %}</label>
                                 <input type="text" class="form-control" name="tax_code" id="inp-tax-code"
-                                       placeholder="Input tax code">
+                                       placeholder="">
                             </div>
                             <div class="form-group col-7">
                                 <label class="form-label required">{% trans "Industry" %}</label>
@@ -172,7 +172,6 @@
                             <div class="form-group col-5">
                                 <label class="form-label">{% trans "Annual Revenue" %}</label>
                                 <select id="select-box-annual-revenue" name="annual_revenue" class="form-select">
-                                    <option value="0"></option>
                                     {% for item in data.customer_revenue %}
                                         <option value="{{ item.value }}">{{ item.name }}</option>
                                     {% endfor %}
@@ -181,7 +180,6 @@
                             <div class="form-group col-7">
                                 <label class="form-label" id="total_employees_label">{% trans "Total Employees" %}</label>
                                 <select id="select-box-total-emp" name="total_employees" class="form-select select-required">
-                                    <option value="0"></option>
                                     {% for item in data.company_size %}
                                         <option value="{{ item.value }}">{{ item.name }}</option>
                                     {% endfor %}
@@ -207,11 +205,11 @@
                         <div class="row">
                             <div class="form-group col-5">
                                 <label class="form-label">{% trans "Phone Number" %}</label>
-                                <input type="text" class="form-control" name="phone" placeholder="+843756323455">
+                                <input type="text" class="form-control" name="phone" placeholder="">
                             </div>
                             <div class="form-group col-7">
                                 <label class="form-label">{% trans "Email" %}</label>
-                                <input type="text" class="form-control" name="email" placeholder="abc@gmail.com" id="inp-email">
+                                <input type="text" class="form-control" name="email" placeholder="" id="inp-email">
                             </div>
                         </div>
                     </div>
@@ -325,8 +323,7 @@
                         <div class="row">
                             <div class="form-group">
                                 <label class="label-field form-label required">{% trans "Province/City" %}</label>
-                                <select class="form-select" id="shipping-city" data-url="{% url "CityListAPI" %}" data-method="GET">
-                                </select>
+                                <select class="form-select" id="shipping-city" data-country-id data-url="{% url "CityListAPI" %}" data-method="GET"></select>
                             </div>
                         </div>
                         <div class="row">
@@ -562,4 +559,6 @@
 {% block jsFooter %}
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
     <script src="{% static 'assets/js/masterdata/saledata/accounts/account_create.js' %}"></script>
+{#    <script src="{% static 'assets/js/masterdata/saledata/accounts/account_create2.js' %}"></script>#}
+{#    <script src="{% static 'assets/js/masterdata/saledata/accounts/temp.js' %}"></script>#}
 {% endblock %}

@@ -1751,6 +1751,114 @@ class UtilControl {
 
 class DTBControl {
     // Handle every thing about DataTable
+    static getRowData(ele$) {
+        // element call from in row of DataTable
+        let row = $(ele$).closest('tr');
+        return $($(ele$).closest('table')).DataTable().row(row).data();
+    }
+
+    static deleteRow(ele$) {
+        $(ele$).closest('table').DataTable().row($(ele$).parents('tr')).remove().draw();
+    }
+
+    static updateDataRow(clsThis, func, isDraw = false) {
+        clsThis = $(clsThis).closest('tr');
+        let dtb = $(clsThis).closest('table').DataTable();
+        let rowIdx = dtb.row(clsThis).index();
+        let rowData = $x.fn.getRowData($(clsThis));
+        let newData = func(clsThis, rowIdx, rowData);
+        let dtbAfter = dtb.row(rowIdx).data(newData);
+        if (isDraw === true) {
+            dtbAfter.draw(false);
+        }
+    }
+
+    checkRowSelect(opts) {
+        let $this = this
+        if (opts?.['fullToolbar'] === true)
+            // init on click when enable count select
+            $('.check-select, .check-select-all', this.dtb$).on('change', function (e) {
+                e.stopPropagation()
+                if ($(this).hasClass('check-select-all')) {
+                    // continue
+                    let listData = $(this).closest('table').DataTable().rows({page: 'current'}).data().toArray()
+                    $('.check-select', $this.dtb$).prop('checked', this.checked)
+                    for (let item of listData) {
+                        $this.setRowSelected = {
+                            item: item,
+                            idTable: $(this).closest('table').attr('id'),
+                            checked: this.checked
+                        }
+                    }
+                } else {
+                    const rowData = $(this).closest('table').DataTable().row($(this).closest('tr')).data();
+                    $this.setRowSelected = {
+                        item: rowData,
+                        idTable: $(this).closest('table').attr('id'),
+                        checked: this.checked
+                    }
+
+                }
+                // count and print to text noti in toolbar
+                const allData = $this.getRowSelected
+                $('.count_selected').html($.fn.transEle.attr('data-datatable-count-txt').replace(
+                    '{0}',
+                    Object.keys(allData[$(this).closest('table').attr('id')]).length
+                ))
+            });
+    }
+
+    reCheckSelect(sgs) {
+        const ckAll = $('.check-select-all', $(sgs.oInstance))
+        if (ckAll.length) ckAll.prop('checked', false)
+        let rowSelect = this.getRowSelected
+        rowSelect = rowSelect[sgs.sInstance] || {}
+        let isFull = true
+        if (Object.keys(rowSelect).length > 0) {
+            for (let item of sgs?.aoData) {
+                if (rowSelect[item?._aData?.id]) {
+                    item._aData.checked = true
+                    $('input', item.anCells[0]).attr('checked', true)
+                } else {
+                    isFull = false
+                    item._aData.checked = false
+                }
+            }
+        } else isFull = false
+        if (isFull) ckAll.prop('checked', true)
+    }
+
+    static getTableSelected(tableID) {
+        let dataList = $('#tbl-stored').text()
+        if (dataList) dataList = JSON.parse(dataList)
+        dataList = dataList[tableID] || {}
+        return dataList
+    }
+
+    static prepareHTMLToolbar(divWrap, _settgs) {
+        // show selected show count select is display
+        $('.count_selected', divWrap).html(`<p>${
+            $.fn.transEle.attr('data-datatable-count-txt').replace('{0}', '0')}</p>`)
+        divWrap.find('.select2:not(:disabled)').initSelect2();
+        // show column show/hide
+        const $custom_tb = $('.custom_toolbar', divWrap).append(
+            `<div class="dropdown ct_toolbar-columns">` +
+            `<button data-bs-toggle="dropdown" class="btn btn-outline-light dropdown-toggle" type="button">` +
+            `<i class="fa-solid fa-list"></i></button><div role="menu" class="dropdown-menu p-4"></div></div>`
+        )
+        let columnList = `<div class="form-check form-check-sm">` +
+            `<input type="checkbox" class="form-check-input check_all" id="tb_columns-all" checked>` +
+            `<label class="form-check-label" for="tb_columns-all">${$.fn.transEle.attr('data-all')}</label></div><hr class="mt-1 mb-1">`;
+        for (let item of _settgs.aoColumns) {
+            if (item?.data) {
+                columnList += `<div class="form-check form-check-sm">` +
+                    `<input type="checkbox" class="form-check-input" data-column="${item.idx}" id="tb_columns-${item.idx}" checked>` +
+                    `<label class="form-check-label" for="customChecks1">${item.sTitle}</label></div>`
+            }
+        }
+        $('.ct_toolbar-columns .dropdown-menu', divWrap).html(columnList)
+    }
+
     set setRowSelected(rowData) {
         let temp = this.dataSelect
         if (!temp.hasOwnProperty(rowData.idTable))
@@ -1771,11 +1879,11 @@ class DTBControl {
         return this.dataSelect
     }
 
-    static parseHeaderDropdownFilter(opts, settings, api) {
+    static parseHeaderDropdownFilter(columns, settings, api) {
         let $thead = api.table().header();
         let hasColHeaderFilter = false;
         let rowColFilterEle = $(`<tr class="row-custom-filter"></tr>`);
-        (opts?.['columns'] || []).map(
+        (columns || []).map(
             (item) => {
                 let colFilter = item?.['colFilter'];
                 if (colFilter) {
@@ -1911,43 +2019,49 @@ class DTBControl {
         return result;
     }
 
-    parseDtlOpts(opts) {
-        let clsThis = this;
+    get reloadCurrency() {
+        let reloadCurrency = this.opts?.['reloadCurrency'];
+        return $.fn.isBoolean(reloadCurrency) ? reloadCurrency : false;
+    }
 
-        // init table
-        let [parsedOpts, domDTL] = DTBControl.parseDomDtl(opts);
-
-        // reload currency in table
-        let reloadCurrency = opts?.['reloadCurrency'];
-        if (opts.hasOwnProperty('reloadCurrency')) delete opts['reloadCurrency'];
-        reloadCurrency = $.fn.isBoolean(reloadCurrency) ? reloadCurrency : false;
-
-        // row callback |  rowIdx = true
-        let rowIdx = opts?.['rowIdx'];
-        if (opts.hasOwnProperty('rowIdx')) delete opts['rowIdx'];
-        let callbackRenderIdx = rowIdx === true ? function (pageInfo, row, data, index) {
-            $('td:eq(0)', row).html(pageInfo.start + index + 1)
-        } : function () {
-        };
-
-        // ajax
-        if (opts?.['ajax']) {
-            if (opts['ajax']['url']) {
-                if (!opts['ajax']?.['error']) {
-                    opts['ajax']['error'] = function (xhr, error, thrown) {
+    appendErrorConfirmAjax() {
+        if (this.opts?.['ajax']) {
+            if (this.opts['ajax']['url']) {
+                if (!this.opts['ajax']?.['error']) {
+                    this.opts['ajax']['error'] = function (xhr, error, thrown) {
                         $.fn.switcherResp(xhr?.['responseJSON']);
                         if ($.fn.isDebug() === true) console.log(xhr, error, thrown);
                     }
                 }
             } else {
-                if ($.fn.isDebug() === true) console.log('Ajax table cancels load data because config url Ajax is blank. Please config it, then try again!', {...opts});
-                delete opts['ajax'];
-                opts['data'] = [];
+                if ($.fn.isDebug() === true) console.log('Ajax table cancels load data because config url Ajax is blank. Please config it, then try again!', {...this.opts});
+                delete this.opts['ajax'];
+                this.opts['data'] = [];
+            }
+        }
+        if (isDenied) { // global variable
+            // denied ajax and empty data
+            if (this.opts.hasOwnProperty('ajax')) delete this.opts['ajax'];
+            this.opts['data'] = [];
+        } else {
+            if (this.opts?.['ajax']) {
+                // has ajax , remove data
+                if (this.opts.hasOwnProperty('data')) {
+                    delete this.opts['data'];
+                }
+            } else {
+                // hasn't ajax, add data empty
+                this.opts['data'] = [];
             }
         }
 
+        return true;
+    }
+
+    setUpUseDataServer() {
+        let clsThis = this;
         // config server side processing
-        if (opts['useDataServer']) {
+        if (this.opts['useDataServer']) {
             // server side v
             let setupServerSide = {
                 processing: true,
@@ -1955,7 +2069,7 @@ class DTBControl {
                 ordering: true,
                 searchDelay: 1000,
                 order: [],
-                ajax: $.extend(opts['ajax'], {
+                ajax: $.extend(this.opts['ajax'], {
                     data: function (d) {
                         let orderTxt = ''
                         if (d?.order.length) {
@@ -1995,37 +2109,100 @@ class DTBControl {
                         return JSON.stringify(json);
                     },
                     headers: {
-                        "ENABLEXCACHECONTROL": !!(opts?.['ajax']?.['cache']) ? 'true' : 'false',
+                        "ENABLEXCACHECONTROL": !!(this.opts?.['ajax']?.['cache']) ? 'true' : 'false',
                     },
                 })
             }
-            opts = $.extend(opts, setupServerSide)
+            this.opts = $.extend(this.opts, setupServerSide)
         }
+    }
 
+    get callbackGetLinkBlank() {
+        return this.opts?.['callbackGetLinkBlank'] || function (rowData) {
+            // return url was converted
+            return null;
+        }
+    }
+
+    get callbackRenderIdx() {
+        let clsThis = this;
+        // row callback |  rowIdx = true
+        let rowIdx = this.opts?.['rowIdx'];
+        if (rowIdx === true) {
+            return function (pageInfo, row, data, index) {
+                let counter = pageInfo.start + index + 1;
+                let htmlDisplay = `${counter}`;
+                let callbackGetLinkBlank = clsThis.callbackGetLinkBlank;
+                let urlTargetHTML = callbackGetLinkBlank ? callbackGetLinkBlank(data) : null;
+                if (urlTargetHTML) {
+                    htmlDisplay = `<a 
+                    href="${urlTargetHTML}" 
+                    target="_blank" 
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="bottom" 
+                    title="${$.fn.transEle.attr('data-msg-open-new-tab')}"
+                >${counter}</a>`;
+                }
+                $('td:eq(0)', row).html(htmlDisplay);
+            }
+        }
+        return function (pageInfo, row, data, index) {
+        };
+    }
+
+    get mergeDrawCallback() {
+        let clsThis = this;
         // merge two drawCallback function
-        let drawCallback01 = function () {
-        }
-        if (opts.hasOwnProperty('drawCallback')) {
-            drawCallback01 = opts['drawCallback'];
-            delete opts['drawCallback'];
-        }
+        let drawCallback01 = this.opts?.['drawCallback'] || function (settings) {
+        };
         let drawCallBackDefault = function (settings) {
             $('.dataTables_paginate > .pagination').addClass('custom-pagination pagination-rounded pagination-simple');
             feather.replace();
             // reload all currency
-            if (reloadCurrency === true) $.fn.initMaskMoney2();
+            if (clsThis.reloadCurrency === true) $.fn.initMaskMoney2();
             // buildSelect2();
             setTimeout(() => DocumentControl.buildSelect2(), 0);
         }
-
-        let rowCallbackManual = function () {
-        };
-        if (parsedOpts.hasOwnProperty('rowCallback')) {
-            rowCallbackManual = parsedOpts?.['rowCallback'];
+        return function (settings) {
+            drawCallback01(settings);
+            drawCallBackDefault(settings);
         }
+    }
 
-        // return data
-        let configFinal = {
+    get mergeRowCallback() {
+        let clsThis = this;
+        let rowCallbackManual = this.opts?.['rowCallback'] || function (row, data, index) {
+        };
+        return function (row, data, index) {
+            rowCallbackManual(row, data, index);
+            let callbackRenderIdx = clsThis.callbackRenderIdx;
+            callbackRenderIdx($(this).DataTable().page.info(), row, data, index);
+        }
+    }
+
+    get mergeInitComplete() {
+        return function (settings) {
+            $(this.api().table().container()).find('input').attr('autocomplete', 'off');
+
+            // show header select when options are in setup
+            DTBControl.parseHeaderDropdownFilter(
+                (this.opts?.['columns'] || []), settings, this.api()
+            );
+            // end if check searching column
+        }
+    }
+
+    parseDtlOpts() {
+        // init table
+        let [domOpts, domDTL] = DTBControl.parseDomDtl(this.opts);
+
+        // ajax
+        this.appendErrorConfirmAjax();
+
+        // config server side processing
+        this.setUpUseDataServer();
+
+        return {
             // scrollY: '400px',
             // scrollCollapse: true,
             // fixedHeader: true,
@@ -2042,150 +2219,21 @@ class DTBControl {
                 [5, 10, 25, 50, -1], [5, 10, 25, 50, $.fn.transEle.attr('data-all')],
             ],
             pageLength: 5,
-            drawCallback: function (settings) {
-                drawCallback01(settings)
-                drawCallBackDefault(settings)
-            },
-            initComplete: function (settings) {
-                $(this.api().table().container()).find('input').attr('autocomplete', 'off');
-
-                // show header select when options are in setup
-                DTBControl.parseHeaderDropdownFilter(opts, settings, this.api())
-                // end if check searching column
-            },
-            rowCallback: function (row, data, index) {
-                rowCallbackManual(row, data, index);
-                callbackRenderIdx($(this).DataTable().page.info(), row, data, index);
-            },
-            data: [], ...parsedOpts,
+            drawCallback: this.mergeDrawCallback,
+            initComplete: this.mergeInitComplete,
+            rowCallback: this.mergeRowCallback,
+            ...domOpts,
         };
-
-        // ajax delete data
-        if (configFinal?.['ajax'] && configFinal.hasOwnProperty('data')) delete configFinal['data'];
-
-        if (isDenied) {
-            if (configFinal.hasOwnProperty('ajax')) delete configFinal['ajax'];
-            configFinal['data'] = [];
-        }
-
-        // returned
-        return configFinal;
-    }
-
-    static getRowData(ele$) {
-        // element call from in row of DataTable
-        let row = $(ele$).closest('tr');
-        return $($(ele$).closest('table')).DataTable().row(row).data();
-    }
-
-    static deleteRow(ele$) {
-        $(ele$).closest('table').DataTable().row($(ele$).parents('tr')).remove().draw();
-    }
-
-    static updateDataRow(clsThis, func, isDraw = false) {
-        clsThis = $(clsThis).closest('tr');
-        let dtb = $(clsThis).closest('table').DataTable();
-        let rowIdx = dtb.row(clsThis).index();
-        let rowData = $x.fn.getRowData($(clsThis));
-        let newData = func(clsThis, rowIdx, rowData);
-        let dtbAfter = dtb.row(rowIdx).data(newData);
-        if (isDraw === true) {
-            dtbAfter.draw(false);
-        }
-    }
-
-    checkRowSelect(opts) {
-        let $this = this
-        if (opts?.['fullToolbar'] === true)
-            // init on click when enable count select
-            $('.check-select, .check-select-all', this.dtb$).on('change', function (e) {
-                e.stopPropagation()
-                if ($(this).hasClass('check-select-all')) {
-                    // continue
-                    let listData = $(this).closest('table').DataTable().rows({page: 'current'}).data().toArray()
-                    $('.check-select', $this.dtb$).prop('checked', this.checked)
-                    for (let item of listData) {
-                        $this.setRowSelected = {
-                            item: item,
-                            idTable: $(this).closest('table').attr('id'),
-                            checked: this.checked
-                        }
-                    }
-                } else {
-                    const rowData = $(this).closest('table').DataTable().row($(this).closest('tr')).data();
-                    $this.setRowSelected = {
-                        item: rowData,
-                        idTable: $(this).closest('table').attr('id'),
-                        checked: this.checked
-                    }
-
-                }
-                // count and print to text noti in toolbar
-                const allData = $this.getRowSelected
-                $('.count_selected').html($.fn.transEle.attr('data-datatable-count-txt').replace(
-                    '{0}',
-                    Object.keys(allData[$(this).closest('table').attr('id')]).length
-                ))
-            });
-    }
-
-    reCheckSelect(sgs) {
-        const ckAll = $('.check-select-all', $(sgs.oInstance))
-        if (ckAll.length) ckAll.prop('checked', false)
-        let rowSelect = this.getRowSelected
-        rowSelect = rowSelect[sgs.sInstance] || {}
-        let isFull = true
-        if (Object.keys(rowSelect).length > 0) {
-            for (let item of sgs?.aoData) {
-                if (rowSelect[item?._aData?.id]) {
-                    item._aData.checked = true
-                    $('input', item.anCells[0]).attr('checked', true)
-                } else {
-                    isFull = false
-                    item._aData.checked = false
-                }
-            }
-        } else isFull = false
-        if (isFull) ckAll.prop('checked', true)
-    }
-
-    static getTableSelected(tableID) {
-        let dataList = $('#tbl-stored').text()
-        if (dataList) dataList = JSON.parse(dataList)
-        dataList = dataList[tableID] || {}
-        return dataList
-    }
-
-    static prepareHTMLToolbar(divWrap, _settgs) {
-        // show selected show count select is display
-        $('.count_selected', divWrap).html(`<p>${
-            $.fn.transEle.attr('data-datatable-count-txt').replace('{0}', '0')}</p>`)
-        divWrap.find('.select2:not(:disabled)').initSelect2();
-        // show column show/hide
-        const $custom_tb = $('.custom_toolbar', divWrap).append(
-            `<div class="dropdown ct_toolbar-columns">` +
-            `<button data-bs-toggle="dropdown" class="btn btn-outline-light dropdown-toggle" type="button">` +
-            `<i class="fa-solid fa-list"></i></button><div role="menu" class="dropdown-menu p-4"></div></div>`
-        )
-        let columnList = `<div class="form-check form-check-sm">` +
-            `<input type="checkbox" class="form-check-input check_all" id="tb_columns-all" checked>` +
-            `<label class="form-check-label" for="tb_columns-all">${$.fn.transEle.attr('data-all')}</label></div><hr class="mt-1 mb-1">`;
-        for (let item of _settgs.aoColumns) {
-            if (item?.data) {
-                columnList += `<div class="form-check form-check-sm">` +
-                    `<input type="checkbox" class="form-check-input" data-column="${item.idx}" id="tb_columns-${item.idx}" checked>` +
-                    `<label class="form-check-label" for="customChecks1">${item.sTitle}</label></div>`
-            }
-        }
-        $('.ct_toolbar-columns .dropdown-menu', divWrap).html(columnList)
     }
 
     constructor(dtb$) {
-        this.dtb$ = $(dtb$)
-        this.dataSelect = {}
+        this.dtb$ = $(dtb$);
+        this.dataSelect = {};
+        this.opts = {};
     }
 
     init(opts) {
+        this.opts = opts;
         let tbl = this.dtb$.DataTable(this.parseDtlOpts(opts));
         let $this = this;
         tbl.on('init.dt', function (event, settings) {
@@ -2627,6 +2675,17 @@ class DocumentControl {
             }
         }
     }
+
+    static buttonLinkBlank(url, iconHtml = '<i class="fa-solid fa-arrow-up-right-from-square"></i>') {
+        return `<a href="${url}" target="_blank">
+            <button 
+                class="btn btn-link btn-xs"
+                data-bs-toggle="tooltip"
+                data-bs-placement="bottom" 
+                title="${$.fn.transEle.attr('data-msg-open-new-tab')}"
+            >${iconHtml}</button>
+        </a>`;
+    }
 }
 
 let $x = {
@@ -2663,6 +2722,7 @@ let $x = {
         renderAvatar: PersonControl.renderAvatar,
 
         renderCodeBreadcrumb: DocumentControl.renderCodeBreadcrumb,
+        buttonLinkBlank: DocumentControl.buttonLinkBlank,
     },
 }
 

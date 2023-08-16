@@ -1,8 +1,10 @@
 /*Blog Init*/
 $(function () {
     let tb = $('#datable_employee_list');
+    let urlDetail = tb.attr('data-url-detail');
     tb.DataTableDefault({
         rowIdx: true,
+        useDataServer: true,
         ajax: {
             url: tb.attr('data-url'),
             type: tb.attr('data-method'),
@@ -14,21 +16,19 @@ $(function () {
                 return [];
             }
         },
+        callbackGetLinkBlank: function (rowData){
+            return rowData.id ? urlDetail.replace('__pk__', rowData.id) : null;
+        },
         columns: [
             {
                 'render': (data, type, row, meta) => {
-                    // let currentId = "chk_sel_" + String(meta.row + 1)
-                    // return `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select" id="${currentId}"><label class="form-check-label" for="${currentId}"></label></span>`;
                     return '';
                 }
             }, {
                 'data': 'code',
                 render: (data, type, row, meta) => {
-                    // return String.format(`<b>{0}</b>`, data);
-                    let urlEmployeeDetail = "/hr/employee/detail/" + row.id
-                    return `<a href="${urlEmployeeDetail}">
-                    <span><b>${data}</b></span>
-                </a>`
+                    let urlEmployeeDetail = urlDetail.replace('__pk__', row.id);
+                    return `<a href="${urlEmployeeDetail}"><span class="badge badge-primary">${data}</span></a>`;
                 }
             }, {
                 'data': 'full_name',

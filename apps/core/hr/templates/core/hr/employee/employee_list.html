@@ -20,8 +20,10 @@
 
 {% block pageContent %}
     <table
-            id="datable_employee_list" class="table nowrap w-100 mb-5" data-url="{% url 'EmployeeListAPI' %}"
+            id="datable_employee_list" class="table nowrap w-100 mb-5"
+            data-url="{% url 'EmployeeListAPI' %}"
             data-method="GET"
+            data-url-detail="{% url 'EmployeeDetail' pk='__pk__' %}"
     >
         <thead>
         <tr>

@@ -3927,3 +3927,6 @@ msgstr "Cao"
 msgid "Files"
 msgstr "Đính kèm"
 
+#
+msgid "Open a new tab"
+msgstr "Mở với tab mới"

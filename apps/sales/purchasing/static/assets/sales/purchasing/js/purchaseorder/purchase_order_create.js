@@ -7,7 +7,7 @@ $(function () {
         let elePurchaseRequest = $('#purchase-order-purchase-request');
         let elePurchaseQuotation = $('#purchase-order-purchase-quotation');
         let eleBoxSupplier = $('#box-purchase-order-supplier');
-        let eleCommonArea = $('#common-information-area');
+        let eleBoxContact = $('#box-purchase-order-contact');
         // Tables
         let tablePurchaseRequest = $('#datable-purchase-request');
         let tablePurchaseRequestProduct = $('#datable-purchase-request-product');
@@ -40,17 +40,13 @@ $(function () {
 // EVENTS
         // Action on change dropdown supplier
         eleBoxSupplier.on('change', function () {
-            let optionSelected = eleBoxSupplier[0].options[eleBoxSupplier[0].selectedIndex];
-            if (optionSelected) {
-                if (optionSelected.querySelector('.data-info')) {
-                    let data = JSON.parse(optionSelected.querySelector('.data-info').value);
-                    // load Contact by supplier
-                    if (data.id && data.owner) {
-                        POLoadDataHandle.loadBoxContact(data.owner.id, data.id);
-                    }
-                } else { // No Value => load again dropdowns
-                    POLoadDataHandle.loadBoxContact();
-                }
+            let dataSelected = SelectDDControl.get_data_from_idx(eleBoxSupplier, $(this).val());
+            if (dataSelected) {
+                eleBoxContact.empty();
+                POLoadDataHandle.loadBoxContact(dataSelected.owner, dataSelected.id);
+            } else { // No Value => load again dropdowns
+                eleBoxContact.empty();
+                POLoadDataHandle.loadBoxContact();
             }
             POLoadDataHandle.loadMoreInformation($(this));
         });

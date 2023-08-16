@@ -8,7 +8,7 @@ class POLoadDataHandle {
     static loadMoreInformation(ele, is_span = false) {
         let optionSelected = null;
         if (is_span === false) {
-            optionSelected = ele[0].options[ele[0].selectedIndex];
+            optionSelected = ele;
         } else {
             optionSelected = ele[0]
         }
@@ -18,14 +18,21 @@ class POLoadDataHandle {
         eleInfo.setAttribute('disabled', true);
         let link = "";
         if (optionSelected) {
-            let eleData = optionSelected.querySelector('.data-info');
-            if (eleData) {
+            let data = {};
+            if (is_span === false) {
+                data = SelectDDControl.get_data_from_idx(ele, ele.val());
+            } else {
+                let eleData = optionSelected.querySelector('.data-info');
+                if (eleData) {
+                    data = JSON.parse(eleData.value)
+                }
+            }
+            if (Object.keys(data).length !== 0) {
                 // remove attr disabled
                 if (eleInfo) {
                     eleInfo.removeAttribute('disabled');
                 }
                 // end
-                let data = JSON.parse(eleData.value);
                 let info = ``;
                 info += `<h6 class="dropdown-header header-wth-bg">${$.fn.transEle.attr('data-more-information')}</h6>`;
                 for (let key in data) {
@@ -63,10 +70,11 @@ class POLoadDataHandle {
         POLoadDataHandle.loadMoreInformation(ele);
     };
 
-    static loadBoxContact(dataContact = {}) {
+    static loadBoxContact(dataContact = {}, supplierID = null) {
         let ele = POLoadDataHandle.contactSelectEle;
         ele.initSelect2({
             data: dataContact,
+            'dataParams': {'account_name_id': supplierID},
             disabled: !(ele.attr('data-url')),
             callbackTextDisplay: function (item) {
                 return item?.['fullname'] || '';
@@ -401,10 +409,10 @@ class POLoadDataHandle {
             is_check = true;
             let pqID = eleChecked.id;
             let pqCode = eleChecked.closest('tr').querySelector('.table-row-code').innerHTML;
-            let pqSupplierID = eleChecked.closest('tr').querySelector('.table-row-supplier').id;
+            let pqSupplier = eleChecked.closest('tr').querySelector('.table-row-supplier').getAttribute('data-supplier');
             let link = "";
             eleAppend += `<div class="inline-elements-badge mr-2 mb-1" id="${pqID}">
-                                    <input class="form-check-input checkbox-circle checkbox-quotation" type="checkbox" id="${pqID}" data-supplier-id="${pqSupplierID}" value="option1">
+                                    <input class="form-check-input checkbox-circle checkbox-quotation" type="checkbox" id="${pqID}" data-supplier="${pqSupplier}" value="option1">
                                     <a href="${link}" target="_blank" class="link-primary underline_hover ml-3"><span>${pqCode}</span></a>
                                     <button type="button" class="btn btn-link btn-sm custom-btn-remove" id="${pqID}" aria-label="Close">
                                         <span aria-hidden="true"><i class="fas fa-times"></i></span>
@@ -662,12 +670,14 @@ class POLoadDataHandle {
     static loadSupplierContactByCheckedQuotation(ele) {
         let self = this;
         let checked_id = ele.id;
-        let supplierID = ele.getAttribute('data-supplier-id');
+        let supplier = JSON.parse(ele.getAttribute('data-supplier'));
         for (let purchase_quotation of JSON.parse($('#purchase_quotations_data').val())) {
             purchase_quotation.is_use = (purchase_quotation.purchase_quotation === checked_id);
         }
         // load supplier by Purchase Quotation
-        self.loadBoxSupplier(supplierID);
+        POLoadDataHandle.supplierSelectEle.empty();
+        self.loadBoxSupplier(supplier);
+        POLoadDataHandle.supplierSelectEle.change();
         return true
     };
 
@@ -981,7 +991,8 @@ class PODataTableHandle {
                 {
                     targets: 3,
                     render: (data, type, row) => {
-                        return `<span class="table-row-supplier" id="${row.supplier_mapped.id}">${row.supplier_mapped.name}</span>`
+                        let dataSupplier = JSON.stringify(row.supplier_mapped).replace(/"/g, "&quot;");
+                        return `<span class="table-row-supplier" data-supplier="${dataSupplier}" id="${row.supplier_mapped.id}">${row.supplier_mapped.name}</span>`
                     }
                 },
                 {

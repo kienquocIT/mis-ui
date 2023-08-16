@@ -2,21 +2,19 @@
 {% load i18n static %}
 {% block title %}{% trans 'Promotion list' %}{% endblock %}
 {% block cssHeader %}
-    <!-- Select2 -->
-    {#    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css"/>#}
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <a class="btn btn-flush-success btn-animated mr-1" type="button" href="{% url 'PromotionCreate' %}">
-        <span class="icon">
-            <span class="font-3 mr-1">
-                {% trans 'New' %}
-            </span>
-            <span class="feather-icon">
-                <i data-feather="plus"></i>
+    <a href="{% url 'PromotionCreate' %}">
+        <button class="btn btn-outline-primary" type="button">
+        <span>
+            <span>{% trans 'Create' %}</span>
+            <span class="icon">
+                <i class="fa-solid fa-plus"></i>
             </span>
         </span>
+        </button>
     </a>
 
     <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"

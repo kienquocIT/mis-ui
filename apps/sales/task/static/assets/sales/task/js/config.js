@@ -4,7 +4,10 @@ $(function(){
 
     // get config detail
     WindowControl.showLoading();
-    $.fn.callAjax($form.attr('data-url'),'GET',).then(
+    $.fn.callAjax2({
+        url: $form.attr('data-url'),
+        'method': 'GET'
+    }).then(
         (resp) => {
             const $todoElm = $('#todo_list')
             let data = $.fn.switcherResp(resp);
@@ -109,16 +112,17 @@ $(function(){
         let list_status = []
         let order = 1
         $('li', $todoElm).each(function(){
-            let $this = $(this)
-            if (!$this.hasClass('ui-state-system')){
-                list_status.push({
+            let $this = $(this), temp = {
                     'id': $this.attr('data-id') ? $this.attr('data-id') : '',
-                    'name': $('.status_name', $this).text(),
-                    'translate_name': $('.status_translate_name', $this).text(),
                     'order': order,
                     'task_color': $('.picker_color', $this).val(),
+                }
+            if (!$this.hasClass('ui-state-system'))
+                $.extend(temp, {
+                    'name': $('.status_name', $this).text(),
+                    'translate_name': $('.status_translate_name', $this).text(),
                 })
-            }
+            list_status.push(temp)
             order += 1
         })
         let inOpt = 0, $inOpt = $('[name="in_assign_opt"]:checked');
@@ -134,7 +138,11 @@ $(function(){
             'is_out_assign': $('#out_assign_any').prop('checked'),
             'out_assign_opt': parseInt(outOpt),
         }
-        $.fn.callAjax($form.attr('data-url'), 'PUT', putData, true)
+        $.fn.callAjax2({
+            'url': $form.attr('data-url'),
+            'method': 'PUT',
+            'data': putData
+        })
             .then(
                 (resp) => {
                     const data = $.fn.switcherResp(resp);

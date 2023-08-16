@@ -138,18 +138,6 @@ class AccountHandle {
     }
 
     combinesData(frmEle) {
-        let selectedVal = $('#shipping-city').val();
-        let dataBackup = SelectDDControl.get_data_from_idx($('#shipping-city'), selectedVal);
-        console.log(dataBackup)
-
-        let userDetail = dataBackup?.['user'] || {};
-        let tabInfoEle = $('#tab-info');
-
-        tabInfoEle.find('input[name="first_name"]').val(userDetail['first_name'] || '');
-        tabInfoEle.find('input[name="last_name"]').val(userDetail['last_name'] || '');
-        tabInfoEle.find('input[name="email"]').val(userDetail['email'] || '');
-        tabInfoEle.find('input[name="phone"]').val(userDetail['phone'] || '');
-
         let frm = new SetupFormSubmit($(frmEle));
         let shipping_address_list = [];
         $('#list-shipping-address input[type=radio]').each(function () {
@@ -236,7 +224,11 @@ $('#save-changes-modal-shipping-address').on('click', function () {
         let district = $('#shipping-district').find(`option:selected`).text();
         let ward = $('#shipping-ward').find(`option:selected`).text();
 
-        let country_id = $('#shipping-city').find(`option:selected`).attr('data-country-id');
+        let selectedVal = $('#shipping-city').val();
+        let dataBackup = SelectDDControl.get_data_from_idx($('#shipping-city'), selectedVal);
+        let data_country_id = dataBackup?.['country_id'] || null;
+
+        let country_id = data_country_id;
         let city_id = $('#shipping-city').find(`option:selected`).attr('value');
         let district_id = $('#shipping-district').find(`option:selected`).attr('value');
         let ward_id = $('#shipping-ward').find(`option:selected`).attr('value');

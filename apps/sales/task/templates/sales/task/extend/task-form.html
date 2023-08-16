@@ -47,7 +47,7 @@
                     </div>
                     <div class="col-md-6 col-xs-12">
                         <div class="form-group">
-                            <label for="inputTextStartDate" class="form-label">{% trans 'Start Date' %}</label>
+                            <label for="inputTextStartDate" class="form-label">{% trans 'Start date' %}</label>
                             <div class="input-affix-wrapper">
                                 <input type="text" class="form-control date-picker" name="start_date"
                                    id="inputTextStartDate"/>
@@ -57,7 +57,7 @@
                     </div>
                     <div class="col-md-6 col-xs-12">
                         <div class="form-group">
-                            <label for="inputTextEndDate" class="form-label">{% trans 'End Date' %}</label>
+                            <label for="inputTextEndDate" class="form-label">{% trans 'End date' %}</label>
                             <div class="input-affix-wrapper">
                                 <input type="text" class="form-control date-picker" name="end_date" id="inputTextEndDate"/>
                                 <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
@@ -79,7 +79,7 @@
                     </div>
                     <div class="col-md-6 col-xs-12">
                         <div class="form-group">
-                            <label for="selectOpportunity" class="form-label">{% trans 'Sale/Project code' %}</label>
+                            <label for="selectOpportunity" class="form-label">{% trans 'Opp/Project code' %}</label>
                             <select class="form-select" name="opportunity" id="selectOpportunity"
                                     data-keyResp="opportunity_list"
                                     data-url="{% url 'OpportunityListAPI' %}"
@@ -235,7 +235,7 @@
                                         <thead>
                                         <tr>
                                             <th>{% trans 'Employee' %}</th>
-                                            <th>{% trans 'Start date ~ End date' %}</th>
+                                            <th>{% trans 'Start date' %} ~ {% trans 'End date' %}</th>
                                             <th>{% trans 'Time spent' %}</th>
                                             <th></th>
                                         </tr>

@@ -71,25 +71,26 @@ class QuotationLoadDataHandle {
         }
     }
 
-    static loadBoxQuotationOpportunity(dataOpp = {}, sale_person = null, is_load_detail = false, is_copy = false) {
+    static loadBoxQuotationOpportunity(dataOpp = {}, sale_person_id = null, is_copy = false) {
         let ele = QuotationLoadDataHandle.opportunitySelectEle;
-        let data_filter = {}
         let form = $('#frm_quotation_create');
-        if ($('#data-init-quotation-create-request-employee').val()) {
-            let data_filter = {
-                'sale_person_id': sale_person,
+        let data_filter = {
                 'is_close_lost': false,
                 'is_deal_close': false,
             };
-            if (form[0].classList.contains('sale-order')) {
-                data_filter['sale_order__isnull'] = true;
-            } else {
-                data_filter['quotation__isnull'] = true;
-            }
+        if (sale_person_id) {
+            data_filter['sale_person_id'] = sale_person_id;
+        } else {
+            data_filter['sale_person_id'] = QuotationLoadDataHandle.salePersonSelectEle.val();
+        }
+        if (form[0].classList.contains('sale-order')) {
+            data_filter['sale_order__isnull'] = true;
+        } else {
+            data_filter['quotation__isnull'] = true;
         }
         ele.initSelect2({
             data: dataOpp,
-            dataParams: data_filter,
+            'dataParams': data_filter,
             disabled: !(ele.attr('data-url')),
         });
         QuotationLoadDataHandle.loadInformationSelectBox(ele);
@@ -105,207 +106,40 @@ class QuotationLoadDataHandle {
                 }
             }
         }
-
-
-
-        // if (!sale_person) {
-        //     sale_person = $('#select-box-quotation-create-sale-person').val(); // filter by sale_person
-        // }
-        // if (sale_person) {
-        //     let data_filter = {
-        //         'sale_person_id': sale_person,
-        //         'is_close_lost': false,
-        //         'is_deal_close': false,
-        //     };
-        //     if ($('#frm_quotation_create')[0].classList.contains('sale-order')) {
-        //         data_filter['sale_order__isnull'] = true;
-        //     } else {
-        //         data_filter['quotation__isnull'] = true;
-        //     }
-        //     if (!ele[0].innerHTML || Object.keys(valueToSelect).length !== 0) {
-        //         $.fn.callAjax2({
-        //                 'url': url,
-        //                 'method': method,
-        //                 'data': data_filter,
-        //                 'isDropdown': true,
-        //             }
-        //         ).then(
-        //             (resp) => {
-        //                 let data = $.fn.switcherResp(resp);
-        //                 if (data) {
-        //                     if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list)) {
-        //                         ele.empty();
-        //                         if (Object.keys(valueToSelect).length !== 0) {
-        //                             data.opportunity_list.push(valueToSelect);
-        //                             // check opp has sale order or closed => disabled button copy to (Only for page quotation detail)
-        //                             if (is_load_detail === true) {
-        //                                 if (!$('#frm_quotation_create')[0].classList.contains('sale-order')) {
-        //                                     if (valueToSelect.is_close_lost === true || valueToSelect.is_deal_close === true || valueToSelect.sale_order_id !== null) {
-        //                                         let btnCopy = document.getElementById('btn-copy-quotation');
-        //                                         let eleTooltipBtnCopy = document.getElementById('tooltip-btn-copy');
-        //                                         btnCopy.setAttribute('disabled', 'true');
-        //                                         eleTooltipBtnCopy.removeAttribute('data-bs-original-title');
-        //                                         eleTooltipBtnCopy.setAttribute('data-bs-placement', 'top');
-        //                                         eleTooltipBtnCopy.setAttribute('title', $.fn.transEle.attr('data-valid-btn-copy'));
-        //                                     }
-        //                                 }
-        //                             }
-        //                         }
-        //                         let eleHTML = ``;
-        //                         data.opportunity_list.map(function (item) {
-        //                             if (item.id) {
-        //                                 let dataStr = JSON.stringify({
-        //                                     'id': item.id,
-        //                                     'title': item.title,
-        //                                     'code': item.code,
-        //                                     'customer': item.customer?.title
-        //                                 }).replace(/"/g, "&quot;");
-        //                                 let opportunity_data = JSON.stringify(item).replace(/"/g, "&quot;");
-        //                                 let data_show = `${item.code}` + ` - ` + `${item.title}`;
-        //                                 eleHTML += `<option value="${item.id}">
-        //                                                 <span class="opp-title">${data_show}</span>
-        //                                                 <input type="hidden" class="data-default" value="${opportunity_data}">
-        //                                                 <input type="hidden" class="data-info" value="${dataStr}">
-        //                                             </option>`
-        //                                 if (valueToSelect && valueToSelect.id === item.id) {
-        //                                     eleHTML += `<option value="${item.id}" selected>
-        //                                                     <span class="opp-title">${data_show}</span>
-        //                                                     <input type="hidden" class="data-default" value="${opportunity_data}">
-        //                                                     <input type="hidden" class="data-info" value="${dataStr}">
-        //                                                 </option>`
-        //                                 }
-        //                             }})
-        //                         ele.append(`<option value=""></option>`);
-        //                         ele.append(eleHTML);
-        //                         self.loadInformationSelectBox(ele);
-        //                     }
-        //                 }
-        //                 // ReCheck Config when change Opportunity (If not load detail or is copy)
-        //                 if (is_load_detail === false || is_copy === true) {
-        //                     configClass.checkConfig(true, null, false, false, is_copy);
-        //                 }
-        //             }
-        //         )
-        //     }
-        // } else {
-        //     ele.append(`<option value=""></option>`);
-        //     // ReCheck Config when change Opportunity (If not load detail or is copy)
-        //     if (is_load_detail === false || is_copy === true) {
-        //         configClass.checkConfig(true, null, false, false, is_copy);
-        //     }
-        // }
+        // ReCheck Config when change Opportunity (If is copy)
+        if (is_copy === true) {
+            QuotationCheckConfigHandle.checkConfig(true, null, false, false, is_copy);
+        }
     };
 
-    static loadBoxQuotationCustomer(dataCustomer = {}, sale_person = null, is_load_detail = false) {
+    static loadBoxQuotationCustomer(dataCustomer = {}, sale_person_id = null) {
         let ele = QuotationLoadDataHandle.customerSelectEle;
+        let form = $('#frm_quotation_create');
+        let data_filter = {};
+        if (sale_person_id) {
+            data_filter['employee__id'] = sale_person_id;
+        } else {
+            data_filter['employee__id'] = QuotationLoadDataHandle.salePersonSelectEle.val();
+        }
         ele.initSelect2({
             data: dataCustomer,
-            // dataParams: data_filter,
+            'dataParams': data_filter,
             disabled: !(ele.attr('data-url')),
             callbackTextDisplay: function (item) {
                 return item?.['name'] || '';
             },
         });
         QuotationLoadDataHandle.loadInformationSelectBox(ele);
-
-
-        // if (!sale_person) {
-        //     sale_person = $('#select-box-quotation-create-sale-person').val(); // filter by sale_person
-        // }
-        // if (sale_person) {
-        //     let data_filter = {'employee__id': sale_person}
-        //     if (!ele[0].innerHTML || valueToSelect) {
-        //         $.fn.callAjax2({
-        //                 'url': url,
-        //                 'method': method,
-        //                 'data': data_filter,
-        //                 'isDropdown': true,
-        //             }
-        //         ).then(
-        //             (resp) => {
-        //                 let data = $.fn.switcherResp(resp);
-        //                 if (data) {
-        //                     if (data.hasOwnProperty('account_sale_list') && Array.isArray(data.account_sale_list)) {
-        //                         self.loadShippingBillingCustomer();
-        //                         ele.empty();
-        //                         let dataAppend = ``;
-        //                         let dataSelected = ``;
-        //                         data.account_sale_list.map(function (item) {
-        //                             let ownerName = "";
-        //                             if (item.owner) {
-        //                                 ownerName = item.owner.fullname;
-        //                             }
-        //                             let dataStr = JSON.stringify({
-        //                                 'id': item.id,
-        //                                 'Name': item.name,
-        //                                 'Owner name': ownerName,
-        //                             }).replace(/"/g, "&quot;");
-        //                             let customer_data = JSON.stringify(item).replace(/"/g, "&quot;");
-        //                             dataAppend += `<option value="${item.id}">
-        //                                                 <span class="account-title">${item.name}</span>
-        //                                                 <input type="hidden" class="data-default" value="${customer_data}">
-        //                                                 <input type="hidden" class="data-info" value="${dataStr}">
-        //                                             </option>`;
-        //                             if (item.id === valueToSelect) {
-        //                                 dataSelected = `<option value="${item.id}" selected>
-        //                                                 <span class="account-title">${item.name}</span>
-        //                                                 <input type="hidden" class="data-default" value="${customer_data}">
-        //                                                 <input type="hidden" class="data-info" value="${dataStr}">
-        //                                             </option>`;
-        //                                 // load Shipping & Billing by Customer
-        //                                 self.loadShippingBillingCustomer(item);
-        //                                 // load Contact by Customer
-        //                                 if (item.id && item.owner) {
-        //                                     self.loadBoxQuotationContact(item.owner.id, item.id);
-        //                                 }
-        //                                 // load Payment Term by Customer
-        //                                 self.loadBoxQuotationPaymentTerm(item.payment_term_mapped.id);
-        //                                 // Store Account Price List
-        //                                 document.getElementById('customer-price-list').value = item.price_list_mapped.id;
-        //                                 // load again price of product by customer price list then Re Calculate
-        //                                 if (is_load_detail === false) {
-        //                                     self.loadDataProductAll();
-        //                                 }
-        //                             }
-        //                         })
-        //                         ele.append(`<option value=""></option>`);
-        //                         if (dataSelected) { // if Value to select
-        //                             if ($('#select-box-quotation-create-opportunity').val()) { // if page has Opp
-        //                                 ele.append(dataSelected);
-        //                             } else { // if page no Opp
-        //                                 ele.append(dataSelected);
-        //                                 ele.append(dataAppend);
-        //                             }
-        //                         } else { // if no Value to select
-        //                             if (!valueToSelect) {
-        //                                 ele.append(dataAppend);
-        //                             }
-        //                             // load Contact no Customer
-        //                             self.loadBoxQuotationContact();
-        //                             // load Payment Term no Customer
-        //                             self.loadBoxQuotationPaymentTerm();
-        //                             // Store Account Price List
-        //                             document.getElementById('customer-price-list').value = "";
-        //                             // load again price of product by customer price list then Re Calculate
-        //                             self.loadDataProductAll();
-        //
-        //                         }
-        //                         self.loadInformationSelectBox(ele);
-        //                     }
-        //                 }
-        //             }
-        //         )
-        //     }
-        // } else {
-        //     ele.append(`<option value=""></option>`);
-        // }
+        if (form.attr('data-method') !== 'GET') {
+            QuotationLoadDataHandle.loadDataProductAll();
+        }
     };
 
     static loadBoxQuotationContact(dataContact = {}, customerID = null) {
         let ele = QuotationLoadDataHandle.contactSelectEle;
         ele.initSelect2({
             data: dataContact,
-            // dataParams: data_filter,
+            'dataParams': {'account_name_id': customerID},
             disabled: !(ele.attr('data-url')),
             callbackTextDisplay: function (item) {
                 return item?.['fullname'] || '';
@@ -361,7 +195,7 @@ class QuotationLoadDataHandle {
         // }
     }
 
-    static loadBoxQuotationPaymentTerm(dataPayment = null) {
+    static loadBoxQuotationPaymentTerm(dataPayment = {}) {
         let ele = QuotationLoadDataHandle.paymentSelectEle;
         ele.initSelect2({
             data: dataPayment,
@@ -406,7 +240,7 @@ class QuotationLoadDataHandle {
         // }
     }
 
-    static loadBoxQuotationSalePerson(dataSalePerson = {}, is_load_init = false) {
+    static loadBoxQuotationSalePerson(dataSalePerson = {}) {
         let ele = QuotationLoadDataHandle.salePersonSelectEle;
         ele.initSelect2({
             data: dataSalePerson,
@@ -416,59 +250,7 @@ class QuotationLoadDataHandle {
             },
         });
         QuotationLoadDataHandle.loadInformationSelectBox(ele);
-
-
-        // $.fn.callAjax2({
-        //         'url': url,
-        //         'method': method,
-        //         'isDropdown': true,
-        //     }
-        // ).then(
-        //     (resp) => {
-        //         let data = $.fn.switcherResp(resp);
-        //         if (data) {
-        //             if (data.hasOwnProperty('employee_list') && Array.isArray(data.employee_list)) {
-        //                 let initEmployee = $('#data-init-quotation-create-request-employee-id');
-        //                 if (initEmployee.val() && is_load_init === true) {
-        //                     valueToSelect = initEmployee.val();
-        //                 }
-        //                 let optionSelected = ``;
-        //                 ele.empty();
-        //                 ele.append(`<option value=""></option>`);
-        //                 data.employee_list.map(function (item) {
-        //                     let group = '';
-        //                     if (item.group) {
-        //                         group = item.group.title
-        //                     }
-        //                     let dataStr = JSON.stringify({
-        //                         'id': item.id,
-        //                         'Name': item.full_name,
-        //                         'Code': item.code,
-        //                         'Group': group
-        //                     }).replace(/"/g, "&quot;");
-        //                     if (valueToSelect && valueToSelect === item.id) {
-        //                         optionSelected = `<option value="${item.id}" selected>
-        //                                                 <span class="employee-title">${item.full_name}</span>
-        //                                                 <input type="hidden" class="data-info" value="${dataStr}">
-        //                                             </option>`;
-        //                         ele.append(optionSelected);
-        //                     } else {
-        //                         ele.append(`<option value="${item.id}">
-        //                                         <span class="employee-title">${item.full_name}</span>
-        //                                         <input type="hidden" class="data-info" value="${dataStr}">
-        //                                     </option>`);
-        //                     }
-        //                 });
-        //                 if (is_load_init === false && valueToSelect) {
-        //                     ele.empty();
-        //                     ele.append(optionSelected);
-        //                 }
-        //                 self.loadInformationSelectBox(ele);
-        //             }
-        //         }
-        //     }
-        // )
-    }
+    };
 
     static loadBoxQuotationPrice() {
         let ele = $('#select-box-quotation-create-price-list');
@@ -923,10 +705,10 @@ class QuotationLoadDataHandle {
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
         if (sale_person_id) {
-            let data_filter = {'sale_person': sale_person_id};
+            let data_filter = {'employee_inherit': sale_person_id};
             if (opp_id) {
                 data_filter = {
-                    'sale_person': sale_person_id,
+                    'employee_inherit': sale_person_id,
                     'opportunity': opp_id
                 }
             }
@@ -1065,17 +847,17 @@ class QuotationLoadDataHandle {
         }
         if (data.opportunity) {
             if (data.sale_person) {
-                self.loadBoxQuotationOpportunity(data.opportunity, data.sale_person.id, true, is_copy);
+                self.loadBoxQuotationOpportunity(data.opportunity, data.sale_person.id, is_copy);
             } else {
-                self.loadBoxQuotationOpportunity(data.opportunity, null, true, is_copy);
+                self.loadBoxQuotationOpportunity(data.opportunity, null, is_copy);
             }
         }
         if (data.customer) {
             data.customer['name'] = data.customer.title;
             if (data.sale_person) {
-                self.loadBoxQuotationCustomer(data.customer, data.sale_person.id, true);
+                self.loadBoxQuotationCustomer(data.customer, data.sale_person.id);
             } else {
-                self.loadBoxQuotationCustomer(data.customer, null, true);
+                self.loadBoxQuotationCustomer(data.customer);
             }
         }
         if (data.contact) {
@@ -2250,7 +2032,7 @@ class QuotationDataTableHandle {
         let method = ele.attr('data-method');
         $('#datable-copy-quotation').DataTable().destroy();
         if (sale_person_id) {
-            let data_filter = {'sale_person': sale_person_id};
+            let data_filter = {'employee_inherit': sale_person_id};
             if (opp_id) {
                 data_filter['opportunity'] = opp_id;
                 data_filter['opportunity__sale_order__isnull'] = true;

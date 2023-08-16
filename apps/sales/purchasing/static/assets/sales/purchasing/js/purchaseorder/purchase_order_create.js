@@ -16,6 +16,8 @@ $(function () {
         let tablePurchaseOrderProductRequest = $('#datable-purchase-order-product-request');
 
         // Load init
+        POLoadDataHandle.loadBoxSupplier();
+        POLoadDataHandle.loadBoxContact();
         PODataTableHandle.dataTablePurchaseRequest();
         PODataTableHandle.dataTablePurchaseRequestProduct();
         PODataTableHandle.dataTablePurchaseQuotation();
@@ -36,14 +38,6 @@ $(function () {
         $('#purchase-order-date-delivered').val(null).trigger('change');
 
 // EVENTS
-        // Action on click dropdown supplier
-        eleCommonArea.on('click', '.select2-selection', function() {
-            let eleSelect = $(this)[0].closest('.form-group').querySelector('.form-select');
-            if (eleSelect.id === 'box-purchase-order-supplier') {
-                POLoadDataHandle.loadBoxSupplier(null);
-            }
-        });
-
         // Action on change dropdown supplier
         eleBoxSupplier.on('change', function () {
             let optionSelected = eleBoxSupplier[0].options[eleBoxSupplier[0].selectedIndex];

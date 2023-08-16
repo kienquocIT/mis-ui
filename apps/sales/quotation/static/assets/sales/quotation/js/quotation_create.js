@@ -13,17 +13,23 @@ $(function () {
         let boxPayment = $('#select-box-quotation-create-payment-term');
         let boxSalePerson = $('#select-box-quotation-create-sale-person');
         let boxPriceList = $('#select-box-quotation-create-price-list');
-        let boxPaymentTerm = $('#select-box-quotation-create-payment-term');
         let boxQuotation = $('#select-box-quotation');
         let tabPrice = $('#tab_terms');
 
         // Load init
-        QuotationLoadDataHandle.loadBoxQuotationOpportunity();
-        QuotationLoadDataHandle.loadBoxQuotationCustomer();
         QuotationLoadDataHandle.loadBoxQuotationContact();
         QuotationLoadDataHandle.loadBoxQuotationPaymentTerm();
         if (formSubmit.attr('data-method') === 'POST') {
-           QuotationLoadDataHandle.loadBoxQuotationSalePerson(JSON.parse($('#data-init-quotation-create-request-employee').val()));
+            let employee_current = $('#data-init-quotation-create-request-employee').val();
+            if (employee_current) {
+                let employee_current_data = JSON.parse(employee_current);
+                QuotationLoadDataHandle.loadBoxQuotationSalePerson(employee_current_data);
+                QuotationLoadDataHandle.loadBoxQuotationOpportunity({}, employee_current_data.id);
+                QuotationLoadDataHandle.loadBoxQuotationCustomer({}, employee_current_data.id);
+            } else {
+                QuotationLoadDataHandle.loadBoxQuotationOpportunity();
+                QuotationLoadDataHandle.loadBoxQuotationCustomer();
+            }
         }
         QuotationLoadDataHandle.loadInitQuotationProduct();
 
@@ -64,15 +70,13 @@ $(function () {
         boxOpportunity.on('change', function () {
             let dataSelected = SelectDDControl.get_data_from_idx(boxOpportunity, $(this).val());
             if (dataSelected) {
-                QuotationLoadDataHandle.loadBoxQuotationCustomer();
+                boxCustomer.empty();
                 QuotationLoadDataHandle.loadBoxQuotationCustomer(dataSelected.customer);
                 boxCustomer.change();
-                // Load again dropdown sale_person only valueSelected
-                QuotationLoadDataHandle.loadBoxQuotationSalePerson($('#select-box-quotation-create-sale-person').val());
             } else { // No Value => load again dropdowns
-                $('#select-box-quotation-create-customer').empty();
-                QuotationLoadDataHandle.loadBoxQuotationCustomer(null);
-                QuotationLoadDataHandle.loadBoxQuotationSalePerson($('#select-box-quotation-create-sale-person').val(), true);
+                boxCustomer.empty();
+                QuotationLoadDataHandle.loadBoxQuotationCustomer();
+                boxCustomer.change();
             }
             // Delete all promotion rows
             deletePromotionRows(tableProduct, true, false);
@@ -86,8 +90,19 @@ $(function () {
         boxCustomer.on('change', function () {
             let dataSelected = SelectDDControl.get_data_from_idx(boxCustomer, $(this).val());
             if (dataSelected) {
-                QuotationLoadDataHandle.loadShippingBillingCustomer();
+                if (boxOpportunity.val()) {
+                    let dataOppSelected = SelectDDControl.get_data_from_idx(boxOpportunity, boxOpportunity.val());
+                    if (dataOppSelected) {
+                        if (Object.keys(dataOppSelected.customer).length !== 0) {
+                            if (dataOppSelected.customer.id !== $(this).val()) {
+                                boxOpportunity.empty();
+                                QuotationLoadDataHandle.loadBoxQuotationOpportunity();
+                            }
+                        }
+                    }
+                }
                 // load Shipping & Billing by Customer
+                QuotationLoadDataHandle.loadShippingBillingCustomer();
                 QuotationLoadDataHandle.loadShippingBillingCustomer(dataSelected);
                 // load Contact by Customer
                 boxContact.empty();
@@ -102,11 +117,15 @@ $(function () {
                 // Load again dropdown sale_person only valueSelected
                 QuotationLoadDataHandle.loadBoxQuotationSalePerson($('#select-box-quotation-create-sale-person').val());
             } else { // No Value => load again dropdowns
+                boxOpportunity.empty();
+                boxContact.empty();
+                boxPayment.empty();
+                QuotationLoadDataHandle.loadBoxQuotationOpportunity();
                 QuotationLoadDataHandle.loadBoxQuotationContact();
                 QuotationLoadDataHandle.loadBoxQuotationPaymentTerm();
                 document.getElementById('customer-price-list').value = "";
                 if (!$('#select-box-quotation-create-opportunity').val()) {
-                    QuotationLoadDataHandle.loadBoxQuotationSalePerson($('#select-box-quotation-create-sale-person').val(), true);
+                    QuotationLoadDataHandle.loadBoxQuotationSalePerson($('#select-box-quotation-create-sale-person').val());
                 }
             }
             // Delete all promotion rows
@@ -124,6 +143,8 @@ $(function () {
             boxCustomer.empty();
             boxContact.empty();
             boxPayment.empty();
+            QuotationLoadDataHandle.loadBoxQuotationOpportunity({}, $(this).val());
+            QuotationLoadDataHandle.loadBoxQuotationCustomer({}, $(this).val());
             document.getElementById('customer-price-list').value = "";
             // Delete all promotion rows
             deletePromotionRows(tableProduct, true, false);
@@ -143,7 +164,7 @@ $(function () {
         });
 
 // Action on click dropdown payment term
-        boxPaymentTerm.on('click', function() {
+        boxPayment.on('click', function() {
             QuotationLoadDataHandle.loadBoxQuotationPaymentTerm();
         });
 

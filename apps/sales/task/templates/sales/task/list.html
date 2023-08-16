@@ -11,19 +11,22 @@
 {% endblock %}
 
 {% block pageAction %}
-    <button
-            class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover ntt-drawer-toggle-link btn-create-todo"
-            type="button"
-            data-drawer-target="#drawer_task_create"
-            data-drawer-active="false"
-            data-bs-toggle="tooltip"
-            data-bs-placement="top"
-            data-bs-original-title="{% trans 'Create' %}"
-    >
-        <span class="btn-icon-wrap">
-            <i class="fa-solid fa-plus"></i>
+    <a href="#">
+        <button class="btn btn-outline-primary ntt-drawer-toggle-link btn-create-todo"
+                type="button"
+                data-drawer-target="#drawer_task_create"
+                data-drawer-active="false"
+                data-bs-toggle="tooltip"
+                data-bs-placement="top"
+                data-bs-original-title="{% trans 'Create' %}">
+        <span>
+            <span>{% trans 'Create' %}</span>
+            <span class="icon">
+                <i class="fa-solid fa-plus"></i>
+            </span>
         </span>
-    </button>
+        </button>
+    </a>
 {% endblock %}
 
 {% block pageContent %}

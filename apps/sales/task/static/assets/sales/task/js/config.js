@@ -25,6 +25,7 @@ $(function(){
                 for (let item of itemSystem){
                     let elm = $($('#item_config').html())
                     elm.addClass('ui-state-system')
+                    elm.attr('data-id', item.id)
                     elm.find('.hand-drag, .icon-close').addClass('blur-35')
                     elm.find('.status_name, .status_translate_name').attr('contenteditable', false)
                     elm.find('.status_name').html(item.name)
@@ -112,17 +113,14 @@ $(function(){
         let list_status = []
         let order = 1
         $('li', $todoElm).each(function(){
-            let $this = $(this), temp = {
-                    'id': $this.attr('data-id') ? $this.attr('data-id') : '',
-                    'order': order,
-                    'task_color': $('.picker_color', $this).val(),
-                }
-            if (!$this.hasClass('ui-state-system'))
-                $.extend(temp, {
-                    'name': $('.status_name', $this).text(),
-                    'translate_name': $('.status_translate_name', $this).text(),
-                })
-            list_status.push(temp)
+            let $this = $(this)
+            list_status.push({
+                'id': $this.attr('data-id') ? $this.attr('data-id') : '',
+                'order': order,
+                'task_color': $('.picker_color', $this).val(),
+                'name': $('.status_name', $this).text(),
+                'translate_name': $('.status_translate_name', $this).text(),
+            })
             order += 1
         })
         let inOpt = 0, $inOpt = $('[name="in_assign_opt"]:checked');

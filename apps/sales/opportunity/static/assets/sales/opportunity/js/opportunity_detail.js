@@ -2211,13 +2211,16 @@ $(document).ready(function () {
             // run status select default
         const sttElm = $('#selectStatus');
         sttElm.attr('data-url')
-        $.fn.callAjax(sttElm.attr('data-url'), 'get')
+        $.fn.callAjax2({
+            'url': sttElm.attr('data-url'),
+            'method': 'get'
+        })
             .then(
                 (resp) => {
                     const data = $.fn.switcherResp(resp);
-                    let todoItem = data[sttElm.attr('data-prefix')][0]
+                    let todoItem = data[sttElm.attr('data-keyResp')][0]
                     sttElm.attr('data-onload', JSON.stringify(todoItem))
-                    initSelectBox(sttElm)
+                    sttElm.initSelect2()
                 })
 
         // load assigner
@@ -2227,16 +2230,16 @@ $(document).ready(function () {
         // assign to me btn
         const $assignBtnElm = $('.btn-assign');
         const $assigneeElm = $('#selectAssignTo')
+        $assigneeElm.initSelect2()
         $assignBtnElm.off().on('click', function () {
             const name = $assignerElm.attr('data-name')
             const id = $assignerElm.attr('data-value-id')
             const infoObj = {
-                'title': name,
+                'full_name': name,
                 'id': id
             }
             $assigneeElm.attr('data-onload', JSON.stringify(infoObj))
-            initSelectBox($assigneeElm)
-
+            $assigneeElm.initSelect2()
         });
 
         // run init label function
@@ -2261,10 +2264,11 @@ $(document).ready(function () {
                     clearInterval(isCheck)
                     data.title = oppCode
                     $selectElm.attr('data-onload', JSON.stringify(data)).attr('disabled', true)
-                    initSelectBox($selectElm)
+                    $selectElm.initSelect2()
                 }
             }, 1000)
         }
+        else $selectElm.initSelect2()
 
         // click to log-work
         $('.btn-log_work').off().on('click', () => {

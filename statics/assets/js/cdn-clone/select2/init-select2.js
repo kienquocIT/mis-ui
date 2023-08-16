@@ -30,7 +30,7 @@ class SelectDDControl {
         let result = [];
         let respTmp = resp?.data;
         if (respTmp) {
-            let respData = resp?.data[keyResp];
+            let respData = SelectDDControl.get_data_key_map(resp?.data, keyResp);
             if (respData) {
                 if (Array.isArray(respData) && respData.length) {
                     result = respData;
@@ -72,8 +72,7 @@ class SelectDDControl {
         } else {
             data = this.ele.attr('data-onload') || '[]';
             try {
-                let temp
-                if (data.indexOf("'") !== -1) temp = data.replaceAll("'", '"');
+                let temp = data.replaceAll("'", '"');
                 parseData = JSON.parse(temp);
             } catch (e) {
             }
@@ -483,7 +482,6 @@ class SelectDDControl {
                 }, ...config,
             }
         }
-        ;
         return ajaxConfig ? {'ajax': ajaxConfig} : {};
     }
 

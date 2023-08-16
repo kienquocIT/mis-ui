@@ -112,6 +112,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     PROMOTION_LIST_PAGE = BreadcrumbChildren(_('Promotion List'), 'PromotionList')
     PROMOTION_CREATE_PAGE = BreadcrumbChildren(_('Promotion create'), 'PromotionCreate')
     PROMOTION_DETAIL_PAGE = BreadcrumbChildren(_('Promotion detail'))
+    PROMOTION_EDIT_PAGE = BreadcrumbChildren(_('Promotion edit'))
 
     # Opportunity
     OPPORTUNITY_LIST_PAGE = BreadcrumbChildren(_('Opportunity list'), 'OpportunityList')
@@ -145,8 +146,10 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     DELIVERY_CONFIG_PAGE = BreadcrumbChildren(_('Delivery'), 'DeliveryConfigDetail')
     DELIVERY_PICKING_LIST_PAGE = BreadcrumbChildren(_('Picking list'), 'OrderPickingList')
     DELIVERY_PICKING_DETAIL_PAGE = BreadcrumbChildren(_('Picking detail'))
+    DELIVERY_PICKING_EDIT_PAGE = BreadcrumbChildren(_('Picking edit'))
     DELIVERY_LIST_PAGE = BreadcrumbChildren(_('Delivery list'), 'OrderDeliveryList')
     DELIVERY_DETAIL_PAGE = BreadcrumbChildren(_('Delivery Detail'))
+    DELIVERY_EDIT_PAGE = BreadcrumbChildren(_('Delivery edit'))
 
     # Return Advance
     RETURN_ADVANCE_LIST_PAGE = BreadcrumbChildren(_('Return Advance list'), 'ReturnAdvanceList')
@@ -403,6 +406,7 @@ class BreadcrumbView:
 
     PROMOTION_CREATE_PAGE = PROMOTION_LIST_PAGE + [BreadcrumbItem.PROMOTION_CREATE_PAGE]
     PROMOTION_DETAIL_PAGE = PROMOTION_LIST_PAGE + [BreadcrumbItem.PROMOTION_DETAIL_PAGE]
+    PROMOTION_EDIT_PAGE = PROMOTION_LIST_PAGE + [BreadcrumbItem.PROMOTION_EDIT_PAGE]
 
     # Opportunity
     OPPORTUNITY_LIST_PAGE = [
@@ -456,10 +460,12 @@ class BreadcrumbView:
         BreadcrumbItem.DELIVERY_PICKING_LIST_PAGE,
     ]
     ORDER_PICKING_DETAIL_PAGE = ORDER_PICKING_LIST_PAGE + [BreadcrumbItem.DELIVERY_PICKING_DETAIL_PAGE]
+    ORDER_PICKING_EDIT_PAGE = ORDER_PICKING_LIST_PAGE + [BreadcrumbItem.DELIVERY_PICKING_EDIT_PAGE]
     ORDER_DELIVERY_LIST_PAGE = [
         BreadcrumbItem.DELIVERY_LIST_PAGE,
     ]
     ORDER_DELIVERY_DETAIL_PAGE = ORDER_DELIVERY_LIST_PAGE + [BreadcrumbItem.DELIVERY_DETAIL_PAGE]
+    ORDER_DELIVERY_EDIT_PAGE = ORDER_DELIVERY_LIST_PAGE + [BreadcrumbItem.DELIVERY_EDIT_PAGE]
 
     # Transition Data Config
     DELIVERY_CONFIG = [

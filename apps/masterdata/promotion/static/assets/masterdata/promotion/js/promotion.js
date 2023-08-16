@@ -38,10 +38,8 @@ class customerHandle {
         let $table = $('#table_customer_list')
         let url = $table.attr('data-url');
         let _this = this
-        $table.DataTable({
-            searching: false,
-            ordering: false,
-            paginate: true,
+        $table.DataTableDefault({
+            useDataServer: true,
             ajax: {
                 url: url,
                 type: "GET",
@@ -77,10 +75,7 @@ class customerHandle {
                 },
             ],
             rowCallback(row, data){
-                $('input[type="checkbox"]', row).on('change', function(){
-                    data.checked = this.checked
-                });
-
+                $('input[type="checkbox"]', row).on('change', () => data.checked = this.checked)
             },
             rowIdx: false,
         });
@@ -324,7 +319,9 @@ let Method = new methodHandle();
 
 function getDetailPage($form){
     $form.attr('data-url')
-    $.fn.callAjax($form.attr('data-url'), 'get')
+    $.fn.callAjax2({
+        'url': $form.attr('data-url'),
+    })
         .then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
@@ -383,12 +380,12 @@ function getDetailPage($form){
                         $('#minimum_value').attr('value', data.discount_method.minimum_value)
                         $.fn.initMaskMoney2($('#minimum_value'),'input')
                     }
+                    let proSelect = $('#product_selected')
                     if(data?.discount_method?.is_on_product){
                         $('#is_on_product').prop('checked', data.discount_method.is_on_product)
-                        let proSelect = $('#product_selected')
                         proSelect.attr('data-onload', JSON.stringify(data.discount_method.product_selected))
-                        initSelectBox(proSelect)
                     }
+                    proSelect.initSelect2()
                     if(data?.discount_method?.num_minimum)
                         $('#num_minimum').val(data.discount_method.num_minimum)
                     if(data?.discount_method?.free_shipping)
@@ -398,13 +395,13 @@ function getDetailPage($form){
                         $('.row-tax, .group-select-box, .row-percent').addClass('hidden')
                         $('.group-gift-box').removeClass('hidden')
                     }
+                    let proReceive = $('#product_received')
                     if(data?.gift_method?.is_free_product){
                         $('#is_free_product').prop('checked', true)
                         $('#num_product_received').val(data?.gift_method?.num_product_received)
-                        let proReceive = $('#product_received')
                         proReceive.attr('data-onload', JSON.stringify(data?.gift_method?.product_received))
-                        initSelectBox(proReceive)
                     }
+                    proReceive.initSelect2()
                     if(data?.gift_method?.is_min_purchase){
                         $('#is_min_purchase').attr('checked', true)
                         let valTemp = 0;
@@ -414,13 +411,13 @@ function getDetailPage($form){
                         $('#min_purchase_cost').attr('value', data.gift_method.min_purchase_cost)
                         $.fn.initMaskMoney2($('#min_purchase_cost'),'input')
                     }
+                    let purProd = $('#purchase_product')
                     if(data?.gift_method?.is_purchase) {
                         $('#is_purchase').attr('checked', true)
                         $('#purchase_num').val(data?.gift_method?.purchase_num)
-                        let purProd = $('#purchase_product')
                         purProd.attr('data-onload', JSON.stringify(data?.gift_method?.purchase_product))
-                        initSelectBox(purProd)
                     }
+                    purProd.initSelect2()
                 }
             },
         )
@@ -456,11 +453,11 @@ $(function () {
     // run default currency form field
     DocumentControl.getCompanyConfig().then((configData)=>{
         let $currencyElm = $('[name="currency"]');
-        $.fn.callAjax(
-            $('#url-factory').attr('data-currency_list'),
-            'GET',
-            {"currency__code": configData?.['currency']?.['code']}
-        )
+        $.fn.callAjax2({
+            'url': $('#url-factory').attr('data-currency_list'),
+            'method': 'GET',
+            'data': {"currency__code": configData?.['currency']?.['code']}
+        })
             .then(
                 (resp) => {
                     const data = $.fn.switcherResp(resp);
@@ -470,7 +467,7 @@ $(function () {
                         "title": defaultCurrency?.title,
                         "code": defaultCurrency?.currency?.code,
                     }))
-                    initSelectBox($currencyElm);
+                    $currencyElm.initSelect2();
                 })
     });
 
@@ -545,12 +542,10 @@ $(function () {
     });
 
     // handle percent input
-    $('[data-type_percent]').on('focus', function(){
-    })
-        .on('blur', function(e){
+    $('[data-type_percent]').on('blur', function (e) {
         let isFloat = /^-?\d+\.?\d*$/,
             isInt = /^-?\d+$/
-        if (this.value && (isFloat.test(this.value) || isInt.test(this.value))){
+        if (this.value && (isFloat.test(this.value) || isInt.test(this.value))) {
             let temp = this.value.replace('-', '').replace(/^0+(?=\d)/, '')
             this.value = temp
         }
@@ -732,7 +727,11 @@ $(function () {
                 _form.dataForm['gift_method']['purchase_product'] = _form.dataForm['purchase_product']
             }
         }
-        $.fn.callAjax(_form.dataUrl, _form.dataMethod, _form.dataForm, csr)
+        $.fn.callAjax2({
+            'url': _form.dataUrl,
+            'method': _form.dataMethod,
+            'data': _form.dataForm
+        })
             .then(
                 (resp) => {
                     const data = $.fn.switcherResp(resp);
@@ -749,7 +748,5 @@ $(function () {
     });
 
     // get detail page
-    if ($form.attr('data-method') === 'PUT'){
-        getDetailPage($form)
-    }
+    if ($form.attr('data-method') === 'PUT') getDetailPage($form)
 });

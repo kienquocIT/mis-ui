@@ -143,7 +143,22 @@ msgstr "Hiển thị mật khẩu"
 
 #
 msgid "New password again"
-msgstr "Nhật lạp mật khẩu mới"
+msgstr "Nhập lại mật khẩu mới"
+
+#
+msgid "Change Company"
+msgstr "Thay đổi công ty"
+
+#
+msgid "Hasn't link to the employee!"
+msgstr "Tài khoản người dùng chưa có liên kết nhân viên"
+
+#
+msgid "Some apps will be working wrong"
+msgstr "Một số ứng dụng sẽ không hoạt động"
+
+msgid "Please switch the current company to the one that already has an employee link or contact the administrator to add an employee to the account."
+msgstr "Vui lòng chuyển công ty hiện tại sang công ty đã có liên kết nhân viên hoặc liên hệ với quản trị viên để thêm nhân viên vào tài khoản."
 
 #
 msgid "Close"

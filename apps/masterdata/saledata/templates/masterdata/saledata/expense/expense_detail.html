@@ -7,36 +7,28 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-outline-primary" type="submit" form="frmUpdateExpense">
+    <a href="#">
+        <button class="btn btn-outline-primary">
         <span>
-            <span>{% trans 'Save' %}</span>
+            <span>{% trans 'Edit' %}</span>
             <span class="icon">
-                <i class="fa-regular fa-floppy-disk"></i>
+                <i class="fa-regular fa-pen-to-square"></i>
             </span>
         </span>
-    </button>
+        </button>
+    </a>
 {% endblock %}
 {% block pageContent %}
-    <form id="frmUpdateExpense" data-method="PUT" data-url="{% url "ExpenseDetailAPI" pk=1 %}">
+    <form id="frmUpdateExpense" data-method="PUT" data-url="{% url "ExpenseDetailAPI" pk=0 %}"
+          data-url-redirect="{% url "ExpenseList" %}">
         {% csrf_token %}
         {{ data.content.price_list|json_script:"id-price-list" }}
         {{ data.content.currency_list|json_script:"id-currency-list" }}
-
         <div class="row">
-            <div class="col-2">
-                <span class="badge badge-soft-primary badge-outline w-100" style="font-size: large"
-                      id="expenseCode"></span>
-            </div>
-        </div>
-
-        <div class="row mt-5">
             <div class="col-4">
                 <label class="form-label required">{% trans 'Name' %}</label>
-                <div class="readonly">
-                    <input class="form-control" type="text" placeholder="Input Name" name="title" id="expenseTitle"
-                           readonly>
-                    <span></span>
-                </div>
+                <input class="form-control" type="text" placeholder="Input Name" name="title" id="expenseTitle"
+                       disabled>
             </div>
         </div>
 
@@ -54,34 +46,25 @@
                 <div class="row">
                     <div class="form-group col-2">
                         <label class="form-label required">{% trans "Expense Type" %}</label>
-                        <div class="readonly">
-                            <select id="chooseExpenseType" class="select2 form-control" data-method="GET"
-                                    data-select2-url="{% url 'ExpenseTypeListAPI' %}" name="expense_type" disabled></select>
-                            <span></span>
-                        </div>
-
+                        <select id="chooseExpenseType" class="form-select" data-method="GET"
+                                data-url="{% url 'ExpenseTypeListAPI' %}" name="expense_type" disabled></select>
                     </div>
                     <div class="form-group col-2">
                         <label class="form-label required">{% trans "UoM Group" %}</label>
-                        <div class="readonly">
-                            <input id="chooseUoMGroup" class="form-control" data-method="GET" readonly
-                                   data-url="{% url "UnitOfMeasureGroupListAPI" %}"
-                            />
-                        </div>
+                        <input id="chooseUoMGroup" data-method="GET" class="form-control" disabled
+                               data-url="{% url "UnitOfMeasureGroupListAPI" %}"
+                               name="uom_group" data-id=""/>
                     </div>
                     <div class="form-group col-2">
                         <label class="form-label required">{% trans "UoM" %}</label>
-                        <div class="readonly">
-                            <select id="chooseUom" class="select2 form-control" data-method="GET"
-                                    data-select2-url="{% url "UnitOfMeasureListAPI" %}"
-                                    name="uom" disabled></select>
-                            <span></span>
-                        </div>
+                        <select id="chooseUom" class="form-select" data-method="GET"
+                                data-url="{% url "UnitOfMeasureOfGroupLaborListAPI" %}"
+                                name="uom" disabled></select>
                     </div>
                     <div class="col-6 form-group" id="choosePriceList" data-method="GET"
                          data-url="{% url "PriceListAPI" %}">
                         <label class="form-label">{% trans "Price List" %}</label>
-                        <input type="select" class="form-select dropdown-toggle" data-bs-toggle="dropdown"
+                        <input class="form-select dropdown-toggle" data-bs-toggle="dropdown" id="dropdown-price-list"
                                oninput="this.value=''"
                                data-bs-display="static" aria-expanded="false" placeholder="Select Price List">
                         <ul class="dropdown-menu dropdown-menu-end dropdown-menu-lg-start w-100 ul-price-list">
@@ -91,19 +74,22 @@
                 <div class="row">
                     <div class="col-3 form-group">
                         <label class="form-label">{% trans "Role" %}</label>
-                        <div class="readonly">
-                            <select class="select2 form-control" id="chooseRole" data-method="GET"
-                                    data-select2-url="{% url "RoleListAPI" %}" multiple name="role" disabled></select>
-                            <span></span>
-                        </div>
+                        <select class="form-select" id="chooseRole" data-method="GET"
+                                data-url="{% url "RoleListAPI" %}" multiple name="role" disabled></select>
                     </div>
                 </div>
             </div>
         </div>
     </form>
 {% endblock %}
+{% block dataHiddenGroup %}
+    <input type="text" id="url-factory"
+           data-price_list="{% url 'PriceListAPI' %}"
+           data-currency_list="{% url 'CurrencyListAPI' %}"
+    >
+{% endblock %}
 {% block jsFooter %}
+    <script src="{% static 'assets/js/masterdata/saledata/expense/expense_common.js' %}"></script>
     <script src="{% static 'assets/js/masterdata/saledata/expense/expense_detail.js' %}"></script>
-    <script src="{% static "assets/js/masterdata/saledata/product/vietnam-number-separator.js" %}"></script>
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
 {% endblock %}

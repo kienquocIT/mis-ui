@@ -170,6 +170,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     UNIT_OF_MEASURE_GROUP_DETAIL = StringUrl('saledata/unit-of-measure-group/{pk}')
     UNIT_OF_MEASURE = StringUrl('saledata/units-of-measure')
     UNIT_OF_MEASURE_DETAIL = StringUrl('saledata/unit-of-measure/{pk}')
+    UOM_OF_GROUP_LABOR_LIST = StringUrl('saledata/uom-group-labor')
 
     # product
     PRODUCT_LIST = StringUrl('saledata/products')

@@ -310,3 +310,13 @@ class ProductForSaleListAPI(APIView):
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_SALE_LIST).get()
         return resp.auto_return(key_success='product_sale_list')
+
+
+class UnitOfMeasureOfGroupLaborListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.UOM_OF_GROUP_LABOR_LIST).get()
+        return resp.auto_return(key_success='uom_of_group_labor')

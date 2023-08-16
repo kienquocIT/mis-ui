@@ -155,42 +155,6 @@ class QuotationLoadDataHandle {
             disabled: !(ele.attr('data-url')),
         });
         QuotationLoadDataHandle.loadInformationSelectBox(ele);
-
-
-
-        // if (!ele[0].innerHTML || valueToSelect) {
-        //     $.fn.callAjax2({
-        //             'url': url,
-        //             'method': method,
-        //             'isDropdown': true,
-        //         }
-        //     ).then(
-        //         (resp) => {
-        //             let data = $.fn.switcherResp(resp);
-        //             if (data) {
-        //                 if (data.hasOwnProperty('payment_terms_list') && Array.isArray(data.payment_terms_list)) {
-        //                     ele.empty();
-        //                     ele.append(`<option value=""></option>`);
-        //                     data.payment_terms_list.map(function (item) {
-        //                         let dataStr = JSON.stringify(item).replace(/"/g, "&quot;");
-        //                         let option = `<option value="${item.id}">
-        //                                     <span class="opp-title">${item.title}</span>
-        //                                     <input type="hidden" class="data-info" value="${dataStr}">
-        //                                 </option>`
-        //                         if (valueToSelect && valueToSelect === item.id) {
-        //                             option = `<option value="${item.id}" selected>
-        //                                         <span class="opp-title">${item.title}</span>
-        //                                         <input type="hidden" class="data-info" value="${dataStr}">
-        //                                     </option>`;
-        //                         }
-        //                         ele.append(option);
-        //                     });
-        //                     self.loadInformationSelectBox(ele);
-        //                 }
-        //             }
-        //         }
-        //     )
-        // }
     }
 
     static loadBoxQuotationSalePerson(dataSalePerson = {}) {
@@ -260,109 +224,14 @@ class QuotationLoadDataHandle {
             // dataParams: data_filter,
             disabled: !(ele.attr('data-url')),
         });
-
-
-        // let self = this;
-        // let ele = document.getElementById('data-init-quotation-create-tables-product');
-        // let jqueryId = '#' + box_id;
-        // let eleBox = $(jqueryId);
-        // if (ele && eleBox) {
-        //     let linkDetail = ele.getAttribute('data-link-detail');
-        //     eleBox.attr('data-link-detail', linkDetail);
-        //     let data = JSON.parse(ele.value);
-        //     eleBox.empty();
-        //     eleBox.append(`<option value=""></option>`);
-        //     for (let i = 0; i < data.length; i++) {
-        //         let uom_title = "";
-        //         let default_uom = {};
-        //         let uom_group = {};
-        //         let tax_code = {};
-        //         if (Object.keys(data[i].sale_information).length !== 0) {
-        //             if (Object.keys(data[i].sale_information.default_uom).length !== 0) {
-        //                 uom_title = data[i].sale_information.default_uom.title
-        //             }
-        //             default_uom = data[i].sale_information.default_uom;
-        //             tax_code = data[i].sale_information.tax_code;
-        //         }
-        //         if (Object.keys(data[i].general_information).length !== 0) {
-        //             uom_group = data[i].general_information.uom_group;
-        //         }
-        //         let dataStr = JSON.stringify({
-        //             'id': data[i].id,
-        //             'title': data[i].title,
-        //             'code': data[i].code,
-        //             'unit of measure': uom_title,
-        //         }).replace(/"/g, "&quot;");
-        //         let product_data = JSON.stringify({
-        //             'id': data[i].id,
-        //             'title': data[i].title,
-        //             'code': data[i].code,
-        //             'unit_of_measure': default_uom,
-        //             'uom_group': uom_group,
-        //             'price_list': data[i].price_list,
-        //             'cost_price': data[i].cost_price,
-        //             'tax': tax_code,
-        //         }).replace(/"/g, "&quot;");
-        //         let option = `<option value="${data[i].id}">
-        //                         <span class="product-title">${data[i].title}</span>
-        //                         <input type="hidden" class="data-default" value="${product_data}">
-        //                         <input type="hidden" class="data-info" value="${dataStr}">
-        //                     </option>`
-        //         if (valueToSelect && valueToSelect === data[i].id) {
-        //             option = `<option value="${data[i].id}" selected>
-        //                         <span class="product-title">${data[i].title}</span>
-        //                         <input type="hidden" class="data-default" value="${product_data}">
-        //                         <input type="hidden" class="data-info" value="${dataStr}">
-        //                     </option>`
-        //         }
-        //         eleBox.append(option);
-        //     }
-        //     // load data information
-        //     self.loadInformationSelectBox(eleBox);
-        // }
     }
 
-    static loadBoxQuotationUOM(ele, dataUOM = {}, uom_group = null) {
+    static loadBoxQuotationUOM(ele, dataUOM = {}, uom_group_id = null) {
         ele.initSelect2({
             data: dataUOM,
+            'dataParams': {'group': uom_group_id},
             disabled: !(ele.attr('data-url')),
         });
-
-
-        // let ele = document.getElementById('data-init-quotation-create-tables-uom');
-        // let jqueryId = '#' + box_id;
-        // let eleBox = $(jqueryId);
-        // if (ele && eleBox && uom_group) {
-        //     let data = JSON.parse(ele.value);
-        //     let optionSelected = ``;
-        //     eleBox.empty();
-        //     eleBox.append(`<option value=""></option>`);
-        //     for (let i = 0; i < data.length; i++) {
-        //         // check uom_group with product
-        //         if (data[i].group.id === uom_group) {
-        //             let dataStr = JSON.stringify({
-        //                 'id': data[i].id,
-        //                 'title': data[i].title,
-        //                 'code': data[i].code,
-        //             }).replace(/"/g, "&quot;");
-        //             let option = `<option value="${data[i].id}">
-        //                             <span class="uom-title">${data[i].title}</span>
-        //                             <input type="hidden" class="data-info" value="${dataStr}">
-        //                         </option>`
-        //             if (valueToSelect && valueToSelect === data[i].id) {
-        //                 // optionSelected = `<option value="${data[i].id}" selected>
-        //                 //             <span class="uom-title">${data[i].title}</span>
-        //                 //             <input type="hidden" class="data-info" value="${dataStr}">
-        //                 //         </option>`
-        //                 option = `<option value="${data[i].id}" selected>
-        //                             <span class="uom-title">${data[i].title}</span>
-        //                             <input type="hidden" class="data-info" value="${dataStr}">
-        //                         </option>`
-        //             }
-        //             eleBox.append(option);
-        //         }
-        //     }
-        // }
     }
 
     static loadBoxQuotationTax(ele, dataTax = {}) {
@@ -370,33 +239,6 @@ class QuotationLoadDataHandle {
             data: dataTax,
             disabled: !(ele.attr('data-url')),
         });
-
-        // let ele = document.getElementById('data-init-quotation-create-tables-tax');
-        // let jqueryId = '#' + box_id;
-        // let eleBox = $(jqueryId);
-        // if (ele && eleBox) {
-        //     let data = JSON.parse(ele.value);
-        //     eleBox.empty();
-        //     eleBox.append(`<option value="" data-value="0">0 %</option>`);
-        //     for (let i = 0; i < data.length; i++) {
-        //         let dataStr = JSON.stringify({
-        //             'id': data[i].id,
-        //             'title': data[i].title,
-        //             'value': data[i].rate,
-        //         }).replace(/"/g, "&quot;");
-        //         let option = `<option value="${data[i].id}" data-value="${data[i].rate}">
-        //                         <span class="tax-title">${data[i].rate} %</span>
-        //                         <input type="hidden" class="data-info" value="${dataStr}">
-        //                     </option>`
-        //         if (valueToSelect && valueToSelect === data[i].id) {
-        //             option = `<option value="${data[i].id}" data-value="${data[i].rate}" selected>
-        //                         <span class="tax-title">${data[i].rate} %</span>
-        //                         <input type="hidden" class="data-info" value="${dataStr}">
-        //                     </option>`
-        //         }
-        //         eleBox.append(option)
-        //     }
-        // }
     }
 
     static loadBoxQuotationExpense(box_id, valueToSelect = null) {

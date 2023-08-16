@@ -1,37 +1,8 @@
 {% extends 'base.html' %}
 {% load static i18n %}
 {% block cssHeader %}
-    <!-- Data Table CSS -->
-    <link
-            href="{% static 'vendors/datatables.net-bs5/css/dataTables.bootstrap5.min.css' %}"
-            rel="stylesheet"
-            type="text/css"
-    />
-
-    <!-- Select2 -->
-    <link
-            href="{% static 'vendors/select2/dist/css/select2.min.css' %}"
-            rel="stylesheet"
-            type="text/css"
-    />
-
-    <!-- Daterangepicker CSS -->
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
-    <!-- Customize -->
     <link rel="stylesheet" href="{% static 'assets/css/core/hr/employee/employee_create.css' %}">
-
-    <style>
-        #upload-area {
-            height: 150px;
-        {#width: 150px;#} line-height: 150px;
-            background-size: auto 100%;
-            background-repeat: no-repeat;
-            background-position: center top;
-            text-align: center;
-            cursor: pointer;
-        }
-
-    </style>
 {% endblock %}
 {% block pageAction %}
     <button class="btn btn-outline-primary" type="submit" form="frm_employee_create">
@@ -72,7 +43,7 @@
                         <div class="col-8">
                             <div class="row">
                                 <div class="form-group">
-                                    <label class="form-label">{% trans 'Select User' %}</label>
+                                    <label class="form-label" for="select-box-user">{% trans 'Select User' %}</label>
                                     <select
                                             class="form-select" id="select-box-user"
                                             data-url="{% url 'CompanyUserNotMapEmployeeListAPI' %}"
@@ -87,7 +58,7 @@
                             <div class="row">
                                 <div class="col-6">
                                     <div class="form-group">
-                                        <label class="form-label required">{% trans 'First Name' %}</label>
+                                        <label class="form-label required" for="employee-first-name">{% trans 'First Name' %}</label>
                                         <input
                                                 type="text" class="form-control"
                                                 placeholder="A"
@@ -100,7 +71,7 @@
                                 </div>
                                 <div class="col-6">
                                     <div class="form-group">
-                                        <label class="form-label required">{% trans 'Last Name' %}</label>
+                                        <label class="form-label required" for="employee-last-name">{% trans 'Last Name' %}</label>
                                         <input
                                                 type="text" placeholder="Nguyen Van"
                                                 class="form-control"
@@ -117,10 +88,6 @@
                         <div class="col-4">
                             <div class="form-group">
                                 <label class="form-label">{% trans 'Avatar' %}</label>
-                                <div id="upload-area" class="form-control">
-                                    Click here to upload image
-                                </div>
-                                <input id="input-avatar" type="file" class="hidden" name="avatar">
                                 <span class="form-text text-muted">{% trans 'Avatar of emloyee' %}</span>
                             </div>
                         </div>
@@ -128,7 +95,7 @@
                     <div class="row">
                         <div class="col-4">
                             <div class="form-group">
-                                <label class="form-label required">{% trans 'Email' %}</label>
+                                <label class="form-label required" for="employee-email">{% trans 'Email' %}</label>
                                 <input
                                         type="email" class="form-control"
                                         placeholder="customer@mtsolution.com.vn"
@@ -142,7 +109,7 @@
                         <div class="col-4">
 
                             <div class="form-group">
-                                <label class="form-label required">{% trans 'Phone' %}</label>
+                                <label class="form-label required" for="employee-phone">{% trans 'Phone' %}</label>
                                 <input
                                         type="text" placeholder="(+84) 987-654-321"
                                         class="form-control"
@@ -155,7 +122,7 @@
                         </div>
                         <div class="col-4">
                             <div class="form-group">
-                                <label class="form-label required">{% trans 'Department' %}</label>
+                                <label class="form-label required" for="select-box-group-employee">{% trans 'Department' %}</label>
                                 <select
                                         class="form-select"
                                         name="group"
@@ -173,7 +140,7 @@
                     <div class="row">
                         <div class="col-4">
                             <div class="form-group">
-                                <label class="form-label required">{% trans 'Date of Birthday' %}</label>
+                                <label class="form-label required" for="employee-dob">{% trans 'Date of Birthday' %}</label>
                                 <input
                                         class="form-control"
                                         id="employee-dob"
@@ -185,7 +152,7 @@
                         </div>
                         <div class="col-4">
                             <div class="form-group">
-                                <label class="form-label required">{% trans 'Date Joined' %}</label>
+                                <label class="form-label required" for="employee-date-joined">{% trans 'Date Joined' %}</label>
                                 <input
                                         class="form-control"
                                         type="text"
@@ -197,7 +164,7 @@
                         </div>
                         <div class="col-4">
                             <div class="form-group">
-                                <label class="form-label">{% trans 'Role' %}</label>
+                                <label class="form-label" for="select-box-role-employee">{% trans 'Role' %}</label>
                                 <select
                                         class="form-control"
                                         multiple
@@ -237,7 +204,7 @@
                                         checked
                                         required
                                 >
-                                <label class="form-label required">{% trans 'Active the employee after created' %}</label>
+                                <label class="form-label required" for="is_active">{% trans 'Active the employee after created' %}</label>
                             </div>
                         </div>
                     </div>
@@ -254,24 +221,10 @@
 
 
 {% block jsFooter %}
-    <!-- Data Table JS -->
-    <script src="{% static 'vendors/datatables.net/js/jquery.dataTables.min.js' %}"></script>
-    <script src="{% static 'vendors/datatables.net-bs5/js/dataTables.bootstrap5.min.js' %}"></script>
-    <script src="{% static 'vendors/jasny-bootstrap/dist/js/jasny-bootstrap.min.js' %}"></script>
-
-    <!-- Select2 -->
-    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
-
-    <!-- Moment JS -->
-    <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
-    <!-- Customize JS -->
-    <script src="{% static 'assets/js/additional-methods.min.js' %}"></script>
-
-    <!-- Daterangepicker JS -->
     <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
-    <script src="{% static 'assets/js/core/hr/employee/employee_pk.js' %}"></script>
-    <script src="{% static 'assets/js/core/hr/employee/employee_create.js' %}"></script>
 
+    <script src="{% static 'assets/js/core/hr/employee/employee_pk.js' %}"></script>
     <script src="{% static 'assets/js/core/hr/plan_app.js' %}"></script>
+    <script src="{% static 'assets/js/core/hr/employee/employee_create.js' %}"></script>
 {% endblock %}

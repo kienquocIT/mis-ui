@@ -68,11 +68,13 @@ $(function () {
 
 // Action on change dropdown opportunity
         boxOpportunity.on('change', function () {
-            let dataSelected = SelectDDControl.get_data_from_idx(boxOpportunity, $(this).val());
-            if (dataSelected) {
-                boxCustomer.empty();
-                QuotationLoadDataHandle.loadBoxQuotationCustomer(dataSelected.customer);
-                boxCustomer.change();
+            if ($(this).val()) {
+                let dataSelected = SelectDDControl.get_data_from_idx(boxOpportunity, $(this).val());
+                if (dataSelected) {
+                    boxCustomer.empty();
+                    QuotationLoadDataHandle.loadBoxQuotationCustomer(dataSelected.customer);
+                    boxCustomer.change();
+                }
             } else { // No Value => load again dropdowns
                 boxCustomer.empty();
                 QuotationLoadDataHandle.loadBoxQuotationCustomer();
@@ -88,34 +90,36 @@ $(function () {
 
 // Action on change dropdown customer
         boxCustomer.on('change', function () {
-            let dataSelected = SelectDDControl.get_data_from_idx(boxCustomer, $(this).val());
-            if (dataSelected) {
-                if (boxOpportunity.val()) {
-                    let dataOppSelected = SelectDDControl.get_data_from_idx(boxOpportunity, boxOpportunity.val());
-                    if (dataOppSelected) {
-                        if (Object.keys(dataOppSelected.customer).length !== 0) {
-                            if (dataOppSelected.customer.id !== $(this).val()) {
-                                boxOpportunity.empty();
-                                QuotationLoadDataHandle.loadBoxQuotationOpportunity();
+            if ($(this).val()) {
+                let dataSelected = SelectDDControl.get_data_from_idx(boxCustomer, $(this).val());
+                if (dataSelected) {
+                    if (boxOpportunity.val()) {
+                        let dataOppSelected = SelectDDControl.get_data_from_idx(boxOpportunity, boxOpportunity.val());
+                        if (dataOppSelected) {
+                            if (Object.keys(dataOppSelected.customer).length !== 0) {
+                                if (dataOppSelected.customer.id !== $(this).val()) {
+                                    boxOpportunity.empty();
+                                    QuotationLoadDataHandle.loadBoxQuotationOpportunity();
+                                }
                             }
                         }
                     }
+                    // load Shipping & Billing by Customer
+                    QuotationLoadDataHandle.loadShippingBillingCustomer();
+                    QuotationLoadDataHandle.loadShippingBillingCustomer(dataSelected);
+                    // load Contact by Customer
+                    boxContact.empty();
+                    QuotationLoadDataHandle.loadBoxQuotationContact(dataSelected.owner, dataSelected.id);
+                    // load Payment Term by Customer
+                    boxPayment.empty();
+                    QuotationLoadDataHandle.loadBoxQuotationPaymentTerm(dataSelected.payment_term_mapped);
+                    // Store Account Price List
+                    if (Object.keys(dataSelected.price_list_mapped).length !== 0) {
+                        document.getElementById('customer-price-list').value = dataSelected.price_list_mapped.id;
+                    }
+                    // Load again dropdown sale_person only valueSelected
+                    QuotationLoadDataHandle.loadBoxQuotationSalePerson($('#select-box-quotation-create-sale-person').val());
                 }
-                // load Shipping & Billing by Customer
-                QuotationLoadDataHandle.loadShippingBillingCustomer();
-                QuotationLoadDataHandle.loadShippingBillingCustomer(dataSelected);
-                // load Contact by Customer
-                boxContact.empty();
-                QuotationLoadDataHandle.loadBoxQuotationContact(dataSelected.owner, dataSelected.id);
-                // load Payment Term by Customer
-                boxPayment.empty();
-                QuotationLoadDataHandle.loadBoxQuotationPaymentTerm(dataSelected.payment_term_mapped);
-                // Store Account Price List
-                if (Object.keys(dataSelected.price_list_mapped).length !== 0) {
-                    document.getElementById('customer-price-list').value = dataSelected.price_list_mapped.id;
-                }
-                // Load again dropdown sale_person only valueSelected
-                QuotationLoadDataHandle.loadBoxQuotationSalePerson($('#select-box-quotation-create-sale-person').val());
             } else { // No Value => load again dropdowns
                 boxOpportunity.empty();
                 boxContact.empty();

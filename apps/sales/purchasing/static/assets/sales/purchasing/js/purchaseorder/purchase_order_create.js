@@ -22,6 +22,7 @@ $(function () {
         PODataTableHandle.dataTablePurchaseRequestProduct();
         PODataTableHandle.dataTablePurchaseQuotation();
         PODataTableHandle.dataTablePurchaseOrderProductAdd();
+        PODataTableHandle.dataTablePurchaseOrderProductRequest();
 
         // run datetimepicker
         $('input[type=text].date-picker').daterangepicker({
@@ -29,21 +30,31 @@ $(function () {
             singleDatePicker: true,
             timePicker: true,
             showDropdowns: true,
-            // "cancelClass": "btn-secondary",
-            // maxYear: parseInt(moment().format('YYYY'), 10)
             locale: {
                 format: 'DD/MM/YYYY hh:mm A'
             }
         });
         $('#purchase-order-date-delivered').val(null).trigger('change');
 
+        function checkDataTableRenderThenHidden() {
+            let element0 = $('#datable-purchase-order-product-request_wrapper');
+            if (element0.length) {
+                element0[0].setAttribute('hidden', 'true');  // hidden ele if condition pass
+            } else {
+                setTimeout(checkDataTableRenderThenHidden, 1000);  // call again after 1s if condition not pass yet
+            }
+        }
+        checkDataTableRenderThenHidden();
+
 // EVENTS
         // Action on change dropdown supplier
         eleBoxSupplier.on('change', function () {
-            let dataSelected = SelectDDControl.get_data_from_idx(eleBoxSupplier, $(this).val());
-            if (dataSelected) {
-                eleBoxContact.empty();
-                POLoadDataHandle.loadBoxContact(dataSelected.owner, dataSelected.id);
+            if ($(this).val()) {
+                let dataSelected = SelectDDControl.get_data_from_idx(eleBoxSupplier, $(this).val());
+                if (dataSelected) {
+                    eleBoxContact.empty();
+                    POLoadDataHandle.loadBoxContact(dataSelected.owner, dataSelected.id);
+                }
             } else { // No Value => load again dropdowns
                 eleBoxContact.empty();
                 POLoadDataHandle.loadBoxContact();

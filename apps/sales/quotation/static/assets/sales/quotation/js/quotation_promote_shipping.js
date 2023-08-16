@@ -538,9 +538,11 @@ class promotionHandle {
                         let subtotalPlus = 0;
                         let eleTax = row.querySelector('.table-row-tax');
                         if (eleTax) {
-                            let optionSelected = eleTax.options[eleTax.selectedIndex];
-                            if (optionSelected) {
-                                tax = parseFloat(optionSelected.getAttribute('data-value'));
+                            if ($(eleTax).val()) {
+                                let dataTax = SelectDDControl.get_data_from_idx($(eleTax), $(eleTax).val());
+                                if (dataTax.hasOwnProperty('rate')) {
+                                    tax = parseInt(dataTax.rate);
+                                }
                             }
                         }
                         // calculate discount & tax
@@ -601,9 +603,11 @@ class promotionHandle {
                         let subtotalPlus = 0;
                         let eleTax = row.querySelector('.table-row-tax');
                         if (eleTax) {
-                            let optionSelected = eleTax.options[eleTax.selectedIndex];
-                            if (optionSelected) {
-                                tax = parseInt(optionSelected.getAttribute('data-value'));
+                            if ($(eleTax).val()) {
+                                let dataTax = SelectDDControl.get_data_from_idx($(eleTax), $(eleTax).val());
+                                if (dataTax.hasOwnProperty('rate')) {
+                                    tax = parseInt(dataTax.rate);
+                                }
                             }
                         }
                         // calculate discount & tax

@@ -5,12 +5,14 @@
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
 {% block pageAction %}
-    <a href="{% url 'QuotationUpdate' data.data.doc_id %}">
-        <button class="btn btn-outline-primary">
+    <a href="#"
+       data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'Save' %}"
+       data-bs-original-title="Save">
+        <button class="btn btn-outline-primary" type="submit" form="frm_quotation_create">
             <span>
-                <span>{% trans 'Edit' %}</span>
+                <span>{% trans 'Save' %}</span>
                 <span class="icon">
-                    <i class="fa-regular fa-pen-to-square"></i>
+                    <i class="fa-regular fa-floppy-disk"></i>
                 </span>
             </span>
         </button>

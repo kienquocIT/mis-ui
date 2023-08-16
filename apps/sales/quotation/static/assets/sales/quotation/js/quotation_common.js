@@ -934,12 +934,9 @@ class QuotationLoadDataHandle {
             costs_data = data.sale_order_costs_data;
             expenses_data = data.sale_order_expenses_data;
         }
-        // tableProduct.DataTable().clear().destroy();
-        // tableCost.DataTable().clear().destroy();
-        // tableExpense.DataTable().clear().destroy();
-        // QuotationDataTableHandle.dataTableProduct();
-        // QuotationDataTableHandle.dataTableCost();
-        // QuotationDataTableHandle.dataTableExpense();
+        tableProduct.DataTable().clear();
+        tableCost.DataTable().clear();
+        tableExpense.DataTable().clear();
         tableProduct.DataTable().rows.add(products_data).draw();
         tableCost.DataTable().rows.add(costs_data).draw();
         tableExpense.DataTable().rows.add(expenses_data).draw();
@@ -2300,9 +2297,11 @@ class QuotationCalculateCaseHandle {
         let subtotalPlus = 0;
         let eleTax = row.querySelector('.table-row-tax');
         if (eleTax) {
-            let dataTax = SelectDDControl.get_data_from_idx($(eleTax), $(eleTax).val());
-            if (dataTax) {
-                tax = parseInt(dataTax.rate);
+            if ($(eleTax).val()) {
+                let dataTax = SelectDDControl.get_data_from_idx($(eleTax), $(eleTax).val());
+                if (dataTax.hasOwnProperty('rate')) {
+                    tax = parseInt(dataTax.rate);
+                }
             }
         }
         let eleTaxAmount = row.querySelector('.table-row-tax-amount');
@@ -2616,7 +2615,7 @@ class QuotationSubmitHandle {
             let eleProduct = row.querySelector('.table-row-item');
             let elePromotion = row.querySelector('.table-row-promotion');
             let eleShipping = row.querySelector('.table-row-shipping');
-            if (eleProduct) { // PRODUCT
+            if ($(eleProduct).val()) { // PRODUCT
                 let dataProduct = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
                 if (dataProduct) {
                     rowData['product'] = dataProduct.id;
@@ -2624,7 +2623,7 @@ class QuotationSubmitHandle {
                     rowData['product_code'] = dataProduct.code;
                 }
                 let eleUOM = row.querySelector('.table-row-uom');
-                if (eleUOM) {
+                if ($(eleUOM).val()) {
                     let dataUOM = SelectDDControl.get_data_from_idx($(eleUOM), $(eleUOM).val());
                     if (dataUOM) {
                         rowData['unit_of_measure'] = dataUOM.id;
@@ -2633,7 +2632,7 @@ class QuotationSubmitHandle {
                     }
                 }
                 let eleTax = row.querySelector('.table-row-tax');
-                if (eleTax) {
+                if ($(eleTax).val()) {
                     let dataTax = SelectDDControl.get_data_from_idx($(eleTax), $(eleTax).val());
                     if (dataTax) {
                         rowData['tax'] = dataTax.id;
@@ -2813,7 +2812,7 @@ class QuotationSubmitHandle {
             let row = tableBody.rows[i];
             let eleProduct = row.querySelector('.table-row-item');
             let eleShipping = row.querySelector('.table-row-shipping');
-            if (eleProduct) { // PRODUCT
+            if ($(eleProduct).val()) { // PRODUCT
                 let dataProduct = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
                 if (dataProduct) {
                     rowData['product'] = dataProduct.id;
@@ -2821,7 +2820,7 @@ class QuotationSubmitHandle {
                     rowData['product_code'] = dataProduct.code;
                 }
                 let eleUOM = row.querySelector('.table-row-uom');
-                if (eleUOM) {
+                if ($(eleUOM).val()) {
                     let dataUOM = SelectDDControl.get_data_from_idx($(eleUOM), $(eleUOM).val());
                     if (dataUOM) {
                         rowData['unit_of_measure'] = dataUOM.id;
@@ -2830,7 +2829,7 @@ class QuotationSubmitHandle {
                     }
                 }
                 let eleTax = row.querySelector('.table-row-tax');
-                if (eleTax) {
+                if ($(eleTax).val()) {
                     let dataTax = SelectDDControl.get_data_from_idx($(eleTax), $(eleTax).val());
                     if (dataTax) {
                         rowData['tax'] = dataTax.id;
@@ -2950,7 +2949,7 @@ class QuotationSubmitHandle {
                 }
             }
             let eleUOM = row.querySelector('.table-row-uom');
-            if (eleUOM) {
+            if ($(eleUOM).val()) {
                 let dataUOM = SelectDDControl.get_data_from_idx($(eleUOM), $(eleUOM).val());
                 if (dataUOM) {
                     rowData['unit_of_measure'] = dataUOM.id;
@@ -2959,7 +2958,7 @@ class QuotationSubmitHandle {
                 }
             }
             let eleTax = row.querySelector('.table-row-tax');
-            if (eleTax) {
+            if ($(eleTax).val()) {
                 let dataTax = SelectDDControl.get_data_from_idx($(eleTax), $(eleTax).val());
                 if (dataTax) {
                     rowData['tax'] = dataTax.id;

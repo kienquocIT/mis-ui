@@ -97,13 +97,14 @@
                                                     class="required"
                                             ></span></label>
                                             <select
-                                                    class="form-select" id="select-box-group-level"
+                                                    class="form-select"
+                                                    id="select-box-group-level"
                                                     data-url="{% url 'GroupLevelListAPI' %}"
                                                     data-method="GET"
                                                     name="group_level"
+                                                    data-keyResp="group_level_list"
                                                     required
                                             >
-                                                <option selected>Select...</option>
                                             </select>
                                             <span class="form-text text-muted">{% trans 'Level link to this group' %}</span>
                                         </div>

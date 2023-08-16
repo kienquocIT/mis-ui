@@ -37,16 +37,12 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     BASTION_UPDATE = BreadcrumbChildren(_('Update'), is_append_code=True)
 
     # hr
-    HR_PAGE = BreadcrumbChildren(_('HR'))
     EMPLOYEE_LIST_PAGE = BreadcrumbChildren(_('Employee List'), 'EmployeeList')
     EMPLOYEE_CREATE_PAGE = BreadcrumbChildren(_('Employee Create'), 'EmployeeCreate')
     GROUP_LEVEL_LIST_PAGE = BreadcrumbChildren(_('Organization Level'), 'GroupLevelList')
     GROUP_LIST_PAGE = BreadcrumbChildren(_('Organization Group'), 'GroupList')
     ROLE_LIST_PAGE = BreadcrumbChildren(_('Role List'), 'RoleList')
     ROLE_CREATE_PAGE = BreadcrumbChildren(_("Create Role"), 'RoleCreate')
-
-    # tenant
-    ORGANIZATION_PAGE = BreadcrumbChildren(_('Organization'), 'GroupList')
 
     # user
     USER_LIST_PAGE = BreadcrumbChildren(_('User List'), 'UserList')
@@ -278,7 +274,6 @@ class BreadcrumbView:
 
     EMPLOYEE_LIST_PAGE = [
         BreadcrumbItem.HOME_PAGE,
-        BreadcrumbItem.HR_PAGE,
         BreadcrumbItem.EMPLOYEE_LIST_PAGE,
     ]
 
@@ -300,13 +295,11 @@ class BreadcrumbView:
 
     GROUP_LEVEL_LIST_PAGE = [
         BreadcrumbItem.HOME_PAGE,
-        BreadcrumbItem.ORGANIZATION_PAGE,
         BreadcrumbItem.GROUP_LEVEL_LIST_PAGE,
     ]
 
     GROUP_LIST_PAGE = [
         BreadcrumbItem.HOME_PAGE,
-        BreadcrumbItem.ORGANIZATION_PAGE,
         BreadcrumbItem.GROUP_LIST_PAGE,
     ]
     GROUP_CREATE = GROUP_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
@@ -335,7 +328,6 @@ class BreadcrumbView:
 
     ROLE_LIST_PAGE = [
         BreadcrumbItem.HOME_PAGE,
-        BreadcrumbItem.HR_PAGE,
         BreadcrumbItem.ROLE_LIST_PAGE,
     ]
 

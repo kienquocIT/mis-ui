@@ -9,7 +9,9 @@ let [
     parentAccountEle,
     shippingCityEle,
     shippingDistrictEle,
-    shippingWardEle
+    shippingWardEle,
+    accountNameEle,
+    accountAddressEle
 ] = [
     $('#select-box-acc-type'),
     $('#select-box-acc-manager'),
@@ -22,6 +24,8 @@ let [
     $('#shipping-city'),
     $('#shipping-district'),
     $('#shipping-ward'),
+    $('#select-box-account-name'),
+    $('#select-box-address')
 ];
 
 function loadShippingCities(shippingCityData) {
@@ -78,9 +82,9 @@ function loadAccountManager(accountManagerData) {
     })
 }
 
-function loadIndustry(accountOwnerData) {
+function loadIndustry(industryData) {
     industryEle.initSelect2({
-        data: (industryEle ? industryEle : null),
+        data: (industryData ? industryData : null),
         keyResp: 'industry_list',
         keyText: 'title',
     })
@@ -120,6 +124,70 @@ function loadParentAccount(parentAccountData) {
         keyResp: 'account_list',
         keyText: 'name',
     })
+}
+
+function loadAccountName(accountNameData) {
+    let list_emp = []
+    $('#select-box-acc-manager').find('option:selected').each(function () {
+        list_emp.push($(this).val());
+    })
+    let list_acc_map_emp = []
+    accountNameEle.initSelect2({
+        ajax: {
+            url: $('#select-box-acc-manager').attr('data-url-accounts'),
+            method: 'GET',
+        },
+        callbackDataResp: function (resp, keyResp){
+            let accounts_map_employee_filtered = [];
+            resp.data[keyResp].map(function (item) {
+                if (list_emp.includes(item.employee)) {
+                    if (!list_acc_map_emp.includes(item.account.id)) {
+                        list_acc_map_emp.push(item.account.id);
+                        accounts_map_employee_filtered.push(item);
+                    }
+                }
+            })
+            console.log(accounts_map_employee_filtered)
+            return accounts_map_employee_filtered
+        },
+        data: (accountNameData ? accountNameData : null),
+        keyResp: 'accounts_map_employee',
+        keyId: 'account--id',
+        keyText: 'account--name',
+    })
+}
+
+function loadAccountAddress(accountAddressData) {
+    let id_account = $('#select-box-account-name').find('option:selected').val();
+    let url = $('#select-box-account-name').attr('data-url').replace(0, id_account);
+    console.log(url)
+    accountAddressEle.initSelect2({
+        ajax: {
+            url: url,
+            method: 'GET',
+        },
+        callbackDataResp: function (resp, keyResp){
+            return resp.data[keyResp]['shipping_address']
+        },
+        data: (accountAddressData ? accountAddressData : null),
+        keyResp: 'account_detail',
+        keyId: 'id',
+        keyText: 'full_address',
+    })
+    // $.fn.callAjax(url, method).then(
+    //     (resp) => {
+    //         let data = $.fn.switcherResp(resp);
+    //         if (data) {
+    //             if (data.hasOwnProperty('account_detail')) {
+    //                 $('#inp-email-address').val(data.account_detail.email);
+    //                 $('#inp-tax-code-address').val(data.account_detail.tax_code);
+    //                 data.account_detail.shipping_address.map(function (item) {
+    //                     $('#select-box-address').append(`<option value="` + item + `">` + item + `</option>`)
+    //                 })
+    //             }
+    //         }
+    //     }
+    // )
 }
 
 class AccountHandle {
@@ -310,8 +378,7 @@ $('#save-changes-modal-billing-address').on('click', function () {
             }
 
             $('#list-billing-address').append(
-                `<div class="form-check ml-5">
-                    <input class="form-check-input" type="radio" name="billingaddressRadio" ` + is_default + `>
+                `<div class="form-check ml-5"><input class="form-check-input" type="radio" name="billingaddressRadio" ` + is_default + `>
                     <label>` + billing_address + `</label>
                     <a href="#" class="del-address-item"><i class="bi bi-x"></i></a>
                 </div>`
@@ -543,31 +610,7 @@ $('#edit-billing-address-btn').on('click', function () {
     $('#edited-billing-address').prop('hidden', true);
     $('#button_add_new_billing_address').html(`<i class="fas fa-plus-circle"></i> Add/Edit`)
 
-    let list_emp = []
-    $('#select-box-acc-manager').find('option:selected').each(function () {
-        list_emp.push($(this).val());
-    })
-
-    let list_acc_map_emp = []
-    let data_url = $('#select-box-acc-manager').attr('data-url-accounts')
-    let data_method = $('#select-box-acc-manager').attr('data-method')
-    $.fn.callAjax(data_url, data_method).then(
-        (resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                if (data.hasOwnProperty('accounts_map_employee')) {
-                    data.accounts_map_employee.map(function (item) {
-                        if (list_emp.includes(item.employee)) {
-                            if (!list_acc_map_emp.includes(item.account.id)) {
-                                list_acc_map_emp.push(item.account.id)
-                                ele.append(`<option value="` + item.account.id + `">` + item.account.name + `</option>`)
-                            }
-                        }
-                    })
-                }
-            }
-        }
-    )
+    loadAccountName();
 
     $('#inp-tax-code-address').val($('#inp-tax-code').val());
     $('#inp-email-address').val($('#inp-email').val());
@@ -591,6 +634,7 @@ $('#edit-billing-address-btn').on('click', function () {
 $('#select-box-account-name').on('change', function () {
     $('#edited-billing-address').val('');
     let id_account = $(this).find('option:selected').val();
+    console.log(id_account)
     let select_box = $('#select-box-address');
     select_box.empty();
     select_box.append(`<option value="0" selected></option>`)
@@ -608,22 +652,7 @@ $('#select-box-account-name').on('change', function () {
         });
     } else {
         $('#button_add_new_billing_address').prop('hidden', false);
-        let url = $(this).attr('data-url').replace(0, id_account);
-        let method = $(this).attr('data-method');
-        $.fn.callAjax(url, method).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (data.hasOwnProperty('account_detail')) {
-                        $('#inp-email-address').val(data.account_detail.email);
-                        $('#inp-tax-code-address').val(data.account_detail.tax_code);
-                        data.account_detail.shipping_address.map(function (item) {
-                            $('#select-box-address').append(`<option value="` + item + `">` + item + `</option>`)
-                        })
-                    }
-                }
-            }
-        )
+        loadAccountAddress();
     }
 })
 
@@ -666,10 +695,12 @@ $('#button_add_new_billing_address').on('click', function () {
     if ($('#button_add_new_billing_address i').attr('class') === 'fas fa-plus-circle') {
         $(this).html(`<i class="bi bi-backspace-fill"></i> Select`);
         $('#select-box-address').prop('hidden', true);
+        $('#select-box-address').prop('disabled', true);
         $('#edited-billing-address').prop('hidden', false);
     } else {
         $(this).html(`<i class="fas fa-plus-circle"></i> Add/Edit`)
         $('#select-box-address').prop('hidden', false);
+        $('#select-box-address').prop('disabled', false);
         $('#edited-billing-address').prop('hidden', true);
     }
 })

@@ -458,7 +458,7 @@ class SelectDDControl {
                     'id': this.callbackValueId(item, keyId),
                     'text': this.callbackTextDisplay(item, keyText),
                     'data': item,
-                    'selected': true,
+                    'selected': item?.['selected'] || true,
                 }
             })
         }

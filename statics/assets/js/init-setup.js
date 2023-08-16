@@ -2027,6 +2027,7 @@ class DTBControl {
             lengthMenu: [
                 [5, 10, 25, 50, -1], [5, 10, 25, 50, $.fn.transEle.attr('data-all')],
             ],
+            pageLength: 5,
             drawCallback: function (settings) {
                 drawCallback01(settings)
                 drawCallBackDefault(settings)

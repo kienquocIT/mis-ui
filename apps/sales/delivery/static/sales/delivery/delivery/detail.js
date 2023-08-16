@@ -373,7 +373,7 @@ $(async function () {
                     for (let item of dataLogistics){
                         htmlTemp += `<div class="col mb-3 text-right txt-cl-black wrap_logistic"><textarea disabled class="form-control mb-2 txt-cl-black" data-id="${
                             item?.id ? item.id : item
-                        }">${item}</textarea><button class="btn btn-primary btn_logistics_choise">${
+                        }">${item?.full_address ? item.full_address : item}</textarea><button class="btn btn-primary btn_logistics_choise">${
                             $trans.attr('data-select_address')}</button></div>`
                     }
                     $(this).find('.modal-body').html(htmlTemp)

@@ -512,7 +512,8 @@ $(function () {
                         }
                         if (tax) {
                             dataTax = SelectDDControl.get_data_from_idx($(tax), $(tax).val());
-                            valueTaxAmount = parseFloat(row.querySelector('.table-row-tax-amount-raw').value);
+                            // valueTaxAmount = parseFloat(row.querySelector('.table-row-tax-amount-raw').value);
+                            valueTaxAmount = 0;
                         }
                         valueQuantity = parseFloat(row.querySelector('.table-row-quantity').value);
                         let elePrice = row.querySelector('.table-row-price');
@@ -520,7 +521,8 @@ $(function () {
                             // valuePrice = $(elePrice).valCurrency();
                             valuePrice = 0;
                         }
-                        valueSubtotal = parseFloat(row.querySelector('.table-row-subtotal-raw').value);
+                        // valueSubtotal = parseFloat(row.querySelector('.table-row-subtotal-raw').value);
+                        valueSubtotal = 0;
                         valueOrder++
                         let dataAdd = {
                             "tax": {

@@ -2,6 +2,7 @@ $(document).ready(function () {
     let tbl = $('#datatable_product_list');
     let url_detail = tbl.attr('data-url-detail');
     tbl.DataTableDefault({
+        useDataServer: true,
         rowIdx: true,
         ajax: {
             url: tbl.attr('data-url'),

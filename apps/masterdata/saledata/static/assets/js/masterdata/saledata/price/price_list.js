@@ -25,6 +25,7 @@ $(document).ready(function () {
     let tbl = $('#datatable-price-list');
     let url_detail = tbl.attr('data-url-detail');
     tbl.DataTableDefault({
+        useDataServer: true,
         rowIdx: true,
         ajax: {
             url: tbl.attr('data-url'),

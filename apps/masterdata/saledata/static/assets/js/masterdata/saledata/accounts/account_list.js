@@ -1,6 +1,7 @@
 $(document).ready(function () {
     let tbl = $('#datatable_account_list');
     tbl.DataTableDefault({
+        useDataServer: true,
         rowIdx: true,
         ajax: {
             debug: true,

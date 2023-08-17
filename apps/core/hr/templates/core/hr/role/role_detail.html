@@ -38,16 +38,36 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-12">
-            {% include 'core/hr/employee/extends/plan_apps.html' %}
+            <div class="col-12">
+                <ul class="nav nav-light nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#plan-app">
+                            <span class="nav-link-text">{% trans 'Plan-Application' %}</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#permissions">
+                            <span class="nav-link-text">{% trans 'Permission' %}</span>
+                        </a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane show active" id="plan-app">
+                        {% include 'core/hr/employee/extends/plan_apps.html' with add_new_enabled="false" %}
+                    </div>
+                    <div class="tab-pane fade" id="permissions">
+                        {% include 'core/hr/employee/extends/permissions.html' with add_new_enabled="false" %}
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
 {% endblock %}
 
 {% block jsFooter %}
     <script>
         let urlDetail = "{% url 'RoleDetailAPI' pk=pk %}";
     </script>
+    <script src="{% static 'assets/js/core/hr/permissions.js' %}"></script>
     <script src="{% static 'assets/js/core/hr/role/role_detail.js' %}"></script>
     <script src="{% static 'assets/js/core/hr/plan_app.js' %}"></script>
     <script src="{% static 'assets/js/core/hr/role/roles_common.js' %}"></script>

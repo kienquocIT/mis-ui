@@ -7,6 +7,7 @@ $(function () {
 
     $(document).ready(function () {
         tb.DataTableDefault({
+            useDataServer: true,
             autoWidth: false,
             rowIdx: true,
             ajax: {
@@ -103,7 +104,6 @@ $(function () {
                     }
                 },
             ],
-            useDataServer: true,
         });
     })
 

@@ -6,6 +6,7 @@ $(document).ready(function () {
             let frm = new SetupFormSubmit(tbl);
             tbl.DataTableDefault(
                 {
+                    useDataServer: true,
                     rowIdx: true,
                     ajax: {
                         url: frm.dataUrl,
@@ -70,6 +71,7 @@ $(document).ready(function () {
             let frm = new SetupFormSubmit(tbl);
             tbl.DataTableDefault(
                 {
+                    useDataServer: true,
                     rowIdx: true,
                     ajax: {
                         url: frm.dataUrl,
@@ -156,10 +158,9 @@ $(document).ready(function () {
     let frm = $('#form-create-lookup');
     frm.submit(function (event) {
         event.preventDefault();
-        let csr = $("input[name=csrfmiddlewaretoken]").last().val();
         let frm = new SetupFormSubmit($(this));
         let frm_data = frm.dataForm;
-        let lookup = $('#form-create-lookup').attr('data-lookup');
+        let lookup = $(this).attr('data-lookup');
         let data_url = ''
         if (lookup === 'salutation') {
             data_url = $('#form-create-lookup').attr('data-url-salutation');

@@ -1,13 +1,15 @@
 $(document).ready(function () {
-    const city_list = JSON.parse($('#id-city-list').text());
+    // const city_list = JSON.parse($('#id-city-list').text());
 
-    const item_unit_list = JSON.parse($('#id-unit-list').text());
-    const item_unit_dict = item_unit_list.reduce((obj, item) => {
-        obj[item.id] = item;
-        return obj;
-    }, {});
+    // const item_unit_list = JSON.parse($('#id-unit-list').text());
+    // const item_unit_dict = item_unit_list.reduce((obj, item) => {
+    //     obj[item.id] = item;
+    //     return obj;
+    // }, {});
 
-    $('.select2').select2();
+    let item_unit_list = [];
+    let item_unit_dict = {}
+
     $(document).on('change', '.cbFixedPrice', function () {
         let divNotFixed = $(this).closest('div .row').find('.divNotFixed')
         if ($(this).is(':checked')) {
@@ -19,14 +21,6 @@ $(document).ready(function () {
         }
     })
 
-    function loadCities(city_list) {
-        let ele = $('#chooseCityDefault');
-        ele.append(`<option value="1">Other cities</option>`)
-        city_list.map(function (item) {
-            ele.append(`<option value="` + item.id + `"><span>` + item.title + `</span></option>`);
-        })
-    }
-
     function removeClass(eleThreshold) {
         eleThreshold.removeClass('mask-money');
         eleThreshold.removeAttr('data-return-type');
@@ -35,7 +29,14 @@ $(document).ready(function () {
 
     //onchange select box choose Unit Of Measure Group
     $(document).on('change', '.chooseUnit', function () {
-        let eleParent = $(this).closest('.line-condition')
+        if (Object.keys(item_unit_dict).length === 0 || item_unit_list.length === 0) {
+            item_unit_list = JSON.parse($(`#${$(this).data('idx-data-loaded')}`).text());
+            item_unit_dict = item_unit_list.reduce((obj, item) => {
+                obj[item.id] = item;
+                return obj;
+            }, {});
+        }
+        let eleParent = $(this).closest('.line-condition');
         let ele = eleParent.find('.spanUnit');
         let inpUnit = eleParent.find('.inpUnit');
         inpUnit.val($(this).find('option:selected').text());
@@ -57,24 +58,7 @@ $(document).ready(function () {
         $.fn.initMaskMoney2();
     })
 
-    function loadCurrency() {
-        let ele = $('#chooseCurrency');
-        let frm = new SetupFormSubmit(ele);
-        $.fn.callAjax(frm.dataUrl, frm.dataMethod).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('currency_list')) {
-                    ele.append(`<option></option>`);
-                    resp.data.currency_list.map(function (item) {
-                        ele.append(`<option value="` + item.id + `"><span>` + item.title + `</span></option>`);
-                    })
-                }
-            }
-        }, (errs) => {
-        },)
-    }
-
-    loadCurrency();
+    ShippingLoadPage.loadCurrency();
 
     // Add new Formula for condition
     $(document).on('click', '.btnAddFormula', function () {
@@ -86,13 +70,11 @@ $(document).ready(function () {
             eleParent.find('.inpUnit').attr('value', text_unit);
             eleParent.find('.spanUnit').text(item_unit_dict[eleParent.find('.chooseUnit').val()].measure);
             let eleThreshold = $(this).closest('.line-condition').find('.inpThreshold');
-            if(text_unit === 'price')
-            {
+            if (text_unit === 'price') {
                 eleThreshold.addClass('mask-money');
                 eleThreshold.attr('data-return-type', 'number');
                 eleThreshold.attr('type', 'text');
-            }
-            else{
+            } else {
                 removeClass(eleThreshold)
             }
         }
@@ -100,11 +82,12 @@ $(document).ready(function () {
     })
 
     //Add new condition
-    $(document).on('click', '#btnAddCondition', function () {
+    $(document).on('click', '#btnAddCondition', async function () {
         let html = $('#newCondition').html();
-        $('.condition-content').append(html);
-        $('.condition-content').children().last().find('.chooseCity').select2();
-        $('.condition-content').children().last().find('.chooseCity').addClass('select2');
+        let ele_condition = $('.condition-content');
+        ele_condition.append(html);
+        ShippingLoadPage.loadCity(ele_condition.children().last().find('.chooseCity'));
+        ShippingLoadPage.loadItemUnit(ele_condition.children().last().find('.chooseUnit'));
     })
 
     // Delete condition
@@ -127,7 +110,6 @@ $(document).ready(function () {
             case '1':
                 $('.condition-content').removeClass('hidden');
                 $('#inputAmount').prop('disabled', true);
-                loadCities(city_list);
                 break;
         }
     })
@@ -225,23 +207,22 @@ $(document).ready(function () {
         }
     })
 
-    $(document).on('change', '.chooseCity', function () {
-        let selectedOptions = $(this).find('option:selected').map(function () {
-            return this.value;
-        }).get();
-
-        $('.chooseCity').not(this).each(function () {
-            $(this).find('option').each(function () {
-                if($(this).is(':selected') === true){
-                    selectedOptions.push($(this).val());
-                }
-                if(selectedOptions.includes($(this).val()) && $(this).is(':selected') === false){
-                    $(this).attr('disabled', 'disabled');
-                }
-                else{
-                    $(this).removeAttr('disabled');
-                }
-            });
-        });
-    });
+    // $(document).on('change', '.chooseCity', function () {
+    //     let selectedOptions = $(this).find('option:selected').map(function () {
+    //         return this.value;
+    //     }).get();
+    //
+    //     $('.chooseCity').not(this).each(function () {
+    //         $(this).find('option').each(function () {
+    //             if ($(this).is(':selected') === true) {
+    //                 selectedOptions.push($(this).val());
+    //             }
+    //             if (selectedOptions.includes($(this).val()) && $(this).is(':selected') === false) {
+    //                 $(this).attr('disabled', 'disabled');
+    //             } else {
+    //                 $(this).removeAttr('disabled');
+    //             }
+    //         });
+    //     });
+    // });
 })

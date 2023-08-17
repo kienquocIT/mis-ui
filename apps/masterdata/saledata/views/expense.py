@@ -25,10 +25,6 @@ class ExpenseCreate(View):
         perm_check=PermCheck(url=ApiURL.EXPENSE_LIST, method='post'),
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.PRICE_LIST).get()
-        resp_currency = ServerAPI(user=request.user, url=ApiURL.CURRENCY_LIST).get()
-        if resp.state and resp_currency:
-            return {'content': {'price_list': resp.result, 'currency_list': resp_currency.result}}, status.HTTP_200_OK
         return {}, status.HTTP_200_OK
 
 
@@ -41,10 +37,6 @@ class ExpenseDetail(View):
         perm_check=PermCheck(url=ApiURL.EXPENSE_DETAIL, method='GET', fill_key=['pk']),
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.PRICE_LIST).get() # noqa
-        resp_currency = ServerAPI(user=request.user, url=ApiURL.CURRENCY_LIST).get()
-        if resp.state and resp_currency:
-            return {'content': {'price_list': resp.result, 'currency_list': resp_currency.result}}, status.HTTP_200_OK
         return {}, status.HTTP_200_OK
 
 

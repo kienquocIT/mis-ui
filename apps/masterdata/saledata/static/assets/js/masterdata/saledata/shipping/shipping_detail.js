@@ -8,7 +8,6 @@ $(document).ready(function () {
         return obj;
     }, {});
 
-    $('.select2').select2();
 
     $(document).on('change', '.cbFixedPrice', function () {
         let divNotFixed = $(this).closest('div .row').find('.divNotFixed')

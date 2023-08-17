@@ -270,6 +270,8 @@ $(document).ready(function () {
         }
     }
 
+    $('#select-box-category-create').initSelect2();
+
     function loadTaxCategory() {
         if (!$.fn.DataTable.isDataTable('#datatable-tax-category')) {
             let tbl = $('#datatable-tax-category');
@@ -283,12 +285,6 @@ $(document).ready(function () {
                         dataSrc: function (resp) {
                             let data = $.fn.switcherResp(resp);
                             if (data && resp.data.hasOwnProperty('tax_category_list')) {
-                                let select_box = $('.select-box-category');
-                                select_box.html('');
-                                data.tax_category_list.map(function (item) {
-                                    console.log(item)
-                                    select_box.append(`<option value="` + item.id + `">` + item.title + `</option>`)
-                                })
                                 return resp.data['tax_category_list'] ? resp.data['tax_category_list'] : []
                             }
                             throw Error('Call data raise errors.')
@@ -439,7 +435,9 @@ $(document).ready(function () {
                         $('#tax-title').val(data.tax.title);
                         $('#tax-code').val(data.tax.code);
                         $('#tax-rate').val(data.tax.rate);
-                        $('.select-box-category').val(data.tax.category);
+                        $('#select-box-category-update').initSelect2({
+                            'data': data.tax.category
+                        })
                         if (data.tax.type === 0) {
                             $('#tax-type').val(['0']).trigger("change");
                         } else if (data.tax.type === 1) {
@@ -481,7 +479,7 @@ $(document).ready(function () {
         } else {
             frm.dataForm['type'] = $('#tax-type').val()[0];
         }
-        frm.dataForm['category'] = $('.select-box-category').val();
+        frm.dataForm['category'] = $('#select-box-category-update').val();
         $.fn.callAjax2({
             'url': url_detail,
             'method': frm.dataMethod,

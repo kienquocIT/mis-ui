@@ -6,6 +6,7 @@ $(document).ready(function () {
             let frm = new SetupFormSubmit(tbl);
             tbl.DataTableDefault(
                 {
+                    useDataServer: true,
                     rowIdx: true,
                     ajax: {
                         url: frm.dataUrl,
@@ -70,6 +71,7 @@ $(document).ready(function () {
             let frm = new SetupFormSubmit(tbl);
             tbl.DataTableDefault(
                 {
+                    useDataServer: true,
                     rowIdx: true,
                     ajax: {
                         url: frm.dataUrl,
@@ -134,6 +136,7 @@ $(document).ready(function () {
             let frm = new SetupFormSubmit(tbl);
             tbl.DataTableDefault(
                 {
+                    useDataServer: true,
                     rowIdx: true,
                     ajax: {
                         url: frm.dataUrl,
@@ -256,7 +259,6 @@ $(document).ready(function () {
                 if (data) {
                     $.fn.notifyB({description: "Successfully"}, 'success')
                     $('#modal-lookup-data').modal('hide');
-                    console.log(lookup)
                     switch (lookup) {
                         case 'section-account-type':
                             $('#datatable-account-type-list').DataTable().ajax.reload();
@@ -350,7 +352,6 @@ $(document).ready(function () {
                     }
                 }
             }, (errs) => {
-                console.log(errs)
                 $.fn.notifyB({description: errs.data.errors}, 'failure');
             },)
 

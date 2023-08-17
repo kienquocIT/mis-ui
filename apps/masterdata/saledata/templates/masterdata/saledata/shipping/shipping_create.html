@@ -35,7 +35,7 @@
             </div>
             <div class="col-4 form-group">
                 <label class="form-label required">{% trans "Currency" %}</label>
-                <select id="chooseCurrency" class="select2 form-control" data-method="GET"
+                <select id="chooseCurrency" class="form-select" data-method="GET"
                         data-url="{% url "CurrencyListAPI" %}" name="currency"></select>
             </div>
         </div>
@@ -86,81 +86,6 @@
                 <span><span class="icon"><span class="feather-icon"><i
                         data-feather="plus"></i></span></span><span>{% trans "Add New Condition" %}</span></span>
                 </button>
-            </div>
-        </div>
-        <div class="line-condition">
-            <div class="formulaCondition">
-                <div class="row">
-                    <div class="col-3 form-group">
-                        <label class="form-label">{% trans "At Location" %}</label>
-                        <select class="select2 form-control chooseCity" id="chooseCityDefault" multiple
-                                name="location"></select>
-                    </div>
-                    <div class="col-3 form-group">
-                        <label class="form-label">{% trans "If" %}</label>
-                        <select class="form-select chooseUnit">
-                            <option></option>
-                            {% for item in data.unit %}
-                                <option value="{{ item.id }}">{{ item.title }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="col-1 mt-2 form-group">
-                        <label class="form-label"></label>
-                        <select class="form-select chooseOperator">
-                            <option value="1"><</option>
-                            <option value="2">></option>
-                            <option value="3">≤</option>
-                            <option value="4">≥</option>
-                        </select>
-                    </div>
-                    <div class="col-4 mt-2 form-group">
-                        <label class="form-label"></label>
-                        <span class="input-affix-wrapper affix-wth-text">
-                            <input type="number" class="form-control inpThreshold"
-                                   aria-describedby="basic-addon1">
-                            <span class="input-suffix spanUnit"></span>
-                        </span>
-                    </div>
-
-                    <div class="col-1"></div>
-                </div>
-                <div class="row">
-                    <div class="col-3"></div>
-                    <div class="col-9 row">
-                        <div class="col-3">
-                            <div class="form-label-group ml-3">
-                                <input type="checkbox" class="form-check-input cbFixedPrice" checked>
-                                <label class="form-label">{% trans "Fixed price" %}</label>
-                            </div>
-                            <input type="text" class="form-control inpAmount mask-money" data-return-type="number">
-                        </div>
-                        <div class="col-4 mt-5 hidden divNotFixed">
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text">+</span>
-                                </div>
-                                <input type="text" class="form-control inpAmountExtra mask-money"
-                                       aria-label="Amount (to the nearest dollar)" data-return-type="number">
-                                <div class="input-group-append">
-                                    <span class="input-group-text">*</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-5 mt-5 hidden divNotFixed">
-                            <label class="form-label displayUoMGroup mt-1"></label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-2"></div>
-                <div class="col-1 ">
-                    <button type="button" class="btn btn-link btn-animated btnAddFormula">
-                    <span><span class="icon"><span class="feather-icon"><i
-                            data-feather="plus"></i></span></span><span>{% trans "Add If" %}</span></span>
-                    </button>
-                </div>
             </div>
         </div>
     </div>
@@ -243,25 +168,18 @@
                 <div class="row">
                     <div class="col-3 form-group">
                         <label class="form-label">{% trans "At Location" %}</label>
-                        <select class="form-control chooseCity" multiple name="location">
-                            <option value="1">Other cities</option>
-                            {% for item in data.cities %}
-                                <option value="{{ item.id }}">{{ item.title }}</option>
-                            {% endfor %}
+                        <select class="form-select chooseCity" multiple data-url="{% url 'CityListAPI' %}" data-method="GET" data-keyResp="cities">
                         </select>
                     </div>
                     <div class="col-3 form-group">
                         <label class="form-label">{% trans "If" %}</label>
-                        <select class="form-select chooseUnit">
-                            <option></option>
-                            {% for item in data.unit %}
-                                <option value="{{ item.id }}">{{ item.title }}</option>
-                            {% endfor %}
+                        <select class="form-select chooseUnit" data-url="{% url 'BaseItemUnitListAPI' %}" data-method="GET" data-keyResp="base_item_units">
                         </select>
                     </div>
                     <div class="col-1 mt-2 form-group">
                         <label class="form-label"></label>
                         <select class="form-select chooseOperator" name="comparison_operators">
+                            <option></option>
                             <option value="1"><</option>
                             <option value="2">></option>
                             <option value="3">≤</option>
@@ -328,7 +246,14 @@
     {{ data.unit | json_script:"id-unit-list" }}
 
 {% endblock %}
+{% block dataHiddenGroup %}
+    <input type="text" id="url-factory"
+           data-cities="{% url 'CityListAPI' %}"
+    >
+{% endblock %}
+
 {% block jsFooter %}
+    <script src="{% static 'assets/js/masterdata/saledata/shipping/shipping_common.js' %}"></script>
     <script src="{% static 'assets/js/masterdata/saledata/shipping/shipping_create.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
 {% endblock %}

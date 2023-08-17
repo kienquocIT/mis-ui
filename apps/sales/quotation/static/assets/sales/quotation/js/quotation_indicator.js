@@ -1,4 +1,3 @@
-let submitClass = new submitHandle();
 let tableIndicator = $('#datable-quotation-create-indicator');
 
 function max(data_list) {
@@ -153,7 +152,7 @@ function calculateIndicator(indicator_list) {
     if (formSubmit[0].classList.contains('sale-order')) {
         is_sale_order = true;
     }
-    submitClass.setupDataSubmit(_form, is_sale_order);
+    QuotationSubmitHandle.setupDataSubmit(_form, is_sale_order);
     let data_form = _form.dataForm;
     // Check special case
     functionClass.checkSpecialCaseIndicator(data_form);

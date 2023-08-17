@@ -120,6 +120,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     QUOTATION_LIST_PAGE = BreadcrumbChildren(_('Quotation list'), 'QuotationList')
     QUOTATION_CREATE_PAGE = BreadcrumbChildren(_('Quotation create'), 'QuotationCreate')
     QUOTATION_DETAIL_PAGE = BreadcrumbChildren(_('Quotation detail'))
+    QUOTATION_UPDATE_PAGE = BreadcrumbChildren(_('Quotation update'))
 
     # Shipping
     SHIPPING_LIST_PAGE = BreadcrumbChildren(_('Shipping list'), 'ShippingList')
@@ -131,6 +132,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     SALE_ORDER_LIST_PAGE = BreadcrumbChildren(_('Sale order list'), 'SaleOrderList')
     SALE_ORDER_CREATE_PAGE = BreadcrumbChildren(_('Sale order create'), 'SaleOrderCreate')
     SALE_ORDER_DETAIL_PAGE = BreadcrumbChildren(_('Sale order detail'))
+    SALE_ORDER_UPDATE_PAGE = BreadcrumbChildren(_('Sale order update'))
 
     # WareHouse
     WAREHOUSE_LIST_PAGE = BreadcrumbChildren(_('WareHouse'), 'WareHouseList')
@@ -195,6 +197,14 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     )
     PURCHASE_QUOTATION_DETAIL = BreadcrumbChildren(
         _('Purchase Quotation detail'),
+    )
+
+    PURCHASE_REQUEST_LIST = BreadcrumbChildren(
+        _('Purchase Request list'), 'PurchaseRequestList'
+    )
+
+    SALE_PROCESS_PAGE = BreadcrumbChildren(
+        _('Sale Process'), 'SaleProcess'
     )
 
 
@@ -416,6 +426,7 @@ class BreadcrumbView:
     ]
     QUOTATION_CREATE_PAGE = QUOTATION_LIST_PAGE + [BreadcrumbItem.QUOTATION_CREATE_PAGE]
     QUOTATION_DETAIL_PAGE = QUOTATION_LIST_PAGE + [BreadcrumbItem.QUOTATION_DETAIL_PAGE]
+    QUOTATION_UPDATE_PAGE = QUOTATION_LIST_PAGE + [BreadcrumbItem.QUOTATION_UPDATE_PAGE]
 
     # Shipping
     SHIPPING_LIST_PAGE = [
@@ -430,6 +441,7 @@ class BreadcrumbView:
     ]
     SALE_ORDER_CREATE_PAGE = SALE_ORDER_LIST_PAGE + [BreadcrumbItem.SALE_ORDER_CREATE_PAGE]
     SALE_ORDER_DETAIL_PAGE = SALE_ORDER_LIST_PAGE + [BreadcrumbItem.SALE_ORDER_DETAIL_PAGE]
+    SALE_ORDER_UPDATE_PAGE = SALE_ORDER_LIST_PAGE + [BreadcrumbItem.SALE_ORDER_UPDATE_PAGE]
 
     # Warehouse
     WAREHOUSE_LIST_PAGE = [
@@ -529,4 +541,20 @@ class BreadcrumbView:
     ]
     PURCHASE_QUOTATION_DETAIL_PAGE = PURCHASE_QUOTATION_LIST_PAGE + [
         BreadcrumbItem.PURCHASE_QUOTATION_DETAIL
+    ]
+
+    PURCHASE_REQUEST_LIST_PAGE = [
+        BreadcrumbItem.PURCHASE_REQUEST_LIST
+    ]
+
+    PURCHASE_REQUEST_CREATE_PAGE = PURCHASE_REQUEST_LIST_PAGE + [
+        BreadcrumbItem.BASTION_CREATE
+    ]
+    PURCHASE_REQUEST_DETAIL_PAGE = PURCHASE_REQUEST_LIST_PAGE + [
+        BreadcrumbItem.BASTION_DETAIL
+    ]
+
+    # process
+    SALE_PROCESS_PAGE = [
+        BreadcrumbItem.SALE_PROCESS_PAGE
     ]

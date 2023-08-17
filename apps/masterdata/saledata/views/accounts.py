@@ -98,7 +98,7 @@ class InterestDetailAPI(APIView):
         is_api=True,
     )
     def get(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(request=request, user=request.user, url=ApiURL.INTEREST_DETAIL + pk).get()
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.INTEREST_DETAIL.fill_key(pk=pk)).get()
         return resp.auto_return(key_success='interest')
 
     @mask_view(
@@ -106,7 +106,9 @@ class InterestDetailAPI(APIView):
         is_api=True,
     )
     def put(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(request=request, user=request.user, url=ApiURL.INTEREST_DETAIL + pk).put(request.data)
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.INTEREST_DETAIL.fill_key(pk=pk)).put(
+            request.data
+        )
         return resp.auto_return(key_success='interest')
 
 
@@ -262,7 +264,7 @@ class AccountTypeDetailAPI(APIView):
         is_api=True,
     )
     def get(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_TYPE_DETAIL + pk).get()
+        resp = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_TYPE_DETAIL.fill_key(pk=pk)).get()
         return resp.auto_return(key_success='account_type')
 
     @mask_view(
@@ -270,7 +272,7 @@ class AccountTypeDetailAPI(APIView):
         is_api=True,
     )
     def put(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_TYPE_DETAIL + pk).put(request.data)
+        resp = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_TYPE_DETAIL.fill_key(pk=pk)).put(request.data)
         return resp.auto_return(key_success='account_type')
 
 
@@ -306,7 +308,7 @@ class AccountGroupDetailAPI(APIView):
         is_api=True,
     )
     def get(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_GROUP_DETAIL + pk).get()
+        resp = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_GROUP_DETAIL.fill_key(pk=pk)).get()
         return resp.auto_return(key_success='account_group')
 
     @mask_view(
@@ -314,7 +316,7 @@ class AccountGroupDetailAPI(APIView):
         is_api=True,
     )
     def put(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_GROUP_DETAIL + pk).put(request.data)
+        resp = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_GROUP_DETAIL.fill_key(pk=pk)).put(request.data)
         return resp.auto_return(key_success='account_group')
 
 
@@ -350,7 +352,7 @@ class IndustryDetailAPI(APIView):
         is_api=True,
     )
     def get(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.INDUSTRY_DETAIL + pk).get()
+        resp = ServerAPI(user=request.user, url=ApiURL.INDUSTRY_DETAIL.fill_key(pk=pk)).get()
         return resp.auto_return(key_success='industry')
 
     @mask_view(
@@ -358,7 +360,7 @@ class IndustryDetailAPI(APIView):
         is_api=True,
     )
     def put(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.INDUSTRY_DETAIL + pk).put(request.data)
+        resp = ServerAPI(user=request.user, url=ApiURL.INDUSTRY_DETAIL.fill_key(pk=pk)).put(request.data)
         return resp.auto_return(key_success='industry')
 
 

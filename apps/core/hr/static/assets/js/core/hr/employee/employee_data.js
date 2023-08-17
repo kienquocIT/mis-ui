@@ -16,7 +16,7 @@ $(function () {
                 return [];
             }
         },
-        callbackGetLinkBlank: function (rowData){
+        callbackGetLinkBlank: function (rowData) {
             return rowData.id ? urlDetail.replace('__pk__', rowData.id) : null;
         },
         columns: [
@@ -24,13 +24,15 @@ $(function () {
                 'render': (data, type, row, meta) => {
                     return '';
                 }
-            }, {
+            },
+            {
                 'data': 'code',
                 render: (data, type, row, meta) => {
                     let urlEmployeeDetail = urlDetail.replace('__pk__', row.id);
-                    return `<a href="${urlEmployeeDetail}"><span class="badge badge-primary">${data}</span></a>`;
+                    return `<a href="${urlEmployeeDetail}"><span class="badge badge-primary">${data}</span></a>` + $x.fn.buttonLinkBlank(urlEmployeeDetail);
                 }
-            }, {
+            },
+            {
                 'data': 'full_name',
                 'render': (data, type, row, meta) => {
                     if (row.hasOwnProperty('full_name') && row.hasOwnProperty('first_name') && typeof row.full_name === 'string') {
@@ -47,7 +49,9 @@ $(function () {
                     }
                     return '';
                 }
-            }, {
+            },
+            {
+                data: 'group',
                 'render': (data, type, row, meta) => {
                     if (row.hasOwnProperty('group') && typeof row.group === "object") {
                         if (Object.keys(row.group).length !== 0) {
@@ -56,24 +60,30 @@ $(function () {
                     }
                     return '';
                 }
-            }, {
+            },
+            {
+                data: 'role',
                 'render': (data, type, row, meta) => {
                     if (row.hasOwnProperty('role') && Array.isArray(row.role)) {
                         let result = [];
-                        row.role.map(item => item.title ? result.push(`<span class="badge badge-soft-primary">` + item.title + `</span>`) : null);
+                        row.role.map(item => item.title ? result.push(`<span class="badge badge-soft-primary mb-1 mr-1">` + item.title + `</span>`) : null);
                         return result.join(" ");
                     }
                     return '';
                 }
-            }, {
+            },
+            {
+                data: 'date_joined',
                 'render': (data, type, row, meta) => {
                     if (row.hasOwnProperty('date_joined') && typeof row.date_joined === 'string') {
-                        return new Date(row.date_joined).toDateString();
+                        return $x.fn.parseDate(row.date_joined);
                     }
-                    return '';
+                    return '_';
                 }
-            }, {
+            },
+            {
                 'className': 'action-center',
+                data: 'is_active',
                 'render': (data, type, row, meta) => {
                     if (row.hasOwnProperty('is_active') && typeof row.is_active === 'boolean') {
                         if (row.is_active) {
@@ -84,16 +94,18 @@ $(function () {
                     }
                     return '';
                 }
-            }, {
-            data: 'is_admin_company',
-            render: (data, type, row, meta) =>{
-                return `
+            },
+            {
+                data: 'is_admin_company',
+                render: (data, type, row, meta) => {
+                    return `
                     <div class="form-check form-switch mb-1">
-                        <input type="checkbox" class="form-check-input" ${data ? "checked": ""} readonly disabled>
+                        <input type="checkbox" class="form-check-input" ${data ? "checked" : ""} readonly disabled>
                     </div>
                 `;
-            }
-            },{
+                }
+            },
+            {
                 'className': 'action-center',
                 'render': (data, type, row, meta) => {
                     let urlDetail = "/hr/employee/" + row.id
@@ -105,14 +117,5 @@ $(function () {
                 }
             },
         ]
-    });
-
-    $(document).on('click', '.check-select', function () {
-        if ($(this).is(":checked")) {
-            $(this).closest('tr').addClass('selected');
-        } else {
-            $(this).closest('tr').removeClass('selected');
-            $('.check-select-all').prop('checked', false);
-        }
     });
 });

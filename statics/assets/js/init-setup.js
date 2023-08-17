@@ -2042,16 +2042,14 @@ class DTBControl {
         if (isDenied) { // global variable
             // denied ajax and empty data
             if (this.opts.hasOwnProperty('ajax')) delete this.opts['ajax'];
-            this.opts['data'] = [];
+            if (!this.opts.hasOwnProperty('data')) this.opts['data'] = [];
         } else {
             if (this.opts?.['ajax']) {
                 // has ajax , remove data
-                if (this.opts.hasOwnProperty('data')) {
-                    delete this.opts['data'];
-                }
+                if (this.opts.hasOwnProperty('data'))  delete this.opts['data'];
             } else {
                 // hasn't ajax, add data empty
-                this.opts['data'] = [];
+                if (!this.opts.hasOwnProperty('data')) this.opts['data'] = [];
             }
         }
 
@@ -2192,6 +2190,18 @@ class DTBControl {
         }
     }
 
+    get columns(){
+        return (this.opts?.['columns'] || []).map(
+            (item)=>{
+                let clsNameTmp = item?.['className'] ? (item?.['className'] + ' wrap-text') : 'wrap-text';
+                return {
+                    ...item,
+                    className: clsNameTmp,
+                }
+            }
+        );
+    }
+
     parseDtlOpts() {
         // init table
         let [domOpts, domDTL] = DTBControl.parseDomDtl(this.opts);
@@ -2223,6 +2233,7 @@ class DTBControl {
             initComplete: this.mergeInitComplete,
             rowCallback: this.mergeRowCallback,
             ...domOpts,
+            columns: this.columns,
         };
     }
 
@@ -2723,6 +2734,9 @@ let $x = {
 
         renderCodeBreadcrumb: DocumentControl.renderCodeBreadcrumb,
         buttonLinkBlank: DocumentControl.buttonLinkBlank,
+
+        parseDateTime: UtilControl.parseDateTime,
+        parseDate: UtilControl.parseDate,
     },
 }
 

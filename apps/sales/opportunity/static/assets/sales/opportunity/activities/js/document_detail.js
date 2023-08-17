@@ -1,7 +1,7 @@
 $(document).ready(function () {
     function loadOpportunity(id) {
         let ele = $('#box-select-opportunity');
-        $.fn.callAjax({
+        $.fn.callAjax2({
             'url': ele.data('select2-url'),
             'method': ele.data('method')
         }).then(

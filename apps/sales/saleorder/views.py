@@ -49,7 +49,7 @@ class SaleOrderCreate(View):
         data_copy_to = request.GET.get('data_copy_to', "")
         result = {
             'data': {
-                'employee_current_id': request.user.employee_current_data.get('id', None),
+                'employee_current': json.dumps(request.user.employee_current_data),
                 'data_copy_to': data_copy_to
             }
         }
@@ -85,6 +85,17 @@ class SaleOrderDetail(View):
         template='sales/saleorder/sale_order_detail.html',
         menu_active='menu_sale_order_list',
         breadcrumb='SALE_ORDER_DETAIL_PAGE',
+    )
+    def get(self, request, pk, *args, **kwargs):
+        return {'data': {'doc_id': pk}}, status.HTTP_200_OK
+
+
+class SaleOrderUpdate(View):
+    @mask_view(
+        auth_require=True,
+        template='sales/saleorder/sale_order_update.html',
+        breadcrumb='SALE_ORDER_UPDATE_PAGE',
+        menu_active='menu_sale_order_list',
     )
     def get(self, request, pk, *args, **kwargs):
         return {'data': {'doc_id': pk}}, status.HTTP_200_OK

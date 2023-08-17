@@ -3,7 +3,7 @@ class GroupLoadDataHandle {
     static boxGroupParent = $('#select-box-group');
     static box1stManager = $('#select-box-first-manager');
     static box2ndManager = $('#select-box-second-manager');
-// load common
+
     static loadDataCommon(frm) {
         if (frm.attr('data-method') === "POST") {
             GroupLoadDataHandle.loadGroupLevelList();
@@ -12,31 +12,36 @@ class GroupLoadDataHandle {
             GroupLoadDataHandle.loadSecondManagerList();
             dataTableEmployee();
             dataTableEmployeeShow();
-        } else if (["PUT", "GET"].includes(frm.attr('data-method'))) {
-            $.fn.callAjax(frm.attr('data-url'), 'GET').then(
+        }
+        if (frm.attr('data-method') === "PUT" || frm.attr('data-method') === "GET") {
+            $.fn.callAjax2({url: frm.attr('data-url'), method: 'GET'}).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $('#reference-group-title').val(data.group.group_level.description);
-                        $('#group-title').val(data.group.title);
-                        $('#group-code').val(data.group.code);
-                        $('#group-description').val(data.group.description);
-                        $('#first-manager-system-title').val(data.group.group_level.first_manager_description);
-                        $('#second-manager-system-title').val(data.group.group_level.second_manager_description);
-                        $('#first-manager-title').val(data.group.first_manager_title);
-                        $('#second-manager-title').val(data.group.second_manager_title);
-                        GroupLoadDataHandle.loadGroupLevelList(data.group.group_level);
-                        GroupLoadDataHandle.loadGroupParentList(data.group.parent_n);
-                        GroupLoadDataHandle.loadFirstManagerList(data.group.first_manager);
-                        GroupLoadDataHandle.loadSecondManagerList(data.group.second_manager);
-                        dataTableEmployee();
-                        dataTableEmployeeShow();
-                        $('#datable_employee_show_list').DataTable().rows.add(data.group.group_employee).draw();
-                        let emp_id_list = [];
-                        for (let emp of data.group.group_employee) {
-                            emp_id_list.push(emp.id);
+                        let groupData = data?.['group'];
+                        if (groupData){
+                            $x.fn.renderCodeBreadcrumb(groupData);
+                            $('#reference-group-title').val(groupData?.['group_level']?.['description']);
+                            $('#group-title').val(groupData?.title);
+                            $('#group-code').val(groupData?.code);
+                            $('#group-description').val(groupData?.description);
+                            $('#first-manager-system-title').val(groupData?.['group_level']?.['first_manager_description']);
+                            $('#second-manager-system-title').val(groupData?.['group_level']?.['second_manager_description']);
+                            $('#first-manager-title').val(groupData?.['first_manager_title']);
+                            $('#second-manager-title').val(groupData?.['second_manager_title']);
+                            GroupLoadDataHandle.loadGroupLevelList(groupData?.['group_level']);
+                            GroupLoadDataHandle.loadGroupParentList(groupData?.['parent_n']);
+                            GroupLoadDataHandle.loadFirstManagerList(groupData?.['first_manager']);
+                            GroupLoadDataHandle.loadSecondManagerList(groupData?.['second_manager']);
+                            dataTableEmployee();
+                            dataTableEmployeeShow();
+                            $('#datable_employee_show_list').DataTable().rows.add(groupData?.['group_employee']).draw();
+                            let emp_id_list = [];
+                            for (let emp of groupData?.['group_employee']) {
+                                emp_id_list.push(emp.id);
+                            }
+                            $('#data-group_employee').val(JSON.stringify(emp_id_list));
                         }
-                        $('#data-group_employee').val(JSON.stringify(emp_id_list));
                     }
                 }
             )
@@ -220,7 +225,8 @@ function dataTableEmployee() {
                 }
             },
         ],
-        drawCallback: function () {},
+        drawCallback: function () {
+        },
     });
 }
 

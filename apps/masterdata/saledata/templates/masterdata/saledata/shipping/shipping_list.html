@@ -6,24 +6,15 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
-       href="{% url "ShippingCreate" %}" data-bs-toggle="tooltip" data-bs-placement="top" title=""
-       data-bs-original-title="Add">
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="plus"></i>
+    <a href="{% url "ShippingCreate" %}">
+        <button class="btn btn-outline-primary">
+            <span>
+                <span>{% trans 'Add' %}</span>
+                <span class="icon">
+                    <i class="fa-solid fa-plus"></i>
+                </span>
             </span>
-        </span>
-    </a>
-
-    <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
-       href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
-       data-bs-original-title="Refresh">
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="refresh-cw"></i>
-            </span>
-        </span>
+        </button>
     </a>
 {% endblock %}
 {% block pageContent %}

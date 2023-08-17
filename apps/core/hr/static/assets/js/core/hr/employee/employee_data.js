@@ -29,7 +29,7 @@ $(function () {
                 'data': 'code',
                 render: (data, type, row, meta) => {
                     let urlEmployeeDetail = urlDetail.replace('__pk__', row.id);
-                    return `<a href="${urlEmployeeDetail}"><span class="badge badge-primary">${data}</span></a>`;
+                    return `<a href="${urlEmployeeDetail}"><span class="badge badge-primary">${data}</span></a>` + $x.fn.buttonLinkBlank(urlEmployeeDetail);
                 }
             },
             {

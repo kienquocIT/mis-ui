@@ -4,19 +4,16 @@
 {% block cssHeader %}
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-outline-primary btn-animated btn-xs" data-bs-toggle="modal" data-bs-target="#modal-create-pr"
-        data-bs-original-title="Add New Purchase Request">
-            <span class="icon">
-                <span class="feather-icon">
-                    <i
-                            data-feather="plus">
-                    </i>
-                </span>
-                <span class="font-3 ml-1">
-                    {% trans 'New' %}
+    <a href="#" data-bs-toggle="modal" data-bs-target="#modal-create-pr">
+        <button class="btn btn-outline-primary">
+            <span>
+                <span>{% trans 'Add' %}</span>
+                <span class="icon">
+                    <i class="fa-solid fa-plus"></i>
                 </span>
             </span>
-    </button>
+        </button>
+    </a>
 {% endblock %}
 {% block pageContent %}
     <table id="datatable-purchase-request" class="table nowrap w-100 mb-5"

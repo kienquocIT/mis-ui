@@ -5,22 +5,34 @@
 {% endblock %}
 
 {% block pageAction %}
-    <a class="btn btn-outline-primary btn-animated btn-xs"
-       href=""
-       data-bs-toggle="modal"
+{#    <a class="btn btn-outline-primary btn-animated btn-xs"#}
+{#       href=""#}
+{#       data-bs-toggle="modal"#}
+{#       data-bs-target="#createOpportunityModalForms"#}
+{#       id="create_opportunity_button"#}
+{#       data-bs-original-title="Add Opportunity">#}
+{#            <span class="icon">#}
+{#                <span class="feather-icon">#}
+{#                    <i#}
+{#                            data-feather="plus">#}
+{#                    </i>#}
+{#                </span>#}
+{#                <span class="font-3 ml-1">#}
+{#                    {% trans 'New' %}#}
+{#                </span>#}
+{#            </span>#}
+{#    </a>#}
+    <a href="#" data-bs-toggle="modal"
        data-bs-target="#createOpportunityModalForms"
-       id="create_opportunity_button"
-       data-bs-original-title="Add Opportunity">
-            <span class="icon">
-                <span class="feather-icon">
-                    <i
-                            data-feather="plus">
-                    </i>
-                </span>
-                <span class="font-3 ml-1">
-                    {% trans 'New' %}
+       id="create_opportunity_button">
+        <button class="btn btn-outline-primary">
+            <span>
+                <span>{% trans 'Add' %}</span>
+                <span class="icon">
+                    <i class="fa-solid fa-plus"></i>
                 </span>
             </span>
+        </button>
     </a>
 {% endblock %}
 
@@ -130,7 +142,7 @@
                         </div>
                         <div class="mb-3 form-group">
                             <label class="form-label">{% trans "Sale Person" %}
-                            <sup class="field-required">(*)</sup></label>
+                                <sup class="field-required">(*)</sup></label>
                             <select class="form-control select2"
                                     name="sale_person"
                                     id="select-box-sale-person"

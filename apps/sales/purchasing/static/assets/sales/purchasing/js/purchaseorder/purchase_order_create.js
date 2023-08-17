@@ -20,6 +20,7 @@ $(function () {
         POLoadDataHandle.loadBoxContact();
         PODataTableHandle.dataTablePurchaseRequest();
         PODataTableHandle.dataTablePurchaseRequestProduct();
+        PODataTableHandle.dataTablePurchaseRequestProductMerge();
         PODataTableHandle.dataTablePurchaseQuotation();
         PODataTableHandle.dataTablePurchaseOrderProductAdd();
         PODataTableHandle.dataTablePurchaseOrderProductRequest();
@@ -38,8 +39,10 @@ $(function () {
 
         function checkDataTableRenderThenHidden() {
             let element0 = $('#datable-purchase-order-product-request_wrapper');
-            if (element0.length) {
-                element0[0].setAttribute('hidden', 'true');  // hidden ele if condition pass
+            let element1 = $('#datable-purchase-request-product-merge_wrapper');
+            if (element0.length && element1.length) { // hidden ele if condition pass
+                element0[0].setAttribute('hidden', 'true');
+                element1[0].setAttribute('hidden', 'true');
             } else {
                 setTimeout(checkDataTableRenderThenHidden, 1000);  // call again after 1s if condition not pass yet
             }
@@ -73,14 +76,14 @@ $(function () {
         });
 
         // Checkbox all
-        $('#table-purchase-reqeust-checkbox-all').on('click', function() {
+        $('#table-purchase-request-checkbox-all').on('click', function() {
             clickCheckBoxAll($(this), tablePurchaseRequest);
             POLoadDataHandle.loadModalPurchaseRequestProductTable();
         });
 
         // Action on click .table-row-checkbox of tablePurchaseRequest
         tablePurchaseRequest.on('click', '.table-row-checkbox', function() {
-            $('#table-purchase-reqeust-checkbox-all')[0].checked = false;
+            $('#table-purchase-request-checkbox-all')[0].checked = false;
             POLoadDataHandle.loadModalPurchaseRequestProductTable();
         });
 

@@ -147,7 +147,6 @@ function loadAccountName(accountNameData) {
                     }
                 }
             })
-            console.log(accounts_map_employee_filtered)
             return accounts_map_employee_filtered
         },
         data: (accountNameData ? accountNameData : null),
@@ -160,7 +159,6 @@ function loadAccountName(accountNameData) {
 function loadAccountAddress(accountAddressData) {
     let id_account = $('#select-box-account-name').find('option:selected').val();
     let url = $('#select-box-account-name').attr('data-url').replace(0, id_account);
-    console.log(url)
     accountAddressEle.initSelect2({
         ajax: {
             url: url,

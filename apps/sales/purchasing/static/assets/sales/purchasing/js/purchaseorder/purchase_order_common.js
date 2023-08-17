@@ -140,7 +140,7 @@ class POLoadDataHandle {
                 $(priceList).empty();
                 if (Array.isArray(data.price_list) && data.price_list.length > 0) {
                     for (let i = 0; i < data.price_list.length; i++) {
-                        if (data.price_list[i].price_type === 1) { // PRICE TYPE IS PRODUCT (PURCHASE)
+                        if (data.price_list[i]?.['price_type'] === 1) { // PRICE TYPE IS PRODUCT (PURCHASE)
                             if (data.price_list[i].is_default === true) { // check & append GENERAL_PRICE_LIST
                                 general_price_id = data.price_list[i].id;
                                 general_price = parseFloat(data.price_list[i].value);
@@ -148,19 +148,19 @@ class POLoadDataHandle {
                                                     <div class="row">
                                                         <div class="col-5"><span>${data.price_list[i].title}</span></div>
                                                         <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
-                                                        <div class="col-2"><span class="valid-price">${data.price_list[i].price_status}</span></div>
+                                                        <div class="col-2"><span class="valid-price">${data.price_list[i]?.['price_status']}</span></div>
                                                     </div>
                                                 </button>`);
                             }
                             if (data.price_list[i].id === account_price_id && general_price_id !== account_price_id) { // check & append CUSTOMER_PRICE_LIST
-                                if (!["Expired", "Invalid"].includes(data.price_list[i].price_status)) { // Customer price valid
+                                if (!["Expired", "Invalid"].includes(data.price_list[i]?.['price_status'])) { // Customer price valid
                                     customer_price = parseFloat(data.price_list[i].value);
                                     $(priceList).empty();
                                     $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option option-btn-checked" data-value="${parseFloat(data.price_list[i].value)}">
                                                         <div class="row">
                                                             <div class="col-5"><span>${data.price_list[i].title}</span></div>
                                                             <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
-                                                            <div class="col-2"><span class="valid-price">${data.price_list[i].price_status}</span></div>
+                                                            <div class="col-2"><span class="valid-price">${data.price_list[i]?.['price_status']}</span></div>
                                                         </div>
                                                     </button>`);
                                 } else { // Customer price invalid, expired
@@ -168,7 +168,7 @@ class POLoadDataHandle {
                                                         <div class="row">
                                                             <div class="col-5"><span>${data.price_list[i].title}</span></div>
                                                             <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
-                                                            <div class="col-2"><span class="expired-price">${data.price_list[i].price_status}</span></div>
+                                                            <div class="col-2"><span class="expired-price">${data.price_list[i]?.['price_status']}</span></div>
                                                         </div>
                                                     </button>`);
                                 }
@@ -809,8 +809,8 @@ class PODataTableHandle {
                     targets: 1,
                     render: (data, type, row) => {
                         let purchase_request_id = "";
-                        if (Object.keys(row.purchase_request).length !== 0) {
-                            purchase_request_id = row.purchase_request.id;
+                        if (Object.keys(row?.['purchase_request']).length !== 0) {
+                            purchase_request_id = row?.['purchase_request']?.['id'];
                         }
                         if (!row.hasOwnProperty('is_checked')) {
                             return `<div class="form-check">
@@ -819,7 +819,7 @@ class PODataTableHandle {
                                         class="form-check-input table-row-checkbox" 
                                         id="${row.id}" 
                                         data-purchase-request-id="${purchase_request_id}"
-                                        data-sale-order-product-id="${row.sale_order_product_id}"
+                                        data-sale-order-product-id="${row?.['sale_order_product_id']}"
                                     >
                                 </div>`
                         } else {
@@ -829,7 +829,7 @@ class PODataTableHandle {
                                         class="form-check-input table-row-checkbox" 
                                         id="${row.id}" 
                                         data-purchase-request-id="${purchase_request_id}"
-                                        data-sale-order-product-id="${row.sale_order_product_id}"
+                                        data-sale-order-product-id="${row?.['sale_order_product_id']}"
                                         checked
                                     >
                                 </div>`
@@ -846,7 +846,7 @@ class PODataTableHandle {
                 {
                     targets: 3,
                     render: (data, type, row) => {
-                        return `<span class="table-row-code">${row.purchase_request.code}</span>`
+                        return `<span class="table-row-code">${row?.['purchase_request']?.['code']}</span>`
                     }
                 },
                 {
@@ -864,7 +864,7 @@ class PODataTableHandle {
                 {
                     targets: 6,
                     render: (data, type, row) => {
-                        return `<span class="table-row-remain">${row.remain_for_purchase_order}</span>`
+                        return `<span class="table-row-remain">${row?.['remain_for_purchase_order']}</span>`
                     }
                 },
                 {
@@ -1116,7 +1116,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 5,
-                    render: (data, type, row) => {
+                    render: () => {
                         return `<div class="row">
                                     <select 
                                         class="form-control table-row-uom-order-actual"
@@ -1262,7 +1262,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 1,
-                    render: (data, type, row) => {
+                    render: () => {
                             return `<div class="row more-information-group">
                                         <div class="input-group">
                                             <span class="input-affix-wrapper">
@@ -1304,7 +1304,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 3,
-                    render: (data, type, row) => {
+                    render: () => {
                         return `<div class="row">
                                     <select 
                                         class="form-control table-row-uom-order-actual"
@@ -1351,12 +1351,6 @@ class PODataTableHandle {
                 {
                     targets: 6,
                     render: (data, type, row) => {
-                        let taxID = "";
-                        let taxRate = "0";
-                        if (row.tax) {
-                            taxID = row.tax.id;
-                            taxRate = row.tax.value;
-                        }
                         return `<div class="row">
                                 <select 
                                     class="form-control table-row-tax"

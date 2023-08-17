@@ -70,7 +70,7 @@ $(function () {
                     {
                         targets: 4,
                         render: (data, type, row) => {
-                            let date_delivered = moment(row.date_delivered).format('YYYY-MM-DD');
+                            let date_delivered = moment(row?.['date_delivered']).format('YYYY-MM-DD');
                             return `<p>${date_delivered}</p>`
                         }
                     },

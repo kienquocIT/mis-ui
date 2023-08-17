@@ -76,8 +76,8 @@ $(function () {
                         targets: 3,
                         render: (data, type, row) => {
                             let ele = `<p></p>`;
-                            if (Object.keys(row.sale_person).length !== 0) {
-                                ele = `<p>${row.sale_person.full_name}</p>`;
+                            if (Object.keys(row?.['sale_person']).length !== 0) {
+                                ele = `<p>${row?.['sale_person']?.['full_name']}</p>`;
                             }
                             return ele;
                         }

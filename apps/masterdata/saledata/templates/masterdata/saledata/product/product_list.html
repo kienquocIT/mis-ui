@@ -24,18 +24,18 @@
         data-url-product-type="{% url "ProductTypeListAPI" %}"
         data-url-product-category="{% url "ProductCategoryListAPI" %}">
             <thead>
-            <th>#</th>
-            <th>{% trans "Code" %}</th>
-            <th>{% trans "Name" %}
+            <th class="w-5">#</th>
+            <th class="w-15">{% trans "Code" %}</th>
+            <th class="w-30">{% trans "Name" %}
                 <i class="fas fa-info-circle icon-info"
                    data-bs-toggle="tooltip"
                    data-bs-placement="bottom"
                    title="{% trans 'Press row here to open detail page.' %}">
                 </i>
             </th>
-            <th>{% trans "Product Type" %}</th>
-            <th>{% trans "Product Category" %}</th>
-            <th style="text-align: center"></th>
+            <th class="w-20">{% trans "Product Type" %}</th>
+            <th class="w-20">{% trans "Product Category" %}</th>
+            <th class="w-10" style="text-align: center">{% trans 'Action' %}</th>
             </thead>
         </table>
     </div>

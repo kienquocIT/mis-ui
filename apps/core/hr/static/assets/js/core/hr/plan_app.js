@@ -47,7 +47,6 @@ class HandlePlanApp {
 
     // load step 1
     loadData(tenant_plan_list) {
-        console.log(tenant_plan_list);
         let clsThis = this;
         this.dtb.DataTableDefault({
             stateDefaultPageControl: false,

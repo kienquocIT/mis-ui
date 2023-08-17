@@ -24,6 +24,7 @@ $(function () {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('advance_payment_list')) {
+                        choose_AP_ele.append(`<option></option>`);
                         if (advance_payment_id !== null) {
                             data.advance_payment_list.map(function (item) {
                                 if (item.id === advance_payment_id) {

@@ -43,7 +43,7 @@
         </thead>
     </table>
 
-    <!-- Modal Modal Update Master Data -->
+    <!-- Modal Create Price List -->
     <form id="form-create-price" data-method="POST"
           data-url="{% url "PriceListAPI" %}"
           data-url-redirect="{% url "PriceList" %}">
@@ -62,7 +62,7 @@
                     <div class="modal-body">
                         <div class="row">
                             <div class="form-group">
-                                <label class="form-label">{% trans "Price list Name" %}<span class="field-required">*</span></label>
+                                <label class="form-label required">{% trans "Price list Name" %}</label>
                                 <input class="form-control" type="text" name="title"
                                        placeholder="Input Name">
                             </div>
@@ -102,26 +102,26 @@
                         </div>
                         <div class="row">
                             <div class="form-group mt-2">
-                                <label class="form-label">{% trans "Currency" %}<span class="field-required">*</span></label>
+                                <label class="form-label required">{% trans "Currency" %}</label>
                                 <select
                                         class="form-control select2 select2-multiple"
                                         multiple
                                         data-placeholder="{% trans 'Choose' %}"
                                         data-method="GET"
-                                        data-url="{% url "CurrencyListAPI" %}"
+                                        data-select2-url="{% url "CurrencyListAPI" %}"
                                         id="select-box-currency" name="currency">
                                 </select>
                             </div>
                         </div>
                         <div class="row">
                             <div class="form-group col-6">
-                                <label class="form-label">{% trans "Factor" %}<span class="field-required">*</span></label>
+                                <label class="form-label required">{% trans "Factor" %}</label>
                                 <input class="form-control" type="text" name="factor" id="factor-inp" readonly
                                        value="1" placeholder="Input factor (0.8)">
                             </div>
                             <div class="form-group col-6">
-                                <label class="form-label">{% trans "Select list type" %}<span class="field-required">*</span></label>
-                                <select class="form-select" name="price_list_type">
+                                <label class="form-label required">{% trans "Select list type" %}</label>
+                                <select class="form-control select2" name="price_list_type">
                                     <option></option>
                                     <option value="0">{% trans "For Sale" %}</option>
                                     <option value="1">{% trans "For Purchase" %}</option>
@@ -131,7 +131,7 @@
                         </div>
                         <div class="row">
                             <div class="form-group col-12">
-                                <label class="form-label">{% trans "Valid time" %}<span class="field-required">*</span></label>
+                                <label class="form-label required">{% trans "Valid time" %}</label>
                                 <input class="form-control" type="text" id="valid_time" readonly>
                             </div>
                         </div>

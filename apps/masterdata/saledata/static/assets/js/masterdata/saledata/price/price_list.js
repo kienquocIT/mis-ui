@@ -2,10 +2,13 @@ $(document).ready(function () {
     let selectCurrencyEle = $('#select-box-currency');
 
     function loadCurrency() {
-        selectCurrencyEle.select2();
-        let url = selectCurrencyEle.attr('data-url');
+        selectCurrencyEle.initSelect2();
+        let url = selectCurrencyEle.attr('data-select2-url');
         let method = selectCurrencyEle.attr('data-method');
-        $.fn.callAjax(url, method).then((resp) => {
+        $.fn.callAjax2({
+            'url': url,
+            'method': method
+        }).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 selectCurrencyEle.text("");
@@ -39,6 +42,7 @@ $(document).ready(function () {
                     data.price_list.map(function (item) {
                         ele.append(`<option value="` + item.id + `">` + item.title + `</option>`)
                     })
+                    // ele.initSelect2();
 
                     return data['price_list'];
                 }
@@ -150,7 +154,7 @@ $(document).ready(function () {
         let frm = new SetupFormSubmit($(this));
 
         frm.dataForm['currency'] = $('#select-box-currency').val();
-        frm.dataForm['currency'].push($('#select-box-currency').find('option[data-primary="1"]').val())
+        // frm.dataForm['currency'].push($('#select-box-currency').find('option[data-primary="1"]').val());
         if (frm.dataForm['currency'].length === 0) {
             frm.dataForm['currency'] = null;
         }
@@ -160,6 +164,8 @@ $(document).ready(function () {
             frm.dataForm['valid_time_end'] = $('#valid_time').val().split(' - ')[1]
         }
 
+        frm.dataForm['auto_update'] = !!$('[name="auto_update"]').is(':checked');
+        frm.dataForm['can_delete'] = !!$('[name="can_delete"]').is(':checked');
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
             .then((resp) => {
                 let data = $.fn.switcherResp(resp);

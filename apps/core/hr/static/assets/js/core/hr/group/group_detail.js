@@ -17,40 +17,41 @@ $(document).ready(function () {
         let eleSecondManTitle = $('#group-second-manager-title-detail');
         let eleFirstManAssign = $('#select-box-first-manager-detail');
         let eleSecondManAssign = $('#select-box-second-manager-detail');
+
         $.fn.callAjax2({
             url: url,
             method: method,
         }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (data.hasOwnProperty('group')) {
-                        $x.fn.renderCodeBreadcrumb(data?.['group']);
-                        eleGroupLevel.val("level " + data.group.group_level.level);
-                        eleParent.val(data.group.parent_n.title);
-                        eleRefTitle.val(data.group.group_level.description);
-                        eleTitle.val(data.group.title);
-                        eleCode.val(data.group.code);
-                        eleDescription.val(data.group.description);
-                        eleFirstManRefTitle.val(data.group.group_level.first_manager_description);
-                        eleSecondManRefTitle.val(data.group.group_level.second_manager_description);
-                        eleFirstManTitle.val(data.group.first_manager_title);
-                        eleSecondManTitle.val(data.group.second_manager_title);
-                        eleFirstManAssign.val(data.group.first_manager.full_name);
-                        eleSecondManAssign.val(data.group.second_manager.full_name);
+                if (data && data.hasOwnProperty('group')) {
+                    let groupData = data.group;
+                    if (groupData) {
+                        $x.fn.renderCodeBreadcrumb(groupData);
+                        eleGroupLevel.val("level " + groupData?.['group_level']?.['level']);
+                        eleParent.val(groupData?.['parent_n']?.['title']);
+                        eleRefTitle.val(groupData?.['group_level']?.['description']);
+                        eleTitle.val(groupData?.['title']);
+                        eleCode.val(groupData?.['code']);
+                        eleDescription.val(groupData?.['description']);
+                        eleFirstManRefTitle.val(groupData?.['group_level']?.['first_manager_description']);
+                        eleSecondManRefTitle.val(groupData?.['group_level']?.['second_manager_description']);
+                        eleFirstManTitle.val(groupData?.['first_manager_title']);
+                        eleSecondManTitle.val(groupData?.['second_manager_title']);
+                        eleFirstManAssign.val(groupData?.['first_manager']?.['full_name']);
+                        eleSecondManAssign.val(groupData?.['second_manager']?.['full_name']);
 
-                        if (data.group.group_employee && Array.isArray(data.group.group_employee)) {
-                            for (let i = 0; i < data.group.group_employee.length; i++) {
-                                // let dataRole = ""
-                                let dataRole = []
-                                if (data.group.group_employee[i].hasOwnProperty('role') && Array.isArray(data.group.group_employee[i].role)) {
-                                    for (let r = 0; r < data.group.group_employee[i].role.length; r++) {
+                        if (groupData?.['group_employee'] && Array.isArray(groupData?.['group_employee'])) {
+                            for (let i = 0; i < groupData?.['group_employee']?.length; i++) {
+                                let dataRole = [];
+                                if (groupData?.['group_employee'][i].hasOwnProperty('role') && Array.isArray(groupData?.['group_employee'][i].role)) {
+                                    for (let r = 0; r < groupData?.['group_employee'][i].role.length; r++) {
                                         // dataRole += data.group.group_employee[i].role[r].title + ", "
-                                        dataRole.push(`<span class="badge badge-soft-primary">` + data.group.group_employee[i].role[r].title + `</span>`);
+                                        dataRole.push(`<span class="badge badge-soft-primary">` + groupData?.['group_employee'][i].role[r].title + `</span>`);
                                         dataRole.join(" ");
                                     }
                                 }
-                                $('#datable-group-employee-detail tbody').append(`<tr>` + `<td><span>${i+1}</span></td>` + `<td><span>${data.group.group_employee[i].full_name}</span></td>` + `<td><span>${dataRole}</span></td>` + `</tr>`);
+                                $('#datable-group-employee-detail tbody').append(`<tr>` + `<td><span>${i+1}</span></td>` + `<td><span>${groupData?.['group_employee'][i].full_name}</span></td>` + `<td><span>${dataRole}</span></td>` + `</tr>`);
                             }
 
                         }

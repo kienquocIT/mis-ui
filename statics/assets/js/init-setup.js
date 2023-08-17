@@ -2194,7 +2194,6 @@ class DTBControl {
         return (this.opts?.['columns'] || []).map(
             (item)=>{
                 let clsNameTmp = item?.['className'] ? (item?.['className'] + ' wrap-text') : 'wrap-text';
-                console.log(item, clsNameTmp);
                 return {
                     ...item,
                     className: clsNameTmp,
@@ -2206,7 +2205,6 @@ class DTBControl {
     parseDtlOpts() {
         // init table
         let [domOpts, domDTL] = DTBControl.parseDomDtl(this.opts);
-        console.log(domOpts);
 
         // ajax
         this.appendErrorConfirmAjax();

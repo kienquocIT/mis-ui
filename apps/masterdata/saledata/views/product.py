@@ -44,7 +44,7 @@ class ProductTypeDetailAPI(APIView):
         is_api=True,
     )
     def get(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_TYPE_DETAIL + pk).get()
+        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_TYPE_DETAIL.fill_key(pk=pk)).get()
         return resp.auto_return(key_success='product_type')
 
     @mask_view(
@@ -52,7 +52,7 @@ class ProductTypeDetailAPI(APIView):
         is_api=True,
     )
     def put(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_TYPE_DETAIL + pk).put(request.data)
+        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_TYPE_DETAIL.fill_key(pk=pk)).put(request.data)
         return resp.auto_return(key_success='product_type')
 
 
@@ -82,7 +82,7 @@ class ProductCategoryDetailAPI(APIView):
         is_api=True,
     )
     def get(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_CATEGORY_DETAIL + pk).get()
+        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_CATEGORY_DETAIL.fill_key(pk=pk)).get()
         return resp.auto_return(key_success='product_category')
 
     @mask_view(
@@ -90,7 +90,7 @@ class ProductCategoryDetailAPI(APIView):
         is_api=True,
     )
     def put(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_CATEGORY_DETAIL + pk).put(request.data)
+        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_CATEGORY_DETAIL.fill_key(pk=pk)).put(request.data)
         return resp.auto_return(key_success='product_category')
 
 
@@ -120,7 +120,7 @@ class ExpenseTypeDetailAPI(APIView):
         is_api=True,
     )
     def get(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.EXPENSE_TYPE_DETAIL + pk).get()
+        resp = ServerAPI(user=request.user, url=ApiURL.EXPENSE_TYPE_DETAIL.fill_key(pk=pk)).get()
         return resp.auto_return(key_success='expense_type')
 
     @mask_view(
@@ -128,7 +128,7 @@ class ExpenseTypeDetailAPI(APIView):
         is_api=True,
     )
     def put(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.EXPENSE_TYPE_DETAIL + pk).put(request.data)
+        resp = ServerAPI(user=request.user, url=ApiURL.EXPENSE_TYPE_DETAIL.fill_key(pk=pk)).put(request.data)
         return resp.auto_return(key_success='expense_type')
 
 
@@ -159,7 +159,7 @@ class UnitOfMeasureDetailAPI(APIView):
         is_api=True,
     )
     def get(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE_DETAIL + pk).get()
+        resp = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE_DETAIL.fill_key(pk=pk)).get()
         return resp.auto_return(key_success='unit_of_measure')
 
     @mask_view(
@@ -167,7 +167,7 @@ class UnitOfMeasureDetailAPI(APIView):
         is_api=True,
     )
     def put(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE_DETAIL + pk).put(request.data)
+        resp = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE_DETAIL.fill_key(pk=pk)).put(request.data)
         return resp.auto_return(key_success='unit_of_measure')
 
 
@@ -197,7 +197,7 @@ class UnitOfMeasureGroupDetailAPI(APIView):
         is_api=True,
     )
     def get(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE_GROUP_DETAIL + pk).get()
+        resp = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE_GROUP_DETAIL.fill_key(pk=pk)).get()
         return resp.auto_return(key_success='uom_group')
 
     @mask_view(
@@ -205,7 +205,7 @@ class UnitOfMeasureGroupDetailAPI(APIView):
         is_api=True,
     )
     def put(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE_GROUP_DETAIL + pk).put(request.data)
+        resp = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE_GROUP_DETAIL.fill_key(pk=pk)).put(request.data)
         return resp.auto_return(key_success='uom_group')
 
 
@@ -320,7 +320,7 @@ class ProductDetailAPI(APIView):
         is_api=True,
     )
     def get(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_DETAIL + pk).get()
+        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_DETAIL.fill_key(pk=pk)).get()
         return resp.auto_return(key_success='product')
 
     @mask_view(
@@ -328,7 +328,7 @@ class ProductDetailAPI(APIView):
         is_api=True,
     )
     def put(self, request, pk, *arg, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_DETAIL + pk).put(request.data)
+        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_DETAIL.fill_key(pk=pk)).put(request.data)
         return resp.auto_return()
 
 
@@ -343,3 +343,13 @@ class ProductForSaleListAPI(APIView):
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_SALE_LIST).get()
         return resp.auto_return(key_success='product_sale_list')
+
+
+class UnitOfMeasureOfGroupLaborListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.UOM_OF_GROUP_LABOR_LIST).get()
+        return resp.auto_return(key_success='uom_of_group_labor')

@@ -1,5 +1,4 @@
 $(document).ready(function () {
-    $('.select2').select2();
     const currency_list = JSON.parse($('#id-currency-list').text());
     const currency_dict = currency_list.reduce((obj, item) => {
         obj[item.id] = item;
@@ -9,6 +8,15 @@ $(document).ready(function () {
         dom: "",
         ordering: false,
         paging: false,
+        columnDefs: [{
+            "searchable": false,
+            "orderable": true, // "targets": [0,1,3,4,5,6,7,8,9]
+        }],
+        order: [[2, 'asc']],
+        language: {
+            search: "",
+            searchPlaceholder: "Search",
+        },
         drawCallback: function () {
             $('.dataTables_paginate > .pagination').addClass('custom-pagination pagination-simple');
             feather.replace();
@@ -22,18 +30,21 @@ $(document).ready(function () {
             }
         }, {
             className: 'wrap-text',
-            'data': 'code', render: (data, type, row, meta) => {
+            'data': 'code',
+            render: (data, type, row, meta) => {
                 return `<span class="badge badge-soft-success btn-detail" data-id="` + row.id + `"
                         style="min-width: max-content; width: 70%" href="#"><b>` + row.code + `</b></span>`
             }
         }, {
             className: 'wrap-text',
-            'data': 'title', render: (data, type, row, meta) => {
+            'data': 'title',
+            render: (data, type, row, meta) => {
                 return `<span><b>` + row.title + `</b></span>`
             }
         }, {
             className: 'wrap-text',
-            'data': 'uom_group', 'render': (data, type, row, meta) => {
+            'data': 'uom_group',
+            'render': (data, type, row, meta) => {
                 return `<div class="row"><center>
                         <div class="col-10" style="padding-right: 5px">
                             <span class="badge badge-soft-danger badge-pill span-uom-group" data-id="` + row.uom_group.id + `" style="min-width: max-content; width: 100%">` + row.uom_group.title + `</span>
@@ -42,7 +53,8 @@ $(document).ready(function () {
             }
         }, {
             className: 'wrap-text',
-            'data': 'uom', 'render': (data, type, row, meta) => {
+            'data': 'uom',
+            'render': (data, type, row, meta) => {
                 return `<div class="row"><center>
                     <div class="col-10" style="padding-right: 5px"><span class="badge badge-soft-blue badge-pill span-uom" data-id="` + row.uom.id + `" style="min-width: max-content; width: 100%">` + row.uom.title + `</span></div>
                     </center></div>`
@@ -77,7 +89,10 @@ $(document).ready(function () {
 
     function loadSourcePriceList(id) {
         let ele = $('#select-box-price-list')
-        $.fn.callAjax(ele.attr('data-url'), ele.attr('data-method')).then((resp) => {
+        $.fn.callAjax2({
+            'url': ele.attr('data-select2-url'),
+            'method': ele.attr('data-method')
+        }).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('price_list')) {
@@ -95,29 +110,16 @@ $(document).ready(function () {
         })
     }
 
-    function loadProDuctCategory() {
-        let element = $('#select-product-category');
-        $.fn.callAjax(element.attr('data-url'), element.attr('data-method')).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product_category_list')) {
-                    element.append(`<option></option>`)
-                    data.product_category_list.map(function (item) {
-                        element.append(`<option value="` + item.id + `">` + item.title + `</option>`)
-                    })
-                }
-            }
-        }, (errs) => {
-        },)
-    }
-
     function loadProduct() {
         let ele = $('#select-box-product');
-        $.fn.callAjax(ele.attr('data-url'), ele.attr('data-method')).then((resp) => {
+        $.fn.callAjax2({
+            'url': ele.attr('data-select2-url'),
+            'method': ele.attr('data-method')
+        }).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product_list')) {
-                    ele.append(`<option value="0"></option>`);
+                    ele.append(`<option></option>`);
                     resp.data.product_list.map(function (item) {
                         if (Object.keys(item.sale_information).length > 0)
                             ele.append(`<option value="` + item.id + `">` + item.code + ` - ` + item.title + `</option>`);
@@ -130,11 +132,14 @@ $(document).ready(function () {
 
     function loadExpense() {
         let ele = $('#select-box-product');
-        $.fn.callAjax(ele.attr('data-url-expense'), ele.attr('data-method')).then((resp) => {
+        $.fn.callAjax2({
+            'url': ele.attr('data-select2-url-expense'),
+            'method': ele.attr('data-method')
+        }).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('expense_list')) {
-                    ele.append(`<option value="0"></option>`);
+                    ele.append(`<option></option>`);
                     resp.data.expense_list.map(function (item) {
                         ele.append(`<option value="` + item.id + `">` + item.code + ` - ` + item.title + `</option>`);
                     })
@@ -146,11 +151,14 @@ $(document).ready(function () {
 
     function loadUoM(group) {
         let ele = $('#select-uom');
-        $.fn.callAjax(ele.attr('data-url'), ele.attr('data-method')).then((resp) => {
+        $.fn.callAjax2({
+            'url': ele.attr('data-select2-url'),
+            'method': ele.attr('data-method')
+        }).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('unit_of_measure')) {
-                    ele.append(`<option value="0"></option>`);
+                    ele.append(`<option></option>`);
                     resp.data.unit_of_measure.map(function (item) {
                         if (item.group.title === group)
                             ele.append(`<option value="` + item.id + `">` + item.code + ` - ` + item.title + `</option>`);
@@ -323,7 +331,11 @@ $(document).ready(function () {
                             let ids = item.price.map(item => item.id);
                             price_longest.price.forEach(obj => {
                                 if (!ids.includes(obj.id)) {
-                                    item.price.push({'id': obj.id, 'abbreviation': obj.abbreviation, 'value': 0});
+                                    item.price.push({
+                                        'id': obj.id,
+                                        'abbreviation': obj.abbreviation,
+                                        'value': 0
+                                    });
                                 }
                             });
                         });
@@ -386,7 +398,10 @@ $(document).ready(function () {
                     // load data tab settings
                     $('#select-box-type').val(price_list_detail.price_list_type);
                     $('#select-box-type').prop('disabled', true);
-                    $('#select-box-type').css({'border': 'None', 'color': 'black'});
+                    $('#select-box-type').css({
+                        'border': 'None',
+                        'color': 'black'
+                    });
                     $('#inp-factor').val(price_list_detail.factor);
                     if (price_list_detail.auto_update === true) {
                         $('#checkbox-update-auto').prop('checked', true);
@@ -402,7 +417,6 @@ $(document).ready(function () {
                         loadSourcePriceList(price_list_detail.price_list_mapped.id);
                         $('#checkbox-update-auto').prop('disabled', false);
                     }
-                    loadProDuctCategory();
 
                     // edit field
                     $('.inp-can-edit select').mouseenter(function () {
@@ -443,7 +457,10 @@ $(document).ready(function () {
                     $('#checkbox-update-auto').prop('disabled', true);
                     $('#checkbox-can-delete').prop('disabled', true);
                     $('#select-box-currency').prop('disabled', true);
-                    $('.select2-selection').css({'border': 'None', 'background-color': '#f7f7f7'});
+                    $('.select2-selection').css({
+                        'border': 'None',
+                        'background-color': '#f7f7f7'
+                    });
                 }
 
                 $('.dataTables_info').remove()
@@ -478,7 +495,11 @@ $(document).ready(function () {
 
     // submit form setting price list
     let price_list_update = [];
-    price_list_update.push({'id': pk, 'factor': 1, 'id_source': ''});
+    price_list_update.push({
+        'id': pk,
+        'factor': 1,
+        'id_source': ''
+    });
     $.fn.callAjax($('#form-update-price-list').attr('data-url-list'), 'GET').then((resp) => {
         let data = $.fn.switcherResp(resp);
         if (data) {
@@ -486,7 +507,11 @@ $(document).ready(function () {
                 data.price_list.map(function (item) {
                     if (item.status === 'Valid' || item.status === 'Invalid') {
                         if (price_list_update.length === 0) {
-                            price_list_update.push({'id': item.id, 'factor': item.factor, 'id_source': ''});
+                            price_list_update.push({
+                                'id': item.id,
+                                'factor': item.factor,
+                                'id_source': ''
+                            });
                         } else {
                             if (price_list_update.map(obj => obj.id).includes(item.price_list_mapped))
                                 price_list_update.push({
@@ -758,7 +783,10 @@ $(document).ready(function () {
             switch (type) {
                 case '0':
                     data_url = $(this).closest('select').attr('data-url-detail').replace(0, $(this).val());
-                    $.fn.callAjax(data_url, 'GET').then((resp) => {
+                    $.fn.callAjax2({
+                        'url': data_url,
+                        'method': 'GET'
+                    }).then((resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product')) {
@@ -773,15 +801,18 @@ $(document).ready(function () {
                     break;
                 case '2':
                     data_url = $(this).closest('select').attr('data-url-detail-expense').replace(0, $(this).val());
-                    $.fn.callAjax(data_url, 'GET').then((resp) => {
+                    $.fn.callAjax2({
+                        'url': data_url,
+                        'method': 'GET'
+                    }).then((resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('expense')) {
                                 $('#inp-code').val(data.expense.code);
-                                $('#inp-uom-group').val(data.expense.general_information.uom_group.title);
-                                $('#inp-uom-group').attr('data-id', data.expense.general_information.uom_group.id);
+                                $('#inp-uom-group').val(data.expense.uom_group.title);
+                                $('#inp-uom-group').attr('data-id', data.expense.uom_group.id);
                                 $('#select-uom').empty()
-                                loadUoM(data.expense.general_information.uom_group.title);
+                                loadUoM(data.expense.uom_group.title);
                             }
                         }
                     })

@@ -27,19 +27,13 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-outline-primary btn-animated btn-xs"
-            form="frm-detail"
-            data-bs-original-title="Save Opportunity">
-                <span class="icon">
-                    <span class="feather-icon">
-                        <i
-                                data-feather="save">
-                        </i>
-                    </span>
-                    <span class="font-3 ml-1">
-                        {% trans 'Save' %}
-                    </span>
-                </span>
+    <button class="btn btn-outline-primary" type="submit" form="frm-detail">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
+            </span>
+        </span>
     </button>
 {% endblock %}
 {% block pageContent %}
@@ -107,7 +101,7 @@
                                 </div>
                             </div>
                             <select class="select2 form-control" id="select-box-customer"
-                                    data-url="{% url 'AccountListAPI' %}"
+                                    data-select2-url="{% url 'AccountListAPI' %}"
                                     data-method="GET" data-close-on-select="true">
                             </select>
                         </div>
@@ -123,7 +117,7 @@
                             <label class="form-label required">{% trans "Product Category" %}</label>
                             <select class="select2 form-control" multiple id="select-box-product-category"
                                     data-close-on-select="true" data-method="GET"
-                                    data-url="{% url 'ProductCategoryListAPI' %}">
+                                    data-select2-url="{% url 'ProductCategoryListAPI' %}">
                             </select>
                         </div>
                         <div class="form-group mt-2">
@@ -724,7 +718,7 @@
                                             <label class="form-label">{% trans "Select Reason why customer buy your product" %}</label>
                                             <select class="form-control select2" multiple id="box-select-factor"
                                                     data-method="GET"
-                                                    data-url="{% url 'OpportunityCustomerDecisionFactorListAPI' %}"></select>
+                                                    data-select2-url="{% url 'OpportunityCustomerDecisionFactorListAPI' %}"></select>
                                         </div>
                                     </div>
                                     <div class="tab-pane fade mb-25" id="tab_account_history">

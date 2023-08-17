@@ -19,7 +19,7 @@ from apps.masterdata.saledata.views.product import (
     ProductCategoryListAPI, ExpenseTypeListAPI, UnitOfMeasureListAPI, UnitOfMeasureGroupListAPI,
     UnitOfMeasureDetailAPI, ProductTypeDetailAPI, ExpenseTypeDetailAPI, ProductCategoryDetailAPI,
     UnitOfMeasureGroupDetailAPI, ProductList, ProductCreate, ProductListAPI, ProductDetailAPI, ProductDetail,
-    ProductForSaleListAPI, ProductUpdate
+    ProductForSaleListAPI, ProductUpdate, UnitOfMeasureOfGroupLaborListAPI,
 )
 from apps.masterdata.saledata.views.price import (
     PriceMasterDataList, TaxCategoryListAPI, TaxListAPI, TaxDetailAPI, TaxCategoryDetailAPI, CurrencyListAPI,
@@ -94,7 +94,12 @@ urlpatterns = [
         'masterdata/unit-of-measure-group/api/<str:pk>', UnitOfMeasureGroupDetailAPI.as_view(),
         name='UnitOfMeasureGroupDetailAPI'
     ),
-    path('masterdata/unit-of-measure/api/<str:pk>', UnitOfMeasureDetailAPI.as_view(), name='UnitOfMeasureDetailAPI')
+    path('masterdata/unit-of-measure/api/<str:pk>', UnitOfMeasureDetailAPI.as_view(), name='UnitOfMeasureDetailAPI'),
+    path(
+        'masterdata/uom-group-labor/list/api',
+        UnitOfMeasureOfGroupLaborListAPI.as_view(),
+        name='UnitOfMeasureOfGroupLaborListAPI'
+    )
 ] + [
     path('products', ProductList.as_view(), name='ProductList'),
     path('product/create', ProductCreate.as_view(), name='ProductCreate'),

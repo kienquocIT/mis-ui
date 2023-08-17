@@ -10,6 +10,7 @@ class ExpenseList(View):
         template='masterdata/saledata/expense/expense_list.html',
         breadcrumb='EXPENSE_LIST_PAGE',
         menu_active='id_menu_expense_list',
+        perm_check=PermCheck(url=ApiURL.EXPENSE_LIST, method='GET'),
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -37,6 +38,7 @@ class ExpenseDetail(View):
         template='masterdata/saledata/expense/expense_detail.html',
         breadcrumb='EXPENSE_DETAIL_PAGE',
         menu_active='menu_account_list',
+        perm_check=PermCheck(url=ApiURL.EXPENSE_DETAIL, method='GET', fill_key=['pk']),
     )
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.PRICE_LIST).get() # noqa
@@ -70,7 +72,7 @@ class ExpenseDetailAPI(APIView):
         auth_require=True
     )
     def get(self, request, pk, *arg, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.EXPENSE_DETAIL.fill_key(expense_id=pk)).get()
+        resp = ServerAPI(user=request.user, url=ApiURL.EXPENSE_DETAIL.fill_key(pk=pk)).get()
         return resp.auto_return(key_success='expense')
 
     @mask_view(
@@ -78,7 +80,7 @@ class ExpenseDetailAPI(APIView):
         is_api=True,
     )
     def put(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.EXPENSE_DETAIL.fill_key(expense_id=pk)).put(request.data)
+        resp = ServerAPI(user=request.user, url=ApiURL.EXPENSE_DETAIL.fill_key(pk=pk)).put(request.data)
         return resp.auto_return(key_success='expense')
 
 

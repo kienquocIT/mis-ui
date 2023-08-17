@@ -4,6 +4,7 @@ $(document).ready(function (){
             let $table = $('#datatable-opportunity-document')
             let frm = new SetupFormSubmit($table);
             $table.DataTableDefault({
+                useDataServer: true,
                 ajax: {
                     url: frm.dataUrl,
                     type: frm.dataMethod,

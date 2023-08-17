@@ -4,6 +4,7 @@ $(document).ready(function () {
             let dtb = $('#datatable_payment_list');
             let frm = new SetupFormSubmit(dtb);
             dtb.DataTableDefault({
+                useDataServer: true,
                 rowIdx: true,
                 reloadCurrency: true,
                 ajax: {

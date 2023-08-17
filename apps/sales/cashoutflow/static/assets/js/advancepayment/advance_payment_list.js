@@ -4,6 +4,7 @@ $(document).ready(function () {
             let dtb = $('#datatable_advance_list');
             let frm = new SetupFormSubmit(dtb);
             dtb.DataTableDefault({
+                useDataServer: true,
                 rowIdx: true,
                 reloadCurrency: true,
                 ajax: {

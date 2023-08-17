@@ -377,8 +377,7 @@ class POLoadDataHandle {
                                         }
                                     }
                                 }
-                                tablePurchaseQuotation.DataTable().clear().destroy();
-                                PODataTableHandle.dataTablePurchaseQuotation();
+                                tablePurchaseQuotation.DataTable().clear().draw();
                                 tablePurchaseQuotation.DataTable().rows.add(data.purchase_quotation_list).draw();
                                 if (is_click === true) {
                                     $('#btn-confirm-add-purchase-quotation').click();
@@ -551,8 +550,8 @@ class POLoadDataHandle {
             self.loadBoxUOM($(row.querySelector('.table-row-uom-order-actual')));
         } else if (table_id === 'datable-purchase-order-product-request') {
             let dataRow = JSON.parse(row.querySelector('.table-row-order').getAttribute('data-row'));
-            self.loadBoxProduct($(row.querySelector('.table-row-item')));
-            self.loadBoxUOM($(row.querySelector('.table-row-uom-order-actual')));
+            self.loadBoxProduct($(row.querySelector('.table-row-item')), dataRow?.product);
+            self.loadBoxUOM($(row.querySelector('.table-row-uom-order-actual')), dataRow?.uom_order_request);
         }
         self.loadBoxTax($(row.querySelector('.table-row-tax')));
     };
@@ -597,7 +596,7 @@ class POLoadDataHandle {
                             let $table = $('#datable-purchase-order-product-request');
                             $table.DataTable().rows().every(function () {
                                 let row = this.node();
-                                let priceListData = dataProduct[row.querySelector('.table-row-item').id];
+                                let priceListData = dataProduct[row.querySelector('.table-row-item').getAttribute('data-product-id')];
                                 let elePrice = row.querySelector('.table-row-price');
                                 let elePriceList = row.querySelector('.table-row-price-list');
                                 if (priceListData) {
@@ -1022,46 +1021,46 @@ class PODataTableHandle {
             ordering: false,
             info: false,
             columnDefs: [
-                {
-                    "width": "1%",
-                    "targets": 0
-                },
-                {
-                    "width": "10%",
-                    "targets": 1
-                },
-                {
-                    "width": "5%",
-                    "targets": 2
-                },
-                {
-                    "width": "5%",
-                    "targets": 3
-                },
-                {
-                    "width": "5%",
-                    "targets": 4,
-                },
-                {
-                    "width": "5%",
-                    "targets": 5,
-                },
-                {
-                    "width": "2%",
-                    "targets": 6,
-                },
-                {
-                    "width": "25%",
-                    "targets": 7,
-                },
-                {
-                    "width": "20%",
-                    "targets": 8,
-                },
-                {
-                    "width": "20%",
-                    "targets": 9,
-                }
+                // {
+                //     "width": "1%",
+                //     "targets": 0
+                // },
+                // {
+                //     "width": "10%",
+                //     "targets": 1
+                // },
+                // {
+                //     "width": "5%",
+                //     "targets": 2
+                // },
+                // {
+                //     "width": "5%",
+                //     "targets": 3
+                // },
+                // {
+                //     "width": "5%",
+                //     "targets": 4,
+                // },
+                // {
+                //     "width": "5%",
+                //     "targets": 5,
+                // },
+                // {
+                //     "width": "2%",
+                //     "targets": 6,
+                // },
+                // {
+                //     "width": "25%",
+                //     "targets": 7,
+                // },
+                // {
+                //     "width": "20%",
+                //     "targets": 8,
+                // },
+                // {
+                //     "width": "20%",
+                //     "targets": 9,
+                // }
             ],
             columns: [
                 {
@@ -1093,6 +1092,7 @@ class PODataTableHandle {
                                             </span>
                                             <select
                                                 class="form-select table-row-item"
+                                                data-product-id="${row?.['product']?.['id']}"
                                                 data-url="${PODataTableHandle.productInitEle.attr('data-url')}"
                                                 data-link-detail="${PODataTableHandle.productInitEle.attr('data-link-detail')}"
                                                 data-method="${PODataTableHandle.productInitEle.attr('data-method')}"
@@ -1557,12 +1557,7 @@ class POValidateHandle {
 class POSubmitHandle {
     static setupDataProduct() {
         let result = [];
-        let is_by_request = false;
         let table = document.getElementById('datable-purchase-order-product-add');
-        if (document.getElementById('purchase-order-purchase-request').innerHTML) {
-            table = document.getElementById('datable-purchase-order-product-request');
-            is_by_request = true;
-        }
         if (table.querySelector('.dataTables_empty')) {
             return []
         }
@@ -1573,13 +1568,8 @@ class POSubmitHandle {
             let eleProduct = row.querySelector('.table-row-item');
             if (eleProduct) { // PRODUCT
                 let dataInfo = {}
-                if (is_by_request === true) {
-                    let eleDataProd = eleProduct.querySelector('.data-info');
-                    dataInfo = JSON.parse(eleDataProd.value);
-                } else {
-                    if ($(eleProduct).val()) {
-                        dataInfo = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
-                    }
+                if ($(eleProduct).val()) {
+                    dataInfo = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
                 }
                 if (dataInfo) {
                     rowData['product'] = dataInfo.id;
@@ -1655,7 +1645,8 @@ class POSubmitHandle {
         _form.dataForm['purchase_quotations_data'] = JSON.parse($('#purchase_quotations_data').val());
         let dateDeliveredVal = $('#purchase-order-date-delivered').val();
         if (dateDeliveredVal) {
-            _form.dataForm['delivered_date'] = moment(dateDeliveredVal).format('YYYY-MM-DD HH:mm:ss');
+            _form.dataForm['delivered_date'] = moment(dateDeliveredVal,
+                'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
         }
         _form.dataForm['status_delivered'] = 0;
         let products_data_setup = self.setupDataProduct();

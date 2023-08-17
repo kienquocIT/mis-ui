@@ -780,12 +780,43 @@ $(document).ready(function () {
         }
     }
 
+    function loadBeneficiaryDefault(department_id, beneficiaries_mapped, sale_person_id) {
+        let ele = $('#beneficiary-select-box');
+        ele.html('');
+        ele.append(`<option></option>`);
+        employee_list.map(function (item) {
+            if (beneficiaries_mapped.includes(item.id)) {
+                if (item.group.id === department_id) {
+                    if (item.id === sale_person_id) {
+                        ele.append(`<option selected data-department="` + item.group.title + `" data-code="` + item.code + `" data-name="` + item.full_name + `" value="` + item.id + `">` + item.full_name + `</option>`);
+                    }
+                    else {
+                        ele.append(`<option data-department="` + item.group.title + `" data-code="` + item.code + `" data-name="` + item.full_name + `" value="` + item.id + `">` + item.full_name + `</option>`);
+                    }
+                }
+            }
+        })
+    }
+
     loadSupplier();
     loadSaleCode('');
     loadCreator();
     $('#beneficiary-select-box').select2();
     if (sale_code_default_obj.length > 0) {
+        let beneficiaries_mapped = [];
+        beneficiaries_mapped.push(sale_code_default_obj[0].sale_person.id)
+        if (sale_code_default_obj[0].opportunity_sale_team_datas) {
+            $.each(sale_code_default_obj[0].opportunity_sale_team_datas, function (index, member_obj) {
+                if (beneficiaries_mapped.includes(member_obj.member.id) === false) {
+                    beneficiaries_mapped.push(member_obj.member.id);
+                }
+            })
+        }
+        loadBeneficiaryDefault($('#creator-select-box option:selected').attr('data-department-id'), beneficiaries_mapped, sale_code_default_obj[0].sale_person.id);
         loadSaleCode($('#beneficiary-select-box').val());
+        // $('#sale-code-select-box option').each(function () {
+        //     console.log($(this).attr('data-opp-id'))
+        // })
         $('#sale-code-select-box').find(`option[data-opp-id="` + sale_code_default_obj[0].id + `"]`).attr('selected', true).trigger('change')
         $('#sale-code-select-box').attr('disabled', true);
         $('input[value="sale"]').attr("checked", true);

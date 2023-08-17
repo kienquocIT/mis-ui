@@ -1,9 +1,9 @@
 $(document).ready(function () {
     let tbl = $('#datatable_account_list');
-    let tbl2 = tbl.DataTableDefault({
+    tbl.DataTableDefault({
+        rowIdx: true,
         useDataServer: true,
         ajax: {
-            debug: true,
             url: tbl.attr('data-url'),
             type: tbl.attr('data-method'),
             dataSrc: function (resp) {
@@ -16,13 +16,15 @@ $(document).ready(function () {
                 'render': (data, type, row, meta) => {
                     return ``;
                 }
-            }, {
+            },
+            {
                 'data': 'name',
                 render: (data, type, row, meta) => {
                     let urlEditPage = $('#account-update-page').attr('data-url').format_url_with_uuid(row.id);
                     return `<a href="${urlEditPage}"><span><b>` + row.name + `</b></span></a>`
                 }
-            }, {
+            },
+            {
                 'data': 'account_type',
                 render: (data, type, row, meta) => {
                     let clsBadgeCurrent = -1;
@@ -35,7 +37,8 @@ $(document).ready(function () {
                     ).join("");
                     return `<div class="row">${html}</div>`
                 }
-            }, {
+            },
+            {
                 'data': 'owner',
                 'render': (data, type, row, meta) => {
                     if (row.owner.fullname) {
@@ -44,26 +47,30 @@ $(document).ready(function () {
                         return ``
                     }
                 }
-            }, {
+            },
+            {
                 'data': 'phone',
                 'render': (data, type, row, meta) => {
-                    return `<span><center>` + row.phone + `</center></span>`
+                    return `<span>${row?.phone ? row.phone : ''}</span>`
                 }
-            }, {
+            },
+            {
                 'data': 'website',
                 'render': (data, type, row, meta) => {
-                    return `<span><center>` + row.website + `</center></span>`
+                    return `<span>${row?.['website'] ? row['website'] : ''}</span>`
                 }
-            }, {
+            },
+            {
                 'data': 'manager',
                 'render': (data, type, row, meta) => {
                     let element = ''
                     for (let i = 0; i < row.manager.length; i++) {
                         element += `<span class="badge badge-soft-secondary mt-1 ml-1">` + row.manager[i].fullname + `</span>`;
                     }
-                    return `<div class="row">` + element + `</div>`
+                    return `<div class="row">${element}</div>`
                 }
-            }, {
+            },
+            {
                 'className': 'action-center',
                 'render': (data, type, row, meta) => {
                     // let bt2 = `<center><a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="#""><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;

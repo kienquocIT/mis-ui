@@ -10,6 +10,7 @@ $(function(){
         columns: [
             {
                 targets: 0,
+                orderable: false,
                 defaultContent: ''
             },
             {
@@ -50,6 +51,7 @@ $(function(){
             },
             {
                 targets: 5,
+                orderable: false,
                 render: (row, type, data) => {
                     let html = `<div class="actions-btn text-center">
                                 <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover delete-btn"

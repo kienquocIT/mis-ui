@@ -68,6 +68,7 @@ $(document).ready(function () {
             },
             {
                 class: 'text-center',
+                orderable: false,
                 render: (data, type, row, meta) => {
                     const isTxt = $('#trans-factory').attr('data-return')
                     return `<div class="dropdown pointer mr-2">

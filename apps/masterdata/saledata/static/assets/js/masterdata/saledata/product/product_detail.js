@@ -323,8 +323,9 @@ $(document).ready(function () {
                 $('#sale-cost').attr('value', sale_information['sale_product_cost']);
 
                 for (let i = 0; i < sale_information['sale_product_price_list'].length; i++) {
+                    console.log(sale_information['sale_product_price_list'])
                     let item = sale_information['sale_product_price_list'][i];
-                    $(`.input_price_list[data-id="` + item.price_list_id + `"]`).attr('value', item.price_list_value);
+                    $(`.input_price_list[data-id="` + item.id + `"]`).attr('value', item.price);
                 }
                 $.fn.initMaskMoney2();
             }

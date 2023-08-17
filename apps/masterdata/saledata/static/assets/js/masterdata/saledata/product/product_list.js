@@ -25,19 +25,19 @@ $(document).ready(function () {
                     return `<a href="${url_detail.replace(0, row.id)}"><span><b>${row.title}</b></span></a>`
                 }
             }, {
-                'data': 'general_information.product_type',
+                'data': 'product_type',
                 render: (row, type, data, meta) => {
                     if (row?.title) {
-                        return `<span class="badge badge-soft-danger badge-pill span-product-type" style="min-width: max-content; width: 50%">${
-                            data.general_information?.product_type?.title}</span>`
+                        return `<span class="badge badge-soft-danger span-product-type" style="min-width: max-content; width: 50%">${
+                            data.product_type?.title}</span>`
                     }
                     return ``;
                 }
             }, {
-                'data': 'general_information.product_category',
+                'data': 'product_category',
                 'render': (row, type, data, meta) => {
                     if (row?.title) {
-                        return `<span class="badge badge-soft-indigo badge-pill span-product-category" style="min-width: max-content; width: 50%">${
+                        return `<span class="badge badge-soft-indigo span-product-category" style="min-width: max-content; width: 50%">${
                             row?.title}</span>`
                     }
                     return ``;

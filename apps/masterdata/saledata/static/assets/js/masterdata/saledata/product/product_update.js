@@ -329,7 +329,7 @@ $(document).ready(function () {
 
             for (let i = 0; i < sale_information['sale_product_price_list'].length; i++) {
                 let item = sale_information['sale_product_price_list'][i];
-                $(`.input_price_list[data-id="` + item.price_list_id + `"]`).attr('value', item.price_list_value);
+                $(`.input_price_list[data-id="` + item.id + `"]`).attr('value', item.price);
             }
             $.fn.initMaskMoney2();
         }
@@ -587,25 +587,18 @@ $(document).ready(function () {
         };
         data['product_choice'] = []
 
-        let product_size = {}
         if ($('#length').val() !== '' && $('#width').val() !== '' && $('#height').val() !== '' && $('#volume') !== '' && $('#weight') !== '') {
-            product_size = {
-                'length': $('#length').val(),
-                'width': $('#width').val(),
-                'height': $('#height').val(),
-                'volume': $('#volume').val(),
-                'weight': $('#weight').val(),
-                'volume_id': $('#volume').attr('data-id'),
-                'weight_id': $('#weight').attr('data-id')
-            }
+            data['length'] = $('#length').val();
+            data['width'] = $('#width').val();
+            data['height'] = $('#height').val();
+            data['volume'] = $('#volume').val();
+            data['weight'] = $('#weight').val();
+            data['volume_id'] = $('#volume').attr('data-id');
+            data['weight_id'] = $('#weight').attr('data-id');
         }
-
-        data['general_information'] = {
-            'general_product_type': $('#general-select-box-product-type option:selected').attr('value'),
-            'general_product_category': $('#general-select-box-product-category option:selected').attr('value'),
-            'general_product_uom_group': $('#general-select-box-uom-group option:selected').attr('value'),
-            'general_product_size': product_size
-        }
+        data['general_product_type'] = $('#general-select-box-product-type option:selected').attr('value');
+        data['general_product_category'] = $('#general-select-box-product-category option:selected').attr('value');
+        data['general_uom_group'] = $('#general-select-box-uom-group option:selected').attr('value');
 
         if ($('#check-tab-sale').is(':checked') === true) {
             data['product_choice'].push(0)
@@ -623,31 +616,43 @@ $(document).ready(function () {
                     });
                 }
             })
-            data['sale_information'] = {
-                'sale_product_default_uom': $('#sale-select-box-default-uom option:selected').attr('value'),
-                'sale_product_tax': $('#sale-select-box-tax-code option:selected').attr('value'),
-                'sale_product_cost': $('#sale-cost').attr('value'),
-                'sale_product_price_list': sale_product_price_list,
-                'currency_using': currency_primary
-            }
+            data['sale_default_uom'] = $('#sale-select-box-default-uom option:selected').attr('value');
+            data['sale_tax'] = $('#sale-select-box-tax-code option:selected').attr('value');
+            data['sale_cost'] = $('#sale-cost').attr('value');
+            data['sale_price_list'] = sale_product_price_list;
+            data['sale_currency_using'] = currency_primary;
+        }
+        else {
+            data['product_choice'].push(0)
+            data['sale_default_uom'] = null;
+            data['sale_tax'] = null;
+            data['sale_cost'] = null;
+            data['sale_price_list'] = [];
+            data['sale_currency_using'] = null;
         }
 
         if ($('#check-tab-inventory').is(':checked') === true) {
             data['product_choice'].push(1)
-            data['inventory_information'] = {
-                'inventory_product_uom': $('#inventory-select-box-uom-name option:selected').attr('value'),
-                'inventory_level_min': $('#inventory-level-min').val(),
-                'inventory_level_max': $('#inventory-level-max').val(),
-            }
+            data['inventory_uom'] = $('#inventory-select-box-uom-name option:selected').attr('value');
+            data['inventory_level_min'] = $('#inventory-level-min').val();
+            data['inventory_level_max'] = $('#inventory-level-max').val();
+        }
+        else {
+            data['inventory_uom'] = null;
+            data['inventory_level_min'] = null;
+            data['inventory_level_max'] = null;
         }
 
         if ($('#check-tab-purchase').is(':checked') === true) {
             data['product_choice'].push(2)
-            data['purchase_information'] = {
-                'purchase_product_default_uom': $('#purchase-select-box-default-uom option:selected').attr('value'),
-                'purchase_product_tax': $('#purchase-select-box-tax-code option:selected').attr('value'),
-            }
+            data['purchase_default_uom'] = $('#purchase-select-box-default-uom option:selected').attr('value');
+            data['purchase_tax'] = $('#purchase-select-box-tax-code option:selected').attr('value');
         }
+        else {
+            data['purchase_default_uom'] = null;
+            data['purchase_tax'] = null;
+        }
+
         console.log(data)
         return data
     }
@@ -666,8 +671,9 @@ $(document).ready(function () {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         $.fn.notifyB({description: "Successfully"}, 'success')
-                        setTimeout(function () {
-                            window.location.reload();
+                        setTimeout(() => {
+                            window.location.replace($(this).attr('data-url-redirect').format_url_with_uuid(pk));
+                            location.reload.bind(location);
                         }, 1000);
                     }
                     setTimeout(
@@ -678,7 +684,13 @@ $(document).ready(function () {
                     )
                 },
                 (errs) => {
-                    // $.fn.notifyB({description: errs.data.errors}, 'failure');
+                    setTimeout(
+                        () => {
+                            WindowControl.hideLoading();
+                        },
+                        1000
+                    )
+                    $.fn.notifyB({description: errs.data.errors}, 'failure');
                 }
             )
     })

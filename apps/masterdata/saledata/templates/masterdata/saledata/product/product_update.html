@@ -32,7 +32,7 @@
 {% endblock %}
 {% block pageContent %}
     <form id="form-update-product" data-method="PUT" data-url="{% url "ProductDetailAPI" pk=0 %}"
-          data-url-redirect="{% url "ProductList" %}">
+          data-url-redirect="{% url "ProductDetail" pk=0 %}">
         {% csrf_token %}
         <div class="row collapse multi-collapse show" id="collapse-area">
             <div class="row">

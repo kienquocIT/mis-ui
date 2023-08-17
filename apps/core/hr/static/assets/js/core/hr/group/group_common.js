@@ -48,19 +48,6 @@ class GroupLoadDataHandle {
         }
     }
 
-    static loadCheckboxTableEmployee() {
-        let emp_list = $('#data-group_employee').val();
-        if (emp_list) {
-            let table = document.getElementById('datable_employee_list');
-            let eleCheckboxList = table.querySelectorAll('.table-row-checkbox');
-            for (let item of eleCheckboxList) {
-                if (JSON.parse(emp_list).includes(item.id)) {
-                    item.checked = true;
-                }
-            }
-        }
-    }
-
 // load group list filter by level
     static loadGroupParentList(dataGroupParent = {}, level = null) {
         let ele = GroupLoadDataHandle.boxGroupParent;
@@ -213,7 +200,11 @@ function dataTableEmployee() {
                 targets: 6,
                 render: (data, type, row) => {
                     let role = JSON.stringify(row.role).replace(/"/g, "&quot;");
-                    let employee_id_checked_list = JSON.parse($('#data-group_employee').val());
+                    let dataGroupEmployee = $('#data-group_employee');
+                    let employee_id_checked_list = [];
+                    if (dataGroupEmployee.val()) {
+                        employee_id_checked_list = JSON.parse(dataGroupEmployee.val());
+                    }
                     if (!employee_id_checked_list.includes(row.id)) {
                         return `<div class="form-check">
                                 <input 

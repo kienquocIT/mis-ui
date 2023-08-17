@@ -19,9 +19,9 @@
     {{ data.account_list | json_script:"account_list" }}
     {{ data.contact_list | json_script:"contact_list" }}
     {{ data.opportunity_list | json_script:"opportunity_list" }}
-    {{ data.meeting_list | json_script:"meeting_list" }}
     {{ data.employee_list | json_script:"employee_list" }}
     {{ data.account_map_employees | json_script:"account_map_employees" }}
+
     <input type="hidden" id="employee_current_id" value="{{ data.employee_current_id }}">
 
     <table id="table_opportunity_meeting_list" class="table nowrap w-100 mb-5"

@@ -4,7 +4,6 @@ $(function () {
         const account_list = JSON.parse($('#account_list').text());
         const contact_list = JSON.parse($('#contact_list').text());
         const opportunity_list = JSON.parse($('#opportunity_list').text());
-        const call_log_list = JSON.parse($('#call_log_list').text());
 
         function LoadSaleCodeList(employee_current_id) {
             let $sale_code_sb = $('#sale-code-select-box');
@@ -152,12 +151,24 @@ $(function () {
             )
         })
 
-        function loadOpportunityCallLogList(call_log_list) {
+        function loadOpportunityCallLogList() {
             if (!$.fn.DataTable.isDataTable('#table_opportunity_call_log_list')) {
                 let dtb = $('#table_opportunity_call_log_list');
+                let frm = new SetupFormSubmit(dtb);
                 dtb.DataTableDefault({
                     rowIdx: true,
-                    data: call_log_list,
+                    useDataServer: true,
+                    ajax: {
+                        url: frm.dataUrl,
+                        type: frm.dataMethod,
+                        dataSrc: function (resp) {
+                            let data = $.fn.switcherResp(resp);
+                            if (data && resp.data.hasOwnProperty('call_log_list')) {
+                                return resp.data['call_log_list'] ? resp.data['call_log_list'] : [];
+                            }
+                            throw Error('Call data raise errors.')
+                        },
+                    },
                     columns: [
                         {
                             'render': (data, type, row, meta) => {
@@ -216,7 +227,7 @@ $(function () {
                 });
             }
         }
-        loadOpportunityCallLogList(call_log_list);
+        loadOpportunityCallLogList();
 
         $(document).on('click', '#table_opportunity_call_log_list .detail-call-log-button', function () {
             let call_log_id = $(this).attr('data-id');

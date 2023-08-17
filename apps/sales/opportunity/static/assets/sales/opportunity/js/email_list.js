@@ -4,7 +4,6 @@ $(function () {
         const account_list = JSON.parse($('#account_list').text());
         const contact_list = JSON.parse($('#contact_list').text());
         const opportunity_list = JSON.parse($('#opportunity_list').text());
-        const email_list = JSON.parse($('#email_list').text());
 
         $('#email-to-select-box').select2({
             dropdownParent: $("#send-email"),
@@ -144,9 +143,21 @@ $(function () {
         function loadOpportunityEmailList() {
             if (!$.fn.DataTable.isDataTable('#table_opportunity_email_list')) {
                 let dtb = $('#table_opportunity_email_list');
+                let frm = new SetupFormSubmit(dtb);
                 dtb.DataTableDefault({
                     rowIdx: true,
-                    data: email_list,
+                    useDataServer: true,
+                    ajax: {
+                        url: frm.dataUrl,
+                        type: frm.dataMethod,
+                        dataSrc: function (resp) {
+                            let data = $.fn.switcherResp(resp);
+                            if (data && resp.data.hasOwnProperty('email_list')) {
+                                return resp.data['email_list'] ? resp.data['email_list'] : [];
+                            }
+                            throw Error('Call data raise errors.')
+                        },
+                    },
                     columns: [
                         {
                             'render': (data, type, row, meta) => {

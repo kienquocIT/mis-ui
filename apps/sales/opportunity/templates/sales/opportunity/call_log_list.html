@@ -19,7 +19,6 @@
     {{ data.account_list | json_script:"account_list" }}
     {{ data.contact_list | json_script:"contact_list" }}
     {{ data.opportunity_list | json_script:"opportunity_list" }}
-    {{ data.call_log_list | json_script:"call_log_list" }}
 
     <input type="hidden" id="employee_current_id" value="{{ data.employee_current_id }}">
     <table id="table_opportunity_call_log_list" class="table nowrap w-100 mb-5"

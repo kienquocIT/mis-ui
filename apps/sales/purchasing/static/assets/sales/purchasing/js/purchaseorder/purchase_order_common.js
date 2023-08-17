@@ -533,12 +533,12 @@ class POLoadDataHandle {
     };
 
     static loadDataRowTable($table) {
-        let self = this;
-        // callBack Row to load data for select box
-        for (let i = 0; i < $table[0].tBodies[0].rows.length; i++) {
-            let row = $table[0].tBodies[0].rows[i];
-            let table_id = $table[0].id;
-            self.loadDataRow(row, table_id);
+        if (!$table[0].querySelector('.dataTables_empty')) {
+            for (let i = 0; i < $table[0].tBodies[0].rows.length; i++) {
+                let row = $table[0].tBodies[0].rows[i];
+                let table_id = $table[0].id;
+                POLoadDataHandle.loadDataRow(row, table_id);
+            }
         }
     };
 
@@ -546,8 +546,14 @@ class POLoadDataHandle {
         let self = this;
         // mask money
         $.fn.initMaskMoney2();
-        self.loadBoxProduct($(row.querySelector('.table-row-item')));
-        self.loadBoxUOM($(row.querySelector('.table-row-uom-order-actual')));
+        if (table_id === 'datable-purchase-order-product-add') {
+            self.loadBoxProduct($(row.querySelector('.table-row-item')));
+            self.loadBoxUOM($(row.querySelector('.table-row-uom-order-actual')));
+        } else if (table_id === 'datable-purchase-order-product-request') {
+            let dataRow = JSON.parse(row.querySelector('.table-row-order').getAttribute('data-row'));
+            self.loadBoxProduct($(row.querySelector('.table-row-item')));
+            self.loadBoxUOM($(row.querySelector('.table-row-uom-order-actual')));
+        }
         self.loadBoxTax($(row.querySelector('.table-row-tax')));
     };
 
@@ -1061,7 +1067,8 @@ class PODataTableHandle {
                 {
                     targets: 0,
                     render: (data, type, row) => {
-                        return `<span class="table-row-order" id="${row.id}">${row.order}</span>`
+                        let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
+                        return `<span class="table-row-order" id="${row.id}" data-row="${dataRow}">${row.order}</span>`
                     }
                 },
                 {
@@ -1263,7 +1270,8 @@ class PODataTableHandle {
                 {
                     targets: 0,
                     render: (data, type, row) => {
-                        return `<span class="table-row-order" id="${row.id}">${row.order}</span>`
+                        let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
+                        return `<span class="table-row-order" id="${row.id}" data-row="${dataRow}">${row.order}</span>`
                     }
                 },
                 {

@@ -461,3 +461,14 @@ class OpportunityDocumentDetailAPI(APIView):
     def get(self, request, pk, *arg, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_DOCUMENT_DETAIL.fill_key(pk=pk)).get()
         return resp.auto_return(key_success='opportunity_doc')
+
+
+# Opportunity List use for Sale Apps
+class OpportunityForSaleListAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(auth_require=True, is_api=True)
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_SALE_LIST).get(data)
+        return resp.auto_return(key_success='opportunity_sale_list')

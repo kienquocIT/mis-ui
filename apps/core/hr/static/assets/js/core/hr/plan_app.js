@@ -47,8 +47,10 @@ class HandlePlanApp {
 
     // load step 1
     loadData(tenant_plan_list) {
+        console.log(tenant_plan_list);
         let clsThis = this;
         this.dtb.DataTableDefault({
+            stateDefaultPageControl: false,
             data: tenant_plan_list,
             autoWidth: false,
             columns: [
@@ -101,13 +103,6 @@ class HandlePlanApp {
                     }
                 }
             ],
-            rowIdx: false,
-            visiblePaging: false,
-            visibleSearchField: false,
-            visibleDisplayRowTotal: false,
-            visiblePagination: false,
-            visibleOrder: false,
-            visibleRowQuantity: false,
             rowCallback: function (row, data, index) {
                 $(row).on('change', '.app-my-checkbox', function () {
                     let checkEle$ = $(this);

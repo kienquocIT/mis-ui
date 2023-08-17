@@ -1,4 +1,4 @@
-$(document).ready(function () {
+function initUserPage() {
     $.fn.callAjax2({
         url: $('#pageDataHide').attr('data-url'),
         method: 'GET'
@@ -76,4 +76,4 @@ $(document).ready(function () {
         (errs) => {
         }
     )
-})
+}

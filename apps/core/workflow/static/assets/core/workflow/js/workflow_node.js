@@ -185,7 +185,15 @@ $(function () {
                             return `<div class="row">
                                         <div class="col-8">
                                             <div class="btn-group dropdown">
-                                                <i class="fas fa-align-justify" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
+                                                <button 
+                                                    type="button"
+                                                    class="btn btn-link"
+                                                    data-bs-toggle="dropdown" 
+                                                    aria-haspopup="true" 
+                                                    aria-expanded="false"
+                                                >
+                                                <i class="fas fa-align-justify" data-bs-toggle="tooltip" data-bs-placement="top" title="click to add action"></i>
+                                                </button>
                                                 <div class="dropdown-menu w-250p">
                                                     <div class="h-250p">
                                                         <div data-simplebar class="nicescroll-bar">
@@ -198,16 +206,22 @@ $(function () {
                                             </div>
                                         </div>
                                         <div class="col-4">
-                                            <span class=""><i class="fas fa-check"></i></span>
+                                            <span class=""><i class="fas fa-check mt-2"></i></span>
                                         </div>
                                     </div>`;
                         } else {
                             return `<div class="row">
                                         <div class="col-8">
-                                            <i class="fas fa-align-justify" style="color: #cccccc"></i>
+                                            <button 
+                                                type="button"
+                                                class="btn btn-link"
+                                                disabled
+                                            >
+                                            <i class="fas fa-align-justify"></i>
+                                            </button>
                                         </div>
                                         <div class="col-4">
-                                            <span class="check-done-audit"><i class="fas fa-check"></i></span>
+                                            <span class="check-done-audit"><i class="fas fa-check mt-2"></i></span>
                                         </div>
                                     </div>`
                         }
@@ -219,7 +233,14 @@ $(function () {
                         if (row.order === 1) {
                             return `<div class="row">
                                         <div class="col-8">
-                                            <i class="fas fa-align-justify btn-initial-node-collaborator" data-bs-toggle="modal" data-bs-target="#auditModalCreateInitial"></i>
+                                            <button 
+                                                type="button"
+                                                class="btn btn-link btn-initial-node-collaborator"
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#auditModalCreateInitial"
+                                            >
+                                            <i class="fas fa-align-justify" data-bs-toggle="tooltip" data-bs-placement="top" title="click to add collaborator"></i>
+                                            </button>
                                             <div
                                                 class="modal fade" id="auditModalCreateInitial" tabindex="-1" role="dialog"
                                                 aria-labelledby="exampleModalCenter" aria-hidden="true"
@@ -262,16 +283,22 @@ $(function () {
                                             </div>
                                         </div>
                                         <div class="col-4">
-                                            <span class="check-done-audit"><i class="fas fa-check"></i></span>
+                                            <span class="check-done-audit"><i class="fas fa-check mt-2"></i></span>
                                         </div>
                                     </div>`
                         } else {
                             return `<div class="row">
                                         <div class="col-8">
-                                            <i class="fas fa-align-justify" style="color: #cccccc"></i>
+                                            <button 
+                                                type="button"
+                                                class="btn btn-link"
+                                                disabled
+                                            >
+                                            <i class="fas fa-align-justify"></i>
+                                            </button>
                                         </div>
                                         <div class="col-4">
-                                            <span class="check-done-audit"><i class="fas fa-check"></i></span>
+                                            <span class="check-done-audit"><i class="fas fa-check mt-2"></i></span>
                                         </div>
                                     </div>`;
                         }
@@ -309,7 +336,12 @@ $(function () {
         let url = '/base/application-property-employee/api';
         let method = "GET"
         let ele = $('#data-init-property-in-form');
-        $.fn.callAjax(url, method).then(
+        $.fn.callAjax2({
+                'url': url,
+                'method': method,
+                'isDropdown': true,
+            }
+        ).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
@@ -327,7 +359,12 @@ $(function () {
         let url = '/company/list/api';
         let method = "GET"
         let ele = $('#data-init-company-in-workflow');
-        $.fn.callAjax(url, method).then(
+        $.fn.callAjax2({
+                'url': url,
+                'method': method,
+                'isDropdown': true,
+            }
+        ).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
@@ -345,7 +382,12 @@ $(function () {
         let url = '/hr/employee/api';
         let method = "GET"
         let ele = $('#data-init-employee-in-workflow');
-        $.fn.callAjax(url, method).then(
+        $.fn.callAjax2({
+                'url': url,
+                'method': method,
+                'isDropdown': true,
+            }
+        ).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
@@ -446,7 +488,12 @@ $(function () {
     function loadInitEmployeeOutForm() {
         let url = $('#url-factory').data('employees');
         let method = "GET";
-        $.fn.callAjax(url, method).then(
+        $.fn.callAjax2({
+                'url': url,
+                'method': method,
+                'isDropdown': true,
+            }
+        ).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
@@ -489,7 +536,6 @@ $(function () {
             let newCheckBox = String(Number(initialCheckBox) + 1);
             let approvedRowOrder = String(Number(initialCheckBox) + 2);
             let completedRowOrder = String(Number(initialCheckBox) + 3);
-
             let checkBox = `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select"><label class="form-check-label"></label></span>`;
             let nodeName = $('#modal-node-name-create').val();
             let nodeDescription = $('#modal-node-description-create').val();
@@ -498,13 +544,20 @@ $(function () {
             let actionData = bt2 + bt3;
             let actionEle = renderAction(false);
             let modalAuditId = "auditModalCreate" + newCheckBox
-
             initialRow.after(`<tr class="initial-row" data-initial-check-box="${newCheckBox}"><td>${checkBox}</td><td><span class="node-title-col-show node-title">${nodeName}</span><input type="text" class="node-title-col-edit" hidden></td><td><span class="node-remark-col-show node-description">${nodeDescription}</span><input type="text" class="node-remark-col-edit" hidden></td>
                                     <td>
                                         <div class="row">
                                             <div class="col-8">
                                                 <div class="btn-group dropdown">
-                                                    <i class="fas fa-align-justify" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
+                                                    <button 
+                                                        type="button"
+                                                        class="btn btn-link"
+                                                        data-bs-toggle="dropdown" 
+                                                        aria-haspopup="true" 
+                                                        aria-expanded="false"
+                                                    >
+                                                    <i class="fas fa-align-justify" data-bs-toggle="tooltip" data-bs-placement="top" title="click to add action"></i>
+                                                    </button>
                                                     <div class="dropdown-menu w-250p"><div class="h-250p"><div data-simplebar class="nicescroll-bar">
                                                         <ul class="node-action-list p-0">
                                                             ${actionEle}
@@ -515,14 +568,21 @@ $(function () {
                                                 </div>
                                             </div>
                                             <div class="col-4">
-                                                <span class="check-done-action"><i class="fas fa-times"></i></span>
+                                                <span class="check-done-action"><i class="fas fa-times mt-2"></i></span>
                                             </div>
                                         </div>
                                     </td>
                                     <td>
                                         <div class="row">
                                             <div class="col-8">
-                                                <i class="fas fa-align-justify" data-bs-toggle="modal" data-bs-target="#${modalAuditId}"></i>
+                                                <button 
+                                                    type="button"
+                                                    class="btn btn-link"
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#${modalAuditId}"
+                                                >
+                                                <i class="fas fa-align-justify" data-bs-toggle="tooltip" data-bs-placement="top" title="click to add collaborator"></i>
+                                                </button>
                                                 <div
                                                     class="modal fade" id="${modalAuditId}" tabindex="-1" role="dialog"
                                                     aria-labelledby="exampleModalCenter" aria-hidden="true"
@@ -557,7 +617,7 @@ $(function () {
                                                 </div>
                                             </div>
                                             <div class="col-4">
-                                                <span class="check-done-audit"><i class="fas fa-times"></i></span>
+                                                <span class="check-done-audit"><i class="fas fa-times mt-2"></i></span>
                                             </div>
                                         </div>
                                     </td>
@@ -1014,7 +1074,12 @@ $(function () {
             let method = "GET"
             let jqueryId = "#" + boxId
             let ele = $(jqueryId);
-            $.fn.callAjax(url, method).then(
+            $.fn.callAjax2({
+                    'url': url,
+                    'method': method,
+                    'isDropdown': true,
+                }
+            ).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
@@ -1292,7 +1357,7 @@ $(function () {
             if ($(this)[0].checked === true) {
                 // change node's actions status
                 eleSpan.innerHTML = ``;
-                eleSpan.innerHTML = `<i class="fas fa-check"></i>`;
+                eleSpan.innerHTML = `<i class="fas fa-check mt-2"></i>`;
 
                 // check group actions
                 if (dataAction === "1") {
@@ -1395,7 +1460,7 @@ $(function () {
                 }
                 if (allUnCheck === eleUL.children.length) {
                     eleSpan.innerHTML = ``;
-                    eleSpan.innerHTML = `<i class="fas fa-times"></i>`;
+                    eleSpan.innerHTML = `<i class="fas fa-times mt-2"></i>`;
                 }
             }
         });
@@ -1415,30 +1480,30 @@ $(function () {
                 if (employeeInForm) {
                     if (employeeInForm.value) {
                         eleSpan.innerHTML = ``;
-                        eleSpan.innerHTML = `<i class="fas fa-check"></i>`;
+                        eleSpan.innerHTML = `<i class="fas fa-check mt-2"></i>`;
                     } else {
                         eleSpan.innerHTML = ``;
-                        eleSpan.innerHTML = `<i class="fas fa-times"></i>`;
+                        eleSpan.innerHTML = `<i class="fas fa-times mt-2"></i>`;
                     }
                 }
             } else if (employeeOutForm) {
                 if (employeeOutForm.querySelector('.col-8')) {
                     if (employeeOutForm.querySelector('.col-8').children.length > 0) {
                         eleSpan.innerHTML = ``;
-                        eleSpan.innerHTML = `<i class="fas fa-check"></i>`;
+                        eleSpan.innerHTML = `<i class="fas fa-check mt-2"></i>`;
                     }
                 } else {
                     eleSpan.innerHTML = ``;
-                    eleSpan.innerHTML = `<i class="fas fa-times"></i>`;
+                    eleSpan.innerHTML = `<i class="fas fa-times mt-2"></i>`;
                 }
             } else if (employeeInWorkflow) {
                 let body = employeeInWorkflow.tBodies[0];
                 if (!body.querySelector('.dataTables_empty') && body.rows.length > 0) {
                     eleSpan.innerHTML = ``;
-                    eleSpan.innerHTML = `<i class="fas fa-check"></i>`;
+                    eleSpan.innerHTML = `<i class="fas fa-check mt-2"></i>`;
                 } else {
                     eleSpan.innerHTML = ``;
-                    eleSpan.innerHTML = `<i class="fas fa-times"></i>`;
+                    eleSpan.innerHTML = `<i class="fas fa-times mt-2"></i>`;
                 }
             }
         });

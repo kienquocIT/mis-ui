@@ -766,7 +766,34 @@ $('#table_districts_list').DataTableDefault({
    ]
 })
 ```
-3. 
+3. Thêm link detail có thuộc tính target="_blank" cho các row
+```html
+<table data-url-detail="{% url 'XXXX' pk='__pk__' %}" ></table>
+```
+```javascript
+// với url detail đã thêm vào attribute của table
+let urlDetail = $('#tbl').attr('data-url-detail');
+
+// Cách 1: Số thứ tự là link blank. 
+// ** KHUYẾN KHÍCH SỬ DỤNG **
+$('#tbl').DataTableDefault({
+   ...{}, // config
+   callbackGetLinkBlank: function (rowData){
+       // hàm này sẽ được sử dụng thêm link target blank vào rowIdx
+       return rowData.id ? urlDetail.replace('__pk__', rowData.id) : null;
+   },
+});
+// Cách 2: Thêm button vào ô nào mong muốn
+// Trong hàm render columns của ô nào mong muốn cộng thêm HTML sau vào:
+{
+   render: function (data, type, row, meta) {
+      return 'xử_lý_của_cột' + $x.fn.buttonLinkBlank(urlEmployeeDetail);
+   }
+}
+```
+#### Kết quả:
+![](README_IMG/DTB_link_blank.png)
+4. 
 
 VIII. Validate form khi submit
 1. SetupFormSubmit.validate(formEle, opts)

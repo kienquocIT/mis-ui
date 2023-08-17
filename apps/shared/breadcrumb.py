@@ -37,16 +37,12 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     BASTION_UPDATE = BreadcrumbChildren(_('Update'), is_append_code=True)
 
     # hr
-    HR_PAGE = BreadcrumbChildren(_('HR'))
     EMPLOYEE_LIST_PAGE = BreadcrumbChildren(_('Employee List'), 'EmployeeList')
     EMPLOYEE_CREATE_PAGE = BreadcrumbChildren(_('Employee Create'), 'EmployeeCreate')
     GROUP_LEVEL_LIST_PAGE = BreadcrumbChildren(_('Organization Level'), 'GroupLevelList')
     GROUP_LIST_PAGE = BreadcrumbChildren(_('Organization Group'), 'GroupList')
     ROLE_LIST_PAGE = BreadcrumbChildren(_('Role List'), 'RoleList')
     ROLE_CREATE_PAGE = BreadcrumbChildren(_("Create Role"), 'RoleCreate')
-
-    # tenant
-    ORGANIZATION_PAGE = BreadcrumbChildren(_('Organization'), 'GroupList')
 
     # user
     USER_LIST_PAGE = BreadcrumbChildren(_('User List'), 'UserList')
@@ -126,6 +122,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     QUOTATION_LIST_PAGE = BreadcrumbChildren(_('Quotation list'), 'QuotationList')
     QUOTATION_CREATE_PAGE = BreadcrumbChildren(_('Quotation create'), 'QuotationCreate')
     QUOTATION_DETAIL_PAGE = BreadcrumbChildren(_('Quotation detail'))
+    QUOTATION_UPDATE_PAGE = BreadcrumbChildren(_('Quotation update'))
 
     # Shipping
     SHIPPING_LIST_PAGE = BreadcrumbChildren(_('Shipping list'), 'ShippingList')
@@ -137,6 +134,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     SALE_ORDER_LIST_PAGE = BreadcrumbChildren(_('Sale order list'), 'SaleOrderList')
     SALE_ORDER_CREATE_PAGE = BreadcrumbChildren(_('Sale order create'), 'SaleOrderCreate')
     SALE_ORDER_DETAIL_PAGE = BreadcrumbChildren(_('Sale order detail'))
+    SALE_ORDER_UPDATE_PAGE = BreadcrumbChildren(_('Sale order update'))
 
     # WareHouse
     WAREHOUSE_LIST_PAGE = BreadcrumbChildren(_('WareHouse'), 'WareHouseList')
@@ -280,7 +278,6 @@ class BreadcrumbView:
 
     EMPLOYEE_LIST_PAGE = [
         BreadcrumbItem.HOME_PAGE,
-        BreadcrumbItem.HR_PAGE,
         BreadcrumbItem.EMPLOYEE_LIST_PAGE,
     ]
 
@@ -296,19 +293,17 @@ class BreadcrumbView:
 
     USER_CREATE_PAGE = USER_LIST_PAGE + [BreadcrumbItem.USER_CREATE_PAGE]
 
-    USER_DETAIL_PAGE = USER_LIST_PAGE + [BreadcrumbItem.USER_DETAIL_PAGE]
+    USER_DETAIL_PAGE = USER_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
 
-    USER_EDIT_PAGE = USER_LIST_PAGE + [BreadcrumbItem.USER_EDIT_PAGE]
+    USER_EDIT_PAGE = USER_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
     GROUP_LEVEL_LIST_PAGE = [
         BreadcrumbItem.HOME_PAGE,
-        BreadcrumbItem.ORGANIZATION_PAGE,
         BreadcrumbItem.GROUP_LEVEL_LIST_PAGE,
     ]
 
     GROUP_LIST_PAGE = [
         BreadcrumbItem.HOME_PAGE,
-        BreadcrumbItem.ORGANIZATION_PAGE,
         BreadcrumbItem.GROUP_LIST_PAGE,
     ]
     GROUP_CREATE = GROUP_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
@@ -319,6 +314,8 @@ class BreadcrumbView:
         BreadcrumbItem.HOME_PAGE,
         BreadcrumbItem.COMPANY_PAGE,
     ]
+    COMPANY_DETAIL_PAGE = COMPANY_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    COMPANY_UPDATE_PAGE = COMPANY_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
     COMPANY_OVERVIEW_PAGE = [
         BreadcrumbItem.HOME_PAGE,
@@ -335,7 +332,6 @@ class BreadcrumbView:
 
     ROLE_LIST_PAGE = [
         BreadcrumbItem.HOME_PAGE,
-        BreadcrumbItem.HR_PAGE,
         BreadcrumbItem.ROLE_LIST_PAGE,
     ]
 
@@ -426,6 +422,7 @@ class BreadcrumbView:
     ]
     QUOTATION_CREATE_PAGE = QUOTATION_LIST_PAGE + [BreadcrumbItem.QUOTATION_CREATE_PAGE]
     QUOTATION_DETAIL_PAGE = QUOTATION_LIST_PAGE + [BreadcrumbItem.QUOTATION_DETAIL_PAGE]
+    QUOTATION_UPDATE_PAGE = QUOTATION_LIST_PAGE + [BreadcrumbItem.QUOTATION_UPDATE_PAGE]
 
     # Shipping
     SHIPPING_LIST_PAGE = [
@@ -440,6 +437,7 @@ class BreadcrumbView:
     ]
     SALE_ORDER_CREATE_PAGE = SALE_ORDER_LIST_PAGE + [BreadcrumbItem.SALE_ORDER_CREATE_PAGE]
     SALE_ORDER_DETAIL_PAGE = SALE_ORDER_LIST_PAGE + [BreadcrumbItem.SALE_ORDER_DETAIL_PAGE]
+    SALE_ORDER_UPDATE_PAGE = SALE_ORDER_LIST_PAGE + [BreadcrumbItem.SALE_ORDER_UPDATE_PAGE]
 
     # Warehouse
     WAREHOUSE_LIST_PAGE = [

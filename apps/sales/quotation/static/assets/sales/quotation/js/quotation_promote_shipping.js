@@ -538,9 +538,11 @@ class promotionHandle {
                         let subtotalPlus = 0;
                         let eleTax = row.querySelector('.table-row-tax');
                         if (eleTax) {
-                            let optionSelected = eleTax.options[eleTax.selectedIndex];
-                            if (optionSelected) {
-                                tax = parseFloat(optionSelected.getAttribute('data-value'));
+                            if ($(eleTax).val()) {
+                                let dataTax = SelectDDControl.get_data_from_idx($(eleTax), $(eleTax).val());
+                                if (dataTax.hasOwnProperty('rate')) {
+                                    tax = parseInt(dataTax.rate);
+                                }
                             }
                         }
                         // calculate discount & tax
@@ -601,9 +603,11 @@ class promotionHandle {
                         let subtotalPlus = 0;
                         let eleTax = row.querySelector('.table-row-tax');
                         if (eleTax) {
-                            let optionSelected = eleTax.options[eleTax.selectedIndex];
-                            if (optionSelected) {
-                                tax = parseInt(optionSelected.getAttribute('data-value'));
+                            if ($(eleTax).val()) {
+                                let dataTax = SelectDDControl.get_data_from_idx($(eleTax), $(eleTax).val());
+                                if (dataTax.hasOwnProperty('rate')) {
+                                    tax = parseInt(dataTax.rate);
+                                }
                             }
                         }
                         // calculate discount & tax
@@ -640,7 +644,7 @@ class promotionHandle {
             taxAmountTotal = parseFloat(eleTaxesRaw.value) - totalTaxAmountMinus;
         }
         // apply Final Tax
-        $(eleTaxes).attr('value', String(taxAmountTotal));
+        $(eleTaxes).attr('data-init-money', String(taxAmountTotal));
         eleTaxesRaw.value = taxAmountTotal;
 
         let eleTotal = document.getElementById('quotation-create-product-total');
@@ -657,7 +661,7 @@ class promotionHandle {
         }
 
         // apply Final Total
-        $(eleTotal).attr('value', String(totalFinal));
+        $(eleTotal).attr('data-init-money', String(totalFinal));
         eleTotalRaw.value = totalFinal;
 
         $.fn.initMaskMoney2();
@@ -821,9 +825,9 @@ class shippingHandle {
         document.getElementById('quotation-final-revenue-before-tax').value = (pretaxNew - parseFloat(eleDiscountAmountRaw.value));
 
         // Apply new pretax, total
-        $(elePretaxAmount).attr('value', String(pretaxNew));
+        $(elePretaxAmount).attr('data-init-money', String(pretaxNew));
         elePretaxAmountRaw.value = pretaxNew;
-        $(eleTotalAmount).attr('value', String(totalNew));
+        $(eleTotalAmount).attr('data-init-money', String(totalNew));
         eleTotalAmountRaw.value = totalNew;
 
         $.fn.initMaskMoney2();

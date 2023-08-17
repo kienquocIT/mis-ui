@@ -19,7 +19,7 @@ $(function () {
             let stt_template = $($('.card-parent_template').html());
             // for kanban main task
             stt_template.find('.btn-add-newtask').attr('data-id', item.id)
-            stt_template.find('.tasklist-name').text(item.name)
+            stt_template.find('.tasklist-name').text(item.name).css('background-color', item.task_color)
             stt_template.find('.task-count').text(item.count)
             stt_template.find('.wrap-child').attr('id', `taskID-${item.id}`)
             $('#tasklist_wrap').append(stt_template)
@@ -91,8 +91,15 @@ $(function () {
         renderLogWork(logWorkList) {
             // reset datatable
             let $table = $('#table_log-work')
-            if ($table.hasClass('datatable')) $table.DataTable().clear().draw();
-            $table.DataTableDefault({
+            if ($table.hasClass('dataTable')){
+                $table.DataTable().clear().draw();
+                $table.DataTable().rows.add(logWorkList).draw();
+            }
+            else $table.DataTableDefault({
+                searching: false,
+                ordering: false,
+                paginate: false,
+                info: false,
                 data: logWorkList,
                 columns: [
                     {
@@ -620,9 +627,12 @@ $(function () {
                             }
                             countSTT()
                         }
-                        else drake.cancel(el)
+                        else{
+                            drake.cancel(el)
+                        }
                     },
                     (errs) => {
+                        $.fn.notifyB({'description': errs?.data?.errors}, 'failure')
                         $(el, target).appendTo(source);
                     }
                 )
@@ -664,8 +674,8 @@ $(function () {
     objTask.init();
 
     // init dragula
-    let objDarg = new dragHandle()
-    objDarg.init()
+    let objDrag = new dragHandle()
+    objDrag.init()
 
     // Horizontal scroll
     new PerfectScrollbar('#kb_scroll, #kb_sub_scroll', {

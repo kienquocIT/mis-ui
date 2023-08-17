@@ -38,7 +38,7 @@ class CompanyDetail(View):
     @mask_view(
         auth_require=True,
         template='core/company/company_detail.html',
-        breadcrumb='COMPANY_LIST_PAGE',
+        breadcrumb='COMPANY_DETAIL_PAGE',
         menu_active='menu_company_list'
     )
     def get(self, request, pk, *args, **kwargs):
@@ -46,23 +46,17 @@ class CompanyDetail(View):
         return resp.auto_return(callback_success=self.callback_success)
 
 
-class CompanyUpdate(View):
-    @mask_view(
-        auth_require=True,
-        template='core/company/company_update.html',
-        breadcrumb='COMPANY_LIST_PAGE',
-        menu_active='menu_company_list',
-    )
-    def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
-
-
 class CompanyUpdateAPI(APIView):
     @classmethod
     def callback_success(cls, result):
         return {'company': result, 'icon': result["title"][0]}
 
-    @mask_view(auth_require=True, template='core/company/company_update.html', breadcrumb='COMPANY_LIST_PAGE')
+    @mask_view(
+        login_require=True,
+        template='core/company/company_update.html',
+        breadcrumb='COMPANY_UPDATE_PAGE',
+        menu_active='menu_company_list'
+    )
     def get(self, request, pk, *args, **kwargs):
         resp = ServerAPI(request=request, user=request.user, url=ApiURL.COMPANY_DETAIL + '/' + pk).get()
         return resp.auto_return(callback_success=self.callback_success)

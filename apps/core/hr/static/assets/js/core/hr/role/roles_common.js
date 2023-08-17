@@ -27,9 +27,12 @@ class RoleForm {
     }
 
     static loadDetail(detailData, memberOpts) {
+        $x.fn.renderCodeBreadcrumb(detailData, 'abbreviation');
         RoleForm.titleEle.val(detailData?.title || '');
         RoleForm.codeEle.val(detailData?.abbreviation || '');
         RoleLoadPage.loadMembers(detailData?.holder || [], memberOpts || {});
+
+        new HandlePermissions().loadData(detailData?.plan_app || [], detailData.permission_by_configured || []);
         new HandlePlanApp().appendPlanAppOfEmployee(detailData?.plan_app || []);
     }
 
@@ -38,6 +41,7 @@ class RoleForm {
             let frm = new SetupFormSubmit($(this.frm));
             frm.dataForm['employees'] = RoleLoadPage.combinesMembers();
             frm.dataForm['plan_app'] = new HandlePlanApp().combinesData();
+            frm.dataForm['permission_by_configured'] = new HandlePermissions().combinesData()['data'];
             if (isSubmit === true) {
                 $x.fn.showLoadingPage();
                 return $.fn.callAjax2({

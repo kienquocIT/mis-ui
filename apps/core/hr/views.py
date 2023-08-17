@@ -324,7 +324,7 @@ class GroupCreate(View):
         template='core/hr/group/group_create.html',
         breadcrumb='GROUP_CREATE',
         menu_active='menu_group_list',
-        perm_check=PermCheck(url=ApiURL.ROLE_LIST, method='POST'),
+        perm_check=PermCheck(url=ApiURL.GROUP_LIST, method='POST'),
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -421,16 +421,3 @@ class GroupDetailAPI(APIView):
         url = ApiURL.GROUP_DETAIL_PK.fill_key(pk=pk)
         resp = ServerAPI(request=request, user=request.user, url=url).delete(request.data)
         return resp.auto_return()
-
-
-class GroupParentListAPI(APIView):
-    permission_classes = [IsAuthenticated]
-
-    @mask_view(
-        auth_require=True,
-        is_api=True
-    )
-    def get(self, request, level, *args, **kwargs):
-        url = ApiURL.GROUP_PARENT_PK.fill_key(level=level)
-        resp = ServerAPI(request=request, url=url, user=request.user).get()
-        return resp.auto_return(key_success='group_parent_list')

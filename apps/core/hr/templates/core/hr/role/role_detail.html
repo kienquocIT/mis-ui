@@ -1,6 +1,5 @@
 {% extends 'base.html' %}
 {% load static i18n %}
-{% load static %}
 
 {% block pageAction %}
     <a href="{% url 'RoleUpdateView' pk=pk %}">
@@ -49,6 +48,7 @@
     <script>
         let urlDetail = "{% url 'RoleDetailAPI' pk=pk %}";
     </script>
+    <script src="{% static 'assets/js/core/hr/permissions.js' %}"></script>
     <script src="{% static 'assets/js/core/hr/role/role_detail.js' %}"></script>
     <script src="{% static 'assets/js/core/hr/plan_app.js' %}"></script>
     <script src="{% static 'assets/js/core/hr/role/roles_common.js' %}"></script>

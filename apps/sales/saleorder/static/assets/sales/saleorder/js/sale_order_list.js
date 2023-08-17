@@ -6,6 +6,7 @@ $(function () {
             let $table = $('#table_sale_order_list')
             let frm = new SetupFormSubmit($table);
             $table.DataTableDefault({
+                useDataServer: true,
                 ajax: {
                     url: frm.dataUrl,
                     type: frm.dataMethod,

@@ -1,6 +1,5 @@
 {% extends 'base.html' %}
 {% load static i18n %}
-{% load static %}
 
 {% block pageAction %}
     <button class="btn btn-outline-primary" type="submit" form="form-role">
@@ -43,7 +42,26 @@
         </div>
         <div class="row">
             <div class="col-12">
-                {% include 'core/hr/employee/extends/plan_apps.html' with add_new_enabled="true" warning_license="true" %}
+                <ul class="nav nav-light nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#plan-app">
+                            <span class="nav-link-text">{% trans 'Plan-Application' %}</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#permissions">
+                            <span class="nav-link-text">{% trans 'Permission' %}</span>
+                        </a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane show active" id="plan-app">
+                        {% include 'core/hr/employee/extends/plan_apps.html' with add_new_enabled="true" warning_license="true" warning_enabled="true" %}
+                    </div>
+                    <div class="tab-pane fade" id="permissions">
+                        {% include 'core/hr/employee/extends/permissions.html' with add_new_enabled="true" %}
+                    </div>
+                </div>
             </div>
         </div>
     </form>
@@ -53,7 +71,8 @@
     <script>
         let urlDetail = "{% url 'RoleDetailAPI' pk=pk %}";
     </script>
-    <script src="{% static 'assets/js/core/hr/role/role_update.js' %}"></script>
+    <script src="{% static 'assets/js/core/hr/permissions.js' %}"></script>
     <script src="{% static 'assets/js/core/hr/plan_app.js' %}"></script>
     <script src="{% static 'assets/js/core/hr/role/roles_common.js' %}"></script>
+    <script src="{% static 'assets/js/core/hr/role/role_update.js' %}"></script>
 {% endblock %}

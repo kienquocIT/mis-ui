@@ -383,6 +383,7 @@ class SelectDDControl {
         //  1. opts
         //  2. attr('...')
         //  3. {default}
+        let isDisabled = this.disabled;
         let isMultiple = this.opts?.multiple ? true : !!this.ele.attr('multiple');
         let isAllowClear = this.opts?.allowClear ? true : (this.ele.attr('data-allowClear') === 'true');
         if (!isMultiple && isAllowClear && this.__has_option_empty !== true) {
@@ -391,7 +392,7 @@ class SelectDDControl {
         return {
             'multiple': isMultiple,
             'closeOnSelect': !isMultiple,
-            'allowClear': isAllowClear,
+            'allowClear': isDisabled === true ? false: isAllowClear,
         }
     }
 
@@ -457,7 +458,7 @@ class SelectDDControl {
                     'id': this.callbackValueId(item, keyId),
                     'text': this.callbackTextDisplay(item, keyText),
                     'data': item,
-                    'selected': true,
+                    'selected': item?.['selected'] || true,
                 }
             })
         }
@@ -579,7 +580,7 @@ class SelectDDControl {
         // Return all config select2
         return {
             'placeholder': $.fn.transEle.attr('data-select-placeholder'),
-            'width': "100%",
+            // 'width': "100%",
             'theme': 'bootstrap4',
             'language': globeLanguage,
             ...this.opts,

@@ -757,13 +757,12 @@ $(document).ready(function () {
                         1000
                     )
                     $.fn.notifyB({description: errs.data.errors}, 'failure');
-                }
+                })
             },
-            (errs) => {
-                $.fn.notifyB({description: errs.data.errors}, 'failure');
-            }
-        )
-    });
+        (errs) => {
+            $.fn.notifyB({description: errs.data.errors}, 'failure');
+        }
+    )
 
     // process address
     $('#select-box-address').on('change', function () {
@@ -904,6 +903,7 @@ $(document).ready(function () {
             $('.check-select-all').prop('checked', false);
         }
     });
+
     $('#datatable-add-contact .check-select-all').on('click', function () {
         $('.check-select').attr('checked', true);
         let table = $('#datatable-add-contact').DataTable();
@@ -924,4 +924,4 @@ $(document).ready(function () {
             $('.check-select').prop('checked', false);
         }
     });
-});
+})

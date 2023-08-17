@@ -19,7 +19,12 @@ $(document).ready(function () {
     const ap_list = JSON.parse($('#advance_payment_list').text());
 
     const urlParams = new URLSearchParams(window.location.search);
-    const sale_code_mapped_parameter = urlParams.get('sale_code_mapped');
+    let param = null;
+    let param_temp_1 = urlParams.get('sale_code_mapped');
+    if (param_temp_1) {param = param_temp_1};
+    let param_temp_2 = urlParams.get('opportunity');
+    if (param_temp_2) {param = param_temp_2};
+    const sale_code_mapped_parameter = param;
     const sale_order = sale_order_list.filter(function(element) {return element.id === sale_code_mapped_parameter;});
     const quotation = quotation_list.filter(function(element) {return element.id === sale_code_mapped_parameter;});
     const opportunity = opportunity_list.filter(function(element) {return element.id === sale_code_mapped_parameter;});

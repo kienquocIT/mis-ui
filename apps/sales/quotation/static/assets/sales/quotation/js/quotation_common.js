@@ -795,28 +795,30 @@ class QuotationLoadDataHandle {
 
     static loadTableDropDowns() {
         let tableProduct = $('#datable-quotation-create-product');
-        // let tableCost = $('#datable-quotation-create-cost');
+        let tableCost = $('#datable-quotation-create-cost');
         let tableExpense = $('#datable-quotation-create-expense');
         QuotationLoadDataHandle.loadDropDowns(tableProduct);
-        // QuotationLoadDataHandle.loadDropDowns(tableCost);
+        QuotationLoadDataHandle.loadDropDowns(tableCost);
         QuotationLoadDataHandle.loadDropDowns(tableExpense, true);
     };
 
     static loadDropDowns(table, is_expense = false) {
-        for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
-            let row = table[0].tBodies[0].rows[i];
-            let dataRow = JSON.parse(row.querySelector('.table-row-order').getAttribute('data-row'));
-            if (is_expense === false) { // PRODUCT
-                $(row.querySelector('.table-row-item')).empty();
-                QuotationLoadDataHandle.loadBoxQuotationProduct($(row.querySelector('.table-row-item')), dataRow.product);
-            } else { // EXPENSE
-                QuotationLoadDataHandle.loadBoxQuotationExpense(row.querySelector('.expense-option-list').id, row.querySelector('.table-row-item').getAttribute('data-value'));
-                QuotationLoadDataHandle.loadBoxQuotationProductPurchasing(row.querySelector('.expense-option-list').id, row.querySelector('.table-row-item').getAttribute('data-value'));
+        if (!table[0].querySelector('.dataTables_empty')) {
+            for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
+                let row = table[0].tBodies[0].rows[i];
+                let dataRow = JSON.parse(row.querySelector('.table-row-order').getAttribute('data-row'));
+                if (is_expense === false) { // PRODUCT
+                    $(row.querySelector('.table-row-item')).empty();
+                    QuotationLoadDataHandle.loadBoxQuotationProduct($(row.querySelector('.table-row-item')), dataRow.product);
+                } else { // EXPENSE
+                    QuotationLoadDataHandle.loadBoxQuotationExpense(row.querySelector('.expense-option-list').id, row.querySelector('.table-row-item').getAttribute('data-value'));
+                    QuotationLoadDataHandle.loadBoxQuotationProductPurchasing(row.querySelector('.expense-option-list').id, row.querySelector('.table-row-item').getAttribute('data-value'));
+                }
+                $(row.querySelector('.table-row-uom')).empty();
+                QuotationLoadDataHandle.loadBoxQuotationUOM($(row.querySelector('.table-row-uom')), dataRow.unit_of_measure);
+                $(row.querySelector('.table-row-tax')).empty();
+                QuotationLoadDataHandle.loadBoxQuotationTax($(row.querySelector('.table-row-tax')), dataRow.tax);
             }
-            $(row.querySelector('.table-row-uom')).empty();
-            QuotationLoadDataHandle.loadBoxQuotationUOM($(row.querySelector('.table-row-uom')), dataRow.unit_of_measure);
-            $(row.querySelector('.table-row-tax')).empty();
-            QuotationLoadDataHandle.loadBoxQuotationTax($(row.querySelector('.table-row-tax')), dataRow.tax);
         }
         return true;
     };

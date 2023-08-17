@@ -339,6 +339,10 @@ class POLoadDataHandle {
             }
         }
         $('#purchase_requests_data').val(JSON.stringify(purchase_requests_data));
+        let eleMergeProduct = $('#merge-same-product');
+        if (eleMergeProduct[0].checked === true) {
+            eleMergeProduct.click();
+        }
         return true;
     };
 
@@ -542,13 +546,8 @@ class POLoadDataHandle {
         let self = this;
         // mask money
         $.fn.initMaskMoney2();
-        if (table_id === 'datable-purchase-order-product-add') {
-            self.loadBoxProduct($(row.querySelector('.table-row-item')));
-            self.loadBoxUOM($(row.querySelector('.table-row-uom-order-actual')));
-        } else if (table_id === 'datable-purchase-order-product-request') {
-            self.loadMoreInformation($(row.querySelector('.table-row-item')), true);
-            self.loadBoxUOM($(row.querySelector('.table-row-uom-order-actual')));
-        }
+        self.loadBoxProduct($(row.querySelector('.table-row-item')));
+        self.loadBoxUOM($(row.querySelector('.table-row-uom-order-actual')));
         self.loadBoxTax($(row.querySelector('.table-row-tax')));
     };
 
@@ -594,13 +593,10 @@ class POLoadDataHandle {
                                 let row = this.node();
                                 let priceListData = dataProduct[row.querySelector('.table-row-item').id];
                                 let elePrice = row.querySelector('.table-row-price');
-                                let elePriceShow = row.querySelector('.table-row-price-show');
                                 let elePriceList = row.querySelector('.table-row-price-list');
                                 if (priceListData) {
-                                    row.querySelector('.table-row-price-show-area').removeAttribute('hidden');
-                                    elePrice.setAttribute('hidden', 'true');
+                                    elePrice.setAttribute('disabled', 'true');
                                     $(elePrice).attr('value', String(0));
-                                    $(elePriceShow).attr('data-init-money', String(0));
                                     if (elePriceList) {
                                         $(elePriceList).empty();
                                         for (let price of priceListData) {
@@ -622,7 +618,6 @@ class POLoadDataHandle {
                                                                     </div>
                                                                 </div>`;
                                                 $(elePrice).attr('value', String(parseFloat(price.unit_price)));
-                                                $(elePriceShow).attr('data-init-money', String(parseFloat(price.unit_price)));
 
                                             }
                                             $(elePriceList).append(priceAppend);
@@ -1021,46 +1016,46 @@ class PODataTableHandle {
             ordering: false,
             info: false,
             columnDefs: [
-                // {
-                //     "width": "1%",
-                //     "targets": 0
-                // },
-                // {
-                //     "width": "10%",
-                //     "targets": 1
-                // },
-                // {
-                //     "width": "5%",
-                //     "targets": 2
-                // },
-                // {
-                //     "width": "5%",
-                //     "targets": 3
-                // },
-                // {
-                //     "width": "5%",
-                //     "targets": 4,
-                // },
-                // {
-                //     "width": "10%",
-                //     "targets": 5,
-                // },
-                // {
-                //     "width": "2%",
-                //     "targets": 6,
-                // },
-                // {
-                //     "width": "20%",
-                //     "targets": 7,
-                // },
-                // {
-                //     "width": "20%",
-                //     "targets": 8,
-                // },
-                // {
-                //     "width": "20%",
-                //     "targets": 9,
-                // }
+                {
+                    "width": "1%",
+                    "targets": 0
+                },
+                {
+                    "width": "10%",
+                    "targets": 1
+                },
+                {
+                    "width": "5%",
+                    "targets": 2
+                },
+                {
+                    "width": "5%",
+                    "targets": 3
+                },
+                {
+                    "width": "5%",
+                    "targets": 4,
+                },
+                {
+                    "width": "5%",
+                    "targets": 5,
+                },
+                {
+                    "width": "2%",
+                    "targets": 6,
+                },
+                {
+                    "width": "25%",
+                    "targets": 7,
+                },
+                {
+                    "width": "20%",
+                    "targets": 8,
+                },
+                {
+                    "width": "20%",
+                    "targets": 9,
+                }
             ],
             columns: [
                 {
@@ -1072,23 +1067,36 @@ class PODataTableHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        let dataStr = JSON.stringify(row.product).replace(/"/g, "&quot;");
-                        let purchase_request_product_datas = JSON.stringify(row.purchase_request_product_datas).replace(/"/g, "&quot;");
-                        return `<div class="row more-information-group" style="display: inline-block">
-                                    <div class="btn-group dropstart w-5">
-                                        <i
-                                            class="fas fa-info-circle more-information"
-                                            data-bs-toggle="dropdown"
-                                            data-dropdown-animation
-                                            aria-haspopup="true"
-                                            aria-expanded="false"
-                                            disabled
-                                        >
-                                        </i>
-                                        <div class="dropdown-menu w-210p mt-4"></div>
+                        return `<div class="row more-information-group">
+                                    <div class="input-group">
+                                        <span class="input-affix-wrapper">
+                                            <span class="input-prefix">
+                                                <div class="btn-group dropstart">
+                                                    <i
+                                                        class="fas fa-info-circle more-information"
+                                                        data-bs-toggle="dropdown"
+                                                        data-dropdown-animation
+                                                        aria-haspopup="true"
+                                                        aria-expanded="false"
+                                                        disabled
+                                                    >
+                                                    </i>
+                                                    <div class="dropdown-menu w-210p mt-4"></div>
+                                                </div>
+                                            </span>
+                                            <select
+                                                class="form-select table-row-item"
+                                                data-url="${PODataTableHandle.productInitEle.attr('data-url')}"
+                                                data-link-detail="${PODataTableHandle.productInitEle.attr('data-link-detail')}"
+                                                data-method="${PODataTableHandle.productInitEle.attr('data-method')}"
+                                                data-keyResp="product_sale_list"
+                                                required
+                                                disabled
+                                            >
+                                            </select>
+                                        </span>
                                     </div>
-                                    <span class="table-row-item" id="${row.product.id}" data-purchase-request-product-datas="${purchase_request_product_datas}">${row.product_title}<input type="hidden" class="data-info" value="${dataStr}"></span>
-                            </div>`
+                                </div>`;
                     },
                 },
                 // {
@@ -1143,26 +1151,22 @@ class PODataTableHandle {
                     targets: 7,
                     render: (data, type, row) => {
                         return `<div class="row">
-                                    <div class="row table-row-price-show-area inline-elements" hidden>
-                                        <span class="mask-money mr-4 table-row-price-show" data-init-money="${parseFloat(row.product_unit_price)}"></span>
-                                        <button 
-                                            aria-expanded="false"
-                                            data-bs-toggle="dropdown"
-                                            class="btn btn-link btn-sm w-10"
-                                            type="button"
-                                            style="margin-left: -40px"
-                                        >
-                                        <i class="fas fa-angle-down"></i>
-                                        </button>
-                                        <div role="menu" class="dropdown-menu dropdown-bordered table-row-price-list w-460p"></div>
-                                    </div>
-                                    <input 
-                                        type="text" 
-                                        class="form-control mask-money table-row-price" 
-                                        value="${row.product_unit_price}"
-                                        data-return-type="number"
-                                    >
-                                </div>`;
+                                    <div class="dropdown">
+                                        <div class="input-group dropdown-action input-group-price" aria-expanded="false" data-bs-toggle="dropdown">
+                                        <span class="input-affix-wrapper">
+                                            <input 
+                                                type="text" 
+                                                class="form-control mask-money table-row-price" 
+                                                value="${row.product_unit_price}"
+                                                data-return-type="number"
+                                            >
+                                            <span class="input-suffix table-row-btn-dropdown-price-list"><i class="fas fa-angle-down"></i></span>
+                                        </span>
+                                        </div>
+                                        <div role="menu" class="dropdown-menu table-row-price-list w-460p">
+                                        <a class="dropdown-item" data-value=""></a>
+                                        </div>
+                                    </div>`;
                     }
                 },
                 {

@@ -517,7 +517,8 @@ $(function () {
                         valueQuantity = parseFloat(row.querySelector('.table-row-quantity').value);
                         let elePrice = row.querySelector('.table-row-price');
                         if (elePrice) {
-                            valuePrice = $(elePrice).valCurrency();
+                            // valuePrice = $(elePrice).valCurrency();
+                            valuePrice = 0;
                         }
                         valueSubtotal = parseFloat(row.querySelector('.table-row-subtotal-raw').value);
                         valueOrder++

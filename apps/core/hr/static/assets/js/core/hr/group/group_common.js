@@ -33,7 +33,6 @@ class GroupLoadDataHandle {
                             GroupLoadDataHandle.loadGroupParentList(groupData?.['parent_n']);
                             GroupLoadDataHandle.loadFirstManagerList(groupData?.['first_manager']);
                             GroupLoadDataHandle.loadSecondManagerList(groupData?.['second_manager']);
-                            dataTableEmployee();
                             dataTableEmployeeShow();
                             $('#datable_employee_show_list').DataTable().rows.add(groupData?.['group_employee']).draw();
                             let emp_id_list = [];
@@ -41,6 +40,7 @@ class GroupLoadDataHandle {
                                 emp_id_list.push(emp.id);
                             }
                             $('#data-group_employee').val(JSON.stringify(emp_id_list));
+                            dataTableEmployee();
                         }
                     }
                 }
@@ -213,7 +213,9 @@ function dataTableEmployee() {
                 targets: 6,
                 render: (data, type, row) => {
                     let role = JSON.stringify(row.role).replace(/"/g, "&quot;");
-                    return `<div class="form-check">
+                    let employee_id_checked_list = JSON.parse($('#data-group_employee').val());
+                    if (!employee_id_checked_list.includes(row.id)) {
+                        return `<div class="form-check">
                                 <input 
                                     type="checkbox" 
                                     class="form-check-input table-row-checkbox" 
@@ -222,6 +224,18 @@ function dataTableEmployee() {
                                     data-role="${role}"
                                 >
                             </div>`
+                    } else {
+                        return `<div class="form-check">
+                                <input 
+                                    type="checkbox" 
+                                    class="form-check-input table-row-checkbox" 
+                                    id="${row.id}"
+                                    data-title="${row.full_name}"
+                                    data-role="${role}"
+                                    checked
+                                >
+                            </div>`
+                    }
                 }
             },
         ],

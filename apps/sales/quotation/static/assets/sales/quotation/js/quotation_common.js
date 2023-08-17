@@ -776,9 +776,9 @@ class QuotationLoadDataHandle {
             costs_data = data.sale_order_costs_data;
             expenses_data = data.sale_order_expenses_data;
         }
-        tableProduct.DataTable().clear();
-        tableCost.DataTable().clear();
-        tableExpense.DataTable().clear();
+        tableProduct.DataTable().clear().draw();
+        tableCost.DataTable().clear().draw();
+        tableExpense.DataTable().clear().draw();
         tableProduct.DataTable().rows.add(products_data).draw();
         tableCost.DataTable().rows.add(costs_data).draw();
         tableExpense.DataTable().rows.add(expenses_data).draw();
@@ -2979,7 +2979,7 @@ function deleteRow(currentRow, tableBody, table) {
 function reOrderSTT(tableBody, table) {
     let order = 0;
     if (tableBody.rows.length === 0) {
-        table.DataTable().clear();
+        table.DataTable().clear().draw();
     } else {
         for (let idx = 0; idx < tableBody.rows.length; idx++) {
             order++;

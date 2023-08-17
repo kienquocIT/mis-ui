@@ -227,7 +227,7 @@ class POLoadDataHandle {
         return true;
     };
 
-    static loadModalPurchaseRequestProductTable(is_clear_all = false, is_click = false) {
+    static loadModalPurchaseRequestProductTable(is_clear_all = false, is_trigger_click = false) {
         let tablePurchaseRequest = $('#datable-purchase-request');
         let tablePurchaseRequestProduct = $('#datable-purchase-request-product');
         let frm = new SetupFormSubmit(tablePurchaseRequestProduct);
@@ -250,7 +250,7 @@ class POLoadDataHandle {
                 };
             }
         }
-        tablePurchaseRequestProduct.DataTable().clear();
+        tablePurchaseRequestProduct.DataTable().clear().draw();
         if (request_id_list.length > 0) {
             $.fn.callAjax2({
                     'url': frm.dataUrl,
@@ -272,7 +272,7 @@ class POLoadDataHandle {
                                 }
                             }
                             tablePurchaseRequestProduct.DataTable().rows.add(data.purchase_request_product_list).draw();
-                            if (is_click === true) {
+                            if (is_trigger_click === true) {
                                 $('#btn-confirm-add-purchase-request').click();
                             }
                         }
@@ -302,7 +302,7 @@ class POLoadDataHandle {
 
     static loadDataMergeProductTable() {
         let tableMerged = $('#datable-purchase-request-product-merge');
-        tableMerged.DataTable().clear();
+        tableMerged.DataTable().clear().draw();
         let data = setupMergeProduct();
         tableMerged.DataTable().rows.add(data).draw();
         return true;
@@ -479,11 +479,11 @@ class POLoadDataHandle {
             $('#datable-purchase-order-product-request_wrapper')[0].removeAttribute('hidden');
         }
         if (data.length > 0) {
-            tablePurchaseOrderProductRequest.DataTable().clear();
+            tablePurchaseOrderProductRequest.DataTable().clear().draw();
             tablePurchaseOrderProductRequest.DataTable().rows.add(data).draw();
             self.loadDataRowTable(tablePurchaseOrderProductRequest);
         } else {
-            tablePurchaseOrderProductRequest.DataTable().clear();
+            tablePurchaseOrderProductRequest.DataTable().clear().draw();
         }
         return true;
     };
@@ -522,7 +522,7 @@ class POLoadDataHandle {
             tablePurchaseOrderProductAdd[0].removeAttribute('hidden');
             $('#datable-purchase-order-product-add_wrapper')[0].removeAttribute('hidden');
         }
-        tablePurchaseOrderProductRequest.DataTable().clear();
+        tablePurchaseOrderProductRequest.DataTable().clear().draw();
         let newRow = tablePurchaseOrderProductAdd.DataTable().row.add(data).draw().node();
         self.loadDataRow(newRow, 'datable-purchase-order-product-add');
         return true;

@@ -78,7 +78,7 @@ $(function () {
         // Checkbox all
         $('#table-purchase-request-checkbox-all').on('click', function() {
             clickCheckBoxAll($(this), tablePurchaseRequest);
-            POLoadDataHandle.loadModalPurchaseRequestProductTable();
+            POLoadDataHandle.loadModalPurchaseRequestProductTable(true);
         });
 
         // Action on click .table-row-checkbox of tablePurchaseRequest

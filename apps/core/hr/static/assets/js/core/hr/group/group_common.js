@@ -126,7 +126,7 @@ class GroupLoadDataHandle {
             });
         }
         $('#data-group_employee').val(JSON.stringify(checked_id_list));
-        tableShow.DataTable().clear();
+        tableShow.DataTable().clear().draw();
         tableShow.DataTable().rows.add(data_emp_show).draw();
     }
 

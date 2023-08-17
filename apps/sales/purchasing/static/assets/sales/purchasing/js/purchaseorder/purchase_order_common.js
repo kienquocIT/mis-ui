@@ -91,48 +91,48 @@ class POLoadDataHandle {
     }
 
     static loadDataProductSelect(ele, is_change_item = true) {
-        let self = this;
-        let optionSelected = ele[0].options[ele[0].selectedIndex];
-        let productData = optionSelected.querySelector('.data-default');
-        if (productData) {
-            let data = JSON.parse(productData.value);
-            let uom = ele[0].closest('tr').querySelector('.table-row-uom-order');
-            let price = ele[0].closest('tr').querySelector('.table-row-price');
-            let priceList = ele[0].closest('tr').querySelector('.table-row-price-list');
-            let tax = ele[0].closest('tr').querySelector('.table-row-tax');
-            // load UOM
-            if (uom && Object.keys(data.unit_of_measure).length !== 0 && Object.keys(data.uom_group).length !== 0) {
-                self.loadBoxUOM(uom.id, data.unit_of_measure.id, data.uom_group.id);
-            } else {
-                self.loadBoxUOM(uom.id);
+        if (ele.val()) {
+            let data = SelectDDControl.get_data_from_idx(ele, ele.val());
+            if (data) {
+                data['unit_of_measure'] = data?.['sale_information']?.['default_uom'];
+                data['uom_group'] = data?.['general_information']?.['uom_group'];
+                data['tax'] = data?.['sale_information']?.['tax_code'];
+                let uom = ele[0].closest('tr').querySelector('.table-row-uom-order-actual');
+                let price = ele[0].closest('tr').querySelector('.table-row-price');
+                let priceList = ele[0].closest('tr').querySelector('.table-row-price-list');
+                let tax = ele[0].closest('tr').querySelector('.table-row-tax');
+                // load UOM
+                if (uom && Object.keys(data.unit_of_measure).length !== 0 && Object.keys(data.uom_group).length !== 0) {
+                    POLoadDataHandle.loadBoxUOM($(uom), data.unit_of_measure, data.uom_group.id);
+                } else {
+                    POLoadDataHandle.loadBoxUOM($(uom));
+                }
+                // load PRICE
+                if (price && priceList) {
+                    POLoadDataHandle.loadPriceProduct(ele[0], is_change_item);
+                }
+                // load TAX
+                if (tax && data.tax) {
+                    POLoadDataHandle.loadBoxTax($(tax), data.tax);
+                } else {
+                    POLoadDataHandle.loadBoxTax($(tax));
+                }
+                // load modal more information
+                POLoadDataHandle.loadMoreInformation(ele);
             }
-            // load PRICE
-            if (price && priceList) {
-                self.loadPriceProduct(ele[0], is_change_item);
-            }
-            // load TAX
-            if (tax && data.tax) {
-                self.loadBoxTax(tax.id, data.tax.id);
-            } else {
-                self.loadBoxTax(tax.id);
-            }
-            // load modal more information
-            self.loadMoreInformation(ele);
+            $.fn.initMaskMoney2();
         }
-        $.fn.initMaskMoney2();
     };
 
     static loadPriceProduct(eleProduct, is_change_item = true) {
-        let optionSelected = eleProduct.options[eleProduct.selectedIndex];
-        let productData = optionSelected.querySelector('.data-default');
+        let data = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
         let is_change_price = false;
-        if (productData) {
-            let data = JSON.parse(productData.value);
+        if (data) {
             let price = eleProduct.closest('tr').querySelector('.table-row-price');
             let priceList = eleProduct.closest('tr').querySelector('.table-row-price-list');
             // load PRICE
             if (price && priceList) {
-                let account_price_id = document.getElementById('customer-price-list').value;
+                let account_price_id = document.getElementById('customer-price-list')?.value;
                 let general_price_id = null;
                 let general_price = 0;
                 let customer_price = null;
@@ -140,7 +140,7 @@ class POLoadDataHandle {
                 $(priceList).empty();
                 if (Array.isArray(data.price_list) && data.price_list.length > 0) {
                     for (let i = 0; i < data.price_list.length; i++) {
-                        if (data.price_list[i].price_type === 1) { // PRICE TYPE IS PRODUCT (PURCHASE)
+                        if (data.price_list[i]?.['price_type'] === 1) { // PRICE TYPE IS PRODUCT (PURCHASE)
                             if (data.price_list[i].is_default === true) { // check & append GENERAL_PRICE_LIST
                                 general_price_id = data.price_list[i].id;
                                 general_price = parseFloat(data.price_list[i].value);
@@ -148,19 +148,19 @@ class POLoadDataHandle {
                                                     <div class="row">
                                                         <div class="col-5"><span>${data.price_list[i].title}</span></div>
                                                         <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
-                                                        <div class="col-2"><span class="valid-price">${data.price_list[i].price_status}</span></div>
+                                                        <div class="col-2"><span class="valid-price">${data.price_list[i]?.['price_status']}</span></div>
                                                     </div>
                                                 </button>`);
                             }
                             if (data.price_list[i].id === account_price_id && general_price_id !== account_price_id) { // check & append CUSTOMER_PRICE_LIST
-                                if (!["Expired", "Invalid"].includes(data.price_list[i].price_status)) { // Customer price valid
+                                if (!["Expired", "Invalid"].includes(data.price_list[i]?.['price_status'])) { // Customer price valid
                                     customer_price = parseFloat(data.price_list[i].value);
                                     $(priceList).empty();
                                     $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option option-btn-checked" data-value="${parseFloat(data.price_list[i].value)}">
                                                         <div class="row">
                                                             <div class="col-5"><span>${data.price_list[i].title}</span></div>
                                                             <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
-                                                            <div class="col-2"><span class="valid-price">${data.price_list[i].price_status}</span></div>
+                                                            <div class="col-2"><span class="valid-price">${data.price_list[i]?.['price_status']}</span></div>
                                                         </div>
                                                     </button>`);
                                 } else { // Customer price invalid, expired
@@ -168,7 +168,7 @@ class POLoadDataHandle {
                                                         <div class="row">
                                                             <div class="col-5"><span>${data.price_list[i].title}</span></div>
                                                             <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
-                                                            <div class="col-2"><span class="expired-price">${data.price_list[i].price_status}</span></div>
+                                                            <div class="col-2"><span class="expired-price">${data.price_list[i]?.['price_status']}</span></div>
                                                         </div>
                                                     </button>`);
                                 }
@@ -198,9 +198,10 @@ class POLoadDataHandle {
         }
     };
 
-    static loadBoxUOM(ele, dataUOM = {}) {
+    static loadBoxUOM(ele, dataUOM = {}, uom_group_id = null) {
         ele.initSelect2({
             data: dataUOM,
+            'dataParams': {'group': uom_group_id},
             disabled: !(ele.attr('data-url')),
         });
     }
@@ -226,7 +227,7 @@ class POLoadDataHandle {
         return true;
     };
 
-    static loadModalPurchaseRequestProductTable(is_clear_all = false, is_click = false) {
+    static loadModalPurchaseRequestProductTable(is_clear_all = false, is_trigger_click = false) {
         let tablePurchaseRequest = $('#datable-purchase-request');
         let tablePurchaseRequestProduct = $('#datable-purchase-request-product');
         let frm = new SetupFormSubmit(tablePurchaseRequestProduct);
@@ -249,8 +250,7 @@ class POLoadDataHandle {
                 };
             }
         }
-        tablePurchaseRequestProduct.DataTable().clear().destroy();
-        PODataTableHandle.dataTablePurchaseRequestProduct();
+        tablePurchaseRequestProduct.DataTable().clear().draw();
         if (request_id_list.length > 0) {
             $.fn.callAjax2({
                     'url': frm.dataUrl,
@@ -271,10 +271,8 @@ class POLoadDataHandle {
                                     }
                                 }
                             }
-                            tablePurchaseRequestProduct.DataTable().clear().destroy();
-                            PODataTableHandle.dataTablePurchaseRequestProduct();
                             tablePurchaseRequestProduct.DataTable().rows.add(data.purchase_request_product_list).draw();
-                            if (is_click === true) {
+                            if (is_trigger_click === true) {
                                 $('#btn-confirm-add-purchase-request').click();
                             }
                         }
@@ -286,23 +284,27 @@ class POLoadDataHandle {
     };
 
     static loadOrHiddenMergeProductTable() {
-        let self = this;
         let eleCheckbox = $('#merge-same-product');
         if (eleCheckbox[0].checked === true) {
-            $('#sroll-datable-purchase-request-product')[0].setAttribute('hidden', 'true');
-            $('#sroll-datable-purchase-request-product-merge')[0].removeAttribute('hidden');
-            self.loadDataMergeProductTable();
+            $('#datable-purchase-request-product')[0].setAttribute('hidden', 'true');
+            $('#datable-purchase-request-product_wrapper')[0].setAttribute('hidden', 'true');
+            $('#datable-purchase-request-product-merge')[0].removeAttribute('hidden');
+            $('#datable-purchase-request-product-merge_wrapper')[0].removeAttribute('hidden');
+            POLoadDataHandle.loadDataMergeProductTable();
         } else {
-            $('#sroll-datable-purchase-request-product-merge')[0].setAttribute('hidden', 'true');
-            $('#sroll-datable-purchase-request-product')[0].removeAttribute('hidden');
+            $('#datable-purchase-request-product-merge')[0].setAttribute('hidden', 'true');
+            $('#datable-purchase-request-product-merge_wrapper')[0].setAttribute('hidden', 'true');
+            $('#datable-purchase-request-product')[0].removeAttribute('hidden');
+            $('#datable-purchase-request-product_wrapper')[0].removeAttribute('hidden');
         }
         return true;
     };
 
     static loadDataMergeProductTable() {
-        $('#datable-purchase-request-product-merge').DataTable().destroy();
+        let tableMerged = $('#datable-purchase-request-product-merge');
+        tableMerged.DataTable().clear().draw();
         let data = setupMergeProduct();
-        PODataTableHandle.dataTablePurchaseRequestProductMerge(data);
+        tableMerged.DataTable().rows.add(data).draw();
         return true;
     };
 
@@ -477,11 +479,11 @@ class POLoadDataHandle {
             $('#datable-purchase-order-product-request_wrapper')[0].removeAttribute('hidden');
         }
         if (data.length > 0) {
-            tablePurchaseOrderProductRequest.DataTable().clear();
+            tablePurchaseOrderProductRequest.DataTable().clear().draw();
             tablePurchaseOrderProductRequest.DataTable().rows.add(data).draw();
             self.loadDataRowTable(tablePurchaseOrderProductRequest);
         } else {
-            tablePurchaseOrderProductRequest.DataTable().clear();
+            tablePurchaseOrderProductRequest.DataTable().clear().draw();
         }
         return true;
     };
@@ -520,7 +522,7 @@ class POLoadDataHandle {
             tablePurchaseOrderProductAdd[0].removeAttribute('hidden');
             $('#datable-purchase-order-product-add_wrapper')[0].removeAttribute('hidden');
         }
-        tablePurchaseOrderProductRequest.DataTable().clear();
+        tablePurchaseOrderProductRequest.DataTable().clear().draw();
         let newRow = tablePurchaseOrderProductAdd.DataTable().row.add(data).draw().node();
         self.loadDataRow(newRow, 'datable-purchase-order-product-add');
         return true;
@@ -689,7 +691,7 @@ class POLoadDataHandle {
         // Load again data & events relate with Purchase Request
         $('#purchase-order-purchase-request').empty();
         self.loadModalPurchaseRequestTable(is_clear_all);
-        $('#table-purchase-reqeust-checkbox-all')[0].checked = false;
+        $('#table-purchase-request-checkbox-all')[0].checked = false;
         self.loadModalPurchaseRequestProductTable(is_clear_all, true);
         // Load again data & events relate with Purchase Quotation
         $('#purchase-order-purchase-quotation').empty();
@@ -809,8 +811,8 @@ class PODataTableHandle {
                     targets: 1,
                     render: (data, type, row) => {
                         let purchase_request_id = "";
-                        if (Object.keys(row.purchase_request).length !== 0) {
-                            purchase_request_id = row.purchase_request.id;
+                        if (Object.keys(row?.['purchase_request']).length !== 0) {
+                            purchase_request_id = row?.['purchase_request']?.['id'];
                         }
                         if (!row.hasOwnProperty('is_checked')) {
                             return `<div class="form-check">
@@ -819,7 +821,7 @@ class PODataTableHandle {
                                         class="form-check-input table-row-checkbox" 
                                         id="${row.id}" 
                                         data-purchase-request-id="${purchase_request_id}"
-                                        data-sale-order-product-id="${row.sale_order_product_id}"
+                                        data-sale-order-product-id="${row?.['sale_order_product_id']}"
                                     >
                                 </div>`
                         } else {
@@ -829,7 +831,7 @@ class PODataTableHandle {
                                         class="form-check-input table-row-checkbox" 
                                         id="${row.id}" 
                                         data-purchase-request-id="${purchase_request_id}"
-                                        data-sale-order-product-id="${row.sale_order_product_id}"
+                                        data-sale-order-product-id="${row?.['sale_order_product_id']}"
                                         checked
                                     >
                                 </div>`
@@ -846,7 +848,7 @@ class PODataTableHandle {
                 {
                     targets: 3,
                     render: (data, type, row) => {
-                        return `<span class="table-row-code">${row.purchase_request.code}</span>`
+                        return `<span class="table-row-code">${row?.['purchase_request']?.['code']}</span>`
                     }
                 },
                 {
@@ -864,7 +866,7 @@ class PODataTableHandle {
                 {
                     targets: 6,
                     render: (data, type, row) => {
-                        return `<span class="table-row-remain">${row.remain_for_purchase_order}</span>`
+                        return `<span class="table-row-remain">${row?.['remain_for_purchase_order']}</span>`
                     }
                 },
                 {
@@ -1116,7 +1118,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 5,
-                    render: (data, type, row) => {
+                    render: () => {
                         return `<div class="row">
                                     <select 
                                         class="form-control table-row-uom-order-actual"
@@ -1262,7 +1264,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 1,
-                    render: (data, type, row) => {
+                    render: () => {
                             return `<div class="row more-information-group">
                                         <div class="input-group">
                                             <span class="input-affix-wrapper">
@@ -1304,7 +1306,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 3,
-                    render: (data, type, row) => {
+                    render: () => {
                         return `<div class="row">
                                     <select 
                                         class="form-control table-row-uom-order-actual"
@@ -1351,12 +1353,6 @@ class PODataTableHandle {
                 {
                     targets: 6,
                     render: (data, type, row) => {
-                        let taxID = "";
-                        let taxRate = "0";
-                        if (row.tax) {
-                            taxID = row.tax.id;
-                            taxRate = row.tax.value;
-                        }
                         return `<div class="row">
                                 <select 
                                     class="form-control table-row-tax"

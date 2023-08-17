@@ -267,6 +267,10 @@ class LogController {
         // reset style
         this.setStyleBoxLog();
 
+        // reset title display
+        let txtTitle = $("#txtDocTitleHistory");
+        txtTitle.text("");
+
         // log runtime
         if (this.logUrl && (!this.groupLogEle.attr('data-log-runtime-loaded') || forceLoad === true)) {
             WindowControl.showLoadingWaitResponse(this.blockDataRuntime);
@@ -289,10 +293,16 @@ class LogController {
                             this.groupLogEle.attr('data-log-runtime-loaded', true);
                             let data = $.fn.switcherResp(resp);
                             if (data && $.fn.hasOwnProperties(data, ['diagram_data'])) {
-                                let diagram_data = data['diagram_data'];
-                                let stages = diagram_data['stages'];
-                                this.blockDataRuntime.html(this.parseLogOfDoc(stages)).removeClass('hidden');
-                                WindowControl.hideLoadingWaitResponse(this.blockDataRuntime);
+                                let diagram_data = data?.['diagram_data'];
+                                if (diagram_data){
+                                    let docTitle = diagram_data?.['doc_title'] || '';
+                                    let stages = diagram_data?.['stages'] || [];
+                                    txtTitle.text(docTitle ? docTitle : '').closest('.ntt-drawer-title-text').removeClass('hidden');
+                                    this.blockDataRuntime.html(
+                                        this.parseLogOfDoc(stages)
+                                    ).removeClass('hidden');
+                                    WindowControl.hideLoadingWaitResponse(this.blockDataRuntime);
+                                }
                             }
                         });
                     }
@@ -316,6 +326,7 @@ class LogController {
                     let data = $.fn.switcherResp(resp);
                     if (data && data['status'] === 200 && data.hasOwnProperty('log_data')) {
                         this.blockDataActivities.append(this.parseLogActivities(data['log_data']));
+                    } else {
                         WindowControl.hideLoadingWaitResponse(this.blockDataActivities);
                     }
                 }, (errs) => {
@@ -2046,7 +2057,7 @@ class DTBControl {
         } else {
             if (this.opts?.['ajax']) {
                 // has ajax , remove data
-                if (this.opts.hasOwnProperty('data'))  delete this.opts['data'];
+                if (this.opts.hasOwnProperty('data')) delete this.opts['data'];
             } else {
                 // hasn't ajax, add data empty
                 if (!this.opts.hasOwnProperty('data')) this.opts['data'] = [];
@@ -2124,11 +2135,11 @@ class DTBControl {
 
     get callbackRenderIdx() {
         let clsThis = this;
-        // row callback |  rowIdx = true
         let rowIdx = this.opts?.['rowIdx'];
         if (rowIdx === true) {
-            return function (pageInfo, row, data, index) {
-                let counter = pageInfo.start + index + 1;
+            return function (row, data, displayNum, displayIndex, dataIndex) {
+                let pageInfo = $(clsThis.dtb$).DataTable().page.info();
+                let counter = pageInfo.start + displayNum + 1;
                 let htmlDisplay = `${counter}`;
                 let callbackGetLinkBlank = clsThis.callbackGetLinkBlank;
                 let urlTargetHTML = callbackGetLinkBlank ? callbackGetLinkBlank(data) : null;
@@ -2144,7 +2155,7 @@ class DTBControl {
                 $('td:eq(0)', row).html(htmlDisplay);
             }
         }
-        return function (pageInfo, row, data, index) {
+        return function (row, data, displayNum, displayIndex, dataIndex) {
         };
     }
 
@@ -2168,31 +2179,30 @@ class DTBControl {
     }
 
     get mergeRowCallback() {
-        let clsThis = this;
-        let rowCallbackManual = this.opts?.['rowCallback'] || function (row, data, index) {
+        let rowCallbackManual = this.opts?.['rowCallback'] || function (row, data, displayNum, displayIndex, dataIndex) {
         };
-        return function (row, data, index) {
-            rowCallbackManual(row, data, index);
-            let callbackRenderIdx = clsThis.callbackRenderIdx;
-            callbackRenderIdx($(this).DataTable().page.info(), row, data, index);
+        let callbackRenderIdx = this.callbackRenderIdx;
+        return function (row, data, displayNum, displayIndex, dataIndex) {
+            rowCallbackManual(row, data, dataIndex);
+            callbackRenderIdx(row, data, dataIndex);
         }
     }
 
     get mergeInitComplete() {
-        return function (settings) {
+        let initCompleteManual = this.opts?.['initComplete'] || function (settings, json) {
+        };
+        return function (settings, json) {
             $(this.api().table().container()).find('input').attr('autocomplete', 'off');
-
-            // show header select when options are in setup
+            initCompleteManual(settings, json);
             DTBControl.parseHeaderDropdownFilter(
                 (this.opts?.['columns'] || []), settings, this.api()
             );
-            // end if check searching column
         }
     }
 
-    get columns(){
+    get columns() {
         return (this.opts?.['columns'] || []).map(
-            (item)=>{
+            (item) => {
                 let clsNameTmp = item?.['className'] ? (item?.['className'] + ' wrap-text') : 'wrap-text';
                 return {
                     ...item,
@@ -2229,11 +2239,11 @@ class DTBControl {
                 [5, 10, 25, 50, -1], [5, 10, 25, 50, $.fn.transEle.attr('data-all')],
             ],
             pageLength: 5,
-            drawCallback: this.mergeDrawCallback,
-            initComplete: this.mergeInitComplete,
-            rowCallback: this.mergeRowCallback,
             ...domOpts,
             columns: this.columns,
+            rowCallback: this.mergeRowCallback,
+            drawCallback: this.mergeDrawCallback,
+            initComplete: this.mergeInitComplete,
         };
     }
 
@@ -2303,8 +2313,16 @@ class WindowControl {
         link.click();
     }
 
+    static getHashUrl(){
+        return location.hash;
+    }
+
     static pushHashUrl(idHash) {
         window.history.pushState(null, null, idHash.includes('#') ? idHash : '#' + idHash);
+    }
+
+    static removeHashUrl(){
+        window.history.replaceState(null, "", "#");
     }
 
     static redirectLogin(timeout = 0, location_to_next = true) {

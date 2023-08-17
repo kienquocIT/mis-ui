@@ -290,6 +290,7 @@ class HandlePermissions {
         let dtbEle = clsThis.tbl.DataTableDefault({
             rowIdx: true,
             data: permData,
+            autoWidth: false,
             columns: [
                 {
                     width: "5%",
@@ -297,8 +298,9 @@ class HandlePermissions {
                     render: (data, type, row) => {
                         return '';
                     }
-                }, {
-                    width: "15%",
+                },
+                {
+                    width: "20%",
                     className: "wrap-text",
                     render: (data, type, row) => {
                         let app_data = row['app_data'];
@@ -316,8 +318,9 @@ class HandlePermissions {
                             >
                         `;
                     }
-                }, {
-                    width: "15%",
+                },
+                {
+                    width: "10%",
                     render: (data, type, row) => {
                         let checkAll = "";
                         if (row['create'] === true && row['view'] === true && row['edit'] === true && row['delete'] === true) {
@@ -332,9 +335,10 @@ class HandlePermissions {
                             >
                         </div>`;
                     }
-                }, {
+                },
+                {
+                    width: "10%",
                     data: "create",
-                    width: "15%",
                     render: (data, type, row) => {
                         return `<div class="form-check form-switch">
                             <input 
@@ -347,9 +351,10 @@ class HandlePermissions {
                             />
                         </div>`;
                     }
-                }, {
+                },
+                {
+                    width: "10%",
                     data: "view",
-                    width: "15%",
                     render: (data, type, row) => {
                         return `<div class="form-check form-switch">
                             <input 
@@ -361,9 +366,10 @@ class HandlePermissions {
                             />
                         </div>`;
                     }
-                }, {
+                },
+                {
+                    width: "10%",
                     data: "edit",
-                    width: "15%",
                     render: (data, type, row) => {
                         return `<div class="form-check form-switch">
                             <input 
@@ -375,9 +381,10 @@ class HandlePermissions {
                             />
                         </div>`;
                     }
-                }, {
+                },
+                {
+                    width: "10%",
                     data: "delete",
-                    width: "15%",
                     render: (data, type, row) => {
                         return `<div class="form-check form-switch">
                             <input 
@@ -389,9 +396,10 @@ class HandlePermissions {
                             />
                         </div>`;
                     }
-                }, {
+                },
+                {
+                    width: "20%",
                     data: "range",
-                    width: "15%",
                     render: (data, type, row) => {
                         let arrValueAllowed = HandlePermissions.returnValueAllowRange(row['app_data']['option_permission'], row['app_data']['range_allow']);
                         if (clsThis.enableChange === true) {
@@ -419,7 +427,8 @@ class HandlePermissions {
                             return `<span class="badge badge-soft-light">${textShow ? textShow : "_"}</span>`
                         }
                     }
-                }, {
+                },
+                {
                     width: "5%",
                     className: "wrap-text",
                     render: (data, type, row) => {

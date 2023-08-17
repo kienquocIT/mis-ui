@@ -112,10 +112,10 @@ $(function () {
                     QuotationLoadDataHandle.loadBoxQuotationContact(dataSelected.owner, dataSelected.id);
                     // load Payment Term by Customer
                     boxPayment.empty();
-                    QuotationLoadDataHandle.loadBoxQuotationPaymentTerm(dataSelected.payment_term_mapped);
+                    QuotationLoadDataHandle.loadBoxQuotationPaymentTerm(dataSelected?.['payment_term_mapped']);
                     // Store Account Price List
-                    if (Object.keys(dataSelected.price_list_mapped).length !== 0) {
-                        document.getElementById('customer-price-list').value = dataSelected.price_list_mapped.id;
+                    if (Object.keys(dataSelected?.['price_list_mapped']).length !== 0) {
+                        document.getElementById('customer-price-list').value = dataSelected?.['price_list_mapped'].id;
                     }
                     // Load again dropdown sale_person only valueSelected
                     QuotationLoadDataHandle.loadBoxQuotationSalePerson($('#select-box-quotation-create-sale-person').val());
@@ -755,7 +755,7 @@ $(function () {
             }
             if (type === 'copy-from') { // COPY FROM (SALE ORDER CREATE -> CHOOSE QUOTATION)
                 // Begin load data copy FROM
-                document.getElementById('customer-price-list').value = dataCopy.customer.customer_price_list;
+                document.getElementById('customer-price-list').value = dataCopy.customer?.['customer_price_list'];
                 QuotationLoadDataHandle.loadDetailQuotation(dataCopy, true);
                 QuotationLoadDataHandle.loadDataTablesAndDropDowns(dataCopy);
 
@@ -811,7 +811,7 @@ $(function () {
                         dataCopy['quotation_costs_data'] = [];
                     }
                     // Begin load data copy TO
-                    document.getElementById('customer-price-list').value = dataCopy.customer.customer_price_list;
+                    document.getElementById('customer-price-list').value = dataCopy.customer?.['customer_price_list'];
                     QuotationLoadDataHandle.loadDataTablesAndDropDowns(dataCopy);
                 }
             }

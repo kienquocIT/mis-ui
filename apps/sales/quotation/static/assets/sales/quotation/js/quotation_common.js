@@ -348,15 +348,15 @@ class QuotationLoadDataHandle {
                                     let default_uom = {};
                                     let uom_group = {};
                                     let tax_code = {};
-                                    if (Object.keys(data[i].sale_information).length !== 0) {
-                                        if (Object.keys(data[i].sale_information.default_uom).length !== 0) {
-                                            uom_title = data[i].sale_information.default_uom.title
+                                    if (Object.keys(data[i]?.['sale_information']).length !== 0) {
+                                        if (Object.keys(data[i]?.['sale_information']?.['default_uom']).length !== 0) {
+                                            uom_title = data[i]?.['sale_information']?.['default_uom']?.['title']
                                         }
-                                        default_uom = data[i].sale_information.default_uom;
-                                        tax_code = data[i].sale_information.tax_code;
+                                        default_uom = data[i]?.['sale_information']?.['default_uom'];
+                                        tax_code = data[i]?.['sale_information']?.['tax_code'];
                                     }
-                                    if (Object.keys(data[i].general_information).length !== 0) {
-                                        uom_group = data[i].general_information.uom_group;
+                                    if (Object.keys(data[i]?.['sale_information']).length !== 0) {
+                                        uom_group = data[i]?.['sale_information']?.['uom_group'];
                                     }
                                     let dataStr = JSON.stringify({
                                         'id': data[i].id,
@@ -411,9 +411,9 @@ class QuotationLoadDataHandle {
         if (productData) {
             let data = productData;
             if (is_expense === false) {
-                data['unit_of_measure'] = data.sale_information.default_uom;
-                data['uom_group'] = data.general_information.uom_group;
-                data['tax'] = data.sale_information.tax_code;
+                data['unit_of_measure'] = data?.['sale_information']?.['default_uom'];
+                data['uom_group'] = data?.['general_information']?.['uom_group'];
+                data['tax'] = data?.['sale_information']?.['tax_code'];
             }
             if (is_expense === true) {
                 data = JSON.parse(productData.value);
@@ -641,16 +641,16 @@ class QuotationLoadDataHandle {
             }
         }
         if (data.opportunity) {
-            if (data.sale_person) {
-                self.loadBoxQuotationOpportunity(data.opportunity, data.sale_person.id, is_copy);
+            if (data?.['sale_person']) {
+                self.loadBoxQuotationOpportunity(data.opportunity, data?.['sale_person']?.['id'], is_copy);
             } else {
                 self.loadBoxQuotationOpportunity(data.opportunity, null, is_copy);
             }
         }
         if (data.customer) {
             data.customer['name'] = data.customer.title;
-            if (data.sale_person) {
-                self.loadBoxQuotationCustomer(data.customer, data.sale_person.id);
+            if (data?.['sale_person']) {
+                self.loadBoxQuotationCustomer(data.customer, data?.['sale_person']?.['id']);
             } else {
                 self.loadBoxQuotationCustomer(data.customer);
             }
@@ -659,14 +659,14 @@ class QuotationLoadDataHandle {
             data.contact['fullname'] = data.contact.title;
             self.loadBoxQuotationContact(data.contact, data.customer.id)
         }
-        if (data.sale_person) {
-            self.loadBoxQuotationSalePerson(data.sale_person)
+        if (data?.['sale_person']) {
+            self.loadBoxQuotationSalePerson(data?.['sale_person'])
         }
-        if (data.payment_term) {
-            self.loadBoxQuotationPaymentTerm(data.payment_term)
+        if (data?.['payment_term']) {
+            self.loadBoxQuotationPaymentTerm(data?.['payment_term'])
         }
-        if (data.quotation && data.sale_person) {
-            self.loadBoxSaleOrderQuotation('select-box-quotation', data.quotation.id, null, data.sale_person.id)
+        if (data.quotation && data?.['sale_person']) {
+            self.loadBoxSaleOrderQuotation('select-box-quotation', data.quotation.id, null, data?.['sale_person']?.['id'])
         }
         if (data.date_created) {
             $('#quotation-create-date-created').val(moment(data.date_created).format('MM/DD/YYYY'));
@@ -712,12 +712,12 @@ class QuotationLoadDataHandle {
         if (data.quotation_logistic_data) {
             document.getElementById('quotation-create-shipping-address').value = data.quotation_logistic_data.shipping_address;
             document.getElementById('quotation-create-billing-address').value = data.quotation_logistic_data.billing_address;
-        } else if (data.sale_order_logistic_data) {
-            document.getElementById('quotation-create-shipping-address').value = data.sale_order_logistic_data.shipping_address;
-            document.getElementById('quotation-create-billing-address').value = data.sale_order_logistic_data.billing_address;
+        } else if (data?.['sale_order_logistic_data']) {
+            document.getElementById('quotation-create-shipping-address').value = data?.['sale_order_logistic_data'].shipping_address;
+            document.getElementById('quotation-create-billing-address').value = data?.['sale_order_logistic_data'].billing_address;
         }
-        $('#quotation-create-customer-shipping').val(data.customer_shipping_id);
-        $('#quotation-create-customer-billing').val(data.customer_billing_id);
+        $('#quotation-create-customer-shipping').val(data?.['customer_shipping_id']);
+        $('#quotation-create-customer-billing').val(data?.['customer_billing_id']);
         // product totals
         self.loadTotal(data, true, false, false);
         self.loadTotal(data, false, true, false);
@@ -776,9 +776,9 @@ class QuotationLoadDataHandle {
             costs_data = data.sale_order_costs_data;
             expenses_data = data.sale_order_expenses_data;
         }
-        tableProduct.DataTable().clear();
-        tableCost.DataTable().clear();
-        tableExpense.DataTable().clear();
+        tableProduct.DataTable().clear().draw();
+        tableCost.DataTable().clear().draw();
+        tableExpense.DataTable().clear().draw();
         tableProduct.DataTable().rows.add(products_data).draw();
         tableCost.DataTable().rows.add(costs_data).draw();
         tableExpense.DataTable().rows.add(expenses_data).draw();
@@ -795,10 +795,10 @@ class QuotationLoadDataHandle {
 
     static loadTableDropDowns() {
         let tableProduct = $('#datable-quotation-create-product');
-        let tableCost = $('#datable-quotation-create-cost');
+        // let tableCost = $('#datable-quotation-create-cost');
         let tableExpense = $('#datable-quotation-create-expense');
         QuotationLoadDataHandle.loadDropDowns(tableProduct);
-        QuotationLoadDataHandle.loadDropDowns(tableCost);
+        // QuotationLoadDataHandle.loadDropDowns(tableCost);
         QuotationLoadDataHandle.loadDropDowns(tableExpense, true);
     };
 
@@ -2979,7 +2979,7 @@ function deleteRow(currentRow, tableBody, table) {
 function reOrderSTT(tableBody, table) {
     let order = 0;
     if (tableBody.rows.length === 0) {
-        table.DataTable().clear();
+        table.DataTable().clear().draw();
     } else {
         for (let idx = 0; idx < tableBody.rows.length; idx++) {
             order++;
@@ -3041,7 +3041,7 @@ function loadPriceProduct(eleProduct, is_change_item = true, is_expense = false)
                 $(priceList).empty();
                 if (Array.isArray(data.price_list) && data.price_list.length > 0) {
                     for (let i = 0; i < data.price_list.length; i++) {
-                        if (data.price_list[i].price_type === 0) { // PRICE TYPE IS PRODUCT (SALE)
+                        if (data.price_list[i]?.['price_type'] === 0) { // PRICE TYPE IS PRODUCT (SALE)
                             if (data.price_list[i].is_default === true) { // check & append GENERAL_PRICE_LIST
                                 general_price_id = data.price_list[i].id;
                                 general_price = parseFloat(data.price_list[i].value);
@@ -3049,19 +3049,19 @@ function loadPriceProduct(eleProduct, is_change_item = true, is_expense = false)
                                                     <div class="row">
                                                         <div class="col-5"><span>${data.price_list[i].title}</span></div>
                                                         <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
-                                                        <div class="col-2"><span class="valid-price">${data.price_list[i].price_status}</span></div>
+                                                        <div class="col-2"><span class="valid-price">${data.price_list[i]?.['price_status']}</span></div>
                                                     </div>
                                                 </button>`);
                             }
                             if (data.price_list[i].id === account_price_id && general_price_id !== account_price_id) { // check & append CUSTOMER_PRICE_LIST
-                                if (!["Expired", "Invalid"].includes(data.price_list[i].price_status)) { // Customer price valid
+                                if (!["Expired", "Invalid"].includes(data.price_list[i]?.['price_status'])) { // Customer price valid
                                     customer_price = parseFloat(data.price_list[i].value);
                                     $(priceList).empty();
                                     $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option option-btn-checked" data-value="${parseFloat(data.price_list[i].value)}">
                                                         <div class="row">
                                                             <div class="col-5"><span>${data.price_list[i].title}</span></div>
                                                             <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
-                                                            <div class="col-2"><span class="valid-price">${data.price_list[i].price_status}</span></div>
+                                                            <div class="col-2"><span class="valid-price">${data.price_list[i]?.['price_status']}</span></div>
                                                         </div>
                                                     </button>`);
                                 } else { // Customer price invalid, expired
@@ -3069,18 +3069,18 @@ function loadPriceProduct(eleProduct, is_change_item = true, is_expense = false)
                                                         <div class="row">
                                                             <div class="col-5"><span>${data.price_list[i].title}</span></div>
                                                             <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
-                                                            <div class="col-2"><span class="expired-price">${data.price_list[i].price_status}</span></div>
+                                                            <div class="col-2"><span class="expired-price">${data.price_list[i]?.['price_status']}</span></div>
                                                         </div>
                                                     </button>`);
                                 }
                             }
-                        } else if (data.price_list[i].price_type === 2) { // PRICE TYPE IS EXPENSE
+                        } else if (data.price_list[i]?.['price_type'] === 2) { // PRICE TYPE IS EXPENSE
                             general_price = parseFloat(data.price_list[i].value);
                             $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option" data-value="${parseFloat(data.price_list[i].value)}">
                                                     <div class="row">
                                                         <div class="col-5"><span>${data.price_list[i].title}</span></div>
                                                         <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
-                                                        <div class="col-2"><span class="valid-price">${data.price_list[i].price_status}</span></div>
+                                                        <div class="col-2"><span class="valid-price">${data.price_list[i]?.['price_status']}</span></div>
                                                     </div>
                                                 </button>`);
                         }
@@ -3115,8 +3115,8 @@ function getDataByProductID(product_id) {
     for (let i = 0; i < dataList.length; i++) {
         let data = dataList[i];
         if (data.id === product_id) {
-            if (data.sale_information) {
-                uom_data = data.sale_information.default_uom;
+            if (data?.['sale_information']) {
+                uom_data = data?.['sale_information']?.['default_uom'];
                 break
             }
         }

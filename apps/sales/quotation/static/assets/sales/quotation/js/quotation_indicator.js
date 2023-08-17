@@ -23,7 +23,7 @@ function dataTableQuotationIndicator(data) {
         ordering: false,
         paginate: false,
         info: false,
-        drawCallback: function (row, data) {
+        drawCallback: function () {
             // render icon after table callback
             feather.replace();
             $.fn.initMaskMoney2();
@@ -68,7 +68,7 @@ function dataTableSaleOrderIndicator(data) {
         ordering: false,
         paginate: false,
         info: false,
-        drawCallback: function (row, data) {
+        drawCallback: function () {
             // render icon after table callback
             feather.replace();
             $.fn.initMaskMoney2();
@@ -310,8 +310,8 @@ class indicatorFunctionHandle {
                 functionBody = self.extractDataToSum(data_form.quotation_expenses_data, leftValueJSON, condition_operator, rightValue, lastElement);
             }
         } else {
-            if (data_form.sale_order_expenses_data) {
-                functionBody = self.extractDataToSum(data_form.sale_order_expenses_data, leftValueJSON, condition_operator, rightValue, lastElement);
+            if (data_form?.['sale_order_expenses_data']) {
+                functionBody = self.extractDataToSum(data_form?.['sale_order_expenses_data'], leftValueJSON, condition_operator, rightValue, lastElement);
             }
         }
         if (functionBody[functionBody.length - 1] === ",") {
@@ -381,7 +381,7 @@ $(function () {
         }
         initDataTableIndicator();
 
-        $('#tab-indicator').on('click', function (e) {
+        $('#tab-indicator').on('click', function () {
             let btnEdit = $('#btn-edit_quotation');
             if (btnEdit.length) {
                 if (btnEdit.is(':hidden')) {
@@ -393,7 +393,7 @@ $(function () {
                         if (!tableIndicator.hasClass('sale-order')) {
                             dataTableQuotationIndicator(detailData.quotation_indicators_data);
                         } else {
-                            dataTableSaleOrderIndicator(detailData.sale_order_indicators_data);
+                            dataTableSaleOrderIndicator(detailData?.['sale_order_indicators_data']);
                         }
                     }
                 }
@@ -403,7 +403,7 @@ $(function () {
         });
 
         // Clear data indicator store then call API to get new
-        $('#btn-refresh-quotation-indicator').on('click', function (e) {
+        $('#btn-refresh-quotation-indicator').on('click', function () {
             document.getElementById('quotation-indicator-data').value = "";
             indicatorClass.loadQuotationIndicator('quotation-indicator-data');
             $.fn.notifyB({description: $.fn.transEle.attr('data-refreshed')}, 'success');

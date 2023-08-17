@@ -19,6 +19,7 @@ $(function(){
             },
             {
                 targets: 1,
+                data: 'title',
                 render: (row, type, data) => {
                     let url = $('#url-factory').attr('data-detail').format_url_with_uuid(data.id)
                     return `<p><a href="${url}" target="_blank" class="text-decoration-underline">${data.title}</a></p>`;
@@ -26,6 +27,7 @@ $(function(){
             },
             {
                 targets: 2,
+                orderable: false,
                 class: 'text-center',
                 render: (row, type, data) => {
                     let isValid = '<span class="badge badge-indicator badge-indicator-xl badge-green"></span>'

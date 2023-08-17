@@ -100,12 +100,13 @@
                                         </div>
                                     </span>
                                     <select
-                                            class="form-select select2"
+                                            class="form-select"
                                             id="box-purchase-order-supplier"
                                             data-url="{% url "AccountForSaleListAPI" %}"
                                             data-method="GET"
                                             data-link-detail="{% url "AccountDetail" 1 %}"
                                             name="supplier"
+                                            data-keyResp="account_sale_list"
                                             required
                                     ></select>
                                 </span>
@@ -129,12 +130,13 @@
                                         </div>
                                     </span>
                                     <select
-                                            class="form-select select2"
+                                            class="form-select"
                                             id="box-purchase-order-contact"
                                             data-url="{% url "ContactListAPI" %}"
                                             data-method="GET"
                                             data-link-detail="{% url 'ContactDetail' 1 %}"
                                             name="contact"
+                                            data-keyResp="contact_list"
                                             required
                                     ></select>
                                 </span>
@@ -226,7 +228,7 @@
                                 <tr>
                                     <th>#</th>
                                     <th>{% trans 'Product' %}</th>
-                                    <th>{% trans 'Description' %}</th>
+{#                                    <th>{% trans 'Description' %}</th>#}
                                     <th>UoM(PR)</th>
                                     <th>{% trans 'Quantity' %}(PR)</th>
                                     <th>{% trans 'Stock' %}</th>
@@ -278,16 +280,10 @@
                                 <div class="row mb-2">
                                     <div class="col-4"><p>{% trans 'Pretax Amount' %}</p></div>
                                     <div class="col-1"></div>
-                                    <div class="col-7">
-                                        <input
-                                            id="purchase-order-product-pretax-amount"
-                                            type="text"
-                                            class="form-control mask-money disabled-custom-show"
-                                            data-return-type="number"
-                                            name="total_product_pretax_amount"
-                                            value="0"
-                                            disabled
-                                        >
+                                    <div class="col-7 total-area">
+                                        <div class="card card-sm">
+                                            <span class="card-body mask-money" data-init-money="0" id="purchase-order-product-pretax-amount"></span>
+                                        </div>
                                         <input
                                             id="purchase-order-product-pretax-amount-raw"
                                             type="text"
@@ -304,16 +300,10 @@
                                 <div class="row mb-2">
                                     <div class="col-4"><p>{% trans 'Taxes' %}</p></div>
                                     <div class="col-1"></div>
-                                    <div class="col-7">
-                                        <input
-                                            id="purchase-order-product-taxes"
-                                            type="text"
-                                            class="form-control mask-money disabled-custom-show"
-                                            data-return-type="number"
-                                            name="total_product_tax"
-                                            value="0"
-                                            disabled
-                                        >
+                                    <div class="col-7 total-area">
+                                        <div class="card card-sm">
+                                            <span class="card-body mask-money" data-init-money="0" id="purchase-order-product-taxes"></span>
+                                        </div>
                                         <input
                                             id="purchase-order-product-taxes-raw"
                                             type="text"
@@ -323,20 +313,13 @@
                                         >
                                     </div>
                                 </div>
-                                <hr class="quotation-horizon">
                                 <div class="row mb-2">
                                     <div class="col-4"><b>{% trans 'Total' %}</b></div>
                                     <div class="col-1"></div>
-                                    <div class="col-7">
-                                        <input
-                                            id="purchase-order-product-total"
-                                            type="text"
-                                            class="form-control mask-money disabled-custom-show"
-                                            data-return-type="number"
-                                            name="total_product"
-                                            value="0"
-                                            disabled
-                                        >
+                                    <div class="col-7 total-area">
+                                        <div class="card card-sm">
+                                            <span class="card-body mask-money" data-init-money="0" id="purchase-order-product-total"></span>
+                                        </div>
                                         <input
                                             id="purchase-order-product-total-raw"
                                             type="text"

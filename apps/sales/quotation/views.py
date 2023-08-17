@@ -1,3 +1,5 @@
+import json
+
 from django.views import View
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
@@ -44,7 +46,7 @@ class QuotationCreate(View):
         breadcrumb='QUOTATION_CREATE_PAGE',
     )
     def get(self, request, *args, **kwargs):
-        return {'data': {'employee_current_id': request.user.employee_current_data.get('id', None)}}, status.HTTP_200_OK
+        return {'data': {'employee_current': json.dumps(request.user.employee_current_data)}}, status.HTTP_200_OK
 
 
 class QuotationListAPI(APIView):
@@ -77,6 +79,17 @@ class QuotationDetail(View):
         template='sales/quotation/quotation_detail.html',
         menu_active='menu_quotation_list',
         breadcrumb='QUOTATION_DETAIL_PAGE',
+    )
+    def get(self, request, pk, *args, **kwargs):
+        return {'data': {'doc_id': pk}}, status.HTTP_200_OK
+
+
+class QuotationUpdate(View):
+    @mask_view(
+        auth_require=True,
+        template='sales/quotation/quotation_update.html',
+        breadcrumb='QUOTATION_UPDATE_PAGE',
+        menu_active='menu_quotation_list',
     )
     def get(self, request, pk, *args, **kwargs):
         return {'data': {'doc_id': pk}}, status.HTTP_200_OK

@@ -16,8 +16,8 @@
 
 {% block pageContent %}
     <form
-            id="frm_group_create" class="needs-validation" data-url="{% url 'GroupDetailAPI' pk=pk %}"
-            data-method="PUT" novalidate data-url-redirect="{% url 'GroupList' %}"
+            id="frm_group_create" class="needs-validation" data-url="{% url 'GroupDetailAPI' data.data.doc_id %}" data-method="PUT"
+            novalidate data-url-redirect="{% url 'GroupList' %}"
     >
         {% csrf_token %}
         <div class="container-fluid">
@@ -70,13 +70,14 @@
                                                     class="required"
                                             ></span></label>
                                             <select
-                                                    class="form-select" id="select-box-group-level"
+                                                    class="form-select"
+                                                    id="select-box-group-level"
                                                     data-url="{% url 'GroupLevelListAPI' %}"
                                                     data-method="GET"
                                                     name="group_level"
+                                                    data-keyResp="group_level_list"
                                                     required
                                             >
-                                                <option selected>Select...</option>
                                             </select>
                                             <span class="form-text text-muted">{% trans 'Level link to this group' %}</span>
                                         </div>
@@ -87,12 +88,13 @@
                                         <div class="form-group">
                                             <label class="form-label">{% trans 'Select Parent Group' %}</label>
                                             <select
-                                                    class="form-select" id="select-box-group"
+                                                    class="form-select"
+                                                    id="select-box-group"
                                                     data-url="{% url 'GroupListAPI' %}"
                                                     data-method="GET"
                                                     name="parent_n"
+                                                    data-keyResp="group_list"
                                             >
-                                                <option selected>Select...</option>
                                             </select>
                                             <span class="form-text text-muted">{% trans 'Group parent of this group' %}</span>
                                         </div>
@@ -113,11 +115,9 @@
                             </div>
                             <div class="row">
                                 <div class="form-group">
-                                    <label class="form-label">{% trans 'Input Display Group Title' %}<span
-                                            class="required"
-                                    ></span></label>
+                                    <label class="form-label" for="group-title">{% trans 'Input Display Group Title' %}<span class="required"></span></label>
                                     <input
-                                            type="text" class="form-control" placeholder="Group Title A"
+                                            type="text" class="form-control"
                                             name="title"
                                             id="group-title"
                                             required
@@ -127,11 +127,11 @@
                             </div>
                             <div class="row">
                                 <div class="form-group">
-                                    <label class="form-label">{% trans 'Input Group Code' %}<span
-                                            class="required"
-                                    ></span></label>
+                                    <label class="form-label" for="group-code">{% trans 'Input Group Code' %}<span class="required"></span></label>
                                     <input
-                                            type="text" class="form-control" placeholder="Group Code" name="code"
+                                            type="text"
+                                            class="form-control"
+                                            name="code"
                                             id="group-code"
                                             required
                                     >
@@ -140,13 +140,8 @@
                             </div>
                             <div class="row">
                                 <div class="form-group">
-                                    <label class="form-label">
-                                        {% trans 'Description' %}
-                                    </label>
-                                    <textarea
-                                            class="form-control" rows="4" cols="50" name="description"
-                                            id="group-description"
-                                    ></textarea>
+                                    <label class="form-label" for="group-description">{% trans 'Description' %}</label>
+                                    <textarea class="form-control" rows="4" cols="50" name="description" id="group-description"></textarea>
                                     <span class="form-text text-muted">{% trans 'Desciption of Group' %}</span>
                                 </div>
                             </div>
@@ -160,7 +155,6 @@
                                         class="btn btn-link btn-animated"
                                         data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
                                         aria-controls="offcanvasExample"
-                                        id="btn-add-employee-to-group"
                                 >
                                     <span><span class="icon"><span class="feather-icon"><i
                                             class="fa-regular fa-square-plus"
@@ -206,7 +200,7 @@
                                         >{% trans 'Cancel' %}</button>
                                         <button
                                                 type="button" class="btn btn-primary"
-                                                id="btn-confirm-add-purchase-request" data-bs-dismiss="offcanvas"
+                                                data-bs-dismiss="offcanvas"
                                                 id="button-add-group-employee"
                                         >{% trans 'Add' %}</button>
                                     </div>
@@ -222,7 +216,7 @@
                                 <tr>
                                     <th>#</th>
                                     <th>{% trans 'Full Name' %}</th>
-                                    <th>Role</th>
+                                    <th>{% trans 'Role' %}</th>
                                     <th>{% trans 'Actions' %}</th>
                                 </tr>
                                 </thead>
@@ -272,11 +266,9 @@
                                 <div class="col-6">
                                     <div class="row">
                                         <div class="form-group">
-                                            <label
-                                                    class="form-label" for="first-manager-title"
-                                            >{% trans 'Input Display 1st Manager Title' %}</label>
+                                            <label class="form-label" for="first-manager-title">{% trans 'Input Display 1st Manager Title' %}</label>
                                             <input
-                                                    type="text" class="form-control" placeholder="First Manager A"
+                                                    type="text" class="form-control"
                                                     name="first_manager_title"
                                                     id="first-manager-title"
                                             >
@@ -287,13 +279,12 @@
                                 <div class="col-6">
                                     <div class="row">
                                         <div class="form-group">
-                                            <label class="form-label">
-                                                {% trans 'Input Display 2nd Manager Title' %}
-                                            </label>
+                                            <label class="form-label" for="second-manager-title">{% trans 'Input Display 2nd Manager Title' %}</label>
                                             <input
-                                                    type="text" class="form-control" placeholder="Second Manager A"
-                                                    id="second-manager-title"
+                                                    type="text"
+                                                    class="form-control"
                                                     name="second_manager_title"
+                                                    id="second-manager-title"
                                             >
                                             <span class="form-text text-muted">{% trans 'Title of 2nd manager' %}</span>
                                         </div>
@@ -309,12 +300,13 @@
                                                     class="form-label" for="select-box-first-manager"
                                             >{% trans 'First Manager Assign To' %}</label>
                                             <select
-                                                    class="form-select" id="select-box-first-manager"
+                                                    class="form-select"
+                                                    id="select-box-first-manager"
                                                     data-url="{% url 'EmployeeListAPI' %}"
                                                     data-method="GET"
                                                     name="first_manager"
+                                                    data-keyResp="employee_list"
                                             >
-                                                <option selected>Select...</option>
                                             </select>
                                             <span class="form-text text-muted">{% trans 'Assign to one employee' %}</span>
                                         </div>
@@ -329,8 +321,8 @@
                                                     data-url="{% url 'EmployeeListAPI' %}"
                                                     data-method="GET"
                                                     name="second_manager"
+                                                    data-keyResp="employee_list"
                                             >
-                                                <option selected>Select...</option>
                                             </select>
                                             <span class="form-text text-muted">{% trans 'Assign to one employee' %}</span>
                                         </div>
@@ -338,25 +330,6 @@
                                 </div>
                             </div>
                         </div>
-
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="form-group">
-                    <div class="form-check form-switch form-switch-lg mb-1" style="padding-left: 0">
-                        <label class="form-label">
-                            {% trans 'Active organization group after created' %}
-                            <span class="field-required">(*)</span>
-                        </label>
-                        <input
-                                type="checkbox"
-                                class="form-check-input"
-                                name="is_active" checked
-                                required
-                                style="margin-left: 0"
-                        >
                     </div>
                 </div>
             </div>
@@ -365,7 +338,8 @@
 {% endblock %}
 
 
-{% block jsFooter %}s
+{% block jsFooter %}
+    <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
     <script src="{% static 'assets/js/core/hr/group/group_common.js' %}"></script>
     <script src="{% static 'assets/js/core/hr/group/group_create.js' %}"></script>
 {% endblock %}

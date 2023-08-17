@@ -2,6 +2,7 @@
 $(function () {
     let tb = $('#datable_group_list');
     tb.DataTableDefault({
+        useDataServer: true,
         ajax: {
             url: tb.attr('data-url'),
             type: tb.attr('data-method'),

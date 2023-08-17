@@ -29,18 +29,20 @@
 {% endblock %}
 
 {% block pageAction %}
-    <a
-            class="btn btn-icon btn-rounded bg-dark-hover mr-1"
-            href="{% url 'WorkflowCreate' %}"
-            data-bs-toggle="tooltip"
-            data-bs-placement="top"
-            title="{% trans 'Create Workflow' %}"
-            id="create_workflow_button"
-            data-bs-original-title="Add Workflow"
-    >
-            <span class="icon">
-                <i class="fas fa-plus"></i>
-            </span>
+    <a href="{% url 'WorkflowCreate' %}"
+       data-bs-toggle="tooltip"
+       data-bs-placement="top"
+       title="{% trans 'Create Workflow' %}"
+       id="create_workflow_button"
+       data-bs-original-title="Add Workflow">
+            <button class="btn btn-outline-primary">
+                <span>
+                    <span>{% trans 'Add' %}</span>
+                    <span class="icon">
+                        <i class="fa-solid fa-plus"></i>
+                    </span>
+                </span>
+            </button>
     </a>
 {% endblock %}
 

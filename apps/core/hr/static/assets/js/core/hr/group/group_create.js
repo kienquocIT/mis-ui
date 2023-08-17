@@ -1,33 +1,33 @@
 $(function () {
     $(document).ready(function () {
         let frm = $('#frm_group_create');
-        loadDataCommon(frm);
+        GroupLoadDataHandle.loadDataCommon(frm);
 
         $(document).on('change', '#select-box-group-level', function () {
-            let sel = $(this)[0].options[$(this)[0].selectedIndex]
-            let ref_group_title = sel.getAttribute('data-description')
-            let first_manager_system_title = sel.getAttribute('data-first-manager-description');
-            let second_manager_system_title = sel.getAttribute('data-second-manager-description');
-            $('#reference-group-title').val(ref_group_title);
-            $('#first-manager-system-title').val(first_manager_system_title);
-            $('#second-manager-system-title').val(second_manager_system_title);
-            let level = sel.getAttribute('data-level');
-            loadGroupListFilter(level)
+            if ($(this).val()) {
+                let dataSelected = SelectDDControl.get_data_from_idx($(this), $(this).val());
+                if (dataSelected) {
+                    $('#reference-group-title').val(dataSelected.description);
+                    $('#first-manager-system-title').val(dataSelected.first_manager_description);
+                    $('#second-manager-system-title').val(dataSelected.second_manager_description);
+                    GroupLoadDataHandle.loadGroupParentList({}, dataSelected.level);
+                }
+            }
         });
 
         $('#btn-add-employee-to-group').on('click', function() {
-            loadCheckboxTableEmployee();
+            GroupLoadDataHandle.loadCheckboxTableEmployee();
         });
 
-        $('#btn-confirm-add-purchase-request').on('click', function() {
-            loadDataEmployeeShow();
+        $('#button-add-group-employee').on('click', function() {
+            GroupLoadDataHandle.loadDataEmployeeShow();
         });
 
         $('#datable_employee_show_list').on('click', '.del-row', function() {
             deleteEmployeeShow(this.id);
         });
 
-        // SUBMIT FORM
+// SUBMIT FORM
         frm.submit(function (e) {
             e.preventDefault();
             let frm = new SetupFormSubmit($(this));

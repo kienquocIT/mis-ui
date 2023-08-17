@@ -219,8 +219,10 @@ $(function () {
             "id": id
         }
         $assigneeElm.attr('data-onload', JSON.stringify(infoObj))
-        $assigneeElm.initSelect2()
-
+        if ($assigneeElm.find(`option [value="${id}"]`).length <= 0)
+            $assigneeElm.append(`<option value="${id}">${name}</option>`)
+        $assigneeElm.val(id).trigger('change')
+        // $assigneeElm.initSelect2()
     });
 
     // run init label function
@@ -399,6 +401,8 @@ $(function () {
                     }
                     if ($('.current-create-task').length) $('.cancel-task').trigger('click')
                 }
-            })
+            },
+            (errs) => $.fn.notifyB({'description': errs?.data?.errors}, 'failure')
+        )
     })
 }, jQuery)

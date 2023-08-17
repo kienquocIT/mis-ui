@@ -12,24 +12,14 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <button id="btn-update" type="submit" form="form-update-item-price"
-            style="background: none; border: none">
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="save"></i>
+    <button class="btn btn-outline-primary" type="submit" form="form-update-item-price">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
             </span>
         </span>
     </button>
-
-    <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
-       href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
-       data-bs-original-title="Refresh">
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="refresh-cw"></i>
-            </span>
-        </span>
-    </a>
 {% endblock %}
 {% block pageContent %}
     <div class="row">
@@ -108,7 +98,7 @@
                 <div class="row mt-3">
                     <div class="form-group col-6">
                         <label class="form-label">{% trans "Select price list" %}</label>
-                        <select class="form-select" data-method="GET" data-url="{% url "PriceListAPI" %}"
+                        <select class="form-control select2" data-method="GET" data-select2-url="{% url "PriceListAPI" %}"
                                 style="border: None; color: black"
                                 id="select-box-price-list" disabled="disabled" name="price_list_mapped"></select>
                     </div>
@@ -146,7 +136,7 @@
                                 multiple
                                 data-placeholder="{% trans 'Choose' %}"
                                 data-method="GET"
-                                data-url="{% url "CurrencyListAPI" %}"
+                                data-select2-url="{% url "CurrencyListAPI" %}"
                                 id="select-box-currency" name="currency" readonly="readonly">
                         </select>
                         <input type="text" id="inp-source" hidden>
@@ -189,17 +179,16 @@
                                 <label class="form-label">{% trans "Name" %}
                                     <span class="field-required">*</span>
                                 </label>
-                                <select type="text" class="form-select" name="product" id="select-box-product"
-                                        data-method="GET" data-url="{% url "ProductListAPI" %}"
-                                        data-url-expense="{% url "ExpenseListAPI" %}"
+                                <select type="text" class="form-control select2" name="product" id="select-box-product"
+                                        data-method="GET" data-select2-url="{% url "ProductListAPI" %}"
+                                        data-select2-url-expense="{% url "ExpenseListAPI" %}"
                                         data-url-detail="{% url "ProductDetailAPI" pk=0 %}"
                                         data-url-detail-expense="{% url "ExpenseDetailAPI" pk=0 %}"></select>
                             </div>
                         </div>
                         <div class="row">
                             <div class="form-group">
-                                <label class="form-label">{% trans "UoM Group" %}
-                                    <span class="field-required">*</span></label>
+                                <label class="form-label required">{% trans "UoM Group" %}</label>
                                 <input type="text" class="form-control" id="inp-uom-group" readonly
                                        style="color: black; background: None">
                             </div>
@@ -209,8 +198,8 @@
                                 <label class="form-label">{% trans "UoM" %}
                                     <span class="field-required">*</span>
                                 </label>
-                                <select type="text" class="form-select" name="uom" id="select-uom"
-                                        data-method="GET" data-url="{% url "UnitOfMeasureListAPI" %}"></select>
+                                <select type="text" class="form-control select2" name="uom" id="select-uom"
+                                        data-method="GET" data-select2-url="{% url "UnitOfMeasureListAPI" %}"></select>
                             </div>
                         </div>
                     </div>

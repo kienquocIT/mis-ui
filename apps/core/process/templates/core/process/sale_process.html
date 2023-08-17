@@ -5,16 +5,13 @@
     <link href="{% static 'assets/css/plugins/form-layout.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-outline-primary btn-animated btn-xs" form="frm-update-process"
-            data-bs-original-title="Add New Purchase Request">
+    <button class="btn btn-outline-primary" type="submit" form="frm-update-process">
+        <span>
+            <span>{% trans 'Save' %}</span>
             <span class="icon">
-                <span class="feather-icon">
-                    <i data-feather="plus"></i>
-                </span>
-                <span class="font-3 ml-1">
-                    {% trans 'Save' %}
-                </span>
+                <i class="fa-regular fa-floppy-disk"></i>
             </span>
+        </span>
     </button>
 {% endblock %}
 {% block pageContent %}

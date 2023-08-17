@@ -5,16 +5,14 @@
     <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}"/>
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-outline-primary btn-animated btn-xs" form="form-create-pr"
-            data-bs-original-title="Add New Purchase Request">
+
+    <button class="btn btn-outline-primary" type="submit" form="form-create-pr">
+        <span>
+            <span>{% trans 'Save' %}</span>
             <span class="icon">
-                <span class="feather-icon">
-                    <i data-feather="plus"></i>
-                </span>
-                <span class="font-3 ml-1">
-                    {% trans 'Save' %}
-                </span>
+                <i class="fa-regular fa-floppy-disk"></i>
             </span>
+        </span>
     </button>
 {% endblock %}
 {% block pageContent %}

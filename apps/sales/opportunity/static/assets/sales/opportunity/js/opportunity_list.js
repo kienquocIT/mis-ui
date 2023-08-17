@@ -126,7 +126,10 @@ $(function () {
         function loadCustomer() {
             let url = boxCustomer.attr('data-select2-url');
             let method = boxCustomer.attr('data-method');
-            $.fn.callAjax(url, method).then(
+            $.fn.callAjax2({
+                'url': url,
+                'method': method
+            }).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
@@ -194,7 +197,10 @@ $(function () {
             let ele = boxProductCategory;
             let url = ele.attr('data-select2-url');
             let method = ele.attr('data-method');
-            $.fn.callAjax(url, method).then(
+            $.fn.callAjax2({
+                'url': url,
+                'method': method
+            }).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {

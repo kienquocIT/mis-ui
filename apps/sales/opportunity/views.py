@@ -76,10 +76,6 @@ class OpportunityDetail(View):
         resp2 = ServerAPI(user=request.user, url=ApiURL.CONTACT_LIST).get()
         resp3 = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_LIST).get()
         resp4 = ServerAPI(user=request.user, url=ApiURL.EMPLOYEE_LIST).get()
-        resp5 = ServerAPI(user=request.user, url=ApiURL.ACCOUNTS_MAP_EMPLOYEES).get()
-        resp6 = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CALL_LOG_LIST).get()
-        resp7 = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_EMAIL_LIST).get()
-        resp8 = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_MEETING_LIST).get()
         result = {
             'employee_current_id': request.user.employee_current_data.get('id', None),
             'config': resp0.result,
@@ -87,10 +83,6 @@ class OpportunityDetail(View):
             'contact_list': resp2.result,
             'opportunity_list': resp3.result,
             'employee_list': resp4.result,
-            'account_map_employees': resp5.result,
-            'opportunity_call_log_list': resp6.result,
-            'opportunity_email_list': resp7.result,
-            'opportunity_meeting_list': resp8.result,
         }
         return result, status.HTTP_200_OK
 

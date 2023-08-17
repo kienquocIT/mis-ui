@@ -53,11 +53,7 @@
         {{ data.contact_list | json_script:"contact_list" }}
         {{ data.opportunity_list | json_script:"opportunity_list" }}
         {{ data.employee_list | json_script:"employee_list" }}
-        {{ data.account_map_employees | json_script:"account_map_employees" }}
 
-        {{ data.opportunity_call_log_list | json_script:"opportunity_call_log_list" }}
-        {{ data.opportunity_email_list | json_script:"opportunity_email_list" }}
-        {{ data.opportunity_meeting_list | json_script:"opportunity_meeting_list" }}
     </div>
     <div id="text-notify" hidden>
         <span id="limit-rate">{% trans "rate must not be less than 0 or greater than 100" %}</span>

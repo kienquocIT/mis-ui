@@ -44,7 +44,7 @@ shippingCityEle.on('change', function () {
 function loadShippingDistricts() {
     shippingDistrictEle.initSelect2({
         ajax: {
-            url: shippingDistrictEle.attr('data-select2-url').format_url_with_uuid($('#shipping-city').val()),
+            url: shippingDistrictEle.attr('data-url').format_url_with_uuid($('#shipping-city').val()),
             method: 'GET'
         },
         keyResp: 'districts',
@@ -59,7 +59,7 @@ shippingDistrictEle.on('change', function () {
 function loadShippingWards() {
     shippingWardEle.initSelect2({
         ajax: {
-            url: shippingWardEle.attr('data-select2-url').format_url_with_uuid($('#shipping-district').val()),
+            url: shippingWardEle.attr('data-url').format_url_with_uuid($('#shipping-district').val()),
             method: 'GET'
         },
         keyResp: 'wards',

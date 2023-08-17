@@ -65,7 +65,7 @@
                                 <label class="form-label">{% trans "Account Owner" %}</label>
                                 <select id="select-box-contact" name="owner" class="form-control select2"
                                         data-method="GET"
-                                        data-select2-url="{% url "ContactListNotMapAccountAPI" %}"
+                                        data-url="{% url "ContactListNotMapAccountAPI" %}"
                                         data-url-detail="{% url "ContactDetailAPI" pk=0 %}">
                                 </select>
                             </div>
@@ -81,8 +81,8 @@
                                         class="form-control select2 select2-multiple select2-required"
                                         multiple
                                         data-method="GET"
-                                        data-select2-url="{% url "EmployeeListAPI" %}"
-                                        data-select2-url-accounts= {% url "AccountsMapEmployeeAPI" %}>
+                                        data-url="{% url "EmployeeListAPI" %}"
+                                        data-url-accounts= {% url "AccountsMapEmployeeAPI" %}>
                                 </select>
                             </div>
                         </div>
@@ -108,7 +108,7 @@
                                         class="form-select select2 select2-multiple select2-required"
                                         multiple
                                         data-method="GET"
-                                        data-select2-url="{% url "AccountTypeListAPI" %}">
+                                        data-url="{% url "AccountTypeListAPI" %}">
                                 </select>
                             </div>
                         </div>
@@ -140,7 +140,7 @@
                             <label class="form-label">{% trans "Parent Account" %}</label>
                             <select id="select-box-parent-account" name="parent_account" class="form-control select2"
                                     data-method="GET"
-                                    data-select2-url="{% url "AccountListAPI" %}" disabled>
+                                    data-url="{% url "AccountListAPI" %}" disabled>
                             </select>
                         </div>
                     </div>
@@ -163,7 +163,7 @@
                                 <select id="select-box-industry" name="industry"
                                         class="form-control select2 select-required"
                                         data-method="GET"
-                                        data-select2-url="{% url "IndustryListAPI" %}">
+                                        data-url="{% url "IndustryListAPI" %}">
                                 </select>
                             </div>
                         </div>
@@ -201,7 +201,7 @@
                         <label class="form-label required">{% trans "Account Group" %}</label>
                         <select id="select-box-account-group" name="account_group" class="form-control select2"
                                 data-method="GET"
-                                data-select2-url="{% url "AccountGroupListAPI" %}">
+                                data-url="{% url "AccountGroupListAPI" %}">
                         </select>
                     </div>
                     <div class="col-2"></div>
@@ -336,7 +336,7 @@
                             <div class="form-group">
                                 <label class="label-field form-label required">{% trans "District" %}</label>
                                 <select class="form-control select2" id="shipping-district"
-                                        data-select2-url="{% url "DistrictListAPI" pk=0 %}" data-method="GET">
+                                        data-url="{% url "DistrictListAPI" pk=0 %}" data-method="GET">
                                 </select>
                             </div>
                         </div>
@@ -344,7 +344,7 @@
                             <div class="form-group">
                                 <label class="label-field form-label">{% trans "Ward" %}</label>
                                 <select class="form-control select2" id="shipping-ward"
-                                        data-select2-url="{% url "WardListAPI" pk=0 %}" data-method="GET">
+                                        data-url="{% url "WardListAPI" pk=0 %}" data-method="GET">
                                 </select>
                             </div>
                         </div>
@@ -388,7 +388,7 @@
                             <label class="label-field form-label required">{% trans "Account Name" %}</label>
                             <select class="form-select" id="select-box-account-name"
                                     data-method="GET"
-                                    data-select2-url="{% url 'AccountDetailAPI' pk=0 %}">
+                                    data-url="{% url 'AccountDetailAPI' pk=0 %}">
                                 <option></option>
                             </select>
                         </div>
@@ -509,7 +509,7 @@
                                 </label>
                                 <select class="form-control select2" id="select-box-contact-owner"
                                         data-method="GET"
-                                        data-select2-url="{% url 'EmployeeListAPI' %}">
+                                        data-url="{% url 'EmployeeListAPI' %}">
                                 </select>
                             </div>
                         </div>

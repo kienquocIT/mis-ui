@@ -12,7 +12,7 @@ class GroupLoadDataHandle {
             GroupLoadDataHandle.loadSecondManagerList();
             dataTableEmployee();
             dataTableEmployeeShow();
-        } else if (frm.attr('data-method') === "PUT") {
+        } else if (["PUT", "GET"].includes(frm.attr('data-method'))) {
             $.fn.callAjax(frm.attr('data-url'), 'GET').then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
@@ -138,7 +138,7 @@ function deleteEmployeeShow(delID) {
             break;
         }
     }
-    loadDataEmployeeShow();
+    GroupLoadDataHandle.loadDataEmployeeShow();
 }
 
 // DATATABLE employee
@@ -258,7 +258,12 @@ function dataTableEmployeeShow(data) {
             {
                 targets: 3,
                 render: (data, type, row) => {
-                    return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row" id="${row.id}"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`
+                    let form = $('#frm_group_create');
+                    if (form.attr('data-method') !== "GET") {
+                        return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row" id="${row.id}"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`;
+                    } else {
+                        return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row" id="${row.id}" disabled><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`
+                    }
                 }
             },
         ],

@@ -2,7 +2,6 @@ from django.views import View
 from rest_framework import status
 from rest_framework.views import APIView
 from apps.shared import mask_view, ApiURL, ServerAPI, PermCheck
-from django.utils.translation import gettext_lazy as _
 
 
 class ShippingList(View):
@@ -11,6 +10,7 @@ class ShippingList(View):
         template='masterdata/saledata/shipping/shipping_list.html',
         breadcrumb='SHIPPING_LIST_PAGE',
         menu_active='id_menu_shipping_list',
+        perm_check=PermCheck(url=ApiURL.SHIPPING_LIST, method='GET'),
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -56,6 +56,7 @@ class ShippingDetail(View):
         template='masterdata/saledata/shipping/shipping_detail.html',
         breadcrumb='SHIPPING_DETAIL_PAGE',
         menu_active='menu_shipping_list',
+        perm_check=PermCheck(url=ApiURL.SHIPPING_DETAIL, method='GET', fill_key=['pk']),
     )
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(url=ApiURL.CITIES, user=request.user).get()
@@ -72,7 +73,7 @@ class ShippingDetailAPI(APIView):
         auth_require=True
     )
     def get(self, request, pk, *arg, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.SHIPPING_DETAIL.fill_key(shipping_id=pk)).get()
+        resp = ServerAPI(user=request.user, url=ApiURL.SHIPPING_DETAIL.fill_key(pk=pk)).get()
         return resp.auto_return(key_success='shipping')
 
     @mask_view(
@@ -80,7 +81,7 @@ class ShippingDetailAPI(APIView):
         is_api=True,
     )
     def put(self, request, pk, *args, **kwargs):
-        url = ApiURL.SHIPPING_DETAIL.fill_key(shipping_id=pk)
+        url = ApiURL.SHIPPING_DETAIL.fill_key(pk=pk)
         resp = ServerAPI(user=request.user, url=url).put(data=request.data)
         return resp.auto_return(key_success='shipping')
 

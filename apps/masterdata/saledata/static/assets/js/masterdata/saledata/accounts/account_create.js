@@ -11,39 +11,44 @@ $(document).ready(function () {
         $("#shipping-district option:selected").prop("selected", false);
         $("#shipping-ward option:selected").prop("selected", false);
         let ele = $('#shipping-city');
-        let url = ele.attr('data-url');
+        let url = ele.attr('data-select2-url');
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then(
+        $.fn.callAjax2({
+            'url': url,
+            'method': method
+        }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     ele.text("");
-                    ele.append(`<option value="" selected>---</option>`)
                     if (data.hasOwnProperty('cities') && Array.isArray(data.cities)) {
+                        ele.append(`<option value="" selected></option>`);
                         data.cities.map(function (item) {
-                            ele.append(`<option data-country-id="` + item.country_id + `" value="` + item.id + `">` + item.title + `</option>`)
+                            ele.append(`<option data-country-id="` + item.country_id + `" value="` + item.id + `">` + item.title + `</option>`);
                         })
                     }
                 }
             }
         )
     }
+
     loadCities();
 
     // load Districts SelectBox
     function loadDistricts() {
         let ele = $('#shipping-district');
-        let url = ele.attr('data-url').replace('pk', $('#shipping-city').val())
+        let url = ele.attr('data-select2-url').format_url_with_uuid($('#shipping-city').val());
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then(
+        $.fn.callAjax2({
+            'url': url,
+            'method': method
+        }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
-                    ele.text("");
-                    ele.append(`<option value="" selected>---</option>`)
                     if (data.hasOwnProperty('districts') && Array.isArray(data.districts)) {
                         data.districts.map(function (item) {
-                            ele.append(`<option data-city-id="` + item.city_id + `" value="` + item.id + `">` + item.title + `</option>`)
+                            ele.append(`<option data-city-id="` + item.city_id + `" value="` + item.id + `">` + item.title + `</option>`);
                         })
                     }
                 }
@@ -54,17 +59,18 @@ $(document).ready(function () {
     // load Wards SelectBox
     function loadWards() {
         let ele = $('#shipping-ward');
-        let url = ele.attr('data-url').replace('pk', $('#shipping-district').val())
+        let url = ele.attr('data-select2-url').format_url_with_uuid($('#shipping-district').val());
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then(
+        $.fn.callAjax2({
+            'url': url,
+            'method': method
+        }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
-                    ele.text("");
-                    ele.append(`<option value="" selected>---</option>`)
                     if (data.hasOwnProperty('wards') && Array.isArray(data.wards)) {
                         data.wards.map(function (item) {
-                            ele.append(`<option data-district-id="` + item.district_id + `" value="` + item.id + `">` + item.title + `</option>`)
+                            ele.append(`<option data-district-id="` + item.district_id + `" value="` + item.id + `">` + item.title + `</option>`);
                         })
                     }
                 }
@@ -116,7 +122,7 @@ $(document).ready(function () {
 
                 $('#list-shipping-address').append(
                     `<div class="form-check ml-5 mb-2">
-                        <input class="form-check-input" type="radio" name="shippingaddressRadio" ` + is_default +`>
+                        <input class="form-check-input" type="radio" name="shippingaddressRadio" ` + is_default + `>
                         <label>` + shipping_address + `</label>
                         <a href="#" class="del-address-item"><i class="bi bi-x"></i></a>
                     </div>`
@@ -271,9 +277,13 @@ $(document).ready(function () {
 
     function loadEmployee() {
         let ele = $('#select-box-acc-manager');
-        let url = ele.attr('data-url');
+        let url = ele.attr('data-select2-url');
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then(
+        $.fn.callAjax2({
+            'url': url,
+            'method': method,
+            'isDropdown': true,
+        }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
@@ -290,14 +300,19 @@ $(document).ready(function () {
 
     function loadAccountOwner(id) {
         let ele = $('#select-box-contact');
-        let url = ele.attr('data-url');
+        let url = ele.attr('data-select2-url');
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then(
+        $.fn.callAjax2({
+            'url': url,
+            'method': method,
+            'isDropdown': true
+        }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
-                    ele.text("");
                     if (data.hasOwnProperty('contact_list_not_map_account') && Array.isArray(data.contact_list_not_map_account)) {
+                        config['data'] = data.contact_list_not_map_account;
+                        initDataTableOffCanvas(config);
                         ele.append(`<option selected></option>`)
                         data.contact_list_not_map_account.map(function (item) {
                             if (item.id === id) {
@@ -313,13 +328,15 @@ $(document).ready(function () {
 
     function loadAccountType() {
         let ele = $('#select-box-acc-type');
-        let url = ele.attr('data-url');
+        let url = ele.attr('data-select2-url');
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then(
+        $.fn.callAjax2({
+            'url': url,
+            'method': method,
+        }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
-                    ele.text("");
                     if (data.hasOwnProperty('account_type_list') && Array.isArray(data.account_type_list)) {
                         data.account_type_list.map(function (item) {
                             ele.append(`<option value="` + item.id + `">` + item.title + `</option>`)
@@ -332,9 +349,12 @@ $(document).ready(function () {
 
     function loadIndustry() {
         let ele = $('#select-box-industry');
-        let url = ele.attr('data-url');
+        let url = ele.attr('data-select2-url');
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then(
+        $.fn.callAjax2({
+            'url': url,
+            'method': method
+        }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
@@ -352,13 +372,15 @@ $(document).ready(function () {
 
     function loadAccountGroup() {
         let ele = $('#select-box-account-group');
-        let url = ele.attr('data-url');
+        let url = ele.attr('data-select2-url');
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then(
+        $.fn.callAjax2({
+            'url': url,
+            'method': method
+        }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
-                    ele.text("");
                     if (data.hasOwnProperty('account_group_list') && Array.isArray(data.account_group_list)) {
                         ele.append(`<option value="" selected></option>`)
                         data.account_group_list.map(function (item) {
@@ -372,9 +394,13 @@ $(document).ready(function () {
 
     function loadParentAccount() {
         let ele = $('#select-box-parent-account');
-        let url = ele.attr('data-url');
+        let url = ele.attr('data-select2-url');
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then(
+        $.fn.callAjax2({
+            'url': url,
+            'method': method,
+            'isDropdown': true,
+        }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
@@ -390,20 +416,6 @@ $(document).ready(function () {
         )
     }
 
-    function loadTableContact() {
-        let dtb = $('#datatable-add-contact');
-        let frm = new SetupFormSubmit(dtb);
-        $.fn.callAjax(frm.dataUrl, "GET").then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    config['data'] = data.contact_list_not_map_account
-                    initDataTableOffCanvas(config);
-                }
-            }
-        )
-    }
-
     $('#select-box-acc-type').select2();
     $('#select-box-acc-manager').select2();
 
@@ -412,7 +424,6 @@ $(document).ready(function () {
     loadIndustry();
     loadAccountOwner(null);
     loadParentAccount();
-    loadTableContact();
     loadAccountGroup();
 
     // button add contact in offCanvas
@@ -470,7 +481,10 @@ $(document).ready(function () {
             }
         } else {
             let data_url = $(this).attr('data-url-detail').replace(0, $(this).val())
-            $.fn.callAjax(data_url, $(this).attr('data-method')).then(
+            $.fn.callAjax2({
+                'url': data_url,
+                'method': $(this).attr('data-method')
+            }).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
@@ -537,9 +551,13 @@ $(document).ready(function () {
         })
 
         let list_acc_map_emp = []
-        let data_url = $('#select-box-acc-manager').attr('data-url-accounts')
+        let data_url = $('#select-box-acc-manager').attr('data-select2-url-accounts');
         let data_method = $('#select-box-acc-manager').attr('data-method')
-        $.fn.callAjax(data_url, data_method).then(
+        $.fn.callAjax2({
+            'url': data_url,
+            'method': data_method,
+            'isDropdown': true,
+        }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
@@ -559,6 +577,7 @@ $(document).ready(function () {
 
         $('#inp-tax-code-address').val($('#inp-tax-code').val());
         $('#inp-email-address').val($('#inp-email').val());
+        console.log($('#inp-account-name').val());
         $('#select-box-account-name').prepend(`<option value="">` + $('#inp-account-name').val() + `</option>`)
 
         if ($('#list-billing-address input').length === 0)
@@ -596,9 +615,12 @@ $(document).ready(function () {
             });
         } else {
             $('#button_add_new_billing_address').prop('hidden', false);
-            let url = $(this).attr('data-url').replace(0, id_account);
+            let url = $(this).attr('data-url').format_url_with_uuid(id_account);
             let method = $(this).attr('data-method');
-            $.fn.callAjax(url, method).then(
+            $.fn.callAjax2({
+                'url': url,
+                'method': method
+            }).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
@@ -655,8 +677,7 @@ $(document).ready(function () {
         $('#list-shipping-address input[type=radio]').each(function () {
             if ($(this).is(':checked')) {
                 shipping_address_list.unshift($(this).next('label').text().trim());
-            }
-            else {
+            } else {
                 shipping_address_list.push($(this).next('label').text().trim());
             }
         });
@@ -665,8 +686,7 @@ $(document).ready(function () {
         $('#list-billing-address input[type=radio]').each(function () {
             if ($(this).is(':checked')) {
                 billing_address_list.unshift($(this).next('label').text().trim());
-            }
-            else {
+            } else {
                 billing_address_list.push($(this).next('label').text().trim());
             }
         });
@@ -717,21 +737,24 @@ $(document).ready(function () {
         frm.dataForm['shipping_address_id_dict'] = shipping_address_id_dict;
         frm.dataForm['billing_address_id_dict'] = billing_address_id_dict;
 
-        frm.dataForm['system_status'] = 1; // save, not draft
+        frm.dataForm['system_status'] = 0; // save, not draft
 
-        $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
-            .then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        $.fn.notifyB({description: "Đang tạo account"}, 'success')
-                        $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
-                    }
-                },
-                (errs) => {
-                    $.fn.notifyB({description: errs.data.errors}, 'failure');
+        $.fn.callAjax2({
+            'url': frm.dataUrl,
+            'method': frm.dataMethod,
+            'data': frm.dataForm
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    $.fn.notifyB({description: "Đang tạo account"}, 'success')
+                    $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
                 }
-            )
+            },
+            (errs) => {
+                $.fn.notifyB({description: errs.data.errors}, 'failure');
+            }
+        )
     });
 
     // process address
@@ -754,10 +777,13 @@ $(document).ready(function () {
     // show modal add new contact
     $('#btn-add-new-contact').on('click', function () {
         let ele = $('#select-box-contact-owner');
-        let url = ele.attr('data-url');
+        let url = ele.attr('data-select2-url');
         let method = ele.attr('data-method');
         $('#modal-add-new-contact input').val('');
-        $.fn.callAjax(url, method).then(
+        $.fn.callAjax2({
+            'url': url,
+            'method': method
+        }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
@@ -797,7 +823,11 @@ $(document).ready(function () {
         }
     }
 
-    $('#save-modal-add-new-contact').on('click', function () {
+    const frmCreateContact = $('#frm-create-new-contact')
+
+    frmCreateContact.submit(function (event) {
+        event.preventDefault();
+        let frm = new SetupFormSubmit($(this));
         let contact_name = $('#inp-fullname').val();
         let contact_owner = $('#select-box-contact-owner').val();
         let job_title = $('#inp-jobtitle').val();
@@ -813,7 +843,11 @@ $(document).ready(function () {
             'mobile': contact_mobile
         }
         let csr = $("input[name=csrfmiddlewaretoken]").val();
-        $.fn.callAjax($(this).attr('data-url'), $(this).attr('data-method'), data, csr).then(
+        $.fn.callAjax2({
+            'url': frm.dataUrl,
+            'method': frm.dataMethod,
+            'data': data
+        }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
@@ -829,7 +863,10 @@ $(document).ready(function () {
 
                     // reload datatable contact in offCanvas
                     let table = $('#datatable-add-contact')
-                    $.fn.callAjax(table.attr('data-url'), table.attr('data-method')).then((resp) => {
+                    $.fn.callAjax2({
+                        'url': table.attr('data-url'),
+                        'method': table.attr('data-method')
+                    }).then((resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('contact_list_not_map_account')) {

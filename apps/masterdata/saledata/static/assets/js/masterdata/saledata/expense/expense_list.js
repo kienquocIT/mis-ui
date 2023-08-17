@@ -5,6 +5,7 @@ $(document).ready(function () {
             let frm = new SetupFormSubmit(dtb);
             dtb.DataTableDefault({
                 rowIdx: true,
+                useDataServer: true,
                 ajax: {
                     url: frm.dataUrl,
                     type: frm.dataMethod,

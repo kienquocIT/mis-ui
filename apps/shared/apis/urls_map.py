@@ -141,17 +141,17 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # masterdata/lookup/contact
     SALUTATION_LIST = StringUrl('saledata/salutations')
     INTERESTS_LIST = StringUrl('saledata/interests')
-    SALUTATION_DETAIL = StringUrl('saledata/salutation/')
+    SALUTATION_DETAIL = StringUrl('saledata/salutation/{pk}')
     SALUTATION_DETAIL_PK = StringUrl('saledata/salutation/{pk}')
-    INTEREST_DETAIL = StringUrl('saledata/interest/')
+    INTEREST_DETAIL = StringUrl('saledata/interest/{pk}')
 
     # masterdata/lookup/account
     INDUSTRY_LIST = StringUrl('saledata/industries')
     ACCOUNT_TYPE_LIST = StringUrl('saledata/accounttypes')
-    ACCOUNT_TYPE_DETAIL = StringUrl('saledata/accounttype/')
+    ACCOUNT_TYPE_DETAIL = StringUrl('saledata/accounttype/{pk}')
     ACCOUNT_GROUP_LIST = StringUrl('saledata/accountgroups')
-    ACCOUNT_GROUP_DETAIL = StringUrl('saledata/accountgroup/')
-    INDUSTRY_DETAIL = StringUrl('saledata/industry/')
+    ACCOUNT_GROUP_DETAIL = StringUrl('saledata/accountgroup/{pk}')
+    INDUSTRY_DETAIL = StringUrl('saledata/industry/{pk}')
 
     # crm/account
     ACCOUNT_LIST = StringUrl('saledata/accounts')
@@ -161,19 +161,20 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # masterdata/product
     PRODUCT_TYPE_LIST = StringUrl('saledata/product-types')
-    PRODUCT_TYPE_DETAIL = StringUrl('saledata/product-type/')
+    PRODUCT_TYPE_DETAIL = StringUrl('saledata/product-type/{pk}')
     PRODUCT_CATEGORY_LIST = StringUrl('saledata/product-categories')
-    PRODUCT_CATEGORY_DETAIL = StringUrl('saledata/product-category/')
+    PRODUCT_CATEGORY_DETAIL = StringUrl('saledata/product-category/{pk}')
     EXPENSE_TYPE_LIST = StringUrl('saledata/expense-types')
-    EXPENSE_TYPE_DETAIL = StringUrl('saledata/expense-type/')
+    EXPENSE_TYPE_DETAIL = StringUrl('saledata/expense-type/{pk}')
     UNIT_OF_MEASURE_GROUP = StringUrl('saledata/units-of-measure-group')
-    UNIT_OF_MEASURE_GROUP_DETAIL = StringUrl('saledata/unit-of-measure-group/')
+    UNIT_OF_MEASURE_GROUP_DETAIL = StringUrl('saledata/unit-of-measure-group/{pk}')
     UNIT_OF_MEASURE = StringUrl('saledata/units-of-measure')
-    UNIT_OF_MEASURE_DETAIL = StringUrl('saledata/unit-of-measure/')
+    UNIT_OF_MEASURE_DETAIL = StringUrl('saledata/unit-of-measure/{pk}')
+    UOM_OF_GROUP_LABOR_LIST = StringUrl('saledata/uom-group-labor')
 
     # product
     PRODUCT_LIST = StringUrl('saledata/products')
-    PRODUCT_DETAIL = StringUrl('saledata/product/')
+    PRODUCT_DETAIL = StringUrl('saledata/product/{pk}')
     PRODUCT_SALE_LIST = StringUrl('saledata/products-sale')
 
     # advance payment
@@ -189,27 +190,27 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # masterdata/price
     TAX_CATEGORY_LIST = StringUrl('saledata/tax-categories')
     TAX_LIST = StringUrl('saledata/taxes')
-    TAX_DETAIL = StringUrl('saledata/tax/')
-    TAX_CATEGORY_DETAIL = StringUrl('saledata/tax-category/')
+    TAX_DETAIL = StringUrl('saledata/tax/{pk}')
+    TAX_CATEGORY_DETAIL = StringUrl('saledata/tax-category/{pk}')
     CURRENCY_LIST = StringUrl('saledata/currencies')
-    CURRENCY_DETAIL = StringUrl('saledata/currency/')
-    SYNC_SELLING_RATE = StringUrl('saledata/sync-selling-rate-with-VCB/')
+    CURRENCY_DETAIL = StringUrl('saledata/currency/{pk}')
+    SYNC_SELLING_RATE = StringUrl('saledata/sync-selling-rate-with-VCB/{pk}')
 
     # price
     PRICE_LIST = StringUrl('saledata/prices')
-    PRICE_DETAIL = StringUrl('saledata/price/')
-    PRICE_DELETE = StringUrl('saledata/delete-price/')
-    PRODUCTS_FOR_PRICE_LIST = StringUrl('saledata/update-products-for-price-list/')
-    PRICE_LIST_DELETE_PRODUCT = StringUrl('saledata/delete-products-for-price-list/')
-    PRODUCT_ADD_FROM_PRICE_LIST = StringUrl('saledata/create-product-from-price-list/')
-    DELETE_CURRENCY_FROM_PRICE_LIST = StringUrl('saledata/delete-currency-from-price-list/')
+    PRICE_DETAIL = StringUrl('saledata/price/{pk}')
+    PRICE_DELETE = StringUrl('saledata/delete-price/{pk}')
+    PRODUCTS_FOR_PRICE_LIST = StringUrl('saledata/update-products-for-price-list/{pk}')
+    PRICE_LIST_DELETE_PRODUCT = StringUrl('saledata/delete-products-for-price-list/{pk}')
+    PRODUCT_ADD_FROM_PRICE_LIST = StringUrl('saledata/create-product-from-price-list/{pk}')
+    DELETE_CURRENCY_FROM_PRICE_LIST = StringUrl('saledata/delete-currency-from-price-list/{pk}')
 
     # payment terms
     PAYMENT_TERMS = StringUrl('saledata/masterdata/config/payment-term')
 
     # expense
     EXPENSE_LIST = StringUrl('saledata/expenses')
-    EXPENSE_DETAIL = StringUrl('saledata/expense/{expense_id}')
+    EXPENSE_DETAIL = StringUrl('saledata/expense/{pk}')
     EXPENSE_SALE_LIST = StringUrl('saledata/expenses-sale')
 
     # opportunity
@@ -247,7 +248,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # shipping
     SHIPPING_LIST = StringUrl('saledata/shippings')
-    SHIPPING_DETAIL = StringUrl('saledata/shipping/{shipping_id}')
+    SHIPPING_DETAIL = StringUrl('saledata/shipping/{pk}')
     SHIPPING_CHECK_LIST = StringUrl('saledata/shippings-check')
 
     # sale order

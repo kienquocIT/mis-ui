@@ -1036,7 +1036,7 @@ $(document).ready(function () {
             frm.dataForm['credit_limit_supplier'] = null;
         }
 
-        frm.dataForm['credit_limit_customer'] = $('#credit-limit-id-cutomer').attr('value');
+        frm.dataForm['credit_limit_customer'] = $('#credit-limit-id-customer').attr('value');
         if (frm.dataForm['credit_limit_customer'] === 'NaN') {
             frm.dataForm['credit_limit_customer'] = null;
         }

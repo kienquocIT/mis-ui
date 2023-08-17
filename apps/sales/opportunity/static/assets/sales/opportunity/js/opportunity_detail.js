@@ -2590,7 +2590,7 @@ $(document).ready(function () {
                             txt = `<i class="bi bi-person-workspace"></i>`
                         }
                         else if (row.type === 'document') {
-                            txt = `<i class="bi bi-telephone-fill"></i>`
+                            txt = `<i class="bi bi-file-earmark-fill"></i>`
                         }
                         return txt
                     }

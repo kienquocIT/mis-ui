@@ -49,7 +49,8 @@ class EmployeeListAPI(APIView):
 
     @mask_view(auth_require=True, is_api=True)
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(request=request, url=ApiURL.EMPLOYEE_LIST, user=request.user).get()
+        params = request.query_params.dict()
+        resp = ServerAPI(request=request, url=ApiURL.EMPLOYEE_LIST, user=request.user).get(params)
         return resp.auto_return(key_success='employee_list')
 
     @mask_view(

@@ -27,7 +27,6 @@ $(function () {
             deleteEmployeeShow(this.id);
         });
 
-// SUBMIT FORM
         frm.submit(function (e) {
             e.preventDefault();
             let frm = new SetupFormSubmit($(this));

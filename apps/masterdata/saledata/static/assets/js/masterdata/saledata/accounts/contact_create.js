@@ -1,7 +1,8 @@
 $(document).ready(function () {
     new ContactHandle().load();
 
-    $('#form-create-contact').submit(function (event) {
+    const frmCreate = $('#form-create-contact')
+    frmCreate.submit(function (event) {
         event.preventDefault();
         WindowControl.showLoading();
         let combinesData = new ContactHandle().combinesData($(this));

@@ -5,22 +5,19 @@
     <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}"/>
 {% endblock %}
 {% block pageAction %}
-    <a class="btn btn-outline-primary btn-animated btn-xs" target="_blank"
-       href="{% url "OpportunityDocumentCreate" %}" data-bs-original-title="Add New Document">
-            <span class="icon">
-                <span class="feather-icon">
-                    <i
-                            data-feather="plus">
-                    </i>
-                </span>
-                <span class="font-3 ml-1">
-                    {% trans 'New' %}
+    <a href="{% url "OpportunityDocumentCreate" %}">
+        <button class="btn btn-outline-primary">
+            <span>
+                <span>{% trans 'Add' %}</span>
+                <span class="icon">
+                    <i class="fa-solid fa-plus"></i>
                 </span>
             </span>
+        </button>
     </a>
 {% endblock %}
 {% block pageContent %}
-    <input class="hidden" id="inp-url" data-url-detail="{% url "OpportunityDocumentDetail" pk=0%}">
+    <input class="hidden" id="inp-url" data-url-detail="{% url "OpportunityDocumentDetail" pk=0 %}">
     <table id="datatable-opportunity-document" class="table nowrap w-100 mb-5"
            data-url="{% url "OpportunityDocumentListAPI" %}"
            data-method="GET">

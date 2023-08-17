@@ -199,6 +199,14 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
         _('Purchase Quotation detail'),
     )
 
+    PURCHASE_REQUEST_LIST = BreadcrumbChildren(
+        _('Purchase Request list'), 'PurchaseRequestList'
+    )
+
+    SALE_PROCESS_PAGE = BreadcrumbChildren(
+        _('Sale Process'), 'SaleProcess'
+    )
+
 
 class BreadcrumbView:
     """menu vertical item view"""
@@ -533,4 +541,20 @@ class BreadcrumbView:
     ]
     PURCHASE_QUOTATION_DETAIL_PAGE = PURCHASE_QUOTATION_LIST_PAGE + [
         BreadcrumbItem.PURCHASE_QUOTATION_DETAIL
+    ]
+
+    PURCHASE_REQUEST_LIST_PAGE = [
+        BreadcrumbItem.PURCHASE_REQUEST_LIST
+    ]
+
+    PURCHASE_REQUEST_CREATE_PAGE = PURCHASE_REQUEST_LIST_PAGE + [
+        BreadcrumbItem.BASTION_CREATE
+    ]
+    PURCHASE_REQUEST_DETAIL_PAGE = PURCHASE_REQUEST_LIST_PAGE + [
+        BreadcrumbItem.BASTION_DETAIL
+    ]
+
+    # process
+    SALE_PROCESS_PAGE = [
+        BreadcrumbItem.SALE_PROCESS_PAGE
     ]

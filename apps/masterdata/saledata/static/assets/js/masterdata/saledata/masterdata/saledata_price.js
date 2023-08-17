@@ -33,6 +33,7 @@ $(document).ready(function () {
                 break;
             case 'section-tax':
                 loadTax();
+                loadTaxCategory();
                 break;
             case 'section-tax-category':
                 loadTaxCategory();
@@ -285,6 +286,7 @@ $(document).ready(function () {
                                 let select_box = $('.select-box-category');
                                 select_box.html('');
                                 data.tax_category_list.map(function (item) {
+                                    console.log(item)
                                     select_box.append(`<option value="` + item.id + `">` + item.title + `</option>`)
                                 })
                                 return resp.data['tax_category_list'] ? resp.data['tax_category_list'] : []
@@ -342,14 +344,16 @@ $(document).ready(function () {
     // load Base Currency (Master data)
     function loadBaseCurrency() {
         let ele = $('#currency_name');
-        let url = ele.attr('data-url');
+        let url = ele.attr('data-select2-url');
         let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then(
+        $.fn.callAjax2({
+            'url': url,
+            'method': method
+        }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
-                    ele.text("");
-                    ele.append(`<option value=""></option>`)
+                    ele.append(`<option></option>`)
                     if (data.hasOwnProperty('base_currencies') && Array.isArray(data.base_currencies)) {
                         data.base_currencies.map(function (item) {
                             ele.append(`<option data-currency-title="` + item.title + `" data-currency-code="` + item.code + `" value="` + item.id + `"><b>` + item.code + `</b> - ` + item.title + `</option>`)
@@ -372,23 +376,22 @@ $(document).ready(function () {
         event.preventDefault();
         let csr = $("input[name=csrfmiddlewaretoken]").val();
         let frm = new SetupFormSubmit($(this));
-        $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
-            .then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        $.fn.notifyB({description: "Successfully"}, 'success')
-                        $('#modal-section-tax-category').hide();
-                    }
-                },
-                (errs) => {
+        $.fn.callAjax2({
+            'url': frm.dataUrl,
+            'method': frm.dataMethod,
+            'data': frm.dataForm
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    $.fn.notifyB({description: "Successfully"}, 'success')
+                    $('#modal-section-tax-category').modal('hide');
+                    $('#datatable-tax-category').DataTable().ajax.reload();
                 }
-            ).then(
-            (rep) => {// reload dataTable after create
-                $('#section-tax-category').html('');
-                $('#section-tax-category').append(ele_tax_category);
-                loadTaxCategory();
-            })
+            },
+            (errs) => {
+            }
+        )
     })
 
 //submit form create tax
@@ -402,66 +405,69 @@ $(document).ready(function () {
         } else {
             frm.dataForm['type'] = $('#select-box-type').val()[0];
         }
-        $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
-            .then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        $.fn.notifyB({description: "Successfully"}, 'success')
-                        $('#modal-section-tax').hide();
-                    }
-                },
-                (errs) => {
-
+        $.fn.callAjax2({
+            'url': frm.dataUrl,
+            'method': frm.dataMethod,
+            'data': frm.dataForm
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    $.fn.notifyB({description: "Successfully"}, 'success')
+                    $('#modal-section-tax').hide();
+                    $('#datatable-tax').DataTable().ajax.reload();
                 }
-            ).then(
-            (rep) => {// reload dataTable after create
-                $('#section-tax').html('');
-                $('#section-tax').append(ele_tax);
-                loadTax();
-            })
+            },
+            (errs) => {
+
+            }
+        )
     })
 
     let url_detail = ''
 // show detail tax
     $(document).on('click', '#datatable-tax .btn-detail', function () {
-        url_detail = $('#form-update-tax').attr('data-url').replace(0, $(this).attr('data-id'))
-        $.fn.callAjax(url_detail, 'GET')
-            .then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('tax')) {
-                            $('#tax-title').val(data.tax.title);
-                            $('#tax-code').val(data.tax.code);
-                            $('#tax-rate').val(data.tax.rate);
-                            $('.select-box-category').val(data.tax.category);
-                            if (data.tax.type === 0) {
-                                $('#tax-type').val(['0']).trigger("change");
-                            } else if (data.tax.type === 1) {
-                                $('#tax-type').val(['1']).trigger("change");
-                            } else {
-                                $('#tax-type').val(['0', '1']).trigger("change");
-                            }
+        url_detail = $('#form-update-tax').attr('data-url').format_url_with_uuid($(this).attr('data-id'));
+        $.fn.callAjax2({
+            'url': url_detail,
+            'method': 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('tax')) {
+                        $('#tax-title').val(data.tax.title);
+                        $('#tax-code').val(data.tax.code);
+                        $('#tax-rate').val(data.tax.rate);
+                        $('.select-box-category').val(data.tax.category);
+                        if (data.tax.type === 0) {
+                            $('#tax-type').val(['0']).trigger("change");
+                        } else if (data.tax.type === 1) {
+                            $('#tax-type').val(['1']).trigger("change");
+                        } else {
+                            $('#tax-type').val(['0', '1']).trigger("change");
                         }
                     }
-                })
+                }
+            })
     })
 
 // show detail tax category
     $(document).on('click', '#datatable-tax-category .btn-detail', function () {
-        url_detail = $('#form-update-tax-category').attr('data-url').replace(0, $(this).attr('data-id'))
-        $.fn.callAjax(url_detail, 'GET')
-            .then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('tax_category')) {
-                            $('#tax-category-title').val(data.tax_category.title)
-                            $('#tax-category-description').val(data.tax_category.description)
-                        }
+        url_detail = $('#form-update-tax-category').attr('data-url').format_url_with_uuid($(this).attr('data-id'));
+        $.fn.callAjax2({
+            'url': url_detail,
+            'method': 'GET',
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('tax_category')) {
+                        $('#tax-category-title').val(data.tax_category.title)
+                        $('#tax-category-description').val(data.tax_category.description)
                     }
-                })
+                }
+            })
     })
 
 //form update tax
@@ -475,23 +481,23 @@ $(document).ready(function () {
         } else {
             frm.dataForm['type'] = $('#tax-type').val()[0];
         }
-        $.fn.callAjax(url_detail, frm.dataMethod, frm.dataForm, csr)
-            .then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        $.fn.notifyB({description: "Successfully"}, 'success')
-                        $('#modal-detail-tax').hide();
-                    }
-                },
-                (errs) => {
+        frm.dataForm['category'] = $('.select-box-category').val();
+        $.fn.callAjax2({
+            'url': url_detail,
+            'method': frm.dataMethod,
+            'data': frm.dataForm
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    $.fn.notifyB({description: "Successfully"}, 'success')
+                    $('#modal-detail-tax').modal('hide');
+                    $('#datatable-tax').DataTable().ajax.reload();
                 }
-            ).then(
-            (rep) => {// reload dataTable after create
-                $('#section-tax').html('');
-                $('#section-tax').append(ele_tax);
-                loadTax();
-            })
+            },
+            (errs) => {
+            }
+        )
     })
 
 //form update tax category
@@ -500,23 +506,22 @@ $(document).ready(function () {
         event.preventDefault();
         let csr = $("input[name=csrfmiddlewaretoken]").val();
         let frm = new SetupFormSubmit($(this));
-        $.fn.callAjax(url_detail, frm.dataMethod, frm.dataForm, csr)
-            .then(
+        $.fn.callAjax2({
+            'url': url_detail,
+            'method': frm.dataMethod,
+            'data': frm.dataForm,
+        }).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         $.fn.notifyB({description: "Successfully"}, 'success')
-                        $('#modal-detail-tax-category').hide();
+                        $('#modal-detail-tax-category').modal('hide');
+                        $('#datatable-tax-category').DataTable().ajax.reload();
                     }
                 },
                 (errs) => {
                 }
-            ).then(
-            (resp) => {// reload dataTable after create
-                $('#section-tax-category').html('');
-                $('#section-tax-category').append(ele_tax_category);
-                loadTaxCategory();
-            })
+            )
     })
 
 // form create currency
@@ -533,24 +538,23 @@ $(document).ready(function () {
         frm.dataForm['abbreviation'] = $('#currency_name option:selected').attr('data-currency-code')
         frm.dataForm['title'] = $('#currency_name option:selected').attr('data-currency-title')
 
-        $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
-            .then(
+        $.fn.callAjax2({
+            'url': frm.dataUrl,
+            'method': frm.dataMethod,
+            'data': frm.dataForm
+        }).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         $.fn.notifyB({description: "Successfully"}, 'success')
-                        $('#modal-section-currency').hide();
+                        $('#modal-section-currency').modal('hide');
+                        $('#datatable-currency').DataTable().ajax.reload();
                     }
                 },
                 (errs) => {
 
                 }
-            ).then(
-            (rep) => {// reload dataTable after create
-                $('#section-currency').html('');
-                $('#section-currency').append(ele_currency);
-                loadCurrency();
-            })
+            )
     })
 
 
@@ -559,8 +563,10 @@ $(document).ready(function () {
         $('#currency-title').closest('div').find('span').text('*')
         $('#currency-abbreviation').closest('div').find('span').text('*')
         url_detail = $('#form-update-currency').attr('data-url').replace(0, $(this).attr('data-id'))
-        $.fn.callAjax(url_detail, 'GET')
-            .then(
+        $.fn.callAjax2({
+            'url': url_detail,
+            'method': 'GET'
+        }).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
@@ -593,8 +599,11 @@ $(document).ready(function () {
             if (result.value) {
                 let data_url = $('#form-create-currency').attr('data-url-delete').replace(0, $(this).attr('data-id'))
                 let csr = $("input[name=csrfmiddlewaretoken]").val();
-                $.fn.callAjax(data_url, 'PUT', {}, csr)
-                    .then(
+                $.fn.callAjax2({
+                    'url': data_url,
+                    'method': 'PUT',
+                    'data': {}
+                }).then(
                         (resp) => {
                             let data = $.fn.switcherResp(resp);
                             if (data) {
@@ -630,8 +639,11 @@ $(document).ready(function () {
             }
         });
         let csr = $("input[name=csrfmiddlewaretoken]").val();
-        $.fn.callAjax($(this).attr('data-url'), 'PUT', {'name': '1'}, csr)
-            .then(
+        $.fn.callAjax2({
+            'url': $(this).attr('data-url'),
+            'method': 'PUT',
+            'data': {'name': '1'}
+        }).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
@@ -909,8 +921,10 @@ $(document).ready(function () {
     }
 
     function loadDetailPage(url) {
-        $.fn.callAjax(url, 'GET')
-            .then(
+        $.fn.callAjax2({
+            'url': url,
+            'method': 'GET',
+        }).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {

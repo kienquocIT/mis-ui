@@ -77,109 +77,31 @@
                        name="fixed_price" value="">
             </div>
         </div>
-    </form>
-    <!--Tab Formula-->
-    <div class="condition-content hidden">
-        <div class="row mt-3">
-            <div class="col-2">
-                <button type="button" class="btn btn-link btn-animated" id="btnAddCondition">
+
+        <!--Tab Formula-->
+        <div class="condition-content hidden">
+            <div class="row mt-3">
+                <div class="col-2">
+                    <button type="button" class="btn btn-link btn-animated" id="btnAddCondition">
                 <span><span class="icon"><span class="feather-icon"><i
                         data-feather="plus"></i></span></span><span>{% trans "Add New Condition" %}</span></span>
-                </button>
+                    </button>
+                </div>
             </div>
         </div>
-    </div>
 
-    <!--Tab hidden to Add condition and Add formula for condition-->
-    <div class="hidden" id="ifInCondition">
-        <div class="formulaCondition newFormula">
-            <div class="row mt-3">
-                <div class="col-3 form-group"></div>
-                <div class="col-3 form-group">
-                    <label class="form-label">{% trans "If" %}</label>
-                    <input type="text" class="form-control inpUnit" readonly value="">
-                </div>
-                <div class="col-1 mt-2 form-group">
-                    <label class="form-label"></label>
-                    <select class="form-select chooseOperator" name="comparison_operators">
-                        <option value="1"><</option>
-                        <option value="2">></option>
-                        <option value="3">≤</option>
-                        <option value="4">≥</option>
-                    </select>
-                </div>
-                <div class="col-4 mt-2 form-group">
-                    <label class="form-label"></label>
-                    <span class="input-affix-wrapper affix-wth-text">
-                        <input type="number" class="form-control inpThreshold"
-                               aria-describedby="basic-addon1">
-                        <span class="input-suffix spanUnit"></span>
-                    </span>
-                </div>
-                <div class="col-1"></div>
-            </div>
-            <div class="row">
-                <div class="col-3"></div>
-                <div class="col-9 row">
-                    <div class="col-3">
-                        <div class="form-label-group ml-3">
-                            <input type="checkbox" class="form-check-input cbFixedPrice" checked>
-                            <label class="form-label">{% trans "Fixed price" %}</label>
-                        </div>
-                        <input type="text" class="form-control inpAmount mask-money" name="amount_condition"
-                               data-return-type="number">
-                    </div>
-                    <div class="col-4 mt-5 hidden divNotFixed">
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text">+</span>
-                            </div>
-                            <input type="text" class="form-control inpAmountExtra mask-money"
-                                   aria-label="Amount (to the nearest dollar)" data-return-type="number">
-                            <div class="input-group-append">
-                                <span class="input-group-text">*</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-3 mt-5 hidden divNotFixed">
-                        <label class="form-label displayUoMGroup mt-1"></label>
-                    </div>
-                    <div class="col-2 mt-5">
-                        <a class="btn btn-icon btn-del btn btn-icon btn-flush-danger flush-soft-hover btn-rounded btnDelFormula">
-                        <span class="btn-icon-wrap"><span class="feather-icon"><i
-                                data-feather="trash-2"></i></span></span>
-                        </a></div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-2"></div>
-            <div class="col-1 ">
-                <button type="button" class="btn btn-link btn-animated btnAddFormula">
-                    <span><span class="icon"><span class="feather-icon"><i
-                            data-feather="plus"></i></span></span><span>{% trans "Add If" %}</span></span>
-                </button>
-            </div>
-        </div>
-    </div>
-    <div class="hidden" id="newCondition">
-        <div class="line-condition newLine">
-            <div class="formulaCondition">
-                <div class="row">
-                    <div class="col-3 form-group">
-                        <label class="form-label">{% trans "At Location" %}</label>
-                        <select class="form-select chooseCity" multiple data-url="{% url 'CityListAPI' %}" data-method="GET" data-keyResp="cities">
-                        </select>
-                    </div>
+        <!--Tab hidden to Add condition and Add formula for condition-->
+        <div class="hidden" id="ifInCondition">
+            <div class="formulaCondition newFormula">
+                <div class="row mt-3">
+                    <div class="col-3 form-group"></div>
                     <div class="col-3 form-group">
                         <label class="form-label">{% trans "If" %}</label>
-                        <select class="form-select chooseUnit" data-url="{% url 'BaseItemUnitListAPI' %}" data-method="GET" data-keyResp="base_item_units">
-                        </select>
+                        <input type="text" class="form-control inpUnit" readonly value="">
                     </div>
                     <div class="col-1 mt-2 form-group">
                         <label class="form-label"></label>
                         <select class="form-select chooseOperator" name="comparison_operators">
-                            <option></option>
                             <option value="1"><</option>
                             <option value="2">></option>
                             <option value="3">≤</option>
@@ -189,17 +111,12 @@
                     <div class="col-4 mt-2 form-group">
                         <label class="form-label"></label>
                         <span class="input-affix-wrapper affix-wth-text">
-                            <input type="number" class="form-control inpThreshold"
-                                   aria-describedby="basic-addon1">
-                            <span class="input-suffix spanUnit"></span>
-                        </span>
+                        <input type="number" class="form-control inpThreshold"
+                               aria-describedby="basic-addon1">
+                        <span class="input-suffix spanUnit"></span>
+                    </span>
                     </div>
-                    <div class="col-1">
-                        <button type="button" class="btn btn-link btn-animated btnDelCondition">
-                            <span><span class="icon"><span class="feather-icon"></span></span><span
-                                    class="text-danger">{% trans "Delete" %}</span></span>
-                        </button>
-                    </div>
+                    <div class="col-1"></div>
                 </div>
                 <div class="row">
                     <div class="col-3"></div>
@@ -209,8 +126,8 @@
                                 <input type="checkbox" class="form-check-input cbFixedPrice" checked>
                                 <label class="form-label">{% trans "Fixed price" %}</label>
                             </div>
-                            <input type="text" class="form-control inpAmount mask-money" data-return-type="number"
-                                   name="amount_condition">
+                            <input type="text" class="form-control inpAmount mask-money" name="amount_condition"
+                                   data-return-type="number">
                         </div>
                         <div class="col-4 mt-5 hidden divNotFixed">
                             <div class="input-group">
@@ -224,9 +141,14 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-5 mt-5 hidden divNotFixed">
+                        <div class="col-3 mt-5 hidden divNotFixed">
                             <label class="form-label displayUoMGroup mt-1"></label>
                         </div>
+                        <div class="col-2 mt-5">
+                            <a class="btn btn-icon btn-del btn btn-icon btn-flush-danger flush-soft-hover btn-rounded btnDelFormula">
+                        <span class="btn-icon-wrap"><span class="feather-icon"><i
+                                data-feather="trash-2"></i></span></span>
+                            </a></div>
                     </div>
                 </div>
             </div>
@@ -240,10 +162,89 @@
                 </div>
             </div>
         </div>
-    </div>
+        <div class="hidden" id="newCondition">
+            <div class="line-condition newLine">
+                <div class="formulaCondition">
+                    <div class="row">
+                        <div class="col-3 form-group">
+                            <label class="form-label">{% trans "At Location" %}</label>
+                            <select class="form-select chooseCity" multiple data-url="{% url 'CityListAPI' %}"
+                                    data-method="GET" data-keyResp="cities" required>
+                            </select>
+                        </div>
+                        <div class="col-3 form-group">
+                            <label class="form-label">{% trans "If" %}</label>
+                            <select class="form-select chooseUnit" data-url="{% url 'BaseItemUnitListAPI' %}"
+                                    data-method="GET" data-keyResp="base_item_units">
+                            </select>
+                        </div>
+                        <div class="col-1 mt-2 form-group">
+                            <label class="form-label"></label>
+                            <select class="form-select chooseOperator" name="comparison_operators">
+                                <option></option>
+                                <option value="1"><</option>
+                                <option value="2">></option>
+                                <option value="3">≤</option>
+                                <option value="4">≥</option>
+                            </select>
+                        </div>
+                        <div class="col-4 mt-2 form-group">
+                            <label class="form-label"></label>
+                            <span class="input-affix-wrapper affix-wth-text">
+                            <input type="number" class="form-control inpThreshold"
+                                   aria-describedby="basic-addon1">
+                            <span class="input-suffix spanUnit"></span>
+                        </span>
+                        </div>
+                        <div class="col-1">
+                            <button type="button" class="btn btn-link btn-animated btnDelCondition">
+                            <span><span class="icon"><span class="feather-icon"></span></span><span
+                                    class="text-danger">{% trans "Delete" %}</span></span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3"></div>
+                        <div class="col-9 row">
+                            <div class="col-3">
+                                <div class="form-label-group ml-3">
+                                    <input type="checkbox" class="form-check-input cbFixedPrice" checked>
+                                    <label class="form-label">{% trans "Fixed price" %}</label>
+                                </div>
+                                <input type="text" class="form-control inpAmount mask-money" data-return-type="number"
+                                       name="amount_condition">
+                            </div>
+                            <div class="col-4 mt-5 hidden divNotFixed">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">+</span>
+                                    </div>
+                                    <input type="text" class="form-control inpAmountExtra mask-money"
+                                           aria-label="Amount (to the nearest dollar)" data-return-type="number">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">*</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-5 mt-5 hidden divNotFixed">
+                                <label class="form-label displayUoMGroup mt-1"></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-2"></div>
+                    <div class="col-1 ">
+                        <button type="button" class="btn btn-link btn-animated btnAddFormula">
+                    <span><span class="icon"><span class="feather-icon"><i
+                            data-feather="plus"></i></span></span><span>{% trans "Add If" %}</span></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
     <!--City Data-->
-    {{ data.cities | json_script:"id-city-list" }}
-    {{ data.unit | json_script:"id-unit-list" }}
 
 {% endblock %}
 {% block dataHiddenGroup %}

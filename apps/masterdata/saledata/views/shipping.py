@@ -25,9 +25,6 @@ class ShippingCreate(View):
         perm_check=PermCheck(url=ApiURL.SHIPPING_LIST, method='post'),
     )
     def get(self, request, *args, **kwargs):
-        resp_unit = ServerAPI(url=ApiURL.ITEM_UNIT_LIST, user=request.user).get()
-        if resp_unit.state:
-            return {'unit': resp_unit.result}, status.HTTP_200_OK
         return {}, status.HTTP_200_OK
 
 
@@ -58,11 +55,6 @@ class ShippingDetail(View):
         perm_check=PermCheck(url=ApiURL.SHIPPING_DETAIL, method='GET', fill_key=['pk']),
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(url=ApiURL.CITIES, user=request.user).get()
-        resp_unit = ServerAPI(url=ApiURL.ITEM_UNIT_LIST, user=request.user).get()
-        if resp.state and resp_unit:
-            result = {'cities': resp.result, 'unit': resp_unit.result}
-            return result, status.HTTP_200_OK
         return {}, status.HTTP_200_OK
 
 

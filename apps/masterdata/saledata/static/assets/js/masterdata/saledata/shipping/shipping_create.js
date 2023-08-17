@@ -1,13 +1,5 @@
 $(document).ready(function () {
-    // const city_list = JSON.parse($('#id-city-list').text());
 
-    // const item_unit_list = JSON.parse($('#id-unit-list').text());
-    // const item_unit_dict = item_unit_list.reduce((obj, item) => {
-    //     obj[item.id] = item;
-    //     return obj;
-    // }, {});
-
-    let item_unit_list = [];
     let item_unit_dict = {}
 
     $(document).on('change', '.cbFixedPrice', function () {
@@ -29,12 +21,8 @@ $(document).ready(function () {
 
     //onchange select box choose Unit Of Measure Group
     $(document).on('change', '.chooseUnit', function () {
-        if (Object.keys(item_unit_dict).length === 0 || item_unit_list.length === 0) {
-            item_unit_list = JSON.parse($(`#${$(this).data('idx-data-loaded')}`).text());
-            item_unit_dict = item_unit_list.reduce((obj, item) => {
-                obj[item.id] = item;
-                return obj;
-            }, {});
+        if (Object.keys(item_unit_dict).length === 0) {
+            item_unit_dict = JSON.parse($(`#${$(this).data('idx-data-loaded')}`).text());
         }
         let eleParent = $(this).closest('.line-condition');
         let ele = eleParent.find('.spanUnit');
@@ -207,22 +195,4 @@ $(document).ready(function () {
         }
     })
 
-    // $(document).on('change', '.chooseCity', function () {
-    //     let selectedOptions = $(this).find('option:selected').map(function () {
-    //         return this.value;
-    //     }).get();
-    //
-    //     $('.chooseCity').not(this).each(function () {
-    //         $(this).find('option').each(function () {
-    //             if ($(this).is(':selected') === true) {
-    //                 selectedOptions.push($(this).val());
-    //             }
-    //             if (selectedOptions.includes($(this).val()) && $(this).is(':selected') === false) {
-    //                 $(this).attr('disabled', 'disabled');
-    //             } else {
-    //                 $(this).removeAttr('disabled');
-    //             }
-    //         });
-    //     });
-    // });
 })

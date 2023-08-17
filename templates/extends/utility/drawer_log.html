@@ -9,12 +9,20 @@
         data-url="{% url 'FlowRuntimeDiagramDetailAPI' pk=1 %}"
 >
     <div class="ntt-drawer-header">
-        <div><span class="ntt-drawer-header-text">{% trans 'History' %}</span></div>
+        <div>
+            <span class="ntt-drawer-header-text">{% trans 'History' %}</span>
+        </div>
         <button class="btn btn-icon btn-xs btn-rounded bg-dark-hover ntt-drawer-close">
             <span class="icon">
                 <span aria-hidden="true"><i class="fas fa-times"></i></span>
             </span>
         </button>
+    </div>
+    <div class="ntt-drawer-header ntt-drawer-title-text">
+        <div class="form-group ml-3 mt-3">
+            <span class="mr-1">{% trans 'Title' %}:</span>
+            <span class="badge badge-soft-success" id="txtDocTitleHistory"></span>
+        </div>
     </div>
     <div class="ntt-drawer-body">
         <div class="ntt-drawer-content-wrap">

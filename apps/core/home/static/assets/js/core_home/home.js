@@ -263,7 +263,6 @@ function loadTabFollowing() {
             columns: [
                 {
                     data: 'doc_title',
-                    className: 'wrap-text',
                     width: "25%",
                     render: (data, type, row) => {
                         let urlData = UrlGatewayReverse.get_url(
@@ -273,36 +272,36 @@ function loadTabFollowing() {
                         );
                         return `<a href="${urlData}">${data ? data : "_"}</a>`;
                     }
-                }, {
+                },
+                {
                     data: 'app_code',
-                    className: 'wrap-text',
                     width: "10%",
                     render: (data, type, row) => {
-                        return data ? `<span class="badge badge-light">${data}</span>` : '';
+                        return data ? `<span class="badge badge-light">${data ? data : ''}</span>` : '';
                     }
-                }, {
-                    className: 'wrap-text',
+                },
+                {
                     width: "15%",
                     data: 'stage_currents',
                     render: (data, type, row) => {
-                        return data ? `<span class="badge badge-warning">${data['title']}</span>` : '';
+                        return data?.['title'] ? `<span class="badge badge-warning">${data?.['title']}</span>` : '';
                     }
-                }, {
+                },
+                {
                     data: 'assignees',
-                    className: 'wrap-text',
                     width: "20%",
                     render: (data, type, row) => {
                         return renderCollaborationHTML(data);
                     }
-                }, {
+                },
+                {
                     data: 'date_created',
-                    className: 'wrap-text',
                     width: "15%",
                     render: (data, type, row) => {
-                        return `<span class="ml-1">${UtilControl.parseDateTime(data)}</span>`;
+                        return data ? `<span class="ml-1">${UtilControl.parseDateTime(data)}</span>`: '';
                     }
-                }, {
-                    className: 'wrap-text',
+                },
+                {
                     width: "15%",
                     data: 'doc_pined_id',
                     render: (data, type, row) => {

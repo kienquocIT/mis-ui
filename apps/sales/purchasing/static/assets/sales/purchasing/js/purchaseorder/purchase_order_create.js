@@ -177,12 +177,29 @@ $(function () {
         });
 
         // Action on change data on row of tablePurchaseOrderProductRequest
-        tablePurchaseOrderProductRequest.on('change', '.table-row-quantity-order-actual, .table-row-price, .table-row-tax', function () {
+        tablePurchaseOrderProductRequest.on('change', '.table-row-uom-order-actual, .table-row-quantity-order-actual, .table-row-price, .table-row-tax', function () {
             let row = $(this)[0].closest('tr');
+            // Change quantity
             if ($(this).hasClass('table-row-quantity-order-actual')) {
                 POValidateHandle.validateNumber(this);
                 let order_on_request = row.querySelector('.table-row-quantity-order-request').innerHTML;
                 POValidateHandle.validateQuantityOrderFinal(this, order_on_request);
+
+
+                // check if different uom
+                let dataRowRaw = row.querySelector('.table-row-order').getAttribute('data-row');
+                let eleUOMOrder = row.querySelector('.table-row-uom-order-actual');
+                if (dataRowRaw && $(eleUOMOrder).val()) {
+                    let dataRow = JSON.parse(dataRowRaw);
+                    let uomRequestData = dataRow?.['uom_order_request'];
+                    let uomOrderData = SelectDDControl.get_data_from_idx($(eleUOMOrder), $(eleUOMOrder).val());
+                    let uomRequestExchangeRate = 1;
+                    let uomOrderExchangeRate = 1;
+                }
+            }
+            // Change uom
+            if ($(this).hasClass('table-row-uom-order-actual')) {
+                row.querySelector('.table-row-quantity-order-actual').val(0);
             }
             POCalculateHandle.calculateMain(tablePurchaseOrderProductRequest, row);
         });

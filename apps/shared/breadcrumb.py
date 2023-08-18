@@ -37,15 +37,15 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     BASTION_UPDATE = BreadcrumbChildren(_('Update'), is_append_code=True)
 
     # hr
-    EMPLOYEE_LIST_PAGE = BreadcrumbChildren(_('Employee List'), 'EmployeeList')
+    EMPLOYEE_LIST_PAGE = BreadcrumbChildren(_('Employee'), 'EmployeeList')
     EMPLOYEE_CREATE_PAGE = BreadcrumbChildren(_('Employee Create'), 'EmployeeCreate')
     GROUP_LEVEL_LIST_PAGE = BreadcrumbChildren(_('Organization Level'), 'GroupLevelList')
     GROUP_LIST_PAGE = BreadcrumbChildren(_('Organization Group'), 'GroupList')
-    ROLE_LIST_PAGE = BreadcrumbChildren(_('Role List'), 'RoleList')
+    ROLE_LIST_PAGE = BreadcrumbChildren(_('Role'), 'RoleList')
     ROLE_CREATE_PAGE = BreadcrumbChildren(_("Create Role"), 'RoleCreate')
 
     # user
-    USER_LIST_PAGE = BreadcrumbChildren(_('User List'), 'UserList')
+    USER_LIST_PAGE = BreadcrumbChildren(_('User'), 'UserList')
     USER_CREATE_PAGE = BreadcrumbChildren(_('User Create'), 'UserCreate')
     USER_DETAIL_PAGE = BreadcrumbChildren(_('User detail'))
     USER_EDIT_PAGE = BreadcrumbChildren(_('Edit user'))
@@ -61,17 +61,17 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     COMPONENTS_PAGE = BreadcrumbChildren(_('Component'), 'ComponentCollections')
 
     # Workflow
-    WORKFLOW_LIST_PAGE = BreadcrumbChildren(_('Workflow list'), 'WorkflowList')
+    WORKFLOW_LIST_PAGE = BreadcrumbChildren(_('Workflow'), 'WorkflowList')
     WORKFLOW_CREATE_PAGE = BreadcrumbChildren(_('Workflow create'), 'WorkflowCreate')
     WORKFLOW_DETAIL_PAGE = BreadcrumbChildren(_('Workflow detail'))
 
     # Contact, Account
-    CONTACT_LIST_PAGE = BreadcrumbChildren(_('Contact list'), 'ContactList')
+    CONTACT_LIST_PAGE = BreadcrumbChildren(_('Contact'), 'ContactList')
     CONTACT_CREATE_PAGE = BreadcrumbChildren(_('Contact create'), 'ContactCreate')
     CONTACT_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
     CONTACT_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
 
-    ACCOUNT_LIST_PAGE = BreadcrumbChildren(_('Account list'), 'AccountList')
+    ACCOUNT_LIST_PAGE = BreadcrumbChildren(_('Account'), 'AccountList')
     ACCOUNT_CREATE_PAGE = BreadcrumbChildren(_('Account create'), 'AccountCreate')
     ACCOUNT_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
 
@@ -84,52 +84,52 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     PRODUCT_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Master Data Product'), 'ProductMasterDataList')
 
     # Product
-    PRODUCT_LIST_PAGE = BreadcrumbChildren(_('Product list'), 'ProductList')
+    PRODUCT_LIST_PAGE = BreadcrumbChildren(_('Product'), 'ProductList')
     PRODUCT_CREATE_PAGE = BreadcrumbChildren(_('Product create'), 'ProductCreate')
     PRODUCT_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
 
     # Advance
-    ADVANCE_PAYMENT_LIST_PAGE = BreadcrumbChildren(_('Advance Payment list'), 'AdvancePaymentList')
+    ADVANCE_PAYMENT_LIST_PAGE = BreadcrumbChildren(_('Advance Payment'), 'AdvancePaymentList')
     ADVANCE_PAYMENT_CREATE_PAGE = BreadcrumbChildren(_('Advance Payment create'), 'AdvancePaymentCreate')
     ADVANCE_PAYMENT_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
 
     # Payment
-    PAYMENT_LIST_PAGE = BreadcrumbChildren(_('Payment list'), 'PaymentList')
+    PAYMENT_LIST_PAGE = BreadcrumbChildren(_('Payment'), 'PaymentList')
     PAYMENT_CREATE_PAGE = BreadcrumbChildren(_('Payment create'), 'PaymentCreate')
     PAYMENT_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
 
     # Price
-    PRICE_LIST_PAGE = BreadcrumbChildren(_('Price list'), 'PriceList')
+    PRICE_LIST_PAGE = BreadcrumbChildren(_('Price'), 'PriceList')
     PRICE_LIST_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
 
     # Expense
-    EXPENSE_LIST_PAGE = BreadcrumbChildren(_('Expense list'), 'ExpenseList')
+    EXPENSE_LIST_PAGE = BreadcrumbChildren(_('Expense'), 'ExpenseList')
     EXPENSE_CREATE_PAGE = BreadcrumbChildren(_('Expense create'), 'ExpenseCreate')
     EXPENSE_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
     # Promotion
-    PROMOTION_LIST_PAGE = BreadcrumbChildren(_('Promotion List'), 'PromotionList')
+    PROMOTION_LIST_PAGE = BreadcrumbChildren(_('Promotion'), 'PromotionList')
     PROMOTION_CREATE_PAGE = BreadcrumbChildren(_('Promotion create'), 'PromotionCreate')
     PROMOTION_DETAIL_PAGE = BreadcrumbChildren(_('Promotion detail'))
     PROMOTION_EDIT_PAGE = BreadcrumbChildren(_('Promotion edit'))
 
     # Opportunity
-    OPPORTUNITY_LIST_PAGE = BreadcrumbChildren(_('Opportunity list'), 'OpportunityList')
+    OPPORTUNITY_LIST_PAGE = BreadcrumbChildren(_('Opportunity'), 'OpportunityList')
 
     # Quotation
     QUOTATION_CONFIG_PAGE = BreadcrumbChildren(_('Quotation'), 'QuotationConfigDetail')
-    QUOTATION_LIST_PAGE = BreadcrumbChildren(_('Quotation list'), 'QuotationList')
+    QUOTATION_LIST_PAGE = BreadcrumbChildren(_('Quotation'), 'QuotationList')
     QUOTATION_CREATE_PAGE = BreadcrumbChildren(_('Quotation create'), 'QuotationCreate')
     QUOTATION_DETAIL_PAGE = BreadcrumbChildren(_('Quotation detail'))
     QUOTATION_UPDATE_PAGE = BreadcrumbChildren(_('Quotation update'))
 
     # Shipping
-    SHIPPING_LIST_PAGE = BreadcrumbChildren(_('Shipping list'), 'ShippingList')
+    SHIPPING_LIST_PAGE = BreadcrumbChildren(_('Shipping'), 'ShippingList')
     SHIPPING_CREATE_PAGE = BreadcrumbChildren(_('Shipping create'), 'ShippingCreate')
     SHIPPING_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
 
     # Sale order
     SALE_ORDER_CONFIG_PAGE = BreadcrumbChildren(_('Sale order'), 'SaleOrderConfigDetail')
-    SALE_ORDER_LIST_PAGE = BreadcrumbChildren(_('Sale order list'), 'SaleOrderList')
+    SALE_ORDER_LIST_PAGE = BreadcrumbChildren(_('Sale order'), 'SaleOrderList')
     SALE_ORDER_CREATE_PAGE = BreadcrumbChildren(_('Sale order create'), 'SaleOrderCreate')
     SALE_ORDER_DETAIL_PAGE = BreadcrumbChildren(_('Sale order detail'))
     SALE_ORDER_UPDATE_PAGE = BreadcrumbChildren(_('Sale order update'))
@@ -138,13 +138,13 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     WAREHOUSE_LIST_PAGE = BreadcrumbChildren(_('WareHouse'), 'WareHouseList')
 
     # Good receipt
-    GOOD_RECEIPT_LIST_PAGE = BreadcrumbChildren(_('Good receipt List'), 'GoodReceiptList')
+    GOOD_RECEIPT_LIST_PAGE = BreadcrumbChildren(_('Good receipt'), 'GoodReceiptList')
     GOOD_RECEIPT_CREATE_PAGE = BreadcrumbChildren(_('Good receipt create'), 'GoodReceiptCreate')
     GOOD_RECEIPT_EDIT_PAGE = BreadcrumbChildren(_('Good receipt edit'))
     GOOD_RECEIPT_DETAIL_PAGE = BreadcrumbChildren(_('Good receipt detail'))
     # Transition Data Config
     DELIVERY_CONFIG_PAGE = BreadcrumbChildren(_('Delivery'), 'DeliveryConfigDetail')
-    DELIVERY_PICKING_LIST_PAGE = BreadcrumbChildren(_('Picking list'), 'OrderPickingList')
+    DELIVERY_PICKING_LIST_PAGE = BreadcrumbChildren(_('Picking'), 'OrderPickingList')
     DELIVERY_PICKING_DETAIL_PAGE = BreadcrumbChildren(_('Picking detail'))
     DELIVERY_PICKING_EDIT_PAGE = BreadcrumbChildren(_('Picking edit'))
     DELIVERY_LIST_PAGE = BreadcrumbChildren(_('Delivery list'), 'OrderDeliveryList')
@@ -152,7 +152,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     DELIVERY_EDIT_PAGE = BreadcrumbChildren(_('Delivery edit'))
 
     # Return Advance
-    RETURN_ADVANCE_LIST_PAGE = BreadcrumbChildren(_('Return Advance list'), 'ReturnAdvanceList')
+    RETURN_ADVANCE_LIST_PAGE = BreadcrumbChildren(_('Return Advance'), 'ReturnAdvanceList')
     RETURN_ADVANCE_CREATE_PAGE = BreadcrumbChildren(_('Return Advance create'), 'ReturnAdvanceCreate')
     RETURN_ADVANCE_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
 
@@ -164,20 +164,20 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
 
     # Task
     OPPORTUNITY_TASK_CONFIG_PAGE = BreadcrumbChildren(_('Task config'), 'OpportunityTaskConfig')
-    OPPORTUNITY_TASK_LIST_PAGE = BreadcrumbChildren(_('Task list'), 'OpportunityTaskList')
+    OPPORTUNITY_TASK_LIST_PAGE = BreadcrumbChildren(_('Task'), 'OpportunityTaskList')
 
     # Sale Activities
-    CALL_LOG_LIST_PAGE = BreadcrumbChildren(_('Call log list'), 'OpportunityCallLogList')
-    EMAIL_LIST_PAGE = BreadcrumbChildren(_('Send email list'), 'OpportunityEmailList')
-    MEETING_LIST_PAGE = BreadcrumbChildren(_('Meeting list'), 'OpportunityMeetingList')
+    CALL_LOG_LIST_PAGE = BreadcrumbChildren(_('Call log'), 'OpportunityCallLogList')
+    EMAIL_LIST_PAGE = BreadcrumbChildren(_('Send email'), 'OpportunityEmailList')
+    MEETING_LIST_PAGE = BreadcrumbChildren(_('Meeting'), 'OpportunityMeetingList')
 
-    OPPORTUNITY_DOCUMENT_LIST_PAGE = BreadcrumbChildren(_('Document List'), 'OpportunityDocumentList')
+    OPPORTUNITY_DOCUMENT_LIST_PAGE = BreadcrumbChildren(_('Document'), 'OpportunityDocumentList')
 
     # Purchase
     # PURCHASE_REQUEST_LIST_PAGE = BreadcrumbChildren(_('Purchase Request List'), 'PurchaseRequestList'),
     # Purchase Quotation Request
     PURCHASE_QUOTATION_REQUEST = BreadcrumbChildren(
-        _('Purchase Quotation Request list'), 'PurchaseQuotationRequestList'
+        _('Purchase Quotation Request'), 'PurchaseQuotationRequestList'
     )
     PURCHASE_QUOTATION_REQUEST_CREATE_FROM_PR = BreadcrumbChildren(
         _('Purchase Quotation Request create (From PR)'), 'PurchaseQuotationRequestCreateFromPR'
@@ -190,7 +190,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     )
 
     PURCHASE_QUOTATION = BreadcrumbChildren(
-        _('Purchase Quotation list'), 'PurchaseQuotationList'
+        _('Purchase Quotation'), 'PurchaseQuotationList'
     )
     PURCHASE_QUOTATION_CREATE = BreadcrumbChildren(
         _('Purchase Quotation create '), 'PurchaseQuotationCreate'
@@ -200,7 +200,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     )
 
     PURCHASE_REQUEST_LIST = BreadcrumbChildren(
-        _('Purchase Request list'), 'PurchaseRequestList'
+        _('Purchase Request'), 'PurchaseRequestList'
     )
 
     SALE_PROCESS_PAGE = BreadcrumbChildren(

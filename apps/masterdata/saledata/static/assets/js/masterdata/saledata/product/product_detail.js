@@ -280,7 +280,6 @@ $(document).ready(function () {
             ele6.find('.ul-price-list').html(html);
 
             let product_detail = results[5];
-            console.log(product_detail)
             $.fn.compareStatusShowPageAction(product_detail);
 
             $('#product-code').text(product_detail['code']);
@@ -323,7 +322,6 @@ $(document).ready(function () {
                 $('#sale-cost').attr('value', sale_information['sale_product_cost']);
 
                 for (let i = 0; i < sale_information['sale_product_price_list'].length; i++) {
-                    console.log(sale_information['sale_product_price_list'])
                     let item = sale_information['sale_product_price_list'][i];
                     $(`.input_price_list[data-id="` + item.id + `"]`).attr('value', item.price);
                 }

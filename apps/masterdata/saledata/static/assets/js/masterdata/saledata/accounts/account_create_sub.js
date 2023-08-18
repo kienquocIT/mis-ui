@@ -171,8 +171,7 @@ function loadAccountAddress(accountAddressData) {
         keyResp: 'account_detail',
         keyId: 'id',
         keyText: 'full_address',
-    })
-    // $.fn.callAjax(url, method).then(
+    })    // $.fn.callAjax(url, method).then(
     //     (resp) => {
     //         let data = $.fn.switcherResp(resp);
     //         if (data) {
@@ -186,6 +185,7 @@ function loadAccountAddress(accountAddressData) {
     //         }
     //     }
     // )
+
 }
 
 class AccountHandle {
@@ -798,7 +798,7 @@ $('#save-modal-add-new-contact').on('click', function () {
             }
         },
         (errs) => {
-            $.fn.notifyB({description: errs.data.errors}, 'failure');
+            //$.fn.notifyB({description: errs.data.errors}, 'failure');
         })
 })
 

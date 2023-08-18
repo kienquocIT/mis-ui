@@ -756,11 +756,11 @@ $(document).ready(function () {
                         },
                         1000
                     )
-                    $.fn.notifyB({description: errs.data.errors}, 'failure');
+                    //$.fn.notifyB({description: errs.data.errors}, 'failure');
                 })
             },
         (errs) => {
-            $.fn.notifyB({description: errs.data.errors}, 'failure');
+            //$.fn.notifyB({description: errs.data.errors}, 'failure');
         }
     )
 
@@ -890,7 +890,7 @@ $(document).ready(function () {
                 }
             },
             (errs) => {
-                $.fn.notifyB({description: errs.data.errors}, 'failure');
+                //$.fn.notifyB({description: errs.data.errors}, 'failure');
             })
     })
 

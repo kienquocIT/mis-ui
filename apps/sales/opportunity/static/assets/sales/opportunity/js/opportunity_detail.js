@@ -1280,7 +1280,7 @@ $(document).ready(function () {
                     }
                 },
                 (errs) => {
-                    $.fn.notifyB({description: errs.data.errors}, 'failure');
+                    //$.fn.notifyB({description: errs.data.errors}, 'failure');
                 }
             )
     })

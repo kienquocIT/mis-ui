@@ -49,7 +49,9 @@ tbl.on('click', '.btnRemoveRow', function () {
 
 tbl.on('change', '#newRowApp', function () {
     let selectedData = SelectDDControl.get_data_from_idx($(this));
-    let rangeAllow = selectedData?.['app'] ? (selectedData['app']?.['option_allowed'] || []) : [];
+    let rangeAllow = (selectedData?.['app'] ? (selectedData['app']?.['option_allowed'] || []) : []).map(
+        (item)=>{return item.toString();}
+    );
 
     let selectRangeEle = $('#newRowRange');
     selectRangeEle.find(":selected").prop('selected', false);

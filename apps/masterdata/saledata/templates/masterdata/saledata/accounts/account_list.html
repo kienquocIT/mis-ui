@@ -32,9 +32,26 @@
     </ul>
     <div class="tab-content">
         <div class="tab-pane show active" id="account-list">
-            <table id="datatable_account_list" class="table nowrap w-100 mb-5"
-                   data-url="{% url "AccountListAPI" %}" data-method="GET">
+            <table
+                    id="datatable_account_list" class="table nowrap w-100 mb-5"
+                    data-url="{% url "AccountListAPI" %}" data-method="GET"
+                    data-url-employee="{% url 'EmployeeListAPI' %}"
+            >
                 <thead>
+                <tr class="row-custom-filter">
+                    <th colspan="8">
+                        <div class="col-12 col-xs-6 col-md-4 col-lg-3">
+                            <label for="searchManager">{% trans 'Account Manager' %}</label>
+                            <select
+                                    class="select-custom-filter"
+                                    id="searchManager" data-url="{% url 'EmployeeListAPI' %}"
+                                    data-keyResp="employee_list" data-keyText="full_name"
+                                    data-keyParam="manager__contains"
+                                    multiple
+                            ></select>
+                        </div>
+                    </th>
+                </tr>
                 <tr>
                     <th>#</th>
                     <th>{% trans "Name" %}</th>

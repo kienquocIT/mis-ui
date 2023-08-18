@@ -30,7 +30,7 @@ $(document).ready(function () {
                     let clsBadgeCurrent = -1;
                     let list_class_badge = ['badge-soft-danger', 'badge-soft-blue', 'badge-soft-primary', 'badge-soft-secondary']
                     let html = (row?.['account_type'] || []).map(
-                        (item)=>{
+                        (item) => {
                             clsBadgeCurrent += 1;
                             return `<span class="badge ${list_class_badge[clsBadgeCurrent]} mt-1 ml-1">${item}</span>`;
                         }
@@ -68,7 +68,14 @@ $(document).ready(function () {
                         element += `<span class="badge badge-soft-secondary mt-1 ml-1">` + row.manager[i].fullname + `</span>`;
                     }
                     return `<div class="row">${element}</div>`
-                }
+                },
+                // colFilter: {
+                //     keyText: "full_name",
+                //     keyId: "id",
+                //     keyResp: "employee_list",
+                //     dataUrl: urlEmployeeList,
+                //     keyParam: "manager__contains",
+                // }
             },
             {
                 'className': 'action-center',

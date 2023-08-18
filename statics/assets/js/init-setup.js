@@ -294,7 +294,7 @@ class LogController {
                             let data = $.fn.switcherResp(resp);
                             if (data && $.fn.hasOwnProperties(data, ['diagram_data'])) {
                                 let diagram_data = data?.['diagram_data'];
-                                if (diagram_data){
+                                if (diagram_data) {
                                     let docTitle = diagram_data?.['doc_title'] || '';
                                     let stages = diagram_data?.['stages'] || [];
                                     txtTitle.text(docTitle ? docTitle : '').closest('.ntt-drawer-title-text').removeClass('hidden');
@@ -1890,7 +1890,21 @@ class DTBControl {
         return this.dataSelect
     }
 
-    static parseHeaderDropdownFilter(columns, settings, api) {
+    static __fillDefaultSelect2Filter(ele$) {
+        if (!$(ele$).attr('data-maximumSelectionLength')) {
+            $(ele$).attr('data-maximumSelectionLength', 5);
+        }
+        if (!$(ele$).attr('data-cache')) {
+            $(ele$).attr('data-cache', 'true');
+        }
+        if (!$(ele$).attr('data-allowClear')) {
+            $(ele$).attr('data-allowClear', 'true');
+        }
+        return $(ele$);
+    }
+
+    static parseHeaderDropdownFilter(columns, settings, tbl) {
+        let api = tbl.DataTable();
         let $thead = api.table().header();
         let hasColHeaderFilter = false;
         let rowColFilterEle = $(`<tr class="row-custom-filter"></tr>`);
@@ -1899,12 +1913,22 @@ class DTBControl {
                 let colFilter = item?.['colFilter'];
                 if (colFilter) {
                     hasColHeaderFilter = true;
+
+                    let attrTxt = '';
+                    Object.keys(colFilter).map(
+                        (key) => {
+                            if (key !== 'keyParam' && key !== 'dataUrl' && key !== 'keyResp') {
+                                attrTxt += ` data-${key}="${colFilter[key]}"`
+                            }
+                        }
+                    )
                     $(`<th>
-                        <select
+                         <select
                             class="select-custom-filter"
                             data-keyParam="${colFilter.keyParam}"
                             data-url="${colFilter.dataUrl}"
                             data-keyResp="${colFilter.keyResp}"
+                            ${attrTxt}
                             multiple
                         ></select>
                     </th>`).appendTo(rowColFilterEle);
@@ -1919,15 +1943,14 @@ class DTBControl {
         setTimeout(
             () => {
                 $($thead).find('select.select-custom-filter').each(function () {
-                    $(this).initSelect2({
-                        'maximumSelectionLength': 5,
-                        'cache': true,
-                    });
-                }).on(
-                    'select2:close', function () {
-                        api.table().ajax.reload();
-                    }
-                );
+                    DTBControl.__fillDefaultSelect2Filter($(this)).initSelect2();
+                }).on('select2:close', function () {
+                    api.table().ajax.reload();
+                }).on('select2:clear', function () {
+                    api.table().ajax.reload();
+                }).on('select2:unselect', function () {
+                    api.table().ajax.reload();
+                });
             },
             0
         );
@@ -2189,13 +2212,14 @@ class DTBControl {
     }
 
     get mergeInitComplete() {
+        let clsThis = this;
         let initCompleteManual = this.opts?.['initComplete'] || function (settings, json) {
         };
         return function (settings, json) {
             $(this.api().table().container()).find('input').attr('autocomplete', 'off');
             initCompleteManual(settings, json);
             DTBControl.parseHeaderDropdownFilter(
-                (this.opts?.['columns'] || []), settings, this.api()
+                (clsThis.opts?.['columns'] || []), settings, clsThis.dtb$
             );
         }
     }
@@ -2313,7 +2337,7 @@ class WindowControl {
         link.click();
     }
 
-    static getHashUrl(){
+    static getHashUrl() {
         return location.hash;
     }
 
@@ -2321,7 +2345,7 @@ class WindowControl {
         window.history.pushState(null, null, idHash.includes('#') ? idHash : '#' + idHash);
     }
 
-    static removeHashUrl(){
+    static removeHashUrl() {
         window.history.replaceState(null, "", "#");
     }
 
@@ -2333,25 +2357,34 @@ class WindowControl {
         }
     }
 
-    static showLoading() {
-        Swal.fire({
-            icon: 'info',
-            title: `${$.fn.transEle.attr('data-loading')}`,
-            text: `${$.fn.transEle.attr('data-wait')}...`,
-            allowOutsideClick: false,
-            showConfirmButton: false,
-            timerProgressBar: true,
-            didOpen: () => {
-                Swal.showLoading();
-            }
-        });
+    static showLoading(timeout = null) {
+        setTimeout(
+            () => {
+                Swal.fire({
+                    icon: 'info',
+                    title: `${$.fn.transEle.attr('data-loading')}`,
+                    text: `${$.fn.transEle.attr('data-wait')}...`,
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    timerProgressBar: true,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+            },
+            Number.isInteger(timeout) ? timeout : 0
+        )
     }
 
-    static hideLoading() {
-        setTimeout(() => {
-            Swal.hideLoading();
-            swal.close();
-        }, 250,)
+    static hideLoading(timeout = null) {
+        console.log('call hide loading...');
+        setTimeout(
+            () => {
+                Swal.hideLoading();
+                swal.close();
+            },
+            Number.isInteger(timeout) ? timeout : 250,
+        )
     }
 
     static showLoadingButton(ele$, opts) {

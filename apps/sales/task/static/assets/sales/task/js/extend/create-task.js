@@ -52,7 +52,25 @@ function logworkSubmit(){
         $('#logWorkModal').modal('hide')
     });
 }
+function getConfig(){
 
+    function setParams(config){
+        if (in_assign_opt > 0){
+
+        }
+    }
+    // const
+
+    const taskConfig = $('#task_config')
+    if (taskConfig.length){
+        // có config
+        const isConfig = JSON.parse(taskConfig.text())
+
+    }
+    else{
+        // ko có config
+    }
+}
 $(function () {
     // declare variable
     const $form = $('#formOpportunityTask')
@@ -210,6 +228,7 @@ $(function () {
     // assign to me btn
     const $assignBtnElm = $('.btn-assign');
     const $assigneeElm = $('#selectAssignTo')
+
     $assigneeElm.initSelect2()
     $assignBtnElm.off().on('click', function () {
         const name = $assignerElm.attr('data-name')
@@ -222,7 +241,6 @@ $(function () {
         if ($assigneeElm.find(`option [value="${id}"]`).length <= 0)
             $assigneeElm.append(`<option value="${id}">${name}</option>`)
         $assigneeElm.val(id).trigger('change')
-        // $assigneeElm.initSelect2()
     });
 
     // run init label function

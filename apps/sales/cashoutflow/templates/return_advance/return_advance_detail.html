@@ -41,8 +41,7 @@
                         <label class="col-3 col-form-label required">{% trans "Advance Payment" %}</label>
                         <div class="col-9">
                             <select id="chooseAdvancePayment" class="form-select" data-method="GET"
-                                data-select2-url="{% url "AdvancePaymentListAPI" %}" style="color: black"
-                                data-url-detail="{% url "AdvancePaymentDetailAPI" pk=0 %}"
+                                data-url="{% url "AdvancePaymentListAPI" %}" style="color: black"
                                 name="advance_payment" disabled>
                         </select>
                         </div>
@@ -228,8 +227,6 @@
                                     <th>{% trans "Input Return" %}</th>
                                 </tr>
                                 </thead>
-                                <tbody>
-                                </tbody>
                             </table>
                         </div>
                     </div>
@@ -269,7 +266,16 @@
         </div>
     </form>
 {% endblock %}
+{% block dataHiddenGroup %}
+    <input type="text" id="url-factory"
+           data-url-detail-ap="{% url 'AdvancePaymentDetailAPI' pk=0 %}"
+    >
+    <input type="text" id="trans-factory"
+        data-trans-greater-remain="{% trans 'Return value not greater than remain value' %}"
+    >
+{% endblock %}
 {% block jsFooter %}
+    <script src="{% static "assets/js/return_advance/return_advance_common.js" %}"></script>
     <script src="{% static "assets/js/return_advance/return_advance_detail.js" %}"></script>
     <!-- Daterangepicker JS -->
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>

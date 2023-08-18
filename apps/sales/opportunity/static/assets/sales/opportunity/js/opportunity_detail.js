@@ -733,12 +733,20 @@ $(document).ready(function () {
         },)
     }
 
+    let paramString = {}
+
     function loadDetail() {
         let url = frmDetail.data('url').replace(0, pk);
         $.fn.callAjax(url, 'GET').then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 let opportunity_detail = data?.['opportunity'];
+
+                paramString = {
+                    'id': opportunity_detail.id,
+                    'code': opportunity_detail.code,
+                    'title': opportunity_detail.title,
+                }
                 $.fn.compareStatusShowPageAction(opportunity_detail);
                 opp_stage_id = opportunity_detail.stage;
                 opp_is_closed = opportunity_detail.is_close;
@@ -2761,10 +2769,6 @@ $(document).ready(function () {
 
     const ele_move_doc_page = $('.btn-add-document')
     let url_doc_page = ele_move_doc_page.attr('href');
-    const paramString = $.param({
-        'opportunity': pk,
-    })
-    ele_move_doc_page.attr('href', url_doc_page + "?" + paramString);
 
     $(document).on('click', '#table-timeline .detail-call-log-button', function () {
         let call_log_id = $(this).attr('data-id');
@@ -2868,7 +2872,7 @@ $(document).ready(function () {
     // event create related features
 
     $(document).on('click', '.btn-create-related-feature', function () {
-        let url = $(this).data('url') + "?" + paramString;
+        let url = $(this).data('url') + "?opportunity={0}".format_by_idx(encodeURIComponent(JSON.stringify(paramString)));
         window.open(url, '_blank');
     })
 

@@ -35,24 +35,25 @@
                     <div class="row form-group">
                         <label class="col-3 col-form-label required">{% trans "Advance Payment" %}</label>
                         <div class="col-9">
-                            <select id="chooseAdvancePayment" class="select2 form-control" data-method="GET"
-                                    data-select2-url="{% url "AdvancePaymentListAPI" %}"
+                            <select id="chooseAdvancePayment" class="form-select" data-method="GET"
+                                    data-url="{% url "AdvancePaymentListAPI" %}"
+                                    data-keyResp="advance_payment_list"
                                     data-url-detail="{% url "AdvancePaymentDetailAPI" pk=0 %}"
                                     data-close-on-select="true"
-                                    name="advance_payment">'
+                                    name="advance_payment">
                             </select>
                         </div>
                     </div>
                     <div class="row form-group">
                         <label class="col-3 col-form-label required">{% trans "Sale Code" %}</label>
                         <div class="col-9">
-                            <input class="form-control" type="text" readonly name="sale_code">
+                            <input id="inp-sale-code" class="form-control" type="text" readonly name="sale_code">
                         </div>
                     </div>
                     <div class="row form-group">
                         <label class="col-3 col-form-label required">{% trans "Method" %}</label>
                         <div class="col-9">
-                            <select class="form-select" name="method">
+                            <select id="box-method-payment" class="form-select" name="method">
                                 <option selected></option>
                                 <option value="0">{% trans "Cash" %}</option>
                                 <option value="1">{% trans "Bank transfer" %}</option>
@@ -180,15 +181,13 @@
                         >
                             <thead>
                             <tr>
-                                <th class="text-center">#</th>
+                                <th>#</th>
                                 <th>{% trans "Product items" %}</th>
                                 <th>{% trans "Type" %}</th>
                                 <th>{% trans "Remain Total" %}</th>
                                 <th>{% trans "Input Return Value" %}</th>
                             </tr>
                             </thead>
-                            <tbody>
-                            </tbody>
                         </table>
                     </div>
                     <div class="row">
@@ -228,7 +227,16 @@
         </div>
     </form>
 {% endblock %}
+{% block dataHiddenGroup %}
+    <input type="text" id="url-factory"
+           data-url-detail-ap="{% url 'AdvancePaymentDetailAPI' pk=0 %}"
+    >
+    <input type="text" id="trans-factory"
+        data-trans-greater-remain="{% trans 'Return value not greater than remain value' %}"
+    >
+{% endblock %}
 {% block jsFooter %}
+    <script src="{% static "assets/js/return_advance/return_advance_common.js" %}"></script>
     <script src="{% static "assets/js/return_advance/return_advance_create.js" %}"></script>
     <!-- Daterangepicker JS -->
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>

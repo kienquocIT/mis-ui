@@ -60,12 +60,13 @@ $(document).ready(function () {
             if (data) {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product_type_list')) {
                     ele.append(`<option></option>`);
-                    resp.data.product_type_list.map(function (item) {
+                    resp.data?.['product_type_list'].map(function (item) {
                         ele.append(`<option value="` + item.id + `">` + item.title + `</option>`);
                     })
                 }
             }
         }, (errs) => {
+            console.log(errs)
         },)
     }
 
@@ -77,12 +78,13 @@ $(document).ready(function () {
             if (data) {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product_category_list')) {
                     ele.append(`<option></option>`);
-                    resp.data.product_category_list.map(function (item) {
+                    resp.data?.['product_category_list'].map(function (item) {
                         ele.append(`<option value="` + item.id + `">` + item.title + `</option>`);
                     })
                 }
             }
         }, (errs) => {
+            console.log(errs)
         },)
     }
 
@@ -94,13 +96,14 @@ $(document).ready(function () {
             if (data) {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('unit_of_measure_group')) {
                     ele.append(`<option></option>`);
-                    resp.data.unit_of_measure_group.map(function (item) {
-                        if (Object.keys(item.referenced_unit).length !== 0)
+                    resp.data?.['unit_of_measure_group'].map(function (item) {
+                        if (Object.keys(item?.['referenced_unit']).length !== 0)
                             ele.append(`<option value="` + item.id + `">` + item.title + `</option>`);
                     })
                 }
             }
         }, (errs) => {
+            console.log(errs)
         },)
     }
 
@@ -115,7 +118,7 @@ $(document).ready(function () {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('tax_list')) {
                     ele1.append(`<option></option>`);
                     ele2.append(`<option></option>`);
-                    resp.data.tax_list.map(function (item) {
+                    resp.data?.['tax_list'].map(function (item) {
                         if (item.type === 0 || item.type === 2)
                             ele1.append(`<option value="` + item.id + `">` + item.title + `&nbsp;&nbsp;(<span>` + item.code + `</span>)</option>`);
                             ele2.append(`<option value="` + item.id + `">` + item.title + `&nbsp;&nbsp;(<span>` + item.code + `</span>)</option>`);
@@ -123,6 +126,7 @@ $(document).ready(function () {
                 }
             }
         }, (errs) => {
+            console.log(errs)
         },)
 
     }
@@ -142,7 +146,7 @@ $(document).ready(function () {
                         if (item.is_default) {
                             is_default = ''
                         }
-                        if (item.is_default || (item.price_list_mapped !== null && item.auto_update === true)) {
+                        if (item.is_default || (item?.['price_list_mapped'] !== null && item.auto_update === true)) {
                             checked = 'checked';
                             disabled = 'disabled';
                         }
@@ -154,7 +158,7 @@ $(document).ready(function () {
                                 </div>
                             </div>
                             <div class="col-6 form-group">
-                                <input data-is-default="${item.is_default}" ${is_default} data-source="${item.price_list_mapped}" data-auto-update="${item.auto_update}" data-factor="${item.factor}" data-id="${item.id}" data-return-type="number" type="text" class="form-control mask-money input_price_list">
+                                <input data-is-default="${item.is_default}" ${is_default} data-source="${item?.['price_list_mapped']}" data-auto-update="${item.auto_update}" data-factor="${item.factor}" data-id="${item.id}" data-return-type="number" type="text" class="form-control mask-money input_price_list">
                             </div>
                         </div>`;
                     }
@@ -162,6 +166,7 @@ $(document).ready(function () {
                 }
             }
         }, (errs) => {
+            console.log(errs)
         },)
     }
 
@@ -179,10 +184,10 @@ $(document).ready(function () {
     $(document).on("change", '.input_price_list', function () {
         let this_data_id = $(this).attr('data-id');
         let this_data_value = $(this).attr('value');
-        $('.ul-price-list').find('.input_price_list').each(function (index, element) {
+        $('.ul-price-list').find('.input_price_list').each(function () {
             if ($(this).attr('data-source') === this_data_id && $(this).attr('data-auto-update') === 'true' && $(this).attr('data-is-default') === 'false') {
                 let value = parseFloat(this_data_value) * parseFloat($(this).attr('data-factor'));
-                $(this).attr('value', parseFloat(value));
+                $(this).attr('value', value);
                 loadPriceForChild($(this).attr('data-id'), value);
             }
         })
@@ -214,10 +219,10 @@ $(document).ready(function () {
     })
 
     function loadPriceForChild(element_id, element_value) {
-        $('.ul-price-list').find('.input_price_list').each(function (index, element) {
+        $('.ul-price-list').find('.input_price_list').each(function () {
             if ($(this).attr('data-source') === element_id && $(this).attr('data-auto-update') === 'true' && $(this).attr('data-is-default') === 'false') {
                 let value = parseFloat(element_value) * parseFloat($(this).attr('data-factor'));
-                $(this).attr('value', parseFloat(value));
+                $(this).attr('value', value);
                 loadPriceForChild($(this).attr('data-id'), value);
             }
         })
@@ -252,11 +257,12 @@ $(document).ready(function () {
                         data.uom_group.uom.map(function (item) {
                             sale_select_box_default_uom.append(`<option value="` + item.uom_id + `">` + item.uom_title + `</option>`);
                             purchase_select_box_default_uom.append(`<option value="` + item.uom_id + `">` + item.uom_title + `</option>`);
-                            inventory_select_box_uom_name.append(`<option value="` + item.uom_id + `" data-code="` + item.uom_code + `">` + item.uom_title + `</option>`);
+                            inventory_select_box_uom_name.append(`<option value="` + item.uom_id + `" data-code="` + item?.['uom_code'] + `">` + item.uom_title + `</option>`);
                         })
                     }
                 }
             }, (errs) => {
+                console.log(errs)
             },)
         }
     })
@@ -311,7 +317,7 @@ $(document).ready(function () {
         if ($('#check-tab-sale').is(':checked') === true) {
             data['product_choice'].push(0)
             let sale_product_price_list = [];
-            $('.ul-price-list').find('.select_price_list').each(function (index, element) {
+            $('.ul-price-list').find('.select_price_list').each(function () {
                 let selected = $(this).is(':checked');
                 if (selected) {
                     let price_list_id = $(this).closest('.select_price_list_row').find('.input_price_list').attr('data-id');
@@ -431,6 +437,7 @@ $(document).ready(function () {
                         )
                     },
                     (errs) => {
+                        console.log(errs)
                         setTimeout(
                             () => {
                                 WindowControl.hideLoading();
@@ -465,21 +472,21 @@ $(document).ready(function () {
                     {
                         data: 'code',
                         className: 'wrap-text w-25',
-                        render: (data, type, row, meta) => {
+                        render: (data, type, row) => {
                             return `<span class="text-secondary">` + row.code + `</span>`
                         }
                     },
                     {
                         data: 'title',
                         className: 'wrap-text text-center w-50',
-                        render: (data, type, row, meta) => {
-                            return `<center><span class="text-secondary"><b>` + row.title + `</b></span></center>`
+                        render: (data, type, row) => {
+                            return `<span class="text-secondary"><b>` + row.title + `</b></span>`
                         }
                     },
                     {
                         data: 'stock_value',
                         className: 'wrap-text text-center w-25',
-                        render: (data, type, row, meta) => {
+                        render: () => {
                             return `<span>0</span>`
                         }
                     },
@@ -500,28 +507,28 @@ $(document).ready(function () {
                     {
                         data: '',
                         className: 'wrap-text text-center w-25',
-                        render: (data, type, row, meta) => {
+                        render: () => {
                             return `<span style="font-weight: bolder" class="text-danger">0</span>`
                         }
                     },
                     {
                         data: '',
                         className: 'wrap-text text-center w-25',
-                        render: (data, type, row, meta) => {
+                        render: () => {
                             return `<span style="font-weight: bolder" class="text-danger">0</span>`
                         }
                     },
                     {
                         data: '',
                         className: 'wrap-text text-center w-25',
-                        render: (data, type, row, meta) => {
+                        render: () => {
                             return `<span style="font-weight: bolder" class="text-danger">0</span>`
                         }
                     },
                     {
                         data: '',
                         className: 'wrap-text text-center w-25',
-                        render: (data, type, row, meta) => {
+                        render: () => {
                             return `<span style="font-weight: bolder" class="text-danger">0</span>`
                         }
                     },

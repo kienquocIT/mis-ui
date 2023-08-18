@@ -44,7 +44,7 @@ $(document).ready(function () {
             'default': 'Upload an image',
             'replace': 'Drag and drop or click to replace',
             'remove':  'Remove',
-            'error':   'Ooops, something wrong happended.'
+            'error':   'Oops, something wrong happened.'
         },
         tpl: {
             message:' {{ default }}',
@@ -65,10 +65,10 @@ $(document).ready(function () {
     $(document).on("change", '.input_price_list', function () {
         let this_data_id = $(this).attr('data-id');
         let this_data_value = $(this).attr('value');
-        $('.ul-price-list').find('.input_price_list').each(function (index, element) {
+        $('.ul-price-list').find('.input_price_list').each(function () {
             if ($(this).attr('data-source') === this_data_id && $(this).attr('data-auto-update') === 'true' && $(this).attr('data-is-default') === 'false') {
                 let value = parseFloat(this_data_value) * parseFloat($(this).attr('data-factor'));
-                $(this).attr('value', parseFloat(value));
+                $(this).attr('value', value);
                 loadPriceForChild($(this).attr('data-id'), value);
             }
         })
@@ -100,10 +100,10 @@ $(document).ready(function () {
     })
 
     function loadPriceForChild(element_id, element_value) {
-        $('.ul-price-list').find('.input_price_list').each(function (index, element) {
+        $('.ul-price-list').find('.input_price_list').each(function () {
             if ($(this).attr('data-source') === element_id && $(this).attr('data-auto-update') === 'true' && $(this).attr('data-is-default') === 'false') {
                 let value = parseFloat(element_value) * parseFloat($(this).attr('data-factor'));
-                $(this).attr('value', parseFloat(value));
+                $(this).attr('value', value);
                 loadPriceForChild($(this).attr('data-id'), value);
             }
         })
@@ -128,7 +128,7 @@ $(document).ready(function () {
             unit_of_measure_group_get[0].uom.map(function (item) {
                 sale_select_box_default_uom.append(`<option value="` + item.uom_id + `">` + item.uom_title + `</option>`);
                 purchase_select_box_default_uom.append(`<option value="` + item.uom_id + `">` + item.uom_title + `</option>`);
-                inventory_select_box_uom_name.append(`<option value="` + item.uom_id + `" data-code="` + item.uom_code + `">` + item.uom_title + `</option>`);
+                inventory_select_box_uom_name.append(`<option value="` + item.uom_id + `" data-code="` + item?.['uom_code'] + `">` + item.uom_title + `</option>`);
             })
         }
     }
@@ -172,36 +172,44 @@ $(document).ready(function () {
     let call_1 = $.fn.callAjax($('#general-select-box-product-type').attr('data-url'), $('#general-select-box-product-type').attr('data-method')).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
-                return data.product_type_list;
+                return data?.['product_type_list'];
             }
-        }, (errs) => {})
+        }, (errs) => {
+        console.log(errs)
+    })
 
     let call_2 = $.fn.callAjax($('#general-select-box-product-category').attr('data-url'), $('#general-select-box-product-category').attr('data-method')).then((resp) => {
         let data = $.fn.switcherResp(resp);
         if (data) {
             if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product_category_list')) {
-                return data.product_category_list;
+                return data?.['product_category_list'];
             }
         }
-    }, (errs) => {})
+    }, (errs) => {
+        console.log(errs)
+    })
 
     let call_3 = $.fn.callAjax($('#general-select-box-uom-group').attr('data-url'), $('#general-select-box-uom-group').attr('data-method')).then((resp) => {
         let data = $.fn.switcherResp(resp);
         if (data) {
             if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('unit_of_measure_group')) {
-                return data.unit_of_measure_group;
+                return data?.['unit_of_measure_group'];
             }
         }
-    }, (errs) => {})
+    }, (errs) => {
+        console.log(errs)
+    })
 
     let call_4 = $.fn.callAjax($('#sale-select-box-tax-code').attr('data-url'), $('#sale-select-box-tax-code').attr('data-method')).then((resp) => {
         let data = $.fn.switcherResp(resp);
         if (data) {
             if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('tax_list')) {
-                return data.tax_list;
+                return data?.['tax_list'];
             }
         }
-    }, (errs) => {})
+    }, (errs) => {
+        console.log(errs)
+    })
 
     let call_5 = $.fn.callAjax($('#sale-select-price-list').attr('data-url'), $('#sale-select-price-list').attr('data-method')).then((resp) => {
         let data = $.fn.switcherResp(resp);
@@ -210,7 +218,9 @@ $(document).ready(function () {
                 return data.price_list;
             }
         }
-    }, (errs) => {})
+    }, (errs) => {
+        console.log(errs)
+    })
 
     let call_6 = $.fn.callAjax(form_update_product.data('url').format_url_with_uuid(pk), 'GET').then((resp) => {
         let data = $.fn.switcherResp(resp);
@@ -223,22 +233,25 @@ $(document).ready(function () {
         let ele1 = $('#general-select-box-product-type');
         ele1.html('');
         ele1.append(`<option></option>`);
-        results[0].map(function (item) {
+        let results0 = results[0]
+        results0.map(function (item) {
             ele1.append(`<option value="` + item.id + `">` + item.title + `</option>`);
         })
 
         let ele2 = $('#general-select-box-product-category');
         ele2.html('');
         ele2.append(`<option></option>`);
-        results[1].map(function (item) {
+        let results1 = results[1]
+        results1.map(function (item) {
             ele2.append(`<option value="` + item.id + `">` + item.title + `</option>`);
         })
 
         let ele3 = $('#general-select-box-uom-group');
         ele3.html('');
         ele3.append(`<option></option>`);
-        results[2].map(function (item) {
-            if (Object.keys(item.referenced_unit).length !== 0)
+        let results2 = results[2]
+        results2.map(function (item) {
+            if (Object.keys(item?.['referenced_unit']).length !== 0)
                 ele3.append(`<option value="` + item.id + `">` + item.title + `</option>`);
         })
 
@@ -248,7 +261,8 @@ $(document).ready(function () {
         ele5.html('');
         ele4.append(`<option></option>`);
         ele5.append(`<option></option>`);
-        results[3].map(function (item) {
+        let results3 = results[3]
+        results3.map(function (item) {
             if (item.type === 0 || item.type === 2)
             {
                 ele4.append(`<option value="` + item.id + `">` + item.title + `&nbsp;&nbsp;(<span>` + item.code + `</span>)</option>`);
@@ -257,16 +271,17 @@ $(document).ready(function () {
         })
 
         let ele6 = $('#sale-select-price-list');
-        let html = ``
-        for (let i = 0; i < results[4].length; i++) {
-            let item = results[4][i];
+        let html = ``;
+        let results4 = results[4];
+        for (let i = 0; i < results4.length; i++) {
+            let item = results4[i];
             let checked = '';
             let disabled = '';
             let is_default = 'disabled';
             if (item.is_default) {
                 is_default = ''
             }
-            if (item.is_default || (item.price_list_mapped !== null && item.auto_update === true)) {
+            if (item.is_default || (item?.['price_list_mapped'] !== null && item.auto_update === true)) {
                 checked = 'checked';
                 disabled = 'disabled';
             }
@@ -278,7 +293,7 @@ $(document).ready(function () {
                     </div>
                 </div>
                 <div class="col-6 form-group">
-                    <input data-is-default="${item.is_default}" ${is_default} data-source="${item.price_list_mapped}" data-auto-update="${item.auto_update}" data-factor="${item.factor}" data-id="${item.id}" data-return-type="number" type="text" class="form-control mask-money input_price_list">
+                    <input data-is-default="${item.is_default}" ${is_default} data-source="${item?.['price_list_mapped']}" data-auto-update="${item.auto_update}" data-factor="${item.factor}" data-id="${item.id}" data-return-type="number" type="text" class="form-control mask-money input_price_list">
                 </div>
             </div>`;
         }
@@ -342,7 +357,7 @@ $(document).ready(function () {
             $('#inventory-level-min').val(inventory_information['inventory_level_min']);
             $('#inventory-level-max').val(inventory_information['inventory_level_max']);
 
-            let warehouse_stock_list = GetProductFromWareHouseStockList(product_detail.id, product_detail.inventory_information['uom']['id']);
+            let warehouse_stock_list = GetProductFromWareHouseStockList(product_detail.id, product_detail?.['inventory_information']['uom']['id']);
             loadWareHouseList(warehouse_stock_list);
             loadWareHouseOverView(warehouse_stock_list);
         }
@@ -380,9 +395,9 @@ $(document).ready(function () {
         let warehouse_stock_list = [];
         for (let i = 0; i < product_get_from_wh_product_list.length; i++) {
             let calculated_ratio = ConvertToUnitUoM(product_get_from_wh_product_list[i].uom, uom_id_des);
-            let raw_stock_quantity = calculated_ratio * product_get_from_wh_product_list[i].stock_amount;
-            let delivered_quantity = calculated_ratio * product_get_from_wh_product_list[i].sold_amount;
-            let ready_quantity = calculated_ratio * product_get_from_wh_product_list[i].picked_ready;
+            let raw_stock_quantity = calculated_ratio * product_get_from_wh_product_list[i]?.['stock_amount'];
+            let delivered_quantity = calculated_ratio * product_get_from_wh_product_list[i]?.['sold_amount'];
+            let ready_quantity = calculated_ratio * product_get_from_wh_product_list[i]?.['picked_ready'];
 
             warehouse_stock_list.push(
                 {
@@ -409,10 +424,10 @@ $(document).ready(function () {
                     dataSrc: function (resp) {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            if (data.warehouse_list.length > 0) {
-                                for (let i = 0; i < data.warehouse_list.length; i++) {
+                            if (data?.['warehouse_list'].length > 0) {
+                                for (let i = 0; i < data?.['warehouse_list'].length; i++) {
                                     let value_list = warehouse_stock_list.filter(function (item) {
-                                        return item.warehouse_id === data.warehouse_list[i].id;
+                                        return item.warehouse_id === data?.['warehouse_list'][i].id;
                                     });
                                     let stock_value = 0;
                                     let wait_for_delivery_value = 0;
@@ -440,26 +455,26 @@ $(document).ready(function () {
                     {
                         data: 'code',
                         className: 'wrap-text w-15',
-                        render: (data, type, row, meta) => {
+                        render: (data, type, row) => {
                             return `<span class="text-secondary">` + row.code + `</span>`
                         }
                     },
                     {
                         data: 'title',
                         className: 'wrap-text text-center w-25',
-                        render: (data, type, row, meta) => {
-                            return `<center><span class="text-secondary"><b>` + row.title + `</b></span></center>`
+                        render: (data, type, row) => {
+                            return `<span class="text-secondary"><b>` + row.title + `</b></span>`
                         }
                     },
                     {
                         data: 'stock_value',
                         className: 'wrap-text text-center w-15',
-                        render: (data, type, row, meta) => {
+                        render: (data, type, row) => {
                             return `<span>` + row.stock_value + `</span>`
                         }
                     },
                 ],
-                footerCallback: function (tfoot, data, start, end, display) {
+                footerCallback: function () {
                     let api = this.api();
 
                     let sum2 = api
@@ -488,15 +503,15 @@ $(document).ready(function () {
                     dataSrc: function (resp) {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            if (data.warehouse_list.length > 0) {
+                            if (data?.['warehouse_list'].length > 0) {
                                 let sum_stock = 0;
                                 let sum_wait_for_delivery_value = 0;
                                 let sum_wait_for_receipt_value = 0;
                                 let sum_available_value = 0;
 
-                                for (let i = 0; i < data.warehouse_list.length; i++) {
+                                for (let i = 0; i < data?.['warehouse_list'].length; i++) {
                                     let value_list = warehouse_stock_list.filter(function (item) {
-                                        return item.warehouse_id === data.warehouse_list[i].id;
+                                        return item.warehouse_id === data?.['warehouse_list'][i].id;
                                     });
                                     let stock_value = 0;
                                     let wait_for_delivery_value = 0;
@@ -530,7 +545,7 @@ $(document).ready(function () {
                     {
                         data: 'sum_stock',
                         className: 'wrap-text text-center w-25',
-                        render: (data, type, row, meta) => {
+                        render: (data, type, row) => {
                             if (row.sum_stock > 0) {
                                 return `<span style="font-weight: bolder" class="text-primary">${row.sum_stock}</span>`
                             }
@@ -542,7 +557,7 @@ $(document).ready(function () {
                     {
                         data: 'sum_wait_for_delivery_value',
                         className: 'wrap-text text-center w-25',
-                        render: (data, type, row, meta) => {
+                        render: (data, type, row) => {
                             if (row.sum_wait_for_delivery_value > 0) {
                                 return `<span style="font-weight: bolder" class="text-primary">${row.sum_wait_for_delivery_value}</span>`
                             }
@@ -554,7 +569,7 @@ $(document).ready(function () {
                     {
                         data: 'sum_wait_for_receipt_value',
                         className: 'wrap-text text-center w-25',
-                        render: (data, type, row, meta) => {
+                        render: (data, type, row) => {
                             if (row.sum_wait_for_receipt_value > 0) {
                                 return `<span style="font-weight: bolder" class="text-primary">${row.sum_wait_for_receipt_value}</span>`
                             }
@@ -566,7 +581,7 @@ $(document).ready(function () {
                     {
                         data: 'sum_available_value',
                         className: 'wrap-text text-center w-25',
-                        render: (data, type, row, meta) => {
+                        render: (data, type, row) => {
                             if (row.sum_available_value > 0) {
                                 return `<span style="font-weight: bolder" class="text-primary">${row.sum_available_value}</span>`
                             }
@@ -601,7 +616,7 @@ $(document).ready(function () {
         if ($('#check-tab-sale').is(':checked') === true) {
             data['product_choice'].push(0)
             let sale_product_price_list = [];
-            $('.ul-price-list').find('.select_price_list').each(function (index, element) {
+            $('.ul-price-list').find('.select_price_list').each(function () {
                 let selected = $(this).is(':checked');
                 if (selected) {
                     let price_list_id = $(this).closest('.select_price_list_row').find('.input_price_list').attr('data-id');
@@ -719,6 +734,7 @@ $(document).ready(function () {
                         )
                     },
                     (errs) => {
+                        console.log(errs)
                         setTimeout(
                             () => {
                                 WindowControl.hideLoading();

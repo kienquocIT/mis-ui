@@ -331,7 +331,6 @@ $(document).ready(function () {
             data['sale_currency_using'] = currency_primary;
         }
         else {
-            data['product_choice'].push(0)
             data['sale_default_uom'] = null;
             data['sale_tax'] = null;
             data['sale_cost'] = null;
@@ -361,6 +360,18 @@ $(document).ready(function () {
             data['purchase_tax'] = null;
         }
 
+        if (data['product_choice'].includes(1)) {
+            if ($('#length').val() === '' || $('#width').val() === '' || $('#height').val() === '' || $('#volume').val() === '' || $('#weight').val() === '') {
+                $.fn.notifyB({description: 'Tab inventory is selected, product size must not null'}, 'failure');
+                return false
+            }
+        }
+
+        if (data['inventory_level_min'] > data['inventory_level_max']) {
+            $.fn.notifyB({description: 'Inventory level min can not greater than Inventory level max'}, 'failure');
+            return false
+        }
+
         console.log(data)
         return data
     }
@@ -373,35 +384,37 @@ $(document).ready(function () {
         let frm = new SetupFormSubmit($(this));
         let dataForm = getDataForm();
 
-        WindowControl.showLoading();
-        $.fn.callAjax(frm.dataUrl, frm.dataMethod,  dataForm, csr)
-            .then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        $.fn.notifyB({description: "Successfully"}, 'success')
-                        setTimeout(() => {
-                            window.location.replace($(this).attr('data-url-redirect'));
-                            location.reload.bind(location);
-                        }, 1000);
+        if (dataForm) {
+            WindowControl.showLoading();
+            $.fn.callAjax(frm.dataUrl, frm.dataMethod, dataForm, csr)
+                .then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            $.fn.notifyB({description: "Successfully"}, 'success')
+                            setTimeout(() => {
+                                window.location.replace($(this).attr('data-url-redirect'));
+                                location.reload.bind(location);
+                            }, 1000);
+                        }
+                        setTimeout(
+                            () => {
+                                WindowControl.hideLoading();
+                            },
+                            1000
+                        )
+                    },
+                    (errs) => {
+                        setTimeout(
+                            () => {
+                                WindowControl.hideLoading();
+                            },
+                            1000
+                        )
+                        // $.fn.notifyB({description: errs.data.errors}, 'failure');
                     }
-                    setTimeout(
-                        () => {
-                            WindowControl.hideLoading();
-                        },
-                        1000
-                    )
-                },
-                (errs) => {
-                    setTimeout(
-                        () => {
-                            WindowControl.hideLoading();
-                        },
-                        1000
-                    )
-                    // $.fn.notifyB({description: errs.data.errors}, 'failure');
-                }
-            )
+                )
+        }
     })
 
     function loadWareHouseList() {

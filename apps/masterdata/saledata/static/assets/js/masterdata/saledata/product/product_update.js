@@ -607,11 +607,13 @@ $(document).ready(function () {
                     let price_list_id = $(this).closest('.select_price_list_row').find('.input_price_list').attr('data-id');
                     let price_list_value = $(this).closest('.select_price_list_row').find('.input_price_list').attr('value');
                     let is_auto_update = $(this).closest('.select_price_list_row').find('.input_price_list').attr('data-auto-update');
-                    sale_product_price_list.push({
-                        'price_list_id': price_list_id,
-                        'price_list_value': price_list_value,
-                        'is_auto_update': is_auto_update
-                    });
+                    if (price_list_id && price_list_value) {
+                        sale_product_price_list.push({
+                            'price_list_id': price_list_id,
+                            'price_list_value': price_list_value,
+                            'is_auto_update': is_auto_update
+                        });
+                    }
                 }
             })
             data['sale_default_uom'] = $('#sale-select-box-default-uom option:selected').attr('value');
@@ -650,9 +652,33 @@ $(document).ready(function () {
             data['purchase_tax'] = null;
         }
 
+        if (!data['general_product_type'] || !data['general_product_category'] || !data['general_uom_group']) {
+            $.fn.notifyB({description: 'Some fields in General tab is missing'}, 'failure');
+            return false
+        }
+
+        if (data['product_choice'].includes(0)) {
+            if (!data['sale_default_uom'] || !data['sale_currency_using'] || !data['sale_tax'] || data['sale_price_list'].length < 1) {
+                $.fn.notifyB({description: 'Some fields in Sale tab is missing'}, 'failure');
+                return false
+            }
+        }
+
         if (data['product_choice'].includes(1)) {
             if ($('#length').val() === '' || $('#width').val() === '' || $('#height').val() === '' || $('#volume').val() === '' || $('#weight').val() === '') {
                 $.fn.notifyB({description: 'Tab inventory is selected, product size must not null'}, 'failure');
+                return false
+            }
+
+            if (!data['inventory_uom']) {
+                $.fn.notifyB({description: 'Some fields in Inventory tab is missing'}, 'failure');
+                return false
+            }
+        }
+
+        if (data['product_choice'].includes(2)) {
+            if (!data['purchase_default_uom'] || !data['purchase_tax']) {
+                $.fn.notifyB({description: 'Some fields in Purchase tab is missing'}, 'failure');
                 return false
             }
         }
@@ -669,13 +695,12 @@ $(document).ready(function () {
     //submit form update product
     form_update_product.submit(function (event) {
         event.preventDefault();
-        let csr = $("input[name=csrfmiddlewaretoken]").val();
         let frm = new SetupFormSubmit($(this));
         let dataForm = getDataForm();
 
         if (dataForm) {
             WindowControl.showLoading();
-            $.fn.callAjax(frm.dataUrl.format_url_with_uuid(pk), frm.dataMethod, dataForm, csr)
+            $.fn.callAjax2({url: frm.dataUrl.format_url_with_uuid(pk), method: frm.dataMethod, data: dataForm, urlRedirect: frm.dataUrlRedirect.format_url_with_uuid(pk)})
                 .then(
                     (resp) => {
                         let data = $.fn.switcherResp(resp);

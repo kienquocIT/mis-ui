@@ -317,11 +317,13 @@ $(document).ready(function () {
                     let price_list_id = $(this).closest('.select_price_list_row').find('.input_price_list').attr('data-id');
                     let price_list_value = $(this).closest('.select_price_list_row').find('.input_price_list').attr('value');
                     let is_auto_update = $(this).closest('.select_price_list_row').find('.input_price_list').attr('data-auto-update');
-                    sale_product_price_list.push({
-                        'price_list_id': price_list_id,
-                        'price_list_value': price_list_value,
-                        'is_auto_update': is_auto_update
-                    });
+                    if (price_list_id && price_list_value) {
+                        sale_product_price_list.push({
+                            'price_list_id': price_list_id,
+                            'price_list_value': price_list_value,
+                            'is_auto_update': is_auto_update
+                        });
+                    }
                 }
             })
             data['sale_default_uom'] = $('#sale-select-box-default-uom option:selected').attr('value');
@@ -330,6 +332,13 @@ $(document).ready(function () {
             data['sale_price_list'] = sale_product_price_list;
             data['sale_currency_using'] = currency_primary;
         }
+        else {
+            data['sale_default_uom'] = null;
+            data['sale_tax'] = null;
+            data['sale_cost'] = null;
+            data['sale_price_list'] = [];
+            data['sale_currency_using'] = null;
+        }
 
         if ($('#check-tab-inventory').is(':checked') === true) {
             data['product_choice'].push(1)
@@ -337,16 +346,49 @@ $(document).ready(function () {
             data['inventory_level_min'] = parseFloat($('#inventory-level-min').val());
             data['inventory_level_max'] = parseFloat($('#inventory-level-max').val());
         }
+        else {
+            data['inventory_uom'] = null;
+            data['inventory_level_min'] = null;
+            data['inventory_level_max'] = null;
+        }
 
         if ($('#check-tab-purchase').is(':checked') === true) {
             data['product_choice'].push(2)
             data['purchase_default_uom'] = $('#purchase-select-box-default-uom option:selected').attr('value');
             data['purchase_tax'] = $('#purchase-select-box-tax-code option:selected').attr('value');
         }
+        else {
+            data['purchase_default_uom'] = null;
+            data['purchase_tax'] = null;
+        }
+
+        if (!data['general_product_type'] || !data['general_product_category'] || !data['general_uom_group']) {
+            $.fn.notifyB({description: 'Some fields in General tab is missing'}, 'failure');
+            return false
+        }
+
+        if (data['product_choice'].includes(0)) {
+            if (!data['sale_default_uom'] || !data['sale_currency_using'] || !data['sale_tax'] || data['sale_price_list'].length < 1) {
+                $.fn.notifyB({description: 'Some fields in Sale tab is missing'}, 'failure');
+                return false
+            }
+        }
 
         if (data['product_choice'].includes(1)) {
             if ($('#length').val() === '' || $('#width').val() === '' || $('#height').val() === '' || $('#volume').val() === '' || $('#weight').val() === '') {
                 $.fn.notifyB({description: 'Tab inventory is selected, product size must not null'}, 'failure');
+                return false
+            }
+
+            if (!data['inventory_uom']) {
+                $.fn.notifyB({description: 'Some fields in Inventory tab is missing'}, 'failure');
+                return false
+            }
+        }
+
+        if (data['product_choice'].includes(2)) {
+            if (!data['purchase_default_uom'] || !data['purchase_tax']) {
+                $.fn.notifyB({description: 'Some fields in Purchase tab is missing'}, 'failure');
                 return false
             }
         }

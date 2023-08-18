@@ -173,12 +173,14 @@ $(document).ready(function () {
         let call_1 = $.fn.callAjax($('#general-select-box-product-type').attr('data-url'), $('#general-select-box-product-type').attr('data-method')).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
+                console.log(data)
                 return data.product_type_list;
             }
         }, (errs) => {})
         let call_2 = $.fn.callAjax($('#general-select-box-product-category').attr('data-url'), $('#general-select-box-product-category').attr('data-method')).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
+                console.log(data)
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product_category_list')) {
                     return data.product_category_list;
                 }
@@ -187,6 +189,7 @@ $(document).ready(function () {
         let call_3 = $.fn.callAjax($('#general-select-box-uom-group').attr('data-url'), $('#general-select-box-uom-group').attr('data-method')).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
+                console.log(data)
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('unit_of_measure_group')) {
                     return data.unit_of_measure_group;
                 }
@@ -195,6 +198,7 @@ $(document).ready(function () {
         let call_4 = $.fn.callAjax($('#sale-select-box-tax-code').attr('data-url'), $('#sale-select-box-tax-code').attr('data-method')).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
+                console.log(data)
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('tax_list')) {
                     return data.tax_list;
                 }
@@ -203,6 +207,7 @@ $(document).ready(function () {
         let call_5 = $.fn.callAjax($('#sale-select-price-list').attr('data-url'), $('#sale-select-price-list').attr('data-method')).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
+                console.log(data)
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('price_list')) {
                     return data.price_list;
                 }
@@ -211,6 +216,7 @@ $(document).ready(function () {
         let call_6 = $.fn.callAjax(form_update_product.data('url').format_url_with_uuid(pk), 'GET').then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
+                console.log(data)
                 return data.product
             }
         })
@@ -298,6 +304,8 @@ $(document).ready(function () {
                 $('#check-tab-purchase').attr('checked', true);
                 $('#link-tab-purchase').removeClass('disabled');
             }
+
+            console.log(product_detail['sale_information'])
 
             if (Object.keys(product_detail['general_information']).length !== 0) {
                 let general_information = product_detail['general_information'];

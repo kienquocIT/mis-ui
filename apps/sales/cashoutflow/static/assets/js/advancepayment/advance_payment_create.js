@@ -8,6 +8,7 @@ $(document).ready(function () {
     const sale_code_mapped_parameter = param;
     const sale_order = sale_order_list.filter(function(element) {return element.id === sale_code_mapped_parameter;});
     const quotation = quotation_list.filter(function(element) {return element.id === sale_code_mapped_parameter;});
+    console.log(opportunity_list)
     const opportunity = opportunity_list.filter(function(element) {return element.id === sale_code_mapped_parameter;});
     let sale_code_default_obj = [];
     let sale_code_default_type = -1;

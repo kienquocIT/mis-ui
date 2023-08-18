@@ -446,6 +446,42 @@ class QuotationLoadDataHandle {
         $.fn.initMaskMoney2();
     }
 
+    static loadTableCopyQuotation(opp_id = null, sale_person_id = null) {
+        let ele = $('#data-init-copy-quotation');
+        let url = ele.attr('data-url');
+        let method = ele.attr('data-method');
+        $('#datable-copy-quotation').DataTable().destroy();
+        if (sale_person_id) {
+            let data_filter = {'employee_inherit': sale_person_id};
+            if (opp_id) {
+                data_filter['opportunity'] = opp_id;
+                data_filter['opportunity__sale_order__isnull'] = true;
+                data_filter['opportunity__is_close_lost'] = false;
+                data_filter['opportunity__is_deal_close'] = false;
+            } else {
+                data_filter['opportunity__isnull'] = true;
+            }
+            $.fn.callAjax2({
+                    'url': url,
+                    'method': method,
+                    'data': data_filter,
+                    'isDropdown': true,
+                }
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('quotation_list') && Array.isArray(data.quotation_list)) {
+                            QuotationDataTableHandle.dataTableCopyQuotation(data.quotation_list);
+                        }
+                    }
+                }
+            )
+        } else {
+            QuotationDataTableHandle.dataTableCopyQuotation();
+        }
+    };
+
     static loadShippingBillingCustomer(item = null) {
         let modalShippingContent = $('#quotation-create-modal-shipping-body')[0].querySelector('.modal-body');
         if (modalShippingContent) {
@@ -1819,44 +1855,6 @@ class QuotationDataTableHandle {
         });
     }
 
-    static loadTableCopyQuotation(opp_id = null, sale_person_id = null) {
-        let self = this;
-        let ele = $('#data-init-copy-quotation');
-        let url = ele.attr('data-url');
-        let method = ele.attr('data-method');
-        $('#datable-copy-quotation').DataTable().destroy();
-        if (sale_person_id) {
-            let data_filter = {'employee_inherit': sale_person_id};
-            if (opp_id) {
-                data_filter['opportunity'] = opp_id;
-                data_filter['opportunity__sale_order__isnull'] = true;
-                data_filter['opportunity__is_close_lost'] = false;
-                data_filter['opportunity__is_deal_close'] = false;
-            } else {
-                data_filter['opportunity__isnull'] = true;
-            }
-            $.fn.callAjax2({
-                    'url': url,
-                    'method': method,
-                    'data': data_filter,
-                    'isDropdown': true,
-                }
-                // url, method, data_filter
-            ).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        if (data.hasOwnProperty('quotation_list') && Array.isArray(data.quotation_list)) {
-                            self.dataTableCopyQuotation(data.quotation_list);
-                        }
-                    }
-                }
-            )
-        } else {
-            self.dataTableCopyQuotation();
-        }
-    }
-
     static dataTableCopyQuotationProduct(data) {
         // init dataTable
         let $tables = $('#datable-copy-quotation-product');
@@ -2118,7 +2116,7 @@ class QuotationCalculateCaseHandle {
             eleTotalRaw.value = totalFinal;
         }
         $.fn.initMaskMoney2();
-    }
+    };
 
     static calculate(row) {
         let price = 0;
@@ -2195,7 +2193,7 @@ class QuotationCalculateCaseHandle {
             eleSubtotalRaw.value = subtotal;
         }
         $.fn.initMaskMoney2();
-    }
+    };
 
     static commonCalculate(table, row, is_product = false, is_cost = false, is_expense = false) {
         let self = this;
@@ -2209,7 +2207,16 @@ class QuotationCalculateCaseHandle {
             self.updateTotal(table[0], false, false, true)
         }
 
-    }
+    };
+
+    static calculateAllRowsTableProduct(table) {
+        for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
+            let row = table[0].tBodies[0].rows[i];
+            if (row.querySelector('.table-row-item')) {
+                QuotationCalculateCaseHandle.commonCalculate(table, row, true, false, false);
+            }
+        }
+    };
 
 }
 
@@ -3009,7 +3016,7 @@ function filterDataProductNotPromotion(data_products) {
     let order = 0;
     for (let i = 0; i < data_products.length; i++) {
         let dataProd = data_products[i];
-        if (!dataProd.hasOwnProperty('is_promotion') && !dataProd.hasOwnProperty('is_shipping')) {
+        if (dataProd?.['is_promotion'] === false && dataProd?.['is_shipping'] === false) {
             order++;
             dataProd['order'] = order;
             finalList.push(dataProd)

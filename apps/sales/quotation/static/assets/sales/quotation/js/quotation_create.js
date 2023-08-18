@@ -16,7 +16,7 @@ $(function () {
         let boxQuotation = $('#select-box-quotation');
         let tabPrice = $('#tab_terms');
 
-        // Load init
+        // Load inits
         QuotationLoadDataHandle.loadBoxQuotationContact();
         QuotationLoadDataHandle.loadBoxQuotationPaymentTerm();
         if (formSubmit.attr('data-method') === 'POST') {
@@ -32,15 +32,15 @@ $(function () {
             }
         }
         QuotationLoadDataHandle.loadInitQuotationProduct();
-
-        // load config
+        // init config
         QuotationLoadDataHandle.loadInitQuotationConfig('quotation-config-data', formSubmit.attr('data-method'));
-        // load first time indicator
+        // init first time indicator
         indicatorClass.loadQuotationIndicator('quotation-indicator-data', true);
-
+        // init dataTable
         QuotationDataTableHandle.dataTableProduct();
         QuotationDataTableHandle.dataTableCost();
         QuotationDataTableHandle.dataTableExpense();
+
         let tableProduct = $('#datable-quotation-create-product');
         let tableCost = $('#datable-quotation-create-cost');
         let tableExpense = $('#datable-quotation-create-expense');
@@ -676,7 +676,7 @@ $(function () {
                 if (boxSalePerson.val()) {
                     sale_person_id = boxSalePerson.val()
                 }
-                QuotationDataTableHandle.loadTableCopyQuotation(opp_id, sale_person_id);
+                QuotationLoadDataHandle.loadTableCopyQuotation(opp_id, sale_person_id);
             } else if (type === 'copy-to') {
                 // load data product for table datable-copy-quotation-product
                 let dataCopy = JSON.parse($('#data-copy-quotation-detail')[0].value);
@@ -816,6 +816,9 @@ $(function () {
                     // Begin load data copy TO
                     document.getElementById('customer-price-list').value = dataCopy.customer?.['customer_price_list'];
                     QuotationLoadDataHandle.loadDataTablesAndDropDowns(dataCopy);
+                    if (dataRaw.option === 'custom') {
+                        QuotationCalculateCaseHandle.calculateAllRowsTableProduct(tableProduct);
+                    }
                 }
             }
         }

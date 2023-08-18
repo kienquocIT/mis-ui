@@ -294,7 +294,7 @@ class LogController {
                             let data = $.fn.switcherResp(resp);
                             if (data && $.fn.hasOwnProperties(data, ['diagram_data'])) {
                                 let diagram_data = data?.['diagram_data'];
-                                if (diagram_data){
+                                if (diagram_data) {
                                     let docTitle = diagram_data?.['doc_title'] || '';
                                     let stages = diagram_data?.['stages'] || [];
                                     txtTitle.text(docTitle ? docTitle : '').closest('.ntt-drawer-title-text').removeClass('hidden');
@@ -2313,7 +2313,7 @@ class WindowControl {
         link.click();
     }
 
-    static getHashUrl(){
+    static getHashUrl() {
         return location.hash;
     }
 
@@ -2321,7 +2321,7 @@ class WindowControl {
         window.history.pushState(null, null, idHash.includes('#') ? idHash : '#' + idHash);
     }
 
-    static removeHashUrl(){
+    static removeHashUrl() {
         window.history.replaceState(null, "", "#");
     }
 
@@ -2333,25 +2333,33 @@ class WindowControl {
         }
     }
 
-    static showLoading() {
-        Swal.fire({
-            icon: 'info',
-            title: `${$.fn.transEle.attr('data-loading')}`,
-            text: `${$.fn.transEle.attr('data-wait')}...`,
-            allowOutsideClick: false,
-            showConfirmButton: false,
-            timerProgressBar: true,
-            didOpen: () => {
-                Swal.showLoading();
-            }
-        });
+    static showLoading(timeout = null) {
+        setTimeout(
+            () => {
+                Swal.fire({
+                    icon: 'info',
+                    title: `${$.fn.transEle.attr('data-loading')}`,
+                    text: `${$.fn.transEle.attr('data-wait')}...`,
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    timerProgressBar: true,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+            },
+            Number.isInteger(timeout) ? timeout : 0
+        )
     }
 
-    static hideLoading() {
-        setTimeout(() => {
-            Swal.hideLoading();
-            swal.close();
-        }, 250,)
+    static hideLoading(timeout = null) {
+        setTimeout(
+            () => {
+                Swal.hideLoading();
+                swal.close();
+            },
+            Number.isInteger(timeout) ? timeout : 250,
+        )
     }
 
     static showLoadingButton(ele$, opts) {

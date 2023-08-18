@@ -37,12 +37,11 @@ $(document).ready(function () {
             )
         ) {
             let tbl = $('#dtbWareHouseList');
-            $.fn.callAjax(
-                SetupFormSubmit.getUrlDetailWithID(tbl.attr('data-url-remove'), rowData?.['id']),
-                'DELETE',
-                {},
-                $("input[name=csrfmiddlewaretoken]").val(),
-            ).then(
+            $.fn.callAjax2({
+                'url': SetupFormSubmit.getUrlDetailWithID(tbl.attr('data-url-remove'), rowData?.['id']),
+                'method': 'DELETE',
+            })
+                .then(
                 (resp)=>{
                     console.log(resp);
                     $.fn.switcherResp(resp);
@@ -75,7 +74,12 @@ $(document).ready(function () {
             event.preventDefault();
             return;
         }
-        $.fn.callAjax(frm.getUrlDetail($('#idxObjectUpdateID').text()), frm.dataMethod, bodyData, $("input[name=csrfmiddlewaretoken]").val(),).then((resp) => {
+        $.fn.callAjax2({
+            'url': frm.getUrlDetail($('#idxObjectUpdateID').text()),
+            'method': frm.dataMethod,
+            'data': bodyData,
+        })
+            .then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data?.['status'] === 200) {
                 $.fn.notifyB({
@@ -104,11 +108,12 @@ $(document).ready(function () {
             event.preventDefault();
             return;
         }
-        $.fn.callAjax(
-            frm.dataUrl,
-            frm.dataMethod,
-            bodyData,
-            $("input[name=csrfmiddlewaretoken]").val(),
+        $.fn.callAjax2(
+            {
+                'url': frm.dataUrl,
+                'method': frm.dataMethod,
+                'data': bodyData,
+            }
         ).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
@@ -131,40 +136,15 @@ $(document).ready(function () {
         let tbl = $('#dtbWareHouseList');
         let frm = new SetupFormSubmit(tbl);
         tbl.DataTableDefault({
+            useDataServer: true,
             ajax: {
                 url: frm.dataUrl,
                 type: frm.dataMethod,
-                dataSrc: function (resp) {
-                    let data = $.fn.switcherResp(resp);
-                    if (data && resp.data.hasOwnProperty('warehouse_list')) {
-                        return resp.data['warehouse_list'] ? resp.data['warehouse_list'] : []
-                    }
-                    throw Error('Call data raise errors.')
-                },
+                dataSrc: 'data.warehouse_list',
             },
-            columnDefs: [
-                {
-                    "width": "5%",
-                    "targets": 0
-                }, {
-                    "width": "10%",
-                    "targets": 1
-                }, {
-                    "width": "25%",
-                    "targets": 2
-                }, {
-                    "width": "35%",
-                    "targets": 3
-                }, {
-                    "width": "10%",
-                    "targets": 4
-                }, {
-                    "width": "10%",
-                    "targets": 5,
-                }
-            ],
             columns: [
                 {
+                    orderable: false,
                     render: (data, type, row, meta) => {
                         return ''
                     },
@@ -191,6 +171,7 @@ $(document).ready(function () {
                         return (`<div class="form-check form-switch mb-1"><input type="checkbox" class="form-check-input" {0} disabled></div>`).format_by_idx((data === true ? "checked" : ""))
                     },
                 }, {
+                    orderable: false,
                     className: 'action-center',
                     render: (data, type, row, meta) => {
                         let btnEdit = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-edit-row" data-bs-toggle="modal" data-bs-target="#updateWareHouse"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;

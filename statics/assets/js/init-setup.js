@@ -267,6 +267,10 @@ class LogController {
         // reset style
         this.setStyleBoxLog();
 
+        // reset title display
+        let txtTitle = $("#txtDocTitleHistory");
+        txtTitle.text("");
+
         // log runtime
         if (this.logUrl && (!this.groupLogEle.attr('data-log-runtime-loaded') || forceLoad === true)) {
             WindowControl.showLoadingWaitResponse(this.blockDataRuntime);
@@ -289,10 +293,16 @@ class LogController {
                             this.groupLogEle.attr('data-log-runtime-loaded', true);
                             let data = $.fn.switcherResp(resp);
                             if (data && $.fn.hasOwnProperties(data, ['diagram_data'])) {
-                                let diagram_data = data['diagram_data'];
-                                let stages = diagram_data['stages'];
-                                this.blockDataRuntime.html(this.parseLogOfDoc(stages)).removeClass('hidden');
-                                WindowControl.hideLoadingWaitResponse(this.blockDataRuntime);
+                                let diagram_data = data?.['diagram_data'];
+                                if (diagram_data){
+                                    let docTitle = diagram_data?.['doc_title'] || '';
+                                    let stages = diagram_data?.['stages'] || [];
+                                    txtTitle.text(docTitle ? docTitle : '').closest('.ntt-drawer-title-text').removeClass('hidden');
+                                    this.blockDataRuntime.html(
+                                        this.parseLogOfDoc(stages)
+                                    ).removeClass('hidden');
+                                    WindowControl.hideLoadingWaitResponse(this.blockDataRuntime);
+                                }
                             }
                         });
                     }
@@ -316,6 +326,7 @@ class LogController {
                     let data = $.fn.switcherResp(resp);
                     if (data && data['status'] === 200 && data.hasOwnProperty('log_data')) {
                         this.blockDataActivities.append(this.parseLogActivities(data['log_data']));
+                    } else {
                         WindowControl.hideLoadingWaitResponse(this.blockDataActivities);
                     }
                 }, (errs) => {
@@ -2302,8 +2313,16 @@ class WindowControl {
         link.click();
     }
 
+    static getHashUrl(){
+        return location.hash;
+    }
+
     static pushHashUrl(idHash) {
         window.history.pushState(null, null, idHash.includes('#') ? idHash : '#' + idHash);
+    }
+
+    static removeHashUrl(){
+        window.history.replaceState(null, "", "#");
     }
 
     static redirectLogin(timeout = 0, location_to_next = true) {

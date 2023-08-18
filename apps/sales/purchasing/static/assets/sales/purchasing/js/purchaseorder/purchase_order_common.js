@@ -91,48 +91,48 @@ class POLoadDataHandle {
     }
 
     static loadDataProductSelect(ele, is_change_item = true) {
-        let self = this;
-        let optionSelected = ele[0].options[ele[0].selectedIndex];
-        let productData = optionSelected.querySelector('.data-default');
-        if (productData) {
-            let data = JSON.parse(productData.value);
-            let uom = ele[0].closest('tr').querySelector('.table-row-uom-order');
-            let price = ele[0].closest('tr').querySelector('.table-row-price');
-            let priceList = ele[0].closest('tr').querySelector('.table-row-price-list');
-            let tax = ele[0].closest('tr').querySelector('.table-row-tax');
-            // load UOM
-            if (uom && Object.keys(data.unit_of_measure).length !== 0 && Object.keys(data.uom_group).length !== 0) {
-                self.loadBoxUOM(uom.id, data.unit_of_measure.id, data.uom_group.id);
-            } else {
-                self.loadBoxUOM(uom.id);
+        if (ele.val()) {
+            let data = SelectDDControl.get_data_from_idx(ele, ele.val());
+            if (data) {
+                data['unit_of_measure'] = data?.['sale_information']?.['default_uom'];
+                data['uom_group'] = data?.['general_information']?.['uom_group'];
+                data['tax'] = data?.['sale_information']?.['tax_code'];
+                let uom = ele[0].closest('tr').querySelector('.table-row-uom-order-actual');
+                let price = ele[0].closest('tr').querySelector('.table-row-price');
+                let priceList = ele[0].closest('tr').querySelector('.table-row-price-list');
+                let tax = ele[0].closest('tr').querySelector('.table-row-tax');
+                // load UOM
+                if (uom && Object.keys(data.unit_of_measure).length !== 0 && Object.keys(data.uom_group).length !== 0) {
+                    POLoadDataHandle.loadBoxUOM($(uom), data.unit_of_measure, data.uom_group.id);
+                } else {
+                    POLoadDataHandle.loadBoxUOM($(uom));
+                }
+                // load PRICE
+                if (price && priceList) {
+                    POLoadDataHandle.loadPriceProduct(ele[0], is_change_item);
+                }
+                // load TAX
+                if (tax && data.tax) {
+                    POLoadDataHandle.loadBoxTax($(tax), data.tax);
+                } else {
+                    POLoadDataHandle.loadBoxTax($(tax));
+                }
+                // load modal more information
+                POLoadDataHandle.loadMoreInformation(ele);
             }
-            // load PRICE
-            if (price && priceList) {
-                self.loadPriceProduct(ele[0], is_change_item);
-            }
-            // load TAX
-            if (tax && data.tax) {
-                self.loadBoxTax(tax.id, data.tax.id);
-            } else {
-                self.loadBoxTax(tax.id);
-            }
-            // load modal more information
-            self.loadMoreInformation(ele);
+            $.fn.initMaskMoney2();
         }
-        $.fn.initMaskMoney2();
     };
 
     static loadPriceProduct(eleProduct, is_change_item = true) {
-        let optionSelected = eleProduct.options[eleProduct.selectedIndex];
-        let productData = optionSelected.querySelector('.data-default');
+        let data = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
         let is_change_price = false;
-        if (productData) {
-            let data = JSON.parse(productData.value);
+        if (data) {
             let price = eleProduct.closest('tr').querySelector('.table-row-price');
             let priceList = eleProduct.closest('tr').querySelector('.table-row-price-list');
             // load PRICE
             if (price && priceList) {
-                let account_price_id = document.getElementById('customer-price-list').value;
+                let account_price_id = document.getElementById('customer-price-list')?.value;
                 let general_price_id = null;
                 let general_price = 0;
                 let customer_price = null;
@@ -140,7 +140,7 @@ class POLoadDataHandle {
                 $(priceList).empty();
                 if (Array.isArray(data.price_list) && data.price_list.length > 0) {
                     for (let i = 0; i < data.price_list.length; i++) {
-                        if (data.price_list[i].price_type === 1) { // PRICE TYPE IS PRODUCT (PURCHASE)
+                        if (data.price_list[i]?.['price_type'] === 1) { // PRICE TYPE IS PRODUCT (PURCHASE)
                             if (data.price_list[i].is_default === true) { // check & append GENERAL_PRICE_LIST
                                 general_price_id = data.price_list[i].id;
                                 general_price = parseFloat(data.price_list[i].value);
@@ -148,19 +148,19 @@ class POLoadDataHandle {
                                                     <div class="row">
                                                         <div class="col-5"><span>${data.price_list[i].title}</span></div>
                                                         <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
-                                                        <div class="col-2"><span class="valid-price">${data.price_list[i].price_status}</span></div>
+                                                        <div class="col-2"><span class="valid-price">${data.price_list[i]?.['price_status']}</span></div>
                                                     </div>
                                                 </button>`);
                             }
                             if (data.price_list[i].id === account_price_id && general_price_id !== account_price_id) { // check & append CUSTOMER_PRICE_LIST
-                                if (!["Expired", "Invalid"].includes(data.price_list[i].price_status)) { // Customer price valid
+                                if (!["Expired", "Invalid"].includes(data.price_list[i]?.['price_status'])) { // Customer price valid
                                     customer_price = parseFloat(data.price_list[i].value);
                                     $(priceList).empty();
                                     $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option option-btn-checked" data-value="${parseFloat(data.price_list[i].value)}">
                                                         <div class="row">
                                                             <div class="col-5"><span>${data.price_list[i].title}</span></div>
                                                             <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
-                                                            <div class="col-2"><span class="valid-price">${data.price_list[i].price_status}</span></div>
+                                                            <div class="col-2"><span class="valid-price">${data.price_list[i]?.['price_status']}</span></div>
                                                         </div>
                                                     </button>`);
                                 } else { // Customer price invalid, expired
@@ -168,7 +168,7 @@ class POLoadDataHandle {
                                                         <div class="row">
                                                             <div class="col-5"><span>${data.price_list[i].title}</span></div>
                                                             <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
-                                                            <div class="col-2"><span class="expired-price">${data.price_list[i].price_status}</span></div>
+                                                            <div class="col-2"><span class="expired-price">${data.price_list[i]?.['price_status']}</span></div>
                                                         </div>
                                                     </button>`);
                                 }
@@ -198,9 +198,10 @@ class POLoadDataHandle {
         }
     };
 
-    static loadBoxUOM(ele, dataUOM = {}) {
+    static loadBoxUOM(ele, dataUOM = {}, uom_group_id = null) {
         ele.initSelect2({
             data: dataUOM,
+            'dataParams': {'group': uom_group_id},
             disabled: !(ele.attr('data-url')),
         });
     }
@@ -226,7 +227,7 @@ class POLoadDataHandle {
         return true;
     };
 
-    static loadModalPurchaseRequestProductTable(is_clear_all = false, is_click = false) {
+    static loadModalPurchaseRequestProductTable(is_clear_all = false, is_trigger_click = false) {
         let tablePurchaseRequest = $('#datable-purchase-request');
         let tablePurchaseRequestProduct = $('#datable-purchase-request-product');
         let frm = new SetupFormSubmit(tablePurchaseRequestProduct);
@@ -249,8 +250,7 @@ class POLoadDataHandle {
                 };
             }
         }
-        tablePurchaseRequestProduct.DataTable().clear().destroy();
-        PODataTableHandle.dataTablePurchaseRequestProduct();
+        tablePurchaseRequestProduct.DataTable().clear().draw();
         if (request_id_list.length > 0) {
             $.fn.callAjax2({
                     'url': frm.dataUrl,
@@ -271,10 +271,8 @@ class POLoadDataHandle {
                                     }
                                 }
                             }
-                            tablePurchaseRequestProduct.DataTable().clear().destroy();
-                            PODataTableHandle.dataTablePurchaseRequestProduct();
                             tablePurchaseRequestProduct.DataTable().rows.add(data.purchase_request_product_list).draw();
-                            if (is_click === true) {
+                            if (is_trigger_click === true) {
                                 $('#btn-confirm-add-purchase-request').click();
                             }
                         }
@@ -286,23 +284,27 @@ class POLoadDataHandle {
     };
 
     static loadOrHiddenMergeProductTable() {
-        let self = this;
         let eleCheckbox = $('#merge-same-product');
         if (eleCheckbox[0].checked === true) {
-            $('#sroll-datable-purchase-request-product')[0].setAttribute('hidden', 'true');
-            $('#sroll-datable-purchase-request-product-merge')[0].removeAttribute('hidden');
-            self.loadDataMergeProductTable();
+            $('#datable-purchase-request-product')[0].setAttribute('hidden', 'true');
+            $('#datable-purchase-request-product_wrapper')[0].setAttribute('hidden', 'true');
+            $('#datable-purchase-request-product-merge')[0].removeAttribute('hidden');
+            $('#datable-purchase-request-product-merge_wrapper')[0].removeAttribute('hidden');
+            POLoadDataHandle.loadDataMergeProductTable();
         } else {
-            $('#sroll-datable-purchase-request-product-merge')[0].setAttribute('hidden', 'true');
-            $('#sroll-datable-purchase-request-product')[0].removeAttribute('hidden');
+            $('#datable-purchase-request-product-merge')[0].setAttribute('hidden', 'true');
+            $('#datable-purchase-request-product-merge_wrapper')[0].setAttribute('hidden', 'true');
+            $('#datable-purchase-request-product')[0].removeAttribute('hidden');
+            $('#datable-purchase-request-product_wrapper')[0].removeAttribute('hidden');
         }
         return true;
     };
 
     static loadDataMergeProductTable() {
-        $('#datable-purchase-request-product-merge').DataTable().destroy();
+        let tableMerged = $('#datable-purchase-request-product-merge');
+        tableMerged.DataTable().clear().draw();
         let data = setupMergeProduct();
-        PODataTableHandle.dataTablePurchaseRequestProductMerge(data);
+        tableMerged.DataTable().rows.add(data).draw();
         return true;
     };
 
@@ -337,6 +339,10 @@ class POLoadDataHandle {
             }
         }
         $('#purchase_requests_data').val(JSON.stringify(purchase_requests_data));
+        let eleMergeProduct = $('#merge-same-product');
+        if (eleMergeProduct[0].checked === true) {
+            eleMergeProduct.click();
+        }
         return true;
     };
 
@@ -371,8 +377,7 @@ class POLoadDataHandle {
                                         }
                                     }
                                 }
-                                tablePurchaseQuotation.DataTable().clear().destroy();
-                                PODataTableHandle.dataTablePurchaseQuotation();
+                                tablePurchaseQuotation.DataTable().clear().draw();
                                 tablePurchaseQuotation.DataTable().rows.add(data.purchase_quotation_list).draw();
                                 if (is_click === true) {
                                     $('#btn-confirm-add-purchase-quotation').click();
@@ -477,11 +482,11 @@ class POLoadDataHandle {
             $('#datable-purchase-order-product-request_wrapper')[0].removeAttribute('hidden');
         }
         if (data.length > 0) {
-            tablePurchaseOrderProductRequest.DataTable().clear();
+            tablePurchaseOrderProductRequest.DataTable().clear().draw();
             tablePurchaseOrderProductRequest.DataTable().rows.add(data).draw();
             self.loadDataRowTable(tablePurchaseOrderProductRequest);
         } else {
-            tablePurchaseOrderProductRequest.DataTable().clear();
+            tablePurchaseOrderProductRequest.DataTable().clear().draw();
         }
         return true;
     };
@@ -520,19 +525,19 @@ class POLoadDataHandle {
             tablePurchaseOrderProductAdd[0].removeAttribute('hidden');
             $('#datable-purchase-order-product-add_wrapper')[0].removeAttribute('hidden');
         }
-        tablePurchaseOrderProductRequest.DataTable().clear();
+        tablePurchaseOrderProductRequest.DataTable().clear().draw();
         let newRow = tablePurchaseOrderProductAdd.DataTable().row.add(data).draw().node();
         self.loadDataRow(newRow, 'datable-purchase-order-product-add');
         return true;
     };
 
     static loadDataRowTable($table) {
-        let self = this;
-        // callBack Row to load data for select box
-        for (let i = 0; i < $table[0].tBodies[0].rows.length; i++) {
-            let row = $table[0].tBodies[0].rows[i];
-            let table_id = $table[0].id;
-            self.loadDataRow(row, table_id);
+        if (!$table[0].querySelector('.dataTables_empty')) {
+            for (let i = 0; i < $table[0].tBodies[0].rows.length; i++) {
+                let row = $table[0].tBodies[0].rows[i];
+                let table_id = $table[0].id;
+                POLoadDataHandle.loadDataRow(row, table_id);
+            }
         }
     };
 
@@ -544,8 +549,9 @@ class POLoadDataHandle {
             self.loadBoxProduct($(row.querySelector('.table-row-item')));
             self.loadBoxUOM($(row.querySelector('.table-row-uom-order-actual')));
         } else if (table_id === 'datable-purchase-order-product-request') {
-            self.loadMoreInformation($(row.querySelector('.table-row-item')), true);
-            self.loadBoxUOM($(row.querySelector('.table-row-uom-order-actual')));
+            let dataRow = JSON.parse(row.querySelector('.table-row-order').getAttribute('data-row'));
+            self.loadBoxProduct($(row.querySelector('.table-row-item')), dataRow?.product);
+            self.loadBoxUOM($(row.querySelector('.table-row-uom-order-actual')), dataRow?.uom_order_request);
         }
         self.loadBoxTax($(row.querySelector('.table-row-tax')));
     };
@@ -590,15 +596,12 @@ class POLoadDataHandle {
                             let $table = $('#datable-purchase-order-product-request');
                             $table.DataTable().rows().every(function () {
                                 let row = this.node();
-                                let priceListData = dataProduct[row.querySelector('.table-row-item').id];
+                                let priceListData = dataProduct[row.querySelector('.table-row-item').getAttribute('data-product-id')];
                                 let elePrice = row.querySelector('.table-row-price');
-                                let elePriceShow = row.querySelector('.table-row-price-show');
                                 let elePriceList = row.querySelector('.table-row-price-list');
                                 if (priceListData) {
-                                    row.querySelector('.table-row-price-show-area').removeAttribute('hidden');
-                                    elePrice.setAttribute('hidden', 'true');
+                                    elePrice.setAttribute('disabled', 'true');
                                     $(elePrice).attr('value', String(0));
-                                    $(elePriceShow).attr('data-init-money', String(0));
                                     if (elePriceList) {
                                         $(elePriceList).empty();
                                         for (let price of priceListData) {
@@ -620,7 +623,6 @@ class POLoadDataHandle {
                                                                     </div>
                                                                 </div>`;
                                                 $(elePrice).attr('value', String(parseFloat(price.unit_price)));
-                                                $(elePriceShow).attr('data-init-money', String(parseFloat(price.unit_price)));
 
                                             }
                                             $(elePriceList).append(priceAppend);
@@ -689,7 +691,7 @@ class POLoadDataHandle {
         // Load again data & events relate with Purchase Request
         $('#purchase-order-purchase-request').empty();
         self.loadModalPurchaseRequestTable(is_clear_all);
-        $('#table-purchase-reqeust-checkbox-all')[0].checked = false;
+        $('#table-purchase-request-checkbox-all')[0].checked = false;
         self.loadModalPurchaseRequestProductTable(is_clear_all, true);
         // Load again data & events relate with Purchase Quotation
         $('#purchase-order-purchase-quotation').empty();
@@ -809,8 +811,8 @@ class PODataTableHandle {
                     targets: 1,
                     render: (data, type, row) => {
                         let purchase_request_id = "";
-                        if (Object.keys(row.purchase_request).length !== 0) {
-                            purchase_request_id = row.purchase_request.id;
+                        if (Object.keys(row?.['purchase_request']).length !== 0) {
+                            purchase_request_id = row?.['purchase_request']?.['id'];
                         }
                         if (!row.hasOwnProperty('is_checked')) {
                             return `<div class="form-check">
@@ -819,7 +821,7 @@ class PODataTableHandle {
                                         class="form-check-input table-row-checkbox" 
                                         id="${row.id}" 
                                         data-purchase-request-id="${purchase_request_id}"
-                                        data-sale-order-product-id="${row.sale_order_product_id}"
+                                        data-sale-order-product-id="${row?.['sale_order_product_id']}"
                                     >
                                 </div>`
                         } else {
@@ -829,7 +831,7 @@ class PODataTableHandle {
                                         class="form-check-input table-row-checkbox" 
                                         id="${row.id}" 
                                         data-purchase-request-id="${purchase_request_id}"
-                                        data-sale-order-product-id="${row.sale_order_product_id}"
+                                        data-sale-order-product-id="${row?.['sale_order_product_id']}"
                                         checked
                                     >
                                 </div>`
@@ -846,7 +848,7 @@ class PODataTableHandle {
                 {
                     targets: 3,
                     render: (data, type, row) => {
-                        return `<span class="table-row-code">${row.purchase_request.code}</span>`
+                        return `<span class="table-row-code">${row?.['purchase_request']?.['code']}</span>`
                     }
                 },
                 {
@@ -864,7 +866,7 @@ class PODataTableHandle {
                 {
                     targets: 6,
                     render: (data, type, row) => {
-                        return `<span class="table-row-remain">${row.remain_for_purchase_order}</span>`
+                        return `<span class="table-row-remain">${row?.['remain_for_purchase_order']}</span>`
                     }
                 },
                 {
@@ -1040,7 +1042,7 @@ class PODataTableHandle {
                 //     "targets": 4,
                 // },
                 // {
-                //     "width": "10%",
+                //     "width": "5%",
                 //     "targets": 5,
                 // },
                 // {
@@ -1048,7 +1050,7 @@ class PODataTableHandle {
                 //     "targets": 6,
                 // },
                 // {
-                //     "width": "20%",
+                //     "width": "25%",
                 //     "targets": 7,
                 // },
                 // {
@@ -1064,29 +1066,44 @@ class PODataTableHandle {
                 {
                     targets: 0,
                     render: (data, type, row) => {
-                        return `<span class="table-row-order" id="${row.id}">${row.order}</span>`
+                        let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
+                        return `<span class="table-row-order" id="${row.id}" data-row="${dataRow}">${row.order}</span>`
                     }
                 },
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        let dataStr = JSON.stringify(row.product).replace(/"/g, "&quot;");
-                        let purchase_request_product_datas = JSON.stringify(row.purchase_request_product_datas).replace(/"/g, "&quot;");
-                        return `<div class="row more-information-group" style="display: inline-block">
-                                    <div class="btn-group dropstart w-5">
-                                        <i
-                                            class="fas fa-info-circle more-information"
-                                            data-bs-toggle="dropdown"
-                                            data-dropdown-animation
-                                            aria-haspopup="true"
-                                            aria-expanded="false"
-                                            disabled
-                                        >
-                                        </i>
-                                        <div class="dropdown-menu w-210p mt-4"></div>
+                        return `<div class="row more-information-group">
+                                    <div class="input-group">
+                                        <span class="input-affix-wrapper">
+                                            <span class="input-prefix">
+                                                <div class="btn-group dropstart">
+                                                    <i
+                                                        class="fas fa-info-circle more-information"
+                                                        data-bs-toggle="dropdown"
+                                                        data-dropdown-animation
+                                                        aria-haspopup="true"
+                                                        aria-expanded="false"
+                                                        disabled
+                                                    >
+                                                    </i>
+                                                    <div class="dropdown-menu w-210p mt-4"></div>
+                                                </div>
+                                            </span>
+                                            <select
+                                                class="form-select table-row-item"
+                                                data-product-id="${row?.['product']?.['id']}"
+                                                data-url="${PODataTableHandle.productInitEle.attr('data-url')}"
+                                                data-link-detail="${PODataTableHandle.productInitEle.attr('data-link-detail')}"
+                                                data-method="${PODataTableHandle.productInitEle.attr('data-method')}"
+                                                data-keyResp="product_sale_list"
+                                                required
+                                                disabled
+                                            >
+                                            </select>
+                                        </span>
                                     </div>
-                                    <span class="table-row-item" id="${row.product.id}" data-purchase-request-product-datas="${purchase_request_product_datas}">${row.product_title}<input type="hidden" class="data-info" value="${dataStr}"></span>
-                            </div>`
+                                </div>`;
                     },
                 },
                 // {
@@ -1116,7 +1133,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 5,
-                    render: (data, type, row) => {
+                    render: () => {
                         return `<div class="row">
                                     <select 
                                         class="form-control table-row-uom-order-actual"
@@ -1141,26 +1158,22 @@ class PODataTableHandle {
                     targets: 7,
                     render: (data, type, row) => {
                         return `<div class="row">
-                                    <div class="row table-row-price-show-area inline-elements" hidden>
-                                        <span class="mask-money mr-4 table-row-price-show" data-init-money="${parseFloat(row.product_unit_price)}"></span>
-                                        <button 
-                                            aria-expanded="false"
-                                            data-bs-toggle="dropdown"
-                                            class="btn btn-link btn-sm w-10"
-                                            type="button"
-                                            style="margin-left: -40px"
-                                        >
-                                        <i class="fas fa-angle-down"></i>
-                                        </button>
-                                        <div role="menu" class="dropdown-menu dropdown-bordered table-row-price-list w-460p"></div>
-                                    </div>
-                                    <input 
-                                        type="text" 
-                                        class="form-control mask-money table-row-price" 
-                                        value="${row.product_unit_price}"
-                                        data-return-type="number"
-                                    >
-                                </div>`;
+                                    <div class="dropdown">
+                                        <div class="input-group dropdown-action input-group-price" aria-expanded="false" data-bs-toggle="dropdown">
+                                        <span class="input-affix-wrapper">
+                                            <input 
+                                                type="text" 
+                                                class="form-control mask-money table-row-price" 
+                                                value="${row.product_unit_price}"
+                                                data-return-type="number"
+                                            >
+                                            <span class="input-suffix table-row-btn-dropdown-price-list"><i class="fas fa-angle-down"></i></span>
+                                        </span>
+                                        </div>
+                                        <div role="menu" class="dropdown-menu table-row-price-list w-460p">
+                                        <a class="dropdown-item" data-value=""></a>
+                                        </div>
+                                    </div>`;
                     }
                 },
                 {
@@ -1257,12 +1270,13 @@ class PODataTableHandle {
                 {
                     targets: 0,
                     render: (data, type, row) => {
-                        return `<span class="table-row-order" id="${row.id}">${row.order}</span>`
+                        let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
+                        return `<span class="table-row-order" id="${row.id}" data-row="${dataRow}">${row.order}</span>`
                     }
                 },
                 {
                     targets: 1,
-                    render: (data, type, row) => {
+                    render: () => {
                             return `<div class="row more-information-group">
                                         <div class="input-group">
                                             <span class="input-affix-wrapper">
@@ -1304,7 +1318,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 3,
-                    render: (data, type, row) => {
+                    render: () => {
                         return `<div class="row">
                                     <select 
                                         class="form-control table-row-uom-order-actual"
@@ -1351,12 +1365,6 @@ class PODataTableHandle {
                 {
                     targets: 6,
                     render: (data, type, row) => {
-                        let taxID = "";
-                        let taxRate = "0";
-                        if (row.tax) {
-                            taxID = row.tax.id;
-                            taxRate = row.tax.value;
-                        }
                         return `<div class="row">
                                 <select 
                                     class="form-control table-row-tax"
@@ -1549,12 +1557,7 @@ class POValidateHandle {
 class POSubmitHandle {
     static setupDataProduct() {
         let result = [];
-        let is_by_request = false;
         let table = document.getElementById('datable-purchase-order-product-add');
-        if (document.getElementById('purchase-order-purchase-request').innerHTML) {
-            table = document.getElementById('datable-purchase-order-product-request');
-            is_by_request = true;
-        }
         if (table.querySelector('.dataTables_empty')) {
             return []
         }
@@ -1565,13 +1568,8 @@ class POSubmitHandle {
             let eleProduct = row.querySelector('.table-row-item');
             if (eleProduct) { // PRODUCT
                 let dataInfo = {}
-                if (is_by_request === true) {
-                    let eleDataProd = eleProduct.querySelector('.data-info');
-                    dataInfo = JSON.parse(eleDataProd.value);
-                } else {
-                    if ($(eleProduct).val()) {
-                        dataInfo = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
-                    }
+                if ($(eleProduct).val()) {
+                    dataInfo = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
                 }
                 if (dataInfo) {
                     rowData['product'] = dataInfo.id;
@@ -1647,7 +1645,8 @@ class POSubmitHandle {
         _form.dataForm['purchase_quotations_data'] = JSON.parse($('#purchase_quotations_data').val());
         let dateDeliveredVal = $('#purchase-order-date-delivered').val();
         if (dateDeliveredVal) {
-            _form.dataForm['delivered_date'] = moment(dateDeliveredVal).format('YYYY-MM-DD HH:mm:ss');
+            _form.dataForm['delivered_date'] = moment(dateDeliveredVal,
+                'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
         }
         _form.dataForm['status_delivered'] = 0;
         let products_data_setup = self.setupDataProduct();

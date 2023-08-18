@@ -553,7 +553,7 @@ class POLoadDataHandle {
             if (dataRowRaw) {
                 let dataRow = JSON.parse(dataRowRaw);
                 self.loadBoxProduct($(row.querySelector('.table-row-item')), dataRow?.['product']);
-                self.loadBoxUOM($(row.querySelector('.table-row-uom-order-actual')), dataRow?.['uom_order_request'], dataRow?.['uom_order_request']?.['uom_group_id']);
+                self.loadBoxUOM($(row.querySelector('.table-row-uom-order-actual')), dataRow?.['uom_order_request'], dataRow?.['uom_order_request']?.['uom_group']?.['id']);
             }
         }
         self.loadBoxTax($(row.querySelector('.table-row-tax')));
@@ -977,6 +977,13 @@ class PODataTableHandle {
             columns: [
                 {
                     targets: 0,
+                    render: (data, type, row, meta) => {
+                        let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
+                        return `<span class="table-row-order" id="${row.id}" data-row="${dataRow}">${(meta.row + 1)}</span>`
+                    }
+                },
+                {
+                    targets: 1,
                     render: (data, type, row) => {
                         if (!row.hasOwnProperty('is_checked')) {
                             return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" id="${row.id}"></div>`;
@@ -986,26 +993,26 @@ class PODataTableHandle {
                     }
                 },
                 {
-                    targets: 1,
+                    targets: 2,
                     render: (data, type, row) => {
                         return `<span class="table-row-code">${row.code}</span>`
                     },
                 },
                 {
-                    targets: 2,
+                    targets: 3,
                     render: (data, type, row) => {
                         return `<span class="table-row-title">${row.title}</span>`
                     }
                 },
                 {
-                    targets: 3,
+                    targets: 4,
                     render: (data, type, row) => {
                         let dataSupplier = JSON.stringify(row.supplier_mapped).replace(/"/g, "&quot;");
                         return `<span class="table-row-supplier" data-supplier="${dataSupplier}" id="${row.supplier_mapped.id}">${row.supplier_mapped.name}</span>`
                     }
                 },
                 {
-                    targets: 4,
+                    targets: 5,
                     render: (data, type, row) => {
                         return `<span class="table-row-purchase-quotation-request">${row.purchase_quotation_request_mapped.code}</span>`
                     }

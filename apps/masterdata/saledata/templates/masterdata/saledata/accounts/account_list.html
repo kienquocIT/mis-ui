@@ -41,15 +41,30 @@
                 <thead>
                 <tr class="row-custom-filter">
                     <th colspan="8">
-                        <div class="col-12 col-xs-6 col-md-4 col-lg-3">
-                            <label for="searchManager">{% trans 'Account Manager' %}</label>
-                            <select
-                                    class="select-custom-filter"
-                                    id="searchManager" data-url="{% url 'EmployeeListAPI' %}"
-                                    data-keyResp="employee_list" data-keyText="full_name"
-                                    data-keyParam="manager__contains"
-                                    multiple
-                            ></select>
+                        <div class="row">
+                            <div class="col-12 col-xs-6 col-md-4 col-lg-3">
+                                <label for="searchManager">{% trans 'Account Manager' %}</label>
+                                <select
+                                        class="select-custom-filter"
+                                        id="searchManager" data-url="{% url 'EmployeeListAPI' %}"
+                                        data-keyResp="employee_list" data-keyText="full_name"
+                                        data-keyParam="manager__contains"
+                                        multiple
+                                ></select>
+                            </div>
+                            <div class="col-12 col-xs-6 col-md-4 col-lg-3">
+                                <label for="searchAdvanceManager">{% trans 'Filter Manager Advance' %}</label>
+                                <select
+                                        class="select-custom-filter"
+                                        id="searchAdvanceManager"
+                                        data-keyParam="has_manager_custom"
+                                >
+                                    <option value="all" selected>{% trans 'All' %}</option>
+                                    <option value="me">{% trans 'Of Me' %}</option>
+                                    <option value="same">{% trans 'Of Same Group' %}</option>
+                                    <option value="staff">{% trans 'Of My Staff' %}</option>
+                                </select>
+                            </div>
                         </div>
                     </th>
                 </tr>

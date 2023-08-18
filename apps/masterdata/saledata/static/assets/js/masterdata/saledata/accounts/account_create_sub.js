@@ -32,14 +32,12 @@ function loadShippingCities(shippingCityData) {
     shippingCityEle.initSelect2({
         data: (shippingCityData ? shippingCityData : null),
         keyResp: 'cities',
+    }).on('change', function () {
+        shippingDistrictEle.find('option').remove();
+        shippingWardEle.find('option').remove();
+        loadShippingDistricts();
     })
 }
-
-shippingCityEle.on('change', function () {
-    shippingDistrictEle.find('option').remove();
-    shippingWardEle.find('option').remove();
-    loadShippingDistricts()
-});
 
 function loadShippingDistricts() {
     shippingDistrictEle.initSelect2({
@@ -48,13 +46,11 @@ function loadShippingDistricts() {
             method: 'GET'
         },
         keyResp: 'districts',
+    }).on('change', function () {
+        shippingWardEle.find('option').remove();
+        loadShippingWards();
     })
 }
-
-shippingDistrictEle.on('change', function () {
-    shippingWardEle.find('option').remove();
-    loadShippingWards()
-});
 
 function loadShippingWards() {
     shippingWardEle.initSelect2({

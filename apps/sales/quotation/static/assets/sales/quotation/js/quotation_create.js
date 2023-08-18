@@ -761,6 +761,9 @@ $(function () {
                 document.getElementById('customer-price-list').value = dataCopy.customer?.['customer_price_list'];
                 QuotationLoadDataHandle.loadDetailQuotation(dataCopy, true);
                 QuotationLoadDataHandle.loadDataTablesAndDropDowns(dataCopy);
+                if (dataCopyTo.option === 'custom') {
+                    QuotationCalculateCaseHandle.calculateAllRowsTableProduct(tableProduct);
+                }
 
             } else if (type === 'copy-to') { // COPY TO (QUOTATION DETAIL -> SALE ORDER CREATE)
                 // create URL and add to href

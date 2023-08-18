@@ -330,13 +330,6 @@ $(document).ready(function () {
             data['sale_price_list'] = sale_product_price_list;
             data['sale_currency_using'] = currency_primary;
         }
-        else {
-            data['sale_default_uom'] = null;
-            data['sale_tax'] = null;
-            data['sale_cost'] = null;
-            data['sale_price_list'] = [];
-            data['sale_currency_using'] = null;
-        }
 
         if ($('#check-tab-inventory').is(':checked') === true) {
             data['product_choice'].push(1)
@@ -344,20 +337,11 @@ $(document).ready(function () {
             data['inventory_level_min'] = parseFloat($('#inventory-level-min').val());
             data['inventory_level_max'] = parseFloat($('#inventory-level-max').val());
         }
-        else {
-            data['inventory_uom'] = null;
-            data['inventory_level_min'] = null;
-            data['inventory_level_max'] = null;
-        }
 
         if ($('#check-tab-purchase').is(':checked') === true) {
             data['product_choice'].push(2)
             data['purchase_default_uom'] = $('#purchase-select-box-default-uom option:selected').attr('value');
             data['purchase_tax'] = $('#purchase-select-box-tax-code option:selected').attr('value');
-        }
-        else {
-            data['purchase_default_uom'] = null;
-            data['purchase_tax'] = null;
         }
 
         if (data['product_choice'].includes(1)) {

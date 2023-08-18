@@ -28,7 +28,8 @@ class PromotionListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(request=request, user=request.user, url=ApiURL.PROMOTION_LIST).get()
+        params = request.query_params.dict()
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.PROMOTION_LIST).get(params)
         return resp.auto_return(key_success='promotion_list')
 
 

@@ -230,7 +230,7 @@ $(function () {
 
                     const taskList = _this.getTaskList
                     for (let [key, item] of taskList.entries()){
-                        if (item.parent_n.id === taskID)
+                        if (item?.parent_n?.id === taskID)
                             $(`.sub-tasklist-wrap [data-task-id="${item.id}"]`).parents('.tasklist-card').removeClass(
                                 'hidden')
                     }
@@ -389,13 +389,19 @@ $(function () {
                 if (isReturn) return childHTML
                 else {
                     const taskStatusID = taskStatus.id
-                    $(`[data-id="${taskStatusID}"]`).closest('.tasklist').find('.wrap-child').append(childHTML)
+                    const $thisCrt = this
+                    $(`[data-id="${taskStatusID}"]`).closest('.tasklist').find('.wrap-child').each(function(){
+                        let temp = childHTML.clone()
+                        $(this).append(temp)
+                        if ($(this).closest('#kb_scroll').length > 0) temp.removeClass('hidden')
+
+                        temp.find('[data-toggle="tooltip"]').tooltip({placement: 'right'});
+                        $thisCrt.editTask(temp)
+                        $thisCrt.deleteTask(temp)
+                        $thisCrt.logTimeAct(temp)
+                        $thisCrt.showHideSubtask(temp)
+                    })
                     $('.cancel-task').trigger('click')
-                    childHTML.find('[data-toggle="tooltip"]').tooltip({placement: 'right'});
-                    this.editTask(childHTML)
-                    this.deleteTask(childHTML)
-                    this.logTimeAct(childHTML)
-                    this.showHideSubtask(childHTML)
                     // reload lại các sub
                     this.reloadCountParent()
                     // đếm lại số task trong task status
@@ -490,7 +496,7 @@ $(function () {
             const hasSub = this.getCountParent
             if (hasSub?.[data.id])
                 $elm.find('.sub_task_count').text(hasSub[data.id])
-
+            $('.cancel-task').trigger('click')
             // reload sub count
             this.reloadCountParent()
             // đếm lại số task trong task status

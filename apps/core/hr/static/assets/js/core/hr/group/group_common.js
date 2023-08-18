@@ -13,7 +13,7 @@ class GroupLoadDataHandle {
             dataTableEmployee();
             dataTableEmployeeShow();
         }
-        if (frm.attr('data-method') === "PUT") {
+        if (frm.attr('data-method') === "PUT" || frm.attr('data-method') === "GET") {
             $.fn.callAjax2({url: frm.attr('data-url'), method: 'GET'}).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
@@ -33,7 +33,6 @@ class GroupLoadDataHandle {
                             GroupLoadDataHandle.loadGroupParentList(groupData?.['parent_n']);
                             GroupLoadDataHandle.loadFirstManagerList(groupData?.['first_manager']);
                             GroupLoadDataHandle.loadSecondManagerList(groupData?.['second_manager']);
-                            dataTableEmployee();
                             dataTableEmployeeShow();
                             $('#datable_employee_show_list').DataTable().rows.add(groupData?.['group_employee']).draw();
                             let emp_id_list = [];
@@ -41,23 +40,11 @@ class GroupLoadDataHandle {
                                 emp_id_list.push(emp.id);
                             }
                             $('#data-group_employee').val(JSON.stringify(emp_id_list));
+                            dataTableEmployee();
                         }
                     }
                 }
             )
-        }
-    }
-
-    static loadCheckboxTableEmployee() {
-        let emp_list = $('#data-group_employee').val();
-        if (emp_list) {
-            let table = document.getElementById('datable_employee_list');
-            let eleCheckboxList = table.querySelectorAll('.table-row-checkbox');
-            for (let item of eleCheckboxList) {
-                if (JSON.parse(emp_list).includes(item.id)) {
-                    item.checked = true;
-                }
-            }
         }
     }
 
@@ -126,7 +113,7 @@ class GroupLoadDataHandle {
             });
         }
         $('#data-group_employee').val(JSON.stringify(checked_id_list));
-        tableShow.DataTable().clear();
+        tableShow.DataTable().clear().draw();
         tableShow.DataTable().rows.add(data_emp_show).draw();
     }
 
@@ -143,7 +130,7 @@ function deleteEmployeeShow(delID) {
             break;
         }
     }
-    loadDataEmployeeShow();
+    GroupLoadDataHandle.loadDataEmployeeShow();
 }
 
 // DATATABLE employee
@@ -213,7 +200,13 @@ function dataTableEmployee() {
                 targets: 6,
                 render: (data, type, row) => {
                     let role = JSON.stringify(row.role).replace(/"/g, "&quot;");
-                    return `<div class="form-check">
+                    let dataGroupEmployee = $('#data-group_employee');
+                    let employee_id_checked_list = [];
+                    if (dataGroupEmployee.val()) {
+                        employee_id_checked_list = JSON.parse(dataGroupEmployee.val());
+                    }
+                    if (!employee_id_checked_list.includes(row.id)) {
+                        return `<div class="form-check">
                                 <input 
                                     type="checkbox" 
                                     class="form-check-input table-row-checkbox" 
@@ -222,6 +215,18 @@ function dataTableEmployee() {
                                     data-role="${role}"
                                 >
                             </div>`
+                    } else {
+                        return `<div class="form-check">
+                                <input 
+                                    type="checkbox" 
+                                    class="form-check-input table-row-checkbox" 
+                                    id="${row.id}"
+                                    data-title="${row.full_name}"
+                                    data-role="${role}"
+                                    checked
+                                >
+                            </div>`
+                    }
                 }
             },
         ],
@@ -264,7 +269,12 @@ function dataTableEmployeeShow(data) {
             {
                 targets: 3,
                 render: (data, type, row) => {
-                    return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row" id="${row.id}"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`
+                    let form = $('#frm_group_create');
+                    if (form.attr('data-method') !== "GET") {
+                        return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row" id="${row.id}"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`;
+                    } else {
+                        return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row" id="${row.id}" disabled><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`
+                    }
                 }
             },
         ],

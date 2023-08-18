@@ -23,7 +23,8 @@ class WareHouseListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.WAREHOUSE_LIST).get()
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.WAREHOUSE_LIST).get(params)
         return resp.auto_return(key_success='warehouse_list')
 
     @mask_view(

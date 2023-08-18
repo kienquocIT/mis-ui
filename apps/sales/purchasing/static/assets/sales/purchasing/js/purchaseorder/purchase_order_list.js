@@ -6,6 +6,7 @@ $(function () {
             let $table = $('#table_purchase_order_list')
             let frm = new SetupFormSubmit($table);
             $table.DataTableDefault({
+                useDataServer: true,
                 ajax: {
                     url: frm.dataUrl,
                     type: frm.dataMethod,
@@ -70,7 +71,7 @@ $(function () {
                     {
                         targets: 4,
                         render: (data, type, row) => {
-                            let date_delivered = moment(row.date_delivered).format('YYYY-MM-DD');
+                            let date_delivered = moment(row?.['date_delivered']).format('YYYY-MM-DD');
                             return `<p>${date_delivered}</p>`
                         }
                     },

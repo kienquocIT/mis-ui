@@ -324,8 +324,8 @@ class promotionHandle {
         let max_usages = conditionCheck.max_usages;
         if (max_usages > 0) {
             let check_max_usages = 0;
-            for (let idx = 0; idx < data_promotion.sale_order_used.length; idx++) {
-                let order_used = data_promotion.sale_order_used[idx];
+            for (let idx = 0; idx < data_promotion?.['sale_order_used'].length; idx++) {
+                let order_used = data_promotion?.['sale_order_used'][idx];
                 if (order_used.customer_id === customer_id) {
                     check_max_usages++
                 }
@@ -339,8 +339,8 @@ class promotionHandle {
         if (use_count > 0) {
             let times_condition = conditionCheck.times_condition;
             let check_use_count = 0;
-            for (let i = 0; i < data_promotion.sale_order_used.length; i++) {
-                let order_used = data_promotion.sale_order_used[i];
+            for (let i = 0; i < data_promotion?.['sale_order_used'].length; i++) {
+                let order_used = data_promotion?.['sale_order_used'][i];
                 if (order_used.customer_id === customer_id) {
                     if (times_condition === 1) { // IN VALID TIME
                         let dateToCheck = new Date(moment(order_used.date_created).format('YYYY-MM-DD')).getTime();
@@ -404,7 +404,7 @@ class promotionHandle {
             if (condition.is_on_product === true) { // discount on specific product
                 let row = tableProd.DataTable().row(condition.row_apply_index).node();
                 let taxSelected = row.querySelector('.table-row-tax').options[row.querySelector('.table-row-tax').selectedIndex];
-                let taxValue = taxSelected.getAttribute('data-value')
+                // let taxValue = taxSelected.getAttribute('data-value')
                 taxID = taxSelected.value;
                 if (condition.is_on_percent === true) { // discount by percent
                     let subtotal = row.querySelector('.table-row-subtotal-raw').value;
@@ -700,7 +700,7 @@ class promotionHandle {
                                     checkList.push(item.id)
                                 }
                                 check_length++;
-                                if (check_length === data.promotion_check_list.length) {
+                                if (check_length === data?.['promotion_check_list'].length) {
                                     if (!eleCheck.val()) {
                                         eleCheck.val('true');
                                     }
@@ -723,7 +723,7 @@ class shippingHandle {
         let margin = parseFloat(data_shipping.margin);
         let isPass = false;
         for (let i = 0; i < formula_condition.length; i++) {
-            let location_condition = formula_condition[i].location_condition
+            let location_condition = formula_condition[i]?.['location_condition']
             for (let l = 0; l < location_condition.length; l++) {
                 let location = location_condition[l];
                 if (shippingAddress.includes(location.title)) { // check location
@@ -781,9 +781,9 @@ class shippingHandle {
                             }
                         }
                         if (isPass === true) {
-                            if (data_shipping.cost_method === 0) {
+                            if (data_shipping?.['cost_method'] === 0) {
                                 final_shipping_price = parseFloat(data_shipping.fixed_price);
-                            } else if (data_shipping.cost_method === 1) {
+                            } else if (data_shipping?.['cost_method'] === 1) {
                                 final_shipping_price = (shipping_price + (extra_amount * result_to_check));
                             }
                             if (margin > 0) {

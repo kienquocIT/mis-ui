@@ -97,12 +97,14 @@ $(function(){
     $('#in_assign_any').on('change', function(){
         if (!this.checked){
             $('[name="in_assign_opt"]').prop('disabled', false)
+            $('[name="in_assign_opt"][value="1"]').prop('checked', true)
         }else $('[name="in_assign_opt"]').prop('disabled', true).prop('checked', false)
     })
     // block assign over Opp
     $('#out_assign_any').on('change', function(){
         if (!this.checked){
             $('[name="out_assign_opt"]').prop('disabled', false)
+            $('[name="out_assign_opt"][value="1"]').prop('checked', true)
         }else $('[name="out_assign_opt"]').prop('disabled', true).prop('checked', false)
     })
 

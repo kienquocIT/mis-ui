@@ -27,7 +27,8 @@ class GoodReceiptListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(request=request, user=request.user, url=ApiURL.GOOD_RECEIPT_API).get()
+        params = request.query_params.dict()
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.GOOD_RECEIPT_API).get(params)
         return resp.auto_return(key_success='good_receipt_list')
 
     @mask_view(

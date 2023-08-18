@@ -20,6 +20,7 @@ $(function () {
         POLoadDataHandle.loadBoxContact();
         PODataTableHandle.dataTablePurchaseRequest();
         PODataTableHandle.dataTablePurchaseRequestProduct();
+        PODataTableHandle.dataTablePurchaseRequestProductMerge();
         PODataTableHandle.dataTablePurchaseQuotation();
         PODataTableHandle.dataTablePurchaseOrderProductAdd();
         PODataTableHandle.dataTablePurchaseOrderProductRequest();
@@ -38,8 +39,10 @@ $(function () {
 
         function checkDataTableRenderThenHidden() {
             let element0 = $('#datable-purchase-order-product-request_wrapper');
-            if (element0.length) {
-                element0[0].setAttribute('hidden', 'true');  // hidden ele if condition pass
+            let element1 = $('#datable-purchase-request-product-merge_wrapper');
+            if (element0.length && element1.length) { // hidden ele if condition pass
+                element0[0].setAttribute('hidden', 'true');
+                element1[0].setAttribute('hidden', 'true');
             } else {
                 setTimeout(checkDataTableRenderThenHidden, 1000);  // call again after 1s if condition not pass yet
             }
@@ -73,14 +76,14 @@ $(function () {
         });
 
         // Checkbox all
-        $('#table-purchase-reqeust-checkbox-all').on('click', function() {
+        $('#table-purchase-request-checkbox-all').on('click', function() {
             clickCheckBoxAll($(this), tablePurchaseRequest);
-            POLoadDataHandle.loadModalPurchaseRequestProductTable();
+            POLoadDataHandle.loadModalPurchaseRequestProductTable(true);
         });
 
         // Action on click .table-row-checkbox of tablePurchaseRequest
         tablePurchaseRequest.on('click', '.table-row-checkbox', function() {
-            $('#table-purchase-reqeust-checkbox-all')[0].checked = false;
+            $('#table-purchase-request-checkbox-all')[0].checked = false;
             POLoadDataHandle.loadModalPurchaseRequestProductTable();
         });
 
@@ -174,12 +177,29 @@ $(function () {
         });
 
         // Action on change data on row of tablePurchaseOrderProductRequest
-        tablePurchaseOrderProductRequest.on('change', '.table-row-quantity-order-actual, .table-row-price, .table-row-tax', function () {
+        tablePurchaseOrderProductRequest.on('change', '.table-row-uom-order-actual, .table-row-quantity-order-actual, .table-row-price, .table-row-tax', function () {
             let row = $(this)[0].closest('tr');
+            // Change quantity
             if ($(this).hasClass('table-row-quantity-order-actual')) {
                 POValidateHandle.validateNumber(this);
                 let order_on_request = row.querySelector('.table-row-quantity-order-request').innerHTML;
                 POValidateHandle.validateQuantityOrderFinal(this, order_on_request);
+
+
+                // check if different uom
+                let dataRowRaw = row.querySelector('.table-row-order').getAttribute('data-row');
+                let eleUOMOrder = row.querySelector('.table-row-uom-order-actual');
+                if (dataRowRaw && $(eleUOMOrder).val()) {
+                    let dataRow = JSON.parse(dataRowRaw);
+                    let uomRequestData = dataRow?.['uom_order_request'];
+                    let uomOrderData = SelectDDControl.get_data_from_idx($(eleUOMOrder), $(eleUOMOrder).val());
+                    let uomRequestExchangeRate = 1;
+                    let uomOrderExchangeRate = 1;
+                }
+            }
+            // Change uom
+            if ($(this).hasClass('table-row-uom-order-actual')) {
+                row.querySelector('.table-row-quantity-order-actual').val(0);
             }
             POCalculateHandle.calculateMain(tablePurchaseOrderProductRequest, row);
         });

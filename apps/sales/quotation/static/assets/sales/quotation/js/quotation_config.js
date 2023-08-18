@@ -411,13 +411,13 @@ $(function () {
             document.getElementById('btn-edit_quotation_config').removeAttribute('hidden');
         });
 
-        tableIndicator.on('change', '.table-row-title, .table-row-description, .table-row-order', function(e) {
+        tableIndicator.on('change', '.table-row-title, .table-row-description, .table-row-order', function() {
             $(this)[0].closest('tr').querySelector('.table-row-save').removeAttribute('disabled');
             $(this)[0].closest('tr').querySelector('.table-row-save').classList.remove('flush-soft-hover');
             $(this)[0].closest('tr').querySelector('.table-row-save').classList.add('btn-soft-warning');
         });
 
-        tableIndicator.on('click', '.modal-edit-formula', function(e) {
+        tableIndicator.on('click', '.modal-edit-formula', function() {
             let eleIndicatorListShow = $(this)[0].closest('tr').querySelector('.indicator-list');
             let row = $(this)[0].closest('tr');
             loadInitIndicatorList('init-indicator-list', $(eleIndicatorListShow), row);
@@ -431,7 +431,7 @@ $(function () {
             loadInitParamList('init-indicator-param-list', $(eleParamFunctionListShow));
         });
 
-        tableIndicator.on('click', '.param-item', function(e) {
+        tableIndicator.on('click', '.param-item', function() {
             let propertySelected = $(this)[0].querySelector('.data-show');
             if (propertySelected) {
                 let dataShow = JSON.parse(propertySelected.value);
@@ -443,7 +443,7 @@ $(function () {
             }
         });
 
-        tableIndicator.on('mouseenter', '.param-item', function(e) {
+        tableIndicator.on('mouseenter', '.param-item', function() {
             let propertySelected = $(this)[0].querySelector('.data-show');
             if (propertySelected) {
                 let dataShow = JSON.parse(propertySelected.value);
@@ -477,7 +477,7 @@ $(function () {
         });
 
 // Validate Indicator Formula Editor
-        tableIndicator.on('blur', '.indicator-editor', function (e) {
+        tableIndicator.on('blur', '.indicator-editor', function () {
             let editorValue = $(this).val();
             let isValid = true;
             let row = $(this)[0].closest('tr');
@@ -594,7 +594,7 @@ $(function () {
 
 // BEGIN setup formula
         let main_regex = /[a-zA-Z]+\((?:[^)(]+|\((?:[^)(]+|\([^)(]*\))*\))*\)|[a-zA-Z]+|[-+*/()]|\d+|%/g;
-        let body_simple_regex = /\((.*?)\)/;
+        // let body_simple_regex = /\((.*?)\)/;
         let body_nested_regex = /\((.*)\)/;
         let main_body_regex = /[a-zA-Z]+\((?:[^)(]+|\((?:[^)(]+|\([^)(]*\))*\))*\)|[a-zA-Z]+|[-+*/()]|\d+|".*?"|==|!=|>=|<=|>|</g;
 
@@ -610,7 +610,7 @@ $(function () {
 
         function parseStringToArray(expression) {
             let data = expression.replace(/\s/g, "");
-            const regex = /[a-zA-Z]+\((?:[^)(]+|\((?:[^)(]+|\([^)(]*\))*\))*\)|[a-zA-Z]+|[-+*()]|\d+/g;
+            // const regex = /[a-zA-Z]+\((?:[^)(]+|\((?:[^)(]+|\([^)(]*\))*\))*\)|[a-zA-Z]+|[-+*()]|\d+/g;
             return data.match(main_regex)
         }
 
@@ -693,7 +693,7 @@ $(function () {
 
 // BEGIN SUBMIT
         // submit create indicator
-        btnCreateIndicator.on('click', function(e) {
+        btnCreateIndicator.on('click', function() {
             let url = $(this).attr('data-url');
             let url_redirect = $(this).attr('data-url-redirect');
             let method = $(this).attr('data-method');
@@ -732,7 +732,7 @@ $(function () {
         });
 
         // submit edit title & description on row
-        tableIndicator.on('click', '.table-row-save', function(e) {
+        tableIndicator.on('click', '.table-row-save', function() {
             let url_update = btnCreateIndicator.attr('data-url-update');
             let url = url_update.format_url_with_uuid($(this).attr('data-id'));
             let url_redirect = btnCreateIndicator.attr('data-url-redirect');
@@ -761,7 +761,7 @@ $(function () {
         });
 
         // submit update indicator formula
-        tableIndicator.on('click', '.btn-edit-indicator', function (e) {
+        tableIndicator.on('click', '.btn-edit-indicator', function () {
             let url_update = btnCreateIndicator.attr('data-url-update');
             let url = url_update.format_url_with_uuid($(this).attr('data-id'));
             let url_redirect = btnCreateIndicator.attr('data-url-redirect');
@@ -785,7 +785,7 @@ $(function () {
         });
 
         // submit restore indicator
-        $('#btn-accept-restore-indicator').on('click', function (e) {
+        $('#btn-accept-restore-indicator').on('click', function () {
             if (!tableIndicator[0].querySelector('.dataTables_empty')) {
                 let dataID = null;
                 for (let i = 0; i < tableIndicator[0].tBodies[0].rows.length; i++) {

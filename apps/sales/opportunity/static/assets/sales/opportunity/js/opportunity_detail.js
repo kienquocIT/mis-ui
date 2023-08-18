@@ -2767,8 +2767,6 @@ $(document).ready(function () {
 
     callAjaxtoLoadTimeLineList();
 
-    const ele_move_doc_page = $('.btn-add-document')
-    let url_doc_page = ele_move_doc_page.attr('href');
 
     $(document).on('click', '#table-timeline .detail-call-log-button', function () {
         let call_log_id = $(this).attr('data-id');
@@ -2872,6 +2870,12 @@ $(document).ready(function () {
     // event create related features
 
     $(document).on('click', '.btn-create-related-feature', function () {
+        let url = $(this).data('url') + "?opportunity={0}".format_by_idx(encodeURIComponent(JSON.stringify(paramString)));
+        window.open(url, '_blank');
+    })
+
+
+    $(document).on('click', '.btn-add-document', function (){
         let url = $(this).data('url') + "?opportunity={0}".format_by_idx(encodeURIComponent(JSON.stringify(paramString)));
         window.open(url, '_blank');
     })

@@ -20,11 +20,12 @@ $(function () {
                     $('[name="date_created"]').val(return_advance_detail.date_created.split(" ")[0]);
                     $('[name="method"]').val(return_advance_detail.method);
                     loadProductTable(return_advance_detail.cost);
-                    let total_value = return_advance_detail.cost.map(obj => obj.return_price).reduce((a, b) => a + b, 0)
+                    let total_value = return_advance_detail.cost.map(obj => obj?.['return_price']).reduce((a, b) => a + b, 0)
                     $('#total-value').attr('data-init-money', total_value);
                     if (return_advance_detail.money_received) {
-                        $('#money-received').prop('checked', true);
-                        $('#money-received').prop('disabled', true);
+                        let money_received_ele = $('#money-received')
+                        money_received_ele.prop('checked', true);
+                        money_received_ele.prop('disabled', true);
                     } else {
                         $('#money-received').prop('checked', false);
                     }

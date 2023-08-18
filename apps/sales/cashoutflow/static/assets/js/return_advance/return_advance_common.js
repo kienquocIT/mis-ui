@@ -66,19 +66,19 @@ function loadDetailAdvancePayment(id, type = 'create') {
             if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('advance_payment_detail')) {
                 let ele_beneficiary = $('#chooseBeneficiary');
                 let sale_code_ele = $('[name="sale_code"]');
-                if (data.advance_payment_detail.sale_order_mapped.length > 0) {
-                    sale_code_ele.val(data.advance_payment_detail.sale_order_mapped[0].opportunity.code);
-                } else if (data.advance_payment_detail.quotation_mapped.length > 0) {
-                    sale_code_ele.val(data.advance_payment_detail.quotation_mapped[0].opportunity.code);
-                } else if (data.advance_payment_detail.opportunity_mapped.length > 0) {
-                    sale_code_ele.val(data.advance_payment_detail.opportunity_mapped[0].code);
+                if (data?.['advance_payment_detail']?.['sale_order_mapped'].length > 0) {
+                    sale_code_ele.val(data?.['advance_payment_detail']?.['sale_order_mapped'][0].opportunity.code);
+                } else if (data?.['advance_payment_detail']?.['quotation_mapped'].length > 0) {
+                    sale_code_ele.val(data?.['advance_payment_detail']?.['quotation_mapped'][0].opportunity.code);
+                } else if (data?.['advance_payment_detail']?.['opportunity_mapped'].length > 0) {
+                    sale_code_ele.val(data?.['advance_payment_detail']?.['opportunity_mapped'][0].code);
                 } else {
                     sale_code_ele.val('');
                 }
-                ReturnAdvanceLoadPage.loadBeneficiary(ele_beneficiary, data.advance_payment_detail.beneficiary)
-                loadDetailBeneficiary(data.advance_payment_detail.beneficiary.id);
+                ReturnAdvanceLoadPage.loadBeneficiary(ele_beneficiary, data?.['advance_payment_detail'].beneficiary)
+                loadDetailBeneficiary(data?.['advance_payment_detail'].beneficiary.id);
                 if (type === 'create') {
-                    loadProductTable(data.advance_payment_detail.product_items)
+                    loadProductTable(data?.['advance_payment_detail']?.['product_items'])
                 }
             }
         }
@@ -208,7 +208,7 @@ class ReturnAdvanceLoadPage {
                     })
                 } else if ($.fn.hasOwnProperties(params, ['opportunity'])) {
                     resp.data[keyResp].map(function (item) {
-                        if (item.opportunity_id === params.opportunity.id) {
+                        if (item?.['opportunity_id'] === params.opportunity.id) {
                             list_result.push(item)
                         }
                     })

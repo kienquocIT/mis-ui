@@ -1545,15 +1545,42 @@ class POValidateHandle {
         }
     };
 
-    static validateQuantityOrderFinal(ele, order_on_request) {
-        let eleStock = ele.closest('tr').querySelector('.table-row-stock');
-        if (parseFloat(ele.value) < parseFloat(order_on_request)) {
-            ele.value = order_on_request;
+    static validateQuantityOrderAndUpdateStock(row) {
+        let eleQuantityRequest = row.querySelector('.table-row-quantity-order-request');
+        let eleQuantityOrder = row.querySelector('.table-row-quantity-order-actual');
+        let eleStock = row.querySelector('.table-row-stock');
+        let quantity_request = eleQuantityRequest.innerHTML;
+        let quantity_order = eleQuantityOrder.value;
+
+        if (parseFloat(quantity_order) < parseFloat(quantity_request)) {
+            eleQuantityOrder.value = quantity_request;
             eleStock.innerHTML = '0';
             $.fn.notifyB({description: 'Quantity order actually must be equal or greater than quantity order on request'}, 'failure');
+            return false
         } else {
-            eleStock.innerHTML = String(parseFloat(ele.value) - parseFloat(order_on_request));
+            let dataRowRaw = row.querySelector('.table-row-order').getAttribute('data-row');
+            let eleUOMOrder = row.querySelector('.table-row-uom-order-actual');
+            if (dataRowRaw && $(eleUOMOrder).val()) {
+                let dataRow = JSON.parse(dataRowRaw);
+                let uomRequestData = dataRow?.['uom_order_request'];
+                let uomOrderData = SelectDDControl.get_data_from_idx($(eleUOMOrder), $(eleUOMOrder).val());
+                if (uomRequestData?.['id'] === uomOrderData?.['id']) { // IF COMMON UOM
+                    eleStock.innerHTML = String(parseFloat(quantity_order) - parseFloat(quantity_request));
+                } else { // IF DIFFERENT UOM
+                    let uomRequestExchangeRate = 1;
+                    let uomOrderExchangeRate = 1;
+                    if (uomRequestData?.['is_referenced_unit'] === false) {
+                        uomRequestExchangeRate = uomRequestData?.['ratio'];
+                    }
+                    if (uomOrderData?.['group']?.['is_referenced_unit'] === false) {
+                        uomOrderExchangeRate = uomOrderData?.['ratio'];
+                    }
+                    let differenceExchangeValue = (parseFloat(quantity_order) * uomOrderExchangeRate) - (parseFloat(quantity_request) * uomRequestExchangeRate);
+                    eleStock.innerHTML = String(differenceExchangeValue / uomRequestExchangeRate);
+                }
+            }
         }
+        return true
     };
 }
 
@@ -1685,6 +1712,11 @@ function setupMergeProduct() {
     let table = $('#datable-purchase-request-product');
     if (!table[0].querySelector('.dataTables_empty')) {
         let order = 0;
+        // Setup UOM Data by Product
+        for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
+            let row = table[0].tBodies[0].rows[i];
+        }
+        // Setup Merge Data by Product
         for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
             let row = table[0].tBodies[0].rows[i];
             let sale_order_id = row.querySelector('.table-row-checkbox').getAttribute('data-sale-order-product-id');

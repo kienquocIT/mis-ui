@@ -296,7 +296,12 @@ $.fn.extend({
         else {
             let isDropdown = UtilControl.popKey(opts, 'isDropdown', false, true);
             let isNotify = UtilControl.popKey(opts, 'isNotify', false, true);
-            if (!$.fn.isBoolean(isNotify)) isNotify = true;
+            if (!$.fn.isBoolean(isNotify)) isNotify = false;
+
+            let isLoading = UtilControl.popKey(opts, 'isLoading', false, true);
+            if (!$.fn.isBoolean(isLoading)) isLoading = false;
+            if (isLoading) $x.fn.showLoadingPage();
+
             return new Promise(function (resolve, reject) {
                 // Setup then Call Ajax
                 let url = opts?.['url'] || null;
@@ -328,6 +333,7 @@ $.fn.extend({
                     let ctx = {
                         ...opts,
                         success: function (rest, textStatus, jqXHR) {
+                            if (isLoading) $x.fn.hideLoadingPage(1000);
                             if (successCallback) successCallback(rest, textStatus, jqXHR);
                             if (onlySuccessCallback === false) {
                                 let data = $.fn.switcherResp(rest, isNotify);
@@ -354,6 +360,7 @@ $.fn.extend({
                             }
                         },
                         error: function (jqXHR, textStatus, errorThrown) {
+                            if (isLoading) $x.fn.hideLoadingPage(1000);
                             if (errorCallback) errorCallback(jqXHR, textStatus, errorThrown);
                             if (onlyErrorCallback === false) {
                                 let resp_data = jqXHR.responseJSON;

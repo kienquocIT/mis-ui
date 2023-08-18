@@ -34,10 +34,12 @@ $(function () {
 
     $('#frm_employee_update').submit(function (event) {
         event.preventDefault();
-
         let ajaxConfig = EmployeeLoadPage.combinesForm('#frm_employee_update');
         if (ajaxConfig){
-            $.fn.callAjax2(ajaxConfig).then((resp) => {
+            $.fn.callAjax2({
+                ...ajaxConfig,
+                isLoading: true,
+            }).then((resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     $.fn.notifyB({description: data.message}, 'success');

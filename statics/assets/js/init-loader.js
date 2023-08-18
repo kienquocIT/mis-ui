@@ -333,7 +333,7 @@ $.fn.extend({
                     let ctx = {
                         ...opts,
                         success: function (rest, textStatus, jqXHR) {
-                            if (isLoading) $x.fn.hideLoadingPage(1000);
+                            if (isLoading) $x.fn.hideLoadingPage(0);
                             if (successCallback) successCallback(rest, textStatus, jqXHR);
                             if (onlySuccessCallback === false) {
                                 let data = $.fn.switcherResp(rest, isNotify);
@@ -360,7 +360,7 @@ $.fn.extend({
                             }
                         },
                         error: function (jqXHR, textStatus, errorThrown) {
-                            if (isLoading) $x.fn.hideLoadingPage(1000);
+                            if (isLoading) $x.fn.hideLoadingPage(0);
                             if (errorCallback) errorCallback(jqXHR, textStatus, errorThrown);
                             if (onlyErrorCallback === false) {
                                 let resp_data = jqXHR.responseJSON;

@@ -102,7 +102,9 @@ class SelectDDControl {
         //  1. Opts
         //  2. attr('data-keyResp')
         //  3. 'data'
-        return this.opts?.['keyResp'] ? this.opts?.['keyResp'] : this.ele.attr('data-keyResp') ? this.ele.attr('data-keyResp') : 'data';
+        let keyResp = this.opts?.['keyResp'] ? this.opts?.['keyResp'] : this.ele.attr('data-keyResp') ? this.ele.attr('data-keyResp') : 'data';
+        this.ele.attr('data-keyResp', keyResp);
+        return keyResp;
     }
 
     get _data_keyId() {
@@ -111,7 +113,9 @@ class SelectDDControl {
         //  1. Opts
         //  2. attr('data-keyId')
         //  3. 'id'
-        return this.opts?.['keyId'] ? this.opts?.['keyId'] : this.ele.attr('data-keyId') ? this.ele.attr('data-keyId') : 'id';
+        let keyId = this.opts?.['keyId'] ? this.opts?.['keyId'] : this.ele.attr('data-keyId') ? this.ele.attr('data-keyId') : 'id';
+        this.ele.attr('data-keyId', keyId);
+        return keyId;
     }
 
     get _data_keyText() {
@@ -120,7 +124,9 @@ class SelectDDControl {
         //  1. Opts
         //  2. attr('data-keyText')
         //  3. 'title'
-        return this.opts?.keyText ? this.opts?.keyText : this.ele.attr('data-keyText') ? this.ele.attr('data-keyText') : 'title';
+        let keyText = this.opts?.keyText ? this.opts?.keyText : this.ele.attr('data-keyText') ? this.ele.attr('data-keyText') : 'title';
+        this.ele.attr('data-keyText', keyText)
+        return keyText;
     }
 
     get _ajax_url_method_or_full() {
@@ -608,10 +614,12 @@ class SelectDDControl {
             clsThis.callbackRenderInfoDetail($(this));
         });
         return this.ele.select2(this._config).on('change', function (e) {
-            if ($(this).valid()) {
-                $(this).closest(".form-group").removeClass("has-error");
-            } else {
-                $(this).closest(".form-group").addClass("has-error");
+            if ($(this).closest('form').length > 0){
+                if ($(this).valid()) {
+                    $(this).closest(".form-group").removeClass("has-error");
+                } else {
+                    $(this).closest(".form-group").addClass("has-error");
+                }
             }
         });
     }

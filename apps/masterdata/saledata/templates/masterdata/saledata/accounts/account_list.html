@@ -36,8 +36,23 @@
             <table
                     id="datatable_account_list" class="table nowrap w-100 mb-5"
                     data-url="{% url "AccountListAPI" %}" data-method="GET"
+                    data-url-employee="{% url 'EmployeeListAPI' %}"
             >
                 <thead>
+                <tr class="row-custom-filter">
+                    <th colspan="8">
+                        <div class="col-12 col-xs-6 col-md-4 col-lg-3">
+                            <label for="searchManager">{% trans 'Account Manager' %}</label>
+                            <select
+                                    class="select-custom-filter"
+                                    id="searchManager" data-url="{% url 'EmployeeListAPI' %}"
+                                    data-keyResp="employee_list" data-keyText="full_name"
+                                    data-keyParam="manager__contains"
+                                    multiple
+                            ></select>
+                        </div>
+                    </th>
+                </tr>
                 <tr>
                     <th>#</th>
                     <th class="w-20">{% trans "Name" %}</th>
@@ -52,24 +67,24 @@
             </table>
         </div>
         <div class="tab-pane fade" id="account-draft">
-{#            <table#}
-{#                    id="datatable_account_list_draft" class="table nowrap w-100 mb-5"#}
-{#                    data-url="" data-method="GET"#}
-{#            >#}
-{#                <thead class="align-center">#}
-{#                <tr>#}
-{#                    <th>#</th>#}
-{#                    <th style="text-align: center">{% trans "Name" %}</th>#}
-{#                    <th>{% trans "Type" %}</th>#}
-{#                    <th>{% trans "Industry" %}</th>#}
-{#                    <th>{% trans "Account Owner" %}</th>#}
-{#                    <th>{% trans "Phone number" %}</th>#}
-{#                    <th>{% trans "Website" %}</th>#}
-{#                    <th>{% trans "Account Manager" %}</th>#}
-{#                    <th class="w-5 text-left">{% trans "Action" %}</th>#}
-{#                </tr>#}
-{#                </thead>#}
-{#            </table>#}
+            {#            <table#}
+            {#                    id="datatable_account_list_draft" class="table nowrap w-100 mb-5"#}
+            {#                    data-url="" data-method="GET"#}
+            {#            >#}
+            {#                <thead class="align-center">#}
+            {#                <tr>#}
+            {#                    <th>#</th>#}
+            {#                    <th style="text-align: center">{% trans "Name" %}</th>#}
+            {#                    <th>{% trans "Type" %}</th>#}
+            {#                    <th>{% trans "Industry" %}</th>#}
+            {#                    <th>{% trans "Account Owner" %}</th>#}
+            {#                    <th>{% trans "Phone number" %}</th>#}
+            {#                    <th>{% trans "Website" %}</th>#}
+            {#                    <th>{% trans "Account Manager" %}</th>#}
+            {#                    <th class="w-5 text-left">{% trans "Action" %}</th>#}
+            {#                </tr>#}
+            {#                </thead>#}
+            {#            </table>#}
         </div>
     </div>
 

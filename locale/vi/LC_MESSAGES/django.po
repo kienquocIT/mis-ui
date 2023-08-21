@@ -3930,3 +3930,19 @@ msgstr "Đính kèm"
 #
 msgid "Open a new tab"
 msgstr "Mở với tab mới"
+
+#
+msgid "Filter Manager Advance"
+msgstr "Bộ lọc quản lý nâng cao"
+
+#
+msgid "Of Me"
+msgstr "Của tôi"
+
+#
+msgid "Of Same Group"
+msgstr "Cùng phòng ban của tôi"
+
+#
+msgid "Of My Staff"
+msgstr "Nhân viên của tôi"

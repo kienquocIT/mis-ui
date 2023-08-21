@@ -1721,60 +1721,61 @@ function setupMergeProduct() {
         let order = 0;
         let uom_reference = {};
         // Setup Merge Data by Product
-        for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
-            let row = table[0].tBodies[0].rows[i];
-            let sale_order_id = row.querySelector('.table-row-checkbox').getAttribute('data-sale-order-product-id');
+        for (let eleChecked of table[0].querySelectorAll('.table-row-checkbox:checked')) {
+            let row = eleChecked.closest('tr');
+            let sale_order_id = eleChecked.getAttribute('data-sale-order-product-id');
             if (sale_order_id === "null") {
                 sale_order_id = null;
             }
-            if (row.querySelector('.table-row-checkbox').checked === true) {
-                let dataRowRaw = row.querySelector('.table-row-order').getAttribute('data-row');
-                if (dataRowRaw) {
-                    let dataRow = JSON.parse(dataRowRaw);
-                    if (Object.keys(uom_reference).length === 0) {
-                        uom_reference = dataRow?.['uom']?.['uom_group']?.['uom_reference'];
+            let dataRowRaw = row.querySelector('.table-row-order').getAttribute('data-row');
+            if (dataRowRaw) {
+                let dataRow = JSON.parse(dataRowRaw);
+                if (Object.keys(uom_reference).length === 0) {
+                    uom_reference = dataRow?.['uom']?.['uom_group']?.['uom_reference'];
+                }
+                let quantity = parseFloat(dataRow?.['quantity']);
+                let quantity_order = parseFloat(row.querySelector('.table-row-quantity-order').value);
+                if (dataRow?.['uom']?.['id'] !== uom_reference?.['id']) {
+                    quantity = (parseFloat(dataRow?.['quantity']) * parseFloat(dataRow?.['uom']?.['ratio']));
+                    quantity_order = (parseFloat(row.querySelector('.table-row-quantity-order').value) * parseFloat(dataRow?.['uom']?.['ratio']));
+                }
+                let remain = (quantity_order - quantity);
+                if (!dataJson.hasOwnProperty(row.querySelector('.table-row-item').id)) {
+                    order++
+                    dataJson[row.querySelector('.table-row-item').id] = {
+                        'id': dataRow?.['id'],
+                        'purchase_request_product_datas': [{
+                            'purchase_request_product': dataRow?.['id'],
+                            'sale_order_product': sale_order_id,
+                            'quantity_order': quantity_order,
+                            'quantity_remain': parseFloat(dataRow?.['remain_for_purchase_order']),
+                        }],
+                        'product': dataRow?.['product'],
+                        'uom_order_request': uom_reference,
+                        'uom_order_actual': uom_reference,
+                        'tax': {'id': 1, 'value': 10},
+                        'stock': 0,
+                        'product_title': dataRow?.['product']?.['title'],
+                        'code_list': [dataRow?.['purchase_request']?.['code']],
+                        'product_description': 'xxxxx',
+                        'product_quantity_request': parseFloat(dataRow?.['quantity']),
+                        'product_quantity_order_request': quantity_order,
+                        'product_quantity_order_actual': quantity_order,
+                        'remain': remain,
+                        'product_unit_price': 0,
+                        'product_tax_title': '',
+                        'product_tax_amount': 0,
+                        'product_subtotal_price': 0,
+                        'order': order,
+                    };
+                } else {
+                    if (!dataJson[dataRow?.['product']?.['id']].code_list.includes(dataRow?.['purchase_request']?.['code'])) {
+                        dataJson[dataRow?.['product']?.['id']].code_list.push(dataRow?.['purchase_request']?.['code']);
                     }
-                    if (dataRow?.['uom']?.['id'] !== uom_reference?.['id']) {
-                        dataRow['quantity'] = (parseFloat(dataRow?.['quantity']) * parseFloat(dataRow?.['uom']?.['ratio']));
-                        dataRow['product_quantity_order_actual'] = (parseFloat(row.querySelector('.table-row-quantity-order').value) * parseFloat(dataRow?.['uom']?.['ratio']));
-                    }
-                    if (!dataJson.hasOwnProperty(row.querySelector('.table-row-item').id)) {
-                        order++
-                        dataJson[row.querySelector('.table-row-item').id] = {
-                            'id': dataRow?.['id'],
-                            'purchase_request_product_datas': [{
-                                'purchase_request_product': dataRow?.['id'],
-                                'sale_order_product': sale_order_id,
-                                'quantity_order': parseFloat(row.querySelector('.table-row-quantity-order').value),
-                                'quantity_remain': parseFloat(dataRow?.['remain_for_purchase_order']),
-                            }],
-                            'product': dataRow?.['product'],
-                            'uom_order_request': uom_reference,
-                            'uom_order_actual': uom_reference,
-                            'tax': {'id': 1, 'value': 10},
-                            'stock': 0,
-                            'product_title': dataRow?.['product']?.['title'],
-                            'code_list': [dataRow?.['purchase_request']?.['code']],
-                            'product_description': 'xxxxx',
-                            'product_quantity_request': parseFloat(dataRow?.['quantity']),
-                            'product_quantity_order_request': parseFloat(row.querySelector('.table-row-quantity-order').value),
-                            'product_quantity_order_actual': parseFloat(row.querySelector('.table-row-quantity-order').value),
-                            'remain': (parseFloat(row.querySelector('.table-row-quantity-order').value) - parseFloat(dataRow?.['quantity'])),
-                            'product_unit_price': 0,
-                            'product_tax_title': '',
-                            'product_tax_amount': 0,
-                            'product_subtotal_price': 0,
-                            'order': order,
-                        };
-                    } else {
-                        if (!dataJson[dataRow?.['product']?.['id']].code_list.includes(dataRow?.['purchase_request']?.['code'])) {
-                            dataJson[dataRow?.['product']?.['id']].code_list.push(dataRow?.['purchase_request']?.['code']);
-                        }
-                        dataJson[dataRow?.['product']?.['id']].product_quantity_request += parseFloat(dataRow?.['quantity']);
-                        dataJson[dataRow?.['product']?.['id']].product_quantity_order_request += parseFloat(row.querySelector('.table-row-quantity-order').value);
-                        dataJson[dataRow?.['product']?.['id']].remain += (parseFloat(row.querySelector('.table-row-quantity-order').value) - parseFloat(dataRow?.['quantity']));
-                        dataJson[dataRow?.['product']?.['id']].product_quantity_order_actual += parseFloat(row.querySelector('.table-row-quantity-order').value);
-                    }
+                    dataJson[dataRow?.['product']?.['id']].product_quantity_request += parseFloat(dataRow?.['quantity']);
+                    dataJson[dataRow?.['product']?.['id']].product_quantity_order_request += quantity_order;
+                    dataJson[dataRow?.['product']?.['id']].remain += remain;
+                    dataJson[dataRow?.['product']?.['id']].product_quantity_order_actual += quantity_order;
                 }
             }
         }

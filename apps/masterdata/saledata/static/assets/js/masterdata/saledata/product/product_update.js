@@ -1,5 +1,4 @@
 $(document).ready(function () {
-    let form_update_product = $('#form-update-product');
 
     function disabledTab(check, link_tab, id_tab) {
         if (!check) {
@@ -222,7 +221,7 @@ $(document).ready(function () {
         console.log(errs)
     })
 
-    let call_6 = $.fn.callAjax(form_update_product.data('url').format_url_with_uuid(pk), 'GET').then((resp) => {
+    let call_6 = $.fn.callAjax($('#form-update-product').data('url').format_url_with_uuid(pk), 'GET').then((resp) => {
         let data = $.fn.switcherResp(resp);
         if (data) {
             return data.product
@@ -708,7 +707,7 @@ $(document).ready(function () {
     }
 
     //submit form update product
-    form_update_product.submit(function (event) {
+    $('#form-update-product').submit(function (event) {
         event.preventDefault();
         let frm = new SetupFormSubmit($(this));
         let dataForm = getDataForm();

@@ -1,5 +1,4 @@
 $(document).ready(function () {
-    let form_update_product = $('#form-update-product');
 
     function disabledTab(check, link_tab, id_tab) {
         if (!check) {
@@ -223,7 +222,7 @@ $(document).ready(function () {
         }, (errs) => {
             console.log(errs)
         })
-        let call_6 = $.fn.callAjax(form_update_product.data('url').format_url_with_uuid(pk), 'GET').then((resp) => {
+        let call_6 = $.fn.callAjax($('#form-update-product').data('url').format_url_with_uuid(pk), 'GET').then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 console.log(data)

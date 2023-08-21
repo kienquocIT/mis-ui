@@ -409,8 +409,7 @@ $(document).ready(function () {
     }
 
     //submit form create product
-    let form_create_product = $('#form-create-product');
-    form_create_product.submit(function (event) {
+    $('#form-create-product').submit(function (event) {
         event.preventDefault();
         let csr = $("input[name=csrfmiddlewaretoken]").val();
         let frm = new SetupFormSubmit($(this));

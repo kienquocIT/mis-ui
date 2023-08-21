@@ -3932,8 +3932,8 @@ msgid "Open a new tab"
 msgstr "Mở với tab mới"
 
 #
-msgid "Filter Manager Advance"
-msgstr "Bộ lọc quản lý nâng cao"
+msgid "Filter Manager By Group"
+msgstr "Theo nhóm"
 
 #
 msgid "Of Me"

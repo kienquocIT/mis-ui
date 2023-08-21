@@ -542,21 +542,15 @@ class POLoadDataHandle {
     };
 
     static loadDataRow(row, table_id) {
-        let self = this;
         // mask money
         $.fn.initMaskMoney2();
-        if (table_id === 'datable-purchase-order-product-add') {
-            self.loadBoxProduct($(row.querySelector('.table-row-item')));
-            self.loadBoxUOM($(row.querySelector('.table-row-uom-order-actual')));
-        } else if (table_id === 'datable-purchase-order-product-request') {
-            let dataRowRaw = row.querySelector('.table-row-order').getAttribute('data-row');
-            if (dataRowRaw) {
-                let dataRow = JSON.parse(dataRowRaw);
-                self.loadBoxProduct($(row.querySelector('.table-row-item')), dataRow?.['product']);
-                self.loadBoxUOM($(row.querySelector('.table-row-uom-order-actual')), dataRow?.['uom_order_request'], dataRow?.['uom_order_request']?.['uom_group']?.['id']);
-            }
+        let dataRowRaw = row.querySelector('.table-row-order').getAttribute('data-row');
+        if (dataRowRaw) {
+            let dataRow = JSON.parse(dataRowRaw);
+            POLoadDataHandle.loadBoxProduct($(row.querySelector('.table-row-item')), dataRow?.['product']);
+            POLoadDataHandle.loadBoxUOM($(row.querySelector('.table-row-uom-order-actual')), dataRow?.['uom_order_request'], dataRow?.['uom_order_request']?.['uom_group']?.['id']);
+            POLoadDataHandle.loadBoxTax($(row.querySelector('.table-row-tax')), dataRow?.['tax']);
         }
-        self.loadBoxTax($(row.querySelector('.table-row-tax')));
     };
 
     static loadPriceListByPurchaseQuotation(purchase_quotations_id_list, checked_id = null) {
@@ -735,6 +729,76 @@ class POLoadDataHandle {
         POLoadDataHandle.contactSelectEle.empty();
         return true
     };
+
+    static loadDetailPage(data, is_detail = false) {
+        $('#purchase-order-title').val(data?.['title']);
+        $('#purchase-order-date-delivered').val(moment(data?.['date_created']).format('DD/MM/YYYY hh:mm A'));
+        POLoadDataHandle.loadBoxSupplier(data?.['supplier']);
+        POLoadDataHandle.loadBoxContact(data?.['contact']);
+        POLoadDataHandle.loadDetailPageTables(data);
+        POLoadDataHandle.loadTotals(data);
+    }
+
+    static loadDetailPageTables(data) {
+        let tableProductAdd = $('#datable-purchase-order-product-add');
+        let tableProductRequest = $('#datable-purchase-order-product-request');
+        if (data?.['purchase_requests_data']) {
+            tableProductAdd[0].setAttribute('hidden', 'true');
+            $('#datable-purchase-order-product-add_wrapper')[0].setAttribute('hidden', 'true');
+            tableProductRequest[0].removeAttribute('hidden');
+            $('#datable-purchase-order-product-request_wrapper')[0].removeAttribute('hidden');
+            tableProductRequest.DataTable().rows.add(data?.['purchase_order_products_data']).draw();
+            POLoadDataHandle.loadDataRowTable(tableProductRequest);
+            POLoadDataHandle.loadTableDisabled(tableProductRequest);
+        }
+
+    }
+
+    static loadTotals(data) {
+        let elePretaxAmount = document.getElementById('purchase-order-product-pretax-amount');
+        let eleTaxes = document.getElementById('purchase-order-product-taxes');
+        let eleTotal = document.getElementById('purchase-order-product-total');
+        let elePretaxAmountRaw = document.getElementById('purchase-order-product-pretax-amount-raw');
+        let eleTaxesRaw = document.getElementById('purchase-order-product-taxes-raw');
+        let eleTotalRaw = document.getElementById('purchase-order-product-total-raw');
+        let finalRevenueBeforeTax = document.getElementById('purchase-order-final-revenue-before-tax');
+        $(elePretaxAmount).attr('data-init-money', String(data?.['total_product_pretax_amount']));
+        elePretaxAmountRaw.value = data?.['total_product_pretax_amount'];
+        $(eleTaxes).attr('data-init-money', String(data?.['total_product_tax']));
+        eleTaxesRaw.value = data?.['total_product_tax'];
+        $(eleTotal).attr('data-init-money', String(data?.['total_product']));
+        eleTotalRaw.value = data?.['total_product'];
+        finalRevenueBeforeTax.value = data?.['total_product_revenue_before_tax'];
+    }
+
+    static loadTableDisabled(table) {
+        for (let ele of table[0].querySelectorAll('.table-row-item')) {
+            ele.setAttribute('disabled', 'true');
+            ele.classList.add('disabled-custom-show');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-uom-order-actual')) {
+            ele.setAttribute('disabled', 'true');
+            ele.classList.add('disabled-custom-show');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-quantity-order-actual')) {
+            ele.setAttribute('disabled', 'true');
+            ele.classList.add('disabled-custom-show');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-price')) {
+            ele.setAttribute('disabled', 'true');
+            ele.classList.add('disabled-custom-show');
+        }
+        for (let ele of table[0].querySelectorAll('.input-group-price')) {
+            ele.setAttribute('disabled', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-tax')) {
+            ele.setAttribute('disabled', 'true');
+            ele.classList.add('disabled-custom-show');
+        }
+        for (let ele of table[0].querySelectorAll('.del-row')) {
+            ele.setAttribute('disabled', 'true');
+        }
+    };
 }
 
 // DataTable
@@ -773,7 +837,11 @@ class PODataTableHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" id="${row.id}"></div>`
+                        if ($('#frm_purchase_order_create').attr('data-method') !== 'GET') {
+                            return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" id="${row.id}"></div>`;
+                        } else {
+                            return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" id="${row.id}" disabled></div>`;
+                        }
                     }
                 },
                 {
@@ -1596,6 +1664,9 @@ class POSubmitHandle {
     static setupDataProduct() {
         let result = [];
         let table = document.getElementById('datable-purchase-order-product-add');
+        if (document.getElementById('purchase-order-purchase-request').innerHTML) {
+            table = document.getElementById('datable-purchase-order-product-request');
+        }
         if (table.querySelector('.dataTables_empty')) {
             return []
         }
@@ -1733,6 +1804,7 @@ function setupMergeProduct() {
                 if (Object.keys(uom_reference).length === 0) {
                     uom_reference = dataRow?.['uom']?.['uom_group']?.['uom_reference'];
                 }
+                let product_id = dataRow?.['product']?.['id'];
                 let quantity = parseFloat(dataRow?.['quantity']);
                 let quantity_order = parseFloat(row.querySelector('.table-row-quantity-order').value);
                 if (dataRow?.['uom']?.['id'] !== uom_reference?.['id']) {
@@ -1740,9 +1812,9 @@ function setupMergeProduct() {
                     quantity_order = (parseFloat(row.querySelector('.table-row-quantity-order').value) * parseFloat(dataRow?.['uom']?.['ratio']));
                 }
                 let remain = (quantity_order - quantity);
-                if (!dataJson.hasOwnProperty(row.querySelector('.table-row-item').id)) {
+                if (!dataJson.hasOwnProperty(product_id)) {
                     order++
-                    dataJson[row.querySelector('.table-row-item').id] = {
+                    dataJson[product_id] = {
                         'id': dataRow?.['id'],
                         'purchase_request_product_datas': [{
                             'purchase_request_product': dataRow?.['id'],
@@ -1758,7 +1830,7 @@ function setupMergeProduct() {
                         'product_title': dataRow?.['product']?.['title'],
                         'code_list': [dataRow?.['purchase_request']?.['code']],
                         'product_description': 'xxxxx',
-                        'product_quantity_request': parseFloat(dataRow?.['quantity']),
+                        'product_quantity_request': quantity,
                         'product_quantity_order_request': quantity_order,
                         'product_quantity_order_actual': quantity_order,
                         'remain': remain,
@@ -1769,13 +1841,13 @@ function setupMergeProduct() {
                         'order': order,
                     };
                 } else {
-                    if (!dataJson[dataRow?.['product']?.['id']].code_list.includes(dataRow?.['purchase_request']?.['code'])) {
-                        dataJson[dataRow?.['product']?.['id']].code_list.push(dataRow?.['purchase_request']?.['code']);
+                    if (!dataJson[product_id].code_list.includes(dataRow?.['purchase_request']?.['code'])) {
+                        dataJson[product_id].code_list.push(dataRow?.['purchase_request']?.['code']);
                     }
-                    dataJson[dataRow?.['product']?.['id']].product_quantity_request += parseFloat(dataRow?.['quantity']);
-                    dataJson[dataRow?.['product']?.['id']].product_quantity_order_request += quantity_order;
-                    dataJson[dataRow?.['product']?.['id']].remain += remain;
-                    dataJson[dataRow?.['product']?.['id']].product_quantity_order_actual += quantity_order;
+                    dataJson[product_id].product_quantity_request += quantity;
+                    dataJson[product_id].product_quantity_order_request += quantity_order;
+                    dataJson[product_id].remain += remain;
+                    dataJson[product_id].product_quantity_order_actual += quantity_order;
                 }
             }
         }

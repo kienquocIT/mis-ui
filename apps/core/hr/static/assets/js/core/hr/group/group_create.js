@@ -1,6 +1,7 @@
 $(function () {
     $(document).ready(function () {
         let frm = $('#frm_group_create');
+        let dataGroupEmployee = $('#data-group_employee');
         GroupLoadDataHandle.loadDataCommon(frm);
 
         $(document).on('change', '#select-box-group-level', function () {
@@ -15,10 +16,6 @@ $(function () {
             }
         });
 
-        $('#btn-add-employee-to-group').on('click', function() {
-            GroupLoadDataHandle.loadCheckboxTableEmployee();
-        });
-
         $('#button-add-group-employee').on('click', function() {
             GroupLoadDataHandle.loadDataEmployeeShow();
         });
@@ -30,7 +27,9 @@ $(function () {
         frm.submit(function (e) {
             e.preventDefault();
             let frm = new SetupFormSubmit($(this));
-            frm.dataForm['group_employee'] = JSON.parse($('#data-group_employee').val());
+            if (dataGroupEmployee.val()) {
+                frm.dataForm['group_employee'] = JSON.parse(dataGroupEmployee.val());
+            }
             if (frm.dataForm) {
                 for (let key in frm.dataForm) {
                     if (frm.dataForm[key] === '') {

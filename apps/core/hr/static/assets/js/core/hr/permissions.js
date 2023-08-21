@@ -49,7 +49,9 @@ tbl.on('click', '.btnRemoveRow', function () {
 
 tbl.on('change', '#newRowApp', function () {
     let selectedData = SelectDDControl.get_data_from_idx($(this));
-    let rangeAllow = selectedData?.['app'] ? (selectedData['app']?.['range_allow'] || []) : [];
+    let rangeAllow = (selectedData?.['app'] ? (selectedData['app']?.['option_allowed'] || []) : []).map(
+        (item)=>{return item.toString();}
+    );
 
     let selectRangeEle = $('#newRowRange');
     selectRangeEle.find(":selected").prop('selected', false);
@@ -82,6 +84,7 @@ $('#btnAddNewRowPerms').click(function () {
                 "title": appDataBackup['title'],
                 "code": appDataBackup['code'],
                 "option_permission": appDataBackup['option_permission'],
+                "option_allowed": appDataBackup['option_allowed'],
                 "range_allow": appDataBackup['range_allow'],
             },
             "plan_data": {
@@ -401,7 +404,7 @@ class HandlePermissions {
                     width: "20%",
                     data: "range",
                     render: (data, type, row) => {
-                        let arrValueAllowed = HandlePermissions.returnValueAllowRange(row['app_data']['option_permission'], row['app_data']['range_allow']);
+                        let arrValueAllowed = HandlePermissions.returnValueAllowRange(row['app_data']['option_permission'], row['app_data']['option_allowed']);
                         if (clsThis.enableChange === true) {
                             let ele = $(`
                                 <select 

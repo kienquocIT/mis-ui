@@ -305,6 +305,18 @@ class SelectDDControl {
         }
     }
 
+    get placeholder(){
+        return this.opts?.['placeholder'] ? this.opts.placeholder : this.ele.attr('data-placeholder') ? this.ele.attr('data-placeholder') :  $.fn.transEle.attr('data-select-placeholder');
+    }
+
+    get width(){
+        return this.opts?.width ? this.opts?.width : this.ele.attr('data-width') ? this.ele.attr('data-width') : '100%';
+    }
+
+    get theme(){
+        return this.opts?.theme ? this.opts?.theme : this.ele.attr('data-theme') ? this.ele.attr('data-theme') : 'bootstrap4';
+    }
+
     get keepIdNullHasText() {
         // flag keep when id = "" but has text display
         // default: false
@@ -585,9 +597,9 @@ class SelectDDControl {
     config() {
         // Return all config select2
         return {
-            'placeholder': $.fn.transEle.attr('data-select-placeholder'),
-            // 'width': "100%",
-            'theme': 'bootstrap4',
+            'placeholder': this.placeholder,
+            'width': this.width,
+            'theme': this.theme,
             'language': globeLanguage,
             ...this.opts,
             'minimumInputLength': this.minimumInputLength,

@@ -129,10 +129,6 @@ function loadAccountName(accountNameData) {
     })
     let list_acc_map_emp = []
     accountNameEle.initSelect2({
-        ajax: {
-            url: $('#select-box-acc-manager').attr('data-url-accounts'),
-            method: 'GET',
-        },
         callbackDataResp: function (resp, keyResp){
             let accounts_map_employee_filtered = [];
             resp.data[keyResp].map(function (item) {

@@ -92,8 +92,7 @@
                                         class="form-control select2 select2-multiple select2-required"
                                         multiple
                                         data-method="GET"
-                                        data-url="{% url "EmployeeListAPI" %}"
-                                        data-url-accounts= {% url "AccountsMapEmployeeAPI" %}>
+                                        data-url="{% url "EmployeeListAPI" %}">
                                 </select>
                             </div>
                         </div>
@@ -446,7 +445,7 @@
                                 <select
                                         class="form-select" id="select-box-account-name"
                                         data-method="GET"
-                                        data-url="{% url 'AccountDetailAPI' pk=0 %}"
+                                        data-url= {% url "AccountsMapEmployeeAPI" %}
                                 >
                                     <option></option>
                                 </select>

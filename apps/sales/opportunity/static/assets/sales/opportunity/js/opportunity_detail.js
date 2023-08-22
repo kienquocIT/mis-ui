@@ -2068,6 +2068,81 @@ $(document).ready(function () {
         });
     }
 
+    class AssignToSetup {
+        static case01(config, params) {
+            // có opps + config có in assign opt lớn hơn 0
+            if (config.in_assign_opt === 1) {
+                // chỉ employee trong opportunity
+                let selectOpt = '';
+                $('#card-member .card').each(function(){
+                    let opt = `<option data-value="${$(this).attr('data-id')}">${$(this).find('.card-title').text()
+                    }</option>`
+                    selectOpt += opt
+                })
+                $('#selectAssignTo').html(selectOpt).removeAttr('data-url')
+
+            } else if (config.in_assign_opt === 2) {
+                // chỉ nhân viên của user
+                params = {'group__first_manager__id': true}
+            } else {
+                // vừa trong opportunity vừa là nhân viên của user
+                $('.is-lazy-loading').addClass('is_show')
+                let selectOpt = '<option value=""></option>';
+                $('#card-member .card').each(function(){
+                    let opt = `<option data-value="${$(this).attr('data-id')}">${$(this).find('.card-title').text()
+                    }</option>`
+                    selectOpt += opt
+                })
+                const $sltElm = $('#selectAssignTo')
+                //
+                $.fn.callAjax2({
+                    'url': $sltElm.attr('data-url'),
+                    'method': 'get',
+                    'data': {'group__first_manager__id': true}
+                }).then(
+                    (resp) => {
+                        const data = $.fn.switcherResp(resp);
+                        let assigneeList = data?.[$sltElm.attr('data-keyresp')]
+                        for (const item of assigneeList){
+                            if (selectOpt.indexOf(item?.[$sltElm.attr('data-keyid')]) === -1){
+                                let opt = `<option data-value="${item?.[$sltElm.attr('data-keyid')]
+                                }">${item?.[$sltElm.attr('data-keytext')]}</option>`
+                                selectOpt += opt
+                            }
+                        }
+                        $sltElm.html(selectOpt).removeAttr('data-url')
+                        $('.is-lazy-loading').removeClass('is_show')
+                    }
+                )
+            }
+            return params
+        }
+
+        static hasConfig(config) {
+            const $selectElm = $('#selectAssignTo')
+            let params = {}
+            if (config.in_assign_opt > 0) params = this.case01(config, params)
+
+            $selectElm.attr('data-params', JSON.stringify(params))
+            if ($selectElm.hasClass("select2-hidden-accessible")) $selectElm.select2('destroy')
+            $selectElm.initSelect2()
+        }
+
+        static init() {
+
+            $.fn.callAjax2({
+                'url': $('#task_url_sub').attr('data-task-config'),
+                'method': 'get'
+            }).then(
+                (resp) => {
+                    const data = $.fn.switcherResp(resp);
+                    let taskConfig = data?.['task_config']
+                    this.hasConfig(taskConfig)
+                }
+            )
+        }
+    }
+
     $(function () {
         // declare variable
         const $form = $('#formOpportunityTask')
@@ -2225,7 +2300,8 @@ $(document).ready(function () {
         // assign to me btn
         const $assignBtnElm = $('.btn-assign');
         const $assigneeElm = $('#selectAssignTo')
-        $assigneeElm.initSelect2()
+
+        AssignToSetup.init()
         $assignBtnElm.off().on('click', function () {
             const name = $assignerElm.attr('data-name')
             const id = $assignerElm.attr('data-value-id')

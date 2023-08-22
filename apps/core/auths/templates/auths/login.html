@@ -38,7 +38,10 @@
                 <div class="row">
                     <div class="col-sm-10 position-relative mx-auto">
                         <div class="auth-content py-8">
-                            <form class="w-100" id="form-login" data-url="" data-url-redirect="" data-method="POST">
+                            <form
+                                    class="w-100" id="form-login" data-url="" data-url-redirect="" data-method="POST"
+                                    autocomplete="off"
+                            >
                                 <div class="row">
                                     <div class="col-lg-5 col-md-7 col-sm-10 mx-auto">
                                         <div class="text-center mb-7">
@@ -127,6 +130,7 @@
                                                         >{% trans 'Keep me logged in' %}</label>
                                                     </div>
                                                 </div>
+                                                <div id="recapcha" class="mt-1 mb-1"></div>
                                                 <input
                                                         type="submit" class="btn btn-primary btn-uppercase btn-block"
                                                         value="{% trans 'Login' %}" tabindex="4"
@@ -181,14 +185,34 @@
     <!-- /spinner loading -->
     <div class="hidden">
         <span id="flagNotifyKey" data-value={{ is_notify_key }}></span>
-        <span id="errLoginIncorrect" data-value="{% trans 'The username or password is incorrect' %}"></span>
+        <span
+                id="errLoginIncorrect" data-value="{% trans 'The username or password is incorrect' %}"
+                data-captcha-require="{% trans 'Please solve the captcha.' %}"
+        ></span>
     </div>
 </div>
 <!-- /Wrapper -->
 
+<script type="text/javascript">
+    let ggCaptChaEnabled = "{{ captcha_enabled }}";
+    var onloadCallback = function () {
+        if (ggCaptChaEnabled === 'True') {
+            grecaptcha.render('recapcha', {
+                'sitekey': '{{ secret_key_gg }}'
+            });
+        }
+    };
+</script>
+<script
+        src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit"
+        async defer
+>
+</script>
+
 {% compress js %}
     <!-- jQuery -->
     <script src="{% static 'vendors/jquery/dist/jquery.min.js' %}"></script>
+    <script src="{% static 'vendors/jquery-validate/jquery.validate.min.js' %}"></script>
 
     <!-- Bootstrap Core JS -->
     <script src="{% static 'vendors/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
@@ -375,37 +399,74 @@
         $(document).ready(function () {
             $('#form-login').submit(function (event) {
                 event.preventDefault();
-                $.fn.showLoadingLogin();
-                let frm = new SetupFormSubmitLogin($(this));
-                if (frm.dataUrl && frm.dataMethod) {
-                    $.fn.callAjaxLogin(frm.dataUrl, frm.dataMethod, frm.dataForm).then(
-                        (resp) => {
-                            let data = resp.data;
-                            if (data.status === 200) {
-                                localStorage.setItem('tenant_code', frm.dataForm['tenant_code']);
-                                $.fn.notifyBLogin({description: data.detail}, 'success');
-                                let path_redirect = "/";
-                                const params = Object.fromEntries(new URLSearchParams(location.search));
-                                if (params.next) {
-                                    path_redirect = params.next;
-                                }
-                                $.fn.redirectUrlLogin(path_redirect, 800);
-                            }
+
+                let state = false;
+                if (ggCaptChaEnabled === 'True') {
+                    let response = grecaptcha.getResponse();
+                    if (!response) {
+                        $.fn.notifyBLogin({
+                            'description': $('#errLoginIncorrect').attr('data-captcha-require')
+                        }, 'failure');
+                        return false;
+                    } else {
+                        state = true;
+                    }
+                } else {
+                    state = true;
+                }
+
+                if (state) {
+                    $.fn.showLoadingLogin();
+                    let frm = new SetupFormSubmitLogin($(this));
+                    console.log(frm.dataForm);
+                    if (frm.dataUrl && frm.dataMethod) {
+                        if (ggCaptChaEnabled === 'True' && !frm.dataForm['g-recaptcha-response']) {
+                            $.fn.notifyBLogin({
+                                'description': $('#errLoginIncorrect').attr('data-captcha-require')
+                            }, 'failure');
                             setTimeout(
                                 () => {
                                     $.fn.hideLoadingLogin();
                                 }, 2000
                             )
-                        },
-                        (err) => {
-                            $.fn.notifyBLogin({
-                                'description': $('#errLoginIncorrect').attr('data-value')
-                            }, 'failure')
-                            $.fn.hideLoadingLogin();
+                            return false;
                         }
-                    )
-                } else throw 'Setup call raise exception with URL or method is incorrect.!';
-            });
+                        $.fn.callAjaxLogin(
+                            frm.dataUrl,
+                            frm.dataMethod,
+                            {
+                                ...frm.dataForm,
+                                'g_recaptcha_response': frm.dataForm?.['g-recaptcha-response'] || ''
+                            }
+                        ).then(
+                            (resp) => {
+                                let data = resp.data;
+                                if (data.status === 200) {
+                                    localStorage.setItem('tenant_code', frm.dataForm['tenant_code']);
+                                    $.fn.notifyBLogin({description: data.detail}, 'success');
+                                    let path_redirect = "/";
+                                    const params = Object.fromEntries(new URLSearchParams(location.search));
+                                    if (params.next) {
+                                        path_redirect = params.next;
+                                    }
+                                    $.fn.redirectUrlLogin(path_redirect, 800);
+                                }
+                                setTimeout(
+                                    () => {
+                                        $.fn.hideLoadingLogin();
+                                    }, 2000
+                                )
+                            },
+                            (err) => {
+                                $.fn.notifyBLogin({
+                                    'description': $('#errLoginIncorrect').attr('data-value')
+                                }, 'failure')
+                                $.fn.hideLoadingLogin();
+                            }
+                        )
+                    } else throw 'Setup call raise exception with URL or method is incorrect.!';
+                }
+            })
 
             function loadTenantList() {
                 let tenant_element = $('#tenant-select');

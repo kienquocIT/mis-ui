@@ -2789,6 +2789,26 @@ msgid "Draft"
 msgstr "Nháp"
 
 #
+msgid "Export to file"
+msgstr "Xuất thành file"
+
+#
+msgid "Open/Close filter area"
+msgstr "Hiện/Ẩn khu vực lọc dữ liệu"
+
+#
+msgid "Show/Hide columns"
+msgstr "Ẩn hiện cột"
+
+#
+msgid "Sorting by"
+msgstr "Sắp xếp theo"
+
+#
+msgid "Tools"
+msgstr "Công cụ"
+
+#
 msgid "Created"
 msgstr "Đã tạo"
 
@@ -3932,8 +3952,8 @@ msgid "Open a new tab"
 msgstr "Mở với tab mới"
 
 #
-msgid "Filter Manager Advance"
-msgstr "Bộ lọc quản lý nâng cao"
+msgid "By Group"
+msgstr "Theo nhóm"
 
 #
 msgid "Of Me"
@@ -3946,3 +3966,15 @@ msgstr "Cùng phòng ban của tôi"
 #
 msgid "Of My Staff"
 msgstr "Nhân viên của tôi"
+
+#
+msgid "Ascending"
+msgstr "Tăng dần"
+
+#
+msgid "Descending"
+msgstr "Giảm dần"
+
+#
+msgid "Please solve the captcha."
+msgstr "Vui lòng hoàn thành captcha."

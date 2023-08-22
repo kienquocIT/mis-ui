@@ -44,14 +44,24 @@
                             <div class="row">
                                 <div class="form-group">
                                     <label class="form-label" for="select-box-user">{% trans 'Select User' %}</label>
-                                    <select
-                                            class="form-select" id="select-box-user"
-                                            data-url="{% url 'CompanyUserNotMapEmployeeListAPI' %}"
-                                            data-method="GET"
-                                            data-keyResp="company_user_list"
-                                            name="user"
-                                    >
-                                    </select>
+                                    <div class="input-affix-wrapper">
+                                        <div class="dropdown input-prefix">
+                                            <i class="fas fa-info-circle text-blue"
+                                               data-bs-toggle="dropdown"
+                                               data-dropdown-animation
+                                               aria-haspopup="true"
+                                               aria-expanded="false"
+                                               disabled></i>
+                                            <div class="dropdown-menu w-210p mt-2"></div>
+                                        </div>
+                                        <select class="form-select" id="select-box-user"
+                                                data-url="{% url 'CompanyUserNotMapEmployeeListAPI' %}"
+                                                data-method="GET"
+                                                data-keyResp="company_user_list"
+                                                name="user"
+                                        >
+                                        </select>
+                                    </div>
                                     <span class="form-text text-muted">{% trans 'User link to the employee' %}</span>
                                 </div>
                             </div>

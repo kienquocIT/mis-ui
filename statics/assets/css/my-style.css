@@ -27,6 +27,7 @@
 .hidden-simple {
     display: none;
 }
+
 .hidden {
     display: none !important;
 }
@@ -135,9 +136,9 @@ div.inline {
     margin-left: 5px;
 }
 
-[type="search"] {
-    outline: none;
-}
+/*[type="search"] {*/
+/*    outline: none;*/
+/*}*/
 
 /* show - hidden code company */
 #span-code-company {
@@ -170,17 +171,106 @@ div.inline {
     color: blue;
 }
 
-.dataTables_filter {
-    text-align: left !important;
+/* Customize CSS datatable */
+.manualFilter .select2-container {
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+    /*padding-left: 0.5rem;*/
+    font-size: 0.875rem;
+    border-radius: 0.2rem;
 }
 
-.dataTables_filter label, .dataTables_filter input {
-    width: 100% !important;
+.util-btn {
+    justify-content: flex-end;
+}
+
+.row-custom-filter {
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+.dataTables_wrapper {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
+
+.dataTables_filter {
+    width: 200px;
+    margin-left: auto;
+    justify-content: flex-end;
+}
+
+/*.dataTables_filter {*/
+/*    text-align: left !important;*/
+/*    width: 100%;*/
+/*}*/
+
+.remove-filter-child {
+    cursor: pointer;
+}
+
+.dataTables_filter label, .dataTables_filter label input {
+    /*width: 100% !important;*/
 }
 
 .dataTables_length {
-    text-align: left !important;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    padding-top: 0;
 }
+
+@media screen and (min-width: 993px) {
+    .dataTables_paginate {
+        justify-content: right !important;
+    }
+
+    .dataTables_info:before {
+        content: "|";
+        margin-right: 10px;
+        margin-left: 10px;
+    }
+}
+
+@media screen and (max-width: 992px) {
+    .dataTables_info {
+        margin-left: auto;
+    }
+
+    .dataTables_paginate {
+        margin-top: 10px !important;
+        justify-content: center !important;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .textFilter {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 576px) {
+    .dataTables_length {
+        margin-top: 10px;
+        justify-content: center;
+    }
+
+    .dataTables_info {
+        margin-top: 10px;
+        justify-content: center !important;
+        margin-left: unset;
+    }
+
+    .dataTables_paginate {
+        margin-top: 10px !important;
+    }
+
+    .cus-page-info {
+        flex-direction: column;
+    }
+}
+
+/* -- Customize CSS datatable */
 
 /* button css customize */
 .bg-dark-hover:hover {
@@ -191,30 +281,35 @@ div.inline {
 .table thead th, .table-advance thead th {
     border-bottom: 0;
 }
+
 /* -- Update some header table */
 
-.dataTables_scrollBody::-webkit-scrollbar{
-    height:8px;
+.dataTables_scrollBody::-webkit-scrollbar {
+    height: 8px;
 }
+
 .dataTables_scrollBody::-webkit-scrollbar-thumb {
     background-color: #d6d9da;
     border-radius: 4px;
 }
+
 /* button upload file */
 .btn-upload-force-color {
     color: #262a2e !important;
     background-color: #f2f5f6 !important;
 }
+
 /* -- button upload file */
 
-.count_selected{
+.count_selected {
     margin-top: 1rem;
 }
 
-.dropdown.ct_toolbar-columns{
+.dropdown.ct_toolbar-columns {
     text-align: right;
 }
-.select2-container--bootstrap4 .select2-selection__clear{
+
+.select2-container--bootstrap4 .select2-selection__clear {
     padding-left: 0;
     display: flex;
     justify-content: center;

@@ -95,6 +95,7 @@ class EmployeeLoadPage {
         frm.dataForm['role'] = EmployeeLoadPage.roleSelectEle.val()
 
         if (!frm.dataForm['user']) frm.dataForm['user'] = null;
+        if (!frm.dataForm['group']) frm.dataForm['group'] = null;
 
         if (frm.dataForm['user'] && !frm.dataForm['plan_app']) {
             $.fn.notifyB({description: 'Employee map user must choose applications'}, 'failure');

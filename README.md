@@ -793,7 +793,34 @@ $('#tbl').DataTableDefault({
 ```
 #### Kết quả:
 ![](README_IMG/DTB_link_blank.png)
-4. 
+4. Sorting
+> Thêm "orderable: true," vào "columns" nào muốn thêm vào sort 
+5. Lọc tùy chỉnh
+```text
+Trường trong cấu hình DTB: 'cusFilter'
+- keyParam [str]: --> trường dùng để lọc
+- placeholder [str]: Label cho trường lọc này --> nên tạo thẻ span ẩn chứa các attribute text đã dịch
+- multiple [bool]: --> cho phép chọn nhiều không
+
+1. Lọc dữ liệu tĩnh
+- data: [{'id': '', 'text': '', 'selected': 'true'}] --> render ra các option value={id} text={text} selected={selected}
+2. Lọc dữ liệu động
+- dataUrl [str]: --> Đường dẫn API
+- keyResp [str]: --> Key lấy dữ liệu từ response
+- keyText [str]: default="title" --> Key lấy dữ liệu hiển thị cho option
+- keyId [str]: default="id" --> Key lấy dữ liệu làm value
+- keyParam [str]: trường thêm vào params khi gọi lọc kèm dữ liệu keyId lấy được
+```
+6. Tool nâng cao
+```text
+Trường trong cấu hình DTB: 'cusTool'
+- code [str]: Nhận biết tự động để tự thêm dữ liệu vào icon và text
+- icon [html][not required]: mã hiển thị icon
+- text [str][not required]: Tên hiển thị
+- url [str][not required]: Url được gán cho nút
+- className [str][not required]: Các class được bỏ vào dòng của button
+- eClick [function][not required]: hàm hứng sự kiện click của nút được tạo ra.
+```
 
 VIII. Validate form khi submit
 1. SetupFormSubmit.validate(formEle, opts)

@@ -1956,16 +1956,376 @@ class DTBControl {
         );
     }
 
+    // static parseFilter(dtb) {
+    //     let dtbInited = $(dtb).DataTable();
+    //
+    //     let rowCustomFilter = $(`div.row-custom-filter[data-dtb-id="#` + dtb.attr('id') + `"]`);
+    //
+    //     let dtbWrapper = $(dtb).closest('.dataTables_wrapper');
+    //     let dtbFilter = $(dtbWrapper).find('.dataTables_filter');
+    //     let dtbFilterInput = $(dtbFilter).find('input[type="search"]');
+    //
+    //     rowCustomFilter.each(function () {
+    //         $(this).find('select').each(function () {
+    //             DTBControl.__fillDefaultSelect2Filter($(this)).initSelect2();
+    //         }).on('select2:close', function () {
+    //             dtbInited.table().ajax.reload();
+    //         }).on('select2:clear', function () {
+    //             dtbInited.table().ajax.reload();
+    //         }).on('select2:unselect', function () {
+    //             dtbInited.table().ajax.reload();
+    //         });
+    //
+    //         let customFilterEle = $(this).find('.custom-filter-dtb');
+    //         if (dtbFilterInput && dtbFilterInput.length > 0 && customFilterEle && customFilterEle.length > 0) {
+    //             // dtbFilter.addClass('hidden');
+    //             $(this).find('.custom-filter-dtb').on('keyup', function () {
+    //                 $(dtbFilterInput).val($(this).val()).trigger('keyup');
+    //             });
+    //         } else {
+    //             customFilterEle.remove();
+    //         }
+    //     })
+    // }
+
+    static _summaryFilterToText(textFilterEle, manualFilterEle = null, textManual = []) {
+        if (textFilterEle) {
+            let textFilterSelected = [];
+
+            if (manualFilterEle) {
+                manualFilterEle.find('select.custom-filter-manual-dtb').each(function () {
+                    let valSelected = $(this).val();
+                    if (valSelected) {
+                        if (Array.isArray(valSelected)) {
+                            let textDisplay = [];
+                            $(this).find('option:selected').each(function () {
+                                textDisplay.push($(this).text());
+                            })
+                            if (textDisplay && textDisplay.length > 0) {
+                                textFilterSelected.push(`<span data-select-id="${$(this).attr('id')}"  class="badge badge-light badge-outline mr-1 mb-1"><i class="fa-regular fa-circle-xmark remove-filter-child"></i> ${$(this).closest('.form-group').find('label small').text()} : ${textDisplay.join(", ")}</span>`)
+                            }
+                        } else {
+                            let textDisplay = $(this).find('option:selected').text();
+                            if (textDisplay) {
+                                textFilterSelected.push(`<span data-select-id="${$(this).attr('id')}"  class="badge badge-light badge-outline mr-1 mb-1"><i class="fa-regular fa-circle-xmark remove-filter-child"></i> ${$(this).closest('.form-group').find('label small').text()} : ${textDisplay}</span>`)
+                            }
+                        }
+                    }
+                });
+            } else if (textManual) {
+                textManual.map(
+                    (item) => {
+                        if (item.text) {
+                            textFilterSelected.push(`<span data-select-id="${item.idx}" class="badge badge-light badge-outline mr-1 mb-1"><i class="fa-regular fa-circle-xmark remove-filter-child"></i> ${item.placeholder} : ${item.text}</span>`);
+                        }
+                    }
+                )
+            }
+            if (textFilterSelected.length <= 5) {
+                textFilterEle.html(textFilterSelected.join(``))
+            } else {
+                textFilterEle.html(textFilterSelected.slice(1, 5).join("") + `<button class='btn btn-soft-light btn-sm show-more-filter-text'>...</button><script class="hidden">${JSON.stringify(textFilterSelected)}</script>`)
+            }
+
+            textFilterEle.on('click', '.show-more-filter-text', function () {
+                Swal.fire({
+                    html: textFilterSelected.join(""),
+                })
+            }).on('click', '.remove-filter-child', function () {
+                let ele = $('#' + $(this).closest('span').attr('data-select-id'));
+                if (ele.length > 0) {
+                    ele.val("");
+                    ele.trigger('change');
+                    $(this).remove();
+                }
+            })
+        }
+    }
+
+    static _parseCusTools(settings, wrapperEle) {
+        let cusToolData = [];
+        (settings.oInit.cusTool || []).map(
+            (item) => {
+                let idx = $x.fn.randomStr(32);
+                let autoFillRequired = {};
+                switch (item.code) {
+                    case 'draft':
+                        autoFillRequired['icon'] = `<i class="fa-regular fa-note-sticky"></i>`;
+                        autoFillRequired['text'] = $.fn.transEle.attr('data-msg-draft');
+                        break
+                    case 'export':
+                        autoFillRequired['icon'] = `<i class="fa-solid fa-file-export"></i>`;
+                        autoFillRequired['text'] = $.fn.transEle.attr('data-msg-export-to-file');
+                        break
+                }
+
+                let config = {
+                    'idx': idx,
+                    'code': null,
+                    'icon': '',
+                    'text': '',
+                    'url': '#',
+                    'className': '',
+                    'eClick': null,
+                    ...autoFillRequired,
+                    ...item,
+                }
+
+                if (config.icon) {
+                    if (config.icon.includes('class="')) {
+                        config.icon = config.icon.replace('class="', 'class="dropdown-icon ');
+                    } else if (config.icon.includes("class='")) {
+                        config.icon = config.icon.replace("class='", "class='dropdown-icon ");
+                    }
+                }
+
+                let ele = $(`<a class="dropdown-item ${config.className}" id="${idx}" href="${config.url}">${config.icon}<span>${config.text}</span></a>`);
+                if (config.eClick) wrapperEle.on('click', '#' + idx, config.eClick);
+                cusToolData.push(ele.prop('outerHTML'));
+            }
+        );
+        return cusToolData;
+    }
+
+    static parseFilter2(dtb, settings, json) {
+        let groupCustomEle = dtb.parent().find('.util-btn');
+        let filterEle = dtb.parent().find('.dataTables_filter');
+        let wrapperEle = dtb.closest('.dataTables_wrapper');
+
+        // handle customize filter
+        let btnFilterEle = dtb.parent().find('.btnAddFilter');
+        let textFilterEle = dtb.parent().find('.textFilter');
+        let manualFilterEle = dtb.parent().find('.manualFilter');
+        let cusFilterArr = [];
+        let initTextFilter = [];
+        let cusFilter = settings.oInit?.['cusFilter'] || [];
+        if (cusFilter && Array.isArray(cusFilter)) {
+            cusFilter.map(
+                (item) => {
+                    let config = {
+                        keyText: 'title',
+                        keyId: 'id',
+                        keyResp: null,
+                        dataUrl: null,
+                        keyParam: null,
+                        placeholder: null,
+                        data: [],   // [{'id': '', 'text': '', selected: false}]
+                        ...item,
+                    }
+                    if (
+                        (config.keyResp && config.dataUrl && config.keyParam && config.keyText && config.keyId) ||
+                        (!config.dataUrl && config.data && Array.isArray(config.data) && config.data.length > 0)
+                    ) {
+                        let textSelected = '';
+                        let dataOnload = config.data.map(
+                            (item) => {
+                                if (item.selected === true) {
+                                    textSelected = item.text;
+                                }
+                                return `<option value="${item.id}" ${item.selected ? "selected" : ""}>${item.text}</option>`
+                            }
+                        )
+                        let attrHTML = ['data-method="GET"'];
+                        Object.keys(config).map(
+                            (key) => {
+                                if (config[key]) {
+                                    if (key === 'dataUrl') {
+                                        attrHTML.push(`data-url="${config.dataUrl}"`);
+                                    } else if (key === 'dataMethod') {
+                                        attrHTML.push(`data-method="${config.dataMethod}"`);
+                                    } else if (key === 'placeholder') {
+                                        attrHTML.push(`data-placeholder="${config.placeholder}"`);
+                                    } else if (key === 'data') {
+                                    } else if (key === 'multiple') {
+                                        attrHTML.push(`multiple`);
+                                    } else if (key === 'allowClear') {
+                                        attrHTML.push('data-allowClear="true"');
+                                    } else {
+                                        attrHTML.push(`data-${key}="${config[key]}"`);
+                                    }
+                                }
+                            }
+                        )
+                        let fakeIdx = $x.fn.randomStr(32);
+                        cusFilterArr.push(`
+                            <div class="col-12 col-md-4 w-200p mb-1">
+                                <div class="form-group">
+                                    <label for="${fakeIdx}"><small>${config.placeholder}</small></label>
+                                    <select 
+                                        id="${fakeIdx}"
+                                        class="custom-filter-manual-dtb form-select form-select-sm"
+                                        ${attrHTML.join(" ")}
+                                    >
+                                        ${dataOnload.join("")}
+                                    </select>
+                                </div>
+                            </div>
+                        `);
+                        initTextFilter.push({
+                            'placeholder': config.placeholder,
+                            'text': textSelected,
+                            'idx': fakeIdx,
+                        })
+                    }
+                }
+            )
+        }
+        if (cusFilterArr && cusFilterArr.length > 0) {
+            // manualFilterEle.html(cusFilterArr.join(""));
+            btnFilterEle.html(`
+                <button 
+                    class="btn btn-light btn-sm mr-1"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="bottom"
+                    title="${$.fn.transEle.attr('data-msg-open-close-filter')}"
+                ><i class="fa-solid fa-filter mr-1" style="color: #707070;"></i> ${$.fn.transEle.attr('data-msg-filter')}</button>
+            `);
+            manualFilterEle.html(cusFilterArr.join(""));
+            wrapperEle.on('click', '.btnAddFilter', function () {
+                wrapperEle.find('.manualFilter').toggleClass('hidden');
+            });
+            DTBControl._summaryFilterToText(textFilterEle, null, initTextFilter);
+        }
+
+        // append filter search class form-control-sm
+        filterEle.addClass('mr-1');
+        filterEle.find('input[type="search"]').addClass('form-control w-200p');
+
+        // handle visible && sort
+        let keyVisible = [];
+        let keySort = [];
+        settings.aoColumns.map(
+            (colConfig) => {
+                let colSortSTitle = colConfig?.['sTitle'] || '';
+
+                let colSortEnabled = colConfig?.['orderable'] || false;
+                let colSortMKey = colConfig?.['mData'] || '';
+                if (colSortEnabled && colSortMKey) {
+                    keySort.push(`<option value="${colSortMKey}">${colSortSTitle}</option>`);
+                }
+
+                let isVisible = colConfig?.['bVisible'] || false;
+                let idxCol = colConfig?.['idx'];
+                let randomStringData = $x.fn.randomStr(32);
+                keyVisible.push(`
+                    <li class="d-flex align-items-center justify-content-between mb-1">
+                        <div class="form-check">
+                            <input 
+                                type="checkbox" 
+                                class="form-check-input custom-visible-item-dtb" 
+                                id="${randomStringData}" ${isVisible ? 'checked' : ''}
+                                data-idx="${idxCol}"
+                            >
+                            <label class="form-check-label" for="${randomStringData}">${colSortSTitle}</label>
+                        </div>
+                    </li>
+                `)
+            }
+        )
+
+        // handle tools
+        let cusToolData = DTBControl._parseCusTools(settings, wrapperEle) || [];
+
+        // render
+        let keySortHtml = keySort.length > 0 ? `
+            <div 
+                class="input-group input-group-sm ml-1"
+                data-bs-toggle="tooltip"
+                title="${$.fn.transEle.attr('data-msg-sorting-by')}"
+            >
+                <select class="form-select form-select-sm w-80p custom-order-dtb">
+                    <option selected></option>
+                        ${keySort.join("")}
+                </select>
+                <button class="btn btn-light custom-order-asc-dtb w-35p" disabled>
+                    <i class="fa-solid fa-arrow-down-a-z"></i>
+                </button>
+            </div>
+        ` : '';
+        let keyVisibleHtml = keyVisible.length > 0 ? `
+            <div 
+                class="btn-group btn-group-sm dropdown ml-1"
+                data-bs-toggle="tooltip"
+                title="${$.fn.transEle.attr('data-msg-show-hide-columns')}"
+            >
+                <button type="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fa-solid fa-list"></i>
+                </button>
+                <div class="dropdown-menu w-150p">
+                    <ul class="p-0 m-0 custom-visible-dtb">
+                        ${keyVisible.join("")}
+                    </ul>
+                </div>
+            </div>
+        ` : '';
+        let cusToolHtml = cusToolData.length > 0 ? `
+            <div 
+                class="btn-group btn-group-sm dropdown ml-1"
+                data-bs-toggle="tooltip"
+                title="${$.fn.transEle.attr('data-msg-tools')}"
+            >
+                <button type="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fa-regular fa-lightbulb"></i>
+                </button>
+                <div class="dropdown-menu w-150p">
+                    ${cusToolData.join("")}
+                </div>
+            </div>
+        ` : '';
+
+        groupCustomEle.html(`
+            <div class="d-flex justify-content-end align-items-center">
+                ${keySortHtml}
+                ${keyVisibleHtml}
+                ${cusToolHtml}
+            </div>
+        `).on('change', 'select.custom-order-dtb', function () {
+            if ($(this).val()) {
+                $(this).parent().find('.custom-order-asc-dtb').prop('disabled', false);
+                dtb.DataTable().ajax.reload();
+            } else {
+                $(this).parent().find('.custom-order-asc-dtb').prop('disabled', true);
+            }
+        }).on('click', 'button.custom-order-asc-dtb', function () {
+            $(this).find('i').toggleClass('fa-arrow-down-a-z').toggleClass('fa-arrow-down-z-a');
+            dtb.DataTable().ajax.reload();
+        }).on('change', 'input.custom-visible-item-dtb', function () {
+            let idx = Number.parseInt($(this).attr('data-idx'));
+            if (Number.isInteger(idx)) {
+                dtb.DataTable().column(idx).visible($(this).prop('checked'));
+            }
+        });
+        wrapperEle.on('change', 'select.custom-filter-manual-dtb', function () {
+            dtb.DataTable().ajax.reload();
+            DTBControl._summaryFilterToText(
+                textFilterEle, manualFilterEle,
+            )
+        });
+
+        setTimeout(
+            () => {
+                wrapperEle.find('select.custom-filter-manual-dtb').each(function () {
+                    $(this).initSelect2({allowClear: true})
+                });
+            },
+            0
+        )
+    }
+
     static parseDomDtl(opts) {
         // stateDefaultPageControl: disable all toolbar
         let stateDefaultPageControl = typeof opts?.['stateDefaultPageControl'] === 'boolean' ? opts?.['stateDefaultPageControl'] : true;
         if (opts.hasOwnProperty('stateDefaultPageControl')) delete opts['stateDefaultPageControl'];
 
-        let domDTL = "<'row miner-group'<'col-sm-12 col-md-3 col-lg-2 mt-3'f>>" +
-            "<'row mt-3'<'col-sm-12 col-md-6'<'count_selected'>><'col-sm-12 col-md-6'<'custom_toolbar'>>>" +
-            "<'row mt-3'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'p>>" +
-            "<'row mt-3'<'col-sm-12'tr>>" +
-            "<'row mt-3'<'col-sm-12 col-md-6'i>>";
+        // let domDTL = "<'row miner-group'<'col-sm-12 col-md-3 col-lg-2 mt-3'f>>" +
+        //     "<'row mt-3'<'col-sm-12 col-md-6'<'count_selected'>><'col-sm-12 col-md-6'<'custom_toolbar'>>>" +
+        //     "<'row mt-3'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'p>>" +
+        //     "<'row mt-3'<'col-sm-12'tr>>" +
+        //     "<'row mt-3'<'col-sm-12 col-md-6'i>>";
+
+        // style 1
+        let domDTL = `<'d-flex mb-1'<'btnAddFilter mb-1'><'textFilter overflow-hidden mb-1'>f<'util-btn mb-1'>><'row manualFilter hidden mb-1'>` + 'rt' + `<'row' <'col-lg-6 col-md-12 d-flex cus-page-info'li><'col-lg-6 col-md-12'p>>`;
+
         let utilsDom = {
             // "l": Đại diện cho thanh điều hướng (paging) của DataTable.
             // "f": Đại diện cho hộp tìm kiếm (filtering) của DataTable.
@@ -1981,7 +2341,6 @@ class DTBControl {
             visibleOrder: stateDefaultPageControl,   // "r"
             visibleRowQuantity: stateDefaultPageControl,   // "s"
         }
-
         // show or hide search field
         if (opts.hasOwnProperty('visiblePaging')) {
             if ($.fn.isBoolean(opts['visiblePaging'])) utilsDom.visiblePaging = opts['visiblePaging'];
@@ -2098,40 +2457,67 @@ class DTBControl {
             let setupServerSide = {
                 processing: true,
                 serverSide: true,
-                ordering: true,
+                ordering: false,
+                // ordering: true,
                 searchDelay: 1000,
                 order: [],
                 ajax: $.extend(this.opts['ajax'], {
                     data: function (d) {
-                        let orderTxt = ''
-                        if (d?.order.length) {
-                            const orderKey = d.columns[d.order[0].column].data
-                            const orderVal = d.order[0].dir
-                            if (orderKey && typeof orderKey !== 'number' && orderVal)
-                                orderTxt = orderVal === 'asc' ? orderKey : `-${orderKey}`
-                        }
+                        let wrapperEle = clsThis.dtb$.closest('.dataTables_wrapper');
+
+                        let sortKey = wrapperEle.find('.custom-order-dtb').val();
+                        let sortASC = wrapperEle.find('.custom-order-asc-dtb i').hasClass('fa-arrow-down-z-a');   // DESC
+                        let orderTxt = sortKey ? `${sortASC ? '-' : ''}${sortKey}` : '';
 
                         let keyKeepEmpty = [];
                         let customFilter = {};
-                        $(clsThis.dtb$).find('.row-custom-filter select').each(function () {
-                            let val = $(this).val();
-                            if (val) {
-                                if ((typeof val === "string" && val) || (Array.isArray(val) && val.length > 0)) {
-                                    customFilter[$(this).attr('data-keyParam')] = (!Array.isArray(val) ? [val] : val).join(",");
-                                }
-                            } else {
-                                if ($(this).attr('data-keepIdNullHasText') === 'true') {
-                                    customFilter[$(this).attr('data-keyParam')] = "";
-                                    keyKeepEmpty.push($(this).attr('data-keyParam'))
+
+                        $(`div.row-custom-filter[data-dtb-id="#` + clsThis.dtb$.attr('id') + `"]`).find('select').each(
+                            function () {
+                                let val = $(this).val();
+                                if (val) {
+                                    if ((typeof val === "string" && val) || (Array.isArray(val) && val.length > 0)) {
+                                        customFilter[$(this).attr('data-keyParam')] = (!Array.isArray(val) ? [val] : val).join(",");
+                                    }
+                                } else {
+                                    if ($(this).attr('data-keepIdNullHasText') === 'true') {
+                                        customFilter[$(this).attr('data-keyParam')] = "";
+                                        keyKeepEmpty.push($(this).attr('data-keyParam'))
+                                    }
                                 }
                             }
-                        });
+                        );
+
+                        let customFilterData = {};
+                        let filterManualEle = wrapperEle.find('select.custom-filter-manual-dtb');
+                        if (filterManualEle.length > 0) {
+                            filterManualEle.each(function () {
+                                customFilterData[$(this).attr('data-keyparam')] = $(this).val();
+                            })
+                        } else {
+                            (clsThis.opts.cusFilter || []).map(
+                                (item) => {
+                                    if (item.data && Array.isArray(item.data)) {
+                                        let valParam = [];
+                                        item.data.map(
+                                            (item2) => {
+                                                if (item2.selected === true) {
+                                                    valParam.push(item2.id);
+                                                }
+                                            }
+                                        )
+                                        customFilterData[item.keyParam] = valParam.join(",");
+                                    }
+
+                                }
+                            )
+                        }
 
                         return DTBControl.cleanParamBeforeCall({
                             'page': Math.ceil(d.start / d.length) + 1,
                             'pageSize': d.length,
                             'search': d?.search?.value ? d.search.value : '',
-                            'ordering': orderTxt, ...customFilter
+                            'ordering': orderTxt, ...customFilter, ...customFilterData,
                         }, keyKeepEmpty);
                     },
                     dataFilter: function (data) {
@@ -2221,6 +2607,8 @@ class DTBControl {
             DTBControl.parseHeaderDropdownFilter(
                 (clsThis.opts?.['columns'] || []), settings, clsThis.dtb$
             );
+            // DTBControl.parseFilter(clsThis.dtb$);
+            DTBControl.parseFilter2(clsThis.dtb$, settings, json);
         }
     }
 
@@ -2788,6 +3176,8 @@ let $x = {
 
         parseDateTime: UtilControl.parseDateTime,
         parseDate: UtilControl.parseDate,
+
+        randomStr: UtilControl.generateRandomString,
     },
 }
 

@@ -81,6 +81,17 @@ class PurchaseOrderDetail(View):
         return {'data': {'doc_id': pk}}, status.HTTP_200_OK
 
 
+class PurchaseOrderUpdate(View):
+    @mask_view(
+        auth_require=True,
+        template='sales/purchasing/purchaseorder/purchase_order_update.html',
+        menu_active='menu_purchase_order_list',
+        breadcrumb='PURCHASE_ORDER_DETAIL_PAGE',
+    )
+    def get(self, request, pk, *args, **kwargs):
+        return {'data': {'doc_id': pk}}, status.HTTP_200_OK
+
+
 class PurchaseOrderDetailAPI(APIView):
 
     @mask_view(

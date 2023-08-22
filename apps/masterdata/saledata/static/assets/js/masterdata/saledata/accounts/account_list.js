@@ -49,6 +49,20 @@ $(document).ready(function () {
                 multiple: true,
             },
         ],
+        cusTool: [
+            {
+                'code': 'draft',
+                eClick: function (){
+                    console.log($(this));
+                },
+            },
+            {
+                'code': 'export',
+                eClick: function (){
+                    console.log($(this));
+                },
+            },
+        ],
         columns: [
             {
                 width: "5%",

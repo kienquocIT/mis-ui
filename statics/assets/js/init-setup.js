@@ -1988,7 +1988,7 @@ class DTBControl {
     //     })
     // }
 
-    static summaryFilterToText(textFilterEle, manualFilterEle = null, textManual = []) {
+    static _summaryFilterToText(textFilterEle, manualFilterEle = null, textManual = []) {
         if (textFilterEle) {
             let textFilterSelected = [];
 
@@ -2033,13 +2033,58 @@ class DTBControl {
                 })
             }).on('click', '.remove-filter-child', function () {
                 let ele = $('#' + $(this).closest('span').attr('data-select-id'));
-                if (ele.length > 0){
+                if (ele.length > 0) {
                     ele.val("");
                     ele.trigger('change');
                     $(this).remove();
                 }
             })
         }
+    }
+
+    static _parseCusTools(settings, wrapperEle) {
+        let cusToolData = [];
+        (settings.oInit.cusTool || []).map(
+            (item) => {
+                let idx = $x.fn.randomStr(32);
+                let autoFillRequired = {};
+                switch (item.code) {
+                    case 'draft':
+                        autoFillRequired['icon'] = `<i class="fa-regular fa-note-sticky"></i>`;
+                        autoFillRequired['text'] = $.fn.transEle.attr('data-msg-draft');
+                        break
+                    case 'export':
+                        autoFillRequired['icon'] = `<i class="fa-solid fa-file-export"></i>`;
+                        autoFillRequired['text'] = $.fn.transEle.attr('data-msg-export-to-file');
+                        break
+                }
+
+                let config = {
+                    'idx': idx,
+                    'code': null,
+                    'icon': '',
+                    'text': '',
+                    'url': '#',
+                    'className': '',
+                    'eClick': null,
+                    ...autoFillRequired,
+                    ...item,
+                }
+
+                if (config.icon) {
+                    if (config.icon.includes('class="')) {
+                        config.icon = config.icon.replace('class="', 'class="dropdown-icon ');
+                    } else if (config.icon.includes("class='")) {
+                        config.icon = config.icon.replace("class='", "class='dropdown-icon ");
+                    }
+                }
+
+                let ele = $(`<a class="dropdown-item ${config.className}" id="${idx}" href="${config.url}">${config.icon}<span>${config.text}</span></a>`);
+                if (config.eClick) wrapperEle.on('click', '#' + idx, config.eClick);
+                cusToolData.push(ele.prop('outerHTML'));
+            }
+        );
+        return cusToolData;
     }
 
     static parseFilter2(dtb, settings, json) {
@@ -2127,18 +2172,24 @@ class DTBControl {
         }
         if (cusFilterArr && cusFilterArr.length > 0) {
             // manualFilterEle.html(cusFilterArr.join(""));
-            btnFilterEle.html(`<button class="btn btn-light btn-sm mr-1"><i class="fa-solid fa-filter mr-1"></i> Filter</button>`);
+            btnFilterEle.html(`
+                <button 
+                    class="btn btn-light btn-sm mr-1"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="bottom"
+                    title="${$.fn.transEle.attr('data-msg-open-close-filter')}"
+                ><i class="fa-solid fa-filter mr-1" style="color: #707070;"></i> ${$.fn.transEle.attr('data-msg-filter')}</button>
+            `);
             manualFilterEle.html(cusFilterArr.join(""));
             wrapperEle.on('click', '.btnAddFilter', function () {
                 wrapperEle.find('.manualFilter').toggleClass('hidden');
             });
-
-            DTBControl.summaryFilterToText(textFilterEle, null, initTextFilter);
+            DTBControl._summaryFilterToText(textFilterEle, null, initTextFilter);
         }
 
         // append filter search class form-control-sm
         filterEle.addClass('mr-1');
-        filterEle.find('input[type="search"]').addClass('form-control w-200p'); // .removeClass('form-control-sm');
+        filterEle.find('input[type="search"]').addClass('form-control w-200p');
 
         // handle visible && sort
         let keyVisible = [];
@@ -2172,53 +2223,72 @@ class DTBControl {
             }
         )
 
+        // handle tools
+        let cusToolData = DTBControl._parseCusTools(settings, wrapperEle) || [];
+
+        // render
         let keySortHtml = keySort.length > 0 ? `
-            <div class="input-group input-group-sm w-115p ml-1">
+            <div 
+                class="input-group input-group-sm ml-1"
+                data-bs-toggle="tooltip"
+                title="${$.fn.transEle.attr('data-msg-sorting-by')}"
+            >
                 <select class="form-select form-select-sm w-80p custom-order-dtb">
                     <option selected></option>
                         ${keySort.join("")}
                 </select>
-                <button class="btn btn-light custom-order-asc-dtb w-35p">
+                <button class="btn btn-light custom-order-asc-dtb w-35p" disabled>
                     <i class="fa-solid fa-arrow-down-a-z"></i>
                 </button>
             </div>
-        `: '';
+        ` : '';
+        let keyVisibleHtml = keyVisible.length > 0 ? `
+            <div 
+                class="btn-group btn-group-sm dropdown ml-1"
+                data-bs-toggle="tooltip"
+                title="${$.fn.transEle.attr('data-msg-show-hide-columns')}"
+            >
+                <button type="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fa-solid fa-list"></i>
+                </button>
+                <div class="dropdown-menu w-150p">
+                    <ul class="p-0 m-0 custom-visible-dtb">
+                        ${keyVisible.join("")}
+                    </ul>
+                </div>
+            </div>
+        ` : '';
+        let cusToolHtml = cusToolData.length > 0 ? `
+            <div 
+                class="btn-group btn-group-sm dropdown ml-1"
+                data-bs-toggle="tooltip"
+                title="${$.fn.transEle.attr('data-msg-tools')}"
+            >
+                <button type="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fa-regular fa-lightbulb"></i>
+                </button>
+                <div class="dropdown-menu w-150p">
+                    ${cusToolData.join("")}
+                </div>
+            </div>
+        ` : '';
 
         groupCustomEle.html(`
             <div class="d-flex justify-content-end align-items-center">
                 ${keySortHtml}
-                <div class="btn-group btn-group-sm dropdown ml-1">
-                    <button type="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="fa-solid fa-list"></i>
-                    </button>
-                    <div class="dropdown-menu w-175p">
-                        <ul class="p-0 m-0 custom-visible-dtb">
-                            ${keyVisible.join("")}
-                        </ul>
-                    </div>
-                </div>
-                <div class="btn-group btn-group-sm dropdown ml-1">
-                    <button type="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="fa-regular fa-lightbulb"></i>
-                    </button>
-                    <div class="dropdown-menu w-150p">
-                        <h6 class="dropdown-header">Link</h6>
-                        <a class="dropdown-item" href="#"><i class="dropdown-icon fa-regular fa-note-sticky"></i><span>Draft</span></a>
-                        <div class="dropdown-divider"></div>
-                        <h6 class="dropdown-header">Table Tools</h6>
-                        <a class="dropdown-item" href="#"><i class="dropdown-icon fa-solid fa-file-export"></i><span>Exports</span></a>
-                    </div>
-                </div>
+                ${keyVisibleHtml}
+                ${cusToolHtml}
             </div>
         `).on('change', 'select.custom-order-dtb', function () {
             if ($(this).val()) {
+                $(this).parent().find('.custom-order-asc-dtb').prop('disabled', false);
                 dtb.DataTable().ajax.reload();
+            } else {
+                $(this).parent().find('.custom-order-asc-dtb').prop('disabled', true);
             }
         }).on('click', 'button.custom-order-asc-dtb', function () {
             $(this).find('i').toggleClass('fa-arrow-down-a-z').toggleClass('fa-arrow-down-z-a');
-            if (wrapperEle.find('select.custom-order-dtb').val()) {
-                dtb.DataTable().ajax.reload();
-            }
+            dtb.DataTable().ajax.reload();
         }).on('change', 'input.custom-visible-item-dtb', function () {
             let idx = Number.parseInt($(this).attr('data-idx'));
             if (Number.isInteger(idx)) {
@@ -2227,7 +2297,7 @@ class DTBControl {
         });
         wrapperEle.on('change', 'select.custom-filter-manual-dtb', function () {
             dtb.DataTable().ajax.reload();
-            DTBControl.summaryFilterToText(
+            DTBControl._summaryFilterToText(
                 textFilterEle, manualFilterEle,
             )
         });
@@ -2422,7 +2492,6 @@ class DTBControl {
                         let filterManualEle = wrapperEle.find('select.custom-filter-manual-dtb');
                         if (filterManualEle.length > 0) {
                             filterManualEle.each(function () {
-                                console.log('select.custom-filter-manual-dtb: ', $(this).val(), $(this).attr('data-keyparam'));
                                 customFilterData[$(this).attr('data-keyparam')] = $(this).val();
                             })
                         } else {

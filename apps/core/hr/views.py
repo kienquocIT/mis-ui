@@ -1,3 +1,4 @@
+import uuid
 from django.urls import reverse
 from django.views import View
 from requests_toolbelt import MultipartEncoder
@@ -45,11 +46,18 @@ class EmployeeList(View):
 
 
 class EmployeeListAPI(APIView):
-    permission_classes = [IsAuthenticated]
+    @classmethod
+    def params_custom(cls, request):
+        params = request.query_params.dict()
+        if 'group__id' in params and not isinstance(
+                params['group__id'], uuid.UUID
+        ) and request.user.employee_current_data.get('group', None):
+            params['group__id'] = request.user.employee_current_data.get('group')
+        return params
 
     @mask_view(auth_require=True, is_api=True)
     def get(self, request, *args, **kwargs):
-        params = request.query_params.dict()
+        params = self.params_custom(request)
         resp = ServerAPI(request=request, url=ApiURL.EMPLOYEE_LIST, user=request.user).get(params)
         return resp.auto_return(key_success='employee_list')
 

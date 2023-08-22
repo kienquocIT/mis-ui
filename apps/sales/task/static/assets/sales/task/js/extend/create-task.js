@@ -52,25 +52,105 @@ function logworkSubmit(){
         $('#logWorkModal').modal('hide')
     });
 }
-function getConfig(){
-
-    function setParams(config){
-        if (in_assign_opt > 0){
+class AssignToSetup {
+    static case01(config, params){
+        // có opps + config có in assign opt lớn hơn 0
+        const urlOpptDetail = $('#task_url_sub').attr('data-opps-detail').format_url_with_uuid(
+            $('#selectOpportunity').val())
+        if (config.in_assign_opt === 1){
+            // chỉ employee trong opportunity
+            $('.is-lazy-loading').addClass('is_show')
+            $.fn.callAjax2({
+                    'url': urlOpptDetail,
+                    'method': 'get',
+                }).then(
+                    (resp) => {
+                        const data = $.fn.switcherResp(resp);
+                        let selectOpt = '<option value=""></option>'
+                        const $AseElm = $('#selectAssignTo')
+                        for (const item of data.opportunity.opportunity_sale_team_datas){
+                            let opt = `<option data-value="${item?.member?.id}">${item?.member?.name}</option>`
+                            selectOpt += opt
+                        }
+                        $AseElm.html(selectOpt).removeAttr('data-url')
+                        $('.is-lazy-loading').removeClass('is_show')
+                    })
 
         }
-    }
-    // const
+        else if (config.in_assign_opt === 2){
+            // chỉ nhân viên của user
+            params = {'group__first_manager__id': true}
+        }
+        else{
+            // vừa trong opportunity vừa là nhân viên của user
+            $('.is-lazy-loading').addClass('is_show')
+            const assigntoElm = $('#selectAssignTo')
+            let ListMemberInOppt = $.fn.callAjax2({'url': urlOpptDetail, 'method': 'get'})
+            let ListStaff = $.fn.callAjax2({'url': assigntoElm.attr('data-url'), 'method': 'get',
+                'data': {'group__first_manager__id': true}
+            })
+            $.when(ListMemberInOppt, ListStaff).done(function(res01, res02){
+                const data01 = $.fn.switcherResp(res01);
+                const data02 = $.fn.switcherResp(res02);
+                let opts = '<option value=""></option>'
+                if(data01.status === 200){
+                     for (const item of data01.opportunity.opportunity_sale_team_datas){
+                         let opt = `<option data-value="${item?.member?.id}">${item?.member?.name}</option>`
+                            opts += opt
+                     }
+                }
+                if (data02.status === 200){
+                    for (const item of data02[assigntoElm.attr('data-keyresp')]){
+                        if (opts.indexOf(item?.[assigntoElm.attr('data-keyid')] !== -1)){
+                            let opt = `<option data-value="${item?.[assigntoElm.attr('data-keyid')]}">${
+                                item?.[assigntoElm.attr('data-keytext')]}</option>`
+                            opts += opt
+                        }
+                    }
+                }
+                assigntoElm.html(opts).removeAttr('data-url')
+                $('.is-lazy-loading').removeClass('is_show')
+            })
 
-    const taskConfig = $('#task_config')
-    if (taskConfig.length){
-        // có config
+        }
+        return params
+    }
+    static case02(config, params){
+        // ko có opps + config có out assign opt lớn hơn 0
+        if (config.out_assign_opt === 1)
+            // giao cho user trong phòng ban chính user đó
+            params = {'group__id': true}
+        else
+            // chỉ nhân viên của user
+            params = {'group__first_manager__id': true}
+        return params
+    }
+
+    static hasConfig(config){
+        const $selectElm = $('#selectAssignTo')
+        let params = {}
+        const oppsElm = $('#selectOpportunity').val()
+        if (oppsElm && config.in_assign_opt > 0) params = this.case01(config, params)
+        else if (config.out_assign_opt > 0) params = this.case02(config, params)
+
+        $selectElm.attr('data-params', JSON.stringify(params))
+        if ($selectElm.hasClass("select2-hidden-accessible")) $selectElm.select2('destroy')
+        $selectElm.initSelect2()
+    }
+    static init(){
+        const $self = this
+        const taskConfig = $('#task_config')
         const isConfig = JSON.parse(taskConfig.text())
+        this.hasConfig(isConfig)
 
-    }
-    else{
-        // ko có config
+        const $OppsElm = $('#selectOpportunity')
+        $OppsElm.on("select2:select", function () {
+            // const item = e.params.data
+            $self.hasConfig(isConfig)
+        })
     }
 }
+
 $(function () {
     // declare variable
     const $form = $('#formOpportunityTask')
@@ -229,7 +309,7 @@ $(function () {
     const $assignBtnElm = $('.btn-assign');
     const $assigneeElm = $('#selectAssignTo')
 
-    $assigneeElm.initSelect2()
+    AssignToSetup.init()
     $assignBtnElm.off().on('click', function () {
         const name = $assignerElm.attr('data-name')
         const id = $assignerElm.attr('data-value-id')
@@ -294,9 +374,8 @@ $(function () {
             },
         )
         .then(newEditor => {
-            // public global scope for clean purpose when reset form.
-            let editor = newEditor;
-            window.editor = editor;
+            // public global scope for clean purpose when reset form
+            window.editor = newEditor;
         })
 
     // run checklist tab

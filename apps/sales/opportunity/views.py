@@ -16,8 +16,6 @@ def create_update_opportunity(request, url, msg):
 
 
 class OpportunityList(View):
-    permission_classes = [IsAuthenticated]
-
     @mask_view(
         auth_require=True,
         template='sales/opportunity/opportunity_list.html',

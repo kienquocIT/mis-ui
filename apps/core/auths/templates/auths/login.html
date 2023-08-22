@@ -185,7 +185,7 @@
     <!-- /spinner loading -->
     <div class="hidden">
         <span id="flagNotifyKey" data-value={{ is_notify_key }}></span>
-        <span id="errLoginIncorrect" data-value="{% trans 'The username or password is incorrect' %}"></span>
+        <span id="errLoginIncorrect" data-value="{% trans 'The username or password is incorrect' %}" data-captcha-require="{% trans 'Please solve the captcha.' %}"></span>
     </div>
 </div>
 <!-- /Wrapper -->
@@ -193,7 +193,7 @@
 <script type="text/javascript">
     var onloadCallback = function () {
         grecaptcha.render('recapcha', {
-            'sitekey': '6LfNp8YnAAAAAE9qAY7kCFcRFOigzLQjqlyQIcnM'
+            'sitekey': '{{ secret_key_gg }}'
         });
     };
 </script>
@@ -393,36 +393,52 @@
         $(document).ready(function () {
             $('#form-login').submit(function (event) {
                 event.preventDefault();
-                $.fn.showLoadingLogin();
-                let frm = new SetupFormSubmitLogin($(this));
-                if (frm.dataUrl && frm.dataMethod) {
-                    $.fn.callAjaxLogin(frm.dataUrl, frm.dataMethod, frm.dataForm).then(
-                        (resp) => {
-                            let data = resp.data;
-                            if (data.status === 200) {
-                                localStorage.setItem('tenant_code', frm.dataForm['tenant_code']);
-                                $.fn.notifyBLogin({description: data.detail}, 'success');
-                                let path_redirect = "/";
-                                const params = Object.fromEntries(new URLSearchParams(location.search));
-                                if (params.next) {
-                                    path_redirect = params.next;
-                                }
-                                $.fn.redirectUrlLogin(path_redirect, 800);
+
+                let response = grecaptcha.getResponse();
+                if (response) {
+                    $.fn.showLoadingLogin();
+                    let frm = new SetupFormSubmitLogin($(this));
+                    console.log(frm.dataForm);
+                    if (frm.dataUrl && frm.dataMethod && frm.dataForm['g-recaptcha-response']) {
+                        $.fn.callAjaxLogin(
+                            frm.dataUrl,
+                            frm.dataMethod,
+                            {
+                                ...frm.dataForm,
+                                'g_recaptcha_response': frm.dataForm['g-recaptcha-response']
                             }
-                            setTimeout(
-                                () => {
-                                    $.fn.hideLoadingLogin();
-                                }, 2000
-                            )
-                        },
-                        (err) => {
-                            $.fn.notifyBLogin({
-                                'description': $('#errLoginIncorrect').attr('data-value')
-                            }, 'failure')
-                            $.fn.hideLoadingLogin();
-                        }
-                    )
-                } else throw 'Setup call raise exception with URL or method is incorrect.!';
+                        ).then(
+                            (resp) => {
+                                let data = resp.data;
+                                if (data.status === 200) {
+                                    localStorage.setItem('tenant_code', frm.dataForm['tenant_code']);
+                                    $.fn.notifyBLogin({description: data.detail}, 'success');
+                                    let path_redirect = "/";
+                                    const params = Object.fromEntries(new URLSearchParams(location.search));
+                                    if (params.next) {
+                                        path_redirect = params.next;
+                                    }
+                                    $.fn.redirectUrlLogin(path_redirect, 800);
+                                }
+                                setTimeout(
+                                    () => {
+                                        $.fn.hideLoadingLogin();
+                                    }, 2000
+                                )
+                            },
+                            (err) => {
+                                $.fn.notifyBLogin({
+                                    'description': $('#errLoginIncorrect').attr('data-value')
+                                }, 'failure')
+                                $.fn.hideLoadingLogin();
+                            }
+                        )
+                    } else throw 'Setup call raise exception with URL or method is incorrect.!';
+                } else {
+                    $.fn.notifyBLogin({
+                        'description': $('#errLoginIncorrect').attr('data-captcha-require')
+                    }, 'failure')
+                }
             })
 
             function loadTenantList() {

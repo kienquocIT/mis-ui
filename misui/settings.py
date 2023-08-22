@@ -28,6 +28,9 @@ load_dotenv(os.path.join(BASE_DIR, '.env'))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-p8r4sbt&9q*ig^3_$ao95)n3)vq5hu40k8d4jqep8zzpt49sx1'
 
+GG_RECAPTCHA_SERVER_KEY = os.environ.get('GG_RECAPTCHA_SERVER_KEY', '6LfNp8YnAAAAAH2nG-MQfa__3p71shh10CE8KfLX')
+GG_RECAPTCHA_CLIENT_KEY = os.environ.get('GG_RECAPTCHA_CLIENT_KEY', '6LfNp8YnAAAAAE9qAY7kCFcRFOigzLQjqlyQIcnM')
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 DEBUG_JS = True

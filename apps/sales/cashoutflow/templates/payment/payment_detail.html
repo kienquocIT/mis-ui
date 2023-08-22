@@ -24,18 +24,6 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <button id="save-payment" class="btn btn-flush-primary flush-soft-hover"
-            type="submit" form="form-update-payment" data-bs-toggle="tooltip" data-bs-placement="top" title="Update"
-            data-bs-original-title="Update">
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="save"></i>
-            </span>
-            <span class="font-3 ml-1">
-                {% trans 'Update' %}
-            </span>
-        </span>
-    </button>
 {% endblock %}
 {% block pageContent %}
     {{ data.data.sale_order_list | json_script:"sale_order_list" }}

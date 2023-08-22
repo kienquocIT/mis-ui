@@ -19,7 +19,12 @@ $(document).ready(function () {
     const ap_list = JSON.parse($('#advance_payment_list').text());
 
     const urlParams = new URLSearchParams(window.location.search);
-    const sale_code_mapped_parameter = urlParams.get('sale_code_mapped');
+    let param = null;
+    let param_temp_1 = urlParams.get('sale_code_mapped');
+    if (param_temp_1) {param = param_temp_1};
+    let param_temp_2 = urlParams.get('opportunity');
+    if (param_temp_2) {param = param_temp_2};
+    const sale_code_mapped_parameter = param;
     const sale_order = sale_order_list.filter(function(element) {return element.id === sale_code_mapped_parameter;});
     const quotation = quotation_list.filter(function(element) {return element.id === sale_code_mapped_parameter;});
     const opportunity = opportunity_list.filter(function(element) {return element.id === sale_code_mapped_parameter;});
@@ -624,7 +629,6 @@ $(document).ready(function () {
             }
             else if (sale_code_default_type === 2) {
                 $('#sale-code-select-box').prop('disabled', true);
-                // $('#beneficiary-select-box').prop('disabled', true);
                 $('#btn-change-sale-code-type').prop('disabled', true);
                 // get ap product items
                 let opp_id = sale_code_default_obj[0].id;
@@ -671,7 +675,6 @@ $(document).ready(function () {
                     }
                 }
 
-
                 let so_mapped_id = null;
                 let quo_mapped_id = null;
                 let opp_mapped_id = null;
@@ -707,7 +710,6 @@ $(document).ready(function () {
                 // get payment items
                 payment_cost_items_filtered = [];
                 for (let i = 0; i < payment_cost_items_list.length; i++) {
-                    // console.log(payment_cost_items_list[i])
                     let sale_code_mapped = payment_cost_items_list[i].sale_code_mapped;
                     if (sale_code_mapped === so_mapped_id || sale_code_mapped === quo_mapped_id || sale_code_mapped === opp_mapped_id) {
                         payment_cost_items_filtered.push(payment_cost_items_list[i]);
@@ -721,7 +723,8 @@ $(document).ready(function () {
 
                     $('#sale-code-select-box').val(so_mapped.code).trigger('change');
                     let beneficiaries_mapped = [];
-                    beneficiaries_mapped.push(so_mapped.sale_person.id)
+                    beneficiaries_mapped.push(so_mapped)
+
                     if (so_mapped.opportunity) {
                         $.each(so_mapped.opportunity.opportunity_sale_team_datas, function (index, member_obj) {
                             if (beneficiaries_mapped.includes(member_obj.member.id) === false) {
@@ -2441,16 +2444,24 @@ $(document).ready(function () {
             frm.dataForm['method'] = 2;
         }
 
-        console.log(frm.dataForm)
         if (can_submit) {
+            WindowControl.showLoading();
             $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
             .then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         $.fn.notifyB({description: "Successfully"}, 'success')
-                        $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1000);
                     }
+                    setTimeout(
+                        () => {
+                            WindowControl.hideLoading();
+                        },
+                        1000
+                    )
                 },
                 (errs) => {
                     // $.fn.notifyB({description: errs.data.errors}, 'failure');

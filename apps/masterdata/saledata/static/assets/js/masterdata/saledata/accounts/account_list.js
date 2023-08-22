@@ -11,13 +11,17 @@ $(document).ready(function () {
                 if (data && data.hasOwnProperty('account_list')) return data['account_list'];
             },
         },
+        fullToolbar: true,
+        autoWidth: false,
         columns: [
             {
+                width: "5%",
                 'render': (data, type, row, meta) => {
                     return ``;
                 }
             },
             {
+                width: "20%",
                 'data': 'name',
                 render: (data, type, row, meta) => {
                     let urlEditPage = $('#account-update-page').attr('data-url').format_url_with_uuid(row.id);
@@ -25,20 +29,22 @@ $(document).ready(function () {
                 }
             },
             {
+                width: "20%",
                 'data': 'account_type',
                 render: (data, type, row, meta) => {
                     let clsBadgeCurrent = -1;
                     let list_class_badge = ['badge-soft-danger', 'badge-soft-blue', 'badge-soft-primary', 'badge-soft-secondary']
                     let html = (row?.['account_type'] || []).map(
-                        (item)=>{
+                        (item) => {
                             clsBadgeCurrent += 1;
                             return `<span class="badge ${list_class_badge[clsBadgeCurrent]} mt-1 ml-1">${item}</span>`;
                         }
                     ).join("");
-                    return `<div class="row">${html}</div>`
+                    return html;
                 }
             },
             {
+                width: "10%",
                 'data': 'owner',
                 'render': (data, type, row, meta) => {
                     if (row.owner.fullname) {
@@ -49,34 +55,38 @@ $(document).ready(function () {
                 }
             },
             {
+                width: "10%",
                 'data': 'phone',
                 'render': (data, type, row, meta) => {
                     return `<span>${row?.phone ? row.phone : ''}</span>`
                 }
             },
             {
+                width: "10%",
                 'data': 'website',
                 'render': (data, type, row, meta) => {
                     return `<span>${row?.['website'] ? row['website'] : ''}</span>`
                 }
             },
             {
+                width: "25%",
                 'data': 'manager',
                 'render': (data, type, row, meta) => {
                     let element = ''
                     for (let i = 0; i < row.manager.length; i++) {
-                        element += `<span class="badge badge-soft-secondary mt-1 ml-1">` + row.manager[i].fullname + `</span>`;
+                        element += `<!-- <span class="badge badge-soft-success mt-1 ml-1">` + row.manager[i].fullname + `</span> -->`;
+                        element += `<span class="badge badge-soft-success mt-1 ml-1">` + row.manager[i].fullname + `</span>`;
                     }
-                    return `<div class="row">${element}</div>`
-                }
-            },
-            {
-                'className': 'action-center',
-                'render': (data, type, row, meta) => {
-                    // let bt2 = `<center><a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="#""><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
-                    // let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#""><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a></center>`;
-                    return '';
-                }
+                    // return `<div class="row">${element}</div>`;
+                    return element;
+                },
+                // colFilter: {
+                //     keyText: "full_name",
+                //     keyId: "id",
+                //     keyResp: "employee_list",
+                //     dataUrl: urlEmployeeList,
+                //     keyParam: "manager__contains",
+                // }
             },
         ],
     });

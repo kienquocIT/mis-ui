@@ -2,10 +2,6 @@ $(document).ready(function () {
     let shipping_address_id_dict = [];
     let billing_address_id_dict = [];
 
-    // $('#shipping-city').select2();
-    // $('#shipping-district').select2();
-    // $('#shipping-ward').select2();
-
     // load Cities SelectBox
     function loadCities() {
         $("#shipping-district option:selected").prop("selected", false);
@@ -739,23 +735,34 @@ $(document).ready(function () {
 
         frm.dataForm['system_status'] = 0; // save, not draft
 
-        $.fn.callAjax2({
-            'url': frm.dataUrl,
-            'method': frm.dataMethod,
-            'data': frm.dataForm
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    $.fn.notifyB({description: "Đang tạo account"}, 'success')
-                    $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
-                }
+        WindowControl.showLoading();
+        $.fn.callAjax2({url: frm.dataUrl, method:frm.dataMethod, data: frm.dataForm, urlRedirect: frm.dataUrlRedirect})
+            .then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: "Successfully"}, 'success')
+                        setTimeout(() => {
+                            window.location.replace($(this).attr('data-url-redirect'));
+                            location.reload.bind(location);
+                        }, 1000);
+                    }
+
+                },
+                (errs) => {
+                    setTimeout(
+                        () => {
+                            WindowControl.hideLoading();
+                        },
+                        1000
+                    )
+                    //$.fn.notifyB({description: errs.data.errors}, 'failure');
+                })
             },
-            (errs) => {
-                $.fn.notifyB({description: errs.data.errors}, 'failure');
-            }
-        )
-    });
+        (errs) => {
+            //$.fn.notifyB({description: errs.data.errors}, 'failure');
+        }
+    )
 
     // process address
     $('#select-box-address').on('change', function () {
@@ -883,7 +890,7 @@ $(document).ready(function () {
                 }
             },
             (errs) => {
-                $.fn.notifyB({description: errs.data.errors}, 'failure');
+                //$.fn.notifyB({description: errs.data.errors}, 'failure');
             })
     })
 
@@ -896,6 +903,7 @@ $(document).ready(function () {
             $('.check-select-all').prop('checked', false);
         }
     });
+
     $('#datatable-add-contact .check-select-all').on('click', function () {
         $('.check-select').attr('checked', true);
         let table = $('#datatable-add-contact').DataTable();
@@ -916,4 +924,4 @@ $(document).ready(function () {
             $('.check-select').prop('checked', false);
         }
     });
-});
+})

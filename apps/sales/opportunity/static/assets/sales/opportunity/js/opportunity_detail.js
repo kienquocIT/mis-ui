@@ -8,11 +8,6 @@ $(document).ready(function () {
     const contact_list = JSON.parse($('#contact_list').text());
     const opportunity_list = JSON.parse($('#opportunity_list').text());
     const employee_list = JSON.parse($('#employee_list').text());
-    const account_map_employees = JSON.parse($('#account_map_employees').text());
-
-    const opportunity_call_log_list = JSON.parse($('#opportunity_call_log_list').text());
-    const opportunity_email_list = JSON.parse($('#opportunity_email_list').text());
-    const opportunity_meeting_list = JSON.parse($('#opportunity_meeting_list').text());
 
     const config_is_select_stage = config.is_select_stage;
     const config_is_AM_create = config.is_account_manager_create;
@@ -1285,7 +1280,7 @@ $(document).ready(function () {
                     }
                 },
                 (errs) => {
-                    $.fn.notifyB({description: errs.data.errors}, 'failure');
+                    //$.fn.notifyB({description: errs.data.errors}, 'failure');
                 }
             )
     })
@@ -2590,7 +2585,7 @@ $(document).ready(function () {
                         } else if (row.type === 'meeting') {
                             txt = `<i class="bi bi-person-workspace"></i>`
                         } else if (row.type === 'document') {
-                            txt = `<i class="bi bi-telephone-fill"></i>`
+                            txt = `<i class="bi bi-file-earmark-fill"></i>`
                         }
                         return txt
                     }

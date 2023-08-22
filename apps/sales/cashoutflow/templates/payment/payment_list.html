@@ -6,21 +6,16 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <a class="btn btn-outline-primary btn-animated btn-xs"
-       href="{% url "PaymentCreate" %}"
-       data-bs-toggle="tooltip"
-       data-bs-placement="top"
-       title="{% trans 'Create Payment' %}"
-       id="create_payment_button"
-       data-bs-original-title="Add Payment">
-            <span class="icon">
-                <span class="feather-icon">
-                    <i data-feather="plus"></i>
-                </span>
-                <span class="font-3 ml-1">
-                    {% trans 'New' %}
+    <a href="{% url "PaymentCreate" %}">
+        <button id="btn-show-modal-create" class="btn btn-outline-primary" type="button" data-bs-toggle="modal"
+                data-bs-target="#modal-create-price-list">
+            <span>
+                <span>{% trans 'Add' %}</span>
+                <span class="icon">
+                    <i class="fa-solid fa-plus"></i>
                 </span>
             </span>
+        </button>
     </a>
 {% endblock %}
 {% block pageContent %}
@@ -31,6 +26,7 @@
                data-type-translate-approved="{% trans 'Approved' %}"
         >
             <thead>
+            <th>#</th>
             <th>{% trans "Code" %}</th>
             <th>{% trans "Name" %}
                 <i class="fas fa-info-circle icon-info"

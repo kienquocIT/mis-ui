@@ -294,7 +294,7 @@ class LogController {
                             let data = $.fn.switcherResp(resp);
                             if (data && $.fn.hasOwnProperties(data, ['diagram_data'])) {
                                 let diagram_data = data?.['diagram_data'];
-                                if (diagram_data){
+                                if (diagram_data) {
                                     let docTitle = diagram_data?.['doc_title'] || '';
                                     let stages = diagram_data?.['stages'] || [];
                                     txtTitle.text(docTitle ? docTitle : '').closest('.ntt-drawer-title-text').removeClass('hidden');
@@ -1890,7 +1890,21 @@ class DTBControl {
         return this.dataSelect
     }
 
-    static parseHeaderDropdownFilter(columns, settings, api) {
+    static __fillDefaultSelect2Filter(ele$) {
+        if (!$(ele$).attr('data-maximumSelectionLength')) {
+            $(ele$).attr('data-maximumSelectionLength', 5);
+        }
+        if (!$(ele$).attr('data-cache')) {
+            $(ele$).attr('data-cache', 'true');
+        }
+        if (!$(ele$).attr('data-allowClear')) {
+            $(ele$).attr('data-allowClear', 'true');
+        }
+        return $(ele$);
+    }
+
+    static parseHeaderDropdownFilter(columns, settings, tbl) {
+        let api = tbl.DataTable();
         let $thead = api.table().header();
         let hasColHeaderFilter = false;
         let rowColFilterEle = $(`<tr class="row-custom-filter"></tr>`);
@@ -1899,12 +1913,22 @@ class DTBControl {
                 let colFilter = item?.['colFilter'];
                 if (colFilter) {
                     hasColHeaderFilter = true;
+
+                    let attrTxt = '';
+                    Object.keys(colFilter).map(
+                        (key) => {
+                            if (key !== 'keyParam' && key !== 'dataUrl' && key !== 'keyResp') {
+                                attrTxt += ` data-${key}="${colFilter[key]}"`
+                            }
+                        }
+                    )
                     $(`<th>
-                        <select
+                         <select
                             class="select-custom-filter"
                             data-keyParam="${colFilter.keyParam}"
                             data-url="${colFilter.dataUrl}"
                             data-keyResp="${colFilter.keyResp}"
+                            ${attrTxt}
                             multiple
                         ></select>
                     </th>`).appendTo(rowColFilterEle);
@@ -1919,18 +1943,64 @@ class DTBControl {
         setTimeout(
             () => {
                 $($thead).find('select.select-custom-filter').each(function () {
-                    $(this).initSelect2({
-                        'maximumSelectionLength': 5,
-                        'cache': true,
-                    });
-                }).on(
-                    'select2:close', function () {
-                        api.table().ajax.reload();
-                    }
-                );
+                    DTBControl.__fillDefaultSelect2Filter($(this)).initSelect2();
+                }).on('select2:close', function () {
+                    api.table().ajax.reload();
+                }).on('select2:clear', function () {
+                    api.table().ajax.reload();
+                }).on('select2:unselect', function () {
+                    api.table().ajax.reload();
+                });
             },
             0
         );
+    }
+
+    // static parseFilter(dtb) {
+    //     let dtbInited = $(dtb).DataTable();
+    //
+    //     let rowCustomFilter = $(`div.row-custom-filter[data-dtb-id="#` + dtb.attr('id') + `"]`);
+    //
+    //     let dtbWrapper = $(dtb).closest('.dataTables_wrapper');
+    //     let dtbFilter = $(dtbWrapper).find('.dataTables_filter');
+    //     let dtbFilterInput = $(dtbFilter).find('input[type="search"]');
+    //
+    //     rowCustomFilter.each(function () {
+    //         $(this).find('select').each(function () {
+    //             DTBControl.__fillDefaultSelect2Filter($(this)).initSelect2();
+    //         }).on('select2:close', function () {
+    //             dtbInited.table().ajax.reload();
+    //         }).on('select2:clear', function () {
+    //             dtbInited.table().ajax.reload();
+    //         }).on('select2:unselect', function () {
+    //             dtbInited.table().ajax.reload();
+    //         });
+    //
+    //         let customFilterEle = $(this).find('.custom-filter-dtb');
+    //         if (dtbFilterInput && dtbFilterInput.length > 0 && customFilterEle && customFilterEle.length > 0) {
+    //             // dtbFilter.addClass('hidden');
+    //             $(this).find('.custom-filter-dtb').on('keyup', function () {
+    //                 $(dtbFilterInput).val($(this).val()).trigger('keyup');
+    //             });
+    //         } else {
+    //             customFilterEle.remove();
+    //         }
+    //     })
+    // }
+
+    static parseFilter2(dtb) {
+        let groupCustomEle = dtb.parent().find('.util-btn');
+        let filterEle = dtb.parent().find('.dataTables_filter');
+        groupCustomEle.html(`
+            <div class="h-100 d-flex justify-content-end align-items-center">
+                <button class="btn mt-1 mr-1">
+                    <span class="icon"><i class="fa-solid fa-list"></i></span>
+                </button>
+                <button class="btn mt-1 mr-1">
+                    <span class="icon"><i class="fa-regular fa-note-sticky"></i></span>
+                </button>
+            </div>
+        `)
     }
 
     static parseDomDtl(opts) {
@@ -1943,6 +2013,10 @@ class DTBControl {
             "<'row mt-3'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'p>>" +
             "<'row mt-3'<'col-sm-12'tr>>" +
             "<'row mt-3'<'col-sm-12 col-md-6'i>>";
+
+        // style 1
+        domDTL = `<'row ' <'col-6'f><'col-6 util-btn'>>` + 'rt' + `<'row' <'col-lg-6 col-md-12 d-flex cus-page-info'li><'col-lg-6 col-md-12'p>>`;
+
         let utilsDom = {
             // "l": Đại diện cho thanh điều hướng (paging) của DataTable.
             // "f": Đại diện cho hộp tìm kiếm (filtering) của DataTable.
@@ -1958,7 +2032,6 @@ class DTBControl {
             visibleOrder: stateDefaultPageControl,   // "r"
             visibleRowQuantity: stateDefaultPageControl,   // "s"
         }
-
         // show or hide search field
         if (opts.hasOwnProperty('visiblePaging')) {
             if ($.fn.isBoolean(opts['visiblePaging'])) utilsDom.visiblePaging = opts['visiblePaging'];
@@ -2090,19 +2163,22 @@ class DTBControl {
 
                         let keyKeepEmpty = [];
                         let customFilter = {};
-                        $(clsThis.dtb$).find('.row-custom-filter select').each(function () {
-                            let val = $(this).val();
-                            if (val) {
-                                if ((typeof val === "string" && val) || (Array.isArray(val) && val.length > 0)) {
-                                    customFilter[$(this).attr('data-keyParam')] = (!Array.isArray(val) ? [val] : val).join(",");
-                                }
-                            } else {
-                                if ($(this).attr('data-keepIdNullHasText') === 'true') {
-                                    customFilter[$(this).attr('data-keyParam')] = "";
-                                    keyKeepEmpty.push($(this).attr('data-keyParam'))
+
+                        $(`div.row-custom-filter[data-dtb-id="#` + clsThis.dtb$.attr('id') + `"]`).find('select').each(
+                            function () {
+                                let val = $(this).val();
+                                if (val) {
+                                    if ((typeof val === "string" && val) || (Array.isArray(val) && val.length > 0)) {
+                                        customFilter[$(this).attr('data-keyParam')] = (!Array.isArray(val) ? [val] : val).join(",");
+                                    }
+                                } else {
+                                    if ($(this).attr('data-keepIdNullHasText') === 'true') {
+                                        customFilter[$(this).attr('data-keyParam')] = "";
+                                        keyKeepEmpty.push($(this).attr('data-keyParam'))
+                                    }
                                 }
                             }
-                        });
+                        );
 
                         return DTBControl.cleanParamBeforeCall({
                             'page': Math.ceil(d.start / d.length) + 1,
@@ -2189,14 +2265,17 @@ class DTBControl {
     }
 
     get mergeInitComplete() {
+        let clsThis = this;
         let initCompleteManual = this.opts?.['initComplete'] || function (settings, json) {
         };
         return function (settings, json) {
             $(this.api().table().container()).find('input').attr('autocomplete', 'off');
             initCompleteManual(settings, json);
             DTBControl.parseHeaderDropdownFilter(
-                (this.opts?.['columns'] || []), settings, this.api()
+                (clsThis.opts?.['columns'] || []), settings, clsThis.dtb$
             );
+            // DTBControl.parseFilter(clsThis.dtb$);
+            DTBControl.parseFilter2(clsThis.dtb$);
         }
     }
 
@@ -2313,7 +2392,7 @@ class WindowControl {
         link.click();
     }
 
-    static getHashUrl(){
+    static getHashUrl() {
         return location.hash;
     }
 
@@ -2321,7 +2400,7 @@ class WindowControl {
         window.history.pushState(null, null, idHash.includes('#') ? idHash : '#' + idHash);
     }
 
-    static removeHashUrl(){
+    static removeHashUrl() {
         window.history.replaceState(null, "", "#");
     }
 
@@ -2333,25 +2412,34 @@ class WindowControl {
         }
     }
 
-    static showLoading() {
-        Swal.fire({
-            icon: 'info',
-            title: `${$.fn.transEle.attr('data-loading')}`,
-            text: `${$.fn.transEle.attr('data-wait')}...`,
-            allowOutsideClick: false,
-            showConfirmButton: false,
-            timerProgressBar: true,
-            didOpen: () => {
-                Swal.showLoading();
-            }
-        });
+    static showLoading(timeout = null) {
+        setTimeout(
+            () => {
+                Swal.fire({
+                    icon: 'info',
+                    title: `${$.fn.transEle.attr('data-loading')}`,
+                    text: `${$.fn.transEle.attr('data-wait')}...`,
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    timerProgressBar: true,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+            },
+            Number.isInteger(timeout) ? timeout : 0
+        )
     }
 
-    static hideLoading() {
-        setTimeout(() => {
-            Swal.hideLoading();
-            swal.close();
-        }, 250,)
+    static hideLoading(timeout = null) {
+        console.log('call hide loading...');
+        setTimeout(
+            () => {
+                Swal.hideLoading();
+                swal.close();
+            },
+            Number.isInteger(timeout) ? timeout : 250,
+        )
     }
 
     static showLoadingButton(ele$, opts) {

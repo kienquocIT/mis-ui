@@ -198,7 +198,7 @@ class QuotationLoadDataHandle {
     }
 
     static loadInitQuotationProduct() {
-        let ele = $('#data-init-quotation-create-tables-product');
+        let ele = QuotationDataTableHandle.productInitEle;
         let url = ele.attr('data-url');
         let method = ele.attr('data-method');
         $.fn.callAjax2({
@@ -322,7 +322,7 @@ class QuotationLoadDataHandle {
     };
 
     static loadBoxQuotationProductPurchasing(box_id, valueToSelect = null) {
-        let ele = $('#data-init-quotation-create-tables-product');
+        let ele = QuotationDataTableHandle.productInitEle;
         let jqueryId = '#' + box_id;
         let eleBox = $(jqueryId);
         let url = ele.attr('data-url');
@@ -916,9 +916,7 @@ class QuotationDataTableHandle {
             paging: false,
             ordering: false,
             info: false,
-            drawCallback: function (row, data) {
-                // render icon after table callback
-                feather.replace();
+            drawCallback: function () {
             },
             rowCallback: function (row, data, index) {
             },
@@ -1165,6 +1163,12 @@ class QuotationDataTableHandle {
                                     data-return-type="number"
                                     hidden
                                 >
+                                <input
+                                    type="text"
+                                    class="form-control table-row-discount-amount-raw"
+                                    value="0"
+                                    hidden
+                                >
                             </div>`;
                         } else {
                             return `<div class="row">
@@ -1178,6 +1182,12 @@ class QuotationDataTableHandle {
                                     type="text"
                                     class="form-control mask-money table-row-discount-amount"
                                     data-return-type="number"
+                                    hidden
+                                >
+                                <input
+                                    type="text"
+                                    class="form-control table-row-discount-amount-raw"
+                                    value="0"
                                     hidden
                                 >
                             </div>`;
@@ -1275,9 +1285,7 @@ class QuotationDataTableHandle {
             ordering: false,
             info: false,
             columnDefs: [],
-            drawCallback: function (row, data) {
-                // render icon after table callback
-                feather.replace();
+            drawCallback: function () {
             },
             rowCallback: function (row, data) {
             },
@@ -1407,12 +1415,6 @@ class QuotationDataTableHandle {
                     width: "10%",
                     render: (data, type, row) => {
                         let selectTaxID = 'quotation-create-cost-box-tax-' + String(row.order);
-                        let taxID = "";
-                        let taxRate = "";
-                        if (row.tax) {
-                            taxID = row.tax.id;
-                            taxRate = row.tax.value;
-                        }
                         if (row.is_shipping === false) {
                             return `<div class="row">
                                 <select 
@@ -1502,9 +1504,7 @@ class QuotationDataTableHandle {
             ordering: false,
             info: false,
             columnDefs: [],
-            drawCallback: function (row, data) {
-                // render icon after table callback
-                feather.replace();
+            drawCallback: function () {
                 $.fn.initMaskMoney2();
             },
             rowCallback: function (row, data) {
@@ -1643,12 +1643,6 @@ class QuotationDataTableHandle {
                     width: "10%",
                     render: (data, type, row) => {
                         let selectTaxID = 'quotation-create-expense-box-tax-' + String(row.order);
-                        let taxID = "";
-                        let taxRate = "";
-                        if (row.tax) {
-                            taxID = row.tax.id;
-                            taxRate = row.tax.value
-                        }
                         return `<div class="row">
                                 <select 
                                     class="form-select table-row-tax"
@@ -1710,9 +1704,7 @@ class QuotationDataTableHandle {
             ordering: false,
             info: false,
             columnDefs: [],
-            drawCallback: function (row, data) {
-                // render icon after table callback
-                feather.replace();
+            drawCallback: function () {
             },
             rowCallback: function (row, data) {
             },
@@ -1820,16 +1812,14 @@ class QuotationDataTableHandle {
             ordering: false,
             info: false,
             columnDefs: [],
-            drawCallback: function (row, data) {
-                // render icon after table callback
-                feather.replace();
+            drawCallback: function () {
             },
             rowCallback: function (row, data) {
             },
             columns: [
                 {
                     targets: 0,
-                    render: (data, type, row, meta) => {
+                    render: (data, type, row) => {
                         return `<div class="form-check">
                                     <input 
                                         type="checkbox"
@@ -1865,9 +1855,7 @@ class QuotationDataTableHandle {
             ordering: false,
             info: false,
             columnDefs: [],
-            drawCallback: function (row, data) {
-                // render icon after table callback
-                feather.replace();
+            drawCallback: function () {
             },
             rowCallback: function (row, data) {
             },
@@ -1880,7 +1868,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 1,
-                    render: (data, type, row, meta) => {
+                    render: (data, type, row) => {
                         return `<div class="form-check">
                                     <input 
                                         type="checkbox"
@@ -1922,9 +1910,7 @@ class QuotationDataTableHandle {
             ordering: false,
             info: false,
             columnDefs: [],
-            drawCallback: function (row, data) {
-                // render icon after table callback
-                feather.replace();
+            drawCallback: function () {
                 $.fn.initMaskMoney2();
             },
             rowCallback: function (row, data) {
@@ -2011,6 +1997,7 @@ class QuotationDataTableHandle {
 // Calculate
 class QuotationCalculateCaseHandle {
     static updateTotal(table, is_product, is_cost, is_expense) {
+        let form = document.getElementById('frm_quotation_create');
         let pretaxAmount = 0;
         let discountAmount = 0;
         let taxAmount = 0;
@@ -2087,15 +2074,28 @@ class QuotationCalculateCaseHandle {
                         }
                     }
                 }
+                //
+                let eleRowDiscountAmountRaw = row.querySelector('.table-row-discount-amount-raw');
+                let eleRowQuantity = row.querySelector('.table-row-quantity');
+                if (eleRowDiscountAmountRaw && eleRowQuantity) {
+                    discountAmount += (parseFloat(eleRowDiscountAmountRaw.value) * parseFloat(eleRowQuantity.value));
+                }
             }
             let discount_on_total = 0;
             let discountTotalRate = $('#quotation-create-product-discount').val();
             if (discountTotalRate && eleDiscount) {
-                discount_on_total = parseFloat(discountTotalRate);
-                discountAmount = ((pretaxAmount * discount_on_total) / 100)
-                // check if shipping fee then minus before calculate discount
-                if (shippingFee > 0) {
-                    discountAmount = (((pretaxAmount - shippingFee) * discount_on_total) / 100)
+                if (!form.classList.contains('sale-order')) {
+                    discount_on_total = parseFloat(discountTotalRate);
+                    discountAmount = ((pretaxAmount * discount_on_total) / 100)
+                    // check if shipping fee then minus before calculate discount
+                    if (shippingFee > 0) {
+                        discountAmount = (((pretaxAmount - shippingFee) * discount_on_total) / 100)
+                    }
+                } else {
+                    if (pretaxAmount > 0) {
+                        discount_on_total = ((discountAmount / pretaxAmount) * 100);
+                        document.getElementById('quotation-create-product-discount').value = discount_on_total;
+                    }
                 }
             }
             let totalFinal = (pretaxAmount - discountAmount + taxAmount);
@@ -2119,6 +2119,7 @@ class QuotationCalculateCaseHandle {
     };
 
     static calculate(row) {
+        let form = document.getElementById('frm_quotation_create');
         let price = 0;
         let quantity = 0;
         let elePrice = row.querySelector('.table-row-price');
@@ -2151,6 +2152,7 @@ class QuotationCalculateCaseHandle {
         // calculate discount + tax
         let eleDiscount = row.querySelector('.table-row-discount');
         let eleDiscountAmount = row.querySelector('.table-row-discount-amount');
+        let eleDiscountAmountRaw = row.querySelector('.table-row-discount-amount-raw');
         if (eleDiscount && eleDiscountAmount) {
             if (eleDiscount.value) {
                 discount = parseFloat(eleDiscount.value)
@@ -2165,18 +2167,38 @@ class QuotationCalculateCaseHandle {
 
             let discountAmount = ((price * discount) / 100);
             let priceDiscountOnRow = (price - discountAmount);
-            subtotal = (priceDiscountOnRow * quantity);
+            if (!form.classList.contains('sale-order')) {
+               subtotal = (priceDiscountOnRow * quantity);
+            }
 
             let discountAmountOnTotal = ((priceDiscountOnRow * discount_on_total) / 100);
             subtotalPlus = ((priceDiscountOnRow - discountAmountOnTotal) * quantity);
             // calculate tax
             if (eleTaxAmount) {
-                let taxAmount = ((subtotalPlus * tax) / 100);
-                $(eleTaxAmount).attr('value', String(taxAmount));
-                eleTaxAmountRaw.value = taxAmount;
+                if (!form.classList.contains('sale-order')) {
+                    let taxAmount = ((subtotalPlus * tax) / 100);
+                    $(eleTaxAmount).attr('value', String(taxAmount));
+                    eleTaxAmountRaw.value = taxAmount;
+                } else {
+                    let taxAmount = ((subtotal * tax) / 100);
+                    $(eleTaxAmount).attr('value', String(taxAmount));
+                    eleTaxAmountRaw.value = taxAmount;
+                }
             }
-            // eleDiscountAmount.value = discountAmountOnTotal;
-            $(eleDiscountAmount).attr('value', String(discountAmountOnTotal));
+            // store discount amount
+            if (!form.classList.contains('sale-order')) {
+                if (discountAmountOnTotal > 0) {
+                    $(eleDiscountAmount).attr('value', String(discountAmountOnTotal));
+                    eleDiscountAmountRaw.value = discountAmountOnTotal;
+                } else {
+                    $(eleDiscountAmount).attr('value', String(discountAmount));
+                    eleDiscountAmountRaw.value = discountAmount;
+                }
+            } else {
+                $(eleDiscountAmount).attr('value', String(discountAmount));
+                eleDiscountAmountRaw.value = discountAmount;
+            }
+
         } else {
             // calculate tax no discount on total
             if (eleTaxAmount) {
@@ -2224,9 +2246,10 @@ class QuotationCalculateCaseHandle {
 class QuotationCheckConfigHandle {
     static checkConfig(is_change_opp = false, new_row = null, is_first_time = false, is_has_opp_detail = false, is_copy = false) {
         let self = this;
+        let form = document.getElementById('frm_quotation_create');
         let configRaw = $('#quotation-config-data').val();
         if (configRaw) {
-            let opportunity = $('#select-box-quotation-create-opportunity').val();
+            let opportunity = QuotationLoadDataHandle.opportunitySelectEle.val();
             let config = JSON.parse(configRaw);
             let tableProduct = document.getElementById('datable-quotation-create-product');
             let empty_list = ["", null];
@@ -2246,16 +2269,18 @@ class QuotationCheckConfigHandle {
                             }
                         }
                     }
-                    let eleDiscountTotal = document.getElementById('quotation-create-product-discount');
-                    if (config.short_sale_config.is_discount_on_total === false) {
-                        eleDiscountTotal.setAttribute('disabled', 'true');
-                        eleDiscountTotal.classList.add('disabled-custom-show');
-                        eleDiscountTotal.value = "0";
-                        is_make_price_change = true;
-                    } else {
-                        if (eleDiscountTotal.hasAttribute('disabled')) {
-                            eleDiscountTotal.removeAttribute('disabled');
-                            eleDiscountTotal.classList.remove('disabled-custom-show');
+                    if (!form.classList.contains('sale-order')) {
+                        let eleDiscountTotal = document.getElementById('quotation-create-product-discount');
+                        if (config.short_sale_config.is_discount_on_total === false) {
+                            eleDiscountTotal.setAttribute('disabled', 'true');
+                            eleDiscountTotal.classList.add('disabled-custom-show');
+                            eleDiscountTotal.value = "0";
+                            is_make_price_change = true;
+                        } else {
+                            if (eleDiscountTotal.hasAttribute('disabled')) {
+                                eleDiscountTotal.removeAttribute('disabled');
+                                eleDiscountTotal.classList.remove('disabled-custom-show');
+                            }
                         }
                     }
                     // ReCalculate Total
@@ -2294,17 +2319,19 @@ class QuotationCheckConfigHandle {
                             }
                         }
                     }
-                    let eleDiscountTotal = document.getElementById('quotation-create-product-discount');
-                    if (config.long_sale_config.is_not_discount_on_total === false) {
-                        if (eleDiscountTotal.hasAttribute('disabled')) {
-                            eleDiscountTotal.removeAttribute('disabled');
-                            eleDiscountTotal.classList.remove('disabled-custom-show');
+                    if (!form.classList.contains('sale-order')) {
+                        let eleDiscountTotal = document.getElementById('quotation-create-product-discount');
+                        if (config.long_sale_config.is_not_discount_on_total === false) {
+                            if (eleDiscountTotal.hasAttribute('disabled')) {
+                                eleDiscountTotal.removeAttribute('disabled');
+                                eleDiscountTotal.classList.remove('disabled-custom-show');
+                            }
+                        } else {
+                            eleDiscountTotal.setAttribute('disabled', 'true');
+                            eleDiscountTotal.classList.add('disabled-custom-show');
+                            eleDiscountTotal.value = "0";
+                            is_make_price_change = true;
                         }
-                    } else {
-                        eleDiscountTotal.setAttribute('disabled', 'true');
-                        eleDiscountTotal.classList.add('disabled-custom-show');
-                        eleDiscountTotal.value = "0";
-                        is_make_price_change = true;
                     }
                     // ReCalculate Total
                     if (is_first_time === false && is_copy === false) {

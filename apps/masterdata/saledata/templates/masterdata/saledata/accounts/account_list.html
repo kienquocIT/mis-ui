@@ -18,45 +18,46 @@
     </a>
 {% endblock %}
 {% block pageContent %}
-{#    <div class="row row-custom-filter" data-dtb-id="#datatable_account_list">#}
-{#        <div class="col-12 col-xs-6 col-md-4 col-lg-2">#}
-{#            {% include 'extends/dtb/filter.html' %}#}
-{#        </div>#}
-{#        <div class="col-12 col-xs-6 col-md-4 col-lg-2">#}
-{#            <div class="form-group">#}
-{#                <label for="searchAdvanceManager">{% trans 'Filter Manager By Group' %}</label>#}
-{#                <select#}
-{#                        class="select-custom-filter form-select"#}
-{#                        id="searchAdvanceManager"#}
-{#                        data-keyParam="has_manager_custom"#}
-{#                >#}
-{#                    <option value="all">{% trans 'All' %}</option>#}
-{#                    <option value="me" selected>{% trans 'Of Me' %}</option>#}
-{#                    <option value="same">{% trans 'Of Same Group' %}</option>#}
-{#                    <option value="staff">{% trans 'Of My Staff' %}</option>#}
-{#                </select>#}
-{#            </div>#}
-{#        </div>#}
-{#        <div class="col-12 col-xs-6 col-md-4 col-lg-2">#}
-{#            <div class="form-group">#}
-{#                <label for="searchManager">{% trans 'Account Manager' %}</label>#}
-{#                <select#}
-{#                        class="select-custom-filter form-select"#}
-{#                        id="searchManager" data-url="{% url 'EmployeeListAPI' %}"#}
-{#                        data-keyResp="employee_list" data-keyText="full_name"#}
-{#                        data-keyParam="manager__contains"#}
-{#                        multiple#}
-{#                ></select>#}
-{#            </div>#}
-{#        </div>#}
-{#        <div class="col-12 col-xs-6 col-md-4 col-lg-2">#}
-{#        </div>#}
-{#        <div class="col-12 col-xs-6 col-md-4 col-lg-2">#}
-{#        </div>#}
-{#        <div class="col-12 col-xs-6 col-md-4 col-lg-2">#}
-{#            {% include 'extends/dtb/toolbar.html' %}#}
-{#        </div>#}
-{#    </div>#}
+    {#    <div class="row row-custom-filter" data-dtb-id="#datatable_account_list">#}
+    {#        <div class="col-12 col-xs-6 col-md-4 col-lg-2">#}
+    {#            {% include 'extends/dtb/filter.html' %}#}
+    {#        </div>#}
+    {#        <div class="col-12 col-xs-6 col-md-4 col-lg-2">#}
+    {#            <div class="form-group">#}
+    {#                <label for="searchAdvanceManager">{% trans 'Filter Manager By Group' %}</label>#}
+    {#                <select#}
+    {#                        class="select-custom-filter form-select"#}
+    {#                        id="searchAdvanceManager"#}
+    {#                        data-keyParam="has_manager_custom"#}
+    {#                >#}
+    {#                    <option value="all">{% trans 'All' %}</option>#}
+    {#                    <option value="me" selected>{% trans 'Of Me' %}</option>#}
+    {#                    <option value="same">{% trans 'Of Same Group' %}</option>#}
+    {#                    <option value="staff">{% trans 'Of My Staff' %}</option>#}
+    {#                </select>#}
+    {#            </div>#}
+    {#        </div>#}
+    {#        <div class="col-12 col-xs-6 col-md-4 col-lg-2">#}
+    {#            <div class="form-group">#}
+    {#                <label for="searchManager">{% trans 'Account Manager' %}</label>#}
+    {#                <select#}
+    {#                        class="select-custom-filter form-select"#}
+    {#                        id="searchManager" data-url="{% url 'EmployeeListAPI' %}"#}
+    {#                        data-keyResp="employee_list" data-keyText="full_name"#}
+    {#                        data-keyParam="manager__contains"#}
+    {#                        multiple#}
+    {#                ></select>#}
+    {#            </div>#}
+    {#        </div>#}
+    {#        <div class="col-12 col-xs-6 col-md-4 col-lg-2">#}
+    {#        </div>#}
+    {#        <div class="col-12 col-xs-6 col-md-4 col-lg-2">#}
+    {#        </div>#}
+    {#        <div class="col-12 col-xs-6 col-md-4 col-lg-2">#}
+    {#            {% include 'extends/dtb/toolbar.html' %}#}
+    {#        </div>#}
+    {#    </div>#}
+
     <table
             id="datatable_account_list" class="table nowrap w-100"
             data-url="{% url "AccountListAPI" %}" data-method="GET"
@@ -75,10 +76,16 @@
         </thead>
     </table>
 
-    <input
+    <br
             type="hidden"
             id="account-update-page"
             data-url="{% url 'AccountDetail' 1 %}"
+            data-msg-by-group="{% trans 'By Group' %}"
+            data-msg-of-me="{% trans 'Of Me' %}"
+            data-msg-of-group="{% trans 'Of Same Group' %}"
+            data-msg-of-staff="{% trans 'Of My Staff' %}"
+            data-msg-of-all="{% trans 'All' %}"
+            data-msg-filter-manager="{% trans 'Account Manager' %}"
     >
 {% endblock %}
 {% block jsFooter %}

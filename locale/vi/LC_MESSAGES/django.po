@@ -3932,7 +3932,7 @@ msgid "Open a new tab"
 msgstr "Mở với tab mới"
 
 #
-msgid "Filter Manager By Group"
+msgid "By Group"
 msgstr "Theo nhóm"
 
 #
@@ -3946,3 +3946,11 @@ msgstr "Cùng phòng ban của tôi"
 #
 msgid "Of My Staff"
 msgstr "Nhân viên của tôi"
+
+#
+msgid "Ascending"
+msgstr "Tăng dần"
+
+#
+msgid "Descending"
+msgstr "Giảm dần"

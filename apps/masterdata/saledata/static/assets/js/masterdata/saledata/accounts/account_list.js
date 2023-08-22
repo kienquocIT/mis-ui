@@ -1,5 +1,7 @@
 $(document).ready(function () {
+    let msgData = $("#account-update-page");
     let tbl = $('#datatable_account_list');
+    let urlEmployeeList = tbl.attr('data-url-employee')
     tbl.DataTableDefault({
         rowIdx: true,
         useDataServer: true,
@@ -13,6 +15,40 @@ $(document).ready(function () {
         },
         fullToolbar: true,
         autoWidth: false,
+        cusFilter: [
+            {
+                keyParam: "has_manager_custom",
+                placeholder: msgData.attr('data-msg-by-group'),
+                data: [
+                    {
+                        'id': 'all',
+                        'text': msgData.attr('data-msg-of-all'),
+                    },
+                    {
+                        'id': 'me',
+                        'text': msgData.attr('data-msg-of-me'),
+                        'allowClear': true,
+                        selected: true,
+                    },
+                    {
+                        'id': 'same',
+                        'text': msgData.attr('data-msg-of-group'),
+                    },
+                    {
+                        'id': 'staff',
+                        'text': msgData.attr('data-msg-of-staff'),
+                    },
+                ]
+            },
+            {
+                dataUrl: urlEmployeeList,
+                keyResp: 'employee_list',
+                keyText: 'full_name',
+                keyParam: "manager__contains",
+                placeholder: msgData.attr('data-msg-filter-manager'),
+                multiple: true,
+            },
+        ],
         columns: [
             {
                 width: "5%",
@@ -21,10 +57,11 @@ $(document).ready(function () {
                 }
             },
             {
+                orderable: true,
                 width: "20%",
                 'data': 'name',
                 render: (data, type, row, meta) => {
-                    let urlEditPage = $('#account-update-page').attr('data-url').format_url_with_uuid(row.id);
+                    let urlEditPage = msgData.attr('data-url').format_url_with_uuid(row.id);
                     return `<a href="${urlEditPage}"><span><b>` + row.name + `</b></span></a>`
                 }
             },
@@ -34,13 +71,12 @@ $(document).ready(function () {
                 render: (data, type, row, meta) => {
                     let clsBadgeCurrent = -1;
                     let list_class_badge = ['badge-soft-danger', 'badge-soft-blue', 'badge-soft-primary', 'badge-soft-secondary']
-                    let html = (row?.['account_type'] || []).map(
+                    return (row?.['account_type'] || []).map(
                         (item) => {
                             clsBadgeCurrent += 1;
                             return `<span class="badge ${list_class_badge[clsBadgeCurrent]} mt-1 ml-1">${item}</span>`;
                         }
                     ).join("");
-                    return html;
                 }
             },
             {
@@ -49,9 +85,8 @@ $(document).ready(function () {
                 'render': (data, type, row, meta) => {
                     if (row.owner.fullname) {
                         return `<div class="row"><center><span style="width: 100%" class="badge badge-soft-orange">` + row.owner.fullname + `</span></center></div>`
-                    } else {
-                        return ``
                     }
+                    return ``;
                 }
             },
             {
@@ -80,13 +115,6 @@ $(document).ready(function () {
                     // return `<div class="row">${element}</div>`;
                     return element;
                 },
-                // colFilter: {
-                //     keyText: "full_name",
-                //     keyId: "id",
-                //     keyResp: "employee_list",
-                //     dataUrl: urlEmployeeList,
-                //     keyParam: "manager__contains",
-                // }
             },
         ],
     });

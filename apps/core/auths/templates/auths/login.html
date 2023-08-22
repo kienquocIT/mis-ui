@@ -40,7 +40,7 @@
                         <div class="auth-content py-8">
                             <form
                                     class="w-100" id="form-login" data-url="" data-url-redirect="" data-method="POST"
-                                    method="POST"
+                                    autocomplete="off"
                             >
                                 <div class="row">
                                     <div class="col-lg-5 col-md-7 col-sm-10 mx-auto">
@@ -185,16 +185,22 @@
     <!-- /spinner loading -->
     <div class="hidden">
         <span id="flagNotifyKey" data-value={{ is_notify_key }}></span>
-        <span id="errLoginIncorrect" data-value="{% trans 'The username or password is incorrect' %}" data-captcha-require="{% trans 'Please solve the captcha.' %}"></span>
+        <span
+                id="errLoginIncorrect" data-value="{% trans 'The username or password is incorrect' %}"
+                data-captcha-require="{% trans 'Please solve the captcha.' %}"
+        ></span>
     </div>
 </div>
 <!-- /Wrapper -->
 
 <script type="text/javascript">
+    let ggCaptChaEnabled = "{{ captcha_enabled }}";
     var onloadCallback = function () {
-        grecaptcha.render('recapcha', {
-            'sitekey': '{{ secret_key_gg }}'
-        });
+        if (ggCaptChaEnabled === 'True') {
+            grecaptcha.render('recapcha', {
+                'sitekey': '{{ secret_key_gg }}'
+            });
+        }
     };
 </script>
 <script
@@ -394,18 +400,43 @@
             $('#form-login').submit(function (event) {
                 event.preventDefault();
 
-                let response = grecaptcha.getResponse();
-                if (response) {
+                let state = false;
+                if (ggCaptChaEnabled === 'True') {
+                    let response = grecaptcha.getResponse();
+                    if (!response) {
+                        $.fn.notifyBLogin({
+                            'description': $('#errLoginIncorrect').attr('data-captcha-require')
+                        }, 'failure');
+                        return false;
+                    } else {
+                        state = true;
+                    }
+                } else {
+                    state = true;
+                }
+
+                if (state) {
                     $.fn.showLoadingLogin();
                     let frm = new SetupFormSubmitLogin($(this));
                     console.log(frm.dataForm);
-                    if (frm.dataUrl && frm.dataMethod && frm.dataForm['g-recaptcha-response']) {
+                    if (frm.dataUrl && frm.dataMethod) {
+                        if (ggCaptChaEnabled === 'True' && !frm.dataForm['g-recaptcha-response']) {
+                            $.fn.notifyBLogin({
+                                'description': $('#errLoginIncorrect').attr('data-captcha-require')
+                            }, 'failure');
+                            setTimeout(
+                                () => {
+                                    $.fn.hideLoadingLogin();
+                                }, 2000
+                            )
+                            return false;
+                        }
                         $.fn.callAjaxLogin(
                             frm.dataUrl,
                             frm.dataMethod,
                             {
                                 ...frm.dataForm,
-                                'g_recaptcha_response': frm.dataForm['g-recaptcha-response']
+                                'g_recaptcha_response': frm.dataForm?.['g-recaptcha-response'] || ''
                             }
                         ).then(
                             (resp) => {
@@ -434,10 +465,6 @@
                             }
                         )
                     } else throw 'Setup call raise exception with URL or method is incorrect.!';
-                } else {
-                    $.fn.notifyBLogin({
-                        'description': $('#errLoginIncorrect').attr('data-captcha-require')
-                    }, 'failure')
                 }
             })
 

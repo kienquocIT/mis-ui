@@ -83,7 +83,11 @@ class AuthLogin(APIView):
         request.session.flush()
         request.user = AnonymousUser
         return render(
-            request, 'auths/login.html', {'is_notify_key': False, 'secret_key_gg': settings.GG_RECAPTCHA_CLIENT_KEY}
+            request, 'auths/login.html', {
+                'is_notify_key': False,
+                'captcha_enabled': settings.GG_RECAPTCHA_ENABLED,
+                'secret_key_gg': settings.GG_RECAPTCHA_CLIENT_KEY if settings.GG_RECAPTCHA_ENABLED else None
+            }
         )
 
     @mask_view(

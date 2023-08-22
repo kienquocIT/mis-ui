@@ -127,6 +127,7 @@
                                                         >{% trans 'Keep me logged in' %}</label>
                                                     </div>
                                                 </div>
+                                                <div id="recapcha"></div>
                                                 <input
                                                         type="submit" class="btn btn-primary btn-uppercase btn-block"
                                                         value="{% trans 'Login' %}" tabindex="4"
@@ -187,8 +188,22 @@
 <!-- /Wrapper -->
 
 {% compress js %}
+    <script type="text/javascript">
+        var onloadCallback = function () {
+            grecaptcha.render('recapcha', {
+                'sitekey': 'AIzaSyCy2Xbmxa7jc0HCALRVigB97rM6xCweBfY'
+            });
+        };
+    </script>
+    <script
+            src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit"
+            async defer
+    >
+    </script>
+
     <!-- jQuery -->
     <script src="{% static 'vendors/jquery/dist/jquery.min.js' %}"></script>
+    <script src="{% static 'vendors/jquery-validate/jquery.validate.min.js' %}"></script>
 
     <!-- Bootstrap Core JS -->
     <script src="{% static 'vendors/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
@@ -373,38 +388,40 @@
     <!-- Custom JS -->
     <script>
         $(document).ready(function () {
-            $('#form-login').submit(function (event) {
-                event.preventDefault();
-                $.fn.showLoadingLogin();
-                let frm = new SetupFormSubmitLogin($(this));
-                if (frm.dataUrl && frm.dataMethod) {
-                    $.fn.callAjaxLogin(frm.dataUrl, frm.dataMethod, frm.dataForm).then(
-                        (resp) => {
-                            let data = resp.data;
-                            if (data.status === 200) {
-                                localStorage.setItem('tenant_code', frm.dataForm['tenant_code']);
-                                $.fn.notifyBLogin({description: data.detail}, 'success');
-                                let path_redirect = "/";
-                                const params = Object.fromEntries(new URLSearchParams(location.search));
-                                if (params.next) {
-                                    path_redirect = params.next;
+            $('#form-login').validate({
+                submitHandler: function (event) {
+                    event.preventDefault();
+                    $.fn.showLoadingLogin();
+                    let frm = new SetupFormSubmitLogin($(this));
+                    if (frm.dataUrl && frm.dataMethod) {
+                        $.fn.callAjaxLogin(frm.dataUrl, frm.dataMethod, frm.dataForm).then(
+                            (resp) => {
+                                let data = resp.data;
+                                if (data.status === 200) {
+                                    localStorage.setItem('tenant_code', frm.dataForm['tenant_code']);
+                                    $.fn.notifyBLogin({description: data.detail}, 'success');
+                                    let path_redirect = "/";
+                                    const params = Object.fromEntries(new URLSearchParams(location.search));
+                                    if (params.next) {
+                                        path_redirect = params.next;
+                                    }
+                                    $.fn.redirectUrlLogin(path_redirect, 800);
                                 }
-                                $.fn.redirectUrlLogin(path_redirect, 800);
+                                setTimeout(
+                                    () => {
+                                        $.fn.hideLoadingLogin();
+                                    }, 2000
+                                )
+                            },
+                            (err) => {
+                                $.fn.notifyBLogin({
+                                    'description': $('#errLoginIncorrect').attr('data-value')
+                                }, 'failure')
+                                $.fn.hideLoadingLogin();
                             }
-                            setTimeout(
-                                () => {
-                                    $.fn.hideLoadingLogin();
-                                }, 2000
-                            )
-                        },
-                        (err) => {
-                            $.fn.notifyBLogin({
-                                'description': $('#errLoginIncorrect').attr('data-value')
-                            }, 'failure')
-                            $.fn.hideLoadingLogin();
-                        }
-                    )
-                } else throw 'Setup call raise exception with URL or method is incorrect.!';
+                        )
+                    } else throw 'Setup call raise exception with URL or method is incorrect.!';
+                }
             });
 
             function loadTenantList() {

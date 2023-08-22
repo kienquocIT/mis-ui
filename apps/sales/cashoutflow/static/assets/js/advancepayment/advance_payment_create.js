@@ -1,4 +1,24 @@
 $(document).ready(function () {
+    const sale_order_list = JSON.parse($('#sale_order_list').text());
+    const quotation_list = JSON.parse($('#quotation_list').text());
+    const opportunity_list = JSON.parse($('#opportunity_list').text());
+
+    const urlParams = new URLSearchParams(window.location.search);
+    let param = urlParams.get('opportunity');
+    const sale_code_mapped_parameter = param;
+    const sale_order = sale_order_list.filter(function(element) {return element.id === sale_code_mapped_parameter;});
+    const quotation = quotation_list.filter(function(element) {return element.id === sale_code_mapped_parameter;});
+    console.log(opportunity_list)
+    const opportunity = opportunity_list.filter(function(element) {return element.id === sale_code_mapped_parameter;});
+    let sale_code_default_obj = [];
+    let sale_code_default_type = -1;
+    if (sale_order.length > 0) {sale_code_default_obj = sale_order; sale_code_default_type = 0;}
+    if (quotation.length > 0) {sale_code_default_obj = quotation; sale_code_default_type = 1;}
+    if (opportunity.length > 0) {sale_code_default_obj = opportunity; sale_code_default_type = 2;}
+
+    console.log(sale_code_default_obj)
+    console.log(sale_code_default_type)
+
     let payment_cost_items_filtered = [];
     let advance_payment_product_items = [];
 
@@ -8,10 +28,7 @@ $(document).ready(function () {
     const account_list = JSON.parse($('#account_list').text());
     const employee_list = JSON.parse($('#employee_list').text());
     const ap_list = JSON.parse($('#advance_payment_list').text());
-    const quotation_list = JSON.parse($('#quotation_list').text());
-    const sale_order_list = JSON.parse($('#sale_order_list').text());
     const unit_of_measure = JSON.parse($('#unit_of_measure').text());
-    const opportunity_list = JSON.parse($('#opportunity_list').text());
     const payment_cost_items_list = JSON.parse($('#payment_cost_items_list').text());
     const account_bank_accounts_information_dict = account_list.reduce((obj, item) => {
         obj[item.id] = item.bank_accounts_information;
@@ -496,7 +513,7 @@ $(document).ready(function () {
                 if (Object.keys(item.opportunity).length !== 0) {
                     if (item.opportunity.is_close === false) {
                         oppcode_loaded.push(item.opportunity.id);
-                        ele.append(`<option class="dropdown-item" href="#" data-bs-toggle="tooltip" data-bs-placement="right" title="` + item.opportunity.code + `: ` + item.opportunity.title + `" data-sale-code="` + item.opportunity.code + `" data-type="1" data-sale-code-id="` + item.id + `" value="` + item.code + `">` + item.title + `</option>`);
+                        ele.append(`<option class="dropdown-item" href="#" data-bs-toggle="tooltip" data-bs-placement="right" title="` + item.opportunity.code + `: ` + item.opportunity.title + `" data-opp-id="` + item.opportunity.id + `" data-sale-code="` + item.opportunity.code + `" data-type="1" data-sale-code-id="` + item.id + `" value="` + item.code + `">` + item.title + `</option>`);
                         added = true;
                     }
                 }
@@ -510,7 +527,7 @@ $(document).ready(function () {
                     $.each(item.opportunity.opportunity_sale_team_datas, function (index, member_obj) {
                         if (member_obj.member.id === beneficiary && item.opportunity.is_close === false) {
                             oppcode_loaded.push(item.opportunity.id);
-                            ele.append(`<option class="dropdown-item" href="#" data-bs-toggle="tooltip" data-bs-placement="right" title="` + item.opportunity.code + `: ` + item.opportunity.title + `" data-sale-code="` + item.opportunity.code + `" data-type="1" data-sale-code-id="` + item.id + `" value="` + item.code + `">` + item.title + `</option>`);
+                            ele.append(`<option class="dropdown-item" href="#" data-opp-id="` + item.opportunity.id + `" data-bs-toggle="tooltip" data-bs-placement="right" title="` + item.opportunity.code + `: ` + item.opportunity.title + `" data-sale-code="` + item.opportunity.code + `" data-type="1" data-sale-code-id="` + item.id + `" value="` + item.code + `">` + item.title + `</option>`);
                             added = true;
                             return;
                         }
@@ -521,13 +538,13 @@ $(document).ready(function () {
         opportunity_list.map(function (item) {
             let added = false;
             if (item.sale_person.id === beneficiary && oppcode_loaded.includes(item.id) === false && item.is_close === false) {
-                ele.append(`<option data-sale-code="` + item.code + `" data-type="2" data-sale-code-id="` + item.id + `" value="` + item.code + `">` + item.title + `</option>`);
+                ele.append(`<option data-sale-code="` + item.code + `" data-type="2" data-opp-id="` + item.id + `" data-sale-code-id="` + item.id + `" value="` + item.code + `">` + item.title + `</option>`);
                 added = true;
             }
             if (item.opportunity_sale_team_datas.length > 0 && added === false && item.is_close === false) {
                 $.each(item.opportunity_sale_team_datas, function(index, member_obj) {
                     if (member_obj.member.id === beneficiary && oppcode_loaded.includes(item.id) === false) {
-                        ele.append(`<option data-sale-code="` + item.code + `" data-type="2" data-sale-code-id="` + item.id + `" value="` + item.code + `">` + item.title + `</option>`);
+                        ele.append(`<option data-sale-code="` + item.code + `" data-type="2" data-opp-id="` + item.id + `" data-sale-code-id="` + item.id + `" value="` + item.code + `">` + item.title + `</option>`);
                         added = true;
                     }
                 });
@@ -764,10 +781,76 @@ $(document).ready(function () {
         }
     }
 
-    loadCreator();
-    $('#beneficiary-select-box').select2();
+    function loadBeneficiaryDefault(department_id, beneficiaries_mapped, sale_person_id) {
+        let ele = $('#beneficiary-select-box');
+        ele.html('');
+        ele.append(`<option></option>`);
+        employee_list.map(function (item) {
+            if (beneficiaries_mapped.includes(item.id)) {
+                if (item.group.id === department_id) {
+                    if (item.id === sale_person_id) {
+                        ele.append(`<option selected data-department="` + item.group.title + `" data-code="` + item.code + `" data-name="` + item.full_name + `" value="` + item.id + `">` + item.full_name + `</option>`);
+                    }
+                    else {
+                        ele.append(`<option data-department="` + item.group.title + `" data-code="` + item.code + `" data-name="` + item.full_name + `" value="` + item.id + `">` + item.full_name + `</option>`);
+                    }
+                }
+            }
+        })
+    }
+
     loadSupplier();
     loadSaleCode('');
+    loadCreator();
+    $('#beneficiary-select-box').select2();
+    if (sale_code_default_obj.length > 0) {
+        let beneficiaries_mapped = [];
+        beneficiaries_mapped.push(sale_code_default_obj[0].sale_person.id)
+        if (sale_code_default_obj[0].opportunity_sale_team_datas) {
+            $.each(sale_code_default_obj[0].opportunity_sale_team_datas, function (index, member_obj) {
+                if (beneficiaries_mapped.includes(member_obj.member.id) === false) {
+                    beneficiaries_mapped.push(member_obj.member.id);
+                }
+            })
+        }
+        loadBeneficiaryDefault($('#creator-select-box option:selected').attr('data-department-id'), beneficiaries_mapped, sale_code_default_obj[0].sale_person.id);
+        loadSaleCode($('#beneficiary-select-box').val());
+        // $('#sale-code-select-box option').each(function () {
+        //     console.log($(this).attr('data-opp-id'))
+        // })
+        $('#sale-code-select-box').find(`option[data-opp-id="` + sale_code_default_obj[0].id + `"]`).attr('selected', true).trigger('change')
+        $('#sale-code-select-box').attr('disabled', true);
+        $('input[value="sale"]').attr("checked", true);
+        $('#btn-change-sale-code-type').text($('input[name="sale_code_type"]:checked').val());
+        $('#btn-change-sale-code-type').attr('disabled', true);
+    }
+    else {
+        // load Sale Code list which beneficiary person is their sale-person
+        $('#beneficiary-select-box').on('change', function () {
+        $('#tab_line_detail_datatable tbody').html(``);
+        $('#beneficiary-name').text($('#beneficiary-select-box option:selected').attr('data-name'));
+        $('#beneficiary-code').text($('#beneficiary-select-box option:selected').attr('data-code'));
+        $('#beneficiary-department').text($('#beneficiary-select-box option:selected').attr('data-department'));
+        let url = $('#btn-detail-beneficiary-tab').attr('data-url').replace('0', $('#beneficiary-select-box option:selected').attr('value'));
+        $('#btn-detail-beneficiary-tab').attr('href', url);
+
+        let sale_code_type = document.getElementsByClassName('sale_code_type');
+        let sale_code_type_val = '';
+        for (let i = 0; i < sale_code_type.length; i++) {
+            if (sale_code_type[i].checked) {
+                sale_code_type_val = sale_code_type[i].value;
+            }
+        }
+        if (sale_code_type_val === 'non-sale') {
+            loadSaleCode('');
+            $('#sale-code-label-id').removeClass('required');
+        }
+        else if (sale_code_type_val === 'sale') {
+            loadSaleCode($('#beneficiary-select-box').val());
+            $('#sale-code-label-id').addClass('required');
+        }
+    })
+    }
 
     $('#return_date_id').dateRangePickerDefault({
         singleDatePicker: true,
@@ -832,32 +915,6 @@ $(document).ready(function () {
                     </div>
                 </div>
             </div>`)
-        }
-    })
-
-    // load Sale Code list which beneficiary person is their sale-person
-    $('#beneficiary-select-box').on('change', function () {
-        $('#tab_line_detail_datatable tbody').html(``);
-        $('#beneficiary-name').text($('#beneficiary-select-box option:selected').attr('data-name'));
-        $('#beneficiary-code').text($('#beneficiary-select-box option:selected').attr('data-code'));
-        $('#beneficiary-department').text($('#beneficiary-select-box option:selected').attr('data-department'));
-        let url = $('#btn-detail-beneficiary-tab').attr('data-url').replace('0', $('#beneficiary-select-box option:selected').attr('value'));
-        $('#btn-detail-beneficiary-tab').attr('href', url);
-
-        let sale_code_type = document.getElementsByClassName('sale_code_type');
-        let sale_code_type_val = '';
-        for (let i = 0; i < sale_code_type.length; i++) {
-            if (sale_code_type[i].checked) {
-                sale_code_type_val = sale_code_type[i].value;
-            }
-        }
-        if (sale_code_type_val === 'non-sale') {
-            loadSaleCode('');
-            $('#sale-code-label-id').removeClass('required');
-        }
-        else if (sale_code_type_val === 'sale') {
-            loadSaleCode($('#beneficiary-select-box').val());
-            $('#sale-code-label-id').addClass('required');
         }
     })
 
@@ -1145,14 +1202,23 @@ $(document).ready(function () {
 
         console.log(frm.dataForm)
 
+        WindowControl.showLoading();
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
             .then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         $.fn.notifyB({description: "Successfully"}, 'success')
-                        $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1000);
                     }
+                    setTimeout(
+                        () => {
+                            WindowControl.hideLoading();
+                        },
+                        1000
+                    )
                 },
                 (errs) => {
                     // $.fn.notifyB({description: errs.data.errors}, 'failure');

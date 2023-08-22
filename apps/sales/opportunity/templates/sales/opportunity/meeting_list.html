@@ -5,29 +5,23 @@
     <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}"/>
 {% endblock %}
 {% block pageAction %}
-    <a class="btn btn-outline-primary btn-animated btn-xs"
-       href=""
-       data-bs-toggle="modal"
-       data-bs-target="#create-meeting"
-       id="create-meeting-button"
-       data-bs-original-title="New Meeting">
+    <button id="create-meeting-button" class="btn btn-outline-primary" type="button" data-bs-toggle="modal"
+            data-bs-target="#create-meeting">
+        <span>
+            <span>{% trans 'Add' %}</span>
             <span class="icon">
-                <span class="feather-icon">
-                    <i data-feather="plus"></i>
-                </span>
-                <span class="font-3 ml-1">
-                    {% trans 'New' %}
-                </span>
+                <i class="fa-solid fa-plus"></i>
             </span>
-    </a>
+        </span>
+    </button>
 {% endblock %}
 {% block pageContent %}
     {{ data.account_list | json_script:"account_list" }}
     {{ data.contact_list | json_script:"contact_list" }}
     {{ data.opportunity_list | json_script:"opportunity_list" }}
-    {{ data.meeting_list | json_script:"meeting_list" }}
     {{ data.employee_list | json_script:"employee_list" }}
     {{ data.account_map_employees | json_script:"account_map_employees" }}
+
     <input type="hidden" id="employee_current_id" value="{{ data.employee_current_id }}">
 
     <table id="table_opportunity_meeting_list" class="table nowrap w-100 mb-5"
@@ -37,6 +31,7 @@
            data-method="GET">
         <thead>
         <tr>
+            <th>#</th>
             <th>{% trans 'Subject' %}
                 <i class="fas fa-info-circle icon-info"
                    data-bs-toggle="tooltip"

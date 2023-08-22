@@ -4,9 +4,7 @@ $(function () {
         const account_list = JSON.parse($('#account_list').text());
         const contact_list = JSON.parse($('#contact_list').text());
         const opportunity_list = JSON.parse($('#opportunity_list').text());
-        const meeting_list = JSON.parse($('#meeting_list').text());
         const employee_list = JSON.parse($('#employee_list').text());
-        const account_map_employees = JSON.parse($('#account_map_employees').text());
 
         function LoadMeetingSaleCodeList(employee_current_id) {
             let $sc_sb = $('#meeting-sale-code-select-box');
@@ -159,12 +157,31 @@ $(function () {
             )
         })
 
-        function loadOpportunityMeetingList(meeting_list) {
+        function loadOpportunityMeetingList() {
             if (!$.fn.DataTable.isDataTable('#table_opportunity_meeting_list')) {
                 let dtb = $('#table_opportunity_meeting_list');
+                let frm = new SetupFormSubmit(dtb);
                 dtb.DataTableDefault({
-                    data: meeting_list,
+                    rowIdx: true,
+                    useDataServer: true,
+                    ajax: {
+                        url: frm.dataUrl,
+                        type: frm.dataMethod,
+                        dataSrc: function (resp) {
+                            let data = $.fn.switcherResp(resp);
+                            if (data && resp.data.hasOwnProperty('meeting_list')) {
+                                console.log(data)
+                                return resp.data['meeting_list'] ? resp.data['meeting_list'] : [];
+                            }
+                            throw Error('Call data raise errors.')
+                        },
+                    },
                     columns: [
+                        {
+                            'render': (data, type, row, meta) => {
+                                return ``;
+                            }
+                        },
                         {
                             data: 'subject',
                             className: 'wrap-text w-35',
@@ -210,7 +227,7 @@ $(function () {
                 });
             }
         }
-        loadOpportunityMeetingList(meeting_list);
+        loadOpportunityMeetingList();
 
         $('#meeting-address-input-btn').on('click', function () {
             $('#meeting-address-select-box').prop('hidden', true);

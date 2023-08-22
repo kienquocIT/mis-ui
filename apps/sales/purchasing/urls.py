@@ -6,7 +6,7 @@ from apps.sales.purchasing.views import PurchaseOrderCreate, PurchaseRequestList
     PurchaseQuotationRequestListAPI, PurchaseQuotationRequestCreateFromPR, PurchaseQuotationRequestCreateManual, \
     PurchaseQuotationRequestDetail, PurchaseQuotationRequestDetailAPI, PurchaseQuotationList, PurchaseQuotationCreate, \
     PurchaseQuotationListAPI, PurchaseQuotationDetail, PurchaseQuotationDetailAPI, PurchaseRequestProductListAPI, \
-    PurchaseQuotationProductListAPI
+    PurchaseQuotationProductListAPI, PurchaseOrderUpdate
 
 urlpatterns = [
     # purchase request
@@ -27,8 +27,9 @@ urlpatterns = [
     path('purchase-order/list', PurchaseOrderList.as_view(), name='PurchaseOrderList'),
     path('purchase-order/api/lists', PurchaseOrderListAPI.as_view(), name='PurchaseOrderListAPI'),
     path('purchase-order/create', PurchaseOrderCreate.as_view(), name='PurchaseOrderCreate'),
-    path('purchase-order/update/<str:pk>', PurchaseOrderDetail.as_view(), name='PurchaseOrderDetail'),
-    path('purchase-order/update-api/<str:pk>', PurchaseOrderDetailAPI.as_view(), name='PurchaseOrderDetailAPI'),
+    path('purchase-order/detail/<str:pk>', PurchaseOrderDetail.as_view(), name='PurchaseOrderDetail'),
+    path('purchase-order/detail-api/<str:pk>', PurchaseOrderDetailAPI.as_view(), name='PurchaseOrderDetailAPI'),
+    path('purchase-order/update/<str:pk>', PurchaseOrderUpdate.as_view(), name='PurchaseOrderUpdate'),
 ] + [
     path(
         'purchase-quotation-request/lists',

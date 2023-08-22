@@ -55,8 +55,11 @@ class GroupLoadDataHandle {
             data: dataGroupParent,
             'dataParams': {'group_level__level__lt': parseInt(level)},
             disabled: !(ele.attr('data-url')),
-            callbackTextDisplay: function (item) {
-                return item?.['title'] + '-level' + String(item?.['level']) || '';
+            templateResult: function (state) {
+                let levelHTML = `<span class="badge badge-soft-primary">level ${state.data?.level ? state.data.level : "_"}</span>`
+                let activeHTML = state.data?.is_active === true ? `<span class="badge badge-success badge-indicator"></span>` : `<span class="badge badge-light badge-indicator"></span>`;
+                state.text = state.data?.title;
+                return $(`<span>${state.text} ${activeHTML} ${levelHTML}</span>`);
             },
         });
     }
@@ -79,8 +82,10 @@ class GroupLoadDataHandle {
         ele.initSelect2({
             data: dataEmployee,
             disabled: !(ele.attr('data-url')),
-            callbackTextDisplay: function (item) {
-                return item?.['full_name'] || '';
+            templateResult: function (state) {
+                let groupHTML = `<span class="badge badge-soft-primary">${state.data?.group?.title ? state.data.group.title : "_"}</span>`
+                let activeHTML = state.data?.is_active === true ? `<span class="badge badge-success badge-indicator"></span>` : `<span class="badge badge-light badge-indicator"></span>`;
+                return $(`<span>${state.text} ${activeHTML} ${groupHTML}</span>`);
             },
         });
     }
@@ -91,8 +96,10 @@ class GroupLoadDataHandle {
         ele.initSelect2({
             data: dataEmployee,
             disabled: !(ele.attr('data-url')),
-            callbackTextDisplay: function (item) {
-                return item?.['full_name'] || '';
+            templateResult: function (state) {
+                let groupHTML = `<span class="badge badge-soft-primary">${state.data?.group?.title ? state.data.group.title : "_"}</span>`
+                let activeHTML = state.data?.is_active === true ? `<span class="badge badge-success badge-indicator"></span>` : `<span class="badge badge-light badge-indicator"></span>`;
+                return $(`<span>${state.text} ${activeHTML} ${groupHTML}</span>`);
             },
         });
     }
@@ -138,6 +145,7 @@ function dataTableEmployee() {
     let $table = $('#datable_employee_list');
     let frm = new SetupFormSubmit($table);
     $table.DataTableDefault({
+        useDataServer: true,
         ajax: {
             url: frm.dataUrl,
             type: frm.dataMethod,
@@ -176,24 +184,25 @@ function dataTableEmployee() {
             {
                 targets: 3,
                 render: (data, type, row) => {
-                    return `<span class="badge badge-soft-primary table-row-group">${row.group.title}</span>`
+                    return `<span class="badge badge-soft-primary table-row-group">${row?.group?.title}</span>`
                 },
             },
             {
                 targets: 4,
                 render: (data, type, row) => {
-                    let dataDate = new Date(row.date_joined).toDateString();
-                    return `<span class="table-row-date-join">${dataDate}</span>`
-                }
+                    if (row?.role && Array.isArray(row.role)) {
+                        let result = [];
+                        row.role.map(item => item.title ? result.push(`<span class="badge badge-soft-success mb-1 mr-1">` + item.title + `</span>`) : null);
+                        return result.join(" ");
+                    }
+                    return '';
+                },
             },
             {
                 targets: 5,
                 render: (data, type, row) => {
-                    if (row.is_active === true) {
-                        return `<span class="badge badge-info badge-indicator badge-indicator-xl"></span>`;
-                    } else {
-                        return `<span class="badge badge-light badge-indicator badge-indicator-xl"></span>`;
-                    }
+                    let dataDate = new Date(row.date_joined).toDateString();
+                    return `<span class="table-row-date-join">${dataDate}</span>`
                 }
             },
             {

@@ -79,14 +79,6 @@ $(function () {
                     ],
                 });
             }
-            $('#table-select-purchase-request-products').DataTableDefault({
-                paging: false,
-                dom: "<'row mt-3 miner-group'>" + "<'row mt-3'<'col-sm-12'tr>>"
-            })
-            $('#table-select-purchase-request-products-for-merge').DataTableDefault({
-                paging: false,
-                dom: "<'row mt-3 miner-group'>" + "<'row mt-3'<'col-sm-12'tr>>"
-            })
         }
         LoadPurchaseRequestTable();
 
@@ -386,6 +378,7 @@ $(function () {
                     'pr_subtotal_price': current_pretax_value,
                 })
             })
+            console.log(purchase_request_products_selected_data)
 
             $('#pretax-value').attr('data-init-money', pretax_value);
             $('#taxes-value').attr('data-init-money', taxes_value);

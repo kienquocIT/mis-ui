@@ -1351,14 +1351,24 @@ $(document).ready(function () {
         frm.dataForm['account_bank_information_dict'] = account_bank_accounts_information_dict;
 
         frm.dataUrl = frm.dataUrl.replace('/0', '/' + window.location.pathname.split('/').pop())
+
+        WindowControl.showLoading();
         $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
             .then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         $.fn.notifyB({description: "Successfully"}, 'success')
-                        $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1000);
                     }
+                    setTimeout(
+                        () => {
+                            WindowControl.hideLoading();
+                        },
+                        1000
+                    )
                 },
                 (errs) => {
                     // $.fn.notifyB({description: errs.data.errors}, 'failure');

@@ -1,7 +1,12 @@
 $(function () {
     $(document).ready(function () {
         const urlParams = new URLSearchParams(window.location.search);
-        const advance_payment_id = urlParams.get('advance_payment_id');
+        let param = null;
+        let param_temp_1 = urlParams.get('advance_payment_id');
+        if (param_temp_1) {param = param_temp_1};
+        let param_temp_2 = urlParams.get('opportunity');
+        if (param_temp_2) {param = param_temp_2};
+        const advance_payment_id = param;
 
         const opportunity_id = urlParams.get('opportunity');
         const choose_AP_ele = $('#chooseAdvancePayment');

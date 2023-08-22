@@ -2172,17 +2172,21 @@ class DTBControl {
             }
         )
 
+        let keySortHtml = keySort.length > 0 ? `
+            <div class="input-group input-group-sm w-115p ml-1">
+                <select class="form-select form-select-sm w-80p custom-order-dtb">
+                    <option selected></option>
+                        ${keySort.join("")}
+                </select>
+                <button class="btn btn-light custom-order-asc-dtb w-35p">
+                    <i class="fa-solid fa-arrow-down-a-z"></i>
+                </button>
+            </div>
+        `: '';
+
         groupCustomEle.html(`
             <div class="d-flex justify-content-end align-items-center">
-                <div class="input-group input-group-sm w-115p ml-1">
-                    <select class="form-select form-select-sm w-80p custom-order-dtb">
-                        <option selected></option>
-                        ${keySort.join("")}
-                    </select>
-                    <button class="btn btn-light custom-order-asc-dtb w-35p">
-                        <i class="fa-solid fa-arrow-down-a-z"></i>
-                    </button>
-                </div>
+                ${keySortHtml}
                 <div class="btn-group btn-group-sm dropdown ml-1">
                     <button type="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="fa-solid fa-list"></i>
@@ -2193,7 +2197,6 @@ class DTBControl {
                         </ul>
                     </div>
                 </div>
-                
                 <div class="btn-group btn-group-sm dropdown ml-1">
                     <button type="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="fa-regular fa-lightbulb"></i>

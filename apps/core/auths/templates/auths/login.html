@@ -38,7 +38,10 @@
                 <div class="row">
                     <div class="col-sm-10 position-relative mx-auto">
                         <div class="auth-content py-8">
-                            <form class="w-100" id="form-login" data-url="" data-url-redirect="" data-method="POST">
+                            <form
+                                    class="w-100" id="form-login" data-url="" data-url-redirect="" data-method="POST"
+                                    method="POST"
+                            >
                                 <div class="row">
                                     <div class="col-lg-5 col-md-7 col-sm-10 mx-auto">
                                         <div class="text-center mb-7">
@@ -127,7 +130,7 @@
                                                         >{% trans 'Keep me logged in' %}</label>
                                                     </div>
                                                 </div>
-                                                <div id="recapcha"></div>
+                                                <div id="recapcha" class="mt-1 mb-1"></div>
                                                 <input
                                                         type="submit" class="btn btn-primary btn-uppercase btn-block"
                                                         value="{% trans 'Login' %}" tabindex="4"
@@ -190,7 +193,7 @@
 <script type="text/javascript">
     var onloadCallback = function () {
         grecaptcha.render('recapcha', {
-            'sitekey': 'AIzaSyCy2Xbmxa7jc0HCALRVigB97rM6xCweBfY'
+            'sitekey': '6LfNp8YnAAAAAE9qAY7kCFcRFOigzLQjqlyQIcnM'
         });
     };
 </script>
@@ -388,41 +391,39 @@
     <!-- Custom JS -->
     <script>
         $(document).ready(function () {
-            $('#form-login').validate({
-                submitHandler: function (event) {
-                    event.preventDefault();
-                    $.fn.showLoadingLogin();
-                    let frm = new SetupFormSubmitLogin($(this));
-                    if (frm.dataUrl && frm.dataMethod) {
-                        $.fn.callAjaxLogin(frm.dataUrl, frm.dataMethod, frm.dataForm).then(
-                            (resp) => {
-                                let data = resp.data;
-                                if (data.status === 200) {
-                                    localStorage.setItem('tenant_code', frm.dataForm['tenant_code']);
-                                    $.fn.notifyBLogin({description: data.detail}, 'success');
-                                    let path_redirect = "/";
-                                    const params = Object.fromEntries(new URLSearchParams(location.search));
-                                    if (params.next) {
-                                        path_redirect = params.next;
-                                    }
-                                    $.fn.redirectUrlLogin(path_redirect, 800);
+            $('#form-login').submit(function (event) {
+                event.preventDefault();
+                $.fn.showLoadingLogin();
+                let frm = new SetupFormSubmitLogin($(this));
+                if (frm.dataUrl && frm.dataMethod) {
+                    $.fn.callAjaxLogin(frm.dataUrl, frm.dataMethod, frm.dataForm).then(
+                        (resp) => {
+                            let data = resp.data;
+                            if (data.status === 200) {
+                                localStorage.setItem('tenant_code', frm.dataForm['tenant_code']);
+                                $.fn.notifyBLogin({description: data.detail}, 'success');
+                                let path_redirect = "/";
+                                const params = Object.fromEntries(new URLSearchParams(location.search));
+                                if (params.next) {
+                                    path_redirect = params.next;
                                 }
-                                setTimeout(
-                                    () => {
-                                        $.fn.hideLoadingLogin();
-                                    }, 2000
-                                )
-                            },
-                            (err) => {
-                                $.fn.notifyBLogin({
-                                    'description': $('#errLoginIncorrect').attr('data-value')
-                                }, 'failure')
-                                $.fn.hideLoadingLogin();
+                                $.fn.redirectUrlLogin(path_redirect, 800);
                             }
-                        )
-                    } else throw 'Setup call raise exception with URL or method is incorrect.!';
-                }
-            });
+                            setTimeout(
+                                () => {
+                                    $.fn.hideLoadingLogin();
+                                }, 2000
+                            )
+                        },
+                        (err) => {
+                            $.fn.notifyBLogin({
+                                'description': $('#errLoginIncorrect').attr('data-value')
+                            }, 'failure')
+                            $.fn.hideLoadingLogin();
+                        }
+                    )
+                } else throw 'Setup call raise exception with URL or method is incorrect.!';
+            })
 
             function loadTenantList() {
                 let tenant_element = $('#tenant-select');

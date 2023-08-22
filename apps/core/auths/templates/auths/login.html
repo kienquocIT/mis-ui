@@ -187,20 +187,20 @@
 </div>
 <!-- /Wrapper -->
 
-{% compress js %}
-    <script type="text/javascript">
-        var onloadCallback = function () {
-            grecaptcha.render('recapcha', {
-                'sitekey': 'AIzaSyCy2Xbmxa7jc0HCALRVigB97rM6xCweBfY'
-            });
-        };
-    </script>
-    <script
-            src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit"
-            async defer
-    >
-    </script>
+<script type="text/javascript">
+    var onloadCallback = function () {
+        grecaptcha.render('recapcha', {
+            'sitekey': 'AIzaSyCy2Xbmxa7jc0HCALRVigB97rM6xCweBfY'
+        });
+    };
+</script>
+<script
+        src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit"
+        async defer
+>
+</script>
 
+{% compress js %}
     <!-- jQuery -->
     <script src="{% static 'vendors/jquery/dist/jquery.min.js' %}"></script>
     <script src="{% static 'vendors/jquery-validate/jquery.validate.min.js' %}"></script>

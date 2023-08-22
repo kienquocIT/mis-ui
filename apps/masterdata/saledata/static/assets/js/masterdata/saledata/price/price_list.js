@@ -23,6 +23,8 @@ $(document).ready(function () {
     let tbl = $('#datatable-price-list');
     let url_detail = tbl.attr('data-url-detail');
     tbl.DataTableDefault({
+        useDataServer: true,
+        rowIdx: true,
         ajax: {
             useDataServer: true,
             url: tbl.attr('data-url'),
@@ -38,8 +40,7 @@ $(document).ready(function () {
         columns: [
             {
                 'render': (data, type, row, meta) => {
-                    let currentId = "chk_sel_" + String(meta.row + 1)
-                    return `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select" id="${currentId}" data-id=` + row.id + `><label class="form-check-label" for="${currentId}"></label></span>`;
+                    return ``;
                 }
             }, {
                 'data': 'title',
@@ -74,20 +75,16 @@ $(document).ready(function () {
                     let badge_type;
                     let text_type;
                     if (row.status === 'Valid') {
-                        badge_type = 'badge-green'
-                        text_type = 'text-green'
+                        badge_type = 'text-success'
                     } else if (row.status === 'Invalid') {
-                        badge_type = 'badge-orange'
-                        text_type = 'text-orange'
+                        badge_type = 'text-orange'
                     } else if (row.status === 'Expired') {
-                        badge_type = 'badge-red'
-                        text_type = 'text-danger'
+                        badge_type = 'text-danger'
                     } else {
-                        badge_type = 'badge-gray'
-                        text_type = 'text-gray'
+                        badge_type = 'text-gray'
                     }
 
-                    return `<span class="badge badge-indicator badge-indicator-xl ` + badge_type + `"></span><span class="` + text_type + `">&nbsp;` + row.status + `</span>`;
+                    return `<span class="` + badge_type + `">&nbsp;` + row.status + `</span>`;
                 }
             }, {
                 'className': 'action-center',

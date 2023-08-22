@@ -4,6 +4,8 @@ $(document).ready(function () {
             let dtb = $('#datatable_advance_list');
             let frm = new SetupFormSubmit(dtb);
             dtb.DataTableDefault({
+                useDataServer: true,
+                rowIdx: true,
                 reloadCurrency: true,
                 ajax: {
                     url: frm.dataUrl,
@@ -18,6 +20,10 @@ $(document).ready(function () {
                 },
                 columns: [
                     {
+                        'render': (data, type, row, meta) => {
+                            return ``;
+                        }
+                    }, {
                         data: 'code',
                         className: 'wrap-text',
                         render: (data, type, row, meta) => {

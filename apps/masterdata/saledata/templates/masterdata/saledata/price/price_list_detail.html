@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
+{% block title %}{% trans 'Price List Detail' %}{% endblock %}
 {% block cssHeader %}
     <link
             href="{% static 'vendors/select2/dist/css/select2.min.css' %}"
@@ -12,7 +13,7 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-outline-primary" type="submit" form="form-update-item-price">
+    <button id="btn-update" class="btn btn-outline-primary" type="submit" form="form-update-item-price">
         <span>
             <span>{% trans 'Save' %}</span>
             <span class="icon">
@@ -78,9 +79,9 @@
                     <thead>
                     <th class="w-5">#</th>
                     <th class="w-10">{% trans "Code" %}</th>
-                    <th class="w-25">{% trans "Item name" %}</th>
-                    <th class="w-10 text-center">{% trans "UoM group" %}</th>
-                    <th class="w-10 text-center">{% trans "UoM" %}</th>
+                    <th class="w-30">{% trans "Item name" %}</th>
+                    <th class="w-15 text-center">{% trans "UoM group" %}</th>
+                    <th class="w-15 text-center">{% trans "UoM" %}</th>
                     </thead>
                 </table>
             </form>
@@ -218,7 +219,7 @@
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
-    <script src="{% static "assets/js/masterdata/saledata/product/vietnam-number-separator.js" %}"></script>
+{#    <script src="{% static "assets/js/masterdata/saledata/product/vietnam-number-separator.js" %}"></script>#}
     <script src="{% static 'assets/js/masterdata/saledata/price/price_list_detail.js' %}"></script>
     <script src="{% static 'vendors/jasny-bootstrap/dist/js/jasny-bootstrap.min.js' %}"></script>
     <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>

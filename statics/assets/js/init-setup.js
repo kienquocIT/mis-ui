@@ -1956,6 +1956,53 @@ class DTBControl {
         );
     }
 
+    // static parseFilter(dtb) {
+    //     let dtbInited = $(dtb).DataTable();
+    //
+    //     let rowCustomFilter = $(`div.row-custom-filter[data-dtb-id="#` + dtb.attr('id') + `"]`);
+    //
+    //     let dtbWrapper = $(dtb).closest('.dataTables_wrapper');
+    //     let dtbFilter = $(dtbWrapper).find('.dataTables_filter');
+    //     let dtbFilterInput = $(dtbFilter).find('input[type="search"]');
+    //
+    //     rowCustomFilter.each(function () {
+    //         $(this).find('select').each(function () {
+    //             DTBControl.__fillDefaultSelect2Filter($(this)).initSelect2();
+    //         }).on('select2:close', function () {
+    //             dtbInited.table().ajax.reload();
+    //         }).on('select2:clear', function () {
+    //             dtbInited.table().ajax.reload();
+    //         }).on('select2:unselect', function () {
+    //             dtbInited.table().ajax.reload();
+    //         });
+    //
+    //         let customFilterEle = $(this).find('.custom-filter-dtb');
+    //         if (dtbFilterInput && dtbFilterInput.length > 0 && customFilterEle && customFilterEle.length > 0) {
+    //             // dtbFilter.addClass('hidden');
+    //             $(this).find('.custom-filter-dtb').on('keyup', function () {
+    //                 $(dtbFilterInput).val($(this).val()).trigger('keyup');
+    //             });
+    //         } else {
+    //             customFilterEle.remove();
+    //         }
+    //     })
+    // }
+
+    static parseFilter2(dtb) {
+        let groupCustomEle = dtb.parent().find('.util-btn');
+        let filterEle = dtb.parent().find('.dataTables_filter');
+        groupCustomEle.html(`
+            <div class="h-100 d-flex justify-content-end align-items-center">
+                <button class="btn mt-1 mr-1">
+                    <span class="icon"><i class="fa-solid fa-list"></i></span>
+                </button>
+                <button class="btn mt-1 mr-1">
+                    <span class="icon"><i class="fa-regular fa-note-sticky"></i></span>
+                </button>
+            </div>
+        `)
+    }
+
     static parseDomDtl(opts) {
         // stateDefaultPageControl: disable all toolbar
         let stateDefaultPageControl = typeof opts?.['stateDefaultPageControl'] === 'boolean' ? opts?.['stateDefaultPageControl'] : true;
@@ -1966,6 +2013,10 @@ class DTBControl {
             "<'row mt-3'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'p>>" +
             "<'row mt-3'<'col-sm-12'tr>>" +
             "<'row mt-3'<'col-sm-12 col-md-6'i>>";
+
+        // style 1
+        domDTL = `<'row ' <'col-6'f><'col-6 util-btn'>>` + 'rt' + `<'row' <'col-lg-6 col-md-12 d-flex cus-page-info'li><'col-lg-6 col-md-12'p>>`;
+
         let utilsDom = {
             // "l": Đại diện cho thanh điều hướng (paging) của DataTable.
             // "f": Đại diện cho hộp tìm kiếm (filtering) của DataTable.
@@ -1981,7 +2032,6 @@ class DTBControl {
             visibleOrder: stateDefaultPageControl,   // "r"
             visibleRowQuantity: stateDefaultPageControl,   // "s"
         }
-
         // show or hide search field
         if (opts.hasOwnProperty('visiblePaging')) {
             if ($.fn.isBoolean(opts['visiblePaging'])) utilsDom.visiblePaging = opts['visiblePaging'];
@@ -2113,19 +2163,22 @@ class DTBControl {
 
                         let keyKeepEmpty = [];
                         let customFilter = {};
-                        $(clsThis.dtb$).find('.row-custom-filter select').each(function () {
-                            let val = $(this).val();
-                            if (val) {
-                                if ((typeof val === "string" && val) || (Array.isArray(val) && val.length > 0)) {
-                                    customFilter[$(this).attr('data-keyParam')] = (!Array.isArray(val) ? [val] : val).join(",");
-                                }
-                            } else {
-                                if ($(this).attr('data-keepIdNullHasText') === 'true') {
-                                    customFilter[$(this).attr('data-keyParam')] = "";
-                                    keyKeepEmpty.push($(this).attr('data-keyParam'))
+
+                        $(`div.row-custom-filter[data-dtb-id="#` + clsThis.dtb$.attr('id') + `"]`).find('select').each(
+                            function () {
+                                let val = $(this).val();
+                                if (val) {
+                                    if ((typeof val === "string" && val) || (Array.isArray(val) && val.length > 0)) {
+                                        customFilter[$(this).attr('data-keyParam')] = (!Array.isArray(val) ? [val] : val).join(",");
+                                    }
+                                } else {
+                                    if ($(this).attr('data-keepIdNullHasText') === 'true') {
+                                        customFilter[$(this).attr('data-keyParam')] = "";
+                                        keyKeepEmpty.push($(this).attr('data-keyParam'))
+                                    }
                                 }
                             }
-                        });
+                        );
 
                         return DTBControl.cleanParamBeforeCall({
                             'page': Math.ceil(d.start / d.length) + 1,
@@ -2221,6 +2274,8 @@ class DTBControl {
             DTBControl.parseHeaderDropdownFilter(
                 (clsThis.opts?.['columns'] || []), settings, clsThis.dtb$
             );
+            // DTBControl.parseFilter(clsThis.dtb$);
+            DTBControl.parseFilter2(clsThis.dtb$);
         }
     }
 

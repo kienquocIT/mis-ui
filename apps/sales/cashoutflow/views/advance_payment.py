@@ -51,7 +51,7 @@ class AdvancePaymentCreate(View):
                            'employee_list': resp7.result,
                            'tax_list': resp8.result,
                            'unit_of_measure': resp9.result,
-                           'payment_cost_items_list': resp10.result
+                           'payment_cost_items_list': resp10.result,
                        }
                }, status.HTTP_200_OK
 

@@ -147,6 +147,7 @@ $(document).ready(function () {
         if (frm.dataForm['currency'].length === 0) {
             frm.dataForm['currency'] = null;
         }
+        console.log(frm.dataForm['currency']);
 
         let valid_time_ele = $('#valid_time')
         if (valid_time_ele.val()) {
@@ -156,8 +157,11 @@ $(document).ready(function () {
 
         frm.dataForm['auto_update'] = !!$('[name="auto_update"]').is(':checked');
         frm.dataForm['can_delete'] = !!$('[name="can_delete"]').is(':checked');
-        $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
-            .then((resp) => {
+        $.fn.callAjax2({
+            url: frm.dataUrl,
+            method: frm.dataMethod,
+            data: frm.dataForm
+        }).then((resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     $.fn.notifyB({description: "Successfully"}, 'success')

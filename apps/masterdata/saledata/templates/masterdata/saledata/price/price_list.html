@@ -14,7 +14,7 @@
 {% endblock %}
 {% block pageAction %}
 
-    <a href="#" data-bs-toggle="modal" data-bs-target="#modal-create-price-list">
+    <a href="#" data-bs-toggle="modal" id="btn-add-new" data-bs-target="#modal-create-price-list">
         <button class="btn btn-outline-primary">
             <span>
                 <span>{% trans 'Add' %}</span>
@@ -84,7 +84,7 @@
                                 <div class="card card-body mt-1 mb-1">
                                     <div class="form-group mt-2">
                                         <label class="form-label">{% trans "Select price list" %}</label>
-                                        <select class="form-select" data-method="GET" data-url="{% url "PriceDetailAPI" pk=0 %}"
+                                        <select class="form-select" data-method="GET" data-url="{% url 'PriceListAPI' %}" data-keyResp="price_list" data-url-detail="{% url "PriceDetailAPI" pk=0 %}"
                                                 name="price_list_mapped"
                                                 id="select-box-price-list" disabled></select>
                                     </div>
@@ -109,12 +109,13 @@
                             <div class="form-group mt-2">
                                 <label class="form-label required">{% trans "Currency" %}</label>
                                 <select
-                                        class="form-control select2 select2-multiple"
+                                        class="form-select"
                                         multiple
-                                        data-placeholder="{% trans 'Choose' %}"
                                         data-method="GET"
-                                        data-select2-url="{% url "CurrencyListAPI" %}"
-                                        id="select-box-currency" name="currency">
+                                        data-url="{% url "CurrencyListAPI" %}"
+                                        id="select-box-currency" name="currency"
+                                        data-keyResp="currency_list"
+                                >
                                 </select>
                             </div>
                         </div>
@@ -126,8 +127,7 @@
                             </div>
                             <div class="form-group col-6">
                                 <label class="form-label required">{% trans "Select list type" %}</label>
-                                <select class="form-control select2" name="price_list_type">
-                                    <option></option>
+                                <select class="form-select" name="price_list_type" id="select-box-type">
                                     <option value="0">{% trans "For Sale" %}</option>
                                     <option value="1">{% trans "For Purchase" %}</option>
                                     <option value="2">{% trans "For Expense" %}</option>

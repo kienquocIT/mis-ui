@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
-{% block title %}{% trans 'Expense Create' %}{% endblock %}
+{% block title %}{% trans 'Expense Update' %}{% endblock %}
 {% block cssHeader %}
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-outline-primary" type="submit" form="frmCreateExpense">
+    <button class="btn btn-outline-primary" type="submit" form="frmUpdateExpense">
         <span>
             <span>{% trans 'Save' %}</span>
             <span class="icon">
@@ -18,13 +18,13 @@
     </button>
 {% endblock %}
 {% block pageContent %}
-    <form id="frmCreateExpense" data-method="POST" data-url="{% url "ExpenseListAPI" %}"
+    <form id="frmUpdateExpense" data-method="PUT" data-url="{% url "ExpenseDetailAPI" pk=0 %}"
           data-url-redirect="{% url "ExpenseList" %}">
         {% csrf_token %}
         <div class="row">
             <div class="col-4">
                 <label class="form-label required">{% trans 'Name' %}</label>
-                <input class="form-control" type="text" placeholder="Input Name" name="title">
+                <input class="form-control" type="text" placeholder="Input Name" name="title" id="expenseTitle">
             </div>
         </div>
 
@@ -86,6 +86,6 @@
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'assets/js/masterdata/saledata/expense/expense_common.js' %}"></script>
-    <script src="{% static 'assets/js/masterdata/saledata/expense/expense_create.js' %}"></script>
+    <script src="{% static 'assets/js/masterdata/saledata/expense/expense_update.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
 {% endblock %}

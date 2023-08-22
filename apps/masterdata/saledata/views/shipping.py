@@ -58,6 +58,18 @@ class ShippingDetail(View):
         return {}, status.HTTP_200_OK
 
 
+class ShippingUpdate(View):
+    @mask_view(
+        auth_require=True,
+        template='masterdata/saledata/shipping/shipping_update.html',
+        breadcrumb='SHIPPING_UPDATE_PAGE',
+        menu_active='menu_shipping_list',
+        perm_check=PermCheck(url=ApiURL.SHIPPING_DETAIL, method='GET', fill_key=['pk']),
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
 class ShippingDetailAPI(APIView):
     @mask_view(
         is_api=True,

@@ -104,8 +104,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
 
     # Expense
     EXPENSE_LIST_PAGE = BreadcrumbChildren(_('Expense'), 'ExpenseList')
-    EXPENSE_CREATE_PAGE = BreadcrumbChildren(_('Expense create'), 'ExpenseCreate')
-    EXPENSE_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+
     # Promotion
     PROMOTION_LIST_PAGE = BreadcrumbChildren(_('Promotion'), 'PromotionList')
     PROMOTION_CREATE_PAGE = BreadcrumbChildren(_('Promotion create'), 'PromotionCreate')
@@ -404,8 +403,9 @@ class BreadcrumbView:
     PRICE_LIST_DETAIL_PAGE = PRICE_LIST_PAGE + [BreadcrumbItem.PRICE_LIST_DETAIL_PAGE]
 
     EXPENSE_LIST_PAGE = [BreadcrumbItem.EXPENSE_LIST_PAGE]
-    EXPENSE_CREATE_PAGE = EXPENSE_LIST_PAGE + [BreadcrumbItem.EXPENSE_CREATE_PAGE]
-    EXPENSE_DETAIL_PAGE = EXPENSE_LIST_PAGE + [BreadcrumbItem.EXPENSE_DETAIL_PAGE]
+    EXPENSE_CREATE_PAGE = EXPENSE_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+    EXPENSE_DETAIL_PAGE = EXPENSE_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    EXPENSE_UPDATE_PAGE = EXPENSE_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
     PROMOTION_LIST_PAGE = [
         BreadcrumbItem.PROMOTION_LIST_PAGE
@@ -432,8 +432,9 @@ class BreadcrumbView:
     SHIPPING_LIST_PAGE = [
         BreadcrumbItem.SHIPPING_LIST_PAGE
     ]
-    SHIPPING_CREATE_PAGE = SHIPPING_LIST_PAGE + [BreadcrumbItem.SHIPPING_CREATE_PAGE]
-    SHIPPING_DETAIL_PAGE = SHIPPING_LIST_PAGE + [BreadcrumbItem.SHIPPING_DETAIL_PAGE]
+    SHIPPING_CREATE_PAGE = SHIPPING_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+    SHIPPING_DETAIL_PAGE = SHIPPING_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    SHIPPING_UPDATE_PAGE = SHIPPING_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
     # Sale order
     SALE_ORDER_LIST_PAGE = [

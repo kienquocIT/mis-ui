@@ -137,7 +137,7 @@ function loadDataTableProduct(data) {
     }
 }
 
-function loadDataTableProductPageDetail(data) {
+function loadDataTableProductPageDetail(data, type_page = 'create') {
     if (!$.fn.DataTable.isDataTable('#dtbProduct')) {
         let $table = $('#dtbProduct')
         $table.DataTableDefault({
@@ -181,7 +181,11 @@ function loadDataTableProductPageDetail(data) {
                     targets: 4,
                     className: 'wrap-text',
                     render: (data, type, row) => {
-                        return `<input class="mask-money form-control return-price" type="text" data-return-type="number" value="${data}">`
+                        if (type_page === 'detail') {
+                            return `<input class="mask-money form-control return-price" type="text" data-return-type="number" value="${data}" disabled>`
+                        }
+                        else
+                            return `<input class="mask-money form-control return-price" type="text" data-return-type="number" value="${data}">`
                     }
                 },
             ],
@@ -234,4 +238,35 @@ class ReturnAdvanceLoadPage {
             data: data
         })
     }
+}
+
+function loadDetail(id, frmDetail) {
+    let frm = new SetupFormSubmit(frmDetail);
+    let choose_AP_ele = $('#chooseAdvancePayment');
+    $.fn.callAjax2({
+        url: frm.getUrlDetail(id),
+        method: 'GET'
+    }).then((resp) => {
+        let data = $.fn.switcherResp(resp);
+        if (data) {
+            let return_advance_detail = data?.['return_advance'];
+            $.fn.compareStatusShowPageAction(return_advance_detail);
+            $('.header-code').text(return_advance_detail.code);
+            $('[name="title"]').val(return_advance_detail.title);
+            ReturnAdvanceLoadPage.loadAdvancePayment(choose_AP_ele, return_advance_detail.advance_payment, {});
+            loadDetailAdvancePayment(return_advance_detail.advance_payment.id, 'detail');
+            loadCreator(return_advance_detail.creator);
+            $('[name="date_created"]').val(return_advance_detail.date_created.split(" ")[0]);
+            $('[name="method"]').val(return_advance_detail.method);
+            loadProductTable(return_advance_detail.cost);
+            let total_value = return_advance_detail.cost.map(obj => obj?.['return_price']).reduce((a, b) => a + b, 0)
+            $('#total-value').attr('data-init-money', total_value);
+            if (return_advance_detail.money_received) {
+                let money_received_ele = $('#money-received')
+                money_received_ele.prop('checked', true);
+            }
+
+        }
+    }, (errs) => {
+    },)
 }

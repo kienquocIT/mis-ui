@@ -85,3 +85,15 @@ class ExpenseForSaleListAPI(APIView):
     def get(self, request, *arg, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.EXPENSE_SALE_LIST).get()
         return resp.auto_return(key_success='expense_sale_list')
+
+
+class ExpenseUpdate(View):
+    @mask_view(
+        auth_require=True,
+        template='masterdata/saledata/expense/expense_update.html',
+        breadcrumb='EXPENSE_UPDATE_PAGE',
+        menu_active='id_menu_expense_list',
+        perm_check=PermCheck(url=ApiURL.EXPENSE_LIST, method='post'),
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK

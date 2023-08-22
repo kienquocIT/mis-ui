@@ -293,7 +293,7 @@ $(document).ready(function () {
                 if (data.hasOwnProperty('price')) {
                     let dropdown = $('.dropdown-currency');
                     price_list_detail.currency.map(function (item) {
-                        let abbreviation = currency_dict[item].abbreviation
+                        let abbreviation = currency_dict[item.id].abbreviation
                         dropdown.append(`<div class="form-check form-check mt-2">
                             <input data-id="` + item + `" class="form-check-input display-currency" type="checkbox" id="check-` + abbreviation + `" value="option1" checked>
                             <label class="form-check-label">` + abbreviation + `</label>

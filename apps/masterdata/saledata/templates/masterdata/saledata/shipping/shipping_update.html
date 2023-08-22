@@ -7,32 +7,22 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <a href="{% url 'ShippingUpdate' pk=0 %}" id="btn-edit">
-        <button class="btn btn-outline-primary">
-            <span>
-                <span>{% trans 'Edit' %}</span>
-                <span class="icon">
-                    <i class="fa-regular fa-pen-to-square"></i>
-                </span>
-            </span>
-        </button>
-    </a>
 {% endblock %}
 {% block pageContent %}
-    <form id="frmDetailShipping" data-method="PUT" data-url-detail="{% url "ShippingDetailAPI" pk=0 %}"
+    <form id="frmUpdateShipping" data-method="PUT" data-url-detail="{% url "ShippingDetailAPI" pk=0 %}"
           data-url-redirect="{% url "ShippingList" %}">
         {% csrf_token %}
         <!--Field required-->
         <div class="row">
             <div class="col-4 form-group">
                 <label class="form-label required">{% trans "Title" %}</label>
-                <input type="text" class="form-control" placeholder="Input Name" name="title" id="inpTitle" disabled>
+                <input type="text" class="form-control" placeholder="Input Name" name="title" id="inpTitle">
             </div>
             <div class="col-4 form-group">
                 <label class="form-label required">{% trans "Margin" %}</label>
                 <div class="input-group">
                     <div class="input-affix-wrapper affix-wth-text ">
-                        <input class="form-control" type="number" name="margin" id="inpMargin" disabled>
+                        <input class="form-control" type="number" name="margin" id="inpMargin">
                         <span class="input-suffix">%</span>
                     </div>
                 </div>
@@ -41,7 +31,7 @@
                 <label class="form-label required">{% trans "Currency" %}</label>
 
                 <select id="chooseCurrency" class="select2 form-control" data-method="GET"
-                        data-url="{% url "CurrencyListAPI" %}" name="currency" disabled></select>
+                        data-url="{% url "CurrencyListAPI" %}" name="currency"></select>
 
 
             </div>
@@ -50,7 +40,7 @@
             <div class="col-2">
                 <div class="form-group">
                     <div class="form-check form-switch mb-1">
-                        <input type="checkbox" class="form-check-input" id="inputActive" name="is_active" disabled>
+                        <input type="checkbox" class="form-check-input" id="inputActive" name="is_active">
                         <label for="inputActive" class="form-label">{% trans 'Active' %}</label>
                         <span></span>
                     </div>
@@ -64,13 +54,13 @@
             <div class="col-6">
                 <div class="form-check form-check-inline mt-2">
                     <input class="form-check-input mt-1 ratioMethod" type="radio" value="0" name="cost_method"
-                           checked id="check-method-0" disabled>
+                           checked id="check-method-0">
                     <label class="form-check-label" for="check-method-0">{% trans "Fixed price" %}</label>
                     <span></span>
                 </div>
                 <div class="form-check form-check-inline mt-2">
                     <input class="form-check-input mt-1 ratioMethod" type="radio" value="1" name="cost_method"
-                           id="check-method-1" disabled>
+                           id="check-method-1">
                     <label class="form-check-label" for="check-method-1">{% trans "Formula" %}</label>
                     <span></span>
                 </div>
@@ -89,7 +79,7 @@
                 <div class="readonly">
                     <input class="form-control mask-money" type="text" data-return-type="number"
                            placeholder="Input Amount"
-                           id="inputAmount" name="fixed_price" disabled>
+                           id="inputAmount" name="fixed_price">
                     <span></span>
                 </div>
 
@@ -100,6 +90,10 @@
         <div class="condition-content hidden">
             <div class="row mt-3">
                 <div class="col-2">
+                    <button type="button" class="btn btn-link btn-animated" id="btnAddCondition">
+                <span><span class="icon"><span class="feather-icon"><i
+                        data-feather="plus"></i></span></span><span>{% trans "Add New Condition" %}</span></span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -111,11 +105,11 @@
                     <div class="col-3 form-group"></div>
                     <div class="col-3 form-group">
                         <label class="form-label">{% trans "If" %}</label>
-                        <input type="text" class="form-control inpUnit" readonly value="" disabled>
+                        <input type="text" class="form-control inpUnit" readonly value="">
                     </div>
                     <div class="col-1 mt-2 form-group">
                         <label class="form-label"></label>
-                        <select class="form-select chooseOperator" name="comparison_operators" disabled>
+                        <select class="form-select chooseOperator" name="comparison_operators">
                             <option value="1"><</option>
                             <option value="2">></option>
                             <option value="3">≤</option>
@@ -126,7 +120,7 @@
                         <label class="form-label"></label>
                         <span class="input-affix-wrapper affix-wth-text">
                         <input type="number" class="form-control inpThreshold"
-                               aria-describedby="basic-addon1" disabled>
+                               aria-describedby="basic-addon1">
                         <span class="input-suffix spanUnit"></span>
                     </span>
                     </div>
@@ -137,11 +131,11 @@
                     <div class="col-9 row">
                         <div class="col-3">
                             <div class="form-label-group ml-3">
-                                <input type="checkbox" class="form-check-input cbFixedPrice" checked disabled>
+                                <input type="checkbox" class="form-check-input cbFixedPrice" checked>
                                 <label class="form-label">{% trans "Fixed price" %}</label>
                             </div>
                             <input type="text" class="form-control inpAmount mask-money" data-return-type="number"
-                                   name="amount_condition" disabled>
+                                   name="amount_condition">
                         </div>
                         <div class="col-4 mt-5 hidden divNotFixed">
                             <div class="input-group">
@@ -149,7 +143,7 @@
                                     <span class="input-group-text">+</span>
                                 </div>
                                 <input type="text" class="form-control inpAmountExtra mask-money"
-                                       aria-label="Amount (to the nearest dollar)" data-return-type="number" disabled>
+                                       aria-label="Amount (to the nearest dollar)" data-return-type="number">
                                 <div class="input-group-append">
                                     <span class="input-group-text">*</span>
                                 </div>
@@ -159,13 +153,20 @@
                             <label class="form-label displayUoMGroup mt-1"></label>
                         </div>
                         <div class="col-2 mt-5">
-                        </div>
+                            <a class="btn btn-icon btn-del btn btn-icon btn-flush-danger flush-soft-hover btn-rounded btnDelFormula">
+                        <span class="btn-icon-wrap"><span class="feather-icon"><i
+                                data-feather="trash-2"></i></span></span>
+                            </a></div>
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-2"></div>
                 <div class="col-1 ">
+                    <button type="button" class="btn btn-link btn-animated btnAddFormula">
+                    <span><span class="icon"><span class="feather-icon"><i
+                            data-feather="plus"></i></span></span><span>{% trans "Add If" %}</span></span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -176,18 +177,17 @@
                         <div class="col-3 form-group">
                             <label class="form-label">{% trans "At Location" %}</label>
                             <select class="form-select chooseCity" multiple data-method="GET"
-                                    data-url="{% url 'CityListAPI' %}" data-keyResp="cities" disabled>
+                                    data-url="{% url 'CityListAPI' %}" data-keyResp="cities">
                             </select>
                         </div>
                         <div class="col-3 form-group">
                             <label class="form-label">{% trans "If" %}</label>
                             <select class="form-select chooseUnit" data-method="GET"
-                                    data-url="{% url 'BaseItemUnitListAPI' %}" data-keyResp="base_item_units" disabled>
-                            </select>
+                                    data-url="{% url 'BaseItemUnitListAPI' %}" data-keyResp="base_item_units"></select>
                         </div>
                         <div class="col-1 mt-2 form-group">
                             <label class="form-label"></label>
-                            <select class="form-select chooseOperator" name="comparison_operators" disabled>
+                            <select class="form-select chooseOperator" name="comparison_operators">
                                 <option value="1"><</option>
                                 <option value="2">></option>
                                 <option value="3">≤</option>
@@ -198,11 +198,15 @@
                             <label class="form-label"></label>
                             <span class="input-affix-wrapper affix-wth-text">
                             <input type="number" class="form-control inpThreshold"
-                                   aria-describedby="basic-addon1" disabled>
+                                   aria-describedby="basic-addon1">
                             <span class="input-suffix spanUnit"></span>
                         </span>
                         </div>
                         <div class="col-1">
+                            <button type="button" class="btn btn-link btn-animated btnDelCondition">
+                            <span><span class="icon"><span class="feather-icon"></span></span><span
+                                    class="text-danger">{% trans "Delete" %}</span></span>
+                            </button>
                         </div>
                     </div>
                     <div class="row">
@@ -210,11 +214,11 @@
                         <div class="col-9 row">
                             <div class="col-3">
                                 <div class="form-label-group ml-3">
-                                    <input type="checkbox" class="form-check-input cbFixedPrice" checked disabled>
+                                    <input type="checkbox" class="form-check-input cbFixedPrice" checked>
                                     <label class="form-label">{% trans "Fixed price" %}</label>
                                 </div>
                                 <input type="text" class="form-control inpAmount mask-money" data-return-type="number"
-                                       name="amount_condition" disabled>
+                                       name="amount_condition">
                             </div>
                             <div class="col-4 mt-5 hidden divNotFixed">
                                 <div class="input-group">
@@ -222,7 +226,7 @@
                                         <span class="input-group-text">+</span>
                                     </div>
                                     <input type="text" class="form-control inpAmountExtra mask-money"
-                                           aria-label="Amount (to the nearest dollar)" data-return-type="number" disabled>
+                                           aria-label="Amount (to the nearest dollar)" data-return-type="number">
                                     <div class="input-group-append">
                                         <span class="input-group-text">*</span>
                                     </div>
@@ -237,6 +241,10 @@
                 <div class="row">
                     <div class="col-2"></div>
                     <div class="col-1 ">
+                        <button type="button" class="btn btn-link btn-animated btnAddFormula">
+                    <span><span class="icon"><span class="feather-icon"><i
+                            data-feather="plus"></i></span></span><span>{% trans "Add If" %}</span></span>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -245,6 +253,6 @@
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'assets/js/masterdata/saledata/shipping/shipping_common.js' %}"></script>
-    <script src="{% static 'assets/js/masterdata/saledata/shipping/shipping_detail.js' %}"></script>
+    <script src="{% static 'assets/js/masterdata/saledata/shipping/shipping_update.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
 {% endblock %}

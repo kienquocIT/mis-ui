@@ -1,7 +1,5 @@
 $(document).ready(function () {
 
-    let item_unit_dict = {}
-
     $(document).on('change', '.cbFixedPrice', function () {
         let divNotFixed = $(this).closest('div .row').find('.divNotFixed')
         if ($(this).is(':checked')) {
@@ -13,69 +11,21 @@ $(document).ready(function () {
         }
     })
 
-    function removeClass(eleThreshold) {
-        eleThreshold.removeClass('mask-money');
-        eleThreshold.removeAttr('data-return-type');
-        eleThreshold.attr('type', 'number');
-    }
+    ShippingLoadPage.loadCurrency();
 
     //onchange select box choose Unit Of Measure Group
     $(document).on('change', '.chooseUnit', function () {
-        if (Object.keys(item_unit_dict).length === 0) {
-            item_unit_dict = JSON.parse($(`#${$(this).data('idx-data-loaded')}`).text());
-        }
-        let eleParent = $(this).closest('.line-condition');
-        let ele = eleParent.find('.spanUnit');
-        let inpUnit = eleParent.find('.inpUnit');
-        inpUnit.val($(this).find('option:selected').text());
-        eleParent.find('.displayUoMGroup').text($(this).find('option:selected').text());
-
-        let eleThreshold = eleParent.find('.inpThreshold')
-        eleThreshold.attr('value', '')
-        ele.text(item_unit_dict[$(this).val()].measure)
-        switch ($(this).find('option:selected').text()) {
-            case 'price':
-                eleThreshold.addClass('mask-money');
-                eleThreshold.attr('data-return-type', 'number');
-                eleThreshold.attr('type', 'text');
-                break;
-            default:
-                removeClass(eleThreshold)
-                break;
-        }
-        $.fn.initMaskMoney2();
+        changeUnit($(this))
     })
-
-    ShippingLoadPage.loadCurrency();
 
     // Add new Formula for condition
     $(document).on('click', '.btnAddFormula', function () {
-        let html = $('#ifInCondition').html();
-        $(this).closest('.line-condition').append(html);
-        let eleParent = $(this).closest('.line-condition')
-        let text_unit = eleParent.find('.chooseUnit').find('option:selected').text();
-        if (text_unit !== '') {
-            eleParent.find('.inpUnit').attr('value', text_unit);
-            eleParent.find('.spanUnit').text(item_unit_dict[eleParent.find('.chooseUnit').val()].measure);
-            let eleThreshold = $(this).closest('.line-condition').find('.inpThreshold');
-            if (text_unit === 'price') {
-                eleThreshold.addClass('mask-money');
-                eleThreshold.attr('data-return-type', 'number');
-                eleThreshold.attr('type', 'text');
-            } else {
-                removeClass(eleThreshold)
-            }
-        }
-        $(this).remove();
+        addFormula($(this))
     })
 
     //Add new condition
-    $(document).on('click', '#btnAddCondition', async function () {
-        let html = $('#newCondition').html();
-        let ele_condition = $('.condition-content');
-        ele_condition.append(html);
-        ShippingLoadPage.loadCity(ele_condition.children().last().find('.chooseCity'));
-        ShippingLoadPage.loadItemUnit(ele_condition.children().last().find('.chooseUnit'));
+    $(document).on('click', '#btnAddCondition', function () {
+        addCondition();
     })
 
     // Delete condition
@@ -90,14 +40,16 @@ $(document).ready(function () {
 
     // onchange cost method
     $(document).on('change', '.ratioMethod', function () {
+        let ele_condition = $('.condition-content');
+        let ele_inputAmount = $('#inputAmount')
         switch ($(this).val()) {
             case '0':
-                $('.condition-content').addClass('hidden');
-                $('#inputAmount').prop('disabled', false);
+                ele_condition.addClass('hidden');
+                ele_inputAmount.prop('disabled', false);
                 break;
             case '1':
-                $('.condition-content').removeClass('hidden');
-                $('#inputAmount').prop('disabled', true);
+                ele_condition.removeClass('hidden');
+                ele_inputAmount.prop('disabled', true);
                 break;
         }
     })
@@ -105,7 +57,6 @@ $(document).ready(function () {
     const frmCreateShipping = $('#frmCreateShipping')
     frmCreateShipping.submit(function (event) {
         event.preventDefault();
-        let csr = $("input[name=csrfmiddlewaretoken]").val();
         let frm = new SetupFormSubmit($(this));
         frm.dataForm['fixed_price'] = $('[name="fixed_price"]').valCurrency();
         frm.dataForm['is_active'] = !!$('#inputActive').is(':checked');
@@ -179,8 +130,11 @@ $(document).ready(function () {
                 break;
         }
         if (is_submit) {
-            $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
-                .then(
+            $.fn.callAjax2({
+                url: frm.dataUrl,
+                method: frm.dataMethod,
+                data: frm.dataForm,
+            }).then(
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {

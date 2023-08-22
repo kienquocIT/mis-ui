@@ -1,3 +1,20 @@
+class DocumentLoadPage {
+    static opportunitySelectEle = $('#box-select-opportunity');
+    static personSelectEle = $('#box-select-person-in-charge');
+
+    static loadOpportunity(data) {
+        this.opportunitySelectEle.initSelect2({
+            data: data,
+        })
+    }
+
+    static loadPersonInCharge(data) {
+        this.personSelectEle.initSelect2({
+            data: data,
+        })
+    }
+}
+
 function appendFileEle(file, data_documents, type) {
     let html = $('.document-hidden').html();
     let ele_doc = $('.document-content');
@@ -15,22 +32,5 @@ function appendFileEle(file, data_documents, type) {
         FileUtils.init(ele_button, file);
         let doc_detail = data_documents.find(item => item.attachment === file.media_file_id);
         ele_last_doc.find('textarea').val(doc_detail.description);
-    }
-}
-
-class DocumentLoadPage {
-    static opportunitySelectEle = $('#box-select-opportunity');
-    static personSelectEle = $('#box-select-person-in-charge');
-
-    static loadOpportunity(data) {
-        this.opportunitySelectEle.initSelect2({
-            data: data,
-        })
-    }
-
-    static loadPersonInCharge(data) {
-        this.personSelectEle.initSelect2({
-            data: data,
-        })
     }
 }

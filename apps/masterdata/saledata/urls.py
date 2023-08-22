@@ -11,7 +11,7 @@ from apps.masterdata.saledata.views.accounts import (
 )
 from apps.masterdata.saledata.views.config import PaymentsTermsListAPI, PaymentsTermsDetailAPI
 from apps.masterdata.saledata.views.expense import ExpenseList, ExpenseListAPI, ExpenseCreate, ExpenseDetail, \
-    ExpenseDetailAPI, ExpenseForSaleListAPI
+    ExpenseDetailAPI, ExpenseForSaleListAPI, ExpenseUpdate
 from apps.masterdata.saledata.views.good_receipt import GoodReceiptList, GoodReceiptCreate, GoodReceiptListAPI, \
     GoodReceiptDetailAPI, GoodReceiptDetail, GoodReceiptEdit
 from apps.masterdata.saledata.views.product import (
@@ -28,7 +28,7 @@ from apps.masterdata.saledata.views.price import (
     PriceDeleteAPI
 )
 from apps.masterdata.saledata.views.shipping import ShippingList, ShippingCreate, ShippingListAPI, ShippingDetail, \
-    ShippingDetailAPI, ShippingCheckListAPI
+    ShippingDetailAPI, ShippingCheckListAPI, ShippingUpdate
 from apps.masterdata.saledata.views.warehouse import (
     WareHouseList, WareHouseListAPI, WareHouseDetailAPI, WarehouseProductAPI,
 )
@@ -153,16 +153,18 @@ urlpatterns = [
     path('expenses', ExpenseList.as_view(), name='ExpenseList'),
     path('expenses/api', ExpenseListAPI.as_view(), name='ExpenseListAPI'),
     path('expenses/create', ExpenseCreate.as_view(), name='ExpenseCreate'),
-    path('expense/<str:pk>', ExpenseDetail.as_view(), name='ExpenseDetail'),
+    path('expense/detail/<str:pk>', ExpenseDetail.as_view(), name='ExpenseDetail'),
     path('expense/api/<str:pk>', ExpenseDetailAPI.as_view(), name='ExpenseDetailAPI'),
     path('expenses-sale/api', ExpenseForSaleListAPI.as_view(), name='ExpenseForSaleListAPI'),
+    path('expense/update/<str:pk>', ExpenseUpdate.as_view(), name='ExpenseUpdate')
 ] + [
     path('shippings', ShippingList.as_view(), name='ShippingList'),
     path('shippings/create', ShippingCreate.as_view(), name='ShippingCreate'),
     path('shippings/api', ShippingListAPI.as_view(), name='ShippingListAPI'),
-    path('shipping/<str:pk>', ShippingDetail.as_view(), name='ShippingDetail'),
+    path('shipping/detail/<str:pk>', ShippingDetail.as_view(), name='ShippingDetail'),
     path('shipping/api/<str:pk>', ShippingDetailAPI.as_view(), name='ShippingDetailAPI'),
     path('shippings-check-api', ShippingCheckListAPI.as_view(), name='ShippingCheckListAPI'),
+    path('shipping/update/<str:pk>', ShippingUpdate.as_view(), name='ShippingUpdate'),
 ]
 
 # WareHouse

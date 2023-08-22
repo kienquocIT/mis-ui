@@ -26,16 +26,9 @@ class OpportunityList(View):
         perm_check=PermCheck(url=ApiURL.OPPORTUNITY_LIST, method='GET'),
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CONFIG).get()
-        if resp.state:
-            result = {
-                'employee_current_id': request.user.employee_current_data.get('id', None),
-                'config': resp.result
-            }
-        else:
-            result = {
-                'employee_current_id': request.user.employee_current_data.get('id', None),
-            }
+        result = {
+            'employee_current_id': request.user.employee_current_data.get('id', None),
+        }
         return result, status.HTTP_200_OK
 
 
@@ -154,7 +147,7 @@ class OpportunityConfigAPI(APIView):
     )
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CONFIG).get()
-        return resp.auto_return()
+        return resp.auto_return(key_success='opportunity_config')
 
     @mask_view(
         login_require=True,

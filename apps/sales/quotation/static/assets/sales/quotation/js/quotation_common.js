@@ -2175,12 +2175,12 @@ class QuotationCalculateCaseHandle {
             subtotalPlus = ((priceDiscountOnRow - discountAmountOnTotal) * quantity);
             // calculate tax
             if (eleTaxAmount) {
-                if (!form.classList.contains('sale-order')) {
+                if (!form.classList.contains('sale-order')) { // Quotation (normal calculate)
                     let taxAmount = ((subtotalPlus * tax) / 100);
                     $(eleTaxAmount).attr('value', String(taxAmount));
                     eleTaxAmountRaw.value = taxAmount;
-                } else {
-                    let taxAmount = ((subtotal * tax) / 100);
+                } else { // Sale Order
+                    let taxAmount = (((priceDiscountOnRow * quantity) * tax) / 100);
                     $(eleTaxAmount).attr('value', String(taxAmount));
                     eleTaxAmountRaw.value = taxAmount;
                 }

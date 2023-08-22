@@ -2093,7 +2093,7 @@ class QuotationCalculateCaseHandle {
                     }
                 } else {
                     if (pretaxAmount > 0) {
-                        discount_on_total = ((discountAmount / pretaxAmount) * 100);
+                        discount_on_total = ((discountAmount / pretaxAmount) * 100).toFixed(2);
                         document.getElementById('quotation-create-product-discount').value = discount_on_total;
                     }
                 }

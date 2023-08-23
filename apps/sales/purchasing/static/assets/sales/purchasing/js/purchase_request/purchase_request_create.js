@@ -155,7 +155,7 @@ $(document).ready(function () {
         let ele_uom = ele_tr_current.find('.box-select-uom');
         let ele_tax = ele_tr_current.find('.box-select-tax');
 
-        PurchaseRequestLoadPage.loadUoM(ele_uom, product?.['sale_information'].default_uom, {'group': product?.['general_information'].uom_group.id});
+        PurchaseRequestLoadPage.loadUoM(ele_uom, product?.['sale_information']?.['default_uom'], {'group': product?.['general_information'].uom_group.id});
         PurchaseRequestLoadPage.loadTax(ele_tax, product?.['sale_information'].tax_code);
         let ele_url = PurchaseRequestLoadPage.urlEle;
         loadProductDetail(ele_tr_current, ele_url, product)
@@ -215,7 +215,7 @@ $(document).ready(function () {
                             $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
                         }
                     }, (errs) => {
-                        $.fn.notifyB({description: "PR create fail"}, 'failure')
+                        $.fn.notifyB({description: errs.data.errors}, 'failure');
                     }
                 )
             }

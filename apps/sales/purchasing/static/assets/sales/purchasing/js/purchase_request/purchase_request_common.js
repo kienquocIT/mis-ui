@@ -470,7 +470,7 @@ function loadProductDetail(ele_tr_current, ele_url, product) {
     ele_tr_current.find('.input-affix-wrapper a').attr('href', ele_url.data('url-product-detail').format_url_with_uuid(product.id));
     ele_tr_current.find('.span-product-name').text(product.title);
     ele_tr_current.find('.span-product-code').text(product.code);
-    ele_tr_current.find('.span-product-uom').text(product?.['sale_information'].default_uom.title);
+    ele_tr_current.find('.span-product-uom').text(product?.['sale_information']?.['default_uom'].title);
     ele_tr_current.find('.span-product-uom-group').text(product?.['general_information'].uom_group.title);
 }
 

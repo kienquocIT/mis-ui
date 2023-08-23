@@ -19,6 +19,7 @@ $(document).ready(function () {
             {
                 keyParam: "has_manager_custom",
                 placeholder: msgData.attr('data-msg-by-group'),
+                allowClear: true,
                 data: [
                     {
                         'id': 'all',
@@ -27,7 +28,6 @@ $(document).ready(function () {
                     {
                         'id': 'me',
                         'text': msgData.attr('data-msg-of-me'),
-                        'allowClear': true,
                         selected: true,
                     },
                     {

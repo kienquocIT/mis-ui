@@ -2171,14 +2171,18 @@ class DTBControl {
             )
         }
         if (cusFilterArr && cusFilterArr.length > 0) {
-            // manualFilterEle.html(cusFilterArr.join(""));
             btnFilterEle.html(`
                 <button 
                     class="btn btn-light btn-sm mr-1"
                     data-bs-toggle="tooltip"
                     data-bs-placement="bottom"
                     title="${$.fn.transEle.attr('data-msg-open-close-filter')}"
-                ><i class="fa-solid fa-filter mr-1" style="color: #707070;"></i> ${$.fn.transEle.attr('data-msg-filter')}</button>
+                >
+                    <span>
+                        <span class="icon dtb-icon-btn-filter"><i class="fa-solid fa-filter" style="color: #707070;"></i></span>
+                        <span class="dtb-text-btn-filter">${$.fn.transEle.attr('data-msg-filter')}</span>
+                    </span>
+                </button>
             `);
             manualFilterEle.html(cusFilterArr.join(""));
             wrapperEle.on('click', '.btnAddFilter', function () {
@@ -2229,7 +2233,7 @@ class DTBControl {
         // render
         let keySortHtml = keySort.length > 0 ? `
             <div 
-                class="input-group input-group-sm ml-1"
+                class="input-group input-group-sm w-115p ml-1"
                 data-bs-toggle="tooltip"
                 title="${$.fn.transEle.attr('data-msg-sorting-by')}"
             >
@@ -2253,6 +2257,16 @@ class DTBControl {
                 </button>
                 <div class="dropdown-menu w-150p">
                     <ul class="p-0 m-0 custom-visible-dtb">
+                        <li class="d-flex align-items-center justify-content-between mb-1">
+                            <div class="form-check">
+                                <input 
+                                    type="checkbox" 
+                                    class="form-check-input check-all" 
+                                    id="${dtb.attr('id')}-visible-check-all"
+                                >
+                                <blabel class="form-check-label" for="${dtb.attr('id')}-visible-check-all"><b>${$.fn.transEle.attr('data-all')}</b></label>
+                            </div>
+                        </li>
                         ${keyVisible.join("")}
                     </ul>
                 </div>
@@ -2279,22 +2293,48 @@ class DTBControl {
                 ${keyVisibleHtml}
                 ${cusToolHtml}
             </div>
-        `).on('change', 'select.custom-order-dtb', function () {
-            if ($(this).val()) {
-                $(this).parent().find('.custom-order-asc-dtb').prop('disabled', false);
+        `).on(
+            'change', 'select.custom-order-dtb', function () {
+                if ($(this).val()) {
+                    $(this).parent().find('.custom-order-asc-dtb').prop('disabled', false);
+                    dtb.DataTable().ajax.reload();
+                } else {
+                    $(this).parent().find('.custom-order-asc-dtb').prop('disabled', true);
+                }
+            }
+        ).on(
+            'click', 'button.custom-order-asc-dtb', function () {
+                $(this).find('i').toggleClass('fa-arrow-down-a-z').toggleClass('fa-arrow-down-z-a');
                 dtb.DataTable().ajax.reload();
-            } else {
-                $(this).parent().find('.custom-order-asc-dtb').prop('disabled', true);
             }
-        }).on('click', 'button.custom-order-asc-dtb', function () {
-            $(this).find('i').toggleClass('fa-arrow-down-a-z').toggleClass('fa-arrow-down-z-a');
-            dtb.DataTable().ajax.reload();
-        }).on('change', 'input.custom-visible-item-dtb', function () {
-            let idx = Number.parseInt($(this).attr('data-idx'));
-            if (Number.isInteger(idx)) {
-                dtb.DataTable().column(idx).visible($(this).prop('checked'));
+        ).on(
+            'change', 'input.custom-visible-item-dtb',
+            function () {
+                // handle check all
+                let ddEle = $(this).closest('.dropdown-menu');
+                let allEle = ddEle.find('input.check-all');
+                let arrChecked = true;
+                ddEle.find('input.custom-visible-item-dtb').each(function () {
+                    if ($(this).prop('checked') === false) arrChecked = false;
+                });
+                allEle.prop('checked', arrChecked);
+
+                // handle this item
+                let idx = Number.parseInt($(this).attr('data-idx'));
+                if (Number.isInteger(idx)) {
+                    let currentVal = $(this).prop('checked');
+                    dtb.DataTable().column(idx).visible(currentVal);
+                }
             }
-        });
+        ).on(
+            'change', 'input.check-all',
+            function () {
+                let currentVal = $(this).prop('checked');
+                $(this).closest('.dropdown-menu').find('input.custom-visible-item-dtb').each(function () {
+                    $(this).prop('checked', currentVal).trigger('change');
+                });
+            }
+        );
         wrapperEle.on('change', 'select.custom-filter-manual-dtb', function () {
             dtb.DataTable().ajax.reload();
             DTBControl._summaryFilterToText(
@@ -2307,6 +2347,9 @@ class DTBControl {
                 wrapperEle.find('select.custom-filter-manual-dtb').each(function () {
                     $(this).initSelect2({allowClear: true})
                 });
+                wrapperEle.find('input.custom-visible-item-dtb').each(function () {
+                    $(this).trigger('change');
+                })
             },
             0
         )

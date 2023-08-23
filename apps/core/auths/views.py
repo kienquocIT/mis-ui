@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth import login
 from django.contrib.auth.models import AnonymousUser
 from django.shortcuts import render, redirect
@@ -38,10 +39,10 @@ class AuthOAuth2Login(APIView):
     @classmethod
     def post_callback_success(cls, result):
         return {
-                    'id': result['id'],
-                    'access_code': result['code'],
-                    'secret_token_regis': result['access_token_regis'],
-                }
+            'id': result['id'],
+            'access_code': result['code'],
+            'secret_token_regis': result['access_token_regis'],
+        }
 
     @mask_view(auth_require=True, is_api=True)
     def post(self, request, *args, **kwargs):
@@ -81,7 +82,13 @@ class AuthLogin(APIView):
                 return redirect(request.query_params.get('next', reverse('HomeView')))
         request.session.flush()
         request.user = AnonymousUser
-        return render(request, 'auths/login.html', {'is_notify_key': False})
+        return render(
+            request, 'auths/login.html', {
+                'is_notify_key': False,
+                'captcha_enabled': settings.GG_RECAPTCHA_ENABLED,
+                'secret_key_gg': settings.GG_RECAPTCHA_CLIENT_KEY if settings.GG_RECAPTCHA_ENABLED else None
+            }
+        )
 
     @mask_view(
         auth_require=False,

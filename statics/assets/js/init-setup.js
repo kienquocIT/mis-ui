@@ -85,12 +85,11 @@ class SetupFormSubmit {
                         'color': "red",
                     })
                 },
-                submitHandler: (
-                    submitHandler ? submitHandler : function (form) {
-                        form.submit()
-                    }
-                ),
-                onsubmit: !!submitHandler,
+                submitHandler: function (form, event) {
+                    event.preventDefault();
+                    submitHandler ? submitHandler(form, event) : form.submit();
+                },
+                onsubmit: true, // !!submitHandler,
             })
         } else {
             throw Error('Form element must be required!');

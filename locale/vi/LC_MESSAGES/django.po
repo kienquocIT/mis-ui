@@ -3974,3 +3974,7 @@ msgstr "Tăng dần"
 #
 msgid "Descending"
 msgstr "Giảm dần"
+
+#
+msgid "Please solve the captcha."
+msgstr "Vui lòng hoàn thành captcha."

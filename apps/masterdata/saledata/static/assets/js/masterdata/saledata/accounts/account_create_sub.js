@@ -1,4 +1,5 @@
 let [
+    accountName,
     accountTypeEle,
     accountManagerEle,
     accountOwnerEle,
@@ -10,8 +11,11 @@ let [
     shippingCityEle,
     shippingDistrictEle,
     shippingWardEle,
-    contactOwnerEle
+    contactOwnerEle,
+    inputOrganizationEle,
+    billingAddressEle
 ] = [
+    $('#inp-account-name'),
     $('#select-box-acc-type'),
     $('#select-box-acc-manager'),
     $('#select-box-contact'),
@@ -23,8 +27,12 @@ let [
     $('#shipping-city'),
     $('#shipping-district'),
     $('#shipping-ward'),
-    $('#select-box-contact-owner')
+    $('#select-box-contact-owner'),
+    $('#inp-organization'),
+    $('#select-box-address')
 ];
+
+let data_selected_contact = [];
 
 function loadAccountType(accountTypeData) {
     accountTypeEle.initSelect2({
@@ -74,7 +82,21 @@ function loadAccountOwner(accountOwnerData) {
         keyResp: 'contact_list_not_map_account',
         keyId: 'id',
         keyText: 'fullname',
-    })
+    }).on('change', function () {
+        let owner_selected = accountOwnerEle.val();
+        if (owner_selected !== null) {
+            let obj_owner = JSON.parse($('#' + accountOwnerEle.attr('data-idx-data-loaded')).text())[owner_selected];
+            let data = {
+                'id': obj_owner.id,
+                'job_title': obj_owner.job_title,
+                'fullname': obj_owner.fullname,
+                'mobile': obj_owner.mobile,
+                'email': obj_owner.email,
+                'owner': true
+            }
+            loadTableSelectedContact([data]);
+        }
+    });
 }
 
 function loadAccountGroup(accountGroupData) {
@@ -173,6 +195,47 @@ class AccountHandle {
 
     combinesData(frmEle) {
         let frm = new SetupFormSubmit($(frmEle));
+
+        // avatar
+        // name
+        // code
+        // website
+        // # [
+        // #   {"title": "Customer", "detail": "individual/organization"},
+        // #   {"title": "Personal", "detail": ""},
+        // # ]
+        // account_type
+        // account_type_selection
+        // account_group
+        // owner
+        // # ["e3e416d7-ae74-4bb8-a55f-169c5fde53a0", "d2f9397d-3a6c-46d6-9a67-442bc43554a8"]
+        // manager
+        // employee
+        // account_types_mapped
+        // bank_accounts_information
+        // credit_cards_information
+        // parent_account
+        // tax_code
+        // industry
+        // annual_revenue = models.SmallIntegerField(choices=ANNUAL_REVENUE_SELECTION, null=True)
+        // total_employees = models.SmallIntegerField(choices=TOTAL_EMPLOYEES_SELECTION, null=True)
+        // phone
+        // email
+        // # [
+        // #   "Số 2/8, Xã Định An, Huyện Dầu Tiếng, Bình Dương",
+        // #   "Số 22/20, Phường Lê Hồng Phong, Thành Phố Phủ Lý, Hà Nam"
+        // # ]
+        // # địa chỉ đầu tiên là default
+        // shipping_address
+        //
+        // # [
+        // #   "Tầng 2, TGDD, Số 22/20, xã Bình Hưng, huyện Bình Chánh, TP HCM (email: tgdd@gmail.com, tax code: 123123)"
+        // #   "Tầng 10, TGDD, Số 7/10, xã Bình Hưng, huyện Bình Chánh, TP HCM (email: tgdd@gmail.com, tax code: 123123)"
+        // # ]
+        // # địa chỉ đầu tiên là default
+        // billing_address
+
+
         let shipping_address_list = [];
         $('#list-shipping-address input[type=radio]').each(function () {
             if ($(this).is(':checked')) {
@@ -205,23 +268,23 @@ class AccountHandle {
             frm.dataForm['tax_code'] = null;
         }
 
-        if ($('#select-box-annual-revenue').val() === '0') {
+        if (annualRevenueEle.val() === '0') {
             frm.dataForm['annual_revenue'] = null;
         }
 
-        if ($('#select-box-total-emp').val() === '0') {
+        if (totalEmployeeEle.val() === '0') {
             frm.dataForm['total_employees'] = null;
         }
 
-        if ($('#select-box-acc-manager').val().length > 0) {
-            frm.dataForm['manager'] = $('#select-box-acc-manager').val();
+        if (accountManagerEle.val().length > 0) {
+            frm.dataForm['manager'] = accountManagerEle.val();
         }
 
-        if ($('#select-box-acc-type').val().length > 0) {
-            frm.dataForm['account_type'] = $('#select-box-acc-type').val();
+        if (accountTypeEle.val().length > 0) {
+            frm.dataForm['account_type'] = accountTypeEle.val();
         }
 
-        if ($('#inp-organization').is(':checked')) {
+        if (inputOrganizationEle.is(':checked')) {
             frm.dataForm['account_type_selection'] = 1;
         } else {
             frm.dataForm['account_type_selection'] = 0;
@@ -252,20 +315,23 @@ let shipping_address_id_dict = [];
 let billing_address_id_dict = [];
 
 $('#save-changes-modal-shipping-address').on('click', function () {
+    let shipping_address_modal = $('#detail-modal-shipping-address');
+    let shipping_city = $('#shipping-city');
+    let shipping_district = $('#shipping-district');
+    let shipping_ward = $('#shipping-ward');
+    let make_default_shipping_address = $('#make-default-shipping-address');
     try {
-        let detail_shipping_address = $('#detail-modal-shipping-address').val();
-        let city = $('#shipping-city').find(`option:selected`).text();
-        let district = $('#shipping-district').find(`option:selected`).text();
-        let ward = $('#shipping-ward').find(`option:selected`).text();
+        let detail_shipping_address = shipping_address_modal.val();
+        let city = shipping_city.find(`option:selected`).text();
+        let district = shipping_district.find(`option:selected`).text();
+        let ward = shipping_district.find(`option:selected`).text();
 
-        let selectedVal = $('#shipping-city').val();
-        let dataBackup = SelectDDControl.get_data_from_idx($('#shipping-city'), selectedVal);
-        let data_country_id = dataBackup?.['country_id'] || null;
-
-        let country_id = data_country_id;
-        let city_id = $('#shipping-city').find(`option:selected`).attr('value');
-        let district_id = $('#shipping-district').find(`option:selected`).attr('value');
-        let ward_id = $('#shipping-ward').find(`option:selected`).attr('value');
+        let selectedVal = shipping_city.val();
+        let dataBackup = SelectDDControl.get_data_from_idx(shipping_city, selectedVal);
+        let country_id = dataBackup?.['country_id'] || null;
+        let city_id = shipping_city.find(`option:selected`).attr('value');
+        let district_id = shipping_district.find(`option:selected`).attr('value');
+        let ward_id = shipping_ward.find(`option:selected`).attr('value');
 
         let shipping_address = '';
         if (city !== '' && district !== '' && detail_shipping_address !== '') {
@@ -277,28 +343,28 @@ $('#save-changes-modal-shipping-address').on('click', function () {
             }
 
             $('#modal-shipping-address').modal('hide');
-            $('#detail-modal-shipping-address').val('');
+            shipping_address_modal.val('');
         } else {
             $.fn.notifyB({description: "Missing address information!"}, 'failure');
         }
 
         if (shipping_address !== '') {
             let is_default = '';
-            if ($('#make-default-shipping-address').prop('checked') === true) {
+            if (make_default_shipping_address.prop('checked') === true) {
                 is_default = 'checked';
             }
 
             $('#list-shipping-address').append(
                 `<div class="form-check ml-5 mb-2">
                     <input class="form-check-input" type="radio" name="shippingaddressRadio" ` + is_default +`>
-                    <label>` + shipping_address + `</label>
-                    <a href="#" class="del-address-item"><i class="bi bi-x"></i></a>
+                    <span><label>` + shipping_address + `</label></span>
+                    <span><a href="#" class="del-address-item"><i class="bi bi-trash"></i></a></span>
                 </div>`
             )
 
             // delete address item
             $('.del-address-item').on('click', function () {
-                $(this).parent().remove();
+                $(this).closest('.form-check').remove();
             })
 
             shipping_address_id_dict.push({
@@ -308,7 +374,7 @@ $('#save-changes-modal-shipping-address').on('click', function () {
                 'district_id': district_id,
                 'ward_id': ward_id,
                 'full_address': shipping_address,
-                'is_default': $('#make-default-shipping-address').prop('checked')
+                'is_default': make_default_shipping_address.prop('checked')
             })
         }
     } catch (error) {
@@ -317,13 +383,14 @@ $('#save-changes-modal-shipping-address').on('click', function () {
 })
 
 $('#save-changes-modal-billing-address').on('click', function () {
+    let make_default_billing_address = $('#make-default-billing-address');
     try {
         let acc_name = $('#input-account-name').val();
         let email_address = $('#inp-email-address').val();
         let tax_code = $('#inp-tax-code-address').val();
 
-        let account_address = $('#select-box-address').find('option:selected').val();
-        if ($('#select-box-address').is(':hidden')) {
+        let account_address = billingAddressEle.find('option:selected').val();
+        if (billingAddressEle.is(':hidden')) {
             account_address = $('#edited-billing-address').val()
         }
 
@@ -337,20 +404,21 @@ $('#save-changes-modal-billing-address').on('click', function () {
 
         if (billing_address !== '') {
             let is_default = '';
-            if ($('#make-default-billing-address').prop('checked') === true) {
+            if (make_default_billing_address.prop('checked') === true) {
                 is_default = 'checked';
             }
 
             $('#list-billing-address').append(
-                `<div class="form-check ml-5"><input class="form-check-input" type="radio" name="billingaddressRadio" ` + is_default + `>
-                    <label>` + billing_address + `</label>
-                    <a href="#" class="del-address-item"><i class="bi bi-x"></i></a>
+                `<div class="form-check ml-5">
+                    <input class="form-check-input" type="radio" name="billingaddressRadio" ` + is_default + `>
+                    <span><label>` + billing_address + `</label></span>
+                    <span><a href="#" class="del-address-item"><i class="bi bi-trash"></i></a></span>
                 </div>`
             )
 
             // delete address item
             $('.del-address-item').on('click', function () {
-                $(this).parent().remove();
+                $(this).closest('.form-check').remove();
             })
 
             billing_address_id_dict.push({
@@ -359,7 +427,7 @@ $('#save-changes-modal-billing-address').on('click', function () {
                 'tax_code': tax_code,
                 'account_address': account_address,
                 'full_address': billing_address,
-                'is_default': $('#make-default-billing-address').prop('checked'),
+                'is_default': make_default_billing_address.prop('checked'),
             })
         }
     } catch (error) {
@@ -367,41 +435,22 @@ $('#save-changes-modal-billing-address').on('click', function () {
     }
 })
 
-let ele_table_offcanvas = $('#table-offcanvas').html()
 let config = {
-    dom: '<"row"<"col-7 mb-3"<"blog-toolbar-left">><"col-5 mb-3"<"blog-toolbar-right"flip>>><"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
-    ordering: false,
     scrollY: $(window).height() * 0.45,
     scrollCollapse: true,
     paging: false,
-    columnDefs: [{
-        "searchable": false,
-        "orderable": false, // "targets": [0,1,3,4,5,6,7,8,9]
-    }],
-    order: [2, 'asc'],
-    language: {
-        search: "",
-        searchPlaceholder: "Search",
-        info: "_START_ - _END_ of _TOTAL_",
-        sLengthMenu: "View  _MENU_",
-        paginate: {
-            next: '<i class="ri-arrow-right-s-line"></i>', // or '→'
-            previous: '<i class="ri-arrow-left-s-line"></i>' // or '←'
-        }
-    },
     drawCallback: function () {
         $('.dataTables_paginate > .pagination').addClass('custom-pagination pagination-simple');
-        feather.replace();
     },
     data: [],
     columns: [{
         'data': 'fullname',
-        render: (data, type, row, meta) => {
+        render: (data, type, row) => {
             return `<a href="#"><span><b>` + row.fullname + `</b></span></a>`
         }
     }, {
         'data': 'job_title',
-        render: (data, type, row, meta) => {
+        render: (data, type, row) => {
             if (row.job_title) {
                 return `<span>` + row.job_title + `</span>`
             }
@@ -409,7 +458,7 @@ let config = {
         }
     }, {
         'data': 'owner',
-        render: (data, type, row, meta) => {
+        render: (data, type, row) => {
             if (row.owner.fullname) {
                 return `<span>` + row.owner.fullname + `</span>`
             }
@@ -417,7 +466,7 @@ let config = {
         }
     }, {
         'data': 'mobile',
-        'render': (data, type, row, meta) => {
+        'render': (data, type, row) => {
             if (row.mobile) {
                 return `<span>` + row.mobile + `</span>`
             }
@@ -425,7 +474,7 @@ let config = {
         }
     }, {
         'data': 'email',
-        'render': (data, type, row, meta) => {
+        'render': (data, type, row) => {
             if (row.email) {
                 return `<span>` + row.email + `</span>`
             }
@@ -439,120 +488,13 @@ let config = {
     }]
 }
 
-function loadTableContact() {
-    let dtb = $('#datatable-add-contact');
-    let frm = new SetupFormSubmit(dtb);
-    $.fn.callAjax(frm.dataUrl, "GET").then(
-        (resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                config['data'] = data.contact_list_not_map_account
-                initDataTableOffCanvas(config);
-            }
-        }
-    )
-}
-
-$('#select-box-acc-type').select2();
-$('#select-box-acc-manager').select2();
-
-loadTableContact();
-
-// button add contact in offCanvas
-function tableContactAdd() {
-    let tableShowBodyOffModal = $('#datatable_contact_list tbody');
-
-    while (tableShowBodyOffModal[0].rows.length > 0) {
-        tableShowBodyOffModal[0].deleteRow(0);
-    }
-
-    let table = $('#datatable-add-contact').DataTable();
-    let dataCheckedIndexes = table.rows('.selected').indexes();
-    for (let idx = 0; idx < dataCheckedIndexes.length; idx++) {
-        let dataChecked = table.rows(dataCheckedIndexes[idx]).data()[0];
-        let rowNode = table.rows(dataCheckedIndexes[idx]).nodes()[0];
-        if (rowNode.lastElementChild.children[0].firstElementChild.getAttribute('data-owner') === '1') {
-            let trData = `<td><span>` + dataChecked.fullname + `</span><span class="field-required">*</span></td><td><span>` + dataChecked.job_title + `</span></td><td><span>` + dataChecked.phone + `</span></td><td><span>` + dataChecked.email + `</span></td>`;
-            tableShowBodyOffModal.prepend(`<tr class="contact_primary" data-value="` + dataChecked.id + `">` + trData + `</tr>`);
-        } else {
-            let trData = `<td><span>` + dataChecked.fullname + `</span></td><td><span>` + dataChecked.job_title + `</span></td><td><span>` + dataChecked.phone + `</span></td><td><span>` + dataChecked.email + `</span></td>`;
-            tableShowBodyOffModal.append(`<tr class="contact_selected" data-value="` + dataChecked.id + `">` + trData + `</tr>`);
-        }
-    }
-    return false;
-}
-
-// button add Contact in table Contact
-$('#btn-add-contact').on('click', function () {
-    tableContactAdd();
-    if ($('#datatable_contact_list tr').filter('.contact_primary').length === 0) {
-        $('#select-box-contact option:eq(0)').prop('selected', true);
-        $('#job_title').val('');
-    }
-})
-
-// Change Account Owner
-$('#select-box-contact').on('change', function () {
-    let oldValue = $(this).data('oldValue');
-    let newValue = $(this).val();
-    let tableShowBodyOffModal = $('#datatable_contact_list tbody');
-
-    let table = $("#datatable-add-contact").DataTable();
-    let indexList = table.rows().indexes();
-
-    if ($(this).val() === '') {
-        while (tableShowBodyOffModal[0].rows.length > 0) {
-            tableShowBodyOffModal[0].deleteRow(0);
-        }
-        $('#job_title').val('');
-        for (let idx = 0; idx < indexList.length; idx++) {
-            let rowNode = table.rows(indexList[idx]).nodes()[0]
-            rowNode.classList.remove('selected');
-            rowNode.lastElementChild.children[0].firstElementChild.checked = false;
-            rowNode.lastElementChild.children[0].firstElementChild.setAttribute('data-owner', '0');
-        }
-    } else {
-        let data_url = $(this).attr('data-url-detail').replace(0, $(this).val())
-        $.fn.callAjax(data_url, $(this).attr('data-method')).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (data.hasOwnProperty('contact_detail')) {
-                        $('#job_title').val(data.contact_detail.job_title);
-                        if ($('.contact_selected').length > 0 && $('.contact_selected').filter(`[data-value="` + newValue + `"]`))
-                            $('.contact_selected').filter(`[data-value="` + newValue + `"]`).remove();
-                        $('.contact_primary').remove();
-                        tableShowBodyOffModal.prepend(`<tr class="contact_primary" data-value="` + newValue + `"><td><span>` + data.contact_detail.fullname.fullname + `</span><span class="field-required">*</span></td><td><span>` + data.contact_detail.job_title + `</span></td><td><span>` + data.contact_detail.phone + `</span></td><td><span>` + data.contact_detail.email + `</span></td></tr>`);
-                        for (let idx = 0; idx < indexList.length; idx++) {
-                            let rowNode = table.rows(indexList[idx]).nodes()[0]
-                            if (data.contact_detail.id === rowNode.lastElementChild.children[0].firstElementChild.getAttribute('value')) {
-                                rowNode.classList.add('selected');
-                                rowNode.lastElementChild.children[0].firstElementChild.checked = true;
-                                rowNode.lastElementChild.children[0].firstElementChild.setAttribute('data-owner', '1');
-                            } else if (oldValue === rowNode.lastElementChild.children[0].firstElementChild.getAttribute('value')) {
-                                rowNode.classList.remove('selected');
-                                rowNode.lastElementChild.children[0].firstElementChild.checked = false;
-                                rowNode.lastElementChild.children[0].firstElementChild.setAttribute('data-owner', '0');
-                            }
-                        }
-                    }
-                }
-            }
-        )
-    }
-    $(this).data('oldValue', newValue);
-}).each(function () {
-    $(this).data('oldValue', $(this).val());
-});
-
-$('#inp-individual').on('change', function () {
-    $('#select-box-parent-account').prop('selectedIndex', -1);
-    $('#select-box-parent-account').attr('disabled', true);
+inputOrganizationEle.on('change', function () {
+    $('#select-box-parent-account').prop('selectedIndex', -1).attr('disabled', true);
     $("#tax-code-label").removeClass("required");
     $("#total_employees_label").removeClass("required");
 })
 
-$('#inp-organization').on('change', function () {
+inputOrganizationEle.on('change', function () {
     $('#select-box-parent-account').attr('disabled', false);
     $("#tax-code-label").addClass("required");
     $("#total_employees_label").addClass("required");
@@ -568,75 +510,41 @@ $('#edit-shipping-address-btn').on('click', function () {
 $('#edit-billing-address-btn').on('click', function () {
     let ele = $('#select-box-account-name')
     ele.html('');
-    $('#edited-billing-address').val('');
-    $('#select-box-address').prop('hidden', false);
-    $('#edited-billing-address').prop('hidden', true);
+    $('#edited-billing-address').val('').prop('hidden', true);
+    billingAddressEle.prop('hidden', false);
     $('#button_add_new_billing_address').html(`<i class="fas fa-plus-circle"></i> Add/Edit`)
 
-    $('#input-account-name').val($('#inp-account-name').val());
+    $('#input-account-name').val(accountName.val());
     $('#inp-tax-code-address').val($('#inp-tax-code').val());
     $('#inp-email-address').val($('#inp-email').val());
-    $('#select-box-account-name').prepend(`<option value="">` + $('#inp-account-name').val() + `</option>`)
+    ele.prepend(`<option value="">` + accountName.val() + `</option>`)
 
     if ($('#list-billing-address input').length === 0)
         $('#make-default-billing-address').prop('checked', true);
 
-    let select_box = $('#select-box-address')
-    select_box.empty();
-    select_box.append(`<option value="0" selected></option>`)
+    billingAddressEle.empty();
+    billingAddressEle.append(`<option value="0" selected></option>`)
     $('#list-shipping-address').children().each(function () {
         if ($(this).find('input').prop('checked') === true)
-            select_box.append(`<option value="` + $(this).find('label').text() + `">` + $(this).find('label').text() + `</option>`)
+            billingAddressEle.append(`<option value="` + $(this).find('label').text() + `">` + $(this).find('label').text() + `</option>`)
         else
-            select_box.append(`<option value="` + $(this).find('label').text() + `">` + $(this).find('label').text() + `</option>`)
+            billingAddressEle.append(`<option value="` + $(this).find('label').text() + `">` + $(this).find('label').text() + `</option>`)
     });
-})
-
-// Conditions for show offCanvas add Contact
-$('#add-contact-btn').on('click', function () {
-    let allFieldsFilled = true;
-    $('.inp-required').each(function () {
-        if ($(this).val() === '') {
-            allFieldsFilled = false;
-        }
-        return false;
-    });
-    $('.select2-required').each(function () {
-        if ($(this).val().length === 0) {
-            allFieldsFilled = false;
-            return false;
-        }
-    });
-    $('.select-required').each(function () {
-        if ($(this).find('option:selected').val() === '') {
-            allFieldsFilled = false;
-            return false;
-        }
-    });
-    // if (!allFieldsFilled) {
-    //     $.fn.notifyB({description: "Not yet filled"}, 'warning')
-    //     $('#offcanvasRight').offcanvas('hide');
-    // } else {
-    //     $('#offcanvasRight').offcanvas('show');
-    // }
-    $('#offcanvasRight').offcanvas('show');
 })
 
 // process address
-$('#select-box-address').on('change', function () {
+billingAddressEle.on('change', function () {
     $('#edited-billing-address').val($(this).find('option:selected').text());
 })
 
 $('#button_add_new_billing_address').on('click', function () {
     if ($('#button_add_new_billing_address i').attr('class') === 'fas fa-plus-circle') {
         $(this).html(`<i class="bi bi-backspace-fill"></i> Select`);
-        $('#select-box-address').prop('hidden', true);
-        $('#select-box-address').prop('disabled', true);
+        billingAddressEle.prop('hidden', true).prop('disabled', true);
         $('#edited-billing-address').prop('hidden', false);
     } else {
         $(this).html(`<i class="fas fa-plus-circle"></i> Add/Edit`)
-        $('#select-box-address').prop('hidden', false);
-        $('#select-box-address').prop('disabled', false);
+        billingAddressEle.prop('hidden', false).prop('disabled', false);
         $('#edited-billing-address').prop('hidden', true);
     }
 })
@@ -663,57 +571,235 @@ $('#btn-add-new-contact').on('click', function () {
     )
 })
 
-// function reload table add contact after add contact
-function initDataTableOffCanvas(config) {
-    let dtb = $('#datatable-add-contact');
-    if (dtb.length > 0) {
-        let targetDt = dtb.DataTable(config);
-        let indexList = targetDt.rows().indexes();
-        $('#datatable_contact_list tr').each(function () {
-            let rowValue = $(this).attr('data-value');
-            for (let idx = 0; idx < indexList.length; idx++) {
-                let rowNode = targetDt.rows(indexList[idx]).nodes()[0]
-                if (rowValue === rowNode.lastElementChild.children[0].firstElementChild.getAttribute('value')) {
-                    if ($(this).hasClass('contact_primary')) {
-                        rowNode.lastElementChild.children[0].firstElementChild.setAttribute('data-owner', '1');
+function loadTableSelectContact(account_owner_id, selected_contact_list) {
+    let tbl = $('#datatable-add-contact');
+    tbl.DataTable().destroy();
+    tbl.DataTableDefault({
+        scrollY: true,
+        paging: false,
+        useDataServer: true,
+        rowIdx: true,
+        ajax: {
+            url: tbl.attr('data-url'),
+            type: tbl.attr('data-method'),
+            dataSrc: function (resp) {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (resp.data['contact_list_not_map_account']) {
+                        let data_raw = resp.data['contact_list_not_map_account'];
+                        let data_filter = [];
+                        for (let i = 0; i < data_raw.length; i++) {
+                            if (account_owner_id !== data_raw[i].id) {
+                                data_filter.push(data_raw[i]);
+                            }
+                        }
+                        return data_filter;
                     } else {
-                        rowNode.lastElementChild.children[0].firstElementChild.setAttribute('data-owner', '0')
+                        return [];
                     }
-                    rowNode.classList.add('selected');
-                    rowNode.lastElementChild.children[0].firstElementChild.checked = true;
                 }
+                return [];
             }
-        })
+        },
+        columns: [
+            {
+                className: 'w-5',
+                render: () => {
+                    return ``;
+                }
+            },
+            {
+                data: 'fullname',
+                className: 'w-25',
+                render: (data, type, row) => {
+                    return `<span class="text-primary"><b>${row.fullname}</b></span>`
+                }
+            },
+            {
+                data: 'job_title',
+                className: 'text-center w-15',
+                render: (data, type, row) => {
+                    return `<span class="text-secondary">${row.job_title}</span>`
+                }
+            },
+            {
+                data: 'owner',
+                className: 'w-20',
+                render: (data, type, row) => {
+                    if (Object.keys(row.owner).length !== 0) {
+                        return `<span class="text-secondary">${row.owner.fullname}</span>`
+                    }
+                    return ``
+                }
+            },
+            {
+                data: 'mobile',
+                className: 'text-center w-15',
+                render: (data, type, row) => {
+                    if (row.mobile !== null) {
+                        return `<span class="text-secondary">${row.mobile}</span>`
+                    }
+                    return ``
+                }
+            },
+            {
+                data: 'email',
+                className: 'text-center w-15',
+                render: (data, type, row) => {
+                    if (row.email !== null) {
+                        return `<span class="text-secondary">${row.email}</span>`
+                    }
+                    return ``
+                }
+            },
+            {
+                data: '',
+                className: 'text-center w-5',
+                render: (data, type, row) => {
+                    if (selected_contact_list.includes(row.id)) {
+                        return `<span class="form-check">
+                            <input type="checkbox" class="form-check-input selected_contact"
+                            data-id="${row.id}" checked
+                            data-fullname="${row.fullname}"
+                            data-mobile="${row.mobile}"
+                            data-email="${row.email}"
+                            data-job-title="${row.job_title}">
+                            <label class="form-check-label"></label>
+                        </span>`
+                    }
+                    else {
+                        return `<span class="form-check">
+                            <input type="checkbox" class="form-check-input selected_contact"
+                            data-id="${row.id}"
+                            data-fullname="${row.fullname}"
+                            data-mobile="${row.mobile}"
+                            data-email="${row.email}"
+                            data-job-title="${row.job_title}">
+                            <label class="form-check-label"></label>
+                        </span>`
+                    }
+                }
+            },
+        ],
+    })
+}
+
+$('#add-contact-btn').on('click', function () {
+    let selected_contact = [];
+    document.querySelectorAll('.selected_contact_full_name').forEach(function (element) {
+        selected_contact.push(element.getAttribute('data-id'));
+    })
+    loadTableSelectContact(accountOwnerEle.val(), selected_contact);
+})
+
+function loadTableSelectedContact(data) {
+    let tbl = $('#datatable_contact_list');
+    tbl.DataTable().destroy();
+    tbl.DataTableDefault({
+        dom: '',
+        paging: false,
+        data: data,
+        columns: [
+            {
+                className: 'w-5',
+                render: (data, type, row) => {
+                    if (row.owner === true) {
+                        return `<span class="text-primary"><i class="bi bi-check2-square"></i></span>`
+                    }
+                    return ``;
+                }
+            },
+            {
+                data: 'fullname',
+                className: 'w-30',
+                render: (data, type, row) => {
+                    return `<span class="text-secondary selected_contact_full_name" data-id="${row.id}"><b>${row.fullname}</b></span>`
+                }
+            },
+            {
+                data: 'job_title',
+                className: 'w-20',
+                render: (data, type, row) => {
+                    return `<span class="text-secondary">${row.job_title}</span>`
+                }
+            }, {
+                data: 'mobile',
+                className: 'w-25',
+                render: (data, type, row) => {
+                    if (row.mobile !== null && row.mobile !== 'null') {
+                        return `<span class="text-secondary">${row.mobile}</span>`
+                    }
+                    return ``
+                }
+            },
+            {
+                data: 'email',
+                className: 'w-20',
+                render: (data, type, row) => {
+                    if (row.email !== null && row.email !== 'null') {
+                        return `<span class="text-secondary">${row.email}</span>`
+                    }
+                    return ``
+                }
+            },
+        ],
+    })
+}
+
+$(document).on('click', '#btn-add-contact', function () {
+    let selected_contact = [];
+    let owner_selected = accountOwnerEle.val();
+    if (owner_selected !== null) {
+        let obj_owner = JSON.parse($('#' + accountOwnerEle.attr('data-idx-data-loaded')).text())[owner_selected];
+        let data = {
+            'id': obj_owner.id,
+            'job_title': obj_owner.job_title,
+            'fullname': obj_owner.fullname,
+            'mobile': obj_owner.mobile,
+            'email': obj_owner.email,
+            'owner': true
+        }
+        selected_contact.push(data)
+    }
+
+    document.querySelectorAll('.selected_contact').forEach(function (element) {
+        if (element.checked) {
+            selected_contact.push({
+                'id': element.getAttribute('data-id'),
+                'job_title': element.getAttribute('data-job-title'),
+                'fullname': element.getAttribute('data-fullname'),
+                'mobile': element.getAttribute('data-mobile'),
+                'email': element.getAttribute('data-email'),
+                'owner': false
+            })
+        }
+    })
+    loadTableSelectedContact(selected_contact);
+    checkSelectAll();
+});
+
+function checkSelectAll() {
+    if (document.querySelectorAll('.selected_contact:checked').length === document.querySelectorAll('.selected_contact').length) {
+        document.getElementById('check-select-all').checked = true;
+    }
+    else {
+        document.getElementById('check-select-all').checked = false;
     }
 }
 
-// select all checkbox in offCanvas
-$(document).on('click', '#datatable-add-contact .check-select', function () {
-    if ($(this).is(":checked")) {
-        $(this).closest('tr').addClass('selected');
-    } else {
-        $(this).closest('tr').removeClass('selected');
-        $('.check-select-all').prop('checked', false);
-    }
+$(document).on('click', '.selected_contact', function () {
+    checkSelectAll();
 });
 
-$('#datatable-add-contact .check-select-all').on('click', function () {
-    $('.check-select').attr('checked', true);
-    let table = $('#datatable-add-contact').DataTable();
-    let indexList = table.rows().indexes();
-    if ($(this).is(":checked")) {
-        for (let idx = 0; idx < indexList.length; idx++) {
-            let rowNode = table.rows(indexList[idx]).nodes()[0];
-            rowNode.classList.add('selected');
-            rowNode.lastElementChild.children[0].firstElementChild.checked = true;
-        }
-        $('.check-select').prop('checked', true);
-    } else {
-        for (let idx = 0; idx < indexList.length; idx++) {
-            let rowNode = table.rows(indexList[idx]).nodes()[0];
-            rowNode.classList.remove("selected");
-            rowNode.firstElementChild.children[0].firstElementChild.checked = false;
-        }
-        $('.check-select').prop('checked', false);
+$(document).on('click', '#check-select-all', function () {
+    if ($(this).is(':checked')) {
+        document.querySelectorAll('.selected_contact').forEach(function (element) {
+            element.checked = true;
+        })
+    }
+    else {
+        document.querySelectorAll('.selected_contact').forEach(function (element) {
+            element.checked = false;
+        })
     }
 });

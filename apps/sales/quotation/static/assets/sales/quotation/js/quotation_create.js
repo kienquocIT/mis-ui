@@ -763,6 +763,8 @@ $(function () {
                 QuotationLoadDataHandle.loadDataTablesAndDropDowns(dataCopy);
                 if (dataCopyTo.option === 'custom') {
                     QuotationCalculateCaseHandle.calculateAllRowsTableProduct(tableProduct);
+                } else {
+                    QuotationCalculateCaseHandle.calculateAllRowsTableProduct(tableProduct);
                 }
 
             } else if (type === 'copy-to') { // COPY TO (QUOTATION DETAIL -> SALE ORDER CREATE)
@@ -821,6 +823,8 @@ $(function () {
                     QuotationLoadDataHandle.loadDataTablesAndDropDowns(dataCopy);
                     if (dataRaw.option === 'custom') {
                         QuotationCalculateCaseHandle.calculateAllRowsTableProduct(tableProduct);
+                    } else {
+                        QuotationCalculateCaseHandle.calculateAllRowsTableProduct(tableProduct);
                     }
                 }
             }
@@ -829,8 +833,6 @@ $(function () {
         function checkElementValuesBeforeLoadDataCopy() {
             let element0 = $('#data-copy-quotation-detail').val();
             let element1 = $('#data-init-quotation-create-tables-product').val();
-
-
             if (element0 && element1) {
                 loadDataCopyTo(JSON.parse(element0));  // call loadDataCopyTo() if all condition pass
             } else {

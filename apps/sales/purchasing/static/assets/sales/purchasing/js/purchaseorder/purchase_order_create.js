@@ -76,14 +76,14 @@ $(function () {
         });
 
         // Checkbox all
-        $('#table-purchase-request-checkbox-all').on('click', function() {
+        tablePurchaseRequest.on('click', '.table-checkbox-all', function() {
             clickCheckBoxAll($(this), tablePurchaseRequest);
             POLoadDataHandle.loadModalPurchaseRequestProductTable(true);
         });
 
         // Action on click .table-row-checkbox of tablePurchaseRequest
         tablePurchaseRequest.on('click', '.table-row-checkbox', function() {
-            $('#table-purchase-request-checkbox-all')[0].checked = false;
+            tablePurchaseRequest[0].querySelector('.table-checkbox-all').checked = false;
             POLoadDataHandle.loadModalPurchaseRequestProductTable();
         });
 

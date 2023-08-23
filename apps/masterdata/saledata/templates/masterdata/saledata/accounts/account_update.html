@@ -104,7 +104,7 @@
                         <div class="form-group col-12">
                             <label class="label-field form-label"
                                    for="account-owner-id">{% trans "Account Owner" %}</label>
-                            <select id="account-owner-id" name="owner_id" class="form-select"
+                            <select id="account-owner-id" name="owner" class="form-select"
                                     data-method="GET"
                                     data-url="{% url "ContactListNotMapAccountAPI" %}"
                                     data-url-detail="{% url "ContactDetailAPI" pk=0 %}">
@@ -115,19 +115,19 @@
                         <div class="form-group col-12">
                             <label class="label-field form-label"
                                    for="owner-job-title-id">{% trans "Job Title" %}</label>
-                            <input type="text" class="form-control input-cannot-edit" name="owner-job-title" id="owner-job-title-id">
+                            <input disabled type="text" class="form-control input-cannot-edit" name="owner-job-title" id="owner-job-title-id">
                         </div>
                     </div>
                     <div class="row">
                         <div class="form-group col-12">
                             <label class="label-field form-label" for="owner-email-id">{% trans "Email" %}</label>
-                            <input type="text" class="form-control input-cannot-edit" name="owner-email" id="owner-email-id">
+                            <input disabled type="text" class="form-control input-cannot-edit" name="owner-email" id="owner-email-id">
                         </div>
                     </div>
                     <div class="row">
                         <div class="form-group col-12">
                             <label class="label-field form-label" for="owner-mobile-id">{% trans "Mobile" %}</label>
-                            <input type="text" class="form-control input-cannot-edit" name="owner-mobile" id="owner-mobile-id">
+                            <input disabled type="text" class="form-control input-cannot-edit" name="owner-mobile" id="owner-mobile-id">
                         </div>
                     </div>
                 </div>
@@ -151,6 +151,7 @@
                             </a>
                         </li>
                     </ul>
+
                     <div class="tab-content">
                         <div class="tab-pane fade show active" id="tab_detail">
                             <div class="row mt-6">
@@ -332,6 +333,10 @@
                                             </span>
                                     </button>
                                 </div>
+                                <button type="button" class="btn btn-soft-primary mr-5" id="btn-add-new-contact"
+                                        data-bs-toggle="modal" data-bs-target="#modal-add-new-contact"
+                                        aria-label="Close" hidden
+                                >{% trans "Add New Contact" %}</button>
                             </div>
                         </div>
 
@@ -742,7 +747,6 @@
                 </div>
             </div>
         </div>
-        </div>
     </form>
 
     <div class="modal fade" id="modal-add-contact" tabindex="-1" role="dialog"
@@ -785,6 +789,84 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal Add new Contact -->
+    <div class="modal fade" id="modal-add-new-contact" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalCenter" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans "Add New Contact" %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form data-url="{% url "ContactCreateAPI" %}" data-method="POST" id="frm-create-new-contact">
+                        <div class="row">
+                            <div class="form-group">
+                                <label class="form-label">{% trans "Contact Owner" %}
+                                    <span class="field-required">*</span>
+                                </label>
+                                <select class="form-control select2" id="select-box-contact-owner"
+                                        data-method="GET"
+                                        data-url="{% url 'EmployeeListAPI' %}">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label class="form-label">{% trans "Job Title" %}</label>
+                                    <input type="text" class="form-control" id="inp-jobtitle">
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label class="form-label">{% trans "Full Name" %}
+                                        <span class="field-required">*</span>
+                                    </label>
+                                    <input type="text" class="form-control" id="inp-fullname">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <label class="form-label">{% trans "Email" %}
+                                </label>
+                                <input type="text" class="form-control" id="inp-email-contact">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label class="form-label">{% trans "Phone" %}
+                                    </label>
+                                    <input type="text" class="form-control" id="inp-phone">
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label class="form-label">{% trans "Mobile" %}
+                                    </label>
+                                    <input type="text" class="form-control" id="inp-mobile">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-outline-primary" type="submit" form="frm-create-new-contact">
+                        <span>
+                            <span>{% trans 'Save' %}</span>
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End modal Add new Contact -->
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static "assets/js/masterdata/saledata/accounts/account_update.js" %}"></script>

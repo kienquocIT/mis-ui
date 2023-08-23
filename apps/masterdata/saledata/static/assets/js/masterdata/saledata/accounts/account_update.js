@@ -69,6 +69,73 @@ $(document).ready(function () {
         )
     }
 
+    function loadContactOwner(contactOwnerData) {
+        $('#select-box-contact-owner').initSelect2({
+            ajax: {
+                url: $('#select-box-contact-owner').attr('data-url'),
+                method: 'GET',
+            },
+            data: (contactOwnerData ? contactOwnerData : null),
+            keyResp: 'employee_list',
+            keyId: 'id',
+            keyText: 'full_name',
+        })
+    }
+    loadContactOwner()
+
+    let frm_create_contact = $('#frm-create-new-contact');
+    frm_create_contact.submit(function (event) {
+        event.preventDefault();
+        let contact_name = $('#inp-fullname').val();
+        let contact_owner = $('#select-box-contact-owner').val();
+        let job_title = $('#inp-jobtitle').val();
+        let contact_email = $('#inp-email-contact').val();
+        let contact_mobile = $('#inp-mobile').val();
+        let contact_phone = $('#inp-phone').val();
+        let data = {
+            'owner': contact_owner,
+            'fullname': contact_name,
+            'job_title': job_title,
+            'email': contact_email,
+            'phone': contact_phone,
+            'mobile': contact_mobile
+        }
+        let csr = $("input[name=csrfmiddlewaretoken]").val();
+        $.fn.callAjax($(this).attr('data-url'), $(this).attr('data-method'), data, csr).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    //reload select box account owner
+                    let id_contact_primary = null;
+                    if ($('#datatable_contact_list .contact_primary').length !== 0) {
+                        id_contact_primary = $('#datatable_contact_list .contact_primary').attr('data-value');
+                    }
+
+                    // loadAccountOwner(id_contact_primary);
+                    // $('#table-offcanvas').empty();
+                    // $('#table-offcanvas').append(ele_table_offcanvas);
+
+                    // reload datatable contact in offCanvas
+                    let table = $('#datatable-add-contact')
+                    $.fn.callAjax(table.attr('data-url'), table.attr('data-method')).then((resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('contact_list_not_map_account')) {
+                                config['data'] = resp.data.contact_list_not_map_account;
+                            }
+                        }
+                    }, (errs) => {
+                    },)
+
+                    $('#modal-add-new-contact').hide();
+                    $('#offcanvasRight').offcanvas('show');
+                }
+            },
+            (errs) => {
+                //$.fn.notifyB({description: errs.data.errors}, 'failure');
+            })
+    })
+
     $('#shipping-city').on('change', function () {
         loadDistricts();
         $('#shipping-ward').html('<option value="" selected>---</option>');
@@ -401,7 +468,7 @@ $(document).ready(function () {
 
                 loadAccountGroup(data.account_group);
 
-                console.log(data)
+                // console.log(data)
                 loadPaymentTerms(data.payment_term_customer_mapped, data.payment_term_supplier_mapped);
 
                 loadPriceList(data.price_list_mapped);
@@ -638,6 +705,7 @@ $(document).ready(function () {
 
     // load Account Owner SelectBox
     function loadAccountOwner(current_account_owner, contacts_mapped) {
+        // console.log(current_account_owner)
         $('#owner-job-title-id').val(current_account_owner.job_title);
         $('#owner-email-id').val(current_account_owner.email);
         $('#owner-mobile-id').val(current_account_owner.mobile);
@@ -652,7 +720,6 @@ $(document).ready(function () {
                     ele.text("");
                     ele.append(`<option value=""></option>`)
                     if (data.hasOwnProperty('contact_list_not_map_account') && Array.isArray(data.contact_list_not_map_account)) {
-
                         for (let i = 0; i < contacts_mapped.length; i++) {
                             data.contact_list_not_map_account.unshift(contacts_mapped[i]);
                         }
@@ -857,7 +924,9 @@ $(document).ready(function () {
                 return obj !== option_selected.val();
             })
         }
-        list_contact_map.unshift(option_selected.val());
+        if (option_selected.val() !== '') {
+            list_contact_map.unshift(option_selected.val());
+        }
         table.clear().draw();
         list_contact_map.map(function (id) {
             let contact = dict_contact[id];
@@ -1042,7 +1111,7 @@ $(document).ready(function () {
         }
 
         if ($('#account-owner-id').val() === '') {
-            frm.dataForm['owner_id'] = null;
+            frm.dataForm['owner'] = null;
         }
 
         if ($('#account-revenue-id').val() === '0') {
@@ -1144,7 +1213,7 @@ $(document).ready(function () {
                         },
                         1000
                     )
-                    //$.fn.notifyB({description: errs.data.errors}, 'failure');
+                    $.fn.notifyB({description: errs.data.errors}, 'failure');
                 }
             )
     });

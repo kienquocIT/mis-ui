@@ -1,6 +1,5 @@
 function loadAddressDisplay(idx, addr, ward, district, city) {
-    // #detail-modal-work-address
-    let txt = `${addr ? addr : ''}, ${ward ? addr : ''}, ${district ? district : ''}, ${city ? city : ''}`;
+    let txt = `${addr ? addr : ''}, ${ward ? ward : ''}, ${district ? district : ''}, ${city ? city : ''}`;
     $(idx).val(txt);
 }
 
@@ -94,7 +93,7 @@ function loadWWard(wardData) {
     });
 }
 
-$('#save-changes-modal-work-address').click(function () {
+$('#save-changes-modal-work-address').on('click', function () {
     try {
         let country_id = $('input[name="work_country"]').val();
         let city_id = wCityEle.val()
@@ -108,6 +107,7 @@ $('#save-changes-modal-work-address').click(function () {
             let ward = wWardEle.find(`option[value="` + ward_id + `"]`).text();
 
             if (detail_work_address || city || district || ward) {
+                console.log(wAddr, detail_work_address, ward, district, city)
                 loadAddressDisplay(wAddr, detail_work_address, ward, district, city);
                 $(this).closest('div.modal').modal('hide');
             } else {

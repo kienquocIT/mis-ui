@@ -10,8 +10,7 @@ let [
     shippingCityEle,
     shippingDistrictEle,
     shippingWardEle,
-    accountNameEle,
-    accountAddressEle
+    contactOwnerEle
 ] = [
     $('#select-box-acc-type'),
     $('#select-box-acc-manager'),
@@ -24,46 +23,15 @@ let [
     $('#shipping-city'),
     $('#shipping-district'),
     $('#shipping-ward'),
-    $('#select-box-account-name'),
-    $('#select-box-address')
+    $('#select-box-contact-owner')
 ];
-
-function loadShippingCities(shippingCityData) {
-    shippingCityEle.initSelect2({
-        data: (shippingCityData ? shippingCityData : null),
-        keyResp: 'cities',
-    }).on('change', function () {
-        shippingDistrictEle.find('option').remove();
-        shippingWardEle.find('option').remove();
-        loadShippingDistricts();
-    })
-}
-
-function loadShippingDistricts() {
-    shippingDistrictEle.initSelect2({
-        ajax: {
-            url: shippingDistrictEle.attr('data-url').format_url_with_uuid($('#shipping-city').val()),
-            method: 'GET'
-        },
-        keyResp: 'districts',
-    }).on('change', function () {
-        shippingWardEle.find('option').remove();
-        loadShippingWards();
-    })
-}
-
-function loadShippingWards() {
-    shippingWardEle.initSelect2({
-        ajax: {
-            url: shippingWardEle.attr('data-url').format_url_with_uuid($('#shipping-district').val()),
-            method: 'GET'
-        },
-        keyResp: 'wards',
-    });
-}
 
 function loadAccountType(accountTypeData) {
     accountTypeEle.initSelect2({
+        ajax: {
+            url: accountTypeEle.attr('data-url'),
+            method: 'GET',
+        },
         data: (accountTypeData ? accountTypeData : null),
         keyResp: 'account_type_list',
         keyText: 'title',
@@ -72,32 +40,52 @@ function loadAccountType(accountTypeData) {
 
 function loadAccountManager(accountManagerData) {
     accountManagerEle.initSelect2({
+        ajax: {
+            url: accountManagerEle.attr('data-url'),
+            method: 'GET',
+        },
         data: (accountManagerData ? accountManagerData : null),
         keyResp: 'employee_list',
+        keyId: 'id',
         keyText: 'full_name',
     })
 }
 
 function loadIndustry(industryData) {
     industryEle.initSelect2({
+        ajax: {
+            url: industryEle.attr('data-url'),
+            method: 'GET',
+        },
         data: (industryData ? industryData : null),
         keyResp: 'industry_list',
+        keyId: 'id',
         keyText: 'title',
     })
 }
 
 function loadAccountOwner(accountOwnerData) {
     accountOwnerEle.initSelect2({
+        ajax: {
+            url: accountOwnerEle.attr('data-url'),
+            method: 'GET',
+        },
         data: (accountOwnerData ? accountOwnerData : null),
         keyResp: 'contact_list_not_map_account',
+        keyId: 'id',
         keyText: 'fullname',
     })
 }
 
 function loadAccountGroup(accountGroupData) {
     accountGroupEle.initSelect2({
+        ajax: {
+            url: accountGroupEle.attr('data-url'),
+            method: 'GET',
+        },
         data: (accountGroupData ? accountGroupData : null),
         keyResp: 'account_group_list',
+        keyId: 'id',
         keyText: 'title',
     })
 }
@@ -116,72 +104,55 @@ function loadAnnualRevenue() {
 
 function loadParentAccount(parentAccountData) {
     parentAccountEle.initSelect2({
+        ajax: {
+            url: parentAccountEle.attr('data-url'),
+            method: 'GET',
+        },
         data: (parentAccountData ? parentAccountData : null),
         keyResp: 'account_list',
         keyText: 'name',
     })
 }
 
-function loadAccountName(accountNameData) {
-    let list_emp = []
-    $('#select-box-acc-manager').find('option:selected').each(function () {
-        list_emp.push($(this).val());
-    })
-    let list_acc_map_emp = []
-    accountNameEle.initSelect2({
-        ajax: {
-            url: $('#select-box-acc-manager').attr('data-url-accounts'),
-            method: 'GET',
-        },
-        callbackDataResp: function (resp, keyResp){
-            let accounts_map_employee_filtered = [];
-            resp.data[keyResp].map(function (item) {
-                if (list_emp.includes(item.employee)) {
-                    if (!list_acc_map_emp.includes(item.account.id)) {
-                        list_acc_map_emp.push(item.account.id);
-                        accounts_map_employee_filtered.push(item);
-                    }
-                }
-            })
-            return accounts_map_employee_filtered
-        },
-        data: (accountNameData ? accountNameData : null),
-        keyResp: 'accounts_map_employee',
-        keyId: 'account--id',
-        keyText: 'account--name',
-    })
+function loadShippingCities(cityData) {
+    shippingCityEle.initSelect2({
+        data: (cityData ? cityData : null),
+        keyResp: 'cities',
+    }).on('change', function () {
+        let dataParams = JSON.stringify({'city_id': $(this).val()});
+        shippingDistrictEle.attr('data-params', dataParams).val("");
+        shippingWardEle.attr('data-params', '{}').val("");
+    });
 }
 
-function loadAccountAddress(accountAddressData) {
-    let id_account = $('#select-box-account-name').find('option:selected').val();
-    let url = $('#select-box-account-name').attr('data-url').replace(0, id_account);
-    accountAddressEle.initSelect2({
+function loadShippingDistrict(disData) {
+    shippingDistrictEle.initSelect2({
+        data: (disData ? disData : null),
+        keyResp: 'districts',
+    }).on('change', function () {
+        let dataParams = JSON.stringify({'district_id': $(this).val()});
+        shippingWardEle.attr('data-params', dataParams).val("");
+    });
+}
+
+function loadShippingWard(wardData) {
+    shippingWardEle.initSelect2({
+        data: (wardData ? wardData : null),
+        keyResp: 'wards',
+    });
+}
+
+function loadContactOwner(contactOwnerData) {
+    contactOwnerEle.initSelect2({
         ajax: {
-            url: url,
+            url: contactOwnerEle.attr('data-url'),
             method: 'GET',
         },
-        callbackDataResp: function (resp, keyResp){
-            return resp.data[keyResp]['shipping_address']
-        },
-        data: (accountAddressData ? accountAddressData : null),
-        keyResp: 'account_detail',
+        data: (contactOwnerData ? contactOwnerData : null),
+        keyResp: 'employee_list',
         keyId: 'id',
-        keyText: 'full_address',
-    })    // $.fn.callAjax(url, method).then(
-    //     (resp) => {
-    //         let data = $.fn.switcherResp(resp);
-    //         if (data) {
-    //             if (data.hasOwnProperty('account_detail')) {
-    //                 $('#inp-email-address').val(data.account_detail.email);
-    //                 $('#inp-tax-code-address').val(data.account_detail.tax_code);
-    //                 data.account_detail.shipping_address.map(function (item) {
-    //                     $('#select-box-address').append(`<option value="` + item + `">` + item + `</option>`)
-    //                 })
-    //             }
-    //         }
-    //     }
-    // )
-
+        keyText: 'full_name',
+    })
 }
 
 class AccountHandle {
@@ -195,8 +166,9 @@ class AccountHandle {
         loadAnnualRevenue();
         loadParentAccount();
         loadShippingCities();
-        loadShippingDistricts();
-        loadShippingWards();
+        loadShippingDistrict();
+        loadShippingWard();
+        loadContactOwner();
     }
 
     combinesData(frmEle) {
@@ -346,11 +318,9 @@ $('#save-changes-modal-shipping-address').on('click', function () {
 
 $('#save-changes-modal-billing-address').on('click', function () {
     try {
-        let acc_name = $('#select-box-account-name').find(`option:selected`).text();
+        let acc_name = $('#input-account-name').val();
         let email_address = $('#inp-email-address').val();
         let tax_code = $('#inp-tax-code-address').val();
-
-        let acc_name_id = $('#select-box-account-name').find(`option:selected`).attr('value');
 
         let account_address = $('#select-box-address').find('option:selected').val();
         if ($('#select-box-address').is(':hidden')) {
@@ -384,7 +354,7 @@ $('#save-changes-modal-billing-address').on('click', function () {
             })
 
             billing_address_id_dict.push({
-                'account_name_id': acc_name_id,
+                'account_name': acc_name,
                 'email': email_address,
                 'tax_code': tax_code,
                 'account_address': account_address,
@@ -599,13 +569,11 @@ $('#edit-billing-address-btn').on('click', function () {
     let ele = $('#select-box-account-name')
     ele.html('');
     $('#edited-billing-address').val('');
-    $('#button_add_new_billing_address').prop('hidden', true);
     $('#select-box-address').prop('hidden', false);
     $('#edited-billing-address').prop('hidden', true);
     $('#button_add_new_billing_address').html(`<i class="fas fa-plus-circle"></i> Add/Edit`)
 
-    loadAccountName();
-
+    $('#input-account-name').val($('#inp-account-name').val());
     $('#inp-tax-code-address').val($('#inp-tax-code').val());
     $('#inp-email-address').val($('#inp-email').val());
     $('#select-box-account-name').prepend(`<option value="">` + $('#inp-account-name').val() + `</option>`)
@@ -622,32 +590,6 @@ $('#edit-billing-address-btn').on('click', function () {
         else
             select_box.append(`<option value="` + $(this).find('label').text() + `">` + $(this).find('label').text() + `</option>`)
     });
-})
-
-// button event change select-box-account-name in modal billing address
-$('#select-box-account-name').on('change', function () {
-    $('#edited-billing-address').val('');
-    let id_account = $(this).find('option:selected').val();
-    console.log(id_account)
-    let select_box = $('#select-box-address');
-    select_box.empty();
-    select_box.append(`<option value="0" selected></option>`)
-
-    if (id_account === '') {
-        $('#button_add_new_billing_address').prop('hidden', true);
-        $('#inp-tax-code-address').val($('#inp-tax-code').val());
-        $('#inp-email-address').val($('#inp-email').val());
-
-        $('#list-shipping-address').children().each(function () {
-            if ($(this).find('input').prop('checked') === true)
-                select_box.append(`<option value="` + $(this).find('label').text() + `">` + $(this).find('label').text() + `</option>`)
-            else
-                select_box.append(`<option value="` + $(this).find('label').text() + `">` + $(this).find('label').text() + `</option>`)
-        });
-    } else {
-        $('#button_add_new_billing_address').prop('hidden', false);
-        loadAccountAddress();
-    }
 })
 
 // Conditions for show offCanvas add Contact
@@ -744,59 +686,6 @@ function initDataTableOffCanvas(config) {
         })
     }
 }
-
-$('#save-modal-add-new-contact').on('click', function () {
-    let contact_name = $('#inp-fullname').val();
-    let contact_owner = $('#select-box-contact-owner').val();
-    let job_title = $('#inp-jobtitle').val();
-    let contact_email = $('#inp-email-contact').val();
-    let contact_mobile = $('#inp-mobile').val();
-    let contact_phone = $('#inp-phone').val();
-    let data = {
-        'owner': contact_owner,
-        'fullname': contact_name,
-        'job_title': job_title,
-        'email': contact_email,
-        'phone': contact_phone,
-        'mobile': contact_mobile
-    }
-    let csr = $("input[name=csrfmiddlewaretoken]").val();
-    $.fn.callAjax($(this).attr('data-url'), $(this).attr('data-method'), data, csr).then(
-        (resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                //reload select box account owner
-                let id_contact_primary = null;
-                if ($('#datatable_contact_list .contact_primary').length !== 0) {
-                    id_contact_primary = $('#datatable_contact_list .contact_primary').attr('data-value');
-                }
-
-                loadAccountOwner(id_contact_primary);
-                $('#table-offcanvas').empty();
-                $('#table-offcanvas').append(ele_table_offcanvas);
-
-                // reload datatable contact in offCanvas
-                let table = $('#datatable-add-contact')
-                $.fn.callAjax(table.attr('data-url'), table.attr('data-method')).then((resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('contact_list_not_map_account')) {
-                            config['data'] = resp.data.contact_list_not_map_account;
-                        }
-                        initDataTableOffCanvas(config, '#datatable-add-contact');
-                    }
-                }, (errs) => {
-                    initDataTableOffCanvas(config, '#datatable-add-contact');
-                },)
-
-                $('#modal-add-new-contact').hide();
-                $('#offcanvasRight').offcanvas('show');
-            }
-        },
-        (errs) => {
-            //$.fn.notifyB({description: errs.data.errors}, 'failure');
-        })
-})
 
 // select all checkbox in offCanvas
 $(document).on('click', '#datatable-add-contact .check-select', function () {

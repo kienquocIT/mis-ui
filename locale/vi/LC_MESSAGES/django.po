@@ -2406,7 +2406,7 @@ msgstr "Danh sách sản phẩm"
 
 #
 msgid "Product create"
-msgstr "Tạo quy trình"
+msgstr "Tạo sản phẩm"
 
 #
 msgid "Advance Payment list"

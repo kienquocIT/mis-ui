@@ -56,7 +56,7 @@ $(function () {
         })
     }
     // task util class
-    class taskHandle {
+    class  taskHandle {
         taskList = []
 
         set setTaskList(data) {
@@ -272,7 +272,7 @@ $(function () {
                             if (data?.opportunity_data && Object.keys(data.opportunity_data).length)
                                 $('#selectOpportunity').attr('data-onload', JSON.stringify({
                                     "id": data.opportunity_data.id,
-                                    "title": data.opportunity_data.code
+                                    "code": data.opportunity_data.code
                                 }))
                             $('#selectPriority').val(data.priority).trigger('change')
                             window.formLabel.renderLabel(data.label)

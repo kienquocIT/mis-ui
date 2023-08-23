@@ -14,7 +14,8 @@ function resetFormTask() {
     window.editor.setData('')
     $('.create-task').attr('disabled', false)
 }
-function logworkSubmit(){
+
+function logworkSubmit() {
     $('#save-logtime').off().on('click', function () {
         const startDate = $('#startDateLogTime').val()
         const endDate = $('#endDateLogTime').val()
@@ -34,7 +35,7 @@ function logworkSubmit(){
             data.task = taskID
             let url = $('#url-factory').attr('data-logtime')
             $.fn.callAjax2({
-                'url':url,
+                'url': url,
                 'method': 'POST',
                 'data': data
             })
@@ -46,62 +47,62 @@ function logworkSubmit(){
                         }
                     }
                 )
-        }else{
+        } else {
             $('[name="log_time"]').attr('value', JSON.stringify(data))
         }
         $('#logWorkModal').modal('hide')
     });
 }
+
 class AssignToSetup {
-    static case01(config, params){
+    static case01(config, params) {
         // có opps + config có in assign opt lớn hơn 0
         const urlOpptDetail = $('#task_url_sub').attr('data-opps-detail').format_url_with_uuid(
             $('#selectOpportunity').val())
-        if (config.in_assign_opt === 1){
+        if (config.in_assign_opt === 1) {
             // chỉ employee trong opportunity
             $('.is-lazy-loading').addClass('is_show')
             $.fn.callAjax2({
-                    'url': urlOpptDetail,
-                    'method': 'get',
-                }).then(
-                    (resp) => {
-                        const data = $.fn.switcherResp(resp);
-                        let selectOpt = '<option value=""></option>'
-                        const $AseElm = $('#selectAssignTo')
-                        for (const item of data.opportunity.opportunity_sale_team_datas){
-                            let opt = `<option data-value="${item?.member?.id}">${item?.member?.name}</option>`
-                            selectOpt += opt
-                        }
-                        $AseElm.html(selectOpt).removeAttr('data-url')
-                        $('.is-lazy-loading').removeClass('is_show')
-                    })
+                'url': urlOpptDetail,
+                'method': 'get',
+            }).then(
+                (resp) => {
+                    const data = $.fn.switcherResp(resp);
+                    let selectOpt = '<option value=""></option>'
+                    const $AseElm = $('#selectAssignTo')
+                    for (const item of data.opportunity.opportunity_sale_team_datas) {
+                        let opt = `<option data-value="${item?.member?.id}">${item?.member?.name}</option>`
+                        selectOpt += opt
+                    }
+                    $AseElm.html(selectOpt).removeAttr('data-url')
+                    $('.is-lazy-loading').removeClass('is_show')
+                })
 
-        }
-        else if (config.in_assign_opt === 2){
+        } else if (config.in_assign_opt === 2) {
             // chỉ nhân viên của user
             params = {'group__first_manager__id': true}
-        }
-        else{
+        } else {
             // vừa trong opportunity vừa là nhân viên của user
             $('.is-lazy-loading').addClass('is_show')
             const assigntoElm = $('#selectAssignTo')
             let ListMemberInOppt = $.fn.callAjax2({'url': urlOpptDetail, 'method': 'get'})
-            let ListStaff = $.fn.callAjax2({'url': assigntoElm.attr('data-url'), 'method': 'get',
+            let ListStaff = $.fn.callAjax2({
+                'url': assigntoElm.attr('data-url'), 'method': 'get',
                 'data': {'group__first_manager__id': true}
             })
-            $.when(ListMemberInOppt, ListStaff).done(function(res01, res02){
+            $.when(ListMemberInOppt, ListStaff).done(function (res01, res02) {
                 const data01 = $.fn.switcherResp(res01);
                 const data02 = $.fn.switcherResp(res02);
                 let opts = '<option value=""></option>'
-                if(data01.status === 200){
-                     for (const item of data01.opportunity.opportunity_sale_team_datas){
-                         let opt = `<option data-value="${item?.member?.id}">${item?.member?.name}</option>`
-                            opts += opt
-                     }
+                if (data01.status === 200) {
+                    for (const item of data01.opportunity.opportunity_sale_team_datas) {
+                        let opt = `<option data-value="${item?.member?.id}">${item?.member?.name}</option>`
+                        opts += opt
+                    }
                 }
-                if (data02.status === 200){
-                    for (const item of data02[assigntoElm.attr('data-keyresp')]){
-                        if (opts.indexOf(item?.[assigntoElm.attr('data-keyid')] !== -1)){
+                if (data02.status === 200) {
+                    for (const item of data02[assigntoElm.attr('data-keyresp')]) {
+                        if (opts.indexOf(item?.[assigntoElm.attr('data-keyid')] !== -1)) {
                             let opt = `<option data-value="${item?.[assigntoElm.attr('data-keyid')]}">${
                                 item?.[assigntoElm.attr('data-keytext')]}</option>`
                             opts += opt
@@ -115,7 +116,8 @@ class AssignToSetup {
         }
         return params
     }
-    static case02(config, params){
+
+    static case02(config, params) {
         // ko có opps + config có out assign opt lớn hơn 0
         if (config.out_assign_opt === 1)
             // giao cho user trong phòng ban chính user đó
@@ -126,7 +128,7 @@ class AssignToSetup {
         return params
     }
 
-    static hasConfig(config){
+    static hasConfig(config) {
         const $selectElm = $('#selectAssignTo')
         let params = {}
         const oppsElm = $('#selectOpportunity').val()
@@ -137,7 +139,8 @@ class AssignToSetup {
         if ($selectElm.hasClass("select2-hidden-accessible")) $selectElm.select2('destroy')
         $selectElm.initSelect2()
     }
-    static init(){
+
+    static init() {
         const $self = this
         const taskConfig = $('#task_config')
         const isConfig = JSON.parse(taskConfig.text())
@@ -232,6 +235,7 @@ $(function () {
     // checklist handle
     class checklistHandle {
         datalist = []
+
         set setDataList(data) {
             this.datalist = data;
         }
@@ -284,7 +288,7 @@ $(function () {
     }
 
     /** start run and init all function **/
-    // run status select default
+        // run status select default
     const sttElm = $('#selectStatus');
     sttElm.attr('data-url')
     $.fn.callAjax2({
@@ -295,7 +299,7 @@ $(function () {
             (resp) => {
                 const data = $.fn.switcherResp(resp);
                 let todoItem = data[sttElm.attr('data-keyResp')][0]
-                $('.btn-create-todo, .current-create-task').click(()=>{
+                $('.btn-create-todo, .current-create-task').click(() => {
                     sttElm.attr('data-onload', JSON.stringify(todoItem))
                     sttElm.initSelect2()
                 })
@@ -333,23 +337,22 @@ $(function () {
     const $btnInOpp = $('.current-create-task')
     const $selectElm = $('#selectOpportunity')
 
-    if($btnInOpp.length){
+    if ($btnInOpp.length) {
         const pk = $.fn.getPkDetail()
         let data = {
             "id": pk,
             "title": ''
         }
-        const isCheck = setInterval(()=>{
+        const isCheck = setInterval(() => {
             let oppCode = $('#span-code').text()
-            if (oppCode.length){
+            if (oppCode.length) {
                 clearInterval(isCheck)
                 data.title = oppCode
                 $selectElm.attr('data-onload', JSON.stringify(data)).attr('disabled', true)
                 $selectElm.initSelect2()
             }
         }, 1000)
-    }
-    else{
+    } else {
         // run init select2 in task page
         $selectElm.initSelect2()
     }
@@ -396,110 +399,107 @@ $(function () {
     });
 
     // validate form
-    jQuery.validator.setDefaults({
-        debug: false,
-        success: "valid"
-    });
+    SetupFormSubmit.validate(
+        $form, {
+            submitHandler: function () {
+                let _form = new SetupFormSubmit($form);
+                let formData = _form.dataForm
+                const start_date = new Date(formData.start_date).getDate()
+                const end_date = new Date(formData.end_date).getDate()
+                if (end_date < start_date) {
+                    $.fn.notifyB({description: $('#form_valid').attr('data-valid-datetime')}, 'failure')
+                    return false
+                }
+                if (formData.log_time === "")
+                    delete formData.log_time
+                else {
+                    let temp = formData.log_time.replaceAll("'", '"')
+                    temp = JSON.parse(temp)
+                    formData.log_time = temp
+                }
+                formData.start_date = moment(formData.start_date, 'DD/MM/YYYY').format('YYYY-MM-DD')
+                formData.end_date = moment(formData.end_date, 'DD/MM/YYYY').format('YYYY-MM-DD')
+                formData.priority = parseInt(formData.priority)
+                let tagsList = $('#inputLabel').attr('value')
+                if (tagsList)
+                    formData.label = JSON.parse(tagsList)
+                formData.employee_created = $('#inputAssigner').attr('value')
+                formData.task_status = $('#selectStatus').val()
+                const task_status = $('#selectStatus').select2('data')[0]
+                const taskSttData = {
+                    'id': task_status.id,
+                    'title': task_status.title,
+                }
 
-    $form.validate({
-        errorElement: 'p',
-        errorClass: 'is-invalid cl-red',
-    })
+                const assign_to = $('#selectAssignTo').select2('data')[0]
+                let assign_toData = {}
+                if (assign_to)
+                    assign_toData = {
+                        'id': assign_to.id,
+                        'first_name': assign_to.text.split('. ')[1],
+                        'last_name': assign_to.text.split('. ')[0],
+                    }
 
-    // form submit
-    $form.off().on('submit', function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        let _form = new SetupFormSubmit($form);
-        let formData = _form.dataForm
-        const start_date = new Date(formData.start_date).getDate()
-        const end_date = new Date(formData.end_date).getDate()
-        if (end_date < start_date) {
-            $.fn.notifyB({description: $('#form_valid').attr('data-valid-datetime')}, 'failure')
-            return false
-        }
-        if (formData.log_time === "")
-            delete formData.log_time
-        else{
-            let temp = formData.log_time.replaceAll("'", '"')
-            temp = JSON.parse(temp)
-            formData.log_time = temp
-        }
-        formData.start_date = moment(formData.start_date, 'DD/MM/YYYY').format('YYYY-MM-DD')
-        formData.end_date = moment(formData.end_date, 'DD/MM/YYYY').format('YYYY-MM-DD')
-        formData.priority = parseInt(formData.priority)
-        let tagsList = $('#inputLabel').attr('value')
-        if (tagsList)
-            formData.label = JSON.parse(tagsList)
-        formData.employee_created = $('#inputAssigner').attr('value')
-        formData.task_status = $('#selectStatus').val()
-        const task_status = $('#selectStatus').select2('data')[0]
-        const taskSttData = {
-            'id': task_status.id,
-            'title': task_status.title,
-        }
+                formData.checklist = []
+                $('.wrap-checklist .checklist_item').each(function () {
+                    formData.checklist.push({
+                        'name': $(this).find('label').text(),
+                        'done': $(this).find('input').prop('checked'),
+                    })
+                })
 
-        const assign_to = $('#selectAssignTo').select2('data')[0]
-        let assign_toData = {}
-        if (assign_to)
-            assign_toData = {
-                'id': assign_to.id,
-                'first_name': assign_to.text.split('. ')[1],
-                'last_name': assign_to.text.split('. ')[0],
+                if (!formData.opportunity) delete formData.opportunity
+                if ($('#selectOpportunity').val()) formData.opportunity = $('#selectOpportunity').val()
+
+                if ($('[name="attach"]').val()) {
+                    let list = []
+                    list.push($('[name="attach"]').val())
+                    formData.attach = list
+                }
+
+                let method = 'POST'
+                let url = _form.dataUrl
+                if (formData.id && formData.id !== '') {
+                    method = 'PUT'
+                    url = $('#url-factory').attr('data-task-detail').format_url_with_uuid(formData.id)
+                }
+                $.fn.callAjax2({
+                    'url': url,
+                    'method': method,
+                    'data': formData
+                }).then(
+                    (resp) => {
+                        const data = $.fn.switcherResp(resp);
+                        if (data) {
+                            $.fn.notifyB({description: data?.message || data?.detail}, 'success')
+                            // if in task page load add task function
+                            if ($(document).find('#tasklist_wrap').length) {
+                                let elm = $('<input type="hidden" id="addNewTaskData"/>');
+                                // case update
+                                if (!data?.id && data?.status === 200) {
+                                    elm = $('<input type="hidden" id="updateTaskData"/>');
+                                    formData.code = $('#inputTextCode').val();
+                                    formData.assign_to = assign_toData
+                                    formData.task_status = taskSttData
+                                }
+                                // case create
+                                if (data?.id) formData = data
+                                const datadump = JSON.stringify(formData)
+                                elm.attr('data-task', datadump)
+                                $('body').append(elm)
+                            }
+                            if ($('.current-create-task').length) $('.cancel-task').trigger('click')
+                        }
+                    },
+                    (errs) => $.fn.notifyB({'description': errs?.data?.errors}, 'failure')
+                )
             }
-
-        formData.checklist = []
-        $('.wrap-checklist .checklist_item').each(function () {
-            formData.checklist.push({
-                'name': $(this).find('label').text(),
-                'done': $(this).find('input').prop('checked'),
-            })
         })
 
-        if (!formData.opportunity) delete formData.opportunity
-        if ($('#selectOpportunity').val()) formData.opportunity = $('#selectOpportunity').val()
-
-        if ($('[name="attach"]').val()){
-            let list = []
-            list.push($('[name="attach"]').val())
-            formData.attach = list
-        }
-
-        let method = 'POST'
-        let url = _form.dataUrl
-        if(formData.id && formData.id !== ''){
-            method = 'PUT'
-            url = $('#url-factory').attr('data-task-detail').format_url_with_uuid(formData.id)
-        }
-        $.fn.callAjax2({
-            'url': url,
-            'method': method,
-            'data': formData
-        }).then(
-            (resp) => {
-                const data = $.fn.switcherResp(resp);
-                if (data) {
-                    $.fn.notifyB({description: data?.message || data?.detail }, 'success')
-                    // if in task page load add task function
-                    if ($(document).find('#tasklist_wrap').length) {
-                        let elm = $('<input type="hidden" id="addNewTaskData"/>');
-                        // case update
-                        if (!data?.id && data?.status === 200) {
-                            elm = $('<input type="hidden" id="updateTaskData"/>');
-                            formData.code = $('#inputTextCode').val();
-                            formData.assign_to = assign_toData
-                            formData.task_status = taskSttData
-                        }
-                        // case create
-                        if (data?.id) formData = data
-                        const datadump = JSON.stringify(formData)
-                        elm.attr('data-task', datadump)
-                        $('body').append(elm)
-                    }
-                    if ($('.current-create-task').length) $('.cancel-task').trigger('click')
-                }
-            },
-            (errs) => $.fn.notifyB({'description': errs?.data?.errors}, 'failure')
-        )
-    })
+    // form submit
+    // $form.off().on('submit', function (e) {
+    //     e.preventDefault();
+    //     e.stopPropagation();
+    //
+    // })
 }, jQuery)

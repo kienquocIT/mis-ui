@@ -31,10 +31,17 @@
 
 {% block pageContent %}
     <!-- Navigation task list/kanban-->
-    <ul class="nav nav-light nav-tabs">
+    <ul class="nav nav-line nav-light nav-tabs">
         <li class="nav-item">
             <a class="nav-link active" data-bs-toggle="tab" href="#tab_block_1">
+                <i class="fa-solid fa-table-columns"></i>
                 <span class="nav-link-text">{% trans 'Kanban' %}</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#tab_block_2">
+                <i class="fa-solid fa-list-ul"></i>
+                <span class="nav-link-text">{% trans 'List' %}</span>
             </a>
         </li>
     </ul>
@@ -50,6 +57,73 @@
                 </div>
             </div>
 
+        </div>
+        <div class="tab-pane fade" id="tab_block_2">
+            <div class="list_task_wrap table-responsive">
+                <table
+                        id="table_task_list"
+                        class="table nowrap table-advance"
+                        data-url="{% url 'FlowRuntimeMeListAPI' %}"
+                        data-method="GET"
+                >
+                    <tbody>
+                    <tr>
+                        <td>
+                            xxxxx
+                        </td>
+                        <td>
+                            <span class="badge badge-light">Primary</span>
+                        </td>
+                        <td>
+                            <span class="badge badge-soft-warning">Warning</span>
+                        </td>
+                        <td>
+                            <div class="justify-content-start flex-wrap">
+                                <div class="avatar avatar-xs avatar-primary avatar-rounded position-relative mr-1 mb-1">
+                                    <span class="initial-wrap">AB</span>
+                                    <span class="badge badge-success badge-indicator badge-indicator-xl position-bottom-end-overflow-1">
+                                                                <i class="fa-solid fa-check"></i>
+                                                            </span>
+                                </div>
+                                <div class="avatar avatar-xs avatar-primary avatar-rounded position-relative mr-1 mb-1">
+                                    <span class="initial-wrap">AB</span>
+                                    <span class="badge badge-danger badge-indicator badge-indicator-xl position-bottom-end-overflow-1">
+                                                                <i class="fa-solid fa-xmark"></i>
+                                                            </span>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="badge badge-soft-warning">21-06-2023 10:05:00</span>
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center justify-content-end">
+                                <button
+                                        class="btn btn-icon btn-rounded bg-dark-hover mr-1"
+                                        data-bs-toggle="tooltip"
+                                        data-bs-placement="bottom"
+                                        data-bs-original-title="{% trans 'View Diagram' %}"
+                                >
+                                                                <span class="icon">
+                                                                    <i class="fa-solid fa-clock-rotate-left"></i>
+                                                                </span>
+                                </button>
+                                <button
+                                        class="btn btn-icon btn-rounded bg-dark-hover mr-1"
+                                        data-bs-toggle="tooltip"
+                                        data-bs-placement="bottom"
+                                        data-bs-original-title="{% trans 'Pin' %}"
+                                >
+                                                                <span class="icon">
+                                                                    <i class="fa-solid fa-thumbtack"></i>
+                                                                </span>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 

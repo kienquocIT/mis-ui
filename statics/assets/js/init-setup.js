@@ -87,7 +87,7 @@ class SetupFormSubmit {
                 },
                 submitHandler: function (form, event) {
                     event.preventDefault();
-                    submitHandler ? submitHandler(form, event) : form.submit();
+                    submitHandler ? submitHandler($(form), event) : form.submit();
                 },
                 onsubmit: true, // !!submitHandler,
             })

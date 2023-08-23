@@ -12,7 +12,7 @@ $(document).ready(function () {
                     if (data && (data['status'] === 201 || data['status'] === 200)) {
                         $.fn.notifyB({description: $('#base-trans-factory').attr('data-success')}, 'success');
                         setTimeout(() => {
-                            window.location.replace(frm.formSelected.attr('data-url-redirect'));
+                            window.location.replace(form.attr('data-url-redirect'));
                         }, 1000);
                     }
                 }, (err) => {

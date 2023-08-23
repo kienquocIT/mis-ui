@@ -49,7 +49,7 @@
                             <label class="form-label">{% trans 'Purchase request' %}</label>
                             <div class="input-group">
                                 <span class="input-affix-wrapper">
-                                    <div class="form-control div-input" id="purchase-order-purchase-request"></div>
+                                    <div class="form-control div-input" id="purchase-order-purchase-request" data-link-detail="{% url "PurchaseRequestDetail" 1 %}"></div>
                                     <input type="hidden" id="purchase_requests_data">
                                     <span class="input-suffix">
                                         <button
@@ -67,7 +67,7 @@
                             <label class="form-label">{% trans 'Purchase quotation' %}</label>
                             <div class="input-group">
                                 <span class="input-affix-wrapper">
-                                    <div class="form-control div-input" id="purchase-order-purchase-quotation"></div>
+                                    <div class="form-control div-input" id="purchase-order-purchase-quotation" data-link-detail="{% url "PurchaseQuotationDetail" 1 %}"></div>
                                     <input type="hidden" id="purchase_quotations_data">
                                     <span class="input-suffix">
                                         <button

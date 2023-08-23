@@ -672,6 +672,28 @@ $(function () {
         }
     }
 
+    class listViewTask {
+        set setConfig(data){
+            this.taskConfig = data
+        };
+
+        static initTaskConfig(){
+            const config = JSON.parse($('#task_config').text());
+            this.setConfig = config
+        }
+        static renderTable(){
+
+        }
+
+        static init(data){
+            this.setTaskList = data
+            this.renderTable()
+        }
+
+        constructor() {
+            this.taskConfig = '';
+        }
+    }
     /** ********************************************* **/
     // render column status của task
     getSttAndRender()

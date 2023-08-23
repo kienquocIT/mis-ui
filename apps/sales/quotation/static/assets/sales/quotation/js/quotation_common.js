@@ -1253,8 +1253,10 @@ class QuotationDataTableHandle {
                 {
                     targets: 8,
                     render: (data, type, row) => {
-                        return `<div class="row">
-                                <span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row.product_subtotal_price)}"></span>
+                        return `<div class="row subtotal-area">
+                                <div class="card card-sm">
+                                    <span class="card-body mask-money table-row-subtotal" data-init-money="${parseFloat(row.product_subtotal_price)}"></span>
+                                </div>
                                 <input
                                     type="text"
                                     class="form-control table-row-subtotal-raw"
@@ -1471,8 +1473,10 @@ class QuotationDataTableHandle {
                     targets: 6,
                     width: "20%",
                     render: (data, type, row) => {
-                        return `<div class="row">
-                                <span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row.product_subtotal_price)}"></span>
+                        return `<div class="row subtotal-area">
+                                <div class="card card-sm">
+                                    <span class="card-body mask-money table-row-subtotal" data-init-money="${parseFloat(row.product_subtotal_price)}"></span>
+                                </div>
                                 <input
                                     type="text"
                                     class="form-control table-row-subtotal-raw"
@@ -1672,8 +1676,10 @@ class QuotationDataTableHandle {
                     targets: 6,
                     width: "20%",
                     render: (data, type, row) => {
-                        return `<div class="row">
-                                <span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row.expense_subtotal_price)}"></span>
+                        return `<div class="row subtotal-area">
+                                <div class="card card-sm">
+                                    <span class="card-body mask-money table-row-subtotal" data-init-money="${parseFloat(row.expense_subtotal_price)}"></span>
+                                </div>
                                 <input
                                     type="text"
                                     class="form-control table-row-subtotal-raw"
@@ -2236,6 +2242,15 @@ class QuotationCalculateCaseHandle {
             let row = table[0].tBodies[0].rows[i];
             if (row.querySelector('.table-row-item')) {
                 QuotationCalculateCaseHandle.commonCalculate(table, row, true, false, false);
+            }
+        }
+    };
+
+    static calculateAllRowsTableCost(table) {
+        for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
+            let row = table[0].tBodies[0].rows[i];
+            if (row.querySelector('.table-row-item')) {
+                QuotationCalculateCaseHandle.commonCalculate(table, row, false, true, false);
             }
         }
     };

@@ -1285,13 +1285,17 @@ class PODataTableHandle {
                 {
                     targets: 9,
                     render: (data, type, row) => {
-                        return `<span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row.product_subtotal_price)}"></span>
-                                <input
-                                    type="text"
-                                    class="form-control table-row-subtotal-raw"
-                                    value="${row.product_subtotal_price}"
-                                    hidden
-                                >`;
+                        return `<div class="row subtotal-area">
+                                    <div class="card card-sm">
+                                        <span class="card-body mask-money table-row-subtotal" data-init-money="${parseFloat(row.product_subtotal_price)}"></span>
+                                    </div>
+                                    <input
+                                        type="text"
+                                        class="form-control table-row-subtotal-raw"
+                                        value="${row.product_subtotal_price}"
+                                        hidden
+                                    >
+                                </div>`;
                     }
                 },
             ],

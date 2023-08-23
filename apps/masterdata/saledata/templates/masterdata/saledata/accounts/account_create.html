@@ -384,8 +384,8 @@
                                 <div class="form-group">
                                     <label class="label-field form-label required">{% trans "District" %}</label>
                                     <select
-                                            class="form-control select2" id="shipping-district"
-                                            data-url="{% url "DistrictListAPI" pk=0 %}" data-method="GET"
+                                            class="form-select" id="shipping-district"
+                                            data-url="{% url "DistrictAllListAPI" %}" data-method="GET"
                                     >
                                     </select>
                                 </div>
@@ -394,8 +394,8 @@
                                 <div class="form-group">
                                     <label class="label-field form-label">{% trans "Ward" %}</label>
                                     <select
-                                            class="form-control select2" id="shipping-ward"
-                                            data-url="{% url "WardListAPI" pk=0 %}" data-method="GET"
+                                            class="form-select" id="shipping-ward"
+                                            data-url="{% url "WardAllListAPI" %}" data-method="GET"
                                     >
                                     </select>
                                 </div>

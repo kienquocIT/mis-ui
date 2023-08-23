@@ -11,7 +11,8 @@ let [
     shippingDistrictEle,
     shippingWardEle,
     accountNameEle,
-    accountAddressEle
+    accountAddressEle,
+    contactOwnerEle
 ] = [
     $('#select-box-acc-type'),
     $('#select-box-acc-manager'),
@@ -25,45 +26,16 @@ let [
     $('#shipping-district'),
     $('#shipping-ward'),
     $('#select-box-account-name'),
-    $('#select-box-address')
+    $('#select-box-address'),
+    $('#select-box-contact-owner')
 ];
-
-function loadShippingCities(shippingCityData) {
-    shippingCityEle.initSelect2({
-        data: (shippingCityData ? shippingCityData : null),
-        keyResp: 'cities',
-    }).on('change', function () {
-        shippingDistrictEle.find('option').remove();
-        shippingWardEle.find('option').remove();
-        loadShippingDistricts();
-    })
-}
-
-function loadShippingDistricts() {
-    shippingDistrictEle.initSelect2({
-        ajax: {
-            url: shippingDistrictEle.attr('data-url').format_url_with_uuid($('#shipping-city').val()),
-            method: 'GET'
-        },
-        keyResp: 'districts',
-    }).on('change', function () {
-        shippingWardEle.find('option').remove();
-        loadShippingWards();
-    })
-}
-
-function loadShippingWards() {
-    shippingWardEle.initSelect2({
-        ajax: {
-            url: shippingWardEle.attr('data-url').format_url_with_uuid($('#shipping-district').val()),
-            method: 'GET'
-        },
-        keyResp: 'wards',
-    });
-}
 
 function loadAccountType(accountTypeData) {
     accountTypeEle.initSelect2({
+        ajax: {
+            url: accountTypeEle.attr('data-url'),
+            method: 'GET',
+        },
         data: (accountTypeData ? accountTypeData : null),
         keyResp: 'account_type_list',
         keyText: 'title',
@@ -72,32 +44,52 @@ function loadAccountType(accountTypeData) {
 
 function loadAccountManager(accountManagerData) {
     accountManagerEle.initSelect2({
+        ajax: {
+            url: accountManagerEle.attr('data-url'),
+            method: 'GET',
+        },
         data: (accountManagerData ? accountManagerData : null),
         keyResp: 'employee_list',
+        keyId: 'id',
         keyText: 'full_name',
     })
 }
 
 function loadIndustry(industryData) {
     industryEle.initSelect2({
+        ajax: {
+            url: industryEle.attr('data-url'),
+            method: 'GET',
+        },
         data: (industryData ? industryData : null),
         keyResp: 'industry_list',
+        keyId: 'id',
         keyText: 'title',
     })
 }
 
 function loadAccountOwner(accountOwnerData) {
     accountOwnerEle.initSelect2({
+        ajax: {
+            url: accountOwnerEle.attr('data-url'),
+            method: 'GET',
+        },
         data: (accountOwnerData ? accountOwnerData : null),
         keyResp: 'contact_list_not_map_account',
+        keyId: 'id',
         keyText: 'fullname',
     })
 }
 
 function loadAccountGroup(accountGroupData) {
     accountGroupEle.initSelect2({
+        ajax: {
+            url: accountGroupEle.attr('data-url'),
+            method: 'GET',
+        },
         data: (accountGroupData ? accountGroupData : null),
         keyResp: 'account_group_list',
+        keyId: 'id',
         keyText: 'title',
     })
 }
@@ -116,6 +108,10 @@ function loadAnnualRevenue() {
 
 function loadParentAccount(parentAccountData) {
     parentAccountEle.initSelect2({
+        ajax: {
+            url: parentAccountEle.attr('data-url'),
+            method: 'GET',
+        },
         data: (parentAccountData ? parentAccountData : null),
         keyResp: 'account_list',
         keyText: 'name',
@@ -177,7 +173,48 @@ function loadAccountAddress(accountAddressData) {
     //         }
     //     }
     // )
+}
 
+function loadShippingCities(cityData) {
+    shippingCityEle.initSelect2({
+        data: (cityData ? cityData : null),
+        keyResp: 'cities',
+    }).on('change', function () {
+        let dataParams = JSON.stringify({'city_id': $(this).val()});
+        console.log(dataParams)
+        shippingDistrictEle.attr('data-params', dataParams).val("");
+        shippingWardEle.attr('data-params', '{}').val("");
+    });
+}
+
+function loadShippingDistrict(disData) {
+    shippingDistrictEle.initSelect2({
+        data: (disData ? disData : null),
+        keyResp: 'districts',
+    }).on('change', function () {
+        let dataParams = JSON.stringify({'district_id': $(this).val()});
+        shippingWardEle.attr('data-params', dataParams).val("");
+    });
+}
+
+function loadShippingWard(wardData) {
+    shippingWardEle.initSelect2({
+        data: (wardData ? wardData : null),
+        keyResp: 'wards',
+    });
+}
+
+function loadContactOwner(contactOwnerData) {
+    contactOwnerEle.initSelect2({
+        ajax: {
+            url: contactOwnerEle.attr('data-url'),
+            method: 'GET',
+        },
+        data: (contactOwnerData ? contactOwnerData : null),
+        keyResp: 'employee_list',
+        keyId: 'id',
+        keyText: 'full_name',
+    })
 }
 
 class AccountHandle {
@@ -190,9 +227,10 @@ class AccountHandle {
         loadTotalEmployees();
         loadAnnualRevenue();
         loadParentAccount();
-        loadShippingCities();
-        loadShippingDistricts();
-        loadShippingWards();
+        loadShippingCities()
+        loadShippingDistrict()
+        loadShippingWard()
+        loadContactOwner()
     }
 
     combinesData(frmEle) {

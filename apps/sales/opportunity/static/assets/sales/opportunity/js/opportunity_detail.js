@@ -2083,7 +2083,7 @@ $(document).ready(function () {
                 // chỉ employee trong opportunity
                 let selectOpt = '';
                 $('#card-member .card').each(function(){
-                    let opt = `<option data-value="${$(this).attr('data-id')}">${$(this).find('.card-title').text()
+                    let opt = `<option value="${$(this).attr('data-id')}">${$(this).find('.card-title').text()
                     }</option>`
                     selectOpt += opt
                 })
@@ -2097,7 +2097,7 @@ $(document).ready(function () {
                 $('.is-lazy-loading').addClass('is_show')
                 let selectOpt = '<option value=""></option>';
                 $('#card-member .card').each(function(){
-                    let opt = `<option data-value="${$(this).attr('data-id')}">${$(this).find('.card-title').text()
+                    let opt = `<option value="${$(this).attr('data-id')}">${$(this).find('.card-title').text()
                     }</option>`
                     selectOpt += opt
                 })
@@ -2113,7 +2113,7 @@ $(document).ready(function () {
                         let assigneeList = data?.[$sltElm.attr('data-keyresp')]
                         for (const item of assigneeList){
                             if (selectOpt.indexOf(item?.[$sltElm.attr('data-keyid')]) === -1){
-                                let opt = `<option data-value="${item?.[$sltElm.attr('data-keyid')]
+                                let opt = `<option value="${item?.[$sltElm.attr('data-keyid')]
                                 }">${item?.[$sltElm.attr('data-keytext')]}</option>`
                                 selectOpt += opt
                             }
@@ -2335,13 +2335,13 @@ $(document).ready(function () {
             const pk = $.fn.getPkDetail()
             let data = {
                 "id": pk,
-                "title": ''
+                "code": ''
             }
             const isCheck = setInterval(() => {
                 let oppCode = $('#span-code').text()
                 if (oppCode.length) {
                     clearInterval(isCheck)
-                    data.title = oppCode
+                    data.code = oppCode
                     $selectElm.attr('data-onload', JSON.stringify(data)).attr('disabled', true)
                     $selectElm.initSelect2()
                 }

@@ -94,7 +94,7 @@ $(function () {
 
         // Action on click btn remove purchase request
         elePurchaseRequest.on('click', '.custom-btn-remove', function() {
-            let removeIDList = [this.id];
+            let removeIDList = [this.getAttribute('data-id')];
             POLoadDataHandle.loadDataAfterClickRemove(tablePurchaseRequest, removeIDList, "purchase_request");
         });
 
@@ -121,7 +121,7 @@ $(function () {
                POLoadDataHandle.loadSupplierContactByCheckedQuotation(this);
             }
             for (let item of elePurchaseQuotation[0].querySelectorAll('.checkbox-quotation')) {
-                if (item.id !== $(this)[0].id) {
+                if (item.getAttribute('data-id') !== $(this)[0].getAttribute('data-id')) {
                     item.checked = false;
                 }
             }
@@ -133,14 +133,14 @@ $(function () {
             let checked_id = null;
             for (let item of elePurchaseQuotation[0].querySelectorAll('.checkbox-quotation')) {
                 if (item.checked === true) {
-                    checked_id = item.id;
+                    checked_id = item.getAttribute('data-id');
                 }
             }
-            let removeIDList = [this.id];
+            let removeIDList = [this.getAttribute('data-id')];
             POLoadDataHandle.loadDataAfterClickRemove(tablePurchaseQuotation, removeIDList, "purchase_quotation");
             if (checked_id) {
                 for (let item of elePurchaseQuotation[0].querySelectorAll('.checkbox-quotation')) {
-                    if (item.id === checked_id) {
+                    if (item.getAttribute('data-id') === checked_id) {
                         $(item).click();
                     }
                 }

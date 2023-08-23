@@ -234,12 +234,12 @@ class POLoadDataHandle {
         let request_id_list = [];
         let checked_data = {};
         for (let eleChecked of tablePurchaseRequest[0].querySelectorAll('.table-row-checkbox:checked')) {
-            request_id_list.push(eleChecked.id);
+            request_id_list.push(eleChecked.getAttribute('data-id'));
         }
         if (!tablePurchaseRequestProduct[0].querySelector('.dataTables_empty') && is_clear_all === false) {
             for (let eleChecked of tablePurchaseRequestProduct[0].querySelectorAll('.table-row-checkbox:checked')) {
-                checked_data[eleChecked.id] = {
-                    'id': eleChecked.id,
+                checked_data[eleChecked.getAttribute('data-id')] = {
+                    'id': eleChecked.getAttribute('data-id'),
                     'quantity_order': eleChecked.closest('tr').querySelector('.table-row-quantity-order').value,
                 };
             }
@@ -309,7 +309,6 @@ class POLoadDataHandle {
     };
 
     static loadDataShowPurchaseRequest() {
-        let self = this;
         let elePurchaseRequest = $('#purchase-order-purchase-request');
         let tablePurchaseRequest = $('#datable-purchase-request');
         let purchase_requests_data = [];
@@ -318,12 +317,12 @@ class POLoadDataHandle {
             let is_checked = false;
             for (let eleChecked of tablePurchaseRequest[0].querySelectorAll('.table-row-checkbox:checked')) {
                 is_checked = true;
-                let prID = eleChecked.id;
+                let prID = eleChecked.getAttribute('data-id');
                 let prCode = eleChecked.closest('tr').querySelector('.table-row-code').innerHTML;
                 let link = "";
-                eleAppend += `<div class="inline-elements-badge mr-2 mb-1" id="${prID}">
+                eleAppend += `<div class="inline-elements-badge mr-2 mb-1">
                                     <a href="${link}" target="_blank" class="link-primary underline_hover"><span>${prCode}</span></a>
-                                    <button type="button" class="btn btn-link btn-sm custom-btn-remove" id="${prID}" aria-label="Close">
+                                    <button type="button" class="btn btn-link btn-sm custom-btn-remove" data-id="${prID}" aria-label="Close">
                                         <span aria-hidden="true"><i class="fas fa-times"></i></span>
                                     </button>
                                 </div>`;
@@ -332,10 +331,10 @@ class POLoadDataHandle {
             if (is_checked === true) {
                 elePurchaseRequest.empty();
                 elePurchaseRequest.append(eleAppend);
-                self.loadTableProductByPurchaseRequest();
+                POLoadDataHandle.loadTableProductByPurchaseRequest();
             } else {
                 elePurchaseRequest.empty();
-                self.loadTableProductByPurchaseRequest();
+                POLoadDataHandle.loadTableProductByPurchaseRequest();
             }
         }
         $('#purchase_requests_data').val(JSON.stringify(purchase_requests_data));
@@ -351,7 +350,7 @@ class POLoadDataHandle {
         let checked_list = [];
         if (!tablePurchaseQuotation[0].querySelector('.dataTables_empty') && is_clear_all === false) {
             for (let eleChecked of tablePurchaseQuotation[0].querySelectorAll('.table-row-checkbox:checked')) {
-                checked_list.push(eleChecked.id);
+                checked_list.push(eleChecked.getAttribute('data-id'));
             }
         }
         let frm = new SetupFormSubmit(tablePurchaseQuotation);
@@ -397,7 +396,6 @@ class POLoadDataHandle {
     };
 
     static loadDataShowPurchaseQuotation() {
-        let self = this;
         let elePurchaseQuotation = $('#purchase-order-purchase-quotation');
         let tablePurchaseQuotation = $('#datable-purchase-quotation');
         let purchase_quotations_data = [];
@@ -407,20 +405,20 @@ class POLoadDataHandle {
         let checked_id = null;
         if (elePurchaseQuotation[0].innerHTML) {
             for (let eleChecked of elePurchaseQuotation[0].querySelectorAll('.checkbox-quotation:checked')) {
-                checked_id = eleChecked.id;
+                checked_id = eleChecked.getAttribute('data-id');
             }
         }
         for (let eleChecked of tablePurchaseQuotation[0].querySelectorAll('.table-row-checkbox:checked')) {
             is_check = true;
-            let pqID = eleChecked.id;
+            let pqID = eleChecked.getAttribute('data-id');
             let pqCode = eleChecked.closest('tr').querySelector('.table-row-code').innerHTML;
             let pqSupplier = JSON.parse(eleChecked.closest('tr').querySelector('.table-row-supplier').getAttribute('data-supplier'));
             let pqSupplierStr = JSON.stringify(pqSupplier).replace(/"/g, "&quot;");
             let link = "";
-            eleAppend += `<div class="inline-elements-badge mr-2 mb-1" id="${pqID}">
-                                    <input class="form-check-input checkbox-circle checkbox-quotation" type="checkbox" id="${pqID}" data-code="${pqCode}" data-supplier="${pqSupplierStr}" value="option1">
+            eleAppend += `<div class="inline-elements-badge mr-2 mb-1">
+                                    <input class="form-check-input checkbox-circle checkbox-quotation" type="checkbox" data-id="${pqID}" data-code="${pqCode}" data-supplier="${pqSupplierStr}" value="option1">
                                     <a href="${link}" target="_blank" class="link-primary underline_hover ml-3"><span>${pqCode}</span></a>
-                                    <button type="button" class="btn btn-link btn-sm custom-btn-remove" id="${pqID}" aria-label="Close">
+                                    <button type="button" class="btn btn-link btn-sm custom-btn-remove" data-id="${pqID}" aria-label="Close">
                                         <span aria-hidden="true"><i class="fas fa-times"></i></span>
                                     </button>
                                 </div>`;
@@ -441,16 +439,15 @@ class POLoadDataHandle {
             elePurchaseQuotation.empty();
         }
         $('#purchase_quotations_data').val(JSON.stringify(purchase_quotations_data));
-
         if (elePurchaseQuotation[0].querySelectorAll('.checkbox-quotation')) {
             if (checked_id) {
                 for (let eleCheck of elePurchaseQuotation[0].querySelectorAll('.checkbox-quotation')) {
-                    if (eleCheck.id === checked_id) {
+                    if (eleCheck.getAttribute('data-id') === checked_id) {
                         eleCheck.checked = true;
                     }
                 }
             }
-            self.loadPriceListByPurchaseQuotation(purchase_quotations_id_list, checked_id);
+            POLoadDataHandle.loadPriceListByPurchaseQuotation(purchase_quotations_id_list, checked_id);
         }
         return true;
     };
@@ -458,7 +455,7 @@ class POLoadDataHandle {
     static loadDataAfterClickRemove(table, removeIDList, code) {
         let self = this;
         for (let eleChecked of table[0].querySelectorAll('.table-row-checkbox:checked')) {
-            if (removeIDList.includes(eleChecked.id)) {
+            if (removeIDList.includes(eleChecked.getAttribute('data-id'))) {
                 eleChecked.checked = false;
             }
         }
@@ -640,12 +637,11 @@ class POLoadDataHandle {
     };
 
     static loadCheckProductsByCheckedQuotation(ele) {
-        let self = this;
         if (ele.checked === true) {
             let eleDataPQProducts = $('#data-purchase-quotation-products');
             if (eleDataPQProducts.val()) {
                 let dataPQMapProductsList = JSON.parse(eleDataPQProducts.val());
-                let dataPQMapProducts = dataPQMapProductsList[ele.id];
+                let dataPQMapProducts = dataPQMapProductsList[ele.getAttribute('data-id')];
                 let tablePRProduct = $('#datable-purchase-request-product');
                 for (let eleChecked of tablePRProduct[0].querySelectorAll('.table-row-checkbox:checked')) {
                     let row = eleChecked.closest('tr');
@@ -658,14 +654,14 @@ class POLoadDataHandle {
                         $(row).css('background-color', '#f7f7f7');
                         row.setAttribute('data-bs-toggle', 'tooltip');
                         row.setAttribute('data-bs-placement', 'top');
-                        row.setAttribute('title', $.fn.transEle.attr('data-product-not-in') + '' + ele.getAttribute('data-code'));
+                        row.setAttribute('title', $.fn.transEle.attr('data-product-not-in') + ' ' + ele.getAttribute('data-code'));
                     }
                 }
                 $('#btn-confirm-add-purchase-request').click();
                 $('#btn-confirm-add-purchase-quotation').click();
             }
         } else {
-            self.loadModalPurchaseRequestProductTable(false, true)
+            POLoadDataHandle.loadModalPurchaseRequestProductTable(false, true)
         }
     };
 
@@ -730,14 +726,71 @@ class POLoadDataHandle {
         return true
     };
 
+    // LOAD DETAIL
     static loadDetailPage(data, is_detail = false) {
         $('#purchase-order-title').val(data?.['title']);
         $('#purchase-order-date-delivered').val(moment(data?.['date_created']).format('DD/MM/YYYY hh:mm A'));
+        POLoadDataHandle.loadDataShowPRPQ(data);
         POLoadDataHandle.loadBoxSupplier(data?.['supplier']);
         POLoadDataHandle.loadBoxContact(data?.['contact']);
         POLoadDataHandle.loadDetailPageTables(data);
         POLoadDataHandle.loadTotals(data);
     }
+
+    static loadDataShowPRPQ(data) {
+        let elePurchaseRequest = $('#purchase-order-purchase-request');
+        let elePRAppend = ``;
+        let purchase_requests_data = [];
+        let elePurchaseQuotation = $('#purchase-order-purchase-quotation');
+        let elePQAppend = ``;
+        let purchase_quotations_data = [];
+        // PR
+        for (let dataPR of data?.['purchase_requests_data']) {
+            let prID = dataPR?.['id'];
+            let prCode = dataPR?.['code'];
+            let link = "";
+            elePRAppend += `<div class="inline-elements-badge mr-2 mb-1">
+                                    <a href="${link}" target="_blank" class="link-primary underline_hover"><span>${prCode}</span></a>
+                                    <button type="button" class="btn btn-link btn-sm custom-btn-remove" data-id="${prID}" aria-label="Close">
+                                        <span aria-hidden="true"><i class="fas fa-times"></i></span>
+                                    </button>
+                                </div>`;
+            purchase_requests_data.push(prID);
+        }
+        elePurchaseRequest.append(elePRAppend);
+        $('#purchase_requests_data').val(JSON.stringify(purchase_requests_data));
+        // PQ
+        for (let dataPQ of data?.['purchase_quotations_data']) {
+            let pqID = dataPQ?.['purchase_quotation']?.['id'];
+            let pqCode = dataPQ?.['purchase_quotation']?.['code'];
+            let pqSupplier = dataPQ?.['purchase_quotation']?.['supplier'];
+            let pqSupplierStr = JSON.stringify(pqSupplier).replace(/"/g, "&quot;");
+            let link = "";
+            if (dataPQ?.['is_use'] === false) {
+                elePQAppend += `<div class="inline-elements-badge mr-2 mb-1">
+                                    <input class="form-check-input checkbox-circle checkbox-quotation" type="checkbox" data-id="${pqID}" data-code="${pqCode}" data-supplier="${pqSupplierStr}" value="option1">
+                                    <a href="${link}" target="_blank" class="link-primary underline_hover ml-3"><span>${pqCode}</span></a>
+                                    <button type="button" class="btn btn-link btn-sm custom-btn-remove" data-id="${pqID}" aria-label="Close">
+                                        <span aria-hidden="true"><i class="fas fa-times"></i></span>
+                                    </button>
+                                </div>`;
+            } else {
+                elePQAppend += `<div class="inline-elements-badge mr-2 mb-1">
+                                    <input class="form-check-input checkbox-circle checkbox-quotation" type="checkbox" data-id="${pqID}" data-code="${pqCode}" data-supplier="${pqSupplierStr}" value="option1" checked>
+                                    <a href="${link}" target="_blank" class="link-primary underline_hover ml-3"><span>${pqCode}</span></a>
+                                    <button type="button" class="btn btn-link btn-sm custom-btn-remove" data-id="${pqID}" aria-label="Close">
+                                        <span aria-hidden="true"><i class="fas fa-times"></i></span>
+                                    </button>
+                                </div>`;
+            }
+            purchase_quotations_data.push({
+                'purchase_quotation': pqID,
+                'is_use': false
+            })
+        }
+        elePurchaseQuotation.append(elePQAppend);
+        $('#purchase_quotations_data').val(JSON.stringify(purchase_quotations_data));
+    };
 
     static loadDetailPageTables(data) {
         let tableProductAdd = $('#datable-purchase-order-product-add');
@@ -799,6 +852,7 @@ class POLoadDataHandle {
             ele.setAttribute('disabled', 'true');
         }
     };
+
 }
 
 // DataTable
@@ -822,9 +876,7 @@ class PODataTableHandle {
                     throw Error('Call data raise errors.')
                 },
             },
-            searching: false,
             paging: false,
-            ordering: false,
             info: false,
             columnDefs: [],
             columns: [
@@ -838,9 +890,9 @@ class PODataTableHandle {
                     targets: 1,
                     render: (data, type, row) => {
                         if ($('#frm_purchase_order_create').attr('data-method') !== 'GET') {
-                            return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" id="${row.id}"></div>`;
+                            return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}"></div>`;
                         } else {
-                            return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" id="${row.id}" disabled></div>`;
+                            return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}" disabled></div>`;
                         }
                     }
                 },
@@ -866,9 +918,7 @@ class PODataTableHandle {
         let $table = $('#datable-purchase-request-product');
         $table.DataTableDefault({
             data: data ? data : [],
-            searching: false,
             paging: false,
-            ordering: false,
             info: false,
             columnDefs: [],
             columns: [
@@ -891,7 +941,7 @@ class PODataTableHandle {
                                     <input 
                                         type="checkbox" 
                                         class="form-check-input table-row-checkbox" 
-                                        id="${row.id}" 
+                                        data-id="${row.id}" 
                                         data-purchase-request-id="${purchase_request_id}"
                                         data-sale-order-product-id="${row?.['sale_order_product_id']}"
                                     >
@@ -901,7 +951,7 @@ class PODataTableHandle {
                                     <input 
                                         type="checkbox" 
                                         class="form-check-input table-row-checkbox" 
-                                        id="${row.id}" 
+                                        data-id="${row.id}" 
                                         data-purchase-request-id="${purchase_request_id}"
                                         data-sale-order-product-id="${row?.['sale_order_product_id']}"
                                         checked
@@ -961,9 +1011,7 @@ class PODataTableHandle {
         let $table = $('#datable-purchase-request-product-merge');
         $table.DataTableDefault({
             data: data ? data : [],
-            searching: false,
             paging: false,
-            ordering: false,
             info: false,
             columnDefs: [],
             columns: [
@@ -976,7 +1024,7 @@ class PODataTableHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" id="${row.id}" checked disabled></div>`
+                        return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}" checked disabled></div>`
                     }
                 },
                 {
@@ -1037,9 +1085,7 @@ class PODataTableHandle {
         let $table = $('#datable-purchase-quotation');
         $table.DataTableDefault({
             data: data ? data : [],
-            searching: false,
             paging: false,
-            ordering: false,
             info: false,
             columnDefs: [],
             columns: [
@@ -1054,9 +1100,9 @@ class PODataTableHandle {
                     targets: 1,
                     render: (data, type, row) => {
                         if (!row.hasOwnProperty('is_checked')) {
-                            return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" id="${row.id}"></div>`;
+                            return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}"></div>`;
                         } else {
-                            return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" id="${row.id}" checked></div>`;
+                            return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}" checked></div>`;
                         }
                     }
                 },
@@ -1095,52 +1141,9 @@ class PODataTableHandle {
         let $table = $('#datable-purchase-order-product-request');
         $table.DataTableDefault({
             data: data ? data : [],
-            searching: false,
             paging: false,
-            ordering: false,
             info: false,
-            columnDefs: [
-                // {
-                //     "width": "1%",
-                //     "targets": 0
-                // },
-                // {
-                //     "width": "10%",
-                //     "targets": 1
-                // },
-                // {
-                //     "width": "5%",
-                //     "targets": 2
-                // },
-                // {
-                //     "width": "5%",
-                //     "targets": 3
-                // },
-                // {
-                //     "width": "5%",
-                //     "targets": 4,
-                // },
-                // {
-                //     "width": "5%",
-                //     "targets": 5,
-                // },
-                // {
-                //     "width": "2%",
-                //     "targets": 6,
-                // },
-                // {
-                //     "width": "25%",
-                //     "targets": 7,
-                // },
-                // {
-                //     "width": "20%",
-                //     "targets": 8,
-                // },
-                // {
-                //     "width": "20%",
-                //     "targets": 9,
-                // }
-            ],
+            columnDefs: [],
             columns: [
                 {
                     targets: 0,
@@ -1307,9 +1310,7 @@ class PODataTableHandle {
         let $table = $('#datable-purchase-order-product-add');
         $table.DataTableDefault({
             data: data ? data : [],
-            searching: false,
             paging: false,
-            ordering: false,
             info: false,
             columnDefs: [
                 {

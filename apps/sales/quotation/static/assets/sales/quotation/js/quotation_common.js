@@ -79,9 +79,9 @@ class QuotationLoadDataHandle {
                 'is_deal_close': false,
             };
         if (sale_person_id) {
-            data_filter['sale_person_id'] = sale_person_id;
+            data_filter['employee_inherit'] = sale_person_id;
         } else {
-            data_filter['sale_person_id'] = QuotationLoadDataHandle.salePersonSelectEle.val();
+            data_filter['employee_inherit'] = QuotationLoadDataHandle.salePersonSelectEle.val();
         }
         if (form[0].classList.contains('sale-order')) {
             data_filter['sale_order__isnull'] = true;

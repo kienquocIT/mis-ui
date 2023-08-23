@@ -224,94 +224,59 @@ $(document).ready(function () {
 
     // submit form create lookup data
     let frm = $('#form-create-lookup');
-    frm.submit(function (event) {
-        event.preventDefault();
-        let csr = $("input[name=csrfmiddlewaretoken]").last().val();
-        let frm = new SetupFormSubmit($(this));
-        let frm_data = frm.dataForm;
-        let lookup = $('#form-create-lookup').attr('data-lookup');
-        let data_url = ''
-        if (lookup === 'section-account-type') {
-            data_url = $('#form-create-lookup').attr('data-url-account-type');
-        }
-        if (lookup === 'section-account-group') {
-            data_url = $('#form-create-lookup').attr('data-url-account-group');
-        }
-        if (lookup === 'section-industry') {
-            data_url = $('#form-create-lookup').attr('data-url-industry');
-        }
+    SetupFormSubmit.validate(
+        frm,
+        {
+            submitHandler: function (form) {
+                let frm = new SetupFormSubmit($(form));
+                let frm_data = frm.dataForm;
+                let lookup = $(form).attr('data-lookup');
+                let data_url = ''
+                if (lookup === 'section-account-type') {
+                    data_url = $(form).attr('data-url-account-type');
+                }
+                if (lookup === 'section-account-group') {
+                    data_url = $(form).attr('data-url-account-group');
+                }
+                if (lookup === 'section-industry') {
+                    data_url = $(form).attr('data-url-industry');
+                }
 
-        if (frm_data['code'] === '') {
-            frm_data['code'] = null;
-        }
+                if (frm_data['code'] === '') {
+                    frm_data['code'] = null;
+                }
 
-        if (frm_data['title'] === '') {
-            frm_data['title'] = null;
-        }
-
-        $.fn.callAjax2({
-            'url': data_url,
-            'method': frm.dataMethod,
-            'data': frm_data,
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    $.fn.notifyB({description: "Successfully"}, 'success')
-                    $('#modal-lookup-data').modal('hide');
-                    switch (lookup) {
-                        case 'section-account-type':
-                            $('#datatable-account-type-list').DataTable().ajax.reload();
-                            break;
-                        case 'section-account-group':
-                            $('#datatable-account-group-list').DataTable().ajax.reload();
-                            break;
-                        case 'section-industry':
-                            $('#datatable-industry-list').DataTable().ajax.reload();
-                            break;
+                if (frm_data['title'] === '') {
+                    frm_data['title'] = null;
+                }
+                $.fn.callAjax2({
+                    'url': data_url,
+                    'method': frm.dataMethod,
+                    'data': frm_data,
+                }).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
+                            $('#modal-lookup-data').modal('hide');
+                            switch (lookup) {
+                                case 'section-account-type':
+                                    $('#datatable-account-type-list').DataTable().ajax.reload();
+                                    break;
+                                case 'section-account-group':
+                                    $('#datatable-account-group-list').DataTable().ajax.reload();
+                                    break;
+                                case 'section-industry':
+                                    $('#datatable-industry-list').DataTable().ajax.reload();
+                                    break;
+                            }
+                        }
+                    },
+                    (errs) => {
                     }
-                }
-            },
-            (errs) => {
+                )
             }
-        )
-    })
-
-    // Select checkbox in table
-    function selectAllCheckBox(id_table) {
-        $(document).on('click', id_table + ` .check-select`, function () {
-            if ($(this).is(":checked")) {
-                $(this).closest('tr').addClass('selected');
-            } else {
-                $(this).closest('tr').removeClass('selected');
-                $(id_table + ` .check-select-all`).prop('checked', false);
-            }
-        });
-        $(document).on('click', id_table + ` .check-select-all`, function () {
-            $(id_table + ` .check-select`).attr('checked', true);
-            let table = $(id_table).DataTable();
-            let indexList = table.rows().indexes();
-            if ($(this).is(":checked")) {
-                for (let idx = 0; idx < indexList.length; idx++) {
-                    let rowNode = table.rows(indexList[idx]).nodes()[0];
-                    rowNode.classList.add('selected');
-                    rowNode.firstElementChild.children[0].firstElementChild.checked = true;
-                }
-                $(id_table + ` .check-select`).prop('checked', true);
-            } else {
-                for (let idx = 0; idx < indexList.length; idx++) {
-                    let rowNode = table.rows(indexList[idx]).nodes()[0];
-                    rowNode.classList.remove("selected");
-                    rowNode.firstElementChild.children[0].firstElementChild.checked = false;
-                }
-                $(id_table + ` .check-select`).prop('checked', false);
-            }
-        });
-    }
-
-    selectAllCheckBox('#datatable-account-type-list');
-    selectAllCheckBox('#datatable-account-group-list');
-    selectAllCheckBox('#datatable-industry-list');
+        })
 
     // show modal edit
     $(document).on('click', '.edit-button', function () {
@@ -341,13 +306,13 @@ $(document).ready(function () {
                             $('#code-update').val(data.account_type.code);
                             $('#description-update').val(data.account_type.description);
                         } else if (resp.data.hasOwnProperty('account_group')) {
-                            $('#name-update').val(data.account_group.title);
-                            $('#code-update').val(data.account_group.code);
-                            $('#description-update').val(data.account_group.description);
+                            $('#name-update').val(data?.['account_group'].title);
+                            $('#code-update').val(data?.['account_group'].code);
+                            $('#description-update').val(data?.['account_group'].description);
                         } else if (resp.data.hasOwnProperty('industry')) {
-                            $('#name-update').val(data.industry.title);
-                            $('#code-update').val(data.industry.code);
-                            $('#description-update').val(data.industry.description);
+                            $('#name-update').val(data?.['industry'].title);
+                            $('#code-update').val(data?.['industry'].code);
+                            $('#description-update').val(data?.['industry'].description);
                         }
                     }
                 }
@@ -356,53 +321,56 @@ $(document).ready(function () {
             },)
 
     });
-    let frmUpdate = $('#form-update-masterdata')
-    frmUpdate.submit(function (event) {
-        event.preventDefault();
-        frm = new SetupFormSubmit($(this));
-        let inp_name = $('#name-update');
-        let inp_code = $('#code-update');
-        let inp_des = $('#description-update');
-        let data_form = {
-            'code': inp_code.val(),
-            'title': inp_name.val(),
-            'description': inp_des.val(),
-        }
-
-        if (data_form['code'] === '') {
-            data_form['code'] = null;
-        }
-
-        if (data_form['title'] === '') {
-            data_form['title'] = null;
-        }
-        let data_url = $('#master-data-url-detail').val();
-        $.fn.callAjax2({
-            'url': data_url,
-            'method': frm.dataMethod,
-            'data': data_form
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    $.fn.notifyB({description: "Successfully"}, 'success')
-                    $('#modal-update-data').modal('hide');
-                    switch ($('#master-data-type').val()) {
-                        case 'account_type':
-                            $('#datatable-account-type-list').DataTable().ajax.reload();
-                            break;
-                        case 'account_group':
-                            $('#datatable-account-group-list').DataTable().ajax.reload();
-                            break;
-                        case 'industry':
-                            $('#datatable-industry-list').DataTable().ajax.reload();
-                            break;
-                    }
+    let frmUpdate = $('#form-update-masterdata');
+    SetupFormSubmit.validate(
+        frmUpdate,
+        {
+            submitHandler: function (form) {
+                let frm = new SetupFormSubmit($(form));
+                let inp_name = $('#name-update');
+                let inp_code = $('#code-update');
+                let inp_des = $('#description-update');
+                let data_form = {
+                    'code': inp_code.val(),
+                    'title': inp_name.val(),
+                    'description': inp_des.val(),
                 }
-            },
-            (errs) => {
-                //$.fn.notifyB({description: errs.data.errors}, 'failure');
+
+                if (data_form['code'] === '') {
+                    data_form['code'] = null;
+                }
+
+                if (data_form['title'] === '') {
+                    data_form['title'] = null;
+                }
+                let data_url = $('#master-data-url-detail').val();
+                $.fn.callAjax2({
+                    'url': data_url,
+                    'method': frm.dataMethod,
+                    'data': data_form
+                }).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
+                            $('#modal-update-data').modal('hide');
+                            switch ($('#master-data-type').val()) {
+                                case 'account_type':
+                                    $('#datatable-account-type-list').DataTable().ajax.reload();
+                                    break;
+                                case 'account_group':
+                                    $('#datatable-account-group-list').DataTable().ajax.reload();
+                                    break;
+                                case 'industry':
+                                    $('#datatable-industry-list').DataTable().ajax.reload();
+                                    break;
+                            }
+                        }
+                    },
+                    (errs) => {
+                        //$.fn.notifyB({description: errs.data.errors}, 'failure');
+                    }
+                )
             }
-        )
-    });
+        });
 });

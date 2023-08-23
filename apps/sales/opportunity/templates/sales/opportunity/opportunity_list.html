@@ -5,23 +5,6 @@
 {% endblock %}
 
 {% block pageAction %}
-{#    <a class="btn btn-outline-primary btn-animated btn-xs"#}
-{#       href=""#}
-{#       data-bs-toggle="modal"#}
-{#       data-bs-target="#createOpportunityModalForms"#}
-{#       id="create_opportunity_button"#}
-{#       data-bs-original-title="Add Opportunity">#}
-{#            <span class="icon">#}
-{#                <span class="feather-icon">#}
-{#                    <i#}
-{#                            data-feather="plus">#}
-{#                    </i>#}
-{#                </span>#}
-{#                <span class="font-3 ml-1">#}
-{#                    {% trans 'New' %}#}
-{#                </span>#}
-{#            </span>#}
-{#    </a>#}
     <a href="#" data-bs-toggle="modal"
        data-bs-target="#createOpportunityModalForms"
        id="create_opportunity_button">
@@ -45,9 +28,6 @@
            data-link-update="{% url 'OpportunityDetail' pk=0 %}"
            data-link-list="{% url 'OpportunityList' %}"
     >
-    <div class="hidden">
-        {{ data.config | json_script:"id-config-data" }}
-    </div>
     <table
             id="table_opportunity_list"
             class="table nowrap w-100 mb-5"
@@ -99,7 +79,7 @@
                 <div class="modal-body">
                     <form
                             data-url="{% url 'OpportunityListAPI' %}"
-                            data-url-redirect="{% url 'OpportunityDetail' pk=0 %}"
+                            data-url-detail="{% url 'OpportunityDetail' pk=0 %}"
                             data-method="POST"
                             id="form-create_opportunity"
                             method="post"
@@ -111,12 +91,15 @@
                                 <sup class="field-required">(*)</sup>
                             </label>
                             <select
-                                    class="form-control select2"
+                                    class="form-select"
                                     id="select-box-opportunity-create-customer"
-                                    data-select2-url="{% url "AccountListAPI" %}"
+                                    data-close-on-select="true"
+                                    data-url="{% url "AccountListAPI" %}"
                                     data-method="GET"
                                     name="customer"
                                     required
+                                    data-keyResp="account_list"
+                                    data-keyText="name"
                             ></select>
                         </div>
                         <div class="mb-3">
@@ -131,36 +114,43 @@
                         </div>
                         <div class="mb-3 form-group">
                             <label class="form-label">{% trans "Product Category" %}</label>
-                            <select class="form-control select2"
+                            <select class="form-select"
                                     name="product_category"
                                     id="select-box-product-category"
+                                    data-close-on-select="true"
                                     multiple
                                     data-method="GET"
-                                    data-select2-url="{% url 'ProductCategoryListAPI' %}"
+                                    data-url="{% url 'ProductCategoryListAPI' %}"
+                                    data-keyResp="product_category_list"
                             >
                             </select>
                         </div>
                         <div class="mb-3 form-group">
-                            <label class="form-label">{% trans "Sale Person" %}
-                                <sup class="field-required">(*)</sup></label>
-                            <select class="form-control select2"
-                                    name="sale_person"
+                            <label class="form-label required">{% trans "Sale Person" %}</label>
+                            <select class="form-select"
+                                    name="employee_inherit"
                                     id="select-box-sale-person"
-                                    data-close-on-select="true"
                                     data-method="GET"
-                                    data-select2-url="{% url 'EmployeeListAPI' %}"
+                                    data-url="{% url 'EmployeeListAPI' %}"
+                                    data-keyResp="employee_list"
+                                    data-keyText="full_name"
                             >
                             </select>
                         </div>
                         <button type="submit" class="btn btn-primary"
-                                id="btn-create_opportunity">{% trans 'Save' %}</button>
+                                form="form-create_opportunity">{% trans 'Save' %}</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 {% endblock %}
-
+{% block dataHiddenGroup %}
+    <input type="text" id="url-factory"
+           data-url-config="{% url 'OpportunityConfigAPI' %}"
+    >
+{% endblock %}
 {% block jsFooter %}
+    <script src="{% static 'assets/sales/opportunity/js/opportunity_common.js' %}"></script>
     <script src="{% static 'assets/sales/opportunity/js/opportunity_list.js' %}"></script>
 {% endblock %}

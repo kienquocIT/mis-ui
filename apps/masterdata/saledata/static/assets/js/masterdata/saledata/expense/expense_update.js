@@ -27,17 +27,11 @@ $(document).ready(function () {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 expense_price = renderDetailData(resp);
+                loadDetailPriceList(price_list, price_dict, obj_price, expense_price, currency_primary);
             }
         })
     }
 
-    let loaded_price_list = false;
-    $(document).on('click', '#dropdown-price-list', async function () {
-        if (!loaded_price_list) {
-            loadDetailPriceList(price_list, price_dict, obj_price, expense_price, currency_primary);
-            loaded_price_list = true;
-        }
-    })
     loadDetailExpense().then(null);
 
     // auto checked checkbox for price list copy from source
@@ -52,23 +46,29 @@ $(document).ready(function () {
         autoInputValuePriceList(price_dict)
     })
 
-    frmUpdate.submit(function (event) {
-        event.preventDefault();
-        let frm = submitForm($(this), obj_price.dict, currency_primary);
-        $.fn.callAjax2({
-            'url': frm.dataUrl.format_url_with_uuid(pk),
-            'method': frm.dataMethod,
-            'data': frm.dataForm
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    $.fn.notifyB({description: "Successfully"}, 'success')
-                    $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
-                }
-            },
-            (errs) => {
-                $.fn.notifyB({description: errs.data.errors}, 'failure');
-            })
-    })
+    SetupFormSubmit.validate(
+        frmUpdate,
+        {
+            submitHandler: function (form) {
+                price_dict = obj_price.dict;
+                let combinesData = submitForm($(form), price_dict, currency_primary)
+                $.fn.callAjax2({
+                    'url': combinesData.url.format_url_with_uuid(pk),
+                    'method': combinesData.method,
+                    'data': combinesData.data
+                }).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
+                            setTimeout(() => {
+                                window.location.href = $(form).data('url-redirect');
+                            }, 1000)
+                        }
+                    },
+                    (errs) => {
+                        $.fn.notifyB({description: errs.data.errors}, 'failure');
+                    })
+            }
+        })
 })

@@ -15,27 +15,31 @@ $(document).ready(function () {
     loadUoMGroup();
 
     // submit form create expense
-    let frmCreate = $('#frmCreateExpense')
-    frmCreate.submit(function (event) {
-        event.preventDefault();
-        let frm = submitForm($(this), price_dict, currency_primary)
 
-        $.fn.callAjax2({
-            'url': frm.dataUrl,
-            'method': frm.dataMethod,
-            'data': frm.dataForm
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    $.fn.notifyB({description: "Successfully"}, 'success')
-                    $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
-                }
-            },
-            (errs) => {
-                $.fn.notifyB({description: errs.data.errors}, 'failure');
-            })
-    })
+    SetupFormSubmit.validate(
+        $('#frm-create-expense'),
+        {
+            submitHandler: function (form) {
+                let combinesData = submitForm($(form), price_dict, currency_primary)
+                $.fn.callAjax2({
+                    url: combinesData.url,
+                    method: combinesData.method,
+                    data: combinesData.data,
+                    urlRedirect: combinesData.urlRedirect,
+                }).then((resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
+                        setTimeout(() => {
+                            window.location.href = $(form).data('url-redirect');
+                        }, 1000)
+                    }
+                }, (errs) => {
+                    $.fn.switcherResp(errs);
+                })
+            }
+        }
+    );
 
     $(document).on('click', '#dropdown-price-list', async function () {
         if (price_list.length === 0 || Object.keys(price_dict).length === 0) {

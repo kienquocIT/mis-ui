@@ -197,23 +197,28 @@ $(document).ready(function () {
     })
 
     const frm_create = $('#form-create-pr');
-    frm_create.submit(function (event) {
-        event.preventDefault();
-        let frm = new SetupFormSubmit(frm_create);
-        let csr = $("[name=csrfmiddlewaretoken]").val();
-        let frm_data = getDataForm(frm.dataForm, ele_request_for, ele_sale_order);
-        $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm_data, csr).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    $.fn.notifyB({description: data.message}, 'success')
-                    $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
-                }
-            }, (errs) => {
-                console.log(errs)
-                $.fn.notifyB({description: "PR create fail"}, 'failure')
+    SetupFormSubmit.validate(
+        frm_create,
+        {
+            submitHandler: function (form) {
+                let frm = new SetupFormSubmit($(form));
+                let frm_data = getDataForm(frm.dataForm, ele_request_for, ele_sale_order);
+                $.fn.callAjax2({
+                    url: frm.dataUrl,
+                    method: frm.dataMethod,
+                    data: frm_data
+                }).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            $.fn.notifyB({description: data.message}, 'success')
+                            $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
+                        }
+                    }, (errs) => {
+                        $.fn.notifyB({description: "PR create fail"}, 'failure')
+                    }
+                )
             }
-        )
-    })
+        })
 
 })

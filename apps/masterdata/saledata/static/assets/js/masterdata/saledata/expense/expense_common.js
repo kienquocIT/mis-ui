@@ -290,10 +290,16 @@ function submitForm(ele, price_dict, currency_primary) {
     let frm = new SetupFormSubmit(ele);
     frm.dataForm['uom_group'] = $('#chooseUoMGroup').data('id');
     let price_list = getDataFormPriceList(price_dict);
+
     if (price_list.length > 0) {
         frm.dataForm['data_price_list'] = price_list;
         frm.dataForm['currency_using'] = currency_primary.id;
     }
     frm.dataForm['role'] = ExpenseLoadPage.roleSelectEle.val();
-    return frm
+    return {
+        url: frm.dataUrl,
+        method: frm.dataMethod,
+        data: frm.dataForm,
+        urlRedirect: frm.dataUrlRedirect,
+    }
 }

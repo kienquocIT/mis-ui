@@ -8,6 +8,14 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
+    <button class="btn btn-outline-primary" type="submit" form="frmUpdateShipping">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
+            </span>
+        </span>
+    </button>
 {% endblock %}
 {% block pageContent %}
     <form id="frmUpdateShipping" data-method="PUT" data-url-detail="{% url "ShippingDetailAPI" pk=0 %}"
@@ -17,13 +25,13 @@
         <div class="row">
             <div class="col-4 form-group">
                 <label class="form-label required">{% trans "Title" %}</label>
-                <input type="text" class="form-control" placeholder="Input Name" name="title" id="inpTitle">
+                <input type="text" class="form-control" placeholder="Input Name" name="title" id="inpTitle" required>
             </div>
             <div class="col-4 form-group">
                 <label class="form-label required">{% trans "Margin" %}</label>
                 <div class="input-group">
                     <div class="input-affix-wrapper affix-wth-text ">
-                        <input class="form-control" type="number" name="margin" id="inpMargin">
+                        <input class="form-control" type="number" name="margin" id="inpMargin" required>
                         <span class="input-suffix">%</span>
                     </div>
                 </div>
@@ -32,7 +40,7 @@
                 <label class="form-label required">{% trans "Currency" %}</label>
 
                 <select id="chooseCurrency" class="select2 form-control" data-method="GET"
-                        data-url="{% url "CurrencyListAPI" %}" name="currency"></select>
+                        data-url="{% url "CurrencyListAPI" %}" name="currency" required></select>
 
 
             </div>

@@ -8,6 +8,14 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
+    <button class="btn btn-outline-primary" type="submit" form="frmDetail">
+    <span>
+        <span>{% trans 'Save' %}</span>
+        <span class="icon">
+            <i class="fa-regular fa-floppy-disk"></i>
+        </span>
+    </span>
+    </button>
 {% endblock %}
 {% block pageContent %}
     <form id="frmDetail"
@@ -27,16 +35,17 @@
                     <div class="row form-group">
                         <label class="col-3 col-form-label required">{% trans "Name" %}</label>
                         <div class="col-9">
-                            <input type="text" class="form-control" placeholder="input title" name="title" required style="color: black">
+                            <input type="text" class="form-control" placeholder="input title" name="title" required
+                                   style="color: black">
                         </div>
                     </div>
                     <div class="row form-group">
                         <label class="col-3 col-form-label required">{% trans "Advance Payment" %}</label>
                         <div class="col-9">
                             <select id="chooseAdvancePayment" class="form-select" data-method="GET"
-                                data-url="{% url "AdvancePaymentListAPI" %}" style="color: black"
-                                name="advance_payment" disabled>
-                        </select>
+                                    data-url="{% url "AdvancePaymentListAPI" %}" style="color: black"
+                                    name="advance_payment" disabled>
+                            </select>
                         </div>
                     </div>
                     <div class="row form-group">
@@ -125,7 +134,8 @@
                                     </span>
                                 </span>
                                 <input data-url-detail="{% url 'EmployeeDetailAPI' '0' %}" data-method="GET"
-                                       data-id="{{ data.employee_current_id }}" class="form-control" type="text" name="creator"
+                                       data-id="{{ data.employee_current_id }}" class="form-control" type="text"
+                                       name="creator"
                                        readonly>
                             </span>
                         </div>
@@ -142,7 +152,8 @@
                                        aria-expanded="false"
                                        disabled
                                     ></i>
-                                    <span role="menu" class="dropdown-menu ml-4 pl-3 pr-3 pt-3 pb-3" style="width: 25rem;">
+                                    <span role="menu" class="dropdown-menu ml-4 pl-3 pr-3 pt-3 pb-3"
+                                          style="width: 25rem;">
                                         <div class="row">
                                             <span class="col-7">{% trans "More information" %}</span>
                                             <a class="col-5 text-right"
@@ -166,7 +177,8 @@
                                         </div>
                                     </span>
                                 </span>
-                                <select class="form-select" name="beneficiary" id="chooseBeneficiary" style="color: black"
+                                <select class="form-select" name="beneficiary" id="chooseBeneficiary"
+                                        style="color: black"
                                         data-method="GET" data-url="{% url 'EmployeeListAPI' %}" disabled
                                 >
                                 </select>
@@ -183,7 +195,9 @@
             </div>
         </div>
         <div class="row collapse-arrow text-center">
-            <i class="bi bi-arrows-expand text-primary" data-bs-toggle="collapse" data-bs-target="#collapse-area" data-bs-placement="top" aria-expanded="true" aria-controls="collapse-area" id="advance-info-collapse"></i>
+            <i class="bi bi-arrows-expand text-primary" data-bs-toggle="collapse" data-bs-target="#collapse-area"
+               data-bs-placement="top" aria-expanded="true" aria-controls="collapse-area"
+               id="advance-info-collapse"></i>
         </div>
         <div class="row">
             <div class="col-11">
@@ -236,7 +250,8 @@
                                             <div class="card-body text-primary">
                                                 <div class="row mb-5">
                                                     <div class="col-4">{% trans "Total" %}</div>
-                                                    <span class="col-8 text-right mask-money" id="total-value" data-init-money="0"></span>
+                                                    <span class="col-8 text-right mask-money" id="total-value"
+                                                          data-init-money="0"></span>
                                                 </div>
                                                 <div class="row mt-5">
                                                     <div class="col-6">
@@ -264,7 +279,7 @@
            data-url-detail-ap="{% url 'AdvancePaymentDetailAPI' pk=0 %}"
     >
     <input type="text" id="trans-factory"
-        data-trans-greater-remain="{% trans 'Return value not greater than remain value' %}"
+           data-trans-greater-remain="{% trans 'Return value not greater than remain value' %}"
     >
 {% endblock %}
 {% block jsFooter %}

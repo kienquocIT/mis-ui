@@ -658,7 +658,7 @@ class POLoadDataHandle {
                         $(row).css('background-color', '#f7f7f7');
                         row.setAttribute('data-bs-toggle', 'tooltip');
                         row.setAttribute('data-bs-placement', 'top');
-                        row.setAttribute('title', 'This product is not in ' + ele.getAttribute('data-code'));
+                        row.setAttribute('title', $.fn.transEle.attr('data-product-not-in') + '' + ele.getAttribute('data-code'));
                     }
                 }
                 $('#btn-confirm-add-purchase-request').click();
@@ -688,7 +688,7 @@ class POLoadDataHandle {
         // Load again data & events relate with Purchase Request
         $('#purchase-order-purchase-request').empty();
         self.loadModalPurchaseRequestTable(is_clear_all);
-        $('#table-purchase-request-checkbox-all')[0].checked = false;
+        $('#datable-purchase-request')[0].querySelector('.table-checkbox-all').checked = false;
         self.loadModalPurchaseRequestProductTable(is_clear_all, true);
         // Load again data & events relate with Purchase Quotation
         $('#purchase-order-purchase-quotation').empty();

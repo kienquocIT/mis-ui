@@ -12,7 +12,7 @@ $(document).ready(function () {
     SetupFormSubmit.validate(
         $('#frm_employee_create'),
         {
-            submitHandler: function (form) {
+            submitHandler: function (form, event) {
                 let ajaxConfig = EmployeeLoadPage.combinesForm($(form), false);
                 $.fn.callAjax2({
                     ...ajaxConfig,

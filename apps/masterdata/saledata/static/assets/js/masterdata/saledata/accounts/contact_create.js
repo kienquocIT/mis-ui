@@ -3,18 +3,16 @@ $(document).ready(function () {
 
     const frm = new SetupFormSubmit($('#form-create-contact'));
     frm.validate({
-        submitHandler: function (event) {
-            event.preventDefault();
+        submitHandler: function (form) {
             WindowControl.showLoading();
-            let combinesData = new ContactHandle().combinesData($(this));
+            let combinesData = new ContactHandle().combinesData(form);
             $.fn.callAjax2(combinesData).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data && (data['status'] === 201 || data['status'] === 200)) {
                         $.fn.notifyB({description: $('#base-trans-factory').attr('data-success')}, 'success');
                         setTimeout(() => {
-                            window.location.replace($(this).attr('data-url-redirect'));
-                            location.reload.bind(location);
+                            window.location.replace(form.attr('data-url-redirect'));
                         }, 1000);
                     }
                 }, (err) => {

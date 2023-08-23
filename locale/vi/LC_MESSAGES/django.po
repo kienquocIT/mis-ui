@@ -3978,3 +3978,19 @@ msgstr "Giảm dần"
 #
 msgid "Please solve the captcha."
 msgstr "Vui lòng hoàn thành captcha."
+
+#
+msgid "Warning"
+msgstr "Cảnh báo"
+
+#
+msgid "Continue"
+msgstr "Tiếp Tục"
+
+#
+msgid "All selected purchase requests and related datas will be removed"
+msgstr "Tất cả yêu cầu mua hàng đã chọn và dữ liệu liên quan sẽ bị loại bỏ"
+
+#
+msgid "Product is not in"
+msgstr "Sản phẩm không thuộc"

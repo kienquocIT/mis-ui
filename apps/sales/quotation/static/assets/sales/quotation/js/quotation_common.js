@@ -106,6 +106,8 @@ class QuotationLoadDataHandle {
                 }
             }
         }
+        // ReCheck Config when change Opportunity
+        QuotationCheckConfigHandle.checkConfig(true);
         // ReCheck Config when change Opportunity (If is copy)
         if (is_copy === true) {
             QuotationCheckConfigHandle.checkConfig(true, null, false, false, is_copy);
@@ -912,9 +914,7 @@ class QuotationDataTableHandle {
         let $tables = $('#datable-quotation-create-product');
         $tables.DataTableDefault({
             data: data ? data : [],
-            searching: false,
             paging: false,
-            ordering: false,
             info: false,
             drawCallback: function () {
             },
@@ -1282,9 +1282,7 @@ class QuotationDataTableHandle {
         let $tables = $('#datable-quotation-create-cost');
         $tables.DataTableDefault({
             data: data ? data : [],
-            searching: false,
             paging: false,
-            ordering: false,
             info: false,
             columnDefs: [],
             drawCallback: function () {
@@ -1503,9 +1501,7 @@ class QuotationDataTableHandle {
         let $tables = $('#datable-quotation-create-expense');
         $tables.DataTableDefault({
             data: data ? data : [],
-            searching: false,
             paging: false,
-            ordering: false,
             info: false,
             columnDefs: [],
             drawCallback: function () {

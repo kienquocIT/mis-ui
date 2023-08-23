@@ -320,6 +320,8 @@ class POLoadDataHandle {
                 let prID = eleChecked.getAttribute('data-id');
                 let prCode = eleChecked.closest('tr').querySelector('.table-row-code').innerHTML;
                 let link = "";
+                let linkDetail = elePurchaseRequest.attr('data-link-detail');
+                link = linkDetail.format_url_with_uuid(prID);
                 eleAppend += `<div class="inline-elements-badge mr-2 mb-1">
                                     <a href="${link}" target="_blank" class="link-primary underline_hover"><span>${prCode}</span></a>
                                     <button type="button" class="btn btn-link btn-sm custom-btn-remove" data-id="${prID}" aria-label="Close">
@@ -415,6 +417,8 @@ class POLoadDataHandle {
             let pqSupplier = JSON.parse(eleChecked.closest('tr').querySelector('.table-row-supplier').getAttribute('data-supplier'));
             let pqSupplierStr = JSON.stringify(pqSupplier).replace(/"/g, "&quot;");
             let link = "";
+            let linkDetail = elePurchaseQuotation.attr('data-link-detail');
+            link = linkDetail.format_url_with_uuid(pqID);
             eleAppend += `<div class="inline-elements-badge mr-2 mb-1">
                                     <input class="form-check-input checkbox-circle checkbox-quotation" type="checkbox" data-id="${pqID}" data-code="${pqCode}" data-supplier="${pqSupplierStr}" value="option1">
                                     <a href="${link}" target="_blank" class="link-primary underline_hover ml-3"><span>${pqCode}</span></a>
@@ -667,7 +671,7 @@ class POLoadDataHandle {
 
     static loadSupplierContactByCheckedQuotation(ele) {
         let self = this;
-        let checked_id = ele.id;
+        let checked_id = ele.getAttribute('data-id');
         let supplier = JSON.parse(ele.getAttribute('data-supplier'));
         for (let purchase_quotation of JSON.parse($('#purchase_quotations_data').val())) {
             purchase_quotation.is_use = (purchase_quotation.purchase_quotation === checked_id);
@@ -727,7 +731,7 @@ class POLoadDataHandle {
     };
 
     // LOAD DETAIL
-    static loadDetailPage(data, is_detail = false) {
+    static loadDetailPage(data) {
         $('#purchase-order-title').val(data?.['title']);
         $('#purchase-order-date-delivered').val(moment(data?.['date_created']).format('DD/MM/YYYY hh:mm A'));
         POLoadDataHandle.loadDataShowPRPQ(data);
@@ -749,9 +753,11 @@ class POLoadDataHandle {
             let prID = dataPR?.['id'];
             let prCode = dataPR?.['code'];
             let link = "";
+            let linkDetail = elePurchaseRequest.attr('data-link-detail');
+            link = linkDetail.format_url_with_uuid(prID);
             elePRAppend += `<div class="inline-elements-badge mr-2 mb-1">
                                     <a href="${link}" target="_blank" class="link-primary underline_hover"><span>${prCode}</span></a>
-                                    <button type="button" class="btn btn-link btn-sm custom-btn-remove" data-id="${prID}" aria-label="Close">
+                                    <button type="button" class="btn btn-link btn-sm custom-btn-remove" data-id="${prID}" aria-label="Close" disabled>
                                         <span aria-hidden="true"><i class="fas fa-times"></i></span>
                                     </button>
                                 </div>`;
@@ -766,11 +772,13 @@ class POLoadDataHandle {
             let pqSupplier = dataPQ?.['purchase_quotation']?.['supplier'];
             let pqSupplierStr = JSON.stringify(pqSupplier).replace(/"/g, "&quot;");
             let link = "";
+            let linkDetail = elePurchaseQuotation.attr('data-link-detail');
+            link = linkDetail.format_url_with_uuid(pqID);
             if (dataPQ?.['is_use'] === false) {
                 elePQAppend += `<div class="inline-elements-badge mr-2 mb-1">
                                     <input class="form-check-input checkbox-circle checkbox-quotation" type="checkbox" data-id="${pqID}" data-code="${pqCode}" data-supplier="${pqSupplierStr}" value="option1">
                                     <a href="${link}" target="_blank" class="link-primary underline_hover ml-3"><span>${pqCode}</span></a>
-                                    <button type="button" class="btn btn-link btn-sm custom-btn-remove" data-id="${pqID}" aria-label="Close">
+                                    <button type="button" class="btn btn-link btn-sm custom-btn-remove" data-id="${pqID}" aria-label="Close" disabled>
                                         <span aria-hidden="true"><i class="fas fa-times"></i></span>
                                     </button>
                                 </div>`;
@@ -778,7 +786,7 @@ class POLoadDataHandle {
                 elePQAppend += `<div class="inline-elements-badge mr-2 mb-1">
                                     <input class="form-check-input checkbox-circle checkbox-quotation" type="checkbox" data-id="${pqID}" data-code="${pqCode}" data-supplier="${pqSupplierStr}" value="option1" checked>
                                     <a href="${link}" target="_blank" class="link-primary underline_hover ml-3"><span>${pqCode}</span></a>
-                                    <button type="button" class="btn btn-link btn-sm custom-btn-remove" data-id="${pqID}" aria-label="Close">
+                                    <button type="button" class="btn btn-link btn-sm custom-btn-remove" data-id="${pqID}" aria-label="Close" disabled>
                                         <span aria-hidden="true"><i class="fas fa-times"></i></span>
                                     </button>
                                 </div>`;

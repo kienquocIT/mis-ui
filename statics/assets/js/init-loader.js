@@ -165,7 +165,7 @@ $.fn.extend({
             });
         }
     },
-    switcherResp: function (resp, isNotify = true) {
+    switcherResp: function (resp, isNotify = true, swalOpts={}) {
         if (typeof resp === 'object') {
             let status = 500;
             if (resp.hasOwnProperty('status')) status = resp.status;
@@ -175,9 +175,7 @@ $.fn.extend({
                 case 201:
                     return resp.data
                 case 204:
-                    if (isNotify === true) $.fn.notifyB({
-                        'description': $.fn.transEle.attr('data-success'),
-                    }, 'success');
+                    if (isNotify === true) $.fn.notifyB({'description': $.fn.transEle.attr('data-success'),}, 'success');
                     return {'status': status}
                 case 400:
                     let mess = resp.data;
@@ -185,17 +183,16 @@ $.fn.extend({
                     if (isNotify === true) UtilControl.notifyErrors(mess);
                     return {};
                 case 401:
-                    WindowControl.showUnauthenticated(true);
+                    WindowControl.showUnauthenticated(swalOpts,true);
                     return {};
                 case 403:
-                    // if (isNotify === true) $.fn.notifyB({'description': resp.data.errors}, 'failure');
-                    WindowControl.showForbidden();
+                    WindowControl.showForbidden(swalOpts);
                     return {};
                 case 404:
-                    WindowControl.showNotFound();
+                    WindowControl.showNotFound(swalOpts);
                     return {};
                 case 500:
-                    WindowControl.showSVErrors();
+                    WindowControl.showSVErrors(swalOpts);
                     return {};
                 default:
                     return {};
@@ -301,6 +298,8 @@ $.fn.extend({
             if (!$.fn.isBoolean(isLoading)) isLoading = false;
             if (isLoading) $x.fn.showLoadingPage();
 
+            let sweetAlertOpts = UtilControl.popKey(opts, 'sweetAlertOpts', {}, true);
+
             return new Promise(function (resolve, reject) {
                 // Setup then Call Ajax
                 let url = opts?.['url'] || null;
@@ -335,7 +334,7 @@ $.fn.extend({
                             if (isLoading) $x.fn.hideLoadingPage(0);
                             if (successCallback) successCallback(rest, textStatus, jqXHR);
                             if (onlySuccessCallback === false) {
-                                let data = $.fn.switcherResp(rest, isNotify);
+                                let data = $.fn.switcherResp(rest, isNotify, sweetAlertOpts);
                                 if (data) {
                                     if (DocumentControl.getBtnIDLastSubmit() === 'idxSaveInZoneWFThenNext') {
                                         let btnSubmit = $('#idxSaveInZoneWFThenNext');
@@ -364,7 +363,7 @@ $.fn.extend({
                             if (onlyErrorCallback === false) {
                                 let resp_data = jqXHR.responseJSON;
                                 if (resp_data && typeof resp_data === 'object') {
-                                    $.fn.switcherResp(resp_data, isNotify);
+                                    $.fn.switcherResp(resp_data, isNotify, sweetAlertOpts);
                                     reject(resp_data);
                                 } else if (jqXHR.status === 204) reject({'status': 204});
                             }

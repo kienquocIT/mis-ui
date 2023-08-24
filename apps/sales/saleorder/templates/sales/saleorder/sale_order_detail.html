@@ -1148,7 +1148,10 @@
                     $.fn.callAjax2({
                         'url': callDeliveryUrl,
                         'method': 'POST',
-                        isLoading: false,
+                        isLoading: true,
+                        sweetAlertOpts: {
+                            'allowOutsideClick': true,
+                        },
                     }).then(
                         (resp) => {
                             let data = $.fn.switcherResp(resp);

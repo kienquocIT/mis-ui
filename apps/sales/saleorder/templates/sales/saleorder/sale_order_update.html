@@ -1038,6 +1038,9 @@
                         'url': callDeliveryUrl,
                         'method': 'POST',
                         isLoading: true,
+                        sweetAlertOpts: {
+                            'allowOutsideClick': true,
+                        },
                     }).then(
                         (resp)=>{
                             let data = $.fn.switcherResp(resp);

@@ -2854,7 +2854,7 @@ class WindowControl {
         });
     }
 
-    static showForbidden() {
+    static showForbidden(opts) {
         Swal.fire({
             title: globeMsgHttp403,
             icon: 'error',
@@ -2871,10 +2871,11 @@ class WindowControl {
             preDeny: function () {
                 window.location.href = '/';
             },
+            ...opts,
         })
     }
 
-    static showNotFound() {
+    static showNotFound(opts) {
         Swal.fire({
             title: globeMsgHttp404,
             icon: 'question',
@@ -2891,10 +2892,11 @@ class WindowControl {
             preDeny: function () {
                 window.location.href = '/';
             },
+            ...opts,
         })
     }
 
-    static showUnauthenticated(isRedirect=true) {
+    static showUnauthenticated(opts, isRedirect=true) {
         if (isRedirect === true){
             Swal.fire({
                 title: globeMsgAuthExpires,
@@ -2905,6 +2907,7 @@ class WindowControl {
                 timerProgressBar: true,
                 showConfirmButton: true,
                 confirmButtonText: globeLoginPage,
+                ...opts
             }).then((result) => {
                 if (result.dismiss === Swal.DismissReason.timer || result.isConfirmed || result.value) {
                     return $x.fn.redirectLogin();
@@ -2921,6 +2924,7 @@ class WindowControl {
                 preConfirm: function (opts) {
                     return $x.fn.redirectLogin();
                 },
+                ...opts,
             });
         }
     }

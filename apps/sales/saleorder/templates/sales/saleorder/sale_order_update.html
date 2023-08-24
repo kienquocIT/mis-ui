@@ -1031,19 +1031,17 @@
     <script>
         $(document).ready(function (){
             $('#btnDeliverySaleOrder').click(function (event){
-                WindowControl.showLoading();
                 const urlElm = $('#dataUrlSaleOrderCallDelivery')
                 let callDeliveryUrl = urlElm.attr('data-url');
                 if (callDeliveryUrl){
                     $.fn.callAjax2({
                         'url': callDeliveryUrl,
                         'method': 'POST',
-                        isLoading: false,
+                        isLoading: true,
                     }).then(
                         (resp)=>{
                             let data = $.fn.switcherResp(resp);
                             if (data?.['status'] === 200){
-                                console.log('rep')
                                 const config = data?.config
                                 let is_URL = urlElm.attr('data-delivery')
                                 if (config?.is_picking && !data?.is_not_picking) is_URL = urlElm.attr('data-picking')

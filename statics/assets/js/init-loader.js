@@ -168,9 +168,7 @@ $.fn.extend({
     switcherResp: function (resp, isNotify = true) {
         if (typeof resp === 'object') {
             let status = 500;
-            if (resp.hasOwnProperty('status')) {
-                status = resp.status;
-            }
+            if (resp.hasOwnProperty('status')) status = resp.status;
             switch (status) {
                 case 200:
                     return resp.data
@@ -187,8 +185,8 @@ $.fn.extend({
                     if (isNotify === true) UtilControl.notifyErrors(mess);
                     return {};
                 case 401:
-                    if (isNotify === true) $.fn.notifyB({'description': resp.data}, 'failure');
-                    return WindowControl.redirectLogin(500);
+                    WindowControl.showUnauthenticated(true);
+                    return {};
                 case 403:
                     // if (isNotify === true) $.fn.notifyB({'description': resp.data.errors}, 'failure');
                     WindowControl.showForbidden();
@@ -197,6 +195,7 @@ $.fn.extend({
                     WindowControl.showNotFound();
                     return {};
                 case 500:
+                    WindowControl.showSVErrors();
                     return {};
                 default:
                     return {};
@@ -291,9 +290,9 @@ $.fn.extend({
         }
     },
     callAjax2: function (opts = {}) {
-        if (isDenied && !globeUrlNotDeny.includes(url)) return new Promise(function (resolve, reject) {
-        });
-        else {
+        if (isDenied && !globeUrlNotDeny.includes(url)){
+            return new Promise(function (resolve, reject) {});
+        } else {
             let isDropdown = UtilControl.popKey(opts, 'isDropdown', false, true);
             let isNotify = UtilControl.popKey(opts, 'isNotify', false, true);
             if (!$.fn.isBoolean(isNotify)) isNotify = false;
@@ -360,7 +359,7 @@ $.fn.extend({
                             }
                         },
                         error: function (jqXHR, textStatus, errorThrown) {
-                            if (isLoading) $x.fn.hideLoadingPage(0);
+                            if (isLoading) $x.fn.hideLoadingPage();
                             if (errorCallback) errorCallback(jqXHR, textStatus, errorThrown);
                             if (onlyErrorCallback === false) {
                                 let resp_data = jqXHR.responseJSON;

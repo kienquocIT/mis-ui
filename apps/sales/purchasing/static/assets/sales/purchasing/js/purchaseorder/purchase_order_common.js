@@ -799,21 +799,27 @@ class POLoadDataHandle {
         POLoadDataHandle.PQDataEle.val(JSON.stringify(purchase_quotations_data));
     };
 
-    static loadDataCheckedPRProduct(data) {
+    static loadDataCheckedPRProduct(dataDetail) {
         let tablePurchaseRequestProduct = $('#datable-purchase-request-product');
         let frm = new SetupFormSubmit(tablePurchaseRequestProduct);
         let request_id_list = [];
         let checked_data = {};
-        if (data) {
+        if (dataDetail) {
             if (POLoadDataHandle.PRDataEle.val()) {
                 request_id_list = JSON.parse(POLoadDataHandle.PRDataEle.val());
             }
-            for (let dataProduct of data?.['purchase_order_products_data']) {
-                for (let PRProduct of dataProduct?.['purchase_request_product_datas']) {
+            for (let dataProduct of dataDetail?.['purchase_order_products_data']) {
+                for (let PRProduct of dataProduct?.['purchase_request_products_data']) {
                     checked_data[PRProduct?.['purchase_request_product_id']] = {
                         'id': PRProduct?.['purchase_request_product_id'],
                         'quantity_order': PRProduct?.['quantity_order'],
                     }
+                }
+            }
+            for (let PRProduct of dataDetail?.['purchase_request_products_data']) {
+                checked_data[PRProduct?.['purchase_request_product_id']] = {
+                    'id': PRProduct?.['purchase_request_product_id'],
+                    'quantity_order': PRProduct?.['quantity_order'],
                 }
             }
             tablePurchaseRequestProduct.DataTable().clear().draw();
@@ -829,17 +835,16 @@ class POLoadDataHandle {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             if (data.hasOwnProperty('purchase_request_product_list') && Array.isArray(data.purchase_request_product_list)) {
-                                if (Object.keys(checked_data).length !== 0) {
+                                if (Object.keys(checked_data).length > 0) {
                                     for (let prProduct of data.purchase_request_product_list) {
                                         if (checked_data.hasOwnProperty(prProduct.id)) {
                                             prProduct['is_checked'] = true;
                                             prProduct['quantity_order'] = checked_data[prProduct.id].quantity_order;
-                                        } else {
-                                            prProduct['is_disabled_by_pq']
                                         }
                                     }
                                 }
                                 tablePurchaseRequestProduct.DataTable().rows.add(data.purchase_request_product_list).draw();
+                                POLoadDataHandle.loadPRProductNotInPO(dataDetail);
                             }
                         }
                     }
@@ -847,6 +852,37 @@ class POLoadDataHandle {
             }
         }
         return true;
+    };
+
+    static loadPRProductNotInPO(data) {
+        let PRProductIDList = [];
+        for (let PRProduct of data?.['purchase_request_products_data']) {
+            PRProductIDList.push(PRProduct?.['purchase_request_product_id'])
+        }
+        let PQCode = null;
+        for (let PQ of data?.['purchase_quotations_data']) {
+            if (PQ?.['is_use'] === true) {
+                PQCode = PQ?.['purchase_quotation']?.['code'];
+                break
+            }
+        }
+        let table = $('#datable-purchase-request-product');
+        for (let eleChecked of table[0].querySelectorAll('.table-row-checkbox:checked')) {
+            let row = eleChecked.closest('tr');
+            let dataRowRaw = row.querySelector('.table-row-order').getAttribute('data-row');
+            if (dataRowRaw) {
+                let dataRow = JSON.parse(dataRowRaw);
+                if (PRProductIDList.includes(dataRow?.['id'])) {
+                    eleChecked.classList.add('disabled-by-pq');
+                    eleChecked.setAttribute('disabled', 'true');
+                    row.querySelector('.table-row-quantity-order').setAttribute('disabled', 'true');
+                    $(row).css('background-color', '#f7f7f7');
+                    row.setAttribute('data-bs-toggle', 'tooltip');
+                    row.setAttribute('data-bs-placement', 'top');
+                    row.setAttribute('title', $.fn.transEle.attr('data-product-not-in') + ' ' + PQCode);
+                }
+            }
+        }
     };
 
     static loadDetailPageTables(data) {
@@ -1731,6 +1767,31 @@ class POValidateHandle {
 
 // Submit Form
 class POSubmitHandle {
+
+    static setupDataPRProduct() {
+        let result = []
+        let table = $('#datable-purchase-request-product');
+        for (let eleChecked of table[0].querySelectorAll('.disabled-by-pq')) {
+            let sale_order_id = eleChecked.getAttribute('data-sale-order-product-id');
+            if (sale_order_id === "null") {
+                sale_order_id = null;
+            }
+            let row = eleChecked.closest('tr');
+            let quantity_order = parseFloat(row.querySelector('.table-row-quantity-order').value);
+            let dataRowRaw = row.querySelector('.table-row-order').getAttribute('data-row');
+            if (dataRowRaw) {
+                let dataRow = JSON.parse(dataRowRaw);
+                result.push({
+                    'purchase_request_product': dataRow?.['id'],
+                    'sale_order_product': sale_order_id,
+                    'quantity_order': quantity_order,
+                    'quantity_remain': parseFloat(dataRow?.['remain_for_purchase_order']),
+                })
+            }
+        }
+        return result;
+    };
+
     static setupDataProduct() {
         let result = [];
         let table = document.getElementById('datable-purchase-order-product-add');
@@ -1754,9 +1815,6 @@ class POSubmitHandle {
                     rowData['product'] = dataInfo.id;
                     rowData['product_title'] = dataInfo.title;
                     rowData['product_code'] = dataInfo.code;
-                    if (eleProduct.getAttribute('data-purchase-request-product-datas')) {
-                        rowData['purchase_request_product_datas'] = JSON.parse(eleProduct.getAttribute('data-purchase-request-product-datas'));
-                    }
                 }
                 let eleDescription = row.querySelector('.table-row-description');
                 if (eleDescription) {
@@ -1817,7 +1875,7 @@ class POSubmitHandle {
                     rowData['order'] = parseInt(eleOrder.innerHTML);
                     if (eleOrder.getAttribute('data-row')) {
                         let dataRow = JSON.parse(eleOrder.getAttribute('data-row'));
-                        rowData['purchase_request_product_datas'] = dataRow?.['purchase_request_product_datas'];
+                        rowData['purchase_request_products_data'] = dataRow?.['purchase_request_products_data'];
                     }
                 }
             }
@@ -1827,16 +1885,19 @@ class POSubmitHandle {
     };
 
     static setupDataSubmit(_form) {
-        let self = this;
         _form.dataForm['purchase_requests_data'] = JSON.parse(POLoadDataHandle.PRDataEle.val());
         _form.dataForm['purchase_quotations_data'] = JSON.parse(POLoadDataHandle.PQDataEle.val());
+        let pr_products_data_setup = POSubmitHandle.setupDataPRProduct();
+        if (pr_products_data_setup.length > 0) {
+            _form.dataForm['purchase_request_products_data'] = pr_products_data_setup;
+        }
         let dateDeliveredVal = $('#purchase-order-date-delivered').val();
         if (dateDeliveredVal) {
             _form.dataForm['delivered_date'] = moment(dateDeliveredVal,
                 'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
         }
         _form.dataForm['status_delivered'] = 0;
-        let products_data_setup = self.setupDataProduct();
+        let products_data_setup = POSubmitHandle.setupDataProduct();
         if (products_data_setup.length > 0) {
             _form.dataForm['purchase_order_products_data'] = products_data_setup;
         }
@@ -1894,7 +1955,7 @@ function setupMergeProduct() {
                     order++
                     dataJson[product_id] = {
                         'id': dataRow?.['id'],
-                        'purchase_request_product_datas': [{
+                        'purchase_request_products_data': [{
                             'purchase_request_product': dataRow?.['id'],
                             'sale_order_product': sale_order_id,
                             'quantity_order': quantity_order,
@@ -1922,7 +1983,7 @@ function setupMergeProduct() {
                     if (!dataJson[product_id].code_list.includes(dataRow?.['purchase_request']?.['code'])) {
                         dataJson[product_id].code_list.push(dataRow?.['purchase_request']?.['code']);
                     }
-                    dataJson[product_id].purchase_request_product_datas.push({
+                    dataJson[product_id].purchase_request_products_data.push({
                         'purchase_request_product': dataRow?.['id'],
                         'sale_order_product': sale_order_id,
                         'quantity_order': quantity_order,

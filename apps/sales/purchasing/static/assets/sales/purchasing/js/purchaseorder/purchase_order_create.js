@@ -212,6 +212,7 @@ $(function () {
                 'title',
                 'purchase_requests_data',
                 'purchase_quotations_data',
+                'purchase_request_products_data',
                 'supplier',
                 'contact',
                 'delivered_date',

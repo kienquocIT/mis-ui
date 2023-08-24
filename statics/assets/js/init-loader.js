@@ -165,21 +165,17 @@ $.fn.extend({
             });
         }
     },
-    switcherResp: function (resp, isNotify = true) {
+    switcherResp: function (resp, isNotify = true, swalOpts={}) {
         if (typeof resp === 'object') {
             let status = 500;
-            if (resp.hasOwnProperty('status')) {
-                status = resp.status;
-            }
+            if (resp.hasOwnProperty('status')) status = resp.status;
             switch (status) {
                 case 200:
                     return resp.data
                 case 201:
                     return resp.data
                 case 204:
-                    if (isNotify === true) $.fn.notifyB({
-                        'description': $.fn.transEle.attr('data-success'),
-                    }, 'success');
+                    if (isNotify === true) $.fn.notifyB({'description': $.fn.transEle.attr('data-success'),}, 'success');
                     return {'status': status}
                 case 400:
                     let mess = resp.data;
@@ -187,16 +183,16 @@ $.fn.extend({
                     if (isNotify === true) UtilControl.notifyErrors(mess);
                     return {};
                 case 401:
-                    if (isNotify === true) $.fn.notifyB({'description': resp.data}, 'failure');
-                    return WindowControl.redirectLogin(500);
+                    WindowControl.showUnauthenticated(swalOpts,true);
+                    return {};
                 case 403:
-                    // if (isNotify === true) $.fn.notifyB({'description': resp.data.errors}, 'failure');
-                    WindowControl.showForbidden();
+                    WindowControl.showForbidden(swalOpts);
                     return {};
                 case 404:
-                    WindowControl.showNotFound();
+                    WindowControl.showNotFound(swalOpts);
                     return {};
                 case 500:
+                    WindowControl.showSVErrors(swalOpts);
                     return {};
                 default:
                     return {};
@@ -291,9 +287,9 @@ $.fn.extend({
         }
     },
     callAjax2: function (opts = {}) {
-        if (isDenied && !globeUrlNotDeny.includes(url)) return new Promise(function (resolve, reject) {
-        });
-        else {
+        if (isDenied && !globeUrlNotDeny.includes(url)){
+            return new Promise(function (resolve, reject) {});
+        } else {
             let isDropdown = UtilControl.popKey(opts, 'isDropdown', false, true);
             let isNotify = UtilControl.popKey(opts, 'isNotify', false, true);
             if (!$.fn.isBoolean(isNotify)) isNotify = false;
@@ -301,6 +297,8 @@ $.fn.extend({
             let isLoading = UtilControl.popKey(opts, 'isLoading', false, true);
             if (!$.fn.isBoolean(isLoading)) isLoading = false;
             if (isLoading) $x.fn.showLoadingPage();
+
+            let sweetAlertOpts = UtilControl.popKey(opts, 'sweetAlertOpts', {}, true);
 
             return new Promise(function (resolve, reject) {
                 // Setup then Call Ajax
@@ -336,7 +334,7 @@ $.fn.extend({
                             if (isLoading) $x.fn.hideLoadingPage(0);
                             if (successCallback) successCallback(rest, textStatus, jqXHR);
                             if (onlySuccessCallback === false) {
-                                let data = $.fn.switcherResp(rest, isNotify);
+                                let data = $.fn.switcherResp(rest, isNotify, sweetAlertOpts);
                                 if (data) {
                                     if (DocumentControl.getBtnIDLastSubmit() === 'idxSaveInZoneWFThenNext') {
                                         let btnSubmit = $('#idxSaveInZoneWFThenNext');
@@ -360,12 +358,12 @@ $.fn.extend({
                             }
                         },
                         error: function (jqXHR, textStatus, errorThrown) {
-                            if (isLoading) $x.fn.hideLoadingPage(0);
+                            if (isLoading) $x.fn.hideLoadingPage();
                             if (errorCallback) errorCallback(jqXHR, textStatus, errorThrown);
                             if (onlyErrorCallback === false) {
                                 let resp_data = jqXHR.responseJSON;
                                 if (resp_data && typeof resp_data === 'object') {
-                                    $.fn.switcherResp(resp_data, isNotify);
+                                    $.fn.switcherResp(resp_data, isNotify, sweetAlertOpts);
                                     reject(resp_data);
                                 } else if (jqXHR.status === 204) reject({'status': 204});
                             }

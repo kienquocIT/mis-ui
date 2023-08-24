@@ -418,7 +418,6 @@
                 if (state) {
                     $.fn.showLoadingLogin();
                     let frm = new SetupFormSubmitLogin($(this));
-                    console.log(frm.dataForm);
                     if (frm.dataUrl && frm.dataMethod) {
                         if (ggCaptChaEnabled === 'True' && !frm.dataForm['g-recaptcha-response']) {
                             $.fn.notifyBLogin({

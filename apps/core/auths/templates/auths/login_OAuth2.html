@@ -466,11 +466,7 @@
                             window.location.href = path_redirect + `?id=${data['id']}&access_code=${data['access_code']}&token=${data['secret_token_regis']}`
                         }
                     },
-                    (errs) => {
-                        console.log('errors: ', errs);
-                    }
                 )
-                console.log($(this).attr('data-company-id'), access_id);
             });
 
             $('#form-login').submit(function (event) {

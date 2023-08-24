@@ -90,6 +90,7 @@ $(function () {
         // Action on click btn add purchase request
         $('#btn-confirm-add-purchase-request').on('click', function () {
             POLoadDataHandle.loadDataShowPurchaseRequest();
+            POLoadDataHandle.loadDataShowPurchaseQuotation();
         });
 
         // Action on click btn remove purchase request
@@ -118,14 +119,16 @@ $(function () {
         // Action on click checkbox purchase quotation
         elePurchaseQuotation.on('click', '.checkbox-quotation', function () {
             if (this.checked === true) {
-               POLoadDataHandle.loadSupplierContactByCheckedQuotation(this);
-            }
-            for (let item of elePurchaseQuotation[0].querySelectorAll('.checkbox-quotation')) {
-                if (item.getAttribute('data-id') !== $(this)[0].getAttribute('data-id')) {
-                    item.checked = false;
+                POLoadDataHandle.loadSupplierContactByCheckedQuotation(this);
+                for (let item of elePurchaseQuotation[0].querySelectorAll('.checkbox-quotation')) {
+                    if (item.getAttribute('data-id') !== $(this)[0].getAttribute('data-id')) {
+                        item.checked = false;
+                    }
                 }
+                POLoadDataHandle.loadCheckProductsByCheckedQuotation(this);
+            } else {
+                POLoadDataHandle.loadModalPurchaseRequestProductTable(false, true);
             }
-            POLoadDataHandle.loadCheckProductsByCheckedQuotation(this);
         });
 
         // Action on click btn remove purchase quotation

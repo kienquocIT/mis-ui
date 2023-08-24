@@ -51,7 +51,7 @@
     </div>
     <div id="text-notify" hidden>
         <span id="limit-rate">{% trans "rate must not be less than 0 or greater than 100" %}</span>
-        <span id="limit-quantity">{% trans "quantity must not be less than zero" %}</span>
+
         <span id="limit-money">{% trans "money must not be less than zero" %}</span>
         <span id="limit-close-date">{% trans "The closing date must not be later than the opening date" %}</span>
         <span id="not-select-stage">{% trans "Configuration does not allow selecting stage" %}</span>
@@ -101,8 +101,11 @@
                                 </div>
                             </div>
                             <select class="select2 form-control" id="select-box-customer"
-                                    data-select2-url="{% url 'AccountListAPI' %}"
-                                    data-method="GET" data-close-on-select="true">
+                                    data-url="{% url 'AccountListAPI' %}"
+                                    data-method="GET" data-close-on-select="true"
+                                    data-keyResp="account_list"
+                                    data-keyText="name"
+                            >
                             </select>
                         </div>
                         <div class="form-group mt-2">
@@ -110,22 +113,29 @@
                             <select class="select2 form-control" id="select-box-end-customer"
                                     data-close-on-select="true"
                                     data-url="{% url 'AccountListAPI' %}" disabled
-                                    data-method="GET">
+                                    data-method="GET"
+                                    data-keyResp="account_list"
+                                    data-keyText="name">
                             </select>
                         </div>
                         <div class="form-group mt-2">
                             <label class="form-label required">{% trans "Product Category" %}</label>
-                            <select class="select2 form-control" multiple id="select-box-product-category"
-                                    data-close-on-select="true" data-method="GET"
-                                    data-select2-url="{% url 'ProductCategoryListAPI' %}">
+                            <select class="form-select" multiple id="select-box-product-category"
+                                    data-close-on-select="true"
+                                    data-method="GET"
+                                    data-url="{% url 'ProductCategoryListAPI' %}"
+                                    data-keyResp="product_category_list"
+                            >
                             </select>
                         </div>
                         <div class="form-group mt-2">
                             <label class="form-label required">{% trans "Sale Person" %}</label>
-                            <select class="select2 form-control" id="select-box-sale-person" data-method="GET"
+                            <select class="form-select" id="select-box-sale-person" data-method="GET"
                                     data-close-on-select="true"
-                                    data-url="{% url 'EmployeeListAPI' %}" name="sale_person">
-                                <option></option>
+                                    data-url="{% url 'EmployeeListAPI' %}"
+                                    name="sale_person"
+                                    data-keyText="full_name"
+                            >
                             </select>
                         </div>
                         <div class="form-group mt-2">
@@ -226,13 +236,24 @@
                                             </div>
                                         </div>
                                         <div class="dropdown">
-                                            <button type="button" class="btn ml-3" data-bs-toggle="dropdown"><i class="fa-solid fa-arrows-spin"></i></button>
+                                            <button type="button" class="btn ml-3" data-bs-toggle="dropdown"><i
+                                                    class="fa-solid fa-arrows-spin"></i></button>
                                             <div class="dropdown-menu">
-                                                <a class="dropdown-item btn-create-related-feature" data-url="{% url 'QuotationCreate' %}" href="#">{% trans 'Quotation' %}</a>
-                                                <a class="dropdown-item btn-create-related-feature" data-url="{% url 'SaleOrderCreate' %}" href="#">{% trans 'Sale Order' %}</a>
-                                                <a class="dropdown-item btn-create-related-feature" data-url="{% url 'AdvancePaymentCreate' %}" href="#">{% trans 'Advance Payment' %}</a>
-                                                <a class="dropdown-item btn-create-related-feature" data-url="{% url 'PaymentCreate' %}" href="#">{% trans 'Payment' %}</a>
-                                                <a class="dropdown-item btn-create-related-feature" data-url="{% url 'ReturnAdvanceCreate' %}" href="#">{% trans 'Return advance' %}</a>
+                                                <a class="dropdown-item btn-create-related-feature"
+                                                   data-url="{% url 'QuotationCreate' %}"
+                                                   href="#">{% trans 'Quotation' %}</a>
+                                                <a class="dropdown-item btn-create-related-feature"
+                                                   data-url="{% url 'SaleOrderCreate' %}"
+                                                   href="#">{% trans 'Sale Order' %}</a>
+                                                <a class="dropdown-item btn-create-related-feature"
+                                                   data-url="{% url 'AdvancePaymentCreate' %}"
+                                                   href="#">{% trans 'Advance Payment' %}</a>
+                                                <a class="dropdown-item btn-create-related-feature"
+                                                   data-url="{% url 'PaymentCreate' %}"
+                                                   href="#">{% trans 'Payment' %}</a>
+                                                <a class="dropdown-item btn-create-related-feature"
+                                                   data-url="{% url 'ReturnAdvanceCreate' %}"
+                                                   href="#">{% trans 'Return advance' %}</a>
                                             </div>
                                         </div>
                                     </div>
@@ -303,7 +324,8 @@
                                                     <span class="text-black ml-1">{% trans "Document For Customer" %}</span>
                                                 </div>
                                                 <div class="col-2 text-right mt-2">
-                                                    <a href="" data-url="{% url "OpportunityDocumentCreate" %}" target="_blank"
+                                                    <a href="" data-url="{% url "OpportunityDocumentCreate" %}"
+                                                       target="_blank"
                                                        class="mr-2 btn-add-document">
                                                         <span class="badge badge-primary w-50">{% trans 'Do' %}</span>
                                                     </a>
@@ -420,118 +442,21 @@
                                 </div>
                                 <div class="tab-content ml-4 mr-4">
                                     <div class="tab-pane fade show active mb-25" id="tab_product">
-                                        <input data-method="GET" data-url="{% url 'TaxListAPI' %}" hidden
-                                               id="input-data-tax">
-                                        <input data-method="GET" data-url="{% url 'UnitOfMeasureListAPI' %}" hidden
-                                               id="input-data-uom">
-                                        <div class="table-responsive overflow-auto">
-                                            <table class="table nowrap" id="table-products">
+                                        <div class="overflow-auto">
+                                            <table class="table nowrap w-100" id="table-products">
                                                 <thead>
                                                 <tr>
                                                     <th class="">#</th>
-                                                    <th class="wrap-text">{% trans "Product" %}</th>
-                                                    <th class="wrap-text">{% trans 'Product Category' %}</th>
-                                                    <th class="wrap-text">{% trans 'UoM' %}</th>
-                                                    <th class="wrap-text">{% trans "Quantity" %}</th>
-                                                    <th class="wrap-text">{% trans "Unit Price" %}</th>
-                                                    <th class="wrap-text">{% trans "Tax" %}</th>
-                                                    <th class="wrap-text">{% trans "Subtotal Price" %}</th>
+                                                    <th>{% trans "Product" %}</th>
+                                                    <th>{% trans 'Product Category' %}</th>
+                                                    <th>{% trans 'UoM' %}</th>
+                                                    <th>{% trans "Quantity" %}</th>
+                                                    <th>{% trans "Unit Price" %}</th>
+                                                    <th>{% trans "Tax" %}</th>
+                                                    <th>{% trans "Subtotal Price" %}</th>
                                                     <th></th>
                                                 </tr>
                                                 </thead>
-                                                <tbody>
-                                                <tr class="odd text-center col-table-empty">
-                                                    <td colspan="10">{% trans 'No data available in table' %}</td>
-                                                </tr>
-                                                <tr class="col-select-product hidden">
-                                                    <td class="wrap-text num-product">
-                                                    </td>
-                                                    <td class="wrap-text">
-                                                        <select class="form-select select-box-product w-200p"
-                                                                data-method="GET"
-                                                                data-url="{% url 'ProductListAPI' %}">
-                                                        </select>
-                                                    </td>
-                                                    <td class="wrap-text">
-                                                        <select class="form-select w-150p box-select-product-category">
-                                                        </select>
-                                                    </td>
-                                                    <td class="wrap-text">
-                                                        <select class="form-select w-100p box-select-uom"></select>
-                                                    </td>
-                                                    <td>
-                                                        <input type="number"
-                                                               class="form-control w-100p input-quantity"/>
-                                                    </td>
-                                                    <td class="wrap-text">
-                                                        <input type="text"
-                                                               class="form-control mask-money w-200p input-unit-price"
-                                                               data-return-type="number"/>
-                                                    </td>
-                                                    <td class="wrap-text">
-                                                        <select class="form-select w-100p box-select-tax">
-                                                        </select>
-                                                    </td>
-                                                    <td class="wrap-text">
-                                                        <div class="readonly">
-                                                            <input class="form-control mask-money w-200p input-subtotal"
-                                                                   type="text"
-                                                                   data-return-type="number" readonly>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <a class="btn btn-icon btn-del-item">
-                                                <span class="btn-icon-wrap">
-                                                    <span class="feather-icon"><i data-feather="trash-2"></i></span>
-                                                </span>
-                                                        </a>
-                                                    </td>
-                                                </tr>
-
-                                                <tr class="col-input-product hidden">
-                                                    <td class="wrap-text num-product">
-                                                    </td>
-                                                    <td class="wrap-text">
-                                                        <input class="form-control w-200p input-product-name"
-                                                               type="text"
-                                                               placeholder="Personal Computer">
-                                                    </td>
-                                                    <td class="wrap-text">
-                                                        <select class="form-select w-150p box-select-product-category">
-                                                        </select>
-                                                    </td>
-                                                    <td class="wrap-text">
-                                                        <select class="form-select w-100p box-select-uom"></select>
-                                                    </td>
-                                                    <td>
-                                                        <input type="number"
-                                                               class="form-control w-100p input-quantity"/>
-                                                    </td>
-                                                    <td class="wrap-text">
-                                                        <input type="text"
-                                                               class="form-control mask-money w-200p input-unit-price"
-                                                               data-return-type="number"/>
-                                                    </td>
-                                                    <td class="wrap-text">
-                                                        <select class="form-select w-100p box-select-tax">
-                                                        </select>
-                                                    </td>
-                                                    <td class="wrap-text">
-                                                        <div class="readonly">
-                                                            <input class="form-control mask-money w-200p input-subtotal"
-                                                                   type="text"
-                                                                   data-return-type="number" readonly>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <a class="btn btn-icon btn-del-item">
-                                                <span class="btn-icon-wrap">
-                                                    <span class="feather-icon"><i data-feather="trash-2"></i></span>
-                                                </span>
-                                                        </a>
-                                                    </td>
-                                                </tr>
-                                                </tbody>
                                             </table>
                                         </div>
                                         <div class="row">
@@ -539,8 +464,14 @@
                                                 <button type="button" data-bs-toggle="dropdown"
                                                         class="btn btn-link btn-animated"
                                                 >
-                                        <span><span class="icon"><span class="feather-icon"><i
-                                                data-feather="plus"></i></span></span><span>{% trans 'Add Product' %}</span></span>
+                                                    <span>
+                                                        <span class="icon">
+                                                            <span class="feather-icon">
+                                                                <i data-feather="plus"></i>
+                                                            </span>
+                                                        </span>
+                                                        <span>{% trans 'Add Product' %}</span>
+                                                    </span>
                                                 </button>
                                                 <div class="dropdown-menu">
                                                     <a class="dropdown-item" href="#"
@@ -1374,11 +1305,16 @@
     <input type="text" id="url-factory"
            data-task_detail="{% url 'OpportunityTaskDetailAPI' 1 %}"
            data-task_list="{% url 'OpportunityTaskListAPI' %}"
+           data-url-product="{% url 'ProductForSaleListAPI' %}"
+           data-url-product-category="{% url 'ProductCategoryListAPI' %}"
+           data-url-tax="{% url 'TaxListAPI' %}"
+           data-url-uom="{% url 'UnitOfMeasureListAPI' %}"
     >
     <input type="text" id="trans-factory"
            data-activity-type01="{% trans 'Call to customer' %}"
            data-activity-type02="{% trans 'Send email' %}"
            data-activity-type03="{% trans 'Meeting with customer' %}"
+           data-trans-limit-quantity="{% trans 'quantity must not be less than zero' %}"
     >
 {% endblock %}
 {% block jsFooter %}
@@ -1389,5 +1325,7 @@
     <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>
     <script src="{% static 'vendors/ckeditor/ckeditor.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+
+    <script src="{% static 'assets/sales/opportunity/js/opportunity_common.js' %}"></script>
     <script src="{% static 'assets/sales/opportunity/js/opportunity_detail.js' %}"></script>
 {% endblock %}

@@ -112,7 +112,6 @@ $(document).ready(function () {
                     table_contact_role.DataTable().row.add(item).draw();
                     loadDetailContactRole(item, table_contact_role, transEle)
                 })
-                console.log(opportunity_detail)
                 loadSaleTeam(opportunity_detail.opportunity_sale_team_datas)
 
                 $.fn.initMaskMoney2();

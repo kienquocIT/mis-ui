@@ -23,287 +23,6 @@ $(document).ready(function () {
     let condition_sale_oder_approved = false;
     let condition_sale_oder_delivery_status = false;
 
-    function autoLoadStage(is_load_rate = false, just_check = false) {
-        if (list_stage_condition.length === 0) {
-            list_stage.map(function (item) {
-                let list_condition = []
-                item.condition_datas.map(function (condition) {
-                    list_condition.push({
-                        'property': condition.condition_property.title,
-                        'comparison_operator': condition.comparison_operator,
-                        'compare_data': condition.compare_data,
-                    })
-                })
-                list_stage_condition.push({
-                    'id': item.id,
-                    'logical_operator': item.logical_operator,
-                    'condition_datas': list_condition
-                })
-            })
-        }
-        let list_property_config = []
-        let ele_customer = $('#select-box-customer option:selected');
-        if (ele_customer.length > 0) {
-            let compare_data = 0;
-            if (ele_customer.data('annual-revenue') !== null) {
-                compare_data = ele_customer.data('annual-revenue').toString();
-            }
-            list_property_config.push({
-                'property': 'Customer',
-                'comparison_operator': '≠',
-                'compare_data': '0',
-            })
-
-            list_property_config.push({
-                'property': 'Customer',
-                'comparison_operator': '=',
-                'compare_data': compare_data,
-            })
-        }
-
-        let ele_product_category = $('#select-box-product-category option:selected');
-        if (ele_product_category.length > 0) {
-            list_property_config.push({
-                'property': 'Product Category',
-                'comparison_operator': '≠',
-                'compare_data': '0',
-            })
-        } else {
-            list_property_config.push({
-                'property': 'Product Category',
-                'comparison_operator': '=',
-                'compare_data': '0',
-            })
-        }
-
-        let ele_budget = $('#input-budget');
-        if (ele_budget.valCurrency() === 0) {
-            list_property_config.push({
-                'property': 'Budget',
-                'comparison_operator': '=',
-                'compare_data': '0',
-            })
-        } else {
-            list_property_config.push({
-                'property': 'Budget',
-                'comparison_operator': '≠',
-                'compare_data': '0',
-            })
-        }
-
-        let ele_open_date = $('#input-open-date');
-        if (ele_open_date.val() === '') {
-            list_property_config.push({
-                'property': 'Open Date',
-                'comparison_operator': '=',
-                'compare_data': '0',
-            })
-        } else {
-            list_property_config.push({
-                'property': 'Open Date',
-                'comparison_operator': '≠',
-                'compare_data': '0',
-            })
-        }
-
-        let ele_close_date = $('#input-close-date');
-        if (ele_close_date.val() === '') {
-            list_property_config.push({
-                'property': 'Close Date',
-                'comparison_operator': '=',
-                'compare_data': '0',
-            })
-        } else {
-            list_property_config.push({
-                'property': 'Close Date',
-                'comparison_operator': '≠',
-                'compare_data': '0',
-            })
-        }
-
-        let ele_decision_maker = $('#input-decision-maker');
-        if (ele_decision_maker.attr('data-id') === '') {
-            list_property_config.push({
-                'property': 'Decision maker',
-                'comparison_operator': '=',
-                'compare_data': '0',
-            })
-        } else {
-            list_property_config.push({
-                'property': 'Decision maker',
-                'comparison_operator': '≠',
-                'compare_data': '0',
-            })
-        }
-
-        let ele_tr_product = $('#table-products tbody tr:not(.hidden)');
-        if (ele_tr_product.length === 0 || ele_tr_product.hasClass('col-table-empty')) {
-            list_property_config.push({
-                'property': 'Product.Line.Detail',
-                'comparison_operator': '=',
-                'compare_data': '0',
-            })
-        } else {
-            list_property_config.push({
-                'property': 'Product.Line.Detail',
-                'comparison_operator': '≠',
-                'compare_data': '0',
-            })
-        }
-
-        let ele_competitor_win = $('.input-win-deal:checked');
-        if (ele_competitor_win.length === 0) {
-            list_property_config.push({
-                'property': 'Competitor.Win',
-                'comparison_operator': '≠',
-                'compare_data': '0',
-            })
-        } else {
-            list_property_config.push({
-                'property': 'Competitor.Win',
-                'comparison_operator': '=',
-                'compare_data': '0',
-            })
-        }
-
-        let ele_check_lost = $('#check-lost-reason');
-        if (ele_check_lost.is(':checked')) {
-            list_property_config.push({
-                'property': 'Lost By Other Reason',
-                'comparison_operator': '=',
-                'compare_data': '0',
-            })
-        } else {
-            list_property_config.push({
-                'property': 'Lost By Other Reason',
-                'comparison_operator': '≠',
-                'compare_data': '0',
-            })
-        }
-
-        if (condition_is_quotation_confirm) {
-            list_property_config.push({
-                'property': 'Quotation.confirm',
-                'comparison_operator': '=',
-                'compare_data': '0',
-            })
-        } else {
-            list_property_config.push({
-                'property': 'Quotation.confirm',
-                'comparison_operator': '≠',
-                'compare_data': '0',
-            })
-        }
-
-
-        if (condition_sale_oder_approved) {
-            list_property_config.push({
-                'property': 'SaleOrder.status',
-                'comparison_operator': '=',
-                'compare_data': '0',
-            })
-        } else {
-            list_property_config.push({
-                'property': 'SaleOrder.status',
-                'comparison_operator': '≠',
-                'compare_data': '0',
-            })
-        }
-
-        if (condition_sale_oder_delivery_status) {
-            list_property_config.push({
-                'property': 'SaleOrder.Delivery.Status',
-                'comparison_operator': '≠',
-                'compare_data': '0',
-            })
-        } else {
-            list_property_config.push({
-                'property': 'SaleOrder.Delivery.Status',
-                'comparison_operator': '=',
-                'compare_data': '0',
-            })
-        }
-
-        let id_stage_current = '';
-        for (let i = 0; i < list_stage_condition.length; i++) {
-            if (list_stage_condition[i].logical_operator === 0) {
-                if (list_stage_condition[i].condition_datas.every(objA => list_property_config.some(objB => objectsMatch(objA, objB)))) {
-                    id_stage_current = list_stage_condition[i].id
-                    break;
-                }
-            } else {
-                if (list_stage_condition[i].condition_datas.some(objA => list_property_config.some(objB => objectsMatch(objA, objB)))) {
-                    id_stage_current = list_stage_condition[i].id
-                    break;
-                }
-            }
-        }
-        if (!just_check) {
-            let ele_close_deal = $('#input-close-deal');
-            if ($('.stage-selected').not(ele_close_deal.closest('.sub-stage')).last().data('id') !== id_stage_current) {
-                Swal.fire($('#opp-updated').text());
-            }
-            let ele_stage = $(`.sub-stage`);
-            let ele_stage_current = $(`.sub-stage[data-id="${id_stage_current}"]`);
-            let index = ele_stage_current.index();
-            if (ele_stage_current.hasClass('stage-lost')) {
-                ele_stage_current.addClass('bg-red-light-5 stage-selected');
-                ele_stage.removeClass('bg-primary-light-5 stage-selected');
-            } else {
-                for (let i = 0; i <= ele_stage.length; i++) {
-                    if (i <= index) {
-                        if (!ele_stage.eq(i).hasClass('stage-lost'))
-                            ele_stage.eq(i).addClass('bg-primary-light-5 stage-selected');
-                        else {
-                            ele_stage.eq(i).removeClass('bg-red-light-5 stage-selected');
-                        }
-                    } else {
-                        ele_stage.eq(i).removeClass('bg-primary-light-5 bg-red-light-5 stage-selected');
-                    }
-                }
-            }
-
-            if (ele_close_deal.is(':checked')) {
-                ele_stage_current = ele_close_deal.closest('.sub-stage');
-                ele_close_deal.closest('.sub-stage').addClass('bg-primary-light-5 stage-selected');
-                $('.page-content input, .page-content select, .page-content .btn').not(ele_close_deal).not($('#rangeInput')).prop('disabled', true);
-                if (!config_is_input_rate) {
-                    $('#check-input-rate').prop('disabled', true);
-                    $('#input-rate').prop('disabled', true);
-                }
-            } else {
-                $('.page-content input, .page-content select, .page-content .btn').prop('disabled', false);
-                ele_close_deal.closest('.sub-stage').removeClass('bg-primary-light-5 stage-selected');
-                if (!config_is_input_rate) {
-                    $('#check-input-rate').prop('disabled', true);
-                    $('#input-rate').prop('disabled', true);
-                } else {
-                    let ele_check_input_rate = $('#check-input-rate')
-                    ele_check_input_rate.prop('disabled', false);
-                    if (ele_check_input_rate.is(':checked')) {
-                        $('#input-rate').prop('disabled', false);
-                    } else {
-                        $('#input-rate').prop('disabled', true);
-                    }
-
-                }
-                if (!$('#check-agency-role').is(':checked')) {
-                    $('#select-box-end-customer').prop('disabled', true);
-                }
-            }
-
-            if (!$('#check-input-rate').is(':checked')) {
-                if (is_load_rate) {
-                    let obj_stage = dict_stage[ele_stage_current.data('id')]
-                    if (ele_stage_current.hasClass('stage-close'))
-                        obj_stage = dict_stage[$('.stage-selected').not(ele_stage_current).last().data('id')];
-                    $('#input-rate').val(obj_stage.win_rate);
-                    $('#rangeInput').val(obj_stage.win_rate);
-                }
-            }
-        }
-        return id_stage_current
-    }
 
     // config input date
     $('input[name="open_date"]').daterangepicker({
@@ -331,408 +50,15 @@ $(document).ready(function () {
         maxYear: parseInt(moment().format('YYYY'), 10) + 100
     });
 
-    function loadTax() {
-        let ele_input = $('#input-data-tax');
-        let ele = $('.box-select-tax');
-        let url = ele_input.data('url');
-        let method = ele_input.data('method');
-        $.fn.callAjax(url, method).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('tax_list')) {
-                    ele.append(`<option data-value="0"></option>`);
-                    data.tax_list.map(function (item) {
-                        ele.append(`<option value="${item.id}" data-value="${item.rate}">${item.title} (${item.rate} %)</option>`);
-                    })
-                }
-            }
-        })
-    }
-
-    function loadUoM() {
-        let ele_input = $('#input-data-uom');
-
-        let ele = $('.box-select-uom');
-
-        let url = ele_input.data('url');
-        let method = ele_input.data('method');
-
-        $.fn.callAjax(url, method).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('unit_of_measure')) {
-                    ele.append(`<option></option>`);
-                    data.unit_of_measure.map(function (item) {
-                        ele.append(`<option value="${item.id}">${item.title}</option>`);
-                    })
-                }
-            }
-        })
-    }
-
-    function loadProduct(list_category, product_datas) {
-        let ele = $('.col-select-product .select-box-product');
-        let url = ele.attr('data-url');
-        let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product_list')) {
-                    ele.append(`<option></option>`);
-                    $('#data-product').val(JSON.stringify(data.product_list));
-                    data.product_list.map(function (item) {
-                        if (list_category.length > 0 && list_category.includes(item.general_information.product_category.id)) {
-                            ele.append(`<option value="${item.id}" data-category-id="${item.general_information.product_category.id}">${item.title}</option>`);
-                        }
-                    })
-
-                }
-            }
-            if (product_datas.length > 0) {
-                let pretax_amount = 0;
-                let taxes = 0;
-                product_datas.map(function (item) {
-                    addRowProduct(item);
-                    pretax_amount += item.product_subtotal_price;
-                    taxes += item.product_subtotal_price * parseFloat(item.tax.rate) / 100;
-                })
-                $('#input-product-pretax-amount').attr('value', pretax_amount);
-                $('#input-product-taxes').attr('value', taxes);
-                $('#input-product-total').attr('value', pretax_amount + taxes);
-            }
-        })
-    }
-
-    function loadCustomer(id, end_customer_id, data_competitor, sale_person) {
-        let ele = $('#select-box-customer');
-        let ele_end_customer = $('#select-box-end-customer');
-        let ele_competitor = $('.box-select-competitor');
-        if (end_customer_id === null || end_customer_id === id) {
-            ele_end_customer.attr('disabled', true);
-        }
-
-        let url = ele.data('select2-url');
-        let method = ele.data('method');
-        $.fn.callAjax2({
-            'url': url,
-            'method': method
-        }).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('account_list')) {
-                    ele_end_customer.append('<option></option>')
-                    data.account_list.map(function (item) {
-                        if (item.id === id) {
-                            ele.append(`<option selected value="${item.id}" data-annual-revenue="${item.annual_revenue}">${item.name}</option>`);
-                            loadSalePerson(item.manager.map(obj => obj.id), sale_person);
-                        } else {
-                            ele_competitor.append(`<option value="${item.id}">${item.name}</option>`);
-                            ele.append(`<option value="${item.id}" data-annual-revenue="${item.annual_revenue}">${item.name}</option>`);
-                        }
-
-                        if (item.id === end_customer_id) {
-                            ele_end_customer.append(`<option selected value="${item.id}">${item.name}</option>`);
-                            $('#check-agency-role').prop('checked', true);
-                            $('.box-select-type-customer option[value="1"]').prop('disabled', false);
-                            ele_end_customer.prop('disabled', false);
-                        } else {
-                            ele_end_customer.append(`<option value="${item.id}">${item.name}</option>`);
-                        }
-                    })
-                    ele_end_customer.find(`option[value="${ele.val()}"]`).prop('disabled', true);
-
-                    loadCompetitor(data_competitor);
-                }
-            }
-        })
-    }
-
-    function loadProductCategory(list_id) {
-        let ele = ele_select_product_category;
-        let ele_in_table = $('.box-select-product-category');
-        let url = ele.attr('data-select2-url');
-        let method = ele.attr('data-method');
-        $.fn.callAjax2({
-            'url': url,
-            'method': method
-        }).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product_category_list')) {
-                    ele.append(`<option></option>`);
-                    ele_in_table.append(`<option></option>`);
-                    data.product_category_list.map(function (item) {
-                        if (list_id.includes(item.id)) {
-                            ele.append(`<option selected value="${item.id}">${item.title}</option>`);
-                            ele_in_table.append(`<option value="${item.id}">${item.title}</option>`)
-                        } else {
-                            ele.append(`<option value="${item.id}">${item.title}</option>`);
-                        }
-                    })
-                }
-            }
-        })
-    }
-
-    function loadContact(customer_id, end_customer_id, data_contact_role) {
-        let ele_data_contact = $('#input-data-contact');
-        let url = ele_data_contact.data('url');
-        let method = ele_data_contact.data('method');
-        let ele_select_box = $('.box-select-contact');
-        $.fn.callAjax(url, method).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('contact_list')) {
-                    data.contact_list.map(function (item) {
-                        if (item.account_name.id === customer_id) {
-                            ele_select_box.append(`<option value="${item.id}" data-type-customer="0" class="hidden">${item.fullname}</option>`);
-                        } else if (item.account_name.id === end_customer_id) {
-                            ele_select_box.append(`<option value="${item.id}" data-type-customer="1" class="hidden">${item.fullname}</option>`);
-                        } else {
-                            ele_select_box.append(`<option value="${item.id}" data-type-customer="-1" class="hidden">${item.fullname}</option>`);
-                        }
-                    })
-
-                    ele_data_contact.val(JSON.stringify(data.contact_list));
-                    loadContactRole(data_contact_role);
-                }
-            }
-        })
-    }
-
-    function addRowProduct(data) {
-        let table = $('#table-products');
-        let col_empty = table.find('.col-table-empty');
-        if (col_empty !== undefined) {
-            col_empty.addClass('hidden');
-        }
-        let last_row;
-        if (data.product !== null) {
-            let col = $('.col-select-product').html().replace('hidden', '');
-            table.find('tbody').append(`<tr>${col}</tr>`);
-            last_row = table.find('tbody tr').last();
-            last_row.find('.select-box-product').val(data.product.id);
-
-        } else {
-            let col = $('.col-input-product').html().replace('hidden', '');
-            table.find('tbody').append(`<tr>${col}</tr>`);
-            last_row = table.find('tbody tr').last();
-            last_row.find('.input-product-name').val(data.product_name);
-        }
-        last_row.find('.num-product').text(table.find('tbody tr').length - 3);
-        last_row.find('.box-select-product-category').val(data.product_category.id);
-        last_row.find('.box-select-uom').val(data.uom.id);
-        last_row.find('.input-quantity').val(data.product_quantity);
-        last_row.find('.box-select-tax').val(data.tax.id);
-        last_row.find('.input-unit-price').attr('value', data.product_unit_price);
-        last_row.find('.input-subtotal').attr('value', data.product_subtotal_price);
-        $.fn.initMaskMoney2();
-    }
-
-    function loadCompetitor(data) {
-        if (data.length > 0) {
-            let table = $('#table-competitors');
-            let col_empty = table.find('.col-table-empty');
-            if (col_empty !== undefined) {
-                col_empty.addClass('hidden');
-            }
-            let col = $('.col-competitor').html().replace('hidden', '');
-            data.map(function (item) {
-                table.find('tbody').append(`<tr>${col}</tr>`);
-                let last_row = table.find('tbody tr').last();
-                last_row.find('.box-select-competitor').val(item.competitor.id);
-                last_row.find('.input-strength').val(item.strength);
-                last_row.find('.input-weakness').val(item.weakness);
-                if (item.win_deal === true) {
-                    last_row.find('.input-win-deal').prop(' ', true);
-                }
-            })
-        }
-    }
-
-    function loadBoxContact(ele_row, type) {
-        let list_contact = [];
-        ele_row.find('.box-select-contact').each(function () {
-            list_contact.push($(this).val());
-        })
-        let last_row = ele_row.last();
-
-        last_row.find(`.box-select-contact option[data-type-customer!="${type}"]`).addClass('hidden');
-        last_row.find(`.box-select-contact option[data-type-customer="${type}"]`).removeClass('hidden');
-        list_contact.map(function (item) {
-            last_row.find(`.box-select-contact option[value="${item}"]`).not(':last').addClass('hidden');
-        })
-    }
-
-    function loadContactRole(data) {
-        if (data.length > 0) {
-            let table = $('#table-contact-role');
-            let col_empty = table.find('.col-table-empty');
-            if (col_empty !== undefined) {
-                col_empty.addClass('hidden');
-            }
-            let col = $('.col-contact').html().replace('hidden', '');
-            data.map(function (item) {
-                table.find('tbody').append(`<tr>${col}</tr>`);
-                let last_row = table.find('tbody tr').last();
-                last_row.find('.box-select-type-customer').val(item.type_customer);
-                last_row.find('.box-select-contact').val(item.contact.id);
-                last_row.find('.input-job-title').val(item.job_title);
-                last_row.find('.box-select-role').val(item.role);
-
-                loadBoxContact(table.find('tbody tr'), item.type_customer);
-
-            })
-        }
-    }
-
-    function loadDecisionFactor(list_factor) {
-        let ele = $('#box-select-factor');
-
-        let url = ele.data('select2-url');
-        let method = ele.data('method');
-
-        $.fn.callAjax(url, method).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('opportunity_decision_factor')) {
-                    data.opportunity_decision_factor.map(function (item) {
-                        if (list_factor.includes(item.id)) {
-                            ele.append(`<option value="${item.id}" selected>${item.title}</option>`);
-                        }
-                        ele.append(`<option value="${item.id}">${item.title}</option>`);
-                    })
-                }
-            }
-        })
-    }
-
-    function loadMemberSaleTeam(employee_list) {
-        if (!$.fn.DataTable.isDataTable('#dtbMember')) {
-            let dtb = $('#dtbMember');
-            dtb.DataTableDefault({
-                paging: false,
-                scrollY: '200px',
-                autoWidth: false,
-                columnDefs: [
-                    {
-                        "width": "10%",
-                        "targets": 0
-                    }, {
-                        "width": "30%",
-                        "targets": 1
-                    }, {
-                        "width": "50%",
-                        "targets": 2
-                    },
-                    {
-                        "width": "0%",
-                        "targers": 3
-                    },
-                    {
-                        "width": "10%",
-                        "targets": 4
-                    }
-                ],
-                data: employee_list,
-                columns: [
-                    {
-                        render: (data, type, row, meta) => {
-                            return '';
-                        }
-                    },
-                    {
-                        data: 'code',
-                        className: 'wrap-text',
-                        render: (data, type, row, meta) => {
-                            return `<span class="span-emp-code">{0}</span>`.format_by_idx(
-                                data
-                            )
-                        }
-                    },
-                    {
-                        data: 'full_name',
-                        className: 'wrap-text',
-                        render: (data, type, row, meta) => {
-                            return `<span class="span-emp-name">{0}</span>`.format_by_idx(
-                                data
-                            )
-                        }
-                    },
-                    {
-                        data: 'email',
-                        className: 'wrap-text hidden',
-                        render: (data, type, row, meta) => {
-                            return `<span class="span-emp-email">{0}</span>`.format_by_idx(
-                                data
-                            )
-                        }
-                    },
-                    {
-                        className: 'wrap-text',
-                        render: (data, type, row, meta) => {
-                            return `<span class="form-check"><input data-id="{0}" type="checkbox" class="form-check-input input-select-member" /></span>`.format_by_idx(row.id)
-                        }
-                    },
-                ],
-            });
-        }
-    }
-
-    function loadSalePerson(list_manager, sale_person) {
-        let ele = $('#select-box-sale-person');
-        let ele_emp_current_group = $('#group_id_emp_login');
-        $.fn.callAjax(ele.data('url'), ele.data('method')).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('employee_list')) {
-                    loadMemberSaleTeam(data.employee_list);
-                    $('#data-sale-person').val(JSON.stringify(data.employee_list));
-                    let emp_current = data.employee_list.find(obj => obj.id === employee_current_id);
-                    ele_emp_current_group.val(emp_current.group.id);
-                    data.employee_list.map(function (employee) {
-                        if (employee.id === sale_person.id) {
-                            ele.append(`<option value="${employee.id}" selected>${employee.full_name}</option>`);
-                        }
-                    })
-                    // if (config_is_AM_create) {
-                    //     data.employee_list.map(function (employee) {
-                    //         if (list_manager.includes(employee_current_id)) {
-                    //             if (employee.group.id === emp_current.group.id && list_manager.includes(employee.id)) {
-                    //                 if (employee.id === sale_person.id) {
-                    //                     ele.append(`<option value="${employee.id}" selected>${employee.full_name}</option>`);
-                    //                 } else {
-                    //                     ele.append(`<option value="${employee.id}">${employee.full_name}</option>`);
-                    //                 }
-                    //             }
-                    //         } else {
-                    //             if (employee.id === sale_person.id) {
-                    //                 ele.append(`<option value="${employee.id}" selected>${employee.full_name}</option>`);
-                    //             }
-                    //         }
-                    //     })
-                    // } else {
-                    //     data.employee_list.map(function (employee) {
-                    //         if (employee.group.id === emp_current.group.id) {
-                    //             if (employee.id === sale_person.id) {
-                    //                 ele.append(`<option value="${employee.id}" selected>${employee.full_name}</option>`);
-                    //             } else {
-                    //                 ele.append(`<option value="${employee.id}">${employee.full_name}</option>`);
-                    //             }
-                    //         }
-                    //     })
-                    // }
-                }
-            }
-        }, (errs) => {
-        },)
-    }
 
     let paramString = {}
 
     function loadDetail() {
-        let url = frmDetail.data('url').replace(0, pk);
-        $.fn.callAjax(url, 'GET').then((resp) => {
+        let url = frmDetail.data('url').format_url_with_uuid(pk);
+        $.fn.callAjax2({
+            url: url,
+            method: 'GET',
+        }).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 let opportunity_detail = data?.['opportunity'];
@@ -765,7 +91,6 @@ $(document).ready(function () {
                     if (ele_check.is(':checked')) {
                         ele_input_rate.prop('readonly', false);
                     }
-                    // ele_input_rate.prop('readonly', true);
                 } else {
                     let ele_check = $('#check-input-rate');
                     ele_check.prop('checked', false);
@@ -776,15 +101,11 @@ $(document).ready(function () {
                     $('#check-lost-reason').prop('checked', true);
                 } else
                     $('#check-lost-reason').prop('checked', false);
-                loadCustomer(opportunity_detail.customer, opportunity_detail.end_customer, opportunity_detail.opportunity_competitors_datas, opportunity_detail.sale_person);
-                loadProductCategory(opportunity_detail.product_category);
-                loadTax();
-                loadUoM();
                 $('#input-budget').attr('value', opportunity_detail.budget_value);
-                if (opportunity_detail.open_date !== null)
-                    $('#input-open-date').val(opportunity_detail.open_date.split(' ')[0]);
-                if (opportunity_detail.close_date !== null)
-                    $('#input-close-date').val(opportunity_detail.close_date.split(' ')[0]);
+                if (opportunity_detail?.['open_date'] !== null)
+                    $('#input-open-date').val(opportunity_detail?.['open_date'].split(' ')[0]);
+                if (opportunity_detail?.['open_date'] !== null)
+                    $('#input-close-date').val(opportunity_detail?.['open_date'].split(' ')[0]);
                 else {
                     $('#input-close-date').val('');
                 }
@@ -793,10 +114,34 @@ $(document).ready(function () {
                     ele_decision_maker.val(opportunity_detail.decision_maker.name);
                     ele_decision_maker.attr('data-id', opportunity_detail.decision_maker.id);
                 }
-                loadProduct(opportunity_detail.product_category, opportunity_detail.opportunity_product_datas);
-                loadContact(opportunity_detail.customer, opportunity_detail.end_customer, opportunity_detail.opportunity_contact_role_datas);
-                loadSaleTeam(opportunity_detail.opportunity_sale_team_datas);
-                loadDecisionFactor(opportunity_detail.customer_decision_factor);
+
+                OpportunityLoadPage.loadCustomer($('#select-box-customer'), opportunity_detail.customer, config_is_AM_create, opportunity_detail?.['sale_person'].id);
+                OpportunityLoadPage.loadProductCategory($('#select-box-product-category'), opportunity_detail.product_category);
+
+                OpportunityLoadPage.loadSalePersonPageDetail($('#select-box-sale-person'), opportunity_detail?.['sale_person']);
+                OpportunityLoadPage.loadEndCustomer($('#select-box-end-customer'), opportunity_detail.end_customer);
+
+                $('#input-budget').attr('value', opportunity_detail.budget_value);
+                if (opportunity_detail?.['open_date'] !== null)
+                    $('#input-open-date').val(opportunity_detail?.['open_date'].split(' ')[0]);
+                if (opportunity_detail?.['close_date'] !== null)
+                    $('#input-close-date').val(opportunity_detail?.['close_date'].split(' ')[0]);
+                else {
+                    $('#input-close-date').val('');
+                }
+                if (opportunity_detail.decision_maker !== null) {
+                    let ele_decision_maker = $('#input-decision-maker');
+                    ele_decision_maker.val(opportunity_detail.decision_maker.name);
+                    ele_decision_maker.attr('data-id', opportunity_detail.decision_maker.id);
+                }
+                // load table product
+                loadDtbProduct([]);
+                let table_product = $('#table-products');
+                OpportunityLoadDetail.loadDetailTableProduct(table_product, opportunity_detail);
+
+                $('#input-product-pretax-amount').attr('value', opportunity_detail.total_product_pretax_amount);
+                $('#input-product-taxes').attr('value', opportunity_detail.total_product_tax);
+                $('#input-product-total').attr('value', opportunity_detail.total_product);
 
                 if ($.fn.hasOwnProperties(opportunity_detail, ['sale_order'])) {
                     if (opportunity_detail.sale_order.system_status === 0) {
@@ -821,32 +166,11 @@ $(document).ready(function () {
 
     // even in tab product
     $('#btn-add-select-product').on('click', function () {
-        let table = $('#table-products');
-        table.addClass('tag-change');
-        let col_empty = table.find('.col-table-empty');
-        if (col_empty !== undefined) {
-            col_empty.addClass('hidden');
-        }
-        let col = $('.col-select-product').html().replace('hidden', '');
-        table.find('tbody').append(`<tr>${col}</tr>`);
-
-        let last_row = table.find('tbody tr').last();
-        last_row.find('.num-product').text(table.find('tbody tr').length - 3);
+        OpportunityLoadDetail.addRowSelectProduct()
     })
 
     $('#btn-add-input-product').on('click', function () {
-        let table = $('#table-products');
-        table.addClass('tag-change');
-        let col_empty = table.find('.col-table-empty');
-        if (col_empty !== undefined) {
-            col_empty.addClass('hidden');
-        }
-
-        let col = $('.col-input-product').html().replace('hidden', '');
-        table.find('tbody').append(`<tr>${col}</tr>`);
-
-        let last_row = table.find('tbody tr').last();
-        last_row.find('.num-product').text(table.find('tbody tr').length - 3);
+        OpportunityLoadDetail.addRowInputProduct()
     })
 
     ele_select_product_category.on('select2:unselect', function (e) {
@@ -878,40 +202,23 @@ $(document).ready(function () {
 
     $(document).on('change', '.select-box-product', function () {
         let ele_tr = $(this).closest('tr');
-        if (Object.keys(dict_product).length === 0) {
-            dict_product = JSON.parse($('#data-product').val()).reduce((obj, item) => {
-                obj[item.id] = item;
-                return obj;
-            }, {});
-        }
-        let product = dict_product[$(this).val().toString()];
-        ele_tr.find(`.box-select-product-category`).val(product['general_information']['product_category']['id']);
-        if ($.fn.hasOwnProperties(product['sale_information'], ['default_uom'])) {
-            ele_tr.find('.box-select-uom').val(product['sale_information']['default_uom']['id']);
-        }
-        if ($.fn.hasOwnProperties(product['sale_information'], ['tax_code'])) {
-            ele_tr.find('.box-select-tax').val(product['sale_information']['tax_code']['id']);
-        }
+        let product = SelectDDControl.get_data_from_idx($(this), $(this).val());
+        OpportunityLoadPage.loadSubProductCategory(
+            ele_tr.find(`.box-select-product-category`),
+            product?.['general_information'].product_category,
+            OpportunityLoadPage.productCategorySelectEle.val(),
+        )
+        OpportunityLoadPage.loadTax(
+            ele_tr.find(`.box-select-uom`),
+            product?.['sale_information'].tax_code,
+        )
+        OpportunityLoadPage.loadUoM(
+            ele_tr.find(`.box-select-uom`),
+            product?.['sale_information']?.['default_uom'],
+            product,
+        )
     })
 
-    function getTotalPrice() {
-        let ele_tr_products = $('#table-products tbody tr:not(.hidden)');
-        let tax_value = 0;
-        let total_pretax = 0;
-        ele_tr_products.each(function () {
-            let tax = 0;
-            if ($(this).find('.box-select-tax option:selected').data('value') !== undefined)
-                tax = parseFloat($(this).find('.box-select-tax option:selected').data('value')) / 100;
-            let sub_total = $(this).find('.input-subtotal').valCurrency();
-            total_pretax += sub_total;
-            tax_value += sub_total * tax;
-        })
-
-        $('#input-product-pretax-amount').attr('value', total_pretax);
-        $('#input-product-taxes').attr('value', tax_value);
-        $('#input-product-total').attr('value', total_pretax + tax_value);
-        $.fn.initMaskMoney2();
-    }
 
     $(document).on('change', '.input-unit-price', function () {
         let price = $(this).valCurrency();
@@ -919,13 +226,13 @@ $(document).ready(function () {
         let quantity = ele_parent.find('.input-quantity').val();
         let subtotal = price * quantity;
         ele_parent.find('.input-subtotal').attr('value', subtotal);
-        getTotalPrice();
+        OpportunityLoadDetail.getTotalPrice();
     })
 
     $(document).on('change', '.input-quantity', function () {
         let quantity = $(this).val();
         if (quantity < 0) {
-            $.fn.notifyB({description: $('#limit-quantity').text()}, 'failure');
+            $.fn.notifyB({description: OpportunityLoadPage.transEle.data('trans-limit-quantity')}, 'failure');
             $(this).val(0);
             quantity = 0;
         }
@@ -933,8 +240,7 @@ $(document).ready(function () {
         let price = ele_parent.find('.input-unit-price').valCurrency();
         let subtotal = price * quantity;
         ele_parent.find('.input-subtotal').attr('value', subtotal);
-
-        getTotalPrice();
+        OpportunityLoadDetail.getTotalPrice();
     })
 
     $(document).on('change', '.box-select-tax', function () {
@@ -944,7 +250,7 @@ $(document).ready(function () {
         let subtotal = price * quantity;
         ele_parent.find('.input-subtotal').attr('value', subtotal);
 
-        getTotalPrice();
+        OpportunityLoadDetail.getTotalPrice();
     })
 
     // event in tab competitor
@@ -1275,22 +581,24 @@ $(document).ready(function () {
     // submit form edit
     frmDetail.submit(function (event) {
         event.preventDefault();
-        let csr = $("input[name=csrfmiddlewaretoken]").val();
         let frm = new SetupFormSubmit($(this));
         frm.dataForm = getDataForm(frm.dataForm);
-        $.fn.callAjax(frm.dataUrl.format_url_with_uuid(pk), frm.dataMethod, frm.dataForm, csr)
-            .then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        $.fn.notifyB({description: "Successfully"}, 'success')
-                        $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
-                    }
-                },
-                (errs) => {
-                    //$.fn.notifyB({description: errs.data.errors}, 'failure');
+        $.fn.callAjax2({
+            url: frm.dataUrl.format_url_with_uuid(pk),
+            method: frm.dataMethod,
+            data: frm.dataForm,
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    $.fn.notifyB({description: "Successfully"}, 'success')
+                    $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
                 }
-            )
+            },
+            (errs) => {
+                //$.fn.notifyB({description: errs.data.errors}, 'failure');
+            }
+        )
     })
 
     $(document).on('click', '.btn-del-item', function () {
@@ -1352,17 +660,6 @@ $(document).ready(function () {
         }
     })
 
-    function loadSaleTeam(data) {
-        let card_member = $('#card-member');
-        data.map(function (item) {
-            card_member.append($('.card-member-hidden').html());
-            let card = card_member.find('.card').last();
-            card.find('.btn-detail-member').attr('href', $('#url-member').val().format_url_with_uuid(item.member.id));
-            card.find('.card-title').text(item.member.name);
-            card.find('.card-text').text(item.member.email);
-            card.attr('data-id', item.member.id);
-        })
-    }
 
     $(document).on('click', '.btn-remove-card', function () {
         $(this).closest('.card').remove();
@@ -1393,35 +690,6 @@ $(document).ready(function () {
 
     // Stage
 
-    function sortStage(list_stage) {
-        let object_lost = null;
-        let delivery = null;
-        let object_close = null;
-        let list_result = []
-
-        for (let i = 0; i < list_stage.length; i++) {
-            if (list_stage[i].is_closed_lost) {
-                object_lost = list_stage[i];
-            } else if (list_stage[i].is_delivery) {
-                delivery = list_stage[i];
-            } else if (list_stage[i].is_deal_closed) {
-                object_close = list_stage[i];
-            } else {
-                list_result.push(list_stage[i]);
-            }
-        }
-
-        list_result.sort(function (a, b) {
-            return a.win_rate - b.win_rate;
-        });
-        list_result.push(object_lost);
-        if (delivery !== null)
-            list_result.push(delivery);
-        list_result.push(object_close);
-
-        return list_result
-    }
-
     let list_stage = [];
     let dict_stage = {};
 
@@ -1431,11 +699,14 @@ $(document).ready(function () {
         let url = ele.data('url');
 
         let html = $('#stage-hidden').html();
-        $.fn.callAjax(url, method).then((resp) => {
+        $.fn.callAjax2({
+            url: url,
+            method: method
+        }).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('opportunity_config_stage')) {
-                    list_stage = sortStage(data.opportunity_config_stage);
+                    list_stage = sortStage(data?.['opportunity_config_stage']);
                     dict_stage = list_stage.reduce((obj, item) => {
                         obj[item.id] = item;
                         return obj;
@@ -1446,26 +717,26 @@ $(document).ready(function () {
                         let ele_first_stage = ele.find('.sub-stage').first();
                         ele_first_stage.attr('data-id', item.id);
                         ele_first_stage.find('.stage-indicator').text(item.indicator);
-                        if (item.is_closed_lost) {
+                        if (item?.['is_closed_lost']) {
                             ele_first_stage.find('.dropdown').remove();
                             ele_first_stage.addClass('stage-lost')
                         }
-                        if (item.is_deal_closed) {
+                        if (item?.['is_deal_closed']) {
                             ele_first_stage.addClass('stage-close')
                             ele_first_stage.find('.dropdown-menu').empty();
                             if (is_close_lost || is_deal_close) {
                                 ele_first_stage.find('.dropdown-menu').append(
                                     `<div class="form-check form-switch">
-                                    <input type="checkbox" class="form-check-input" id="input-close-deal" checked>
-                                    <label for="input-close-deal" class="form-label">Close Deal</label>
-                                </div>`
+                                        <input type="checkbox" class="form-check-input" id="input-close-deal" checked>
+                                        <label for="input-close-deal" class="form-label">Close Deal</label>
+                                    </div>`
                                 )
                             } else {
                                 ele_first_stage.find('.dropdown-menu').append(
                                     `<div class="form-check form-switch">
-                                    <input type="checkbox" class="form-check-input" id="input-close-deal">
-                                    <label for="input-close-deal" class="form-label">Close Deal</label>
-                                </div>`
+                                        <input type="checkbox" class="form-check-input" id="input-close-deal">
+                                        <label for="input-close-deal" class="form-label">Close Deal</label>
+                                    </div>`
                                 )
                             }
                         }
@@ -1561,15 +832,18 @@ $(document).ready(function () {
     })
 
 
-    // event auto select stage
-
-    function objectsMatch(objA, objB) {
-        return objA.property === objB.property && objA.comparison_operator === objB.comparison_operator && objA.compare_data === objB.compare_data;
-    }
-
     let list_stage_condition = []
     $(document).on('click', '#btn-auto-update-stage', function () {
-        autoLoadStage(true);
+        autoLoadStage(
+            true,
+            false,
+            list_stage_condition,
+            list_stage,
+            condition_sale_oder_approved,
+            condition_is_quotation_confirm,
+            condition_sale_oder_delivery_status,
+            config_is_input_rate,
+            dict_stage);
         $(this).tooltip('hide');
     })
 
@@ -1719,7 +993,6 @@ $(document).ready(function () {
 
     $('#form-create-new-call-log').submit(function (event) {
         event.preventDefault();
-        let csr = $("input[name=csrfmiddlewaretoken]").val();
         let frm = new SetupFormSubmit($(this));
 
         frm.dataForm['subject'] = $('#subject-input').val();
@@ -1734,9 +1007,12 @@ $(document).ready(function () {
             frm.dataForm['repeat'] = 0;
         }
 
-        // console.log(frm.dataForm)
 
-        $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr).then((resp) => {
+        $.fn.callAjax2({
+            url: frm.dataUrl,
+            method: frm.dataMethod,
+            data: frm.dataForm
+        }).then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 $.fn.notifyB({description: "Successfully"}, 'success')
@@ -1837,21 +1113,24 @@ $(document).ready(function () {
 
         // console.log(frm.dataForm)
 
-        $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
-            .then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        $.fn.notifyB({description: "Successfully"}, 'success')
-                        $('#send-email').hide();
+        $.fn.callAjax2({
+            url: frm.dataUrl,
+            method: frm.dataMethod,
+            data: frm.dataForm
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    $.fn.notifyB({description: "Successfully"}, 'success')
+                    $('#send-email').hide();
 
-                        callAjaxtoLoadTimeLineList();
-                    }
-                },
-                (errs) => {
-                    // $.fn.notifyB({description: errs.data.errors}, 'failure');
+                    callAjaxtoLoadTimeLineList();
                 }
-            )
+            },
+            (errs) => {
+                // $.fn.notifyB({description: errs.data.errors}, 'failure');
+            }
+        )
     })
 
 
@@ -2082,7 +1361,7 @@ $(document).ready(function () {
             if (config.in_assign_opt === 1) {
                 // chỉ employee trong opportunity
                 let selectOpt = '';
-                $('#card-member .card').each(function(){
+                $('#card-member .card').each(function () {
                     let opt = `<option value="${$(this).attr('data-id')}">${$(this).find('.card-title').text()
                     }</option>`
                     selectOpt += opt
@@ -2096,7 +1375,7 @@ $(document).ready(function () {
                 // vừa trong opportunity vừa là nhân viên của user
                 $('.is-lazy-loading').addClass('is_show')
                 let selectOpt = '<option value=""></option>';
-                $('#card-member .card').each(function(){
+                $('#card-member .card').each(function () {
                     let opt = `<option value="${$(this).attr('data-id')}">${$(this).find('.card-title').text()
                     }</option>`
                     selectOpt += opt
@@ -2111,8 +1390,8 @@ $(document).ready(function () {
                     (resp) => {
                         const data = $.fn.switcherResp(resp);
                         let assigneeList = data?.[$sltElm.attr('data-keyresp')]
-                        for (const item of assigneeList){
-                            if (selectOpt.indexOf(item?.[$sltElm.attr('data-keyid')]) === -1){
+                        for (const item of assigneeList) {
+                            if (selectOpt.indexOf(item?.[$sltElm.attr('data-keyid')]) === -1) {
                                 let opt = `<option value="${item?.[$sltElm.attr('data-keyid')]
                                 }">${item?.[$sltElm.attr('data-keytext')]}</option>`
                                 selectOpt += opt
@@ -2346,8 +1625,7 @@ $(document).ready(function () {
                     $selectElm.initSelect2()
                 }
             }, 1000)
-        }
-        else $selectElm.initSelect2()
+        } else $selectElm.initSelect2()
 
         // click to log-work
         $('.btn-log_work').off().on('click', () => {
@@ -2946,7 +2224,7 @@ $(document).ready(function () {
     })
 
 
-    $(document).on('click', '.btn-add-document', function (){
+    $(document).on('click', '.btn-add-document', function () {
         let url = $(this).data('url') + "?opportunity={0}".format_by_idx(encodeURIComponent(JSON.stringify(paramString)));
         window.open(url, '_blank');
     })

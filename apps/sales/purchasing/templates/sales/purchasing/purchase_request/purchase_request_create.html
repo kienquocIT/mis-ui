@@ -18,6 +18,7 @@
 {% block pageContent %}
     <form id="form-create-pr" data-url="{% url "PurchaseRequestListAPI" %}" data-method="POST"
           data-url-redirect="{% url "PurchaseRequestList" %}">
+    <input hidden name="employee_created" value="{{ request.user.employee_current_data.id }}">
         <div class="row">
             <div class="col-6">
                 <div class="form-group">
@@ -402,8 +403,8 @@
                 <select
                         class="form-control box-select-product"
                         data-method="GET"
-                        data-url="{% url "ProductListAPI" %}"
-                        data-keyResp="product_list"
+                        data-url="{% url "ProductForSaleListAPI" %}"
+                        data-keyResp="product_sale_list"
                 >
                 </select>
             </span>

@@ -1148,7 +1148,7 @@
                     $.fn.callAjax2({
                         'url': callDeliveryUrl,
                         'method': 'POST',
-                        isLoading: true,
+                        isLoading: false,
                     }).then(
                         (resp) => {
                             let data = $.fn.switcherResp(resp);

@@ -1035,12 +1035,11 @@
                 const urlElm = $('#dataUrlSaleOrderCallDelivery')
                 let callDeliveryUrl = urlElm.attr('data-url');
                 if (callDeliveryUrl){
-                    $.fn.callAjax(
-                        callDeliveryUrl,
-                        'POST',
-                        {},
-                        true,
-                    ).then(
+                    $.fn.callAjax2({
+                        'url': callDeliveryUrl,
+                        'method': 'POST',
+                        isLoading: false,
+                    }).then(
                         (resp)=>{
                             let data = $.fn.switcherResp(resp);
                             if (data?.['status'] === 200){
@@ -1053,9 +1052,6 @@
                                 }, 1000);
                             }
                         },
-                        (errs)=>{
-                            WindowControl.hideLoading();
-                        }
                     )
                 }
                 event.preventDefault();

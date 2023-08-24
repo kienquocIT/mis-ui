@@ -1,5 +1,10 @@
 let [
     accountName,
+    accountCode,
+    accountWebsite,
+    accountTaxCode,
+    inputPhone,
+    inputEmail,
     accountTypeEle,
     accountManagerEle,
     accountOwnerEle,
@@ -13,9 +18,15 @@ let [
     shippingWardEle,
     contactOwnerEle,
     inputOrganizationEle,
+    inputIndividualEle,
     billingAddressEle
 ] = [
     $('#inp-account-name'),
+    $('#inp-account-code'),
+    $('#inp-account-website'),
+    $('#inp-tax-code'),
+    $('#inp-phone'),
+    $('#inp-email'),
     $('#select-box-acc-type'),
     $('#select-box-acc-manager'),
     $('#select-box-contact'),
@@ -29,10 +40,15 @@ let [
     $('#shipping-ward'),
     $('#select-box-contact-owner'),
     $('#inp-organization'),
+    $('#inp-individual'),
     $('#select-box-address')
 ];
 
-let data_selected_contact = [];
+let shipping_address_id_dict = [];
+
+let billing_address_id_dict = [];
+
+let data_contact_mapped = [];
 
 function loadAccountType(accountTypeData) {
     accountTypeEle.initSelect2({
@@ -86,6 +102,7 @@ function loadAccountOwner(accountOwnerData) {
         let owner_selected = accountOwnerEle.val();
         if (owner_selected !== null) {
             let obj_owner = JSON.parse($('#' + accountOwnerEle.attr('data-idx-data-loaded')).text())[owner_selected];
+            $('#job_title').val(obj_owner.job_title);
             let data = {
                 'id': obj_owner.id,
                 'job_title': obj_owner.job_title,
@@ -94,6 +111,7 @@ function loadAccountOwner(accountOwnerData) {
                 'email': obj_owner.email,
                 'owner': true
             }
+            data_contact_mapped = [data];
             loadTableSelectedContact([data]);
         }
     });
@@ -192,116 +210,96 @@ class AccountHandle {
         loadShippingWard();
         loadContactOwner();
     }
-
     combinesData(frmEle) {
         let frm = new SetupFormSubmit($(frmEle));
 
-        // avatar
-        // name
-        // code
-        // website
-        // # [
-        // #   {"title": "Customer", "detail": "individual/organization"},
-        // #   {"title": "Personal", "detail": ""},
-        // # ]
-        // account_type
-        // account_type_selection
-        // account_group
-        // owner
-        // # ["e3e416d7-ae74-4bb8-a55f-169c5fde53a0", "d2f9397d-3a6c-46d6-9a67-442bc43554a8"]
-        // manager
-        // employee
-        // account_types_mapped
-        // bank_accounts_information
-        // credit_cards_information
-        // parent_account
-        // tax_code
-        // industry
-        // annual_revenue = models.SmallIntegerField(choices=ANNUAL_REVENUE_SELECTION, null=True)
-        // total_employees = models.SmallIntegerField(choices=TOTAL_EMPLOYEES_SELECTION, null=True)
-        // phone
-        // email
-        // # [
-        // #   "Số 2/8, Xã Định An, Huyện Dầu Tiếng, Bình Dương",
-        // #   "Số 22/20, Phường Lê Hồng Phong, Thành Phố Phủ Lý, Hà Nam"
-        // # ]
-        // # địa chỉ đầu tiên là default
-        // shipping_address
-        //
-        // # [
-        // #   "Tầng 2, TGDD, Số 22/20, xã Bình Hưng, huyện Bình Chánh, TP HCM (email: tgdd@gmail.com, tax code: 123123)"
-        // #   "Tầng 10, TGDD, Số 7/10, xã Bình Hưng, huyện Bình Chánh, TP HCM (email: tgdd@gmail.com, tax code: 123123)"
-        // # ]
-        // # địa chỉ đầu tiên là default
-        // billing_address
-
-
-        let shipping_address_list = [];
-        $('#list-shipping-address input[type=radio]').each(function () {
-            if ($(this).is(':checked')) {
-                shipping_address_list.unshift($(this).next('label').text().trim());
-            }
-            else {
-                shipping_address_list.push($(this).next('label').text().trim());
-            }
-        });
-
-        let billing_address_list = [];
-        $('#list-billing-address input[type=radio]').each(function () {
-            if ($(this).is(':checked')) {
-                billing_address_list.unshift($(this).next('label').text().trim());
-            }
-            else {
-                billing_address_list.push($(this).next('label').text().trim());
-            }
-        });
-
-        if (frm.dataForm['code'] === '') {
-            frm.dataForm['code'] = null;
+        if (accountName.val()) {
+            frm.dataForm['name'] = accountName.val();
         }
-
-        if (frm.dataForm['parent_account'] === '') {
-            frm.dataForm['parent_account'] = null;
+        else {
+            $.fn.notifyB({description: 'Account name is required.'}, 'failure');
+            return false;
         }
-
-        if (frm.dataForm['tax_code'] === '') {
-            frm.dataForm['tax_code'] = null;
+        if (accountCode.val()) {
+            frm.dataForm['code'] = accountCode.val();
         }
-
-        if (annualRevenueEle.val() === '0') {
-            frm.dataForm['annual_revenue'] = null;
+        else {
+            $.fn.notifyB({description: 'Account code is required.'}, 'failure');
+            return false;
         }
-
-        if (totalEmployeeEle.val() === '0') {
-            frm.dataForm['total_employees'] = null;
-        }
-
-        if (accountManagerEle.val().length > 0) {
-            frm.dataForm['manager'] = accountManagerEle.val();
-        }
-
+        frm.dataForm['website'] = accountWebsite.val();
         if (accountTypeEle.val().length > 0) {
             frm.dataForm['account_type'] = accountTypeEle.val();
         }
-
+        else {
+            $.fn.notifyB({description: 'Account type is required.'}, 'failure');
+            return false;
+        }
         if (inputOrganizationEle.is(':checked')) {
             frm.dataForm['account_type_selection'] = 1;
-        } else {
+        }
+        else {
             frm.dataForm['account_type_selection'] = 0;
         }
+        if (accountGroupEle.val()) {
+            frm.dataForm['account_group'] = accountGroupEle.val();
+        }
+        else {
+            $.fn.notifyB({description: 'Account group is required.'}, 'failure');
+            return false;
+        }
+        if (accountOwnerEle.val()) {
+            frm.dataForm['owner'] = accountOwnerEle.val();
+        }
+        if (accountManagerEle.val().length > 0) {
+            frm.dataForm['manager'] = accountManagerEle.val();
+        }
+        else {
+            $.fn.notifyB({description: 'Account manager is required.'}, 'failure');
+            return false;
+        }
+        if (parentAccountEle.val()) {
+            frm.dataForm['parent_account'] = parentAccountEle.val();
+        }
+        if (annualRevenueEle.val()) {
+            frm.dataForm['annual_revenue'] = annualRevenueEle.val();
+        }
+        if (totalEmployeeEle.val()) {
+            frm.dataForm['total_employees'] = totalEmployeeEle.val();
+        }
+        else {
+            if (inputOrganizationEle.is(':checked')) {
+                $.fn.notifyB({description: 'Total employee is required with Organization Account.'}, 'failure');
+                return false;
+            }
+        }
+        if (accountTaxCode.val()) {
+            frm.dataForm['tax_code'] = accountTaxCode.val();
+        }
+        else {
+            if (inputOrganizationEle.is(':checked')) {
+                $.fn.notifyB({description: 'Tax code is required with Organization Account.'}, 'failure');
+                return false;
+            }
+        }
+        if (industryEle.val()) {
+            frm.dataForm['industry'] = industryEle.val();
+        }
+        else {
+            $.fn.notifyB({description: 'Industry is required.'}, 'failure');
+            return false;
+        }
+        if (inputPhone.val()) {
+            frm.dataForm['phone'] = inputPhone.val();
+        }
+        if (inputEmail.val()) {
+            frm.dataForm['email'] = inputEmail.val();
+        }
 
-        frm.dataForm['contact_select_list'] = $('.contact_selected').map(function () {
-            return $(this).attr('data-value');
-        }).get();
-        frm.dataForm['contact_primary'] = $('.contact_primary').attr('data-value');
-
-        frm.dataForm['shipping_address'] = shipping_address_list;
-        frm.dataForm['billing_address'] = billing_address_list;
         frm.dataForm['shipping_address_id_dict'] = shipping_address_id_dict;
         frm.dataForm['billing_address_id_dict'] = billing_address_id_dict;
-
+        frm.dataForm['contact_mapped'] = data_contact_mapped;
         frm.dataForm['system_status'] = 1; // save, not draft
-
         return {
             url: frm.dataUrl,
             method: frm.dataMethod,
@@ -310,9 +308,6 @@ class AccountHandle {
         };
     }
 }
-
-let shipping_address_id_dict = [];
-let billing_address_id_dict = [];
 
 $('#save-changes-modal-shipping-address').on('click', function () {
     let shipping_address_modal = $('#detail-modal-shipping-address');
@@ -358,7 +353,7 @@ $('#save-changes-modal-shipping-address').on('click', function () {
                 `<div class="form-check ml-5 mb-2">
                     <input class="form-check-input" type="radio" name="shippingaddressRadio" ` + is_default +`>
                     <span><label>` + shipping_address + `</label></span>
-                    <span><a href="#" class="del-address-item"><i class="bi bi-trash"></i></a></span>
+                    &nbsp;<span><a href="#" class="text-danger del-address-item"><i class="bi bi-trash"></i></a></span>
                 </div>`
             )
 
@@ -412,7 +407,7 @@ $('#save-changes-modal-billing-address').on('click', function () {
                 `<div class="form-check ml-5">
                     <input class="form-check-input" type="radio" name="billingaddressRadio" ` + is_default + `>
                     <span><label>` + billing_address + `</label></span>
-                    <span><a href="#" class="del-address-item"><i class="bi bi-trash"></i></a></span>
+                    &nbsp;<span><a href="#" class="text-danger del-address-item"><i class="bi bi-trash"></i></a></span>
                 </div>`
             )
 
@@ -488,7 +483,7 @@ let config = {
     }]
 }
 
-inputOrganizationEle.on('change', function () {
+inputIndividualEle.on('change', function () {
     $('#select-box-parent-account').prop('selectedIndex', -1).attr('disabled', true);
     $("#tax-code-label").removeClass("required");
     $("#total_employees_label").removeClass("required");
@@ -501,13 +496,13 @@ inputOrganizationEle.on('change', function () {
 })
 
 // Button add shipping address
-$('#edit-shipping-address-btn').on('click', function () {
+$('#add-shipping-address-btn').on('click', function () {
     if ($('#list-shipping-address input').length === 0)
         $('#make-default-shipping-address').prop('checked', true);
 })
 
 // Button add billing address
-$('#edit-billing-address-btn').on('click', function () {
+$('#add-billing-address-btn').on('click', function () {
     let ele = $('#select-box-account-name')
     ele.html('');
     $('#edited-billing-address').val('').prop('hidden', true);
@@ -515,7 +510,7 @@ $('#edit-billing-address-btn').on('click', function () {
     $('#button_add_new_billing_address').html(`<i class="fas fa-plus-circle"></i> Add/Edit`)
 
     $('#input-account-name').val(accountName.val());
-    $('#inp-tax-code-address').val($('#inp-tax-code').val());
+    $('#inp-tax-code-address').val(accountTaxCode.val());
     $('#inp-email-address').val($('#inp-email').val());
     ele.prepend(`<option value="">` + accountName.val() + `</option>`)
 
@@ -571,7 +566,12 @@ $('#btn-add-new-contact').on('click', function () {
     )
 })
 
-function loadTableSelectContact(account_owner_id, selected_contact_list) {
+function loadTableSelectContact() {
+    account_owner_id = accountOwnerEle.val();
+    let selected_contact_list = [];
+    document.querySelectorAll('.selected_contact_full_name').forEach(function (element) {
+        selected_contact_list.push(element.getAttribute('data-id'));
+    })
     let tbl = $('#datatable-add-contact');
     tbl.DataTable().destroy();
     tbl.DataTableDefault({
@@ -685,11 +685,7 @@ function loadTableSelectContact(account_owner_id, selected_contact_list) {
 }
 
 $('#add-contact-btn').on('click', function () {
-    let selected_contact = [];
-    document.querySelectorAll('.selected_contact_full_name').forEach(function (element) {
-        selected_contact.push(element.getAttribute('data-id'));
-    })
-    loadTableSelectContact(accountOwnerEle.val(), selected_contact);
+    loadTableSelectContact();
 })
 
 function loadTableSelectedContact(data) {
@@ -774,17 +770,13 @@ $(document).on('click', '#btn-add-contact', function () {
             })
         }
     })
+    data_contact_mapped = selected_contact;
     loadTableSelectedContact(selected_contact);
     checkSelectAll();
 });
 
 function checkSelectAll() {
-    if (document.querySelectorAll('.selected_contact:checked').length === document.querySelectorAll('.selected_contact').length) {
-        document.getElementById('check-select-all').checked = true;
-    }
-    else {
-        document.getElementById('check-select-all').checked = false;
-    }
+    document.getElementById('check-select-all').checked = document.querySelectorAll('.selected_contact:checked').length === document.querySelectorAll('.selected_contact').length;
 }
 
 $(document).on('click', '.selected_contact', function () {

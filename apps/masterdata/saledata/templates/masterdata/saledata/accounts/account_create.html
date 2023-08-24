@@ -46,7 +46,7 @@
                             </div>
                             <div class="form-group col-7">
                                 <label class="form-label">{% trans "Website" %}</label>
-                                <input class="form-control" placeholder="">
+                                <input class="form-control" id="inp-account-website" placeholder="">
                             </div>
                         </div>
                     </div>
@@ -196,7 +196,7 @@
                         <div class="row">
                             <div class="form-group col-5">
                                 <label class="form-label">{% trans "Phone Number" %}</label>
-                                <input type="text" class="form-control" placeholder="">
+                                <input type="text" class="form-control" placeholder="" id="inp-phone">
                             </div>
                             <div class="form-group col-7">
                                 <label class="form-label">{% trans "Email" %}</label>
@@ -216,7 +216,7 @@
             <div class="form-group">
                 <div class="row">
                     <div class="col-5 text-left">
-                        <button class="btn btn-soft-primary w-50" type="button" data-bs-toggle="modal" data-bs-target="#modal-shipping-address">
+                        <button id="add-shipping-address-btn" class="btn btn-soft-primary w-50" type="button" data-bs-toggle="modal" data-bs-target="#modal-shipping-address">
                             <span>
                                 <span>{% trans 'Add new shipping address' %}</span>
                                 <span class="icon">
@@ -239,7 +239,7 @@
             <div class="form-group">
                 <div class="row">
                     <div class="col-5 text-left">
-                        <button class="btn btn-soft-primary w-50" type="button" data-bs-toggle="modal" data-bs-target="#modal-billing-address">
+                        <button id="add-billing-address-btn" class="btn btn-soft-primary w-50" type="button" data-bs-toggle="modal" data-bs-target="#modal-billing-address">
                             <span>
                                 <span>{% trans 'Add new billing/invoice address' %}</span>
                                 <span class="icon">

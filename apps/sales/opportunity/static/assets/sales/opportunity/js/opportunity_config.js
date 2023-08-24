@@ -214,35 +214,6 @@ $(document).ready(function () {
         })
     }
 
-    function sortStage(list_stage) {
-        let object_lost = null;
-        let delivery = null;
-        let object_close = null;
-        let list_result = []
-
-        for (let i = 0; i < list_stage.length; i++) {
-            if (list_stage[i]?.['is_closed_lost']) {
-                object_lost = list_stage[i];
-            } else if (list_stage[i]?.['is_delivery']) {
-                delivery = list_stage[i];
-            } else if (list_stage[i]?.['is_deal_closed']) {
-                object_close = list_stage[i];
-            } else {
-                list_result.push(list_stage[i]);
-            }
-        }
-
-        list_result.sort(function (a, b) {
-            return a.win_rate - b.win_rate;
-        });
-        list_result.push(object_lost);
-        if (delivery !== null)
-            list_result.push(delivery);
-        list_result.push(object_close);
-
-        return list_result
-    }
-
     function loadStage() {
         if (!$.fn.DataTable.isDataTable('#table-opportunity-config-stage')) {
             let $table = $('#table-opportunity-config-stage')

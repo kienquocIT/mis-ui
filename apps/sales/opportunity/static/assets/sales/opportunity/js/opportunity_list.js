@@ -6,7 +6,7 @@ $(document).ready(async function () {
     let productCategorySelectEle = $('#select-box-product-category');
     let salePersonSelectEle = $('#select-box-sale-person');
 
-    loadDtb();
+    loadDtbOpportunityList();
 
     SetupFormSubmit.validate(
         $('#form-create_opportunity'),

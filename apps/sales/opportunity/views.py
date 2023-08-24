@@ -58,10 +58,24 @@ class OpportunityDetail(View):
 
     @mask_view(
         auth_require=True,
-        template='sales/opportunity/opportunity_detail.html',
+        template='sales/opportunity/opportunity_detail_page.html',
         menu_active='',
         breadcrumb='OPPORTUNITY_DETAIL_PAGE',
         perm_check=PermCheck(url=ApiURL.OPPORTUNITY_DETAIL, method='GET', fill_key=['pk']),
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
+class OpportunityUpdate(View):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        template='sales/opportunity/opportunity_detail.html',
+        menu_active='',
+        breadcrumb='OPPORTUNITY_UPDATE_PAGE',
+        perm_check=PermCheck(url=ApiURL.OPPORTUNITY_DETAIL, method='PUT', fill_key=['pk']),
     )
     def get(self, request, *args, **kwargs):
         resp0 = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CONFIG).get()

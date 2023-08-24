@@ -28,7 +28,7 @@ $(document).ready(function () {
                             },
                             1000
                         )
-                        // $.fn.notifyB({description: errs.data.errors}, 'failure');
+                        $.fn.notifyB({description: errs.data.errors}, 'failure');
                     }
                 )
         }
@@ -59,10 +59,12 @@ $(document).ready(function () {
                     $('#offcanvasRight').offcanvas('show');
                     loadTableSelectContact();
                     $.fn.notifyB({description: "Successfully"}, 'success')
-                    setTimeout(() => {
-                        window.location.replace($(this).attr('data-url-redirect'));
-                        location.reload.bind(location);
-                    }, 1000);
+                    setTimeout(
+                        () => {
+                            WindowControl.hideLoading();
+                        },
+                        1000
+                    )
                 }
             },
             (errs) => {
@@ -72,7 +74,8 @@ $(document).ready(function () {
                         },
                         1000
                     )
-                // $.fn.notifyB({description: errs.data.errors}, 'failure');
+                console.log(errs)
+                $.fn.notifyB({description: errs.data.errors}, 'failure');
             })
     })
 });

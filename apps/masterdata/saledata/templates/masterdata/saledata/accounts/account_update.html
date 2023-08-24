@@ -288,6 +288,7 @@
                         <div class="tab-pane fade show" id="tab_contacts">
                             <div class="row">
                                 <div id="section-contact-mapped-list" class="contact-mapped-list">
+                                    <h6 class="text-muted">{% trans 'Contacts Mapped' %}</h6>
                                     <table id="datatable_contact_list" class="table nowrap mt-3 w-100"
                                            data-method="GET">
                                         <thead>
@@ -539,7 +540,7 @@
                                             <label class="label-field form-label required">{% trans "Account Address" %}
                                                 <button
                                                         class="btn" type="button"
-                                                        id="button_add_new_billing_address"
+                                                        id="custom_billing_address"
                                                         style="position: absolute; right: 0; background: none; border: none; color: #007D88"
                                                 >
                                                     <i class="fas fa-plus-circle"></i> Add/Edit
@@ -734,7 +735,7 @@
                     aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
-            <button type="button" class="btn btn-soft-primary" id="btn-add-new-contact"
+            <button type="button" class="btn btn-soft-primary" id="new_contact_shortcut"
                     data-bs-toggle="modal" data-bs-target="#modal-add-new-contact"
                     aria-label="Close">{% trans "New Contact Shortcut" %}&nbsp;
                 <i class="bi bi-journal-bookmark-fill"></i>
@@ -851,7 +852,7 @@
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static "assets/js/masterdata/saledata/accounts/account_common.js" %}"></script>
-    <script src="{% static "assets/js/masterdata/saledata/accounts/account_update_main.js" %}"></script>
+    <script src="{% static "assets/js/masterdata/saledata/accounts/account_update.js" %}"></script>
     <!-- Monthpicker JS -->
     <script src="{% static 'vendors/monthpicker/monthpicker.js' %}"></script>
 {% endblock %}

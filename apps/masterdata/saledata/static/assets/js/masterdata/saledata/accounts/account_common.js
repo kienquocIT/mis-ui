@@ -1,53 +1,33 @@
-let [
-    accountName,
-    accountCode,
-    accountWebsite,
-    accountTaxCode,
-    inputPhone,
-    inputEmail,
-    accountTypeEle,
-    accountManagerEle,
-    accountOwnerEle,
-    industryEle,
-    accountGroupEle,
-    totalEmployeeEle,
-    annualRevenueEle,
-    parentAccountEle,
-    shippingCityEle,
-    shippingDistrictEle,
-    shippingWardEle,
-    contactOwnerEle,
-    inputOrganizationEle,
-    inputIndividualEle,
-    billingAddressEle
-] = [
-    $('#inp-account-name'),
-    $('#inp-account-code'),
-    $('#inp-account-website'),
-    $('#inp-tax-code'),
-    $('#inp-phone'),
-    $('#inp-email'),
-    $('#select-box-acc-type'),
-    $('#select-box-acc-manager'),
-    $('#select-box-contact'),
-    $('#select-box-industry'),
-    $('#select-box-account-group'),
-    $('#select-box-total-emp'),
-    $('#select-box-annual-revenue'),
-    $('#select-box-parent-account'),
-    $('#shipping-city'),
-    $('#shipping-district'),
-    $('#shipping-ward'),
-    $('#select-box-contact-owner'),
-    $('#inp-organization'),
-    $('#inp-individual'),
-    $('#select-box-address')
-];
-
+let accountName = $('#inp-account-name')
+let accountCode = $('#inp-account-code')
+let accountWebsite = $('#inp-account-website')
+let accountTaxCode = $('#inp-tax-code')
+let inputPhone = $('#inp-phone')
+let inputEmail = $('#inp-email')
+let accountTypeEle = $('#select-box-acc-type')
+let accountManagerEle = $('#select-box-acc-manager')
+let accountOwnerEle = $('#select-box-contact')
+let industryEle = $('#select-box-industry')
+let accountGroupEle = $('#select-box-account-group')
+let totalEmployeeEle = $('#select-box-total-emp')
+let annualRevenueEle = $('#select-box-annual-revenue')
+let parentAccountEle = $('#select-box-parent-account')
+let shippingCityEle = $('#shipping-city')
+let shippingDistrictEle = $('#shipping-district')
+let shippingWardEle = $('#shipping-ward')
+let contactOwnerEle = $('#select-box-contact-owner')
+let inputOrganizationEle = $('#inp-organization')
+let inputIndividualEle = $('#inp-individual')
+let billingAddressEle = $('#select-box-address')
+let add_shipping_address_btn = $('#add-shipping-address-btn')
+let add_billing_address_btn = $('#add-billing-address-btn')
+let add_contact_btn = $('#add-contact-btn')
+let save_shipping_address = $('#save-changes-modal-shipping-address')
+let save_billing_address = $('#save-changes-modal-billing-address')
+let custom_billing_address = $('#custom_billing_address')
+let new_contact_shortcut = $('#new_contact_shortcut')
 let shipping_address_id_dict = [];
-
 let billing_address_id_dict = [];
-
 let data_contact_mapped = [];
 
 function loadAccountType(accountTypeData) {
@@ -183,120 +163,8 @@ function loadContactOwner(contactOwnerData) {
     })
 }
 
-class AccountHandle {
-    load() {
-        loadAccountType();
-        loadAccountManager();
-        loadAccountOwner();
-        loadIndustry();
-        loadAccountGroup();
-        loadParentAccount();
-        loadShippingCities();
-        loadShippingDistrict();
-        loadShippingWard();
-        loadContactOwner();
-    }
-    combinesData(frmEle) {
-        let frm = new SetupFormSubmit($(frmEle));
-
-        if (accountName.val()) {
-            frm.dataForm['name'] = accountName.val();
-        }
-        else {
-            $.fn.notifyB({description: 'Account name is required.'}, 'failure');
-            return false;
-        }
-        if (accountCode.val()) {
-            frm.dataForm['code'] = accountCode.val();
-        }
-        else {
-            $.fn.notifyB({description: 'Account code is required.'}, 'failure');
-            return false;
-        }
-        frm.dataForm['website'] = accountWebsite.val();
-        if (accountTypeEle.val().length > 0) {
-            frm.dataForm['account_type'] = accountTypeEle.val();
-        }
-        else {
-            $.fn.notifyB({description: 'Account type is required.'}, 'failure');
-            return false;
-        }
-        if (inputOrganizationEle.is(':checked')) {
-            frm.dataForm['account_type_selection'] = 1;
-        }
-        else {
-            frm.dataForm['account_type_selection'] = 0;
-        }
-        if (accountGroupEle.val()) {
-            frm.dataForm['account_group'] = accountGroupEle.val();
-        }
-        else {
-            $.fn.notifyB({description: 'Account group is required.'}, 'failure');
-            return false;
-        }
-        if (accountOwnerEle.val()) {
-            frm.dataForm['owner'] = accountOwnerEle.val();
-        }
-        if (accountManagerEle.val().length > 0) {
-            frm.dataForm['manager'] = accountManagerEle.val();
-        }
-        else {
-            $.fn.notifyB({description: 'Account manager is required.'}, 'failure');
-            return false;
-        }
-        if (parentAccountEle.val()) {
-            frm.dataForm['parent_account'] = parentAccountEle.val();
-        }
-        if (annualRevenueEle.val()) {
-            frm.dataForm['annual_revenue'] = annualRevenueEle.val();
-        }
-        if (totalEmployeeEle.val()) {
-            frm.dataForm['total_employees'] = totalEmployeeEle.val();
-        }
-        else {
-            if (inputOrganizationEle.is(':checked')) {
-                $.fn.notifyB({description: 'Total employee is required with Organization Account.'}, 'failure');
-                return false;
-            }
-        }
-        if (accountTaxCode.val()) {
-            frm.dataForm['tax_code'] = accountTaxCode.val();
-        }
-        else {
-            if (inputOrganizationEle.is(':checked')) {
-                $.fn.notifyB({description: 'Tax code is required with Organization Account.'}, 'failure');
-                return false;
-            }
-        }
-        if (industryEle.val()) {
-            frm.dataForm['industry'] = industryEle.val();
-        }
-        else {
-            $.fn.notifyB({description: 'Industry is required.'}, 'failure');
-            return false;
-        }
-        if (inputPhone.val()) {
-            frm.dataForm['phone'] = inputPhone.val();
-        }
-        if (inputEmail.val()) {
-            frm.dataForm['email'] = inputEmail.val();
-        }
-
-        frm.dataForm['shipping_address_id_dict'] = shipping_address_id_dict;
-        frm.dataForm['billing_address_id_dict'] = billing_address_id_dict;
-        frm.dataForm['contact_mapped'] = data_contact_mapped;
-        frm.dataForm['system_status'] = 1; // save, not draft
-        return {
-            url: frm.dataUrl,
-            method: frm.dataMethod,
-            data: frm.dataForm,
-            urlRedirect: frm.dataUrlRedirect,
-        };
-    }
-}
-
 function loadTableSelectContact() {
-    account_owner_id = accountOwnerEle.val();
+    let account_owner_id = accountOwnerEle.val();
     let selected_contact_list = [];
     document.querySelectorAll('.selected_contact_full_name').forEach(function (element) {
         selected_contact_list.push(element.getAttribute('data-id'));
@@ -471,11 +339,215 @@ function checkSelectAll() {
     document.getElementById('check-select-all').checked = document.querySelectorAll('.selected_contact:checked').length === document.querySelectorAll('.selected_contact').length;
 }
 
-$('#save-changes-modal-shipping-address').on('click', function () {
+function Disable(option) {
+    if (option === 'detail') {
+        $('.form-control').prop('disabled', true).css({color: 'black'});
+        $('.form-select').prop('disabled', true).css({color: 'black'});
+        $('.select2').prop('disabled', true);
+        $('input').prop('disabled', true);
+        $('.del-address-item').prop('hidden', true);
+        add_shipping_address_btn.addClass('disabled');
+        add_shipping_address_btn.prop('hidden', true);
+        add_billing_address_btn.addClass('disabled');
+        add_billing_address_btn.prop('hidden', true);
+        add_contact_btn.addClass('disabled');
+        add_contact_btn.prop('hidden', true);
+    }
+}
+
+function LoadDetail(option) {
+    new AccountHandle().load();
+    // load data detail
+    let pk = $.fn.getPkDetail()
+    let url_loaded = $('#form-detail-update-account').attr('data-url').replace(0, pk);
+    $.fn.callAjax(url_loaded, 'GET').then(
+        (resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                WFRTControl.setWFRuntimeID(data['account_detail']?.['workflow_runtime_id']);
+                data = data['account_detail'];
+                console.log(data)
+                $.fn.compareStatusShowPageAction(data);
+
+                accountName.val(data.name);
+                accountCode.val(data.code);
+                accountWebsite.val(data.website);
+                inputPhone.val(data.phone);
+                inputEmail.val(data.email);
+                accountTaxCode.val(data.tax_code);
+
+                if (data.account_type_selection === 0) {
+                    inputIndividualEle.prop('checked', true);
+                    $('#parent-account-div-id').prop('hidden', true);
+                    $('#account-tax-code-label-id').removeClass('required');
+                    $('#total_employees_label').removeClass('required');
+                } else if (data.account_type_selection === 1) {
+                    inputOrganizationEle.prop('checked', true);
+                    $('#parent-account-div-id').prop('hidden', false);
+                    $('#account-tax-code-label-id').addClass('required');
+                    $('#total_employees_label').addClass('required');
+                }
+
+                let list_shipping_address = ``;
+                for (let i = 0; i < data.shipping_address.length; i++) {
+                    let shipping_address = data.shipping_address[i];
+                    if (shipping_address.is_default) {
+                        list_shipping_address += `<div class="form-check ml-5 mb-2">
+                                    <input class="form-check-input" type="radio" name="shippingaddressRadio" checked>
+                                    <span><label>` + shipping_address.full_address + `</label></span>
+                                    &nbsp;<span><a href="#" class="text-danger del-address-item"><i class="bi bi-trash"></i></a></span>
+                               </div>`;
+                    } else {
+                        list_shipping_address += `<div class="form-check ml-5 mb-2">
+                                    <input class="form-check-input" type="radio" name="shippingaddressRadio">
+                                    <span><label>` + shipping_address.full_address + `</label></span>
+                                    &nbsp;<span><a href="#" class="text-danger del-address-item"><i class="bi bi-trash"></i></a></span>
+                               </div>`;
+                    }
+                }
+                $('#list-shipping-address').html(list_shipping_address);
+
+                let list_billing_address = ``
+                for (let i = 0; i < data.billing_address.length; i++) {
+                    let billing_address = data.billing_address[i];
+                    if (billing_address.is_default) {
+                        list_billing_address += `<div class="form-check ml-5 mb-2">
+                                    <input class="form-check-input" type="radio" name="billingaddressRadio" checked>
+                                    <span><label>` + billing_address.full_address + `</label></span>
+                                    &nbsp;<span><a href="#" class="text-danger del-address-item"><i class="bi bi-trash"></i></a></span>
+                               </div>`;
+                    } else {
+                        list_billing_address += `<div class="form-check ml-5 mb-2">
+                                    <input class="form-check-input" type="radio" name="billingaddressRadio">
+                                    <span><label>` + billing_address.full_address + `</label></span>
+                                    &nbsp;<span><a href="#" class="text-danger del-address-item"><i class="bi bi-trash"></i></a></span>
+                               </div>`;
+                    }
+                }
+                $('#list-billing-address').html(list_billing_address)
+
+                let list_bank_accounts_html = ``
+                let bank_accounts_information = data?.['bank_accounts_information'];
+                for (let i = 0; i < data?.['bank_accounts_information'].length; i++) {
+                    let country_id = bank_accounts_information[i].country_id;
+                    let bank_name = bank_accounts_information[i].bank_name;
+                    let bank_code = bank_accounts_information[i].bank_code;
+                    let bank_account_name = bank_accounts_information[i].bank_account_name;
+                    let bank_account_number = bank_accounts_information[i].bank_account_number;
+                    let bic_swift_code = bank_accounts_information[i].bic_swift_code;
+                    let is_default = '';
+                    if (bank_accounts_information[i].is_default) {
+                        is_default = 'checked';
+                    }
+                    list_bank_accounts_html += `<div class="card card-bank-account col-8 ml-3">
+                                        <span class="mt-2">
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <a class="btn-del-bank-account" href="#"><i class="bi bi-x"></i></a>
+                                                </div>
+                                                <div class="col-6 text-right">
+                                                    <input class="form-check-input ratio-select-bank-account-default" type="radio" name="bank-account-select-default"` + is_default + `>
+                                                </div>
+                                            </div>
+                                        </span>
+                                        <label class="ml-3">Bank account name: <a class="bank-account-name-label" href="#"><b>` + bank_account_name + `</b></a></label>
+                                        <label class="ml-3">Bank name: <a class="bank-name-label" href="#"><b>` + bank_name + `</b></a></label>
+                                        <label class="ml-3 mb-3">Bank account number: <a class="bank-account-number-label" href="#"><b>` + bank_account_number + `</b></a></label>
+                                        <label hidden class="ml-3">Country ID: <a class="country-id-label" href="#"><b>` + country_id + `</b></a></label>
+                                        <label hidden class="ml-3">Bank code: <a class="bank-code-label" href="#"><b>` + bank_code + `</b></a></label>
+                                        <label hidden class="ml-3">BIC/SWIFT Code: <a class="bic-swift-code-label" href="#"><b>` + bic_swift_code + `</b></a></label>
+                                    </div>`
+                }
+                $('#list-bank-account-information').html(list_bank_accounts_html);
+
+                let list_credit_cards_html = ``
+                let credit_cards_information = data?.['credit_cards_information']
+                for (let i = 0; i < credit_cards_information.length; i++) {
+                    let credit_card_type = credit_cards_information[i]?.['credit_card_type'];
+                    let credit_card_number = credit_cards_information[i]?.['credit_card_number'];
+                    let credit_card_name = credit_cards_information[i]?.['credit_card_name'];
+                    let credit_card_exp_date = credit_cards_information[i]?.['expired_date'];
+                    let is_default = '';
+                    if (credit_cards_information[i].is_default) {
+                        is_default = 'checked';
+                    }
+                    list_credit_cards_html += `<div class="card card-credit-card col-8 ml-3">
+                                            <span class="mt-2">
+                                                <div class="row">
+                                                    <div class="col-6">
+                                                        <a class="btn-del-credit-card" href="#"><i class="bi bi-x"></i></a>
+                                                    </div>
+                                                    <div class="col-6 text-right">
+                                                        <input class="form-check-input credit-card-select-default" type="radio" name="credit-card-select-default"` + is_default + `>
+                                                    </div>
+                                                </div>
+                                            </span>
+                                            <label class="ml-3">Card Type: <a class="credit_card_type" href="#"><b>` + credit_card_type + `</b></a></label>
+                                            <label class="ml-3">Card Number: <a class="credit_card_number" href="#"><b>` + credit_card_number + `</b></a></label>
+                                            <label class="ml-3">Card Exp: <a class="expired_date" href="#"><b>` + credit_card_exp_date + `</b></a></label>
+                                            <label class="ml-3 mb-3">Card Name: <a class="credit_card_name" href="#"><b>` + credit_card_name + `</b></a></label>
+                                        </div>`
+                }
+                $('#list-credit-card-information').html(list_credit_cards_html);
+
+                // delete bank account item
+                $('.btn-del-bank-account').on('click', function () {
+                    $(this).closest('.card').remove()
+                })
+
+                // delete credit card item
+                $('.btn-del-credit-card').on('click', function () {
+                    $(this).closest('.card').remove()
+                })
+
+                // delete address item
+                $('.del-address-item').on('click', function () {
+                    $(this).closest('.form-check').remove();
+                })
+
+                totalEmployeeEle.val(data.total_employees)
+                annualRevenueEle.val(data.annual_revenue)
+
+                loadAccountType(data.account_type)
+
+                for (let i = 0; i < data.account_type.length; i++) {
+                    if (data.account_type[i].title === 'Customer')
+                    {
+                        $('#role-for-customer').prop('hidden', false);
+                    }
+                    if (data.account_type[i].title === 'Supplier')
+                    {
+                        $('#role-for-supplier').prop('hidden', false);
+                    }
+                }
+
+                loadAccountGroup(data.account_group)
+
+                loadIndustry(data.industry)
+
+                loadAccountOwner(data.owner)
+                $('#job_title').val(data.owner.job_title).css({color: 'black'});
+                $('#owner-email').val(data.owner.email).css({color: 'black'});
+                $('#owner-mobile').val(data.owner.mobile).css({color: 'black'});
+
+                loadAccountManager(data.manager)
+
+                loadParentAccount(data.parent_account)
+
+                loadTableSelectedContact(data.contact_mapped);
+
+                $.fn.initMaskMoney2();
+
+                Disable(option);
+            }
+        })
+}
+
+save_shipping_address.on('click', function () {
     let shipping_address_modal = $('#detail-modal-shipping-address');
-    let shipping_city = $('#shipping-city');
-    let shipping_district = $('#shipping-district');
-    let shipping_ward = $('#shipping-ward');
+    let shipping_city = shippingCityEle;
+    let shipping_district = shippingDistrictEle;
+    let shipping_ward = shippingWardEle;
     let make_default_shipping_address = $('#make-default-shipping-address');
     try {
         let detail_shipping_address = shipping_address_modal.val();
@@ -539,7 +611,7 @@ $('#save-changes-modal-shipping-address').on('click', function () {
     }
 })
 
-$('#save-changes-modal-billing-address').on('click', function () {
+save_billing_address.on('click', function () {
     let make_default_billing_address = $('#make-default-billing-address');
     try {
         let acc_name = $('#input-account-name').val();
@@ -592,88 +664,33 @@ $('#save-changes-modal-billing-address').on('click', function () {
     }
 })
 
-let config = {
-    scrollY: $(window).height() * 0.45,
-    scrollCollapse: true,
-    paging: false,
-    drawCallback: function () {
-        $('.dataTables_paginate > .pagination').addClass('custom-pagination pagination-simple');
-    },
-    data: [],
-    columns: [{
-        'data': 'fullname',
-        render: (data, type, row) => {
-            return `<a href="#"><span><b>` + row.fullname + `</b></span></a>`
-        }
-    }, {
-        'data': 'job_title',
-        render: (data, type, row) => {
-            if (row.job_title) {
-                return `<span>` + row.job_title + `</span>`
-            }
-            return ``
-        }
-    }, {
-        'data': 'owner',
-        render: (data, type, row) => {
-            if (row.owner.fullname) {
-                return `<span>` + row.owner.fullname + `</span>`
-            }
-            return ``
-        }
-    }, {
-        'data': 'mobile',
-        'render': (data, type, row) => {
-            if (row.mobile) {
-                return `<span>` + row.mobile + `</span>`
-            }
-            return ``
-        }
-    }, {
-        'data': 'email',
-        'render': (data, type, row) => {
-            if (row.email) {
-                return `<span>` + row.email + `</span>`
-            }
-            return ``
-        }
-    }, {
-        'render': (data, type, row, meta) => {
-            let currentId = "chk_sel_" + String(meta.row + 1)
-            return `<span class="form-check mb-0"><input type="checkbox" class="contact-added form-check-input check-select" id="${currentId}" value=` + row.id + `></span>`;
-        }
-    }]
-}
-
 inputIndividualEle.on('change', function () {
-    $('#select-box-parent-account').prop('selectedIndex', -1).attr('disabled', true);
+    parentAccountEle.prop('selectedIndex', -1).attr('disabled', true);
     $("#tax-code-label").removeClass("required");
     $("#total_employees_label").removeClass("required");
 })
 
 inputOrganizationEle.on('change', function () {
-    $('#select-box-parent-account').attr('disabled', false);
+    parentAccountEle.attr('disabled', false);
     $("#tax-code-label").addClass("required");
     $("#total_employees_label").addClass("required");
 })
 
-// Button add shipping address
-$('#add-shipping-address-btn').on('click', function () {
+add_shipping_address_btn.on('click', function () {
     if ($('#list-shipping-address input').length === 0)
         $('#make-default-shipping-address').prop('checked', true);
 })
 
-// Button add billing address
-$('#add-billing-address-btn').on('click', function () {
+add_billing_address_btn.on('click', function () {
     let ele = $('#select-box-account-name')
     ele.html('');
     $('#edited-billing-address').val('').prop('hidden', true);
     billingAddressEle.prop('hidden', false);
-    $('#button_add_new_billing_address').html(`<i class="fas fa-plus-circle"></i> Add/Edit`)
+    custom_billing_address.html(`<i class="fas fa-plus-circle"></i> Add/Edit`)
 
     $('#input-account-name').val(accountName.val());
     $('#inp-tax-code-address').val(accountTaxCode.val());
-    $('#inp-email-address').val($('#inp-email').val());
+    $('#inp-email-address').val(inputEmail.val());
     ele.prepend(`<option value="">` + accountName.val() + `</option>`)
 
     if ($('#list-billing-address input').length === 0)
@@ -689,13 +706,12 @@ $('#add-billing-address-btn').on('click', function () {
     });
 })
 
-// process address
 billingAddressEle.on('change', function () {
     $('#edited-billing-address').val($(this).find('option:selected').text());
 })
 
-$('#button_add_new_billing_address').on('click', function () {
-    if ($('#button_add_new_billing_address i').attr('class') === 'fas fa-plus-circle') {
+custom_billing_address.on('click', function () {
+    if ($('#custom_billing_address i').attr('class') === 'fas fa-plus-circle') {
         $(this).html(`<i class="bi bi-backspace-fill"></i> Select`);
         billingAddressEle.prop('hidden', true).prop('disabled', true);
         $('#edited-billing-address').prop('hidden', false);
@@ -706,9 +722,8 @@ $('#button_add_new_billing_address').on('click', function () {
     }
 })
 
-// show modal add new contact
-$('#btn-add-new-contact').on('click', function () {
-    let ele = $('#select-box-contact-owner');
+new_contact_shortcut.on('click', function () {
+    let ele = contactOwnerEle;
     let url = ele.attr('data-url');
     let method = ele.attr('data-method');
     $('#modal-add-new-contact input').val('');
@@ -728,7 +743,7 @@ $('#btn-add-new-contact').on('click', function () {
     )
 })
 
-$('#add-contact-btn').on('click', function () {
+add_contact_btn.on('click', function () {
     loadTableSelectContact();
 })
 
@@ -781,3 +796,115 @@ $(document).on('click', '#check-select-all', function () {
         })
     }
 });
+
+class AccountHandle {
+    load() {
+        loadAccountType();
+        loadAccountManager();
+        loadAccountOwner();
+        loadIndustry();
+        loadAccountGroup();
+        loadParentAccount();
+        loadShippingCities();
+        loadShippingDistrict();
+        loadShippingWard();
+        loadContactOwner();
+    }
+    combinesData(frmEle) {
+        let frm = new SetupFormSubmit($(frmEle));
+
+        if (accountName.val()) {
+            frm.dataForm['name'] = accountName.val();
+        }
+        else {
+            $.fn.notifyB({description: 'Account name is required.'}, 'failure');
+            return false;
+        }
+        if (accountCode.val()) {
+            frm.dataForm['code'] = accountCode.val();
+        }
+        else {
+            $.fn.notifyB({description: 'Account code is required.'}, 'failure');
+            return false;
+        }
+        frm.dataForm['website'] = accountWebsite.val();
+        if (accountTypeEle.val().length > 0) {
+            frm.dataForm['account_type'] = accountTypeEle.val();
+        }
+        else {
+            $.fn.notifyB({description: 'Account type is required.'}, 'failure');
+            return false;
+        }
+        if (inputOrganizationEle.is(':checked')) {
+            frm.dataForm['account_type_selection'] = 1;
+        }
+        else {
+            frm.dataForm['account_type_selection'] = 0;
+        }
+        if (accountGroupEle.val()) {
+            frm.dataForm['account_group'] = accountGroupEle.val();
+        }
+        else {
+            $.fn.notifyB({description: 'Account group is required.'}, 'failure');
+            return false;
+        }
+        if (accountOwnerEle.val()) {
+            frm.dataForm['owner'] = accountOwnerEle.val();
+        }
+        if (accountManagerEle.val().length > 0) {
+            frm.dataForm['manager'] = accountManagerEle.val();
+        }
+        else {
+            $.fn.notifyB({description: 'Account manager is required.'}, 'failure');
+            return false;
+        }
+        if (parentAccountEle.val()) {
+            frm.dataForm['parent_account'] = parentAccountEle.val();
+        }
+        if (annualRevenueEle.val()) {
+            frm.dataForm['annual_revenue'] = annualRevenueEle.val();
+        }
+        if (totalEmployeeEle.val()) {
+            frm.dataForm['total_employees'] = totalEmployeeEle.val();
+        }
+        else {
+            if (inputOrganizationEle.is(':checked')) {
+                $.fn.notifyB({description: 'Total employee is required with Organization Account.'}, 'failure');
+                return false;
+            }
+        }
+        if (accountTaxCode.val()) {
+            frm.dataForm['tax_code'] = accountTaxCode.val();
+        }
+        else {
+            if (inputOrganizationEle.is(':checked')) {
+                $.fn.notifyB({description: 'Tax code is required with Organization Account.'}, 'failure');
+                return false;
+            }
+        }
+        if (industryEle.val()) {
+            frm.dataForm['industry'] = industryEle.val();
+        }
+        else {
+            $.fn.notifyB({description: 'Industry is required.'}, 'failure');
+            return false;
+        }
+        if (inputPhone.val()) {
+            frm.dataForm['phone'] = inputPhone.val();
+        }
+        if (inputEmail.val()) {
+            frm.dataForm['email'] = inputEmail.val();
+        }
+
+        frm.dataForm['shipping_address_id_dict'] = shipping_address_id_dict;
+        frm.dataForm['billing_address_id_dict'] = billing_address_id_dict;
+        frm.dataForm['contact_mapped'] = data_contact_mapped;
+        frm.dataForm['system_status'] = 1; // save, not draft
+        return {
+            url: frm.dataUrl,
+            method: frm.dataMethod,
+            data: frm.dataForm,
+            urlRedirect: frm.dataUrlRedirect,
+        };
+    }
+}

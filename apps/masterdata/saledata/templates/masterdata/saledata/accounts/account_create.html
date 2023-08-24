@@ -160,6 +160,7 @@
                             <div class="form-group col-5">
                                 <label class="form-label">{% trans "Annual Revenue" %}</label>
                                 <select id="select-box-annual-revenue" class="form-select">
+                                    <option value=""></option>
                                     {% for item in data.customer_revenue %}
                                         <option value="{{ item.value }}">{{ item.name }}</option>
                                     {% endfor %}
@@ -172,6 +173,7 @@
                                 >{% trans "Total Employees" %}</label>
                                 <select id="select-box-total-emp"
                                         class="form-select">
+                                    <option value=""></option>
                                     {% for item in data.company_size %}
                                         <option value="{{ item.value }}">{{ item.name }}</option>
                                     {% endfor %}
@@ -562,7 +564,6 @@
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
-    {#    <script src="{% static 'assets/js/masterdata/saledata/accounts/account_create.js' %}"></script>#}
-    <script src="{% static 'assets/js/masterdata/saledata/accounts/account_create_sub.js' %}"></script>
+    <script src="{% static 'assets/js/masterdata/saledata/accounts/account_common.js' %}"></script>
     <script src="{% static 'assets/js/masterdata/saledata/accounts/account_create_main.js' %}"></script>
 {% endblock %}

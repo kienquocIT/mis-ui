@@ -168,14 +168,6 @@ $(document).ready(function () {
                 loadTableSelectedContact(data.contact_mapped);
 
                 $.fn.initMaskMoney2();
-
-                $('.form-control').prop('disabled', true).css({color: 'black'});
-                $('.form-select').prop('disabled', true).css({color: 'black'});
-                $('.select2').prop('disabled', true);
-                $('input').prop('disabled', true);
-                $('.del-address-item').prop('hidden', true);
-                $('button').addClass('disabled');
-                $('button').prop('hidden', true);
             }
         })
 })

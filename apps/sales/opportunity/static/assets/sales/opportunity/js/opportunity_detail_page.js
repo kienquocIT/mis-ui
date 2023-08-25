@@ -114,6 +114,7 @@ $(document).ready(function () {
                 })
                 loadSaleTeam(opportunity_detail.opportunity_sale_team_datas)
 
+                OpportunityLoadPage.loadFactor($('#box-select-factor'), opportunity_detail.customer_decision_factor);
                 $.fn.initMaskMoney2();
             }
         })

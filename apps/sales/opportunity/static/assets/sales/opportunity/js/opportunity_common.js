@@ -4,6 +4,7 @@ class OpportunityLoadPage {
 
     static productCategorySelectEle = $('#select-box-product-category');
     static customerSelectEle = $('#select-box-customer');
+    static endCustomerSelectEle = $('#select-box-end-customer');
 
     static loadCustomer(ele, data, config, emp_current) {
         ele.initSelect2({
@@ -139,6 +140,27 @@ class OpportunityLoadPage {
         })
     }
 
+    static loadFactor(ele, data) {
+        ele.initSelect2({
+            data: data,
+        })
+    }
+
+    static loadContact(ele, data, customer) {
+        ele.initSelect2({
+            data: data,
+            callbackDataResp(resp, keyResp) {
+                let list_result = []
+                resp.data[keyResp].map(function (item) {
+                    if (customer === item.account_name.id) {
+                        list_result.push(item)
+                    }
+                })
+                return list_result
+            }
+        })
+    }
+
     static combinesData(frmEle) {
         let frm = new SetupFormSubmit($(frmEle));
 
@@ -150,12 +172,16 @@ class OpportunityLoadPage {
             urlRedirect: frm.dataUrlRedirect,
         };
     }
+
+
 }
 
 class OpportunityLoadDetail {
     static productTableEle = $('#table-products');
 
-    static competitorTableEle = $('#table-competitors')
+    static competitorTableEle = $('#table-competitors');
+
+    static contactRoleTableEle = $('#table-contact-role');
 
     static loadDetailTableProduct(table, data) {
         data.opportunity_product_datas.map(function (item) {
@@ -227,11 +253,10 @@ class OpportunityLoadDetail {
             table.DataTable().row.add(item).draw();
             let tr_current_ele = table.find('tbody tr').last();
             OpportunityLoadPage.loadCompetitor(tr_current_ele.find('.box-select-competitor'), item.competitor, OpportunityLoadPage.customerSelectEle.val());
-
         })
     }
 
-    static addRowCompetitor(){
+    static addRowCompetitor() {
         let table = this.competitorTableEle;
         table.addClass('tag-change');
         let data = {
@@ -244,7 +269,53 @@ class OpportunityLoadDetail {
         OpportunityLoadPage.loadCompetitor(tr_current_ele.find('.box-select-competitor'), {}, OpportunityLoadPage.customerSelectEle.val());
     }
 
-    static delRowTable(ele){
+
+    static loadDetailTableContactRole(table, data) {
+        data.opportunity_contact_role_datas.map(function (item) {
+            table.DataTable().row.add(item).draw();
+            let tr_current_ele = table.find('tbody tr').last();
+            OpportunityLoadPage.loadContact(tr_current_ele.find('.box-select-contact'), item.contact, OpportunityLoadPage.customerSelectEle.val());
+            OpportunityLoadDetail.appendTypeCustomer(item.type_customer, tr_current_ele.find('.box-select-type-customer'));
+            OpportunityLoadDetail.appendRole(item.role, tr_current_ele.find('.box-select-role'));
+        })
+    }
+
+    static addRowContactRole(){
+        let table = this. contactRoleTableEle;
+        table.addClass('tag-change');
+        let data = {
+            'job_title': '',
+        }
+        table.DataTable().row.add(data).draw();
+        let tr_current_ele = table.find('tbody tr').last();
+        OpportunityLoadPage.loadContact(tr_current_ele.find('.box-select-contact'), {}, OpportunityLoadPage.customerSelectEle.val());
+        this.appendTypeCustomer(null, tr_current_ele.find('.box-select-type-customer'));
+        this.appendRole(null, tr_current_ele.find('.box-select-role'));
+    }
+
+    static appendTypeCustomer(value, ele) {
+        let data = JSON.parse($('#data_type_customer').text());
+        data.map(function (item) {
+            if (value === item.value) {
+                ele.append(`<option value="${item.value}" selected>${item.name}</option>`);
+            } else {
+                ele.append(`<option value="${item.value}">${item.name}</option>`);
+            }
+        })
+    }
+
+    static appendRole(value, ele){
+        let data = JSON.parse($('#data_role_customer').text());
+        data.map(function (item) {
+            if (value === item.value) {
+                ele.append(`<option value="${item.value}" selected>${item.name}</option>`);
+            } else {
+                ele.append(`<option value="${item.value}">${item.name}</option>`);
+            }
+        })
+    }
+
+    static delRowTable(ele) {
         let table = ele.closest(`table`);
         table.addClass('tag-change');
         table.DataTable().row(ele.closest('tr').index()).remove().draw();
@@ -585,7 +656,7 @@ function loadDtbCompetitorPageDetail(data) {
 
 function loadDtbContactRolePageDetail(data) {
     if (!$.fn.DataTable.isDataTable('#table-contact-role')) {
-        let dtb = $('#table-contact-role');
+        let dtb = OpportunityLoadDetail.contactRoleTableEle;
         dtb.DataTableDefault({
             data: data,
             columns: [
@@ -779,6 +850,54 @@ function loadDtbCompetitor(data) {
     }
 }
 
+function loadDtbContactRole(data) {
+    if (!$.fn.DataTable.isDataTable('#table-contact-role')) {
+        let dtb = OpportunityLoadDetail.contactRoleTableEle;
+        dtb.DataTableDefault({
+            data: data,
+            columns: [
+                {
+                    className: 'wrap-text',
+                    render: () => {
+                        return `<select class="form-select box-select-type-customer"></select>`
+                    }
+                },
+                {
+                    className: 'wrap-text',
+                    render: () => {
+                        return `<select class="form-select box-select-contact" data-method="GET" data-url="${OpportunityLoadPage.urlEle.data('url-contact')}" data-keyResp="contact_list" data-keyText="fullname"></select>`
+                    }
+                },
+                {
+                    data: 'job_title',
+                    className: 'wrap-text',
+                    render: (data) => {
+                        return `<input type="text" class="form-control input-job-title" value="{0}" readonly/>`.format_by_idx(
+                            data
+                        )
+                    }
+                },
+                {
+                    className: 'wrap-text',
+                    render: () => {
+                        return `<select class="form-select box-select-role"></select>`
+                    }
+                },
+                {
+                    className: 'wrap-text',
+                    render: () => {
+                        return `<a class="btn btn-icon btn-del-item">
+                                    <span class="btn-icon-wrap">
+                                        <span class="feather-icon"><i data-feather="trash-2"></i></span>
+                                    </span>
+                                </a>`
+                    }
+                }
+            ],
+        });
+    }
+}
+
 
 function objectsMatch(objA, objB) {
     return objA.property === objB.property && objA.comparison_operator === objB.comparison_operator && objA.compare_data === objB.compare_data;
@@ -813,7 +932,7 @@ function autoLoadStage(
         })
     }
     let list_property_config = []
-    let ele_customer = $('#select-box-customer');
+    let ele_customer = OpportunityLoadPage.customerSelectEle;
     let obj_customer = SelectDDControl.get_data_from_idx(ele_customer, ele_customer.val());
     if (ele_customer.length > 0) {
         let compare_data = 0;

@@ -2,7 +2,7 @@ from django.views import View
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from django.utils.translation import gettext_lazy as _
+from apps.shared.constant import TYPE_CUSTOMER, ROLE_CUSTOMER
 
 from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg, PermCheck
 
@@ -90,6 +90,8 @@ class OpportunityUpdate(View):
             'contact_list': resp2.result,
             'opportunity_list': resp3.result,
             'employee_list': resp4.result,
+            'type_customer': TYPE_CUSTOMER,
+            'role_customer': ROLE_CUSTOMER,
         }
         return result, status.HTTP_200_OK
 

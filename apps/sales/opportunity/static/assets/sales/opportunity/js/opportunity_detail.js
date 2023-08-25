@@ -139,14 +139,22 @@ $(document).ready(function () {
                 let table_product = OpportunityLoadDetail.productTableEle;
                 OpportunityLoadDetail.loadDetailTableProduct(table_product, opportunity_detail);
 
+                $('#input-product-pretax-amount').attr('value', opportunity_detail.total_product_pretax_amount);
+                $('#input-product-taxes').attr('value', opportunity_detail.total_product_tax);
+                $('#input-product-total').attr('value', opportunity_detail.total_product);
+
                 // load competitor
                 loadDtbCompetitor([]);
                 let table_competitor = OpportunityLoadDetail.competitorTableEle;
                 OpportunityLoadDetail.loadDetailTableCompetitor(table_competitor, opportunity_detail)
 
-                $('#input-product-pretax-amount').attr('value', opportunity_detail.total_product_pretax_amount);
-                $('#input-product-taxes').attr('value', opportunity_detail.total_product_tax);
-                $('#input-product-total').attr('value', opportunity_detail.total_product);
+                // load table contact role
+                loadDtbContactRole([]);
+                let table_contact_role = OpportunityLoadDetail.contactRoleTableEle;
+                OpportunityLoadDetail.loadDetailTableContactRole(table_contact_role, opportunity_detail);
+
+                OpportunityLoadPage.loadFactor($('#box-select-factor'), opportunity_detail.customer_decision_factor);
+
 
                 if ($.fn.hasOwnProperties(opportunity_detail, ['sale_order'])) {
                     if (opportunity_detail.sale_order.system_status === 0) {
@@ -264,7 +272,6 @@ $(document).ready(function () {
     })
 
     $(document).on('change', '.input-win-deal', function () {
-
         if ($(this).is(':checked')) {
             if (checkOppWonOrDelivery()) {
                 $(this).prop('checked', false);
@@ -286,16 +293,7 @@ $(document).ready(function () {
 
     // event in tab contact role
     $('#btn-add-contact').on('click', function () {
-        let table = $('#table-contact-role');
-        table.addClass('tag-change')
-        let col_empty = table.find('.col-table-empty');
-        if (col_empty !== undefined) {
-            col_empty.addClass('hidden');
-        }
-        let col = $('.col-contact').html().replace('hidden', '');
-        table.find('tbody').append(`<tr>${col}</tr>`);
-
-        loadBoxContact(table.find('tbody tr'), 0);
+        OpportunityLoadDetail.addRowContactRole();
     })
 
     $(document).on('change', '#select-box-end-customer', function () {
@@ -340,19 +338,17 @@ $(document).ready(function () {
 
     $(document).on('change', '.box-select-type-customer', function () {
         let box_select_contact = $(this).closest('tr').find('.box-select-contact');
-        box_select_contact.prop("selectedIndex", -1);
-        box_select_contact.find('option').addClass('hidden');
         $(this).closest('tr').find('.input-job-title').val('');
-        box_select_contact.find(`option[data-type-customer="${$(this).val()}"]`).removeClass('hidden');
+        if ($(this).val() === '0') {
+            OpportunityLoadPage.loadContact(box_select_contact, {}, OpportunityLoadPage.customerSelectEle.val());
+        } else {
+            OpportunityLoadPage.loadContact(box_select_contact, {}, OpportunityLoadPage.endCustomerSelectEle.val());
+        }
     })
 
     $(document).on('change', '.box-select-contact', function () {
-        let contact_data = JSON.parse($('#input-data-contact').val());
-        let id = $(this).val();
-        let contact = contact_data.find(function (item) {
-            return item.id === id;
-        })
-        $(this).closest('tr').find('.input-job-title').val(contact.job_title);
+        let contact_data = SelectDDControl.get_data_from_idx($(this), $(this).val());
+        $(this).closest('tr').find('.input-job-title').val(contact_data.job_title);
 
         if ($(this).closest('tr').find('.box-select-role option:selected').val() === '0') {
             let ele_decision_maker = $('#input-decision-maker');

@@ -229,14 +229,26 @@ class POLoadDataHandle {
         return true;
     };
 
-    static loadModalPurchaseRequestProductTable(is_clear_all = false, is_trigger_click = false) {
+    static loadModalPurchaseRequestProductTable(is_clear_all = false, is_trigger = false, dataDetail = null) {
         let tablePurchaseRequest = $('#datable-purchase-request');
         let tablePurchaseRequestProduct = $('#datable-purchase-request-product');
         let frm = new SetupFormSubmit(tablePurchaseRequestProduct);
-        let request_id_list = [];
         let checked_data = {};
-        for (let eleChecked of tablePurchaseRequest[0].querySelectorAll('.table-row-checkbox:checked')) {
-            request_id_list.push(eleChecked.getAttribute('data-id'));
+        if (dataDetail) {
+            for (let dataProduct of dataDetail?.['purchase_order_products_data']) {
+                for (let PRProduct of dataProduct?.['purchase_request_products_data']) {
+                    checked_data[PRProduct?.['purchase_request_product_id']] = {
+                        'id': PRProduct?.['purchase_request_product_id'],
+                        'quantity_order': PRProduct?.['quantity_order'],
+                    }
+                }
+            }
+            for (let PRProduct of dataDetail?.['purchase_request_products_data']) {
+                checked_data[PRProduct?.['purchase_request_product_id']] = {
+                    'id': PRProduct?.['purchase_request_product_id'],
+                    'quantity_order': PRProduct?.['quantity_order'],
+                }
+            }
         }
         if (!tablePurchaseRequestProduct[0].querySelector('.dataTables_empty') && is_clear_all === false) {
             for (let eleChecked of tablePurchaseRequestProduct[0].querySelectorAll('.table-row-checkbox:checked')) {
@@ -247,39 +259,46 @@ class POLoadDataHandle {
             }
         }
         tablePurchaseRequestProduct.DataTable().clear().draw();
-        if (request_id_list.length > 0) {
-            $.fn.callAjax2({
-                    'url': frm.dataUrl,
-                    'method': frm.dataMethod,
-                    'data': {'purchase_request_id__in': request_id_list.join(',')},
-                    'isDropdown': true,
-                }
-            ).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        if (data.hasOwnProperty('purchase_request_product_list') && Array.isArray(data.purchase_request_product_list)) {
-                            if (Object.keys(checked_data).length !== 0) {
-                                for (let prProduct of data.purchase_request_product_list) {
-                                    if (checked_data.hasOwnProperty(prProduct.id)) {
-                                        prProduct['is_checked'] = true;
-                                        prProduct['quantity_order'] = checked_data[prProduct.id].quantity_order;
+        let purchase_requests_data = POLoadDataHandle.PRDataEle;
+        if (purchase_requests_data.val()) {
+            let purchase_requests_data_parse = JSON.parse(purchase_requests_data.val());
+            if (purchase_requests_data_parse.length > 0) {
+                $.fn.callAjax2({
+                        'url': frm.dataUrl,
+                        'method': frm.dataMethod,
+                        'data': {'purchase_request_id__in': purchase_requests_data_parse.join(',')},
+                        'isDropdown': true,
+                    }
+                ).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            if (data.hasOwnProperty('purchase_request_product_list') && Array.isArray(data.purchase_request_product_list)) {
+                                if (Object.keys(checked_data).length !== 0) {
+                                    for (let prProduct of data.purchase_request_product_list) {
+                                        if (checked_data.hasOwnProperty(prProduct.id)) {
+                                            prProduct['is_checked'] = true;
+                                            prProduct['quantity_order'] = checked_data[prProduct.id].quantity_order;
+                                        }
                                     }
                                 }
-                            }
-                            tablePurchaseRequestProduct.DataTable().rows.add(data.purchase_request_product_list).draw();
-                            if (is_trigger_click === true) {
-                                $('#btn-confirm-add-purchase-request').click();
-                                POLoadDataHandle.loadDataShowPurchaseQuotation();
+                                tablePurchaseRequestProduct.DataTable().rows.add(data.purchase_request_product_list).draw();
+                                if (dataDetail) {
+                                    POLoadDataHandle.loadPRProductNotInPO(dataDetail);
+                                }
+                                if (is_trigger === true) {
+                                    $('#btn-confirm-add-purchase-request').click();
+                                    POLoadDataHandle.loadDataShowPurchaseQuotation();
+                                }
                             }
                         }
                     }
+                )
+            } else {
+                if (is_trigger === true) {
+                    $('#btn-confirm-add-purchase-request').click();
+                    POLoadDataHandle.loadDataShowPurchaseQuotation();
                 }
-            )
-        } else {
-            if (is_trigger_click === true) {
-                $('#btn-confirm-add-purchase-request').click();
-                POLoadDataHandle.loadDataShowPurchaseQuotation();
             }
         }
         return true;
@@ -349,12 +368,23 @@ class POLoadDataHandle {
         return true;
     };
 
-    static loadModalPurchaseQuotation(is_clear_all = false, is_click = false) {
+    static loadModalPurchaseQuotation(is_clear_all = false, is_trigger = false, dataDetail = null) {
         let tablePurchaseQuotation = $('#datable-purchase-quotation');
-        let checked_list = [];
+        let checked_data = {};
+        if (dataDetail) {
+            for (let PQ of dataDetail?.['purchase_quotations_data']) {
+                checked_data[PQ?.['purchase_quotation']?.['id']] = {
+                    'id': PQ?.['purchase_quotation']?.['id'],
+                    'is_use': PQ?.['is_use'],
+                };
+            }
+        }
         if (!tablePurchaseQuotation[0].querySelector('.dataTables_empty') && is_clear_all === false) {
             for (let eleChecked of tablePurchaseQuotation[0].querySelectorAll('.table-row-checkbox:checked')) {
-                checked_list.push(eleChecked.getAttribute('data-id'));
+                checked_data[eleChecked.getAttribute('data-id')] = {
+                    'id': eleChecked.getAttribute('data-id'),
+                    'is_use': false,
+                };
             }
         }
         let frm = new SetupFormSubmit(tablePurchaseQuotation);
@@ -373,16 +403,17 @@ class POLoadDataHandle {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             if (data.hasOwnProperty('purchase_quotation_list') && Array.isArray(data.purchase_quotation_list)) {
-                                if (checked_list.length > 0) {
+                                if (Object.keys(checked_data).length !== 0) {
                                     for (let PQ of data.purchase_quotation_list) {
-                                        if (checked_list.includes(PQ.id)) {
+                                        if (checked_data.hasOwnProperty(PQ.id)) {
                                             PQ['is_checked'] = true;
+                                            PQ['is_use'] = checked_data[PQ.id]?.['is_use'];
                                         }
                                     }
                                 }
                                 tablePurchaseQuotation.DataTable().clear().draw();
                                 tablePurchaseQuotation.DataTable().rows.add(data.purchase_quotation_list).draw();
-                                if (is_click === true) {
+                                if (is_trigger === true) {
                                     $('#btn-confirm-add-purchase-quotation').click();
                                 }
                             }
@@ -730,17 +761,21 @@ class POLoadDataHandle {
 
     // LOAD DETAIL
     static loadDetailPage(data) {
+        $('#data-detail-page').val(JSON.stringify(data));
         $('#purchase-order-title').val(data?.['title']);
         $('#purchase-order-date-delivered').val(moment(data?.['date_created']).format('DD/MM/YYYY hh:mm A'));
         POLoadDataHandle.loadDataShowPRPQ(data);
-        POLoadDataHandle.loadDataCheckedPRProduct(data);
+        PODataTableHandle.dataTablePurchaseRequest();
+        POLoadDataHandle.loadModalPurchaseRequestProductTable(false, false, data);
+        POLoadDataHandle.loadModalPurchaseQuotation(false, false, data);
         POLoadDataHandle.loadBoxSupplier(data?.['supplier']);
         POLoadDataHandle.loadBoxContact(data?.['contact']);
-        POLoadDataHandle.loadDetailPageTables(data);
+        POLoadDataHandle.loadTablesDetailPage(data);
         POLoadDataHandle.loadTotals(data);
     };
 
     static loadDataShowPRPQ(data) {
+        let from = $('#frm_purchase_order_create');
         let elePurchaseRequest = $('#purchase-order-purchase-request');
         let elePRAppend = ``;
         let purchase_requests_data = [];
@@ -754,12 +789,21 @@ class POLoadDataHandle {
             let link = "";
             let linkDetail = elePurchaseRequest.attr('data-link-detail');
             link = linkDetail.format_url_with_uuid(prID);
-            elePRAppend += `<div class="inline-elements-badge mr-2 mb-1">
+            if (from.attr('data-method') === 'GET') {
+                elePRAppend += `<div class="inline-elements-badge mr-2 mb-1">
                                     <a href="${link}" target="_blank" class="link-primary underline_hover"><span>${prCode}</span></a>
                                     <button type="button" class="btn btn-link btn-sm custom-btn-remove" data-id="${prID}" aria-label="Close" disabled>
                                         <span aria-hidden="true"><i class="fas fa-times"></i></span>
                                     </button>
                                 </div>`;
+            } else {
+                elePRAppend += `<div class="inline-elements-badge mr-2 mb-1">
+                                    <a href="${link}" target="_blank" class="link-primary underline_hover"><span>${prCode}</span></a>
+                                    <button type="button" class="btn btn-link btn-sm custom-btn-remove" data-id="${prID}" aria-label="Close">
+                                        <span aria-hidden="true"><i class="fas fa-times"></i></span>
+                                    </button>
+                                </div>`;
+            }
             purchase_requests_data.push(prID);
         }
         elePurchaseRequest.append(elePRAppend);
@@ -773,22 +817,42 @@ class POLoadDataHandle {
             let link = "";
             let linkDetail = elePurchaseQuotation.attr('data-link-detail');
             link = linkDetail.format_url_with_uuid(pqID);
-            if (dataPQ?.['is_use'] === false) {
-                elePQAppend += `<div class="inline-elements-badge mr-2 mb-1">
+            if (from.attr('data-method') === 'GET') {
+                if (dataPQ?.['is_use'] === false) {
+                    elePQAppend += `<div class="inline-elements-badge mr-2 mb-1">
+                                    <input class="form-check-input checkbox-circle checkbox-quotation" type="checkbox" data-id="${pqID}" data-code="${pqCode}" data-supplier="${pqSupplierStr}" value="option1" disabled>
+                                    <a href="${link}" target="_blank" class="link-primary underline_hover ml-3"><span>${pqCode}</span></a>
+                                    <button type="button" class="btn btn-link btn-sm custom-btn-remove" data-id="${pqID}" aria-label="Close" disabled>
+                                        <span aria-hidden="true"><i class="fas fa-times"></i></span>
+                                    </button>
+                                </div>`;
+                } else {
+                    elePQAppend += `<div class="inline-elements-badge mr-2 mb-1">
+                                    <input class="form-check-input checkbox-circle checkbox-quotation" type="checkbox" data-id="${pqID}" data-code="${pqCode}" data-supplier="${pqSupplierStr}" value="option1" checked disabled>
+                                    <a href="${link}" target="_blank" class="link-primary underline_hover ml-3"><span>${pqCode}</span></a>
+                                    <button type="button" class="btn btn-link btn-sm custom-btn-remove" data-id="${pqID}" aria-label="Close" disabled>
+                                        <span aria-hidden="true"><i class="fas fa-times"></i></span>
+                                    </button>
+                                </div>`;
+                }
+            } else {
+                if (dataPQ?.['is_use'] === false) {
+                    elePQAppend += `<div class="inline-elements-badge mr-2 mb-1">
                                     <input class="form-check-input checkbox-circle checkbox-quotation" type="checkbox" data-id="${pqID}" data-code="${pqCode}" data-supplier="${pqSupplierStr}" value="option1">
                                     <a href="${link}" target="_blank" class="link-primary underline_hover ml-3"><span>${pqCode}</span></a>
-                                    <button type="button" class="btn btn-link btn-sm custom-btn-remove" data-id="${pqID}" aria-label="Close" disabled>
+                                    <button type="button" class="btn btn-link btn-sm custom-btn-remove" data-id="${pqID}" aria-label="Close">
                                         <span aria-hidden="true"><i class="fas fa-times"></i></span>
                                     </button>
                                 </div>`;
-            } else {
-                elePQAppend += `<div class="inline-elements-badge mr-2 mb-1">
+                } else {
+                    elePQAppend += `<div class="inline-elements-badge mr-2 mb-1">
                                     <input class="form-check-input checkbox-circle checkbox-quotation" type="checkbox" data-id="${pqID}" data-code="${pqCode}" data-supplier="${pqSupplierStr}" value="option1" checked>
                                     <a href="${link}" target="_blank" class="link-primary underline_hover ml-3"><span>${pqCode}</span></a>
-                                    <button type="button" class="btn btn-link btn-sm custom-btn-remove" data-id="${pqID}" aria-label="Close" disabled>
+                                    <button type="button" class="btn btn-link btn-sm custom-btn-remove" data-id="${pqID}" aria-label="Close">
                                         <span aria-hidden="true"><i class="fas fa-times"></i></span>
                                     </button>
                                 </div>`;
+                }
             }
             purchase_quotations_data.push({
                 'purchase_quotation': pqID,
@@ -797,61 +861,6 @@ class POLoadDataHandle {
         }
         elePurchaseQuotation.append(elePQAppend);
         POLoadDataHandle.PQDataEle.val(JSON.stringify(purchase_quotations_data));
-    };
-
-    static loadDataCheckedPRProduct(dataDetail) {
-        let tablePurchaseRequestProduct = $('#datable-purchase-request-product');
-        let frm = new SetupFormSubmit(tablePurchaseRequestProduct);
-        let request_id_list = [];
-        let checked_data = {};
-        if (dataDetail) {
-            if (POLoadDataHandle.PRDataEle.val()) {
-                request_id_list = JSON.parse(POLoadDataHandle.PRDataEle.val());
-            }
-            for (let dataProduct of dataDetail?.['purchase_order_products_data']) {
-                for (let PRProduct of dataProduct?.['purchase_request_products_data']) {
-                    checked_data[PRProduct?.['purchase_request_product_id']] = {
-                        'id': PRProduct?.['purchase_request_product_id'],
-                        'quantity_order': PRProduct?.['quantity_order'],
-                    }
-                }
-            }
-            for (let PRProduct of dataDetail?.['purchase_request_products_data']) {
-                checked_data[PRProduct?.['purchase_request_product_id']] = {
-                    'id': PRProduct?.['purchase_request_product_id'],
-                    'quantity_order': PRProduct?.['quantity_order'],
-                }
-            }
-            tablePurchaseRequestProduct.DataTable().clear().draw();
-            if (request_id_list.length > 0) {
-                $.fn.callAjax2({
-                        'url': frm.dataUrl,
-                        'method': frm.dataMethod,
-                        'data': {'purchase_request_id__in': request_id_list.join(',')},
-                        'isDropdown': true,
-                    }
-                ).then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            if (data.hasOwnProperty('purchase_request_product_list') && Array.isArray(data.purchase_request_product_list)) {
-                                if (Object.keys(checked_data).length > 0) {
-                                    for (let prProduct of data.purchase_request_product_list) {
-                                        if (checked_data.hasOwnProperty(prProduct.id)) {
-                                            prProduct['is_checked'] = true;
-                                            prProduct['quantity_order'] = checked_data[prProduct.id].quantity_order;
-                                        }
-                                    }
-                                }
-                                tablePurchaseRequestProduct.DataTable().rows.add(data.purchase_request_product_list).draw();
-                                POLoadDataHandle.loadPRProductNotInPO(dataDetail);
-                            }
-                        }
-                    }
-                )
-            }
-        }
-        return true;
     };
 
     static loadPRProductNotInPO(data) {
@@ -885,7 +894,8 @@ class POLoadDataHandle {
         }
     };
 
-    static loadDetailPageTables(data) {
+    static loadTablesDetailPage(data) {
+        let form = $('#frm_purchase_order_create');
         let tableProductAdd = $('#datable-purchase-order-product-add');
         let tableProductRequest = $('#datable-purchase-order-product-request');
         if (data?.['purchase_requests_data']) {
@@ -895,9 +905,11 @@ class POLoadDataHandle {
             $('#datable-purchase-order-product-request_wrapper')[0].removeAttribute('hidden');
             tableProductRequest.DataTable().rows.add(data?.['purchase_order_products_data']).draw();
             POLoadDataHandle.loadDataRowTable(tableProductRequest);
-            POLoadDataHandle.loadTableDisabled(tableProductRequest);
-        }
+            if (form.attr('data-method') === 'GET') {
+                POLoadDataHandle.loadTableDisabled(tableProductRequest);
+            }
 
+        }
     };
 
     static loadTotals(data) {
@@ -991,7 +1003,16 @@ class PODataTableHandle {
                         if ($('#frm_purchase_order_create').attr('data-method') !== 'GET') {
                             return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}"></div>`;
                         } else {
-                            return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}" disabled></div>`;
+                            if (POLoadDataHandle.PRDataEle.val()) {
+                                let PRIDList = JSON.parse(POLoadDataHandle.PRDataEle.val());
+                                if (PRIDList.includes(row.id)) {
+                                    return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}" checked disabled></div>`;
+                                } else {
+                                    return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}" disabled></div>`;
+                                }
+                            } else {
+                                return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}" disabled></div>`;
+                            }
                         }
                     }
                 },
@@ -1200,10 +1221,18 @@ class PODataTableHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        if (!row.hasOwnProperty('is_checked')) {
-                            return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}"></div>`;
+                        if ($('#frm_purchase_order_create').attr('data-method') !== 'GET') {
+                            if (!row.hasOwnProperty('is_checked')) {
+                                return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}"></div>`;
+                            } else {
+                                return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}" checked></div>`;
+                            }
                         } else {
-                            return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}" checked></div>`;
+                            if (!row.hasOwnProperty('is_checked')) {
+                                return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}" disabled></div>`;
+                            } else {
+                                return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}" checked disabled></div>`;
+                            }
                         }
                     }
                 },

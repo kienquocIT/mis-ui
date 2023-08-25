@@ -16,14 +16,16 @@ $(function () {
         let tablePurchaseOrderProductRequest = $('#datable-purchase-order-product-request');
 
         // Load init
-        POLoadDataHandle.loadBoxSupplier();
-        POLoadDataHandle.loadBoxContact();
-        PODataTableHandle.dataTablePurchaseRequest();
-        PODataTableHandle.dataTablePurchaseRequestProduct();
-        PODataTableHandle.dataTablePurchaseRequestProductMerge();
-        PODataTableHandle.dataTablePurchaseQuotation();
-        PODataTableHandle.dataTablePurchaseOrderProductAdd();
-        PODataTableHandle.dataTablePurchaseOrderProductRequest();
+        if (formSubmit.attr('data-method') === 'POST') {
+            POLoadDataHandle.loadBoxSupplier();
+            POLoadDataHandle.loadBoxContact();
+            PODataTableHandle.dataTablePurchaseRequest();
+            PODataTableHandle.dataTablePurchaseRequestProduct();
+            PODataTableHandle.dataTablePurchaseRequestProductMerge();
+            PODataTableHandle.dataTablePurchaseQuotation();
+            PODataTableHandle.dataTablePurchaseOrderProductAdd();
+            PODataTableHandle.dataTablePurchaseOrderProductRequest();
+        }
 
         // run datetimepicker
         $('input[type=text].date-picker').daterangepicker({
@@ -47,7 +49,10 @@ $(function () {
                 setTimeout(checkDataTableRenderThenHidden, 1000);  // call again after 1s if condition not pass yet
             }
         }
-        checkDataTableRenderThenHidden();
+        if (formSubmit.attr('data-method') === 'POST') {
+            checkDataTableRenderThenHidden();
+        }
+
 
 // EVENTS
         // Action on change dropdown supplier

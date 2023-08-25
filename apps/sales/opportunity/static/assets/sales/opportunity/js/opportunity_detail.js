@@ -136,8 +136,13 @@ $(document).ready(function () {
                 }
                 // load table product
                 loadDtbProduct([]);
-                let table_product = $('#table-products');
+                let table_product = OpportunityLoadDetail.productTableEle;
                 OpportunityLoadDetail.loadDetailTableProduct(table_product, opportunity_detail);
+
+                // load competitor
+                loadDtbCompetitor([]);
+                let table_competitor = OpportunityLoadDetail.competitorTableEle;
+                OpportunityLoadDetail.loadDetailTableCompetitor(table_competitor, opportunity_detail)
 
                 $('#input-product-pretax-amount').attr('value', opportunity_detail.total_product_pretax_amount);
                 $('#input-product-taxes').attr('value', opportunity_detail.total_product_tax);
@@ -255,14 +260,7 @@ $(document).ready(function () {
 
     // event in tab competitor
     $('#btn-add-competitor').on('click', function () {
-        let table = $('#table-competitors');
-        table.addClass('tag-change');
-        let col_empty = table.find('.col-table-empty');
-        if (col_empty !== undefined) {
-            col_empty.addClass('hidden');
-        }
-        let col = $('.col-competitor').html().replace('hidden', '');
-        table.find('tbody').append(`<tr>${col}</tr>`);
+        OpportunityLoadDetail.addRowCompetitor()
     })
 
     $(document).on('change', '.input-win-deal', function () {
@@ -591,35 +589,18 @@ $(document).ready(function () {
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
-                    $.fn.notifyB({description: "Successfully"}, 'success')
+                    $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
                     $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
                 }
             },
             (errs) => {
-                //$.fn.notifyB({description: errs.data.errors}, 'failure');
+                $.fn.notifyB({description: errs.data.errors}, 'failure');
             }
         )
     })
 
     $(document).on('click', '.btn-del-item', function () {
-        let table = $(this).closest(`table`);
-        table.addClass('tag-change');
-        $(this).closest('tr').remove();
-        if (table.find('tbody tr:not(.hidden)').length === 0) {
-            table.find('.col-table-empty').removeClass('hidden');
-        }
-        switch (table.attr('id')) {
-            case 'table-products':
-                getTotalPrice();
-                break;
-            case 'table-contact-role':
-                if (table.find(`.box-select-role option[value="0"]:selected`).length === 0) {
-                    let ele_decision_maker = $('#input-decision-maker');
-                    ele_decision_maker.val('');
-                    ele_decision_maker.attr('data-id', '');
-                    ele_decision_maker.addClass('tag-change');
-                }
-        }
+        OpportunityLoadDetail.delRowTable($(this));
     })
 
     // tab add member for sale

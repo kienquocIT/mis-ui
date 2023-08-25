@@ -523,60 +523,26 @@
                                     </div>
                                     <div class="tab-pane fade mb-25" id="tab_competitors">
                                         <button type="button" class="btn btn-link btn-animated" id="btn-add-competitor">
-                                <span>
-                                    <span class="icon">
-                                        <span class="feather-icon">
-                                            <i data-feather="plus"></i>
-                                        </span>
-                                    </span>
-                                    <span>{% trans 'Add Competitor' %}</span>
-                                </span>
-                                        </button>
-
-                                        <div class="table-responsive">
-                                            <table class="table nowrap" id="table-competitors">
-                                                <thead>
-                                                <tr>
-                                                    <th class="wrap-text w-30">{% trans "Name" %}</th>
-                                                    <th class="wrap-text w-30">{% trans 'Strength' %}</th>
-                                                    <th class="wrap-text w-30">{% trans 'Weakness' %}</th>
-                                                    <th class="wrap-text w-10">{% trans "Win deal" %}</th>
-                                                    <th></th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                <tr class="odd text-center col-table-empty">
-                                                    <td colspan="10">{% trans 'No data available in table' %}</td>
-                                                </tr>
-                                                <tr class="col-competitor hidden">
-                                                    <td class="wrap-text">
-                                                        <select class="form-select box-select-competitor">
-                                                            <option></option>
-                                                        </select>
-                                                    </td>
-                                                    <td class="wrap-text text-center">
-                                                        <input type="text" class="form-control input-strength"/>
-                                                    </td>
-                                                    <td class="wrap-text text-center">
-                                                        <input type="text" class="form-control input-weakness"/>
-                                                    </td>
-                                                    <td class="wrap-text text-center mb-5">
-                                                        <div class="form-check">
-                                                            <input type="checkbox"
-                                                                   class="form-check-input input-win-deal"/>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <a class="btn btn-icon btn-del-item">
-                                                <span class="btn-icon-wrap">
-                                                    <span class="feather-icon"><i data-feather="trash-2"></i></span>
+                                            <span>
+                                                <span class="icon">
+                                                    <span class="feather-icon">
+                                                        <i data-feather="plus"></i>
+                                                    </span>
                                                 </span>
-                                                        </a>
-                                                    </td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
+                                                <span>{% trans 'Add Competitor' %}</span>
+                                            </span>
+                                        </button>
+                                        <table class="table nowrap w-100" id="table-competitors">
+                                            <thead>
+                                            <tr>
+                                                <th class="wrap-text w-30">{% trans "Name" %}</th>
+                                                <th class="wrap-text w-30">{% trans 'Strength' %}</th>
+                                                <th class="wrap-text w-30">{% trans 'Weakness' %}</th>
+                                                <th class="wrap-text w-10">{% trans "Win deal" %}</th>
+                                                <th></th>
+                                            </tr>
+                                            </thead>
+                                        </table>
                                     </div>
                                     <div class="tab-pane fade mb-25" id="tab_contact_role">
                                         <button type="button" class="btn btn-link btn-animated" id="btn-add-contact">
@@ -1309,6 +1275,7 @@
            data-url-product-category="{% url 'ProductCategoryListAPI' %}"
            data-url-tax="{% url 'TaxListAPI' %}"
            data-url-uom="{% url 'UnitOfMeasureListAPI' %}"
+           data-url-competitor="{% url 'AccountListAPI' %}"
     >
     <input type="text" id="trans-factory"
            data-activity-type01="{% trans 'Call to customer' %}"

@@ -2,7 +2,8 @@ class OpportunityLoadPage {
     static transEle = $('#trans-factory');
     static urlEle = $('#url-factory');
 
-    static productCategorySelectEle = $('#select-box-product-category')
+    static productCategorySelectEle = $('#select-box-product-category');
+    static customerSelectEle = $('#select-box-customer');
 
     static loadCustomer(ele, data, config, emp_current) {
         ele.initSelect2({
@@ -103,14 +104,13 @@ class OpportunityLoadPage {
             data: data,
             callbackDataResp(resp, keyResp) {
                 let list_result = []
-                if (product !== undefined){
+                if (product !== undefined) {
                     resp.data[keyResp].map(function (item) {
                         if (product?.['general_information'].uom_group.id === item.group.id) {
                             list_result.push(item)
                         }
                     })
-                }
-                else {
+                } else {
                     list_result = resp.data[keyResp]
                 }
                 return list_result
@@ -121,6 +121,21 @@ class OpportunityLoadPage {
     static loadTax(ele, data) {
         ele.initSelect2({
             data: data,
+        })
+    }
+
+    static loadCompetitor(ele, data, customer) {
+        ele.initSelect2({
+            data: data,
+            callbackDataResp(resp, keyResp) {
+                let list_result = []
+                resp.data[keyResp].map(function (item) {
+                    if (customer !== item.id) {
+                        list_result.push(item)
+                    }
+                })
+                return list_result
+            }
         })
     }
 
@@ -139,6 +154,8 @@ class OpportunityLoadPage {
 
 class OpportunityLoadDetail {
     static productTableEle = $('#table-products');
+
+    static competitorTableEle = $('#table-competitors')
 
     static loadDetailTableProduct(table, data) {
         data.opportunity_product_datas.map(function (item) {
@@ -202,6 +219,47 @@ class OpportunityLoadDetail {
         $('#input-product-taxes').attr('value', tax_value);
         $('#input-product-total').attr('value', total_pretax + tax_value);
         $.fn.initMaskMoney2();
+    }
+
+
+    static loadDetailTableCompetitor(table, data) {
+        data.opportunity_competitors_datas.map(function (item) {
+            table.DataTable().row.add(item).draw();
+            let tr_current_ele = table.find('tbody tr').last();
+            OpportunityLoadPage.loadCompetitor(tr_current_ele.find('.box-select-competitor'), item.competitor, OpportunityLoadPage.customerSelectEle.val());
+
+        })
+    }
+
+    static addRowCompetitor(){
+        let table = this.competitorTableEle;
+        table.addClass('tag-change');
+        let data = {
+            'strength': '',
+            'weakness': '',
+            'win_deal': false,
+        }
+        table.DataTable().row.add(data).draw();
+        let tr_current_ele = table.find('tbody tr').last();
+        OpportunityLoadPage.loadCompetitor(tr_current_ele.find('.box-select-competitor'), {}, OpportunityLoadPage.customerSelectEle.val());
+    }
+
+    static delRowTable(ele){
+        let table = ele.closest(`table`);
+        table.addClass('tag-change');
+        table.DataTable().row(ele.closest('tr').index()).remove().draw();
+        switch (table.attr('id')) {
+            case 'table-products':
+                this.getTotalPrice();
+                break;
+            case 'table-contact-role':
+                if (table.find(`.box-select-role option[value="0"]:selected`).length === 0) {
+                    let ele_decision_maker = $('#input-decision-maker');
+                    ele_decision_maker.val('');
+                    ele_decision_maker.attr('data-id', '');
+                    ele_decision_maker.addClass('tag-change');
+                }
+        }
     }
 
 }
@@ -477,7 +535,7 @@ function loadDtbProductDetailPageDetail(data) {
 
 function loadDtbCompetitorPageDetail(data) {
     if (!$.fn.DataTable.isDataTable('#table-competitors')) {
-        let dtb = $('#table-competitors');
+        let dtb = OpportunityLoadDetail.competitorTableEle;
         dtb.DataTableDefault({
             data: data,
             columns: [
@@ -668,6 +726,59 @@ function loadDtbProduct(data) {
     }
 }
 
+function loadDtbCompetitor(data) {
+    if (!$.fn.DataTable.isDataTable('#table-competitors')) {
+        let dtb = OpportunityLoadDetail.competitorTableEle;
+        dtb.DataTableDefault({
+            data: data,
+            columns: [
+                {
+                    className: 'wrap-text',
+                    render: () => {
+                        return `<select class="form-control box-select-competitor" data-method="GET" data-url="${OpportunityLoadPage.urlEle.data('url-competitor')}" data-keyResp="account_list" data-keyText="name"></select>`
+                    }
+                },
+                {
+                    data: 'strength',
+                    className: 'wrap-text',
+                    render: (data) => {
+                        return `<input class="form-control input-strength" type="text" value="{0}"/>`.format_by_idx(
+                            data
+                        )
+                    }
+                },
+                {
+                    data: 'weakness',
+                    className: 'wrap-text',
+                    render: (data) => {
+                        return `<input type="text" class="form-control input-weakness" value="{0}"/>`.format_by_idx(
+                            data
+                        )
+                    }
+                },
+                {
+                    data: 'win_deal',
+                    className: 'wrap-text text-center',
+                    render: (data) => {
+                        if (data) {
+                            return `<div class="form-check"><input checked type="checkbox" class="form-check-input"></div>`
+                        } else {
+                            return `<div class="form-check"><input type="checkbox" class="form-check-input input-win-deal"></div>`
+                        }
+                    }
+                },
+                {
+                    className: 'wrap-text',
+                    render: () => {
+                        return `<a class="btn btn-icon btn-del-item"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>
+`
+                    }
+                },
+            ],
+        });
+    }
+}
+
 
 function objectsMatch(objA, objB) {
     return objA.property === objB.property && objA.comparison_operator === objB.comparison_operator && objA.compare_data === objB.compare_data;
@@ -702,11 +813,12 @@ function autoLoadStage(
         })
     }
     let list_property_config = []
-    let ele_customer = $('#select-box-customer option:selected');
+    let ele_customer = $('#select-box-customer');
+    let obj_customer = SelectDDControl.get_data_from_idx(ele_customer, ele_customer.val());
     if (ele_customer.length > 0) {
         let compare_data = 0;
-        if (ele_customer.data('annual-revenue') !== null) {
-            compare_data = ele_customer.data('annual-revenue').toString();
+        if (obj_customer.annual_revenue !== null) {
+            compare_data = obj_customer.annual_revenue;
         }
         list_property_config.push({
             'property': 'Customer',

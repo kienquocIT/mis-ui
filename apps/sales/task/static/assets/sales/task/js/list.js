@@ -31,7 +31,7 @@ $(function () {
                 }
                 $('[data-drawer-target="#drawer_task_create"]').trigger('click')
                 // activeDrawer('#drawer_task_create', $('.btn-add-newtask', stt_template));
-                let createFormTask = setInterval(function(){
+                let createFormTask = setInterval(function () {
                     clearInterval(createFormTask)
                     const $sttElm = $('#selectStatus')
                     $sttElm.attr('data-onload', JSON.stringify(currentData))
@@ -48,15 +48,33 @@ $(function () {
             $('#sub-tasklist_wrap').append(cloneHTML)
         }
     }
-    
+
     function countSTT() {
-        $('#tasklist_wrap .tasklist').each(function(){
+        $('#tasklist_wrap .tasklist').each(function () {
             const item = $('.wrap-child .tasklist-card', $(this)).length
             $(this).find('.task-count').text(item)
         })
     }
+
+    function callDataTaskList(kanban, list){
+        $.fn.callAjax2({'url': $urlFact.attr('data-task-list'), 'method': 'GET'})
+            .then(
+                (req) => {
+                    let data = $.fn.switcherResp(req);
+                    if (data?.['status'] === 200) {
+                        const taskList = data.task_list
+                        kanban.init(taskList)
+                        list.init(list, taskList)
+                    }
+                },
+                (err) => {
+                    console.log('call data error, ', err)
+                }
+            );
+    }
+
     // task util class
-    class taskHandle {
+    class kanbanHandle {
         taskList = []
 
         set setTaskList(data) {
@@ -91,11 +109,10 @@ $(function () {
         renderLogWork(logWorkList) {
             // reset datatable
             let $table = $('#table_log-work')
-            if ($table.hasClass('dataTable')){
+            if ($table.hasClass('dataTable')) {
                 $table.DataTable().clear().draw();
                 $table.DataTable().rows.add(logWorkList).draw();
-            }
-            else $table.DataTableDefault({
+            } else $table.DataTableDefault({
                 searching: false,
                 ordering: false,
                 paginate: false,
@@ -203,33 +220,33 @@ $(function () {
             }
         }
 
-        showHideSubtask(newHTML=null){
+        showHideSubtask(newHTML = null) {
             let elm = $('.task-discuss')
             const _this = this
             if (newHTML) elm = newHTML.find('.task-discuss')
             elm.off().on('click', function () {
                 // toggle Sub task layout
-                if ($(this).hasClass('opened')){
+                if ($(this).hasClass('opened')) {
                     $(this).removeClass('opened')
                     $('#tab_block_1').removeClass('isOpened').css('min-height', 'auto')
                     // restore default
                     $('.tasklist-wrap .tasklist-card').removeClass('hidden')
-                }else {
+                } else {
                     const $tab1 = $('#tab_block_1'), $subTaskWrap = $('.sub-tasklist-wrap')
                     $(this).addClass('opened')
                     $tab1.addClass('isOpened')
                     let distanceBt = $(document).height() - $tab1.offset().top
-                    $tab1.css( 'min-height', `${distanceBt}px`)
+                    $tab1.css('min-height', `${distanceBt}px`)
                     $subTaskWrap.css('min-height',
                         `${distanceBt - $('.tasklist-wrap').outerHeight()}px`
-                        )
+                    )
                     const taskID = $(this).parents('.tasklist-card').find('.card-title').attr('data-task-id')
                     // show/hide parent-task and child-task
                     $('.tasklist-card').addClass('hidden')
                     $(this).parents('.tasklist-card').removeClass('hidden')
 
                     const taskList = _this.getTaskList
-                    for (let [key, item] of taskList.entries()){
+                    for (let [key, item] of taskList.entries()) {
                         if (item?.parent_n?.id === taskID)
                             $(`.sub-tasklist-wrap [data-task-id="${item.id}"]`).parents('.tasklist-card').removeClass(
                                 'hidden')
@@ -279,14 +296,14 @@ $(function () {
                             $('#inputLabel').attr('value', JSON.stringify(data.label))
                             $('#inputAssigner').val(data.employee_created.last_name + '. ' + data.employee_created.first_name)
                                 .attr('value', data.employee_created.id)
-                            if (data?.assign_to){
+                            if (data?.assign_to) {
                                 data.assign_to.full_name = `${data.assign_to.last_name}. ${data.assign_to.first_name}`
                                 $('#selectAssignTo').attr('data-onload', JSON.stringify(data.assign_to))
                             }
                             window.editor.setData(data.remark)
                             window.checklist.setDataList = data.checklist
                             window.checklist.render()
-                            $('#selectOpportunity, #selectAssignTo, #selectStatus').each(function(){
+                            $('#selectOpportunity, #selectAssignTo, #selectStatus').each(function () {
                                 $(this).html('')
                                 $(this).initSelect2()
                             })
@@ -378,19 +395,19 @@ $(function () {
                     const total = newData.checklist.length
                     childHTML.find('.checklist_progress').text(`${done}/${total}`)
                 }
-                if (newData.attach){
+                if (newData.attach) {
                     const fileDetail = newData.attach[0]?.['files']
                     FileUtils.init($(`[name="attach"]`, childHTML).siblings('button'), fileDetail);
                 }
 
-                if(newData.parent_n && Object.keys(newData?.parent_n).length)
+                if (newData.parent_n && Object.keys(newData?.parent_n).length)
                     childHTML.find('.task-discuss').remove()
 
                 if (isReturn) return childHTML
                 else {
                     const taskStatusID = taskStatus.id
                     const $thisCrt = this
-                    $(`[data-id="${taskStatusID}"]`).closest('.tasklist').find('.wrap-child').each(function(){
+                    $(`[data-id="${taskStatusID}"]`).closest('.tasklist').find('.wrap-child').each(function () {
                         let temp = childHTML.clone()
                         $(this).append(temp)
                         if ($(this).closest('#kb_scroll').length > 0) temp.removeClass('hidden')
@@ -412,57 +429,46 @@ $(function () {
         }
 
         // on page loaded render task list for task status
-        getAndRenderTask() {
-            $.fn.callAjax2({'url':$urlFact.attr('data-task-list'), 'method':'GET'})
-                .then(
-                    (req) => {
-                        let data = $.fn.switcherResp(req);
-                        let taskByID = {}
-                        if (data?.['status'] === 200) {
-                            const taskList = data.task_list
-                            this.setTaskList = taskList
-                            let count_parent = {}
-                            // loop trong ds gán cho template html gán vào object theo status ID
-                            for (const item of taskList) {
-                                if (item.parent_n && Object.keys(item.parent_n).length)
-                                    if (count_parent?.[item.parent_n.id]) count_parent[item.parent_n.id] += 1
-                                    else count_parent[item.parent_n.id] = 1
-                                const stt = item.task_status.id
-                                const getStrID = taskByID?.[stt]
-                                const newTask = this.addNewTask(item, true)
+        getAndRenderTask(data) {
+            let taskByID = {};
+            const taskList = data
+            this.setTaskList = taskList
+            let count_parent = {}
+            // loop trong ds gán cho template html gán vào object theo status ID
+            for (const item of taskList) {
+                if (item.parent_n && Object.keys(item.parent_n).length)
+                    if (count_parent?.[item.parent_n.id]) count_parent[item.parent_n.id] += 1
+                    else count_parent[item.parent_n.id] = 1
+                const stt = item.task_status.id
+                const getStrID = taskByID?.[stt]
+                const newTask = this.addNewTask(item, true)
 
-                                if (getStrID === undefined) {
-                                    // chưa có task status trong string html
-                                    taskByID[stt] = newTask.prop('outerHTML');
-                                } else {
-                                    // đã có str stt trong string html
-                                    taskByID[stt] += newTask.prop('outerHTML');
-                                }
-                            }
+                if (getStrID === undefined) {
+                    // chưa có task status trong string html
+                    taskByID[stt] = newTask.prop('outerHTML');
+                } else {
+                    // đã có str stt trong string html
+                    taskByID[stt] += newTask.prop('outerHTML');
+                }
+            }
 
-                            // loop trong danh sách status ID append HTMl cho task
-                            $.each(taskByID, (key, value) => {
-                                let stsElm = $(`[data-id="${key}"]`).closest('.tasklist')
-                                $('.wrap-child', stsElm).append(value)
-                                this.editTask()
-                                this.deleteTask()
-                                this.logTimeAct()
-                                this.showHideSubtask()
-                            })
-                            // run tooltip cho avatar
-                            $('[data-toggle="tooltip"]').tooltip({placement: 'right'});
+            // loop trong danh sách status ID append HTMl cho task
+            $.each(taskByID, (key, value) => {
+                let stsElm = $(`[data-id="${key}"]`).closest('.tasklist')
+                $('.wrap-child', stsElm).append(value)
+                this.editTask()
+                this.deleteTask()
+                this.logTimeAct()
+                this.showHideSubtask()
+            })
+            // run tooltip cho avatar
+            $('[data-toggle="tooltip"]').tooltip({placement: 'right'});
 
-                            // show các task nào có sub
-                            for (let item in count_parent) {
-                                $(`[data-task-id="${item}"]`).closest('.tasklist-card').find('.sub_task_count').text(
-                                    count_parent[item])
-                            }
-                        }
-                    },
-                    (err) => {
-                        console.log('call data error, ', err)
-                    }
-                );
+            // show các task nào có sub
+            for (let item in count_parent) {
+                $(`[data-task-id="${item}"]`).closest('.tasklist-card').find('.sub_task_count').text(
+                    count_parent[item])
+            }
         }
 
         // re-render new data for old task
@@ -545,7 +551,7 @@ $(function () {
                     // update data to task kanban after
                     if (sameSTT) this.afterUpdate(strData)
                     else {
-                        $(`[data-id="${old_stt}"]`).parents('.tasklist').each(function(){
+                        $(`[data-id="${old_stt}"]`).parents('.tasklist').each(function () {
                             $(this).find($(`[data-task-id="${strData.id}"]`)).parents('.tasklist-card').remove()
                         })
                         this.addNewTask(strData)
@@ -562,7 +568,7 @@ $(function () {
                 const taskID = $(this).closest('form').find('[name="id"]').val()
                 const $oppElm = $('#selectOpportunity')
                 let oppData = {}
-                if ($oppElm.val()){
+                if ($oppElm.val()) {
                     oppData = {
                         "id": $oppElm.select2('data')[0].id,
                         "title": $oppElm.select2('data')[0].text,
@@ -596,8 +602,8 @@ $(function () {
 
         }
 
-        init() {
-            this.getAndRenderTask();
+        init(data) {
+            this.getAndRenderTask(data);
             // Function to wait form create on submit
             $createBtn.off().on('click', () => this.waitDataCreated());
             this.createSubTask();
@@ -606,34 +612,33 @@ $(function () {
 
     // drag handle
     class dragHandle {
-        onDrop(el, target, source, isSub=false){
+        onDrop(el, target, source, isSub = false) {
             const dataSttUpdate = {
                 "id": $(el).find('.card-title').attr('data-task-id'),
                 "task_status": $(target).attr('id').split('taskID-')[1],
             }
             $.fn.callAjax2({
-                'url':$urlFact.attr('data-change-stt'),
+                'url': $urlFact.attr('data-change-stt'),
                 'method': 'PUT',
-                'data':dataSttUpdate
+                'data': dataSttUpdate
             })
                 .then(
                     (req) => {
                         const res = $.fn.switcherResp(req)
-                        if (res.status === 200){
+                        if (res.status === 200) {
                             const taskID = $('.card-title', el).attr('data-task-id')
-                            if (isSub){
+                            if (isSub) {
                                 const taskTargetID = $(target).attr('id').split('sub-')[1]
                                 const taskEl = $(`[data-task-id="${taskID}"]`, '#tasklist_wrap').closest('.tasklist-card')
                                 // nếu kéo task từ sub -> lấy task ẩn của task chính kéo sang cột tương ứng
                                 $(taskEl).appendTo($(`#${taskTargetID}`))
-                            }else{
+                            } else {
                                 const taskTargetID = $(target).attr('id')
                                 const taskEl = $(`[data-task-id="${taskID}"]`, '#sub-tasklist_wrap').closest('.tasklist-card')
                                 $(taskEl).appendTo($(`#sub-${taskTargetID}`))
                             }
                             countSTT()
-                        }
-                        else{
+                        } else {
                             drake.cancel(el)
                         }
                     },
@@ -673,33 +678,157 @@ $(function () {
     }
 
     class listViewTask {
-        set setConfig(data){
-            this.taskConfig = data
-        };
-
-        static initTaskConfig(){
-            const config = JSON.parse($('#task_config').text());
-            this.setConfig = config
-        }
-        static renderTable(){
-
-        }
-
-        static init(data){
-            this.setTaskList = data
-            this.renderTable()
-        }
 
         constructor() {
             this.taskConfig = '';
+            this.taskList = [];
+        }
+
+        set setConfig(data) {
+            this.taskConfig = data
+        };
+
+        set setTaskList(data) {
+            this.taskList = data
+        }
+
+        get getTaskList() {
+            return this.taskList
+        }
+
+        get getConfig(){
+            return this.taskConfig
+        }
+
+        init(cls, data) {
+            this.setTaskList = data
+            listViewTask.initTaskConfig(cls)
+            listViewTask.renderTable(cls)
+        }
+
+        static initTaskConfig(cls) {
+            cls.setConfig = JSON.parse($('#task_config').text());
+        }
+
+        static actionClickBtn(row, data, index){
+            // $('#table_task_list').DataTable().rows().data().toArray()
+            let tbl = $('#table_task_list')
+            if(data.edited) {
+                $('.cancel-task').trigger('click')
+                data.edited = false
+                tbl.DataTable().cell(index, 6).data(data.edited).draw(true)
+            }
+            else{
+                $('[data-drawer-target="#drawer_task_create"]').trigger('click')
+                data.edited = true
+                tbl.DataTable().cell(index, 6).data(data.edited).draw(true)
+            }
+            let $form = $('#formOpportunityTask')
+            $form.tit
+        }
+
+        static renderTable(cls) {
+            const dataList = cls.getTaskList
+            const $tblElm = $('#table_task_list')
+            $tblElm.DataTableDefault({
+                "data": dataList,
+                "columns": [
+                    {
+                        "data": 'title',
+                        "width": "20%",
+                        render: (row, type, data) => {
+                            return `<span class="mr-2">${row ? row : "_"}</span>` +
+                                '<span class="badge badge-primary badge-indicator-processing badge-indicator" style="margin-top: -1px;"></span>'
+                                + `<span class="ml-2 font-weight-bold">${data.code}</span>`
+                        }
+                    },
+                    {
+                        "data": 'priority',
+                        "width": '10%',
+                        render: (row, type, data) => {
+                            let $badge = $($('.priority-badges').html());
+                            $badge.find('.badge-icon-wrap').text(
+                                row === 0 ? '!' : row === 1 ? '!!' : '!!!'
+                            )
+                            $badge.addClass(`text-${priority_list[row]}`)
+                            return $badge.prop('outerHTML')
+                        }
+                    },
+                    {
+                        "data": "task_status",
+                        "width": "10%",
+                        render: (row, type, data)=> {
+                            const config = cls.getConfig
+                            let html = $('<span class="badge text-dark font-2">')
+                            for (let cf of config.list_status){
+                                if (cf.id === row.id){
+                                    html.css('background-color', cf.task_color).text(row.title)
+                                    break;
+                                }
+                            }
+                            return html.prop('outerHTML')
+                        }
+                    },
+                    {
+                        "data": "assign_to",
+                        "width": "15%",
+                        render: (row, type, data) => {
+                            let html = ''
+                            const assigner = $x.fn.renderAvatar(data.employee_created)
+                            let assignee = ''
+                            if (row) assignee = $x.fn.renderAvatar(row)
+                            html += assigner + '<supper>»</supper>' + assignee
+                            return html
+                        }
+                    },
+                    {
+                        "data": "date_created",
+                        "width": "10%",
+                        render: (row, type, data)=>{
+                            return `<span>${$x.fn.parseDate(row)}<span>`
+                        }
+                    },
+                    {
+                        "data": "opportunity",
+                        "width": "10%",
+                        render: (row, type, data) =>{
+                            let html = '--';
+                            if (row?.code) html = `<span>${row.code}</span>`
+                            return html
+                        }
+                    },
+                    {
+                        "width": "10%",
+                        "class": "text-center",
+                        render: (row, type, data) =>{
+                            const isEdit = data?.edited ? data.edited : false;
+                            let $btn = $('<button class="btn btn_task-list-action btn-icon btn-rounded bg-dark-hover" type="button">')
+                            $btn.html(`<span class="icon"><i class="fa-regular ${isEdit ? 'fa-eye' : 'fa-eye-slash'}"></i></span>`)
+                            return $btn.prop('outerHTML')
+                        }
+                    }
+                ],
+                rowCallback: (row, data, index)=>{
+                    $('.avatar', row).tooltip({placement: 'top'})
+                    $('.btn_task-list-action', row).off().on('click', function(){
+                        listViewTask.actionClickBtn(row, data, index)
+                    })
+                }
+            }).on('draw.dt', function () {
+                $tblElm.find('tbody').find('tr').each(function () {
+                    $(this).after('<tr class="table-row-gap"><td></td></tr>');
+                });
+            });
         }
     }
+
     /** ********************************************* **/
     // render column status của task
     getSttAndRender()
     // render task
-    let objTask = new taskHandle()
-    objTask.init();
+    const kanbanTask = new kanbanHandle()
+    const listTask = new listViewTask()
+    callDataTaskList(kanbanTask, listTask)
 
     // init dragula
     let objDrag = new dragHandle()

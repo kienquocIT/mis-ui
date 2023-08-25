@@ -2207,19 +2207,20 @@ class DTBControl {
                 let isVisible = colConfig?.['bVisible'] || false;
                 let idxCol = colConfig?.['idx'];
                 let randomStringData = $x.fn.randomStr(32);
-                keyVisible.push(`
-                    <li class="d-flex align-items-center justify-content-between mb-1">
-                        <div class="form-check">
-                            <input 
-                                type="checkbox" 
-                                class="form-check-input custom-visible-item-dtb" 
-                                id="${randomStringData}" ${isVisible ? 'checked' : ''}
-                                data-idx="${idxCol}"
-                            >
-                            <label class="form-check-label" for="${randomStringData}">${colSortSTitle}</label>
-                        </div>
-                    </li>
-                `)
+                if(colSortSTitle)
+                    keyVisible.push(`
+                        <li class="d-flex align-items-center justify-content-between mb-1">
+                            <div class="form-check">
+                                <input 
+                                    type="checkbox" 
+                                    class="form-check-input custom-visible-item-dtb" 
+                                    id="${randomStringData}" ${isVisible ? 'checked' : ''}
+                                    data-idx="${idxCol}"
+                                >
+                                <label class="form-check-label" for="${randomStringData}">${colSortSTitle}</label>
+                            </div>
+                        </li>
+                    `)
             }
         )
 

@@ -92,10 +92,14 @@ $(function () {
             POLoadDataHandle.loadModalPurchaseRequestProductTable();
         });
 
-        // Action on click btn add purchase request
+        // Action on click btn ADD PURCHASE REQUEST
         $('#btn-confirm-add-purchase-request').on('click', function () {
             POLoadDataHandle.loadDataShowPurchaseRequest();
-            POLoadDataHandle.loadDataShowPurchaseQuotation();
+            if (elePurchaseRequest[0].innerHTML) {
+                POLoadDataHandle.loadModalPurchaseQuotation();
+            } else {
+                POLoadDataHandle.loadModalPurchaseQuotation(true, true, null);
+            }
         });
 
         // Action on click btn remove purchase request
@@ -132,7 +136,7 @@ $(function () {
                 }
                 POLoadDataHandle.loadCheckProductsByCheckedQuotation(this);
             } else {
-                POLoadDataHandle.loadModalPurchaseRequestProductTable(false, true);
+                $('#btn-confirm-add-purchase-request').click();
             }
         });
 

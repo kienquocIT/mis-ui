@@ -233,6 +233,7 @@ class POLoadDataHandle {
         let tablePurchaseRequest = $('#datable-purchase-request');
         let tablePurchaseRequestProduct = $('#datable-purchase-request-product');
         let frm = new SetupFormSubmit(tablePurchaseRequestProduct);
+        let checked_pr_id_list = [];
         let checked_data = {};
         if (dataDetail) {
             for (let dataProduct of dataDetail?.['purchase_order_products_data']) {
@@ -249,6 +250,11 @@ class POLoadDataHandle {
                     'quantity_order': PRProduct?.['quantity_order'],
                 }
             }
+            if (POLoadDataHandle.PRDataEle.val()) {
+                for (let prId of JSON.parse(POLoadDataHandle.PRDataEle.val())) {
+                    checked_pr_id_list.push(prId);
+                }
+            }
         }
         if (!tablePurchaseRequestProduct[0].querySelector('.dataTables_empty') && is_clear_all === false) {
             for (let eleChecked of tablePurchaseRequestProduct[0].querySelectorAll('.table-row-checkbox:checked')) {
@@ -258,47 +264,46 @@ class POLoadDataHandle {
                 };
             }
         }
+        for (let eleChecked of tablePurchaseRequest[0].querySelectorAll('.table-row-checkbox:checked')) {
+            checked_pr_id_list.push(eleChecked.getAttribute('data-id'));
+        }
         tablePurchaseRequestProduct.DataTable().clear().draw();
-        let purchase_requests_data = POLoadDataHandle.PRDataEle;
-        if (purchase_requests_data.val()) {
-            let purchase_requests_data_parse = JSON.parse(purchase_requests_data.val());
-            if (purchase_requests_data_parse.length > 0) {
-                $.fn.callAjax2({
-                        'url': frm.dataUrl,
-                        'method': frm.dataMethod,
-                        'data': {'purchase_request_id__in': purchase_requests_data_parse.join(',')},
-                        'isDropdown': true,
-                    }
-                ).then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            if (data.hasOwnProperty('purchase_request_product_list') && Array.isArray(data.purchase_request_product_list)) {
-                                if (Object.keys(checked_data).length !== 0) {
-                                    for (let prProduct of data.purchase_request_product_list) {
-                                        if (checked_data.hasOwnProperty(prProduct.id)) {
-                                            prProduct['is_checked'] = true;
-                                            prProduct['quantity_order'] = checked_data[prProduct.id].quantity_order;
-                                        }
+        if (checked_pr_id_list.length > 0) {
+            $.fn.callAjax2({
+                    'url': frm.dataUrl,
+                    'method': frm.dataMethod,
+                    'data': {'purchase_request_id__in': checked_pr_id_list.join(',')},
+                    'isDropdown': true,
+                }
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('purchase_request_product_list') && Array.isArray(data.purchase_request_product_list)) {
+                            if (Object.keys(checked_data).length !== 0) {
+                                for (let prProduct of data.purchase_request_product_list) {
+                                    if (checked_data.hasOwnProperty(prProduct.id)) {
+                                        prProduct['is_checked'] = true;
+                                        prProduct['quantity_order'] = checked_data[prProduct.id].quantity_order;
                                     }
                                 }
-                                tablePurchaseRequestProduct.DataTable().rows.add(data.purchase_request_product_list).draw();
-                                if (dataDetail) {
-                                    POLoadDataHandle.loadPRProductNotInPO(dataDetail);
-                                }
-                                if (is_trigger === true) {
-                                    $('#btn-confirm-add-purchase-request').click();
-                                    POLoadDataHandle.loadDataShowPurchaseQuotation();
-                                }
+                            }
+                            tablePurchaseRequestProduct.DataTable().rows.add(data.purchase_request_product_list).draw();
+                            if (dataDetail) {
+                                POLoadDataHandle.loadPRProductNotInPO(dataDetail);
+                            }
+                            if (is_trigger === true) {
+                                $('#btn-confirm-add-purchase-request').click();
+                                POLoadDataHandle.loadDataShowPurchaseQuotation();
                             }
                         }
                     }
-                )
-            } else {
-                if (is_trigger === true) {
-                    $('#btn-confirm-add-purchase-request').click();
-                    POLoadDataHandle.loadDataShowPurchaseQuotation();
                 }
+            )
+        } else {
+            if (is_trigger === true) {
+                $('#btn-confirm-add-purchase-request').click();
+                POLoadDataHandle.loadDataShowPurchaseQuotation();
             }
         }
         return true;
@@ -425,6 +430,9 @@ class POLoadDataHandle {
                     tablePurchaseQuotation.DataTable().clear().destroy();
                     PODataTableHandle.dataTablePurchaseQuotation();
                 }
+                if (is_trigger === true) {
+                    $('#btn-confirm-add-purchase-quotation').click();
+                }
             }
         }
         return true;
@@ -474,6 +482,8 @@ class POLoadDataHandle {
             elePurchaseQuotation.append(eleAppend);
         } else {
             elePurchaseQuotation.empty();
+            POLoadDataHandle.supplierSelectEle.empty();
+            POLoadDataHandle.contactSelectEle.empty();
         }
         POLoadDataHandle.PQDataEle.val(JSON.stringify(purchase_quotations_data));
         if (elePurchaseQuotation[0].querySelectorAll('.checkbox-quotation')) {
@@ -505,7 +515,6 @@ class POLoadDataHandle {
     };
 
     static loadTableProductByPurchaseRequest() {
-        let self = this;
         let tablePurchaseOrderProductRequest = $('#datable-purchase-order-product-request');
         let tablePurchaseOrderProductAdd = $('#datable-purchase-order-product-add');
         let data = setupMergeProduct();
@@ -518,10 +527,26 @@ class POLoadDataHandle {
         if (data.length > 0) {
             tablePurchaseOrderProductRequest.DataTable().clear().draw();
             tablePurchaseOrderProductRequest.DataTable().rows.add(data).draw();
-            self.loadDataRowTable(tablePurchaseOrderProductRequest);
+            POLoadDataHandle.loadDataRowTable(tablePurchaseOrderProductRequest);
         } else {
             tablePurchaseOrderProductRequest.DataTable().clear().draw();
             tablePurchaseOrderProductRequest.DataTable().rows.add(data).draw();
+            // restart totals
+            let elePretaxAmount = document.getElementById('purchase-order-product-pretax-amount');
+            let eleTaxes = document.getElementById('purchase-order-product-taxes');
+            let eleTotal = document.getElementById('purchase-order-product-total');
+            let elePretaxAmountRaw = document.getElementById('purchase-order-product-pretax-amount-raw');
+            let eleTaxesRaw = document.getElementById('purchase-order-product-taxes-raw');
+            let eleTotalRaw = document.getElementById('purchase-order-product-total-raw');
+            let finalRevenueBeforeTax = document.getElementById('purchase-order-final-revenue-before-tax');
+            $(elePretaxAmount).attr('data-init-money', String(0));
+            elePretaxAmountRaw.value = 0;
+            finalRevenueBeforeTax.value = 0;
+            $(eleTaxes).attr('data-init-money', String(0));
+            eleTaxesRaw.value = 0;
+            $(eleTotal).attr('data-init-money', String(0));
+            eleTotalRaw.value = 0;
+            $.fn.initMaskMoney2();
         }
         return true;
     };
@@ -1001,18 +1026,21 @@ class PODataTableHandle {
                     targets: 1,
                     render: (data, type, row) => {
                         if ($('#frm_purchase_order_create').attr('data-method') !== 'GET') {
+                            if (POLoadDataHandle.PRDataEle.val()) {
+                                let PRIDList = JSON.parse(POLoadDataHandle.PRDataEle.val());
+                                if (PRIDList.includes(row.id)) {
+                                    return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}" checked></div>`;
+                                }
+                            }
                             return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}"></div>`;
                         } else {
                             if (POLoadDataHandle.PRDataEle.val()) {
                                 let PRIDList = JSON.parse(POLoadDataHandle.PRDataEle.val());
                                 if (PRIDList.includes(row.id)) {
                                     return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}" checked disabled></div>`;
-                                } else {
-                                    return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}" disabled></div>`;
                                 }
-                            } else {
-                                return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}" disabled></div>`;
                             }
+                            return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}" disabled></div>`;
                         }
                     }
                 },

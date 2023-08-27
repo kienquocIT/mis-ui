@@ -304,7 +304,7 @@
                             </div>
                             <div class="row mt-3">
                                 <div class="col-5 text-left">
-                                    <button class="btn btn-soft-primary w-50" id="add-contact-btn" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasExample" type="button">
+                                    <button class="btn btn-soft-primary w-50" id="add-contact-btn-detail" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasExample" type="button">
                                         <span>
                                             <span>{% trans 'Add Contact' %}</span>
                                             <span class="icon">
@@ -369,61 +369,52 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="p-1 bg-light bg-opacity-75">
-                                    <h5>Bank Account Information</h5>
+                                <div class="w-100 p-1 bg-light mt-3">
+                                    <h5>{% trans 'Bank Account Information' %}</h5>
                                 </div>
-                                <div class="row">
+                                <div class="row mt-3">
                                     <div class="form-group">
                                         <div class="row">
-                                            <div class="col-12 text-right">
-                                                <button data-bs-toggle="modal" id="bank-account-information-btn"
-                                                        data-bs-target="#modal-bank-account-information" type="button"
-                                                        style="background: none; border: none; color: #007D88"
-                                                        class="btn">
-                                                        <span id="edit-bank-account-information"
-                                                              data-bs-toggle="tooltip"
-                                                              data-bs-placement="bottom"
-                                                              data-bs-original-title="Add new Bank Account">
+                                            <div class="col-12 text-left">
+                                                <button id="bank-account-information-btn"
+                                                        class="btn btn-soft-primary w-30"
+                                                        type="button" data-bs-toggle="modal"
+                                                        data-bs-target="#modal-bank-account-information">
+                                                    <span id="edit-bank-account-information">
+                                                        <span>{% trans 'Add new bank account' %}</span>
+                                                        <span class="icon">
                                                             <i class="fas fa-plus-circle"></i>
-                                                            &nbsp;Add New Bank Account
                                                         </span>
+                                                    </span>
                                                 </button>
                                             </div>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-12">
-                                                <div class="row mt-3" id="list-bank-account-information"></div>
-                                            </div>
-                                        </div>
+                                        <div class="row mt-3" id="list-bank-account-information"></div>                                        </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="p-1 bg-light bg-opacity-75">
-                                    <h5>Credit Card Account Information</h5>
+                                <div class="w-100 p-1 bg-light">
+                                    <h5>{% trans 'Credit Card Account Information' %}</h5>
                                 </div>
-                                <div class="row">
+                                <div class="row mt-3">
                                     <div class="form-group">
                                         <div class="row">
-                                            <div class="col-12 text-right">
-                                                <button data-bs-toggle="modal" id="credit-card-information-btn"
-                                                        data-bs-target="#modal-credit-card-information" type="button"
-                                                        style="background: none; border: none; color: #007D88"
-                                                        class="btn">
-                                                        <span id="edit-credit-card-information" data-bs-toggle="tooltip"
-                                                              data-bs-placement="bottom"
-                                                              data-bs-original-title="Add new Credit Card">
+                                            <div class="col-12 text-left">
+                                                <button id="credit-card-information-btn"
+                                                        class="btn btn-soft-primary w-30"
+                                                        type="button" data-bs-toggle="modal"
+                                                        data-bs-target="#modal-credit-card-information">
+                                                    <span id="edit-bank-account-information">
+                                                        <span>{% trans 'Add New Credit Card' %}</span>
+                                                        <span class="icon">
                                                             <i class="fas fa-plus-circle"></i>
-                                                            &nbsp;Add New Credit Card
                                                         </span>
+                                                    </span>
                                                 </button>
                                             </div>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-12">
-                                                <div class="row mt-3" id="list-credit-card-information"></div>
-                                            </div>
-                                        </div>
+                                        <div class="row mt-3" id="list-credit-card-information"></div>
                                     </div>
                                 </div>
                             </div>
@@ -851,8 +842,8 @@
     <!-- End modal Add new Contact -->
 {% endblock %}
 {% block jsFooter %}
-    <script src="{% static "assets/js/masterdata/saledata/accounts/account_common.js" %}"></script>
-    <script src="{% static "assets/js/masterdata/saledata/accounts/account_update.js" %}"></script>
     <!-- Monthpicker JS -->
     <script src="{% static 'vendors/monthpicker/monthpicker.js' %}"></script>
+    <script src="{% static "assets/js/masterdata/saledata/accounts/account_common.js" %}"></script>
+    <script src="{% static "assets/js/masterdata/saledata/accounts/account_update.js" %}"></script>
 {% endblock %}

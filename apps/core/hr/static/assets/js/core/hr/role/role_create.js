@@ -5,8 +5,12 @@ $(document).ready(function () {
 
     RoleLoadPage.loadMembers();
 
-    $("#form-role").submit(function (event) {
-        event.preventDefault();
-        return new RoleForm({'form': $(this)}).combinesForm(true);
-    });
+    let frm = $("#form-role");
+    SetupFormSubmit.validate(
+        frm,
+        {
+            submitHandler: function (form) {
+                return new RoleForm({'form': $(form)}).combinesForm(true);
+            }
+        });
 });

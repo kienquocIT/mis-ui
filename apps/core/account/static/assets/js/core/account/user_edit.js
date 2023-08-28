@@ -8,21 +8,26 @@ lNameEle.on('input', function () {
 
 $(document).ready(function () {
     initUserPage();
-
-    $("#form-edit-user").submit(function (event) {
-        let url = window.location.pathname.replace('edit', 'detail');
-        event.preventDefault();
-        let csr = $("input[name=csrfmiddlewaretoken]").val();
-        let frm = new SetupFormSubmit($(this));
-        $.fn.callAjax(url + '/api', frm.dataMethod, frm.dataForm, csr)
-            .then((resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    $.fn.notifyB({description: "Đang cập nhật"}, 'success')
-                    setTimeout(location.reload.bind(location), 1000);
-                }
-            }, (errs) => {
-                // $.fn.notifyB({description: errs.data.errors}, 'failure')
-            })
-    });
+    const pk = $.fn.getPkDetail()
+    let frm = $("#form-edit-user");
+    SetupFormSubmit.validate(
+        frm,
+        {
+            submitHandler: function (form) {
+                let frm = new SetupFormSubmit($(form));
+                $.fn.callAjax2({
+                    url: frm.dataUrl.format_url_with_uuid(pk),
+                    method: frm.dataMethod,
+                    data: frm.dataForm
+                }).then((resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: $('#base-trans-factory').data('update')}, 'success')
+                        setTimeout(location.reload.bind(location), 1000);
+                    }
+                }, (errs) => {
+                    $.fn.notifyB({description: errs.data.errors}, 'failure')
+                })
+            }
+        });
 });

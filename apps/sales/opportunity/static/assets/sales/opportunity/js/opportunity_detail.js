@@ -1,5 +1,5 @@
 $(document).ready(async function () {
-    const pk = $.fn.getPkDetail()
+    const pk = $.fn.getPkDetail();
     const frmDetail = $('#frm-detail');
     // element
     const rangeInputEle = $('#rangeInput');
@@ -391,27 +391,30 @@ $(document).ready(async function () {
 
 
     // submit form edit
-    frmDetail.submit(function (event) {
-        event.preventDefault();
-        let frm = new SetupFormSubmit($(this));
-        frm.dataForm = OpportunityLoadDetail.getDataForm(frm.dataForm);
-        $.fn.callAjax2({
-            url: frm.dataUrl.format_url_with_uuid(pk),
-            method: frm.dataMethod,
-            data: frm.dataForm,
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
-                    $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
-                }
-            },
-            (errs) => {
-                $.fn.notifyB({description: errs.data.errors}, 'failure');
+    SetupFormSubmit.validate(
+        frmDetail,
+        {
+            submitHandler: function (form) {
+                let frm = new SetupFormSubmit($(form));
+                frm.dataForm = OpportunityLoadDetail.getDataForm(frm.dataForm);
+                $.fn.callAjax2({
+                    url: frm.dataUrl.format_url_with_uuid(pk),
+                    method: frm.dataMethod,
+                    data: frm.dataForm,
+                }).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
+                            $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
+                        }
+                    },
+                    (errs) => {
+                        $.fn.notifyB({description: errs.data.errors}, 'failure');
+                    }
+                )
             }
-        )
-    })
+        })
 
     $(document).on('click', '.btn-del-item', function () {
         OpportunityLoadDetail.delRowTable($(this));

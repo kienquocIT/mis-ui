@@ -120,6 +120,7 @@ class ContactList(View):
         template='masterdata/saledata/accounts/contact_list.html',
         breadcrumb='CONTACT_LIST_PAGE',
         menu_active='id_menu_contact',
+        perm_check=PermCheck(url=ApiURL.CONTACT_LIST, method='get'),
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -171,6 +172,7 @@ class ContactDetail(View):
         template='masterdata/saledata/accounts/contact_detail.html',
         breadcrumb='CONTACT_DETAIL_PAGE',
         menu_active='menu_contact_detail',
+        perm_check=PermCheck(url=ApiURL.CONTACT_LIST, method='get'),
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -372,6 +374,7 @@ class AccountList(View):
         template='masterdata/saledata/accounts/account_list.html',
         breadcrumb='ACCOUNT_LIST_PAGE',
         menu_active='id_menu_account',
+        perm_check=PermCheck(url=ApiURL.ACCOUNT_LIST, method='get'),
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -420,6 +423,7 @@ class AccountDetail(View):
         template='masterdata/saledata/accounts/account_detail.html',
         breadcrumb='ACCOUNT_DETAIL_PAGE',
         menu_active='menu_account_detail',
+        perm_check=PermCheck(url=ApiURL.ACCOUNT_DETAIL, method='get'),
     )
     def get(self, request, *args, **kwargs):
         input_mapping_properties = InputMappingProperties.SALE_DATA_ACCOUNT
@@ -436,6 +440,7 @@ class AccountUpdate(View):
         template='masterdata/saledata/accounts/account_update.html',
         breadcrumb='ACCOUNT_UPDATE_PAGE',
         menu_active='menu_account_update',
+        perm_check=PermCheck(url=ApiURL.ACCOUNT_DETAIL, method='put', fill_key=['pk']),
     )
     def get(self, request, *args, **kwargs):
         input_mapping_properties = InputMappingProperties.SALE_DATA_ACCOUNT

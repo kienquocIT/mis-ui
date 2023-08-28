@@ -15,41 +15,13 @@ $(document).ready(function () {
 
     let opp_stage_id;
     let opp_is_closed = false;
-    let employee_current_id = $('#emp-current-id').val();
 
-    let dict_product = {}
 
     let condition_is_quotation_confirm = false;
     let condition_sale_oder_approved = false;
     let condition_sale_oder_delivery_status = false;
 
-
-    // config input date
-    $('input[name="open_date"]').daterangepicker({
-        singleDatePicker: true,
-        timePicker: true,
-        showDropdowns: true,
-        drops: 'auto',
-        minYear: 2000,
-        locale: {
-            format: 'YYYY-MM-DD'
-        },
-        "cancelClass": "btn-secondary",
-        maxYear: parseInt(moment().format('YYYY-MM-DD'), 10) + 100
-    });
-    $('input[name="close_date"]').daterangepicker({
-        singleDatePicker: true,
-        timePicker: true,
-        showDropdowns: true,
-        drops: 'auto',
-        minYear: parseInt(moment().format('YYYY-MM-DD'), 10) - 1,
-        locale: {
-            format: 'YYYY-MM-DD'
-        },
-        "cancelClass": "btn-secondary",
-        maxYear: parseInt(moment().format('YYYY'), 10) + 100
-    });
-
+    OpportunityLoadDetail.configDateTimeEle()
 
     let paramString = {}
 
@@ -70,7 +42,7 @@ $(document).ready(function () {
                 }
                 $.fn.compareStatusShowPageAction(opportunity_detail);
                 opp_stage_id = opportunity_detail.stage;
-                opp_is_closed = opportunity_detail.is_close;
+                opp_is_closed = opportunity_detail?.['is_close'];
                 loadStage(opportunity_detail.stage, opportunity_detail.is_close_lost, opportunity_detail.is_deal_close);
                 let ele_header = $('#header-title');
                 ele_header.text(opportunity_detail.title);
@@ -101,6 +73,7 @@ $(document).ready(function () {
                     $('#check-lost-reason').prop('checked', true);
                 } else
                     $('#check-lost-reason').prop('checked', false);
+
                 $('#input-budget').attr('value', opportunity_detail.budget_value);
                 if (opportunity_detail?.['open_date'] !== null)
                     $('#input-open-date').val(opportunity_detail?.['open_date'].split(' ')[0]);
@@ -121,7 +94,6 @@ $(document).ready(function () {
                 OpportunityLoadPage.loadSalePersonPageDetail($('#select-box-sale-person'), opportunity_detail?.['sale_person']);
                 OpportunityLoadPage.loadEndCustomer($('#select-box-end-customer'), opportunity_detail.end_customer);
 
-                $('#input-budget').attr('value', opportunity_detail.budget_value);
                 if (opportunity_detail?.['open_date'] !== null)
                     $('#input-open-date').val(opportunity_detail?.['open_date'].split(' ')[0]);
                 if (opportunity_detail?.['close_date'] !== null)
@@ -152,9 +124,10 @@ $(document).ready(function () {
                 loadDtbContactRole([]);
                 let table_contact_role = OpportunityLoadDetail.contactRoleTableEle;
                 OpportunityLoadDetail.loadDetailTableContactRole(table_contact_role, opportunity_detail);
-
                 OpportunityLoadPage.loadFactor($('#box-select-factor'), opportunity_detail.customer_decision_factor);
 
+                // load sale team
+                loadSaleTeam(opportunity_detail.opportunity_sale_team_datas);
 
                 if ($.fn.hasOwnProperties(opportunity_detail, ['sale_order'])) {
                     if (opportunity_detail.sale_order.system_status === 0) {
@@ -602,31 +575,11 @@ $(document).ready(function () {
     // tab add member for sale
 
     $(document).on('click', '#btn-show-modal-add-member', function () {
-        let card_member = $('#card-member .card');
-        let table = $('#dtbMember');
-        table.find('tbody tr').removeClass('selected');
-        table.find('tbody tr .input-select-member').prop('checked', false);
-        card_member.map(function () {
-            table.find(`.input-select-member[data-id="${$(this).attr('data-id')}"]`).prop('checked', true);
-            table.find(`.input-select-member[data-id="${$(this).attr('data-id')}"]`).closest('tr').addClass('selected');
-        })
+        OpportunityLoadDetail.loadMemberForDtb().then();
     })
 
     $(document).on('click', '#btn-add-member', function () {
-        let ele_tr = $('#dtbMember').find('tr.selected');
-        let card_member = $('#card-member');
-        card_member.html('');
-        ele_tr.each(function () {
-            card_member.append($('.card-member-hidden').html());
-            let card = card_member.find('.card').last();
-            let member_id = $(this).find('.input-select-member').attr('data-id');
-            card.find('.btn-detail-member').attr('href', $('#url-member').val().format_url_with_uuid(member_id));
-            card.find('.card-title').text($(this).find('.span-emp-name').text());
-            card.find('.card-text').text($(this).find('.span-emp-email').text());
-            card.attr('data-id', member_id);
-        })
-        $('#modalAddMember').modal('hide');
-        card_member.addClass('tag-change');
+        OpportunityLoadDetail.addMember();
     })
 
     $(document).on('click', '#dtbMember .input-select-member', function () {
@@ -645,7 +598,7 @@ $(document).ready(function () {
 
     $(document).on('change', '.mask-money', function () {
         if ($(this).valCurrency() < 0) {
-            $.fn.notifyB({description: $('#limit-money').text()}, 'failure');
+            $.fn.notifyB({description: OpportunityLoadPage.transEle.data('trans-limit-money')}, 'failure');
             $(this).attr('value', 0);
             $.fn.initMaskMoney2();
         }

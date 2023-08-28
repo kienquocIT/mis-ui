@@ -51,8 +51,6 @@
     </div>
     <div id="text-notify" hidden>
         <span id="limit-rate">{% trans "rate must not be less than 0 or greater than 100" %}</span>
-
-        <span id="limit-money">{% trans "money must not be less than zero" %}</span>
         <span id="limit-close-date">{% trans "The closing date must not be later than the opening date" %}</span>
         <span id="not-select-stage">{% trans "Configuration does not allow selecting stage" %}</span>
         <span id="deal-close-lost">{% trans "Can not select stage because this opportunity is close lost" %}</span>
@@ -656,7 +654,7 @@
                     </div>
                     <div class="modal-body">
                         <div class="table-responsive">
-                            <table class="table nowrap w-lg-750p" id="dtbMember">
+                            <table class="table nowrap w-lg-750p" id="dtbMember" data-method="GET" data-url="{% url 'EmployeeListAPI' %}">
                                 <thead>
                                 <tr>
                                     <th></th>
@@ -1238,12 +1236,14 @@
            data-url-uom="{% url 'UnitOfMeasureListAPI' %}"
            data-url-competitor="{% url 'AccountListAPI' %}"
            data-url-contact="{% url 'ContactListAPI' %}"
+           data-url-emp-detail="{% url 'EmployeeDetail' pk=0 %}"
     >
     <input type="text" id="trans-factory"
            data-activity-type01="{% trans 'Call to customer' %}"
            data-activity-type02="{% trans 'Send email' %}"
            data-activity-type03="{% trans 'Meeting with customer' %}"
            data-trans-limit-quantity="{% trans 'quantity must not be less than zero' %}"
+           data-trans-limit-money="{% trans 'money must not be less than zero' %}"
     >
 {% endblock %}
 {% block jsFooter %}

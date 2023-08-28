@@ -16,32 +16,8 @@ $(document).ready(function () {
     let opp_is_closed = false;
 
     // config input date
-    $('input[name="open_date"]').daterangepicker({
-        singleDatePicker: true,
-        timePicker: true,
-        showDropdowns: true,
-        drops: 'auto',
-        minYear: 2000,
-        locale: {
-            format: 'YYYY-MM-DD'
-        },
-        "cancelClass": "btn-secondary",
-        maxYear: parseInt(moment().format('YYYY-MM-DD'), 10) + 100
-    });
-    $('input[name="close_date"]').daterangepicker({
-        singleDatePicker: true,
-        timePicker: true,
-        showDropdowns: true,
-        drops: 'auto',
-        minYear: parseInt(moment().format('YYYY-MM-DD'), 10) - 1,
-        locale: {
-            format: 'YYYY-MM-DD'
-        },
-        "cancelClass": "btn-secondary",
-        maxYear: parseInt(moment().format('YYYY'), 10) + 100
-    });
+    OpportunityLoadDetail.configDateTimeEle()
 
-    let paramString = {}
 
     function loadDetail() {
         let url = frmDetail.data('url').format_url_with_uuid(pk);
@@ -52,14 +28,7 @@ $(document).ready(function () {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 let opportunity_detail = data?.['opportunity'];
-
-                paramString = {
-                    'id': opportunity_detail.id,
-                    'code': opportunity_detail.code,
-                    'title': opportunity_detail.title,
-                }
                 $.fn.compareStatusShowPageAction(opportunity_detail);
-
                 opp_stage_id = opportunity_detail.stage;
                 opp_is_closed = opportunity_detail?.['is_close'];
                 loadStage(opportunity_detail.stage, opportunity_detail.is_close_lost, opportunity_detail.is_deal_close);
@@ -112,7 +81,7 @@ $(document).ready(function () {
                     table_contact_role.DataTable().row.add(item).draw();
                     loadDetailContactRole(item, table_contact_role, transEle)
                 })
-                loadSaleTeam(opportunity_detail.opportunity_sale_team_datas)
+                loadSaleTeam(opportunity_detail.opportunity_sale_team_datas);
 
                 OpportunityLoadPage.loadFactor($('#box-select-factor'), opportunity_detail.customer_decision_factor);
                 $.fn.initMaskMoney2();
@@ -121,7 +90,6 @@ $(document).ready(function () {
     }
 
     loadDetail();
-
 
     // Stage
 

@@ -280,8 +280,8 @@ class OpportunityLoadDetail {
         })
     }
 
-    static addRowContactRole(){
-        let table = this. contactRoleTableEle;
+    static addRowContactRole() {
+        let table = this.contactRoleTableEle;
         table.addClass('tag-change');
         let data = {
             'job_title': '',
@@ -304,7 +304,7 @@ class OpportunityLoadDetail {
         })
     }
 
-    static appendRole(value, ele){
+    static appendRole(value, ele) {
         let data = JSON.parse($('#data_role_customer').text());
         data.map(function (item) {
             if (value === item.value) {
@@ -331,6 +331,65 @@ class OpportunityLoadDetail {
                     ele_decision_maker.addClass('tag-change');
                 }
         }
+    }
+
+
+    static addMember() {
+        let ele_tr = $('#dtbMember').find('tr.selected');
+        let card_member = $('#card-member');
+        card_member.html('');
+        ele_tr.each(function () {
+            card_member.append($('.card-member-hidden').html());
+            let card = card_member.find('.card').last();
+            let member_id = $(this).find('.input-select-member').attr('data-id');
+            card.find('.btn-detail-member').attr('href', $('#url-member').val().format_url_with_uuid(member_id));
+            card.find('.card-title').text($(this).find('.span-emp-name').text());
+            card.find('.card-text').text($(this).find('.span-emp-email').text());
+            card.attr('data-id', member_id);
+        })
+        $('#modalAddMember').modal('hide');
+        card_member.addClass('tag-change');
+    }
+
+    static async loadMemberForDtb() {
+        await loadMemberSaleTeam();
+        let card_member = $('#card-member .card');
+        let table = $('#dtbMember');
+        await new Promise(resolve => setTimeout(resolve, 500));
+        table.find('tbody tr').removeClass('selected');
+        table.find('tbody tr .input-select-member').prop('checked', false);
+        card_member.map(function () {
+            table.find(`.input-select-member[data-id="${$(this).attr('data-id')}"]`).prop('checked', true);
+            table.find(`.input-select-member[data-id="${$(this).attr('data-id')}"]`).closest('tr').addClass('selected');
+        })
+    }
+
+    static configDateTimeEle() {
+        // config input date
+        $('input[name="open_date"]').daterangepicker({
+            singleDatePicker: true,
+            timePicker: true,
+            showDropdowns: true,
+            drops: 'auto',
+            minYear: 2000,
+            locale: {
+                format: 'YYYY-MM-DD'
+            },
+            "cancelClass": "btn-secondary",
+            maxYear: parseInt(moment().format('YYYY-MM-DD'), 10) + 100
+        });
+        $('input[name="close_date"]').daterangepicker({
+            singleDatePicker: true,
+            timePicker: true,
+            showDropdowns: true,
+            drops: 'auto',
+            minYear: parseInt(moment().format('YYYY-MM-DD'), 10) - 1,
+            locale: {
+                format: 'YYYY-MM-DD'
+            },
+            "cancelClass": "btn-secondary",
+            maxYear: parseInt(moment().format('YYYY'), 10) + 100
+        });
     }
 
 }
@@ -451,10 +510,12 @@ async function loadConfig() {
 
 // page detail
 
-function loadMemberSaleTeam(employee_list) {
+async function loadMemberSaleTeam() {
     if (!$.fn.DataTable.isDataTable('#dtbMember')) {
         let dtb = $('#dtbMember');
+        let frm = new SetupFormSubmit(dtb);
         dtb.DataTableDefault({
+            rowIdx: true,
             paging: false,
             scrollY: '200px',
             autoWidth: false,
@@ -478,7 +539,18 @@ function loadMemberSaleTeam(employee_list) {
                     "targets": 4
                 }
             ],
-            data: employee_list,
+            useDataServer: true,
+            ajax: {
+                url: frm.dataUrl,
+                type: frm.dataMethod,
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && resp.data.hasOwnProperty('employee_list')) {
+                        return resp.data['employee_list'] ? resp.data['employee_list'] : [];
+                    }
+                    throw Error('Call data raise errors.')
+                },
+            },
             columns: [
                 {
                     render: () => {
@@ -1182,7 +1254,7 @@ function autoLoadStage(
 
             }
             if (!$('#check-agency-role').is(':checked')) {
-                $('#select-box-end-customer').prop('disabled', true);
+                OpportunityLoadPage.endCustomerSelectEle.prop('disabled', true);
             }
         }
 

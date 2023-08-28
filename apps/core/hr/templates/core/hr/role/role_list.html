@@ -21,9 +21,9 @@
     <table
             id="datatable_role_list" class="table nowrap w-100 mb-5" data-url='{% url "RoleListAPI" %}'
             data-method="GET"
-            data-detail="{% url 'RoleDetail' pk="-pk-" %}"
-            data-detail-update="{% url 'RoleUpdateView' pk="-pk-" %}"
-            data-employee-detail="{% url 'EmployeeDetail' pk='-pk-' %}"
+            data-detail="{% url 'RoleDetail' pk=0 %}"
+            data-detail-update="{% url 'RoleUpdateView' pk=0 %}"
+            data-employee-detail="{% url 'EmployeeDetail' pk=0 %}"
     >
         <thead>
         <tr>
@@ -35,7 +35,7 @@
         </tr>
         </thead>
     </table>
-    <form id="form-delete" data-method="DELETE" data-url="{% url "RoleDetailAPI" pk="pk" %}">
+    <form id="form-delete" data-method="DELETE" data-url="{% url "RoleDetailAPI" pk=0 %}">
         {% csrf_token %}
     </form>
 {% endblock %}

@@ -1,5 +1,6 @@
 /*Blog Init*/
 $(function () {
+    let urlEle = $('#url-factory');
     let tb = $('#datatable_user_list');
     tb.DataTableDefault({
         rowIdx: true,
@@ -17,15 +18,13 @@ $(function () {
         },
         columns: [
             {
-                'render': (data, type, row, meta) => {
-                    // let currentId = "chk_sel_" + String(meta.row + 1)
-                    // return `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select" id="${currentId}" data-id=` + row.id + `><label class="form-check-label" for="${currentId}"></label></span>`;
+                'render': () => {
                     return ''
                 }
             }, {
                 'data': 'full_name',
-                'render': (data, type, row, meta) => {
-                    if (row.hasOwnProperty('full_name') && row.hasOwnProperty('first_name') && typeof row.full_name === 'string') {
+                'render': (data, type, row) => {
+                    if (row.hasOwnProperty('full_name') && row.hasOwnProperty('first_name') && typeof data === 'string') {
                         return `<div class="media align-items-center">
                                 <div class="media-head me-2">
                                     <div class="avatar avatar-xs avatar-success avatar-rounded">
@@ -33,8 +32,8 @@ $(function () {
                                     </div>
                                 </div>
                                 <div class="media-body">
-                                    <a href="/account/user/detail/` + row.id + `">
-                                        <span class="d-block">` + row.full_name + `</span>
+                                    <a href="${urlEle.data('url-user-detail').format_url_with_uuid(row.id)}">
+                                        <span class="d-block">${data}</span>
                                     </a>    
                                         
                                 </div>
@@ -44,15 +43,15 @@ $(function () {
                 }
             }, {
                 'data': 'username',
-                render: (data, type, row, meta) => {
-                    return `<span class="badge badge-soft-primary">` + row.username + `</span>`;
+                render: (data, type, row) => {
+                    return `<span class="badge badge-soft-primary">${data}</span>`;
                 }
             }, {
                 'className': 'action-center',
-                'render': (data, type, row, meta) => {
+                'render': (data, type, row) => {
                     let btn1 = `<button class="btn btn-icon btn-rounded bg-dark-hover btn-modal-change-passwd" data-bs-toggle="modal" data-bs-target="#modalChangePassword"><span class="icon" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Change password" ><i class="fas fa-key"></i></span></button>`;
-                    let btn2 = `<a class="btn btn-icon btn-rounded bg-dark-hover edit-button" href="user/edit/${row.id}" data-id="${row.id}"><span class="icon" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Edit" ><i class="fas fa-edit"></i></span></a>`;
-                    let btn3 = `<button class="btn btn-icon btn-rounded bg-dark-hover del-button" href="user/edit/${row.id}" data-id="${row.id}"><span class="icon" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Delete" ><i class="fas fa-user-times"></i></span></button>`;
+                    let btn2 = `<a class="btn btn-icon btn-rounded bg-dark-hover edit-button" href="${urlEle.data('url-user-detail').format_url_with_uuid(row.id)}" data-id="${row.id}"><span class="icon" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Edit" ><i class="fas fa-edit"></i></span></a>`;
+                    let btn3 = `<button class="btn btn-icon btn-rounded bg-dark-hover del-button" href="${urlEle.data('url-user-detail-api').format_url_with_uuid(row.id)}" data-id="${row.id}"><span class="icon" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Delete" ><i class="fas fa-user-times"></i></span></button>`;
                     return btn1 + btn2 + btn3;
                 }
             },
@@ -65,35 +64,6 @@ $(function () {
         $('#btnSaveNewPassword').attr('data-id', rowData?.['id']);
     });
 
-    $(document).on('click', '.check-select', function () {
-        if ($(this).is(":checked")) {
-            $(this).closest('tr').addClass('selected');
-        } else {
-            $(this).closest('tr').removeClass('selected');
-            $('.check-select-all').prop('checked', false);
-        }
-    });
-
-    $(document).on('click', '.check-select-all', function () {
-        $('.check-select').attr('checked', true);
-        let table = $('#datatable_user_list').DataTable();
-        let indexList = table.rows().indexes();
-        if ($(this).is(":checked")) {
-            for (let idx = 0; idx < indexList.length; idx++) {
-                let rowNode = table.rows(indexList[idx]).nodes()[0];
-                rowNode.classList.add('selected');
-                rowNode.firstElementChild.children[0].firstElementChild.checked = true;
-            }
-            $('.check-select').prop('checked', true);
-        } else {
-            for (let idx = 0; idx < indexList.length; idx++) {
-                let rowNode = table.rows(indexList[idx]).nodes()[0];
-                rowNode.classList.remove("selected");
-                rowNode.firstElementChild.children[0].firstElementChild.checked = false;
-            }
-            $('.check-select').prop('checked', false);
-        }
-    });
 
     $(document).on('click', '.btnShowHidePassword', function (event){
        $(this).toggleClass('fa-eye-slash').toggleClass('fa-eye');

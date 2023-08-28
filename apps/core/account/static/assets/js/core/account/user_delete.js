@@ -1,16 +1,19 @@
 $("tbody").on("click", ".del-button", function () {
-    if (confirm("Confirm Delete User?") === true) {
-        let csr = $("input[name=csrfmiddlewaretoken]").val();
+    if (confirm($('#trans-factory').data('trans-confirm-delete')) === true) {
         let user_id = $(this).attr('data-id');
         let data_url = $(this).attr('href');
-        user_data = {
+        let user_data = {
             'id': user_id
         }
-        $.fn.callAjax(data_url + '/api', "DELETE", user_data, csr).then((resp) => {
+        $.fn.callAjax({
+            url: data_url,
+            method: 'DELETE',
+            data: user_data
+        }).then((resp) => {
 
             let data = $.fn.switcherResp(resp);
             if (data) {
-                $.fn.notifyB({description: "Thành công"}, 'success')
+                $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
                 $.fn.redirectUrl(location.pathname, 1000);
             }
         }, (errs) => {

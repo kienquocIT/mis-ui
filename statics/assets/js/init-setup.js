@@ -2787,34 +2787,25 @@ class WindowControl {
         }
     }
 
-    static showLoading(timeout = null) {
-        setTimeout(
-            () => {
-                Swal.fire({
-                    icon: 'info',
-                    title: `${$.fn.transEle.attr('data-loading')}`,
-                    text: `${$.fn.transEle.attr('data-wait')}...`,
-                    allowOutsideClick: false,
-                    showConfirmButton: false,
-                    timerProgressBar: true,
-                    didOpen: () => {
-                        Swal.showLoading();
-                    }
-                });
+    static showLoading() {
+        Swal.fire({
+            icon: 'info',
+            title: `${$.fn.transEle.attr('data-loading')}`,
+            text: `${$.fn.transEle.attr('data-wait')}...`,
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            timerProgressBar: true,
+            didOpen: () => {
+                Swal.showLoading();
             },
-            Number.isInteger(timeout) ? timeout : 0
-        )
+            didDestroy: () => {
+                Swal.hideLoading();
+            },
+        });
     }
 
-    static hideLoading(timeout = null) {
-        console.log('call hide loading...');
-        setTimeout(
-            () => {
-                Swal.hideLoading();
-                swal.close();
-            },
-            Number.isInteger(timeout) ? timeout : 250,
-        )
+    static hideLoading() {
+        swal.close();
     }
 
     static showLoadingButton(ele$, opts) {
@@ -2863,7 +2854,7 @@ class WindowControl {
         });
     }
 
-    static showForbidden() {
+    static showForbidden(opts) {
         Swal.fire({
             title: globeMsgHttp403,
             icon: 'error',
@@ -2880,10 +2871,11 @@ class WindowControl {
             preDeny: function () {
                 window.location.href = '/';
             },
+            ...opts,
         })
     }
 
-    static showNotFound() {
+    static showNotFound(opts) {
         Swal.fire({
             title: globeMsgHttp404,
             icon: 'question',
@@ -2900,21 +2892,41 @@ class WindowControl {
             preDeny: function () {
                 window.location.href = '/';
             },
+            ...opts,
         })
     }
 
-    static showUnauthenticated() {
-        Swal.fire({
-            title: globeMsgAuthExpires,
-            icon: 'error',
-            allowOutsideClick: false,
-            confirmButtonColor: '#3085d6',
-            showConfirmButton: true,
-            confirmButtonText: globeLoginPage,
-            preConfirm: function (opts) {
-                return $x.fn.redirectLogin();
-            },
-        })
+    static showUnauthenticated(opts, isRedirect=true) {
+        if (isRedirect === true){
+            Swal.fire({
+                title: globeMsgAuthExpires,
+                icon: 'error',
+                allowOutsideClick: false,
+                confirmButtonColor: '#3085d6',
+                timer: 2000,
+                timerProgressBar: true,
+                showConfirmButton: true,
+                confirmButtonText: globeLoginPage,
+                ...opts
+            }).then((result) => {
+                if (result.dismiss === Swal.DismissReason.timer || result.isConfirmed || result.value) {
+                    return $x.fn.redirectLogin();
+                }
+            });
+        } else {
+            Swal.fire({
+                title: globeMsgAuthExpires,
+                icon: 'error',
+                allowOutsideClick: false,
+                confirmButtonColor: '#3085d6',
+                showConfirmButton: true,
+                confirmButtonText: globeLoginPage,
+                preConfirm: function (opts) {
+                    return $x.fn.redirectLogin();
+                },
+                ...opts,
+            });
+        }
     }
 
     static showSVErrors() {

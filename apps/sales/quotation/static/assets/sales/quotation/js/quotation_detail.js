@@ -6,7 +6,11 @@ $(function () {
         let eleDataDetail = $('#quotation-detail-data');
 
         // call ajax get info quotation detail
-        $.fn.callAjax($form.data('url'), 'GET').then(
+        $.fn.callAjax2({
+            url: $form.data('url'),
+            method: 'GET',
+            isLoading: true,
+        }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {

@@ -293,7 +293,9 @@ class POLoadDataHandle {
                                 POLoadDataHandle.loadPRProductNotInPO(dataDetail);
                             }
                             if (is_remove === true) {
-                                $('#btn-confirm-add-purchase-request').click();
+                                POLoadDataHandle.loadDataShowPurchaseRequest();
+                                POLoadDataHandle.loadTableProductByPurchaseRequest();
+                                POLoadDataHandle.loadModalPurchaseQuotation(true);
                             }
                         }
                     }
@@ -365,7 +367,7 @@ class POLoadDataHandle {
         return true;
     };
 
-    static loadModalPurchaseQuotation(is_clear_all = false, dataDetail = null) {
+    static loadModalPurchaseQuotation(is_remove = false, dataDetail = null) {
         let tablePurchaseQuotation = $('#datable-purchase-quotation');
         let checked_data = {};
         if (dataDetail) {
@@ -376,7 +378,7 @@ class POLoadDataHandle {
                 };
             }
         }
-        if (!tablePurchaseQuotation[0].querySelector('.dataTables_empty') && is_clear_all === false) {
+        if (!tablePurchaseQuotation[0].querySelector('.dataTables_empty')) {
             for (let eleChecked of tablePurchaseQuotation[0].querySelectorAll('.table-row-checkbox:checked')) {
                 checked_data[eleChecked.getAttribute('data-id')] = {
                     'id': eleChecked.getAttribute('data-id'),
@@ -410,17 +412,14 @@ class POLoadDataHandle {
                                 }
                                 tablePurchaseQuotation.DataTable().clear().draw();
                                 tablePurchaseQuotation.DataTable().rows.add(data.purchase_quotation_list).draw();
-                                // $('#btn-confirm-add-purchase-quotation').click();
+                                if (is_remove === true) {
+                                    POLoadDataHandle.loadDataShowPurchaseQuotation();
+                                    POLoadDataHandle.loadPriceListByPurchaseQuotation();
+                                }
                             }
                         }
                     }
                 )
-            } else {
-                if (is_clear_all === true) {
-                    tablePurchaseQuotation.DataTable().clear().destroy();
-                    PODataTableHandle.dataTablePurchaseQuotation();
-                }
-                // $('#btn-confirm-add-purchase-quotation').click();
             }
         }
         return true;
@@ -508,6 +507,16 @@ class POLoadDataHandle {
             }
         }
         POLoadDataHandle.loadModalPurchaseRequestProductTable(true);
+    };
+
+    static loadDataWhenRemovePQ(ele) {
+        let removeID = ele.getAttribute('data-id');
+        let table = $('#datable-purchase-quotation');
+        for (let eleChecked of table[0].querySelectorAll('.table-row-checkbox:checked')) {
+            if (eleChecked.getAttribute('data-id') === removeID) {
+                eleChecked.checked = false;
+            }
+        }
     }
 
     static loadTableProductByPurchaseRequest() {

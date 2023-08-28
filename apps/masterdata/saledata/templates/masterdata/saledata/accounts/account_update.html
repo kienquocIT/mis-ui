@@ -34,10 +34,16 @@
     </button>
 {% endblock %}
 {% block pageContent %}
-    <form data-method="PUT" id="form-detail-update-account" data-url="{% url "AccountDetailAPI" pk=0 %}">
+    <form data-method="PUT" id="form-detail-update-account"
+          data-url="{% url "AccountDetailAPI" pk=0 %}"
+          data-url-redirect="{% url "AccountDetail" pk=0 %}"
+    >
         <div class="row">
             <div class="col-3 scroll-div">
                 <div class="col-12 mb-20" style="padding-right: 6%">
+                    <div class="mb-3">
+                        <h5 class="text-primary">{% trans 'Account information' %}</h5>
+                    </div>
                     <div class="row">
                         <div class="form-group col-12">
                             <label class="label-field form-label required"
@@ -49,7 +55,7 @@
                         <div class="form-group col-12">
                             <label class="label-field form-label required"
                                    for="account-code-id">{% trans "Code" %}</label>
-                            <input type="text" class="form-control input-cannot-edit" id="inp-account-code" oninput="this.value=this.value.toUpperCase()">
+                            <input readonly type="text" class="form-control input-cannot-edit" id="inp-account-code" oninput="this.value=this.value.toUpperCase()">
                         </div>
                     </div>
                     <div class="row">
@@ -58,7 +64,7 @@
                             <input type="text" class="form-control" id="inp-account-website">
                         </div>
                     </div>
-                    <div class="row" id="account-type-div">
+                    <div class="row">
                         <div class="form-group col-12">
                             <label class="label-field form-label required">{% trans "Account Type" %}</label>
                             <select id="select-box-acc-type"
@@ -69,7 +75,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="row mb-2" id="account-type-customer-type-div-id">
+                    <div class="row">
                         <div class="form-group col-6 text-center">
                             <input class="form-check-input" type="radio" name="flexRadioDefault" id="inp-individual" checked>
                             <label for="inp-individual">{% trans "individual" %}</label>
@@ -88,7 +94,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="row mb-10">
+                    <div class="row">
                         <div class="form-group col-12">
                             <label class="label-field form-label required">{% trans "Industry" %}</label>
                             <select id="select-box-industry" class="form-select"
@@ -96,6 +102,10 @@
                                     data-url="{% url "IndustryListAPI" %}">
                             </select>
                         </div>
+                    </div>
+                    <div class="dropdown-divider mt-5 mb-5"></div>
+                    <div class="mb-3">
+                        <h5 class="text-primary">{% trans 'Account owner information' %}</h5>
                     </div>
                     <div class="row">
                         <div class="form-group col-12">
@@ -334,7 +344,7 @@
                                     <div class="form-group">
                                         <label class="label-field form-label"
                                                for="payment-terms-id">{% trans "Price List" %}</label>
-                                        <select id="price-list-id"
+                                        <select id="price-list"
                                                 class="form-select"
                                                 data-method="GET"
                                                 data-url="{% url "PriceListAPI" %}">
@@ -391,10 +401,9 @@
                                         </div>
                                         <div class="row mt-3" id="list-bank-account-information"></div>                                        </div>
                                     </div>
-                                </div>
                             </div>
                             <div class="row">
-                                <div class="w-100 p-1 bg-light">
+                                <div class="w-100 p-1 bg-light mt-3">
                                     <h5>{% trans 'Credit Card Account Information' %}</h5>
                                 </div>
                                 <div class="row mt-3">
@@ -405,7 +414,7 @@
                                                         class="btn btn-soft-primary w-30"
                                                         type="button" data-bs-toggle="modal"
                                                         data-bs-target="#modal-credit-card-information">
-                                                    <span id="edit-bank-account-information">
+                                                    <span id="edit-credit-card-information">
                                                         <span>{% trans 'Add New Credit Card' %}</span>
                                                         <span class="icon">
                                                             <i class="fas fa-plus-circle"></i>

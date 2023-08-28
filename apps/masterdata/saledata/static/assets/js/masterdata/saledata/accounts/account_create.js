@@ -1,7 +1,6 @@
 $(document).ready(function () {
     new AccountHandle().load();
 
-    // Form Create Account
     let frm = $('#form-create-account')
     frm.submit(function (event) {
         event.preventDefault();
@@ -33,49 +32,4 @@ $(document).ready(function () {
                 )
         }
     });
-
-    let frm_create_contact = $('#frm-create-new-contact');
-    frm_create_contact.submit(function (event) {
-        event.preventDefault();
-        let data = {
-            'owner': $('#select-box-contact-owner').val(),
-            'fullname': $('#inp-fullname').val(),
-            'job_title': $('#inp-jobtitle').val(),
-            'email': $('#inp-email-contact').val(),
-            'phone': $('#inp-phone').val(),
-            'mobile': $('#inp-mobile').val()
-        }
-        let combinesData = {
-            url: $(this).attr('data-url'),
-            method: $(this).attr('data-method'),
-            data: data,
-        }
-        WindowControl.showLoading();
-        $.fn.callAjax2(combinesData).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    $('#modal-add-new-contact').hide();
-                    $('#offcanvasRight').offcanvas('show');
-                    loadTableSelectContact();
-                    $.fn.notifyB({description: "Successfully"}, 'success')
-                    setTimeout(
-                        () => {
-                            WindowControl.hideLoading();
-                        },
-                        1000
-                    )
-                }
-            },
-            (errs) => {
-                setTimeout(
-                        () => {
-                            WindowControl.hideLoading();
-                        },
-                        1000
-                    )
-                console.log(errs)
-                $.fn.notifyB({description: errs.data.errors}, 'failure');
-            })
-    })
 });

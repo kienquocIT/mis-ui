@@ -491,12 +491,144 @@ function Disable(option) {
         $('.select2').prop('disabled', true);
         $('input').prop('disabled', true);
         $('.del-address-item').prop('hidden', true);
-        add_shipping_address_btn.addClass('disabled');
-        add_shipping_address_btn.prop('hidden', true);
-        add_billing_address_btn.addClass('disabled');
-        add_billing_address_btn.prop('hidden', true);
-        add_contact_btn.addClass('disabled');
-        add_contact_btn.prop('hidden', true);
+        add_shipping_address_btn.addClass('disabled').prop('hidden', true);
+        add_billing_address_btn.addClass('disabled').prop('hidden', true);
+        add_contact_btn_detail.addClass('disabled').prop('hidden', true);
+        addBankAccountEle.addClass('disabled').prop('hidden', true);
+        addCreditCardEle.addClass('disabled').prop('hidden', true);
+        $('.card-close').addClass('disabled').prop('hidden', true);
+    }
+}
+
+function load_shipping_address_mapped(data) {
+    let list_shipping_address = ``;
+    for (let i = 0; i < data.shipping_address.length; i++) {
+        let shipping_address = data.shipping_address[i];
+        if (shipping_address.is_default) {
+            list_shipping_address += `<div class="form-check ml-5 mb-2">
+                        <input class="form-check-input" type="radio" name="shippingaddressRadio" checked>
+                        <span><label>` + shipping_address.full_address + `</label></span>
+                        &nbsp;<span><a href="#" class="text-danger del-address-item"><i class="bi bi-trash"></i></a></span>
+                   </div>`;
+        } else {
+            list_shipping_address += `<div class="form-check ml-5 mb-2">
+                        <input class="form-check-input" type="radio" name="shippingaddressRadio">
+                        <span><label>` + shipping_address.full_address + `</label></span>
+                        &nbsp;<span><a href="#" class="text-danger del-address-item"><i class="bi bi-trash"></i></a></span>
+                   </div>`;
+        }
+    }
+    $('#list-shipping-address').html(list_shipping_address);
+}
+
+function load_billing_address_mapped(data) {
+    let list_billing_address = ``
+    for (let i = 0; i < data.billing_address.length; i++) {
+        let billing_address = data.billing_address[i];
+        if (billing_address.is_default) {
+            list_billing_address += `<div class="form-check ml-5 mb-2">
+                        <input class="form-check-input" type="radio" name="billingaddressRadio" checked>
+                        <span><label>` + billing_address.full_address + `</label></span>
+                        &nbsp;<span><a href="#" class="text-danger del-address-item"><i class="bi bi-trash"></i></a></span>
+                   </div>`;
+        } else {
+            list_billing_address += `<div class="form-check ml-5 mb-2">
+                        <input class="form-check-input" type="radio" name="billingaddressRadio">
+                        <span><label>` + billing_address.full_address + `</label></span>
+                        &nbsp;<span><a href="#" class="text-danger del-address-item"><i class="bi bi-trash"></i></a></span>
+                   </div>`;
+        }
+    }
+    $('#list-billing-address').html(list_billing_address)
+}
+
+function load_bank_accounts_mapped(data) {
+    for (let i = 0; i < data.length; i++) {
+        let bank_account = data[i];
+        let default_card_color = '';
+        let checked = '';
+        if (bank_account?.['is_default'] === true) {
+            default_card_color = 'border-primary';
+            checked = 'checked';
+        }
+        $('#list-bank-account-information').append(
+            `<div class="card ${default_card_color} close-over col-5 mr-5">
+                <div class="card-body">
+                    <button type="button" class="card-close btn-close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <div class="row">
+                        <div class="col-1">
+                            <div class="card-text">
+                                <input class="radio_select_default_bank_account" name="bank_account_default" type="radio" ${checked}>                 
+                            </div>
+                        </div>
+                        <div class="col-11">
+                            <div class="card-text">
+                                Bank account name: <span class="bank_account_name"><b>${bank_account?.['bank_account_name']}</b></span>
+                            </div>
+                            <div class="card-text">
+                                Bank name: <span class="bank_name"><b>${bank_account?.['bank_name']}</b></span>
+                            </div>
+                            <div class="card-text">
+                                Bank account number: <span class="bank_account_number"><b>${bank_account?.['bank_account_number']}</b></span>
+                            </div>
+                            <div class="card-text" hidden>
+                                Country ID: <span class="bank_country_id"><b>${bank_account?.['bank_country_id']}</b></span>
+                            </div>
+                            <div class="card-text" hidden>
+                                Bank code: <span class="bank_code"><b>${bank_account?.['bank_code']}</b></span>
+                            </div>
+                            <div class="card-text" hidden>
+                                BIC/SWIFT Code: <span class="bic_swift_code"><b>${bank_account?.['bic_swift_code']}</b></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`
+        )
+    }
+}
+
+function load_credit_cards_mapped(data) {
+    for (let i = 0; i < data.length; i++) {
+        let credit_card = data[i];
+        let default_card_color = '';
+        let checked = '';
+        if (credit_card?.['is_default'] === true) {
+            default_card_color = 'border-primary';
+            checked = 'checked';
+        }
+        $('#list-credit-card-information').append(
+            `<div class="card ${default_card_color} close-over col-5 mr-5">
+                <div class="card-body">
+                    <button type="button" class="card-close btn-close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <div class="row">
+                        <div class="col-1">
+                            <div class="card-text">
+                                <input class="radio_select_default_credit_card" name="credit_card_default" type="radio" ${checked}>
+                            </div>
+                        </div>
+                        <div class="col-11">
+                            <div class="card-text">
+                                Card Type: <span class="credit_card_type"><b>${credit_card?.['credit_card_type']}</b></span>
+                            </div>
+                            <div class="card-text">
+                                Card Number: <span class="credit_card_number"><b>${credit_card?.['credit_card_number']}</b></span>
+                            </div>
+                            <div class="card-text">
+                                Card Exp: <span class="credit_expired_date"><b>${credit_card?.['card_expired_date']}</b></span>
+                            </div>
+                            <div class="card-text">
+                                Card Name: <span class="credit_card_name"><b>${credit_card?.['credit_card_name']}</b></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`
+        )
     }
 }
 
@@ -534,119 +666,9 @@ function LoadDetail(option) {
                     $('#total_employees_label').addClass('required');
                 }
 
-                let list_shipping_address = ``;
-                for (let i = 0; i < data.shipping_address.length; i++) {
-                    let shipping_address = data.shipping_address[i];
-                    if (shipping_address.is_default) {
-                        list_shipping_address += `<div class="form-check ml-5 mb-2">
-                                    <input class="form-check-input" type="radio" name="shippingaddressRadio" checked>
-                                    <span><label>` + shipping_address.full_address + `</label></span>
-                                    &nbsp;<span><a href="#" class="text-danger del-address-item"><i class="bi bi-trash"></i></a></span>
-                               </div>`;
-                    } else {
-                        list_shipping_address += `<div class="form-check ml-5 mb-2">
-                                    <input class="form-check-input" type="radio" name="shippingaddressRadio">
-                                    <span><label>` + shipping_address.full_address + `</label></span>
-                                    &nbsp;<span><a href="#" class="text-danger del-address-item"><i class="bi bi-trash"></i></a></span>
-                               </div>`;
-                    }
-                }
-                $('#list-shipping-address').html(list_shipping_address);
+                load_shipping_address_mapped(data);
+                load_billing_address_mapped(data);
 
-                let list_billing_address = ``
-                for (let i = 0; i < data.billing_address.length; i++) {
-                    let billing_address = data.billing_address[i];
-                    if (billing_address.is_default) {
-                        list_billing_address += `<div class="form-check ml-5 mb-2">
-                                    <input class="form-check-input" type="radio" name="billingaddressRadio" checked>
-                                    <span><label>` + billing_address.full_address + `</label></span>
-                                    &nbsp;<span><a href="#" class="text-danger del-address-item"><i class="bi bi-trash"></i></a></span>
-                               </div>`;
-                    } else {
-                        list_billing_address += `<div class="form-check ml-5 mb-2">
-                                    <input class="form-check-input" type="radio" name="billingaddressRadio">
-                                    <span><label>` + billing_address.full_address + `</label></span>
-                                    &nbsp;<span><a href="#" class="text-danger del-address-item"><i class="bi bi-trash"></i></a></span>
-                               </div>`;
-                    }
-                }
-                $('#list-billing-address').html(list_billing_address)
-
-                let list_bank_accounts_html = ``
-                let bank_accounts_information = data?.['bank_accounts_information'];
-                for (let i = 0; i < data?.['bank_accounts_information'].length; i++) {
-                    let country_id = bank_accounts_information[i].country_id;
-                    let bank_name = bank_accounts_information[i].bank_name;
-                    let bank_code = bank_accounts_information[i].bank_code;
-                    let bank_account_name = bank_accounts_information[i].bank_account_name;
-                    let bank_account_number = bank_accounts_information[i].bank_account_number;
-                    let bic_swift_code = bank_accounts_information[i].bic_swift_code;
-                    let is_default = '';
-                    if (bank_accounts_information[i].is_default) {
-                        is_default = 'checked';
-                    }
-                    list_bank_accounts_html += `<div class="card card-bank-account col-8 ml-3">
-                                        <span class="mt-2">
-                                            <div class="row">
-                                                <div class="col-6">
-                                                    <a class="btn-del-bank-account" href="#"><i class="bi bi-x"></i></a>
-                                                </div>
-                                                <div class="col-6 text-right">
-                                                    <input class="form-check-input ratio-select-bank-account-default" type="radio" name="bank-account-select-default"` + is_default + `>
-                                                </div>
-                                            </div>
-                                        </span>
-                                        <label class="ml-3">Bank account name: <a class="bank-account-name-label" href="#"><b>` + bank_account_name + `</b></a></label>
-                                        <label class="ml-3">Bank name: <a class="bank-name-label" href="#"><b>` + bank_name + `</b></a></label>
-                                        <label class="ml-3 mb-3">Bank account number: <a class="bank-account-number-label" href="#"><b>` + bank_account_number + `</b></a></label>
-                                        <label hidden class="ml-3">Country ID: <a class="country-id-label" href="#"><b>` + country_id + `</b></a></label>
-                                        <label hidden class="ml-3">Bank code: <a class="bank-code-label" href="#"><b>` + bank_code + `</b></a></label>
-                                        <label hidden class="ml-3">BIC/SWIFT Code: <a class="bic-swift-code-label" href="#"><b>` + bic_swift_code + `</b></a></label>
-                                    </div>`
-                }
-                $('#list-bank-account-information').html(list_bank_accounts_html);
-
-                let list_credit_cards_html = ``
-                let credit_cards_information = data?.['credit_cards_information']
-                for (let i = 0; i < credit_cards_information.length; i++) {
-                    let credit_card_type = credit_cards_information[i]?.['credit_card_type'];
-                    let credit_card_number = credit_cards_information[i]?.['credit_card_number'];
-                    let credit_card_name = credit_cards_information[i]?.['credit_card_name'];
-                    let credit_card_exp_date = credit_cards_information[i]?.['expired_date'];
-                    let is_default = '';
-                    if (credit_cards_information[i].is_default) {
-                        is_default = 'checked';
-                    }
-                    list_credit_cards_html += `<div class="card card-credit-card col-8 ml-3">
-                                            <span class="mt-2">
-                                                <div class="row">
-                                                    <div class="col-6">
-                                                        <a class="btn-del-credit-card" href="#"><i class="bi bi-x"></i></a>
-                                                    </div>
-                                                    <div class="col-6 text-right">
-                                                        <input class="form-check-input credit-card-select-default" type="radio" name="credit-card-select-default"` + is_default + `>
-                                                    </div>
-                                                </div>
-                                            </span>
-                                            <label class="ml-3">Card Type: <a class="credit_card_type" href="#"><b>` + credit_card_type + `</b></a></label>
-                                            <label class="ml-3">Card Number: <a class="credit_card_number" href="#"><b>` + credit_card_number + `</b></a></label>
-                                            <label class="ml-3">Card Exp: <a class="expired_date" href="#"><b>` + credit_card_exp_date + `</b></a></label>
-                                            <label class="ml-3 mb-3">Card Name: <a class="credit_card_name" href="#"><b>` + credit_card_name + `</b></a></label>
-                                        </div>`
-                }
-                $('#list-credit-card-information').html(list_credit_cards_html);
-
-                // delete bank account item
-                $('.btn-del-bank-account').on('click', function () {
-                    $(this).closest('.card').remove()
-                })
-
-                // delete credit card item
-                $('.btn-del-credit-card').on('click', function () {
-                    $(this).closest('.card').remove()
-                })
-
-                // delete address item
                 $('.del-address-item').on('click', function () {
                     $(this).closest('.form-check').remove();
                 })
@@ -680,6 +702,7 @@ function LoadDetail(option) {
 
                 loadParentAccount(data.parent_account)
 
+                data_contact_mapped = data.contact_mapped;
                 loadTableSelectedContact(data.contact_mapped);
 
                 add_contact_btn_detail.on('click', function () {
@@ -694,6 +717,8 @@ function LoadDetail(option) {
                 $('#credit-limit-id-customer').attr('value', data?.['credit_limit_customer']);
                 $('#credit-limit-id-supplier').attr('value', data?.['credit_limit_supplier']);
                 loadCountries();
+                load_bank_accounts_mapped(data?.['bank_accounts_mapped']);
+                load_credit_cards_mapped(data?.['credit_cards_mapped']);
 
                 $.fn.initMaskMoney2();
 
@@ -956,6 +981,96 @@ $(document).on('click', '#check-select-all', function () {
     }
 });
 
+let currencyEle = $('#currency')
+let paymentTermCustomerEle = $('#payment-terms-id-customer')
+let creditLimitCustomerEle = $('#credit-limit-id-customer')
+let priceListCustomerEle = $('#price-list')
+let paymentTermSupplierEle = $('#payment-terms-id-supplier')
+let creditLimitSupplierEle = $('#credit-limit-id-supplier')
+let bankAccountCountryEle = $('#country-select-box-id')
+let creditCardExpDate= $("#credit-card-exp-date")
+let addBankAccountEle= $("#bank-account-information-btn")
+let addCreditCardEle= $("#credit-card-information-btn")
+
+function get_bank_accounts_information() {
+    let bank_accounts_information = [];
+    let list_bank_account = $('#list-bank-account-information').children();
+    for (let i = 0; i < list_bank_account.length; i++) {
+        let country_id = $(list_bank_account[i]).find('span.bank_country_id').text();
+        let bank_name = $(list_bank_account[i]).find('span.bank_name').text();
+        let bank_code = $(list_bank_account[i]).find('span.bank_code').text();
+        let bank_account_name = $(list_bank_account[i]).find('span.bank_account_name').text();
+        let bank_account_number = $(list_bank_account[i]).find('span.bank_account_number').text();
+        let bic_swift_code = $(list_bank_account[i]).find('span.bic_swift_code').text();
+        let is_default = $(list_bank_account[i]).find('input[type=radio]').is(':checked');
+
+        bank_accounts_information.push({
+            'country_id': country_id,
+            'bank_name': bank_name,
+            'bank_code': bank_code,
+            'bank_account_name': bank_account_name,
+            'bank_account_number': bank_account_number,
+            'bic_swift_code': bic_swift_code,
+            'is_default': is_default
+        })
+    }
+    return bank_accounts_information;
+}
+
+function get_credit_cards_information() {
+    let credit_cards_information = [];
+    let list_card = $('#list-credit-card-information').children();
+    for (let i = 0; i < list_card.length; i++) {
+        let credit_card_type = $(list_card[i]).find('span.credit_card_type').text();
+        let credit_card_number = $(list_card[i]).find('span.credit_card_number').text();
+        let credit_card_name = $(list_card[i]).find('span.credit_card_name').text();
+        let expired_date = $(list_card[i]).find('span.credit_expired_date').text();
+        let is_default = $(list_card[i]).find('input[type=radio]').is(':checked');
+
+        credit_cards_information.push({
+            'credit_card_type': credit_card_type,
+            'credit_card_number': credit_card_number,
+            'credit_card_name': credit_card_name,
+            'expired_date': expired_date,
+            'is_default': is_default
+        })
+    }
+    return credit_cards_information;
+}
+
+function get_contacts_mapped() {
+    let contact_mapped_list = [];
+    $('#datatable_contact_list tbody').find('.selected_contact_full_name').each(function () {
+        contact_mapped_list.push({
+            'id': $(this).attr('data-id'),
+            'owner': accountOwnerEle.val() === $(this).attr('data-id')
+        })
+    })
+    return contact_mapped_list;
+}
+
+function get_update_shipping_address() {
+    let update_shipping_address = [];
+    $('#list-shipping-address').find('label').each(function () {
+        update_shipping_address.push({
+            'full_address': $(this).text(),
+            'is_default': $(this).closest('.form-check').find('.form-check-input').is(':checked')
+        })
+    })
+    return update_shipping_address;
+}
+
+function get_update_billing_address() {
+    let update_billing_address = [];
+    $('#list-billing-address').find('label').each(function () {
+        update_billing_address.push({
+            'full_address': $(this).text(),
+            'is_default': $(this).closest('.form-check').find('.form-check-input').is(':checked')
+        })
+    })
+    return update_billing_address;
+}
+
 class AccountHandle {
     load() {
         loadAccountType();
@@ -969,7 +1084,7 @@ class AccountHandle {
         loadShippingWard();
         loadContactOwner();
     }
-    combinesData(frmEle) {
+    combinesData(frmEle, for_update=false) {
         let frm = new SetupFormSubmit($(frmEle));
 
         if (accountName.val()) {
@@ -1059,21 +1174,37 @@ class AccountHandle {
         frm.dataForm['billing_address_id_dict'] = billing_address_id_dict;
         frm.dataForm['contact_mapped'] = data_contact_mapped;
         frm.dataForm['system_status'] = 1; // save, not draft
+
+        let url_return = frm.dataUrl;
+        let urlRedirect_return = frm?.['urlRedirect'];
+
+        if (for_update === true) {
+
+            frm.dataForm['update_shipping_address'] = get_update_shipping_address();
+            frm.dataForm['update_billing_address'] = get_update_billing_address();
+            frm.dataForm['contact_mapped'] = get_contacts_mapped();
+            frm.dataForm['bank_accounts_information'] = get_bank_accounts_information();
+            frm.dataForm['credit_cards_information'] = get_credit_cards_information();
+            frm.dataForm['currency'] = currencyEle.val();
+            frm.dataForm['payment_term_customer_mapped'] = paymentTermCustomerEle.val();
+            frm.dataForm['price_list_mapped'] = priceListCustomerEle.val();
+            frm.dataForm['credit_limit_customer'] = creditLimitCustomerEle.attr('value');
+            frm.dataForm['payment_term_supplier_mapped'] = paymentTermSupplierEle.val();
+            frm.dataForm['credit_limit_supplier'] = creditLimitSupplierEle.attr('value');
+
+            let pk = $.fn.getPkDetail()
+            url_return = frm.dataUrl.format_url_with_uuid(pk);
+            urlRedirect_return = frm.dataUrlRedirect.format_url_with_uuid(pk);
+        }
+
         return {
-            url: frm.dataUrl,
+            url: url_return,
             method: frm.dataMethod,
             data: frm.dataForm,
-            urlRedirect: frm.dataUrlRedirect,
+            urlRedirect: urlRedirect_return,
         };
     }
 }
-
-let currencyEle = $('#currency')
-let paymentTermCustomerEle = $('#payment-terms-id-customer')
-let paymentTermSupplierEle = $('#payment-terms-id-supplier')
-let priceListCustomerEle = $('#price-list-id')
-let bankAccountCountryEle = $('#country-select-box-id')
-let creditCardExpDate= $("#credit-card-exp-date")
 
 function loadCurrency(currencyData) {
     currencyEle.initSelect2({
@@ -1242,9 +1373,74 @@ $(document).on('click', '#save-changes-modal-credit-card', function () {
     }
 })
 
-creditCardExpDate.datepicker({
-    format: "mm/yyyy",
-    startView: "months",
-    minViewMode: "months",
-});
+$(document).on('click', '#edit-bank-account-information', function () {
+    if ($('#list-bank-account-information input').length === 0) {
+        $('#make-default-bank-account').prop('checked', true).prop('disabled', true);
+    } else {
+        $('#make-default-bank-account').prop('checked', false).prop('disabled', false);
+    }
+})
 
+$(document).on('click', '#edit-credit-card-information', function () {
+    if ($('#list-credit-card-information input').length === 0) {
+        $('#make-default-credit-card').prop('checked', true).prop('disabled', true);
+    } else {
+        $('#make-default-credit-card').prop('checked', false).prop('disabled', false);
+    }
+})
+
+$(document).on('change', '.radio_select_default_bank_account', function () {
+    $('#list-bank-account-information').find('.border-primary').removeClass('border-primary')
+    $(this).closest('.card').addClass('border-primary');
+})
+
+$(document).on('change', '.radio_select_default_credit_card', function () {
+    $('#list-credit-card-information').find('.border-primary').removeClass('border-primary')
+    $(this).closest('.card').addClass('border-primary');
+})
+
+let frm_create_contact = $('#frm-create-new-contact');
+
+frm_create_contact.submit(function (event) {
+    event.preventDefault();
+    let data = {
+        'owner': $('#select-box-contact-owner').val(),
+        'fullname': $('#inp-fullname').val(),
+        'job_title': $('#inp-jobtitle').val(),
+        'email': $('#inp-email-contact').val(),
+        'phone': $('#inp-phone').val(),
+        'mobile': $('#inp-mobile').val()
+    }
+    let combinesData = {
+        url: $(this).attr('data-url'),
+        method: $(this).attr('data-method'),
+        data: data,
+    }
+    WindowControl.showLoading();
+    $.fn.callAjax2(combinesData).then(
+        (resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                $('#modal-add-new-contact').hide();
+                $('#offcanvasRight').offcanvas('show');
+                loadTableSelectContact();
+                $.fn.notifyB({description: "Successfully"}, 'success')
+                setTimeout(
+                    () => {
+                        WindowControl.hideLoading();
+                    },
+                    1000
+                )
+            }
+        },
+        (errs) => {
+            setTimeout(
+                    () => {
+                        WindowControl.hideLoading();
+                    },
+                    1000
+                )
+            console.log(errs)
+            $.fn.notifyB({description: errs.data.errors}, 'failure');
+        })
+})

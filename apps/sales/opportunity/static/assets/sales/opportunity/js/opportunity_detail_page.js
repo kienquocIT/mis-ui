@@ -33,10 +33,10 @@ $(document).ready(function () {
                     $('#check-lost-reason').prop('checked', false);
 
 
-                OpportunityLoadDropdown.loadCustomer($('#select-box-customer'), opportunity_detail.customer);
-                OpportunityLoadDropdown.loadProductCategory($('#select-box-product-category'), opportunity_detail.product_category);
-                OpportunityLoadDropdown.loadSalePersonPageDetail($('#select-box-sale-person'), opportunity_detail?.['sale_person']);
-                OpportunityLoadDropdown.loadEndCustomer($('#select-box-end-customer'), opportunity_detail.end_customer);
+                OpportunityLoadDropdown.loadCustomer(opportunity_detail.customer);
+                OpportunityLoadDropdown.loadProductCategory(opportunity_detail.product_category);
+                OpportunityLoadDropdown.loadSalePersonPageDetail(opportunity_detail?.['sale_person']);
+                OpportunityLoadDropdown.loadEndCustomer(opportunity_detail.end_customer);
 
                 $('#input-budget').attr('value', opportunity_detail.budget_value);
 

@@ -86,11 +86,11 @@ $(document).ready(async function () {
                     ele_decision_maker.attr('data-id', opportunity_detail.decision_maker.id);
                 }
 
-                OpportunityLoadDropdown.loadCustomer($('#select-box-customer'), opportunity_detail.customer, config_is_AM_create, opportunity_detail?.['sale_person'].id);
-                OpportunityLoadDropdown.loadProductCategory($('#select-box-product-category'), opportunity_detail.product_category);
+                OpportunityLoadDropdown.loadCustomer(opportunity_detail.customer, config_is_AM_create, opportunity_detail?.['sale_person'].id);
+                OpportunityLoadDropdown.loadProductCategory(opportunity_detail.product_category);
 
-                OpportunityLoadDropdown.loadSalePersonPageDetail($('#select-box-sale-person'), opportunity_detail?.['sale_person']);
-                OpportunityLoadDropdown.loadEndCustomer($('#select-box-end-customer'), opportunity_detail.end_customer);
+                OpportunityLoadDropdown.loadSalePersonPageDetail(opportunity_detail?.['sale_person']);
+                OpportunityLoadDropdown.loadEndCustomer(opportunity_detail.end_customer, opportunity_detail.customer.id);
 
                 // load table product
                 loadDtbProduct([]);
@@ -145,32 +145,16 @@ $(document).ready(async function () {
         OpportunityLoadDetail.addRowInputProduct()
     })
 
-    // ele_select_product_category.on('select2:unselect', function (e) {
-    //     let removedOption = e.params.data;
-    //     let list_product = JSON.parse($('#data-product').val());
-    //     $(`.box-select-product-category option[value="${removedOption.id}"]:selected`).closest('tr').remove();
-    //     $('#table-product').addClass('tag-change');
-    //     $(`.box-select-product-category option[value="${removedOption.id}"]`).remove();
-    //
-    //     let list_product_remove = list_product.filter(function (item) {
-    //         return item.general_information.product_category.id === removedOption.id;
-    //     })
-    //     list_product_remove.map(function (item) {
-    //         $(`.select-box-product option[value="${item.id}"]`).remove();
-    //     })
-    // });
-    //
-    // ele_select_product_category.on('select2:select', function (e) {
-    //     let addOption = e.params.data;
-    //     let list_product = JSON.parse($('#data-product').val());
-    //     $(`.box-select-product-category`).append(`<option value="${addOption.id}">${addOption.text}</option>`)
-    //     let list_product_add = list_product.filter(function (item) {
-    //         return item.general_information.product_category.id === addOption.id;
-    //     })
-    //     list_product_add.map(function (item) {
-    //         $('.select-box-product').append(`<option value="${item.id}">${item.title}</option>`)
-    //     })
-    // });
+    OpportunityLoadDropdown.productCategorySelectEle.on('select2:unselect', function (e) {
+        let removedOption = e.params.data;
+        let table = $('#table-products');
+        $(`.box-select-product-category option[value="${removedOption.id}"]:selected`).closest('tr').each(function () {
+            table.DataTable().row($(this).index()).remove().draw();
+        })
+        table.addClass('tag-change');
+        $(`.box-select-product-category option[value="${removedOption.id}"]`).remove();
+        OpportunityLoadDetail.getTotalPrice();
+    });
 
     $(document).on('change', '.select-box-product', function () {
         let ele_tr = $(this).closest('tr');
@@ -191,7 +175,6 @@ $(document).ready(async function () {
         )
     })
 
-
     $(document).on('change', '.input-unit-price', function () {
         let price = $(this).valCurrency();
         let ele_parent = $(this).closest('tr');
@@ -204,7 +187,7 @@ $(document).ready(async function () {
     $(document).on('change', '.input-quantity', function () {
         let quantity = $(this).val();
         if (quantity < 0) {
-            $.fn.notifyB({description: OpportunityLoadDropdown.transEle.data('trans-limit-quantity')}, 'failure');
+            $.fn.notifyB({description: transEle.data('trans-limit-quantity')}, 'failure');
             $(this).val(0);
             quantity = 0;
         }
@@ -234,11 +217,7 @@ $(document).ready(async function () {
         if ($(this).is(':checked')) {
             if (checkOppWonOrDelivery()) {
                 $(this).prop('checked', false);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Opp has been Win Deal',
-                })
+                OpportunityLoadDetail.renderAlert(transEle.data('trans-opp-win-deal'));
             } else {
                 $('.input-win-deal').not(this).prop('checked', false);
                 $('.stage-lost').addClass('bg-red-light-5 stage-selected');
@@ -256,43 +235,21 @@ $(document).ready(async function () {
     })
 
     $(document).on('change', '#select-box-end-customer', function () {
-        let contact_data = JSON.parse($('#input-data-contact').val());
         let table = $('#table-contact-role');
-        if (table.find('tbody tr.col-table-empty').length === 0) {
+        table.addClass('tag-change');
+
+        table.find('.box-select-type-customer option[value="1"]:selected').closest('tr').each(function () {
             table.addClass('tag-change');
-        }
-        let account_id = $(this).val();
-
-        table.find('.box-select-type-customer option[value="1"]:selected').closest('tr').remove();
-        let contact_of_end_customer = contact_data.filter(function (item) {
-            return item.account_name.id === account_id;
-        })
-
-        let select_box_contact = table.find('.box-select-contact');
-        select_box_contact.find(`option[data-type-customer="1"]`).attr('data-type-customer', '-1');
-        contact_of_end_customer.map(function (item) {
-            select_box_contact.find(`option[value="${item.id}"]`).attr('data-type-customer', '1')
-        })
+            table.DataTable().row($(this).index()).remove().draw();
+        });
     })
 
     $(document).on('change', '#select-box-customer', function () {
-        let contact_data = JSON.parse($('#input-data-contact').val());
         let table = $('#table-contact-role');
-        if (table.find('tbody tr.col-table-empty').length === 0) {
+        table.find('.box-select-type-customer option[value="0"]:selected').closest('tr').each(function () {
             table.addClass('tag-change');
-        }
-        let account_id = $(this).val();
-
-        table.find('.box-select-type-customer option[value="0"]:selected').closest('tr').remove();
-        let contact_of_customer = contact_data.filter(function (item) {
-            return item.account_name.id === account_id;
-        })
-
-        let select_box_contact = table.find('.box-select-contact');
-        select_box_contact.find(`option[data-type-customer="0"]`).attr('data-type-customer', '-1');
-        contact_of_customer.map(function (item) {
-            select_box_contact.find(`option[value="${item.id}"]`).attr('data-type-customer', '0')
-        })
+            table.DataTable().row($(this).index()).remove().draw();
+        });
     })
 
     $(document).on('change', '.box-select-type-customer', function () {
@@ -316,31 +273,9 @@ $(document).ready(async function () {
         }
     })
 
-    $(document).on('click', '.box-select-role', function () {
-        if ($('.box-select-role').find('option[value="0"]:selected').length === 1) {
-            if ($(this).find('option[value="0"]:selected').length === 0)
-                $(this).find('option[value="0"]').attr('disabled', 'disabled');
-        } else {
-            $(this).find('option[value="0"]').removeAttr('disabled');
-        }
-    })
-
     $(document).on('change', '.box-select-role', function () {
-        let ele_decision_maker = $('#input-decision-maker');
-        if ($(this).val() === '0') {
-            let ele_contact = $(this).closest('tr').find('.box-select-contact option:selected');
-            ele_decision_maker.val(ele_contact.text());
-            ele_decision_maker.attr('data-id', ele_contact.val());
-            ele_decision_maker.addClass('tag-change');
-        } else {
-            if ($('.box-select-role option[value="0"]:selected').length === 0) {
-                ele_decision_maker.val('');
-                ele_decision_maker.attr('data-id', '');
-                ele_decision_maker.addClass('tag-change');
-            }
-        }
+        OpportunityLoadDetail.onChangeContactRole($(this));
     })
-
 
     // event general
     $(document).on('change', 'select, input', function () {
@@ -446,7 +381,7 @@ $(document).ready(async function () {
 
     $(document).on('change', '.mask-money', function () {
         if ($(this).valCurrency() < 0) {
-            $.fn.notifyB({description: OpportunityLoadDropdown.transEle.data('trans-limit-money')}, 'failure');
+            $.fn.notifyB({description: transEle.data('trans-limit-money')}, 'failure');
             $(this).attr('value', 0);
             $.fn.initMaskMoney2();
         }
@@ -469,18 +404,10 @@ $(document).ready(async function () {
     $(document).on('click', '.btn-go-to-stage', function () {
         if (config_is_select_stage) {
             if ($('#input-close-deal').is(':checked')) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: $('#deal-closed').text(),
-                })
+                OpportunityLoadDetail.renderAlert($('#deal-closed').text());
             } else {
                 if ($('#check-lost-reason').is(':checked') || $('.input-win-deal:checked').length > 0) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: $('#deal-close-lost').text(),
-                    })
+                    OpportunityLoadDetail.renderAlert($('#deal-close-lost').text());
                 } else {
                     let stage = $(this).closest('.sub-stage');
                     let index = stage.index();
@@ -498,11 +425,7 @@ $(document).ready(async function () {
                 }
             }
         } else {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: $('#not-select-stage').text(),
-            })
+            OpportunityLoadDetail.renderAlert($('#not-select-stage').text());
         }
     })
 
@@ -523,11 +446,7 @@ $(document).ready(async function () {
         } else {
             if (checkOppWonOrDelivery()) {
                 $(this).prop('checked', false);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Opp has been Win Deal',
-                })
+                OpportunityLoadDetail.renderAlert(transEle.data('trans-opp-win-deal'));
             } else {
                 $('.input-win-deal').not(this).prop('checked', false);
                 ele_stage_lost.addClass('bg-red-light-5 stage-selected');
@@ -581,6 +500,7 @@ $(document).ready(async function () {
 
     // toggle action and activity
     toggleShowActivity()
+
 
     // for call log
 

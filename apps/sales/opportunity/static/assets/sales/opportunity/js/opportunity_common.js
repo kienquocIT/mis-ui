@@ -1,13 +1,13 @@
-class OpportunityLoadDropdown {
-    static transEle = $('#trans-factory');
-    static urlEle = $('#url-factory');
+let [urlEle, transEle] = [$("#url-factory"), $("#trans-factory")];
 
+class OpportunityLoadDropdown {
     static productCategorySelectEle = $('#select-box-product-category');
     static customerSelectEle = $('#select-box-customer');
     static endCustomerSelectEle = $('#select-box-end-customer');
+    static salePersonSelectEle = $('#select-box-sale-person');
 
-    static loadCustomer(ele, data, config, emp_current) {
-        ele.initSelect2({
+    static loadCustomer(data, config, emp_current) {
+        this.customerSelectEle.initSelect2({
             data: data,
             callbackDataResp(resp, keyResp) {
                 if (config) {
@@ -26,14 +26,14 @@ class OpportunityLoadDropdown {
         })
     }
 
-    static loadProductCategory(ele, data) {
-        ele.initSelect2({
+    static loadProductCategory(data) {
+        this.productCategorySelectEle.initSelect2({
             data: data,
         })
     }
 
-    static loadSalePerson(ele, data, config, emp_current_id, list_account_manager) {
-        ele.initSelect2({
+    static loadSalePerson(data, config, emp_current_id, list_account_manager) {
+        this.salePersonSelectEle.initSelect2({
             data: data,
             callbackDataResp(resp, keyResp) {
                 let list_result = []
@@ -57,15 +57,24 @@ class OpportunityLoadDropdown {
         })
     }
 
-    static loadSalePersonPageDetail(ele, data) {
-        ele.initSelect2({
+    static loadSalePersonPageDetail(data) {
+        this.salePersonSelectEle.initSelect2({
             data: data,
         })
     }
 
-    static loadEndCustomer(ele, data) {
-        ele.initSelect2({
+    static loadEndCustomer(data, customer) {
+        this.endCustomerSelectEle.initSelect2({
             data: data,
+            callbackDataResp(resp, keyResp) {
+                let list_result = []
+                resp.data[keyResp].map(function (item) {
+                    if (customer !== item.id) {
+                        list_result.push(item)
+                    }
+                })
+                return list_result
+            }
         })
     }
 
@@ -172,7 +181,6 @@ class OpportunityLoadDropdown {
             urlRedirect: frm.dataUrlRedirect,
         };
     }
-
 
 }
 
@@ -291,6 +299,7 @@ class OpportunityLoadDetail {
         OpportunityLoadDropdown.loadContact(tr_current_ele.find('.box-select-contact'), {}, OpportunityLoadDropdown.customerSelectEle.val());
         this.appendTypeCustomer(null, tr_current_ele.find('.box-select-type-customer'));
         this.appendRole(null, tr_current_ele.find('.box-select-role'));
+        tr_current_ele.find('.box-select-role').val('');
     }
 
     static appendTypeCustomer(value, ele) {
@@ -500,7 +509,7 @@ class OpportunityLoadDetail {
         data.map(function (item) {
             card_member.append($('.card-member-hidden').html());
             let card = card_member.find('.card').last();
-            card.find('.btn-detail-member').attr('href', OpportunityLoadDropdown.urlEle.data('url-emp-detail').format_url_with_uuid(item.member.id));
+            card.find('.btn-detail-member').attr('href', urlEle.data('url-emp-detail').format_url_with_uuid(item.member.id));
             card.find('.card-title').text(item.member.name);
             card.find('.card-text').text(item.member.email);
             card.attr('data-id', item.member.id);
@@ -523,8 +532,8 @@ class OpportunityLoadDetail {
         let ele_sale_team_members = $('#card-member.tag-change .card');
         let ele_lost_other_reason = $('#check-lost-reason');
 
-        data_form['win_rate'] = parseFloat(inputRateEle.val());
-        data_form['is_input_rate'] = !!checkInputRateEle.is(':checked');
+        data_form['win_rate'] = parseFloat($('#input-rate').val());
+        data_form['is_input_rate'] = !!$('#check-input-rate').is(':checked');
         ele_customer.val() !== undefined ? data_form['customer'] = ele_customer.val() : undefined;
         ele_end_customer.val() !== undefined ? data_form['end_customer'] = ele_end_customer.val() : undefined;
         ele_budget.attr('value') !== undefined ? data_form['budget_value'] = ele_budget.attr('value') : undefined;
@@ -570,7 +579,7 @@ class OpportunityLoadDetail {
         data_form['total_product_pretax_amount'] = $('#input-product-pretax-amount').valCurrency();
         data_form['total_product_tax'] = $('#input-product-taxes').valCurrency();
 
-        if ($('#table-products').hasClass('tag-change')) {
+        if (OpportunityLoadDetail.productTableEle.hasClass('tag-change')) {
             data_form['opportunity_product_datas'] = list_product_data;
         }
 
@@ -593,7 +602,7 @@ class OpportunityLoadDetail {
             list_competitor_data.push(data);
         })
 
-        if ($('#table-competitors').hasClass('tag-change')) {
+        if (OpportunityLoadDetail.competitorTableEle.hasClass('tag-change')) {
             data_form['opportunity_competitors_datas'] = list_competitor_data;
         }
 
@@ -609,7 +618,7 @@ class OpportunityLoadDetail {
             list_contact_role_data.push(data);
         })
 
-        if ($('#table-contact-role').hasClass('tag-change')) {
+        if (OpportunityLoadDetail.contactRoleTableEle.hasClass('tag-change')) {
             data_form['opportunity_contact_role_datas'] = list_contact_role_data;
         }
 
@@ -649,6 +658,42 @@ class OpportunityLoadDetail {
             data_form['is_close_lost'] = true;
         }
         return data_form
+    }
+
+    static onChangeContactRole(ele) {
+        let ele_decision_maker = $('#input-decision-maker');
+        if (ele.val() === '0') {
+            let table = this.contactRoleTableEle;
+            if (table.find('.box-select-role').not($(this)).find('option[value="0"]:selected').length === 1) {
+                ele.val('');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: transEle.data('trans-role-decision-maker'),
+                })
+            } else {
+                let ele_contact = $(this).closest('tr').find('.box-select-contact option:selected');
+                this.setDataDecisionMaker(ele_decision_maker, ele_contact.text(), ele_contact.val());
+            }
+        }
+
+        if ($('.box-select-role option[value="0"]:selected').length === 0) {
+            this.setDataDecisionMaker(ele_decision_maker, '', '');
+        }
+    }
+
+    static setDataDecisionMaker(ele_decision_maker, value, id) {
+        ele_decision_maker.val(value);
+        ele_decision_maker.attr(id);
+        ele_decision_maker.addClass('tag-change');
+    }
+
+    static renderAlert(text) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: text,
+        })
     }
 }
 
@@ -760,7 +805,7 @@ function callData(url, method) {
 }
 
 async function loadConfig() {
-    let url = OpportunityLoadDropdown.urlEle.data('url-config');
+    let url = urlEle.data('url-config');
     let method = 'GET';
     let result = await callData(url, method);
     return result?.['opportunity_config'];
@@ -1065,7 +1110,7 @@ function loadDtbProduct(data) {
                     className: 'wrap-text',
                     render: (data) => {
                         if (data !== null) {
-                            return `<select class="form-select select-box-product" data-method="GET" data-url="${OpportunityLoadDropdown.urlEle.data('url-product')}" data-keyResp="product_sale_list"></select>`
+                            return `<select class="form-select select-box-product" data-method="GET" data-url="${urlEle.data('url-product')}" data-keyResp="product_sale_list"></select>`
                         } else {
                             return `<input class="form-control input-product-name" type="text"/>`
                         }
@@ -1074,13 +1119,13 @@ function loadDtbProduct(data) {
                 {
                     className: 'wrap-text',
                     render: () => {
-                        return `<select class="form-select box-select-product-category" data-method="GET" data-url="${OpportunityLoadDropdown.urlEle.data('url-product-category')}" data-keyResp="product_category_list"></select>`
+                        return `<select class="form-select box-select-product-category" data-method="GET" data-url="${urlEle.data('url-product-category')}" data-keyResp="product_category_list"></select>`
                     }
                 },
                 {
                     className: 'wrap-text',
                     render: () => {
-                        return `<select class="form-select box-select-uom w-80p" data-method="GET" data-url="${OpportunityLoadDropdown.urlEle.data('url-uom')}" data-keyResp="unit_of_measure"></select>`
+                        return `<select class="form-select box-select-uom w-80p" data-method="GET" data-url="${urlEle.data('url-uom')}" data-keyResp="unit_of_measure"></select>`
                     }
                 },
                 {
@@ -1104,7 +1149,7 @@ function loadDtbProduct(data) {
                 {
                     className: 'wrap-text',
                     render: () => {
-                        return `<select class="form-select box-select-tax" data-method="GET" data-url="${OpportunityLoadDropdown.urlEle.data('url-tax')}" data-keyResp="tax_list"></select>`
+                        return `<select class="form-select box-select-tax" data-method="GET" data-url="${urlEle.data('url-tax')}" data-keyResp="tax_list"></select>`
                     }
                 },
                 {
@@ -1136,7 +1181,7 @@ function loadDtbCompetitor(data) {
                 {
                     className: 'wrap-text',
                     render: () => {
-                        return `<select class="form-control box-select-competitor" data-method="GET" data-url="${OpportunityLoadDropdown.urlEle.data('url-competitor')}" data-keyResp="account_list" data-keyText="name"></select>`
+                        return `<select class="form-control box-select-competitor" data-method="GET" data-url="${urlEle.data('url-competitor')}" data-keyResp="account_list" data-keyText="name"></select>`
                     }
                 },
                 {
@@ -1195,7 +1240,7 @@ function loadDtbContactRole(data) {
                 {
                     className: 'wrap-text',
                     render: () => {
-                        return `<select class="form-select box-select-contact" data-method="GET" data-url="${OpportunityLoadDropdown.urlEle.data('url-contact')}" data-keyResp="contact_list" data-keyText="fullname"></select>`
+                        return `<select class="form-select box-select-contact" data-method="GET" data-url="${urlEle.data('url-contact')}" data-keyResp="contact_list" data-keyText="fullname"></select>`
                     }
                 },
                 {

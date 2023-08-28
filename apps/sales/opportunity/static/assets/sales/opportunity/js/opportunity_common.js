@@ -187,10 +187,10 @@ class OpportunityLoadDetail {
         data.opportunity_product_datas.map(function (item) {
             table.DataTable().row.add(item).draw();
             let tr_current_ele = table.find('tbody tr').last();
-            OpportunityLoadPage.loadProduct(tr_current_ele.find('.select-box-product'), item.product, data.product_category.map(obj => obj.id))
-            OpportunityLoadPage.loadSubProductCategory(tr_current_ele.find('.box-select-product-category'), item.product_category, data.product_category.map(obj => obj.id))
-            OpportunityLoadPage.loadUoM(tr_current_ele.find('.box-select-uom'), item.product_category);
-            OpportunityLoadPage.loadTax(tr_current_ele.find('.box-select-tax'), item.tax)
+            OpportunityLoadDropdown.loadProduct(tr_current_ele.find('.select-box-product'), item.product, data.product_category.map(obj => obj.id))
+            OpportunityLoadDropdown.loadSubProductCategory(tr_current_ele.find('.box-select-product-category'), item.product_category, data.product_category.map(obj => obj.id))
+            OpportunityLoadDropdown.loadUoM(tr_current_ele.find('.box-select-uom'), item.product_category);
+            OpportunityLoadDropdown.loadTax(tr_current_ele.find('.box-select-tax'), item.tax)
         })
     }
 
@@ -205,8 +205,8 @@ class OpportunityLoadDetail {
         }
         this.productTableEle.DataTable().row.add(data).draw();
         let tr_current_ele = this.productTableEle.find('tbody tr').last();
-        OpportunityLoadPage.loadProduct(tr_current_ele.find('.select-box-product'), {}, OpportunityLoadPage.productCategorySelectEle.val());
-        OpportunityLoadPage.loadTax(tr_current_ele.find('.box-select-tax'), {})
+        OpportunityLoadDropdown.loadProduct(tr_current_ele.find('.select-box-product'), {}, OpportunityLoadDropdown.productCategorySelectEle.val());
+        OpportunityLoadDropdown.loadTax(tr_current_ele.find('.box-select-tax'), {})
     }
 
     static addRowInputProduct() {
@@ -219,9 +219,9 @@ class OpportunityLoadDetail {
         }
         this.productTableEle.DataTable().row.add(data).draw();
         let tr_current_ele = this.productTableEle.find('tbody tr').last();
-        OpportunityLoadPage.loadSubProductCategory(tr_current_ele.find('.box-select-product-category'), {}, OpportunityLoadPage.productCategorySelectEle.val());
-        OpportunityLoadPage.loadTax(tr_current_ele.find('.box-select-tax'), {})
-        OpportunityLoadPage.loadUoM(tr_current_ele.find('.box-select-uom'), {})
+        OpportunityLoadDropdown.loadSubProductCategory(tr_current_ele.find('.box-select-product-category'), {}, OpportunityLoadDropdown.productCategorySelectEle.val());
+        OpportunityLoadDropdown.loadTax(tr_current_ele.find('.box-select-tax'), {})
+        OpportunityLoadDropdown.loadUoM(tr_current_ele.find('.box-select-uom'), {})
     }
 
     static getRateTax(ele) {
@@ -252,7 +252,7 @@ class OpportunityLoadDetail {
         data.opportunity_competitors_datas.map(function (item) {
             table.DataTable().row.add(item).draw();
             let tr_current_ele = table.find('tbody tr').last();
-            OpportunityLoadPage.loadCompetitor(tr_current_ele.find('.box-select-competitor'), item.competitor, OpportunityLoadPage.customerSelectEle.val());
+            OpportunityLoadDropdown.loadCompetitor(tr_current_ele.find('.box-select-competitor'), item.competitor, OpportunityLoadDropdown.customerSelectEle.val());
         })
     }
 
@@ -266,7 +266,7 @@ class OpportunityLoadDetail {
         }
         table.DataTable().row.add(data).draw();
         let tr_current_ele = table.find('tbody tr').last();
-        OpportunityLoadPage.loadCompetitor(tr_current_ele.find('.box-select-competitor'), {}, OpportunityLoadPage.customerSelectEle.val());
+        OpportunityLoadDropdown.loadCompetitor(tr_current_ele.find('.box-select-competitor'), {}, OpportunityLoadDropdown.customerSelectEle.val());
     }
 
 
@@ -274,7 +274,7 @@ class OpportunityLoadDetail {
         data.opportunity_contact_role_datas.map(function (item) {
             table.DataTable().row.add(item).draw();
             let tr_current_ele = table.find('tbody tr').last();
-            OpportunityLoadPage.loadContact(tr_current_ele.find('.box-select-contact'), item.contact, OpportunityLoadPage.customerSelectEle.val());
+            OpportunityLoadDropdown.loadContact(tr_current_ele.find('.box-select-contact'), item.contact, OpportunityLoadDropdown.customerSelectEle.val());
             OpportunityLoadDetail.appendTypeCustomer(item.type_customer, tr_current_ele.find('.box-select-type-customer'));
             OpportunityLoadDetail.appendRole(item.role, tr_current_ele.find('.box-select-role'));
         })
@@ -288,7 +288,7 @@ class OpportunityLoadDetail {
         }
         table.DataTable().row.add(data).draw();
         let tr_current_ele = table.find('tbody tr').last();
-        OpportunityLoadPage.loadContact(tr_current_ele.find('.box-select-contact'), {}, OpportunityLoadPage.customerSelectEle.val());
+        OpportunityLoadDropdown.loadContact(tr_current_ele.find('.box-select-contact'), {}, OpportunityLoadDropdown.customerSelectEle.val());
         this.appendTypeCustomer(null, tr_current_ele.find('.box-select-type-customer'));
         this.appendRole(null, tr_current_ele.find('.box-select-role'));
     }
@@ -500,7 +500,7 @@ class OpportunityLoadDetail {
         data.map(function (item) {
             card_member.append($('.card-member-hidden').html());
             let card = card_member.find('.card').last();
-            card.find('.btn-detail-member').attr('href', OpportunityLoadPage.urlEle.data('url-emp-detail').format_url_with_uuid(item.member.id));
+            card.find('.btn-detail-member').attr('href', OpportunityLoadDropdown.urlEle.data('url-emp-detail').format_url_with_uuid(item.member.id));
             card.find('.card-title').text(item.member.name);
             card.find('.card-text').text(item.member.email);
             card.attr('data-id', item.member.id);
@@ -760,7 +760,7 @@ function callData(url, method) {
 }
 
 async function loadConfig() {
-    let url = OpportunityLoadPage.urlEle.data('url-config');
+    let url = OpportunityLoadDropdown.urlEle.data('url-config');
     let method = 'GET';
     let result = await callData(url, method);
     return result?.['opportunity_config'];
@@ -1065,7 +1065,7 @@ function loadDtbProduct(data) {
                     className: 'wrap-text',
                     render: (data) => {
                         if (data !== null) {
-                            return `<select class="form-select select-box-product" data-method="GET" data-url="${OpportunityLoadPage.urlEle.data('url-product')}" data-keyResp="product_sale_list"></select>`
+                            return `<select class="form-select select-box-product" data-method="GET" data-url="${OpportunityLoadDropdown.urlEle.data('url-product')}" data-keyResp="product_sale_list"></select>`
                         } else {
                             return `<input class="form-control input-product-name" type="text"/>`
                         }
@@ -1074,13 +1074,13 @@ function loadDtbProduct(data) {
                 {
                     className: 'wrap-text',
                     render: () => {
-                        return `<select class="form-select box-select-product-category" data-method="GET" data-url="${OpportunityLoadPage.urlEle.data('url-product-category')}" data-keyResp="product_category_list"></select>`
+                        return `<select class="form-select box-select-product-category" data-method="GET" data-url="${OpportunityLoadDropdown.urlEle.data('url-product-category')}" data-keyResp="product_category_list"></select>`
                     }
                 },
                 {
                     className: 'wrap-text',
                     render: () => {
-                        return `<select class="form-select box-select-uom w-80p" data-method="GET" data-url="${OpportunityLoadPage.urlEle.data('url-uom')}" data-keyResp="unit_of_measure"></select>`
+                        return `<select class="form-select box-select-uom w-80p" data-method="GET" data-url="${OpportunityLoadDropdown.urlEle.data('url-uom')}" data-keyResp="unit_of_measure"></select>`
                     }
                 },
                 {
@@ -1104,7 +1104,7 @@ function loadDtbProduct(data) {
                 {
                     className: 'wrap-text',
                     render: () => {
-                        return `<select class="form-select box-select-tax" data-method="GET" data-url="${OpportunityLoadPage.urlEle.data('url-tax')}" data-keyResp="tax_list"></select>`
+                        return `<select class="form-select box-select-tax" data-method="GET" data-url="${OpportunityLoadDropdown.urlEle.data('url-tax')}" data-keyResp="tax_list"></select>`
                     }
                 },
                 {
@@ -1136,7 +1136,7 @@ function loadDtbCompetitor(data) {
                 {
                     className: 'wrap-text',
                     render: () => {
-                        return `<select class="form-control box-select-competitor" data-method="GET" data-url="${OpportunityLoadPage.urlEle.data('url-competitor')}" data-keyResp="account_list" data-keyText="name"></select>`
+                        return `<select class="form-control box-select-competitor" data-method="GET" data-url="${OpportunityLoadDropdown.urlEle.data('url-competitor')}" data-keyResp="account_list" data-keyText="name"></select>`
                     }
                 },
                 {
@@ -1195,7 +1195,7 @@ function loadDtbContactRole(data) {
                 {
                     className: 'wrap-text',
                     render: () => {
-                        return `<select class="form-select box-select-contact" data-method="GET" data-url="${OpportunityLoadPage.urlEle.data('url-contact')}" data-keyResp="contact_list" data-keyText="fullname"></select>`
+                        return `<select class="form-select box-select-contact" data-method="GET" data-url="${OpportunityLoadDropdown.urlEle.data('url-contact')}" data-keyResp="contact_list" data-keyText="fullname"></select>`
                     }
                 },
                 {
@@ -1262,7 +1262,7 @@ function autoLoadStage(
         })
     }
     let list_property_config = []
-    let ele_customer = OpportunityLoadPage.customerSelectEle;
+    let ele_customer = OpportunityLoadDropdown.customerSelectEle;
     let obj_customer = SelectDDControl.get_data_from_idx(ele_customer, ele_customer.val());
     if (ele_customer.length > 0) {
         let compare_data = '0';
@@ -1514,7 +1514,7 @@ function autoLoadStage(
 
             }
             if (!$('#check-agency-role').is(':checked')) {
-                OpportunityLoadPage.endCustomerSelectEle.prop('disabled', true);
+                OpportunityLoadDropdown.endCustomerSelectEle.prop('disabled', true);
             }
         }
 

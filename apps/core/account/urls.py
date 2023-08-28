@@ -14,5 +14,5 @@ urlpatterns = [
     path('user/edit/<str:pk>', UserEdit.as_view(), name='UserEdit'),
     path('user/reset-password/<str:pk>', UserResetPassword.as_view(), name='UserResetPassword'),
     path('users/api', UserListAPI.as_view(), name='UserListAPI'),
-    path('user/detail/<str:pk>/api', UserDetailAPI.as_view(), name='UserDetailAPI'),
+    path('user/detail/api/<str:pk>', UserDetailAPI.as_view(), name='UserDetailAPI'),
 ]

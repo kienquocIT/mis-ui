@@ -4,6 +4,7 @@ $(document).ready(function () {
             let dtb = $('#dtbShipping');
             let frm = new SetupFormSubmit(dtb);
             dtb.DataTableDefault({
+                'useDataServer': true,
                 rowIdx: true,
                 ajax: {
                     url: frm.dataUrl,

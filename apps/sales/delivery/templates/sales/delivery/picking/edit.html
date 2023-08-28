@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
-{% block title %}{% trans 'Picking detail' %}{% endblock %}
+{% block title %}{% trans 'Picking edit' %}{% endblock %}
 {% block cssHeader %}
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
@@ -162,7 +162,6 @@
            data-error-warehouse="{% trans 'Warehouse is required!' %}"
            data-error-done="{% trans 'Done column of line detail is empty!' %}"
            data-outstock="{% trans 'Product in Warehouse out of stock' %}"
-           data-prod-outstock="{% trans 'Out of stock' %}"
            data-warehouse="{% trans 'Warehouse' %}"
            data-stock="{% trans 'Available in Store place' %}"
            data-view-detail="{% trans 'View detail' %}"

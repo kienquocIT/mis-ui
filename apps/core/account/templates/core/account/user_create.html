@@ -82,6 +82,7 @@
                                 id="select-box-company"
                                 data-method="GET"
                                 data-url="{% url "CompanyListAPI" %}"
+                                data-keyResp="company_list"
                                 required
                         >
                         </select>
@@ -154,9 +155,12 @@
                 >{% trans 'require change password when first sign in' %}</label>
             </div>
         </form>
-
     </div>
-    </div>
+{% endblock %}
+{% block dataHiddenGroup %}
+    <input type="text" id="trans-factory"
+           data-trans-confirm-password="{% trans 'Passwords does not match' %}"
+    >
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'assets/js/core/account/user_create.js' %}"></script>

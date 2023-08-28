@@ -15,7 +15,7 @@
 {% endblock %}
 {% block pageContent %}
     <span id="pageDataHide" data-url="{% url 'UserDetailAPI' pk=pk %}"></span>
-    <form data-url="" data-url-redirect="/" data-method="PUT" id="form-edit-user">
+    <form data-url="{% url 'UserDetailAPI' pk=0 %}" data-url-redirect="/" data-method="PUT" id="form-edit-user">
         {% csrf_token %}
         <div class="row">
             <div class="col-6 col-lg-4">

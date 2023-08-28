@@ -79,9 +79,9 @@ class QuotationLoadDataHandle {
                 'is_deal_close': false,
             };
         if (sale_person_id) {
-            data_filter['sale_person_id'] = sale_person_id;
+            data_filter['employee_inherit'] = sale_person_id;
         } else {
-            data_filter['sale_person_id'] = QuotationLoadDataHandle.salePersonSelectEle.val();
+            data_filter['employee_inherit'] = QuotationLoadDataHandle.salePersonSelectEle.val();
         }
         if (form[0].classList.contains('sale-order')) {
             data_filter['sale_order__isnull'] = true;
@@ -106,6 +106,8 @@ class QuotationLoadDataHandle {
                 }
             }
         }
+        // ReCheck Config when change Opportunity
+        QuotationCheckConfigHandle.checkConfig(true);
         // ReCheck Config when change Opportunity (If is copy)
         if (is_copy === true) {
             QuotationCheckConfigHandle.checkConfig(true, null, false, false, is_copy);
@@ -912,9 +914,7 @@ class QuotationDataTableHandle {
         let $tables = $('#datable-quotation-create-product');
         $tables.DataTableDefault({
             data: data ? data : [],
-            searching: false,
             paging: false,
-            ordering: false,
             info: false,
             drawCallback: function () {
             },
@@ -1253,8 +1253,10 @@ class QuotationDataTableHandle {
                 {
                     targets: 8,
                     render: (data, type, row) => {
-                        return `<div class="row">
-                                <span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row.product_subtotal_price)}"></span>
+                        return `<div class="row subtotal-area">
+                                <div class="card card-sm">
+                                    <span class="card-body mask-money table-row-subtotal" data-init-money="${parseFloat(row.product_subtotal_price)}"></span>
+                                </div>
                                 <input
                                     type="text"
                                     class="form-control table-row-subtotal-raw"
@@ -1280,9 +1282,7 @@ class QuotationDataTableHandle {
         let $tables = $('#datable-quotation-create-cost');
         $tables.DataTableDefault({
             data: data ? data : [],
-            searching: false,
             paging: false,
-            ordering: false,
             info: false,
             columnDefs: [],
             drawCallback: function () {
@@ -1471,8 +1471,10 @@ class QuotationDataTableHandle {
                     targets: 6,
                     width: "20%",
                     render: (data, type, row) => {
-                        return `<div class="row">
-                                <span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row.product_subtotal_price)}"></span>
+                        return `<div class="row subtotal-area">
+                                <div class="card card-sm">
+                                    <span class="card-body mask-money table-row-subtotal" data-init-money="${parseFloat(row.product_subtotal_price)}"></span>
+                                </div>
                                 <input
                                     type="text"
                                     class="form-control table-row-subtotal-raw"
@@ -1499,9 +1501,7 @@ class QuotationDataTableHandle {
         let $tables = $('#datable-quotation-create-expense');
         $tables.DataTableDefault({
             data: data ? data : [],
-            searching: false,
             paging: false,
-            ordering: false,
             info: false,
             columnDefs: [],
             drawCallback: function () {
@@ -1672,8 +1672,10 @@ class QuotationDataTableHandle {
                     targets: 6,
                     width: "20%",
                     render: (data, type, row) => {
-                        return `<div class="row">
-                                <span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row.expense_subtotal_price)}"></span>
+                        return `<div class="row subtotal-area">
+                                <div class="card card-sm">
+                                    <span class="card-body mask-money table-row-subtotal" data-init-money="${parseFloat(row.expense_subtotal_price)}"></span>
+                                </div>
                                 <input
                                     type="text"
                                     class="form-control table-row-subtotal-raw"
@@ -2236,6 +2238,15 @@ class QuotationCalculateCaseHandle {
             let row = table[0].tBodies[0].rows[i];
             if (row.querySelector('.table-row-item')) {
                 QuotationCalculateCaseHandle.commonCalculate(table, row, true, false, false);
+            }
+        }
+    };
+
+    static calculateAllRowsTableCost(table) {
+        for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
+            let row = table[0].tBodies[0].rows[i];
+            if (row.querySelector('.table-row-item')) {
+                QuotationCalculateCaseHandle.commonCalculate(table, row, false, true, false);
             }
         }
     };

@@ -3,12 +3,6 @@ let PercentCount = 0;
 let $transElm = $('#trans-factory');
 $(document).ready(function () {
 
-    let ele_tax_category = $('#section-tax-category').html();
-    let ele_tax = $('#section-tax').html();
-    let ele_currency = $('#section-currency').html();
-
-    $('.select2-multiple').select2();
-
     //Switch view table
     $("#tab-select-table a").on("click", function () {
         let btn_create = $('#btn-show-modal-create')
@@ -72,6 +66,7 @@ $(document).ready(function () {
             let frm = new SetupFormSubmit(tbl);
             tbl.DataTableDefault(
                 {
+                    useDataServer: true,
                     rowIdx: true,
                     ajax: {
                         url: frm.dataUrl,
@@ -82,8 +77,7 @@ $(document).ready(function () {
                                 let vndCurrency = $.grep(resp.data['currency_list'], function (currency) {
                                     return currency.abbreviation === "VND";
                                 })[0];
-
-                                if (vndCurrency.is_primary) {
+                                if (vndCurrency !== undefined && vndCurrency.is_primary) {
                                     for (let i = 0; i < resp.data['currency_list'].length; i++) {
                                         resp.data['currency_list'][i]['round_number'] = 2;
                                     }
@@ -152,13 +146,11 @@ $(document).ready(function () {
                         }, {
                             render: (data, type, row, meta) => {
                                 if (row.is_default === false) {
-                                    let btDel = `<a data-id="` + row.id + `" class="btn btn-icon btn-flush-dark btn-rounded del-button del-btn-currency" data-bs-toggle="tooltip" data-bs-placement="top" data-id="` + row.id + `" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`.format_by_idx(
+                                    return `<a data-id="` + row.id + `" class="btn btn-icon btn-flush-dark btn-rounded del-button del-btn-currency" data-bs-toggle="tooltip" data-bs-placement="top" data-id="` + row.id + `" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`.format_by_idx(
                                         row.id
                                     );
-                                    return btDel;
                                 } else {
-                                    let btDel = `<a class="btn btn-icon"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
-                                    return btDel;
+                                    return `<a class="btn btn-icon"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
                                 }
                             }
                         }
@@ -174,6 +166,7 @@ $(document).ready(function () {
             let frm = new SetupFormSubmit(tbl);
             tbl.DataTableDefault(
                 {
+                    useDataServer: true,
                     rowIdx: true,
                     ajax: {
                         url: frm.dataUrl,
@@ -197,7 +190,7 @@ $(document).ready(function () {
                             className: 'wrap-text',
                             render: (data, type, row, meta) => {
                                 return `<a class="badge badge-outline badge-soft-success btn-detail" data-id="{0}" data-bs-toggle="modal"
-                                        data-bs-target="#modal-detail-tax" style="min-width: max-content; width: 100%" href="#"><center><span><b>{1}</b></span></center></a>`.format_by_idx(
+                                        data-bs-target="#modal-detail-tax" style="min-width: max-content; width: 100%" href="#"><span><b>{1}</b></span></a>`.format_by_idx(
                                     row.id, data
                                 )
                             }
@@ -237,9 +230,7 @@ $(document).ready(function () {
                             className: 'wrap-text',
                             render: (data, type, row, meta) => {
                                 if (row.category) {
-                                    return `<center>
-                                            <span class="badge badge-soft-primary badge-pill" style="min-width: max-content; width: 100%">{0}</span>
-                                            </center>`.format_by_idx(data.title)
+                                    return `<span class="badge badge-soft-primary badge-pill" style="min-width: max-content; width: 100%">{0}</span>`.format_by_idx(data.title)
                                 } else {
                                     return `<span></span>`
                                 }
@@ -249,9 +240,7 @@ $(document).ready(function () {
                             className: 'wrap-text',
                             render: (data, type, row, meta) => {
                                 if (data >= 0) {
-                                    return `<center>
-                                            <span class="badge badge-soft-pink badge-pill" style="min-width: max-content; width: 100%">{0}%</span>
-                                            </center>`.format_by_idx(data)
+                                    return `<span class="badge badge-soft-pink badge-pill" style="min-width: max-content; width: 100%">{0}%</span>`.format_by_idx(data)
                                 } else {
                                     return `<span></span>`
                                 }
@@ -270,12 +259,15 @@ $(document).ready(function () {
         }
     }
 
+    $('#select-box-category-create').initSelect2();
+
     function loadTaxCategory() {
         if (!$.fn.DataTable.isDataTable('#datatable-tax-category')) {
             let tbl = $('#datatable-tax-category');
             let frm = new SetupFormSubmit(tbl);
             tbl.DataTableDefault(
                 {
+                    useDataServer: true,
                     rowIdx: true,
                     ajax: {
                         url: frm.dataUrl,
@@ -283,12 +275,6 @@ $(document).ready(function () {
                         dataSrc: function (resp) {
                             let data = $.fn.switcherResp(resp);
                             if (data && resp.data.hasOwnProperty('tax_category_list')) {
-                                let select_box = $('.select-box-category');
-                                select_box.html('');
-                                data.tax_category_list.map(function (item) {
-                                    console.log(item)
-                                    select_box.append(`<option value="` + item.id + `">` + item.title + `</option>`)
-                                })
                                 return resp.data['tax_category_list'] ? resp.data['tax_category_list'] : []
                             }
                             throw Error('Call data raise errors.')
@@ -344,85 +330,77 @@ $(document).ready(function () {
     // load Base Currency (Master data)
     function loadBaseCurrency() {
         let ele = $('#currency_name');
-        let url = ele.attr('data-select2-url');
-        let method = ele.attr('data-method');
-        $.fn.callAjax2({
-            'url': url,
-            'method': method
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    ele.append(`<option></option>`)
-                    if (data.hasOwnProperty('base_currencies') && Array.isArray(data.base_currencies)) {
-                        data.base_currencies.map(function (item) {
-                            ele.append(`<option data-currency-title="` + item.title + `" data-currency-code="` + item.code + `" value="` + item.id + `"><b>` + item.code + `</b> - ` + item.title + `</option>`)
-                        })
-                    }
-                }
-            }
-        )
+        ele.initSelect2({
+            data: {},
+            templateResult: function (state) {
+                return $(`<span>${state.data?.code} - ${state.text}</span>`);
+            },
+        }).on('change', function () {
+            let currency = SelectDDControl.get_data_from_idx($(this), $(this).val());
+            $('#abbreviation-id').val(currency.code);
+        })
     }
 
-    $('#currency_name').on('change', function () {
-        $('#abbreviation-id').val($('#currency_name option:selected').attr('data-currency-code'))
-    })
     loadBaseCurrency();
     loadCurrency();
 
 //submit form create tax category
     let form_create_tax_category = $('#form-create-tax-category')
-    form_create_tax_category.submit(function (event) {
-        event.preventDefault();
-        let csr = $("input[name=csrfmiddlewaretoken]").val();
-        let frm = new SetupFormSubmit($(this));
-        $.fn.callAjax2({
-            'url': frm.dataUrl,
-            'method': frm.dataMethod,
-            'data': frm.dataForm
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    $.fn.notifyB({description: "Successfully"}, 'success')
-                    $('#modal-section-tax-category').modal('hide');
-                    $('#datatable-tax-category').DataTable().ajax.reload();
-                }
-            },
-            (errs) => {
+    SetupFormSubmit.validate(
+        form_create_tax_category,
+        {
+            submitHandler: function (form) {
+                let frm = new SetupFormSubmit($(form));
+                $.fn.callAjax2({
+                    'url': frm.dataUrl,
+                    'method': frm.dataMethod,
+                    'data': frm.dataForm
+                }).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            $.fn.notifyB({description: "Successfully"}, 'success')
+                            $('#modal-section-tax-category').modal('hide');
+                            $('#datatable-tax-category').DataTable().ajax.reload();
+                        }
+                    },
+                    (errs) => {
+                    }
+                )
             }
-        )
-    })
+        })
 
 //submit form create tax
     let form_create_tax = $('#form-create-tax')
-    form_create_tax.submit(function (event) {
-        event.preventDefault();
-        let csr = $("input[name=csrfmiddlewaretoken]").val();
-        let frm = new SetupFormSubmit($(this));
-        if ($('#select-box-type').val().length > 1) {
-            frm.dataForm['type'] = '2';
-        } else {
-            frm.dataForm['type'] = $('#select-box-type').val()[0];
-        }
-        $.fn.callAjax2({
-            'url': frm.dataUrl,
-            'method': frm.dataMethod,
-            'data': frm.dataForm
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    $.fn.notifyB({description: "Successfully"}, 'success')
-                    $('#modal-section-tax').hide();
-                    $('#datatable-tax').DataTable().ajax.reload();
+    SetupFormSubmit.validate(
+        form_create_tax,
+        {
+            submitHandler: function (form) {
+                let frm = new SetupFormSubmit($(form));
+                if ($('#select-box-type').val().length > 1) {
+                    frm.dataForm['type'] = '2';
+                } else {
+                    frm.dataForm['type'] = $('#select-box-type').val()[0];
                 }
-            },
-            (errs) => {
+                $.fn.callAjax2({
+                    'url': frm.dataUrl,
+                    'method': frm.dataMethod,
+                    'data': frm.dataForm
+                }).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            $.fn.notifyB({description: "Successfully"}, 'success')
+                            $('#modal-section-tax').hide();
+                            $('#datatable-tax').DataTable().ajax.reload();
+                        }
+                    },
+                    (errs) => {
 
+                    }
+                )
             }
-        )
-    })
+        })
 
     let url_detail = ''
 // show detail tax
@@ -439,7 +417,9 @@ $(document).ready(function () {
                         $('#tax-title').val(data.tax.title);
                         $('#tax-code').val(data.tax.code);
                         $('#tax-rate').val(data.tax.rate);
-                        $('.select-box-category').val(data.tax.category);
+                        $('#select-box-category-update').initSelect2({
+                            'data': data.tax.category
+                        })
                         if (data.tax.type === 0) {
                             $('#tax-type').val(['0']).trigger("change");
                         } else if (data.tax.type === 1) {
@@ -463,8 +443,8 @@ $(document).ready(function () {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('tax_category')) {
-                        $('#tax-category-title').val(data.tax_category.title)
-                        $('#tax-category-description').val(data.tax_category.description)
+                        $('#tax-category-title').val(data?.['tax_category'].title)
+                        $('#tax-category-description').val(data?.['tax_category'].description)
                     }
                 }
             })
@@ -472,18 +452,81 @@ $(document).ready(function () {
 
 //form update tax
     let form_update_tax = $('#form-update-tax')
-    form_update_tax.submit(function (event) {
-        event.preventDefault();
-        let csr = $("input[name=csrfmiddlewaretoken]").val();
-        let frm = new SetupFormSubmit($(this));
-        if ($('#tax-type').val().length > 1) {
-            frm.dataForm['type'] = '2';
-        } else {
-            frm.dataForm['type'] = $('#tax-type').val()[0];
-        }
-        frm.dataForm['category'] = $('.select-box-category').val();
+    SetupFormSubmit.validate(
+        form_update_tax,
+        {
+            submitHandler: function (form) {
+                let frm = new SetupFormSubmit($(form));
+                let tax_type_ele = $('#tax-type')
+                if (tax_type_ele.val().length > 1) {
+                    frm.dataForm['type'] = '2';
+                } else {
+                    frm.dataForm['type'] = tax_type_ele.val()[0];
+                }
+                frm.dataForm['category'] = $('#select-box-category-update').val();
+                $.fn.callAjax2({
+                    'url': url_detail,
+                    'method': frm.dataMethod,
+                    'data': frm.dataForm
+                }).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            $.fn.notifyB({description: "Successfully"}, 'success')
+                            $('#modal-detail-tax').modal('hide');
+                            $('#datatable-tax').DataTable().ajax.reload();
+                        }
+                    },
+                    (errs) => {
+                    }
+                )
+            }
+        })
+
+//form update tax category
+    let form_update_tax_category = $('#form-update-tax-category')
+    SetupFormSubmit.validate(
+        form_update_tax_category,
+        {
+            submitHandler: function (form) {
+                let frm = new SetupFormSubmit($(form));
         $.fn.callAjax2({
             'url': url_detail,
+            'method': frm.dataMethod,
+            'data': frm.dataForm,
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    $.fn.notifyB({description: "Successfully"}, 'success')
+                    $('#modal-detail-tax-category').modal('hide');
+                    $('#datatable-tax-category').DataTable().ajax.reload();
+                }
+            },
+            (errs) => {
+            }
+        )
+    }})
+
+// form create currency
+    let form_create_currency = $('#form-create-currency')
+    SetupFormSubmit.validate(
+        form_create_currency,
+        {
+            submitHandler: function (form) {
+                let frm = new SetupFormSubmit($(form));
+
+        if (frm.dataForm['rate'] === '') {
+            frm.dataForm['rate'] = null;
+        }
+
+        let currency_ele = $('#currency_name');
+        let currency_obj = SelectDDControl.get_data_from_idx(currency_ele, currency_ele.val());
+        frm.dataForm['abbreviation'] = currency_obj.code;
+        frm.dataForm['title'] = currency_obj.title;
+
+        $.fn.callAjax2({
+            'url': frm.dataUrl,
             'method': frm.dataMethod,
             'data': frm.dataForm
         }).then(
@@ -491,71 +534,15 @@ $(document).ready(function () {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     $.fn.notifyB({description: "Successfully"}, 'success')
-                    $('#modal-detail-tax').modal('hide');
-                    $('#datatable-tax').DataTable().ajax.reload();
+                    $('#modal-section-currency').modal('hide');
+                    $('#datatable-currency').DataTable().ajax.reload();
                 }
             },
             (errs) => {
+
             }
         )
-    })
-
-//form update tax category
-    let form_update_tax_category = $('#form-update-tax-category')
-    form_update_tax_category.submit(function (event) {
-        event.preventDefault();
-        let csr = $("input[name=csrfmiddlewaretoken]").val();
-        let frm = new SetupFormSubmit($(this));
-        $.fn.callAjax2({
-            'url': url_detail,
-            'method': frm.dataMethod,
-            'data': frm.dataForm,
-        }).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        $.fn.notifyB({description: "Successfully"}, 'success')
-                        $('#modal-detail-tax-category').modal('hide');
-                        $('#datatable-tax-category').DataTable().ajax.reload();
-                    }
-                },
-                (errs) => {
-                }
-            )
-    })
-
-// form create currency
-    let form_create_currency = $('#form-create-currency')
-    form_create_currency.submit(function (event) {
-        event.preventDefault();
-        let csr = $("input[name=csrfmiddlewaretoken]").val();
-        let frm = new SetupFormSubmit($(this));
-
-        if (frm.dataForm['rate'] === '') {
-            frm.dataForm['rate'] = null;
-        }
-
-        frm.dataForm['abbreviation'] = $('#currency_name option:selected').attr('data-currency-code')
-        frm.dataForm['title'] = $('#currency_name option:selected').attr('data-currency-title')
-
-        $.fn.callAjax2({
-            'url': frm.dataUrl,
-            'method': frm.dataMethod,
-            'data': frm.dataForm
-        }).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        $.fn.notifyB({description: "Successfully"}, 'success')
-                        $('#modal-section-currency').modal('hide');
-                        $('#datatable-currency').DataTable().ajax.reload();
-                    }
-                },
-                (errs) => {
-
-                }
-            )
-    })
+    }})
 
 
 // show detail currency
@@ -567,16 +554,16 @@ $(document).ready(function () {
             'url': url_detail,
             'method': 'GET'
         }).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('currency')) {
-                            $('#currency-title').val(data.currency.title);
-                            $('#currency-abbreviation').val(data.currency.abbreviation);
-                            $('#currency-rate').val(data.currency.rate);
-                        }
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('currency')) {
+                        $('#currency-title').val(data.currency.title);
+                        $('#currency-abbreviation').val(data.currency.abbreviation);
+                        $('#currency-rate').val(data.currency.rate);
                     }
-                })
+                }
+            })
     })
 
 // delete currency
@@ -598,67 +585,61 @@ $(document).ready(function () {
         }).then((result) => {
             if (result.value) {
                 let data_url = $('#form-create-currency').attr('data-url-delete').replace(0, $(this).attr('data-id'))
-                let csr = $("input[name=csrfmiddlewaretoken]").val();
                 $.fn.callAjax2({
                     'url': data_url,
                     'method': 'PUT',
                     'data': {}
                 }).then(
-                        (resp) => {
-                            let data = $.fn.switcherResp(resp);
-                            if (data) {
-                                $.fn.notifyB({description: "Successfully"}, 'success')
-                                setTimeout(function () {
-                                    location.reload()
-                                }, 1000);
-                            }
-                        },
-                        (errs) => {
-                            // $.fn.notifyB({description: errs.data.errors}, 'failure');
-                            Swal.fire({
-                                html:
-                                    '<div><h6 class="text-danger mb-0">Source Price List can not be deleted!</h6></div>',
-                                customClass: {
-                                    content: 'text-center',
-                                    confirmButton: 'btn btn-primary',
-                                },
-                                buttonsStyling: false,
-                            })
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            $.fn.notifyB({description: "Successfully"}, 'success')
+                            setTimeout(function () {
+                                location.reload()
+                            }, 1000);
+                        }
+                    },
+                    (errs) => {
+                        // $.fn.notifyB({description: errs.data.errors}, 'failure');
+                        Swal.fire({
+                            html:
+                                '<div><h6 class="text-danger mb-0">Source Price List can not be deleted!</h6></div>',
+                            customClass: {
+                                content: 'text-center',
+                                confirmButton: 'btn btn-primary',
+                            },
+                            buttonsStyling: false,
                         })
+                    })
             }
         })
     });
 
     // sync selling rate from VietComBank
     $(document).on("click", '#sync-from-VCB-button', function () {
-        // $('#sync-status').html('<div class="spinner-border text-primary" role="status" style="height: 15px; width: 15px;"></div>');
         $('#sync-from-VCB-button').html('In Sync... &nbsp;<i class="bi bi-arrow-repeat"></i>')
         $('#datatable-currency tbody tr td:nth-child(4)').each(function () {
             if ($(this).find('span').hasClass('badge') === false) {
                 $(this).html('<div class="spinner-border text-primary" role="status" style="height: 15px; width: 15px;"></div>');
             }
         });
-        let csr = $("input[name=csrfmiddlewaretoken]").val();
         $.fn.callAjax2({
             'url': $(this).attr('data-url'),
             'method': 'PUT',
             'data': {'name': '1'}
         }).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        setTimeout(function () {
-                            $('#sync-from-VCB-button').text('Sync with VCB &nbsp;')
-                            // $('#sync-status').html('');
-                            $('#section-currency').html('');
-                            $('#section-currency').append(ele_currency);
-                            loadCurrency();
-                        }, 0);
-                    }
-                },
-                (errs) => {
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    setTimeout(function () {
+                        $('#sync-from-VCB-button').text('Sync with VCB &nbsp;')
+                        $('#datatable-currency').DataTable().ajax.reload();
+                    }, 0);
                 }
-            )
+            },
+            (errs) => {
+            }
+        )
     });
 
 // PAYMENTS TERMS handle
@@ -854,7 +835,7 @@ $(document).ready(function () {
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        let txt = '';
+                        let txt;
                         if (row.unit_type.hasOwnProperty('text')) // if row data is object
                             txt = row.unit_type.text
                         else // else row data is number
@@ -871,7 +852,7 @@ $(document).ready(function () {
                 {
                     targets: 4,
                     render: (data, type, row) => {
-                        let txt = '';
+                        let txt;
                         if (row.day_type.hasOwnProperty('text')) txt = row.day_type.text
                         else txt = $('option[value="' + row.day_type + '"]', '[name="day_type"]').text()
                         return `<p>${txt}</p>`
@@ -880,7 +861,7 @@ $(document).ready(function () {
                 {
                     targets: 5,
                     render: (data, type, row) => {
-                        let txt = '';
+                        let txt;
                         if (row.after.hasOwnProperty('text')) txt = row.after.text
                         else txt = $('option[value="' + row.after + '"]', '[name="after"]').text()
                         return `<p>${txt}</p>`
@@ -925,31 +906,31 @@ $(document).ready(function () {
             'url': url,
             'method': 'GET',
         }).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        $('#modal-add-table form #is_edited').val('true')
-                        $('[name="title"]').val(data.title)
-                        $('[name="apply_for"]').val(data.apply_for).trigger('change')
-                        $('[name="remark"]').val(data.remark)
-                        $('[name="payment_terms_id"]').val(data.id)
-                        $('#table_terms').DataTable().clear().draw();
-                        $('#table_terms').DataTable().rows.add(data.term).draw();
-                        let temp = []
-                        let total_type_0 = 0
-                        for (let item of data.term) {
-                            temp.push(item.unit_type)
-                            if (item.unit_type === 0)
-                                total_type_0 += item.value
-                        }
-                        term_type_list = [...new Set(temp)]
-                        // nếu type = balance thì khoá btn
-                        // nếu type = 0 thì total value = 100 => khoá
-                        if (total_type_0 >= 100 || term_type_list.indexOf(2) !== -1)
-                            $('[data-bs-target="#modal-add-table"]').prop('disabled', true)
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    $('#modal-add-table form #is_edited').val('true')
+                    $('[name="title"]').val(data.title)
+                    $('[name="apply_for"]').val(data.apply_for).trigger('change')
+                    $('[name="remark"]').val(data.remark)
+                    $('[name="payment_terms_id"]').val(data.id)
+                    $('#table_terms').DataTable().clear().draw();
+                    $('#table_terms').DataTable().rows.add(data.term).draw();
+                    let temp = []
+                    let total_type_0 = 0
+                    for (let item of data.term) {
+                        temp.push(item.unit_type)
+                        if (item.unit_type === 0)
+                            total_type_0 += item.value
                     }
+                    term_type_list = [...new Set(temp)]
+                    // nếu type = balance thì khoá btn
+                    // nếu type = 0 thì total value = 100 => khoá
+                    if (total_type_0 >= 100 || term_type_list.indexOf(2) !== -1)
+                        $('[data-bs-target="#modal-add-table"]').prop('disabled', true)
                 }
-            )
+            }
+        )
     }
 
     // on Unit type changed

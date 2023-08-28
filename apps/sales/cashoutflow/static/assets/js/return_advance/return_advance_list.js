@@ -4,6 +4,7 @@ $(document).ready(function () {
             let dtb = $('#dtbReturnAdvance');
             let frm = new SetupFormSubmit(dtb);
             dtb.DataTableDefault({
+                useDataServer: true,
                 reloadCurrency: true,
                 ajax: {
                     url: frm.dataUrl,

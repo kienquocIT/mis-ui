@@ -45,8 +45,7 @@ $(document).ready(function () {
                             let to_supplier_trans = $('#datatable_advance_list').attr('data-type-translate-supplier')
                             if (row.advance_payment_type === 'To Employee') {
                                 return `<span class="badge badge-soft-danger">` + to_employee_trans + `</span>`
-                            }
-                            else if (row.advance_payment_type === 'To Supplier') {
+                            } else if (row.advance_payment_type === 'To Supplier') {
                                 return `<span class="badge badge-soft-blue">` + to_supplier_trans + `</span>`
                             }
                         }
@@ -133,7 +132,10 @@ $(document).ready(function () {
                                              <a class="dropdown-item" href="{1}">To Payment</a>
                                         </div>
                                     </div>`.format_by_idx(
-                                        $('#datatable_advance_list').data('return-advance') + `?advance_payment_id={0}`.format_by_idx(row.id),
+                                $('#datatable_advance_list').data('return-advance') + `?advance_payment={0}`.format_by_idx(encodeURIComponent(JSON.stringify({
+                                    'id': row.id,
+                                    'title': row.title
+                                }))),
                                 $('#datatable_advance_list').attr('data-payment') + `?sale_code_mapped={0}`.format_by_idx(sale_code_id)
                             );
                         }

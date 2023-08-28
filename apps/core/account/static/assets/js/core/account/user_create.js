@@ -3,12 +3,12 @@ $(document).ready(function () {
     let last_name = '';
     $('#inp-firstname').change(function () {
         first_name = $(this).val();
-        $('#inp-fullname').val(last_name + ' ' + first_name);
+        $('#inp-fullname').val(`{0} {1}`.format_by_idx(last_name, first_name));
     });
 
     $('#inp-lastname').change(function () {
         last_name = $(this).val();
-        $('#inp-fullname').val(last_name + ' ' + first_name);
+        $('#inp-fullname').val(`{0} {1}`.format_by_idx(last_name, first_name));
     });
 
     $('.btn-icon').on('click', function () {
@@ -18,17 +18,17 @@ $(document).ready(function () {
 
     function generatePW() {
         let pass = '';
-        var str = 'abcdefghijklmnopqrstuvwxyz';
+        let str = 'abcdefghijklmnopqrstuvwxyz';
 
         for (let i = 1; i <= 6; i++) {
-            var char = Math.floor(Math.random()
+            let char = Math.floor(Math.random()
                 * str.length + 1);
             pass += str.charAt(char)
         }
 
-        var str_num = '0123456789'
+        let str_num = '0123456789'
         for (let i = 1; i <= 2; i++) {
-            var char = Math.floor(Math.random()
+            let char = Math.floor(Math.random()
                 * str_num.length + 1);
             pass += str_num.charAt(char)
         }
@@ -39,43 +39,32 @@ $(document).ready(function () {
     }
 
     $('#auto-create-pw').on('change', function () {
-        if ($(this).is(':checked') == true) {
+        let passwordEle = $('#password');
+        let confirmPasswordEle = $('#confirm-password');
+        if ($(this).is(':checked') === true) {
             const pw = generatePW();
-            $('#password').val(pw);
-            $('#password').prop("readonly", true);
-            $('#confirm-password').val(pw);
-            $('#confirm-password').prop("readonly", true);
+            passwordEle.val(pw);
+            passwordEle.prop("readonly", true);
+            confirmPasswordEle.val(pw);
+            confirmPasswordEle.prop("readonly", true);
             $('#require-change-pw').prop('checked', true);
         } else {
-            $('#password').val('');
-            $('#password').prop("readonly", false);
-            $('#confirm-password').val('');
-            $('#confirm-password').prop("readonly", false);
+            passwordEle.val('');
+            passwordEle.prop("readonly", false);
+            confirmPasswordEle.val('');
+            confirmPasswordEle.prop("readonly", false);
             $('#require-change-pw').prop('checked', false);
         }
     });
 
-    function loadCompanyList() {
-        let ele = $('#select-box-company');
-        let url = ele.attr('data-url');
-        let method = ele.attr('data-method');
-        $.fn.callAjax(url, method).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    ele.text("");
-                    if (data.hasOwnProperty('company_list') && Array.isArray(data.company_list)) {
-                        // ele.append(`<option>` + `</option>`)
-                        data.company_list.map(function (item) {
-                            ele.append(`<option value="` + item.id + `">` + item.title + `</option>`)
-                        })
-                    }
-                }
-            }
-        )
+    function loadCompanySelectEle(ele, data) {
+        ele.initSelect2({
+            data: data,
+        })
     }
 
-    loadCompanyList();
+    loadCompanySelectEle($('#select-box-company'));
+
     jQuery.validator.setDefaults({
         debug: true,
         success: "valid"
@@ -85,26 +74,32 @@ $(document).ready(function () {
         errorElement: 'p',
         errorClass: 'is-invalid cl-red',
     })
-    frm.submit(function (event) {
-        event.preventDefault();
-        let csr = $("input[name=csrfmiddlewaretoken]").val();
-        let frm = new SetupFormSubmit($(this));
-        if ($("#password").val() != $("#confirm-password").val()) {
-            $.fn.notifyB({description: 'mật khẩu không trùng khớp'}, 'warning')
-        } else {
-            $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
-                .then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyB({description: "Successfully"}, 'success')
-                            $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
-                        }
-                    },
-                    (errs) => {
-                        // $.fn.notifyB({description: errs.data.errors}, 'failure');
-                    }
-                )
-        }
-    });
+    SetupFormSubmit.validate(
+        frm,
+        {
+            submitHandler: function (form) {
+                let frm = new SetupFormSubmit($(form));
+                if ($("#password").val() !== $("#confirm-password").val()) {
+                    $.fn.notifyB({description: $('#trans-factory').data('trans-confirm-password')}, 'warning')
+                } else {
+                    $.fn.callAjax2({
+                        url: frm.dataUrl,
+                        method: frm.dataMethod,
+                        data: frm.dataForm,
+                    })
+                        .then(
+                            (resp) => {
+                                let data = $.fn.switcherResp(resp);
+                                if (data) {
+                                    $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
+                                    $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
+                                }
+                            },
+                            (errs) => {
+                                $.fn.notifyB({description: errs.data.errors}, 'failure');
+                            }
+                        )
+                }
+            }
+        });
 });

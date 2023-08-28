@@ -18,6 +18,7 @@
 {% block pageContent %}
     <form id="form-create-pr" data-url="{% url "PurchaseRequestListAPI" %}" data-method="POST"
           data-url-redirect="{% url "PurchaseRequestList" %}">
+    <input hidden name="employee_created" value="{{ request.user.employee_current_data.id }}">
         <div class="row">
             <div class="col-6">
                 <div class="form-group">
@@ -74,7 +75,9 @@
                             class="form-control select2"
                             id="box-select-supplier"
                             data-method="GET"
-                            data-select2-url="{% url "AccountListAPI" %}"
+                            data-url="{% url "AccountListAPI" %}"
+                            data-keyResp="account_list"
+                            data-keyText="name"
                     >
                     </select>
                 </span>
@@ -83,9 +86,8 @@
             <div class="col-6">
                 <div class="form-group">
                     <label class="form-label">{% trans 'Status' %}</label>
-                    <div class="readonly">
-                        <input class="form-control" name="system_status" value="Open" readonly data-value="0"/>
-                    </div>
+                    <input class="form-control" name="system_status" value="{% trans 'Draft' %}" readonly
+                           data-value="0"/>
                 </div>
             </div>
         </div>
@@ -135,7 +137,9 @@
                             class="form-control select2"
                             id="box-select-contact"
                             data-method="GET"
-                            data-select2-url="{% url "ContactListAPI" %}"
+                            data-url="{% url "ContactListAPI" %}"
+                            data-keyResp="contact_list"
+                            data-keyText="fullname"
                     >
                     </select>
                 </span>
@@ -144,9 +148,7 @@
             <div class="col-6">
                 <div class="form-group">
                     <label class="form-label">{% trans 'Purchase Status' %}</label>
-                    <div class="readonly">
-                        <input class="form-control" name="purchase_status" value="Wait" data-value="0" readonly/>
-                    </div>
+                    <input class="form-control" name="purchase_status" value="Wait" data-value="0" readonly/>
                 </div>
             </div>
         </div>
@@ -177,9 +179,7 @@
             <div class="col-6">
                 <div class="form-group">
                     <label class="form-label required">{% trans 'Order Code' %}</label>
-                    <div class="readonly">
-                        <input class="form-control" name="sale_order" readonly/>
-                    </div>
+                    <input class="form-control" name="sale_order" readonly/>
                 </div>
             </div>
         </div>
@@ -236,7 +236,7 @@
                     <div class="col-7 mt-5">
                         <div class="row mb-2">
                             <div class="col-6"><p>{% trans 'Pretax Amount' %}</p></div>
-                            <div class="col-6 readonly">
+                            <div class="col-6">
                                 <input
                                         id="input-product-pretax-amount"
                                         type="text"
@@ -248,7 +248,7 @@
                         </div>
                         <div class="row mb-2">
                             <div class="col-6"><p>{% trans 'Taxes' %}</p></div>
-                            <div class="col-6 readonly">
+                            <div class="col-6">
                                 <input
                                         id="input-product-taxes"
                                         type="text"
@@ -261,7 +261,7 @@
                         <hr>
                         <div class="row mb-2">
                             <div class="col-6"><b>{% trans 'Total' %}</b></div>
-                            <div class="col-6 readonly">
+                            <div class="col-6">
                                 <input
                                         id="input-product-total"
                                         type="text"
@@ -278,98 +278,95 @@
 
             </div>
         </div>
-    </form>
 
-    <div class="modal fade" id="modal-select-sale-order" tabindex="-1" role="dialog"
-         aria-labelledby="exampleModalLarge01" aria-hidden="true">
-        <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">{% trans 'Select Items' %}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-5 border">
-                            <table id="datatable-sale-order" class="table nowrap w-100 mb-5"
-                                   data-url="{% url "SaleOrderListAPI" %}"
-                                   data-method="GET">
-                                <thead>
-                                <th class="w-5">#</th>
-                                <th class="w-5"></th>
-                                <th class="w-60">{% trans "Name" %}</th>
-                                <th class="w-30">{% trans "Code" %}</th>
-                                </thead>
-                            </table>
-                        </div>
-                        <div class="col-7 border">
-                            <table id="datatable-product-of-so" class="table nowrap mb-5 w-lg-630p"
-                                   data-method="GET"
-                                   data-url="{% url 'ProductListSaleOrderAPI' pk=0 %}"
-                            >
-                                <thead>
-                                <th class="w-5">#</th>
-                                <th class="w-5"></th>
-                                <th class="w-45">{% trans "Product" %}</th>
-                                <th class="w-15">{% trans "Quantity" %}</th>
-                                <th class="w-15">{% trans "Remain" %}</th>
-                                <th class="w-15">{% trans "Request" %}</th>
-                                </thead>
-                            </table>
+        <div class="modal fade" id="modal-select-sale-order" tabindex="-1" role="dialog"
+             aria-labelledby="exampleModalLarge01" aria-hidden="true">
+            <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{% trans 'Select Items' %}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-5 border">
+                                <table id="datatable-sale-order" class="table nowrap w-100 mb-5"
+                                       data-url="{% url "SaleOrderListAPI" %}"
+                                       data-method="GET">
+                                    <thead>
+                                    <th class="w-5">#</th>
+                                    <th class="w-5"></th>
+                                    <th class="w-60">{% trans "Name" %}</th>
+                                    <th class="w-30">{% trans "Code" %}</th>
+                                    </thead>
+                                </table>
+                            </div>
+                            <div class="col-7 border">
+                                <table id="datatable-product-of-so" class="table nowrap mb-5 w-lg-630p"
+                                       data-method="GET"
+                                       data-url="{% url 'ProductListSaleOrderAPI' pk=0 %}"
+                                >
+                                    <thead>
+                                    <th class="w-5">#</th>
+                                    <th class="w-5"></th>
+                                    <th class="w-45">{% trans "Product" %}</th>
+                                    <th class="w-15">{% trans "Quantity" %}</th>
+                                    <th class="w-15">{% trans "Remain" %}</th>
+                                    <th class="w-15">{% trans "Request" %}</th>
+                                    </thead>
+                                </table>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary"
-                            data-bs-dismiss="modal">{% trans "Cancel" %}</button>
-                    <button type="button" class="btn btn-primary" id="btn-select-so-product">{% trans 'Next' %}</button>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary"
+                                data-bs-dismiss="modal">{% trans "Cancel" %}</button>
+                        <button type="button" class="btn btn-primary"
+                                id="btn-select-so-product">{% trans 'Next' %}</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="modal fade" id="modal-select-request-for" tabindex="-1" role="dialog"
-         aria-labelledby="exampleModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">{% trans 'Select type of purchase' %}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-4">
-                            <button type="button" class="btn btn-info w-100" type="button"
-                                    id="btn-select-type-sale-order" data-bs-toggle="modal"
-                                    data-bs-target="#modal-select-sale-order">{% trans 'For Sale Order' %}</button>
-                        </div>
-                        <div class="col-4">
-                            <button class="btn btn-primary w-100" type="button"
-                                    id="btn-select-type-stock">{% trans 'For Stock' %}</button>
-                        </div>
-                        <div class="col-4">
-                            <button class="btn btn-warning w-100" type="button"
-                                    id="btn-select-type-other">{% trans 'For Other' %}</button>
+        <div class="modal fade" id="modal-select-request-for" tabindex="-1" role="dialog"
+             aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">{% trans 'Select type of purchase' %}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-4">
+                                <button type="button" class="btn btn-info w-100" type="button"
+                                        id="btn-select-type-sale-order" data-bs-toggle="modal"
+                                        data-bs-target="#modal-select-sale-order">{% trans 'For Sale Order' %}</button>
+                            </div>
+                            <div class="col-4">
+                                <button class="btn btn-primary w-100" type="button"
+                                        id="btn-select-type-stock">{% trans 'For Stock' %}</button>
+                            </div>
+                            <div class="col-4">
+                                <button class="btn btn-warning w-100" type="button"
+                                        id="btn-select-type-other">{% trans 'For Other' %}</button>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary"
-                            data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary"
+                                data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-
-
-{% endblock %}
-{% block dataHiddenGroup %}
-    <div id="box-select-so-product">
+        <div class="hidden">
+            <div id="box-select-so-product">
             <span class="input-affix-wrapper">
                 <span class="input-prefix" id="dropdownBeneficiary">
                     <i class="fas fa-info-circle text-primary" aria-expanded="false"
@@ -406,19 +403,26 @@
                 <select
                         class="form-control box-select-product"
                         data-method="GET"
-                        data-url="{% url "ProductListAPI" %}"
+                        data-url="{% url "ProductForSaleListAPI" %}"
+                        data-keyResp="product_sale_list"
                 >
                 </select>
             </span>
-    </div>
-    <div id="box-select-so-product-uom">
-        <select class="form-control box-select-uom" data-method="GET"
-                data-url="{% url "UnitOfMeasureListAPI" %}"></select>
-    </div>
-    <div id="box-select-so-product-tax">
-        <select class="form-control box-select-tax" data-method="GET" data-url="{% url "TaxListAPI" %}"></select>
-    </div>
+            </div>
+            <div id="box-select-so-product-uom">
+                <select class="form-control box-select-uom" data-method="GET"
+                        data-url="{% url "UnitOfMeasureListAPI" %}" data-keyResp="unit_of_measure"></select>
+            </div>
+            <div id="box-select-so-product-tax">
+                <select class="form-control box-select-tax" data-method="GET"
+                        data-url="{% url "TaxListAPI" %}" data-keyResp="tax_list"></select>
+            </div>
+        </div>
+    </form>
 
+
+{% endblock %}
+{% block dataHiddenGroup %}
     <input id="trans-factory"
            data-trans-more-info="{% trans 'More Information' %}"
            data-trans-more="{% trans 'More' %}"
@@ -434,11 +438,13 @@
            data-url-contact-detail="{% url 'ContactDetail' pk=0 %}"
            data-url-so-product="{% url 'ProductListSaleOrderAPI' pk=0 %}"
            data-url-uom-group="{% url 'UnitOfMeasureGroupListAPI' %}"
+           data-url-this-page="{% url 'PurchaseRequestCreate' %}"
     >
 {% endblock %}
 
 {% block jsFooter %}
     <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'assets/sales/purchasing/js/purchase_request/purchase_request_common.js' %}"></script>
     <script src="{% static 'assets/sales/purchasing/js/purchase_request/purchase_request_create.js' %}"></script>
 {% endblock %}

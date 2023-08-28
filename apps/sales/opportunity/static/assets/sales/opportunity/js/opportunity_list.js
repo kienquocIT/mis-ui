@@ -1,293 +1,44 @@
-$(function () {
-    $(document).ready(function () {
-        let boxCustomer = $('#select-box-opportunity-create-customer');
-        let boxProductCategory = $('#select-box-product-category');
+$(document).ready(async function () {
+    let employee_current_id = $('#employee_current_id').val();
+    let config = await loadConfig().then();
 
-        let $table = $('#table_opportunity_list');
-        let listURL = $table.attr('data-url');
+    let customerSelectEle = $('#select-box-opportunity-create-customer');
+    let productCategorySelectEle = $('#select-box-product-category');
+    let salePersonSelectEle = $('#select-box-sale-person');
 
-        let employee_current_id = $('#employee_current_id').val();
-        let config = JSON.parse($('#id-config-data').text());
+    loadDtbOpportunityList();
 
-        let config_is_AM_create = config.is_account_manager_create;
-
-        function getOppList(data) {
-            let result = []
-            data.map(function (item) {
-                let list_sale_team = item.opportunity_sale_team_datas.map(obj => obj.member.id)
-                if (item.sale_person.id === employee_current_id || list_sale_team.includes(employee_current_id)) {
-                    result.push(item)
-                }
-            })
-            return result
-        }
-
-        function loadDtb() {
-            if (!$.fn.DataTable.isDataTable('#table_opportunity_list-purchase-request')) {
-                let $table = $('#table_opportunity_list')
-                let frm = new SetupFormSubmit($table);
-                $table.DataTableDefault({
-                    ajax: {
-                        url: frm.dataUrl,
-                        type: frm.dataMethod,
-                        dataSrc: function (resp) {
-                            let data = $.fn.switcherResp(resp);
-                            if (data && resp.data.hasOwnProperty('opportunity_list')) {
-                                return resp.data['opportunity_list'] ? resp.data['opportunity_list'] : [];
-                            }
-                            throw Error('Call data raise errors.')
-                        },
-                    },
-                    columns: [
-                        {
-                            targets: 0,
-                            render: () => {
-                                return `<div class="form-check"><input type="checkbox" class="form-check-input"></div>`
-                            }
-                        },
-                        {
-                            targets: 1,
-                            render: (data, type, row) => {
-                                const link = $('#opportunity-link').data('link-update').format_url_with_uuid(row.id)
-                                return `<a href="${link}" class="link-primary underline_hover">${row.code}</a>`
-                            }
-                        },
-                        {
-                            targets: 2,
-                            render: (data, type, row) => {
-                                return `<p>${row.title}</p>`
-                            }
-                        },
-                        {
-                            targets: 3,
-                            render: (data, type, row) => {
-                                return `<p>${row.customer.title}</p>`
-                            }
-                        },
-                        {
-                            targets: 4,
-                            render: (data, type, row) => {
-                                return `<span class="badge badge badge-soft-success  ml-2 mt-2">${row.sale_person.name}</span>`
-                            }
-                        },
-                        {
-                            targets: 5,
-                            render: (data, type, row) => {
-                                let open_date = null;
-                                if (row.open_date !== null) {
-                                    open_date = row.open_date.split(" ")[0]
-                                }
-                                return `<p>${open_date}</p>`
-                            }
-                        },
-                        {
-                            targets: 6,
-                            render: (data, type, row) => {
-                                let close_date = null;
-                                if (row.close_date !== null) {
-                                    close_date = row.close_date.split(" ")[0]
-                                }
-                                return `<p>${close_date}</p>`
-                            }
-                        },
-                        {
-                            targets: 7,
-                            render: (data, type, row) => {
-                                let stage_current = null;
-                                stage_current = row.stage.find(function (obj) {
-                                    return obj.is_current === true;
-                                });
-                                return `<p>${stage_current.indicator}</p>`
-                            }
-                        },
-                        {
-                            targets: 8,
-                            className: 'action-center',
-                            render: (data, type, row) => {
-                                let urlUpdate = $('#opportunity-link').attr('data-link-update').format_url_with_uuid(row.id)
-                                return `<div><a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" `
-                                    + `data-bs-original-title="Delete" href="javascript:void(0)" data-url="${urlUpdate}" `
-                                    + `data-method="DELETE"><span class="btn-icon-wrap"><span class="feather-icon">`
-                                    + `<i data-feather="trash-2"></i></span></span></a></div>`;
-                            },
-                        }
-                    ],
-                });
-            }
-        }
-
-        loadDtb();
-
-
-        let is_load_customer = false;
-        let is_load_product_category = false;
-        let is_load_sale_person = false;
-
-        function loadCustomer() {
-            let url = boxCustomer.attr('data-select2-url');
-            let method = boxCustomer.attr('data-method');
-            $.fn.callAjax2({
-                'url': url,
-                'method': method
-            }).then(
-                (resp) => {
+    SetupFormSubmit.validate(
+        $('#form-create_opportunity'),
+        {
+            submitHandler: function (form) {
+                let combinesData = OpportunityLoadDropdown.combinesData($(form))
+                $.fn.callAjax2({
+                    url: combinesData.url,
+                    method: combinesData.method,
+                    data: combinesData.data,
+                }).then((resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        if (data.hasOwnProperty('account_list') && Array.isArray(data.account_list)) {
-                            is_load_customer = true;
-                            boxCustomer.append(`<option value=""></option>`);
-                            $('#data-customer').attr('value', JSON.stringify(data.account_list));
-                            if (config_is_AM_create) {
-                                data.account_list.map(function (item) {
-                                    let list_manager = item.manager.map(obj => obj.id)
-                                    if (list_manager.includes(employee_current_id)) {
-                                        boxCustomer.append(`<option value="${item.id}">
-                                                            <span class="account-title">${item.name}</span>
-                                                        </option>`)
-                                    }
-                                })
-                            } else {
-                                data.account_list.map(function (item) {
-                                    boxCustomer.append(`<option value="${item.id}">
-                                                            <span class="account-title">${item.name}</span>
-                                                        </option>`)
-                                })
-                            }
-                        }
+                        $.fn.notifyB({description: data.message}, 'success')
+                        setTimeout(() => {
+                            window.location.href = $(form).data('url-detail').format_url_with_uuid(data.id);
+                        }, 1000)
                     }
+                }, (errs) => {
+                    $.fn.switcherResp(errs);
                 })
+            }
         }
+    );
 
-
-        $('#btn-create_opportunity').on('click', function (e) {
-            e.preventDefault()
-            let $form = document.getElementById('form-create_opportunity');
-            let _form = new SetupFormSubmit($('#form-create_opportunity'));
-            let submitFields = [
-                'title',
-                'code',
-                'customer',
-                'sale_person',
-            ]
-            if (_form.dataForm) {
-                for (let key in _form.dataForm) {
-                    if (!submitFields.includes(key)) delete _form.dataForm[key]
-                }
-            }
-            _form.dataForm['product_category'] = $('#select-box-product-category').val();
-            _form.dataForm['open_date'] = new Date();
-            let csr = $("[name=csrfmiddlewaretoken]").val();
-            $.fn.callAjax(_form.dataUrl, _form.dataMethod, _form.dataForm, csr)
-                .then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyB({description: data.message}, 'success')
-                            $.fn.redirectUrl($($form).attr('data-url-redirect').format_url_with_uuid(data.id), 1000);
-                        }
-                    },
-                    (errs) => {
-                        console.log(errs)
-                        $.fn.notifyB({description: "Opportunity create fail"}, 'failure')
-                    }
-                )
-        });
-
-        function loadProductCategory() {
-            let ele = boxProductCategory;
-            let url = ele.attr('data-select2-url');
-            let method = ele.attr('data-method');
-            $.fn.callAjax2({
-                'url': url,
-                'method': method
-            }).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        if (data.hasOwnProperty('product_category_list') && Array.isArray(data.product_category_list)) {
-                            is_load_product_category = true;
-                            data.product_category_list.map(function (item) {
-                                boxProductCategory.append(`<option value="${item.id}">
-                                                            <span>${item.title}</span>
-                                                        </option>`)
-                            })
-                        }
-                    }
-                }
-            )
-        }
-
-
-        let dict_customer = {}
-        let dict_sale_person = {}
-        let list_sale_person = []
-
-        function loadSalePerson() {
-            let ele = $('#select-box-sale-person');
-            $.fn.callAjax2({
-                'url': ele.data('select2-url'),
-                'method': ele.data('method'),
-                'isDropdown': true
-            }).then((resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('employee_list')) {
-                        is_load_sale_person = true;
-                        list_sale_person = data.employee_list;
-                        // if (config_is_AM_create) {
-                        data.employee_list.map(function (employee) {
-                            if (employee.id === employee_current_id) {
-                                ele.append(`<option value="${employee.id}" selected">${employee.full_name}</option>`);
-                                $('#group_id_emp_login').val(employee.group.id);
-                            }
-                        })
-                    }
-                }
-            }, (errs) => {
-            },)
-        }
-
-        loadSalePerson();
-
-        boxCustomer.on('change', function () {
-            if (Object.keys(dict_customer).length === 0) {
-                dict_customer = JSON.parse($('#data-customer').val()).reduce((obj, item) => {
-                    obj[item.id] = item;
-                    return obj;
-                }, {});
-            }
-            if (Object.keys(dict_sale_person).length === 0) {
-                dict_sale_person = list_sale_person.reduce((obj, item) => {
-                    obj[item.id] = item;
-                    return obj;
-                }, {});
-            }
-
-            let group_id = $('#group_id_emp_login').val();
-            let select_box_sale_person = $("#select-box-sale-person");
-            select_box_sale_person.html('');
-            if (group_id === '') {
-                let emp_current = dict_sale_person[employee_current_id];
-                select_box_sale_person.append(`<option value="${emp_current.id}" selected">${emp_current.full_name}</option>`)
-            }
-            let list_customer_am = dict_customer[$(this).val()].manager.map(obj => obj.id)
-
-            list_sale_person.map(function (item) {
-                if (item.group.id === group_id && list_customer_am.includes(item.id)) {
-                    select_box_sale_person.append(`<option value="${item.id}">${item.full_name}</option>`)
-                }
-            })
-        })
-        $(document).on('click', '#create_opportunity_button', function () {
-            if (!is_load_customer) {
-                loadCustomer();
-            }
-            if (!is_load_product_category) {
-                loadProductCategory();
-            }
-            if (!is_load_sale_person) {
-                loadSalePerson();
-            }
-        })
+    $(document).on('click', '#create_opportunity_button', function () {
+        OpportunityLoadDropdown.loadCustomer(customerSelectEle, {}, config.is_account_manager_create, employee_current_id);
+        OpportunityLoadDropdown.loadProductCategory(productCategorySelectEle);
     })
-});
+
+    customerSelectEle.on('change', function () {
+        let customer = SelectDDControl.get_data_from_idx($(this), $(this).val());
+        OpportunityLoadDropdown.loadSalePerson(salePersonSelectEle, {}, config.is_account_manager_create, employee_current_id, customer.manager.map(obj => obj.id));
+    })
+})

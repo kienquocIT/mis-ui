@@ -1,5 +1,6 @@
 '{% extends 'base.html' %}
 {% load static i18n %}
+{% block title %}{% trans 'Opportunity Config' %}{% endblock %}
 {% block cssHeader %}
 {% endblock %}
 {% block pageAction %}
@@ -332,5 +333,6 @@
 
 
 {% block jsFooter %}
+    <script src="{% static 'assets/sales/opportunity/js/opportunity_common.js' %}"></script>
     <script src="{% static 'assets/sales/opportunity/js/opportunity_config.js' %}"></script>
 {% endblock %}'

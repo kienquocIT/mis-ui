@@ -1,8 +1,5 @@
 $(document).ready(function () {
 
-    let list_contact = [];
-    let dict_contact = {};
-
     const searchParams = new URLSearchParams(window.location.search);
     const param = searchParams.get("type");
     let ele_request_for = $('[name="request_for"]')
@@ -10,412 +7,9 @@ $(document).ready(function () {
     let btn_change_pr_product = $('.btn-change-pr-product');
     let btn_add_product = $('.btn-add-product');
 
-    let dict_supplier = {};
-
-    function loadSupplier() {
-        let ele = $('#box-select-supplier');
-        let url = ele.attr('data-select2-url');
-        let method = ele.attr('data-method');
-        $.fn.callAjax2({
-            'url': url,
-            'method': method,
-            'isDropdown': true,
-        }).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                if (data.hasOwnProperty('account_list') && Array.isArray(data.account_list)) {
-                    ele.append(`<option></option>`)
-                    data.account_list.map(function (item) {
-                        dict_supplier[item.id] = item;
-                        if (item.account_type.includes("Supplier")) {
-                            ele.append(`<option value="${item.id}">${item.name}</option>`);
-                        }
-                    })
-                }
-            }
-        })
-    }
-
-    function loadContact() {
-        let ele = $('#box-select-contact');
-        let url = ele.attr('data-select2-url');
-        let method = ele.attr('data-method');
-        $.fn.callAjax2({
-            'url': url,
-            'method': method,
-            'isDropdown': true,
-        }).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                if (resp.data.hasOwnProperty('contact_list') && Array.isArray(resp.data.contact_list)) {
-                    list_contact = data.contact_list;
-                    dict_contact = data.contact_list.reduce((obj, item) => {
-                        obj[item.id] = item;
-                        return obj;
-                    }, {});
-                }
-            }
-        })
-    }
-
-    function loadTax() {
-        let ele = $('#box-select-so-product-tax').find('select');
-        let url = ele.data('url');
-        let method = ele.data('method');
-        $.fn.callAjax2({
-            'url': url,
-            'method': method,
-        }).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('tax_list')) {
-                    ele.append(`<option data-value="0"></option>`);
-                    data.tax_list.map(function (item) {
-                        ele.append(`<option value="${item.id}" data-value="${item.rate}">${item.title} (${item.rate} %)</option>`);
-                    })
-                }
-            }
-        })
-    }
-
-    let list_uom = [];
-
-    function loadUoM() {
-        let ele = $('#box-select-so-product-uom').find('select');
-        let url = ele.data('url');
-        let method = ele.data('method');
-        if (list_uom.length === 0) {
-            $.fn.callAjax2({
-                'url': url,
-                'method': method,
-            }).then((resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('unit_of_measure')) {
-                        data.unit_of_measure.map(function (item) {
-                            list_uom.push(item);
-                        })
-                    }
-                }
-            })
-        }
-    }
-
-    let list_product = []
-    let dict_product = {}
-
-    function loadProduct() {
-        let ele = $('#box-select-so-product').find('select');
-        let url = ele.data('url');
-        let method = ele.data('method');
-        if (ele.find('option').length === 0) {
-            $.fn.callAjax2({
-                'url': url,
-                'method': method,
-            }).then((resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product_list')) {
-                        ele.append(`<option></option>`);
-                        data.product_list.map(function (item) {
-                            list_product.push(item)
-                            dict_product[item.id] = item;
-                            ele.append(`<option value="${item.id}">${item.title}</option>`);
-                        })
-                    }
-                }
-            })
-        }
-    }
-
-
-    function loadSaleOrder() {
-        if (!$.fn.DataTable.isDataTable('#datatable-sale-order')) {
-            let $table = $('#datatable-sale-order')
-            let frm = new SetupFormSubmit($table);
-            $table.DataTableDefault({
-                rowIdx: true,
-                paging: false,
-                scrollY: '200px',
-                autoWidth: false,
-                ajax: {
-                    url: frm.dataUrl,
-                    type: frm.dataMethod,
-                    dataSrc: function (resp) {
-                        let data = $.fn.switcherResp(resp);
-                        if (data && resp.data.hasOwnProperty('sale_order_list')) {
-                            return resp.data['sale_order_list'] ? resp.data['sale_order_list'] : [];
-                        }
-                        throw Error('Call data raise errors.')
-                    },
-                },
-                columns: [
-                    {
-                        targets: 0,
-                        className: 'wrap-text',
-                        render: (data, type, row) => {
-                            return ``
-                        }
-                    },
-                    {
-                        targets: 1,
-                        className: 'wrap-text',
-                        render: (data, type, row) => {
-                            return `<span class="form-check"><input type="checkbox" class="form-check-input inp-check-so" data-id="${row.id}"/></span>`
-                        }
-                    },
-                    {
-                        data: 'title',
-                        targets: 2,
-                        className: 'wrap-text',
-                        render: (data, type, row) => {
-                            return `<p>${data}</p>`
-                        }
-                    },
-                    {
-                        data: 'code',
-                        targets: 3,
-                        className: 'wrap-text',
-                        render: (data, type, row) => {
-                            return `<p class="p-so-code">${data}</p>`
-                        }
-                    },
-                ],
-            });
-        }
-    }
 
     let dict_so_product = {} // {product_of_so_id: {.....}}
     let dict_so = {} // { sale_order_id: {...} }
-
-    function loadSOProduct(id, table) {
-        table.clear().draw();
-        if (dict_so.hasOwnProperty(id)) {
-            let so_product_datas = dict_so[id].product_data;
-            so_product_datas.map(function (item) {
-                let data_temp = {
-                    'id': item.id,
-                    'title': item.product.title,
-                    'quantity': item.product_quantity,
-                    'remain': item.remain_for_purchase_request,
-                }
-                table.row.add(data_temp).draw().node();
-            })
-        } else {
-            if (id !== undefined) {
-                let url = $('#url-factory').data('url-so-product').format_url_with_uuid(id);
-                $.fn.callAjax2({
-                    'url': url,
-                    'method': 'GET',
-                }).then((resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        if (resp.data.hasOwnProperty('so_product_list')) {
-                            dict_so[data.so_product_list.id] = data.so_product_list;
-                            let so_product_datas = data.so_product_list.product_data;
-                            so_product_datas.map(function (item) {
-                                dict_so_product[item.id] = item;
-                                if (item.product.product_choice.includes(2)) {
-                                    let data_temp = {
-                                        'id': item.id,
-                                        'title': item.product.title,
-                                        'quantity': item.product_quantity,
-                                        'remain': item.remain_for_purchase_request,
-                                    }
-                                    table.row.add(data_temp).draw().node();
-                                }
-                            })
-                        }
-                    }
-                })
-            }
-        }
-    }
-
-    function loadDtbSOProduct(product_datas) {
-        if (!$.fn.DataTable.isDataTable('#datatable-product-of-so')) {
-            let $table = $('#datatable-product-of-so')
-            $table.DataTableDefault({
-                rowIdx: true,
-                paging: false,
-                scrollY: '200px',
-                autoWidth: false,
-                data: product_datas,
-                columns: [
-                    {
-                        targets: 0,
-                        className: 'wrap-text',
-                        render: (data, type, row) => {
-                            return ``
-                        }
-                    },
-                    {
-                        targets: 1,
-                        className: 'wrap-text',
-                        render: (data, type, row) => {
-                            return `<span class="form-check"><input type="checkbox" class="form-check-input inp-check-so-product" data-id="${row.id}"/></span>`
-                        }
-                    },
-                    {
-                        data: 'title',
-                        targets: 2,
-                        className: 'wrap-text',
-                        render: (data, type, row) => {
-                            return `<p>${data}</p>`
-                        }
-                    },
-                    {
-                        data: 'quantity',
-                        targets: 3,
-                        className: 'wrap-text',
-                        render: (data, type, row) => {
-                            return `<p>${data}</p>`
-                        }
-                    },
-                    {
-                        data: 'remain',
-                        targets: 4,
-                        className: 'wrap-text',
-                        render: (data, type, row) => {
-                            return `<p class="p-so-product-remain">${data}</p>`
-                        }
-                    },
-                    {
-                        data: 'request',
-                        targets: 5,
-                        className: 'wrap-text',
-                        render: (data, type, row) => {
-                            return `<input class="form-control inp-request-so-product"/>`
-                        }
-                    },
-                ],
-            });
-        }
-    }
-
-    function getHtmlProductTitle(row, product) {
-        let ele_trans = $('#trans-factory');
-        let ele_url = $('#url-factory');
-        return `<span class="input-affix-wrapper">
-                <span class="input-prefix" id="dropdownBeneficiary">
-                    <i class="fas fa-info-circle text-primary" aria-expanded="false"
-                       data-bs-toggle="dropdown"></i>
-                    <span role="menu" class="dropdown-menu ml-4 pl-3 pr-3 pt-3 pb-3"
-                          style="width: 25rem;">
-                        <div class="row">
-                            <span class="col-7">${ele_trans.data('trans-more-info')}</span>
-                            <a class="col-5 text-right" target="_blank"
-                               href="${ele_url.data('url-product-detail')}">
-                                <span class="badge btn-outline-primary">${ele_trans.data('trans-more')}&nbsp;<i
-                                    class="bi bi-arrow-right"></i></span>
-                            </a>
-                        </div>
-                        <div class="dropdown-divider"></div>
-                        <div class="row">
-                            <span class="col-5">${ele_trans.data('trans-product-name')}</span>
-                            <span class="col-7 text-primary span-product-name"></span>
-                        </div>
-                        <div class="row">
-                            <span class="col-5">${ele_trans.data('trans-code')}</span>
-                            <span class="col-7 text-primary span-product-code"></span>
-                        </div>
-                        <div class="row">
-                            <span class="col-5">UoM Group</span>
-                            <span class="col-7 text-primary span-product-uom-group"></span>
-                        </div>
-                        <div class="row">
-                            <span class="col-5">UoM</span>
-                            <span class="col-7 text-primary span-product-uom"></span>
-                        </div>
-                    </span>
-                </span>
-                <input class="form-control inp-product" data-so-product-id="${row.id}" data-id="${product.id}" value="${product.title}" readonly/>
-            </span>`
-    }
-
-    function loadDtbPRProduct(product_datas) {
-        if (!$.fn.DataTable.isDataTable('#datatable-pr-product')) {
-            let $table = $('#datatable-pr-product')
-            $table.DataTableDefault({
-                rowIdx: true,
-                reloadCurrency: true,
-                paging: false,
-                autoWidth: false,
-                data: product_datas,
-                columns: [
-                    {
-                        targets: 0,
-                        className: 'wrap-text',
-                        render: (data, type, row) => {
-                            return ``
-                        }
-                    },
-                    {
-                        data: 'product',
-                        targets: 1,
-                        render: (data, type, row) => {
-                            if (data === undefined) {
-                                return $('#box-select-so-product').html()
-                            }
-                            return getHtmlProductTitle(row, data);
-                        }
-                    },
-                    {
-                        targets: 2,
-                        className: 'wrap-text',
-                        render: (data, type, row) => {
-                            return `<input class="form-control inp-description" />`
-                        }
-                    },
-                    {
-                        data: 'product',
-                        targets: 3,
-                        className: 'wrap-text',
-                        render: (data, type, row) => {
-                            if (row.product === undefined) {
-                                return $('#box-select-so-product-uom').html();
-                            }
-                            return `<p class="inp-uom" data-id="${data.uom.id}">${data.uom.title}</p>`
-                        }
-                    },
-                    {
-                        data: 'request',
-                        targets: 4,
-                        className: 'wrap-text',
-                        render: (data, type, row) => {
-                            if (row.product === undefined) {
-                                return `<input class="form-control inp-quantity"/>`
-                            }
-                            return `<div class="readonly"><input class="form-control inp-quantity" readonly value="${data}"></div>`
-                        }
-                    },
-                    {
-                        targets: 5,
-                        className: 'wrap-text',
-                        render: (data, type, row) => {
-                            return `<input class="form-control mask-money inp-unit-price" />`
-                        }
-                    },
-                    {
-                        targets: 6,
-                        className: 'wrap-text',
-                        render: (data, type, row) => {
-                            return $('#box-select-so-product-tax').html();
-
-                        }
-                    },
-                    {
-                        targets: 7,
-                        className: 'wrap-text',
-                        render: (data, type, row) => {
-                            return `<span class="mask-money inp-subtotal" data-init-money=0></span>`
-
-                        }
-                    },
-                ],
-            });
-        }
-    }
 
     switch (param) {
         case 'sale-order':
@@ -432,16 +26,12 @@ $(document).ready(function () {
             ele_request_for.attr('data-id', 1);
             ele_sale_order.closest('.form-group').addClass('hidden');
             btn_change_pr_product.addClass('hidden');
-            loadProduct();
-            loadUoM();
             break;
         case 'other':
             ele_request_for.val('Other');
             ele_request_for.attr('data-id', 2);
             ele_sale_order.closest('.form-group').addClass('hidden');
             btn_change_pr_product.addClass('hidden');
-            loadProduct();
-            loadUoM();
             break;
     }
 
@@ -456,11 +46,11 @@ $(document).ready(function () {
         },
         "cancelClass": "btn-secondary",
         maxYear: parseInt(moment().format('YYYY-MM-DD'), 10) + 100
-    });
+    }).val('');
 
-    loadSupplier();
-    loadContact();
-    loadTax();
+    PurchaseRequestLoadPage.loadSupplier()
+
+
     loadDtbPRProduct();
 
     // event in model select product from sale order
@@ -468,14 +58,14 @@ $(document).ready(function () {
         let table_so_product = $('#datatable-product-of-so').DataTable();
         if ($(this).is(':checked')) {
             $('.inp-check-so').not($(this)).prop('checked', false);
-            loadSOProduct($(this).data('id'), table_so_product);
+            loadSOProduct(dict_so, dict_so_product, $(this).data('id'), table_so_product);
         } else {
 
         }
     })
 
     $(document).on('click', '#btn-select-so-product', function () {
-        let ele_url = $('#url-factory');
+        let ele_url = PurchaseRequestLoadPage.urlEle;
         let table_pr_product = $('#datatable-pr-product').DataTable();
         $('.inp-check-so-product:checked').each(function () {
             let num_request = $(this).closest('tr').find('.inp-request-so-product').val();
@@ -496,7 +86,8 @@ $(document).ready(function () {
             ele_new_product.find('.span-product-code').text(product.product.code);
             ele_new_product.find('.span-product-uom').text(product.product.uom.title);
             ele_new_product.find('.span-product-uom-group').text(product.product.uom_group);
-            ele_new_product.find('.box-select-tax').val(product.product.tax_code);
+
+            PurchaseRequestLoadPage.loadTax(ele_new_product.find('.box-select-tax'), product.product.tax_code);
         })
 
         let ele_so_selected = $('.inp-check-so:checked');
@@ -518,33 +109,6 @@ $(document).ready(function () {
         }
     })
 
-
-    // event in table product of purchase request
-    function loadPriceSubProduct(ele) {
-        let quantity = ele.find('.inp-quantity').val();
-        let unit_price = ele.find('.inp-unit-price').valCurrency();
-        let ele_subtotal = ele.find('.inp-subtotal');
-        ele_subtotal.attr('data-init-money', quantity * unit_price);
-        $.fn.initMaskMoney2();
-    }
-
-    function loadFinalPrice(ele) {
-        let sub_ele = ele.find('tbody tr');
-        let total_pretax = 0;
-        let taxes = 0;
-        let total = 0;
-        sub_ele.each(function () {
-            let pretax = parseFloat($(this).find('.inp-subtotal').attr('data-init-money'));
-            let tax = pretax * parseFloat($(this).find('.box-select-tax option:selected').data('value')) / 100;
-            total_pretax += pretax;
-            taxes += tax
-            total += pretax + tax;
-        })
-        $('#input-product-pretax-amount').attr('value', total_pretax);
-        $('#input-product-taxes').attr('value', taxes);
-        $('#input-product-total').attr('value', total);
-        $.fn.initMaskMoney2();
-    }
 
     $(document).on('change', '.inp-unit-price', function () {
         let tr_current = $(this).closest('tr');
@@ -574,80 +138,31 @@ $(document).ready(function () {
     })
 
     $(document).on('click', '.btn-add-pr-product', function () {
-        let table_pr_product = $('#datatable-pr-product').DataTable();
-        table_pr_product.row.add([]).draw().node();
+        let table = $('#datatable-pr-product')
+        let dataTable = table.DataTable();
+        dataTable.row.add([]).draw().node();
+
+        let last_row = table.find('tbody tr').last();
+        let productSelectEle = last_row.find('.box-select-product');
+        let taxSelectEle = last_row.find('.box-select-tax');
+        PurchaseRequestLoadPage.loadProduct(productSelectEle);
+        PurchaseRequestLoadPage.loadTax(taxSelectEle)
     })
 
     $(document).on('change', '.box-select-product', function () {
-        let product = dict_product[$(this).val()];
+        let product = SelectDDControl.get_data_from_idx($(this), $(this).val());
         let ele_tr_current = $(this).closest('tr');
         let ele_uom = ele_tr_current.find('.box-select-uom');
-        list_uom.filter(obj => obj.group.id === product.general_information.uom_group.id).map(function (item) {
-            if (product.sale_information.hasOwnProperty('default_uom') && product.sale_information.default_uom.id === item.id) {
-                ele_uom.append(`<option value="${item.id}" selected>${item.title}</option>`);
-            }
-            ele_uom.append(`<option value="${item.id}">${item.title}</option>`);
-        })
-
         let ele_tax = ele_tr_current.find('.box-select-tax');
-        ele_tax.val(product.sale_information.tax_code.id);
 
-        let ele_url = $('#url-factory');
-        ele_tr_current.find('.input-affix-wrapper a').attr('href', ele_url.data('url-product-detail').format_url_with_uuid(product.id));
-        ele_tr_current.find('.span-product-name').text(product.title);
-        ele_tr_current.find('.span-product-code').text(product.code);
-        ele_tr_current.find('.span-product-uom').text(product.sale_information.default_uom.title);
-        ele_tr_current.find('.span-product-uom-group').text(product.general_information.uom_group.title);
+        PurchaseRequestLoadPage.loadUoM(ele_uom, product?.['sale_information']?.['default_uom'], {'group': product?.['general_information'].uom_group.id});
+        PurchaseRequestLoadPage.loadTax(ele_tax, product?.['sale_information'].tax_code);
+        let ele_url = PurchaseRequestLoadPage.urlEle;
+        loadProductDetail(ele_tr_current, ele_url, product)
     })
-
-    // event change supplier
-    $(document).on('change', '#box-select-supplier', function () {
-        let supplier_id = $(this).val();
-        let supplier_obj = dict_supplier[supplier_id];
-        let ele_contact = $('#box-select-contact');
-        ele_contact.empty();
-        list_contact.map(function (item) {
-            if (item.account_name.id === supplier_id) {
-                if (supplier_obj.owner.id === item.id) {
-                    ele_contact.append(`<option value="${item.id}" selected>${item.fullname}</option>`)
-                } else {
-                    ele_contact.append(`<option value="${item.id}">${item.fullname}</option>`)
-                }
-            }
-        })
-        let ele_url = $('#url-factory');
-        let supplier_current = dict_supplier[$(this).val()];
-        let ele_parent = $(this).closest('.input-affix-wrapper');
-        ele_parent.find('a').attr('href', ele_url.data('url-account-detail').format_url_with_uuid(supplier_current.id));
-        ele_parent.find('.span-supplier-name').text(supplier_current.name);
-        ele_parent.find('.span-supplier-code').text(supplier_current.code);
-        ele_parent.find('.span-supplier-owner').text(supplier_current.owner.fullname);
-        ele_parent.find('.span-supplier-industry').text(supplier_current.industry.title);
-    })
-
-    // event change type of Purchase Request
-
-    function updateURLParameter(paramName, paramValue) {
-        const url = new URL(window.location.href);
-        if (url.searchParams.has(paramName)) {
-            url.searchParams.set(paramName, paramValue);
-        } else {
-            url.searchParams.append(paramName, paramValue);
-        }
-
-        window.history.replaceState({}, '', url.toString(undefined));
-    }
-
-    function deleteDtbPRProduct() {
-        let table = $('#datatable-pr-product').DataTable();
-        table.clear().draw();
-        $('#input-product-pretax-amount').attr('value', '');
-        $('#input-product-taxes').attr('value', '');
-        $('#input-product-total').attr('value', '');
-    }
 
     $(document).on('click', '#btn-select-type-sale-order', function () {
-        updateURLParameter('type', 'sale-order');
+        updateURLParameter('sale-order');
         ele_request_for.val('Sale Order');
         ele_request_for.attr('data-id', 0);
         ele_sale_order.closest('.form-group').removeClass('hidden');
@@ -660,132 +175,50 @@ $(document).ready(function () {
     })
 
     $(document).on('click', '#btn-select-type-stock', function () {
-        updateURLParameter('type', 'stock');
+        updateURLParameter('stock');
         ele_request_for.val('Stock');
         ele_request_for.attr('data-id', 1);
         ele_sale_order.closest('.form-group').addClass('hidden');
         btn_change_pr_product.addClass('hidden');
         btn_add_product.removeClass('hidden');
-        // reloadEleProduct('stock');
-        if (Object.keys(dict_product).length === 0) {
-            loadProduct();
-        }
-        loadUoM();
         deleteDtbPRProduct();
         $(this).closest('.modal').modal('hide');
     })
 
     $(document).on('click', '#btn-select-type-other', function () {
-        updateURLParameter('type', 'other');
+        updateURLParameter('other');
         ele_request_for.val('Other');
         ele_request_for.attr('data-id', 2);
         ele_sale_order.closest('.form-group').addClass('hidden');
         btn_change_pr_product.addClass('hidden');
         btn_add_product.removeClass('hidden');
-        if (Object.keys(dict_product).length === 0) {
-            loadProduct();
-        }
-        loadUoM();
         deleteDtbPRProduct();
         $(this).closest('.modal').modal('hide');
     })
 
-    // event change contact
-
-    $(document).on('change', '#box-select-contact', function () {
-        let ele_url = $('#url-factory');
-        let contact_current = dict_contact[$(this).val()];
-        let ele_parent = $(this).closest('.input-affix-wrapper');
-        ele_parent.find('a').attr('href', ele_url.data('url-account-detail').format_url_with_uuid(contact_current.id));
-        ele_parent.find('.span-contact-name').text(contact_current.fullname);
-        ele_parent.find('.span-contact-job-title').text(contact_current.job_title);
-        ele_parent.find('.span-contact-mobile').text(contact_current.mobile);
-        ele_parent.find('.span-contact-email').text(contact_current.email);
-        ele_parent.find('.span-contact-report-to').text(contact_current.report_to.name);
-    })
-
-    function getProductDataForStockAndOther() {
-        let list_product_data = []
-        let ele_tr = $('#datatable-pr-product tbody tr');
-        ele_tr.each(function () {
-            let data = {
-                'sale_order_product': null,
-                'product': $(this).find('.box-select-product').val(),
-                'description': $(this).find('.inp-description').val(),
-                'uom': $(this).find('.box-select-uom').val(),
-                'quantity': $(this).find('.inp-quantity').val(),
-                'unit_price': $(this).find('.inp-unit-price').valCurrency(),
-                'tax': $(this).find('.box-select-tax').val(),
-                'sub_total_price': $(this).find('.inp-subtotal').attr('data-init-money'),
-            }
-            list_product_data.push(data)
-        })
-
-        return list_product_data
-    }
-
-    function getProductDataForSaleOrder() {
-        let list_product_data = []
-        let ele_tr = $('#datatable-pr-product tbody tr');
-        ele_tr.each(function () {
-            let data = {
-                'sale_order_product': $(this).find('.inp-product').data('so-product-id'),
-                'product': $(this).find('.inp-product').data('id'),
-                'description': $(this).find('.inp-description').val(),
-                'uom': $(this).find('.inp-uom').data('id'),
-                'quantity': $(this).find('.inp-quantity').val(),
-                'unit_price': $(this).find('.inp-unit-price').valCurrency(),
-                'tax': $(this).find('.box-select-tax').val(),
-                'sub_total_price': $(this).find('.inp-subtotal').attr('data-init-money'),
-            }
-            list_product_data.push(data)
-        })
-
-        return list_product_data
-    }
-
-    function getDataForm(dataForm) {
-        dataForm['supplier'] = $('#box-select-supplier').val();
-        dataForm['contact'] = $('#box-select-contact').val();
-        dataForm['request_for'] = ele_request_for.data('id');
-        if (ele_sale_order.data('id') !== '') {
-            dataForm['sale_order'] = ele_sale_order.data('id');
-        } else {
-            dataForm['sale_order'] = null;
-        }
-        dataForm['system_status'] = 0;
-        dataForm['purchase_status'] = 0;
-
-        if (dataForm['request_for'] !== 0) {
-            dataForm['purchase_request_product_datas'] = getProductDataForStockAndOther();
-        } else {
-            dataForm['purchase_request_product_datas'] = getProductDataForSaleOrder();
-        }
-
-        dataForm['pretax_amount'] = $('#input-product-pretax-amount').valCurrency();
-        dataForm['taxes'] = $('#input-product-taxes').valCurrency();
-        dataForm['total_price'] = $('#input-product-total').valCurrency();
-        return dataForm
-    }
-
     const frm_create = $('#form-create-pr');
-    frm_create.submit(function (event) {
-        event.preventDefault();
-        let frm = new SetupFormSubmit(frm_create);
-        let csr = $("[name=csrfmiddlewaretoken]").val();
-        let frm_data = getDataForm(frm.dataForm);
-        $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm_data, csr).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    $.fn.notifyB({description: data.message}, 'success')
-                    $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
-                }
-            }, (errs) => {
-                console.log(errs)
-                $.fn.notifyB({description: "PR create fail"}, 'failure')
+    SetupFormSubmit.validate(
+        frm_create,
+        {
+            submitHandler: function (form) {
+                let frm = new SetupFormSubmit($(form));
+                let frm_data = getDataForm(frm.dataForm, ele_request_for, ele_sale_order);
+                $.fn.callAjax2({
+                    url: frm.dataUrl,
+                    method: frm.dataMethod,
+                    data: frm_data
+                }).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            $.fn.notifyB({description: data.message}, 'success')
+                            $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
+                        }
+                    }, (errs) => {
+                        $.fn.notifyB({description: errs.data.errors}, 'failure');
+                    }
+                )
             }
-        )
-    })
+        })
 
 })

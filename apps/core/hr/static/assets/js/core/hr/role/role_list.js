@@ -32,14 +32,14 @@ $(function () {
                     'data': 'title',
                     'className': 'wrap-text',
                     'render': (data, type, row, meta) => {
-                        return `<a href="${detailUrl.replace('-pk-', row.id)}"><b>${row.title}</b></a>`;
+                        return `<a href="${detailUrl.format_url_with_uuid(row.id)}"><b>${data}</b></a>`;
                     }
                 }, {
                     'width': '15%',
                     'data': 'abbreviation',
                     'className': 'wrap-text',
                     render: (data, type, row, meta) => {
-                        return `<span>` + row.abbreviation + `</span>`;
+                        return `<span>${data}</span>`;
                     }
                 }, {
                     'width': '55%',
@@ -47,13 +47,13 @@ $(function () {
                     'className': 'wrap-text',
                     render: (data, type, row, meta) => {
                         let arrHTML = [];
-                        (row.holder && Array.isArray(row.holder) ? row.holder : []).forEach(function (value, i) {
+                        (data && Array.isArray(data) ? data : []).forEach(function (value, i) {
                             let hiddenCls = "";
                             if (i >= numLimitShowMember) {
                                 hiddenCls = "hidden";
                             }
                             arrHTML.push(`
-                                <a href="${employeeDetailUrl.replace('-pk-', value.id)}"
+                                <a href="${employeeDetailUrl.format_url_with_uuid(value.id)}"
                                     <span class="child-member badge badge-soft-primary m-1 wrap-text ${hiddenCls}">
                                         ${value?.['full_name']}
                                     </span>
@@ -80,7 +80,7 @@ $(function () {
                     'render': (data, type, row, meta) => {
                         let btnUpdate = `
                         <a 
-                            href="${updateUrl.replace("-pk-", row.id)}" 
+                            href="${updateUrl.format_url_with_uuid(row.id)}" 
                             class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" 
                             data-bs-toggle="tooltip" data-bs-placement="top" title="${$.fn.transEle.attr('data-edit')}"
                         >
@@ -119,7 +119,7 @@ $(function () {
             if (result.isConfirmed) {
                 let frm = new SetupFormSubmit($('#form-delete'));
                 $.fn.callAjax2({
-                    url: frm.dataUrl.replace('/pk/', `/${rowData.id}/`),
+                    url: frm.dataUrl.format_url_with_uuid(rowData.id),
                     method: frm.dataMethod,
                     csrf_token: frm.dataForm['csrfmiddlewaretoken'],
                 }).then((resp) => {

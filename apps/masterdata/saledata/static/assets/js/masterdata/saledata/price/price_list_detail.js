@@ -72,19 +72,15 @@ $(document).ready(function () {
 
     // load for tab setting and dropdown add currency for price list
     function loadCurrency(list_id, currency_list) {
+        list_id = list_id.map(obj => obj.id);
         let ele = $('#select-box-currency');
         currency_list.map(function (item) {
-                if (item.is_primary === true) {
-                    ele.append(`<option value="` + item.id + `" selected>` + item.title + `</option>`);
-                } else {
-                    if (list_id.includes(item.id)) {
-                        ele.append(`<option value="` + item.id + `" selected>` + item.title + `</option>`);
-                    } else {
-                        ele.append(`<option data-primary="0" value="` + item.id + `">` + item.title + `</option>`);
-                    }
-                }
+            if (list_id.includes(item.id)) {
+                ele.append(`<option value="` + item.id + `" selected>` + item.title + `</option>`);
+            } else {
+                ele.append(`<option data-primary="0" value="` + item.id + `">` + item.title + `</option>`);
             }
-        )
+        })
     }
 
     function loadSourcePriceList(id) {
@@ -231,7 +227,7 @@ $(document).ready(function () {
         return list_result
     }
 
-    // load detail price list
+// load detail price list
     let frm = $('#form-update-price-list');
     let pk = window.location.pathname.split('/').pop();
     $.fn.callAjax(frm.attr('data-url').replace(0, pk), 'GET').then(
@@ -292,7 +288,7 @@ $(document).ready(function () {
                 if (data.hasOwnProperty('price')) {
                     let dropdown = $('.dropdown-currency');
                     price_list_detail.currency.map(function (item) {
-                        let abbreviation = currency_dict[item].abbreviation
+                        let abbreviation = currency_dict[item.id].abbreviation
                         dropdown.append(`<div class="form-check form-check mt-2">
                             <input data-id="` + item + `" class="form-check-input display-currency" type="checkbox" id="check-` + abbreviation + `" value="option1" checked>
                             <label class="form-check-label">` + abbreviation + `</label>
@@ -469,7 +465,7 @@ $(document).ready(function () {
         })
 
 
-    // onchange checkbox auto-update
+// onchange checkbox auto-update
     $('#checkbox-update-auto').on('change', function () {
         if ($(this).prop("checked")) {
             $('#select-product-category').prop('disabled', 'disabled');
@@ -493,7 +489,7 @@ $(document).ready(function () {
         }
     })
 
-    // submit form setting price list
+// submit form setting price list
     let price_list_update = [];
     price_list_update.push({
         'id': pk,
@@ -528,10 +524,8 @@ $(document).ready(function () {
         // form update price list
         frm.submit(function (event) {
             event.preventDefault();
-            let csr = $("input[name=csrfmiddlewaretoken]").val();
             let frm = new SetupFormSubmit($(this));
             frm.dataForm['currency'] = $('#select-box-currency').val();
-            frm.dataForm['currency'].push($('#select-box-currency').find('option[data-primary="1"]').val())
             if (frm.dataForm['currency'].length === 0) {
                 frm.dataForm['currency'] = null;
             }
@@ -548,7 +542,6 @@ $(document).ready(function () {
             if (frm.dataForm['can_delete'] === undefined) {
                 frm.dataForm['can_delete'] = false
             }
-            frm.dataForm['currency'] = $('#select-box-currency').val()
 
             $.fn.callAjax(frm.dataUrl.replace(0, pk), frm.dataMethod, frm.dataForm, csr)
                 .then(
@@ -691,8 +684,8 @@ $(document).ready(function () {
         })
     })
 
-    // add input price in modal create new product
-    // let table_price_of_currency = $('#table-price-of-currency').html()
+// add input price in modal create new product
+// let table_price_of_currency = $('#table-price-of-currency').html()
     $('#btn-add-new-item').on('click', function () {
         let type = $('#select-box-type').val()
         switch (type) {
@@ -716,7 +709,7 @@ $(document).ready(function () {
         }
     })
 
-    // delete item
+// delete item
     $(document).on('click', '.btn-del', function () {
         Swal.fire({
             html:
@@ -770,7 +763,7 @@ $(document).ready(function () {
         })
     })
 
-    // on change price in table item
+// on change price in table item
     $(document).on('input', '#datatable-item-list input.form-control', function () {
         $(this).addClass('inp-edited');
     })
@@ -826,7 +819,7 @@ $(document).ready(function () {
         }
     })
 
-    // display currency
+// display currency
     $(document).on('change', '.display-currency', function () {
         let dataId = $(this).attr('data-id')
         let col = $(`.price-currency-exists[data-id="` + dataId + `"]`);

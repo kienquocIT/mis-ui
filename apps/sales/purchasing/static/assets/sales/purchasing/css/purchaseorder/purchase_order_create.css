@@ -77,12 +77,21 @@
 
 .total-area .card {
     margin-top: unset;
+    margin-bottom: unset;
 }
 
-.total-area .card .card-sm .card-body {
+.total-area .card.card-sm .card-body {
     padding: 0.8rem;
 }
 
+.subtotal-area .card {
+    margin-top: unset;
+    margin-bottom: unset;
+}
+
+.subtotal-area .card.card-sm .card-body {
+    padding: 0.5rem;
+}
 
 
 

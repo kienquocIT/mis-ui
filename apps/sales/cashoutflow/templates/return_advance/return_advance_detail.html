@@ -1,20 +1,23 @@
 '{% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
+{% block title %}{% trans 'Return Advacne Detail' %}{% endblock %}
 {% block cssHeader %}
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-outline-primary" type="submit" form="frmDetail">
-        <span>
-            <span>{% trans 'Save' %}</span>
-            <span class="icon">
-                <i class="fa-regular fa-floppy-disk"></i>
+    <a href="{% url 'ReturnAdvanceUpdate' pk=0 %}" id="btn-edit">
+        <button class="btn btn-outline-primary">
+            <span>
+                <span>{% trans 'Edit' %}</span>
+                <span class="icon">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                </span>
             </span>
-        </span>
-    </button>
+        </button>
+    </a>
 {% endblock %}
 {% block pageContent %}
     <form id="frmDetail"
@@ -41,8 +44,7 @@
                         <label class="col-3 col-form-label required">{% trans "Advance Payment" %}</label>
                         <div class="col-9">
                             <select id="chooseAdvancePayment" class="form-select" data-method="GET"
-                                data-select2-url="{% url "AdvancePaymentListAPI" %}" style="color: black"
-                                data-url-detail="{% url "AdvancePaymentDetailAPI" pk=0 %}"
+                                data-url="{% url "AdvancePaymentListAPI" %}" style="color: black"
                                 name="advance_payment" disabled>
                         </select>
                         </div>
@@ -228,8 +230,6 @@
                                     <th>{% trans "Input Return" %}</th>
                                 </tr>
                                 </thead>
-                                <tbody>
-                                </tbody>
                             </table>
                         </div>
                     </div>
@@ -252,7 +252,7 @@
                                                     <div class="col-6">
                                                         <div class="form-check mt-2">
                                                             <input type="checkbox" name="money_received"
-                                                                   class="form-check-input" id="money-received">
+                                                                   class="form-check-input" id="money-received" disabled>
                                                             <label class="text-primary">{% trans "Money received" %}</label>
                                                         </div>
                                                     </div>
@@ -269,7 +269,16 @@
         </div>
     </form>
 {% endblock %}
+{% block dataHiddenGroup %}
+    <input type="text" id="url-factory"
+           data-url-detail-ap="{% url 'AdvancePaymentDetailAPI' pk=0 %}"
+    >
+    <input type="text" id="trans-factory"
+        data-trans-greater-remain="{% trans 'Return value not greater than remain value' %}"
+    >
+{% endblock %}
 {% block jsFooter %}
+    <script src="{% static "assets/js/return_advance/return_advance_common.js" %}"></script>
     <script src="{% static "assets/js/return_advance/return_advance_detail.js" %}"></script>
     <!-- Daterangepicker JS -->
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>

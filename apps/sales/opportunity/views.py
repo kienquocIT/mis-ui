@@ -2,7 +2,7 @@ from django.views import View
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from django.utils.translation import gettext_lazy as _
+from apps.shared.constant import TYPE_CUSTOMER, ROLE_CUSTOMER
 
 from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg, PermCheck
 
@@ -24,16 +24,9 @@ class OpportunityList(View):
         perm_check=PermCheck(url=ApiURL.OPPORTUNITY_LIST, method='GET'),
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CONFIG).get()
-        if resp.state:
-            result = {
-                'employee_current_id': request.user.employee_current_data.get('id', None),
-                'config': resp.result
-            }
-        else:
-            result = {
-                'employee_current_id': request.user.employee_current_data.get('id', None),
-            }
+        result = {
+            'employee_current_id': request.user.employee_current_data.get('id', None),
+        }
         return result, status.HTTP_200_OK
 
 
@@ -65,24 +58,38 @@ class OpportunityDetail(View):
 
     @mask_view(
         auth_require=True,
-        template='sales/opportunity/opportunity_detail.html',
+        template='sales/opportunity/opportunity_detail_page.html',
         menu_active='',
         breadcrumb='OPPORTUNITY_DETAIL_PAGE',
         perm_check=PermCheck(url=ApiURL.OPPORTUNITY_DETAIL, method='GET', fill_key=['pk']),
     )
     def get(self, request, *args, **kwargs):
-        resp0 = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CONFIG).get()
+        return {}, status.HTTP_200_OK
+
+
+class OpportunityUpdate(View):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        template='sales/opportunity/opportunity_detail.html',
+        menu_active='',
+        breadcrumb='OPPORTUNITY_UPDATE_PAGE',
+        perm_check=PermCheck(url=ApiURL.OPPORTUNITY_DETAIL, method='PUT', fill_key=['pk']),
+    )
+    def get(self, request, *args, **kwargs):
         resp1 = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_LIST).get()
         resp2 = ServerAPI(user=request.user, url=ApiURL.CONTACT_LIST).get()
         resp3 = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_LIST).get()
         resp4 = ServerAPI(user=request.user, url=ApiURL.EMPLOYEE_LIST).get()
         result = {
             'employee_current_id': request.user.employee_current_data.get('id', None),
-            'config': resp0.result,
             'account_list': resp1.result,
             'contact_list': resp2.result,
             'opportunity_list': resp3.result,
             'employee_list': resp4.result,
+            'type_customer': TYPE_CUSTOMER,
+            'role_customer': ROLE_CUSTOMER,
         }
         return result, status.HTTP_200_OK
 
@@ -152,7 +159,7 @@ class OpportunityConfigAPI(APIView):
     )
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CONFIG).get()
-        return resp.auto_return()
+        return resp.auto_return(key_success='opportunity_config')
 
     @mask_view(
         login_require=True,

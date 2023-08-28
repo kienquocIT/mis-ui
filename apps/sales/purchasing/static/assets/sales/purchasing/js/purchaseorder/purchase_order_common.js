@@ -90,7 +90,7 @@ class POLoadDataHandle {
             data: dataProduct,
             disabled: !(ele.attr('data-url')),
         });
-    }
+    };
 
     static loadDataProductSelect(ele, is_change_item = true) {
         if (ele.val()) {
@@ -206,14 +206,14 @@ class POLoadDataHandle {
             'dataParams': {'group': uom_group_id},
             disabled: !(ele.attr('data-url')),
         });
-    }
+    };
 
     static loadBoxTax(ele, dataTax = {}) {
         ele.initSelect2({
             data: dataTax,
             disabled: !(ele.attr('data-url')),
         });
-    }
+    };
 
     static loadModalPurchaseRequestTable(is_clear_all = false) {
         let tablePurchaseRequest = $('#datable-purchase-request');
@@ -767,7 +767,7 @@ class POLoadDataHandle {
             }
         }
         POLoadDataHandle.PQDataEle.val(JSON.stringify(PQData))
-    }
+    };
 
     static loadSupplierContactByCheckedQuotation(ele) {
         POLoadDataHandle.supplierSelectEle.empty();

@@ -341,7 +341,8 @@ class ProductForSaleListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_SALE_LIST).get()
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_SALE_LIST).get(data)
         return resp.auto_return(key_success='product_sale_list')
 
 

@@ -27,6 +27,8 @@ let save_shipping_address = $('#save-changes-modal-shipping-address')
 let save_billing_address = $('#save-changes-modal-billing-address')
 let custom_billing_address = $('#custom_billing_address')
 let new_contact_shortcut = $('#new_contact_shortcut')
+let roleForCustomerEle = $('#role-for-customer')
+let roleForSupplierEle = $('#role-for-supplier')
 let shipping_address_id_dict = [];
 let billing_address_id_dict = [];
 let data_contact_mapped = [];
@@ -41,7 +43,26 @@ function loadAccountType(accountTypeData) {
         keyResp: 'account_type_list',
         keyId: 'id',
         keyText: 'title',
-    })
+    }).on('change', function () {
+        let account_type_title_selected = [];
+        accountTypeEle.find('option:selected').each(function () {
+            account_type_title_selected.push($(this).text())
+        })
+        if (account_type_title_selected.includes('Customer'))
+        {
+            roleForCustomerEle.prop('hidden', false);
+        }
+        else {
+            roleForCustomerEle.prop('hidden', true);
+        }
+        if (account_type_title_selected.includes('Supplier'))
+        {
+            roleForSupplierEle.prop('hidden', false);
+        }
+        else {
+            roleForSupplierEle.prop('hidden', true);
+        }
+    });
 }
 
 function loadAccountManager(accountManagerData) {
@@ -681,11 +702,11 @@ function LoadDetail(option) {
                 for (let i = 0; i < data.account_type.length; i++) {
                     if (data.account_type[i].title === 'Customer')
                     {
-                        $('#role-for-customer').prop('hidden', false);
+                        roleForCustomerEle.prop('hidden', false);
                     }
                     if (data.account_type[i].title === 'Supplier')
                     {
-                        $('#role-for-supplier').prop('hidden', false);
+                        roleForSupplierEle.prop('hidden', false);
                     }
                 }
 
@@ -700,7 +721,7 @@ function LoadDetail(option) {
 
                 loadAccountManager(data.manager)
 
-                loadParentAccount(data.parent_account)
+                loadParentAccount(data?.['parent_account_mapped'])
 
                 data_contact_mapped = data.contact_mapped;
                 loadTableSelectedContact(data.contact_mapped);
@@ -1133,7 +1154,7 @@ class AccountHandle {
             return false;
         }
         if (parentAccountEle.val()) {
-            frm.dataForm['parent_account'] = parentAccountEle.val();
+            frm.dataForm['parent_account_mapped'] = parentAccountEle.val();
         }
         if (annualRevenueEle.val()) {
             frm.dataForm['annual_revenue'] = annualRevenueEle.val();
@@ -1185,12 +1206,25 @@ class AccountHandle {
             frm.dataForm['contact_mapped'] = get_contacts_mapped();
             frm.dataForm['bank_accounts_information'] = get_bank_accounts_information();
             frm.dataForm['credit_cards_information'] = get_credit_cards_information();
-            frm.dataForm['currency'] = currencyEle.val();
-            frm.dataForm['payment_term_customer_mapped'] = paymentTermCustomerEle.val();
-            frm.dataForm['price_list_mapped'] = priceListCustomerEle.val();
-            frm.dataForm['credit_limit_customer'] = creditLimitCustomerEle.attr('value');
-            frm.dataForm['payment_term_supplier_mapped'] = paymentTermSupplierEle.val();
-            frm.dataForm['credit_limit_supplier'] = creditLimitSupplierEle.attr('value');
+
+            if (currencyEle.val()) {
+                frm.dataForm['currency'] = currencyEle.val();
+            }
+            if (paymentTermCustomerEle.val()) {
+                frm.dataForm['payment_term_customer_mapped'] = paymentTermCustomerEle.val();
+            }
+            if (priceListCustomerEle.val()) {
+                frm.dataForm['price_list_mapped'] = priceListCustomerEle.val();
+            }
+            if (creditLimitCustomerEle.attr('value')) {
+                frm.dataForm['credit_limit_customer'] = creditLimitCustomerEle.attr('value');
+            }
+            if (paymentTermSupplierEle.val()) {
+                frm.dataForm['payment_term_supplier_mapped'] = paymentTermSupplierEle.val();
+            }
+            if (creditLimitCustomerEle.attr('value')) {
+                frm.dataForm['credit_limit_supplier'] = creditLimitSupplierEle.attr('value');
+            }
 
             let pk = $.fn.getPkDetail()
             url_return = frm.dataUrl.format_url_with_uuid(pk);

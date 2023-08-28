@@ -367,8 +367,6 @@ class IndustryDetailAPI(APIView):
 
 
 class AccountList(View):
-    permission_classes = [IsAuthenticated]
-
     @mask_view(
         auth_require=True,
         template='masterdata/saledata/accounts/account_list.html',
@@ -381,8 +379,6 @@ class AccountList(View):
 
 
 class AccountListAPI(APIView):
-    permission_classes = [IsAuthenticated]
-
     @mask_view(auth_require=True, is_api=True)
     def get(self, request, *args, **kwargs):
         filter = request.query_params.dict()
@@ -393,8 +389,6 @@ class AccountListAPI(APIView):
 
 
 class AccountCreate(View):
-    permission_classes = [IsAuthenticated]
-
     @mask_view(
         auth_require=True,
         template='masterdata/saledata/accounts/account_create.html',
@@ -407,8 +401,6 @@ class AccountCreate(View):
 
 
 class AccountCreateAPI(APIView):
-    permission_classes = [IsAuthenticated]
-
     @mask_view(auth_require=True, is_api=True)
     def post(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_LIST).post(request.data)
@@ -416,25 +408,18 @@ class AccountCreateAPI(APIView):
 
 
 class AccountDetail(View):
-    permission_classes = [IsAuthenticated]
-
     @mask_view(
         auth_require=True,
         template='masterdata/saledata/accounts/account_detail.html',
         breadcrumb='ACCOUNT_DETAIL_PAGE',
         menu_active='menu_account_detail',
-        perm_check=PermCheck(url=ApiURL.ACCOUNT_DETAIL, method='get'),
+        perm_check=PermCheck(url=ApiURL.ACCOUNT_LIST, method='get'),
     )
     def get(self, request, *args, **kwargs):
-        input_mapping_properties = InputMappingProperties.SALE_DATA_ACCOUNT
-        return {
-                   'input_mapping_properties': input_mapping_properties, 'form_id': 'form-detail-update-account'
-               }, status.HTTP_200_OK
+        return {}, status.HTTP_200_OK
 
 
 class AccountUpdate(View):
-    permission_classes = [IsAuthenticated]
-
     @mask_view(
         auth_require=True,
         template='masterdata/saledata/accounts/account_update.html',
@@ -442,7 +427,7 @@ class AccountUpdate(View):
         menu_active='menu_account_update',
         perm_check=PermCheck(url=ApiURL.ACCOUNT_DETAIL, method='put', fill_key=['pk']),
     )
-    def get(self, request, *args, **kwargs):
+    def get(self, request, *args, pk, **kwargs):
         input_mapping_properties = InputMappingProperties.SALE_DATA_ACCOUNT
         return {
                    'input_mapping_properties': input_mapping_properties, 'form_id': 'form-detail-update-account'

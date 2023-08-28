@@ -680,11 +680,13 @@ function LoadDetail(option) {
                     $('#parent-account-div-id').prop('hidden', true);
                     $('#account-tax-code-label-id').removeClass('required');
                     $('#total_employees_label').removeClass('required');
+                    $("#tax-code-label").removeClass("required");
                 } else if (data.account_type_selection === 1) {
                     inputOrganizationEle.prop('checked', true);
                     $('#parent-account-div-id').prop('hidden', false);
                     $('#account-tax-code-label-id').addClass('required');
                     $('#total_employees_label').addClass('required');
+                    $("#tax-code-label").addClass("required");
                 }
 
                 load_shipping_address_mapped(data);
@@ -873,6 +875,7 @@ inputIndividualEle.on('change', function () {
     parentAccountEle.prop('selectedIndex', -1).attr('disabled', true);
     $("#tax-code-label").removeClass("required");
     $("#total_employees_label").removeClass("required");
+    loadParentAccount();
 })
 
 inputOrganizationEle.on('change', function () {

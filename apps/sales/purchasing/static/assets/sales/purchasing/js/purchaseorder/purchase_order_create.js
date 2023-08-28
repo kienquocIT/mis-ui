@@ -95,17 +95,17 @@ $(function () {
         // Action on click btn ADD PURCHASE REQUEST
         $('#btn-confirm-add-purchase-request').on('click', function () {
             POLoadDataHandle.loadDataShowPurchaseRequest();
+            POLoadDataHandle.loadTableProductByPurchaseRequest();
             if (elePurchaseRequest[0].innerHTML) {
                 POLoadDataHandle.loadModalPurchaseQuotation();
             } else {
-                POLoadDataHandle.loadModalPurchaseQuotation(true, true, null);
+                POLoadDataHandle.loadModalPurchaseQuotation(true);
             }
         });
 
         // Action on click btn remove purchase request
         elePurchaseRequest.on('click', '.custom-btn-remove', function() {
-            let removeIDList = [this.getAttribute('data-id')];
-            POLoadDataHandle.loadDataAfterClickRemove(tablePurchaseRequest, removeIDList, "purchase_request");
+            POLoadDataHandle.loadDataWhenRemovePR(this);
         });
 
         // Action on change quantity order of tablePurchaseRequestProduct
@@ -120,23 +120,23 @@ $(function () {
             POLoadDataHandle.loadModalPurchaseQuotation();
         });
 
-        // Action on click add purchase quotation
+        // Action on click ADD PURCHASE QUOTATION
         $('#btn-confirm-add-purchase-quotation').on('click', function () {
             POLoadDataHandle.loadDataShowPurchaseQuotation();
+            POLoadDataHandle.loadPriceListByPurchaseQuotation();
         });
 
         // Action on click checkbox purchase quotation
         elePurchaseQuotation.on('click', '.checkbox-quotation', function () {
+            POLoadDataHandle.loadUpdateDataPQ(this);
+            POLoadDataHandle.loadSupplierContactByCheckedQuotation(this);
+            POLoadDataHandle.loadCheckProductsByCheckedQuotation(this);
             if (this.checked === true) {
-                POLoadDataHandle.loadSupplierContactByCheckedQuotation(this);
                 for (let item of elePurchaseQuotation[0].querySelectorAll('.checkbox-quotation')) {
                     if (item.getAttribute('data-id') !== $(this)[0].getAttribute('data-id')) {
                         item.checked = false;
                     }
                 }
-                POLoadDataHandle.loadCheckProductsByCheckedQuotation(this);
-            } else {
-                $('#btn-confirm-add-purchase-request').click();
             }
         });
 

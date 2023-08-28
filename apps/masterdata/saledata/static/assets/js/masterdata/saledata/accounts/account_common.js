@@ -1154,32 +1154,36 @@ $(document).on('click', '#save-changes-modal-bank-account', function () {
             is_default = 'checked';
         }
         $('#list-bank-account-information').append(
-            `<div class="col-lg-5 col-sm-12">
-                <div class="card close-over">
-                    <div class="card-body">
-                        <button type="button" class="card-close btn-close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                        <div class="card-text">
-                            <input class="radio_select_default_bank_account" name="bank_account_default" type="radio" ` + is_default + `>                 
+            `<div class="card close-over col-5 mr-5">
+                <div class="card-body">
+                    <button type="button" class="card-close btn-close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <div class="row">
+                        <div class="col-1">
+                            <div class="card-text">
+                                <input class="radio_select_default_bank_account" name="bank_account_default" type="radio" ` + is_default + `>                 
+                            </div>
                         </div>
-                        <div class="card-text">
-                            Bank account name: <span class="bank_account_name"><b>` + bank_account_name + `</b></span>
-                        </div>
-                        <div class="card-text">
-                            Bank name: <span class="bank_name"><b>` + bank_name + `</b></span>
-                        </div>
-                        <div class="card-text">
-                            Bank account number: <span class="bank_account_number"><b>` + bank_account_number + `</b></span>
-                        </div>
-                        <div class="card-text" hidden>
-                            Country ID: <span class="bank_country_id"><b>` + bank_country_id + `</b></span>
-                        </div>
-                        <div class="card-text" hidden>
-                            Bank code: <span class="bank_code"><b>` + bank_code + `</b></span>
-                        </div>
-                        <div class="card-text" hidden>
-                            BIC/SWIFT Code: <span class="bic_swift_code"><b>` + bic_swift_code + `</b></span>
+                        <div class="col-11">
+                            <div class="card-text">
+                                Bank account name: <span class="bank_account_name"><b>` + bank_account_name + `</b></span>
+                            </div>
+                            <div class="card-text">
+                                Bank name: <span class="bank_name"><b>` + bank_name + `</b></span>
+                            </div>
+                            <div class="card-text">
+                                Bank account number: <span class="bank_account_number"><b>` + bank_account_number + `</b></span>
+                            </div>
+                            <div class="card-text" hidden>
+                                Country ID: <span class="bank_country_id"><b>` + bank_country_id + `</b></span>
+                            </div>
+                            <div class="card-text" hidden>
+                                Bank code: <span class="bank_code"><b>` + bank_code + `</b></span>
+                            </div>
+                            <div class="card-text" hidden>
+                                BIC/SWIFT Code: <span class="bic_swift_code"><b>` + bic_swift_code + `</b></span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1203,26 +1207,30 @@ $(document).on('click', '#save-changes-modal-credit-card', function () {
             is_default = 'checked';
         }
         $('#list-credit-card-information').append(
-            `<div class="col-lg-5 col-sm-12">
-                <div class="card close-over">
-                    <div class="card-body">
-                        <button type="button" class="card-close btn-close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                        <div class="card-text">
-                            <input class="radio_select_default_credit_card" name="credit_card_default" type="radio" ` + is_default + `>                 
+            `<div class="card close-over col-5 mr-5">
+                <div class="card-body">
+                    <button type="button" class="card-close btn-close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <div class="row">
+                        <div class="col-1">
+                            <div class="card-text">
+                                <input class="radio_select_default_credit_card" name="credit_card_default" type="radio" ` + is_default + `>
+                            </div>
                         </div>
-                        <div class="card-text">
-                            Card Type: <span class="credit_card_type"><b>` + credit_card_type + `</b></span>
-                        </div>
-                        <div class="card-text">
-                            Card Number: <span class="credit_card_number"><b>` + credit_card_number + `</b></span>
-                        </div>
-                        <div class="card-text">
-                            Card Exp: <span class="credit_expired_date"><b>` + credit_card_exp_date + `</b></span>
-                        </div>
-                        <div class="card-text">
-                            Card Name: <span class="credit_card_name"><b>` + credit_card_name + `</b></span>
+                        <div class="col-11">
+                            <div class="card-text">
+                                Card Type: <span class="credit_card_type"><b>` + credit_card_type + `</b></span>
+                            </div>
+                            <div class="card-text">
+                                Card Number: <span class="credit_card_number"><b>` + credit_card_number + `</b></span>
+                            </div>
+                            <div class="card-text">
+                                Card Exp: <span class="credit_expired_date"><b>` + credit_card_exp_date + `</b></span>
+                            </div>
+                            <div class="card-text">
+                                Card Name: <span class="credit_card_name"><b>` + credit_card_name + `</b></span>
+                            </div>
                         </div>
                     </div>
                 </div>

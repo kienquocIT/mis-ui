@@ -458,10 +458,6 @@ class POLoadDataHandle {
                 'is_use': false
             })
         }
-        if (!checked_id) {
-            POLoadDataHandle.supplierSelectEle.empty();
-            POLoadDataHandle.contactSelectEle.empty();
-        }
         if (is_check === true) {
             elePurchaseQuotation.empty();
             elePurchaseQuotation.append(eleAppend);
@@ -471,31 +467,19 @@ class POLoadDataHandle {
             POLoadDataHandle.contactSelectEle.empty();
         }
         POLoadDataHandle.PQDataEle.val(JSON.stringify(purchase_quotations_data));
-        if (elePurchaseQuotation[0].querySelectorAll('.checkbox-quotation')) {
-            if (checked_id) {
+        if (checked_id) {
+            if (elePurchaseQuotation[0].querySelectorAll('.checkbox-quotation')) {
                 for (let eleCheck of elePurchaseQuotation[0].querySelectorAll('.checkbox-quotation')) {
                     if (eleCheck.getAttribute('data-id') === checked_id) {
                         eleCheck.checked = true;
                     }
                 }
             }
+        } else {
+            POLoadDataHandle.supplierSelectEle.empty();
+            POLoadDataHandle.contactSelectEle.empty();
         }
         return true;
-    };
-
-    static loadDataAfterClickRemove(table, removeIDList, code) {
-        let self = this;
-        for (let eleChecked of table[0].querySelectorAll('.table-row-checkbox:checked')) {
-            if (removeIDList.includes(eleChecked.getAttribute('data-id'))) {
-                eleChecked.checked = false;
-            }
-        }
-        if (code === "purchase_request") {
-            self.loadDataWhenClearPR(false);
-        } else if ("purchase_quotation") {
-            self.loadDataWhenClearPQ();
-        }
-        return true
     };
 
     static loadDataWhenRemovePR(ele) {
@@ -512,12 +496,21 @@ class POLoadDataHandle {
     static loadDataWhenRemovePQ(ele) {
         let removeID = ele.getAttribute('data-id');
         let table = $('#datable-purchase-quotation');
+        let eleCheckbox = ele.closest('.inline-elements-badge').querySelector('.checkbox-quotation');
+        if (eleCheckbox.checked === true) {
+            eleCheckbox.checked = false;
+            POLoadDataHandle.loadUpdateDataPQ(eleCheckbox);
+            POLoadDataHandle.loadSupplierContactByCheckedQuotation(eleCheckbox);
+            POLoadDataHandle.loadCheckProductsByCheckedQuotation(eleCheckbox);
+        }
         for (let eleChecked of table[0].querySelectorAll('.table-row-checkbox:checked')) {
             if (eleChecked.getAttribute('data-id') === removeID) {
                 eleChecked.checked = false;
             }
         }
-    }
+        POLoadDataHandle.loadDataShowPurchaseQuotation();
+        POLoadDataHandle.loadPriceListByPurchaseQuotation();
+    };
 
     static loadTableProductByPurchaseRequest() {
         let tablePurchaseOrderProductRequest = $('#datable-purchase-order-product-request');
@@ -819,18 +812,6 @@ class POLoadDataHandle {
         } else {
             POCalculateHandle.calculateTable(table);
         }
-        return true
-    };
-
-    static loadDataWhenClearPQ() {
-        let self = this;
-        // Load again data & events relate with Purchase Request
-        self.loadModalPurchaseRequestProductTable(false);
-        // Load again data & events relate with Purchase Quotation
-        $('#purchase-order-purchase-quotation').empty();
-        self.loadModalPurchaseQuotation(false);
-        POLoadDataHandle.supplierSelectEle.empty();
-        POLoadDataHandle.contactSelectEle.empty();
         return true
     };
 

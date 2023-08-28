@@ -11,7 +11,7 @@ $(function () {
         // Tables
         let tablePurchaseRequest = $('#datable-purchase-request');
         let tablePurchaseRequestProduct = $('#datable-purchase-request-product');
-        let tablePurchaseQuotation = $('#datable-purchase-quotation');
+        // let tablePurchaseQuotation = $('#datable-purchase-quotation');
         let tablePurchaseOrderProductAdd = $('#datable-purchase-order-product-add');
         let tablePurchaseOrderProductRequest = $('#datable-purchase-order-product-request');
 
@@ -148,8 +148,7 @@ $(function () {
                     checked_id = item.getAttribute('data-id');
                 }
             }
-            let removeIDList = [this.getAttribute('data-id')];
-            POLoadDataHandle.loadDataAfterClickRemove(tablePurchaseQuotation, removeIDList, "purchase_quotation");
+            POLoadDataHandle.loadDataWhenRemovePQ(this);
             if (checked_id) {
                 for (let item of elePurchaseQuotation[0].querySelectorAll('.checkbox-quotation')) {
                     if (item.getAttribute('data-id') === checked_id) {

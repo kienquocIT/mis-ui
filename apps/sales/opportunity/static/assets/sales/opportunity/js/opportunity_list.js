@@ -12,7 +12,7 @@ $(document).ready(async function () {
         $('#form-create_opportunity'),
         {
             submitHandler: function (form) {
-                let combinesData = OpportunityLoadPage.combinesData($(form))
+                let combinesData = OpportunityLoadDropdown.combinesData($(form))
                 $.fn.callAjax2({
                     url: combinesData.url,
                     method: combinesData.method,
@@ -33,12 +33,12 @@ $(document).ready(async function () {
     );
 
     $(document).on('click', '#create_opportunity_button', function () {
-        OpportunityLoadPage.loadCustomer(customerSelectEle, {}, config, employee_current_id);
-        OpportunityLoadPage.loadProductCategory(productCategorySelectEle);
+        OpportunityLoadDropdown.loadCustomer(customerSelectEle, {}, config.is_account_manager_create, employee_current_id);
+        OpportunityLoadDropdown.loadProductCategory(productCategorySelectEle);
     })
 
     customerSelectEle.on('change', function () {
         let customer = SelectDDControl.get_data_from_idx($(this), $(this).val());
-        OpportunityLoadPage.loadSalePerson(salePersonSelectEle, {}, config, employee_current_id, customer.manager.map(obj => obj.id));
+        OpportunityLoadDropdown.loadSalePerson(salePersonSelectEle, {}, config.is_account_manager_create, employee_current_id, customer.manager.map(obj => obj.id));
     })
 })

@@ -5,68 +5,40 @@ $(document).ready(function () {
     let transEle = $('#trans-factory');
     $('#btn-opp-edit').attr('href', dataUrlEle.data('url-edit').format_url_with_uuid(pk));
 
+
     loadDtbContactRolePageDetail([]);
 
     $('#rangeInput').on('mousedown', function () {
         return false;
     });
 
-    let opp_stage_id;
-
-    let opp_is_closed = false;
-
     // config input date
     OpportunityLoadDetail.configDateTimeEle()
 
 
-    function loadDetail() {
+     function loadDetail() {
         let url = frmDetail.data('url').format_url_with_uuid(pk);
         $.fn.callAjax2({
             url: url,
             method: 'GET'
-        }).then((resp) => {
+        }).then(async (resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 let opportunity_detail = data?.['opportunity'];
-                $.fn.compareStatusShowPageAction(opportunity_detail);
-                opp_stage_id = opportunity_detail.stage;
-                opp_is_closed = opportunity_detail?.['is_close'];
-                loadStage(opportunity_detail.stage, opportunity_detail.is_close_lost, opportunity_detail.is_deal_close);
-                let ele_header = $('#header-title');
-                ele_header.text(opportunity_detail.title);
-                $('#span-code').text(opportunity_detail.code);
-                $('#rangeInput').val(opportunity_detail.win_rate);
-                let ele_input_rate = $('#input-rate')
-                ele_input_rate.val(opportunity_detail.win_rate);
-
-                if (opportunity_detail.is_input_rate) {
-                    $('#check-input-rate').prop('checked', true);
-                    ele_input_rate.prop('disabled', false);
-                } else
-                    $('#check-input-rate').prop('checked', false);
+                await OpportunityLoadDetail.loadDetailCommon(opportunity_detail);
 
                 if (opportunity_detail.lost_by_other_reason) {
                     $('#check-lost-reason').prop('checked', true);
                 } else
                     $('#check-lost-reason').prop('checked', false);
-                OpportunityLoadPage.loadCustomer($('#select-box-customer'), opportunity_detail.customer);
-                OpportunityLoadPage.loadProductCategory($('#select-box-product-category'), opportunity_detail.product_category);
-                OpportunityLoadPage.loadSalePersonPageDetail($('#select-box-sale-person'), opportunity_detail?.['sale_person']);
-                OpportunityLoadPage.loadEndCustomer($('#select-box-end-customer'), opportunity_detail.end_customer);
+
+
+                OpportunityLoadDropdown.loadCustomer($('#select-box-customer'), opportunity_detail.customer);
+                OpportunityLoadDropdown.loadProductCategory($('#select-box-product-category'), opportunity_detail.product_category);
+                OpportunityLoadDropdown.loadSalePersonPageDetail($('#select-box-sale-person'), opportunity_detail?.['sale_person']);
+                OpportunityLoadDropdown.loadEndCustomer($('#select-box-end-customer'), opportunity_detail.end_customer);
 
                 $('#input-budget').attr('value', opportunity_detail.budget_value);
-                if (opportunity_detail?.['open_date'] !== null)
-                    $('#input-open-date').val(opportunity_detail?.['open_date'].split(' ')[0]);
-                if (opportunity_detail?.['close_date'] !== null)
-                    $('#input-close-date').val(opportunity_detail?.['close_date'].split(' ')[0]);
-                else {
-                    $('#input-close-date').val('');
-                }
-                if (opportunity_detail.decision_maker !== null) {
-                    let ele_decision_maker = $('#input-decision-maker');
-                    ele_decision_maker.val(opportunity_detail.decision_maker.name);
-                    ele_decision_maker.attr('data-id', opportunity_detail.decision_maker.id);
-                }
 
                 loadDtbProductDetailPageDetail(opportunity_detail.opportunity_product_datas);
 
@@ -81,9 +53,9 @@ $(document).ready(function () {
                     table_contact_role.DataTable().row.add(item).draw();
                     loadDetailContactRole(item, table_contact_role, transEle)
                 })
-                loadSaleTeam(opportunity_detail.opportunity_sale_team_datas);
+                OpportunityLoadDetail.loadSaleTeam(opportunity_detail.opportunity_sale_team_datas);
 
-                OpportunityLoadPage.loadFactor($('#box-select-factor'), opportunity_detail.customer_decision_factor);
+                OpportunityLoadDropdown.loadFactor($('#box-select-factor'), opportunity_detail.customer_decision_factor);
                 $.fn.initMaskMoney2();
             }
         })
@@ -91,88 +63,8 @@ $(document).ready(function () {
 
     loadDetail();
 
-    // Stage
 
-    let list_stage = [];
-    let dict_stage = {};
-
-    function loadStage(stages, is_close_lost, is_deal_close) {
-        let ele = $('#div-stage');
-        let method = ele.data('method');
-        let url = ele.data('url');
-
-        let html = $('#stage-hidden').html();
-        $.fn.callAjax2({
-            url: url,
-            method: method
-        }).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('opportunity_config_stage')) {
-                    list_stage = sortStage(data?.['opportunity_config_stage']);
-                    dict_stage = list_stage.reduce((obj, item) => {
-                        obj[item.id] = item;
-                        return obj;
-                    }, {});
-
-                    list_stage.reverse().map(function (item) {
-                        ele.prepend(html);
-                        let ele_first_stage = ele.find('.sub-stage').first();
-                        ele_first_stage.attr('data-id', item.id);
-                        ele_first_stage.find('.stage-indicator').text(item.indicator);
-                        if (item?.['is_closed_lost']) {
-                            ele_first_stage.find('.dropdown').remove();
-                            ele_first_stage.addClass('stage-lost')
-                        }
-                        if (item?.['is_deal_closed']) {
-                            ele_first_stage.addClass('stage-close')
-                            ele_first_stage.find('.dropdown-menu').empty();
-                            if (is_close_lost || is_deal_close) {
-                                ele_first_stage.find('.dropdown-menu').append(
-                                    `<div class="form-check form-switch">
-                                        <input type="checkbox" class="form-check-input" id="input-close-deal" checked>
-                                        <label for="input-close-deal" class="form-label">Close Deal</label>
-                                    </div>`
-                                )
-                            } else {
-                                ele_first_stage.find('.dropdown-menu').append(
-                                    `<div class="form-check form-switch">
-                                        <input type="checkbox" class="form-check-input" id="input-close-deal">
-                                        <label for="input-close-deal" class="form-label">Close Deal</label>
-                                    </div>`
-                                )
-                            }
-                        }
-                    })
-                }
-            }
-            if (stages.length !== 0) {
-                stages.map(function (item) {
-                    let ele_stage = $(`.sub-stage[data-id="${item.id}"]`);
-                    if (ele_stage.hasClass('stage-lost')) {
-                        ele_stage.addClass('bg-red-light-5 stage-selected');
-                    } else if (ele_stage.hasClass('stage-close')) {
-                        let el_close_deal = $('#input-close-deal');
-                        $('.page-content input, .page-content select, .page-content .btn').not(el_close_deal).not($('#rangeInput')).prop('disabled', true);
-                        ele_stage.addClass('bg-primary-light-5 stage-selected');
-                        el_close_deal.prop('checked', true);
-                    } else {
-                        ele_stage.addClass('bg-primary-light-5 stage-selected');
-                    }
-                })
-            }
-        })
-    }
-
-    $(document).on('click', '#btn-show-activity', function () {
-        $('.div-activity').removeClass('hidden');
-        $('.div-action').addClass('hidden');
-    })
-
-    $(document).on('click', '#btn-show-action', function () {
-        $('.div-activity').addClass('hidden');
-        $('.div-action').removeClass('hidden');
-    })
+    toggleShowActivity();
 
 
     $('#date-input').daterangepicker({

@@ -44,6 +44,10 @@ function logworkSubmit(){
                         if (data?.['status'] === 200) {
                             $.fn.notifyB({description: data.message}, 'success')
                         }
+                    },
+                    (err) => {
+                        const text = err?.data?.errors
+                        $.fn.notifyB({description: text}, 'failure')
                     }
                 )
         }else{

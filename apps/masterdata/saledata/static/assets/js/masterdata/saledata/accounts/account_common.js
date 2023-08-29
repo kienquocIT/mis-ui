@@ -29,9 +29,9 @@ let custom_billing_address = $('#custom_billing_address')
 let new_contact_shortcut = $('#new_contact_shortcut')
 let roleForCustomerEle = $('#role-for-customer')
 let roleForSupplierEle = $('#role-for-supplier')
-let shipping_address_id_dict = [];
-let billing_address_id_dict = [];
-let data_contact_mapped = [];
+let tableShippingAddressEle = $('#list-shipping-address')
+let tableBillingAddressEle = $('#list-billing-address')
+let data_contact_mapped = []
 
 function loadAccountType(accountTypeData) {
     accountTypeEle.initSelect2({
@@ -525,42 +525,49 @@ function load_shipping_address_mapped(data) {
     let list_shipping_address = ``;
     for (let i = 0; i < data.shipping_address.length; i++) {
         let shipping_address = data.shipping_address[i];
-        if (shipping_address.is_default) {
-            list_shipping_address += `<div class="form-check ml-5 mb-2">
-                        <input class="form-check-input" type="radio" name="shippingaddressRadio" checked>
-                        <span><label>` + shipping_address.full_address + `</label></span>
-                        &nbsp;<span><a href="#" class="text-danger del-address-item"><i class="bi bi-trash"></i></a></span>
-                   </div>`;
-        } else {
-            list_shipping_address += `<div class="form-check ml-5 mb-2">
-                        <input class="form-check-input" type="radio" name="shippingaddressRadio">
-                        <span><label>` + shipping_address.full_address + `</label></span>
-                        &nbsp;<span><a href="#" class="text-danger del-address-item"><i class="bi bi-trash"></i></a></span>
-                   </div>`;
+        let is_default = '';
+        let default_card_color = '';
+        if (shipping_address.is_default === true) {
+            is_default = 'checked';
+            default_card_color = 'bg-primary text-dark bg-opacity-10';
         }
+        list_shipping_address +=
+            `<tr class="${default_card_color}">
+                <td><span><input type="radio" name="shippingaddressRadio" ${is_default}></span></td>
+                <td><span class="shipping_address_full_address">${shipping_address?.['full_address']}</span></td>
+                <td><span><a href="#" class="del-address-item"><i class="bi bi-trash"></i></a></span></td>
+                <td hidden class="shipping_address_country_id">${shipping_address?.['country_id']}</td>
+                <td hidden class="shipping_address_city_id">${shipping_address?.['city_id']}</td>
+                <td hidden class="shipping_address_district_id">${shipping_address?.['district_id']}</td>
+                <td hidden class="shipping_address_ward_id">${shipping_address?.['ward_id']}</td>
+                <td hidden class="shipping_address_detail_address">${shipping_address?.['detail_address']}</td>
+            </tr>`
     }
-    $('#list-shipping-address').html(list_shipping_address);
+    tableShippingAddressEle.find('tbody').append(list_shipping_address)
 }
 
 function load_billing_address_mapped(data) {
     let list_billing_address = ``
     for (let i = 0; i < data.billing_address.length; i++) {
         let billing_address = data.billing_address[i];
-        if (billing_address.is_default) {
-            list_billing_address += `<div class="form-check ml-5 mb-2">
-                        <input class="form-check-input" type="radio" name="billingaddressRadio" checked>
-                        <span><label>` + billing_address.full_address + `</label></span>
-                        &nbsp;<span><a href="#" class="text-danger del-address-item"><i class="bi bi-trash"></i></a></span>
-                   </div>`;
-        } else {
-            list_billing_address += `<div class="form-check ml-5 mb-2">
-                        <input class="form-check-input" type="radio" name="billingaddressRadio">
-                        <span><label>` + billing_address.full_address + `</label></span>
-                        &nbsp;<span><a href="#" class="text-danger del-address-item"><i class="bi bi-trash"></i></a></span>
-                   </div>`;
+        let is_default = '';
+        let default_card_color = '';
+        if (billing_address.is_default === true) {
+            is_default = 'checked';
+            default_card_color = 'bg-primary text-dark bg-opacity-10';
         }
+        list_billing_address +=
+            `<tr class="${default_card_color}">
+                <td><span><input type="radio" name="billingaddressRadio" ${is_default}></span></td>
+                <td><span class="billing_address_full_address">${billing_address.full_address}</span></td>
+                <td><span><a href="#" class="del-address-item"><i class="bi bi-trash"></i></a></span></td>
+                <td hidden class="billing_address_account_name">${billing_address.account_name}</td>
+                <td hidden class="billing_address_email">${billing_address.email}</td>
+                <td hidden class="billing_address_tax_code">${billing_address.tax_code}</td>
+                <td hidden class="billing_address_account_address">${billing_address.account_address}</td>
+            </tr>`
     }
-    $('#list-billing-address').html(list_billing_address)
+    tableBillingAddressEle.find('tbody').append(list_billing_address)
 }
 
 function load_bank_accounts_mapped(data) {
@@ -569,7 +576,7 @@ function load_bank_accounts_mapped(data) {
         let default_card_color = '';
         let checked = '';
         if (bank_account?.['is_default'] === true) {
-            default_card_color = 'border-primary';
+            default_card_color = 'bg-primary text-dark bg-opacity-10';
             checked = 'checked';
         }
         $('#list-bank-account-information').append(
@@ -617,7 +624,7 @@ function load_credit_cards_mapped(data) {
         let default_card_color = '';
         let checked = '';
         if (credit_card?.['is_default'] === true) {
-            default_card_color = 'border-primary';
+            default_card_color = 'bg-primary text-dark bg-opacity-10';
             checked = 'checked';
         }
         $('#list-credit-card-information').append(
@@ -664,7 +671,7 @@ function LoadDetail(option) {
             if (data) {
                 WFRTControl.setWFRuntimeID(data['account_detail']?.['workflow_runtime_id']);
                 data = data['account_detail'];
-                console.log(data)
+                // console.log(data)
 
                 $.fn.compareStatusShowPageAction(data);
 
@@ -693,7 +700,7 @@ function LoadDetail(option) {
                 load_billing_address_mapped(data);
 
                 $('.del-address-item').on('click', function () {
-                    $(this).closest('.form-check').remove();
+                    $(this).closest('tr').remove();
                 })
 
                 totalEmployeeEle.val(data.total_employees)
@@ -789,28 +796,21 @@ save_shipping_address.on('click', function () {
             if (make_default_shipping_address.prop('checked') === true) {
                 is_default = 'checked';
             }
-
-            $('#list-shipping-address').append(
-                `<div class="form-check ml-5 mb-2">
-                    <input class="form-check-input" type="radio" name="shippingaddressRadio" ` + is_default +`>
-                    <span><label>` + shipping_address + `</label></span>
-                    &nbsp;<span><a href="#" class="text-danger del-address-item"><i class="bi bi-trash"></i></a></span>
-                </div>`
+            tableShippingAddressEle.find('tbody').append(
+                `<tr>
+                    <td><span><input type="radio" name="shippingaddressRadio" ${is_default}></span></td>
+                    <td><span class="shipping_address_full_address">${shipping_address}</span></td>
+                    <td><span><a href="#" class="del-address-item"><i class="bi bi-trash"></i></a></span></td>
+                    <td hidden class="shipping_address_country_id">${country_id}</td>
+                    <td hidden class="shipping_address_city_id">${city_id}</td>
+                    <td hidden class="shipping_address_district_id">${district_id}</td>
+                    <td hidden class="shipping_address_ward_id">${ward_id}</td>
+                    <td hidden class="shipping_address_detail_address">${detail_shipping_address}</td>
+                </tr>`
             )
 
-            // delete address item
             $('.del-address-item').on('click', function () {
-                $(this).closest('.form-check').remove();
-            })
-
-            shipping_address_id_dict.push({
-                'country_id': country_id,
-                'detail_address': detail_shipping_address,
-                'city_id': city_id,
-                'district_id': district_id,
-                'ward_id': ward_id,
-                'full_address': shipping_address,
-                'is_default': make_default_shipping_address.prop('checked')
+                $(this).closest('tr').remove();
             })
         }
     } catch (error) {
@@ -843,27 +843,20 @@ save_billing_address.on('click', function () {
             if (make_default_billing_address.prop('checked') === true) {
                 is_default = 'checked';
             }
-
-            $('#list-billing-address').append(
-                `<div class="form-check ml-5">
-                    <input class="form-check-input" type="radio" name="billingaddressRadio" ` + is_default + `>
-                    <span><label>` + billing_address + `</label></span>
-                    &nbsp;<span><a href="#" class="text-danger del-address-item"><i class="bi bi-trash"></i></a></span>
-                </div>`
+            tableBillingAddressEle.find('tbody').append(
+                `<tr>
+                    <td><span><input type="radio" name="billingaddressRadio" ${is_default}></span></td>
+                    <td><span class="billing_address_full_address">${billing_address}</span></td>
+                    <td><span><a href="#" class="del-address-item"><i class="bi bi-trash"></i></a></span></td>
+                    <td hidden class="billing_address_account_name">${acc_name}</td>
+                    <td hidden class="billing_address_email">${email_address}</td>
+                    <td hidden class="billing_address_tax_code">${tax_code}</td>
+                    <td hidden class="billing_address_account_address">${account_address}</td>
+                </tr>`
             )
 
-            // delete address item
             $('.del-address-item').on('click', function () {
-                $(this).closest('.form-check').remove();
-            })
-
-            billing_address_id_dict.push({
-                'account_name': acc_name,
-                'email': email_address,
-                'tax_code': tax_code,
-                'account_address': account_address,
-                'full_address': billing_address,
-                'is_default': make_default_billing_address.prop('checked'),
+                $(this).closest('tr').remove();
             })
         }
     } catch (error) {
@@ -885,8 +878,12 @@ inputOrganizationEle.on('change', function () {
 })
 
 add_shipping_address_btn.on('click', function () {
-    if ($('#list-shipping-address input').length === 0)
-        $('#make-default-shipping-address').prop('checked', true);
+    if ($('#list-shipping-address input').length === 0) {
+        $('#make-default-shipping-address').prop('checked', true).prop('disabled', true);
+    }
+    else {
+        $('#make-default-shipping-address').prop('checked', false).prop('disabled', false);
+    }
 })
 
 add_billing_address_btn.on('click', function () {
@@ -906,11 +903,11 @@ add_billing_address_btn.on('click', function () {
 
     billingAddressEle.empty();
     billingAddressEle.append(`<option value="0" selected></option>`)
-    $('#list-shipping-address').children().each(function () {
-        if ($(this).find('input').prop('checked') === true)
-            billingAddressEle.append(`<option value="` + $(this).find('label').text() + `">` + $(this).find('label').text() + `</option>`)
+    tableShippingAddressEle.find('.shipping_address_full_address').each(function () {
+        if ($(this).closest('tr').find('input[type="radio"]').is(':checked') === true)
+            billingAddressEle.append(`<option selected>` + $(this).text() + `</option>`)
         else
-            billingAddressEle.append(`<option value="` + $(this).find('label').text() + `">` + $(this).find('label').text() + `</option>`)
+            billingAddressEle.append(`<option>` + $(this).text() + `</option>`)
     });
 })
 
@@ -1073,26 +1070,35 @@ function get_contacts_mapped() {
     return contact_mapped_list;
 }
 
-function get_update_shipping_address() {
-    let update_shipping_address = [];
-    $('#list-shipping-address').find('label').each(function () {
-        update_shipping_address.push({
-            'full_address': $(this).text(),
-            'is_default': $(this).closest('.form-check').find('.form-check-input').is(':checked')
+function get_shipping_address() {
+    let shipping_address = [];
+    $('#list-shipping-address tbody').find('tr').each(function () {
+        shipping_address.push({
+            'country_id': $(this).find('.shipping_address_country_id').text(),
+            'city_id': $(this).find('.shipping_address_city_id').text(),
+            'district_id': $(this).find('.shipping_address_district_id').text(),
+            'ward_id': $(this).find('.shipping_address_ward_id').text(),
+            'detail_address': $(this).find('.shipping_address_detail_address').text(),
+            'full_address': $(this).find('.shipping_address_full_address').text(),
+            'is_default': $(this).find('input[type="radio"]').is(':checked'),
         })
     })
-    return update_shipping_address;
+    return shipping_address;
 }
 
-function get_update_billing_address() {
-    let update_billing_address = [];
-    $('#list-billing-address').find('label').each(function () {
-        update_billing_address.push({
-            'full_address': $(this).text(),
-            'is_default': $(this).closest('.form-check').find('.form-check-input').is(':checked')
+function get_billing_address() {
+    let billing_address = [];
+    $('#list-billing-address tbody').find('tr').each(function () {
+        billing_address.push({
+            'account_name': $(this).find('.billing_address_account_name').text(),
+            'email': $(this).find('.billing_address_email').text(),
+            'tax_code': $(this).find('.billing_address_tax_code').text(),
+            'account_address': $(this).find('.billing_address_account_address').text(),
+            'full_address': $(this).find('.billing_address_full_address').text(),
+            'is_default': $(this).find('input[type="radio"]').is(':checked')
         })
     })
-    return update_billing_address;
+    return billing_address;
 }
 
 class AccountHandle {
@@ -1194,8 +1200,8 @@ class AccountHandle {
             frm.dataForm['email'] = inputEmail.val();
         }
 
-        frm.dataForm['shipping_address_id_dict'] = shipping_address_id_dict;
-        frm.dataForm['billing_address_id_dict'] = billing_address_id_dict;
+        frm.dataForm['shipping_address_dict'] = get_shipping_address();
+        frm.dataForm['billing_address_dict'] = get_billing_address();
         frm.dataForm['contact_mapped'] = data_contact_mapped;
         frm.dataForm['system_status'] = 1; // save, not draft
 
@@ -1203,9 +1209,6 @@ class AccountHandle {
         let urlRedirect_return = frm?.['urlRedirect'];
 
         if (for_update === true) {
-
-            frm.dataForm['update_shipping_address'] = get_update_shipping_address();
-            frm.dataForm['update_billing_address'] = get_update_billing_address();
             frm.dataForm['contact_mapped'] = get_contacts_mapped();
             frm.dataForm['bank_accounts_information'] = get_bank_accounts_information();
             frm.dataForm['credit_cards_information'] = get_credit_cards_information();
@@ -1318,11 +1321,13 @@ $(document).on('click', '#save-changes-modal-bank-account', function () {
 
     if (bank_country_id !== '' && bank_name !== '' && bank_code !== '' && bank_account_name !== '' && bank_account_number !== '') {
         let is_default = '';
+        let default_card_color = '';
         if ($('#make-default-bank-account').is(':checked')) {
             is_default = 'checked';
+            default_card_color = 'bg-primary text-dark bg-opacity-10';
         }
         $('#list-bank-account-information').append(
-            `<div class="card close-over col-5 mr-5">
+            `<div class="card ${default_card_color} close-over col-5 mr-5">
                 <div class="card-body">
                     <button type="button" class="card-close btn-close">
                         <span aria-hidden="true">&times;</span>
@@ -1371,11 +1376,13 @@ $(document).on('click', '#save-changes-modal-credit-card', function () {
 
     if (credit_card_type !== '' && credit_card_number !== '' && credit_card_exp_date !== '' && credit_card_name !== '') {
         let is_default = '';
+        let default_card_color = '';
         if ($('#make-default-credit-card').is(':checked')) {
             is_default = 'checked';
+            default_card_color = 'bg-primary text-dark bg-opacity-10';
         }
         $('#list-credit-card-information').append(
-            `<div class="card close-over col-5 mr-5">
+            `<div class="card ${default_card_color} close-over col-5 mr-5">
                 <div class="card-body">
                     <button type="button" class="card-close btn-close">
                         <span aria-hidden="true">&times;</span>
@@ -1426,14 +1433,24 @@ $(document).on('click', '#edit-credit-card-information', function () {
     }
 })
 
+$(document).on('change', 'input[name="shippingaddressRadio"]', function () {
+    tableShippingAddressEle.find('tr').removeClass('bg-primary text-dark bg-opacity-10');
+    $(this).closest('tr').addClass('bg-primary text-dark bg-opacity-10');
+})
+
+$(document).on('change', 'input[name="billingaddressRadio"]', function () {
+    tableBillingAddressEle.find('tr').removeClass('bg-primary text-dark bg-opacity-10');
+    $(this).closest('tr').addClass('bg-primary text-dark bg-opacity-10');
+})
+
 $(document).on('change', '.radio_select_default_bank_account', function () {
-    $('#list-bank-account-information').find('.border-primary').removeClass('border-primary')
-    $(this).closest('.card').addClass('border-primary');
+    $('#list-bank-account-information').find('.card').removeClass('bg-primary text-dark bg-opacity-10')
+    $(this).closest('.card').addClass('bg-primary text-dark bg-opacity-10');
 })
 
 $(document).on('change', '.radio_select_default_credit_card', function () {
-    $('#list-credit-card-information').find('.border-primary').removeClass('border-primary')
-    $(this).closest('.card').addClass('border-primary');
+    $('#list-credit-card-information').find('.card').removeClass('bg-primary text-dark bg-opacity-10')
+    $(this).closest('.card').addClass('bg-primary text-dark bg-opacity-10');
 })
 
 let frm_create_contact = $('#frm-create-new-contact');

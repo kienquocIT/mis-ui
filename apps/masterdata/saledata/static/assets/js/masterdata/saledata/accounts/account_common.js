@@ -106,7 +106,7 @@ function loadAccountOwner(accountOwnerData, contact_mapped) {
         keyText: 'fullname',
     }).on('change', function () {
         let owner_selected = accountOwnerEle.val();
-        if (owner_selected !== null) {
+        if (owner_selected !== '') {
             let obj_owner = JSON.parse($('#' + accountOwnerEle.attr('data-idx-data-loaded')).text())[owner_selected];
             $('#job_title').val(obj_owner.job_title).css({color: 'black'});
             $('#owner-email').val(obj_owner.email).css({color: 'black'});
@@ -958,7 +958,7 @@ add_contact_btn.on('click', function () {
 $(document).on('click', '#btn-add-contact', function () {
     let selected_contact = [];
     let owner_selected = accountOwnerEle.val();
-    if (owner_selected !== null) {
+    if (owner_selected !== '') {
         let obj_owner = JSON.parse($('#' + accountOwnerEle.attr('data-idx-data-loaded')).text())[owner_selected];
         let data = {
             'id': obj_owner.id,

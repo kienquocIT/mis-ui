@@ -23,13 +23,13 @@
             <div class="col-6">
                 <div class="form-group">
                     <label class="form-label required">{% trans 'Field Name' %}</label>
-                    <input class="form-control" placeholder="Input Name" name="title"/>
+                    <input class="form-control" placeholder="Input Name" name="title" required/>
                 </div>
             </div>
             <div class="col-6">
                 <div class="form-group">
                     <label class="form-label required">{% trans 'Delivered Date' %}</label>
-                    <input class="form-control" name="delivered_date"/>
+                    <input class="form-control" name="delivered_date" required/>
                 </div>
             </div>
         </div>
@@ -78,6 +78,7 @@
                             data-url="{% url "AccountListAPI" %}"
                             data-keyResp="account_list"
                             data-keyText="name"
+                            required
                     >
                     </select>
                 </span>
@@ -87,7 +88,7 @@
                 <div class="form-group">
                     <label class="form-label">{% trans 'Status' %}</label>
                     <input class="form-control" name="system_status" value="{% trans 'Draft' %}" readonly
-                           data-value="0"/>
+                           data-value="0" required/>
                 </div>
             </div>
         </div>
@@ -134,12 +135,13 @@
                         </span>
                     </span>
                     <select
-                            class="form-control select2"
+                            class="form-select"
                             id="box-select-contact"
                             data-method="GET"
                             data-url="{% url "ContactListAPI" %}"
                             data-keyResp="contact_list"
                             data-keyText="fullname"
+                            required
                     >
                     </select>
                 </span>
@@ -148,7 +150,7 @@
             <div class="col-6">
                 <div class="form-group">
                     <label class="form-label">{% trans 'Purchase Status' %}</label>
-                    <input class="form-control" name="purchase_status" value="Wait" data-value="0" readonly/>
+                    <input class="form-control" name="purchase_status" value="Wait" data-value="0" readonly required/>
                 </div>
             </div>
         </div>

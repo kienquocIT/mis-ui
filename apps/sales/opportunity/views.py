@@ -24,10 +24,7 @@ class OpportunityList(View):
         perm_check=PermCheck(url=ApiURL.OPPORTUNITY_LIST, method='GET'),
     )
     def get(self, request, *args, **kwargs):
-        result = {
-            'employee_current_id': request.user.employee_current_data.get('id', None),
-        }
-        return result, status.HTTP_200_OK
+        return {}, status.HTTP_200_OK
 
 
 class OpportunityListAPI(APIView):

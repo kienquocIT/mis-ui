@@ -37,17 +37,16 @@ class OpportunityLoadDropdown {
             data: data,
             callbackDataResp(resp, keyResp) {
                 let list_result = []
-                if (config) {
-                    let emp_current = resp.data[keyResp].find(obj => obj.id === emp_current_id)
+                if (!config) {
                     resp.data[keyResp].map(function (item) {
-                        if (item.group.id === emp_current.group.id && list_account_manager.includes(item.id)) {
+                        if (item.group.id === $('#employee_current_group').val() && list_account_manager.includes(item.id)) {
                             list_result.push(item)
                         }
                     })
                     return list_result
                 } else {
                     resp.data[keyResp].map(function (item) {
-                        if (item.id === emp_current_id.id) {
+                        if (item.id === emp_current_id) {
                             list_result.push(item)
                         }
                     })
@@ -197,7 +196,7 @@ class OpportunityLoadDetail {
             let tr_current_ele = table.find('tbody tr').last();
             OpportunityLoadDropdown.loadProduct(tr_current_ele.find('.select-box-product'), item.product, data.product_category.map(obj => obj.id))
             OpportunityLoadDropdown.loadSubProductCategory(tr_current_ele.find('.box-select-product-category'), item.product_category, data.product_category.map(obj => obj.id))
-            OpportunityLoadDropdown.loadUoM(tr_current_ele.find('.box-select-uom'), item.product_category);
+            OpportunityLoadDropdown.loadUoM(tr_current_ele.find('.box-select-uom'), item.uom);
             OpportunityLoadDropdown.loadTax(tr_current_ele.find('.box-select-tax'), item.tax)
         })
     }
@@ -555,26 +554,28 @@ class OpportunityLoadDetail {
 
         // tab product
         let list_product_data = []
-        ele_tr_products.each(function () {
-            let ele_product = $(this).find('.select-box-product');
-            let product_id = ele_product.val();
-            let product_name = ele_product.find('option:selected').text();
-            if (ele_product.length === 0) {
-                product_id = null;
-                product_name = $(this).find('.input-product-name').val();
-            }
-            let data = {
-                'product': product_id,
-                'product_category': $(this).find('.box-select-product-category').val(),
-                'tax': $(this).find('.box-select-tax').val(),
-                'uom': $(this).find('.box-select-uom').val(),
-                'product_name': product_name,
-                'product_quantity': $(this).find('.input-quantity').val(),
-                'product_unit_price': $(this).find('.input-unit-price').attr('value'),
-                'product_subtotal_price': $(this).find('.input-subtotal').attr('value'),
-            }
-            list_product_data.push(data);
-        })
+        if (this.productTableEle.DataTable().data().length > 0) {
+            ele_tr_products.each(function () {
+                let ele_product = $(this).find('.select-box-product');
+                let product_id = ele_product.val();
+                let product_name = ele_product.find('option:selected').text();
+                if (ele_product.length === 0) {
+                    product_id = null;
+                    product_name = $(this).find('.input-product-name').val();
+                }
+                let data = {
+                    'product': product_id,
+                    'product_category': $(this).find('.box-select-product-category').val(),
+                    'tax': $(this).find('.box-select-tax').val(),
+                    'uom': $(this).find('.box-select-uom').val(),
+                    'product_name': product_name,
+                    'product_quantity': $(this).find('.input-quantity').val(),
+                    'product_unit_price': $(this).find('.input-unit-price').attr('value'),
+                    'product_subtotal_price': $(this).find('.input-subtotal').attr('value'),
+                }
+                list_product_data.push(data);
+            })
+        }
         data_form['total_product'] = $('#input-product-total').valCurrency();
         data_form['total_product_pretax_amount'] = $('#input-product-pretax-amount').valCurrency();
         data_form['total_product_tax'] = $('#input-product-taxes').valCurrency();
@@ -585,22 +586,22 @@ class OpportunityLoadDetail {
 
         // tab competitor
         let list_competitor_data = []
-        ele_tr_competitors.each(function () {
-            let win_deal = false;
-            if ($(this).find('.input-win-deal').is(':checked')) {
-                win_deal = true;
-                data_form['is_close_lost'] = true;
-            }
-
-            let data = {
-                'competitor': $(this).find('.box-select-competitor').val(),
-                'strength': $(this).find('.input-strength').val(),
-                'weakness': $(this).find('.input-weakness').val(),
-                'win_deal': win_deal,
-            }
-
-            list_competitor_data.push(data);
-        })
+        if (this.competitorTableEle.DataTable().data().length > 0) {
+            ele_tr_competitors.each(function () {
+                let win_deal = false;
+                if ($(this).find('.input-win-deal').is(':checked')) {
+                    win_deal = true;
+                    data_form['is_close_lost'] = true;
+                }
+                let data = {
+                    'competitor': $(this).find('.box-select-competitor').val(),
+                    'strength': $(this).find('.input-strength').val(),
+                    'weakness': $(this).find('.input-weakness').val(),
+                    'win_deal': win_deal,
+                }
+                list_competitor_data.push(data);
+            })
+        }
 
         if (OpportunityLoadDetail.competitorTableEle.hasClass('tag-change')) {
             data_form['opportunity_competitors_datas'] = list_competitor_data;
@@ -608,15 +609,17 @@ class OpportunityLoadDetail {
 
         // tab contact role
         let list_contact_role_data = []
-        ele_tr_contact_role.each(function () {
-            let data = {
-                'type_customer': $(this).find('.box-select-type-customer').val(),
-                'contact': $(this).find('.box-select-contact').val(),
-                'job_title': $(this).find('.input-job-title').val(),
-                'role': $(this).find('.box-select-role').val(),
-            }
-            list_contact_role_data.push(data);
-        })
+        if (this.contactRoleTableEle.DataTable().data().length > 0) {
+            ele_tr_contact_role.each(function () {
+                let data = {
+                    'type_customer': $(this).find('.box-select-type-customer').val(),
+                    'contact': $(this).find('.box-select-contact').val(),
+                    'job_title': $(this).find('.input-job-title').val(),
+                    'role': $(this).find('.box-select-role').val(),
+                }
+                list_contact_role_data.push(data);
+            })
+        }
 
         if (OpportunityLoadDetail.contactRoleTableEle.hasClass('tag-change')) {
             data_form['opportunity_contact_role_datas'] = list_contact_role_data;
@@ -660,6 +663,8 @@ class OpportunityLoadDetail {
         return data_form
     }
 
+
+    // function support event
     static onChangeContactRole(ele) {
         let ele_decision_maker = $('#input-decision-maker');
         if (ele.val() === '0') {
@@ -1098,6 +1103,7 @@ function loadDtbProduct(data) {
         dtb.DataTableDefault({
             rowIdx: true,
             reloadCurrency: true,
+            paging: false,
             data: data,
             columns: [
                 {
@@ -1110,29 +1116,29 @@ function loadDtbProduct(data) {
                     className: 'wrap-text',
                     render: (data) => {
                         if (data !== null) {
-                            return `<select class="form-select select-box-product" data-method="GET" data-url="${urlEle.data('url-product')}" data-keyResp="product_sale_list"></select>`
+                            return `<select class="form-select select-box-product" data-method="GET" data-url="${urlEle.data('url-product')}" data-keyResp="product_sale_list" required></select><input class="form-control input-product-name hidden" type="text" value="${data.title}"/>`
                         } else {
-                            return `<input class="form-control input-product-name" type="text"/>`
+                            return `<input class="form-control input-product-name" type="text" required/>`
                         }
                     }
                 },
                 {
                     className: 'wrap-text',
                     render: () => {
-                        return `<select class="form-select box-select-product-category" data-method="GET" data-url="${urlEle.data('url-product-category')}" data-keyResp="product_category_list"></select>`
+                        return `<select class="form-select box-select-product-category" data-method="GET" data-url="${urlEle.data('url-product-category')}" data-keyResp="product_category_list" required></select>`
                     }
                 },
                 {
                     className: 'wrap-text',
                     render: () => {
-                        return `<select class="form-select box-select-uom w-80p" data-method="GET" data-url="${urlEle.data('url-uom')}" data-keyResp="unit_of_measure"></select>`
+                        return `<select class="form-select box-select-uom w-80p" data-method="GET" data-url="${urlEle.data('url-uom')}" data-keyResp="unit_of_measure" required></select>`
                     }
                 },
                 {
                     data: 'product_quantity',
                     className: 'wrap-text',
                     render: (data) => {
-                        return `<input type="number" class="form-control w-80p input-quantity" value="{0}"/>`.format_by_idx(
+                        return `<input type="number" class="form-control w-80p input-quantity" value="{0}" required/>`.format_by_idx(
                             data
                         )
                     }
@@ -1141,7 +1147,7 @@ function loadDtbProduct(data) {
                     data: 'product_unit_price',
                     className: 'wrap-text',
                     render: (data) => {
-                        return `<input type="text" class="form-control w-150p mask-money input-unit-price" data-return-type="number" value="{0}"/>`.format_by_idx(
+                        return `<input type="text" class="form-control w-150p mask-money input-unit-price" data-return-type="number" value="{0}" required/>`.format_by_idx(
                             data
                         )
                     }
@@ -1149,14 +1155,14 @@ function loadDtbProduct(data) {
                 {
                     className: 'wrap-text',
                     render: () => {
-                        return `<select class="form-select box-select-tax" data-method="GET" data-url="${urlEle.data('url-tax')}" data-keyResp="tax_list"></select>`
+                        return `<select class="form-select box-select-tax" data-method="GET" data-url="${urlEle.data('url-tax')}" data-keyResp="tax_list" required></select>`
                     }
                 },
                 {
                     data: 'product_subtotal_price',
                     className: 'wrap-text',
                     render: (data) => {
-                        return `<input class="form-control mask-money w-200p input-subtotal" type="text" data-return-type="number" value="{0}" readonly>`.format_by_idx(
+                        return `<input class="form-control mask-money w-200p input-subtotal" type="text" data-return-type="number" value="{0}" readonly required>`.format_by_idx(
                             data
                         )
                     }
@@ -1177,11 +1183,12 @@ function loadDtbCompetitor(data) {
         let dtb = OpportunityLoadDetail.competitorTableEle;
         dtb.DataTableDefault({
             data: data,
+            paging: false,
             columns: [
                 {
                     className: 'wrap-text',
                     render: () => {
-                        return `<select class="form-control box-select-competitor" data-method="GET" data-url="${urlEle.data('url-competitor')}" data-keyResp="account_list" data-keyText="name"></select>`
+                        return `<select class="form-control box-select-competitor" data-method="GET" data-url="${urlEle.data('url-competitor')}" data-keyResp="account_list" data-keyText="name" required></select>`
                     }
                 },
                 {
@@ -1230,17 +1237,18 @@ function loadDtbContactRole(data) {
         let dtb = OpportunityLoadDetail.contactRoleTableEle;
         dtb.DataTableDefault({
             data: data,
+            paging: false,
             columns: [
                 {
                     className: 'wrap-text',
                     render: () => {
-                        return `<select class="form-select box-select-type-customer"></select>`
+                        return `<select class="form-select box-select-type-customer" required></select>`
                     }
                 },
                 {
                     className: 'wrap-text',
                     render: () => {
-                        return `<select class="form-select box-select-contact" data-method="GET" data-url="${urlEle.data('url-contact')}" data-keyResp="contact_list" data-keyText="fullname"></select>`
+                        return `<select class="form-select box-select-contact" data-method="GET" data-url="${urlEle.data('url-contact')}" data-keyResp="contact_list" data-keyText="fullname" required></select>`
                     }
                 },
                 {
@@ -1255,7 +1263,7 @@ function loadDtbContactRole(data) {
                 {
                     className: 'wrap-text',
                     render: () => {
-                        return `<select class="form-select box-select-role"></select>`
+                        return `<select class="form-select box-select-role" required></select>`
                     }
                 },
                 {
@@ -1402,8 +1410,7 @@ function autoLoadStage(
         })
     }
 
-    let ele_tr_product = $('#table-products tbody tr:not(.hidden)');
-    if (ele_tr_product.length === 0 || ele_tr_product.hasClass('col-table-empty')) {
+    if (OpportunityLoadDetail.productTableEle.DataTable().data().length === 0) {
         list_property_config.push({
             'property': 'Product.Line.Detail',
             'comparison_operator': '=',
@@ -1489,8 +1496,6 @@ function autoLoadStage(
             'compare_data': '0',
         })
     }
-
-    console.log(list_property_config)
 
     let id_stage_current = '';
     for (let i = 0; i < list_stage_condition.length; i++) {

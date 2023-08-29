@@ -138,7 +138,8 @@ $(document).ready(async function () {
 
     // even in tab product
     $('#btn-add-select-product').on('click', function () {
-        OpportunityLoadDetail.addRowSelectProduct()
+        // OpportunityLoadDetail.getDataProduct();
+        OpportunityLoadDetail.addRowSelectProduct();
     })
 
     $('#btn-add-input-product').on('click', function () {
@@ -159,20 +160,26 @@ $(document).ready(async function () {
     $(document).on('change', '.select-box-product', function () {
         let ele_tr = $(this).closest('tr');
         let product = SelectDDControl.get_data_from_idx($(this), $(this).val());
+        ele_tr.find(`.input-product-name`).attr('value', product.title)
+
         OpportunityLoadDropdown.loadSubProductCategory(
             ele_tr.find(`.box-select-product-category`),
             product?.['general_information'].product_category,
             OpportunityLoadDropdown.productCategorySelectEle.val(),
         )
-        OpportunityLoadDropdown.loadTax(
-            ele_tr.find(`.box-select-uom`),
-            product?.['sale_information'].tax_code,
-        )
+
         OpportunityLoadDropdown.loadUoM(
             ele_tr.find(`.box-select-uom`),
             product?.['sale_information']?.['default_uom'],
             product,
         )
+
+        OpportunityLoadDropdown.loadTax(
+            ele_tr.find(`.box-select-tax`),
+            product?.['sale_information'].tax_code,
+        )
+
+
     })
 
     $(document).on('change', '.input-unit-price', function () {

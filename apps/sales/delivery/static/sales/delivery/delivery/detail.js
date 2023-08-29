@@ -481,6 +481,8 @@ $(async function () {
                 }
                 if (res.ready_quantity > 0 && res.state < 2) $('button[form="delivery_form"]').attr('disabled', false)
 
+                WFRTControl.setWFRuntimeID(res?.['workflow_runtime_id']);
+
                 // after prepare HTML run event click button done
                 btnDoneClick()
             })

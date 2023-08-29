@@ -1,6 +1,4 @@
 $(document).ready(function () {
-    let selectCurrencyEle = $('#select-box-currency');
-    let priceListSelectEle = $('#select-box-price-list');
     $('#select-box-type').initSelect2();
 
     function loadPriceList(ele, data) {
@@ -9,13 +7,14 @@ $(document).ready(function () {
         })
     }
 
+    let selectCurrencyEle = $('#select-box-currency');
     function loadCurrency(ele, data) {
         ele.initSelect2({
             data: data,
         })
     }
-
     loadCurrency(selectCurrencyEle);
+
     $(document).on('click', '#btn-add-new', function () {
         loadPriceList(priceListSelectEle);
     })
@@ -39,7 +38,7 @@ $(document).ready(function () {
         },
         columns: [
             {
-                'render': (data, type, row, meta) => {
+                'render': () => {
                     return ``;
                 }
             }, {
@@ -60,11 +59,11 @@ $(document).ready(function () {
                 className: 'text-center',
                 render: (data, type, row) => {
                     if (row?.['price_list_type'].value === 0) {
-                        return `<span style="width: 20%; min-width: max-content" class="badge badge-soft-danger badge-pill">` + row?.['price_list_type'].name + `</span>`
+                        return `<span style="width: 50%" class="text-indigo">` + row?.['price_list_type'].name + `</span>`
                     } else if (row?.['price_list_type'].value === 1) {
-                        return `<span style="width: 20%; min-width: max-content" class="badge badge-soft-indigo badge-pill">` + row?.['price_list_type'].name + `</span>`
+                        return `<span style="width: 50%" class="text-yellow">` + row?.['price_list_type'].name + `</span>`
                     } else if (row?.['price_list_type'].value === 2) {
-                        return `<span style="width: 20%; min-width: max-content" class="badge badge-soft-green badge-pill">` + row?.['price_list_type'].name + `</span>`
+                        return `<span style="width: 50%" class="text-green">` + row?.['price_list_type'].name + `</span>`
                     } else {
                         return ''
                     }
@@ -73,21 +72,22 @@ $(document).ready(function () {
                 'data': 'status',
                 render: (data, type, row) => {
                     let badge_type;
-                    let text_type;
                     if (row.status === 'Valid') {
-                        badge_type = 'text-success'
+                        badge_type = 'badge-success'
                     } else if (row.status === 'Invalid') {
-                        badge_type = 'text-orange'
+                        badge_type = 'badge-orange'
                     } else if (row.status === 'Expired') {
-                        badge_type = 'text-danger'
+                        badge_type = 'badge-danger'
                     } else {
-                        badge_type = 'text-gray'
+                        badge_type = 'badge-gray'
                     }
-
-                    return `<span class="` + badge_type + `">&nbsp;` + row.status + `</span>`;
+                    return `<span class="badge-status">
+                                <span class="badge ${badge_type} badge-indicator"></span>
+                                <span class="badge-label">${row.status}</span>
+                            </span>`
                 }
             }, {
-                'className': 'action-center',
+                'className': 'action-center text-right',
                 'render': (data, type, row) => {
                     if (row.is_default === false) {
                         return `<a data-method="DELETE" data-id="` + row.id + `" class="btn btn-icon btn-del btn btn-icon btn-flush-danger flush-soft-hover btn-rounded del-button delete-price-list-btn">
@@ -101,7 +101,6 @@ $(document).ready(function () {
         ],
     })
 
-    //logic checkbox
     $('#checkbox-copy-source').on('change', function () {
         if ($(this).prop("checked")) {
             priceListSelectEle.removeAttr('disabled');
@@ -136,41 +135,7 @@ $(document).ready(function () {
         }
     })
 
-    // submit form create price list
-    let frm = $('#form-create-price')
-    frm.submit(function (event) {
-        event.preventDefault();
-        let csr = $("input[name=csrfmiddlewaretoken]").val();
-        let frm = new SetupFormSubmit($(this));
-
-        frm.dataForm['currency'] = selectCurrencyEle.val();
-        if (frm.dataForm['currency'].length === 0) {
-            frm.dataForm['currency'] = null;
-        }
-        console.log(frm.dataForm['currency']);
-
-        let valid_time_ele = $('#valid_time')
-        if (valid_time_ele.val()) {
-            frm.dataForm['valid_time_start'] = valid_time_ele.val().split(' - ')[0];
-            frm.dataForm['valid_time_end'] = valid_time_ele.val().split(' - ')[1]
-        }
-
-        frm.dataForm['auto_update'] = !!$('[name="auto_update"]').is(':checked');
-        frm.dataForm['can_delete'] = !!$('[name="can_delete"]').is(':checked');
-        $.fn.callAjax2({
-            url: frm.dataUrl,
-            method: frm.dataMethod,
-            data: frm.dataForm
-        }).then((resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    $.fn.notifyB({description: "Successfully"}, 'success')
-                    $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
-                }
-            })
-    });
-
-    // onchange select box select-box-price-list
+    let priceListSelectEle = $('#select-box-price-list');
     priceListSelectEle.on('change', function () {
         let data_url = $(this).data('url-detail').format_url_with_uuid($(this).val());
         $.fn.callAjax2({
@@ -186,9 +151,6 @@ $(document).ready(function () {
         })
     })
 
-    // function load
-
-    /* Date range picker with times*/
     $('#valid_time').daterangepicker({
         timePicker: true,
         startDate: moment().startOf('millisecond').add(5, 'minutes'),
@@ -240,4 +202,35 @@ $(document).ready(function () {
         })
     });
 
+    let frm = $('#form-create-price')
+    frm.submit(function (event) {
+        event.preventDefault();
+        let frm = new SetupFormSubmit($(this));
+
+        frm.dataForm['currency'] = selectCurrencyEle.val();
+        if (frm.dataForm['currency'].length === 0) {
+            frm.dataForm['currency'] = null;
+        }
+        console.log(frm.dataForm['currency']);
+
+        let valid_time_ele = $('#valid_time')
+        if (valid_time_ele.val()) {
+            frm.dataForm['valid_time_start'] = valid_time_ele.val().split(' - ')[0];
+            frm.dataForm['valid_time_end'] = valid_time_ele.val().split(' - ')[1]
+        }
+
+        frm.dataForm['auto_update'] = !!$('[name="auto_update"]').is(':checked');
+        frm.dataForm['can_delete'] = !!$('[name="can_delete"]').is(':checked');
+        $.fn.callAjax2({
+            url: frm.dataUrl,
+            method: frm.dataMethod,
+            data: frm.dataForm
+        }).then((resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    $.fn.notifyB({description: "Successfully"}, 'success')
+                    $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
+                }
+            })
+    });
 })

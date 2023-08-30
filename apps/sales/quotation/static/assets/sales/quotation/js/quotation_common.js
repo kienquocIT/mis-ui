@@ -981,7 +981,7 @@ class QuotationDataTableHandle {
                                         <span class="input-prefix">
                                             <div class="btn-group dropstart">
                                                 <i
-                                                    class="fas fa-info-circle"
+                                                    class="fas fa-info-circle text-blue"
                                                     data-bs-toggle="dropdown"
                                                     data-dropdown-animation
                                                     aria-haspopup="true"
@@ -1015,7 +1015,7 @@ class QuotationDataTableHandle {
                                     <span class="input-affix-wrapper">
                                         <span class="input-prefix">
                                             <a href="${link}" target="_blank">
-                                                <i class="fas fa-gift"></i>
+                                                <i class="fas fa-gift text-brown"></i>
                                             </a>
                                         </span>
                                         <input type="text" class="form-control table-row-promotion disabled-custom-show" value="${row.product_title}" data-id="${row.promotion.id}" data-is-promotion-on-row="${row.is_promotion_on_row}" data-id-product="${row.product.id}" data-bs-toggle="tooltip" title="${row.product_title}" disabled>
@@ -1037,7 +1037,7 @@ class QuotationDataTableHandle {
                                     <span class="input-affix-wrapper">
                                         <span class="input-prefix">
                                             <a href="${link}" target="_blank">
-                                                <i class="fas fa-shipping-fast"></i>
+                                                <i class="fas fa-shipping-fast text-teal"></i>
                                             </a>
                                         </span>
                                         <input type="text" class="form-control table-row-shipping disabled-custom-show" value="${row.product_title}" data-id="${row.shipping.id}" data-shipping-price-margin="${price_margin}" data-bs-toggle="tooltip" title="${row.product_title}" disabled>
@@ -1310,7 +1310,7 @@ class QuotationDataTableHandle {
                                         <span class="input-prefix">
                                             <div class="btn-group dropstart">
                                                 <i
-                                                    class="fas fa-info-circle"
+                                                    class="fas fa-info-circle text-blue"
                                                     data-bs-toggle="dropdown"
                                                     data-dropdown-animation
                                                     aria-haspopup="true"
@@ -1345,7 +1345,7 @@ class QuotationDataTableHandle {
                                     <span class="input-affix-wrapper">
                                         <span class="input-prefix">
                                             <a href="${link}" target="_blank">
-                                                <i class="fas fa-shipping-fast"></i>
+                                                <i class="fas fa-shipping-fast text-teal"></i>
                                             </a>
                                         </span>
                                         <input type="text" class="form-control table-row-shipping disabled-custom-show" value="${row.product_title}" data-id="${row.shipping.id}" data-bs-toggle="tooltip" title="${row.product_title}" disabled>
@@ -1537,7 +1537,7 @@ class QuotationDataTableHandle {
                                                 <span class="input-prefix">
                                                     <div class="btn-group dropdown">
                                                         <i
-                                                            class="fas fa-info-circle"
+                                                            class="fas fa-info-circle text-blue"
                                                             data-bs-toggle="dropdown"
                                                             data-dropdown-animation
                                                             aria-haspopup="true"

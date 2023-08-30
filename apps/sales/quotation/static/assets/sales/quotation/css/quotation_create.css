@@ -52,18 +52,6 @@ a.dropdown-item.table-row-price-option:hover {
     color: white;
 }
 
-.fa-info-circle {
-    color: #298dff;
-}
-
-.fa-gift {
-    color: #e92990;
-}
-
-.fa-shipping-fast {
-    color: #c39749;
-}
-
 .modal-body-invalid-promotion {
     text-align: center;
 }

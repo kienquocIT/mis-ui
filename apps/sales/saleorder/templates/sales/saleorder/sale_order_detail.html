@@ -88,7 +88,7 @@
                                             <span class="input-prefix">
                                                 <div class="btn-group dropstart">
                                                     <i
-                                                            class="fas fa-info-circle"
+                                                            class="fas fa-info-circle text-blue"
                                                             data-bs-toggle="dropdown"
                                                             data-dropdown-animation
                                                             aria-haspopup="true"
@@ -120,7 +120,7 @@
                                             <span class="input-prefix">
                                                 <div class="btn-group dropstart">
                                                     <i
-                                                            class="fas fa-info-circle"
+                                                            class="fas fa-info-circle text-blue"
                                                             data-bs-toggle="dropdown"
                                                             data-dropdown-animation
                                                             aria-haspopup="true"
@@ -153,7 +153,7 @@
                                             <span class="input-prefix">
                                                 <div class="btn-group dropstart">
                                                     <i
-                                                            class="fas fa-info-circle"
+                                                            class="fas fa-info-circle text-blue"
                                                             data-bs-toggle="dropdown"
                                                             data-dropdown-animation
                                                             aria-haspopup="true"
@@ -186,7 +186,7 @@
                                             <span class="input-prefix">
                                                 <div class="btn-group dropstart">
                                                     <i
-                                                            class="fas fa-info-circle"
+                                                            class="fas fa-info-circle text-blue"
                                                             data-bs-toggle="dropdown"
                                                             data-dropdown-animation
                                                             aria-haspopup="true"
@@ -250,7 +250,7 @@
                                             <span class="input-prefix">
                                                 <div class="btn-group dropstart">
                                                     <i
-                                                            class="fas fa-info-circle"
+                                                            class="fas fa-info-circle text-blue"
                                                             data-bs-toggle="dropdown"
                                                             data-dropdown-animation
                                                             aria-haspopup="true"
@@ -283,7 +283,7 @@
                                             <span class="input-prefix">
                                                 <div class="btn-group dropstart">
                                                     <i
-                                                            class="fas fa-info-circle"
+                                                            class="fas fa-info-circle text-blue"
                                                             data-bs-toggle="dropdown"
                                                             data-dropdown-animation
                                                             aria-haspopup="true"
@@ -501,13 +501,20 @@
                                         <div class="row mt-8">
                                             <div class="col-4">
                                                 <button
-                                                        type="button"
-                                                        class="btn btn-soft-info"
-                                                        data-bs-toggle="modal"
-                                                        data-bs-target="#shippingFeeModalCenter"
-                                                        id="btn-add-shipping"
-                                                        disabled
-                                                >{% trans 'Add Shipping Fee' %}</button>
+                                                    type="button"
+                                                    class="btn btn-success btn-animated bg-green-light-5"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#shippingFeeModalCenter"
+                                                    id="btn-add-shipping"
+                                                    disabled
+                                                >
+                                                    <span class="text-teal">
+                                                        <span class="icon">
+                                                            <i class="fas fa-shipping-fast"></i>
+                                                        </span>
+                                                        <span>{% trans 'Add Shipping Fee' %}</span>
+                                                    </span>
+                                                </button>
                                                 <div
                                                         class="modal fade" id="shippingFeeModalCenter" tabindex="-1"
                                                         role="dialog" aria-labelledby="shippingFeeModalCenter"
@@ -651,14 +658,26 @@
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <button
+                                            <div class="col-4"></div>
+                                            <div class="col-2"></div>
+                                            <div class="col-6">
+                                                <button
                                                     type="button"
-                                                    class="btn btn-soft-success"
+                                                    class="btn btn-warning btn-animated bg-yellow-light-5"
                                                     data-bs-toggle="modal"
                                                     data-bs-target="#promotionModalCenter"
                                                     id="btn-check-promotion"
                                                     disabled
-                                            >{% trans 'Check available promotion' %}</button>
+                                                >
+                                                    <span class="text-brown">
+                                                        <span class="icon">
+                                                            <i class="fas fa-gift"></i>
+                                                        </span>
+                                                        <span>{% trans 'Check available promotion' %}</span>
+                                                    </span>
+                                                </button>
+                                            </div>
+
                                             <div
                                                     class="modal fade" id="promotionModalCenter" tabindex="-1"
                                                     role="dialog" aria-labelledby="promotionModalCenter"

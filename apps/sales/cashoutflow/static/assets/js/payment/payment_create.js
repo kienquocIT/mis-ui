@@ -25,9 +25,24 @@ $(document).ready(function () {
     let param_temp_2 = urlParams.get('opportunity');
     if (param_temp_2) {param = param_temp_2};
     const sale_code_mapped_parameter = param;
-    const sale_order = sale_order_list.filter(function(element) {return element.id === sale_code_mapped_parameter;});
-    const quotation = quotation_list.filter(function(element) {return element.id === sale_code_mapped_parameter;});
-    const opportunity = opportunity_list.filter(function(element) {return element.id === sale_code_mapped_parameter;});
+    let sale_order = []
+    let quotation = []
+    let opportunity = []
+    if (sale_order_list !== {}) {
+        sale_order = sale_order_list.filter(function(element) {
+            return element.id === sale_code_mapped_parameter;}
+        );
+    }
+    if (quotation_list !== {}) {
+        quotation = quotation_list.filter(function (element) {
+            return element.id === sale_code_mapped_parameter;
+        });
+    }
+    if (opportunity_list !== {}) {
+        opportunity = opportunity_list.filter(function (element) {
+            return element.id === sale_code_mapped_parameter;
+        });
+    }
     let sale_code_default_obj = [];
     let sale_code_default_type = -1;
     if (sale_order.length > 0) {sale_code_default_obj = sale_order; sale_code_default_type = 0;}

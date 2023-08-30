@@ -66,23 +66,23 @@ $(document).ready(function () {
         columns: [
             {
                 width: "5%",
-                'render': (data, type, row, meta) => {
+                'render': () => {
                     return ``;
                 }
             },
             {
                 orderable: true,
                 width: "20%",
-                'data': 'name',
-                render: (data, type, row, meta) => {
+                data: 'name',
+                render: (data, type, row) => {
                     let urlEditPage = msgData.attr('data-url').format_url_with_uuid(row.id);
                     return `<a href="${urlEditPage}"><span><b>` + row.name + `</b></span></a>`
                 }
             },
             {
                 width: "20%",
-                'data': 'account_type',
-                render: (data, type, row, meta) => {
+                data: 'account_type',
+                render: (data, type, row) => {
                     let clsBadgeCurrent = -1;
                     let list_class_badge = ['badge-soft-danger', 'badge-soft-blue', 'badge-soft-primary', 'badge-soft-secondary']
                     return (row?.['account_type'] || []).map(
@@ -95,38 +95,40 @@ $(document).ready(function () {
             },
             {
                 width: "10%",
-                'data': 'owner',
-                'render': (data, type, row, meta) => {
+                data: 'owner',
+                render: (data, type, row) => {
                     if (row.owner.fullname) {
-                        return `<div class="row"><center><span style="width: 100%" class="badge badge-soft-orange">` + row.owner.fullname + `</span></center></div>`
+                        return `<div class="row"><span style="width: 100%" class="badge badge-soft-orange">` + row.owner.fullname + `</span></div>`
                     }
                     return ``;
                 }
             },
             {
                 width: "10%",
-                'data': 'phone',
-                'render': (data, type, row, meta) => {
+                data: 'phone',
+                render: (data, type, row) => {
                     return `<span>${row?.phone ? row.phone : ''}</span>`
                 }
             },
             {
                 width: "10%",
-                'data': 'website',
-                'render': (data, type, row, meta) => {
+                data: 'website',
+                render: (data, type, row) => {
                     return `<span>${row?.['website'] ? row['website'] : ''}</span>`
                 }
             },
             {
                 width: "25%",
-                'data': 'manager',
-                'render': (data, type, row, meta) => {
+                data: 'manager',
+                render: (data, type, row) => {
                     let element = ''
                     for (let i = 0; i < row.manager.length; i++) {
-                        element += `<!-- <span class="badge badge-soft-success mt-1 ml-1">` + row.manager[i].fullname + `</span> -->`;
-                        element += `<span class="badge badge-soft-success mt-1 ml-1">` + row.manager[i].fullname + `</span>`;
+                        let fullname = row.manager[i].fullname;
+                        if (fullname === undefined) {
+                            fullname = row.manager[i].full_name;
+                        }
+                        element += `<span class="badge badge-soft-success mt-1 ml-1">` + fullname + `</span>`;
                     }
-                    // return `<div class="row">${element}</div>`;
                     return element;
                 },
             },
@@ -146,46 +148,47 @@ $(document).ready(function () {
         // },
         columns: [
             {
-                'render': (data, type, row, meta) => {
+                render: (data, type, row, meta) => {
                     let currentId = "chk_sel_" + String(meta.row + 1)
                     return `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select" id="${currentId}" data-id=` + row.id + `><label class="form-check-label" for="${currentId}"></label></span>`;
                 }
             }, {
-                'data': 'full_name',
-                render: (data, type, row, meta) => {
+                data: 'full_name',
+                render: (data, type, row) => {
                     return `<a href="#"><span><b>` + row.fullname + `</b></span></a>`
                 }
             }, {
-                'data': 'title',
-                render: (data, type, row, meta) => {
+                data: 'title',
+                render: (data, type, row) => {
                     return `<span>` + row.title + `</span>`
                 }
             }, {
-                'data': 'owner',
-                'render': (data, type, row, meta) => {
+                data: 'owner',
+                render: (data, type, row) => {
                     return `<span>` + row.owner + `</span>`
                 }
             }, {
-                'data': 'account_name',
-                'render': (data, type, row, meta) => {
+                data: 'account_name',
+                render: (data, type, row) => {
                     return `<span>` + row.account_name + `</span>`
                 }
             }, {
-                'data': 'mobie',
-                'render': (data, type, row, meta) => {
+                data: 'mobie',
+                render: (data, type, row) => {
                     return `<span>` + row.mobile + `</span>`
                 }
             }, {
-                'data': 'email',
-                'render': (data, type, row, meta) => {
+                data: 'email',
+                render: (data, type, row) => {
                     return `<span>` + row.email + `</span>`
                 }
             }, {
-                'className': 'action-center',
-                'render': (data, type, row, meta) => {
+                className: 'action-center',
+                render: () => {
                     // let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href=""><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
                     // let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="#"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
                     // return bt2 + bt3;
+                    return ``
                 }
             },
         ]

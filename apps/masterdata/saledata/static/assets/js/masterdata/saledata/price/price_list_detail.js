@@ -70,7 +70,6 @@ $(document).ready(function () {
         }
     }
 
-    // load for tab setting and dropdown add currency for price list
     function loadCurrency(list_id, currency_list) {
         list_id = list_id.map(obj => obj.id);
         let ele = $('#select-box-currency');
@@ -266,22 +265,17 @@ $(document).ready(function () {
 
                 if (price_list_detail.status) {
                     let badge_type = '';
-                    let text_type = '';
                     if (price_list_detail.status === 'Valid') {
                         badge_type = 'badge-green'
-                        text_type = 'text-green'
                     } else if (price_list_detail.status === 'Invalid') {
                         badge_type = 'badge-orange'
-                        text_type = 'text-orange'
                     } else if (price_list_detail.status === 'Expired') {
                         badge_type = 'badge-red'
-                        text_type = 'text-red'
                     } else {
                         badge_type = 'badge-gray'
-                        text_type = 'text-gray'
                     }
 
-                    $('#status').html(`<span class="badge badge-indicator badge-indicator-xl ` + badge_type + `"></span><span class="` + text_type + `">&nbsp;` + price_list_detail.status + `</span>`)
+                    $('#status').html(`<span class="badge badge-indicator badge-indicator-xl ` + badge_type + `"></span><span class="badge-label">&nbsp;` + price_list_detail.status + `</span>`)
                 }
 
                 $('#inp-source').val(price_list_detail.price_list_mapped.id)
@@ -460,7 +454,6 @@ $(document).ready(function () {
                 }
 
                 $('.dataTables_info').remove()
-                // $('.btn-soft-primary').eq(1).remove()
             }
         })
 
@@ -543,7 +536,7 @@ $(document).ready(function () {
                 frm.dataForm['can_delete'] = false
             }
 
-            $.fn.callAjax(frm.dataUrl.replace(0, pk), frm.dataMethod, frm.dataForm, csr)
+            $.fn.callAjax2({url: frm.dataUrl.replace(0, pk), method: frm.dataMethod, data: frm.dataForm})
                 .then(
                     (resp) => {
                         let data = $.fn.switcherResp(resp);

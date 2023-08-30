@@ -67,6 +67,7 @@ $(document).ready(function () {
     $(document).on('click', '#btn-select-so-product', function () {
         let ele_url = PurchaseRequestLoadPage.urlEle;
         let table_pr_product = $('#datatable-pr-product').DataTable();
+        table_pr_product.clear().draw();
         $('.inp-check-so-product:checked').each(function () {
             let num_request = $(this).closest('tr').find('.inp-request-so-product').val();
             let product = dict_so_product[$(this).data('id')];

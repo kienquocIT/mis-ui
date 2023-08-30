@@ -1,10 +1,8 @@
 $(document).ready(async function () {
-    let employee_current_id = $('#employee_current_id').val();
+    let employee_current = $('#employee_current_id').val();
     let config = await loadConfig().then();
 
-    let customerSelectEle = $('#select-box-opportunity-create-customer');
-    let productCategorySelectEle = $('#select-box-product-category');
-    let salePersonSelectEle = $('#select-box-sale-person');
+    let customerSelectEle = $('#select-box-customer');
 
     loadDtbOpportunityList();
 
@@ -33,12 +31,12 @@ $(document).ready(async function () {
     );
 
     $(document).on('click', '#create_opportunity_button', function () {
-        OpportunityLoadDropdown.loadCustomer(customerSelectEle, {}, config.is_account_manager_create, employee_current_id);
-        OpportunityLoadDropdown.loadProductCategory(productCategorySelectEle);
+        OpportunityLoadDropdown.loadCustomer({}, config.is_account_manager_create, employee_current);
+        OpportunityLoadDropdown.loadProductCategory();
     })
 
     customerSelectEle.on('change', function () {
         let customer = SelectDDControl.get_data_from_idx($(this), $(this).val());
-        OpportunityLoadDropdown.loadSalePerson(salePersonSelectEle, {}, config.is_account_manager_create, employee_current_id, customer.manager.map(obj => obj.id));
+        OpportunityLoadDropdown.loadSalePerson({}, config.is_account_manager_create, employee_current, customer.manager.map(obj => obj.id));
     })
 })

@@ -1764,7 +1764,7 @@ msgstr "Tên bảng giá"
 
 #
 msgid "Copy from source price list"
-msgstr "Sao chép từ dữ liệu bảng gía"
+msgstr "Sao chép từ dữ liệu bảng giá"
 
 #
 msgid "Select price list"

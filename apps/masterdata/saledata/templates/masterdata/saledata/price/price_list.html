@@ -28,9 +28,8 @@
     </a>
 {% endblock %}
 {% block pageContent %}
-    <table id="datatable-price-list" class="table nowrap w-100 mb-5" data-url="{% url "PriceListAPI" %}"
-           data-url-detail="{% url "PriceListDetail" pk=0 %}"
-           data-url-delete="{% url "PriceDeleteAPI" pk=0 %}"
+    <table id="datatable-price-list" class="table nowrap w-100 mb-5"
+           data-url="{% url "PriceListAPI" %}"
            data-method="GET">
         <thead>
         <th class="w-5">#</th>
@@ -153,6 +152,11 @@
     </form>
     <!-- End Modal Create Master Data -->
 
+{% endblock %}
+{% block dataHiddenGroup %}
+    <input type="text" id="url-factory"
+           data-url-detail="{% url 'PriceListDetail' pk=0 %}"
+    >
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>

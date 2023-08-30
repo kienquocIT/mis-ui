@@ -1,3 +1,4 @@
+let urlEle = $('#url-factory');
 $(document).ready(function () {
     let selectCurrencyEle = $('#select-box-currency');
     let priceListSelectEle = $('#select-box-price-list');
@@ -20,86 +21,86 @@ $(document).ready(function () {
         loadPriceList(priceListSelectEle);
     })
 
-    let tbl = $('#datatable-price-list');
-    let url_detail = tbl.attr('data-url-detail');
-    tbl.DataTableDefault({
-        useDataServer: true,
-        rowIdx: true,
-        ajax: {
-            useDataServer: true,
-            url: tbl.attr('data-url'),
-            type: tbl.attr('data-method'),
-            dataSrc: function (resp) {
-                let data = $.fn.switcherResp(resp);
-                if (data && data.hasOwnProperty('price_list')) {
-                    return data['price_list'];
-                }
-                return [];
-            },
-        },
-        columns: [
-            {
-                'render': (data, type, row, meta) => {
-                    return ``;
-                }
-            }, {
-                'data': 'title',
-                render: (data, type, row) => {
-                    if (row.is_default) {
-                        return `<a class="btn-detail" href="` + url_detail.replace(0, row.id) + `">
-                            <span><b>` + row.title.toUpperCase() + `</b></span>
-                        </a>`
-                    } else {
-                        return `<a class="btn-detail" href="` + url_detail.replace(0, row.id) + `">
-                            <span><b>` + row.title + `</b></span>
-                        </a>`
-                    }
-                }
-            }, {
-                'data': 'type',
-                className: 'text-center',
-                render: (data, type, row) => {
-                    if (row?.['price_list_type'].value === 0) {
-                        return `<span style="width: 20%; min-width: max-content" class="badge badge-soft-danger badge-pill">` + row?.['price_list_type'].name + `</span>`
-                    } else if (row?.['price_list_type'].value === 1) {
-                        return `<span style="width: 20%; min-width: max-content" class="badge badge-soft-indigo badge-pill">` + row?.['price_list_type'].name + `</span>`
-                    } else if (row?.['price_list_type'].value === 2) {
-                        return `<span style="width: 20%; min-width: max-content" class="badge badge-soft-green badge-pill">` + row?.['price_list_type'].name + `</span>`
-                    } else {
-                        return ''
-                    }
-                }
-            }, {
-                'data': 'status',
-                render: (data, type, row) => {
-                    let badge_type;
-                    let text_type;
-                    if (row.status === 'Valid') {
-                        badge_type = 'text-success'
-                    } else if (row.status === 'Invalid') {
-                        badge_type = 'text-orange'
-                    } else if (row.status === 'Expired') {
-                        badge_type = 'text-danger'
-                    } else {
-                        badge_type = 'text-gray'
-                    }
+    function loadDtbPriceList() {
+        if (!$.fn.DataTable.isDataTable('#datatable-price-list')) {
+            let $table = $('#datatable-price-list')
+            let frm = new SetupFormSubmit($table);
+            $table.DataTableDefault({
+                useDataServer: true,
+                rowIdx: true,
+                ajax: {
+                    url: frm.dataUrl,
+                    type: frm.dataMethod,
+                    dataSrc: function (resp) {
+                        let data = $.fn.switcherResp(resp);
+                        if (data && resp.data.hasOwnProperty('price_list')) {
+                            return resp.data['price_list'] ? resp.data['price_list'] : [];
+                        }
+                        throw Error('Call data raise errors.')
+                    },
+                },
 
-                    return `<span class="` + badge_type + `">&nbsp;` + row.status + `</span>`;
-                }
-            }, {
-                'className': 'action-center',
-                'render': (data, type, row) => {
-                    if (row.is_default === false) {
-                        return `<a data-method="DELETE" data-id="` + row.id + `" class="btn btn-icon btn-del btn btn-icon btn-flush-danger flush-soft-hover btn-rounded del-button delete-price-list-btn">
-                                <span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span>
-                                </a>`;
-                    } else {
-                        return ``
+                columns: [
+                    {
+                        render: () => {
+                            return ``;
+                        }
+                    }, {
+                        data: 'title',
+                        render: (data, type, row) => {
+                            return `<a class="btn-detail" href="${urlEle.data('url-detail').format_url_with_uuid(row.id)}">
+                                        <span><b>${data}</b></span>
+                                    </a>`
+
+                        }
+                    }, {
+                        data: 'price_list_type',
+                        className: 'text-center',
+                        render: (data) => {
+                            if (data.value === 0) {
+                                return `<span style="width: 20%; min-width: max-content" class="badge badge-soft-danger badge-pill">${data.name}</span>`
+                            } else if (data.value === 1) {
+                                return `<span style="width: 20%; min-width: max-content" class="badge badge-soft-indigo badge-pill">${data.name}</span>`
+                            } else if (data.value === 2) {
+                                return `<span style="width: 20%; min-width: max-content" class="badge badge-soft-green badge-pill">${data.name}</span>`
+                            } else {
+                                return ''
+                            }
+                        }
+                    }, {
+                        data: 'status',
+                        render: (data) => {
+                            let badge_type;
+                            if (data === 'Valid') {
+                                badge_type = 'text-success'
+                            } else if (data === 'Invalid') {
+                                badge_type = 'text-orange'
+                            } else if (data === 'Expired') {
+                                badge_type = 'text-danger'
+                            } else {
+                                badge_type = 'text-gray'
+                            }
+
+                            return `<span class="${badge_type}">${data}</span>`;
+                        }
+                    }, {
+                        className: 'action-center',
+                        render: (data, type, row) => {
+                            if (row.is_default === false) {
+                                return `<a data-method="DELETE" data-id="${row.id}" class="btn btn-icon btn-del btn btn-icon btn-flush-danger flush-soft-hover btn-rounded del-button delete-price-list-btn">
+                                    <span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span>
+                                    </a>`;
+                            } else {
+                                return ``
+                            }
+                        }
                     }
-                }
-            }
-        ],
-    })
+                ],
+            });
+        }
+    }
+
+    loadDtbPriceList();
 
     //logic checkbox
     $('#checkbox-copy-source').on('change', function () {
@@ -140,14 +141,12 @@ $(document).ready(function () {
     let frm = $('#form-create-price')
     frm.submit(function (event) {
         event.preventDefault();
-        let csr = $("input[name=csrfmiddlewaretoken]").val();
         let frm = new SetupFormSubmit($(this));
 
         frm.dataForm['currency'] = selectCurrencyEle.val();
         if (frm.dataForm['currency'].length === 0) {
             frm.dataForm['currency'] = null;
         }
-        console.log(frm.dataForm['currency']);
 
         let valid_time_ele = $('#valid_time')
         if (valid_time_ele.val()) {
@@ -162,12 +161,12 @@ $(document).ready(function () {
             method: frm.dataMethod,
             data: frm.dataForm
         }).then((resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    $.fn.notifyB({description: "Successfully"}, 'success')
-                    $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
-                }
-            })
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
+                $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
+            }
+        })
     });
 
     // onchange select box select-box-price-list
@@ -216,26 +215,28 @@ $(document).ready(function () {
         }).then((result) => {
             if (result.value) {
                 let data_url = $(this).closest('table').attr('data-url-delete').replace(0, $(this).attr('data-id'))
-                let csr = $("input[name=csrfmiddlewaretoken]").val();
-                $.fn.callAjax(data_url, 'PUT', {}, csr)
-                    .then((resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyB({description: "Successfully"}, 'success')
-                            setTimeout(function () {
-                                location.reload()
-                            }, 1000);
-                        }
-                    }, () => {
-                        Swal.fire({
-                            html: '<div><h6 class="text-danger mb-0">Source/Non-empty Price List can not be deleted!</h6></div>',
-                            customClass: {
-                                content: 'text-center',
-                                confirmButton: 'btn btn-primary',
-                            },
-                            buttonsStyling: false,
-                        })
+                $.fn.callAjax2({
+                    url: data_url,
+                    method: 'PUT',
+                    data: {},
+                }).then((resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: "Successfully"}, 'success')
+                        setTimeout(function () {
+                            location.reload()
+                        }, 1000);
+                    }
+                }, () => {
+                    Swal.fire({
+                        html: '<div><h6 class="text-danger mb-0">Source/Non-empty Price List can not be deleted!</h6></div>',
+                        customClass: {
+                            content: 'text-center',
+                            confirmButton: 'btn btn-primary',
+                        },
+                        buttonsStyling: false,
                     })
+                })
             }
         })
     });

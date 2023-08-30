@@ -1,171 +1,121 @@
-$(document).ready(function () {
-    const currency_list = JSON.parse($('#id-currency-list').text());
-    const currency_dict = currency_list.reduce((obj, item) => {
-        obj[item.id] = item;
-        return obj;
-    }, {});
-    let config = {
-        dom: "",
-        ordering: false,
-        paging: false,
-        columnDefs: [{
-            "searchable": false,
-            "orderable": true, // "targets": [0,1,3,4,5,6,7,8,9]
-        }],
-        order: [[2, 'asc']],
-        language: {
-            search: "",
-            searchPlaceholder: "Search",
-        },
-        drawCallback: function () {
-            $('.dataTables_paginate > .pagination').addClass('custom-pagination pagination-simple');
-            feather.replace();
-        },
-        data: [],
-        columns: [{
-            className: 'wrap-text',
-            'render': (data, type, row, meta) => {
-                let currentId = String(meta.row + 1)
-                return currentId;
-            }
-        }, {
-            className: 'wrap-text',
-            'data': 'code',
-            render: (data, type, row, meta) => {
-                return `<span class="badge badge-soft-success btn-detail" data-id="` + row.id + `"
+let [urlEle, transEle] = [$('#url-factory'), $('#trans-factory')];
+let [priceSelectEle, currencySelectEle, canDeleteCheckBoxEle, autoUpdateCheckBoxEle, factorInputEle, itemSelectEle] = [$('#select-box-price-list'), $('#select-box-currency'), $('#checkbox-can-delete'), $('#checkbox-update-auto'), $('#inp-factor'), $('#select-box-product')]
+
+let columns = [
+    {
+        render: (data, type, row, meta) => {
+            return '';
+        }
+    }, {
+        data: 'code',
+        render: (data, type, row, meta) => {
+            return `<span class="badge badge-soft-success btn-detail" data-id="` + row.id + `"
                         style="min-width: max-content; width: 70%" href="#"><b>` + row.code + `</b></span>`
-            }
-        }, {
-            className: 'wrap-text',
-            'data': 'title',
-            render: (data, type, row, meta) => {
-                return `<span><b>` + row.title + `</b></span>`
-            }
-        }, {
-            className: 'wrap-text',
-            'data': 'uom_group',
-            'render': (data, type, row, meta) => {
-                return `<div class="row"><center>
+        }
+    }, {
+        data: 'title',
+        render: (data, type, row, meta) => {
+            return `<span><b>` + row.title + `</b></span>`
+        }
+    }, {
+        data: 'uom_group',
+        render: (data, type, row, meta) => {
+            return `<div class="row">
                         <div class="col-10" style="padding-right: 5px">
                             <span class="badge badge-soft-danger badge-pill span-uom-group" data-id="` + row.uom_group.id + `" style="min-width: max-content; width: 100%">` + row.uom_group.title + `</span>
-                        </div></center>
+                        </div>
                     </div>`
-            }
-        }, {
-            className: 'wrap-text',
-            'data': 'uom',
-            'render': (data, type, row, meta) => {
-                return `<div class="row"><center>
+        }
+    }, {
+        data: 'uom',
+        render: (data, type, row, meta) => {
+            return `<div class="row">
                     <div class="col-10" style="padding-right: 5px"><span class="badge badge-soft-blue badge-pill span-uom" data-id="` + row.uom.id + `" style="min-width: max-content; width: 100%">` + row.uom.title + `</span></div>
-                    </center></div>`
-            }
-        },]
+                    </div>`
+        }
+    },]
+
+class PriceListAction {
+    static generateColCurrency(product_mapped) {
+        let temp_price = product_mapped[0].price;
+        let table = $('#datatable-item-list');
+        temp_price.forEach(function (value, index) {
+            table.find('thead tr').append(`<th>{0} {1}</th>`.format_by_idx(transEle.data('trans-price'), value.abbreviation))
+            columns.push(
+                {
+                    data: 'price',
+                    render: (data, type, row, meta) => {
+                        if (row.is_auto_update) {
+                            return `<input class="form-control mask-money" data-id-currency="${data[index].id}" value="${data[index].value}" readonly/>`
+                        } else {
+                            return `<input class="form-control mask-money" data-id-currency="${data[index].id}" value="${data[index].value}" />`
+                        }
+                    }
+                },
+            )
+        })
+        this.addColDel(table);
     }
 
-    function initDataTable(config, id_table) {
-        /*DataTable Init*/
-        let dtb = $(id_table);
-        if (dtb.length > 0) {
-            dtb.DataTable(config);
+    static addColDel(table) {
+        table.find('thead tr').append(`<th></th>`)
+        columns.push(
+            {
+                render: (data, type, row, meta) => {
+                    return `<a class="btn btn-icon btn-del btn btn-icon btn-flush-danger flush-soft-hover btn-rounded del-button"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`
+
+                }
+            },
+        )
+    }
+
+    static callData(url, method) {
+        return $.fn.callAjax2({
+            url: url,
+            method: method,
+        }).then((resp) => {
+            return $.fn.switcherResp(resp);
+        });
+    }
+
+    static loadDtbPriceItem(data, columns) {
+        if (!$.fn.DataTable.isDataTable('#datatable-item-list')) {
+            let dtb = $('#datatable-item-list');
+            dtb.DataTableDefault({
+                rowIdx: true,
+                reloadCurrency: true,
+                data: data,
+                paging: false,
+                columns: columns,
+            });
         }
     }
 
-    // load for tab setting and dropdown add currency for price list
-    function loadCurrency(list_id, currency_list) {
-        list_id = list_id.map(obj => obj.id);
-        let ele = $('#select-box-currency');
-        currency_list.map(function (item) {
-            if (list_id.includes(item.id)) {
-                ele.append(`<option value="` + item.id + `" selected>` + item.title + `</option>`);
-            } else {
-                ele.append(`<option data-primary="0" value="` + item.id + `">` + item.title + `</option>`);
-            }
-        })
-    }
+    static async getChildPriceList(pk) {
+        let price_list_update = [];
+        price_list_update.push({
+            'id': pk,
+            'factor': 1,
+            'id_source': ''
+        });
+        let price_data = await this.callData(urlEle.data('url-list'), 'GET');
+        if (price_data.hasOwnProperty('price_list')) {
+            price_data.price_list.map(function (item) {
+                if (item.status === 'Valid' || item.status === 'Invalid') {
+                    if (price_list_update.map(obj => obj.id).includes(item?.['price_list_mapped']))
+                        price_list_update.push({
+                            'id': item.id,
+                            'factor': item.factor * price_list_update.find(obj => obj.id === item?.['price_list_mapped']).factor,
+                            'id_source': item?.['price_list_mapped']
+                        });
 
-    function loadSourcePriceList(id) {
-        let ele = $('#select-box-price-list')
-        $.fn.callAjax2({
-            'url': ele.attr('data-select2-url'),
-            'method': ele.attr('data-method')
-        }).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('price_list')) {
-
-                    ele.append(`<option></option>`)
-                    data.price_list.map(function (item) {
-                        if (item.id === id) {
-                            ele.append(`<option value="` + item.id + `" selected>` + item.title + `</option>`);
-                        } else
-                            ele.append(`<option value="` + item.id + `">` + item.title + `</option>`);
-                    })
                 }
-
-            }
-        })
+            })
+        }
+        return price_list_update
     }
 
-    function loadProduct() {
-        let ele = $('#select-box-product');
-        $.fn.callAjax2({
-            'url': ele.attr('data-select2-url'),
-            'method': ele.attr('data-method')
-        }).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product_list')) {
-                    ele.append(`<option></option>`);
-                    resp.data.product_list.map(function (item) {
-                        if (Object.keys(item.sale_information).length > 0)
-                            ele.append(`<option value="` + item.id + `">` + item.code + ` - ` + item.title + `</option>`);
-                    })
-                }
-            }
-        }, (errs) => {
-        },)
-    }
-
-    function loadExpense() {
-        let ele = $('#select-box-product');
-        $.fn.callAjax2({
-            'url': ele.attr('data-select2-url-expense'),
-            'method': ele.attr('data-method')
-        }).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('expense_list')) {
-                    ele.append(`<option></option>`);
-                    resp.data.expense_list.map(function (item) {
-                        ele.append(`<option value="` + item.id + `">` + item.code + ` - ` + item.title + `</option>`);
-                    })
-                }
-            }
-        }, (errs) => {
-        },)
-    }
-
-    function loadUoM(group) {
-        let ele = $('#select-uom');
-        $.fn.callAjax2({
-            'url': ele.attr('data-select2-url'),
-            'method': ele.attr('data-method')
-        }).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('unit_of_measure')) {
-                    ele.append(`<option></option>`);
-                    resp.data.unit_of_measure.map(function (item) {
-                        if (item.group.title === group)
-                            ele.append(`<option value="` + item.id + `">` + item.code + ` - ` + item.title + `</option>`);
-                    })
-                }
-            }
-        }, (errs) => {
-        },)
-    }
-
-    function getProductWithCurrency(list_product, currency) {
+    static getProductWithCurrency(list_product, currency) {
         let list_result = []
         list_product.map(function (item) {
             if (list_result.length === 0 || !list_result.find(obj => obj.id === item.id)) {
@@ -212,11 +162,11 @@ $(document).ready(function () {
 
         list_result.map(function (item) {
             if (item.price.length !== currency.length) {
-                currency.map(function (id) {
-                    if (!item.price.map(obj => obj.id).includes(id)) {
+                currency.map(function (obj) {
+                    if (!item.price.map(obj => obj.id).includes(obj.id)) {
                         item.price.push({
-                            'id': id,
-                            'abbreviation': currency_dict[id].abbreviation,
+                            'id': obj.id,
+                            'abbreviation': obj.abbreviation,
                             'value': 0
                         })
                     }
@@ -226,344 +176,214 @@ $(document).ready(function () {
         })
         return list_result
     }
+}
+
+class PriceListLoadPage {
+    static loadSourcePriceList(ele, data) {
+        ele.initSelect2({
+            data: data,
+        })
+    }
+
+    static loadCurrency(ele, data) {
+        ele.initSelect2({
+            data: data,
+        })
+    }
+
+    static loadItem(ele, data) {
+        ele.initSelect2({
+            data: data,
+        })
+    }
+
+    static loadUoM(ele, data, group_id) {
+        ele.initSelect2({
+            data: data,
+            dataParams: {'group': group_id},
+        })
+
+    }
+
+    static loadDetailPage(frm, pk) {
+        $.fn.callAjax2({
+            url: frm.data('url').format_url_with_uuid(pk),
+            method: 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    let price_list_detail = data?.['price'];
+                    $.fn.compareStatusShowPageAction(price_list_detail)
+
+                    if (price_list_detail.is_default) {
+                        $('#price_list_name').text(price_list_detail.title.toUpperCase())
+                    } else {
+                        if (price_list_detail.auto_update) {
+                            $('#price_list_name').html(price_list_detail.title + `
+                        <i class="fas fa-info-circle icon-info" data-bs-toggle="tooltip" data-bs-placement="bottom" title='Get product from "` + price_list_detail.price_list_mapped.title + `"'>
+                        </i>`
+                            )
+                        } else {
+                            $('#price_list_name').text(price_list_detail.title)
+                        }
+                    }
+
+                    if (price_list_detail.auto_update) {
+                        autoUpdateCheckBoxEle.prop('checked', true);
+                        currencySelectEle.prop('disabled', true);
+                        $('#btn-add-new-item').prop('disabled', true);
+                    }
+
+                    if (price_list_detail.valid_time_start && price_list_detail.valid_time_start) {
+                        if (price_list_detail.is_default) {
+                            $('#apply_time').html(`From <span style="min-width: max-content;" class="badge badge-soft-primary badge-outline">` + price_list_detail.valid_time_start + `</span> to <span style="min-width: max-content;" class="badge badge-soft-primary badge-outline">now</span>`)
+                        } else {
+                            $('#apply_time').html(`From <span style="min-width: max-content;" class="badge badge-soft-primary badge-outline">` + price_list_detail.valid_time_start + `</span> to <span style="min-width: max-content;" class="badge badge-soft-primary badge-outline">` + price_list_detail.valid_time_end + `</span>`)
+                        }
+                    }
+
+
+                    let product_mapped = PriceListAction.getProductWithCurrency(price_list_detail?.['products_mapped'], price_list_detail.currency)
+                    PriceListAction.generateColCurrency(product_mapped);
+                    PriceListAction.loadDtbPriceItem(product_mapped.sort(function (a, b) {
+                        return a.code - b.code;
+                    }), columns)
+
+
+                    // load data tab settings
+                    $('#select-box-type').val(price_list_detail?.['price_list_type']);
+
+                    factorInputEle.val(price_list_detail.factor);
+
+                    canDeleteCheckBoxEle.prop('checked', price_list_detail.can_delete);
+
+
+                    // load parent price list
+                    PriceListLoadPage.loadSourcePriceList(priceSelectEle, price_list_detail?.['price_list_mapped'])
+                    if (Object.keys(price_list_detail?.['price_list_mapped']).length !== 0) {
+                        autoUpdateCheckBoxEle.prop('disabled', false);
+                    } else {
+                        autoUpdateCheckBoxEle.prop('disabled', true);
+                    }
+
+                    PriceListLoadPage.loadCurrency(currencySelectEle, price_list_detail.currency);
+
+                    if (price_list_detail.status) {
+                        let badge_type;
+                        let text_type;
+                        if (price_list_detail.status === 'Valid') {
+                            badge_type = 'badge-green'
+                            text_type = 'text-green'
+                        } else if (price_list_detail.status === 'Invalid') {
+                            badge_type = 'badge-orange'
+                            text_type = 'text-orange'
+                        } else if (price_list_detail.status === 'Expired') {
+                            badge_type = 'badge-red'
+                            text_type = 'text-red'
+                            this.loadPriceExpired(price_list_detail);
+                        } else {
+                            badge_type = 'badge-gray'
+                            text_type = 'text-gray'
+                        }
+
+                        $('#status').html(`<span class="badge badge-indicator badge-indicator-xl ` + badge_type + `"></span><span class="` + text_type + `">&nbsp;` + price_list_detail.status + `</span>`);
+                    }
+                }
+            })
+    }
+
+    static loadPriceExpired(price_list_detail) {
+        $('#btn-add-new-item').prop('disabled', true);
+        $('#datatable-item-list input').prop('readonly', true);
+
+        $('#datatable-item-list .del-button').remove();
+        $('#notify').text(`* {0} {1}`.format_by_idx(price_list_detail.status, transEle.data('trans-not-modify')))
+        factorInputEle.prop('disabled', true);
+        autoUpdateCheckBoxEle.prop('disabled', true);
+        canDeleteCheckBoxEle.prop('disabled', true);
+        currencySelectEle.prop('disabled', true);
+    }
+}
+
+
+$(document).ready(async function () {
 
 // load detail price list
     let frm = $('#form-update-price-list');
-    let pk = window.location.pathname.split('/').pop();
-    $.fn.callAjax(frm.attr('data-url').replace(0, pk), 'GET').then(
-        (resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                let price_list_detail = data?.['price'];
-                $.fn.compareStatusShowPageAction(price_list_detail);
-                if (price_list_detail.auto_update || price_list_detail.is_default) {
-                    $('#btn-add-new-item').prop('disabled', true);
-                } else {
-                    $('#btn-add-new-item').prop('disabled', false);
-                }
-
-                if (price_list_detail.is_default) {
-                    $('#price_list_name').text(price_list_detail.title.toUpperCase())
-                } else {
-                    $('#setting-nav').removeClass('disabled');
-                    if (price_list_detail.auto_update) {
-                        $('#price_list_name').html(price_list_detail.title + `
-                        <i class="fas fa-info-circle icon-info" data-bs-toggle="tooltip" data-bs-placement="bottom" title='Get product from "` + price_list_detail.price_list_mapped.title + `"'>
-                        </i>`
-                        )
-                    } else {
-                        $('#price_list_name').text(price_list_detail.title)
-                    }
-                }
-
-                if (price_list_detail.valid_time_start && price_list_detail.valid_time_start) {
-                    if (price_list_detail.is_default) {
-                        $('#apply_time').html(`From <span style="min-width: max-content;" class="badge badge-soft-primary badge-outline">` + price_list_detail.valid_time_start + `</span> to <span style="min-width: max-content;" class="badge badge-soft-primary badge-outline">now</span>`)
-                    } else {
-                        $('#apply_time').html(`From <span style="min-width: max-content;" class="badge badge-soft-primary badge-outline">` + price_list_detail.valid_time_start + `</span> to <span style="min-width: max-content;" class="badge badge-soft-primary badge-outline">` + price_list_detail.valid_time_end + `</span>`)
-                    }
-                }
-
-                if (price_list_detail.status) {
-                    let badge_type = '';
-                    let text_type = '';
-                    if (price_list_detail.status === 'Valid') {
-                        badge_type = 'badge-green'
-                        text_type = 'text-green'
-                    } else if (price_list_detail.status === 'Invalid') {
-                        badge_type = 'badge-orange'
-                        text_type = 'text-orange'
-                    } else if (price_list_detail.status === 'Expired') {
-                        badge_type = 'badge-red'
-                        text_type = 'text-red'
-                    } else {
-                        badge_type = 'badge-gray'
-                        text_type = 'text-gray'
-                    }
-
-                    $('#status').html(`<span class="badge badge-indicator badge-indicator-xl ` + badge_type + `"></span><span class="` + text_type + `">&nbsp;` + price_list_detail.status + `</span>`)
-                }
-
-                $('#inp-source').val(price_list_detail.price_list_mapped.id)
-                if (data.hasOwnProperty('price')) {
-                    let dropdown = $('.dropdown-currency');
-                    price_list_detail.currency.map(function (item) {
-                        let abbreviation = currency_dict[item.id].abbreviation
-                        dropdown.append(`<div class="form-check form-check mt-2">
-                            <input data-id="` + item + `" class="form-check-input display-currency" type="checkbox" id="check-` + abbreviation + `" value="option1" checked>
-                            <label class="form-check-label">` + abbreviation + `</label>
-                        </div>`)
-                    })
-                    let product_mapped = getProductWithCurrency(price_list_detail.products_mapped, price_list_detail.currency)
-                    config['data'] = product_mapped.sort(function (a, b) {
-                        return a.code - b.code;
-                    });
-                    initDataTable(config, '#datatable-item-list');
-
-                    for (let i = 0; i < price_list_detail.products_mapped.length; i++) {
-                        if (price_list_detail.products_mapped[i].price === 0) {
-                            let ele1 = $('#datatable-item-list').find(`span[data-id='` + price_list_detail.products_mapped[i].id + `']`).parent().parent()
-                            let ele2 = ele1.find(`span[data-id='` + price_list_detail.products_mapped[i].uom.id + `']`).parent().parent().parent().parent().parent()
-                            ele2.css({
-                                'background-color': '#fffffa'
-                            })
-                        }
-                    }
-
-                    loadCurrency(price_list_detail.currency, currency_list);
-
-                    // add column in table item list (Price Of currency and button Delete item)
-                    if (product_mapped.length !== 0) {
-                        let index_th = 4
-                        let table = $('#datatable-item-list')
-                        let body_table = table.find('tbody tr')
-                        let price_longest = product_mapped.reduce((acc, cur) => {
-                            if (cur.price.length > acc.price.length) {
-                                return cur;
-                            }
-                            return acc;
-                        });
-                        product_mapped.filter(item => item.price.length < price_longest.price.length).map(function (item) {
-                            let ids = item.price.map(item => item.id);
-                            price_longest.price.forEach(obj => {
-                                if (!ids.includes(obj.id)) {
-                                    item.price.push({
-                                        'id': obj.id,
-                                        'abbreviation': obj.abbreviation,
-                                        'value': 0
-                                    });
-                                }
-                            });
-                        });
-
-                        product_mapped.map(function (item) {
-                            const order = price_longest.price.map(item => item.id);
-                            item.price.sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
-                        })
-
-                        // create thead
-                        for (let i = 0; i < price_longest.price.length; i++) {
-                            if (i === price_longest.price.length - 1) {
-                                table.find('thead tr').children().eq(index_th).after($(`<th class="w-15 price-currency-exists text-center" data-id="` + price_longest.price[i].id + `">Price In ` + price_longest.price[i].abbreviation + `</th>`))
-                            } else {
-                                table.find('thead tr').children().eq(index_th).after($(`<th class="w-15 price-currency-exists text-center" data-id="` + price_longest.price[i].id + `">Price In ` + price_longest.price[i].abbreviation + `</th>`))
-                            }
-                            index_th += 1
-                        }
-
-                        // create tbody
-                        for (let j = 0; j < body_table.length; j++) {
-                            for (let i = 0; i < product_mapped[j].price.length; i++) {
-                                if (product_mapped[j].price[i].value === 0) {
-                                    if (product_mapped[j].is_auto_update === true)
-                                        body_table[j].innerHTML += `<td><input style="background: None; border: None; pointer-events: None; color: black; min-width: max-content" class="form-control text-center number-separator" type="text" value="" disabled></td>`
-                                    else
-                                        body_table[j].innerHTML += `<td><input class="form-control text-center number-separator" type="text" value="" style="min-width: max-content"></td>`
-                                } else {
-                                    if (product_mapped[j].is_auto_update === true)
-                                        body_table[j].innerHTML += `<td><input style="background: None; border: None; pointer-events: None; color: black; min-width: max-content" class="form-control text-center number-separator" type="text" value="` + product_mapped[j].price[i].value.toLocaleString('de-DE', {
-                                            minimumFractionDigits: 2,
-                                            maximumFractionDigits: 2
-                                        }) + `" disabled></td>`
-                                    else
-                                        body_table[j].innerHTML += `<td><input class="form-control text-center number-separator" type="text" value="` + product_mapped[j].price[i].value.toLocaleString('de-DE', {
-                                            minimumFractionDigits: 2,
-                                            maximumFractionDigits: 2
-                                        }) + `" style="min-width: max-content"></td>`
-                                }
-                            }
-                        }
-
-                        // create button del
-                        if (price_list_detail.is_default !== true) {
-                            table.find('thead tr').append('<th class="w-5"></th>')
-                            for (let i = 0; i < body_table.length; i++) {
-                                if (body_table[i].lastElementChild.firstElementChild.hasAttribute('disabled')) {
-                                    if (price_list_detail.can_delete === true) {
-                                        body_table[i].innerHTML += `<td><a class="btn btn-icon btn-del btn btn-icon btn-flush-danger flush-soft-hover btn-rounded del-button"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a></td>`
-                                    } else {
-                                        body_table[i].innerHTML += '<td></td>'
-                                    }
-                                } else
-                                    body_table[i].innerHTML += `<td><a class="btn btn-icon btn-del btn btn-icon btn-flush-danger flush-soft-hover btn-rounded del-button"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a></td>`
-                            }
-                            feather.replace();
-                        }
-                    }
-
-                    // load data tab settings
-                    $('#select-box-type').val(price_list_detail.price_list_type);
-                    $('#select-box-type').prop('disabled', true);
-                    $('#select-box-type').css({
-                        'border': 'None',
-                        'color': 'black'
-                    });
-                    $('#inp-factor').val(price_list_detail.factor);
-                    if (price_list_detail.auto_update === true) {
-                        $('#checkbox-update-auto').prop('checked', true);
-                        $('#select-product-category').prop('disabled', 'disabled');
-                        $('#select-box-currency').prop('disabled', 'disabled');
-                        $('#checkbox-can-delete').prop('disabled', false);
-                        $('#btn-add-new-item').prop('disabled', true);
-                    }
-                    if (price_list_detail.can_delete === true) {
-                        $('#checkbox-can-delete').prop('checked', true);
-                    }
-                    if (Object.keys(price_list_detail.price_list_mapped).length !== 0) {
-                        loadSourcePriceList(price_list_detail.price_list_mapped.id);
-                        $('#checkbox-update-auto').prop('disabled', false);
-                    }
-
-                    // edit field
-                    $('.inp-can-edit select').mouseenter(function () {
-                        $(this).css('cursor', 'text');
-                    })
-                    $('.inp-can-edit').focusin(function () {
-                        $(this).find('input[class=form-control]').prop('readonly', false);
-                        $(this).find('select').removeAttr('readonly');
-                    });
-                    $('.inp-can-edit').focusout(function () {
-                        $(this).find('input[class=form-control]').attr('readonly', true);
-                        $(this).find('select').attr('readonly', 'readonly');
-                    });
-                    $('.inp-can-edit').on('change', function () {
-                        $(this).find('input[class=form-control]').css({
-                            'border-color': '#00D67F',
-                            'box-shadow': '0 0 0 0.125rem rgba(0, 214, 127, 0.25)'
-                        })
-                        $(this).find('select').css({
-                            'border-color': '#00D67F',
-                            'box-shadow': '0 0 0 0.125rem rgba(0, 214, 127, 0.25)'
-                        })
-                    })
-                }
-
-                if (price_list_detail.status !== 'Invalid' && price_list_detail.status !== 'Valid') {
-                    $('#btn-add-new-item').prop('disabled', true);
-                    $('#datatable-item-list input').prop('readonly', true);
-                    $('#datatable-item-list input').css({
-                        'color': 'black',
-                        'border': 'None',
-                        'background': 'None'
-                    })
-                    $('#datatable-item-list .del-button').remove();
-                    $('#notify').text(`* ` + price_list_detail.status + ` price list does not allow configuration.`)
-                    $('#inp-factor').prop('disabled', true);
-                    $('#inp-factor').css({'border': 'None'});
-                    $('#checkbox-update-auto').prop('disabled', true);
-                    $('#checkbox-can-delete').prop('disabled', true);
-                    $('#select-box-currency').prop('disabled', true);
-                    $('.select2-selection').css({
-                        'border': 'None',
-                        'background-color': '#f7f7f7'
-                    });
-                }
-
-                $('.dataTables_info').remove()
-                // $('.btn-soft-primary').eq(1).remove()
-            }
-        })
+    let pk = $.fn.getPkDetail();
+    PriceListLoadPage.loadDetailPage(frm, pk);
 
 
 // onchange checkbox auto-update
-    $('#checkbox-update-auto').on('change', function () {
+    autoUpdateCheckBoxEle.on('change', function () {
         if ($(this).prop("checked")) {
             $('#select-product-category').prop('disabled', 'disabled');
-            $('#select-box-currency').prop('disabled', 'disabled');
-            $('#checkbox-can-delete').removeAttr('disabled');
-            $('#btn-add-new-item').prop('disabled', true);
-            if ($('#inp-source').val() !== '') {
-                $.fn.callAjax(frm.attr('data-url').replace(0, $('#inp-source').val()), 'GET').then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $('#select-box-currency').val(price_list_detail.currency).trigger("change");
-                        }
-                    })
-            }
+            currencySelectEle.prop('disabled', 'disabled');
+            canDeleteCheckBoxEle.removeAttr('disabled');
+            $.fn.callAjax2({
+                url: frm.data('url').format_url_with_uuid(priceSelectEle.val()),
+                method: 'GET',
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        PriceListLoadPage.loadCurrency(currencySelectEle, data?.['price_list_detail'].currency);
+                    }
+                })
+
         } else {
-            $('#checkbox-can-delete').prop('checked', false);
-            $('#btn-add-new-item').prop('disabled', false);
-            $('#select-product-category').removeAttr('disabled');
-            $('#select-box-currency').removeAttr('disabled');
+            canDeleteCheckBoxEle.prop('checked', false);
+            currencySelectEle.removeAttr('disabled');
         }
     })
 
 // submit form setting price list
-    let price_list_update = [];
-    price_list_update.push({
-        'id': pk,
-        'factor': 1,
-        'id_source': ''
-    });
-    $.fn.callAjax($('#form-update-price-list').attr('data-url-list'), 'GET').then((resp) => {
-        let data = $.fn.switcherResp(resp);
-        if (data) {
-            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('price_list')) {
-                data.price_list.map(function (item) {
-                    if (item.status === 'Valid' || item.status === 'Invalid') {
-                        if (price_list_update.length === 0) {
-                            price_list_update.push({
-                                'id': item.id,
-                                'factor': item.factor,
-                                'id_source': ''
-                            });
-                        } else {
-                            if (price_list_update.map(obj => obj.id).includes(item.price_list_mapped))
-                                price_list_update.push({
-                                    'id': item.id,
-                                    'factor': item.factor * price_list_update.find(obj => obj.id === item.price_list_mapped).factor,
-                                    'id_source': item.price_list_mapped
-                                });
-                        }
-                    }
-                })
-            }
+    frm.submit(async function (event) {
+        event.preventDefault();
+        let frm = new SetupFormSubmit($(this));
+        let price_list_update = await PriceListAction.getChildPriceList(pk);
+        frm.dataForm['currency'] = currencySelectEle.val();
+        if (frm.dataForm['currency'].length === 0) {
+            frm.dataForm['currency'] = null;
         }
-    }).then((resp) => {
-        // form update price list
-        frm.submit(function (event) {
-            event.preventDefault();
-            let frm = new SetupFormSubmit($(this));
-            frm.dataForm['currency'] = $('#select-box-currency').val();
-            if (frm.dataForm['currency'].length === 0) {
-                frm.dataForm['currency'] = null;
-            }
 
-            if (frm.dataForm['apply_for'] === '') {
-                delete frm.dataForm.apply_for
-            }
-            frm.dataForm['price_list_child'] = price_list_update.map(obj => obj.id);
+        if (frm.dataForm['apply_for'] === '') {
+            delete frm.dataForm.apply_for
+        }
+        frm.dataForm['price_list_child'] = price_list_update.map(obj => obj.id);
 
-            if (frm.dataForm['auto_update'] === undefined) {
-                frm.dataForm['auto_update'] = false
-            }
+        if (frm.dataForm['auto_update'] === undefined) {
+            frm.dataForm['auto_update'] = false
+        }
 
-            if (frm.dataForm['can_delete'] === undefined) {
-                frm.dataForm['can_delete'] = false
-            }
+        if (frm.dataForm['can_delete'] === undefined) {
+            frm.dataForm['can_delete'] = false
+        }
 
-            $.fn.callAjax(frm.dataUrl.replace(0, pk), frm.dataMethod, frm.dataForm, csr)
-                .then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyB({description: "Successfully"}, 'success')
-                            setTimeout(function () {
-                                location.reload()
-                            }, 1000);
-                        }
-                    },
-                    (errs) => {
-                        //$.fn.notifyB({description: errs.data.errors}, 'failure');
-                    })
-        })
+        $.fn.callAjax2({
+            url: frm.dataUrl.format_url_with_uuid(pk),
+            method: frm.dataMethod,
+            data: frm.dataForm
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
+                    setTimeout(function () {
+                        location.reload()
+                    }, 1000);
+                }
+            },
+            (errs) => {
+                $.fn.notifyB({description: errs.data.errors}, 'failure');
+            })
+
 
         // form add new item
         let frm_create_product = $('#form-create-product')
         frm_create_product.submit(function (event) {
             event.preventDefault();
-            let csr = $("input[name=csrfmiddlewaretoken]").val();
             let frm = new SetupFormSubmit($(this));
             let price_list = [];
             price_list_update.map(function (item) {
@@ -583,131 +403,104 @@ $(document).ready(function () {
             })
 
             let data_product = {
-                'id': $('#select-box-product').val(),
+                'id': itemSelectEle.val(),
                 'uom': $('#select-uom').val(),
                 'uom_group': $('#inp-uom-group').attr('data-id'),
             }
             frm.dataForm['list_price_list'] = price_list;
             frm.dataForm['product'] = data_product;
-            $.fn.callAjax(frm.dataUrl.replace(0, pk), frm.dataMethod, frm.dataForm, csr)
-                .then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyB({description: "Successfully"}, 'success')
-                            setTimeout(function () {
-                                location.reload()
-                            }, 1000);
-                        }
-                    },
-                    (errs) => {
-                        //$.fn.notifyB({description: errs.data.errors}, 'failure');
+            $.fn.callAjax2({
+                url: frm.dataUrl.format_url_with_uuid(pk),
+                method: frm.dataMethod,
+                data: frm.dataForm
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
+                        setTimeout(function () {
+                            location.reload()
+                        }, 1000);
                     }
-                )
-        })
-
-        // form update item price
-        let frm_update_item_price = $('#form-update-item-price')
-        frm_update_item_price.submit(function (event) {
-            event.preventDefault();
-            let csr = $("input[name=csrfmiddlewaretoken]").val();
-            let frm = new SetupFormSubmit($(this));
-            frm.dataForm['list_price'] = price_list_update
-
-            let list_price_of_currency = [];
-            $('.price-currency-exists').each(function () {
-                let index = $(this).index()
-                let currency_id = $(this).attr('data-id')
-                $('#datatable-item-list tbody tr').each(function () {
-                    let product_id = $(this).find('.btn-detail').attr('data-id')
-                    let uom_id = $(this).find('.span-uom').attr('data-id')
-                    let uom_gr_id = $(this).find('.span-uom-group').attr('data-id')
-                    let price = $(this).find('td:eq(' + index + ')').find('input').val();
-                    if (price === '') {
-                        price = 0;
-                    } else {
-                        price = parseFloat(price.replace(/\./g, '').replace(',', '.'))
-                    }
-                    if ($(this).find('td:eq(' + index + ')').find('input').hasClass('inp-edited') === true) {
-                        list_price_of_currency.push({
-                            'product_id': product_id,
-                            'uom_id': uom_id,
-                            'uom_group_id': uom_gr_id,
-                            'price': price,
-                            'currency': currency_id,
-                        })
-                    }
-                });
-            })
-
-            $('.th-dropdown').each(function () {
-                let index = $(this).index()
-                let currency_id = $(this).attr('data-id')
-                $('#datatable-item-list tbody tr').each(function () {
-                    let product_id = $(this).find('.btn-detail').attr('data-id')
-                    let uom_id = $(this).find('.span-uom').attr('data-id')
-                    let uom_gr_id = $(this).find('.span-uom-group').attr('data-id')
-                    let price = $(this).find('td:eq(' + index + ')').find('input').val();
-                    if (price === '') {
-                        price = 0;
-                    } else {
-                        price = parseFloat(price.replace(/\./g, '').replace(',', '.'))
-                    }
-                    list_price_of_currency.push({
-                        'product_id': product_id,
-                        'uom_id': uom_id,
-                        'uom_group_id': uom_gr_id,
-                        'price': price,
-                        'currency': currency_id,
-                    })
-                });
-            })
-            frm.dataForm['list_item'] = list_price_of_currency
-            if (frm.dataForm['list_item'].length > 0) {
-                $.fn.callAjax(frm.dataUrl.replace(0, pk), frm.dataMethod, frm.dataForm, csr)
-                    .then(
-                        (resp) => {
-                            let data = $.fn.switcherResp(resp);
-                            if (data) {
-                                $.fn.notifyB({description: "Successfully"}, 'success')
-                                setTimeout(function () {
-                                    location.reload()
-                                }, 1000);
-                            }
-                        },
-                        (errs) => {
-                            //$.fn.notifyB({description: errs.data.errors}, 'failure');
-                        })
-            } else {
-                $.fn.notifyB({description: 'Nothing to change'}, 'warning');
-            }
+                },
+                (errs) => {
+                    $.fn.notifyB({description: errs.data.errors}, 'failure');
+                }
+            )
         })
     })
 
-// add input price in modal create new product
-// let table_price_of_currency = $('#table-price-of-currency').html()
+// form update item price
+    let frm_update_item_price = $('#form-update-item-price')
+    frm_update_item_price.submit(async function (event) {
+        event.preventDefault();
+        let price_list_update = await PriceListAction.getChildPriceList(pk);
+        let frm = new SetupFormSubmit($(this));
+        frm.dataForm['list_price'] = price_list_update;
+
+        let list_price_of_currency = [];
+        // $('.th-dropdown').each(function () {
+        //     let index = $(this).index()
+        //     let currency_id = $(this).attr('data-id')
+        //     $('#datatable-item-list tbody tr').each(function () {
+        //         let product_id = $(this).find('.btn-detail').attr('data-id')
+        //         let uom_id = $(this).find('.span-uom').attr('data-id')
+        //         let uom_gr_id = $(this).find('.span-uom-group').attr('data-id')
+        //         let price = $(this).find('td:eq(' + index + ')').find('input').val();
+        //         if (price === '') {
+        //             price = 0;
+        //         } else {
+        //             price = parseFloat(price.replace(/\./g, '').replace(',', '.'))
+        //         }
+        //         list_price_of_currency.push({
+        //             'product_id': product_id,
+        //             'uom_id': uom_id,
+        //             'uom_group_id': uom_gr_id,
+        //             'price': price,
+        //             'currency': currency_id,
+        //         })
+        //     });
+        // })
+        frm.dataForm['list_item'] = list_price_of_currency
+        if (frm.dataForm['list_item'].length > 0) {
+            $.fn.callAjax2({
+                url: frm.dataUrl.format_url_with_uuid(pk),
+                method: frm.dataMethod,
+                data: frm.dataForm
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
+                        setTimeout(function () {
+                            location.reload()
+                        }, 1000);
+                    }
+                },
+                (errs) => {
+                    $.fn.notifyB({description: errs.data.errors}, 'failure');
+                })
+        } else {
+            $.fn.notifyB({description: 'Nothing to change'}, 'warning');
+        }
+    })
+
     $('#btn-add-new-item').on('click', function () {
-        let type = $('#select-box-type').val()
+        let type = $('#select-box-type').val();
         switch (type) {
             case '0':
-                loadProduct();
+                itemSelectEle.attr('data-keyResp', 'product_sale_list');
+                itemSelectEle.attr('data-url', urlEle.data('url-product'));
+                PriceListLoadPage.loadItem(itemSelectEle);
                 break;
             case '2':
-                loadExpense()
+                itemSelectEle.attr('data-keyResp', 'expense_list');
+                itemSelectEle.attr('data-url', urlEle.data('url-expense'));
+                PriceListLoadPage.loadItem(itemSelectEle);
                 break;
         }
-        $('#select-box-product').empty();
-        $('#inp-uom-group').val('')
-        $('#select-uom').empty();
     })
 
-    $('#tab-select-table a').on('click', function () {
-        if ($(this).attr('href') === "#tab-item-list") {
-            $('#btn-update').attr('form', "form-update-item-price")
-        } else {
-            $('#btn-update').attr('form', "form-update-price-list")
-        }
-    })
 
 // delete item
     $(document).on('click', '.btn-del', function () {
@@ -747,8 +540,7 @@ $(document).ready(function () {
                                 }, 1000);
                             }
                         },
-                        (errs) => {
-                            // $.fn.notifyB({description: errs.data.errors}, 'failure');
+                        () => {
                             Swal.fire({
                                 html:
                                     '<div><h6 class="text-danger mb-0">Can not delete this item!</h6></div>',
@@ -768,72 +560,35 @@ $(document).ready(function () {
         $(this).addClass('inp-edited');
     })
 
-    $('#select-box-product').on('change', function () {
-        if ($(this).val() !== '0') {
-            $('#save-product-selected').prop('disabled', false);
-            let type = $('#select-box-type').val();
-            let data_url;
-            switch (type) {
-                case '0':
-                    data_url = $(this).closest('select').attr('data-url-detail').replace(0, $(this).val());
-                    $.fn.callAjax2({
-                        'url': data_url,
-                        'method': 'GET'
-                    }).then((resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('product')) {
-                                $('#inp-code').val(data.product.code);
-                                $('#inp-uom-group').val(data.product.general_information.uom_group.title);
-                                $('#inp-uom-group').attr('data-id', data.product.general_information.uom_group.id);
-                                $('#select-uom').empty()
-                                loadUoM(data.product.general_information.uom_group.title);
-                            }
-                        }
-                    })
-                    break;
-                case '2':
-                    data_url = $(this).closest('select').attr('data-url-detail-expense').replace(0, $(this).val());
-                    $.fn.callAjax2({
-                        'url': data_url,
-                        'method': 'GET'
-                    }).then((resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('expense')) {
-                                $('#inp-code').val(data.expense.code);
-                                $('#inp-uom-group').val(data.expense.uom_group.title);
-                                $('#inp-uom-group').attr('data-id', data.expense.uom_group.id);
-                                $('#select-uom').empty()
-                                loadUoM(data.expense.uom_group.title);
-                            }
-                        }
-                    })
-                    break;
-            }
+    itemSelectEle.on('change', function () {
+        let item = SelectDDControl.get_data_from_idx($(this), $(this).val());
+        $('#save-product-selected').prop('disabled', false);
+        let type = $('#select-box-type').val();
 
-        } else {
-            $('#inp-code').val('');
-            $('#inp-uom-group').val('');
-            $('#save-product-selected').prop('disabled', true);
+        let code_ele = $('#inp-code');
+        let uom_gr_ele = $('#inp-uom-group');
+        let uom_ele = $('#select-box-uom');
+
+        switch (type) {
+            case '0':
+                code_ele.val(item.code);
+                uom_gr_ele.attr('data-id', item?.['general_information'].uom_group.id);
+                uom_gr_ele.val(item?.['general_information'].uom_group.title);
+                PriceListLoadPage.loadUoM(uom_ele, {}, item?.['general_information'].uom_group.id);
+                break;
+            case '2':
+                code_ele.val(item.code);
+                uom_gr_ele.attr('data-id', item.uom_group.id);
+                uom_gr_ele.val(item.uom_group.title);
+                PriceListLoadPage.loadUoM(uom_ele, {}, item.uom_group.id);
+                break;
         }
     })
 
-// display currency
-    $(document).on('change', '.display-currency', function () {
-        let dataId = $(this).attr('data-id')
-        let col = $(`.price-currency-exists[data-id="` + dataId + `"]`);
-        if (!$(this).is(`:checked`)) {
-            col.hide()
-            $('table tr').each(function () {
-                $(this).find('td').eq(col.index()).hide();
-            });
-        } else {
-            col.show();
-            $('table tr').each(function () {
-                $(this).find('td').eq(col.index()).show();
-            });
-        }
+    $('#setting-nav').on('click', function () {
+        $('#btn-update').attr('form', 'form-update-price-list');
     })
-
+    $('#products-nav').on('click', function () {
+        $('#btn-update').attr('form', 'form-update-item-price');
+    })
 })

@@ -29,6 +29,20 @@
         {% csrf_token %}
         <div class="container-fluid">
             <div class="collapse multi-collapse show" id="collapseExample">
+                <div class="row">
+                    <div class="col-6"></div>
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="col-8"></div>
+                            <div class="col-2">
+                                <h5 class="text-primary" id="purchase-order-code"></h5>
+                            </div>
+                            <div class="col-2" id="purchase-order-status">
+                                <span class="badge badge-soft-success"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="row" id="common-information-area">
                     <div class="col-6">
                         <div class="form-group">
@@ -112,6 +126,34 @@
                                 </span>
                             </div>
                         </div>
+                    </div>
+
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label class="form-label" for="purchase-order-date-delivered">{% trans 'Delivered date' %}</label>
+                            <div class="input-affix-wrapper">
+                                <input type="text" name="delivered-date" id="purchase-order-date-delivered"
+                                       class="form-control date-picker" autocomplete="off" disabled>
+                                <span class="input-suffix">
+                                    <i class="bi bi-calendar-week"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="purchase-order-status-delivered">{% trans 'Delivered status' %}</label>
+                            <div class="input-group">
+                                <span class="input-affix-wrapper">
+                                    <input
+                                        type="text" class="form-control"
+                                        name="status-delivered"
+                                        id="purchase-order-status-delivered"
+                                        value="None"
+                                        data-value="0"
+                                        disabled
+                                    >
+                                </span>
+                            </div>
+                        </div>
                         <div class="form-group">
                             <label class="form-label" for="box-purchase-order-contact">{% trans 'Select Contact' %}</label>
                             <div class="input-group more-information-group">
@@ -140,49 +182,6 @@
                                             required
                                             disabled
                                     ></select>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-6">
-                        <div class="form-group">
-                            <label class="form-label" for="purchase-order-date-delivered">{% trans 'Delivered date' %}</label>
-                            <div class="input-affix-wrapper">
-                                <input type="text" name="delivered-date" id="purchase-order-date-delivered"
-                                       class="form-control date-picker" autocomplete="off" disabled>
-                                <span class="input-suffix">
-                                    <i class="bi bi-calendar-week"></i>
-                                </span>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" for="quotation-create-status">{% trans 'Status' %}</label>
-                            <div class="input-group">
-                                <span class="input-affix-wrapper">
-                                    <input
-                                        type="text" class="form-control status-draft"
-                                        value="Draft"
-                                        data-value="0"
-                                        name="status"
-                                        id="quotation-create-status"
-                                        disabled
-                                    >
-                                </span>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" for="purchase-order-status-delivered">{% trans 'Delivered status' %}</label>
-                            <div class="input-group">
-                                <span class="input-affix-wrapper">
-                                    <input
-                                        type="text" class="form-control"
-                                        name="status-delivered"
-                                        id="purchase-order-status-delivered"
-                                        value="None"
-                                        data-value="0"
-                                        disabled
-                                    >
                                 </span>
                             </div>
                         </div>

@@ -46,6 +46,20 @@
                 <div class="container-fluid">
                     <div class="collapse multi-collapse show" id="collapseExample">
                         <div class="row">
+                            <div class="col-6"></div>
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="col-8"></div>
+                                    <div class="col-2">
+                                        <h5 class="text-primary" id="quotation-create-code"></h5>
+                                    </div>
+                                    <div class="col-2" id="quotation-create-status">
+                                        <span class="badge badge-soft-success"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
                             <div class="col-6">
                                 <div class="form-group">
                                     <label class="form-label" for="quotation-create-title">{% trans 'Title' %}<span class="required"></span></label>
@@ -153,49 +167,18 @@
                             </div>
                             <div class="col-6">
                                 <div class="form-group">
-                                    <label class="form-label" for="quotation-create-code">{% trans 'Code' %}</label>
+                                    <label class="form-label" for="quotation-create-date-created">{% trans 'Date Created' %}<span class="required"></span></label>
                                     <div class="input-group">
                                         <span class="input-affix-wrapper">
                                             <input
-                                                    type="text" class="form-control disabled-custom-show"
-                                                    name="quotation_code"
-                                                    id="quotation-create-code"
-                                                    disabled
+                                                type="text" class="form-control disabled-custom-show"
+                                                placeholder="dd/mm/yyyy"
+                                                name="date_created"
+                                                id="quotation-create-date-created"
+                                                disabled
+                                                required
                                             >
                                         </span>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-6">
-                                        <div class="form-group">
-                                            <label class="form-label" for="quotation-create-date-created">{% trans 'Date Created' %}</label>
-                                            <div class="input-group">
-                                                <span class="input-affix-wrapper">
-                                                    <input
-                                                        type="text" class="form-control disabled-custom-show"
-                                                        placeholder="dd/mm/yyyy"
-                                                        name="date_created"
-                                                        id="quotation-create-date-created"
-                                                        disabled
-                                                    >
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="form-group">
-                                            <label class="form-label" for="quotation-create-status">{% trans 'Status' %}</label>
-                                            <div class="input-group">
-                                                <span class="input-affix-wrapper">
-                                                    <input
-                                                        type="text" class="form-control"
-                                                        name="status"
-                                                        id="quotation-create-status"
-                                                        disabled
-                                                    >
-                                                </span>
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -414,13 +397,14 @@
                                     </table>
                                     <div class="row">
                                         <div class="col-2">
-                                            <button type="button" class="btn btn-link btn-animated" id="btn-add-product-quotation-create" disabled>
+                                            <button type="button" class="btn btn-link btn-animated" id="btn-add-product-quotation-create" disabled hidden>
                                                 <span><span class="icon"><span class="feather-icon"><i class="fa-regular fa-square-plus"></i></span></span><span>{% trans 'Add Product' %}</span></span>
                                             </button>
                                         </div>
                                         <div class="col-10"></div>
                                     </div>
                                 </div>
+                                <br>
                                 <div class="row">
                                     <div class="col-6">
                                         <div class="row mt-8">
@@ -432,6 +416,7 @@
                                                     data-bs-target="#shippingFeeModalCenter"
                                                     id="btn-add-shipping"
                                                     disabled
+                                                    hidden
                                                 >
                                                     <span class="text-teal">
                                                         <span class="icon">
@@ -574,6 +559,7 @@
                                                     data-bs-target="#promotionModalCenter"
                                                     id="btn-check-promotion"
                                                     disabled
+                                                    hidden
                                                 >
                                                     <span class="text-brown">
                                                         <span class="icon">
@@ -802,13 +788,14 @@
                                     </table>
                                     <div class="row">
                                         <div class="col-2">
-                                            <button type="button" class="btn btn-link btn-animated" id="btn-add-expense-quotation-create" disabled>
+                                            <button type="button" class="btn btn-link btn-animated" id="btn-add-expense-quotation-create" disabled hidden>
                                                 <span><span class="icon"><span class="feather-icon"><i class="fa-regular fa-square-plus"></i></span></span><span>{% trans 'Add Expense' %}</span></span>
                                             </button>
                                         </div>
                                         <div class="col-10"></div>
                                     </div>
                                 </div>
+                                <br>
                                 <div class="row">
                                     <div class="col-6"></div>
                                     <div class="col-6" id="quotation-tab-expense-totals">
@@ -942,9 +929,10 @@
                         <div class="col-2">
                             <button
                                     type="button"
-                                    class="btn btn-soft-success"
+                                    class="btn btn-soft-primary"
                                     id="btn-refresh-quotation-indicator"
                                     disabled
+                                    hidden
                             >
                             <span><span class="icon"><span class="feather-icon"><i class="fa-solid fa-arrows-rotate"></i></span></span><span>{% trans 'Refresh data' %}</span></span>
                             </button>

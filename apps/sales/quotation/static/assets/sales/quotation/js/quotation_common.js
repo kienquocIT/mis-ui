@@ -687,7 +687,7 @@ class QuotationLoadDataHandle {
         }
         if (data.code) {
             if ($('#quotation-create-code').length) {
-                document.getElementById('quotation-create-code').value = data.code;
+                document.getElementById('quotation-create-code').innerHTML = data.code;
             }
         }
         if (data.opportunity) {
@@ -725,26 +725,17 @@ class QuotationLoadDataHandle {
             $('#quotation-customer-confirm')[0].checked = data.is_customer_confirm;
         }
         if (data.system_status) {
-            let data_status = {
-                'Draft': 0,
-                'Created': 1,
-                'Added': 2,
-                'Finish': 3,
-                'Cancel': 4,
-            }
-            let css_status = {
-                'Draft': 'status-draft',
-                'Created': 'status-created',
-                'Added': 'status-added',
-                'Finish': 'status-finish',
-                'Cancel': 'status-cancel',
-            }
             let eleStatus = $('#quotation-create-status');
-            eleStatus.val(data.system_status);
-            eleStatus[0].setAttribute('data-value', data_status[data.system_status]);
-            eleStatus[0].className = '';
-            eleStatus[0].classList.add('form-control');
-            eleStatus[0].classList.add(css_status[data.system_status]);
+            let status_data = {
+                "Draft": "badge badge-soft-light",
+                "Created": "badge badge-soft-primary",
+                "Added": "badge badge-soft-info",
+                "Finish": "badge badge-soft-success",
+                "Cancel": "badge badge-soft-danger",
+            }
+            let statusHTML = `<span class="${status_data[data?.['system_status']]}">${data?.['system_status']}</span>`;
+            eleStatus.empty();
+            eleStatus.append(statusHTML);
             // check if is not finish then disable btn copy
             if (!['Added', 'Finish'].includes(data?.['system_status'])) {
                 let btnCopy = document.getElementById('btn-copy-quotation');

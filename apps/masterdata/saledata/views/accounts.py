@@ -120,6 +120,7 @@ class ContactList(View):
         template='masterdata/saledata/accounts/contact_list.html',
         breadcrumb='CONTACT_LIST_PAGE',
         menu_active='id_menu_contact',
+        perm_check=PermCheck(url=ApiURL.CONTACT_LIST, method='get'),
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -171,6 +172,7 @@ class ContactDetail(View):
         template='masterdata/saledata/accounts/contact_detail.html',
         breadcrumb='CONTACT_DETAIL_PAGE',
         menu_active='menu_contact_detail',
+        perm_check=PermCheck(url=ApiURL.CONTACT_LIST, method='get'),
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -365,21 +367,18 @@ class IndustryDetailAPI(APIView):
 
 
 class AccountList(View):
-    permission_classes = [IsAuthenticated]
-
     @mask_view(
         auth_require=True,
         template='masterdata/saledata/accounts/account_list.html',
         breadcrumb='ACCOUNT_LIST_PAGE',
         menu_active='id_menu_account',
+        perm_check=PermCheck(url=ApiURL.ACCOUNT_LIST, method='get'),
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
 
 
 class AccountListAPI(APIView):
-    permission_classes = [IsAuthenticated]
-
     @mask_view(auth_require=True, is_api=True)
     def get(self, request, *args, **kwargs):
         filter = request.query_params.dict()
@@ -390,8 +389,6 @@ class AccountListAPI(APIView):
 
 
 class AccountCreate(View):
-    permission_classes = [IsAuthenticated]
-
     @mask_view(
         auth_require=True,
         template='masterdata/saledata/accounts/account_create.html',
@@ -404,8 +401,6 @@ class AccountCreate(View):
 
 
 class AccountCreateAPI(APIView):
-    permission_classes = [IsAuthenticated]
-
     @mask_view(auth_require=True, is_api=True)
     def post(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_LIST).post(request.data)
@@ -413,31 +408,26 @@ class AccountCreateAPI(APIView):
 
 
 class AccountDetail(View):
-    permission_classes = [IsAuthenticated]
-
     @mask_view(
         auth_require=True,
         template='masterdata/saledata/accounts/account_detail.html',
         breadcrumb='ACCOUNT_DETAIL_PAGE',
         menu_active='menu_account_detail',
+        perm_check=PermCheck(url=ApiURL.ACCOUNT_LIST, method='get'),
     )
     def get(self, request, *args, **kwargs):
-        input_mapping_properties = InputMappingProperties.SALE_DATA_ACCOUNT
-        return {
-                   'input_mapping_properties': input_mapping_properties, 'form_id': 'form-detail-update-account'
-               }, status.HTTP_200_OK
+        return {}, status.HTTP_200_OK
 
 
 class AccountUpdate(View):
-    permission_classes = [IsAuthenticated]
-
     @mask_view(
         auth_require=True,
         template='masterdata/saledata/accounts/account_update.html',
         breadcrumb='ACCOUNT_UPDATE_PAGE',
         menu_active='menu_account_update',
+        perm_check=PermCheck(url=ApiURL.ACCOUNT_DETAIL, method='put', fill_key=['pk']),
     )
-    def get(self, request, *args, **kwargs):
+    def get(self, request, *args, pk, **kwargs):
         input_mapping_properties = InputMappingProperties.SALE_DATA_ACCOUNT
         return {
                    'input_mapping_properties': input_mapping_properties, 'form_id': 'form-detail-update-account'

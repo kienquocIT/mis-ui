@@ -92,6 +92,7 @@ function loadDataTableProduct(data) {
         $table.DataTableDefault({
             rowIdx: true,
             reloadCurrency: true,
+            paging: false,
             data: data,
             columns: [
                 {

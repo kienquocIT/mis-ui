@@ -22,7 +22,8 @@
 {% block pageContent %}
     <input type="hidden" id="data-customer">
     <input type="hidden" id="data-sale-person">
-    <input type="hidden" id="employee_current_id" value="{{ data.employee_current_id }}">
+    <input type="hidden" id="employee_current_id" value="{{ request.user.employee_current_data.id }}">
+    <input type="hidden" id="employee_current_group" value="{{ request.user.employee_current_data.group }}">
     <input type="hidden" id="group_id_emp_login">
     <input type="hidden" id="opportunity-link"
            data-link-update="{% url 'OpportunityDetail' pk=0 %}"
@@ -77,13 +78,12 @@
                     >
                         {% csrf_token %}
                         <div class="mb-3 form-group">
-                            <label class="form-label">
+                            <label class="form-label required">
                                 {% trans 'Select Customer' %}
-                                <sup class="field-required">(*)</sup>
                             </label>
                             <select
                                     class="form-select"
-                                    id="select-box-opportunity-create-customer"
+                                    id="select-box-customer"
                                     data-close-on-select="true"
                                     data-url="{% url "AccountListAPI" %}"
                                     data-method="GET"
@@ -94,12 +94,11 @@
                             ></select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label" for="exampleDropdownFormPassword1">
+                            <label class="form-label required" for="opp-title">
                                 {% trans 'Name' %}
-                                <sup class="field-required">(*)</sup>
                             </label>
                             <input
-                                    type="text" class="form-control" id="exampleDropdownFormPassword1"
+                                    type="text" class="form-control" id="opp-title"
                                     placeholder="" name="title" required
                             >
                         </div>
@@ -125,6 +124,7 @@
                                     data-url="{% url 'EmployeeListAPI' %}"
                                     data-keyResp="employee_list"
                                     data-keyText="full_name"
+                                    required
                             >
                             </select>
                         </div>

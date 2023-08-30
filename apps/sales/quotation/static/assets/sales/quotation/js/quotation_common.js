@@ -102,7 +102,16 @@ class QuotationLoadDataHandle {
                     btnCopy.setAttribute('disabled', 'true');
                     eleTooltipBtnCopy.removeAttribute('data-bs-original-title');
                     eleTooltipBtnCopy.setAttribute('data-bs-placement', 'top');
-                    eleTooltipBtnCopy.setAttribute('title', $.fn.transEle.attr('data-valid-btn-copy'));
+                    let titleText = '';
+                    if (dataOpp.is_close_lost === true || dataOpp.is_deal_close === true) {
+                        titleText += $.fn.transEle.attr('data-opp-closed');
+                        titleText += ',';
+                    }
+                    if (dataOpp.sale_order_id !== null) {
+                        titleText += $.fn.transEle.attr('data-opp-had-sale-order');
+                        titleText += ',';
+                    }
+                    eleTooltipBtnCopy.setAttribute('title', titleText);
                 }
             }
         }
@@ -454,7 +463,10 @@ class QuotationLoadDataHandle {
         let method = ele.attr('data-method');
         $('#datable-copy-quotation').DataTable().destroy();
         if (sale_person_id) {
-            let data_filter = {'employee_inherit': sale_person_id};
+            let data_filter = {
+                'employee_inherit': sale_person_id,
+                'system_status__in': [2, 3].join(','),
+            };
             if (opp_id) {
                 data_filter['opportunity'] = opp_id;
                 data_filter['opportunity__sale_order__isnull'] = true;
@@ -733,6 +745,15 @@ class QuotationLoadDataHandle {
             eleStatus[0].className = '';
             eleStatus[0].classList.add('form-control');
             eleStatus[0].classList.add(css_status[data.system_status]);
+            // check if is not finish then disable btn copy
+            if (!['Added', 'Finish'].includes(data?.['system_status'])) {
+                let btnCopy = document.getElementById('btn-copy-quotation');
+                let eleTooltipBtnCopy = document.getElementById('tooltip-btn-copy');
+                btnCopy.setAttribute('disabled', 'true');
+                eleTooltipBtnCopy.removeAttribute('data-bs-original-title');
+                eleTooltipBtnCopy.setAttribute('data-bs-placement', 'top');
+                eleTooltipBtnCopy.setAttribute('title', $.fn.transEle.attr('data-not-allow-use'));
+            }
         }
         if (is_copy === true) {
             let boxQuotation = $('#select-box-quotation');

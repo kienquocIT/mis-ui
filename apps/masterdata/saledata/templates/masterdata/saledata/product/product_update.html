@@ -205,14 +205,21 @@
                                 <input id="sale-cost" data-return-type="number" type="text" class="form-control mask-money">
                             </div>
                         </div>
-                        <div class="row form-group" id="sale-select-price-list" data-method="GET"
-                             data-url="{% url "PriceListAPI" %}" data-currency="{% url "CurrencyListAPI" %}">
+                        <div class="row form-group">
                             <label class="col-3 col-form-label required">{% trans "Price List" %}</label>
                             <div class="col-9">
-                                <input type="select" class="form-select dropdown-toggle" data-bs-toggle="dropdown" readonly
-                                       data-bs-display="static" aria-expanded="false" placeholder="Select Price List">
-                                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-lg-start w-100 ul-price-list"></ul>
+                                <a class="btn btn-soft-primary w-100" data-bs-toggle="collapse" href="#collapsePriceList" role="button" aria-expanded="false" aria-controls="collapseExample">
+                                    {% trans 'Show Price List' %}
+                                </a>
                             </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6"></div>
+                    <div class="col-6" id="sale-select-price-list" data-method="GET" data-url="{% url "PriceListAPI" %}">
+                        <div class="collapse" id="collapsePriceList">
+                            <div class="border-secondary card card-body ul-price-list"></div>
                         </div>
                     </div>
                 </div>
@@ -336,6 +343,6 @@
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static "vendors/dropify/dist/js/dropify.min.js" %}"></script>
+    <script src="{% static "assets/js/masterdata/saledata/product/product_common.js" %}"></script>
     <script src="{% static "assets/js/masterdata/saledata/product/product_update.js" %}"></script>
-{#    <script src="{% static "assets/js/masterdata/saledata/product/vietnam-number-separator.js" %}"></script>#}
 {% endblock %}

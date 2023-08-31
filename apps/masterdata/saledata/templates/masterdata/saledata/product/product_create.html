@@ -14,29 +14,14 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <button id="save-account" type="submit" form="form-create-product" style="background: none; border: none">
-        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
-           href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
-           data-bs-original-title="Save">
-                <span class="icon">
-                    <span class="feather-icon">
-                        <i data-feather="save"></i>
-                    </span>
-                </span>
-        </a>
-    </button>
-
-    <a
-            class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
-            href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
-            data-bs-original-title="Refresh"
-    >
+    <button id="save-account" class="btn btn-outline-primary" type="submit" form="form-create-product">
+        <span>
+            <span>{% trans 'Save' %}</span>
             <span class="icon">
-                <span class="feather-icon">
-                    <i data-feather="refresh-cw"></i>
-                </span>
+                <i class="fa-regular fa-floppy-disk"></i>
             </span>
-    </a>
+        </span>
+    </button>
 {% endblock %}
 {% block pageContent %}
     <form id="form-create-product"

@@ -57,6 +57,20 @@ $(function () {
     }
 
     function callDataTaskList(kanban, list){
+        function callBackModalChange(mutations, observer){
+            const checkHasClass = mutations[0].target.classList.contains('open');
+            if (!checkHasClass){
+                const _tableDataList = list.getTaskList
+                for (let item of _tableDataList) {
+                    if (item.edited) {
+                        item.edited = false
+                        break;
+                    }
+                }
+                $('#table_task_list').DataTable().clear().rows.add(_tableDataList).draw()
+            }
+        }
+
         $.fn.callAjax2({'url': $urlFact.attr('data-task-list'), 'method': 'GET'})
             .then(
                 (req) => {
@@ -65,6 +79,11 @@ $(function () {
                         const taskList = data.task_list
                         kanban.init(taskList)
                         list.init(list, taskList)
+                        // Function to wait form create on submit
+                        $createBtn.off().on('click', () => initCommon.awaitFormSubmit(kanban, list));
+                        let observer = new MutationObserver(callBackModalChange);
+                        const DOMCheck = document.getElementById('drawer_task_create')
+                        observer.observe(DOMCheck, {attributeFilter: ['class']});
                     }
                 },
                 (err) => {
@@ -73,51 +92,19 @@ $(function () {
             );
     }
 
-    // task util class
-    class kanbanHandle {
-        taskList = []
-
-        set setTaskList(data) {
-            this.taskList = data
-        }
-
-        get getTaskList() {
-            return this.taskList
-        }
-
-        reloadCountParent() {
-            let currentList = this.taskList
-            let countTemp = {}
-            for (let [idx, item] of currentList.entries()) {
-                if (item?.parent_n?.id)
-                    countTemp[item.parent_n.id] = (countTemp[item.parent_n.id] || 0) + 1;
-                else countTemp[item.id] = 0
-
-            }
-            for (let key in countTemp) {
-                $(`[data-task-id="${key}"]`).parents('.tasklist-card').find('.sub_task_count').text(countTemp[key])
-            }
-        }
-
-        deleteTaskAPI(taskID) {
-            return $.fn.callAjax2({
-                'url': $urlFact.attr('data-task-detail').format_url_with_uuid(taskID),
-                'method': 'DELETE'
-            })
-        }
-
-        renderLogWork(logWorkList) {
-            // reset datatable
+    class initCommon{
+        static initTableLogWork(dataList){
             let $table = $('#table_log-work')
             if ($table.hasClass('dataTable')) {
                 $table.DataTable().clear().draw();
-                $table.DataTable().rows.add(logWorkList).draw();
-            } else $table.DataTableDefault({
+                $table.DataTable().rows.add(dataList).draw();
+            }
+            else $table.DataTable({
                 searching: false,
                 ordering: false,
                 paginate: false,
                 info: false,
-                data: logWorkList,
+                data: dataList,
                 columns: [
                     {
                         data: 'employee_created',
@@ -167,13 +154,11 @@ $(function () {
                     }
                 ]
             })
-
         }
 
-        renderSubtask(taskID) {
-            // render subtask in history tabs of FORM edit.
+        static renderSubtask(taskID, dataList){
             const $wrap = $('.wrap-subtask')
-            const taskList = this.getTaskList
+            let taskList = dataList
             let subTaskList = []
             const _this = this
 
@@ -217,6 +202,92 @@ $(function () {
                         })
                     })
                 }
+            }
+        }
+
+        static awaitFormSubmit(kanban, list){
+            const isNewTask = setInterval(() => {
+                const elmData = $('#addNewTaskData')
+                const elmUpdate = $('#updateTaskData')
+                if (elmData.length) {
+                    // when created delete interval
+                    clearInterval(isNewTask)
+                    // parse data
+                    const strData = JSON.parse(elmData.attr('data-task'))
+                    // kanban handle new task created
+                    kanban.waitDataCreated(strData)
+
+                    // list view handle new task create
+                    listViewTask.addNewData(list, strData)
+
+                    elmData.remove();
+                }
+                else if (elmUpdate.length) {
+                    clearInterval(isNewTask)
+                    // parse data
+                    const strData = JSON.parse(elmUpdate.attr('data-task'))
+
+                    // get task has update and update for class task list
+                    let taskData = kanban.getTaskList
+                    let sameSTT = true
+                    let old_stt
+                    let idxTaskUpdate
+                    for (let [idx, item] of taskData.entries()) {
+                        if (item.id === strData.id) {
+                            const itemTStt = item.task_status?.id ? item.task_status.id : item.task_status
+                            const strTStt = strData.task_status?.id ? strData.task_status.id : strData.task_status
+                            if (itemTStt !== strTStt) sameSTT = false
+                            old_stt = itemTStt
+                            taskData[idx] = strData
+                            idxTaskUpdate = idx
+                            break
+                        }
+                    }
+                    kanban.setTaskList = taskData
+                    // update data to task kanban after
+                    if (sameSTT) kanban.afterUpdate(strData)
+                    else {
+                        $(`[data-id="${old_stt}"]`).parents('.tasklist').each(function () {
+                            $(this).find($(`[data-task-id="${strData.id}"]`)).parents('.tasklist-card').remove()
+                        })
+                        kanban.addNewTask(strData)
+                    }
+                    listViewTask.updateTask(list, strData, idxTaskUpdate)
+                }
+            }, 1000)
+        }
+
+        static deleteTask(taskID){
+            return $.fn.callAjax2({
+                'url': $urlFact.attr('data-task-detail').format_url_with_uuid(taskID),
+                'method': 'DELETE'
+            })
+        }
+    }
+
+    // task util class
+    class kanbanHandle {
+        taskList = []
+
+        set setTaskList(data) {
+            this.taskList = data
+        }
+
+        get getTaskList() {
+            return this.taskList
+        }
+
+        reloadCountParent() {
+            let currentList = this.taskList
+            let countTemp = {}
+            for (let [idx, item] of currentList.entries()) {
+                if (item?.parent_n?.id)
+                    countTemp[item.parent_n.id] = (countTemp[item.parent_n.id] || 0) + 1;
+                else countTemp[item.id] = 0
+
+            }
+            for (let key in countTemp) {
+                $(`[data-task-id="${key}"]`).parents('.tasklist-card').find('.sub_task_count').text(countTemp[key])
             }
         }
 
@@ -274,7 +345,7 @@ $(function () {
                             if (!$('#drawer_task_create').hasClass('open'))
                                 $('[data-drawer-target="#drawer_task_create"]').trigger('click')
                             const taskIDElm = $(`<input type="hidden" name="id" value="${data.id}"/>`)
-                            $('#formOpportunityTask').append(taskIDElm)
+                            $formElm.append(taskIDElm)
                             $('#inputTextTitle').val(data.title)
                             $('#inputTextCode').val(data.code)
                             const stt = data.task_status
@@ -310,8 +381,8 @@ $(function () {
                             $formElm.addClass('task_edit')
                             if (Object.keys(data.parent_n).length <= 0) $('.create-subtask').removeClass('hidden')
                             else $('.create-subtask').addClass('hidden')
-                            if (data.task_log_work.length) _this.renderLogWork(data.task_log_work)
-                            _this.renderSubtask(data.id)
+                            if (data.task_log_work.length) initCommon.initTableLogWork(data.task_log_work)
+                            initCommon.renderSubtask(data.id, _this.getTaskList)
 
                             if (data.attach) {
                                 const fileDetail = data.attach[0]?.['files']
@@ -331,7 +402,7 @@ $(function () {
             if (newTaskElm) elm = newTaskElm.find('.del-task-act')
             elm.off().on('click', function () {
                 let taskID = $(this).closest('.tasklist-card').find('.card-title').attr('data-task-id')
-                const callDelete = _this.deleteTaskAPI(taskID)
+                const callDelete = initCommon.deleteTask(taskID)
                 callDelete.then((req) => {
                     let res = $.fn.switcherResp(req);
                     if (res?.['status'] === 200) {
@@ -510,54 +581,14 @@ $(function () {
         }
 
         // async form create is done listening event then of ajax create/update
-        waitDataCreated() {
-            const isNewTask = setInterval(() => {
-                const elmData = $('#addNewTaskData')
-                const elmUpdate = $('#updateTaskData')
-                if (elmData.length) {
-                    // when created delete interval
-                    clearInterval(isNewTask)
-                    // parse data
-                    const strData = JSON.parse(elmData.attr('data-task'))
+        waitDataCreated(newData) {
+            // get before data parse and push new task has added by user
+            let taskData = this.getTaskList
+            taskData.push(newData)
+            this.setTaskList = taskData
 
-                    // get before data parse and push new task has added by user
-                    let taskData = this.getTaskList
-                    taskData.push(strData)
-                    this.setTaskList = taskData
-
-                    // call func to render new task added before
-                    this.addNewTask(strData)
-                    elmData.remove();
-                } else if (elmUpdate.length) {
-                    clearInterval(isNewTask)
-                    // parse data
-                    const strData = JSON.parse(elmUpdate.attr('data-task'))
-
-                    // get task has update and update for class task list
-                    let taskData = this.getTaskList
-                    let sameSTT = true
-                    let old_stt
-                    for (let [idx, item] of taskData.entries()) {
-                        if (item.id === strData.id) {
-                            const itemTStt = item.task_status?.id ? item.task_status.id : item.task_status
-                            const strTStt = strData.task_status?.id ? strData.task_status.id : strData.task_status
-                            if (itemTStt !== strTStt) sameSTT = false
-                            old_stt = itemTStt
-                            taskData[idx] = strData
-                            break
-                        }
-                    }
-                    this.setTaskList = taskData
-                    // update data to task kanban after
-                    if (sameSTT) this.afterUpdate(strData)
-                    else {
-                        $(`[data-id="${old_stt}"]`).parents('.tasklist').each(function () {
-                            $(this).find($(`[data-task-id="${strData.id}"]`)).parents('.tasklist-card').remove()
-                        })
-                        this.addNewTask(strData)
-                    }
-                }
-            }, 1000)
+            // call func to render new task added before
+            this.addNewTask(newData)
         }
 
         // create sub task
@@ -597,15 +628,10 @@ $(function () {
                 const IDTask = $(this).parents('.tasklist-card').find('.card-title').attr('data-task-id')
                 elmTaskID.val(IDTask)
             })
-            // on click save btn log work
-            logworkSubmit()
-
         }
 
         init(data) {
             this.getAndRenderTask(data);
-            // Function to wait form create on submit
-            $createBtn.off().on('click', () => this.waitDataCreated());
             this.createSubTask();
         }
     }
@@ -710,8 +736,66 @@ $(function () {
             cls.setConfig = JSON.parse($('#task_config').text());
         }
 
-        static actionClickBtn(row, data, index){
-            // $('#table_task_list').DataTable().rows().data().toArray()
+        static appendDataToForm(cls, $form, taskID){
+            $.fn.callAjax2({
+                "url": $urlFact.attr('data-task-detail').format_url_with_uuid(taskID),
+                "method": "get"
+            }).then(
+                (req) => {
+                    const data = $.fn.switcherResp(req)
+                        if (data.status === 200) {
+                            $('#inputTextTitle', $form).val(data.title)
+                            $('#inputTextCode', $form).val(data.code)
+                            $('#selectStatus', $form).attr('data-onload', JSON.stringify(data.task_status))
+                            const taskIDElm = $(`<input type="hidden" name="id" value="${data.id}"/>`)
+                            $formElm.append(taskIDElm).addClass('task_edit')
+                            $('#inputTextStartDate', $form).val(
+                                moment(data.start_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
+                            )
+                            $('#inputTextEndDate', $form).val(
+                                moment(data.end_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
+                            )
+                            $('#inputTextEstimate', $form).val(data.estimate)
+                            if (data.opportunity_data?.id)
+                                $('#selectOpportunity', $form).attr('data-onload', JSON.stringify(data.opportunity_data))
+                            $('#selectPriority', $form).val(data.priority).trigger('change')
+
+                            $('#inputAssigner', $form).val(
+                                data.employee_created.last_name +'. '+ data.employee_created.first_name)
+                                .attr('data-value-id', data.employee_created.id)
+                                .attr('value', data.employee_created.id)
+
+                            $('#selectAssignTo', $form).attr('data-onload', JSON.stringify({
+                                "full_name": data.assign_to.last_name + '. ' + data.assign_to.first_name,
+                                ...data.assign_to
+                            }
+                            ))
+                            $('#selectStatus, #selectOpportunity, #selectAssignTo', $form).each(function(){
+                                $(this).html('')
+                                $(this).initSelect2()
+                            })
+                            window.formLabel.renderLabel(data.label)
+                            window.editor.setData(data.remark)
+                            window.checklist.setDataList = data.checklist
+                            window.checklist.render()
+
+                            if (data.attach) {
+                                const fileDetail = data.attach[0]?.['files']
+                                FileUtils.init($(`[name="attach"]`).siblings('button'), fileDetail);
+                            }
+                            initCommon.initTableLogWork(data.task_log_work)
+                            initCommon.renderSubtask(data.id, cls.getTaskList)
+                        }
+
+                },
+                (errs) => {
+                     $.fn.notifyB({description: errs.data.errors}, 'failure')
+                }
+            )
+
+        }
+
+        static actionClickBtn(cls, row, data, index){
             let tbl = $('#table_task_list')
             if(data.edited) {
                 $('.cancel-task').trigger('click')
@@ -719,12 +803,22 @@ $(function () {
                 tbl.DataTable().cell(index, 6).data(data.edited).draw(true)
             }
             else{
-                $('[data-drawer-target="#drawer_task_create"]').trigger('click')
-                data.edited = true
-                tbl.DataTable().cell(index, 6).data(data.edited).draw(true)
+                const allData = cls.getTaskList
+                let infoOld
+                allData.map((item, idx) => {
+                        if (item.edited === true) infoOld = idx
+                        item.edited = false
+                    }
+                )
+                if (!$('.hk-wrapper').hasClass('open'))
+                    $('[data-drawer-target="#drawer_task_create"]').trigger('click')
+                allData[index].edited = true
+                cls.setTaskList = allData
+                if (typeof infoOld === 'number')  // case click task khác mà chưa đóng task cũ
+                    tbl.DataTable().cell(infoOld, 6).data(false).draw(false)
+                tbl.DataTable().cell(index, 6).data(true).draw(false)
+                listViewTask.appendDataToForm(cls, $('#formOpportunityTask'), data.id)
             }
-            let $form = $('#formOpportunityTask')
-            $form.tit
         }
 
         static renderTable(cls) {
@@ -735,7 +829,7 @@ $(function () {
                 "columns": [
                     {
                         "data": 'title',
-                        "width": "20%",
+                        "class": "col-3",
                         render: (row, type, data) => {
                             return `<span class="mr-2">${row ? row : "_"}</span>` +
                                 '<span class="badge badge-primary badge-indicator-processing badge-indicator" style="margin-top: -1px;"></span>'
@@ -744,7 +838,7 @@ $(function () {
                     },
                     {
                         "data": 'priority',
-                        "width": '10%',
+                        "class": 'w-5',
                         render: (row, type, data) => {
                             let $badge = $($('.priority-badges').html());
                             $badge.find('.badge-icon-wrap').text(
@@ -756,7 +850,7 @@ $(function () {
                     },
                     {
                         "data": "task_status",
-                        "width": "10%",
+                        "class": "w-15",
                         render: (row, type, data)=> {
                             const config = cls.getConfig
                             let html = $('<span class="badge text-dark font-2">')
@@ -771,26 +865,33 @@ $(function () {
                     },
                     {
                         "data": "assign_to",
-                        "width": "15%",
+                        "class": "col-2 text-right",
                         render: (row, type, data) => {
                             let html = ''
+                            if (!data.employee_created?.full_name)
+                                data.employee_created.full_name = data.employee_created.last_name +
+                                    ' ' + data.employee_created.first_name
                             const assigner = $x.fn.renderAvatar(data.employee_created)
                             let assignee = ''
-                            if (row) assignee = $x.fn.renderAvatar(row)
+                            if (row){
+                                if (!row.full_name) row.full_name = row.last_name + ' ' + row.first_name
+                                assignee = $x.fn.renderAvatar(row)
+                            }
                             html += assigner + '<supper>»</supper>' + assignee
                             return html
                         }
                     },
                     {
                         "data": "date_created",
-                        "width": "10%",
+                        "class": "col-1",
                         render: (row, type, data)=>{
+                            if (!row) row = new Date()
                             return `<span>${$x.fn.parseDate(row)}<span>`
                         }
                     },
                     {
                         "data": "opportunity",
-                        "width": "10%",
+                        "class": "col-1",
                         render: (row, type, data) =>{
                             let html = '--';
                             if (row?.code) html = `<span>${row.code}</span>`
@@ -798,20 +899,34 @@ $(function () {
                         }
                     },
                     {
-                        "width": "10%",
-                        "class": "text-center",
+                        "class": "col-1 text-center",
                         render: (row, type, data) =>{
                             const isEdit = data?.edited ? data.edited : false;
-                            let $btn = $('<button class="btn btn_task-list-action btn-icon btn-rounded bg-dark-hover" type="button">')
-                            $btn.html(`<span class="icon"><i class="fa-regular ${isEdit ? 'fa-eye' : 'fa-eye-slash'}"></i></span>`)
+                            let $btn = $('<div><button class="btn btn_task-list-action btn-icon btn-rounded bg-dark-hover" type="button"></button></div>')
+                            $btn.find('button').html(`<span class="icon"><i class="fa-regular ${isEdit ? 'fa-eye' : 'fa-eye-slash'}"></i></span>`)
+                            $btn.append(`<div class="list_act-wrap">${
+                                $('.card-child_template .card-action-wrap').html()}</div>`)
                             return $btn.prop('outerHTML')
                         }
                     }
                 ],
                 rowCallback: (row, data, index)=>{
                     $('.avatar', row).tooltip({placement: 'top'})
+
+                    // click view task list
                     $('.btn_task-list-action', row).off().on('click', function(){
-                        listViewTask.actionClickBtn(row, data, index)
+                        listViewTask.actionClickBtn(cls, row, data, index)
+                    })
+                    // click delete
+                    $('.del-task-act', row).off().on('click', function(){
+                        listViewTask.deleteTask(cls, data, index)
+                    })
+                    // click logwork
+                    $('.log-task-act', row).off().on('click', function(){
+                        const elmTaskID = $('#logtime_task_id')
+                        $('#startDateLogTime, #endDateLogTime, #EstLogtime').val(null)
+                        $($(this).attr('href')).modal('show')
+                        elmTaskID.val(data.id)
                     })
                 }
             }).on('draw.dt', function () {
@@ -820,7 +935,37 @@ $(function () {
                 });
             });
         }
-    }
+
+        static addNewData(cls, newData){
+            let currentList = cls.getTaskList
+            currentList.push(newData)
+            const $tblElm = $('#table_task_list')
+            $tblElm.DataTable().row.add(newData).draw()
+        }
+
+        static deleteTask(cls, row, data, index){
+            let req = initCommon.deleteTask(data.id)
+            req.then((resp)=> {
+                let res = $.fn.switcherResp(resp);
+                if (res?.['status'] === 200) {
+                    const tbl = $('#table_task_list')
+                    let currentTaskList = cls.getTaskList
+                    currentTaskList.splice(index, 1)
+                    cls.setTaskList = currentTaskList
+                    tbl.DataTable().row(row).remove().draw();
+                    $.fn.notifyB({description: res.message}, 'success')
+                }
+            })
+        }
+
+        static updateTask(cls, data, index){
+            const tbl = $('#table_task_list')
+            let dataCurrent = cls.getTaskList
+            dataCurrent[index] = data
+            cls.setTaskList = dataCurrent
+            tbl.DataTable().clear().row(index).data(data).draw(true)
+        }
+    };
 
     /** ********************************************* **/
     // render column status của task
@@ -829,7 +974,8 @@ $(function () {
     const kanbanTask = new kanbanHandle()
     const listTask = new listViewTask()
     callDataTaskList(kanbanTask, listTask)
-
+    // on click save btn log work
+    logworkSubmit()
     // init dragula
     let objDrag = new dragHandle()
     objDrag.init()

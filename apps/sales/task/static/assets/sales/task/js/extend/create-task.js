@@ -45,7 +45,8 @@ function logworkSubmit() {
                         if (data?.['status'] === 200) {
                             $.fn.notifyB({description: data.message}, 'success')
                         }
-                    }
+                    },
+                    (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
                 )
         } else {
             $('[name="log_time"]').attr('value', JSON.stringify(data))
@@ -428,17 +429,19 @@ $(function () {
                 const task_status = $('#selectStatus').select2('data')[0]
                 const taskSttData = {
                     'id': task_status.id,
-                    'title': task_status.title,
+                    'title': task_status.text,
                 }
 
                 const assign_to = $('#selectAssignTo').select2('data')[0]
                 let assign_toData = {}
-                if (assign_to)
+                if (assign_to){
                     assign_toData = {
                         'id': assign_to.id,
                         'first_name': assign_to.text.split('. ')[1],
                         'last_name': assign_to.text.split('. ')[0],
                     }
+                    formData.employee_inherit_id = assign_to.id
+                }
 
                 formData.checklist = []
                 $('.wrap-checklist .checklist_item').each(function () {
@@ -481,6 +484,12 @@ $(function () {
                                     formData.code = $('#inputTextCode').val();
                                     formData.assign_to = assign_toData
                                     formData.task_status = taskSttData
+                                    formData.employee_created = {
+                                        "id": $('#inputAssigner').attr('value'),
+                                        "full_name": $('#inputAssigner').attr('data-name'),
+                                        "first_name": $('#inputAssigner').attr('data-name').split('. ')[1],
+                                        "last_name": $('#inputAssigner').attr('data-name').split('. ')[0],
+                                    }
                                 }
                                 // case create
                                 if (data?.id) formData = data
@@ -491,15 +500,12 @@ $(function () {
                             if ($('.current-create-task').length) $('.cancel-task').trigger('click')
                         }
                     },
-                    (errs) => $.fn.notifyB({'description': errs?.data?.errors}, 'failure')
+                    (errs) => {
+                    if (errs?.data?.errors)
+                        $.fn.notifyB({'description': errs?.data?.errors}, 'failure')
+                    }
+
                 )
             }
         })
-
-    // form submit
-    // $form.off().on('submit', function (e) {
-    //     e.preventDefault();
-    //     e.stopPropagation();
-    //
-    // })
 }, jQuery)

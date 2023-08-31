@@ -3749,10 +3749,6 @@ msgid "Copy to sale order"
 msgstr "Sao chép đến đơn hàng"
 
 #
-msgid "Opportunity was closed or had sale order"
-msgstr "Cơ hội kinh doanh đã đóng hoặc đã có đơn hàng"
-
-#
 msgid "Is admin"
 msgstr "Là quản trị viên"
 
@@ -3994,3 +3990,11 @@ msgstr "Tất cả yêu cầu mua hàng đã chọn và dữ liệu liên quan s
 #
 msgid "Product is not in"
 msgstr "Sản phẩm không thuộc"
+
+#
+msgid "Opportunity was closed"
+msgstr "CHKD đã đóng"
+
+#
+msgid "Opportunity had sale order"
+msgstr "CHKD đã có đơn hàng"

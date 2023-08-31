@@ -685,7 +685,7 @@ class QuotationLoadDataHandle {
         if (data.title && is_copy === false) {
             document.getElementById('quotation-create-title').value = data.title;
         }
-        if (data.code) {
+        if (data.code && is_copy === false) {
             if ($('#quotation-create-code').length) {
                 document.getElementById('quotation-create-code').innerHTML = data.code;
             }
@@ -724,7 +724,7 @@ class QuotationLoadDataHandle {
         if (data.is_customer_confirm && is_copy === false) {
             $('#quotation-customer-confirm')[0].checked = data.is_customer_confirm;
         }
-        if (data.system_status) {
+        if (data.system_status && is_copy === false) {
             let eleStatus = $('#quotation-create-status');
             let status_data = {
                 "Draft": "badge badge-soft-light",

@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
+{% block title %}{% trans 'Master Data Item' %}{% endblock %}
 {% block cssHeader %}
     <style>
         select, input, textarea {
@@ -174,8 +175,10 @@
                         </div>
 
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary btn-save-product-and-expense">Save</button>
+                            <button type="button" class="btn btn-secondary"
+                                    data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                            <button type="submit" form="form-create-product-and-expense"
+                                    class="btn btn-primary">{% trans 'Save' %}</button>
                         </div>
                     </div>
                 </div>
@@ -202,11 +205,11 @@
                         <div class="row">
                             <div class="col-6">
                                 <div class="form-group">
-                                    <label class="form-label">{% trans "Select Group" %}
-                                        <span class="field-required">*</span>
+                                    <label class="form-label required">{% trans "Select Group" %}
                                     </label>
                                     <select id="select-box-unit-measure-group" class="form-select" data-method="GET"
-                                            data-url="{% url 'UnitOfMeasureGroupListAPI' %}" name="group"></select>
+                                            data-url="{% url 'UnitOfMeasureGroupListAPI' %}" name="group"
+                                            data-keyResp="unit_of_measure_group"></select>
                                 </div>
                             </div>
                             <div class="col-6">
@@ -222,8 +225,7 @@
                         <div class="row">
                             <div class="col-6">
                                 <div class="form-group">
-                                    <label class="form-label">{% trans "Code" %}
-                                        <span class="field-required">*</span>
+                                    <label class="form-label required">{% trans "Code" %}
                                     </label>
                                     <input id="inp-code" class="form-control" type="text" name="code" readonly
                                            placeholder="CODE01" oninput="this.value=this.value.toUpperCase()">
@@ -233,8 +235,7 @@
                                 <div class="row" id="ratio-area">
                                     <div class="col-6">
                                         <div class="form-group">
-                                            <label class="form-label">{% trans "Ratio" %}
-                                                <span class="field-required">*</span>
+                                            <label class="form-label required">{% trans "Ratio" %}
                                             </label>
                                             <input class="form-control" type="text" name="ratio" readonly
                                                    placeholder="Input ratio" id="ratio-unit">
@@ -261,8 +262,7 @@
                             </div>
                             <div class="col-3">
                                 <div class="form-group">
-                                    <label class="form-label">{% trans "Rounding" %}
-                                        <span class="field-required">*</span>
+                                    <label class="form-label required">{% trans "Rounding" %}
                                     </label>
                                     <input class="form-control" type="number" name="rounding" id="inp-rounding"
                                            placeholder="Input rounding" min="0" step="0.001" value="5" readonly>
@@ -278,8 +278,10 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary btn-save-unit-measure">Save</button>
+                            <button type="button" class="btn btn-secondary"
+                                    data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                            <button type="submit" form="form-create-unit-measure"
+                                    class="btn btn-primary">{% trans 'Save' %}</button>
                         </div>
                     </div>
                 </div>
@@ -313,8 +315,10 @@
                         </div>
 
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary btn-save-unit-measure-group">Save</button>
+                            <button type="button" class="btn btn-secondary"
+                                    data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                            <button type="submit" form="form-create-unit-measure-group"
+                                    class="btn btn-primary">{% trans 'Save' %}</button>
                         </div>
                     </div>
                 </div>
@@ -345,39 +349,34 @@
                                     <label class="form-label required">{% trans "Select Group" %}
                                     </label>
                                     <input id="group-id" disabled hidden>
-                                    <div class="readonly">
-                                        <select class="form-select"
-                                                data-method="GET" data-url="{% url 'UnitOfMeasureGroupListAPI' %}"
-                                                id="select-box-edit-uom-group"
-                                                name="group" disabled>
-                                        </select>
-                                        <span></span>
-                                    </div>
+                                    <select class="form-select"
+                                            data-method="GET" data-url="{% url 'UnitOfMeasureGroupListAPI' %}"
+                                            id="select-box-edit-uom-group"
+                                            name="group" data-keyResp="unit_of_measure_group" disabled>
+                                    </select>
                                 </div>
-{#                                <div class="form-group" id="inp-edit-uom-group-div" hidden>#}
-{#                                    <label class="form-label">{% trans "Select Group" %}#}
-{#                                        <span class="field-required">*</span>#}
-{#                                    </label>#}
-{#                                    <input class="form-control inp-can-not-edit" type="text" name="group" readonly#}
-{#                                           id="inp-edit-uom-group" style="border: None">#}
-{#                                </div>#}
+                                {#                                <div class="form-group" id="inp-edit-uom-group-div" hidden>#}
+                                {#                                    <label class="form-label">{% trans "Select Group" %}#}
+                                {#                                        <span class="field-required">*</span>#}
+                                {#                                    </label>#}
+                                {#                                    <input class="form-control inp-can-not-edit" type="text" name="group" readonly#}
+                                {#                                           id="inp-edit-uom-group" style="border: None">#}
+                                {#                                </div>#}
                             </div>
                             <div class="col-6">
-                                <div class="form-check mt-5 readonly">
+                                <div class="form-check mt-5">
                                     <input class="form-check-input mt-1" type="checkbox" id="check-edit-unit"
                                            name="is_referenced_unit" disabled>
                                     <label class="form-check-label" for="check-edit-unit">
                                         {% trans "is referenced for ratio from other unit" %}
                                     </label>
-                                    <span></span>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-6">
                                 <div class="form-group">
-                                    <label class="form-label">{% trans "Code" %}
-                                        <span class="field-required">*</span>
+                                    <label class="form-label required">{% trans "Code" %}
                                     </label>
                                     <input class="form-control" type="text" name="code" id="inp-code-uom" readonly
                                            style="border: None">
@@ -387,15 +386,11 @@
                                 <div class="row" id="ratio-edit-area">
                                     <div class="col-6">
                                         <div class="form-group inp-can-edit">
-                                            <label class="form-label">{% trans "Ratio" %}
-                                                <span class="field-required">*</span>
+                                            <label class="form-label required">{% trans "Ratio" %}
                                             </label>
                                             <input id="group-referenced-unit-name" disabled hidden>
-                                            <div class="readonly">
-                                                <input class="form-control" type="text" name="ratio" readonly
+                                            <input class="form-control" type="text" name="ratio"
                                                    placeholder="Input ratio" id="inp-ratio-unit">
-                                                <span></span>
-                                            </div>
                                         </div>
                                     </div>
                                     <div class="col-6">
@@ -410,25 +405,19 @@
                         <div class="row">
                             <div class="col-6">
                                 <div class="form-group inp-can-edit">
-                                    <label class="form-label">{% trans "Name" %}
-                                        <span class="field-required">*</span>
+                                    <label class="form-label required">{% trans "Name" %}
                                     </label>
-                                    <div class="readonly">
-                                        <input class="form-control" type="text" name="title" readonly
-                                           placeholder="Input name" id="inp-edit-name-unit">
-                                        <span></span>
-                                    </div>
+                                    <input class="form-control" type="text" name="title"
+                                           placeholder="Input name" id="inp-edit-name-unit" value="">
+
                                 </div>
                             </div>
                             <div class="col-3">
                                 <div class="form-group inp-can-edit">
                                     <label class="form-label required">{% trans "Rounding" %}
                                     </label>
-                                    <div class="readonly">
-                                        <input class="form-control" type="number" name="rounding" readonly
+                                    <input class="form-control" type="number" name="rounding"
                                            placeholder="Input rounding" id="inp-rounding-edit" min="0" step="0.001">
-                                        <span></span>
-                                    </div>
 
                                 </div>
                             </div>
@@ -442,8 +431,10 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary btn-edit-unit-measure">Save</button>
+                            <button type="button" class="btn btn-secondary"
+                                    data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                            <button type="submit" form="form-edit-unit-measure"
+                                    class="btn btn-primary">{% trans 'Save' %}</button>
                         </div>
                     </div>
                 </div>
@@ -473,25 +464,22 @@
                         <div class="row">
                             <div class="form-group inp-can-edit" id="inp-edit-name-div">
                                 <label class="form-label">{% trans "Name" %}</label>
-                                <div class="readonly">
-                                    <input class="form-control inp-can-edit" type="text" name="title"
-                                       placeholder="Input name" id="inp-edit-name" readonly>
-                                    <span></span>
-                                </div>
+                                <input class="form-control inp-can-edit" type="text" name="title"
+                                       placeholder="Input name" id="inp-edit-name">
+                                <span></span>
                             </div>
                             <div class="form-group inp-can-edit" id="inp-edit-description-div">
                                 <label class="form-label">{% trans "Description" %}</label>
-                                <div class="readonly">
-                                    <textarea class="form-control inp-can-edit" type="text" name="description"
-                                          id="inp-edit-description" readonly></textarea>
-                                    <span></span>
-                                </div>
+                                <textarea class="form-control inp-can-edit" type="text" name="description"
+                                          id="inp-edit-description"></textarea>
                             </div>
                         </div>
 
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary btn-edit-product-and-expense">Save</button>
+                            <button type="button" class="btn btn-secondary"
+                                    data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                            <button type="submit" form="form-edit-product-and-expense"
+                                    class="btn btn-primary">{% trans 'Save' %}</button>
                         </div>
                     </div>
                 </div>
@@ -519,18 +507,15 @@
                         <div class="row">
                             <div class="form-group inp-can-edit" id="inp-edit-name-uom-group-div">
                                 <label class="form-label">{% trans "Name" %}</label>
-                                <div class="readonly">
-                                    <input class="form-control inp-can-edit" type="text" name="title"
+                                <input class="form-control inp-can-edit" type="text" name="title"
                                        id="inp-edit-name-uom-group"
-                                       placeholder="Input name" readonly>
-                                    <span></span>
-                                </div>
+                                       placeholder="Input name">
                             </div>
                         </div>
 
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Save</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                            <button type="submit" class="btn btn-primary" form="form-edit-unit-measure-group">{% trans 'Save' %}</button>
                         </div>
                     </div>
                 </div>

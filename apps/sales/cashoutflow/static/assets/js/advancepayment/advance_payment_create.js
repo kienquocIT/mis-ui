@@ -4,12 +4,26 @@ $(document).ready(function () {
     const opportunity_list = JSON.parse($('#opportunity_list').text());
 
     const urlParams = new URLSearchParams(window.location.search);
-    let param = urlParams.get('opportunity');
-    const sale_code_mapped_parameter = param;
-    const sale_order = sale_order_list.filter(function(element) {return element.id === sale_code_mapped_parameter;});
-    const quotation = quotation_list.filter(function(element) {return element.id === sale_code_mapped_parameter;});
-    console.log(opportunity_list)
-    const opportunity = opportunity_list.filter(function(element) {return element.id === sale_code_mapped_parameter;});
+    const sale_code_mapped_parameter = urlParams.get('opportunity');
+
+    let sale_order = []
+    let quotation = []
+    let opportunity = []
+    if (sale_order_list !== {}) {
+        sale_order = sale_order_list.filter(function(element) {
+            return element.id === sale_code_mapped_parameter;}
+        );
+    }
+    if (quotation_list !== {}) {
+        quotation = quotation_list.filter(function (element) {
+            return element.id === sale_code_mapped_parameter;
+        });
+    }
+    if (opportunity_list !== {}) {
+        opportunity = opportunity_list.filter(function (element) {
+            return element.id === sale_code_mapped_parameter;
+        });
+    }
     let sale_code_default_obj = [];
     let sale_code_default_type = -1;
     if (sale_order.length > 0) {sale_code_default_obj = sale_order; sale_code_default_type = 0;}

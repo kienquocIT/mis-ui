@@ -12,7 +12,7 @@ class PurchaseRequestCreate(View):
         template='sales/purchasing/purchase_request/purchase_request_create.html',
         menu_active='menu_purchase_request_list',
         breadcrumb='PURCHASE_REQUEST_CREATE_PAGE',
-        perm_check=PermCheck(url=ApiURL.PURCHASE_REQUEST_LIST, method='GET'),
+        perm_check=PermCheck(url=ApiURL.PURCHASE_REQUEST_LIST, method='POST'),
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -24,7 +24,7 @@ class PurchaseRequestList(View):
         template='sales/purchasing/purchase_request/purchase_request_list.html',
         menu_active='menu_purchase_request_list',
         breadcrumb='PURCHASE_REQUEST_LIST_PAGE',
-        perm_check=PermCheck(url=ApiURL.PURCHASE_REQUEST_LIST, method='POST'),
+        perm_check=PermCheck(url=ApiURL.PURCHASE_REQUEST_LIST, method='GET'),
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK

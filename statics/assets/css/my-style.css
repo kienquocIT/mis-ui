@@ -268,6 +268,16 @@ div.inline {
     .cus-page-info {
         flex-direction: column;
     }
+
+    .btnAddFilter .dtb-text-btn-filter {
+        margin-left: 0!important;
+        visibility: hidden;
+        width: 0;
+    }
+
+    .btnAddFilter .dtb-icon-btn-filter {
+        margin-right: 0!important;
+    }
 }
 
 /* -- Customize CSS datatable */

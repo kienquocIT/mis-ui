@@ -6,7 +6,9 @@ __all__ = [
     'CUSTOMER_REVENUE',
     'PICKING_STATE',
     'WORKFLOW_ACTION',
-    'DELIVERY_STATE'
+    'DELIVERY_STATE',
+    'TYPE_CUSTOMER',
+    'ROLE_CUSTOMER'
 ]
 
 CUSTOMER_REVENUE = [
@@ -47,3 +49,16 @@ WORKFLOW_ACTION = {
     4: [WorkflowMsg.ACTION_RECEIVE, 'fas fa-check text-success'],
     5: [WorkflowMsg.ACTION_TODO, 'far fa-list-alt'],
 }
+
+# Opportunity
+
+TYPE_CUSTOMER = [
+    {"value": 0, "name": _('Direct Customer')},
+    {"value": 1, "name": _('End Customer')},
+]
+
+ROLE_CUSTOMER = [
+    {"value": 0, "name": _('Decision Maker')},
+    {"value": 1, "name": _('Influence')},
+    {"value": 2, "name": _('Contact Involved')},
+]

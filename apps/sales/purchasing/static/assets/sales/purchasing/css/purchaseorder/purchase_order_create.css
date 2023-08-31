@@ -11,8 +11,8 @@
     display: inline-block;
     background-color: #ebfcf5;
     border-radius: 0.5rem;
-    padding: 5px;
-    font-size: 80%;
+    padding: 6px;
+    font-size: 90%;
     min-width: 25px;
     text-align: center;
     text-transform: capitalize;
@@ -77,12 +77,21 @@
 
 .total-area .card {
     margin-top: unset;
+    margin-bottom: unset;
 }
 
-.total-area .card .card-sm .card-body {
+.total-area .card.card-sm .card-body {
     padding: 0.8rem;
 }
 
+.subtotal-area .card {
+    margin-top: unset;
+    margin-bottom: unset;
+}
+
+.subtotal-area .card.card-sm .card-body {
+    padding: 0.5rem;
+}
 
 
 

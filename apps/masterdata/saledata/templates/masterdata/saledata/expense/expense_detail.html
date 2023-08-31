@@ -1,13 +1,14 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
+{% block title %}{% trans 'Expense Detail' %}{% endblock %}
 {% block cssHeader %}
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <a href="#">
+    <a href="{% url 'ExpenseUpdate' pk=0 %}" id="btn-edit">
         <button class="btn btn-outline-primary">
         <span>
             <span>{% trans 'Edit' %}</span>
@@ -19,11 +20,9 @@
     </a>
 {% endblock %}
 {% block pageContent %}
-    <form id="frmUpdateExpense" data-method="PUT" data-url="{% url "ExpenseDetailAPI" pk=0 %}"
+    <form id="frmDetailExpense" data-method="PUT" data-url="{% url "ExpenseDetailAPI" pk=0 %}"
           data-url-redirect="{% url "ExpenseList" %}">
         {% csrf_token %}
-        {{ data.content.price_list|json_script:"id-price-list" }}
-        {{ data.content.currency_list|json_script:"id-currency-list" }}
         <div class="row">
             <div class="col-4">
                 <label class="form-label required">{% trans 'Name' %}</label>

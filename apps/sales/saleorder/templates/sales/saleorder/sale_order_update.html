@@ -535,7 +535,7 @@
                                                 <div class="row">
                                                     <div class="input-group">
                                                         <span class="input-affix-wrapper">
-                                                            <input type="text" class="form-control" id="quotation-create-product-discount">
+                                                            <input type="text" class="form-control" id="quotation-create-product-discount" value="0" disabled>
                                                             <span class="input-suffix">%</span>
                                                         </span>
                                                     </div>
@@ -1031,20 +1031,20 @@
     <script>
         $(document).ready(function (){
             $('#btnDeliverySaleOrder').click(function (event){
-                WindowControl.showLoading();
                 const urlElm = $('#dataUrlSaleOrderCallDelivery')
                 let callDeliveryUrl = urlElm.attr('data-url');
                 if (callDeliveryUrl){
-                    $.fn.callAjax(
-                        callDeliveryUrl,
-                        'POST',
-                        {},
-                        true,
-                    ).then(
+                    $.fn.callAjax2({
+                        'url': callDeliveryUrl,
+                        'method': 'POST',
+                        isLoading: true,
+                        sweetAlertOpts: {
+                            'allowOutsideClick': true,
+                        },
+                    }).then(
                         (resp)=>{
                             let data = $.fn.switcherResp(resp);
                             if (data?.['status'] === 200){
-                                console.log('rep')
                                 const config = data?.config
                                 let is_URL = urlElm.attr('data-delivery')
                                 if (config?.is_picking && !data?.is_not_picking) is_URL = urlElm.attr('data-picking')
@@ -1053,9 +1053,6 @@
                                 }, 1000);
                             }
                         },
-                        (errs)=>{
-                            WindowControl.hideLoading();
-                        }
                     )
                 }
                 event.preventDefault();

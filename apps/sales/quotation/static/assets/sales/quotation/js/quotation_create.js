@@ -80,6 +80,7 @@ $(function () {
                 QuotationLoadDataHandle.loadBoxQuotationCustomer();
                 boxCustomer.change();
             }
+            QuotationLoadDataHandle.loadInformationSelectBox(boxOpportunity);
             // Delete all promotion rows
             deletePromotionRows(tableProduct, true, false);
             // Delete all shipping rows
@@ -112,7 +113,7 @@ $(function () {
                     QuotationLoadDataHandle.loadBoxQuotationContact(dataSelected.owner, dataSelected.id);
                     // load Payment Term by Customer
                     boxPayment.empty();
-                    QuotationLoadDataHandle.loadBoxQuotationPaymentTerm(dataSelected?.['payment_term_mapped']);
+                    QuotationLoadDataHandle.loadBoxQuotationPaymentTerm(dataSelected?.['payment_term_customer_mapped']);
                     // Store Account Price List
                     if (Object.keys(dataSelected?.['price_list_mapped']).length !== 0) {
                         document.getElementById('customer-price-list').value = dataSelected?.['price_list_mapped'].id;
@@ -132,6 +133,7 @@ $(function () {
                     QuotationLoadDataHandle.loadBoxQuotationSalePerson($('#select-box-quotation-create-sale-person').val());
                 }
             }
+            QuotationLoadDataHandle.loadInformationSelectBox(boxCustomer);
             // Delete all promotion rows
             deletePromotionRows(tableProduct, true, false);
             // Delete all shipping rows
@@ -505,24 +507,16 @@ $(function () {
                     let uom = row.querySelector('.table-row-uom');
                     let tax = row.querySelector('.table-row-tax');
                     let shipping = row.querySelector('.table-row-shipping');
-                    if (product) { // PRODUCT
+                    if ($(product).val()) { // PRODUCT
                         dataProduct = SelectDDControl.get_data_from_idx($(product), $(product).val());
-                        if (uom) {
+                        valuePrice = dataProduct?.['sale_cost'];
+                        if ($(uom).val()) {
                             dataUOM = SelectDDControl.get_data_from_idx($(uom), $(uom).val());
                         }
-                        if (tax) {
+                        if ($(tax).val()) {
                             dataTax = SelectDDControl.get_data_from_idx($(tax), $(tax).val());
-                            // valueTaxAmount = parseFloat(row.querySelector('.table-row-tax-amount-raw').value);
-                            valueTaxAmount = 0;
                         }
                         valueQuantity = parseFloat(row.querySelector('.table-row-quantity').value);
-                        let elePrice = row.querySelector('.table-row-price');
-                        if (elePrice) {
-                            // valuePrice = $(elePrice).valCurrency();
-                            valuePrice = 0;
-                        }
-                        // valueSubtotal = parseFloat(row.querySelector('.table-row-subtotal-raw').value);
-                        valueSubtotal = 0;
                         valueOrder++
                         let dataAdd = {
                             "tax": {
@@ -607,10 +601,8 @@ $(function () {
                         QuotationLoadDataHandle.loadBoxQuotationTax($(newRow.querySelector('.table-row-tax')), dataTax);
                     }
                 }
-                // update total
-                QuotationCalculateCaseHandle.updateTotal(tableCost[0], false, true, false);
-                // check disable
-                tableCost.find('.disabled-but-edit').removeAttr('disabled').removeClass('disabled-but-edit');
+                // Re calculate
+                QuotationCalculateCaseHandle.calculateAllRowsTableCost(tableCost);
             }
         });
 
@@ -763,6 +755,8 @@ $(function () {
                 QuotationLoadDataHandle.loadDataTablesAndDropDowns(dataCopy);
                 if (dataCopyTo.option === 'custom') {
                     QuotationCalculateCaseHandle.calculateAllRowsTableProduct(tableProduct);
+                } else {
+                    QuotationCalculateCaseHandle.calculateAllRowsTableProduct(tableProduct);
                 }
 
             } else if (type === 'copy-to') { // COPY TO (QUOTATION DETAIL -> SALE ORDER CREATE)
@@ -821,6 +815,8 @@ $(function () {
                     QuotationLoadDataHandle.loadDataTablesAndDropDowns(dataCopy);
                     if (dataRaw.option === 'custom') {
                         QuotationCalculateCaseHandle.calculateAllRowsTableProduct(tableProduct);
+                    } else {
+                        QuotationCalculateCaseHandle.calculateAllRowsTableProduct(tableProduct);
                     }
                 }
             }
@@ -829,8 +825,6 @@ $(function () {
         function checkElementValuesBeforeLoadDataCopy() {
             let element0 = $('#data-copy-quotation-detail').val();
             let element1 = $('#data-init-quotation-create-tables-product').val();
-
-
             if (element0 && element1) {
                 loadDataCopyTo(JSON.parse(element0));  // call loadDataCopyTo() if all condition pass
             } else {

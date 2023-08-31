@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
+{% block title %}{% trans 'Price List Detail' %}{% endblock %}
 {% block cssHeader %}
     <link
             href="{% static 'vendors/select2/dist/css/select2.min.css' %}"
@@ -22,16 +23,13 @@
     </button>
 {% endblock %}
 {% block pageContent %}
-    <div class="row">
-        <div class="col-3"></div>
+    <div class="row mb-3">
+        <div class="col-3" id="apply_time"></div>
         <div class="col-6 text-center">
-            <h3 style="color: #007D88; font-weight: bolder" id="price_list_name"></h3>
+            <h3 class="text-primary" id="price_list_name"></h3>
         </div>
-        <div class="col-3 text-right mt-3">
-            <a href="#"><span id="status" data-bs-toggle="collapse" href="#valid_time_detail"></span></a>
-        </div>
-        <div class="collapse text-right" id="valid_time_detail">
-            <span id="apply_time"></span>
+        <div class="col-3 text-right">
+            <span class="badge-status" id="status"></span>
         </div>
     </div>
     <div class="row">
@@ -51,19 +49,21 @@
     <div class="tab-content">
         <!-- Tab add item -->
         <div class="tab-pane fade show active" id="tab-item-list">
-            <div class="row">
-                <div class="col-12 text-left">
-                    <button class="btn btn-soft-primary" id="btn-add-new-item" data-bs-toggle="modal"
+            <div class="row mb-3">
+                <div class="col-6">
+                    <button class="btn btn-soft-primary w-20" id="btn-add-new-item" data-bs-toggle="modal"
                             data-bs-target="#modal-add-new-item" type="button">
-                        <span data-bs-placement="bottom" data-bs-toggle="tooltip"
-                              title="{% trans 'Add Item' %}">
-                            <i class="fas fa-plus-circle"></i>&nbsp;
-                            {% trans 'Add Item' %}
+                        <span>
+                            <span>{% trans 'Add item' %}</span>
+                            <span class="icon">
+                                <i class="fas fa-plus-circle"></i>
+                            </span>
                         </span>
                     </button>
-
+                </div>
+                <div class="col-6 text-right">
                     <a href="#" aria-expanded="false" data-bs-toggle="dropdown"
-                       class="btn btn-soft-primary dropdown-toggle" role="button">{% trans "Visible currencies" %}</a>
+                       class="dropdown-toggle" role="button">{% trans "Visible currencies" %}</a>
                     <div role="menu" class="dropdown-menu dropdown-currency"></div>
                 </div>
             </div>

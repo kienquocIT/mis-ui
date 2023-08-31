@@ -90,7 +90,15 @@
         </div>
     </div>
 {% endblock %}
-
+{% block dataHiddenGroup %}
+    <input type="text" id="trans-factory"
+           data-trans-confirm-delete="{% trans 'Confirm Delete User?' %}"
+    >
+    <input type="text" id="url-factory"
+           data-url-user-detail-api="{% url 'UserDetailAPI' pk=0 %}"
+           data-url-user-detail="{% url 'UserDetail' pk=0 %}"
+    >
+{% endblock %}
 {% block jsFooter %}
     <script src="{% static 'assets/js/core/account/user_list.js' %}"></script>
     <script src="{% static 'assets/js/core/account/user_delete.js' %}"></script>

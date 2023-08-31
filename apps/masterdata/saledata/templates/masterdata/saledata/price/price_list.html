@@ -1,27 +1,31 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
+{% block title %}{% trans 'Price List' %}{% endblock %}
 {% block cssHeader %}
     <link
             href="{% static 'vendors/select2/dist/css/select2.min.css' %}"
             rel="stylesheet"
             type="text/css"
     />
-    <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}"/>
     <link href="{% static 'vendors/sweetalert2/sweetalert2.css' %}" rel="stylesheet">
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <button id="btn-show-modal-create" class="btn btn-outline-primary" type="button" data-bs-toggle="modal"
-            data-bs-target="#modal-create-price-list">
-        <span>
-            <span>{% trans 'Add' %}</span>
-            <span class="icon">
-                <i class="fa-solid fa-plus"></i>
+
+    <a href="#" data-bs-toggle="modal" id="btn-add-new" data-bs-target="#modal-create-price-list">
+        <button class="btn btn-outline-primary">
+            <span>
+                <span>{% trans 'Add' %}</span>
+                <span class="icon">
+                    <i class="fa-solid fa-plus"></i>
+                </span>
             </span>
-        </span>
-    </button>
+            </span>
+        </button>
+    </a>
 {% endblock %}
 {% block pageContent %}
     <table id="datatable-price-list" class="table nowrap w-100 mb-5" data-url="{% url "PriceListAPI" %}"
@@ -30,16 +34,16 @@
            data-method="GET">
         <thead>
         <th class="w-5">#</th>
-        <th class="w-35">{% trans "Name" %}
+        <th class="w-30">{% trans "Name" %}
             <i class="fas fa-info-circle icon-info"
                data-bs-toggle="tooltip"
                data-bs-placement="bottom"
                title="{% trans 'Press row here to open detail page.' %}">
             </i>
         </th>
-        <th class="w-25">{% trans "Type" %}</th>
-        <th class="w-30">{% trans "Status" %}</th>
-        <th class="w-5">{% trans "Action" %}</th>
+        <th class="w-30">{% trans "Type" %}</th>
+        <th class="w-25">{% trans "Status" %}</th>
+        <th class="w-10 text-right">{% trans "Action" %}</th>
         </thead>
     </table>
 
@@ -68,7 +72,8 @@
                             </div>
                             <div class="form-check ml-3">
                                 <input class="form-check-input" type="checkbox" value=""
-                                       id="checkbox-copy-source" data-bs-toggle="collapse" data-bs-target="#collapseExample">
+                                       id="checkbox-copy-source" data-bs-toggle="collapse"
+                                       data-bs-target="#collapseExample">
                                 <label class="form-check-label" for="checkbox-copy-source">
                                     {% trans "Copy from source price list" %}
                                 </label>
@@ -79,7 +84,9 @@
                                 <div class="card card-body mt-1 mb-1">
                                     <div class="form-group mt-2">
                                         <label class="form-label">{% trans "Select price list" %}</label>
-                                        <select class="form-select" data-method="GET" data-url="{% url "PriceDetailAPI" pk=0 %}"
+                                        <select class="form-select" data-method="GET"
+                                                data-url="{% url 'PriceListAPI' %}" data-keyResp="price_list"
+                                                data-url-detail="{% url "PriceDetailAPI" pk=0 %}"
                                                 name="price_list_mapped"
                                                 id="select-box-price-list" disabled></select>
                                     </div>
@@ -104,12 +111,13 @@
                             <div class="form-group mt-2">
                                 <label class="form-label required">{% trans "Currency" %}</label>
                                 <select
-                                        class="form-control select2 select2-multiple"
+                                        class="form-select"
                                         multiple
-                                        data-placeholder="{% trans 'Choose' %}"
                                         data-method="GET"
-                                        data-select2-url="{% url "CurrencyListAPI" %}"
-                                        id="select-box-currency" name="currency">
+                                        data-url="{% url "CurrencyListAPI" %}"
+                                        id="select-box-currency" name="currency"
+                                        data-keyResp="currency_list"
+                                >
                                 </select>
                             </div>
                         </div>
@@ -121,8 +129,7 @@
                             </div>
                             <div class="form-group col-6">
                                 <label class="form-label required">{% trans "Select list type" %}</label>
-                                <select class="form-control select2" name="price_list_type">
-                                    <option></option>
+                                <select class="form-select" name="price_list_type" id="select-box-type">
                                     <option value="0">{% trans "For Sale" %}</option>
                                     <option value="1">{% trans "For Purchase" %}</option>
                                     <option value="2">{% trans "For Expense" %}</option>

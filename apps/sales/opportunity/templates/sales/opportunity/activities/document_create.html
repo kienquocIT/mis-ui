@@ -22,11 +22,12 @@
                 <div class="form-group">
                     <label class="form-label required">{% trans 'Sale Code' %}</label>
                     <select
-                            class="form-control select2"
+                            class="form-select"
                             id="box-select-opportunity"
-                            data-select2-url="{% url 'OpportunityListAPI' %}"
+                            data-url="{% url 'OpportunityListAPI' %}"
                             data-method="GET"
                             name="opportunity"
+                            data-keyResp="opportunity_list"
                     >
                     </select>
                 </div>
@@ -49,12 +50,14 @@
             <div class="col-6">
                 <div class="form-group">
                     <label class="form-label required">{% trans 'Person In Charge' %}</label>
-                    <select class="form-control select2"
+                    <select class="form-select"
                             name="person_in_charge"
                             id="box-select-person-in-charge"
                             multiple
                             data-method="GET"
-                            data-select2-url="{% url 'EmployeeListAPI' %}"
+                            data-url="{% url 'EmployeeListAPI' %}"
+                            data-keyResp="employee_list"
+                            data-keyText="full_name"
                     >
                     </select>
                 </div>
@@ -162,5 +165,6 @@
 {% block jsFooter %}
     <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'assets/sales/opportunity/activities/js/document_common.js' %}"></script>
     <script src="{% static 'assets/sales/opportunity/activities/js/document_create.js' %}"></script>
 {% endblock %}

@@ -8,6 +8,7 @@ $(document).ready(function () {
             let $table = $('#datatable-purchase-request')
             let frm = new SetupFormSubmit($table);
             $table.DataTableDefault({
+                useDataServer: true,
                 ajax: {
                     url: frm.dataUrl,
                     type: frm.dataMethod,
@@ -32,7 +33,7 @@ $(document).ready(function () {
                         data: 'title',
                         targets: 1,
                         className: 'wrap-text',
-                        render: (data, type, row) => {
+                        render: (data) => {
                             return `<p>${data}</p>`
                         }
                     },
@@ -40,7 +41,7 @@ $(document).ready(function () {
                         data: 'request_for',
                         targets: 2,
                         className: 'wrap-text',
-                        render: (data, type, row) => {
+                        render: (data) => {
                             return `<p>${data}</p>`
                         }
                     },
@@ -48,7 +49,7 @@ $(document).ready(function () {
                         data: 'sale_order',
                         targets: 3,
                         className: 'wrap-text',
-                        render: (data, type, row) => {
+                        render: (data) => {
                             if (data !== null) {
                                 return `<p>${data.title}</p>`
                             }
@@ -61,7 +62,7 @@ $(document).ready(function () {
                         data: 'supplier',
                         targets: 4,
                         className: 'wrap-text',
-                        render: (data, type, row) => {
+                        render: (data) => {
                             return `<p>${data.title}</p>`
                         }
                     },
@@ -69,7 +70,7 @@ $(document).ready(function () {
                         data: 'delivered_date',
                         targets: 5,
                         className: 'wrap-text',
-                        render: (data, type, row) => {
+                        render: (data) => {
                             return `<p>${data.split(' ')[0]}</p>`
                         }
                     },
@@ -77,7 +78,7 @@ $(document).ready(function () {
                         data: 'system_status',
                         targets: 6,
                         className: 'wrap-text',
-                        render: (data, type, row) => {
+                        render: (data) => {
                             return `<p>${data}</p>`
                         }
                     },
@@ -85,14 +86,14 @@ $(document).ready(function () {
                         data: 'purchase_status',
                         targets: 7,
                         className: 'wrap-text',
-                        render: (data, type, row) => {
+                        render: (data) => {
                             return `<p>${data}</p>`
                         }
                     },
                     {
                         targets: 8,
                         className: 'wrap-text',
-                        render: (data, type, row) => {
+                        render: () => {
                             return ``
                         }
                     },

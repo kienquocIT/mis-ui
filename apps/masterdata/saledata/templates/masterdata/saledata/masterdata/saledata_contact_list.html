@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
+{% block title %}{% trans 'Master Data Contact' %}{% endblock %}
 {% block cssHeader %}
 {% endblock %}
 {% block jsHeader %}
@@ -138,20 +139,13 @@
                             </div>
                             <div class="form-group">
                                 <label class="form-label">{% trans "Name" %}</label>
-                                <div class="readonly">
-                                    <input class="form-control" type="text" name="title" id="name-update"
-                                           placeholder="Input name" required readonly>
-                                    <span></span>
-                                </div>
+                                <input class="form-control" type="text" name="title" id="name-update"
+                                       placeholder="Input name" required>
                             </div>
                             <div class="form-group">
                                 <label class="form-label">{% trans "Description" %}</label>
-                                <div class="readonly">
-                                    <input class="form-control" type="text" name="description"
-                                           id="description-update" placeholder="Input text" readonly>
-                                    <span></span>
-                                </div>
-
+                                <input class="form-control" type="text" name="description"
+                                       id="description-update" placeholder="Input text" readonly>
                             </div>
                         </div>
                     </form>

@@ -67,6 +67,21 @@ class ReturnAdvanceDetail(View):
         return result, status.HTTP_200_OK
 
 
+class ReturnAdvanceUpdate(View):
+    @mask_view(
+        auth_require=True,
+        template='return_advance/return_advance_update.html',
+        breadcrumb='RETURN_ADVANCE_UPDATE_PAGE',
+        menu_active='menu_return_advance_list',
+        perm_check=PermCheck(url=ApiURL.RETURN_ADVANCE_DETAIL, method='PUT', fill_key=['pk']),
+    )
+    def get(self, request, *args, **kwargs):
+        result = {
+            'employee_current_id': request.user.employee_current_data.get('id', None),
+        }
+        return result, status.HTTP_200_OK
+
+
 class ReturnAdvanceDetailAPI(APIView):
 
     @mask_view(

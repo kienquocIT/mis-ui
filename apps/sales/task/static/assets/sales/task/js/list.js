@@ -6,9 +6,11 @@ $(function () {
         1: 'warning',
         2: 'danger'
     }
-    const randomColor = ["primary", "success", "warning", "danger", "info", "red", "green", "pink", "purple",
+    const randomColor = [
+        "primary", "success", "warning", "danger", "info", "red", "green", "pink", "purple",
         "violet", "indigo", "blue", "sky", "cyan", "teal", "neon", "lime", "sun", "yellow", "orange", "pumpkin",
-        "brown", "gold", "light", "dark"]
+        "brown", "gold", "light", "dark"
+    ]
     const $createBtn = $('.create-task')
     const $formElm = $('#formOpportunityTask')
 
@@ -333,7 +335,8 @@ $(function () {
             let elm = $('.card-title')
             const _this = this
             if (newTaskElm) elm = newTaskElm.find('.card-title')
-            elm.off().on('click', function () {
+            elm.off().on('click', function (e) {
+                e.preventDefault()
                 const taskID = $(this).attr('data-task-id')
                 $.fn.callAjax2({
                     'url': $urlFact.attr('data-task-detail').format_url_with_uuid(taskID),
@@ -349,7 +352,7 @@ $(function () {
                             $('#inputTextTitle').val(data.title)
                             $('#inputTextCode').val(data.code)
                             const stt = data.task_status
-                            $('#selectStatus').attr('data-onload', JSON.stringify(stt))
+                            $('#selectStatus').attr('data-onload', JSON.stringify(stt)).initSelect2()
                             $('#inputTextStartDate').val(
                                 moment(data.start_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
                             )
@@ -358,10 +361,17 @@ $(function () {
                             )
                             $('#inputTextEstimate').val(data.estimate)
                             if (data?.opportunity_data && Object.keys(data.opportunity_data).length)
-                                $('#selectOpportunity').attr('data-onload', JSON.stringify({
-                                    "id": data.opportunity_data.id,
-                                    "title": data.opportunity_data.code
-                                }))
+                                $('#selectOpportunity')
+                                    .attr(
+                                        'data-onload',
+                                        JSON.stringify({
+                                                "id": data.opportunity_data.id,
+                                                "code": data.opportunity_data.code
+                                            }
+                                        )
+                                    )
+                                    .html('')
+                                    .initSelect2()
                             $('#selectPriority').val(data.priority).trigger('change')
                             window.formLabel.renderLabel(data.label)
                             $('#inputLabel').attr('value', JSON.stringify(data.label))
@@ -369,15 +379,14 @@ $(function () {
                                 .attr('value', data.employee_created.id)
                             if (data?.assign_to) {
                                 data.assign_to.full_name = `${data.assign_to.last_name}. ${data.assign_to.first_name}`
-                                $('#selectAssignTo').attr('data-onload', JSON.stringify(data.assign_to))
+                                $('#selectAssignTo').html('').attr('data-onload', JSON.stringify(data.assign_to))
+
+                                const isConfig = JSON.parse($('#task_config').text())
+                                AssignToSetup.hasConfig(isConfig)
                             }
                             window.editor.setData(data.remark)
                             window.checklist.setDataList = data.checklist
                             window.checklist.render()
-                            $('#selectOpportunity, #selectAssignTo, #selectStatus').each(function () {
-                                $(this).html('')
-                                $(this).initSelect2()
-                            })
                             $formElm.addClass('task_edit')
                             if (Object.keys(data.parent_n).length <= 0) $('.create-subtask').removeClass('hidden')
                             else $('.create-subtask').addClass('hidden')
@@ -965,7 +974,7 @@ $(function () {
             cls.setTaskList = dataCurrent
             tbl.DataTable().clear().row(index).data(data).draw(true)
         }
-    };
+    }
 
     /** ********************************************* **/
     // render column status của task

@@ -28,7 +28,7 @@ $(document).ready(function () {
                 columns: [
                     {
                         targets: 0,
-                        render: (data, type, row) => {
+                        render: () => {
                             return ``
                         }
                     },
@@ -53,14 +53,17 @@ $(document).ready(function () {
     function loadDetail() {
         let url = frmDetail.data('url');
         let method = 'GET';
-        $.fn.callAjax(url, method).then(
+        $.fn.callAjax2({
+            url: url,
+            method: method
+        }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     $('#opportunity_config_id').attr('value', data.id);
-                    $('#is-select-stage')[0].checked = data.is_select_stage;
-                    $('#is-input-win-rate')[0].checked = data.is_input_win_rate;
-                    $('#is-AM-create')[0].checked = data.is_account_manager_create;
+                    $('#is-select-stage')[0].checked = data?.['opportunity_config'].is_select_stage;
+                    $('#is-input-win-rate')[0].checked = data?.['opportunity_config'].is_input_win_rate;
+                    $('#is-AM-create')[0].checked = data?.['opportunity_config'].is_account_manager_create;
                     loadFactorTable();
                 }
             }
@@ -70,49 +73,60 @@ $(document).ready(function () {
     loadDetail();
 
     // Update Opportunity config
-    frmDetail.submit(function (event) {
-        event.preventDefault();
-        let frm = new SetupFormSubmit($(this));
-        let csr = $("[name=csrfmiddlewaretoken]").val();
-        WindowControl.showLoading();
-        frm.dataForm['is_select_stage'] = $('#is-select-stage')[0].checked;
-        frm.dataForm['is_input_win_rate'] = $('#is-input-win-rate')[0].checked;
-        frm.dataForm['is_account_manager_create'] = $('#is-AM-create')[0].checked;
-        $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
-            .then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        $.fn.notifyB({description: 'Successfully'}, 'success')
-                        $.fn.redirectUrl(window.location, 1000);
-                    }
-                },
-                (errs) => {
-                    console.log(errs)
-                }
-            )
-    })
+    SetupFormSubmit.validate(
+        frmDetail,
+        {
+            submitHandler: function (form) {
+                let frm = new SetupFormSubmit($(form));
+                let csr = $("[name=csrfmiddlewaretoken]").val();
+                frm.dataForm['is_select_stage'] = $('#is-select-stage')[0].checked;
+                frm.dataForm['is_input_win_rate'] = $('#is-input-win-rate')[0].checked;
+                frm.dataForm['is_account_manager_create'] = $('#is-AM-create')[0].checked;
+                $.fn.callAjax2({
+                    url: frm.dataUrl,
+                    method: frm.dataMethod,
+                    data: frm.dataForm,
+                }, frm.dataMethod, frm.dataForm, csr)
+                    .then(
+                        (resp) => {
+                            let data = $.fn.switcherResp(resp);
+                            if (data) {
+                                $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
+                                $.fn.redirectUrl(window.location, 1000);
+                            }
+                        },
+                        (errs) => {
+                            console.log(errs)
+                        }
+                    )
+            }
+        })
 
     // Create + Delete Customer Decision Factor
     const frmCreateFactor = $('#frm-create-factor')
-    frmCreateFactor.submit(function (event) {
-        event.preventDefault();
-        let csr = $("[name=csrfmiddlewaretoken]").val();
-        let frm = new SetupFormSubmit($(this));
-        $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
-            .then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        $.fn.notifyB({description: 'Successfully'}, 'success')
-                        $.fn.redirectUrl(window.location, 1000);
+    SetupFormSubmit.validate(
+        frmCreateFactor,
+        {
+            submitHandler: function (form) {
+                let frm = new SetupFormSubmit($(form));
+                $.fn.callAjax2({
+                    url: frm.dataUrl,
+                    method: frm.dataMethod,
+                    data: frm.dataForm
+                }).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            $.fn.notifyB({description: $('#base-trans-factory').success()}, 'success')
+                            $.fn.redirectUrl(window.location, 1000);
+                        }
+                    },
+                    (errs) => {
+                        console.log(errs)
                     }
-                },
-                (errs) => {
-                    console.log(errs)
-                }
-            )
-    })
+                )
+            }
+        })
 
     $(document).on('click', '.btn-del-factor', function () {
         let rowData = DTBControl.getRowData($(this));
@@ -124,20 +138,22 @@ $(document).ready(function () {
             let table = $('#table-opportunity-customer-decision-factor');
             let url = table.data('url-detail').format_url_with_uuid($(this).data('id'));
             let method = 'DELETE';
-            let csr = $("input[name=csrfmiddlewaretoken]").val();
-            $.fn.callAjax(url, method, {}, csr)
-                .then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyB({description: 'Successfully'}, 'success')
-                            $.fn.redirectUrl(window.location, 1000);
-                        }
-                    },
-                    (errs) => {
-                        console.log(errs)
+            $.fn.callAjax2({
+                url: url,
+                method: method,
+                data: {}
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: $('#base-trans-factory').success()}, 'success')
+                        $.fn.redirectUrl(window.location, 1000);
                     }
-                )
+                },
+                (errs) => {
+                    console.log(errs)
+                }
+            )
         }
     })
 
@@ -173,7 +189,7 @@ $(document).ready(function () {
         let ele_compare = $(this).closest('.sub-condition').find('.box-select-compare');
         load_operator_stage_condition(ele_operator, $(this).val());
         ele_compare.empty();
-        dict_property[$(this).val()].stage_compare_data['='].map(function (compare) {
+        dict_property[$(this).val()]?.['stage_compare_data']['='].map(function (compare) {
             ele_compare.append(`<option value="${compare.id}">${compare.value}</option>`)
         })
     })
@@ -186,45 +202,16 @@ $(document).ready(function () {
 
     function load_operator_stage_condition(ele_operator, id_attr) {
         ele_operator.empty();
-        dict_property[id_attr].opp_stage_operator.map(function (operator) {
+        dict_property[id_attr]?.['opp_stage_operator'].map(function (operator) {
             ele_operator.append(`<option value="${operator}">${operator}</option>`);
         });
     }
 
     function load_compare_data_stage_condition(ele_compare, id_attr, operator) {
         ele_compare.empty();
-        dict_property[id_attr].stage_compare_data[operator].map(function (compare) {
+        dict_property[id_attr]?.['stage_compare_data'][operator].map(function (compare) {
             ele_compare.append(`<option value="${compare.id}">${compare.value}</option>`)
         })
-    }
-
-    function sortStage(list_stage) {
-        let object_lost = null;
-        let delivery = null;
-        let object_close = null;
-        let list_result = []
-
-        for (let i = 0; i < list_stage.length; i++) {
-            if (list_stage[i].is_closed_lost) {
-                object_lost = list_stage[i];
-            } else if (list_stage[i].is_delivery) {
-                delivery = list_stage[i];
-            } else if (list_stage[i].is_deal_closed) {
-                object_close = list_stage[i];
-            } else {
-                list_result.push(list_stage[i]);
-            }
-        }
-
-        list_result.sort(function (a, b) {
-            return a.win_rate - b.win_rate;
-        });
-        list_result.push(object_lost);
-        if (delivery !== null)
-            list_result.push(delivery);
-        list_result.push(object_close);
-
-        return list_result
     }
 
     function loadStage() {
@@ -249,7 +236,7 @@ $(document).ready(function () {
                 columns: [
                     {
                         targets: 0,
-                        render: (data, type, row) => {
+                        render: () => {
                             return ``
                         }
                     },
@@ -289,7 +276,7 @@ $(document).ready(function () {
                     {
                         targets: 5,
                         render: (data, type, row) => {
-                            if (row.is_delete === false) {
+                            if (row?.['is_delete'] === false) {
                                 return `<a class="btn btn-icon btn-del-stage disabled" data-id="${row.id}"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`
                             } else {
                                 return `<a class="btn btn-icon btn-del-stage" data-id="${row.id}"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`
@@ -328,61 +315,68 @@ $(document).ready(function () {
         ele_condition.html('');
         ele_condition.append(first_condition);
         ele_condition.find('select').val('');
-        $.fn.callAjax(url, method)
-            .then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        modal.find('.header-title').text(data.indicator);
-                        let ele_logical_operator = modal.find('#box-select-logic-operator');
-                        $('#input-id-stage').val(data.id);
-                        ele_logical_operator.val(data.logical_operator);
-                        modal.find('.span-logic-operator').text(ele_logical_operator.find('option:selected').text());
+        $.fn.callAjax2({
+            url: url,
+            method: method
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    modal.find('.header-title').text(data.indicator);
+                    let ele_logical_operator = modal.find('#box-select-logic-operator');
+                    $('#input-id-stage').val(data.id);
+                    ele_logical_operator.val(data.logical_operator);
+                    modal.find('.span-logic-operator').text(ele_logical_operator.find('option:selected').text());
 
-                        if (data.condition_datas.length > 0) {
-                            let ele_condition = modal.find('.condition');
-                            let html_add = modal.find('.row-condition-hidden').html();
-                            let first_condition = data.condition_datas.shift();
-                            let first_row = ele_condition.find('.sub-condition').first();
-                            loadRowCondition(first_row, first_condition);
+                    if (data.condition_datas.length > 0) {
+                        let ele_condition = modal.find('.condition');
+                        let html_add = modal.find('.row-condition-hidden').html();
+                        let first_condition = data.condition_datas.shift();
+                        let first_row = ele_condition.find('.sub-condition').first();
+                        loadRowCondition(first_row, first_condition);
 
-                            data.condition_datas.map(function (condition) {
-                                ele_condition.append(html_add);
-                                let last_condition = ele_condition.find('.sub-condition').last();
-                                loadRowCondition(last_condition, condition)
-                            });
-                        }
+                        data.condition_datas.map(function (condition) {
+                            ele_condition.append(html_add);
+                            let last_condition = ele_condition.find('.sub-condition').last();
+                            loadRowCondition(last_condition, condition)
+                        });
                     }
-                },
-                (errs) => {
-                    console.log(errs)
                 }
-            )
+            },
+            (errs) => {
+                console.log(errs)
+            }
+        )
     })
 
     // submit form create Stage
 
     const frmCreateStage = $('#frm-create-stage')
-    frmCreateStage.submit(function (event) {
-        event.preventDefault();
-        let csr = $("[name=csrfmiddlewaretoken]").val();
-        let frm = new SetupFormSubmit($(this));
-        $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
-            .then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        $.fn.notifyB({description: 'Successfully'}, 'success')
-                        let table = $('#table-opportunity-config-stage').DataTable();
-                        table.ajax.reload();
-                        $('#modalCreateStage').modal('hide');
+    SetupFormSubmit.validate(
+        frmCreateStage,
+        {
+            submitHandler: function (form) {
+                let frm = new SetupFormSubmit($(form));
+                $.fn.callAjax2({
+                    url: frm.dataUrl,
+                    method: frm.dataMethod,
+                    data: frm.dataMethod
+                }).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            $.fn.notifyB({description: $('#base-trans-factory').success()}, 'success')
+                            let table = $('#table-opportunity-config-stage').DataTable();
+                            table.ajax.reload();
+                            $('#modalCreateStage').modal('hide');
+                        }
+                    },
+                    (errs) => {
+                        console.log(errs)
                     }
-                },
-                (errs) => {
-                    console.log(errs)
-                }
-            )
-    })
+                )
+            }
+        })
 
     $(document).on('click', '.btn-del-stage', function () {
         let rowData = DTBControl.getRowData($(this));
@@ -392,14 +386,17 @@ $(document).ready(function () {
             )
         ) {
             let method = 'DELETE';
-            let csr = $("[name=csrfmiddlewaretoken]").val();
             let url = $(this).closest('table').data('url-detail').format_url_with_uuid($(this).data('id'));
-            $.fn.callAjax(url, method, {}, csr)
+            $.fn.callAjax2({
+                url: url,
+                method: method,
+                data: {}
+            })
                 .then(
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            $.fn.notifyB({description: 'Successfully'}, 'success')
+                            $.fn.notifyB({description: $('#base-trans-factory').success()}, 'success')
                             let table = $('#table-opportunity-config-stage').DataTable();
                             table.ajax.reload();
                         }
@@ -412,69 +409,76 @@ $(document).ready(function () {
     })
 
     const frmUpdateStageCondition = $('#frm-edit-condition');
-    frmUpdateStageCondition.submit(function (event) {
-        event.preventDefault();
-        let csr = $("[name=csrfmiddlewaretoken]").val();
-        let frm = new SetupFormSubmit($(this));
-        let pk = $('#input-id-stage').val();
-        let ele_condition = $('.condition');
-        let condition_list = [];
-        ele_condition.find('.sub-condition').each(function () {
-            condition_list.push(
-                {
-                    'condition_property': {
-                        'id': $(this).find('.box-select-attr').val(),
-                        'title': $(this).find('.box-select-attr option:selected').text(),
+    SetupFormSubmit.validate(
+        frmUpdateStageCondition,
+        {
+            submitHandler: function (form) {
+                let frm = new SetupFormSubmit($(form));
+                let pk = $('#input-id-stage').val();
+                let ele_condition = $('.condition');
+                let condition_list = [];
+                ele_condition.find('.sub-condition').each(function () {
+                    condition_list.push(
+                        {
+                            'condition_property': {
+                                'id': $(this).find('.box-select-attr').val(),
+                                'title': $(this).find('.box-select-attr option:selected').text(),
+                            },
+                            'comparison_operator': $(this).find('.box-select-comparison-operator').val(),
+                            'compare_data': $(this).find('.box-select-compare').val(),
+                        }
+                    )
+                })
+                frm.dataForm['logical_operator'] = $('#box-select-logic-operator').val();
+                frm.dataForm['condition_datas'] = condition_list;
+                $.fn.callAjax2({
+                    url: frm.dataUrl.format_url_with_uuid(pk),
+                    method: frm.dataMethod,
+                    data: frm.dataForm,
+                }).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            $.fn.notifyB({description: $('#base-trans-factory').success()}, 'success')
+                            $('#modalDetailStage').modal('hide');
+                        }
                     },
-                    'comparison_operator': $(this).find('.box-select-comparison-operator').val(),
-                    'compare_data': $(this).find('.box-select-compare').val(),
-                }
-            )
-        })
-        frm.dataForm['logical_operator'] = $('#box-select-logic-operator').val();
-        frm.dataForm['condition_datas'] = condition_list;
-        $.fn.callAjax(frm.dataUrl.format_url_with_uuid(pk), frm.dataMethod, frm.dataForm, csr)
-            .then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        $.fn.notifyB({description: 'Successfully'}, 'success')
-                        $('#modalDetailStage').modal('hide');
+                    (errs) => {
+                        console.log(errs)
                     }
-                },
-                (errs) => {
-                    console.log(errs)
-                }
-            )
-    })
+                )
+            }
+        })
 
     $(document).on('click', '#btn-restore-default-stage', function () {
         let method = $(this).data('method');
         let url = $(this).data('url');
-        let csr = $("[name=csrfmiddlewaretoken]").val();
-        $.fn.callAjax(url, method, {}, csr)
-            .then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        let modal = $('#modalRestoreDefault');
-                        modal.find('.modal-body h4').prop('hidden', true);
-                        modal.find('.modal-body .div-loading').prop('hidden', false);
-                        setTimeout(function () {
-                            let table = $('#table-opportunity-config-stage').DataTable();
-                            table.ajax.reload();
-                            modal.modal('hide');
-                            $.fn.notifyB({description: 'Successfully'}, 'success')
-                            modal.find('.modal-body h4').prop('hidden', false);
-                            modal.find('.modal-body .div-loading').prop('hidden', true);
-                        }, 2000);
+        $.fn.callAjax2({
+            url: url,
+            method: method,
+            data: {}
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    let modal = $('#modalRestoreDefault');
+                    modal.find('.modal-body h4').prop('hidden', true);
+                    modal.find('.modal-body .div-loading').prop('hidden', false);
+                    setTimeout(function () {
+                        let table = $('#table-opportunity-config-stage').DataTable();
+                        table.ajax.reload();
+                        modal.modal('hide');
+                        $.fn.notifyB({description: $('#base-trans-factory').success()}, 'success')
+                        modal.find('.modal-body h4').prop('hidden', false);
+                        modal.find('.modal-body .div-loading').prop('hidden', true);
+                    }, 2000);
 
-                    }
-                },
-                (errs) => {
-                    console.log(errs)
                 }
-            )
+            },
+            (errs) => {
+                console.log(errs)
+            }
+        )
     })
 
     $(document).on('change', '.input-win-rate', function () {
@@ -487,22 +491,24 @@ $(document).ready(function () {
         }).then((result) => {
             /* Read more about isConfirmed, isDenied below */
             if (result.isConfirmed) {
-                let csr = $("[name=csrfmiddlewaretoken]").val();
                 let frm = new SetupFormSubmit(frmUpdateStageCondition);
                 let pk = $(this).data('id');
                 frm.dataForm['win_rate'] = $(this).val();
-                $.fn.callAjax(frm.dataUrl.format_url_with_uuid(pk), frm.dataMethod, frm.dataForm, csr)
-                    .then(
-                        (resp) => {
-                            let data = $.fn.switcherResp(resp);
-                            if (data) {
-                                Swal.fire(ele_base_tran.data('success'), '', 'success');
-                            }
-                        },
-                        (errs) => {
-                            console.log(errs)
+                $.fn.callAjax2({
+                    url: frm.dataUrl.format_url_with_uuid(pk),
+                    method: frm.dataMethod,
+                    data: frm.dataForm,
+                }).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            Swal.fire(ele_base_tran.data('success'), '', 'success');
                         }
-                    )
+                    },
+                    (errs) => {
+                        console.log(errs)
+                    }
+                )
             }
         })
     })

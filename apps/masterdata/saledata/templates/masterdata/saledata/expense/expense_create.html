@@ -1,13 +1,14 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
+{% block title %}{% trans 'Expense Create' %}{% endblock %}
 {% block cssHeader %}
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-outline-primary" type="submit" form="frmCreateExpense">
+    <button class="btn btn-outline-primary" type="submit" form="frm-create-expense">
         <span>
             <span>{% trans 'Save' %}</span>
             <span class="icon">
@@ -17,15 +18,13 @@
     </button>
 {% endblock %}
 {% block pageContent %}
-    <form id="frmCreateExpense" data-method="POST" data-url="{% url "ExpenseListAPI" %}"
+    <form id="frm-create-expense" data-method="POST" data-url="{% url "ExpenseListAPI" %}"
           data-url-redirect="{% url "ExpenseList" %}">
         {% csrf_token %}
-        {{ data.content.price_list|json_script:"id-price-list" }}
-        {{ data.content.currency_list|json_script:"id-currency-list" }}
         <div class="row">
             <div class="col-4">
                 <label class="form-label required">{% trans 'Name' %}</label>
-                <input class="form-control" type="text" placeholder="Input Name" name="title">
+                <input class="form-control" type="text" placeholder="Input Name" name="title" required>
             </div>
         </div>
 
@@ -44,19 +43,19 @@
                     <div class="form-group col-2">
                         <label class="form-label required">{% trans "Expense Type" %}</label>
                         <select id="chooseExpenseType" class="form-select" data-method="GET"
-                                data-url="{% url 'ExpenseTypeListAPI' %}" name="expense_type"></select>
+                                data-url="{% url 'ExpenseTypeListAPI' %}" name="expense_type" required></select>
                     </div>
                     <div class="form-group col-2">
                         <label class="form-label required">{% trans "UoM Group" %}</label>
                         <input id="chooseUoMGroup" data-method="GET" class="form-control" readonly
                                data-url="{% url "UnitOfMeasureGroupListAPI" %}"
-                               name="uom_group" data-id=""/>
+                               name="uom_group" data-id="" required/>
                     </div>
                     <div class="form-group col-2">
                         <label class="form-label required">{% trans "UoM" %}</label>
                         <select id="chooseUom" class="form-select" data-method="GET"
                                 data-url="{% url "UnitOfMeasureOfGroupLaborListAPI" %}"
-                                name="uom"></select>
+                                name="uom" required></select>
                     </div>
                     <div class="col-6 form-group" id="choosePriceList" data-method="GET"
                          data-url="{% url "PriceListAPI" %}">

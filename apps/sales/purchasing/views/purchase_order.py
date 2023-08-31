@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
-from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg
+from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg, InputMappingProperties
 
 
 def create_purchase_order(request, url, msg):
@@ -89,7 +89,11 @@ class PurchaseOrderUpdate(View):
         breadcrumb='PURCHASE_ORDER_DETAIL_PAGE',
     )
     def get(self, request, pk, *args, **kwargs):
-        return {'data': {'doc_id': pk}}, status.HTTP_200_OK
+        input_mapping_properties = InputMappingProperties.PURCHASING_PURCHASE_ORDER
+        return {
+                   'data': {'doc_id': pk},
+                   'input_mapping_properties': input_mapping_properties, 'form_id': 'frm_purchase_order_create'
+               }, status.HTTP_200_OK
 
 
 class PurchaseOrderDetailAPI(APIView):

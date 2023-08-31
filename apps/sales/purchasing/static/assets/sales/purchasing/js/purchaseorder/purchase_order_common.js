@@ -819,6 +819,18 @@ class POLoadDataHandle {
     static loadDetailPage(data) {
         $('#data-detail-page').val(JSON.stringify(data));
         $('#purchase-order-title').val(data?.['title']);
+        document.getElementById('purchase-order-code').innerHTML = data?.['code'];
+        let eleStatus = $('#purchase-order-status');
+        let status_data = {
+            "Draft": "badge badge-soft-light",
+            "Created": "badge badge-soft-primary",
+            "Added": "badge badge-soft-info",
+            "Finish": "badge badge-soft-success",
+            "Cancel": "badge badge-soft-danger",
+        }
+        let statusHTML = `<span class="${status_data[data?.['system_status']]}">${data?.['system_status']}</span>`;
+        eleStatus.empty();
+        eleStatus.append(statusHTML);
         $('#purchase-order-date-delivered').val(moment(data?.['date_created']).format('DD/MM/YYYY hh:mm A'));
         POLoadDataHandle.loadDataShowPRPQ(data);
         PODataTableHandle.dataTablePurchaseRequest();
@@ -1972,8 +1984,12 @@ class POSubmitHandle {
     };
 
     static setupDataSubmit(_form) {
-        _form.dataForm['purchase_requests_data'] = JSON.parse(POLoadDataHandle.PRDataEle.val());
-        _form.dataForm['purchase_quotations_data'] = JSON.parse(POLoadDataHandle.PQDataEle.val());
+        if (POLoadDataHandle.PRDataEle.val()) {
+            _form.dataForm['purchase_requests_data'] = JSON.parse(POLoadDataHandle.PRDataEle.val());
+        }
+        if (POLoadDataHandle.PQDataEle.val()) {
+           _form.dataForm['purchase_quotations_data'] = JSON.parse(POLoadDataHandle.PQDataEle.val());
+        }
         let pr_products_data_setup = POSubmitHandle.setupDataPRProduct();
         if (pr_products_data_setup.length > 0) {
             _form.dataForm['purchase_request_products_data'] = pr_products_data_setup;
@@ -1992,6 +2008,10 @@ class POSubmitHandle {
         _form.dataForm['total_product_tax'] = parseFloat($('#purchase-order-product-taxes-raw').val());
         _form.dataForm['total_product'] = parseFloat($('#purchase-order-product-total-raw').val());
         _form.dataForm['total_product_revenue_before_tax'] = parseFloat(finalRevenueBeforeTax.value);
+        // system fields
+        if (_form.dataMethod === "POST") {
+            _form.dataForm['system_status'] = 1;
+        }
     };
 }
 

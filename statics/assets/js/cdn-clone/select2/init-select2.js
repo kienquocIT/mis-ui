@@ -472,11 +472,13 @@ class SelectDDControl {
             let keyId = this._data_keyId;
             let keyText = this._data_keyText;
             initData = data.map((item) => {
+                let selected = item?.['selected']
+                if (typeof selected === undefined) selected = true
                 return {
                     'id': this.callbackValueId(item, keyId),
                     'text': this.callbackTextDisplay(item, keyText),
                     'data': item,
-                    'selected': item?.['selected'] || true,
+                    'selected': selected,
                 }
             })
         }

@@ -41,7 +41,10 @@ class AdvancePaymentCreate(View):
         return {
                    'data':
                        {
-                           'employee_current_id': request.user.employee_current_data.get('id', None),
+                           'employee_current': ServerAPI(
+                               user=request.user,
+                               url=ApiURL.EMPLOYEE_DETAIL.push_id(request.user.employee_current_data.get('id', None))
+                           ).get().result,
                            'sale_order_list': resp1.result,
                            'quotation_list': resp2.result,
                            'product_list': resp3.result,

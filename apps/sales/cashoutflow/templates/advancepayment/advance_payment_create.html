@@ -42,6 +42,7 @@
     {{ data.data.tax_list | json_script:"tax_list" }}
     {{ data.data.unit_of_measure | json_script:"unit_of_measure" }}
     {{ data.data.payment_cost_items_list | json_script:"payment_cost_items_list" }}
+    {{ data.data.employee_current | json_script:"employee_current" }}
     <form id="form-create-advance" data-method="POST" data-url-redirect="{% url "AdvancePaymentList" %}"
           data-url-list="{% url 'AdvancePaymentListAPI' %}"
           data-url-detail="{% url 'AdvancePaymentDetailAPI' '0' %}"
@@ -86,7 +87,10 @@
                         </div>
                         <div class="col-7">
                             <select name="sale_code" id="sale-code-select-box"
-                                    class="select2" data-placeholder="Select Sale Code" disabled>
+                                    data-url-opp="{% url 'OpportunityListAPI' %}"
+                                    data-url-quotation="{% url 'QuotationListAPI' %}"
+                                    data-url-sale-order="{% url 'SaleOrderListAPI' %}"
+                                    class="select2" data-placeholder="Select Sale Code">
                             </select>
                         </div>
                     </div>
@@ -132,8 +136,8 @@
                                         </div>
                                     </span>
                                 </span>
-                                <select class="form-select" name="supplier" data-method="GET" id="supplier-select-box"
-                                        data-url="{% url 'AccountListAPI' %}" disabled></select>
+                                <select class="form-select" name="supplier" data-method="GET" id="supplier-select-box" disabled
+                                        data-url="{% url 'AccountListAPI' %}"></select>
                             </span>
                         </div>
                     </div>
@@ -152,14 +156,20 @@
                     <div class="row form-group">
                         <label class="col-4 col-form-label required" id="supplier-label">{% trans "Created date" %}</label>
                         <div class="col-8">
-                            <input class="form-control" id="created_date_id" style="color: #6f6f6f" disabled>
+                            <input class="form-control" id="created_date_id" style="color: #6f6f6f">
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <label class="col-4 col-form-label required" id="supplier-label">{% trans "Return date" %}</label>
+                        <div class="col-8">
+                            <input class="form-control" name="return_date" id="return_date_id">
                         </div>
                     </div>
                     <div class="row form-group">
                         <label class="col-4 col-form-label required">{% trans "Creator" %}</label>
                         <div class="col-8">
                             <span class="input-affix-wrapper">
-                                <span class="input-prefix" id="creator-detail-span" hidden>
+                                <span class="input-prefix" id="creator-detail-span">
                                     <i class="fas fa-info-circle text-primary" aria-expanded="false" data-bs-toggle="dropdown"></i>
                                     <span role="menu" class="dropdown-menu ml-4 pl-3 pr-3 pt-3 pb-3" style="width: 25rem;">
                                         <div class="row">
@@ -184,9 +194,7 @@
                                     </span>
                                 </span>
                                 <select class="form-select" style="color: black" name="creator_name" id="creator-select-box" data-method="GET"
-                                        data-url="{% url 'EmployeeListAPI' %}" disabled></select>
-                                <input id="data-init-advance-create-request-employee-id"
-                                        value="{{ data.data.employee_current_id }}" hidden>
+                                        data-url="{% url 'EmployeeListAPI' %}"></select>
                             </span>
                         </div>
                     </div>
@@ -221,12 +229,6 @@
                                 <select class="form-select" name="beneficiary" id="beneficiary-select-box" data-method="GET"
                                         data-url="{% url 'EmployeeListAPI' %}"></select>
                             </span>
-                        </div>
-                    </div>
-                    <div class="row form-group">
-                        <label class="col-4 col-form-label required" id="supplier-label">{% trans "Return date" %}</label>
-                        <div class="col-8">
-                            <input class="form-control" name="return_date" id="return_date_id" readonly>
                         </div>
                     </div>
                 </div>
@@ -401,7 +403,7 @@
                 <div class="m-3">
                     <div class="row" hidden>
                         <div class="form-group">
-                            <input disabled class="form-control" id="bank-account-order">
+                            <input class="form-control" id="bank-account-order">
                         </div>
                     </div>
                     <div class="row">
@@ -464,10 +466,11 @@
     </form>
 {% endblock %}
 {% block jsFooter %}
-    <script src="{% static "assets/js/advancepayment/advance_payment_create.js" %}"></script>
     <!-- Daterangepicker JS -->
     <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/dropify/dist/js/dropify.min.js' %}"></script>
     <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>
+    <script src="{% static "assets/js/advancepayment/advance_payment_common.js" %}"></script>
+    <script src="{% static "assets/js/advancepayment/advance_payment_create_main.js" %}"></script>
 {% endblock %}

@@ -11,19 +11,21 @@ $(function () {
         // Tables
         let tablePurchaseRequest = $('#datable-purchase-request');
         let tablePurchaseRequestProduct = $('#datable-purchase-request-product');
-        let tablePurchaseQuotation = $('#datable-purchase-quotation');
+        // let tablePurchaseQuotation = $('#datable-purchase-quotation');
         let tablePurchaseOrderProductAdd = $('#datable-purchase-order-product-add');
         let tablePurchaseOrderProductRequest = $('#datable-purchase-order-product-request');
 
         // Load init
-        POLoadDataHandle.loadBoxSupplier();
-        POLoadDataHandle.loadBoxContact();
-        PODataTableHandle.dataTablePurchaseRequest();
-        PODataTableHandle.dataTablePurchaseRequestProduct();
-        PODataTableHandle.dataTablePurchaseRequestProductMerge();
-        PODataTableHandle.dataTablePurchaseQuotation();
-        PODataTableHandle.dataTablePurchaseOrderProductAdd();
-        PODataTableHandle.dataTablePurchaseOrderProductRequest();
+        if (formSubmit.attr('data-method') === 'POST') {
+            POLoadDataHandle.loadBoxSupplier();
+            POLoadDataHandle.loadBoxContact();
+            PODataTableHandle.dataTablePurchaseRequest();
+            PODataTableHandle.dataTablePurchaseRequestProduct();
+            PODataTableHandle.dataTablePurchaseRequestProductMerge();
+            PODataTableHandle.dataTablePurchaseQuotation();
+            PODataTableHandle.dataTablePurchaseOrderProductAdd();
+            PODataTableHandle.dataTablePurchaseOrderProductRequest();
+        }
 
         // run datetimepicker
         $('input[type=text].date-picker').daterangepicker({
@@ -47,7 +49,10 @@ $(function () {
                 setTimeout(checkDataTableRenderThenHidden, 1000);  // call again after 1s if condition not pass yet
             }
         }
-        checkDataTableRenderThenHidden();
+        if (formSubmit.attr('data-method') === 'POST') {
+            checkDataTableRenderThenHidden();
+        }
+
 
 // EVENTS
         // Action on change dropdown supplier
@@ -87,15 +92,20 @@ $(function () {
             POLoadDataHandle.loadModalPurchaseRequestProductTable();
         });
 
-        // Action on click btn add purchase request
+        // Action on click btn ADD PURCHASE REQUEST
         $('#btn-confirm-add-purchase-request').on('click', function () {
             POLoadDataHandle.loadDataShowPurchaseRequest();
+            POLoadDataHandle.loadTableProductByPurchaseRequest();
+            if (elePurchaseRequest[0].innerHTML) {
+                POLoadDataHandle.loadModalPurchaseQuotation();
+            } else {
+                POLoadDataHandle.loadModalPurchaseQuotation(true);
+            }
         });
 
         // Action on click btn remove purchase request
         elePurchaseRequest.on('click', '.custom-btn-remove', function() {
-            let removeIDList = [this.getAttribute('data-id')];
-            POLoadDataHandle.loadDataAfterClickRemove(tablePurchaseRequest, removeIDList, "purchase_request");
+            POLoadDataHandle.loadDataWhenRemovePR(this);
         });
 
         // Action on change quantity order of tablePurchaseRequestProduct
@@ -110,22 +120,24 @@ $(function () {
             POLoadDataHandle.loadModalPurchaseQuotation();
         });
 
-        // Action on click add purchase quotation
+        // Action on click ADD PURCHASE QUOTATION
         $('#btn-confirm-add-purchase-quotation').on('click', function () {
             POLoadDataHandle.loadDataShowPurchaseQuotation();
+            POLoadDataHandle.loadPriceListByPurchaseQuotation();
         });
 
         // Action on click checkbox purchase quotation
         elePurchaseQuotation.on('click', '.checkbox-quotation', function () {
+            POLoadDataHandle.loadUpdateDataPQ(this);
+            POLoadDataHandle.loadSupplierContactByCheckedQuotation(this);
+            POLoadDataHandle.loadCheckProductsByCheckedQuotation(this);
             if (this.checked === true) {
-               POLoadDataHandle.loadSupplierContactByCheckedQuotation(this);
-            }
-            for (let item of elePurchaseQuotation[0].querySelectorAll('.checkbox-quotation')) {
-                if (item.getAttribute('data-id') !== $(this)[0].getAttribute('data-id')) {
-                    item.checked = false;
+                for (let item of elePurchaseQuotation[0].querySelectorAll('.checkbox-quotation')) {
+                    if (item.getAttribute('data-id') !== $(this)[0].getAttribute('data-id')) {
+                        item.checked = false;
+                    }
                 }
             }
-            POLoadDataHandle.loadCheckProductsByCheckedQuotation(this);
         });
 
         // Action on click btn remove purchase quotation
@@ -136,8 +148,7 @@ $(function () {
                     checked_id = item.getAttribute('data-id');
                 }
             }
-            let removeIDList = [this.getAttribute('data-id')];
-            POLoadDataHandle.loadDataAfterClickRemove(tablePurchaseQuotation, removeIDList, "purchase_quotation");
+            POLoadDataHandle.loadDataWhenRemovePQ(this);
             if (checked_id) {
                 for (let item of elePurchaseQuotation[0].querySelectorAll('.checkbox-quotation')) {
                     if (item.getAttribute('data-id') === checked_id) {
@@ -209,6 +220,7 @@ $(function () {
                 'title',
                 'purchase_requests_data',
                 'purchase_quotations_data',
+                'purchase_request_products_data',
                 'supplier',
                 'contact',
                 'delivered_date',

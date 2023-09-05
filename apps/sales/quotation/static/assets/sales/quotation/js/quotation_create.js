@@ -1108,7 +1108,7 @@ $(function () {
                 // indicator tab
                 'quotation_indicators_data',
                 // system
-                // 'system_status',
+                'system_status',
             ]
             if (is_sale_order === true) {
                 submitFields = [
@@ -1144,7 +1144,7 @@ $(function () {
                     // indicator tab
                     'sale_order_indicators_data',
                     // system
-                    // 'system_status',
+                    'system_status',
                 ]
             }
             if (_form.dataForm) {

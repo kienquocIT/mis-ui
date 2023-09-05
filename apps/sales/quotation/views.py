@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from django.utils.translation import gettext_lazy as _
 
-from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg
+from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg, InputMappingProperties
 
 
 def create_quotation(request, url, msg):
@@ -92,7 +92,11 @@ class QuotationUpdate(View):
         menu_active='menu_quotation_list',
     )
     def get(self, request, pk, *args, **kwargs):
-        return {'data': {'doc_id': pk}}, status.HTTP_200_OK
+        input_mapping_properties = InputMappingProperties.QUOTATION_QUOTATION
+        return {
+                   'data': {'doc_id': pk},
+                   'input_mapping_properties': input_mapping_properties, 'form_id': 'frm_quotation_create'
+               }, status.HTTP_200_OK
 
 
 class QuotationDetailAPI(APIView):

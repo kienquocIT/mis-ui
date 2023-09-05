@@ -15,8 +15,7 @@
 }
 
 .disabled-custom-show:disabled {
-    color: #495057;
-    background-color: #e9ecef;
+    color: #0c0c0c;
 }
 
 .disabled-but-edit:disabled {
@@ -51,18 +50,6 @@ ul.quotation-tabs li.quotation-tab-item {
 a.dropdown-item.table-row-price-option:hover {
     background-color: blue;
     color: white;
-}
-
-.fa-info-circle {
-    color: #298dff;
-}
-
-.fa-gift {
-    color: #e92990;
-}
-
-.fa-shipping-fast {
-    color: #c39749;
 }
 
 .modal-body-invalid-promotion {

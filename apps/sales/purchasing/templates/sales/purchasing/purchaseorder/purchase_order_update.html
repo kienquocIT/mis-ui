@@ -6,31 +6,41 @@
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
 {% block pageAction %}
-    <a href="#"
-       data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'Save' %}"
-       data-bs-original-title="Save">
-        <button class="btn btn-outline-primary" type="submit" form="frm_purchase_order_create">
-            <span>
-                <span>{% trans 'Save' %}</span>
-                <span class="icon">
-                    <i class="fa-regular fa-floppy-disk"></i>
-                </span>
+    <button class="btn btn-outline-primary" type="submit" form="frm_purchase_order_create">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
             </span>
-        </button>
-    </a>
+        </span>
+    </button>
 {% endblock %}
 
 {% block pageContent %}
     <form
-            data-url="{% url 'PurchaseOrderListAPI' %}"
+            data-url="{% url 'PurchaseOrderDetailAPI' data.data.doc_id %}"
             data-url-redirect="{% url 'PurchaseOrderList' %}"
-            data-method="POST"
+            data-method="PUT"
             id="frm_purchase_order_create"
             method="post"
     >
         {% csrf_token %}
         <div class="container-fluid">
             <div class="collapse multi-collapse show" id="collapseExample">
+                <div class="row">
+                    <div class="col-6"></div>
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="col-8"></div>
+                            <div class="col-2">
+                                <h5 class="text-primary" id="purchase-order-code"></h5>
+                            </div>
+                            <div class="col-2" id="purchase-order-status">
+                                <span class="badge badge-soft-success"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="row" id="common-information-area">
                     <div class="col-6">
                         <div class="form-group">
@@ -50,7 +60,7 @@
                             <label class="form-label">{% trans 'Purchase request' %}</label>
                             <div class="input-group">
                                 <span class="input-affix-wrapper">
-                                    <div class="form-control div-input" id="purchase-order-purchase-request"></div>
+                                    <div class="form-control div-input" id="purchase-order-purchase-request" data-link-detail="{% url "PurchaseRequestDetail" 1 %}"></div>
                                     <input type="hidden" id="purchase_requests_data">
                                     <span class="input-suffix">
                                         <button
@@ -68,7 +78,7 @@
                             <label class="form-label">{% trans 'Purchase quotation' %}</label>
                             <div class="input-group">
                                 <span class="input-affix-wrapper">
-                                    <div class="form-control div-input" id="purchase-order-purchase-quotation"></div>
+                                    <div class="form-control div-input" id="purchase-order-purchase-quotation" data-link-detail="{% url "PurchaseQuotationDetail" 1 %}"></div>
                                     <input type="hidden" id="purchase_quotations_data">
                                     <span class="input-suffix">
                                         <button
@@ -112,6 +122,33 @@
                                 </span>
                             </div>
                         </div>
+                    </div>
+
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label class="form-label" for="purchase-order-date-delivered">{% trans 'Delivered date' %}</label>
+                            <div class="input-affix-wrapper">
+                                <input type="text" name="delivered-date" id="purchase-order-date-delivered"
+                                       class="form-control date-picker" autocomplete="off">
+                                <span class="input-suffix">
+                                    <i class="bi bi-calendar-week"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="purchase-order-status-delivered">{% trans 'Delivered status' %}</label>
+                            <div class="input-group">
+                                <span class="input-affix-wrapper">
+                                    <input
+                                        type="text" class="form-control"
+                                        name="status-delivered"
+                                        id="purchase-order-status-delivered"
+                                        value="None"
+                                        data-value="0"
+                                    >
+                                </span>
+                            </div>
+                        </div>
                         <div class="form-group">
                             <label class="form-label" for="box-purchase-order-contact">{% trans 'Select Contact' %}</label>
                             <div class="input-group more-information-group">
@@ -139,48 +176,6 @@
                                             data-keyResp="contact_list"
                                             required
                                     ></select>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-6">
-                        <div class="form-group">
-                            <label class="form-label" for="purchase-order-date-delivered">{% trans 'Delivered date' %}</label>
-                            <div class="input-affix-wrapper">
-                                <input type="text" name="delivered-date" id="purchase-order-date-delivered"
-                                       class="form-control date-picker" autocomplete="off">
-                                <span class="input-suffix">
-                                    <i class="bi bi-calendar-week"></i>
-                                </span>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" for="quotation-create-status">{% trans 'Status' %}</label>
-                            <div class="input-group">
-                                <span class="input-affix-wrapper">
-                                    <input
-                                        type="text" class="form-control status-draft"
-                                        value="Draft"
-                                        data-value="0"
-                                        name="status"
-                                        id="quotation-create-status"
-                                        disabled
-                                    >
-                                </span>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" for="purchase-order-status-delivered">{% trans 'Delivered status' %}</label>
-                            <div class="input-group">
-                                <span class="input-affix-wrapper">
-                                    <input
-                                        type="text" class="form-control"
-                                        name="status-delivered"
-                                        id="purchase-order-status-delivered"
-                                        value="None"
-                                        data-value="0"
-                                    >
                                 </span>
                             </div>
                         </div>
@@ -226,16 +221,16 @@
                             >
                                 <thead>
                                 <tr>
-                                    <th>#</th>
+                                    <th class="w-5">#</th>
                                     <th>{% trans 'Product' %}</th>
 {#                                    <th>{% trans 'Description' %}</th>#}
-                                    <th>UoM(PR)</th>
-                                    <th>{% trans 'Quantity' %}(PR)</th>
-                                    <th>{% trans 'Stock' %}</th>
-                                    <th>UoM(PO)<span class="required"></span></th>
-                                    <th>{% trans 'Quantity' %}(PO)<span class="required"></span></th>
-                                    <th>{% trans 'Unit Price' %}<span class="required"></span></th>
-                                    <th>{% trans 'Tax' %}</th>
+                                    <th class="w-5">UoM(PR)</th>
+                                    <th class="w-5">{% trans 'Quantity' %}(PR)</th>
+                                    <th class="w-5">{% trans 'Stock' %}</th>
+                                    <th class="w-5">UoM(PO)<span class="required"></span></th>
+                                    <th class="w-5">{% trans 'Quantity' %}(PO)<span class="required"></span></th>
+                                    <th class="w-15">{% trans 'Unit Price' %}<span class="required"></span></th>
+                                    <th class="w-10">{% trans 'Tax' %}</th>
                                     <th>{% trans 'Subtotal Price' %}</th>
                                 </tr>
                                 </thead>
@@ -384,6 +379,10 @@
             id="data-purchase-quotation-products"
             data-url="{% url "PurchaseQuotationProductListAPI" %}"
             data-method="GET"
+        >
+        <input
+            type="hidden"
+            id="data-detail-page"
         >
 
 
@@ -572,4 +571,5 @@
 
     <script src="{% static 'assets/sales/purchasing/js/purchaseorder/purchase_order_common.js' %}"></script>
     <script src="{% static 'assets/sales/purchasing/js/purchaseorder/purchase_order_create.js' %}"></script>
+    <script src="{% static 'assets/sales/purchasing/js/purchaseorder/purchase_order_detail.js' %}"></script>
 {% endblock %}

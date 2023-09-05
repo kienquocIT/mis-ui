@@ -14,7 +14,7 @@ urlpatterns = [
     path('list', OrderDeliveryList.as_view(), name='OrderDeliveryList'),
     path('list/api', OrderDeliveryListAPI.as_view(), name='OrderDeliveryListAPI'),
     path('detail/<str:pk>', OrderDeliveryDetail.as_view(), name='OrderDeliveryDetail'),
-    path('edit/<str:pk>', OrderDeliveryEdit.as_view(), name='OrderDeliveryEdit'),
+    path('update/<str:pk>', OrderDeliveryEdit.as_view(), name='OrderDeliveryEdit'),
     path('<str:pk>/api', OrderDeliveryDetailAPI.as_view(), name='OrderDeliveryDetailAPI'),
 
     path('picking/list', OrderPickingList.as_view(), name='OrderPickingList'),

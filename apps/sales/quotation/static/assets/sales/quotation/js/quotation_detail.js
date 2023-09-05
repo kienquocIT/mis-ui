@@ -42,6 +42,7 @@ $(function () {
                             }
                         }
                     }
+                    WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
 
                     // delivery button
                     if (data?.['delivery_call'] === false) $('#btnDeliverySaleOrder').removeClass('hidden');

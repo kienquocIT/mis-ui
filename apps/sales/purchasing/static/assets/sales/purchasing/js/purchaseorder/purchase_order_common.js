@@ -4,6 +4,8 @@ let finalRevenueBeforeTax = document.getElementById('purchase-order-final-revenu
 class POLoadDataHandle {
     static supplierSelectEle = $('#box-purchase-order-supplier');
     static contactSelectEle = $('#box-purchase-order-contact');
+    static PRDataEle = $('#purchase_requests_data');
+    static PQDataEle = $('#purchase_quotations_data');
 
     static loadMoreInformation(ele, is_span = false) {
         let optionSelected = null;
@@ -88,7 +90,7 @@ class POLoadDataHandle {
             data: dataProduct,
             disabled: !(ele.attr('data-url')),
         });
-    }
+    };
 
     static loadDataProductSelect(ele, is_change_item = true) {
         if (ele.val()) {
@@ -204,14 +206,14 @@ class POLoadDataHandle {
             'dataParams': {'group': uom_group_id},
             disabled: !(ele.attr('data-url')),
         });
-    }
+    };
 
     static loadBoxTax(ele, dataTax = {}) {
         ele.initSelect2({
             data: dataTax,
             disabled: !(ele.attr('data-url')),
         });
-    }
+    };
 
     static loadModalPurchaseRequestTable(is_clear_all = false) {
         let tablePurchaseRequest = $('#datable-purchase-request');
@@ -227,35 +229,50 @@ class POLoadDataHandle {
         return true;
     };
 
-    static loadModalPurchaseRequestProductTable(is_clear_all = false, is_trigger_click = false) {
+    static loadModalPurchaseRequestProductTable(is_remove = false, dataDetail = null) {
         let tablePurchaseRequest = $('#datable-purchase-request');
         let tablePurchaseRequestProduct = $('#datable-purchase-request-product');
         let frm = new SetupFormSubmit(tablePurchaseRequestProduct);
-        let request_id_list = [];
+        let checked_pr_id_list = [];
         let checked_data = {};
-        for (let eleChecked of tablePurchaseRequest[0].querySelectorAll('.table-row-checkbox:checked')) {
-            request_id_list.push(eleChecked.getAttribute('data-id'));
+        if (dataDetail) {
+            for (let dataProduct of dataDetail?.['purchase_order_products_data']) {
+                for (let PRProduct of dataProduct?.['purchase_request_products_data']) {
+                    checked_data[PRProduct?.['purchase_request_product_id']] = {
+                        'id': PRProduct?.['purchase_request_product_id'],
+                        'quantity_order': PRProduct?.['quantity_order'],
+                    }
+                }
+            }
+            for (let PRProduct of dataDetail?.['purchase_request_products_data']) {
+                checked_data[PRProduct?.['purchase_request_product_id']] = {
+                    'id': PRProduct?.['purchase_request_product_id'],
+                    'quantity_order': PRProduct?.['quantity_order'],
+                }
+            }
+            if (POLoadDataHandle.PRDataEle.val()) {
+                for (let prId of JSON.parse(POLoadDataHandle.PRDataEle.val())) {
+                    checked_pr_id_list.push(prId);
+                }
+            }
         }
-        if (!tablePurchaseRequestProduct[0].querySelector('.dataTables_empty') && is_clear_all === false) {
+        if (!tablePurchaseRequestProduct[0].querySelector('.dataTables_empty')) {
             for (let eleChecked of tablePurchaseRequestProduct[0].querySelectorAll('.table-row-checkbox:checked')) {
                 checked_data[eleChecked.getAttribute('data-id')] = {
                     'id': eleChecked.getAttribute('data-id'),
                     'quantity_order': eleChecked.closest('tr').querySelector('.table-row-quantity-order').value,
                 };
             }
-            for (let eleChecked of tablePurchaseRequestProduct[0].querySelectorAll('.disabled-by-pq')) {
-                checked_data[eleChecked.id] = {
-                    'id': eleChecked.id,
-                    'quantity_order': eleChecked.closest('tr').querySelector('.table-row-quantity-order').value,
-                };
-            }
+        }
+        for (let eleChecked of tablePurchaseRequest[0].querySelectorAll('.table-row-checkbox:checked')) {
+            checked_pr_id_list.push(eleChecked.getAttribute('data-id'));
         }
         tablePurchaseRequestProduct.DataTable().clear().draw();
-        if (request_id_list.length > 0) {
+        if (checked_pr_id_list.length > 0) {
             $.fn.callAjax2({
                     'url': frm.dataUrl,
                     'method': frm.dataMethod,
-                    'data': {'purchase_request_id__in': request_id_list.join(',')},
+                    'data': {'purchase_request_id__in': checked_pr_id_list.join(',')},
                     'isDropdown': true,
                 }
             ).then(
@@ -272,8 +289,13 @@ class POLoadDataHandle {
                                 }
                             }
                             tablePurchaseRequestProduct.DataTable().rows.add(data.purchase_request_product_list).draw();
-                            if (is_trigger_click === true) {
-                                $('#btn-confirm-add-purchase-request').click();
+                            if (dataDetail) {
+                                POLoadDataHandle.loadPRProductNotInPO(dataDetail);
+                            }
+                            if (is_remove === true) {
+                                POLoadDataHandle.loadDataShowPurchaseRequest();
+                                POLoadDataHandle.loadTableProductByPurchaseRequest();
+                                POLoadDataHandle.loadModalPurchaseQuotation(true);
                             }
                         }
                     }
@@ -333,13 +355,11 @@ class POLoadDataHandle {
             if (is_checked === true) {
                 elePurchaseRequest.empty();
                 elePurchaseRequest.append(eleAppend);
-                POLoadDataHandle.loadTableProductByPurchaseRequest();
             } else {
                 elePurchaseRequest.empty();
-                POLoadDataHandle.loadTableProductByPurchaseRequest();
             }
         }
-        $('#purchase_requests_data').val(JSON.stringify(purchase_requests_data));
+        POLoadDataHandle.PRDataEle.val(JSON.stringify(purchase_requests_data));
         let eleMergeProduct = $('#merge-same-product');
         if (eleMergeProduct[0].checked === true) {
             eleMergeProduct.click();
@@ -347,16 +367,27 @@ class POLoadDataHandle {
         return true;
     };
 
-    static loadModalPurchaseQuotation(is_clear_all = false, is_click = false) {
+    static loadModalPurchaseQuotation(is_remove = false, dataDetail = null) {
         let tablePurchaseQuotation = $('#datable-purchase-quotation');
-        let checked_list = [];
-        if (!tablePurchaseQuotation[0].querySelector('.dataTables_empty') && is_clear_all === false) {
+        let checked_data = {};
+        if (dataDetail) {
+            for (let PQ of dataDetail?.['purchase_quotations_data']) {
+                checked_data[PQ?.['purchase_quotation']?.['id']] = {
+                    'id': PQ?.['purchase_quotation']?.['id'],
+                    'is_use': PQ?.['is_use'],
+                };
+            }
+        }
+        if (!tablePurchaseQuotation[0].querySelector('.dataTables_empty')) {
             for (let eleChecked of tablePurchaseQuotation[0].querySelectorAll('.table-row-checkbox:checked')) {
-                checked_list.push(eleChecked.getAttribute('data-id'));
+                checked_data[eleChecked.getAttribute('data-id')] = {
+                    'id': eleChecked.getAttribute('data-id'),
+                    'is_use': false,
+                };
             }
         }
         let frm = new SetupFormSubmit(tablePurchaseQuotation);
-        let purchase_requests_data = $('#purchase_requests_data');
+        let purchase_requests_data = POLoadDataHandle.PRDataEle;
         if (purchase_requests_data.val()) {
             let purchase_requests_data_parse = JSON.parse(purchase_requests_data.val());
             if (JSON.parse(purchase_requests_data.val()).length > 0) {
@@ -371,27 +402,24 @@ class POLoadDataHandle {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             if (data.hasOwnProperty('purchase_quotation_list') && Array.isArray(data.purchase_quotation_list)) {
-                                if (checked_list.length > 0) {
+                                if (Object.keys(checked_data).length !== 0) {
                                     for (let PQ of data.purchase_quotation_list) {
-                                        if (checked_list.includes(PQ.id)) {
+                                        if (checked_data.hasOwnProperty(PQ.id)) {
                                             PQ['is_checked'] = true;
+                                            PQ['is_use'] = checked_data[PQ.id]?.['is_use'];
                                         }
                                     }
                                 }
                                 tablePurchaseQuotation.DataTable().clear().draw();
                                 tablePurchaseQuotation.DataTable().rows.add(data.purchase_quotation_list).draw();
-                                if (is_click === true) {
-                                    $('#btn-confirm-add-purchase-quotation').click();
+                                if (is_remove === true) {
+                                    POLoadDataHandle.loadDataShowPurchaseQuotation();
+                                    POLoadDataHandle.loadPriceListByPurchaseQuotation();
                                 }
                             }
                         }
                     }
                 )
-            } else {
-                if (is_clear_all === true) {
-                    tablePurchaseQuotation.DataTable().clear().destroy();
-                    PODataTableHandle.dataTablePurchaseQuotation();
-                }
             }
         }
         return true;
@@ -401,7 +429,6 @@ class POLoadDataHandle {
         let elePurchaseQuotation = $('#purchase-order-purchase-quotation');
         let tablePurchaseQuotation = $('#datable-purchase-quotation');
         let purchase_quotations_data = [];
-        let purchase_quotations_id_list = [];
         let eleAppend = ``;
         let is_check = false;
         let checked_id = null;
@@ -430,49 +457,62 @@ class POLoadDataHandle {
                 'purchase_quotation': pqID,
                 'is_use': false
             })
-            purchase_quotations_id_list.push(pqID);
-        }
-        if (!checked_id) {
-            POLoadDataHandle.supplierSelectEle.empty();
-            POLoadDataHandle.contactSelectEle.empty();
         }
         if (is_check === true) {
             elePurchaseQuotation.empty();
             elePurchaseQuotation.append(eleAppend);
         } else {
             elePurchaseQuotation.empty();
+            POLoadDataHandle.supplierSelectEle.empty();
+            POLoadDataHandle.contactSelectEle.empty();
         }
-        $('#purchase_quotations_data').val(JSON.stringify(purchase_quotations_data));
-        if (elePurchaseQuotation[0].querySelectorAll('.checkbox-quotation')) {
-            if (checked_id) {
+        POLoadDataHandle.PQDataEle.val(JSON.stringify(purchase_quotations_data));
+        if (checked_id) {
+            if (elePurchaseQuotation[0].querySelectorAll('.checkbox-quotation')) {
                 for (let eleCheck of elePurchaseQuotation[0].querySelectorAll('.checkbox-quotation')) {
                     if (eleCheck.getAttribute('data-id') === checked_id) {
                         eleCheck.checked = true;
                     }
                 }
             }
-            POLoadDataHandle.loadPriceListByPurchaseQuotation(purchase_quotations_id_list, checked_id);
+        } else {
+            POLoadDataHandle.supplierSelectEle.empty();
+            POLoadDataHandle.contactSelectEle.empty();
         }
         return true;
     };
 
-    static loadDataAfterClickRemove(table, removeIDList, code) {
-        let self = this;
+    static loadDataWhenRemovePR(ele) {
+        let removeID = ele.getAttribute('data-id');
+        let table = $('#datable-purchase-request');
         for (let eleChecked of table[0].querySelectorAll('.table-row-checkbox:checked')) {
-            if (removeIDList.includes(eleChecked.getAttribute('data-id'))) {
+            if (eleChecked.getAttribute('data-id') === removeID) {
                 eleChecked.checked = false;
             }
         }
-        if (code === "purchase_request") {
-            self.loadDataWhenClearPR(false);
-        } else if ("purchase_quotation") {
-            self.loadDataWhenClearPQ();
+        POLoadDataHandle.loadModalPurchaseRequestProductTable(true);
+    };
+
+    static loadDataWhenRemovePQ(ele) {
+        let removeID = ele.getAttribute('data-id');
+        let table = $('#datable-purchase-quotation');
+        let eleCheckbox = ele.closest('.inline-elements-badge').querySelector('.checkbox-quotation');
+        if (eleCheckbox.checked === true) {
+            eleCheckbox.checked = false;
+            POLoadDataHandle.loadUpdateDataPQ(eleCheckbox);
+            POLoadDataHandle.loadSupplierContactByCheckedQuotation(eleCheckbox);
+            POLoadDataHandle.loadCheckProductsByCheckedQuotation(eleCheckbox);
         }
-        return true
+        for (let eleChecked of table[0].querySelectorAll('.table-row-checkbox:checked')) {
+            if (eleChecked.getAttribute('data-id') === removeID) {
+                eleChecked.checked = false;
+            }
+        }
+        POLoadDataHandle.loadDataShowPurchaseQuotation();
+        POLoadDataHandle.loadPriceListByPurchaseQuotation();
     };
 
     static loadTableProductByPurchaseRequest() {
-        let self = this;
         let tablePurchaseOrderProductRequest = $('#datable-purchase-order-product-request');
         let tablePurchaseOrderProductAdd = $('#datable-purchase-order-product-add');
         let data = setupMergeProduct();
@@ -485,10 +525,27 @@ class POLoadDataHandle {
         if (data.length > 0) {
             tablePurchaseOrderProductRequest.DataTable().clear().draw();
             tablePurchaseOrderProductRequest.DataTable().rows.add(data).draw();
-            self.loadDataRowTable(tablePurchaseOrderProductRequest);
+            POLoadDataHandle.loadDataRowTable(tablePurchaseOrderProductRequest);
         } else {
             tablePurchaseOrderProductRequest.DataTable().clear().draw();
+            tablePurchaseOrderProductRequest.DataTable().rows.add(data).draw();
         }
+        // restart totals
+        let elePretaxAmount = document.getElementById('purchase-order-product-pretax-amount');
+        let eleTaxes = document.getElementById('purchase-order-product-taxes');
+        let eleTotal = document.getElementById('purchase-order-product-total');
+        let elePretaxAmountRaw = document.getElementById('purchase-order-product-pretax-amount-raw');
+        let eleTaxesRaw = document.getElementById('purchase-order-product-taxes-raw');
+        let eleTotalRaw = document.getElementById('purchase-order-product-total-raw');
+        let finalRevenueBeforeTax = document.getElementById('purchase-order-final-revenue-before-tax');
+        $(elePretaxAmount).attr('data-init-money', String(0));
+        elePretaxAmountRaw.value = 0;
+        finalRevenueBeforeTax.value = 0;
+        $(eleTaxes).attr('data-init-money', String(0));
+        eleTaxesRaw.value = 0;
+        $(eleTotal).attr('data-init-money', String(0));
+        eleTotalRaw.value = 0;
+        $.fn.initMaskMoney2();
         return true;
     };
 
@@ -554,13 +611,23 @@ class POLoadDataHandle {
         }
     };
 
-    static loadPriceListByPurchaseQuotation(purchase_quotations_id_list, checked_id = null) {
+    static loadPriceListByPurchaseQuotation() {
         let eleQuotationProduct = $('#data-purchase-quotation-products');
-        if (purchase_quotations_id_list.length > 0) {
+        let PQIDList = [];
+        let checked_id = null;
+        if (POLoadDataHandle.PQDataEle.val()) {
+            for (let PQData of JSON.parse(POLoadDataHandle.PQDataEle.val())) {
+                PQIDList.push(PQData?.['purchase_quotation']);
+                if (PQData?.['is_use'] === true) {
+                    checked_id = PQData?.['purchase_quotation'];
+                }
+            }
+        }
+        if (PQIDList.length > 0) {
             $.fn.callAjax2({
                     'url': eleQuotationProduct.attr('data-url'),
                     'method': eleQuotationProduct.attr('data-method'),
-                    'data': {'purchase_quotation_id__in': purchase_quotations_id_list.join(',')},
+                    'data': {'purchase_quotation_id__in': PQIDList.join(',')},
                     'isDropdown': true,
                 }
             ).then(
@@ -641,17 +708,17 @@ class POLoadDataHandle {
     };
 
     static loadCheckProductsByCheckedQuotation(ele) {
+        let tablePRProduct = $('#datable-purchase-request-product');
+        let checked_id = ele.getAttribute('data-id');
         if (ele.checked === true) {
             let eleDataPQProducts = $('#data-purchase-quotation-products');
             if (eleDataPQProducts.val()) {
                 let dataPQMapProductsList = JSON.parse(eleDataPQProducts.val());
-                let dataPQMapProducts = dataPQMapProductsList[ele.getAttribute('data-id')];
-                let tablePRProduct = $('#datable-purchase-request-product');
+                let dataPQMapProducts = dataPQMapProductsList[checked_id];
                 for (let eleChecked of tablePRProduct[0].querySelectorAll('.table-row-checkbox:checked')) {
                     let row = eleChecked.closest('tr');
                     let productID = row.querySelector('.table-row-item').id;
                     if (!dataPQMapProducts.includes(productID)) {
-                        eleChecked.checked = false;
                         eleChecked.classList.add('disabled-by-pq');
                         eleChecked.setAttribute('disabled', 'true');
                         row.querySelector('.table-row-quantity-order').setAttribute('disabled', 'true');
@@ -661,38 +728,68 @@ class POLoadDataHandle {
                         row.setAttribute('title', $.fn.transEle.attr('data-product-not-in') + ' ' + ele.getAttribute('data-code'));
                     }
                 }
-                $('#btn-confirm-add-purchase-request').click();
-                $('#btn-confirm-add-purchase-quotation').click();
             }
+            POLoadDataHandle.loadPriceListByPurchaseQuotation();
         } else {
-            POLoadDataHandle.loadModalPurchaseRequestProductTable(false, true)
+            for (let eleChecked of tablePRProduct[0].querySelectorAll('.table-row-checkbox:checked, .table-row-checkbox.disabled-by-pq')) {
+                let row = eleChecked.closest('tr');
+                eleChecked.classList.remove('disabled-by-pq');
+                eleChecked.removeAttribute('disabled');
+                row.querySelector('.table-row-quantity-order').removeAttribute('disabled');
+                $(row).css('background-color', '');
+                row.removeAttribute('data-bs-toggle');
+                row.removeAttribute('data-bs-placement');
+                row.removeAttribute('title');
+            }
+            POLoadDataHandle.loadPriceListByPurchaseQuotation();
         }
+        POLoadDataHandle.loadTableProductByPurchaseRequest();
+    };
+
+    static loadUpdateDataPQ(ele) {
+        let PQData = [];
+        let checked_id = ele.getAttribute('data-id');
+        if (POLoadDataHandle.PQDataEle.val()) {
+            if (ele.checked === true) {
+                for (let purchase_quotation of JSON.parse(POLoadDataHandle.PQDataEle.val())) {
+                    PQData.push({
+                        'purchase_quotation': purchase_quotation?.['purchase_quotation'],
+                        'is_use': (purchase_quotation.purchase_quotation === checked_id)
+                    })
+                }
+            } else {
+                for (let purchase_quotation of JSON.parse(POLoadDataHandle.PQDataEle.val())) {
+                    PQData.push({
+                        'purchase_quotation': purchase_quotation?.['purchase_quotation'],
+                        'is_use': false
+                    })
+                }
+            }
+        }
+        POLoadDataHandle.PQDataEle.val(JSON.stringify(PQData))
     };
 
     static loadSupplierContactByCheckedQuotation(ele) {
-        let self = this;
-        let checked_id = ele.getAttribute('data-id');
-        let supplier = JSON.parse(ele.getAttribute('data-supplier'));
-        for (let purchase_quotation of JSON.parse($('#purchase_quotations_data').val())) {
-            purchase_quotation.is_use = (purchase_quotation.purchase_quotation === checked_id);
-        }
-        // load supplier by Purchase Quotation
         POLoadDataHandle.supplierSelectEle.empty();
-        self.loadBoxSupplier(supplier);
-        POLoadDataHandle.supplierSelectEle.change();
+        POLoadDataHandle.contactSelectEle.empty();
+        if (ele.checked === true) {
+            let supplier = JSON.parse(ele.getAttribute('data-supplier'));
+            // load supplier by Purchase Quotation
+            POLoadDataHandle.loadBoxSupplier(supplier);
+            POLoadDataHandle.supplierSelectEle.change();
+        }
         return true
     };
 
     static loadDataWhenClearPR(is_clear_all = false) {
-        let self = this;
         // Load again data & events relate with Purchase Request
         $('#purchase-order-purchase-request').empty();
-        self.loadModalPurchaseRequestTable(is_clear_all);
+        POLoadDataHandle.loadModalPurchaseRequestTable(is_clear_all);
         $('#datable-purchase-request')[0].querySelector('.table-checkbox-all').checked = false;
-        self.loadModalPurchaseRequestProductTable(is_clear_all, true);
+        POLoadDataHandle.loadModalPurchaseRequestProductTable(is_clear_all);
         // Load again data & events relate with Purchase Quotation
         $('#purchase-order-purchase-quotation').empty();
-        self.loadModalPurchaseQuotation(is_clear_all, true);
+        POLoadDataHandle.loadModalPurchaseQuotation(is_clear_all);
         POLoadDataHandle.supplierSelectEle.empty();
         POLoadDataHandle.contactSelectEle.empty();
         // ReCalculate Totals
@@ -718,30 +815,23 @@ class POLoadDataHandle {
         return true
     };
 
-    static loadDataWhenClearPQ() {
-        let self = this;
-        // Load again data & events relate with Purchase Request
-        self.loadModalPurchaseRequestProductTable(false, true);
-        // Load again data & events relate with Purchase Quotation
-        $('#purchase-order-purchase-quotation').empty();
-        self.loadModalPurchaseQuotation(false, true);
-        POLoadDataHandle.supplierSelectEle.empty();
-        POLoadDataHandle.contactSelectEle.empty();
-        return true
-    };
-
     // LOAD DETAIL
     static loadDetailPage(data) {
+        $('#data-detail-page').val(JSON.stringify(data));
         $('#purchase-order-title').val(data?.['title']);
         $('#purchase-order-date-delivered').val(moment(data?.['date_created']).format('DD/MM/YYYY hh:mm A'));
         POLoadDataHandle.loadDataShowPRPQ(data);
+        PODataTableHandle.dataTablePurchaseRequest();
+        POLoadDataHandle.loadModalPurchaseRequestProductTable(false, data);
+        POLoadDataHandle.loadModalPurchaseQuotation(false, data);
         POLoadDataHandle.loadBoxSupplier(data?.['supplier']);
         POLoadDataHandle.loadBoxContact(data?.['contact']);
-        POLoadDataHandle.loadDetailPageTables(data);
+        POLoadDataHandle.loadTablesDetailPage(data);
         POLoadDataHandle.loadTotals(data);
-    }
+    };
 
     static loadDataShowPRPQ(data) {
+        let from = $('#frm_purchase_order_create');
         let elePurchaseRequest = $('#purchase-order-purchase-request');
         let elePRAppend = ``;
         let purchase_requests_data = [];
@@ -755,16 +845,25 @@ class POLoadDataHandle {
             let link = "";
             let linkDetail = elePurchaseRequest.attr('data-link-detail');
             link = linkDetail.format_url_with_uuid(prID);
-            elePRAppend += `<div class="inline-elements-badge mr-2 mb-1">
+            if (from.attr('data-method') === 'GET') {
+                elePRAppend += `<div class="inline-elements-badge mr-2 mb-1">
                                     <a href="${link}" target="_blank" class="link-primary underline_hover"><span>${prCode}</span></a>
                                     <button type="button" class="btn btn-link btn-sm custom-btn-remove" data-id="${prID}" aria-label="Close" disabled>
                                         <span aria-hidden="true"><i class="fas fa-times"></i></span>
                                     </button>
                                 </div>`;
+            } else {
+                elePRAppend += `<div class="inline-elements-badge mr-2 mb-1">
+                                    <a href="${link}" target="_blank" class="link-primary underline_hover"><span>${prCode}</span></a>
+                                    <button type="button" class="btn btn-link btn-sm custom-btn-remove" data-id="${prID}" aria-label="Close">
+                                        <span aria-hidden="true"><i class="fas fa-times"></i></span>
+                                    </button>
+                                </div>`;
+            }
             purchase_requests_data.push(prID);
         }
         elePurchaseRequest.append(elePRAppend);
-        $('#purchase_requests_data').val(JSON.stringify(purchase_requests_data));
+        POLoadDataHandle.PRDataEle.val(JSON.stringify(purchase_requests_data));
         // PQ
         for (let dataPQ of data?.['purchase_quotations_data']) {
             let pqID = dataPQ?.['purchase_quotation']?.['id'];
@@ -774,33 +873,85 @@ class POLoadDataHandle {
             let link = "";
             let linkDetail = elePurchaseQuotation.attr('data-link-detail');
             link = linkDetail.format_url_with_uuid(pqID);
-            if (dataPQ?.['is_use'] === false) {
-                elePQAppend += `<div class="inline-elements-badge mr-2 mb-1">
+            if (from.attr('data-method') === 'GET') {
+                if (dataPQ?.['is_use'] === false) {
+                    elePQAppend += `<div class="inline-elements-badge mr-2 mb-1">
+                                    <input class="form-check-input checkbox-circle checkbox-quotation" type="checkbox" data-id="${pqID}" data-code="${pqCode}" data-supplier="${pqSupplierStr}" value="option1" disabled>
+                                    <a href="${link}" target="_blank" class="link-primary underline_hover ml-3"><span>${pqCode}</span></a>
+                                    <button type="button" class="btn btn-link btn-sm custom-btn-remove" data-id="${pqID}" aria-label="Close" disabled>
+                                        <span aria-hidden="true"><i class="fas fa-times"></i></span>
+                                    </button>
+                                </div>`;
+                } else {
+                    elePQAppend += `<div class="inline-elements-badge mr-2 mb-1">
+                                    <input class="form-check-input checkbox-circle checkbox-quotation" type="checkbox" data-id="${pqID}" data-code="${pqCode}" data-supplier="${pqSupplierStr}" value="option1" checked disabled>
+                                    <a href="${link}" target="_blank" class="link-primary underline_hover ml-3"><span>${pqCode}</span></a>
+                                    <button type="button" class="btn btn-link btn-sm custom-btn-remove" data-id="${pqID}" aria-label="Close" disabled>
+                                        <span aria-hidden="true"><i class="fas fa-times"></i></span>
+                                    </button>
+                                </div>`;
+                }
+            } else {
+                if (dataPQ?.['is_use'] === false) {
+                    elePQAppend += `<div class="inline-elements-badge mr-2 mb-1">
                                     <input class="form-check-input checkbox-circle checkbox-quotation" type="checkbox" data-id="${pqID}" data-code="${pqCode}" data-supplier="${pqSupplierStr}" value="option1">
                                     <a href="${link}" target="_blank" class="link-primary underline_hover ml-3"><span>${pqCode}</span></a>
-                                    <button type="button" class="btn btn-link btn-sm custom-btn-remove" data-id="${pqID}" aria-label="Close" disabled>
+                                    <button type="button" class="btn btn-link btn-sm custom-btn-remove" data-id="${pqID}" aria-label="Close">
                                         <span aria-hidden="true"><i class="fas fa-times"></i></span>
                                     </button>
                                 </div>`;
-            } else {
-                elePQAppend += `<div class="inline-elements-badge mr-2 mb-1">
+                } else {
+                    elePQAppend += `<div class="inline-elements-badge mr-2 mb-1">
                                     <input class="form-check-input checkbox-circle checkbox-quotation" type="checkbox" data-id="${pqID}" data-code="${pqCode}" data-supplier="${pqSupplierStr}" value="option1" checked>
                                     <a href="${link}" target="_blank" class="link-primary underline_hover ml-3"><span>${pqCode}</span></a>
-                                    <button type="button" class="btn btn-link btn-sm custom-btn-remove" data-id="${pqID}" aria-label="Close" disabled>
+                                    <button type="button" class="btn btn-link btn-sm custom-btn-remove" data-id="${pqID}" aria-label="Close">
                                         <span aria-hidden="true"><i class="fas fa-times"></i></span>
                                     </button>
                                 </div>`;
+                }
             }
             purchase_quotations_data.push({
                 'purchase_quotation': pqID,
-                'is_use': false
+                'is_use': dataPQ?.['is_use']
             })
         }
         elePurchaseQuotation.append(elePQAppend);
-        $('#purchase_quotations_data').val(JSON.stringify(purchase_quotations_data));
+        POLoadDataHandle.PQDataEle.val(JSON.stringify(purchase_quotations_data));
     };
 
-    static loadDetailPageTables(data) {
+    static loadPRProductNotInPO(data) {
+        let PRProductIDList = [];
+        for (let PRProduct of data?.['purchase_request_products_data']) {
+            PRProductIDList.push(PRProduct?.['purchase_request_product_id'])
+        }
+        let PQCode = null;
+        for (let PQ of data?.['purchase_quotations_data']) {
+            if (PQ?.['is_use'] === true) {
+                PQCode = PQ?.['purchase_quotation']?.['code'];
+                break
+            }
+        }
+        let table = $('#datable-purchase-request-product');
+        for (let eleChecked of table[0].querySelectorAll('.table-row-checkbox:checked')) {
+            let row = eleChecked.closest('tr');
+            let dataRowRaw = row.querySelector('.table-row-order').getAttribute('data-row');
+            if (dataRowRaw) {
+                let dataRow = JSON.parse(dataRowRaw);
+                if (PRProductIDList.includes(dataRow?.['id'])) {
+                    eleChecked.classList.add('disabled-by-pq');
+                    eleChecked.setAttribute('disabled', 'true');
+                    row.querySelector('.table-row-quantity-order').setAttribute('disabled', 'true');
+                    $(row).css('background-color', '#f7f7f7');
+                    row.setAttribute('data-bs-toggle', 'tooltip');
+                    row.setAttribute('data-bs-placement', 'top');
+                    row.setAttribute('title', $.fn.transEle.attr('data-product-not-in') + ' ' + PQCode);
+                }
+            }
+        }
+    };
+
+    static loadTablesDetailPage(data) {
+        let form = $('#frm_purchase_order_create');
         let tableProductAdd = $('#datable-purchase-order-product-add');
         let tableProductRequest = $('#datable-purchase-order-product-request');
         if (data?.['purchase_requests_data']) {
@@ -810,10 +961,11 @@ class POLoadDataHandle {
             $('#datable-purchase-order-product-request_wrapper')[0].removeAttribute('hidden');
             tableProductRequest.DataTable().rows.add(data?.['purchase_order_products_data']).draw();
             POLoadDataHandle.loadDataRowTable(tableProductRequest);
-            POLoadDataHandle.loadTableDisabled(tableProductRequest);
+            if (form.attr('data-method') === 'GET') {
+                POLoadDataHandle.loadTableDisabled(tableProductRequest);
+            }
         }
-
-    }
+    };
 
     static loadTotals(data) {
         let elePretaxAmount = document.getElementById('purchase-order-product-pretax-amount');
@@ -830,7 +982,7 @@ class POLoadDataHandle {
         $(eleTotal).attr('data-init-money', String(data?.['total_product']));
         eleTotalRaw.value = data?.['total_product'];
         finalRevenueBeforeTax.value = data?.['total_product_revenue_before_tax'];
-    }
+    };
 
     static loadTableDisabled(table) {
         for (let ele of table[0].querySelectorAll('.table-row-item')) {
@@ -855,6 +1007,12 @@ class POLoadDataHandle {
         for (let ele of table[0].querySelectorAll('.table-row-tax')) {
             ele.setAttribute('disabled', 'true');
             ele.classList.add('disabled-custom-show');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-checkbox')) {
+            ele.setAttribute('disabled', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-quantity-order')) {
+            ele.setAttribute('disabled', 'true');
         }
         for (let ele of table[0].querySelectorAll('.del-row')) {
             ele.setAttribute('disabled', 'true');
@@ -898,8 +1056,20 @@ class PODataTableHandle {
                     targets: 1,
                     render: (data, type, row) => {
                         if ($('#frm_purchase_order_create').attr('data-method') !== 'GET') {
+                            if (POLoadDataHandle.PRDataEle.val()) {
+                                let PRIDList = JSON.parse(POLoadDataHandle.PRDataEle.val());
+                                if (PRIDList.includes(row.id)) {
+                                    return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}" checked></div>`;
+                                }
+                            }
                             return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}"></div>`;
                         } else {
+                            if (POLoadDataHandle.PRDataEle.val()) {
+                                let PRIDList = JSON.parse(POLoadDataHandle.PRDataEle.val());
+                                if (PRIDList.includes(row.id)) {
+                                    return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}" checked disabled></div>`;
+                                }
+                            }
                             return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}" disabled></div>`;
                         }
                     }
@@ -926,6 +1096,7 @@ class PODataTableHandle {
         let $table = $('#datable-purchase-request-product');
         $table.DataTableDefault({
             data: data ? data : [],
+            searching: false,
             paging: false,
             info: false,
             columnDefs: [],
@@ -1019,6 +1190,7 @@ class PODataTableHandle {
         let $table = $('#datable-purchase-request-product-merge');
         $table.DataTableDefault({
             data: data ? data : [],
+            searching: false,
             paging: false,
             info: false,
             columnDefs: [],
@@ -1107,10 +1279,18 @@ class PODataTableHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        if (!row.hasOwnProperty('is_checked')) {
-                            return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}"></div>`;
+                        if ($('#frm_purchase_order_create').attr('data-method') !== 'GET') {
+                            if (!row.hasOwnProperty('is_checked')) {
+                                return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}"></div>`;
+                            } else {
+                                return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}" checked></div>`;
+                            }
                         } else {
-                            return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}" checked></div>`;
+                            if (!row.hasOwnProperty('is_checked')) {
+                                return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}" disabled></div>`;
+                            } else {
+                                return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}" checked disabled></div>`;
+                            }
                         }
                     }
                 },
@@ -1550,7 +1730,7 @@ class POCalculateHandle {
         }
         $.fn.initMaskMoney2();
         return true;
-    }
+    };
 
     static calculateRow(row) {
         let price = 0;
@@ -1595,7 +1775,7 @@ class POCalculateHandle {
         }
         $.fn.initMaskMoney2();
         return true;
-    }
+    };
 
     static calculateMain(table, row) {
         let self = this;
@@ -1611,7 +1791,7 @@ class POCalculateHandle {
             let row = table[0].tBodies[0].rows[i];
             self.calculateMain(table, row)
         }
-    }
+    };
 }
 
 // Validate
@@ -1674,6 +1854,31 @@ class POValidateHandle {
 
 // Submit Form
 class POSubmitHandle {
+
+    static setupDataPRProduct() {
+        let result = []
+        let table = $('#datable-purchase-request-product');
+        for (let eleChecked of table[0].querySelectorAll('.disabled-by-pq')) {
+            let sale_order_id = eleChecked.getAttribute('data-sale-order-product-id');
+            if (sale_order_id === "null") {
+                sale_order_id = null;
+            }
+            let row = eleChecked.closest('tr');
+            let quantity_order = parseFloat(row.querySelector('.table-row-quantity-order').value);
+            let dataRowRaw = row.querySelector('.table-row-order').getAttribute('data-row');
+            if (dataRowRaw) {
+                let dataRow = JSON.parse(dataRowRaw);
+                result.push({
+                    'purchase_request_product': dataRow?.['id'],
+                    'sale_order_product': sale_order_id,
+                    'quantity_order': quantity_order,
+                    'quantity_remain': parseFloat(dataRow?.['remain_for_purchase_order']),
+                })
+            }
+        }
+        return result;
+    };
+
     static setupDataProduct() {
         let result = [];
         let table = document.getElementById('datable-purchase-order-product-add');
@@ -1697,9 +1902,6 @@ class POSubmitHandle {
                     rowData['product'] = dataInfo.id;
                     rowData['product_title'] = dataInfo.title;
                     rowData['product_code'] = dataInfo.code;
-                    if (eleProduct.getAttribute('data-purchase-request-product-datas')) {
-                        rowData['purchase_request_product_datas'] = JSON.parse(eleProduct.getAttribute('data-purchase-request-product-datas'));
-                    }
                 }
                 let eleDescription = row.querySelector('.table-row-description');
                 if (eleDescription) {
@@ -1740,6 +1942,10 @@ class POSubmitHandle {
                 if (eleQuantityOrder) {
                     rowData['product_quantity_order_actual'] = parseFloat(eleQuantityOrder.value);
                 }
+                let stock = row.querySelector('.table-row-stock');
+                if (stock) {
+                    rowData['stock'] = parseFloat(stock.innerHTML);
+                }
                 let elePrice = row.querySelector('.table-row-price');
                 if (elePrice) {
                     rowData['product_unit_price'] = $(elePrice).valCurrency();
@@ -1754,24 +1960,31 @@ class POSubmitHandle {
                 let eleOrder = row.querySelector('.table-row-order');
                 if (eleOrder) {
                     rowData['order'] = parseInt(eleOrder.innerHTML);
+                    if (eleOrder.getAttribute('data-row')) {
+                        let dataRow = JSON.parse(eleOrder.getAttribute('data-row'));
+                        rowData['purchase_request_products_data'] = dataRow?.['purchase_request_products_data'];
+                    }
                 }
             }
             result.push(rowData);
         }
         return result
-    }
+    };
 
     static setupDataSubmit(_form) {
-        let self = this;
-        _form.dataForm['purchase_requests_data'] = JSON.parse($('#purchase_requests_data').val());
-        _form.dataForm['purchase_quotations_data'] = JSON.parse($('#purchase_quotations_data').val());
+        _form.dataForm['purchase_requests_data'] = JSON.parse(POLoadDataHandle.PRDataEle.val());
+        _form.dataForm['purchase_quotations_data'] = JSON.parse(POLoadDataHandle.PQDataEle.val());
+        let pr_products_data_setup = POSubmitHandle.setupDataPRProduct();
+        if (pr_products_data_setup.length > 0) {
+            _form.dataForm['purchase_request_products_data'] = pr_products_data_setup;
+        }
         let dateDeliveredVal = $('#purchase-order-date-delivered').val();
         if (dateDeliveredVal) {
             _form.dataForm['delivered_date'] = moment(dateDeliveredVal,
                 'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
         }
         _form.dataForm['status_delivered'] = 0;
-        let products_data_setup = self.setupDataProduct();
+        let products_data_setup = POSubmitHandle.setupDataProduct();
         if (products_data_setup.length > 0) {
             _form.dataForm['purchase_order_products_data'] = products_data_setup;
         }
@@ -1779,7 +1992,7 @@ class POSubmitHandle {
         _form.dataForm['total_product_tax'] = parseFloat($('#purchase-order-product-taxes-raw').val());
         _form.dataForm['total_product'] = parseFloat($('#purchase-order-product-total-raw').val());
         _form.dataForm['total_product_revenue_before_tax'] = parseFloat(finalRevenueBeforeTax.value);
-    }
+    };
 }
 
 // COMMON FUNCTION
@@ -1805,7 +2018,7 @@ function setupMergeProduct() {
         let order = 0;
         let uom_reference = {};
         // Setup Merge Data by Product
-        for (let eleChecked of table[0].querySelectorAll('.table-row-checkbox:checked')) {
+        for (let eleChecked of table[0].querySelectorAll('.table-row-checkbox:checked:not(.disabled-by-pq)')) {
             let row = eleChecked.closest('tr');
             let sale_order_id = eleChecked.getAttribute('data-sale-order-product-id');
             if (sale_order_id === "null") {
@@ -1829,7 +2042,7 @@ function setupMergeProduct() {
                     order++
                     dataJson[product_id] = {
                         'id': dataRow?.['id'],
-                        'purchase_request_product_datas': [{
+                        'purchase_request_products_data': [{
                             'purchase_request_product': dataRow?.['id'],
                             'sale_order_product': sale_order_id,
                             'quantity_order': quantity_order,
@@ -1857,6 +2070,12 @@ function setupMergeProduct() {
                     if (!dataJson[product_id].code_list.includes(dataRow?.['purchase_request']?.['code'])) {
                         dataJson[product_id].code_list.push(dataRow?.['purchase_request']?.['code']);
                     }
+                    dataJson[product_id].purchase_request_products_data.push({
+                        'purchase_request_product': dataRow?.['id'],
+                        'sale_order_product': sale_order_id,
+                        'quantity_order': quantity_order,
+                        'quantity_remain': parseFloat(dataRow?.['remain_for_purchase_order']),
+                    });
                     dataJson[product_id].product_quantity_request += quantity;
                     dataJson[product_id].product_quantity_order_request += quantity_order;
                     dataJson[product_id].remain += remain;

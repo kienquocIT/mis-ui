@@ -1,6 +1,5 @@
 $(document).ready(function () {
-
-// load detail price list
+    // load detail price list
     let frm = $('#form-update-price-list');
     let pk = $.fn.getPkDetail();
     PriceListLoadPage.loadDetailPage(frm, pk);

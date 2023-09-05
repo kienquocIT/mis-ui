@@ -6,8 +6,6 @@ $(function () {
         // Elements
         let elePurchaseRequest = $('#purchase-order-purchase-request');
         let elePurchaseQuotation = $('#purchase-order-purchase-quotation');
-        let eleBoxSupplier = $('#box-purchase-order-supplier');
-        let eleBoxContact = $('#box-purchase-order-contact');
         // Tables
         let tablePurchaseRequest = $('#datable-purchase-request');
         let tablePurchaseRequestProduct = $('#datable-purchase-request-product');
@@ -56,15 +54,15 @@ $(function () {
 
 // EVENTS
         // Action on change dropdown supplier
-        eleBoxSupplier.on('change', function () {
+        POLoadDataHandle.supplierSelectEle.on('change', function () {
             if ($(this).val()) {
-                let dataSelected = SelectDDControl.get_data_from_idx(eleBoxSupplier, $(this).val());
+                let dataSelected = SelectDDControl.get_data_from_idx(POLoadDataHandle.supplierSelectEle, $(this).val());
                 if (dataSelected) {
-                    eleBoxContact.empty();
+                    POLoadDataHandle.contactSelectEle.empty();
                     POLoadDataHandle.loadBoxContact(dataSelected.owner, dataSelected.id);
                 }
             } else { // No Value => load again dropdowns
-                eleBoxContact.empty();
+                POLoadDataHandle.contactSelectEle.empty();
                 POLoadDataHandle.loadBoxContact();
             }
             POLoadDataHandle.loadMoreInformation($(this));

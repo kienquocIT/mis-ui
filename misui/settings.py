@@ -75,6 +75,7 @@ INSTALLED_APPS = \
         'apps.sales.delivery',
         'apps.sales.task',
         'apps.sales.purchasing',
+        'apps.sales.inventory',
     ]
 
 MIDDLEWARE = [

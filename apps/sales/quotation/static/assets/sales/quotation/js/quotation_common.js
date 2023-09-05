@@ -1713,7 +1713,7 @@ class QuotationDataTableHandle {
         let $tables = $('#datable-quotation-create-promotion');
         $tables.DataTableDefault({
             data: data ? data : [],
-            searching: false,
+            // searching: false,
             paging: false,
             ordering: false,
             info: false,
@@ -1919,7 +1919,7 @@ class QuotationDataTableHandle {
         let $tables = $('#datable-quotation-create-shipping');
         $tables.DataTableDefault({
             data: data ? data : [],
-            searching: false,
+            // searching: false,
             paging: false,
             ordering: false,
             info: false,

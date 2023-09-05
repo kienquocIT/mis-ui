@@ -26,8 +26,8 @@ $(document).ready(function () {
             let $table = $('#datatable-price-list')
             let frm = new SetupFormSubmit($table);
             $table.DataTableDefault({
-                useDataServer: true,
                 rowIdx: true,
+                useDataServer: true,
                 ajax: {
                     url: frm.dataUrl,
                     type: frm.dataMethod,
@@ -50,7 +50,7 @@ $(document).ready(function () {
                         render: (data, type, row) => {
                             return `<a class="btn-detail" href="${urlEle.data('url-detail').format_url_with_uuid(row.id)}">
                                         <span><b>${data}</b></span>
-                                    </a>`
+                                    </a>${$x.fn.buttonLinkBlank(urlEle.data('url-detail').format_url_with_uuid(row.id))}`
 
                         }
                     }, {

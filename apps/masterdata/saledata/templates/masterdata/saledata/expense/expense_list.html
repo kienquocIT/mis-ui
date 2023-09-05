@@ -21,7 +21,7 @@
 {% block pageContent %}
     <table id="dtbExpense" class="table nowrap w-100 mb-5"
            data-method="GET" data-url="{% url "ExpenseListAPI" %}"
-           data-url-detail="{% url "ExpenseDetail" pk=1 %}">
+           data-url-detail="{% url "ExpenseDetail" pk=0 %}">
         <thead>
         <tr>
             <th>

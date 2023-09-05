@@ -209,17 +209,26 @@ class GRLoadDataHandle {
         });
     };
 
-    static loadModalPurchaseRequestTable(is_clear_all = false) {
-        let tablePurchaseRequest = $('#datable-purchase-request');
-        if (is_clear_all === false) {
-            if (tablePurchaseRequest[0].querySelector('.dataTables_empty')) {
-                tablePurchaseRequest.DataTable().clear().destroy();
-                PODataTableHandle.dataTablePurchaseRequest();
-            }
-        } else {
-            tablePurchaseRequest.DataTable().clear().destroy();
-            PODataTableHandle.dataTablePurchaseRequest();
-        }
+    static loadModalProduct() {
+        let tablePOProduct = $('#datable-good-receipt-po-product');
+        let frm = new SetupFormSubmit(tablePOProduct);
+        $.fn.callAjax2({
+                    'url': frm.dataUrl,
+                    'method': frm.dataMethod,
+                    'data': {'purchase_order_id': GRLoadDataHandle.PRDataEle.val()},
+                    'isDropdown': true,
+                }
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('purchase_order_product_list') && Array.isArray(data.purchase_order_product_list)) {
+                            tablePOProduct.DataTable().clear().draw();
+                            tablePOProduct.DataTable().rows.add(data.purchase_order_product_list).draw();
+                        }
+                    }
+                }
+            )
         return true;
     };
 
@@ -878,8 +887,8 @@ class GRDataTableHandle {
         });
     };
 
-    static dataTablePurchaseQuotation(data) {
-        let $table = $('#datable-purchase-quotation');
+    static dataTableGoodReceiptPOProduct(data) {
+        let $table = $('#datable-good-receipt-po-product');
         $table.DataTableDefault({
             data: data ? data : [],
             paging: false,
@@ -888,57 +897,117 @@ class GRDataTableHandle {
             columns: [
                 {
                     targets: 0,
-                    render: (data, type, row, meta) => {
+                    render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
-                        return `<span class="table-row-order" id="${row.id}" data-row="${dataRow}">${(meta.row + 1)}</span>`
+                        return `<div class="form-check">
+                                    <input 
+                                        type="checkbox" 
+                                        class="form-check-input table-row-checkbox" 
+                                        data-id="${row.id}"
+                                        data-row="${dataRow}"
+                                    >
+                                </div>`
                     }
                 },
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        if ($('#frm_purchase_order_create').attr('data-method') !== 'GET') {
-                            if (!row.hasOwnProperty('is_checked')) {
-                                return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}"></div>`;
-                            } else {
-                                return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}" checked></div>`;
-                            }
-                        } else {
-                            if (!row.hasOwnProperty('is_checked')) {
-                                return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}" disabled></div>`;
-                            } else {
-                                return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}" checked disabled></div>`;
-                            }
-                        }
+                        return `<span class="table-row-item">${row?.['product']?.['title']}</span>`;
                     }
                 },
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        return `<span class="table-row-code">${row.code}</span>`
-                    },
+                        return `<span class="table-row-uom">${row?.['uom_order_actual']?.['title']}</span>`;
+                    }
                 },
                 {
                     targets: 3,
                     render: (data, type, row) => {
-                        return `<span class="table-row-title">${row.title}</span>`
+                        return `<span class="table-row-quantity">${row?.['product_quantity_order_actual']}</span>`;
                     }
                 },
                 {
                     targets: 4,
                     render: (data, type, row) => {
-                        let dataSupplier = JSON.stringify(row.supplier_mapped).replace(/"/g, "&quot;");
-                        return `<span class="table-row-supplier" data-supplier="${dataSupplier}" id="${row.supplier_mapped.id}">${row.supplier_mapped.name}</span>`
+                        return `<span class="table-row-received">${row?.['quantity_received'] ? row?.['quantity_received'] : 0}</span>`;
                     }
                 },
                 {
                     targets: 5,
                     render: (data, type, row) => {
-                        return `<span class="table-row-purchase-quotation-request">${row.purchase_quotation_request_mapped.code}</span>`
+                        return `<span class="table-row-remain">${row?.['quantity_remain'] ? row?.['quantity_remain'] : 0}</span>`;
+                    }
+                },
+                {
+                    targets: 6,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-import">${row?.['quantity_import'] ? row?.['quantity_import'] : 0}</span>`;
                     }
                 },
             ],
-            drawCallback: function () {
-            },
+            drawCallback: function () {},
+        });
+    };
+
+    static dataTableGoodReceiptPR(data) {
+        let $table = $('#datable-good-receipt-purchase-request');
+        $table.DataTableDefault({
+            data: data ? data : [],
+            paging: false,
+            info: false,
+            columnDefs: [],
+            columns: [
+                {
+                    targets: 0,
+                    render: (data, type, row) => {
+                        return `<div class="form-check">
+                                    <input 
+                                        type="checkbox" 
+                                        class="form-check-input table-row-checkbox" 
+                                        data-id="${row.id}" 
+                                    >
+                                </div>`
+                    }
+                },
+                {
+                    targets: 1,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-item">${row?.['purchase_request_product']?.['purchase_request']?.['code']}</span>`;
+                    }
+                },
+                {
+                    targets: 2,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-uom">${row?.['purchase_request_product']?.['uom']?.['title']}</span>`;
+                    }
+                },
+                {
+                    targets: 3,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-quantity">${row?.['quantity_order']}</span>`;
+                    }
+                },
+                {
+                    targets: 4,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-received">${row?.['quantity_received'] ? row?.['quantity_received'] : 0}</span>`;
+                    }
+                },
+                {
+                    targets: 5,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-remain">${row?.['quantity_remain'] ? row?.['quantity_remain'] : 0}</span>`;
+                    }
+                },
+                {
+                    targets: 6,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-import">${row?.['quantity_import'] ? row?.['quantity_import'] : 0}</span>`;
+                    }
+                },
+            ],
+            drawCallback: function () {},
         });
     };
 

@@ -238,15 +238,15 @@ class POLoadDataHandle {
         if (dataDetail) {
             for (let dataProduct of dataDetail?.['purchase_order_products_data']) {
                 for (let PRProduct of dataProduct?.['purchase_request_products_data']) {
-                    checked_data[PRProduct?.['purchase_request_product_id']] = {
-                        'id': PRProduct?.['purchase_request_product_id'],
+                    checked_data[PRProduct?.['purchase_request_product']?.['id']] = {
+                        'id': PRProduct?.['purchase_request_product']?.['id'],
                         'quantity_order': PRProduct?.['quantity_order'],
                     }
                 }
             }
             for (let PRProduct of dataDetail?.['purchase_request_products_data']) {
-                checked_data[PRProduct?.['purchase_request_product_id']] = {
-                    'id': PRProduct?.['purchase_request_product_id'],
+                checked_data[PRProduct?.['purchase_request_product']?.['id']] = {
+                    'id': PRProduct?.['purchase_request_product']?.['id'],
                     'quantity_order': PRProduct?.['quantity_order'],
                 }
             }
@@ -934,7 +934,7 @@ class POLoadDataHandle {
     static loadPRProductNotInPO(data) {
         let PRProductIDList = [];
         for (let PRProduct of data?.['purchase_request_products_data']) {
-            PRProductIDList.push(PRProduct?.['purchase_request_product_id'])
+            PRProductIDList.push(PRProduct?.['purchase_request_product']?.['id'])
         }
         let PQCode = null;
         for (let PQ of data?.['purchase_quotations_data']) {
@@ -1127,29 +1127,55 @@ class PODataTableHandle {
                         if (Object.keys(row?.['purchase_request']).length !== 0) {
                             purchase_request_id = row?.['purchase_request']?.['id'];
                         }
-                        if (!row.hasOwnProperty('is_checked')) {
-                            return `<div class="form-check">
-                                    <input 
-                                        type="checkbox" 
-                                        class="form-check-input table-row-checkbox" 
-                                        data-id="${row.id}" 
-                                        data-purchase-request-id="${purchase_request_id}"
-                                        data-sale-order-product-id="${row?.['sale_order_product_id']}"
-                                    >
-                                </div>`
+                        if ($('#frm_purchase_order_create').attr('data-method') !== 'GET') {
+                            if (!row.hasOwnProperty('is_checked')) {
+                                return `<div class="form-check">
+                                        <input 
+                                            type="checkbox" 
+                                            class="form-check-input table-row-checkbox" 
+                                            data-id="${row.id}" 
+                                            data-purchase-request-id="${purchase_request_id}"
+                                            data-sale-order-product-id="${row?.['sale_order_product_id']}"
+                                        >
+                                    </div>`
+                            } else {
+                                return `<div class="form-check">
+                                        <input 
+                                            type="checkbox" 
+                                            class="form-check-input table-row-checkbox" 
+                                            data-id="${row.id}" 
+                                            data-purchase-request-id="${purchase_request_id}"
+                                            data-sale-order-product-id="${row?.['sale_order_product_id']}"
+                                            checked
+                                        >
+                                    </div>`
+                            }
                         } else {
-                            return `<div class="form-check">
-                                    <input 
-                                        type="checkbox" 
-                                        class="form-check-input table-row-checkbox" 
-                                        data-id="${row.id}" 
-                                        data-purchase-request-id="${purchase_request_id}"
-                                        data-sale-order-product-id="${row?.['sale_order_product_id']}"
-                                        checked
-                                    >
-                                </div>`
+                            if (!row.hasOwnProperty('is_checked')) {
+                                return `<div class="form-check">
+                                        <input 
+                                            type="checkbox" 
+                                            class="form-check-input table-row-checkbox" 
+                                            data-id="${row.id}" 
+                                            data-purchase-request-id="${purchase_request_id}"
+                                            data-sale-order-product-id="${row?.['sale_order_product_id']}"
+                                            disabled
+                                        >
+                                    </div>`
+                            } else {
+                                return `<div class="form-check">
+                                        <input 
+                                            type="checkbox" 
+                                            class="form-check-input table-row-checkbox" 
+                                            data-id="${row.id}" 
+                                            data-purchase-request-id="${purchase_request_id}"
+                                            data-sale-order-product-id="${row?.['sale_order_product_id']}"
+                                            checked
+                                            disabled
+                                        >
+                                    </div>`
+                            }
                         }
-
                     }
                 },
                 {

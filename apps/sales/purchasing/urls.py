@@ -6,7 +6,7 @@ from apps.sales.purchasing.views import PurchaseOrderCreate, PurchaseRequestList
     PurchaseQuotationRequestListAPI, PurchaseQuotationRequestCreateFromPR, PurchaseQuotationRequestCreateManual, \
     PurchaseQuotationRequestDetail, PurchaseQuotationRequestDetailAPI, PurchaseQuotationList, PurchaseQuotationCreate, \
     PurchaseQuotationListAPI, PurchaseQuotationDetail, PurchaseQuotationDetailAPI, PurchaseRequestProductListAPI, \
-    PurchaseQuotationProductListAPI, PurchaseOrderUpdate
+    PurchaseQuotationProductListAPI, PurchaseOrderUpdate, PurchaseOrderProductListAPI
 
 urlpatterns = [
     # purchase request
@@ -30,6 +30,7 @@ urlpatterns = [
     path('purchase-order/detail/<str:pk>', PurchaseOrderDetail.as_view(), name='PurchaseOrderDetail'),
     path('purchase-order/detail-api/<str:pk>', PurchaseOrderDetailAPI.as_view(), name='PurchaseOrderDetailAPI'),
     path('purchase-order/update/<str:pk>', PurchaseOrderUpdate.as_view(), name='PurchaseOrderUpdate'),
+    path('purchase-order-product/list', PurchaseOrderProductListAPI.as_view(), name='PurchaseOrderProductListAPI'),
 ] + [
     path(
         'purchase-quotation-request/lists',

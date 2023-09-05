@@ -351,11 +351,12 @@
                                         <table
                                             id="datable-good-receipt-po-product"
                                             class="table nowrap w-100"
-                                            data-url="{% url "PurchaseRequestListAPI" %}"
+                                            data-url="{% url "PurchaseOrderProductListAPI" %}"
                                             data-method="GET"
                                         >
                                             <thead>
                                             <tr>
+                                                <th></th>
                                                 <th>{% trans 'Product' %}</th>
                                                 <th>{% trans 'UOM' %} (PO)</th>
                                                 <th>{% trans 'Quantity' %} (PO)</th>
@@ -370,7 +371,7 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-250p position-relative overflow-y-scroll" hidden>
+                                    <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-250p position-relative overflow-y-scroll" id="scroll-table-pr" hidden>
                                         <table
                                             id="datable-good-receipt-purchase-request"
                                             class="table nowrap w-100"
@@ -379,6 +380,7 @@
                                         >
                                             <thead>
                                             <tr>
+                                                <th></th>
                                                 <th>PR</th>
                                                 <th>{% trans 'UOM' %}</th>
                                                 <th>{% trans 'Quantity' %}</th>
@@ -404,6 +406,7 @@
                                         >
                                             <thead>
                                             <tr>
+                                                <th></th>
                                                 <th>{% trans 'Code' %} WH</th>
                                                 <th>{% trans 'Name' %} WH</th>
                                                 <th>{% trans 'Note' %}</th>

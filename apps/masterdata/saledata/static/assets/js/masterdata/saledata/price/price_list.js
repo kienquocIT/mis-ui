@@ -138,36 +138,44 @@ $(document).ready(function () {
     })
 
     // submit form create price list
-    let frm = $('#form-create-price')
-    frm.submit(function (event) {
-        event.preventDefault();
-        let frm = new SetupFormSubmit($(this));
+    let frm = $('#form-create-price');
+    SetupFormSubmit.validate(
+        frm,
+        {
+            submitHandler: function (form) {
+                let frm = new SetupFormSubmit($(form));
 
-        frm.dataForm['currency'] = selectCurrencyEle.val();
-        if (frm.dataForm['currency'].length === 0) {
-            frm.dataForm['currency'] = null;
-        }
+                frm.dataForm['currency'] = selectCurrencyEle.val();
+                if (frm.dataForm['currency'].length === 0) {
+                    frm.dataForm['currency'] = null;
+                }
 
-        let valid_time_ele = $('#valid_time')
-        if (valid_time_ele.val()) {
-            frm.dataForm['valid_time_start'] = valid_time_ele.val().split(' - ')[0];
-            frm.dataForm['valid_time_end'] = valid_time_ele.val().split(' - ')[1]
-        }
+                let valid_time_ele = $('#valid_time')
+                if (valid_time_ele.val()) {
+                    frm.dataForm['valid_time_start'] = valid_time_ele.val().split(' - ')[0];
+                    frm.dataForm['valid_time_end'] = valid_time_ele.val().split(' - ')[1]
+                }
 
-        frm.dataForm['auto_update'] = !!$('[name="auto_update"]').is(':checked');
-        frm.dataForm['can_delete'] = !!$('[name="can_delete"]').is(':checked');
-        $.fn.callAjax2({
-            url: frm.dataUrl,
-            method: frm.dataMethod,
-            data: frm.dataForm
-        }).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
-                $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
+                frm.dataForm['auto_update'] = !!$('[name="auto_update"]').is(':checked');
+                frm.dataForm['can_delete'] = !!$('[name="can_delete"]').is(':checked');
+
+                $.fn.callAjax2({
+                    url: frm.dataUrl,
+                    method: frm.dataMethod,
+                    data: frm.dataForm
+                }).then((resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
+                            $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
+                        }
+                    },
+                    (errs) => {
+                        $.fn.notifyB({description: errs.data.errors}, 'failure');
+                    }
+                )
             }
-        })
-    });
+        });
 
     // onchange select box select-box-price-list
     priceListSelectEle.on('change', function () {
@@ -200,6 +208,7 @@ $(document).ready(function () {
     });
 
     $(document).on("click", '.delete-price-list-btn', function () {
+
         Swal.fire({
             html: '<div><i class="ri-delete-bin-6-line fs-5 text-danger"></i></div>' + '<h6 class="text-danger">Delete Price List ?</h6>',
             customClass: {

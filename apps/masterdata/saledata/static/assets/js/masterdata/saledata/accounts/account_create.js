@@ -1,17 +1,10 @@
 $(document).ready(function () {
-    LoadDetail('update');
+    new AccountHandle().load();
 
-    creditCardExpDate.datepicker({
-        format: "mm/yyyy",
-        startView: "months",
-        minViewMode: "months",
-    });
-
-    let pk = $.fn.getPkDetail()
-    let frm_update = $('#form-detail-update-account')
-    frm_update.submit(function (event) {
+    let frm = $('#form-create-account')
+    frm.submit(function (event) {
         event.preventDefault();
-        let combinesData = new AccountHandle().combinesData($(this), true);
+        let combinesData = new AccountHandle().combinesData($(this));
         console.log(combinesData)
         if (combinesData) {
             WindowControl.showLoading();
@@ -22,7 +15,7 @@ $(document).ready(function () {
                         if (data) {
                             $.fn.notifyB({description: "Successfully"}, 'success')
                             setTimeout(() => {
-                                window.location.replace($(this).attr('data-url-redirect').format_url_with_uuid(pk));
+                                window.location.replace($(this).attr('data-url-redirect'));
                                 location.reload.bind(location);
                             }, 1000);
                         }
@@ -39,4 +32,4 @@ $(document).ready(function () {
                 )
         }
     });
-})
+});

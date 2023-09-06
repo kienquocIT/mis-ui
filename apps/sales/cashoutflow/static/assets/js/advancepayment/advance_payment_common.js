@@ -1000,7 +1000,7 @@ class AdvancePaymentHandle {
                 url: frmEle.attr('data-url-detail').format_url_with_uuid(pk),
                 method: frm.dataMethod,
                 data: frm.dataForm,
-                urlRedirect: frm.dataUrlRedirect.format_url_with_uuid(pk),
+                urlRedirect: frm.dataUrlRedirect,
             };
         }
 

@@ -1204,7 +1204,6 @@ class AccountHandle {
         frm.dataForm['system_status'] = 1; // save, not draft
 
         let url_return = frm.dataUrl;
-        let urlRedirect_return = frm?.['urlRedirect'];
 
         if (for_update === true) {
             frm.dataForm['contact_mapped'] = get_contacts_mapped();
@@ -1232,14 +1231,13 @@ class AccountHandle {
 
             let pk = $.fn.getPkDetail()
             url_return = frm.dataUrl.format_url_with_uuid(pk);
-            urlRedirect_return = frm.dataUrlRedirect.format_url_with_uuid(pk);
         }
 
         return {
             url: url_return,
             method: frm.dataMethod,
             data: frm.dataForm,
-            urlRedirect: urlRedirect_return,
+            urlRedirect: frm.dataUrlRedirect,
         };
     }
 }

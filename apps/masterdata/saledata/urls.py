@@ -25,7 +25,7 @@ from apps.masterdata.saledata.views.price import (
     PriceMasterDataList, TaxCategoryListAPI, TaxListAPI, TaxDetailAPI, TaxCategoryDetailAPI, CurrencyListAPI,
     CurrencyDetailAPI, SyncSellingRateWithVCB, PriceList, PriceListAPI, PriceListDetail, PriceDetailAPI,
     UpdateProductForPriceListAPI, PriceListDeleteProductAPI, ProductAddFromPriceListAPI, DeleteCurrencyFromPriceListAPI,
-    PriceDeleteAPI
+    PriceDeleteAPI, PriceListUpdate
 )
 from apps.masterdata.saledata.views.shipping import ShippingList, ShippingCreate, ShippingListAPI, ShippingDetail, \
     ShippingDetailAPI, ShippingCheckListAPI, ShippingUpdate
@@ -131,7 +131,8 @@ urlpatterns = [
 ] + [
     path('price-list', PriceList.as_view(), name='PriceList'),
     path('price-list/api', PriceListAPI.as_view(), name='PriceListAPI'),
-    path('price-list/<str:pk>', PriceListDetail.as_view(), name='PriceListDetail'),
+    path('price-list/detail/<str:pk>', PriceListDetail.as_view(), name='PriceListDetail'),
+    path('price-list/update/<str:pk>', PriceListUpdate.as_view(), name='PriceListUpdate'),
     path('price-list/api/<str:pk>', PriceDetailAPI.as_view(), name='PriceDetailAPI'),
     path('delete-price-list/api/<str:pk>', PriceDeleteAPI.as_view(), name='PriceDeleteAPI'),
     path(

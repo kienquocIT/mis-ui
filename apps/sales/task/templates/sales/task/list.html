@@ -31,10 +31,17 @@
 
 {% block pageContent %}
     <!-- Navigation task list/kanban-->
-    <ul class="nav nav-light nav-tabs">
+    <ul class="nav nav-line nav-light nav-tabs">
         <li class="nav-item">
             <a class="nav-link active" data-bs-toggle="tab" href="#tab_block_1">
+                <i class="fa-solid fa-table-columns"></i>
                 <span class="nav-link-text">{% trans 'Kanban' %}</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#tab_block_2">
+                <i class="fa-solid fa-list-ul"></i>
+                <span class="nav-link-text">{% trans 'List' %}</span>
             </a>
         </li>
     </ul>
@@ -46,10 +53,16 @@
                 </div>
             </div>
             <div id="kb_sub_scroll" class="sub-tasklist-scroll position-relative">
-                <div id="sub-tasklist_wrap" class="sub-tasklist-wrap">
+                <div id="sub-tasklist_wrap" class="sub-tasklist-wrap w-">
                 </div>
             </div>
 
+        </div>
+        <div class="tab-pane fade" id="tab_block_2">
+            <div class="list_task_wrap">
+                <table id="table_task_list" class="table nowrap table-advance w-100">
+                </table>
+            </div>
         </div>
     </div>
 
@@ -123,8 +136,7 @@
         </div>
         <div class="priority-badges">
             <div class="badge-icon badge-icon-xxs">
-                <div class="badge-icon-wrap">
-                </div>
+                <div class="badge-icon-wrap"></div>
                 <svg xmlns="http://www.w3.org/2000/svg" class="polygon" viewBox="0 0 127 139.4">
                     <g data-name="Polygon 7" transform="translate(119 5.675)rotate(90)" fill="currentColor">
                         <path d="M87.3 115L40.7 115C37.3 115 34 114.1 31.2 112.5 28.3 110.8 25.9 108.4 24.2 105.5L0.9 65C-0.8 62.1-1.7 58.8-1.7 55.5 -1.7 52.2-0.8 48.9 0.9 46L24.2 5.5C25.9 2.6 28.3 0.2 31.2-1.5 34-3.1 37.3-4 40.7-4L87.3-4C90.7-4 94-3.1 96.8-1.5 99.7 0.2 102.1 2.6 103.8 5.5L127.1 46C128.8 48.9 129.7 52.2 129.7 55.5 129.7 58.8 128.8 62.1 127.1 65L103.8 105.5C102.1 108.4 99.7 110.8 96.8 112.5 94 114.1 90.7 115 87.3 115Z"/>

@@ -13,6 +13,7 @@ $(document).ready(function () {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 let detail = data?.['purchase_request'];
+                $x.fn.renderCodeBreadcrumb(detail);
                 $('[name="title"]').val(detail.title);
                 PurchaseRequestLoadPage.loadSupplier(detail.supplier);
                 $('#box-select-contact').append(`<option value="${detail.contact.id}">${detail.contact.name}</option>`);

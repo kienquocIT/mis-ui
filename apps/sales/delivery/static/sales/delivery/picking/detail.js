@@ -174,10 +174,8 @@ $(async function () {
 
             // picking delivery date
             let estimate_delivery_date = data?.['estimated_delivery_date'];
-            if (estimate_delivery_date) {
-                $('#inputEstimateDeliveryDate').val(estimate_delivery_date);
-                loadDatePicker();
-            }
+            if (estimate_delivery_date)
+                $('#inputEstimateDeliveryDate').val(estimate_delivery_date).dateRangePickerDefault()
 
             // warehouse
             let warehouse_data = data?.['ware_house_data'];

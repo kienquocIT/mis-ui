@@ -38,8 +38,6 @@ class ExpenseLoadPage {
         let ele = ExpenseLoadPage.roleSelectEle;
         ele.initSelect2({
             data: data,
-            'allowClear': true,
-            disabled: !(ele.attr('data-url')),
             keyResp: 'role_list',
             keyText: 'title',
         })
@@ -195,9 +193,10 @@ function loadUoMGroup() {
 function renderDetailData(resp) {
     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('expense')) {
         let expense_detail = resp.data?.['expense'];
+        $x.fn.renderCodeBreadcrumb(expense_detail);
         $.fn.compareStatusShowPageAction(expense_detail);
         $('#expenseTitle').val(expense_detail.title);
-
+        console.log(expense_detail.role)
         ExpenseLoadPage.loadExpenseType(expense_detail.expense_type);
         ExpenseLoadPage.loadRole(expense_detail.role);
         ExpenseLoadPage.loadUoM(expense_detail.uom);

@@ -4018,3 +4018,7 @@ msgstr "Khách hàng"
 #
 msgid "Registry"
 msgstr "Đăng ký"
+
+#
+msgid "About Us"
+msgstr "Về chúng tôi"

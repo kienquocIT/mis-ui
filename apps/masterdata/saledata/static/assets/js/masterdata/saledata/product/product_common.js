@@ -842,8 +842,7 @@ class ProductHandle {
     }
 }
 
-async function LoadDetailProduct(option) {
-    await new ProductHandle().load();
+function LoadDetailProduct(option) {
     let pk = $.fn.getPkDetail()
     $.fn.callAjax($('#form-update-product').data('url').format_url_with_uuid(pk), 'GET').then(
         (resp) => {
@@ -852,7 +851,6 @@ async function LoadDetailProduct(option) {
                 WFRTControl.setWFRuntimeID(data['product']?.['workflow_runtime_id']);
                 let product_detail = data['product'];
                 $.fn.compareStatusShowPageAction(data);
-                console.log(product_detail)
 
                 $('#product-code').text(product_detail['code']);
                 $('#title').val(product_detail['title']);

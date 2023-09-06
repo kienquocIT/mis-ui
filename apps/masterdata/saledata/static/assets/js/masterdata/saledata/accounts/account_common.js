@@ -661,8 +661,6 @@ function load_credit_cards_mapped(data) {
 }
 
 function LoadDetail(option) {
-    new AccountHandle().load();
-    // load data detail
     let pk = $.fn.getPkDetail()
     let url_loaded = $('#form-detail-update-account').attr('data-url').replace(0, pk);
     $.fn.callAjax(url_loaded, 'GET').then(

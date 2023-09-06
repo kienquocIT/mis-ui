@@ -30,6 +30,17 @@ function PaymentLoadCreator(data) {
     btn_detail.attr('href', url);
 }
 
+function InforSpanSupplier(data) {
+    let btn_detail = $('#btn-detail-supplier-tab');
+    $('#supplier-detail-span').prop('hidden', false);
+    $('#supplier-name').text(data?.['name']);
+    $('#supplier-code').text(data?.['code']);
+    $('#supplier-owner').text(data?.['owner']['fullname']);
+    $('#supplier-industry').text(data?.['industry']['title']);
+    let url = btn_detail.attr('data-url').replace('0', data?.['id']);
+    btn_detail.attr('href', url);
+}
+
 function InforSpanBeneficiary(data) {
     let btn_detail = $('#btn-detail-beneficiary-tab');
     $('#beneficiary-detail-span').prop('hidden', false);
@@ -38,6 +49,59 @@ function InforSpanBeneficiary(data) {
     $('#beneficiary-department').text(data?.['group']['title']);
     let url = btn_detail.attr('data-url').replace('0', data?.['id']);
     btn_detail.attr('href', url);
+}
+
+function LoadBankAccount(data) {
+    let ele = $('#list-bank-account-information');
+    ele.html(``);
+    if (data.length > 0) {
+        $('#notify-none-bank-account').prop('hidden', true);
+        for (let i = 0; i < data.length; i++) {
+            let bank_account = data[i];
+            let default_card_color = '';
+            let checked = '';
+            if (bank_account?.['is_default'] === true) {
+                default_card_color = 'bg-primary text-dark bg-opacity-10';
+                checked = 'checked';
+            }
+            ele.append(
+                `<div class="card ${default_card_color} close-over col-5 mr-5">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-1">
+                                <div class="card-text">
+                                    <input disabled class="radio_select_default_bank_account" name="bank_account_default" type="radio" ${checked}>                 
+                                </div>
+                            </div>
+                            <div class="col-11">
+                                <div class="card-text">
+                                    Bank account name: <span class="bank_account_name"><b>${bank_account?.['bank_account_name']}</b></span>
+                                </div>
+                                <div class="card-text">
+                                    Bank name: <span class="bank_name"><b>${bank_account?.['bank_name']}</b></span>
+                                </div>
+                                <div class="card-text">
+                                    Bank account number: <span class="bank_account_number"><b>${bank_account?.['bank_account_number']}</b></span>
+                                </div>
+                                <div class="card-text" hidden>
+                                    Country ID: <span class="bank_country_id"><b>${bank_account?.['bank_country_id']}</b></span>
+                                </div>
+                                <div class="card-text" hidden>
+                                    Bank code: <span class="bank_code"><b>${bank_account?.['bank_code']}</b></span>
+                                </div>
+                                <div class="card-text" hidden>
+                                    BIC/SWIFT Code: <span class="bic_swift_code"><b>${bank_account?.['bic_swift_code']}</b></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>`
+            )
+        }
+    }
+    else {
+        $('#notify-none-bank-account').prop('hidden', false);
+    }
 }
 
 function APLoadSupplier(data) {

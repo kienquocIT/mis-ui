@@ -687,7 +687,7 @@ $(document).ready(function () {
 
     function loadTimelineList(data_timeline_list) {
         const $trans = transEle
-        $('#table-timeline').DataTable().destroy();
+        $('#table-timeline').DataTable().clear().destroy();
         let dtb = $('#table-timeline');
         const type_trans = {
             0: $trans.attr('data-activity-type01'),

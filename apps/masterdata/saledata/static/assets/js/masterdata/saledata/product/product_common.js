@@ -495,7 +495,7 @@ function GetProductFromWareHouseStockList(product_id, uom_id_des) {
 
 function loadWareHouseListDetail(warehouse_stock_list) {
     let dtb = $('#datatable-warehouse-list');
-    dtb.DataTable().destroy();
+    dtb.DataTable().clear().destroy();
     let frm = new SetupFormSubmit(dtb);
     dtb.DataTableDefault({
         dom: '',
@@ -573,7 +573,7 @@ function loadWareHouseListDetail(warehouse_stock_list) {
 
 function loadWareHouseOverViewDetail(warehouse_stock_list) {
     let dtb = $('#datatable-warehouse-overview');
-    dtb.DataTable().destroy();
+    dtb.DataTable().clear().destroy();
     let frm = new SetupFormSubmit(dtb);
     dtb.DataTableDefault({
         dom: '',

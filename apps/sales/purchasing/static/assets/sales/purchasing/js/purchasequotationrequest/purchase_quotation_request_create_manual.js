@@ -110,7 +110,7 @@ $(function () {
             })
             let last_purchase_request_code = '';
             let style_order = -1;
-            $('#table-select-purchase-request-products').DataTable().destroy();
+            $('#table-select-purchase-request-products').DataTable().clear().destroy();
             $('#table-select-purchase-request-products').DataTableDefault({
                 paging: false,
                 dom: "<'row mt-3 miner-group'>" + "<'row mt-3'<'col-sm-12'tr>>",
@@ -235,7 +235,7 @@ $(function () {
                 )
             }
 
-            $('#table-select-purchase-request-products-for-merge').DataTable().destroy();
+            $('#table-select-purchase-request-products-for-merge').DataTable().clear().destroy();
             $('#table-select-purchase-request-products-for-merge').DataTableDefault({
                 paging: false,
                 dom: "<'row mt-3 miner-group'>" + "<'row mt-3'<'col-sm-12'tr>>",
@@ -395,7 +395,7 @@ $(function () {
             $('#taxes-value').attr('data-init-money', taxes_value);
             $('#total-value').attr('data-init-money', total_value);
 
-            $('#table-purchase-quotation-request-products-selected').DataTable().destroy();
+            $('#table-purchase-quotation-request-products-selected').DataTable().clear().destroy();
             $('#table-purchase-quotation-request-products-selected').DataTableDefault({
                 reloadCurrency: true,
                 paging: false,

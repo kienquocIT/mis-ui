@@ -134,7 +134,8 @@ function loadAccountOwner(accountOwnerData, contact_mapped) {
             })
 
             if (reselect_owner === true) {
-                loadTableSelectedContact([data]);
+                console.log(data_contact_mapped)
+                loadTableSelectedContact(data_contact_mapped.push(data));
             }
         }
     });
@@ -214,7 +215,7 @@ function loadTableSelectContact() {
         selected_contact_list.push(element.getAttribute('data-id'));
     })
     let tbl = $('#datatable-add-contact');
-    tbl.DataTable().destroy();
+    tbl.DataTable().clear().destroy();
     tbl.DataTableDefault({
         scrollY: true,
         paging: false,
@@ -332,7 +333,7 @@ function loadTableSelectContactDetail(contact_mapped) {
         selected_contact_list.push(element.getAttribute('data-id'));
     })
     let tbl = $('#datatable-add-contact');
-    tbl.DataTable().destroy();
+    tbl.DataTable().clear().destroy();
     tbl.DataTableDefault({
         scrollY: true,
         paging: false,
@@ -448,7 +449,7 @@ function loadTableSelectContactDetail(contact_mapped) {
 
 function loadTableSelectedContact(data) {
     let tbl = $('#datatable_contact_list');
-    tbl.DataTable().destroy();
+    tbl.DataTable().clear().destroy();
     tbl.DataTableDefault({
         dom: '',
         paging: false,

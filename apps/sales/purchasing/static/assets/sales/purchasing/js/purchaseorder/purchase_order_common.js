@@ -237,17 +237,19 @@ class POLoadDataHandle {
         let checked_data = {};
         if (dataDetail) {
             for (let dataProduct of dataDetail?.['purchase_order_products_data']) {
-                for (let PRProduct of dataProduct?.['purchase_request_products_data']) {
+                for (let PRProduct of dataProduct?.['purchase_request_product_datas']) {
                     checked_data[PRProduct?.['purchase_request_product_id']] = {
                         'id': PRProduct?.['purchase_request_product_id'],
                         'quantity_order': PRProduct?.['quantity_order'],
                     }
                 }
             }
-            for (let PRProduct of dataDetail?.['purchase_request_products_data']) {
-                checked_data[PRProduct?.['purchase_request_product_id']] = {
-                    'id': PRProduct?.['purchase_request_product_id'],
-                    'quantity_order': PRProduct?.['quantity_order'],
+            for (let dataProduct of dataDetail?.['purchase_order_products_data']) {
+                for (let PRProduct of dataProduct?.['purchase_request_product_datas']) {
+                    checked_data[PRProduct?.['purchase_request_product_id']] = {
+                        'id': PRProduct?.['purchase_request_product_id'],
+                        'quantity_order': PRProduct?.['quantity_order'],
+                    }
                 }
             }
             if (POLoadDataHandle.PRDataEle.val()) {
@@ -921,8 +923,10 @@ class POLoadDataHandle {
 
     static loadPRProductNotInPO(data) {
         let PRProductIDList = [];
-        for (let PRProduct of data?.['purchase_request_products_data']) {
-            PRProductIDList.push(PRProduct?.['purchase_request_product_id'])
+        for (let dataProduct of data?.['purchase_order_products_data']) {
+            for (let PRProduct of dataProduct?.['purchase_request_product_datas']) {
+                PRProductIDList.push(PRProduct?.['purchase_request_product_id'])
+            }
         }
         let PQCode = null;
         for (let PQ of data?.['purchase_quotations_data']) {
@@ -1490,7 +1494,8 @@ class PODataTableHandle {
                     }
                 },
             ],
-            drawCallback: function () {},
+            drawCallback: function () {
+            },
         });
     };
 
@@ -1549,7 +1554,7 @@ class PODataTableHandle {
                 {
                     targets: 1,
                     render: () => {
-                            return `<div class="row more-information-group">
+                        return `<div class="row more-information-group">
                                         <div class="input-group">
                                             <span class="input-affix-wrapper">
                                                 <span class="input-prefix">
@@ -1682,7 +1687,8 @@ class PODataTableHandle {
                     }
                 },
             ],
-            drawCallback: function () {},
+            drawCallback: function () {
+            },
         });
     };
 
@@ -2051,7 +2057,10 @@ function setupMergeProduct() {
                         'product': dataRow?.['product'],
                         'uom_order_request': uom_reference,
                         'uom_order_actual': uom_reference,
-                        'tax': {'id': 1, 'value': 10},
+                        'tax': {
+                            'id': 1,
+                            'value': 10
+                        },
                         'stock': 0,
                         'product_title': dataRow?.['product']?.['title'],
                         'code_list': [dataRow?.['purchase_request']?.['code']],

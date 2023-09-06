@@ -1,6 +1,7 @@
 from django.urls import path
 from apps.core.home.views import (
-    HomeView, ComponentCollections, TermsAndConditionsView, HelpAndSupportView, UtilitiesView,
+    HomeView, LandingPageView,
+    ComponentCollections, TermsAndConditionsView, HelpAndSupportView, UtilitiesView,
     BookMarkListAPI, BookMarkDetailAPI,
     DocPinedListAPI, DocPinedDetailAPI,
     GatewayMiddleListView, GatewayMiddleDetailView, GatewayViewNameListView, GatewayViewNameParseView,
@@ -8,6 +9,7 @@ from apps.core.home.views import (
 
 urlpatterns = [
     path('', HomeView.as_view(), name='HomeView'),
+    path('introduce', LandingPageView.as_view(), name='LandingPageView'),
     path('terms', TermsAndConditionsView.as_view(), name='TermsAndConditionsView'),
     path('help-and-support', HelpAndSupportView.as_view(), name='HelpAndSupportView'),
     path('components', ComponentCollections.as_view(), name='ComponentCollections'),

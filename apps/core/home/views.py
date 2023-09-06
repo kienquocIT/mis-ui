@@ -1,4 +1,5 @@
 from django.shortcuts import redirect
+from django.urls import reverse
 from django.views import View
 from rest_framework import status
 from rest_framework.views import APIView
@@ -7,15 +8,30 @@ from apps.shared import mask_view, ConditionFormset, ServerAPI, ApiURL, ServerMs
 from apps.core.home.utils import ReverseUrlCommon
 
 
+class LandingPageView(View):
+    @mask_view(
+        login_require=False,
+        auth_require=False,
+        template='core/home/landing-page.html',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
 class HomeView(View):
     @mask_view(
-        auth_require=True,
+        login_require=False,
+        auth_require=False,
         template='core/home/home.html',
         breadcrumb='HOME_PAGE',
         menu_active='id_menu_home_page',
     )
     def get(self, request, *args, **kwargs):
-        return {'employee_current_data': getattr(request.user, 'employee_current_data', {})}, status.HTTP_200_OK
+        if request.user:
+            employee_current_data = getattr(request.user, 'employee_current_data', {})
+            if employee_current_data:
+                return {'employee_current_data': employee_current_data}, status.HTTP_200_OK
+        return redirect(reverse('LandingPageView'))
 
 
 class BookMarkListAPI(APIView):

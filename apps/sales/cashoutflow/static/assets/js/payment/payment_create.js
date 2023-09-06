@@ -1274,7 +1274,7 @@ $(document).ready(function () {
 
     function loadAPList(sale_code_id) {
         console.log(sale_code_id)
-        $('#advance_payment_list_datatable').DataTable().destroy();
+        $('#advance_payment_list_datatable').DataTable().clear().destroy();
         let AP_db = $('#advance_payment_list_datatable');
         AP_db.DataTableDefault({
             reloadCurrency: true,
@@ -1411,7 +1411,7 @@ $(document).ready(function () {
     }
 
     function loadAPOnly(sale_code_id) {
-        $('#advance_payment_list_datatable').DataTable().destroy();
+        $('#advance_payment_list_datatable').DataTable().clear().destroy();
         let AP_db = $('#advance_payment_list_datatable');
         AP_db.DataTableDefault({
             reloadCurrency: true,

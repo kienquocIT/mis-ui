@@ -25,7 +25,7 @@ $(function () {
                 $('#lead-time-type').val(data_detail.lead_time_type);
                 $('#note').val(data_detail.note);
 
-                $('#table-purchase-quotation-products-selected').DataTable().destroy();
+                $('#table-purchase-quotation-products-selected').DataTable().clear().destroy();
                 $('#table-purchase-quotation-products-selected').DataTableDefault({
                     reloadCurrency: true,
                     paging: false,

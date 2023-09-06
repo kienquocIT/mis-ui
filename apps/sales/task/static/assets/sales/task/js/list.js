@@ -228,7 +228,7 @@ $(function () {
                     clearInterval(isNewTask)
                     // parse data
                     const strData = JSON.parse(elmUpdate.attr('data-task'))
-
+                    elmUpdate.remove()
                     // get task has update and update for class task list
                     let taskData = kanban.getTaskList
                     let sameSTT = true
@@ -239,6 +239,8 @@ $(function () {
                             const itemTStt = item.task_status?.id ? item.task_status.id : item.task_status
                             const strTStt = strData.task_status?.id ? strData.task_status.id : strData.task_status
                             if (itemTStt !== strTStt) sameSTT = false
+                            strData.parent_n = item.parent_n
+
                             old_stt = itemTStt
                             taskData[idx] = strData
                             idxTaskUpdate = idx
@@ -352,7 +354,8 @@ $(function () {
                             $('#inputTextTitle').val(data.title)
                             $('#inputTextCode').val(data.code)
                             const stt = data.task_status
-                            $('#selectStatus').attr('data-onload', JSON.stringify(stt)).initSelect2()
+                            $('#selectStatus').attr('data-onload',
+                                JSON.stringify(stt)).initSelect2().val(stt.id).trigger('change')
                             $('#inputTextStartDate').val(
                                 moment(data.start_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
                             )
@@ -375,8 +378,17 @@ $(function () {
                             $('#selectPriority').val(data.priority).trigger('change')
                             window.formLabel.renderLabel(data.label)
                             $('#inputLabel').attr('value', JSON.stringify(data.label))
+
                             $('#inputAssigner').val(data.employee_created.last_name + '. ' + data.employee_created.first_name)
-                                .attr('value', data.employee_created.id)
+                                .attr(
+                                    'data-name', data.employee_created.last_name + '. ' + data.employee_created.first_name
+                                )
+                                .attr(
+                                    'value', data.employee_created.id
+                                )
+                                .attr(
+                                    'data-value-id', data.employee_created.id
+                                )
                             if (data?.assign_to) {
                                 data.assign_to.full_name = `${data.assign_to.last_name}. ${data.assign_to.first_name}`
                                 $('#selectAssignTo').html('').attr('data-onload', JSON.stringify(data.assign_to))
@@ -461,7 +473,8 @@ $(function () {
                     else {
                         childHTML.find('img').remove()
                         childHTML.find('.avatar').addClass('avatar-' + randomResource)
-                        const full_name = `${assign_to.last_name} ${assign_to.first_name}`
+                        let full_name = `${assign_to?.last_name} ${assign_to?.first_name}`
+                        if (assign_to?.full_name && assign_to?.full_name !== '') full_name = assign_to.full_name
                         const name = $.fn.shortName(full_name, '', 5)
                         childHTML.find('.avatar .initial-wrap').text(name)
                         childHTML.find('.avatar').attr('title', full_name)
@@ -490,8 +503,10 @@ $(function () {
                     $(`[data-id="${taskStatusID}"]`).closest('.tasklist').find('.wrap-child').each(function () {
                         let temp = childHTML.clone()
                         $(this).append(temp)
-                        if ($(this).closest('#kb_scroll').length > 0) temp.removeClass('hidden')
-
+                        if ($(this).closest('#kb_scroll').length > 0 && Object.keys(newData?.parent_n).length === -1
+                        ) temp.removeClass('hidden')
+                        else if ($(this).closest('#kb_sub_scroll').length > 0 && Object.keys(newData?.parent_n).length > 0)
+                            temp.removeClass('hidden')
                         temp.find('[data-toggle="tooltip"]').tooltip({placement: 'right'});
                         $thisCrt.editTask(temp)
                         $thisCrt.deleteTask(temp)
@@ -972,7 +987,7 @@ $(function () {
             let dataCurrent = cls.getTaskList
             dataCurrent[index] = data
             cls.setTaskList = dataCurrent
-            tbl.DataTable().clear().row(index).data(data).draw(true)
+            tbl.DataTable().row(index).data(data).draw(true)
         }
     }
 

@@ -4020,6 +4020,10 @@ msgid "Registry"
 msgstr "Đăng ký"
 
 #
+msgid "About Us"
+msgstr "Về chúng tôi"
+
+#
 msgid "has not been created for Opportunity"
 msgstr "chưa được tạo cho cơ hội kinh doanh"
 

@@ -110,7 +110,7 @@ $(function () {
         tablePurchaseRequestProduct.on('change', '.table-row-quantity-order', function() {
             POValidateHandle.validateNumber(this);
             let remain = parseFloat(this.closest('tr').querySelector('.table-row-remain').innerHTML);
-            POValidateHandle.validateQuantityOrderAndRemain(this, remain);
+            POValidateHandle.validateQuantityOrderRequest(this, remain);
         });
 
         // Purchase quotation modal
@@ -191,7 +191,7 @@ $(function () {
             // Change quantity
             if ($(this).hasClass('table-row-quantity-order-actual')) {
                 POValidateHandle.validateNumber(this);
-                POValidateHandle.validateQuantityOrderAndUpdateStock(row);
+                POValidateHandle.validateQuantityOrderActualAndUpdateStock(row);
             }
             // Change uom
             if ($(this).hasClass('table-row-uom-order-actual')) {
@@ -203,6 +203,7 @@ $(function () {
                     let uomOrderData = SelectDDControl.get_data_from_idx($(eleUOMOrder), $(eleUOMOrder).val());
                     if (uomRequestData?.['id'] !== uomOrderData?.['id']) {
                         row.querySelector('.table-row-quantity-order-actual').value = 0;
+                        row.querySelector('.table-row-stock').innerHTML = '0';
                     }
                 }
             }

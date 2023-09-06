@@ -606,7 +606,7 @@ class POLoadDataHandle {
         if (dataRowRaw) {
             let dataRow = JSON.parse(dataRowRaw);
             POLoadDataHandle.loadBoxProduct($(row.querySelector('.table-row-item')), dataRow?.['product']);
-            POLoadDataHandle.loadBoxUOM($(row.querySelector('.table-row-uom-order-actual')), dataRow?.['uom_order_request'], dataRow?.['uom_order_request']?.['uom_group']?.['id']);
+            POLoadDataHandle.loadBoxUOM($(row.querySelector('.table-row-uom-order-actual')), dataRow?.['uom_order_actual'], dataRow?.['uom_order_actual']?.['uom_group']?.['id']);
             POLoadDataHandle.loadBoxTax($(row.querySelector('.table-row-tax')), dataRow?.['tax']);
         }
     };
@@ -966,7 +966,7 @@ class POLoadDataHandle {
         let form = $('#frm_purchase_order_create');
         let tableProductAdd = $('#datable-purchase-order-product-add');
         let tableProductRequest = $('#datable-purchase-order-product-request');
-        if (data?.['purchase_requests_data']) {
+        if (data?.['purchase_requests_data'].length > 0) {
             tableProductAdd[0].setAttribute('hidden', 'true');
             $('#datable-purchase-order-product-add_wrapper')[0].setAttribute('hidden', 'true');
             tableProductRequest[0].removeAttribute('hidden');
@@ -975,6 +975,14 @@ class POLoadDataHandle {
             POLoadDataHandle.loadDataRowTable(tableProductRequest);
             if (form.attr('data-method') === 'GET') {
                 POLoadDataHandle.loadTableDisabled(tableProductRequest);
+            }
+        } else {
+            tableProductRequest[0].setAttribute('hidden', 'true');
+            $('#datable-purchase-order-product-request_wrapper')[0].setAttribute('hidden', 'true');
+            tableProductAdd.DataTable().rows.add(data?.['purchase_order_products_data']).draw();
+            POLoadDataHandle.loadDataRowTable(tableProductAdd);
+            if (form.attr('data-method') === 'GET') {
+                POLoadDataHandle.loadTableDisabled(tableProductAdd);
             }
         }
     };
@@ -1236,7 +1244,7 @@ class PODataTableHandle {
         let $table = $('#datable-purchase-request-product-merge');
         $table.DataTableDefault({
             data: data ? data : [],
-            searching: false,
+            // searching: false,
             paging: false,
             info: false,
             columnDefs: [],
@@ -1710,8 +1718,10 @@ class PODataTableHandle {
                 {
                     targets: 7,
                     render: (data, type, row) => {
-                        return `<div class="row">
-                                    <span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row.product_subtotal_price)}"></span>
+                        return `<div class="row subtotal-area">
+                                    <div class="card card-sm">
+                                        <span class="card-body mask-money table-row-subtotal" data-init-money="${parseFloat(row.product_subtotal_price)}"></span>
+                                    </div>
                                     <input
                                         type="text"
                                         class="form-control table-row-subtotal-raw"
@@ -1852,50 +1862,57 @@ class POValidateHandle {
         ele.value = value;
     };
 
-    static validateQuantityOrderAndRemain(ele, remain) {
+    static validateQuantityOrderRequest(ele, remain) {
         if (parseFloat(ele.value) > remain) {
             ele.value = '0';
-            $.fn.notifyB({description: 'Quantity order must be less than quantity remain'}, 'failure');
+            $.fn.notifyB({description: $.fn.transEle.attr('data-validate-order-request')}, 'failure');
         }
     };
 
-    static validateQuantityOrderAndUpdateStock(row) {
+    static validateQuantityOrderActualAndUpdateStock(row) {
         let eleQuantityRequest = row.querySelector('.table-row-quantity-order-request');
         let eleQuantityOrder = row.querySelector('.table-row-quantity-order-actual');
         let eleStock = row.querySelector('.table-row-stock');
         let quantity_request = eleQuantityRequest.innerHTML;
         let quantity_order = eleQuantityOrder.value;
-
-        if (parseFloat(quantity_order) < parseFloat(quantity_request)) {
-            eleQuantityOrder.value = quantity_request;
-            eleStock.innerHTML = '0';
-            $.fn.notifyB({description: 'Quantity order actually must be equal or greater than quantity order on request'}, 'failure');
-            return false
-        } else {
-            let dataRowRaw = row.querySelector('.table-row-order').getAttribute('data-row');
-            let eleUOMOrder = row.querySelector('.table-row-uom-order-actual');
-            if (dataRowRaw && $(eleUOMOrder).val()) {
-                let dataRow = JSON.parse(dataRowRaw);
-                let uomRequestData = dataRow?.['uom_order_request'];
-                let uomOrderData = SelectDDControl.get_data_from_idx($(eleUOMOrder), $(eleUOMOrder).val());
-                if (uomRequestData?.['id'] === uomOrderData?.['id']) { // IF COMMON UOM
+        let dataRowRaw = row.querySelector('.table-row-order').getAttribute('data-row');
+        let eleUOMOrder = row.querySelector('.table-row-uom-order-actual');
+        if (dataRowRaw && $(eleUOMOrder).val()) {
+            let dataRow = JSON.parse(dataRowRaw);
+            let uomRequestData = dataRow?.['uom_order_request'];
+            let uomOrderData = SelectDDControl.get_data_from_idx($(eleUOMOrder), $(eleUOMOrder).val());
+            if (uomRequestData?.['id'] === uomOrderData?.['id']) { // IF COMMON UOM
+                if (parseFloat(quantity_order) < parseFloat(quantity_request)) {
+                    eleQuantityOrder.value = '0';
+                    eleStock.innerHTML = '0';
+                    $.fn.notifyB({description: $.fn.transEle.attr('data-validate-order-actual')}, 'failure');
+                    return false
+                } else {
                     eleStock.innerHTML = String(parseFloat(quantity_order) - parseFloat(quantity_request));
-                } else { // IF DIFFERENT UOM
-                    let uomRequestExchangeRate = 1;
-                    let uomOrderExchangeRate = 1;
-                    if (uomRequestData?.['is_referenced_unit'] === false) {
-                        uomRequestExchangeRate = uomRequestData?.['ratio'];
-                    }
-                    if (uomOrderData?.['group']?.['is_referenced_unit'] === false) {
-                        uomOrderExchangeRate = uomOrderData?.['ratio'];
-                    }
-                    let differenceExchangeValue = (parseFloat(quantity_order) * uomOrderExchangeRate) - (parseFloat(quantity_request) * uomRequestExchangeRate);
-                    eleStock.innerHTML = String(differenceExchangeValue / uomRequestExchangeRate);
+                }
+            } else { // IF DIFFERENT UOM
+                let uomRequestExchangeRate = 1;
+                let uomOrderExchangeRate = 1;
+                if (uomRequestData?.['is_referenced_unit'] === false) {
+                    uomRequestExchangeRate = uomRequestData?.['ratio'];
+                }
+                if (uomOrderData?.['group']?.['is_referenced_unit'] === false) {
+                    uomOrderExchangeRate = uomOrderData?.['ratio'];
+                }
+                let differenceExchangeValue = ((parseFloat(quantity_order) * uomOrderExchangeRate) - (parseFloat(quantity_request) * uomRequestExchangeRate));
+                if ((parseFloat(quantity_order) * uomOrderExchangeRate) < (parseFloat(quantity_request) * uomRequestExchangeRate)) {
+                    eleQuantityOrder.value = '0';
+                    eleStock.innerHTML = '0';
+                    $.fn.notifyB({description: $.fn.transEle.attr('data-validate-order-actual')}, 'failure');
+                    return false
+                } else {
+                   eleStock.innerHTML = String(differenceExchangeValue / uomRequestExchangeRate);
                 }
             }
         }
         return true
     };
+
 }
 
 // Submit Form
@@ -2064,6 +2081,19 @@ function clickCheckBoxAll(ele, table) {
     }
 }
 
+function areAllEqual(arr) {
+    if (arr.length === 0) {
+        return true; // An empty array is considered as all elements being equal.
+    }
+    const firstElement = arr[0];
+    for (let i = 1; i < arr.length; i++) {
+        if (arr[i] !== firstElement) {
+            return false; // If any element is not equal to the first one, return false.
+        }
+    }
+    return true; // All elements are equal.
+}
+
 function setupMergeProduct() {
     let data = [];
     let dataJson = {};
@@ -2071,7 +2101,6 @@ function setupMergeProduct() {
     if (!table[0].querySelector('.dataTables_empty')) {
         let order = 0;
         let uom_reference = {};
-        let tax = {};
         // Setup Merge Data by Product
         for (let eleChecked of table[0].querySelectorAll('.table-row-checkbox:checked:not(.disabled-by-pq)')) {
             let row = eleChecked.closest('tr');
@@ -2089,57 +2118,84 @@ function setupMergeProduct() {
                 let product_id = dataRow?.['product']?.['id'];
                 let quantity = parseFloat(dataRow?.['quantity']);
                 let quantity_order = parseFloat(row.querySelector('.table-row-quantity-order').value);
+                let remain = (parseFloat(row.querySelector('.table-row-remain').innerHTML) - quantity_order);
                 if (dataRow?.['uom']?.['id'] !== uom_reference?.['id']) {
                     quantity = (parseFloat(dataRow?.['quantity']) * parseFloat(dataRow?.['uom']?.['ratio']));
                     quantity_order = (parseFloat(row.querySelector('.table-row-quantity-order').value) * parseFloat(dataRow?.['uom']?.['ratio']));
+                    remain = ((parseFloat(row.querySelector('.table-row-remain').innerHTML) * parseFloat(dataRow?.['uom']?.['ratio'])) - quantity_order);
                 }
-                let remain = (quantity_order - quantity);
-                if (!dataJson.hasOwnProperty(product_id)) {
-                    order++
-                    dataJson[product_id] = {
-                        'id': dataRow?.['id'],
-                        'purchase_request_products_data': [{
+                // origin data to check
+                let quantity_origin = parseFloat(dataRow?.['quantity']);
+                let quantity_order_origin = parseFloat(row.querySelector('.table-row-quantity-order').value);
+                let remain_origin = (parseFloat(row.querySelector('.table-row-remain').innerHTML) - quantity_order);
+                if (parseFloat(row.querySelector('.table-row-remain').innerHTML) > 0) {
+                    if (!dataJson.hasOwnProperty(product_id)) {
+                        order++
+                        dataJson[product_id] = {
+                            'id': dataRow?.['id'],
+                            'purchase_request_products_data': [{
+                                'purchase_request_product': dataRow?.['id'],
+                                'sale_order_product': sale_order_id,
+                                'quantity_order': quantity_order,
+                                'quantity_remain': parseFloat(dataRow?.['remain_for_purchase_order']),
+                            }],
+                            'product': dataRow?.['product'],
+                            'uom_order_request': uom_reference,
+                            'uom_order_actual': uom_reference,
+                            'uom_list': [dataRow?.['uom']],
+                            'uom_id_list': [dataRow?.['uom']?.['id']],
+                            'tax': tax,
+                            'stock': 0,
+                            'product_title': dataRow?.['product']?.['title'],
+                            'code_list': [dataRow?.['purchase_request']?.['code']],
+                            'product_description': 'xxxxx',
+                            'product_quantity_request': quantity,
+                            'product_quantity_order_request': quantity_order,
+                            'product_quantity_order_actual': quantity_order,
+                            'remain': remain,
+                            'quantity_origin': quantity_origin,
+                            'quantity_order_origin': quantity_order_origin,
+                            'remain_origin': remain_origin,
+                            'product_unit_price': 0,
+                            'product_tax_title': '',
+                            'product_tax_amount': 0,
+                            'product_subtotal_price': 0,
+                            'order': order,
+                        };
+                    } else {
+                        if (!dataJson[product_id].code_list.includes(dataRow?.['purchase_request']?.['code'])) {
+                            dataJson[product_id].code_list.push(dataRow?.['purchase_request']?.['code']);
+                        }
+                        dataJson[product_id].purchase_request_products_data.push({
                             'purchase_request_product': dataRow?.['id'],
                             'sale_order_product': sale_order_id,
                             'quantity_order': quantity_order,
                             'quantity_remain': parseFloat(dataRow?.['remain_for_purchase_order']),
-                        }],
-                        'product': dataRow?.['product'],
-                        'uom_order_request': uom_reference,
-                        'uom_order_actual': uom_reference,
-                        'tax': tax,
-                        'stock': 0,
-                        'product_title': dataRow?.['product']?.['title'],
-                        'code_list': [dataRow?.['purchase_request']?.['code']],
-                        'product_description': 'xxxxx',
-                        'product_quantity_request': quantity,
-                        'product_quantity_order_request': quantity_order,
-                        'product_quantity_order_actual': quantity_order,
-                        'remain': remain,
-                        'product_unit_price': 0,
-                        'product_tax_title': '',
-                        'product_tax_amount': 0,
-                        'product_subtotal_price': 0,
-                        'order': order,
-                    };
-                } else {
-                    if (!dataJson[product_id].code_list.includes(dataRow?.['purchase_request']?.['code'])) {
-                        dataJson[product_id].code_list.push(dataRow?.['purchase_request']?.['code']);
+                        });
+                        dataJson[product_id].product_quantity_request += quantity;
+                        dataJson[product_id].product_quantity_order_request += quantity_order;
+                        dataJson[product_id].product_quantity_order_actual += quantity_order;
+                        dataJson[product_id].remain += remain;
+
+                        dataJson[product_id].quantity_origin += quantity_origin;
+                        dataJson[product_id].quantity_order_origin += quantity_order_origin;
+                        dataJson[product_id].remain_origin += remain_origin;
+                        dataJson[product_id].uom_list.push(dataRow?.['uom']);
+                        dataJson[product_id].uom_id_list.push(dataRow?.['uom']?.['id']);
                     }
-                    dataJson[product_id].purchase_request_products_data.push({
-                        'purchase_request_product': dataRow?.['id'],
-                        'sale_order_product': sale_order_id,
-                        'quantity_order': quantity_order,
-                        'quantity_remain': parseFloat(dataRow?.['remain_for_purchase_order']),
-                    });
-                    dataJson[product_id].product_quantity_request += quantity;
-                    dataJson[product_id].product_quantity_order_request += quantity_order;
-                    dataJson[product_id].remain += remain;
-                    dataJson[product_id].product_quantity_order_actual += quantity_order;
                 }
             }
         }
         for (let key in dataJson) {
+            if (dataJson[key]['uom_id_list'].length > 0 && areAllEqual(dataJson[key]['uom_id_list']) === true) {
+                dataJson[key]['uom_order_request'] = dataJson[key]['uom_list'][0];
+                dataJson[key]['uom_order_actual'] = dataJson[key]['uom_list'][0];
+
+                dataJson[key]['product_quantity_request'] = dataJson[key]['quantity_origin'];
+                dataJson[key]['product_quantity_order_request'] = dataJson[key]['quantity_order_origin'];
+                dataJson[key]['product_quantity_order_actual'] = dataJson[key]['quantity_order_origin'];
+                dataJson[key]['remain'] = dataJson[key]['remain_origin'];
+            }
             data.push(dataJson[key]);
         }
     }

@@ -14,6 +14,7 @@ $(function () {
             GRDataTableHandle.dataTableGoodReceiptProduct();
             GRDataTableHandle.dataTableGoodReceiptPOProduct();
             GRDataTableHandle.dataTableGoodReceiptPR();
+            GRDataTableHandle.dataTableGoodReceiptWH();
             // PODataTableHandle.dataTablePurchaseRequestProduct();
             // PODataTableHandle.dataTablePurchaseRequestProductMerge();
             // PODataTableHandle.dataTablePurchaseQuotation();
@@ -37,12 +38,28 @@ $(function () {
             GRLoadDataHandle.loadModalProduct();
         });
 
-        tablePOProduct.on('click', '.table-row-checkbox', function() {
+        tablePOProduct.on('click', '.table-row-checkbox', function () {
             let dataRow = JSON.parse($(this).attr('data-row'));
+            let is_checked = false;
+            if (this.checked === true) {
+                is_checked = true;
+            }
+            for (let eleCheck of tablePOProduct[0].querySelectorAll('.table-row-checkbox')) {
+                eleCheck.checked = false;
+                if (is_checked === true) {
+                    this.checked = true;
+                }
+            }
             tablePR.DataTable().clear().draw();
-            tablePR.DataTable().rows.add(dataRow?.['purchase_request_products_data']).draw();
-            $('#scroll-table-pr')[0].removeAttribute('hidden');
-        })
+            if (is_checked === true) {
+                if (dataRow?.['purchase_request_products_data'].length > 0) {
+                    tablePR.DataTable().rows.add(dataRow?.['purchase_request_products_data']).draw();
+                    $('#scroll-table-pr')[0].removeAttribute('hidden');
+                } else {
+
+                }
+            }
+        });
 
     });
 });

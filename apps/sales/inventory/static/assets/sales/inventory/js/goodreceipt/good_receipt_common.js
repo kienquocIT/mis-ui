@@ -215,7 +215,7 @@ class GRLoadDataHandle {
         $.fn.callAjax2({
                     'url': frm.dataUrl,
                     'method': frm.dataMethod,
-                    'data': {'purchase_order_id': GRLoadDataHandle.PRDataEle.val()},
+                    'data': {'purchase_order_id': GRLoadDataHandle.POSelectEle.val()},
                     'isDropdown': true,
                 }
             ).then(
@@ -645,248 +645,6 @@ class GRDataTableHandle {
     static uomInitEle = $('#data-init-uom');
     static taxInitEle = $('#data-init-tax');
 
-    static dataTablePurchaseRequest() {
-        let $table = $('#datable-purchase-request');
-        let frm = new SetupFormSubmit($table);
-        $table.DataTableDefault({
-            ajax: {
-                url: frm.dataUrl,
-                type: frm.dataMethod,
-                dataSrc: function (resp) {
-                    let data = $.fn.switcherResp(resp);
-                    if (data && resp.data.hasOwnProperty('purchase_request_list')) {
-                        return resp.data['purchase_request_list'] ? resp.data['purchase_request_list'] : []
-                    }
-                    throw Error('Call data raise errors.')
-                },
-            },
-            paging: false,
-            info: false,
-            columnDefs: [],
-            columns: [
-                {
-                    targets: 0,
-                    render: (data, type, row, meta) => {
-                        return `<span class="table-row-order">${(meta.row + 1)}</span>`
-                    }
-                },
-                {
-                    targets: 1,
-                    render: (data, type, row) => {
-                        if ($('#frm_purchase_order_create').attr('data-method') !== 'GET') {
-                            if (GRLoadDataHandle.PRDataEle.val()) {
-                                let PRIDList = JSON.parse(GRLoadDataHandle.PRDataEle.val());
-                                if (PRIDList.includes(row.id)) {
-                                    return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}" checked></div>`;
-                                }
-                            }
-                            return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}"></div>`;
-                        } else {
-                            if (GRLoadDataHandle.PRDataEle.val()) {
-                                let PRIDList = JSON.parse(GRLoadDataHandle.PRDataEle.val());
-                                if (PRIDList.includes(row.id)) {
-                                    return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}" checked disabled></div>`;
-                                }
-                            }
-                            return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}" disabled></div>`;
-                        }
-                    }
-                },
-                {
-                    targets: 2,
-                    render: (data, type, row) => {
-                        return `<span class="table-row-title">${row.title}</span>`
-                    },
-                },
-                {
-                    targets: 3,
-                    render: (data, type, row) => {
-                        return `<span class="table-row-code">${row.code}</span>`
-                    }
-                },
-            ],
-            drawCallback: function () {
-            },
-        });
-    };
-
-    static dataTablePurchaseRequestProduct(data) {
-        let $table = $('#datable-purchase-request-product');
-        $table.DataTableDefault({
-            data: data ? data : [],
-            // searching: false,
-            paging: false,
-            info: false,
-            columnDefs: [],
-            columns: [
-                {
-                    targets: 0,
-                    render: (data, type, row, meta) => {
-                        let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
-                        return `<span class="table-row-order" data-row="${dataRow}">${(meta.row + 1)}</span>`
-                    }
-                },
-                {
-                    targets: 1,
-                    render: (data, type, row) => {
-                        let purchase_request_id = "";
-                        if (Object.keys(row?.['purchase_request']).length !== 0) {
-                            purchase_request_id = row?.['purchase_request']?.['id'];
-                        }
-                        if (!row.hasOwnProperty('is_checked')) {
-                            return `<div class="form-check">
-                                    <input 
-                                        type="checkbox" 
-                                        class="form-check-input table-row-checkbox" 
-                                        data-id="${row.id}" 
-                                        data-purchase-request-id="${purchase_request_id}"
-                                        data-sale-order-product-id="${row?.['sale_order_product_id']}"
-                                    >
-                                </div>`
-                        } else {
-                            return `<div class="form-check">
-                                    <input 
-                                        type="checkbox" 
-                                        class="form-check-input table-row-checkbox" 
-                                        data-id="${row.id}" 
-                                        data-purchase-request-id="${purchase_request_id}"
-                                        data-sale-order-product-id="${row?.['sale_order_product_id']}"
-                                        checked
-                                    >
-                                </div>`
-                        }
-
-                    }
-                },
-                {
-                    targets: 2,
-                    render: (data, type, row) => {
-                        return `<span class="table-row-item" id="${row.product.id}">${row.product.title}</span>`
-                    },
-                },
-                {
-                    targets: 3,
-                    render: (data, type, row) => {
-                        return `<span class="table-row-code">${row?.['purchase_request']?.['code']}</span>`
-                    }
-                },
-                {
-                    targets: 4,
-                    render: (data, type, row) => {
-                        return `<span class="table-row-uom-request" id="${row.uom.id}">${row.uom.title}</span>`
-                    }
-                },
-                {
-                    targets: 5,
-                    render: (data, type, row) => {
-                        return `<span class="table-row-quantity-request">${row.quantity}</span>`
-                    }
-                },
-                {
-                    targets: 6,
-                    render: (data, type, row) => {
-                        return `<span class="table-row-remain">${row?.['remain_for_purchase_order']}</span>`
-                    }
-                },
-                {
-                    targets: 7,
-                    render: (data, type, row) => {
-                        if ($('#frm_purchase_order_create').attr('data-method') !== 'GET') {
-                            if (row.hasOwnProperty('quantity_order')) {
-                                return `<input type="text" class="form-control table-row-quantity-order" value="${row.quantity_order}">`;
-                            } else {
-                                return `<input type="text" class="form-control table-row-quantity-order" value="0">`;
-                            }
-                        } else {
-                            if (row.hasOwnProperty('quantity_order')) {
-                                return `<input type="text" class="form-control table-row-quantity-order" value="${row.quantity_order}" disabled>`;
-                            } else {
-                                return `<input type="text" class="form-control table-row-quantity-order" value="0" disabled>`;
-                            }
-                        }
-                    }
-                },
-            ],
-            drawCallback: function () {
-            },
-        });
-    };
-
-    static dataTablePurchaseRequestProductMerge(data) {
-        let $table = $('#datable-purchase-request-product-merge');
-        $table.DataTableDefault({
-            data: data ? data : [],
-            searching: false,
-            paging: false,
-            info: false,
-            columnDefs: [],
-            columns: [
-                {
-                    targets: 0,
-                    render: (data, type, row, meta) => {
-                        return `<span class="table-row-order">${(meta.row + 1)}</span>`
-                    }
-                },
-                {
-                    targets: 1,
-                    render: (data, type, row) => {
-                        return `<div class="form-check"><input type="checkbox" class="form-check-input table-row-checkbox" data-id="${row.id}" checked disabled></div>`
-                    }
-                },
-                {
-                    targets: 2,
-                    render: (data, type, row) => {
-                        return `<span class="table-row-title">${row.product_title}</span>`
-                    },
-                },
-                {
-                    targets: 3,
-                    render: (data, type, row) => {
-                        let codeList = ``;
-                        for (let item of row.code_list) {
-                            codeList += `<span class="dropdown-item">${item}</span>`
-                        }
-                        return `<button
-                                    type="button"
-                                    class="btn btn-link"
-                                    aria-expanded="false"
-                                    data-bs-toggle="dropdown"
-                                ><i class="fas fa-ellipsis-h"></i></button>
-                                <div role="menu" class="dropdown-menu">
-                                    ${codeList}
-                                </div>`
-                    }
-                },
-                {
-                    targets: 4,
-                    render: (data, type, row) => {
-                        return `<span class="table-row-uom-request">${row.uom_order_request.title}</span>`
-                    }
-                },
-                {
-                    targets: 5,
-                    render: (data, type, row) => {
-                        return `<span class="table-row-quantity-request">${row.product_quantity_request}</span>`
-                    }
-                },
-                {
-                    targets: 6,
-                    render: (data, type, row) => {
-                        return `<span class="table-row-remain">${row.remain}</span>`
-                    }
-                },
-                {
-                    targets: 7,
-                    render: (data, type, row) => {
-                        return `<span class="table-row-quantity-order">${row.product_quantity_order_actual}</span>`
-                    }
-                },
-            ],
-            drawCallback: function () {
-            },
-        });
-    };
-
     static dataTableGoodReceiptPOProduct(data) {
         let $table = $('#datable-good-receipt-po-product');
         $table.DataTableDefault({
@@ -961,11 +719,13 @@ class GRDataTableHandle {
                 {
                     targets: 0,
                     render: (data, type, row) => {
+                        let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         return `<div class="form-check">
                                     <input 
                                         type="checkbox" 
                                         class="form-check-input table-row-checkbox" 
                                         data-id="${row.id}" 
+                                        data-row="${dataRow}"
                                     >
                                 </div>`
                     }
@@ -1004,6 +764,59 @@ class GRDataTableHandle {
                     targets: 6,
                     render: (data, type, row) => {
                         return `<span class="table-row-import">${row?.['quantity_import'] ? row?.['quantity_import'] : 0}</span>`;
+                    }
+                },
+            ],
+            drawCallback: function () {},
+        });
+    };
+
+    static dataTableGoodReceiptWH(data) {
+        let $table = $('#datable-good-receipt-warehouse');
+        $table.DataTableDefault({
+            data: data ? data : [],
+            paging: false,
+            info: false,
+            columnDefs: [],
+            columns: [
+                {
+                    targets: 0,
+                    render: (data, type, row) => {
+                        let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
+                        return `<div class="form-check">
+                                    <input 
+                                        type="checkbox" 
+                                        class="form-check-input table-row-checkbox" 
+                                        data-id="${row.id}" 
+                                        data-row="${dataRow}"
+                                    >
+                                </div>`
+                    }
+                },
+                {
+                    targets: 1,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-code">${row?.['warehouse']?.['code']}</span>`;
+                    }
+                },
+                {
+                    targets: 2,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-item">${row?.['warehouse']?.['title']}</span>`;
+                    }
+                },
+                {
+                    targets: 3,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-note">${row?.['note'] ? row?.['note'] : ''}</span>`;
+                    }
+                },
+                {
+                    targets: 4,
+                    render: (data, type, row) => {
+                        return `<div class="row">
+                                    <input type="text" class="form-control table-row-quantity validated-number" value="${row?.['quantity']}" required>
+                                </div>`;
                     }
                 },
             ],

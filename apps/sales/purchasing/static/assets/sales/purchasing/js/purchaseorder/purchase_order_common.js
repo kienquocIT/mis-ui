@@ -1891,22 +1891,32 @@ class POValidateHandle {
                     eleStock.innerHTML = String(parseFloat(quantity_order) - parseFloat(quantity_request));
                 }
             } else { // IF DIFFERENT UOM
-                let uomRequestExchangeRate = 1;
-                let uomOrderExchangeRate = 1;
-                if (uomRequestData?.['is_referenced_unit'] === false) {
-                    uomRequestExchangeRate = uomRequestData?.['ratio'];
-                }
-                if (uomOrderData?.['group']?.['is_referenced_unit'] === false) {
-                    uomOrderExchangeRate = uomOrderData?.['ratio'];
-                }
-                let differenceExchangeValue = ((parseFloat(quantity_order) * uomOrderExchangeRate) - (parseFloat(quantity_request) * uomRequestExchangeRate));
-                if ((parseFloat(quantity_order) * uomOrderExchangeRate) < (parseFloat(quantity_request) * uomRequestExchangeRate)) {
+                // let uomRequestExchangeRate = 1;
+                // let uomOrderExchangeRate = 1;
+                // if (uomRequestData?.['is_referenced_unit'] === false) {
+                //     uomRequestExchangeRate = uomRequestData?.['ratio'];
+                // }
+                // if (uomOrderData?.['group']?.['is_referenced_unit'] === false) {
+                //     uomOrderExchangeRate = uomOrderData?.['ratio'];
+                // }
+                // let differenceExchangeValue = ((parseFloat(quantity_order) * uomOrderExchangeRate) - (parseFloat(quantity_request) * uomRequestExchangeRate));
+                // if ((parseFloat(quantity_order) * uomOrderExchangeRate) < (parseFloat(quantity_request) * uomRequestExchangeRate)) {
+                //     eleQuantityOrder.value = '0';
+                //     eleStock.innerHTML = '0';
+                //     $.fn.notifyB({description: $.fn.transEle.attr('data-validate-order-actual')}, 'failure');
+                //     return false
+                // } else {
+                //    eleStock.innerHTML = String(differenceExchangeValue / uomRequestExchangeRate);
+                // }
+
+                let finalRatio = (parseFloat(uomOrderData?.['ratio']) / parseFloat(uomRequestData?.['ratio']));
+                if ((parseFloat(quantity_order) * finalRatio) < (parseFloat(quantity_request))) {
                     eleQuantityOrder.value = '0';
                     eleStock.innerHTML = '0';
                     $.fn.notifyB({description: $.fn.transEle.attr('data-validate-order-actual')}, 'failure');
                     return false
                 } else {
-                   eleStock.innerHTML = String(differenceExchangeValue / uomRequestExchangeRate);
+                   eleStock.innerHTML = String((parseFloat(quantity_order) * finalRatio) - parseFloat(quantity_request));
                 }
             }
         }
@@ -2101,6 +2111,7 @@ function setupMergeProduct() {
     if (!table[0].querySelector('.dataTables_empty')) {
         let order = 0;
         let uom_reference = {};
+        let uom_default = {};
         // Setup Merge Data by Product
         for (let eleChecked of table[0].querySelectorAll('.table-row-checkbox:checked:not(.disabled-by-pq)')) {
             let row = eleChecked.closest('tr');
@@ -2114,15 +2125,23 @@ function setupMergeProduct() {
                 if (Object.keys(uom_reference).length === 0) {
                     uom_reference = dataRow?.['uom']?.['uom_group']?.['uom_reference'];
                 }
+                if (Object.keys(uom_default).length === 0) {
+                    uom_default = dataRow?.['product']?.['sale_information']?.['default_uom'];
+                }
                 let tax = dataRow?.['tax'];
                 let product_id = dataRow?.['product']?.['id'];
                 let quantity = parseFloat(dataRow?.['quantity']);
                 let quantity_order = parseFloat(row.querySelector('.table-row-quantity-order').value);
                 let remain = (parseFloat(row.querySelector('.table-row-remain').innerHTML) - quantity_order);
-                if (dataRow?.['uom']?.['id'] !== uom_reference?.['id']) {
-                    quantity = (parseFloat(dataRow?.['quantity']) * parseFloat(dataRow?.['uom']?.['ratio']));
-                    quantity_order = (parseFloat(row.querySelector('.table-row-quantity-order').value) * parseFloat(dataRow?.['uom']?.['ratio']));
-                    remain = ((parseFloat(row.querySelector('.table-row-remain').innerHTML) * parseFloat(dataRow?.['uom']?.['ratio'])) - quantity_order);
+                if (dataRow?.['uom']?.['id'] !== uom_default?.['id']) {
+                    let finalRatio = (parseFloat(dataRow?.['uom']?.['ratio']) / parseFloat(uom_default?.['ratio']));
+                    quantity = (parseFloat(dataRow?.['quantity']) * finalRatio);
+                    quantity_order = (parseFloat(row.querySelector('.table-row-quantity-order').value) * finalRatio);
+                    remain = ((parseFloat(row.querySelector('.table-row-remain').innerHTML) * finalRatio) - quantity_order);
+
+                    // quantity = (parseFloat(dataRow?.['quantity']) * parseFloat(dataRow?.['uom']?.['ratio']));
+                    // quantity_order = (parseFloat(row.querySelector('.table-row-quantity-order').value) * parseFloat(dataRow?.['uom']?.['ratio']));
+                    // remain = ((parseFloat(row.querySelector('.table-row-remain').innerHTML) * parseFloat(dataRow?.['uom']?.['ratio'])) - quantity_order);
                 }
                 // origin data to check
                 let quantity_origin = parseFloat(dataRow?.['quantity']);
@@ -2136,12 +2155,12 @@ function setupMergeProduct() {
                             'purchase_request_products_data': [{
                                 'purchase_request_product': dataRow?.['id'],
                                 'sale_order_product': sale_order_id,
-                                'quantity_order': quantity_order,
+                                'quantity_order': quantity_order_origin,
                                 'quantity_remain': parseFloat(dataRow?.['remain_for_purchase_order']),
                             }],
                             'product': dataRow?.['product'],
-                            'uom_order_request': uom_reference,
-                            'uom_order_actual': uom_reference,
+                            'uom_order_request': uom_default,
+                            'uom_order_actual': uom_default,
                             'uom_list': [dataRow?.['uom']],
                             'uom_id_list': [dataRow?.['uom']?.['id']],
                             'tax': tax,
@@ -2169,7 +2188,7 @@ function setupMergeProduct() {
                         dataJson[product_id].purchase_request_products_data.push({
                             'purchase_request_product': dataRow?.['id'],
                             'sale_order_product': sale_order_id,
-                            'quantity_order': quantity_order,
+                            'quantity_order': quantity_order_origin,
                             'quantity_remain': parseFloat(dataRow?.['remain_for_purchase_order']),
                         });
                         dataJson[product_id].product_quantity_request += quantity;

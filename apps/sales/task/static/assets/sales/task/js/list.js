@@ -22,7 +22,7 @@ $(function () {
             // for kanban main task
             stt_template.find('.btn-add-newtask').attr('data-id', item.id)
             stt_template.find('.tasklist-name').text(item.name).css('background-color', item.task_color)
-            stt_template.find('.task-count').text(item.count)
+            stt_template.find('.task-count').text(0)
             stt_template.find('.wrap-child').attr('id', `taskID-${item.id}`)
             $('#tasklist_wrap').append(stt_template)
             // create new task with default task status
@@ -60,6 +60,8 @@ $(function () {
 
     function callDataTaskList(kanban, list){
         function callBackModalChange(mutations, observer){
+            // function kiểm tra nếu form create/edit đang mở thì chỉnh sửa datalist của table show/hide icon
+            // testcase: click view item 1 sau đó click view item 2
             const checkHasClass = mutations[0].target.classList.contains('open');
             if (!checkHasClass){
                 const _tableDataList = list.getTaskList
@@ -129,12 +131,11 @@ $(function () {
                         data: 'start_date',
                         targets: 1,
                         width: "35%",
-                        render: (data, type, row) => {
-                            let date = moment(data, 'YYYY-MM-DDThh:mm:ss').format('YYYY/MM/DD')
-                            if (data !== row.end_date) {
-                                date += ' ~ '
-                                date += moment(row.end_date, 'YYYY-MM-DDThh:mm:ss').format('YYYY/MM/DD')
-                            }
+                        render: (row, type, data) => {
+                            let date = moment(row, 'YYYY-MM-DDThh:mm:ss').format('YYYY/MM/DD')
+                            date += ' ~ '
+                            date += moment(data.end_date, 'YYYY-MM-DDThh:mm:ss').format('YYYY/MM/DD')
+
                             return date;
                         }
                     },
@@ -657,6 +658,7 @@ $(function () {
         init(data) {
             this.getAndRenderTask(data);
             this.createSubTask();
+            countSTT()
         }
     }
 

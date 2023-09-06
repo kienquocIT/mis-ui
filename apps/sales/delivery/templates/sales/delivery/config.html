@@ -92,7 +92,7 @@
                 <div class="row pt-3">
                     <div class="col-xs-12 col-md-6">
                         <label class="form-label">{% trans "Select coordinator for Delivery activities" %}:</label>
-                        <select class="form-control" name="delivery_lead" id="inputDeliveryLead"
+                        <select class="form-control" name="lead_delivery" id="inputDeliveryLead"
                                 data-keyResp="employee_list"
                                 data-url="{% url 'EmployeeListAPI' %}"
                                 data-keyText="full_name"
@@ -104,10 +104,30 @@
                             {% endif %}
                         </select>
                     </div>
+                    <div class="col-xs-12 col-md-6">
+                        <label class="form-label" for="inputPersonDelivery">{% trans "Person delivery" %}</label>
+                        <select class="form-control" name="person_delivery" id="inputPersonDelivery"
+                                data-keyResp="employee_list"
+                                data-url="{% url 'EmployeeListAPI' %}"
+                                data-keyText="full_name"
+                                data-method="GET" multiple
+                        >
+                            {% if data.config_data.person_delivery %}
+                                {% for item in data.config_data.person_delivery %}
+                                    <option value="{{ item.id }}" selected>{{ item.full_name }}</option>
+                                {% endfor %}
+                            {% endif %}
+                        </select>
+                    </div>
                 </div>
             </form>
         </div>
     </div>
+{% endblock %}
+{% block dataHiddenGroup %}
+    <input type="text" id="trans-factory"
+    data-valid-p-lead="{% trans 'Please choice leader for Picking.' %}"
+    data-valid-d-lead="{% trans 'Please choice leader for Delivery.' %}">
 {% endblock %}
 
 {% block jsFooter %}
@@ -117,8 +137,8 @@
             let eleInputPartial = $('#switchPartialShip');
             let $frm = $('#formDeliveryConfig');
             let frmSetup = new SetupFormSubmit($frm);
-            const $PleadElm = $('#inputPickingLead, #inputDeliveryLead, #inputPersonPicking')
-
+            const $PleadElm = $('#inputPickingLead, #inputDeliveryLead, #inputPersonPicking, #inputPersonDelivery')
+            const $trans = $('#trans-factory')
 
             $PleadElm.each(function(){
                 $(this).initSelect2()
@@ -130,6 +150,14 @@
                 let bodyData = {
                     'is_picking': eleInputPicking.prop('checked'),
                     'is_partial_ship': eleInputPartial.prop('checked'),
+                }
+                if (eleInputPicking.prop('checked')){
+                    const pickLead = $('#inputPickingLead').val()
+                    if (pickLead === null){
+                        $.fn.notifyB({'description': $trans.attr('data-valid-p-lead')}, 'failure')
+                        return false
+                    }
+                    bodyData.lead_picking = pickLead
                 }
                 $.fn.callAjax2({
                     'url': frmSetup.dataUrl,

@@ -733,7 +733,7 @@ function loadDtbOpportunityList() {
                     targets: 1,
                     render: (data, type, row) => {
                         const link = $('#opportunity-link').data('link-update').format_url_with_uuid(row.id)
-                        return `<a href="${link}" class="link-primary underline_hover">${row.code}</a>`
+                        return `<a href="${link}" class="badge badge-soft-primary">${row.code}</a> ${$x.fn.buttonLinkBlank(link)}`
                     }
                 },
                 {

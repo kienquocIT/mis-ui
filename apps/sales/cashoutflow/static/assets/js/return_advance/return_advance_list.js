@@ -60,13 +60,10 @@ $(document).ready(function () {
                         data: 'money_received',
                         className: 'wrap-text',
                         render: (data, type, row, meta) => {
-                            let waiting_trans = $('#dtbReturnAdvance').attr('data-type-translate-waiting')
-                            let received_trans = $('#dtbReturnAdvance').attr('data-type-translate-received')
                             if (row.money_received === 'Waiting') {
-                                return `<span class="badge badge-soft-warning badge-outline w-50">` + waiting_trans + `</span>`
-                            }
-                            else {
-                                return `<span class="badge badge-soft-blue badge-outline w-50">` + received_trans + `</span>`
+                                return `<span class="badge badge-soft-warning badge-outline">${data}</span>`
+                            } else {
+                                return `<span class="badge badge-soft-blue badge-outline">${data}</span>`
                             }
 
                         }
@@ -74,12 +71,11 @@ $(document).ready(function () {
                     {
                         data: 'status',
                         render: (data, type, row) => {
-                            let approved_trans = $('#dtbReturnAdvance').attr('data-type-translate-approved')
                             if (row.money_received === 'Received') {
-                                return `<span class="text-success">` + approved_trans + `&nbsp;<i class="bi bi-check2-circle"></i></span>`
+                                return `<span class="text-success">${data}<i class="bi bi-check2-circle"></i></span>`
                             }
                             if (row.money_received === 'Waiting') {
-                                return `<span class="text-success">` + approved_trans + `</span>`
+                                return `<span class="text-success">${data}</span>`
                             }
                         },
                     },
@@ -88,5 +84,6 @@ $(document).ready(function () {
             });
         }
     }
+
     loadShipping();
 })

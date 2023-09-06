@@ -24,15 +24,14 @@ $(document).ready(function () {
                     {
                         data: 'code',
                         targets: 0,
-                        className: 'wrap-text',
                         render: (data, type, row) => {
-                            return `<a href="${url_detail.format_url_with_uuid(row.id)}">${data}</a>`
+                            let urlDetail = url_detail.format_url_with_uuid(row.id);
+                            return `<a href="${urlDetail}"><span class="badge badge-primary">${data}</span></a>` + $x.fn.buttonLinkBlank(urlDetail);
                         }
                     },
                     {
                         data: 'title',
                         targets: 1,
-                        className: 'wrap-text',
                         render: (data) => {
                             return `<p>${data}</p>`
                         }

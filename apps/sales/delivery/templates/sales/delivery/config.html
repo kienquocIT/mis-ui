@@ -36,24 +36,73 @@
                     data-method="PUT"
             >
                 {% csrf_token %}
-                <div class="row pt-3 pl-3">
-                    <div class="form-check form-switch mb-1">
-                        <input
-                                type="checkbox" class="form-check-input" id="switchIsPicking"
-                                {% if data.config_data.is_picking %} checked {% endif %}>
-                        <label class="form-check-label" for="switchIsPicking">
-                            {% trans 'Picking needs to be handled prior to shipment' %}
-                        </label>
+                <div class="row pt-3">
+                    <div class="col-xs-12 col-md-12">
+                        <div class="form-check form-switch mb-1">
+                            <input type="checkbox" class="form-check-input" id="switchIsPicking"
+                                    {% if data.config_data.is_picking %} checked {% endif %}>
+                            <label class="form-check-label" for="switchIsPicking">
+                                {% trans 'Picking needs to be handled prior to shipment' %}
+                            </label>
+                        </div>
                     </div>
                 </div>
-                <div class="row pt-3 pl-3">
-                    <div class="form-check form-switch mb-1">
-                        <input
-                                type="checkbox" class="form-check-input" id="switchPartialShip"
-                                {% if data.config_data.is_partial_ship %} checked {% endif %}>
-                        <label class="form-check-label" for="switchPartialShip">
-                            {% trans "Partial delivery is possible" %}
-                        </label>
+                <div class="row pt-3">
+                    <div class="col-xs-12 col-md-12">
+                        <div class="form-check form-switch mb-1">
+                            <input type="checkbox" class="form-check-input" id="switchPartialShip"
+                                    {% if data.config_data.is_partial_ship %} checked {% endif %}>
+                            <label class="form-check-label" for="switchPartialShip">
+                                {% trans "Partial delivery is possible" %}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row pt-3">
+                    <div class="col-xs-12 col-md-6">
+                        <label class="form-label">{% trans "Select coordinator for Picking activities" %}</label>
+                        <select class="form-control" name="lead_picking" id="inputPickingLead"
+                                data-keyResp="employee_list"
+                                data-url="{% url 'EmployeeListAPI' %}"
+                                data-keyText="full_name"
+                                data-method="GET"
+                        >
+                            {% if data.config_data.lead_picking %}
+                                <option value="{{ data.config_data.lead_picking.id }}" selected>
+                                    {{ data.config_data.lead_picking.full_name }}</option>
+                            {% endif %}
+                        </select>
+                    </div>
+                    <div class="col-xs-12 col-md-6">
+                        <label class="form-label" for="inputPersonPicking">{% trans "Person picking" %}</label>
+                        <select class="form-control" name="person_picking" id="inputPersonPicking"
+                                data-keyResp="employee_list"
+                                data-url="{% url 'EmployeeListAPI' %}"
+                                data-keyText="full_name"
+                                data-method="GET" multiple
+                        >
+                            {% if data.config_data.person_picking %}
+                                {% for item in data.config_data.person_picking %}
+                                    <option value="{{ item.id }}" selected>{{ item.full_name }}</option>
+                                {% endfor %}
+                            {% endif %}
+                        </select>
+                    </div>
+                </div>
+                <div class="row pt-3">
+                    <div class="col-xs-12 col-md-6">
+                        <label class="form-label">{% trans "Select coordinator for Delivery activities" %}:</label>
+                        <select class="form-control" name="delivery_lead" id="inputDeliveryLead"
+                                data-keyResp="employee_list"
+                                data-url="{% url 'EmployeeListAPI' %}"
+                                data-keyText="full_name"
+                                data-method="GET"
+                        >
+                            {% if data.config_data.lead_delivery %}
+                                <option value="{{ data.config_data.lead_delivery.id }}">
+                                    {{ data.config_data.lead_delivery.full_name }}</option>
+                            {% endif %}
+                        </select>
                     </div>
                 </div>
             </form>
@@ -68,6 +117,12 @@
             let eleInputPartial = $('#switchPartialShip');
             let $frm = $('#formDeliveryConfig');
             let frmSetup = new SetupFormSubmit($frm);
+            const $PleadElm = $('#inputPickingLead, #inputDeliveryLead, #inputPersonPicking')
+
+
+            $PleadElm.each(function(){
+                $(this).initSelect2()
+            })
 
             $frm.submit(function (event) {
                 event.preventDefault();
@@ -76,12 +131,11 @@
                     'is_picking': eleInputPicking.prop('checked'),
                     'is_partial_ship': eleInputPartial.prop('checked'),
                 }
-                $.fn.callAjax(
-                    frmSetup.dataUrl,
-                    frmSetup.dataMethod,
-                    bodyData,
-                    true,
-                ).then(
+                $.fn.callAjax2({
+                    'url': frmSetup.dataUrl,
+                    'method': frmSetup.dataMethod,
+                    'data': bodyData,
+                }).then(
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data?.['status'] === 200) {

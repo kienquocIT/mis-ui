@@ -3998,3 +3998,23 @@ msgstr "CHKD đã đóng"
 #
 msgid "Opportunity had sale order"
 msgstr "CHKD đã có đơn hàng"
+
+#
+msgid "Introduce"
+msgstr "Giới thiệu"
+
+#
+msgid "Products"
+msgstr "Sản phẩm"
+
+#
+msgid "Solutions"
+msgstr "Giải pháp"
+
+#
+msgid "Customers"
+msgstr "Khách hàng"
+
+#
+msgid "Registry"
+msgstr "Đăng ký"

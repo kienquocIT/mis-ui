@@ -1,4 +1,6 @@
 $(document).ready(function () {
+    new AccountHandle().load();
+
     LoadDetail('update');
 
     creditCardExpDate.datepicker({

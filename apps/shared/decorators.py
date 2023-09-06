@@ -279,7 +279,9 @@ def mask_view(**parent_kwargs):
                                     'space_code_current': 1,
                                 }
                                 return render(request, cls_check.template_path, ctx)
-                    return redirect(reverse('AuthLogin'))
+                    if login_require is True:
+                        return redirect(reverse('AuthLogin'))
+                    return render(request, cls_check.template_path, ctx)
             raise ValueError(
                 f'Return not map happy case. Over with: is_api={cls_check.is_api},'
                 f'template={cls_check.template_path}'

@@ -120,6 +120,7 @@ function loadCondition(list_condition) {
 
 function renderDetail(data, ele_condition) {
     let shipping_detail = data?.['shipping'];
+    $x.fn.renderCodeBreadcrumb(shipping_detail);
     $.fn.compareStatusShowPageAction(shipping_detail);
     $('#inpTitle').val(shipping_detail.title);
     $('#inpMargin').val(shipping_detail.margin);

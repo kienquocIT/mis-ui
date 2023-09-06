@@ -251,6 +251,7 @@ function loadDetail(id, frmDetail) {
         let data = $.fn.switcherResp(resp);
         if (data) {
             let return_advance_detail = data?.['return_advance'];
+            $x.fn.renderCodeBreadcrumb(return_advance_detail);
             $.fn.compareStatusShowPageAction(return_advance_detail);
             $('.header-code').text(return_advance_detail.code);
             $('[name="title"]').val(return_advance_detail.title);

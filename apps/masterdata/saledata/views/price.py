@@ -236,9 +236,20 @@ class PriceListDetail(View):
         perm_check=PermCheck(url=ApiURL.PRICE_DETAIL, method='GET', fill_key=['pk']),
     )
     def get(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.CURRENCY_LIST).get()
-        if resp.state:
-            return {'currency_list': resp.result}, status.HTTP_200_OK
+        return {}, status.HTTP_200_OK
+
+
+class PriceListUpdate(View):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        template='masterdata/saledata/price/price_list_update.html',
+        breadcrumb='PRICE_LIST_UPDATE_PAGE',
+        menu_active='menu_contact_list',
+        perm_check=PermCheck(url=ApiURL.PRICE_DETAIL, method='PUT', fill_key=['pk']),
+    )
+    def get(self, request, pk, *args, **kwargs):
         return {}, status.HTTP_200_OK
 
 

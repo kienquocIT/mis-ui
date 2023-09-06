@@ -485,8 +485,7 @@ $(function () {
                 if (assign_to){
                     assign_toData = {
                         'id': assign_to.id,
-                        'first_name': assign_to.text.split('. ')[1],
-                        'last_name': assign_to.text.split('. ')[0],
+                        'full_name': assign_to.text,
                     }
                     formData.employee_inherit_id = assign_to.id
                 }
@@ -542,7 +541,7 @@ $(function () {
                                 // case create
                                 if (data?.id) formData = data
                                 const datadump = JSON.stringify(formData)
-                                elm.attr('data-task', datadump)
+                                elm.removeAttr('data-task').attr('data-task', datadump)
                                 $('body').append(elm)
                             }
                             if ($('.current-create-task').length) $('.cancel-task').trigger('click')

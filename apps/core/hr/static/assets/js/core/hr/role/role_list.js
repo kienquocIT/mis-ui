@@ -7,10 +7,10 @@ $(function () {
 
     $(document).ready(function () {
         tb.DataTableDefault({
-            useDataServer: true,
             autoWidth: false,
             rowIdx: true,
             ajax: {
+                useDataServer: true,
                 url: tb.attr('data-url'),
                 type: tb.attr('data-method'),
                 dataSrc: function (resp) {

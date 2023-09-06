@@ -21,14 +21,14 @@ $(document).ready(function () {
                     },
                     columns: [
                         {
-                            render: (data, type, row, meta) => {
+                            render: () => {
                                 return '';
                             }
                         },
                         {
                             data: 'code',
                             className: 'wrap-text',
-                            render: (data, type, row, meta) => {
+                            render: (data) => {
                                 return `<h6><a href="#">{0}</a></h6>`.format_by_idx(
                                     data,
                                 )
@@ -37,7 +37,7 @@ $(document).ready(function () {
                         {
                             data: 'title',
                             className: 'wrap-text',
-                            render: (data, type, row, meta) => {
+                            render: (data) => {
                                 return `<span class="initial-wrap"></span></div>{0}`.format_by_idx(
                                     data
                                 )
@@ -46,13 +46,13 @@ $(document).ready(function () {
                         {
                             data: 'description',
                             className: 'wrap-text',
-                            render: (data, type, row, meta) => {
+                            render: (data) => {
                                 return `<span class="initial-wrap"></span></div>{0}`.format_by_idx(
                                     data
                                 )
                             }
                         }, {
-                            render: (data, type, row, meta) => {
+                            render: (data, type, row) => {
                                 let url = $('#url-factory').data('url-account-type').format_url_with_uuid(row.id);
                                 return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-type="account_type" data-id="{0}" data-url="${url}" data-bs-toggle="modal" data-bs-target="#modal-update-data" data-bs-placement="top" title="" data-bs-original-title="Edit"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`.format_by_idx(
                                     row.id
@@ -86,14 +86,14 @@ $(document).ready(function () {
                     },
                     columns: [
                         {
-                            render: (data, type, row, meta) => {
+                            render: () => {
                                 return '';
                             }
                         },
                         {
                             data: 'code',
                             className: 'wrap-text',
-                            render: (data, type, row, meta) => {
+                            render: (data) => {
                                 return `<h6><a href="#">{0}</a></h6>`.format_by_idx(
                                     data,
                                 )
@@ -102,7 +102,7 @@ $(document).ready(function () {
                         {
                             data: 'title',
                             className: 'wrap-text',
-                            render: (data, type, row, meta) => {
+                            render: (data) => {
                                 return `<span class="initial-wrap"></span></div>{0}`.format_by_idx(
                                     data
                                 )
@@ -111,13 +111,13 @@ $(document).ready(function () {
                         {
                             data: 'description',
                             className: 'wrap-text',
-                            render: (data, type, row, meta) => {
+                            render: (data) => {
                                 return `<span class="initial-wrap"></span></div>{0}`.format_by_idx(
                                     data
                                 )
                             }
                         }, {
-                            render: (data, type, row, meta) => {
+                            render: (data, type, row) => {
                                 let url = $('#url-factory').data('url-account-group').format_url_with_uuid(row.id);
                                 return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button" data-type="account_group" data-id="{0}" data-url="${url}" data-bs-toggle="modal" data-bs-target="#modal-update-data" data-bs-placement="top" title="" data-bs-original-title="Edit"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`.format_by_idx(
                                     row.id

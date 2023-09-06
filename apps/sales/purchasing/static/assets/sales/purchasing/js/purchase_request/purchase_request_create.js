@@ -212,7 +212,7 @@ $(document).ready(function () {
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            $.fn.notifyB({description: data.message}, 'success')
+                            $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
                             $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
                         }
                     }, (errs) => {

@@ -54,6 +54,7 @@ class EmployeeListAPI(APIView):
 # {}: dữ liệu trả về cho request.
 #   VD: {"user_list": [1]} => phần $.fn.callAjax resolve{} sẽ trả về data này để xử lý.
 # status.HTTP_200_OK: trạng thái trả về
+# status.HTTP_200_OK: trạng thái trả về
 #   Với trạng thái 401: trả tín hiệu về $.fn.callAjax reject{} tự chuyển hướng sang LoginPage.
 #   Với trạng thái 500: trả thông tin về $.fn.callAjax reject{} thông báo notify lên giao diện.
 ```
@@ -713,6 +714,14 @@ config = {
    },
    ...,
 };
+
+// tự động select các dữ liệu data từ config 
+config = {
+    data: [{...}],
+    selectedDataOnload: false, // default: true
+   // config.selectedDataOnload: false || data-selectedOnload="false"
+   // tự động selected tất cả các data trong "config.data" || attribute data-onload
+}
 
 ```
 

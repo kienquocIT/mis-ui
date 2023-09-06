@@ -13,16 +13,14 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <a href="{% url 'PriceListUpdate' pk=0 %}" id="btn-edit">
-        <button class="btn btn-outline-primary">
+    <button id="btn-update" class="btn btn-outline-primary" type="submit" form="form-update-item-price">
         <span>
-            <span>{% trans 'Edit' %}</span>
+            <span>{% trans 'Save Item Price' %}</span>
             <span class="icon">
-                <i class="fa-regular fa-pen-to-square"></i>
+                <i class="fa-regular fa-floppy-disk"></i>
             </span>
         </span>
-        </button>
-    </a>
+    </button>
 {% endblock %}
 {% block pageContent %}
     <div class="row">
@@ -56,6 +54,14 @@
         <div class="tab-pane fade show active" id="tab-item-list">
             <div class="row">
                 <div class="col-12 text-left">
+                    <button class="btn btn-soft-primary" id="btn-add-new-item" data-bs-toggle="modal"
+                            data-bs-target="#modal-add-new-item" type="button">
+                        <span data-bs-placement="bottom" data-bs-toggle="tooltip"
+                              title="{% trans 'Add Item' %}">
+                            <i class="fas fa-plus-circle"></i>&nbsp;
+                            {% trans 'Add Item' %}
+                        </span>
+                    </button>
                 </div>
             </div>
             <form id="form-update-item-price" data-url="{% url "UpdateProductForPriceListAPI" pk=0 %}"
@@ -111,14 +117,14 @@
                 <div class="row">
                     <div class="form-check ml-3">
                         <input class="form-check-input" type="checkbox"
-                               id="checkbox-update-auto" name="auto_update" disabled>
+                               id="checkbox-update-auto" name="auto_update">
                         <label class="form-check-label" for="checkbox-update-auto">
                             {% trans "update automatically when source price list changes" %}
                         </label>
                     </div>
                     <div class="form-check ml-3">
                         <input class="form-check-input" type="checkbox"
-                               id="checkbox-can-delete" name="can_delete" disabled>
+                               id="checkbox-can-delete" name="can_delete">
                         <label class="form-check-label" for="checkbox-can-delete">
                             {% trans "Can delete Item in price list" %}
                         </label>
@@ -136,7 +142,6 @@
                                 name="currency"
                                 readonly="readonly"
                                 data-keyResp="currency_list"
-                                disabled
                         >
                         </select>
                         <input type="text" id="inp-source" hidden>
@@ -144,13 +149,79 @@
                     <div class="form-group col-6 inp-can-edit">
                         <label class="form-label">{% trans "Factor" %}</label>
                         <input class="form-control" type="number" name="factor" id="inp-factor" step="0.001"
-                               placeholder="Input factor (0.8)" disabled>
+                               placeholder="Input factor (0.8)">
                     </div>
                 </div>
             </form>
         </div>
     </div>
 
+    <!-- Modal create new Product -->
+    <div class="modal fade" id="modal-add-new-item" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalCenter"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans "Select an item" %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="form-create-product" data-method="PUT" data-url="{% url "ProductAddFromPriceListAPI" pk=0 %}">
+                    <div class="modal-body">
+                        <div class="row" hidden>
+                            <div class="form-group">
+                                <label class="form-label required">{% trans "Code" %}
+                                </label>
+                                <input type="text" class="form-control" id="inp-code" readonly>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <label class="form-label required">{% trans "Name" %}
+                                </label>
+                                <select class="form-select"
+                                        name="product"
+                                        id="select-box-product"
+                                        data-method="GET"
+                                        data-url="">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <label class="form-label required">{% trans "UoM Group" %}</label>
+                                <input type="text" class="form-control" id="inp-uom-group" readonly>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <label class="form-label">{% trans "UoM" %}
+                                    <span class="field-required">*</span>
+                                </label>
+                                <select class="form-select"
+                                        name="uom"
+                                        id="select-box-uom"
+                                        data-method="GET"
+                                        data-url="{% url "UnitOfMeasureListAPI" %}"
+                                        data-keyResp="unit_of_measure"
+                                ></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary"
+                                data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                        <button type="submit" class="btn btn-primary" id="save-product-selected"
+                                form="form-create-product">
+                            {% trans 'Save' %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
     <script type="application/json" id="price_parent"></script>
     <script type="application/json" id="data_detail"></script>
 {% endblock %}
@@ -175,7 +246,7 @@
 {% block jsFooter %}
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
     <script src="{% static 'assets/js/masterdata/saledata/price/price_list_common.js' %}"></script>
-    <script src="{% static 'assets/js/masterdata/saledata/price/price_list_detail.js' %}"></script>
+    <script src="{% static 'assets/js/masterdata/saledata/price/price_list_update.js' %}"></script>
     <script src="{% static 'vendors/jasny-bootstrap/dist/js/jasny-bootstrap.min.js' %}"></script>
     <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>
 {% endblock %}

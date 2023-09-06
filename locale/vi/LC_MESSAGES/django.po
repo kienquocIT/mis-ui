@@ -1764,7 +1764,7 @@ msgstr "Tên bảng giá"
 
 #
 msgid "Copy from source price list"
-msgstr "Sao chép từ dữ liệu bảng gía"
+msgstr "Sao chép từ dữ liệu bảng giá"
 
 #
 msgid "Select price list"
@@ -3998,3 +3998,23 @@ msgstr "CHKD đã đóng"
 #
 msgid "Opportunity had sale order"
 msgstr "CHKD đã có đơn hàng"
+
+#
+msgid "Introduce"
+msgstr "Giới thiệu"
+
+#
+msgid "Products"
+msgstr "Sản phẩm"
+
+#
+msgid "Solutions"
+msgstr "Giải pháp"
+
+#
+msgid "Customers"
+msgstr "Khách hàng"
+
+#
+msgid "Registry"
+msgstr "Đăng ký"

@@ -219,7 +219,14 @@
                 <table id="datatable_contact_list" class="table nowrap w-100"
                        data-method="GET">
                     <thead>
-                    <th class="w-10">{% trans "Account Owner" %}</th>
+                    <th class="w-10">
+                        {% trans "Account Owner" %}
+                        <i class="fas fa-info-circle icon-info"
+                           data-bs-toggle="tooltip"
+                           data-bs-placement="bottom"
+                           title="{% trans 'Check here to select Account Owner.' %}">
+                        </i>
+                    </th>
                     <th class="w-40">{% trans "Name" %}</th>
                     <th>{% trans "Job title" %}</th>
                     <th>{% trans "Phone number" %}</th>
@@ -260,6 +267,7 @@
                             <tbody></tbody>
                         </table>
                     </div>
+                </div>
             </div>
         </div>
         <!-- End Shipping Address -->
@@ -441,7 +449,7 @@
                 </div>
             </div>
         </div>
-        <!-- End Modal Billing Address-->
+            <!-- End Modal Billing Address-->></div>
     </form>
 
     <!-- Off canvas Add Contact-->

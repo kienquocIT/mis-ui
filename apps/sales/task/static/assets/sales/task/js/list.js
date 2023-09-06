@@ -476,7 +476,7 @@ $(function () {
                         childHTML.find('.avatar').addClass('avatar-' + randomResource)
                         let full_name = `${assign_to?.last_name} ${assign_to?.first_name}`
                         if (assign_to?.full_name && assign_to?.full_name !== '') full_name = assign_to.full_name
-                        const name = $.fn.shortName(full_name, '', 5)
+                        const name = $.fn.shortName(full_name)
                         childHTML.find('.avatar .initial-wrap').text(name)
                         childHTML.find('.avatar').attr('title', full_name)
                     }

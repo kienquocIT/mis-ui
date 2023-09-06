@@ -6,7 +6,6 @@ let inputPhone = $('#inp-phone')
 let inputEmail = $('#inp-email')
 let accountTypeEle = $('#select-box-acc-type')
 let accountManagerEle = $('#select-box-acc-manager')
-let accountOwnerEle = $('#select-box-contact')
 let industryEle = $('#select-box-industry')
 let accountGroupEle = $('#select-box-account-group')
 let totalEmployeeEle = $('#select-box-total-emp')
@@ -31,7 +30,7 @@ let roleForCustomerEle = $('#role-for-customer')
 let roleForSupplierEle = $('#role-for-supplier')
 let tableShippingAddressEle = $('#list-shipping-address')
 let tableBillingAddressEle = $('#list-billing-address')
-let data_contact_mapped = []
+let current_owner = null
 
 function loadAccountType(accountTypeData) {
     accountTypeEle.initSelect2({
@@ -89,56 +88,6 @@ function loadIndustry(industryData) {
         keyId: 'id',
         keyText: 'title',
     })
-}
-
-function loadAccountOwner(accountOwnerData, contact_mapped) {
-    accountOwnerEle.initSelect2({
-        ajax: {
-            url: accountOwnerEle.attr('data-url'),
-            method: 'GET',
-        },
-        callbackDataResp: function (resp, keyResp){
-            return resp.data[keyResp].concat(contact_mapped);
-        },
-        data: (accountOwnerData ? accountOwnerData : null),
-        keyResp: 'contact_list_not_map_account',
-        keyId: 'id',
-        keyText: 'fullname',
-    }).on('change', function () {
-        let owner_selected = accountOwnerEle.val();
-        if (owner_selected !== '') {
-            let obj_owner = JSON.parse($('#' + accountOwnerEle.attr('data-idx-data-loaded')).text())[owner_selected];
-            $('#job_title').val(obj_owner.job_title).css({color: 'black'});
-            $('#owner-email').val(obj_owner.email).css({color: 'black'});
-            $('#owner-mobile').val(obj_owner.mobile).css({color: 'black'});
-            let data = {
-                'id': obj_owner.id,
-                'job_title': obj_owner.job_title,
-                'fullname': obj_owner.fullname,
-                'mobile': obj_owner.mobile,
-                'email': obj_owner.email,
-                'owner': true
-            }
-            data_contact_mapped = [data];
-
-            let reselect_owner = true;
-            document.querySelectorAll('.selected_contact_full_name').forEach(function (element) {
-                if (element.getAttribute('data-id') === obj_owner.id) {
-                    let icon = document.getElementById('datatable_contact_list').getElementsByTagName('i');
-                    icon[0].parentNode.removeChild(icon[0]);
-                    let new_icon = document.createElement('i');
-                    new_icon.className = 'bi bi-check2-square text-primary';
-                    element.closest('tr').querySelector('td:first-child').appendChild(new_icon);
-                    reselect_owner = false;
-                }
-            })
-
-            if (reselect_owner === true) {
-                console.log(data_contact_mapped)
-                loadTableSelectedContact(data_contact_mapped.push(data));
-            }
-        }
-    });
 }
 
 function loadAccountGroup(accountGroupData) {
@@ -208,14 +157,9 @@ function loadContactOwner(contactOwnerData) {
     })
 }
 
-function loadTableSelectContact() {
-    let account_owner_id = accountOwnerEle.val();
-    let selected_contact_list = [];
-    document.querySelectorAll('.selected_contact_full_name').forEach(function (element) {
-        selected_contact_list.push(element.getAttribute('data-id'));
-    })
+function loadTableSelectContact(selected_contact_list=[], selected_contact_list_detail=[]) {
     let tbl = $('#datatable-add-contact');
-    tbl.DataTable().clear().destroy();
+    tbl.DataTable().destroy();
     tbl.DataTableDefault({
         scrollY: true,
         paging: false,
@@ -228,14 +172,8 @@ function loadTableSelectContact() {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     if (resp.data['contact_list_not_map_account']) {
-                        let data_raw = resp.data['contact_list_not_map_account'];
-                        let data_filter = [];
-                        for (let i = 0; i < data_raw.length; i++) {
-                            if (account_owner_id !== data_raw[i].id) {
-                                data_filter.push(data_raw[i]);
-                            }
-                        }
-                        return data_filter;
+                        console.log(selected_contact_list)
+                        return resp.data['contact_list_not_map_account'].concat(selected_contact_list_detail);
                     } else {
                         return [];
                     }
@@ -259,45 +197,43 @@ function loadTableSelectContact() {
             },
             {
                 data: 'job_title',
-                className: 'text-center w-15',
                 render: (data, type, row) => {
-                    return `<span class="text-secondary">${row.job_title}</span>`
+                    return `${row.job_title}`
                 }
             },
             {
                 data: 'owner',
-                className: 'w-20',
                 render: (data, type, row) => {
+                    console.log(row.owner)
                     if (Object.keys(row.owner).length !== 0) {
-                        return `<span class="text-secondary">${row.owner.fullname}</span>`
+                        return `${row.owner.fullname}`
                     }
                     return ``
                 }
             },
             {
                 data: 'mobile',
-                className: 'text-center w-15',
                 render: (data, type, row) => {
                     if (row.mobile !== null) {
-                        return `<span class="text-secondary">${row.mobile}</span>`
+                        return `${row.mobile}`
                     }
                     return ``
                 }
             },
             {
                 data: 'email',
-                className: 'text-center w-15',
                 render: (data, type, row) => {
                     if (row.email !== null) {
-                        return `<span class="text-secondary">${row.email}</span>`
+                        return `${row.email}`
                     }
                     return ``
                 }
             },
             {
                 data: '',
-                className: 'text-center w-5',
+                className: 'w-5',
                 render: (data, type, row) => {
+                    console.log(row.id)
                     if (selected_contact_list.includes(row.id)) {
                         return `<span class="form-check">
                             <input type="checkbox" class="form-check-input selected_contact"
@@ -326,128 +262,7 @@ function loadTableSelectContact() {
     })
 }
 
-function loadTableSelectContactDetail(contact_mapped) {
-    let account_owner_id = accountOwnerEle.val();
-    let selected_contact_list = [];
-    document.querySelectorAll('.selected_contact_full_name').forEach(function (element) {
-        selected_contact_list.push(element.getAttribute('data-id'));
-    })
-    let tbl = $('#datatable-add-contact');
-    tbl.DataTable().clear().destroy();
-    tbl.DataTableDefault({
-        scrollY: true,
-        paging: false,
-        useDataServer: true,
-        rowIdx: true,
-        ajax: {
-            url: tbl.attr('data-url'),
-            type: tbl.attr('data-method'),
-            dataSrc: function (resp) {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (resp.data['contact_list_not_map_account']) {
-                        let data_raw = resp.data['contact_list_not_map_account'];
-                        if (contact_mapped !== undefined) {
-                            data_raw = data_raw.concat(contact_mapped)
-                        }
-                        let data_filter = [];
-                        for (let i = 0; i < data_raw.length; i++) {
-                            if (account_owner_id !== data_raw[i].id) {
-                                data_filter.push(data_raw[i]);
-                            }
-                        }
-                        return data_filter;
-                    } else {
-                        return [];
-                    }
-                }
-                return [];
-            }
-        },
-        columns: [
-            {
-                className: 'w-5',
-                render: () => {
-                    return ``;
-                }
-            },
-            {
-                data: 'fullname',
-                className: 'w-25',
-                render: (data, type, row) => {
-                    return `<span class="text-primary"><b>${row.fullname}</b></span>`
-                }
-            },
-            {
-                data: 'job_title',
-                className: 'text-center w-15',
-                render: (data, type, row) => {
-                    return `<span class="text-secondary">${row.job_title}</span>`
-                }
-            },
-            {
-                data: 'owner',
-                className: 'w-20',
-                render: (data, type, row) => {
-                    if (Object.keys(row.owner).length !== 0) {
-                        return `<span class="text-secondary">${row.owner.fullname}</span>`
-                    }
-                    return ``
-                }
-            },
-            {
-                data: 'mobile',
-                className: 'text-center w-15',
-                render: (data, type, row) => {
-                    if (row.mobile !== null) {
-                        return `<span class="text-secondary">${row.mobile}</span>`
-                    }
-                    return ``
-                }
-            },
-            {
-                data: 'email',
-                className: 'text-center w-15',
-                render: (data, type, row) => {
-                    if (row.email !== null) {
-                        return `<span class="text-secondary">${row.email}</span>`
-                    }
-                    return ``
-                }
-            },
-            {
-                data: '',
-                className: 'text-center w-5',
-                render: (data, type, row) => {
-                    if (selected_contact_list.includes(row.id)) {
-                        return `<span class="form-check">
-                            <input type="checkbox" class="form-check-input selected_contact"
-                            data-id="${row.id}" checked
-                            data-fullname="${row.fullname}"
-                            data-mobile="${row.mobile}"
-                            data-email="${row.email}"
-                            data-job-title="${row.job_title}">
-                            <label class="form-check-label"></label>
-                        </span>`
-                    }
-                    else {
-                        return `<span class="form-check">
-                            <input type="checkbox" class="form-check-input selected_contact"
-                            data-id="${row.id}"
-                            data-fullname="${row.fullname}"
-                            data-mobile="${row.mobile}"
-                            data-email="${row.email}"
-                            data-job-title="${row.job_title}">
-                            <label class="form-check-label"></label>
-                        </span>`
-                    }
-                }
-            },
-        ],
-    })
-}
-
-function loadTableSelectedContact(data) {
+function loadTableSelectedContact(data, option='') {
     let tbl = $('#datatable_contact_list');
     tbl.DataTable().clear().destroy();
     tbl.DataTableDefault({
@@ -458,10 +273,16 @@ function loadTableSelectedContact(data) {
             {
                 className: 'w-5',
                 render: (data, type, row) => {
-                    if (row.owner === true) {
-                        return `<span class="text-primary"><i class="bi bi-check2-square"></i></span>`
+                    let disabled = '';
+                    if (option === 'detail') {
+                        disabled = 'disabled';
                     }
-                    return ``;
+                    if (row.is_owner || current_owner.id === row.id) {
+                        return `<span class="form-check"><input ${disabled} checked name="is_account_owner_radio" type="radio" data-id="${row.id}" class="form-check-input is_account_owner"></span>`;
+                    }
+                    else {
+                        return `<span class="form-check"><input ${disabled} name="is_account_owner_radio" type="radio" data-id="${row.id}" class="form-check-input is_account_owner"></span>`;
+                    }
                 }
             },
             {
@@ -527,14 +348,12 @@ function load_shipping_address_mapped(data) {
     for (let i = 0; i < data.shipping_address.length; i++) {
         let shipping_address = data.shipping_address[i];
         let is_default = '';
-        let default_card_color = '';
         if (shipping_address.is_default === true) {
             is_default = 'checked';
-            default_card_color = 'bg-primary text-dark bg-opacity-10';
         }
         list_shipping_address +=
-            `<tr class="${default_card_color}">
-                <td><span><input type="radio" name="shippingaddressRadio" ${is_default}></span></td>
+            `<tr>
+                <td><span class="form-check"><input type="radio" class="form-check-input" name="shippingaddressRadio" ${is_default}></span></td>
                 <td><span class="shipping_address_full_address">${shipping_address?.['full_address']}</span></td>
                 <td><span><a href="#" class="del-address-item"><i class="bi bi-trash"></i></a></span></td>
                 <td hidden class="shipping_address_country_id">${shipping_address?.['country_id']}</td>
@@ -552,14 +371,12 @@ function load_billing_address_mapped(data) {
     for (let i = 0; i < data.billing_address.length; i++) {
         let billing_address = data.billing_address[i];
         let is_default = '';
-        let default_card_color = '';
         if (billing_address.is_default === true) {
             is_default = 'checked';
-            default_card_color = 'bg-primary text-dark bg-opacity-10';
         }
         list_billing_address +=
-            `<tr class="${default_card_color}">
-                <td><span><input type="radio" name="billingaddressRadio" ${is_default}></span></td>
+            `<tr>
+                <td><span class="form-check"><input type="radio" class="form-check-input" name="billingaddressRadio" ${is_default}></span></td>
                 <td><span class="billing_address_full_address">${billing_address.full_address}</span></td>
                 <td><span><a href="#" class="del-address-item"><i class="bi bi-trash"></i></a></span></td>
                 <td hidden class="billing_address_account_name">${billing_address.account_name}</td>
@@ -670,7 +487,7 @@ function LoadDetail(option) {
             if (data) {
                 WFRTControl.setWFRuntimeID(data['account_detail']?.['workflow_runtime_id']);
                 data = data['account_detail'];
-                // console.log(data)
+                console.log(data)
 
                 $.fn.compareStatusShowPageAction(data);
 
@@ -722,21 +539,25 @@ function LoadDetail(option) {
 
                 loadIndustry(data.industry)
 
-                loadAccountOwner(data.owner, data.contact_mapped)
-                $('#job_title').val(data.owner.job_title).css({color: 'black'});
-                $('#owner-email').val(data.owner.email).css({color: 'black'});
-                $('#owner-mobile').val(data.owner.mobile).css({color: 'black'});
-
                 loadAccountManager(data.manager)
 
                 loadParentAccount(data?.['parent_account_mapped'])
 
-                data_contact_mapped = data.contact_mapped;
-                loadTableSelectedContact(data.contact_mapped);
+                for (let i = 0; i < data.contact_mapped.length; i++) {
+                    if (data.contact_mapped[i].is_owner) {
+                        current_owner = data.contact_mapped[i];
+                    }
+                }
 
                 add_contact_btn_detail.on('click', function () {
-                    loadTableSelectContactDetail(data.contact_mapped);
+                    let contact_mapped_list = [];
+                    $('#datatable_contact_list tbody').find('.selected_contact_full_name').each(function () {
+                        contact_mapped_list.push($(this).attr('data-id'))
+                    })
+                    loadTableSelectContact(contact_mapped_list, data.contact_mapped);
                 })
+
+                loadTableSelectedContact(data.contact_mapped, option);
 
                 // For Detail
                 loadCurrency(data.currency)
@@ -797,7 +618,7 @@ save_shipping_address.on('click', function () {
             }
             tableShippingAddressEle.find('tbody').append(
                 `<tr>
-                    <td><span><input type="radio" name="shippingaddressRadio" ${is_default}></span></td>
+                    <td><span class="form-check"><input class="form-check-input" type="radio" name="shippingaddressRadio" ${is_default}></span></td>
                     <td><span class="shipping_address_full_address">${shipping_address}</span></td>
                     <td><span><a href="#" class="del-address-item"><i class="bi bi-trash"></i></a></span></td>
                     <td hidden class="shipping_address_country_id">${country_id}</td>
@@ -812,6 +633,7 @@ save_shipping_address.on('click', function () {
                 $(this).closest('tr').remove();
             })
         }
+        console.log(shipping_address)
     } catch (error) {
         $.fn.notifyB({description: "No address information!"}, 'failure');
     }
@@ -844,7 +666,7 @@ save_billing_address.on('click', function () {
             }
             tableBillingAddressEle.find('tbody').append(
                 `<tr>
-                    <td><span><input type="radio" name="billingaddressRadio" ${is_default}></span></td>
+                    <td><span class="form-check"><input type="radio" class="form-check-input" name="billingaddressRadio" ${is_default}></span></td>
                     <td><span class="billing_address_full_address">${billing_address}</span></td>
                     <td><span><a href="#" class="del-address-item"><i class="bi bi-trash"></i></a></span></td>
                     <td hidden class="billing_address_account_name">${acc_name}</td>
@@ -948,25 +770,15 @@ new_contact_shortcut.on('click', function () {
 })
 
 add_contact_btn.on('click', function () {
-    loadTableSelectContact();
+    let contact_mapped_list = [];
+    $('#datatable_contact_list tbody').find('.selected_contact_full_name').each(function () {
+        contact_mapped_list.push($(this).attr('data-id'))
+    })
+    loadTableSelectContact(contact_mapped_list);
 })
 
 $(document).on('click', '#btn-add-contact', function () {
     let selected_contact = [];
-    let owner_selected = accountOwnerEle.val();
-    if (owner_selected !== '') {
-        let obj_owner = JSON.parse($('#' + accountOwnerEle.attr('data-idx-data-loaded')).text())[owner_selected];
-        let data = {
-            'id': obj_owner.id,
-            'job_title': obj_owner.job_title,
-            'fullname': obj_owner.fullname,
-            'mobile': obj_owner.mobile,
-            'email': obj_owner.email,
-            'owner': true
-        }
-        selected_contact.push(data)
-    }
-
     document.querySelectorAll('.selected_contact').forEach(function (element) {
         if (element.checked) {
             selected_contact.push({
@@ -979,7 +791,6 @@ $(document).on('click', '#btn-add-contact', function () {
             })
         }
     })
-    data_contact_mapped = selected_contact;
     loadTableSelectedContact(selected_contact);
     checkSelectAll();
 });
@@ -1058,17 +869,6 @@ function get_credit_cards_information() {
     return credit_cards_information;
 }
 
-function get_contacts_mapped() {
-    let contact_mapped_list = [];
-    $('#datatable_contact_list tbody').find('.selected_contact_full_name').each(function () {
-        contact_mapped_list.push({
-            'id': $(this).attr('data-id'),
-            'owner': accountOwnerEle.val() === $(this).attr('data-id')
-        })
-    })
-    return contact_mapped_list;
-}
-
 function get_shipping_address() {
     let shipping_address = [];
     $('#list-shipping-address tbody').find('tr').each(function () {
@@ -1100,11 +900,21 @@ function get_billing_address() {
     return billing_address;
 }
 
+function get_contacts_mapped() {
+    let contact_mapped_list = [];
+    $('#datatable_contact_list tbody').find('.is_account_owner').each(function () {
+        contact_mapped_list.push({
+            'id': $(this).attr('data-id'),
+            'is_owner': $(this).is(':checked')
+        })
+    })
+    return contact_mapped_list;
+}
+
 class AccountHandle {
     load() {
         loadAccountType();
         loadAccountManager();
-        loadAccountOwner();
         loadIndustry();
         loadAccountGroup();
         loadParentAccount();
@@ -1151,9 +961,6 @@ class AccountHandle {
             $.fn.notifyB({description: 'Account group is required.'}, 'failure');
             return false;
         }
-        if (accountOwnerEle.val()) {
-            frm.dataForm['owner'] = accountOwnerEle.val();
-        }
         if (accountManagerEle.val().length > 0) {
             frm.dataForm['manager'] = accountManagerEle.val();
         }
@@ -1199,15 +1006,14 @@ class AccountHandle {
             frm.dataForm['email'] = inputEmail.val();
         }
 
+        frm.dataForm['contact_mapped'] = get_contacts_mapped();
         frm.dataForm['shipping_address_dict'] = get_shipping_address();
         frm.dataForm['billing_address_dict'] = get_billing_address();
-        frm.dataForm['contact_mapped'] = data_contact_mapped;
         frm.dataForm['system_status'] = 1; // save, not draft
 
         let url_return = frm.dataUrl;
 
         if (for_update === true) {
-            frm.dataForm['contact_mapped'] = get_contacts_mapped();
             frm.dataForm['bank_accounts_information'] = get_bank_accounts_information();
             frm.dataForm['credit_cards_information'] = get_credit_cards_information();
 

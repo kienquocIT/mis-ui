@@ -56,20 +56,6 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="row">
-                            <div class="form-group col-7">
-                                <label class="form-label">{% trans "Account Owner" %}</label>
-                                <select id="select-box-contact" class="form-control select2"
-                                        data-method="GET"
-                                        data-url="{% url "ContactListNotMapAccountAPI" %}"
-                                        data-url-detail="{% url "ContactDetailAPI" pk=0 %}">
-                                </select>
-                            </div>
-                            <div class="form-group col-5">
-                                <label class="form-label">{% trans "Job Title" %}</label>
-                                <input class="form-control" type="text" id="job_title" readonly>
-                            </div>
-                        </div>
-                        <div class="row">
                             <div class="form-group">
                                 <label class="form-label required">{% trans "Account Manager" %}</label>
                                 <select id="select-box-acc-manager"
@@ -210,8 +196,43 @@
             </div>
         </div>
 
+        <!-- Contact -->
+        <div class="w-100 p-1 bg-light mt-3">
+            <h5>{% trans "Contact" %}</h5>
+        </div>
+        <div class="row mt-3">
+            <div class="col-5 text-left">
+                <button class="btn btn-soft-primary w-50" id="add-contact-btn" data-bs-toggle="offcanvas"
+                        data-bs-target="#offcanvasRight"
+                        aria-controls="offcanvasExample" type="button">
+                    <span>
+                        <span>{% trans 'Select Contacts' %}</span>
+                        <span class="icon">
+                            <i class="fas fa-plus-circle"></i>
+                        </span>
+                    </span>
+                </button>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-12 container">
+                <table id="datatable_contact_list" class="table nowrap w-100"
+                       data-method="GET">
+                    <thead>
+                    <th class="w-10">{% trans "Account Owner" %}</th>
+                    <th class="w-40">{% trans "Name" %}</th>
+                    <th>{% trans "Job title" %}</th>
+                    <th>{% trans "Phone number" %}</th>
+                    <th>{% trans "Email address" %}</th>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+        <!-- End Contact -->
+
         <!-- Shipping Address -->
-        <div class="w-100 p-1 bg-light mt-10">
+        <div class="w-100 p-1 bg-light mt-3">
             <h5>{% trans "Shipping Address" %}</h5>
         </div>
         <div class="row mt-3">
@@ -227,8 +248,18 @@
                             </span>
                         </button>
                     </div>
-                    <div id="list-shipping-address" class="col-7"></div>
                 </div>
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <table class="table w-100" id="list-shipping-address">
+                            <thead>
+                            <th class="w-10">{% trans 'Default' %}</th>
+                            <th class="w-85">{% trans 'Full address' %}</th>
+                            <th class="w-5"></th>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
             </div>
         </div>
         <!-- End Shipping Address -->
@@ -250,45 +281,22 @@
                             </span>
                         </button>
                     </div>
-                    <div id="list-billing-address" class="col-7"></div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <table class="table w-100" id="list-billing-address">
+                            <thead>
+                            <th class="w-10">{% trans 'Default' %}</th>
+                            <th class="w-85">{% trans 'Full address' %}</th>
+                            <th class="w-5"></th>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
         <!-- End Billing Address -->
-
-        <!-- Contact -->
-        <div class="w-100 p-1 bg-light mt-3">
-            <h5>{% trans "Contact" %}</h5>
-        </div>
-        <div class="row mt-3">
-            <div class="col-5 text-left">
-                <button class="btn btn-soft-primary w-50" id="add-contact-btn" data-bs-toggle="offcanvas"
-                        data-bs-target="#offcanvasRight"
-                        aria-controls="offcanvasExample" type="button">
-                    <span>
-                        <span>{% trans 'Add Contact' %}</span>
-                        <span class="icon">
-                            <i class="fas fa-plus-circle"></i>
-                        </span>
-                    </span>
-                </button>
-            </div>
-            <div class="col-6 container mb-20">
-                <h6 class="text-muted">{% trans 'Contacts Mapped' %}</h6>
-                <table id="datatable_contact_list" class="table nowrap w-100"
-                       data-method="GET">
-                    <thead>
-                    <th>{% trans "Owner" %}</th>
-                    <th>{% trans "Name" %}</th>
-                    <th>{% trans "Job title" %}</th>
-                    <th>{% trans "Phone number" %}</th>
-                    <th>{% trans "Email address" %}</th>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-        </div>
-        <!-- End Contact -->
 
         <!-- Modal Shipping Address -->
         <div class="modal fade" id="modal-shipping-address" tabindex="-1" role="dialog"

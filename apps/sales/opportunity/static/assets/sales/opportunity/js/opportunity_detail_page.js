@@ -25,6 +25,7 @@ $(document).ready(function () {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 let opportunity_detail = data?.['opportunity'];
+                $x.fn.renderCodeBreadcrumb(opportunity_detail);
                 await OpportunityLoadDetail.loadDetailCommon(opportunity_detail);
 
                 if (opportunity_detail.lost_by_other_reason) {

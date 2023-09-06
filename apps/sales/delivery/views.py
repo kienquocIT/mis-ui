@@ -4,7 +4,7 @@ from django.views import View
 from rest_framework import status
 from rest_framework.views import APIView
 
-from apps.shared import mask_view, ServerAPI, ApiURL, PICKING_STATE
+from apps.shared import mask_view, ServerAPI, ApiURL, PICKING_STATE, InputMappingProperties
 
 __all__ = [
     'DeliveryConfigDetail', 'DeliveryConfigDetailAPI', 'OrderPickingList', 'OrderPickingListAPI', 'OrderPickingDetail',
@@ -191,9 +191,12 @@ class OrderDeliveryEdit(View):
         menu_active='menu_order_delivery_list',
     )
     def get(self, request, *args, pk, **kwargs):
+        input_mapping_properties = InputMappingProperties.DELIVERY_ORDER_DELIVERY
         result = {
             'pk': pk,
             'state_choices': {key: value for key, value in DELIVERY_STATE},
+            'input_mapping_properties': input_mapping_properties,
+            'form_id': 'delivery_form'
         }
         return result, status.HTTP_200_OK
 

@@ -5,18 +5,14 @@
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
 {% block pageAction %}
-    <a href="#"
-       data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'Save' %}"
-       data-bs-original-title="Save">
-        <button class="btn btn-outline-primary" type="submit" form="frm_quotation_create">
-            <span>
-                <span>{% trans 'Save' %}</span>
-                <span class="icon">
-                    <i class="fa-regular fa-floppy-disk"></i>
-                </span>
+    <button class="btn btn-outline-primary" type="submit" form="frm_quotation_create">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
             </span>
-        </button>
-    </a>
+        </span>
+    </button>
 {% endblock %}
 
 {% block pageContent %}
@@ -49,6 +45,20 @@
                 <div class="container-fluid">
                     <div class="collapse multi-collapse show" id="collapseExample">
                         <div class="row">
+                            <div class="col-6"></div>
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="col-8"></div>
+                                    <div class="col-2">
+                                        <h5 class="text-primary" id="quotation-create-code"></h5>
+                                    </div>
+                                    <div class="col-2" id="quotation-create-status">
+                                        <span class="badge badge-soft-success"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
                             <div class="col-6">
                                 <div class="form-group">
                                     <label class="form-label" for="quotation-create-title">{% trans 'Title' %}<span class="required"></span></label>
@@ -59,25 +69,6 @@
                                             required
                                     >
                                 </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="form-group">
-                                    <label class="form-label" for="quotation-create-code">{% trans 'Code' %}</label>
-                                    <div class="input-group">
-                                        <span class="input-affix-wrapper">
-                                            <input
-                                                    type="text" class="form-control disabled-custom-show"
-                                                    name="quotation_code"
-                                                    id="quotation-create-code"
-                                                    disabled
-                                            >
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-6">
                                 <div class="form-group">
                                     <label class="form-label" for="select-box-quotation-create-opportunity">{% trans 'Select Opportunity' %}</label>
                                     <div class="input-group">
@@ -85,7 +76,7 @@
                                             <span class="input-prefix">
                                                 <div class="btn-group dropstart">
                                                     <i
-                                                            class="fas fa-info-circle"
+                                                            class="fas fa-info-circle text-blue"
                                                             data-bs-toggle="dropdown"
                                                             data-dropdown-animation
                                                             aria-haspopup="true"
@@ -114,7 +105,7 @@
                                             <span class="input-prefix">
                                                 <div class="btn-group dropstart">
                                                     <i
-                                                            class="fas fa-info-circle"
+                                                            class="fas fa-info-circle text-blue"
                                                             data-bs-toggle="dropdown"
                                                             data-dropdown-animation
                                                             aria-haspopup="true"
@@ -144,7 +135,7 @@
                                             <span class="input-prefix">
                                                 <div class="btn-group dropstart">
                                                     <i
-                                                            class="fas fa-info-circle"
+                                                            class="fas fa-info-circle text-blue"
                                                             data-bs-toggle="dropdown"
                                                             data-dropdown-animation
                                                             aria-haspopup="true"
@@ -167,40 +158,10 @@
                                         </span>
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <label class="form-label" for="select-box-quotation-create-payment-term">{% trans 'Select Payment Terms' %}<span class="required"></span></label>
-                                    <div class="input-group">
-                                        <span class="input-affix-wrapper">
-                                            <span class="input-prefix">
-                                                <div class="btn-group dropstart">
-                                                    <i
-                                                            class="fas fa-info-circle"
-                                                            data-bs-toggle="dropdown"
-                                                            data-dropdown-animation
-                                                            aria-haspopup="true"
-                                                            aria-expanded="false"
-                                                            disabled
-                                                    ></i>
-                                                    <div class="dropdown-menu w-210p mt-4"></div>
-                                                </div>
-                                            </span>
-                                            <select
-                                                    class="form-select"
-                                                    id="select-box-quotation-create-payment-term"
-                                                    data-url="{% url "PaymentsTermsListAPI" %}"
-                                                    data-link-detail=""
-                                                    data-method="GET"
-                                                    name="payment_term"
-                                                    data-keyResp="payment_terms_list"
-                                                    required
-                                            ></select>
-                                        </span>
-                                    </div>
-                                </div>
                             </div>
                             <div class="col-6">
                                 <div class="form-group">
-                                    <label class="form-label" for="quotation-create-date-created">{% trans 'Date Created' %}</label>
+                                    <label class="form-label" for="quotation-create-date-created">{% trans 'Date Created' %}<span class="required"></span></label>
                                     <div class="input-group">
                                         <span class="input-affix-wrapper">
                                             <input
@@ -209,19 +170,7 @@
                                                 name="date_created"
                                                 id="quotation-create-date-created"
                                                 disabled
-                                            >
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label" for="quotation-create-status">{% trans 'Status' %}</label>
-                                    <div class="input-group">
-                                        <span class="input-affix-wrapper">
-                                            <input
-                                                type="text" class="form-control"
-                                                name="status"
-                                                id="quotation-create-status"
-                                                disabled
+                                                required
                                             >
                                         </span>
                                     </div>
@@ -233,7 +182,7 @@
                                             <span class="input-prefix">
                                                 <div class="btn-group dropstart">
                                                     <i
-                                                            class="fas fa-info-circle"
+                                                            class="fas fa-info-circle text-blue"
                                                             data-bs-toggle="dropdown"
                                                             data-dropdown-animation
                                                             aria-haspopup="true"
@@ -257,13 +206,43 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
+                                    <label class="form-label" for="select-box-quotation-create-payment-term">{% trans 'Select Payment Terms' %}<span class="required"></span></label>
+                                    <div class="input-group">
+                                        <span class="input-affix-wrapper">
+                                            <span class="input-prefix">
+                                                <div class="btn-group dropstart">
+                                                    <i
+                                                            class="fas fa-info-circle text-blue"
+                                                            data-bs-toggle="dropdown"
+                                                            data-dropdown-animation
+                                                            aria-haspopup="true"
+                                                            aria-expanded="false"
+                                                            disabled
+                                                    ></i>
+                                                    <div class="dropdown-menu w-210p mt-4"></div>
+                                                </div>
+                                            </span>
+                                            <select
+                                                    class="form-select"
+                                                    id="select-box-quotation-create-payment-term"
+                                                    data-url="{% url "PaymentsTermsListAPI" %}"
+                                                    data-link-detail=""
+                                                    data-method="GET"
+                                                    name="payment_term"
+                                                    data-keyResp="payment_terms_list"
+                                                    required
+                                            ></select>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
                                     <label class="form-label" for="select-box-quotation">{% trans 'Select Quotation' %}</label>
                                     <div class="input-group">
                                         <span class="input-affix-wrapper">
                                             <span class="input-prefix">
                                                 <div class="btn-group dropstart">
                                                     <i
-                                                            class="fas fa-info-circle"
+                                                            class="fas fa-info-circle text-blue"
                                                             data-bs-toggle="dropdown"
                                                             data-dropdown-animation
                                                             aria-haspopup="true"
@@ -458,11 +437,18 @@
                                             <div class="col-4">
                                                 <button
                                                     type="button"
-                                                    class="btn btn-soft-info"
+                                                    class="btn btn-success btn-animated bg-green-light-5"
                                                     data-bs-toggle="modal"
                                                     data-bs-target="#shippingFeeModalCenter"
                                                     id="btn-add-shipping"
-                                            >{% trans 'Add Shipping Fee' %}</button>
+                                                >
+                                                    <span class="text-teal">
+                                                        <span class="icon">
+                                                            <i class="fas fa-shipping-fast"></i>
+                                                        </span>
+                                                        <span>{% trans 'Add Shipping Fee' %}</span>
+                                                    </span>
+                                                </button>
                                             <div
                                                     class="modal fade" id="shippingFeeModalCenter" tabindex="-1"
                                                     role="dialog" aria-labelledby="shippingFeeModalCenter"
@@ -587,13 +573,25 @@
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <button
+                                            <div class="col-4"></div>
+                                            <div class="col-2"></div>
+                                            <div class="col-6">
+                                                <button
                                                     type="button"
-                                                    class="btn btn-soft-success"
+                                                    class="btn btn-warning btn-animated bg-yellow-light-5"
                                                     data-bs-toggle="modal"
                                                     data-bs-target="#promotionModalCenter"
                                                     id="btn-check-promotion"
-                                            >{% trans 'Check available promotion' %}</button>
+                                                >
+                                                    <span class="text-brown">
+                                                        <span class="icon">
+                                                            <i class="fas fa-gift"></i>
+                                                        </span>
+                                                        <span>{% trans 'Check available promotion' %}</span>
+                                                    </span>
+                                                </button>
+                                            </div>
+
                                             <div
                                                     class="modal fade" id="promotionModalCenter" tabindex="-1"
                                                     role="dialog" aria-labelledby="promotionModalCenter"
@@ -959,7 +957,7 @@
                         <div class="col-2">
                             <button
                                     type="button"
-                                    class="btn btn-soft-success"
+                                    class="btn btn-soft-primary"
                                     id="btn-refresh-quotation-indicator"
                             >
                             <span><span class="icon"><span class="feather-icon"><i class="fa-solid fa-arrows-rotate"></i></span></span><span>{% trans 'Refresh data' %}</span></span>

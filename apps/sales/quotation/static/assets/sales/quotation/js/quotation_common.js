@@ -102,7 +102,16 @@ class QuotationLoadDataHandle {
                     btnCopy.setAttribute('disabled', 'true');
                     eleTooltipBtnCopy.removeAttribute('data-bs-original-title');
                     eleTooltipBtnCopy.setAttribute('data-bs-placement', 'top');
-                    eleTooltipBtnCopy.setAttribute('title', $.fn.transEle.attr('data-valid-btn-copy'));
+                    let titleText = '';
+                    if (dataOpp.is_close_lost === true || dataOpp.is_deal_close === true) {
+                        titleText += $.fn.transEle.attr('data-opp-closed');
+                        titleText += ',';
+                    }
+                    if (dataOpp.sale_order_id !== null) {
+                        titleText += $.fn.transEle.attr('data-opp-had-sale-order');
+                        titleText += ',';
+                    }
+                    eleTooltipBtnCopy.setAttribute('title', titleText);
                 }
             }
         }
@@ -454,7 +463,10 @@ class QuotationLoadDataHandle {
         let method = ele.attr('data-method');
         $('#datable-copy-quotation').DataTable().destroy();
         if (sale_person_id) {
-            let data_filter = {'employee_inherit': sale_person_id};
+            let data_filter = {
+                'employee_inherit': sale_person_id,
+                'system_status__in': [2, 3].join(','),
+            };
             if (opp_id) {
                 data_filter['opportunity'] = opp_id;
                 data_filter['opportunity__sale_order__isnull'] = true;
@@ -673,9 +685,9 @@ class QuotationLoadDataHandle {
         if (data.title && is_copy === false) {
             document.getElementById('quotation-create-title').value = data.title;
         }
-        if (data.code) {
+        if (data.code && is_copy === false) {
             if ($('#quotation-create-code').length) {
-                document.getElementById('quotation-create-code').value = data.code;
+                document.getElementById('quotation-create-code').innerHTML = data.code;
             }
         }
         if (data.opportunity) {
@@ -712,27 +724,27 @@ class QuotationLoadDataHandle {
         if (data.is_customer_confirm && is_copy === false) {
             $('#quotation-customer-confirm')[0].checked = data.is_customer_confirm;
         }
-        if (data.system_status) {
-            let data_status = {
-                'Draft': 0,
-                'Created': 1,
-                'Added': 2,
-                'Finish': 3,
-                'Cancel': 4,
-            }
-            let css_status = {
-                'Draft': 'status-draft',
-                'Created': 'status-created',
-                'Added': 'status-added',
-                'Finish': 'status-finish',
-                'Cancel': 'status-cancel',
-            }
+        if (data.system_status && is_copy === false) {
             let eleStatus = $('#quotation-create-status');
-            eleStatus.val(data.system_status);
-            eleStatus[0].setAttribute('data-value', data_status[data.system_status]);
-            eleStatus[0].className = '';
-            eleStatus[0].classList.add('form-control');
-            eleStatus[0].classList.add(css_status[data.system_status]);
+            let status_data = {
+                "Draft": "badge badge-soft-light",
+                "Created": "badge badge-soft-primary",
+                "Added": "badge badge-soft-info",
+                "Finish": "badge badge-soft-success",
+                "Cancel": "badge badge-soft-danger",
+            }
+            let statusHTML = `<span class="${status_data[data?.['system_status']]}">${data?.['system_status']}</span>`;
+            eleStatus.empty();
+            eleStatus.append(statusHTML);
+            // check if is not finish then disable btn copy
+            if (!['Added', 'Finish'].includes(data?.['system_status'])) {
+                let btnCopy = document.getElementById('btn-copy-quotation');
+                let eleTooltipBtnCopy = document.getElementById('tooltip-btn-copy');
+                btnCopy.setAttribute('disabled', 'true');
+                eleTooltipBtnCopy.removeAttribute('data-bs-original-title');
+                eleTooltipBtnCopy.setAttribute('data-bs-placement', 'top');
+                eleTooltipBtnCopy.setAttribute('title', $.fn.transEle.attr('data-not-allow-use'));
+            }
         }
         if (is_copy === true) {
             let boxQuotation = $('#select-box-quotation');
@@ -981,7 +993,7 @@ class QuotationDataTableHandle {
                                         <span class="input-prefix">
                                             <div class="btn-group dropstart">
                                                 <i
-                                                    class="fas fa-info-circle"
+                                                    class="fas fa-info-circle text-blue"
                                                     data-bs-toggle="dropdown"
                                                     data-dropdown-animation
                                                     aria-haspopup="true"
@@ -1015,7 +1027,7 @@ class QuotationDataTableHandle {
                                     <span class="input-affix-wrapper">
                                         <span class="input-prefix">
                                             <a href="${link}" target="_blank">
-                                                <i class="fas fa-gift"></i>
+                                                <i class="fas fa-gift text-brown"></i>
                                             </a>
                                         </span>
                                         <input type="text" class="form-control table-row-promotion disabled-custom-show" value="${row.product_title}" data-id="${row.promotion.id}" data-is-promotion-on-row="${row.is_promotion_on_row}" data-id-product="${row.product.id}" data-bs-toggle="tooltip" title="${row.product_title}" disabled>
@@ -1037,7 +1049,7 @@ class QuotationDataTableHandle {
                                     <span class="input-affix-wrapper">
                                         <span class="input-prefix">
                                             <a href="${link}" target="_blank">
-                                                <i class="fas fa-shipping-fast"></i>
+                                                <i class="fas fa-shipping-fast text-teal"></i>
                                             </a>
                                         </span>
                                         <input type="text" class="form-control table-row-shipping disabled-custom-show" value="${row.product_title}" data-id="${row.shipping.id}" data-shipping-price-margin="${price_margin}" data-bs-toggle="tooltip" title="${row.product_title}" disabled>
@@ -1310,7 +1322,7 @@ class QuotationDataTableHandle {
                                         <span class="input-prefix">
                                             <div class="btn-group dropstart">
                                                 <i
-                                                    class="fas fa-info-circle"
+                                                    class="fas fa-info-circle text-blue"
                                                     data-bs-toggle="dropdown"
                                                     data-dropdown-animation
                                                     aria-haspopup="true"
@@ -1345,7 +1357,7 @@ class QuotationDataTableHandle {
                                     <span class="input-affix-wrapper">
                                         <span class="input-prefix">
                                             <a href="${link}" target="_blank">
-                                                <i class="fas fa-shipping-fast"></i>
+                                                <i class="fas fa-shipping-fast text-teal"></i>
                                             </a>
                                         </span>
                                         <input type="text" class="form-control table-row-shipping disabled-custom-show" value="${row.product_title}" data-id="${row.shipping.id}" data-bs-toggle="tooltip" title="${row.product_title}" disabled>
@@ -1537,7 +1549,7 @@ class QuotationDataTableHandle {
                                                 <span class="input-prefix">
                                                     <div class="btn-group dropdown">
                                                         <i
-                                                            class="fas fa-info-circle"
+                                                            class="fas fa-info-circle text-blue"
                                                             data-bs-toggle="dropdown"
                                                             data-dropdown-animation
                                                             aria-haspopup="true"

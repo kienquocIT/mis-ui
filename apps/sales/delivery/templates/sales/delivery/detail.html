@@ -75,7 +75,7 @@
                            class="form-label">{% trans 'Estimated Delivery Date' %}</label>
                     <div class="input-affix-wrapper">
                         <input type="text" name="estimated_delivery_date" id="inputDeliveryDate"
-                               class="form-control date-picker" autocomplete="off" readonly>
+                               class="form-control date-picker" autocomplete="off" disabled>
                         <span class="input-suffix">
                             <i class="fa-solid fa-calendar-days"></i>
                         </span>
@@ -104,7 +104,7 @@
                     <label for="inputActualDate" class="form-label">{% trans 'Actual Date' %}</label>
                     <div class="input-affix-wrapper">
                         <input type="text" name="actual_delivery_date" id="inputActualDate"
-                               class="form-control date-picker" autocomplete="off" readonly>
+                               class="form-control date-picker" autocomplete="off" disabled>
                         <span class="input-suffix">
                             <i class="fa-solid fa-calendar-days"></i>
                         </span>
@@ -262,7 +262,7 @@
                 </table>
             </div>
             <div class="modal-footer justify-content-between ">
-				<button type="button" class="btn btn-primary" id="save-stock">{% trans 'Get' %}</button>
+				<button type="button" class="btn btn-primary" id="save-stock" disabled>{% trans 'Get' %}</button>
 				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
 			</div>
         </div>

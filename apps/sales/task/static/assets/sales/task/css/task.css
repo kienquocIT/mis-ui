@@ -110,10 +110,19 @@
 #kb_sub_scroll{
     display:none
 }
+
 .isOpened #kb_sub_scroll{
     display: block;
     height:100%
 }
+
 .visible-hidden{
     visibility: hidden;
+}
+
+.list_act-wrap{
+    display: inline-block;
+}
+.dropdown-menu-end{
+    min-width: auto;
 }

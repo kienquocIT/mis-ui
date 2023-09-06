@@ -197,7 +197,6 @@ function loadSaleDefaultUom(uom_list, url) {
                 method: 'GET',
             },
             callbackDataResp: function (resp, keyResp) {
-                console.log(resp.data[keyResp]?.['uom'])
                 return resp.data[keyResp]?.['uom'];
             },
             data: null,
@@ -213,7 +212,6 @@ function loadSaleDefaultUom(uom_list, url) {
                 method: 'GET',
             },
             callbackDataResp: function (resp, keyResp) {
-                console.log(resp.data[keyResp]?.['uom'])
                 return resp.data[keyResp]?.['uom'];
             },
             data: uom_list,
@@ -255,7 +253,6 @@ async function loadPriceList() {
                         </div>
                     </div>`;
                 }
-                console.log(html)
                 ele.find('.ul-price-list').html(html);
             }
         }
@@ -272,7 +269,6 @@ function loadInventoryDefaultUom(uom_list, url) {
                 method: 'GET',
             },
             callbackDataResp: function (resp, keyResp) {
-                console.log(resp.data[keyResp]?.['uom'])
                 return resp.data[keyResp]?.['uom'];
             },
             data: (uom_list ? uom_list : null),
@@ -294,7 +290,6 @@ function loadInventoryDefaultUom(uom_list, url) {
                 method: 'GET',
             },
             callbackDataResp: function (resp, keyResp) {
-                console.log(resp.data[keyResp]?.['uom'])
                 return resp.data[keyResp]?.['uom'];
             },
             data: uom_list,
@@ -319,7 +314,6 @@ function loadPurchaseDefaultUom(uom_list, url) {
                 method: 'GET',
             },
             callbackDataResp: function (resp, keyResp) {
-                console.log(resp.data[keyResp]?.['uom'])
                 return resp.data[keyResp]?.['uom'];
             },
             data: (uom_list ? uom_list : null),
@@ -335,7 +329,6 @@ function loadPurchaseDefaultUom(uom_list, url) {
                 method: 'GET',
             },
             callbackDataResp: function (resp, keyResp) {
-                console.log(resp.data[keyResp]?.['uom'])
                 return resp.data[keyResp]?.['uom'];
             },
             data: uom_list,
@@ -532,7 +525,6 @@ function loadWareHouseListDetail(warehouse_stock_list) {
                             resp.data['warehouse_list'][i].wait_for_receipt_value = wait_for_receipt_value;
                             resp.data['warehouse_list'][i].available_value = available_value;
                         }
-                        console.log(resp.data['warehouse_list'])
                         return resp.data['warehouse_list'];
                     } else {
                         return [];
@@ -709,6 +701,7 @@ function getDataForm() {
     data['general_product_type'] = $('#general-select-box-product-type option:selected').attr('value');
     data['general_product_category'] = $('#general-select-box-product-category option:selected').attr('value');
     data['general_uom_group'] = $('#general-select-box-uom-group option:selected').attr('value');
+    data['general_traceability_method'] = $('#general-select-box-traceability-method option:selected').attr('value');
 
     if (check_tab_sale.is(':checked') === true) {
         data['product_choice'].push(0)
@@ -876,6 +869,7 @@ function LoadDetailProduct(option) {
                     loadGeneralProductType(general_information['product_type']);
                     loadGeneralProductCategory(general_information['product_category']);
                     loadGeneralUoMGroup(general_information['uom_group']);
+                    $('#general-select-box-traceability-method').val(general_information['traceability_method']);
                     if (Object.keys(general_information['product_size']).length !== 0) {
                         lengthEle.val(general_information['product_size']['length']);
                         widthEle.val(general_information['product_size']['width']);

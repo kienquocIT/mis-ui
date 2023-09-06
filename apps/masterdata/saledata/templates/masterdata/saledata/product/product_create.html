@@ -122,6 +122,16 @@
                                         data-url-detail="{% url "UnitOfMeasureGroupDetailAPI" pk=0 %}"></select>
                             </div>
                         </div>
+                        <div class="row form-group">
+                            <label class="col-4 col-form-label">{% trans "Traceability method" %}</label>
+                            <div class="col-8">
+                                <select id="general-select-box-traceability-method" class="form-select" data-method="GET">
+                                    <option value="0">{% trans "None" %}</option>
+                                    <option value="1">{% trans "Batch/Lot number" %}</option>
+                                    <option value="2">{% trans "Serial number" %}</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
                     <div class="col-1"></div>
                     <div class="col-6">

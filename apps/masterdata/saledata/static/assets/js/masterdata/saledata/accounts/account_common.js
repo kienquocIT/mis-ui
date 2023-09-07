@@ -134,7 +134,8 @@ function loadAccountOwner(accountOwnerData, contact_mapped) {
             })
 
             if (reselect_owner === true) {
-                loadTableSelectedContact([data]);
+                console.log(data_contact_mapped)
+                loadTableSelectedContact(data_contact_mapped.push(data));
             }
         }
     });
@@ -214,7 +215,7 @@ function loadTableSelectContact() {
         selected_contact_list.push(element.getAttribute('data-id'));
     })
     let tbl = $('#datatable-add-contact');
-    tbl.DataTable().destroy();
+    tbl.DataTable().clear().destroy();
     tbl.DataTableDefault({
         scrollY: true,
         paging: false,
@@ -332,7 +333,7 @@ function loadTableSelectContactDetail(contact_mapped) {
         selected_contact_list.push(element.getAttribute('data-id'));
     })
     let tbl = $('#datatable-add-contact');
-    tbl.DataTable().destroy();
+    tbl.DataTable().clear().destroy();
     tbl.DataTableDefault({
         scrollY: true,
         paging: false,
@@ -448,7 +449,7 @@ function loadTableSelectContactDetail(contact_mapped) {
 
 function loadTableSelectedContact(data) {
     let tbl = $('#datatable_contact_list');
-    tbl.DataTable().destroy();
+    tbl.DataTable().clear().destroy();
     tbl.DataTableDefault({
         dom: '',
         paging: false,
@@ -661,8 +662,6 @@ function load_credit_cards_mapped(data) {
 }
 
 function LoadDetail(option) {
-    new AccountHandle().load();
-    // load data detail
     let pk = $.fn.getPkDetail()
     let url_loaded = $('#form-detail-update-account').attr('data-url').replace(0, pk);
     $.fn.callAjax(url_loaded, 'GET').then(
@@ -1206,7 +1205,6 @@ class AccountHandle {
         frm.dataForm['system_status'] = 1; // save, not draft
 
         let url_return = frm.dataUrl;
-        let urlRedirect_return = frm?.['urlRedirect'];
 
         if (for_update === true) {
             frm.dataForm['contact_mapped'] = get_contacts_mapped();
@@ -1234,14 +1232,13 @@ class AccountHandle {
 
             let pk = $.fn.getPkDetail()
             url_return = frm.dataUrl.format_url_with_uuid(pk);
-            urlRedirect_return = frm.dataUrlRedirect.format_url_with_uuid(pk);
         }
 
         return {
             url: url_return,
             method: frm.dataMethod,
             data: frm.dataForm,
-            urlRedirect: urlRedirect_return,
+            urlRedirect: frm.dataUrlRedirect,
         };
     }
 }

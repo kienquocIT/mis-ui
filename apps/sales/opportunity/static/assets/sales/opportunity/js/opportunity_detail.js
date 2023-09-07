@@ -1334,12 +1334,18 @@ $(document).ready(async function () {
 
             const assign_to = $('#selectAssignTo').select2('data')[0]
             let assign_toData = {}
-            if (assign_to)
+            if (assign_to){
                 assign_toData = {
                     'id': assign_to.id,
                     'first_name': assign_to.text.split('. ')[1],
                     'last_name': assign_to.text.split('. ')[0],
                 }
+                formData.employee_inherit_id = assign_to.id
+            }
+            else{
+                $.fn.notifyB({'description': $('#trans-factory').attr('data-assignee_empty')}, 'failure')
+                return false
+            }
 
             formData.checklist = []
             $('.wrap-checklist .checklist_item').each(function () {
@@ -1364,7 +1370,14 @@ $(document).ready(async function () {
                 method = 'PUT'
                 url = $('#url-factory').attr('data-task-detail').format_url_with_uuid(formData.id)
             }
-            $.fn.callAjax(url, method, formData, true).then(
+            $.fn.callAjax2({
+                'url': url,
+                'method': method,
+                'data': formData,
+                'sweetAlertOpts': {
+                    'allowOutsideClick': true
+                }
+            }).then(
                 (resp) => {
                     const data = $.fn.switcherResp(resp);
                     if (data) {
@@ -1389,7 +1402,11 @@ $(document).ready(async function () {
 
                         callAjaxtoLoadTimeLineList();
                     }
-                })
+                },
+                (error) =>{
+                    console.log(error)
+                }
+            )
         })
     }, jQuery)
 
@@ -1528,7 +1545,7 @@ $(document).ready(async function () {
     function loadTimelineList(data_timeline_list) {
         const $urlElm = $('#url-factory')
         const $trans = $('#trans-factory')
-        $('#table-timeline').DataTable().destroy();
+        $('#table-timeline').DataTable().clear().destroy();
         let dtb = $('#table-timeline');
         const type_trans = {
             0: $trans.attr('data-activity-type01'),

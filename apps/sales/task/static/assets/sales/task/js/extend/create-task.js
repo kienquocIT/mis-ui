@@ -75,13 +75,16 @@ class AssignToSetup {
                             {
                                 "id": "",
                                 "full_name": "",
-                                "selected": !userSelect.hasOwnProperty('id')
+                                "selected": true
                             }
                         ]
                         let checkDup = false
                         for (const item of data.opportunity.opportunity_sale_team_datas){
                             let temp = false
-                            if (userSelect.hasOwnProperty('id') && userSelect.id === item?.member.id) temp = true
+                            if (userSelect.hasOwnProperty('id') && userSelect.id === item?.member.id){
+                                temp = true
+                                selectOpt[0].selected = false
+                            }
                             selectOpt.push({
                                 'id': item?.member?.id,
                                 "full_name": item?.member?.name,
@@ -92,8 +95,10 @@ class AssignToSetup {
                         // add user inherit in list user assign
                         if (!checkDup){
                             let temp = false
-                            if (userSelect.hasOwnProperty('id') && userSelect.id === data.opportunity.sale_person.id)
+                            if (userSelect.hasOwnProperty('id') && userSelect.id === data.opportunity.sale_person.id){
                                 temp = true
+                                selectOpt[0].selected = false
+                            }
                             selectOpt.push({
                                 "id": data.opportunity.sale_person.id,
                                 "full_name": data.opportunity.sale_person.full_name,
@@ -485,8 +490,7 @@ $(function () {
                 if (assign_to){
                     assign_toData = {
                         'id': assign_to.id,
-                        'first_name': assign_to.text.split('. ')[1],
-                        'last_name': assign_to.text.split('. ')[0],
+                        'full_name': assign_to.text,
                     }
                     formData.employee_inherit_id = assign_to.id
                 }
@@ -542,7 +546,7 @@ $(function () {
                                 // case create
                                 if (data?.id) formData = data
                                 const datadump = JSON.stringify(formData)
-                                elm.attr('data-task', datadump)
+                                elm.removeAttr('data-task').attr('data-task', datadump)
                                 $('body').append(elm)
                             }
                             if ($('.current-create-task').length) $('.cancel-task').trigger('click')

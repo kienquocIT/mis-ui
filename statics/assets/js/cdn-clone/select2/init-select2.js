@@ -67,6 +67,22 @@ class SelectDDControl {
         return state;
     }
 
+    get __auto_selected_data_onload(){
+        let configKey = this.opts?.['selectedDataOnload'];
+        let configAttr = this.ele.attr('data-selectedDataOnload');
+
+        if (configKey === undefined || configAttr === undefined){
+            return true
+        } else if (typeof configKey === "boolean"){
+            return configKey
+        } else if (configAttr === 'true'){
+            return true;
+        } else if (configAttr === 'false'){
+            return false;
+        }
+        return true;
+    }
+
     get _data_getDataOnload() {
         // Get dataOnload from OPTS or attribute data-onload
         // Priority:
@@ -469,11 +485,12 @@ class SelectDDControl {
         let initData = [];
         let data = this._data_getDataOnload;
         if (data && Array.isArray(data)) {
+            let autoSelected = (this.__auto_selected_data_onload === true);
             let keyId = this._data_keyId;
             let keyText = this._data_keyText;
             initData = data.map((item) => {
                 let selected = item?.['selected']
-                if (typeof selected === undefined) selected = true
+                if (typeof selected !== "boolean") selected = autoSelected;
                 return {
                     'id': this.callbackValueId(item, keyId),
                     'text': this.callbackTextDisplay(item, keyText),

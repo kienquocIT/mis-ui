@@ -1,0 +1,743 @@
+{% load static i18n %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Meta Tags -->
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jampack - Admin CRM Dashboard Template</title>
+    <meta
+            name="description"
+            content="A modern CRM Dashboard Template with reusable and flexible components for your SaaS web applications by hencework. Based on Bootstrap."
+    />
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="{% static 'assets/images/logo/logo-28x16.png' %}">
+    <link rel="icon" href="{% static 'assets/images/logo/logo-28x16.png' %}" type="image/x-icon">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+            rel="stylesheet"
+            href="//fonts.googleapis.com/css?family=Google+Sans:400,500,600|Roboto:400,400italic,500,500italic,700,700italic|Roboto+Mono:400,500,700&amp;display=swap"
+    >
+
+    <!-- CSS -->
+    <link href="{% static 'assets/css/style.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'assets/css/my-style.css' %}" rel="stylesheet" type="text/css">
+
+    <link rel="stylesheet" href="{% static 'vendors/bootstrap/dist/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'vendors/bootstrap/dist/css/bootstrap-reboot.min.css' %}">
+    <link rel="stylesheet" href="{% static 'vendors/bootstrap/dist/css/bootstrap-grid.min.css' %}">
+    <link rel="stylesheet" href="{% static 'vendors/bootstrap/dist/css/bootstrap-utilities.min.css' %}">
+    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
+
+    <link
+            rel="stylesheet"
+            href="{% static 'vendors/horizontal-vertical-timeline-plugin-jquery/dist/css/timeline.min.css' %}"
+    >
+
+    <style>
+        html, body {
+            color: rgb(32, 33, 36);
+            font: 400 16px/24px "Roboto", "Google Sans", "Roboto Mono", sans-serif;
+            -moz-osx-font-smoothing: grayscale;
+            -webkit-font-smoothing: antialiased;
+            height: 100%;
+            margin: 0;
+            -webkit-text-size-adjust: 100%;
+            -moz-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+            text-size-adjust: 100%
+        }
+
+        :root {
+            --bs-body-color: rgb(32, 33, 36);
+            --bs-body-font-family: "Roboto", "Google Sans", "Roboto Mono", sans-serif;
+            --bs-body-font-size: 16px;
+            --bs-body-font-weight: 400;
+            --bs-body-line-height: 24px;
+        }
+
+        .carousel-control-prev-icon, .carousel-control-next-icon {
+            background-image: none;
+        }
+    </style>
+</head>
+<body>
+<!-- Wrapper -->
+<div class="hk-wrapper" data-layout="horizontal" data-layout-style="default" data-menu="light" data-footer="simple">
+    <!-- Top Navbar -->
+    <nav class="hk-navbar navbar navbar-expand-xl navbar-light fixed-top">
+        <div class="container-fluid">
+            <!-- Start Nav -->
+            <div class="nav-start-wrap">
+                <!-- Brand -->
+                <a class="navbar-brand d-xl-flex d-none" href="/">
+                    <img
+                            class="brand-img img-fluid" src="{% static 'assets/images/logo/logo-55x32.png' %}"
+                            alt="brand"
+                    />
+                    <img
+                            class="brand-img img-fluid" src="{% static 'assets/images/logo/text-logo.png' %}"
+                            width="70px"
+                            alt="brand"
+                    />
+                </a>
+                <!-- /Brand -->
+                <button class="btn btn-icon btn-rounded btn-flush-dark flush-soft-hover navbar-toggle d-xl-none"><span
+                        class="icon"
+                ><span class="feather-icon"><i data-feather="align-left"></i></span></span></button>
+
+                <!-- Search -->
+                <form class="dropdown navbar-search">
+                    <div
+                            class="dropdown-toggle no-caret" data-bs-toggle="dropdown" data-dropdown-animation
+                            data-bs-auto-close="outside"
+                    >
+                        <a href="#" class="btn btn-icon btn-rounded btn-flush-dark flush-soft-hover  d-xl-none"><span
+                                class="icon"
+                        ><span class="feather-icon"><i data-feather="search"></i></span></span></a>
+                        <div class="input-group d-xl-flex d-none">
+							<span class="input-affix-wrapper input-search affix-border">
+								<input
+                                        type="text" class="form-control  bg-transparent"
+                                        data-navbar-search-close="false" placeholder="Tìm kiếm..." aria-label="Search"
+                                >
+								<span class="input-suffix"><span>/</span>
+									<span class="btn-input-clear"><i class="bi bi-x-circle-fill"></i></span>
+									<span
+                                            class="spinner-border spinner-border-sm input-loader text-primary"
+                                            role="status"
+                                    >
+										<span class="sr-only">Loading...</span>
+									</span>
+								</span>
+							</span>
+                        </div>
+                    </div>
+                    <div class="dropdown-menu p-0">
+                        <!-- Mobile Search -->
+                        <div class="dropdown-item d-xl-none bg-transparent">
+                            <div class="input-group mobile-search">
+								<span class="input-affix-wrapper input-search">
+									<input type="text" class="form-control" placeholder="Search..." aria-label="Search">
+									<span class="input-suffix">
+										<span class="btn-input-clear"><i class="bi bi-x-circle-fill"></i></span>
+										<span
+                                                class="spinner-border spinner-border-sm input-loader text-primary"
+                                                role="status"
+                                        >
+											<span class="sr-only">Loading...</span>
+										</span>
+									</span>
+								</span>
+                            </div>
+                        </div>
+                        <!--/ Mobile Search -->
+                        <div data-simplebar class="dropdown-body p-2"></div>
+                        <div class="dropdown-footer d-xl-flex d-none"><a href="#"><u>Search all</u></a></div>
+                    </div>
+                </form>
+                <!-- /Search -->
+            </div>
+            <!-- /Start Nav -->
+
+            <!-- End Nav -->
+            <div class="nav-end-wrap">
+                <ul class="navbar-nav flex-row">
+                    <li class="nav-item">
+                        <a
+                                href="{% url 'AuthLogin' %}" class="badge badge-primary px-3 py-2"
+                                style="margin-right: 10px!important; text-decoration: none;"
+                        >{% trans 'Login' %}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a
+                                href="#" class="badge badge-primary px-3 py-2"
+                                style="margin-right: 10px!important; text-decoration: none;"
+                        >{% trans 'Registry' %}</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /End Nav -->
+        </div>
+    </nav>
+    <!-- /Top Navbar -->
+
+    <!-- Horizontal Nav -->
+    <div class="hk-menu">
+        <!-- Brand -->
+        <div class="menu-header d-xl-none">
+				<span>
+					<a class="navbar-brand" href="/">
+						<img
+                                class="brand-img img-fluid" src="{% static 'assets/images/logo/logo-55x32.png' %}"
+                                alt="brand"
+                        />
+					</a>
+					<button class="btn btn-icon btn-rounded btn-flush-dark flush-soft-hover navbar-toggle">
+						<span class="icon">
+							<span class="svg-icon fs-5">
+								<svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        class="icon icon-tabler icon-tabler-arrow-bar-to-left" width="24" height="24"
+                                        viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                        stroke-linecap="round" stroke-linejoin="round"
+                                >
+									<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+									<line x1="10" y1="12" x2="20" y2="12"></line>
+									<line x1="10" y1="12" x2="14" y2="16"></line>
+									<line x1="10" y1="12" x2="14" y2="8"></line>
+									<line x1="4" y1="4" x2="4" y2="20"></line>
+								</svg>
+							</span>
+						</span>
+					</button>
+				</span>
+        </div>
+        <!-- /Brand -->
+
+        <!-- Main Menu -->
+        <div data-simplebar class="nicescroll-bar">
+            <div class="menu-content-wrap">
+                <div class="container-fluid menu-group">
+                    <ul class="navbar-nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#intro">
+                                <span class="nav-link-text">{% trans 'Introduce' %}</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#products">
+                                <span class="nav-link-text">{% trans 'Products' %}</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#solutions">
+                                <span class="nav-link-text">{% trans 'Solutions' %}</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#customers">
+                                <span class="nav-link-text">{% trans 'Customers' %}</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#about-us">
+                                <span class="nav-link-text">{% trans 'About Us' %}</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#contact">
+                                <span class="nav-link-text">{% trans 'Contact' %}</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- /Main Menu -->
+    </div>
+    <div id="hk_menu_backdrop" class="hk-menu-backdrop"></div>
+    <!-- /Horizontal Nav -->
+
+    <!-- Main Content -->
+    <div class="hk-pg-wrapper">
+        <div class="container-xxl">
+            <!-- Page Body -->
+            <div class="hk-pg-body">
+                <div class="pb-10">
+                    <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+                        <ol class="carousel-indicators">
+                            <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active"></li>
+                            <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1"></li>
+                            <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2"></li>
+                        </ol>
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <img
+                                        class="d-block w-100" src="{% static 'assets/images/team/slide-6.jpg' %}"
+                                        alt="Số hóa và tự động"
+                                >
+                                <div class="carousel-caption d-none d-md-block">
+                                    <h5 class="text-white">Tự động hóa các quy trình</h5>
+                                    <p>Phần mềm quản trị doanh nghiệp có thể tự động hóa các quy trình thủ công, giúp tiết kiệm thời gian và chi phí cho doanh nghiệp.</p>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <img
+                                        class="d-block w-100" src="{% static 'assets/images/team/slide-4.jpg' %}"
+                                        alt="Third slide"
+                                >
+                                <div class="carousel-caption d-none d-md-block">
+                                    <h5 class="text-white">Thống nhất dữ liệu</h5>
+                                    <p>Phần mềm quản trị doanh nghiệp giúp thống nhất dữ liệu từ các phòng ban khác nhau trong doanh nghiệp. Điều này giúp doanh nghiệp dễ dàng truy cập và phân tích dữ liệu, từ đó đưa ra quyết định chính xác hơn.</p>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <img
+                                        class="d-block w-100" src="{% static 'assets/images/team/slide-3.jpg' %}"
+                                        alt="Second slide"
+                                >
+                                <div class="carousel-caption d-none d-md-block">
+                                    <h5 class="text-white">Báo cáo và phân tích dữ liệu</h5>
+                                    <p>Phần mềm quản trị doanh nghiệp cung cấp các công cụ báo cáo và phân tích dữ liệu mạnh mẽ. Điều này giúp doanh nghiệp hiểu rõ hơn về tình hình kinh doanh của mình, từ đó cải thiện hiệu quả hoạt động.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <a
+                                class="carousel-control-prev" href="#carouselExampleIndicators" role="button"
+                                data-bs-slide="prev"
+                        >
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                        <a
+                                class="carousel-control-next" href="#carouselExampleIndicators" role="button"
+                                data-bs-slide="next"
+                        >
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </div>
+                </div>
+                <div id="intro" class="pb-10">
+                    <div class="title-lg title-wth-divider mb-5">
+                        <span>{% trans 'Introduce' %}</span>
+                    </div>
+                    <figure>
+                        <blockquote class="blockquote">
+                            <p class="lead">Trong thời đại số hóa ngày càng phát triển, việc quản lý và vận hành doanh
+                                nghiệp trở nên
+                                phức tạp hơn bao giờ hết. Để đảm bảo sự thành công và sự cạnh tranh, các tổ chức phải
+                                xem xét cách họ quản lý tài nguyên, dữ liệu và quy trình nội bộ. Đó là lý do tại sao
+                                phần mềm hỗ trợ vận hành doanh nghiệp trở thành một yếu tố quan trọng không thể thiếu
+                                trong môi trường kinh doanh ngày nay.</p>
+                            <p class="p-lg">
+                                <b>BFlow</b> là một giải pháp đột phá trong việc quản lý và tối ưu hóa hoạt động của
+                                doanh nghiệp. Được phát triển bởi các chuyên gia hàng đầu trong ngành công nghiệp phần
+                                mềm, Chúng tôi giúp doanh nghiệp của bạn nâng cao hiệu suất, giảm chi phí và tăng
+                                tính cạnh tranh.
+                            </p>
+                            <p class="p-lg">
+                                Hãy để chúng tôi là cầu nối giữa bạn và sự thành công của doanh nghiệp của bạn.
+                                Liên hệ với chúng tôi ngay hôm nay để biết thêm chi tiết và trải nghiệm sức mạnh của
+                                phần mềm này.
+                            </p>
+                        </blockquote>
+                        <figcaption class="blockquote-footer mt-3">
+                            <cite title="Source Title">BFlow Team</cite>
+                        </figcaption>
+                    </figure>
+                </div>
+                <div id="products" class="pb-10">
+                    <div class="title-lg title-wth-divider mb-5">
+                        <span>{% trans 'Products' %}</span>
+                    </div>
+                    <div class="card-group">
+                        <div class="card">
+                            <img
+                                    class="card-img-top" src="{% static 'assets/images/slide/management.jpg' %}"
+                                    alt="Card image cap"
+                            >
+                            <div class="card-body">
+                                <h4 class="card-title">Basic - Quản trị cơ cấu doanh nghiệp và quy trình làm việc</h4>
+                                <p class="card-text">
+                                    Sản phẩm này giúp doanh nghiệp quản lý cơ cấu tổ chức, quy trình làm việc và phân công nhiệm vụ. Điều này giúp doanh nghiệp hoạt động hiệu quả hơn, tránh tình trạng chồng chéo công việc và thiếu trách nhiệm.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <img
+                                    class="card-img-top" src="{% static 'assets/images/slide/sale.jpg' %}"
+                                    alt="Card image cap"
+                            >
+                            <div class="card-body">
+                                <h5 class="card-title">Sale - Hỗ trợ vận hành kho bãi và bán hàng</h5>
+                                <p class="card-text">
+                                    Sản phẩm này giúp doanh nghiệp quản lý kho bãi, hàng hóa, bán hàng và chăm sóc khách hàng. Điều này giúp doanh nghiệp nâng cao hiệu quả hoạt động kinh doanh, tăng doanh thu và lợi nhuận.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <img
+                                    class="card-img-top" src="{% static 'assets/images/slide/office.jpg' %}"
+                                    alt="Card image cap"
+                            >
+                            <div class="card-body">
+                                <h5 class="card-title">Office - Hỗ trợ các công cụ văn phòng</h5>
+                                <p class="card-text">
+                                    Sản phẩm này giúp doanh nghiệp sử dụng các công cụ văn phòng hiệu quả hơn, chẳng hạn như Microsoft Office, Google Docs, Slides, Sheets. Điều này giúp doanh nghiệp tiết kiệm thời gian và chi phí, nâng cao hiệu quả làm việc.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="solutions" class="pb-10">
+                    <div class="title-lg title-wth-divider mb-5">
+                        <span>{% trans 'Solutions' %}</span>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-lg-6">
+                            <div class="card">
+                                <img
+                                        class="card-img-top"
+                                        src="{% static 'assets/images/slide/cloud-software.jpg' %}"
+                                        alt="Card image cap"
+                                >
+                                <div class="card-body">
+                                    <h3 class="card-title">Cloud</h3>
+                                    <h5 class="card-subtitle mb-2 text-muted">Nền tảng đám mây</h5>
+                                    <div class="separator-full"></div>
+                                    <p class="card-text">
+                                    <h6>Khả năng Truy Cập Mọi Lúc, Mọi Nơi</h6>
+                                    <small class="text-muted">Bạn có thể làm việc từ xa và truy cập dữ liệu quan
+                                        trọng từ bất kỳ thiết bị nào có kết nối internet.</small>
+                                    </p>
+                                    <p class="card-text">
+                                    <h6>Tối Ưu Hóa Tài Nguyên</h6>
+                                    <small class="text-muted">Giảm thiểu tình trạng lãng phí tài nguyên với việc sử
+                                        dụng các tính năng đám mây linh hoạt, đảm bảo bạn trả tiền chỉ cho những gì
+                                        bạn thực sự sử dụng.</small>
+                                    </p>
+                                    <p class="card-text">
+                                    <h6>Bảo Mật Và Bảo Đảm Dữ Liệu</h6>
+                                    <small class="text-muted">Chúng tôi cam kết đảm bảo an toàn cho dữ liệu của bạn
+                                        thông qua các biện pháp bảo mật tiên tiến và dịch vụ sao lưu định
+                                        kỳ.</small>
+                                    </p>
+                                    <div class="separator-full"></div>
+                                    <a href="#" class="btn btn-primary">Trải nghiệm</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6">
+                            <div class="card">
+                                <img
+                                        class="card-img-top"
+                                        src="{% static 'assets/images/slide/on-premise-software.jpg' %}"
+                                        alt="Card image cap"
+                                >
+                                <div class="card-body">
+                                    <h3 class="card-title">On-premise</h3>
+                                    <h5 class="card-subtitle mb-2 text-muted">Triển khai nội bộ</h5>
+                                    <div class="separator-full"></div>
+                                    <p class="card-text">
+                                    <h6>Kiểm Soát Toàn Diện</h6>
+                                    <small class="text-muted">
+                                        Bạn có quyền kiểm soát hoàn toàn việc triển khai và quản lý hệ thống tại chỗ,
+                                        đảm bảo tuân thủ các quy tắc và quy định nội bộ.
+                                    </small>
+                                    </p>
+                                    <p class="card-text">
+                                    <h6>Tùy Chỉnh Tối Đa</h6>
+                                    <small class="text-muted">
+                                        Tận dụng tính linh hoạt của sản phẩm để tùy chỉnh nó theo nhu cầu cụ thể của bạn
+                                        và tích hợp hoàn hảo với hệ thống hiện có.
+                                    </small>
+                                    </p>
+                                    <p class="card-text">
+                                    <h6>Bảo Mật Dữ Liệu</h6>
+                                    <small class="text-muted">
+                                        Với việc dữ liệu được lưu trữ trên cơ sở dữ liệu nội bộ, bạn có thể áp dụng các
+                                        biện pháp bảo mật nghiêm ngặt và giữ an toàn cho thông tin quan trọng của bạn.
+                                    </small>
+                                    </p>
+                                    <div class="separator-full"></div>
+                                    <a href="#" class="btn btn-primary">Trải nghiệm</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="customers" class="pb-10">
+                    <div class="title-lg title-wth-divider mb-5">
+                        <span>{% trans 'Customers' %}</span>
+                    </div>
+                    <div id="owl_demo_2" class="owl-carousel owl-theme">
+                        <div class="item"><img src="{% static 'assets/images/customers/customer-1.jpg' %}" alt="Owl Image">
+                        </div>
+                        <div class="item"><img src="{% static 'assets/images/customers/customer-2.jpg' %}" alt="Owl Image">
+                        </div>
+                        <div class="item"><img src="{% static 'assets/images/customers/customer-3.jpg' %}" alt="Owl Image">
+                        </div>
+                        <div class="item"><img src="{% static 'assets/images/customers/customer-7.jpg' %}" alt="Owl Image">
+                        </div>
+                        <div class="item"><img src="{% static 'assets/images/customers/customer-5.jpg' %}" alt="Owl Image">
+                        </div>
+                        <div class="item"><img src="{% static 'assets/images/customers/customer-8.jpg' %}" alt="Owl Image">
+                        </div>
+                    </div>
+                </div>
+                <div id="about-us" class="pb-10">
+                    <div class="title-lg title-wth-divider mb-5">
+                        <span>{% trans 'About Us' %}</span>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-md-6 d-flex justify-content-center align-items-center mb-7">
+                            <img
+                                    src="{% static 'assets/images/team/team-work.jpg' %}"
+                                    style="object-fit: cover; max-height: 500px" alt=""
+                            >
+                        </div>
+                        <div class="col-12 col-md-6 mb-7">
+                            <h5 class="text-primary mb-5">Câu chuyện của chúng tôi</h5>
+                            <p>
+                                Câu chuyện của chúng tôi bắt đầu từ một ý tưởng đơn giản nhưng tận tâm: tạo ra một phần
+                                mềm quản trị doanh nghiệp giúp các doanh nhân và nhà quản lý thể hiện tiềm năng tối đa
+                                của họ. Tại ngọn đồi nhỏ này, một nhóm những cá nhân đam mê công nghệ và kinh doanh đã
+                                hợp tác nhau để xây dựng nên một ứng dụng mạnh mẽ, đáp ứng mọi nhu cầu của doanh nghiệp.
+                            </p>
+                            <p>
+                                Không gì có thể ngăn cản chúng tôi. Chúng tôi đã đánh bại hàng loạt khó khăn và thử
+                                thách, từ việc tìm nguồn tài trợ ban đầu đến việc đoàn kết phát triển sản phẩm. Chúng
+                                tôi đã luôn lắng nghe ý kiến phản hồi của khách hàng và liên tục cải tiến phần mềm của
+                                mình.
+                            </p>
+                            <p>
+                                Câu chuyện của chúng tôi không chỉ là về việc xây dựng một sản phẩm xuất sắc, mà còn là
+                                về việc xây dựng một cộng đồng đoanh nghiệp mạnh mẽ. Chúng tôi tự hào vì đã đồng hành
+                                cùng hàng ngàn doanh nghiệp trên khắp thế giới, giúp họ tăng cường hiệu suất và phát
+                                triển bền vững.
+                            </p>
+                            <p>
+                                Và câu chuyện của chúng tôi vẫn tiếp tục, với sự cam kết không ngừng nghỉ để đổi mới và
+                                phục vụ tốt hơn mỗi ngày. Chúng tôi hy vọng rằng phần mềm quản trị doanh nghiệp của
+                                chúng tôi sẽ luôn là người bạn đồng hành đáng tin cậy cho những người xây dựng và phát
+                                triển doanh nghiệp của mình.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="timeline">
+                            <div class="timeline__wrap">
+                                <div class="timeline__items">
+                                    <div class="timeline__item">
+                                        <div class="timeline__content">
+                                            <h2>09-2022</h2>
+                                            <h6>Thành lập công ty</h6>
+                                            <p>Hoàn thành tất cả các thủ tục pháp lý thành lập công ty.</p>
+                                            <p>Xây dựng đội ngũ phát triển sản phẩm.</p>
+                                        </div>
+                                    </div>
+                                    <div class="timeline__item">
+                                        <div class="timeline__content">
+                                            <h2>10-2023</h2>
+                                            <h6>Phát hành sản phẩm đầu tiên</h6>
+                                            <p>Phát hành phần mềm hỗ trợ việc kinh doanh của doanh nghiệp trên nền tảng
+                                                SAAS.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="contact">
+                    <div class="title-lg title-wth-divider mb-5">
+                        <span>{% trans 'Contact' %}</span>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-md-4">
+                            <ul>
+                                <li>
+                                    <b>Địa chỉ:</b>
+                                    <p>20 Đường số 22, Bình Hưng, Bình Chánh, Thành phố Hồ Chí Minh 70000, Việt Nam</p>
+                                </li>
+                                <li>
+                                    <b>Email:</b>
+                                    <p>support@mtsolution.com.vn</p>
+                                </li>
+                                <li>
+                                    <b>Số điện thoại:</b>
+                                    <p>**Đang cập nhật**</p>
+                                </li>
+                                <li>
+                                    <small class="text-muted text-warning">Bạn có thể để lại liên lạc và lời nhắn tại phần chat trong màng hình này. Đội hỗ trợ của chúng tôi sẽ nhanh chóng kết nối với bạn.</small>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-12 col-md-8">
+                            <div class="d-flex justify-content-center align-items-center">
+                                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15679.953959206854!2d106.68808435!3d10.735370199999998!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752fb753339b89%3A0xa83349079360b12b!2zMjAgxJDGsOG7nW5nIHPhu5EgMjIsIELDrG5oIEjGsG5nLCBCw6xuaCBDaMOhbmgsIFRow6BuaCBwaOG7kSBI4buTIENow60gTWluaCA3MDAwMCwgVmnhu4d0IE5hbQ!5e0!3m2!1svi!2s!4v1693989009427!5m2!1svi!2s" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /Page Body -->
+        </div>
+
+        <!-- Page Footer -->
+        <div class="hk-footer">
+            <footer class="container-xxl footer">
+                <div class="row">
+                    <div class="col-xl-8">
+                        <p class="footer-text"><span class="copy-text">BFlow © 2023 All rights reserved.</span> <a
+                                href="#" class="" target="_blank"
+                        >Privacy Policy</a><span class="footer-link-sep">|</span><a href="#" class="" target="_blank">T&C</a><span
+                                class="footer-link-sep"
+                        >|</span><a href="#" class="" target="_blank">System Status</a></p>
+                    </div>
+                    <div class="col-xl-4">
+                        <a href="#" class="footer-extr-link link-default"><span class="feather-icon"><i
+                                data-feather="external-link"
+                        ></i></span><u>Send feedback to our help forum</u></a>
+                    </div>
+                </div>
+            </footer>
+        </div>
+        <!-- / Page Footer -->
+
+    </div>
+    <!-- /Main Content -->
+</div>
+<!-- /Wrapper -->
+
+<!-- jQuery -->
+<script src="{% static 'vendors/jquery/dist/jquery.min.js' %}"></script>
+<script src="{% static 'vendors/jquery/dist/jquery-ui.min.js' %}"></script>
+
+<!-- Bootstrap Core JS -->
+<script src="{% static 'vendors/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'vendors/bootstrap/dist/js/bootstrap.js' %}"></script>
+
+<!-- Simplebar JS -->
+<script src="{% static 'vendors/simplebar/dist/simplebar.min.js' %}"></script>
+
+<script>
+    const globeLanguage = "{{ base.language }}";
+</script>
+
+<!-- FeatherIcons JS -->
+<script src="{% static 'assets/js/feather.min.js' %}"></script>
+<!-- // FeatherIcons JS -->
+<script src="{% static 'assets/js/notify.js' %}"></script>
+<script src="{% static 'assets/js/bootstrap-notify.min.js' %}"></script>
+<!-- Select2 JS -->
+<script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+<!-- // Select2 JS -->
+
+<script src="{% static 'vendors/owl.carousel/dist/owl.carousel.min.js' %}"></script>
+<!-- Init JS -->
+<script src="{% static 'assets/js/init.js' %}"></script>
+<script src="{% static 'assets/js/cdn-clone/select2/init-select2.js' %}"></script>
+<script src="{% static 'assets/js/init-setup.js' %}"></script>
+<script src="{% static 'assets/js/init-loader.js' %}"></script>
+
+<script type="text/javascript">
+    var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
+    (function () {
+        var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
+        s1.async = true;
+        s1.src = 'https://embed.tawk.to/64f7e242a91e863a5c11df8e/1h9k4nles';
+        s1.charset = 'UTF-8';
+        s1.setAttribute('crossorigin', '*');
+        s0.parentNode.insertBefore(s1, s0);
+    })();
+</script>
+<script>
+    $('#owl_demo_2').owlCarousel({
+        margin: 20,
+        autoplay: true,
+        responsiveClass: true,
+        responsive: {
+            0: {
+                items: 1
+            },
+            480: {
+                items: 2
+            },
+            800: {
+                items: 4
+            },
+
+        }
+    });
+</script>
+
+<script src="{% static 'vendors/horizontal-vertical-timeline-plugin-jquery/dist/js/timeline.min.js' %}"></script>
+<script>
+    $('.timeline').timeline({
+        horizontalStartPosition: 'top',
+        mode: 'horizontal',
+        visibleItems: 3,
+    });
+</script>
+
+
+<script
+        type="text/javascript" src="https://maps.google.com/maps/api/js?key=AIzaSyBazijMOj67rUPPtVybwi2Nbo90tx7vwZs"
+></script>
+<script src="{% static 'assets/js/gmap-init.js' %}"></script>
+<script>
+    google.maps.event.addDomListener(window, 'load', init);
+
+    function init() {
+        var donca = {
+            info: '<strong>Welcome to donca</strong>',
+            lat: -37.7830,
+            long: 145.1660
+        };
+        var melbo = {
+            info: '<strong>Welcome to melbo</strong>',
+            lat: -37.8136,
+            long: 144.9631
+        };
+
+
+        var locations = [
+            [donca.info, donca.lat, donca.long, 0],
+            [melbo.info, melbo.lat, melbo.long, 1],
+
+        ];
+        // Basic options for a simple Google Map
+        // For more options see: https://developers.google.com/maps/documentation/javascript/reference#MapOptions
+        var mapOptions = {
+            // How zoomed in you want the map to start at (always required)
+            zoom: 11,
+
+            // The latitude and longitude to center the map (always required)
+            center: new google.maps.LatLng(10.7298167, 106.6876989), // New York
+
+            // How you would like to style the map.
+            // This is where you would paste any style found on Snazzy Maps.
+        };
+
+        // Get the HTML DOM element that will contain your map
+        // We are using a div with id="map" seen below in the <body>
+        var mapElement = document.getElementById('map_canvas');
+
+        // Create the Google Map using our element and options defined above
+        var map = new google.maps.Map(mapElement, mapOptions);
+        var contentString = '<div class="infowindow-wrap">' +
+            '<h5 class="infowindow-header">Envato Pvt Ltd</h5>' +
+            '<div class="infowindow-body"><p class="txt-dark mb-15">121 King Street, <br>Melbourne VIC 3000, Australia</p><a href="https://envato.com/" target="_blank">www.envato.com</a></div>' +
+            '</div>';
+        var infowindow = new google.maps.InfoWindow({
+            content: contentString
+        });
+        var marker, i;
+        // Let's also add a marker while we're at it
+        for (i = 0; i < locations.length; i++) {
+            marker = new google.maps.Marker({
+                position: new google.maps.LatLng(locations[i][1], locations[i][2]),
+                map: map,
+            });
+
+            google.maps.event.addListener(marker, 'click', (function (marker, i) {
+                if (i === 2) {
+                    return false;
+                } else
+                    return function () {
+                        infowindow.open(map, marker);
+                    }
+            })(marker, i));
+            new google.maps.event.trigger(marker, 'click');
+        }
+    }
+</script>
+</body>
+</html>

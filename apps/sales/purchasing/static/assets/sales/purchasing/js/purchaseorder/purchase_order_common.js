@@ -628,6 +628,76 @@ class POLoadDataHandle {
                     'url': eleQuotationProduct.attr('data-url'),
                     'method': eleQuotationProduct.attr('data-method'),
                     'data': {'purchase_quotation_id__in': PQIDList.join(',')},
+                    'isDropdown': true,
+                }
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('purchase_quotation_product_list') && Array.isArray(data.purchase_quotation_product_list)) {
+                            let dataProduct = {};
+                            let dataPQMapProducts = {};
+                            for (let result of data.purchase_quotation_product_list) {
+                                // setup data to load price list
+                                if (!dataProduct.hasOwnProperty(result.product_id)) {
+                                    dataProduct[result.product_id] = [{
+                                        'purchase_quotation': result.purchase_quotation,
+                                        'unit_price': result.unit_price
+                                    }]
+                                } else {
+                                    dataProduct[result.product_id].push({
+                                        'purchase_quotation': result.purchase_quotation,
+                                        'unit_price': result.unit_price
+                                    })
+                                }
+                                // setup data to load again product by check PQ
+                                if (!dataPQMapProducts.hasOwnProperty(result.purchase_quotation.id)) {
+                                    dataPQMapProducts[result.purchase_quotation.id] = [result.product_id];
+                                } else {
+                                    dataPQMapProducts[result.purchase_quotation.id].push(result.product_id);
+                                }
+                            }
+                            eleQuotationProduct.val(JSON.stringify(dataPQMapProducts));
+                            let $table = $('#datable-purchase-order-product-request');
+                            $table.DataTable().rows().every(function () {
+                                let row = this.node();
+                                let priceListData = dataProduct[row.querySelector('.table-row-item').getAttribute('data-product-id')];
+                                let elePrice = row.querySelector('.table-row-price');
+                                let elePriceList = row.querySelector('.table-row-price-list');
+                                if (priceListData) {
+                                    elePrice.setAttribute('disabled', 'true');
+                                    $(elePrice).attr('value', String(0));
+                                    if (elePriceList) {
+                                        $(elePriceList).empty();
+                                        for (let price of priceListData) {
+                                            let priceAppend = `<div class="dropdown-item disabled text-black border border-grey mb-1" id="${price.purchase_quotation.id}" data-value="${parseFloat(price.unit_price)}">
+                                                                    <div class="row">
+                                                                        <div class="col-7"><span>${price.purchase_quotation.title}</span></div>
+                                                                        <div class="col-5"><span
+                                                                            class="mask-money" data-init-money="${parseFloat(price.unit_price)}"
+                                                                        ></span></div>
+                                                                    </div>
+                                                                </div>`
+                                            if (price.purchase_quotation.id === checked_id) {
+                                                priceAppend = `<div class="dropdown-item disabled text-black border border-grey mb-1 bg-light" id="${price.purchase_quotation.id}" data-value="${parseFloat(price.unit_price)}">
+                                                                    <div class="row">
+                                                                        <div class="col-7"><span>${price.purchase_quotation.title}</span></div>
+                                                                        <div class="col-5"><span
+                                                                            class="mask-money" data-init-money="${parseFloat(price.unit_price)}"
+                                                                        ></span></div>
+                                                                    </div>
+                                                                </div>`;
+                                                $(elePrice).attr('value', String(parseFloat(price.unit_price)));
+
+                                            }
+                                            $(elePriceList).append(priceAppend);
+                                        }
+                                        $.fn.initMaskMoney2();
+                                        POCalculateHandle.calculateMain($table, row);
+                                    }
+                                }
+                            });
+                            // mask money
                             $.fn.initMaskMoney2();
                         }
                     }
@@ -768,6 +838,76 @@ class POLoadDataHandle {
         let elePurchaseQuotation = $('#purchase-order-purchase-quotation');
         let elePQAppend = ``;
         let purchase_quotations_data = [];
+        // PR
+        for (let dataPR of data?.['purchase_requests_data']) {
+            let prID = dataPR?.['id'];
+            let prCode = dataPR?.['code'];
+            let link = "";
+            let linkDetail = elePurchaseRequest.attr('data-link-detail');
+            link = linkDetail.format_url_with_uuid(prID);
+            if (from.attr('data-method') === 'GET') {
+                elePRAppend += `<div class="inline-elements-badge mr-2 mb-1">
+                                    <a href="${link}" target="_blank" class="link-primary underline_hover"><span>${prCode}</span></a>
+                                    <button type="button" class="btn btn-link btn-sm custom-btn-remove" data-id="${prID}" aria-label="Close" disabled>
+                                        <span aria-hidden="true"><i class="fas fa-times"></i></span>
+                                    </button>
+                                </div>`;
+            } else {
+                elePRAppend += `<div class="inline-elements-badge mr-2 mb-1">
+                                    <a href="${link}" target="_blank" class="link-primary underline_hover"><span>${prCode}</span></a>
+                                    <button type="button" class="btn btn-link btn-sm custom-btn-remove" data-id="${prID}" aria-label="Close">
+                                        <span aria-hidden="true"><i class="fas fa-times"></i></span>
+                                    </button>
+                                </div>`;
+            }
+            purchase_requests_data.push(prID);
+        }
+        elePurchaseRequest.append(elePRAppend);
+        POLoadDataHandle.PRDataEle.val(JSON.stringify(purchase_requests_data));
+        // PQ
+        for (let dataPQ of data?.['purchase_quotations_data']) {
+            let pqID = dataPQ?.['purchase_quotation']?.['id'];
+            let pqCode = dataPQ?.['purchase_quotation']?.['code'];
+            let pqSupplier = dataPQ?.['purchase_quotation']?.['supplier'];
+            let pqSupplierStr = JSON.stringify(pqSupplier).replace(/"/g, "&quot;");
+            let link = "";
+            let linkDetail = elePurchaseQuotation.attr('data-link-detail');
+            link = linkDetail.format_url_with_uuid(pqID);
+            if (from.attr('data-method') === 'GET') {
+                if (dataPQ?.['is_use'] === false) {
+                    elePQAppend += `<div class="inline-elements-badge mr-2 mb-1">
+                                    <input class="form-check-input checkbox-circle checkbox-quotation" type="checkbox" data-id="${pqID}" data-code="${pqCode}" data-supplier="${pqSupplierStr}" value="option1" disabled>
+                                    <a href="${link}" target="_blank" class="link-primary underline_hover ml-3"><span>${pqCode}</span></a>
+                                    <button type="button" class="btn btn-link btn-sm custom-btn-remove" data-id="${pqID}" aria-label="Close" disabled>
+                                        <span aria-hidden="true"><i class="fas fa-times"></i></span>
+                                    </button>
+                                </div>`;
+                } else {
+                    elePQAppend += `<div class="inline-elements-badge mr-2 mb-1">
+                                    <input class="form-check-input checkbox-circle checkbox-quotation" type="checkbox" data-id="${pqID}" data-code="${pqCode}" data-supplier="${pqSupplierStr}" value="option1" checked disabled>
+                                    <a href="${link}" target="_blank" class="link-primary underline_hover ml-3"><span>${pqCode}</span></a>
+                                    <button type="button" class="btn btn-link btn-sm custom-btn-remove" data-id="${pqID}" aria-label="Close" disabled>
+                                        <span aria-hidden="true"><i class="fas fa-times"></i></span>
+                                    </button>
+                                </div>`;
+                }
+            } else {
+                if (dataPQ?.['is_use'] === false) {
+                    elePQAppend += `<div class="inline-elements-badge mr-2 mb-1">
+                                    <input class="form-check-input checkbox-circle checkbox-quotation" type="checkbox" data-id="${pqID}" data-code="${pqCode}" data-supplier="${pqSupplierStr}" value="option1">
+                                    <a href="${link}" target="_blank" class="link-primary underline_hover ml-3"><span>${pqCode}</span></a>
+                                    <button type="button" class="btn btn-link btn-sm custom-btn-remove" data-id="${pqID}" aria-label="Close">
+                                        <span aria-hidden="true"><i class="fas fa-times"></i></span>
+                                    </button>
+                                </div>`;
+                } else {
+                    elePQAppend += `<div class="inline-elements-badge mr-2 mb-1">
+                                    <input class="form-check-input checkbox-circle checkbox-quotation" type="checkbox" data-id="${pqID}" data-code="${pqCode}" data-supplier="${pqSupplierStr}" value="option1" checked>
+                                    <a href="${link}" target="_blank" class="link-primary underline_hover ml-3"><span>${pqCode}</span></a>
+                                    <button type="button" class="btn btn-link btn-sm custom-btn-remove" data-id="${pqID}" aria-label="Close">
+                                        <span aria-hidden="true"><i class="fas fa-times"></i></span>
+                                    </button>
+                                </div>`;
                 }
             }
             purchase_quotations_data.push({

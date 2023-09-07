@@ -123,11 +123,7 @@ $(document).ready(function () {
                 render: (data, type, row) => {
                     let element = ''
                     for (let i = 0; i < row.manager.length; i++) {
-                        let fullname = row.manager[i].fullname;
-                        if (fullname === undefined) {
-                            fullname = row.manager[i].full_name;
-                        }
-                        element += `<span class="badge badge-soft-success mt-1 ml-1">` + fullname + `</span>`;
+                        element += `<span class="badge badge-soft-success mt-1 ml-1">${row.manager[i].full_name}</span>`;
                     }
                     return element;
                 },

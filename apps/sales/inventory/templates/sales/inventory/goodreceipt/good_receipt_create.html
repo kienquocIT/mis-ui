@@ -28,13 +28,7 @@
         <div class="container-fluid">
             <div class="collapse multi-collapse show" id="collapseExample">
                 <div class="row mb-2">
-                    <div class="col-6">
-                        <select class="form-select">
-                            <option selected>For purchase order</option>
-                            <option value="1">For inventory adjustment</option>
-                            <option value="2">For product</option>
-                        </select>
-                    </div>
+                    <div class="col-6"></div>
                     <div class="col-6">
                         <div class="row">
                             <div class="col-8"></div>
@@ -50,6 +44,27 @@
                 <div class="row" id="common-information-area">
                     <div class="col-6">
                         <div class="form-group">
+                            <label class="form-label" for="box-good-receipt-type">{% trans 'Good receipt type' %}<span class="required"></span></label>
+                            <div class="input-group">
+                                <span class="input-affix-wrapper">
+                                    <span class="input-prefix">
+                                        <i class="fas fa-people-carry text-brown"></i>
+                                    </span>
+                                    <select
+                                        class="form-select"
+                                        id="box-good-receipt-type"
+                                        data-url=""
+                                        data-method="GET"
+                                        data-link-detail=""
+                                        name="good_receipt_type"
+                                        data-keyResp=""
+                                        required
+                                    >
+                                    </select>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label class="form-label" for="good-receipt-title">{% trans 'Title' %}<span class="required"></span></label>
                             <div class="input-group">
                                 <span class="input-affix-wrapper">
@@ -62,6 +77,34 @@
                                 </span>
                             </div>
                         </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label class="form-label" for="good-receipt-date-delivered">{% trans 'Date' %}</label>
+                            <div class="input-affix-wrapper">
+                                <input type="text" name="delivered-date" id="good-receipt-date-delivered"
+                                       class="form-control date-picker" autocomplete="off">
+                                <span class="input-suffix">
+                                    <i class="bi bi-calendar-week"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="good-receipt-note">{% trans 'Note' %}</label>
+                            <div class="input-group">
+                                <span class="input-affix-wrapper">
+                                    <input
+                                        type="text" class="form-control"
+                                        name="title"
+                                        id="good-receipt-note"
+                                    >
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row custom-area" id="custom-area-1">
+                    <div class="col-6">
                         <div class="form-group">
                             <label class="form-label">{% trans 'Purchase order' %}</label>
                             <div class="input-group more-information-group">
@@ -85,7 +128,7 @@
                                             data-url="{% url "PurchaseOrderListAPI" %}"
                                             data-method="GET"
                                             data-link-detail="{% url "PurchaseOrderDetail" 1 %}"
-                                            name="supplier"
+                                            name="purchase_order"
                                             data-keyResp="purchase_order_list"
                                             required
                                     ></select>
@@ -132,31 +175,77 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-6"></div>
+                </div>
 
+                <div class="row custom-area" id="custom-area-2" hidden>
                     <div class="col-6">
                         <div class="form-group">
-                            <label class="form-label" for="good-receipt-date-delivered">{% trans 'Date' %}</label>
-                            <div class="input-affix-wrapper">
-                                <input type="text" name="delivered-date" id="good-receipt-date-delivered"
-                                       class="form-control date-picker" autocomplete="off">
-                                <span class="input-suffix">
-                                    <i class="bi bi-calendar-week"></i>
-                                </span>
-                            </div>
+                            <label class="form-label" for="box-good-receipt-ia-number">{% trans 'IA number' %}</label>
+                            <select
+                                    class="form-select"
+                                    id="box-good-receipt-ia-number"
+                                    data-url=""
+                                    data-method="GET"
+                                    data-link-detail=""
+                                    name=""
+                                    data-keyResp=""
+                                    required
+                            >
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-6"></div>
+                </div>
+
+                <div class="row custom-area" id="custom-area-3" hidden>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label class="form-label" for="box-good-receipt-product-order">{% trans 'Product order' %}</label>
+                            <select
+                                    class="form-select"
+                                    id="box-good-receipt-product-order"
+                                    data-url=""
+                                    data-method="GET"
+                                    data-link-detail=""
+                                    name=""
+                                    data-keyResp=""
+                                    required
+                            >
+                            </select>
                         </div>
                         <div class="form-group">
-                            <label class="form-label" for="good-receipt-note">{% trans 'Note' %}</label>
-                            <div class="input-group">
+                            <label class="form-label">{% trans 'Production report' %}</label>
+                            <div class="input-group more-information-group">
                                 <span class="input-affix-wrapper">
-                                    <input
-                                        type="text" class="form-control"
-                                        name="title"
-                                        id="good-receipt-note"
-                                    >
+                                    <span class="input-prefix">
+                                        <div class="btn-group dropstart">
+                                            <i
+                                                    class="fas fa-info-circle more-information"
+                                                    data-bs-toggle="dropdown"
+                                                    data-dropdown-animation
+                                                    aria-haspopup="true"
+                                                    aria-expanded="false"
+                                                    disabled
+                                            ></i>
+                                            <div class="dropdown-menu w-210p mt-4"></div>
+                                        </div>
+                                    </span>
+                                    <select
+                                            class="form-select"
+                                            id=""
+                                            data-url="{% url "ProductForSaleListAPI" %}"
+                                            data-method="GET"
+                                            data-link-detail="{% url "ProductDetail" 1 %}"
+                                            name=""
+                                            data-keyResp=""
+                                            required
+                                    ></select>
                                 </span>
                             </div>
                         </div>
                     </div>
+                    <div class="col-6"></div>
                 </div>
             </div>
             <div class="row collapse-arrow mt-2 mb-2">
@@ -310,7 +399,7 @@
             id="base-trans-factory"
             data-view-detail-info="{% trans 'View detail' %}"
             data-more-information="{% trans 'More information' %}"
-            data-product-not-in="{% trans 'Product is not in' %}"
+            data-validate-import="{% trans 'Quantity must be purchase order quantity' %}"
         >
         <input
             type="hidden"
@@ -343,7 +432,7 @@
             <div class="modal-dialog modal-dialog-centered modal-xlg-custom" role="document">
                 <div class="modal-content">
                     <div class="modal-body">
-                        <div class="row mb-2"><span>{% trans 'Product list' %}</span></div>
+                        <div class="row mb-2"><h6>{% trans 'Product list' %}</h6></div>
                         <div class="row">
                             <div class="col-6">
                                 <div class="row mb-2">
@@ -401,7 +490,7 @@
                                         <table
                                             id="datable-good-receipt-warehouse"
                                             class="table nowrap w-100"
-                                            data-url="{% url 'PurchaseRequestProductListAPI' %}"
+                                            data-url="{% url 'WareHouseListAPI' %}"
                                             data-method="GET"
                                         >
                                             <thead>

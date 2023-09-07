@@ -391,14 +391,9 @@
         <div class="modal fade mt-5" id="purchaseRequestModalCenter" tabindex="-1" role="dialog" aria-labelledby="purchaseRequestModalCenter" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-xlg-custom" role="document">
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Select items from purchase request</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
                     <div class="modal-body">
-                        <div class="row">
+                        <div class="row mb-2"><h6>{% trans 'Select items from purchase request' %}</h6></div>
+                        <div class="row mb-1">
                             <div class="col-4"></div>
                             <div class="col-8">
                                 <div class="form-check">
@@ -493,13 +488,8 @@
         <div class="modal fade mt-5" id="purchaseQuotationModalCenter" tabindex="-1" role="dialog" aria-labelledby="purchaseQuotationModalCenter" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Select purchase quotation</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
                     <div class="modal-body">
+                        <div class="row mb-2"><h6>{% trans 'Select purchase quotation' %}</h6></div>
                         <div class="row">
                             <label for="filterByPurchaseRequest" class="col-sm-3 col-form-label">{% trans 'Filter by PQ Request' %}</label>
                             <div class="col-sm-6">

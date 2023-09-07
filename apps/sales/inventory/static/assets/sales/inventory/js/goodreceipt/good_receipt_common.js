@@ -1,5 +1,6 @@
 // LoadData
 class GRLoadDataHandle {
+    static typeSelectEle = $('#box-good-receipt-type');
     static POSelectEle = $('#box-good-receipt-purchase-order');
     static supplierSelectEle = $('#box-good-receipt-supplier');
     static PRDataEle = $('#purchase_requests_data');
@@ -58,6 +59,36 @@ class GRLoadDataHandle {
         }
     };
 
+    static loadBoxType() {
+        let ele = GRLoadDataHandle.typeSelectEle;
+        let dataType = [
+            {
+                'id': 1,
+                'title': 'For purchase order'
+            },
+            {
+                'id': 2,
+                'title': 'For inventory adjustment'
+            },
+            {
+                'id': 3,
+                'title': 'For product'
+            }
+        ];
+        ele.initSelect2({
+            data: dataType,
+        });
+    };
+
+    static loadBoxPO(dataPO = {}) {
+        let ele = GRLoadDataHandle.POSelectEle;
+        ele.initSelect2({
+            data: dataPO,
+            disabled: !(ele.attr('data-url')),
+        });
+        GRLoadDataHandle.loadMoreInformation(ele);
+    };
+
     static loadBoxSupplier(dataCustomer = {}) {
         let ele = GRLoadDataHandle.supplierSelectEle;
         ele.initSelect2({
@@ -66,15 +97,6 @@ class GRLoadDataHandle {
             callbackTextDisplay: function (item) {
                 return item?.['name'] || '';
             },
-        });
-        GRLoadDataHandle.loadMoreInformation(ele);
-    };
-
-    static loadBoxPO(dataPO = {}) {
-        let ele = GRLoadDataHandle.POSelectEle;
-        ele.initSelect2({
-            data: dataPO,
-            disabled: !(ele.attr('data-url')),
         });
         GRLoadDataHandle.loadMoreInformation(ele);
     };
@@ -231,6 +253,30 @@ class GRLoadDataHandle {
             )
         return true;
     };
+
+    static loadModalWareHouse() {
+        let tableWareHouse = $('#datable-good-receipt-warehouse');
+        let frm = new SetupFormSubmit(tableWareHouse);
+        $.fn.callAjax2({
+                    'url': frm.dataUrl,
+                    'method': frm.dataMethod,
+                    // 'data': {'purchase_order_id': GRLoadDataHandle.POSelectEle.val()},
+                    'isDropdown': true,
+                }
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('warehouse_list') && Array.isArray(data.warehouse_list)) {
+                            tableWareHouse.DataTable().clear().draw();
+                            tableWareHouse.DataTable().rows.add(data.warehouse_list).draw();
+                        }
+                    }
+                }
+            )
+        return true;
+    };
+
 
     static loadModalPurchaseRequestProductTable(is_remove = false, dataDetail = null) {
         let tablePurchaseRequest = $('#datable-purchase-request');
@@ -796,26 +842,26 @@ class GRDataTableHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        return `<span class="table-row-code">${row?.['warehouse']?.['code']}</span>`;
+                        return `<span class="table-row-code">${row?.['code']}</span>`;
                     }
                 },
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        return `<span class="table-row-item">${row?.['warehouse']?.['title']}</span>`;
+                        return `<span class="table-row-item">${row?.['title']}</span>`;
                     }
                 },
                 {
                     targets: 3,
                     render: (data, type, row) => {
-                        return `<span class="table-row-note">${row?.['note'] ? row?.['note'] : ''}</span>`;
+                        return `<span class="table-row-note">${row?.['remark'] ? row?.['remark'] : ''}</span>`;
                     }
                 },
                 {
                     targets: 4,
                     render: (data, type, row) => {
                         return `<div class="row">
-                                    <input type="text" class="form-control table-row-quantity validated-number" value="${row?.['quantity']}" required>
+                                    <input type="text" class="form-control table-row-import validated-number" value="${row?.['quantity'] ? row?.['quantity'] : 0}" required>
                                 </div>`;
                     }
                 },

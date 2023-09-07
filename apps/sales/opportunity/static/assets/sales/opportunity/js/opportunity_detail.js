@@ -115,7 +115,10 @@ $(document).ready(async function () {
 
                 // load sale team
                 OpportunityLoadDetail.loadSaleTeam(opportunity_detail.opportunity_sale_team_datas);
-
+                $('#tab_team')
+                    .append($(`<script id="card-member-datas" type="application/json">${
+                        JSON.stringify(opportunity_detail.opportunity_sale_team_datas)}</script>`))
+                AssignToSetup.init()
                 if ($.fn.hasOwnProperties(opportunity_detail, ['sale_order'])) {
                     if (opportunity_detail.sale_order.system_status === 0) {
                         condition_sale_oder_approved = true;
@@ -981,11 +984,22 @@ $(document).ready(async function () {
             if (config.in_assign_opt === 1) {
                 // chỉ employee trong opportunity
                 let selectOpt = '';
-                $('#card-member .card').each(function () {
-                    let opt = `<option value="${$(this).attr('data-id')}">${$(this).find('.card-title').text()
-                    }</option>`
-                    selectOpt += opt
-                })
+                let memberList = []
+                if ($('#card-member-datas').length) memberList = JSON.parse($('#card-member-datas').text())
+                if ($('#card-member .card').length)
+                    $('#card-member .card').each(function () {
+                        let opt = `<option value="${$(this).attr('data-id')}">${$(this).find('.card-title').text()
+                        }</option>`
+                        selectOpt += opt
+                    })
+
+                else {
+                    selectOpt = ''
+                    for (let item of memberList){
+                        let opt = `<option value="${item.member.id}">item.member.name}</option>`
+                        selectOpt += opt
+                    }
+                }
                 $('#selectAssignTo').html(selectOpt).removeAttr('data-url')
 
             } else if (config.in_assign_opt === 2) {
@@ -1207,7 +1221,6 @@ $(document).ready(async function () {
         // assign to me btn
         const $assignBtnElm = $('.btn-assign');
         const $assigneeElm = $('#selectAssignTo')
-
         AssignToSetup.init()
         $assignBtnElm.off().on('click', function () {
             const name = $assignerElm.attr('data-name')

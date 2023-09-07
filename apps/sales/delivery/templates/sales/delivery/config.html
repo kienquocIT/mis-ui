@@ -4,6 +4,15 @@
     {% trans 'Delivery Config' %}
 {% endblock %}
 {% block cssHeader %}
+    <style>
+        #inputPersonPicking:not(.select2-hidden-accessible),
+        #inputPersonDelivery:not(.select2-hidden-accessible){
+            height: 38px;
+            -webkit-appearance: none;
+            appearance: none;
+            -moz-appearance: none;
+        }
+    </style>
 {% endblock %}
 
 {% block pageAction %}
@@ -127,7 +136,7 @@
 {% block dataHiddenGroup %}
     <input type="text" id="trans-factory"
     data-valid-p-lead="{% trans 'Please choice leader for Picking.' %}"
-    data-valid-d-lead="{% trans 'Please choice leader for Delivery.' %}">
+    data-warn-d-lead="{% trans 'You should choose the leader of Delivery for feature Delivery is working correctly' %}">
 {% endblock %}
 
 {% block jsFooter %}
@@ -146,23 +155,32 @@
 
             $frm.submit(function (event) {
                 event.preventDefault();
-                WindowControl.showLoading();
+
                 let bodyData = {
                     'is_picking': eleInputPicking.prop('checked'),
                     'is_partial_ship': eleInputPartial.prop('checked'),
                 }
+                // nếu có check chọn xử lý picking thì ràng buộc lead picking
                 if (eleInputPicking.prop('checked')){
                     const pickLead = $('#inputPickingLead').val()
-                    if (pickLead === null){
-                        $.fn.notifyB({'description': $trans.attr('data-valid-p-lead')}, 'failure')
+                    if (!pickLead){
+                        $.fn.notifyB({'description': $trans.attr('data-valid-p-lead'), 'timeout': 3000}, 'failure')
                         return false
                     }
                     bodyData.lead_picking = pickLead
                 }
+                const personP = $('#inputPersonPicking').val()
+                if(personP.length > 0) bodyData.person_picking = personP
+                // delivery
+                const deliLead = $('#inputDeliveryLead').val()
+                if (!deliLead) $.fn.notifyB({'description': $trans.attr('data-warn-d-lead')}, 'failure')
+                else bodyData.lead_delivery = deliLead
+                const personD = $('#inputPersonDelivery').val()
+                if(personD.length > 0) bodyData.person_delivery = personD
                 $.fn.callAjax2({
                     'url': frmSetup.dataUrl,
                     'method': frmSetup.dataMethod,
-                    'data': bodyData,
+                    'data': bodyData
                 }).then(
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
@@ -170,14 +188,9 @@
                             $.fn.notifyB({
                                 'description': $.fn.transEle.attr('data-success'),
                             }, 'success');
-                            setTimeout(() => {
-                                window.location.reload();
-                            }, 1000)
                         }
                     },
-                    (errs) => {
-                        WindowControl.hideLoading();
-                    }
+                    //(errs) => WindowControl.hideLoading()
                 );
             });
         });

@@ -30,7 +30,7 @@ let roleForCustomerEle = $('#role-for-customer')
 let roleForSupplierEle = $('#role-for-supplier')
 let tableShippingAddressEle = $('#list-shipping-address')
 let tableBillingAddressEle = $('#list-billing-address')
-let current_owner = null
+let current_owner = {'id': null, 'fullname': null}
 
 function loadAccountType(accountTypeData) {
     accountTypeEle.initSelect2({
@@ -172,7 +172,6 @@ function loadTableSelectContact(selected_contact_list=[], selected_contact_list_
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     if (resp.data['contact_list_not_map_account']) {
-                        console.log(selected_contact_list)
                         return resp.data['contact_list_not_map_account'].concat(selected_contact_list_detail);
                     } else {
                         return [];
@@ -204,7 +203,6 @@ function loadTableSelectContact(selected_contact_list=[], selected_contact_list_
             {
                 data: 'owner',
                 render: (data, type, row) => {
-                    console.log(row.owner)
                     if (Object.keys(row.owner).length !== 0) {
                         return `${row.owner.fullname}`
                     }
@@ -233,7 +231,6 @@ function loadTableSelectContact(selected_contact_list=[], selected_contact_list_
                 data: '',
                 className: 'w-5',
                 render: (data, type, row) => {
-                    console.log(row.id)
                     if (selected_contact_list.includes(row.id)) {
                         return `<span class="form-check">
                             <input type="checkbox" class="form-check-input selected_contact"
@@ -277,7 +274,7 @@ function loadTableSelectedContact(data, option='') {
                     if (option === 'detail') {
                         disabled = 'disabled';
                     }
-                    if (row.is_owner || current_owner.id === row.id) {
+                    if (row.is_account_owner || current_owner.id === row.id) {
                         return `<span class="form-check"><input ${disabled} checked name="is_account_owner_radio" type="radio" data-id="${row.id}" class="form-check-input is_account_owner"></span>`;
                     }
                     else {
@@ -487,7 +484,7 @@ function LoadDetail(option) {
             if (data) {
                 WFRTControl.setWFRuntimeID(data['account_detail']?.['workflow_runtime_id']);
                 data = data['account_detail'];
-                console.log(data)
+                // console.log(data)
 
                 $.fn.compareStatusShowPageAction(data);
 
@@ -544,7 +541,7 @@ function LoadDetail(option) {
                 loadParentAccount(data?.['parent_account_mapped'])
 
                 for (let i = 0; i < data.contact_mapped.length; i++) {
-                    if (data.contact_mapped[i].is_owner) {
+                    if (data.contact_mapped[i].is_account_owner) {
                         current_owner = data.contact_mapped[i];
                     }
                 }
@@ -633,7 +630,6 @@ save_shipping_address.on('click', function () {
                 $(this).closest('tr').remove();
             })
         }
-        console.log(shipping_address)
     } catch (error) {
         $.fn.notifyB({description: "No address information!"}, 'failure');
     }
@@ -905,7 +901,7 @@ function get_contacts_mapped() {
     $('#datatable_contact_list tbody').find('.is_account_owner').each(function () {
         contact_mapped_list.push({
             'id': $(this).attr('data-id'),
-            'is_owner': $(this).is(':checked')
+            'is_account_owner': $(this).is(':checked')
         })
     })
     return contact_mapped_list;

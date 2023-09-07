@@ -5,24 +5,33 @@ $(function () {
         let formSubmit = $('#frm_good_receipt_create');
         // Elements
         let btnEdit = $('#btn-edit-product-good-receipt');
+        let btnAdd = $('#btn-confirm-add-product');
         let tablePOProduct = $('#datable-good-receipt-po-product');
         let tablePR = $('#datable-good-receipt-purchase-request');
         let tableWH = $('#datable-good-receipt-warehouse');
+        let tableLineDetail = $('#datable-good-receipt-line-detail');
         // Load init
         if (formSubmit.attr('data-method') === 'POST') {
             GRLoadDataHandle.loadBoxType();
             GRLoadDataHandle.loadBoxPO();
             GRLoadDataHandle.loadBoxSupplier();
-            GRDataTableHandle.dataTableGoodReceiptProduct();
             GRDataTableHandle.dataTableGoodReceiptPOProduct();
             GRDataTableHandle.dataTableGoodReceiptPR();
             GRDataTableHandle.dataTableGoodReceiptWH();
-            // PODataTableHandle.dataTablePurchaseRequestProduct();
-            // PODataTableHandle.dataTablePurchaseRequestProductMerge();
-            // PODataTableHandle.dataTablePurchaseQuotation();
-            // PODataTableHandle.dataTablePurchaseOrderProductAdd();
-            // PODataTableHandle.dataTablePurchaseOrderProductRequest();
+            GRDataTableHandle.dataTableGoodReceiptLineDetail();
         }
+
+        // run datetimepicker
+        $('input[type=text].date-picker').daterangepicker({
+            minYear: 1901,
+            singleDatePicker: true,
+            timePicker: true,
+            showDropdowns: true,
+            locale: {
+                format: 'DD/MM/YYYY hh:mm A'
+            }
+        });
+        // $('#good-receipt-date-created').val(null).trigger('change');
 
         GRLoadDataHandle.typeSelectEle.on('change', function() {
            for (let eleArea of formSubmit[0].querySelectorAll('.custom-area')) {
@@ -35,11 +44,13 @@ $(function () {
         // Action on change dropdown PO
         GRLoadDataHandle.POSelectEle.on('change', function () {
             GRLoadDataHandle.loadMoreInformation($(this));
-            // load supplier by po
             if ($(this).val()) {
                 let dataSelected = SelectDDControl.get_data_from_idx(GRLoadDataHandle.POSelectEle, $(this).val());
+                // load supplier
                 GRLoadDataHandle.supplierSelectEle.empty();
                 GRLoadDataHandle.loadBoxSupplier(dataSelected.supplier);
+                // load PR
+                GRLoadDataHandle.loadDataShowPR(dataSelected.purchase_requests_data);
             }
             btnEdit.click();
         });
@@ -53,7 +64,12 @@ $(function () {
             GRLoadDataHandle.loadModalProduct();
         });
 
+        btnAdd.on('click', function() {
+            GRLoadDataHandle.loadLineDetail();
+        });
+
         tablePOProduct.on('click', '.table-row-checkbox', function () {
+            let row = this.closest('tr');
             let dataRow = JSON.parse($(this).attr('data-row'));
             let is_checked = false;
             if (this.checked === true) {
@@ -73,10 +89,14 @@ $(function () {
                 } else {
 
                 }
+                $(row).css('background-color', '#ebfcf5');
+            } else {
+                $(row).css('background-color', '#fff');
             }
         });
 
         tablePR.on('click', '.table-row-checkbox', function () {
+            let row = this.closest('tr');
             // let dataRow = JSON.parse($(this).attr('data-row'));
             let is_checked = false;
             if (this.checked === true) {
@@ -91,6 +111,9 @@ $(function () {
             tableWH.DataTable().clear().draw();
             if (is_checked === true) {
                 GRLoadDataHandle.loadModalWareHouse();
+                $(row).css('background-color', '#ebfcf5');
+            } else {
+                $(row).css('background-color', '#fff');
             }
         });
 
@@ -107,6 +130,16 @@ $(function () {
                 $.fn.notifyB({description: $.fn.transEle.attr('data-validate-import')}, 'failure');
                 return false
             }
+        });
+
+        tableLineDetail.on('change', '.table-row-price, .table-row-tax', function() {
+            let row = this.closest('tr');
+            GRCalculateHandle.calculateMain(tableLineDetail, row);
+        });
+
+        // Action on click button collapse
+        $('#info-collapse').click(function () {
+            $(this).toggleClass('fa-angle-double-up fa-angle-double-down');
         });
 
     });

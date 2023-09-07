@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static i18n %}
 {% block cssHeader %}
-    <link href="{% static 'assets/sales/purchasing/css/purchaseorder/purchase_order_create.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'assets/sales/inventory/css/goodreceipt/good_receipt_create.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
@@ -48,7 +48,7 @@
                             <div class="input-group">
                                 <span class="input-affix-wrapper">
                                     <span class="input-prefix">
-                                        <i class="fas fa-people-carry text-brown"></i>
+                                        <i class="fas fa-box-open text-brown"></i>
                                     </span>
                                     <select
                                         class="form-select"
@@ -80,9 +80,9 @@
                     </div>
                     <div class="col-6">
                         <div class="form-group">
-                            <label class="form-label" for="good-receipt-date-delivered">{% trans 'Date' %}</label>
+                            <label class="form-label" for="good-receipt-date-created">{% trans 'Date' %}</label>
                             <div class="input-affix-wrapper">
-                                <input type="text" name="delivered-date" id="good-receipt-date-delivered"
+                                <input type="text" name="date-created" id="good-receipt-date-created"
                                        class="form-control date-picker" autocomplete="off">
                                 <span class="input-suffix">
                                     <i class="bi bi-calendar-week"></i>
@@ -125,11 +125,11 @@
                                     <select
                                             class="form-select"
                                             id="box-good-receipt-purchase-order"
-                                            data-url="{% url "PurchaseOrderListAPI" %}"
+                                            data-url="{% url "PurchaseOrderSaleListAPI" %}"
                                             data-method="GET"
                                             data-link-detail="{% url "PurchaseOrderDetail" 1 %}"
                                             name="purchase_order"
-                                            data-keyResp="purchase_order_list"
+                                            data-keyResp="purchase_order_sale_list"
                                             required
                                     ></select>
                                 </span>
@@ -169,8 +169,8 @@
                             <label class="form-label">{% trans 'Purchase request' %}</label>
                             <div class="input-group">
                                 <span class="input-affix-wrapper">
-                                    <div class="form-control div-input" id="good-receipt-purchase-quotation" data-link-detail="{% url "PurchaseQuotationDetail" 1 %}"></div>
-                                    <input type="hidden" id="purchase_quotations_data">
+                                    <div class="form-control div-input" id="good-receipt-purchase-request" data-link-detail="{% url "PurchaseRequestDetail" 1 %}"></div>
+                                    <input type="hidden" id="purchase_requests_data">
                                 </span>
                             </div>
                         </div>
@@ -279,7 +279,7 @@
                     <div class="tab-pane fade show active" id="tab_line_detail">
                         <div class="row">
                             <table
-                                id="datable-good-receipt-product"
+                                id="datable-good-receipt-line-detail"
                                 class="table nowrap w-100 mb-5"
                                 data-url=""
                                 data-method="get"
@@ -323,10 +323,10 @@
                                     <div class="col-1"></div>
                                     <div class="col-7 total-area">
                                         <div class="card card-sm">
-                                            <span class="card-body mask-money" data-init-money="0" id="purchase-order-product-pretax-amount"></span>
+                                            <span class="card-body mask-money" data-init-money="0" id="good-receipt-product-pretax-amount"></span>
                                         </div>
                                         <input
-                                            id="purchase-order-product-pretax-amount-raw"
+                                            id="good-receipt-product-pretax-amount-raw"
                                             type="text"
                                             class="form-control"
                                             value="0"
@@ -334,7 +334,7 @@
                                         >
                                         <input
                                             type="hidden"
-                                            id="purchase-order-final-revenue-before-tax"
+                                            id="good-receipt-final-revenue-before-tax"
                                         >
                                     </div>
                                 </div>
@@ -343,10 +343,10 @@
                                     <div class="col-1"></div>
                                     <div class="col-7 total-area">
                                         <div class="card card-sm">
-                                            <span class="card-body mask-money" data-init-money="0" id="purchase-order-product-taxes"></span>
+                                            <span class="card-body mask-money" data-init-money="0" id="good-receipt-product-taxes"></span>
                                         </div>
                                         <input
-                                            id="purchase-order-product-taxes-raw"
+                                            id="good-receipt-product-taxes-raw"
                                             type="text"
                                             class="form-control"
                                             value="0"
@@ -359,10 +359,10 @@
                                     <div class="col-1"></div>
                                     <div class="col-7 total-area">
                                         <div class="card card-sm">
-                                            <span class="card-body mask-money" data-init-money="0" id="purchase-order-product-total"></span>
+                                            <span class="card-body mask-money" data-init-money="0" id="good-receipt-product-total"></span>
                                         </div>
                                         <input
-                                            id="purchase-order-product-total-raw"
+                                            id="good-receipt-product-total-raw"
                                             type="text"
                                             class="form-control"
                                             value="0"
@@ -422,9 +422,7 @@
         >
         <input
             type="hidden"
-            id="data-purchase-quotation-products"
-            data-url="{% url "PurchaseQuotationProductListAPI" %}"
-            data-method="GET"
+            id="data-purchase-order-products"
         >
 
 
@@ -512,7 +510,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
-                        <button type="button" class="btn btn-primary" id="btn-confirm-add-purchase-request" data-bs-dismiss="modal">{% trans 'Next' %}</button>
+                        <button type="button" class="btn btn-primary" id="btn-confirm-add-product" data-bs-dismiss="modal">{% trans 'Next' %}</button>
                     </div>
                 </div>
             </div>

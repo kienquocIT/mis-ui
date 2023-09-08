@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
-from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg
+from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg, InputMappingProperties
 
 
 def create_purchase_order(request, url, msg):
@@ -89,7 +89,11 @@ class PurchaseOrderUpdate(View):
         breadcrumb='PURCHASE_ORDER_DETAIL_PAGE',
     )
     def get(self, request, pk, *args, **kwargs):
-        return {'data': {'doc_id': pk}}, status.HTTP_200_OK
+        input_mapping_properties = InputMappingProperties.PURCHASING_PURCHASE_ORDER
+        return {
+                   'data': {'doc_id': pk},
+                   'input_mapping_properties': input_mapping_properties, 'form_id': 'frm_purchase_order_create'
+               }, status.HTTP_200_OK
 
 
 class PurchaseOrderDetailAPI(APIView):
@@ -113,3 +117,25 @@ class PurchaseOrderDetailAPI(APIView):
             pk=pk,
             msg=SaleMsg.PURCHASE_ORDER_UPDATE
         )
+
+
+class PurchaseOrderProductListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.PURCHASE_ORDER_PRODUCT_LIST).get(data)
+        return resp.auto_return(key_success='purchase_order_product_list')
+
+
+class PurchaseOrderSaleListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.PURCHASE_ORDER_SALE_LIST).get(data)
+        return resp.auto_return(key_success='purchase_order_sale_list')

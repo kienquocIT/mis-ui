@@ -117,6 +117,9 @@ $(document).ready(async function () {
                 OpportunityLoadDetail.loadSaleTeam(opportunity_detail.opportunity_sale_team_datas);
 
                 if ($.fn.hasOwnProperties(opportunity_detail, ['sale_order'])) {
+                    let so_id = opportunity_detail.sale_order.id;
+                    let link = so_id !== undefined ? urlEle.data('url-related-sale-order').format_url_with_uuid(so_id): '#';
+                    $('#item-related-sale-order').attr('href', link)
                     if (opportunity_detail.sale_order.system_status === 0) {
                         condition_sale_oder_approved = true;
                         if ($.fn.hasOwnProperties(opportunity_detail.sale_order, ['delivery'])) {
@@ -126,6 +129,9 @@ $(document).ready(async function () {
                 }
 
                 if ($.fn.hasOwnProperties(opportunity_detail, ['quotation'])) {
+                    let quotation_id = opportunity_detail.quotation.id;
+                    let link = quotation_id !== undefined ? urlEle.data('url-related-quotation').format_url_with_uuid(quotation_id): '#';
+                    $('#item-related-quotation').attr('href', link)
                     if (opportunity_detail.quotation.is_customer_confirm === true) {
                         condition_is_quotation_confirm = true;
                     }
@@ -495,7 +501,6 @@ $(document).ready(async function () {
         loadWinRate();
     })
 
-
     function checkOppWonOrDelivery() {
         let check = false;
         let stage_id = $('.stage-selected').last().data('id');
@@ -505,6 +510,14 @@ $(document).ready(async function () {
         }
         return check;
     }
+
+    $('.item-detail-related-feature').on('click', function (){
+        if ($(this).attr('href') === '#'){
+           $(this).removeAttr('target');
+           OpportunityLoadDetail.renderAlert(`${$(this).text()} ${transEle.data('trans-not-created')}`);
+        }
+    })
+
 
     // toggle action and activity
     toggleShowActivity()
@@ -1334,12 +1347,18 @@ $(document).ready(async function () {
 
             const assign_to = $('#selectAssignTo').select2('data')[0]
             let assign_toData = {}
-            if (assign_to)
+            if (assign_to){
                 assign_toData = {
                     'id': assign_to.id,
                     'first_name': assign_to.text.split('. ')[1],
                     'last_name': assign_to.text.split('. ')[0],
                 }
+                formData.employee_inherit_id = assign_to.id
+            }
+            else{
+                $.fn.notifyB({'description': $('#trans-factory').attr('data-assignee_empty')}, 'failure')
+                return false
+            }
 
             formData.checklist = []
             $('.wrap-checklist .checklist_item').each(function () {
@@ -1364,7 +1383,14 @@ $(document).ready(async function () {
                 method = 'PUT'
                 url = $('#url-factory').attr('data-task-detail').format_url_with_uuid(formData.id)
             }
-            $.fn.callAjax(url, method, formData, true).then(
+            $.fn.callAjax2({
+                'url': url,
+                'method': method,
+                'data': formData,
+                'sweetAlertOpts': {
+                    'allowOutsideClick': true
+                }
+            }).then(
                 (resp) => {
                     const data = $.fn.switcherResp(resp);
                     if (data) {
@@ -1389,7 +1415,11 @@ $(document).ready(async function () {
 
                         callAjaxtoLoadTimeLineList();
                     }
-                })
+                },
+                (error) =>{
+                    console.log(error)
+                }
+            )
         })
     }, jQuery)
 

@@ -437,50 +437,53 @@
                             </div>
                             <div class="col-8">
                                 <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-450p position-relative overflow-y-scroll" id="sroll-datable-purchase-request-product">
-                                    <table
-                                        id="datable-purchase-request-product"
-                                        class="table nowrap w-100"
-                                        data-url="{% url 'PurchaseRequestProductListAPI' %}"
-                                        data-method="GET"
-                                    >
-                                        <thead>
-                                        <tr>
-                                            <th class="w-5">STT</th>
-                                            <th class="w-5"></th>
-                                            <th>{% trans 'Product' %}</th>
-                                            <th>{% trans 'PR Code' %}</th>
-                                            <th>{% trans 'Unit Of Measure' %}</th>
-                                            <th class="w-5">{% trans 'Quantity' %}</th>
-                                            <th class="w-5">{% trans 'Remain (PO)' %}</th>
-                                            <th class="w-5">{% trans 'Quantity order' %}</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        </tbody>
-                                    </table>
+                                    <div id="table-purchase-request-product-area">
+                                        <table
+                                            id="datable-purchase-request-product"
+                                            class="table nowrap w-100"
+                                            data-url="{% url 'PurchaseRequestProductListAPI' %}"
+                                            data-method="GET"
+                                        >
+                                            <thead>
+                                            <tr>
+                                                <th class="w-5">STT</th>
+                                                <th class="w-5"></th>
+                                                <th>{% trans 'Product' %}</th>
+                                                <th>{% trans 'PR Code' %}</th>
+                                                <th>{% trans 'Unit Of Measure' %}</th>
+                                                <th class="w-5">{% trans 'Quantity' %}</th>
+                                                <th class="w-5">{% trans 'Remain (PO)' %}</th>
+                                                <th class="w-5">{% trans 'Quantity order' %}</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
+                                    </div>
 
-                                    <table
-                                        id="datable-purchase-request-product-merge"
-                                        class="table nowrap w-100"
-                                        data-url="{% url 'SaleOrderListAPI' %}"
-                                        data-method="get"
-                                        hidden
-                                    >
-                                        <thead>
-                                        <tr>
-                                            <th class="w-5">STT</th>
-                                            <th class="w-5"></th>
-                                            <th>{% trans 'Product' %}</th>
-                                            <th>{% trans 'PR Code' %}</th>
-                                            <th>{% trans 'Unit Of Measure' %}</th>
-                                            <th class="w-5">{% trans 'Quantity' %}</th>
-                                            <th class="w-5">{% trans 'Remain' %}</th>
-                                            <th class="w-5">{% trans 'Quantity order' %}</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        </tbody>
-                                    </table>
+                                    <div id="table-purchase-request-product-merge-area" hidden>
+                                        <table
+                                            id="datable-purchase-request-product-merge"
+                                            class="table nowrap w-100"
+                                            data-url="{% url 'SaleOrderListAPI' %}"
+                                            data-method="get"
+                                        >
+                                            <thead>
+                                            <tr>
+                                                <th class="w-5">STT</th>
+                                                <th class="w-5"></th>
+                                                <th>{% trans 'Product' %}</th>
+                                                <th>{% trans 'PR Code' %}</th>
+                                                <th>{% trans 'Unit Of Measure' %}</th>
+                                                <th class="w-5">{% trans 'Quantity' %}</th>
+                                                <th class="w-5">{% trans 'Remain' %}</th>
+                                                <th class="w-5">{% trans 'Quantity order' %}</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>

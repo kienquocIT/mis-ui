@@ -1,7 +1,7 @@
 function resetFormTask() {
     // clean html select etc.
     $('#formOpportunityTask').trigger('reset').removeClass('task_edit')
-    $('#selectAssignTo').val(null).trigger('change');
+    $('#selectAssignTo').val(null).trigger('change').prop('disabled', false);
     if ($('.current-create-task').length <= 0)
         $('#selectOpportunity').val(null).trigger('change').attr('disabled', false);
     $('.label-mark, .wrap-checklist, .wrap-subtask').html('');
@@ -86,11 +86,11 @@ class AssignToSetup {
                                 selectOpt[0].selected = false
                             }
                             selectOpt.push({
-                                'id': item?.member?.id,
-                                "full_name": item?.member?.name,
+                                'id': item.member.id,
+                                "full_name": item?.member.name,
                                 "selected": temp
                             })
-                            if (item.id === data.opportunity.sale_person.id) checkDup = true
+                            if (item.member.id === data.opportunity.sale_person.id) checkDup = true
                         }
                         // add user inherit in list user assign
                         if (!checkDup){
@@ -368,16 +368,16 @@ $(function () {
     const $assigneeElm = $('#selectAssignTo')
     AssignToSetup.init()
     $assignBtnElm.off().on('click', function () {
-        const name = $assignerElm.attr('data-name')
-        const id = $assignerElm.attr('data-value-id')
+        if ($(this).hasClass('disabled')) return false
+        const employee = JSON.parse($('#employee_info').text())
         const infoObj = {
-            "full_name": name,
-            "id": id
+            "full_name": employee.full_name,
+            "id": employee.id
         }
         $assigneeElm.attr('data-onload', JSON.stringify(infoObj))
-        if ($(`option[value="${id}"]`, $assigneeElm).length <= 0)
-            $assigneeElm.append(`<option value="${id}">${name}</option>`)
-        $assigneeElm.val(id).trigger('change')
+        if ($(`option[value="${employee.id}"]`, $assigneeElm).length <= 0)
+            $assigneeElm.append(`<option value="${employee.id}">${employee.full_name}</option>`)
+        $assigneeElm.val(employee.id).trigger('change')
     });
 
     //--INPUT LABEL-- run init label function

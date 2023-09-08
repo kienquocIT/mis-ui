@@ -77,7 +77,10 @@ class OpportunityTaskList(View):
         task_config = {}
         if resp.state:
             task_config = resp.result
-        return {'task_config': task_config}, status.HTTP_200_OK
+        return {
+                   'task_config': task_config,
+                   'employee_info': request.user.employee_current_data
+               }, status.HTTP_200_OK
 
 
 class OpportunityTaskListAPI(APIView):

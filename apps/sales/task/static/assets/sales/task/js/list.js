@@ -32,7 +32,6 @@ $(function () {
                     'title': item.name
                 }
                 $('[data-drawer-target="#drawer_task_create"]').trigger('click')
-                // activeDrawer('#drawer_task_create', $('.btn-add-newtask', stt_template));
                 let createFormTask = setInterval(function () {
                     clearInterval(createFormTask)
                     const $sttElm = $('#selectStatus')
@@ -348,6 +347,7 @@ $(function () {
                     .then((req) => {
                         let data = $.fn.switcherResp(req);
                         if (data?.['status'] === 200) {
+                            const employee = JSON.parse($('#employee_info').text())
                             if (!$('#drawer_task_create').hasClass('open'))
                                 $('[data-drawer-target="#drawer_task_create"]').trigger('click')
                             const taskIDElm = $(`<input type="hidden" name="id" value="${data.id}"/>`)
@@ -364,18 +364,22 @@ $(function () {
                                 moment(data.end_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
                             )
                             $('#inputTextEstimate').val(data.estimate)
-                            if (data?.opportunity_data && Object.keys(data.opportunity_data).length)
-                                $('#selectOpportunity')
-                                    .attr(
-                                        'data-onload',
-                                        JSON.stringify({
-                                                "id": data.opportunity_data.id,
-                                                "code": data.opportunity_data.code
-                                            }
-                                        )
+                            if (data?.opportunity_data && Object.keys(data.opportunity_data).length){
+                                const $oppsElm = $('#selectOpportunity')
+                                $oppsElm.prop('disabled', false)
+                                // nếu user login là user assign và ko phải là user tạo phiếu thì disable opps select
+                                if (employee.id && data.assign_to?.id.length
+                                    && employee.id === data.assign_to.id
+                                    && employee.id !== data.employee_created.id) $oppsElm.prop('disabled', true)
+                                $oppsElm.attr(
+                                    'data-onload',
+                                    JSON.stringify({
+                                            "id": data.opportunity_data.id,
+                                            "code": data.opportunity_data.code
+                                        }
                                     )
-                                    .html('')
-                                    .initSelect2()
+                                ).html('').initSelect2()
+                            }
                             $('#selectPriority').val(data.priority).trigger('change')
                             window.formLabel.renderLabel(data.label)
                             $('#inputLabel').attr('value', JSON.stringify(data.label))
@@ -392,9 +396,16 @@ $(function () {
                                 )
                             if (data?.assign_to) {
                                 data.assign_to.full_name = `${data.assign_to.last_name}. ${data.assign_to.first_name}`
-                                $('#selectAssignTo').html('').attr('data-onload', JSON.stringify(data.assign_to))
-
+                                const $assignElm = $('#selectAssignTo')
                                 const isConfig = JSON.parse($('#task_config').text())
+
+                                $assignElm.prop('disabled', false)
+                                if (employee.id === data.assign_to.id &&
+                                employee.id !== data.employee_created.id){
+                                    $assignElm.prop('disabled', true)
+                                    $('.btn-assign').addClass('disabled')
+                                }
+                                $assignElm.html('').attr('data-onload', JSON.stringify(data.assign_to))
                                 AssignToSetup.hasConfig(isConfig)
                             }
                             window.editor.setData(data.remark)
@@ -580,9 +591,10 @@ $(function () {
                 if (assign_to.avatar) $elm.find('img').attr('src', assign_to.avatar)
                 else {
                     $elm.find('img').remove()
-                    const name = $.fn.shortName(assign_to.last_name + ' ' + assign_to.first_name)
+                    let full_name = assign_to.full_name || assign_to.last_name + ' ' + assign_to.first_name
+                    const name = $.fn.shortName(full_name)
                     $elm.find('.avatar .initial-wrap').text(name)
-                    $elm.find('.avatar').attr('title', assign_to.last_name + ' ' + assign_to.first_name)
+                    $elm.find('.avatar').attr('data-bs-original-title', full_name)
                 }
             }
             if (data.checklist) {
@@ -624,20 +636,29 @@ $(function () {
                 const taskID = $(this).closest('form').find('[name="id"]').val()
                 const $oppElm = $('#selectOpportunity')
                 let oppData = {}
-                if ($oppElm.val()) {
+                if ($oppElm.val())
                     oppData = {
                         "id": $oppElm.select2('data')[0].id,
                         "title": $oppElm.select2('data')[0].text,
                     }
-                }
                 if (taskID) {
                     resetFormTask()
+                    $('.btn-assign').removeClass('disabled')
                     // after reset
                     $formElm.append(`<input type="hidden" name="parent_n" value="${taskID}"/>`)
-                    if (Object.keys(oppData).length)
-                        $oppElm.attr('data-onload', JSON.stringify(oppData)).attr('disabled', true)
+                    if (Object.keys(oppData).length){
+                        $oppElm.append(`<option value="${oppData.id}" selected>${oppData.title}</option>`)
+                            .prop('disabled', true)
+                    }
                     else $oppElm.removeAttr('data-onload')
                     $oppElm.initSelect2()
+
+                    const employee = JSON.parse($('#employee_info').text())
+                    $('#inputAssigner').val(employee.full_name).attr({
+                        "value": employee.id,
+                        "data-name": employee.full_name,
+                        "data-value-id": employee.id,
+                    })
                 }
             })
         }
@@ -738,7 +759,7 @@ $(function () {
 
         set setConfig(data) {
             this.taskConfig = data
-        };
+        }
 
         set setTaskList(data) {
             this.taskList = data
@@ -964,7 +985,11 @@ $(function () {
 
         static addNewData(cls, newData){
             let currentList = cls.getTaskList
-            currentList.push(newData)
+            const hasData = $.filter(currentList, (item)=>{
+                if (item.id === newData.id)
+                    return true
+            }, false)
+            if (!hasData) currentList.push(newData)
             const $tblElm = $('#table_task_list')
             $tblElm.DataTable().row.add(newData).draw()
         }

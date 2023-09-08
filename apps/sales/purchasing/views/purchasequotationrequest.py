@@ -48,13 +48,11 @@ class PurchaseQuotationRequestCreateFromPR(View):
     )
     def get(self, request, *args, **kwargs):
         resp1 = ServerAPI(user=request.user, url=ApiURL.TAX_LIST).get()
-        resp2 = ServerAPI(user=request.user, url=ApiURL.PURCHASE_REQUEST_LIST_FOR_PQR).get()
         return {
                    'data':
                        {
                            'employee_current_id': request.user.employee_current_data.get('id', None),
                            'tax_list': resp1.result,
-                           'purchase_request_list': resp2.result,
                        }
                }, status.HTTP_200_OK
 

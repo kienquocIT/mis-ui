@@ -84,16 +84,7 @@ $(function () {
                     ],
                 });
             }
-            $('#table-select-purchase-request-products').DataTableDefault({
-                paging: false,
-                dom: "<'row mt-3 miner-group'>" + "<'row mt-3'<'col-sm-12'tr>>"
-            })
-            $('#table-select-purchase-request-products-for-merge').DataTableDefault({
-                paging: false,
-                dom: "<'row mt-3 miner-group'>" + "<'row mt-3'<'col-sm-12'tr>>"
-            })
         }
-
         LoadPurchaseRequestTable();
 
         function LoadPurchaseRequestProductsTable() {
@@ -110,7 +101,7 @@ $(function () {
             })
             let last_purchase_request_code = '';
             let style_order = -1;
-            $('#table-select-purchase-request-products').DataTable().clear().destroy();
+            $('#table-select-purchase-request-products').DataTable().destroy();
             $('#table-select-purchase-request-products').DataTableDefault({
                 paging: false,
                 dom: "<'row mt-3 miner-group'>" + "<'row mt-3'<'col-sm-12'tr>>",
@@ -235,7 +226,7 @@ $(function () {
                 )
             }
 
-            $('#table-select-purchase-request-products-for-merge').DataTable().clear().destroy();
+            $('#table-select-purchase-request-products-for-merge').DataTable().destroy();
             $('#table-select-purchase-request-products-for-merge').DataTableDefault({
                 paging: false,
                 dom: "<'row mt-3 miner-group'>" + "<'row mt-3'<'col-sm-12'tr>>",
@@ -395,7 +386,7 @@ $(function () {
             $('#taxes-value').attr('data-init-money', taxes_value);
             $('#total-value').attr('data-init-money', total_value);
 
-            $('#table-purchase-quotation-request-products-selected').DataTable().clear().destroy();
+            $('#table-purchase-quotation-request-products-selected').DataTable().destroy();
             $('#table-purchase-quotation-request-products-selected').DataTableDefault({
                 reloadCurrency: true,
                 paging: false,
@@ -538,7 +529,7 @@ $(function () {
                         'product_description': $(this).find('.product-description').val(),
                         'product_uom_id': $(this).find('.product-uom-select-box option:selected').attr('value'),
                         'product_quantity': $(this).find('.product-quantity').val(),
-                        'product_unit_price': $(this).find('.manual-pr-unit-price-input').attr('value'),
+                        'product_unit_price': $(this).find('.pr-unit-price-input').attr('value'),
                         'product_taxes': $(this).find('.product-tax-select-box option:selected').attr('value'),
                         'product_subtotal_price': $(this).find('.pr-subtotal-price-input').attr('data-init-money'),
                     }
@@ -588,7 +579,6 @@ $(function () {
                         return value;
                     }
                 </script>`);
-
             $.fn.initMaskMoney2();
             let row_count = count_row(table_body, 1);
 
@@ -640,10 +630,10 @@ $(function () {
             product_list.map(function (item) {
                 if (item.product_choice.includes(2)) {
                     let tax_code_id = '';
-                    if (item.sale_information.tax_code) {
-                        tax_code_id = item.sale_information.tax_code.id;
+                    if (item.sale_tax) {
+                        tax_code_id = item.sale_tax.id;
                     }
-                    ele.append(`<option data-uom-group-id="` + item.general_information.uom_group.id + `" data-type="` + item.general_information.product_type.title + `" data-tax-id="` + tax_code_id + `" value="` + item.id + `">` + item.title + `</option>`);
+                    ele.append(`<option data-uom-group-id="` + item.general_uom_group.id + `" data-type="` + item.general_product_type.title + `" data-tax-id="` + tax_code_id + `" value="` + item.id + `">` + item.title + `</option>`);
                 }
             })
         }

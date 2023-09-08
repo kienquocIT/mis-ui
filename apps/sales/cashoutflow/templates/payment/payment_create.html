@@ -23,6 +23,7 @@
 {% block pageContent %}
     {{ data.data.employee_current | json_script:"employee_current" }}
     <form id="form-create-payment" data-method="POST"
+          data-url-list="{% url 'AdvancePaymentListAPI' %}"
           data-url-redirect="{% url "PaymentList" %}"
           data-url="{% url "PaymentListAPI" %}"
     >
@@ -37,7 +38,7 @@
                         </div>
                     </div>
                     <div class="row form-group">
-                        <label class="col-3 col-form-label required">{% trans "Sale/Purchase code" %}</label>
+                        <label id="sale-code-label-id" class="col-3 col-form-label required">{% trans "Sale/Purchase code" %}</label>
                         <div class="col-2">
                             <button style="width: 100%" id="btn-change-sale-code-type" type="button" aria-expanded="false"
                                     data-bs-toggle="dropdown" class="btn btn-outline-light dropdown-toggle">Sale</button>
@@ -72,6 +73,9 @@
                         </div>
                         <div class="col-7">
                             <select id="sale-code-select-box" class="select2"
+                                    data-url-opp="{% url 'OpportunityListAPI' %}"
+                                    data-url-quotation="{% url 'QuotationListAPI' %}"
+                                    data-url-sale-order="{% url 'SaleOrderListAPI' %}"
                                     data-placeholder="Select Sale Code">
                             </select>
                         </div>
@@ -301,43 +305,26 @@
                     </div>
                 </div>
             </div>
-            <div class="tab-pane fade mb-25" id="tab_plan">
-                <div class="row" id="tab_plan_datatable_div">
+            <div class="tab-pane fade" id="tab_plan">
+                <div class="row">
                     <table id="tab_plan_datatable" hidden class="table nowrap w-100" data-method="GET"
+                           data-url-payment-cost-items="{% url 'PaymentCostItemsListAPI' %}"
                            data-url-sale-order="{% url 'SaleOrderExpenseListAPI' %}"
                            data-url-quotation="{% url 'QuotationExpenseListAPI' %}">
                         <thead>
                         <tr>
+                            <th></th>
                             <th>{% trans 'Product items' %}</th>
                             <th>{% trans 'Tax' %}</th>
                             <th>{% trans 'Plan After Tax' %}</th>
                             <th>{% trans 'AP Approved' %}</th>
-                            <th>{% trans 'Returned' %}</th>
-                            <th>{% trans 'Remain AP' %}
-                                <i class="fas fa-info-circle icon-info"
-                                   data-bs-toggle="tooltip"
-                                   data-bs-placement="bottom"
-                                   title="{% trans 'Remain AP' %} = {% trans 'AP Approved' %} - {% trans 'Returned' %} - {% trans 'To payment' %}">
-                                </i>
-                            </th>
-                            <th>{% trans 'Paid' %}
-                                <i class="fas fa-info-circle icon-info"
-                                   data-bs-toggle="tooltip"
-                                   data-bs-placement="bottom"
-                                   title="{% trans 'Paid' %} = {% trans 'To payment' %} + {% trans 'Other Payment' %}">
-                                </i>
-                            </th>
-                            <th>{% trans 'Available' %}
-                                <i class="fas fa-info-circle icon-info"
-                                   data-bs-toggle="tooltip"
-                                   data-bs-placement="bottom"
-                                   title="{% trans 'Available' %} = {% trans 'Plan After Tax' %} - {% trans 'Remain AP' %} - {% trans 'Paid' %}">
-                                </i>
-                            </th>
+                            <th>{% trans 'Return' %}</th>
+                            <th>{% trans 'To Payment' %}</th>
+                            <th>{% trans 'Other Payment' %}</th>
+                            <th>{% trans 'Available' %}</th>
                         </tr>
                         </thead>
-                        <tbody>
-                        </tbody>
+                        <tbody></tbody>
                     </table>
                 </div>
                 <div class="row">
@@ -380,7 +367,6 @@
     <script src="{% static 'vendors/dropify/dist/js/dropify.min.js' %}"></script>
     <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>
     <script src="{% static 'vendors/jquery-steps/build/jquery.steps.min.js' %}" type="text/javascript"></script>
-{#    <script src="{% static "assets/js/payment/payment_create_common.js" %}"></script>#}
-{#    <script src="{% static "assets/js/payment/payment_create_main.js" %}"></script>#}
-    <script src="{% static "assets/js/payment/payment_create.js" %}"></script>
+    <script src="{% static "assets/js/payment/payment_create_common.js" %}"></script>
+    <script src="{% static "assets/js/payment/payment_create_main.js" %}"></script>
 {% endblock %}

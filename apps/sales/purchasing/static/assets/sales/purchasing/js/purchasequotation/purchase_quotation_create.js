@@ -198,10 +198,10 @@ $(function () {
             product_list.map(function (item) {
                 if (item.product_choice.includes(2)) {
                     let tax_code_id = '';
-                    if (item.sale_information.tax_code) {
-                        tax_code_id = item.sale_information.tax_code.id;
+                    if (item.sale_tax) {
+                        tax_code_id = item.sale_tax.id;
                     }
-                    ele.append(`<option data-uom-group-id="` + item.general_information.uom_group.id + `" data-type="` + item.general_information.product_type.title + `" data-tax-id="` + tax_code_id + `" value="` + item.id + `">` + item.title + `</option>`);
+                    ele.append(`<option data-uom-group-id="` + item.general_uom_group.id + `" data-type="` + item.general_product_type.title + `" data-tax-id="` + tax_code_id + `" value="` + item.id + `">` + item.title + `</option>`);
                 }
             })
         }

@@ -183,7 +183,15 @@ function getSaleCode() {
 function APLoadSaleCode(sale_code) {
     saleCodeEle.initSelect2({
         templateResult: function(data) {
-            let ele = $('<div class="row col-12"></div>');
+            let opp_code = 'No Opportunity';
+            if (Object.keys(data).includes('data')) {
+                if (Object.keys(data.data).includes('opportunity')) {
+                    if (Object.keys(data.data.opportunity).length !== 0) {
+                        opp_code = data.data.opportunity['code'];
+                    }
+                }
+            }
+            let ele = $('<div class="row col-12" data-bs-toggle="tooltip" data-bs-placement="right" title="' + opp_code + '"></div>');
             ele.append('<div class="col-4">' + data.data?.['code'] + '</div>');
             ele.append('<div class="col-8">' + data.data?.['title'] + '</div>');
             return ele;

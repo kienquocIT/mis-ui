@@ -63,7 +63,7 @@ $(function () {
                         render: (data, type, row) => {
                             let ele = `<p></p>`;
                             if (Object.keys(row.supplier).length !== 0) {
-                                ele = `<p>${row.supplier.title}</p>`;
+                                ele = `<p>${row.supplier.name}</p>`;
                             }
                             return ele;
                         }

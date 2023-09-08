@@ -166,8 +166,12 @@ class MenusCRM:
     PRODUCT = MenuCommon(
         name='Product', code='id_menu_product_list', view_name='ProductList', icon='<i class="bi bi-archive-fill"></i>',
     )
+    EXPENSE_ITEM = MenuCommon(
+        name='Expense Items', code='id_menu_expense_item_list', view_name='ExpenseItemList',
+        icon='<i class="bi bi-cash-coin"></i>',
+    )
     EXPENSE = MenuCommon(
-        name='Internal Expense Items', code='id_menu_expense_list', view_name='ExpenseList',
+        name='Internal Labor Items', code='id_menu_expense_list', view_name='ExpenseList',
         icon='<i class="bi bi-cash-coin"></i>',
     )
     INVENTORY = MenuCommon(
@@ -343,6 +347,7 @@ class SpaceItem:
                 MenusCRM.QUOTATION,
                 MenusCRM.SALE_ORDER,
                 MenusCRM.PRODUCT,
+                MenusCRM.EXPENSE_ITEM,
                 MenusCRM.EXPENSE,
                 MenusCRM.INVENTORY,
                 MenusCRM.PRICING,

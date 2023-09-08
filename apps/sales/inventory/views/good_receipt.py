@@ -12,7 +12,7 @@ class GoodReceiptList(View):
     @mask_view(
         auth_require=True,
         template='sales/inventory/goodreceipt/good_receipt_list.html',
-        menu_active='',
+        menu_active='menu_goods_receipt_list',
         breadcrumb='',
     )
     def get(self, request, *args, **kwargs):
@@ -23,7 +23,7 @@ class GoodReceiptCreate(View):
     @mask_view(
         auth_require=True,
         template='sales/inventory/goodreceipt/good_receipt_create.html',
-        menu_active='',
+        menu_active='menu_goods_receipt_list',
         breadcrumb='',
     )
     def get(self, request, *args, **kwargs):

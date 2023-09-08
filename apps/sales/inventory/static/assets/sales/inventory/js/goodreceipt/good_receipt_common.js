@@ -5,6 +5,7 @@ class GRLoadDataHandle {
     static supplierSelectEle = $('#box-good-receipt-supplier');
     static POProductEle = $('#data-purchase-order-products');
     static PRDataEle = $('#purchase_requests_data');
+    static submitDataPRWHEle = $('#data-submit-pr-warehouse');
     static finalRevenueBeforeTax = document.getElementById('good-receipt-final-revenue-before-tax');
 
     static loadMoreInformation(ele, is_span = false) {

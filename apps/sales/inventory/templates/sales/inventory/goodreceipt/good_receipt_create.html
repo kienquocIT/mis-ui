@@ -291,7 +291,7 @@
                                     <th>{% trans 'Description' %}</th>
                                     <th>UoM<span class="required"></span></th>
                                     <th>{% trans 'Quantity' %}<span class="required"></span></th>
-                                    <th>{% trans 'Unit Price' %}<span class="required"></span></th>
+                                    <th class="w-20">{% trans 'Unit Price' %}<span class="required"></span></th>
                                     <th>{% trans 'Tax' %}</th>
                                     <th class="w-20">{% trans 'Subtotal Price' %}</th>
                                     <th>{% trans 'Actions' %}</th>
@@ -423,6 +423,10 @@
         <input
             type="hidden"
             id="data-purchase-order-products"
+        >
+        <input
+            type="hidden"
+            id="data-submit-pr-warehouse"
         >
 
 

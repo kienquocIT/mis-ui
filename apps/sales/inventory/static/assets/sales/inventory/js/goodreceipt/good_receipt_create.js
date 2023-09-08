@@ -69,7 +69,6 @@ $(function () {
         });
 
         tablePOProduct.on('click', '.table-row-checkbox', function () {
-            let row = this.closest('tr');
             let dataRow = JSON.parse($(this).attr('data-row'));
             let is_checked = false;
             if (this.checked === true) {
@@ -77,17 +76,16 @@ $(function () {
             }
             for (let eleCheck of tablePOProduct[0].querySelectorAll('.table-row-checkbox')) {
                 eleCheck.checked = false;
-                if (is_checked === true) {
-                    this.checked = true;
-                }
+                let row = eleCheck.closest('tr');
+                $(row).css('background-color', '#fff');
             }
+            let row = this.closest('tr');
             tablePR.DataTable().clear().draw();
             if (is_checked === true) {
+                this.checked = true;
                 if (dataRow?.['purchase_request_products_data'].length > 0) {
                     tablePR.DataTable().rows.add(dataRow?.['purchase_request_products_data']).draw();
                     $('#scroll-table-pr')[0].removeAttribute('hidden');
-                } else {
-
                 }
                 $(row).css('background-color', '#ebfcf5');
             } else {
@@ -96,7 +94,6 @@ $(function () {
         });
 
         tablePR.on('click', '.table-row-checkbox', function () {
-            let row = this.closest('tr');
             // let dataRow = JSON.parse($(this).attr('data-row'));
             let is_checked = false;
             if (this.checked === true) {
@@ -104,16 +101,17 @@ $(function () {
             }
             for (let eleCheck of tablePR[0].querySelectorAll('.table-row-checkbox')) {
                 eleCheck.checked = false;
-                if (is_checked === true) {
-                    this.checked = true;
-                }
+                let row = eleCheck.closest('tr');
+                $(row).css('background-color', '');
             }
+            let row = this.closest('tr');
             tableWH.DataTable().clear().draw();
             if (is_checked === true) {
+                this.checked = true;
                 GRLoadDataHandle.loadModalWareHouse();
                 $(row).css('background-color', '#ebfcf5');
             } else {
-                $(row).css('background-color', '#fff');
+                $(row).css('background-color', '');
             }
         });
 

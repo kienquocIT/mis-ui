@@ -1,7 +1,7 @@
 $(function () {
     $(document).ready(function () {
         const tax_list = JSON.parse($('#tax_list').text());
-        const purchase_request_list = JSON.parse($('#purchase_request_list').text());
+        let purchase_request_list = [];
 
         $('#purchase-request-select-box').prop('disabled', true);
         $('#delivery_date').dateRangePickerDefault({
@@ -48,7 +48,22 @@ $(function () {
                 dtb.DataTableDefault({
                     paging: false,
                     dom: "<'row mt-3 miner-group'>" + "<'row mt-3'<'col-sm-12'tr>>",
-                    data: purchase_request_list,
+                    ajax: {
+                        url: dtb.attr('data-url'),
+                        type: dtb.attr('data-method'),
+                        dataSrc: function (resp) {
+                            let data = $.fn.switcherResp(resp);
+                            if (data) {
+                                if (resp.data['purchase_request_list']) {
+                                    purchase_request_list = resp.data['purchase_request_list'];
+                                    return resp.data['purchase_request_list'];
+                                } else {
+                                    return [];
+                                }
+                            }
+                            return [];
+                        }
+                    },
                     columns: [
                         {
                             data: '',
@@ -221,7 +236,7 @@ $(function () {
                 )
             }
 
-            $('#table-select-purchase-request-products-for-merge').DataTable().clear().destroy();
+            $('#table-select-purchase-request-products-for-merge').DataTable().destroy();
             $('#table-select-purchase-request-products-for-merge').DataTableDefault({
                 paging: false,
                 dom: "<'row mt-3 miner-group'>" + "<'row mt-3'<'col-sm-12'tr>>",
@@ -316,16 +331,6 @@ $(function () {
             }
         })
 
-        $('#purchase-request-select-box-div').on('click', function () {
-            $('#create_purchase_quotation_request_modal').addClass('show');
-            $('#create_purchase_quotation_request_modal').css('display', 'block');
-        })
-
-        $('#close_modal_create_purchase_quotation_request').on('click', function () {
-            $('#create_purchase_quotation_request_modal').removeClass('show');
-            $('#create_purchase_quotation_request_modal').css('display', 'none');
-        })
-
         $(window).on('click', function(event) {
             if (event.target === $('#create_purchase_quotation_request_modal')[0]) {
                 $('#create_purchase_quotation_request_modal').removeClass('show');
@@ -378,13 +383,12 @@ $(function () {
                     'pr_subtotal_price': current_pretax_value,
                 })
             })
-            console.log(purchase_request_products_selected_data)
 
             $('#pretax-value').attr('data-init-money', pretax_value);
             $('#taxes-value').attr('data-init-money', taxes_value);
             $('#total-value').attr('data-init-money', total_value);
 
-            $('#table-purchase-quotation-request-products-selected').DataTable().clear().destroy();
+            $('#table-purchase-quotation-request-products-selected').DataTable().destroy();
             $('#table-purchase-quotation-request-products-selected').DataTableDefault({
                 reloadCurrency: true,
                 paging: false,

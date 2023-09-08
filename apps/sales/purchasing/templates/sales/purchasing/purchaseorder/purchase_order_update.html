@@ -224,14 +224,14 @@
                                     <th class="w-5">#</th>
                                     <th>{% trans 'Product' %}</th>
 {#                                    <th>{% trans 'Description' %}</th>#}
-                                    <th class="w-5">UoM(PR)</th>
-                                    <th class="w-5">{% trans 'Quantity' %}(PR)</th>
+                                    <th class="w-5">UoM (PR)</th>
+                                    <th class="w-5">{% trans 'Quantity' %} (PR)</th>
                                     <th class="w-5">{% trans 'Stock' %}</th>
-                                    <th class="w-5">UoM(PO)<span class="required"></span></th>
-                                    <th class="w-5">{% trans 'Quantity' %}(PO)<span class="required"></span></th>
+                                    <th class="w-5">UoM (PO)<span class="required"></span></th>
+                                    <th class="w-5">{% trans 'Quantity' %} (PO)<span class="required"></span></th>
                                     <th class="w-15">{% trans 'Unit Price' %}<span class="required"></span></th>
                                     <th class="w-10">{% trans 'Tax' %}</th>
-                                    <th>{% trans 'Subtotal Price' %}</th>
+                                    <th class="w-20">{% trans 'Subtotal Price' %}</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -253,7 +253,7 @@
                                     <th>{% trans 'Quantity' %}<span class="required"></span></th>
                                     <th>{% trans 'Unit Price' %}<span class="required"></span></th>
                                     <th>{% trans 'Tax' %}</th>
-                                    <th>{% trans 'Subtotal Price' %}</th>
+                                    <th class="w-20">{% trans 'Subtotal Price' %}</th>
                                     <th>{% trans 'Actions' %}</th>
                                 </tr>
                                 </thead>
@@ -354,6 +354,8 @@
             data-view-detail-info="{% trans 'View detail' %}"
             data-more-information="{% trans 'More information' %}"
             data-product-not-in="{% trans 'Product is not in' %}"
+            data-validate-order-request="{% trans 'Quantity order must be less than quantity remain' %}"
+            data-validate-order-actual="{% trans 'Quantity order actually must be greater than or equal quantity order on request' %}"
         >
         <input
             type="hidden"
@@ -389,14 +391,9 @@
         <div class="modal fade mt-5" id="purchaseRequestModalCenter" tabindex="-1" role="dialog" aria-labelledby="purchaseRequestModalCenter" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-xlg-custom" role="document">
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Select items from purchase request</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
                     <div class="modal-body">
-                        <div class="row">
+                        <div class="row mb-2"><h6>{% trans 'Select items from purchase request' %}</h6></div>
+                        <div class="row mb-1">
                             <div class="col-4"></div>
                             <div class="col-8">
                                 <div class="form-check">
@@ -446,7 +443,7 @@
                                             <th>{% trans 'PR Code' %}</th>
                                             <th>{% trans 'Unit Of Measure' %}</th>
                                             <th class="w-5">{% trans 'Quantity' %}</th>
-                                            <th class="w-5">{% trans 'Remain(PO)' %}</th>
+                                            <th class="w-5">{% trans 'Remain (PO)' %}</th>
                                             <th class="w-5">{% trans 'Quantity order' %}</th>
                                         </tr>
                                         </thead>
@@ -491,13 +488,8 @@
         <div class="modal fade mt-5" id="purchaseQuotationModalCenter" tabindex="-1" role="dialog" aria-labelledby="purchaseQuotationModalCenter" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Select purchase quotation</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
                     <div class="modal-body">
+                        <div class="row mb-2"><h6>{% trans 'Select purchase quotation' %}</h6></div>
                         <div class="row">
                             <label for="filterByPurchaseRequest" class="col-sm-3 col-form-label">{% trans 'Filter by PQ Request' %}</label>
                             <div class="col-sm-6">

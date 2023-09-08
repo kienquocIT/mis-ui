@@ -20,6 +20,8 @@ $(function () {
                 if (data) {
                     $.fn.compareStatusShowPageAction(data);
                     POLoadDataHandle.loadDetailPage(data);
+
+                    WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
                 }
             }
         )

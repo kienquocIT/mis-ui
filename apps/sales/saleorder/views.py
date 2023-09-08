@@ -7,7 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from django.utils.translation import gettext_lazy as _
 
-from apps.shared import mask_view, ServerAPI, ApiURL, ConditionFormset, SaleMsg
+from apps.shared import mask_view, ServerAPI, ApiURL, ConditionFormset, SaleMsg, InputMappingProperties
 
 
 def create_sale_order(request, url, msg):
@@ -98,7 +98,11 @@ class SaleOrderUpdate(View):
         menu_active='menu_sale_order_list',
     )
     def get(self, request, pk, *args, **kwargs):
-        return {'data': {'doc_id': pk}}, status.HTTP_200_OK
+        input_mapping_properties = InputMappingProperties.SALE_ORDER_SALE_ORDER
+        return {
+                   'data': {'doc_id': pk},
+                   'input_mapping_properties': input_mapping_properties, 'form_id': 'frm_quotation_create'
+               }, status.HTTP_200_OK
 
 
 class SaleOrderDetailAPI(APIView):

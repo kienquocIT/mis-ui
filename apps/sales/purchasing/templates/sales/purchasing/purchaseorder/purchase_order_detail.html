@@ -218,54 +218,58 @@
                 <div class="tab-content" id="tab-content-quotation-product">
                     <div class="tab-pane fade show active" id="tab_line_detail">
                         <div class="row">
-                            <table
-                                id="datable-purchase-order-product-request"
-                                class="table nowrap w-100 mb-5"
-                                data-url=""
-                                data-method="get"
-                                hidden
-                            >
-                                <thead>
-                                <tr>
-                                    <th class="w-5">#</th>
-                                    <th>{% trans 'Product' %}</th>
-{#                                    <th>{% trans 'Description' %}</th>#}
-                                    <th class="w-5">UoM (PR)</th>
-                                    <th class="w-5">{% trans 'Quantity' %} (PR)</th>
-                                    <th class="w-5">{% trans 'Stock' %}</th>
-                                    <th class="w-5">UoM (PO)<span class="required"></span></th>
-                                    <th class="w-5">{% trans 'Quantity' %} (PO)<span class="required"></span></th>
-                                    <th class="w-15">{% trans 'Unit Price' %}<span class="required"></span></th>
-                                    <th class="w-5">{% trans 'Tax' %}</th>
-                                    <th class="w-20">{% trans 'Subtotal Price' %}</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                            </table>
+                            <div id="table-purchase-order-product-request-area" hidden>
+                                <table
+                                    id="datable-purchase-order-product-request"
+                                    class="table nowrap w-100 mb-5"
+                                    data-url=""
+                                    data-method="get"
+                                >
+                                    <thead>
+                                    <tr>
+                                        <th class="w-5">#</th>
+                                        <th>{% trans 'Product' %}</th>
+    {#                                    <th>{% trans 'Description' %}</th>#}
+                                        <th class="w-5">UoM (PR)</th>
+                                        <th class="w-5">{% trans 'Quantity' %} (PR)</th>
+                                        <th class="w-5">{% trans 'Stock' %}</th>
+                                        <th class="w-5">UoM (PO)<span class="required"></span></th>
+                                        <th class="w-5">{% trans 'Quantity' %} (PO)<span class="required"></span></th>
+                                        <th class="w-15">{% trans 'Unit Price' %}<span class="required"></span></th>
+                                        <th class="w-10">{% trans 'Tax' %}</th>
+                                        <th class="w-20">{% trans 'Subtotal Price' %}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
 
-                            <table
-                                id="datable-purchase-order-product-add"
-                                class="table nowrap w-100 mb-5"
-                                data-url=""
-                                data-method="get"
-                            >
-                                <thead>
-                                <tr>
-                                    <th class="w-5">#</th>
-                                    <th>{% trans 'Product' %}<span class="required"></span></th>
-                                    <th>{% trans 'Description' %}</th>
-                                    <th class="w-5">UoM<span class="required"></span></th>
-                                    <th class="w-5">{% trans 'Quantity' %}<span class="required"></span></th>
-                                    <th class="w-15">{% trans 'Unit Price' %}<span class="required"></span></th>
-                                    <th class="w-5">{% trans 'Tax' %}</th>
-                                    <th class="w-20">{% trans 'Subtotal Price' %}</th>
-                                    <th class="w-5">{% trans 'Actions' %}</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                            </table>
+                            <div id="table-purchase-order-product-add-area">
+                                <table
+                                    id="datable-purchase-order-product-add"
+                                    class="table nowrap w-100 mb-5"
+                                    data-url=""
+                                    data-method="get"
+                                >
+                                    <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>{% trans 'Product' %}<span class="required"></span></th>
+                                        <th>{% trans 'Description' %}</th>
+                                        <th>UoM<span class="required"></span></th>
+                                        <th>{% trans 'Quantity' %}<span class="required"></span></th>
+                                        <th>{% trans 'Unit Price' %}<span class="required"></span></th>
+                                        <th>{% trans 'Tax' %}</th>
+                                        <th class="w-20">{% trans 'Subtotal Price' %}</th>
+                                        <th>{% trans 'Actions' %}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+
                             <div class="row">
                                 <div class="col-2">
                                     <button type="button" class="btn btn-link btn-animated" id="btn-add-product-purchase-order" disabled>

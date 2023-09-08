@@ -6,6 +6,8 @@ class POLoadDataHandle {
     static contactSelectEle = $('#box-purchase-order-contact');
     static PRDataEle = $('#purchase_requests_data');
     static PQDataEle = $('#purchase_quotations_data');
+    static eleDivTableProductPR = $('#table-purchase-order-product-request-area');
+    static eleDivTableProductAdd = $('#table-purchase-order-product-add-area');
 
     static loadMoreInformation(ele, is_span = false) {
         let optionSelected = null;
@@ -516,12 +518,15 @@ class POLoadDataHandle {
         let tablePurchaseOrderProductRequest = $('#datable-purchase-order-product-request');
         let tablePurchaseOrderProductAdd = $('#datable-purchase-order-product-add');
         let data = setupMergeProduct();
-        if (tablePurchaseOrderProductRequest[0].hasAttribute('hidden')) {
-            tablePurchaseOrderProductAdd[0].setAttribute('hidden', 'true');
-            $('#datable-purchase-order-product-add_wrapper')[0].setAttribute('hidden', 'true');
-            tablePurchaseOrderProductRequest[0].removeAttribute('hidden');
-            $('#datable-purchase-order-product-request_wrapper')[0].removeAttribute('hidden');
-        }
+        // if (tablePurchaseOrderProductRequest[0].hasAttribute('hidden')) {
+        //     tablePurchaseOrderProductAdd[0].setAttribute('hidden', 'true');
+        //     $('#datable-purchase-order-product-add_wrapper')[0].setAttribute('hidden', 'true');
+        //     tablePurchaseOrderProductRequest[0].removeAttribute('hidden');
+        //     $('#datable-purchase-order-product-request_wrapper')[0].removeAttribute('hidden');
+        // }
+        POLoadDataHandle.eleDivTableProductAdd[0].setAttribute('hidden', 'true');
+        POLoadDataHandle.eleDivTableProductPR[0].removeAttribute('hidden');
+        tablePurchaseOrderProductAdd.DataTable().clear().draw();
         if (data.length > 0) {
             tablePurchaseOrderProductRequest.DataTable().clear().draw();
             tablePurchaseOrderProductRequest.DataTable().rows.add(data).draw();
@@ -550,8 +555,7 @@ class POLoadDataHandle {
     };
 
     static loadTableProductNoPurchaseRequest() {
-        let self = this;
-        self.loadDataWhenClearPR(true);
+        POLoadDataHandle.loadDataWhenClearPR(true);
         let tablePurchaseOrderProductRequest = $('#datable-purchase-order-product-request');
         let tablePurchaseOrderProductAdd = $('#datable-purchase-order-product-add');
         let order = 1;
@@ -577,15 +581,11 @@ class POLoadDataHandle {
             'product_subtotal_price': 0,
             'order': order,
         }
-        if (tablePurchaseOrderProductAdd[0].hasAttribute('hidden')) {
-            tablePurchaseOrderProductRequest[0].setAttribute('hidden', 'true');
-            $('#datable-purchase-order-product-request_wrapper')[0].setAttribute('hidden', 'true');
-            tablePurchaseOrderProductAdd[0].removeAttribute('hidden');
-            $('#datable-purchase-order-product-add_wrapper')[0].removeAttribute('hidden');
-        }
+        POLoadDataHandle.eleDivTableProductPR[0].setAttribute('hidden', 'true');
+        POLoadDataHandle.eleDivTableProductAdd[0].removeAttribute('hidden');
         tablePurchaseOrderProductRequest.DataTable().clear().draw();
         let newRow = tablePurchaseOrderProductAdd.DataTable().row.add(data).draw().node();
-        self.loadDataRow(newRow, 'datable-purchase-order-product-add');
+        POLoadDataHandle.loadDataRow(newRow, 'datable-purchase-order-product-add');
         return true;
     };
 
@@ -967,18 +967,16 @@ class POLoadDataHandle {
         let tableProductAdd = $('#datable-purchase-order-product-add');
         let tableProductRequest = $('#datable-purchase-order-product-request');
         if (data?.['purchase_requests_data'].length > 0) {
-            tableProductAdd[0].setAttribute('hidden', 'true');
-            $('#datable-purchase-order-product-add_wrapper')[0].setAttribute('hidden', 'true');
-            tableProductRequest[0].removeAttribute('hidden');
-            $('#datable-purchase-order-product-request_wrapper')[0].removeAttribute('hidden');
+            POLoadDataHandle.eleDivTableProductAdd[0].setAttribute('hidden', 'true');
+            POLoadDataHandle.eleDivTableProductPR[0].removeAttribute('hidden');
             tableProductRequest.DataTable().rows.add(data?.['purchase_order_products_data']).draw();
             POLoadDataHandle.loadDataRowTable(tableProductRequest);
             if (form.attr('data-method') === 'GET') {
                 POLoadDataHandle.loadTableDisabled(tableProductRequest);
             }
         } else {
-            tableProductRequest[0].setAttribute('hidden', 'true');
-            $('#datable-purchase-order-product-request_wrapper')[0].setAttribute('hidden', 'true');
+            POLoadDataHandle.eleDivTableProductPR[0].setAttribute('hidden', 'true');
+            POLoadDataHandle.eleDivTableProductAdd[0].removeAttribute('hidden');
             tableProductAdd.DataTable().rows.add(data?.['purchase_order_products_data']).draw();
             POLoadDataHandle.loadDataRowTable(tableProductAdd);
             if (form.attr('data-method') === 'GET') {

@@ -6,6 +6,9 @@ $(function () {
         // Elements
         let btnEdit = $('#btn-edit-product-good-receipt');
         let btnAdd = $('#btn-confirm-add-product');
+        let btnLot = $('#btn-manage-by-lot');
+        let btnSerial = $('#btn-manage-by-serial');
+        let btnNoLotSerial = $('#btn-no-manage-by-lot-serial');
         let tablePOProduct = $('#datable-good-receipt-po-product');
         let tablePR = $('#datable-good-receipt-purchase-request');
         let tableWH = $('#datable-good-receipt-warehouse');
@@ -18,6 +21,8 @@ $(function () {
             GRDataTableHandle.dataTableGoodReceiptPOProduct();
             GRDataTableHandle.dataTableGoodReceiptPR();
             GRDataTableHandle.dataTableGoodReceiptWH();
+            GRDataTableHandle.dataTableGoodReceiptWHLot();
+            GRDataTableHandle.dataTableGoodReceiptWHSerial();
             GRDataTableHandle.dataTableGoodReceiptLineDetail();
         }
 
@@ -79,6 +84,8 @@ $(function () {
                 let row = eleCheck.closest('tr');
                 $(row).css('background-color', '#fff');
             }
+            //
+            GRStoreDataHandle.storeDataPR();
             let row = this.closest('tr');
             tablePR.DataTable().clear().draw();
             if (is_checked === true) {
@@ -104,30 +111,71 @@ $(function () {
                 let row = eleCheck.closest('tr');
                 $(row).css('background-color', '');
             }
+            //
+            GRStoreDataHandle.storeDataWH();
             let row = this.closest('tr');
             tableWH.DataTable().clear().draw();
             if (is_checked === true) {
                 this.checked = true;
-                GRLoadDataHandle.loadModalWareHouse();
+                GRLoadDataHandle.loadModalWareHouse(JSON.parse(this.getAttribute('data-row')));
                 $(row).css('background-color', '#ebfcf5');
             } else {
                 $(row).css('background-color', '');
             }
         });
 
-        tableWH.on('change', '.table-row-import', function() {
-            let valueWH = parseFloat(this.value);
-            let valueImport = parseFloat(tablePR[0].querySelector('.table-row-checkbox:checked').closest('tr').querySelector('.table-row-import').innerHTML);
-            let valueOrder = parseFloat(tablePR[0].querySelector('.table-row-checkbox:checked').closest('tr').querySelector('.table-row-quantity').innerHTML);
-            let value = valueImport + valueWH;
+        tableWH.on('change', '.table-row-import', function () {
+            let valueThisTime = parseFloat(this.value);
+            let valuePRImport = parseFloat(tablePR[0].querySelector('.table-row-checkbox:checked').closest('tr').querySelector('.table-row-import').innerHTML);
+            let valuePROrder = parseFloat(tablePR[0].querySelector('.table-row-checkbox:checked').closest('tr').querySelector('.table-row-quantity').innerHTML);
+            let valuePOImport = parseFloat(tablePOProduct[0].querySelector('.table-row-checkbox:checked').closest('tr').querySelector('.table-row-import').innerHTML);
+            let valuePOOrder = parseFloat(tablePOProduct[0].querySelector('.table-row-checkbox:checked').closest('tr').querySelector('.table-row-quantity').innerHTML);
+            let valuePRNew = valuePRImport + valueThisTime;
+            let valuePONew = valuePOImport + valueThisTime;
 
-            if (value <= valueOrder) {
-                tablePR[0].querySelector('.table-row-checkbox:checked').closest('tr').querySelector('.table-row-import').innerHTML = String(value);
-                tablePOProduct[0].querySelector('.table-row-checkbox:checked').closest('tr').querySelector('.table-row-import').innerHTML = String(value);
+            if (valuePRNew <= valuePROrder) {
+                tablePR[0].querySelector('.table-row-checkbox:checked').closest('tr').querySelector('.table-row-import').innerHTML = String(valuePRNew);
             } else {
                 $.fn.notifyB({description: $.fn.transEle.attr('data-validate-import')}, 'failure');
                 return false
             }
+            if (valuePONew <= valuePOOrder) {
+                tablePOProduct[0].querySelector('.table-row-checkbox:checked').closest('tr').querySelector('.table-row-import').innerHTML = String(valuePONew);
+            } else {
+                $.fn.notifyB({description: $.fn.transEle.attr('data-validate-import')}, 'failure');
+                return false
+            }
+        });
+
+        btnLot.on('click',  function() {
+            for (let eleImport of tableWH[0].querySelectorAll('.table-row-import')) {
+                eleImport.value = '0';
+                eleImport.setAttribute('disabled', 'true');
+            }
+            $('#btn-lot-serial-area')[0].setAttribute('hidden', 'true');
+            $('#scroll-table-lot-serial')[0].removeAttribute('hidden');
+            $('#table-good-receipt-manage-lot-area')[0].removeAttribute('hidden');
+            $('#table-good-receipt-manage-serial-area')[0].setAttribute('hidden', 'true');
+        });
+
+        btnSerial.on('click',  function() {
+            for (let eleImport of tableWH[0].querySelectorAll('.table-row-import')) {
+                eleImport.value = '0';
+                eleImport.setAttribute('disabled', 'true');
+            }
+            $('#btn-lot-serial-area')[0].setAttribute('hidden', 'true');
+            $('#scroll-table-lot-serial')[0].removeAttribute('hidden');
+            $('#table-good-receipt-manage-serial-area')[0].removeAttribute('hidden');
+            $('#table-good-receipt-manage-lot-area')[0].setAttribute('hidden', 'true');
+        });
+
+        btnNoLotSerial.on('click', function() {
+            for (let eleImport of tableWH[0].querySelectorAll('.table-row-import')) {
+                eleImport.value = '0';
+                eleImport.removeAttribute('disabled');
+            }
+            $('#scroll-table-lot-serial')[0].setAttribute('hidden', 'true');
+            $('#btn-lot-serial-area')[0].removeAttribute('hidden');
         });
 
         tableLineDetail.on('change', '.table-row-price, .table-row-tax', function() {

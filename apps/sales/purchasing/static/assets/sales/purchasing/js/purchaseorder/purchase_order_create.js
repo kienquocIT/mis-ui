@@ -38,10 +38,10 @@ $(function () {
         $('#purchase-order-date-delivered').val(null).trigger('change');
 
         function checkDataTableRenderThenHidden() {
-            let element0 = $('#datable-purchase-order-product-request_wrapper');
+            // let element0 = $('#datable-purchase-order-product-request_wrapper');
             let element1 = $('#datable-purchase-request-product-merge_wrapper');
-            if (element0.length && element1.length) { // hidden ele if condition pass
-                element0[0].setAttribute('hidden', 'true');
+            if (element1.length) { // hidden ele if condition pass
+                // element0[0].setAttribute('hidden', 'true');
                 element1[0].setAttribute('hidden', 'true');
             } else {
                 setTimeout(checkDataTableRenderThenHidden, 1000);  // call again after 1s if condition not pass yet

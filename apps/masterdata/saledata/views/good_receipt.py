@@ -111,3 +111,13 @@ class GoodReceiptDetailAPI(APIView):
             return resp.result, status.HTTP_200_OK
         return resp.auto_return()
 
+
+class GoodReceiptProductListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.GOODS_RECEIPT_PRODUCTs).get(params)
+        return resp.auto_return(key_success='goods_receipt_product_list')

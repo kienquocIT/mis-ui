@@ -336,3 +336,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PROCESS = StringUrl('sale-process/')
     SKIP_PROCESS_STEP = StringUrl('sale-process/step/skip/{pk}')
     SET_CURRENT_PROCESS_STEP = StringUrl('sale-process/step/set-current/{pk}')
+
+    # Expense item
+
+    EXPENSE_ITEM_LIST = StringUrl('saledata/expense-items')
+    EXPENSE_ITEM_DETAIL = StringUrl('saledata/expense-item/{pk}')

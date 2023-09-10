@@ -400,6 +400,7 @@
             data-view-detail-info="{% trans 'View detail' %}"
             data-more-information="{% trans 'More information' %}"
             data-validate-import="{% trans 'Quantity must be purchase order quantity' %}"
+            data-validate-manage-lot="{% trans 'Must check one warehouse' %}"
         >
         <input
             type="hidden"
@@ -422,7 +423,7 @@
         >
         <input
             type="hidden"
-            id="data-purchase-order-products"
+            id="data-init-purchase-order-products"
         >
         <input
             type="hidden"
@@ -488,7 +489,7 @@
                             </div>
                             <div class="col-6">
                                 <div class="row mb-2">
-                                    <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-250p position-relative overflow-y-scroll" id="sroll-datable-purchase-request-product">
+                                    <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-250p position-relative overflow-y-scroll">
                                         <table
                                             id="datable-good-receipt-warehouse"
                                             class="table nowrap w-100"
@@ -507,6 +508,88 @@
                                             <tbody>
                                             </tbody>
                                         </table>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="row" id="btn-lot-serial-area">
+                                        <div class="row mb-1">
+                                            <button
+                                                type="button"
+                                                class="btn btn-success btn-animated bg-green-light-5 w-40"
+                                                id="btn-manage-by-lot"
+                                            >
+                                                <span class="text-teal">
+                                                    <span>{% trans 'Manage by lot' %}</span>
+                                                </span>
+                                            </button>
+                                        </div>
+                                        <div class="row">
+                                            <button
+                                                type="button"
+                                                class="btn btn-success btn-animated bg-green-light-5 w-40"
+                                                id="btn-manage-by-serial"
+                                            >
+                                                <span class="text-teal">
+                                                    <span>{% trans 'Manage by serial' %}</span>
+                                                </span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-250p position-relative overflow-y-scroll" id="scroll-table-lot-serial" hidden>
+                                        <button
+                                            type="button"
+                                            class="btn btn-success bg-green-light-5 w-40"
+                                            id="btn-no-manage-by-lot-serial"
+                                        >
+                                            <span class="text-teal">
+                                                <span>{% trans 'No manage by lot/serial' %}</span>
+                                            </span>
+                                        </button>
+                                        <div id="table-good-receipt-manage-lot-area" hidden>
+                                            <table
+                                                id="datable-good-receipt-manage-lot"
+                                                class="table nowrap w-100"
+                                                data-url=""
+                                                data-method="GET"
+                                            >
+                                                <thead>
+                                                <tr>
+                                                    <th>{% trans 'Lot number' %}</th>
+                                                    <th>{% trans 'Quantity' %}</th>
+                                                    <th>{% trans 'Expiration date' %}</th>
+                                                    <th>{% trans 'Manufacturing date' %}</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                </tbody>
+                                            </table>
+
+                                            <button type="button" class="btn btn-link btn-animated" id="btn-add-manage-lot">
+                                                <span><span class="icon"><span class="feather-icon"><i class="fa-regular fa-square-plus"></i></span></span><span>{% trans 'Add new' %}</span></span>
+                                            </button>
+                                        </div>
+
+                                        <div id="table-good-receipt-manage-serial-area" hidden>
+                                            <table
+                                                id="datable-good-receipt-manage-serial"
+                                                class="table nowrap w-100"
+                                                data-url=""
+                                                data-method="GET"
+                                            >
+                                                <thead>
+                                                <tr>
+                                                    <th>{% trans 'Venedor serial no.' %}</th>
+                                                    <th>{% trans 'Serial no.' %}</th>
+                                                    <th>{% trans 'Expiration date' %}</th>
+                                                    <th>{% trans 'Mfr date' %}</th>
+                                                    <th>{% trans 'Warranty start' %}</th>
+                                                    <th>{% trans 'Warranty end' %}</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

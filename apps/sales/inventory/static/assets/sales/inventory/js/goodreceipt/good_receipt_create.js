@@ -6,10 +6,11 @@ $(function () {
         // Elements
         let btnEdit = $('#btn-edit-product-good-receipt');
         let btnAdd = $('#btn-confirm-add-product');
-        let tablePOProduct = $('#datable-good-receipt-po-product');
-        let tablePR = $('#datable-good-receipt-purchase-request');
-        let tableWH = $('#datable-good-receipt-warehouse');
-        let tableLineDetail = $('#datable-good-receipt-line-detail');
+        let btnLot = $('#btn-manage-by-lot');
+        let btnSerial = $('#btn-manage-by-serial');
+        let btnNoLotSerial = $('#btn-no-manage-by-lot-serial');
+        let btnAddLot = $('#btn-add-manage-lot');
+
         // Load init
         if (formSubmit.attr('data-method') === 'POST') {
             GRLoadDataHandle.loadBoxType();
@@ -18,6 +19,8 @@ $(function () {
             GRDataTableHandle.dataTableGoodReceiptPOProduct();
             GRDataTableHandle.dataTableGoodReceiptPR();
             GRDataTableHandle.dataTableGoodReceiptWH();
+            GRDataTableHandle.dataTableGoodReceiptWHLot();
+            GRDataTableHandle.dataTableGoodReceiptWHSerial();
             GRDataTableHandle.dataTableGoodReceiptLineDetail();
         }
 
@@ -68,23 +71,25 @@ $(function () {
             GRLoadDataHandle.loadLineDetail();
         });
 
-        tablePOProduct.on('click', '.table-row-checkbox', function () {
+        GRDataTableHandle.tablePOProduct.on('click', '.table-row-checkbox', function () {
             let dataRow = JSON.parse($(this).attr('data-row'));
             let is_checked = false;
             if (this.checked === true) {
                 is_checked = true;
             }
-            for (let eleCheck of tablePOProduct[0].querySelectorAll('.table-row-checkbox')) {
+            for (let eleCheck of GRDataTableHandle.tablePOProduct[0].querySelectorAll('.table-row-checkbox')) {
                 eleCheck.checked = false;
                 let row = eleCheck.closest('tr');
                 $(row).css('background-color', '#fff');
             }
+            //
+            GRStoreDataHandle.storeDataPR();
             let row = this.closest('tr');
-            tablePR.DataTable().clear().draw();
+            GRDataTableHandle.tablePR.DataTable().clear().draw();
             if (is_checked === true) {
                 this.checked = true;
                 if (dataRow?.['purchase_request_products_data'].length > 0) {
-                    tablePR.DataTable().rows.add(dataRow?.['purchase_request_products_data']).draw();
+                    GRDataTableHandle.tablePR.DataTable().rows.add(dataRow?.['purchase_request_products_data']).draw();
                     $('#scroll-table-pr')[0].removeAttribute('hidden');
                 }
                 $(row).css('background-color', '#ebfcf5');
@@ -93,52 +98,97 @@ $(function () {
             }
         });
 
-        tablePR.on('click', '.table-row-checkbox', function () {
+        GRDataTableHandle.tablePR.on('click', '.table-row-checkbox', function () {
             // let dataRow = JSON.parse($(this).attr('data-row'));
             let is_checked = false;
             if (this.checked === true) {
                 is_checked = true;
             }
-            for (let eleCheck of tablePR[0].querySelectorAll('.table-row-checkbox')) {
+            for (let eleCheck of GRDataTableHandle.tablePR[0].querySelectorAll('.table-row-checkbox')) {
                 eleCheck.checked = false;
                 let row = eleCheck.closest('tr');
                 $(row).css('background-color', '');
             }
+            //
+            GRStoreDataHandle.storeDataWH();
             let row = this.closest('tr');
-            tableWH.DataTable().clear().draw();
+            GRDataTableHandle.tableWH.DataTable().clear().draw();
             if (is_checked === true) {
                 this.checked = true;
-                GRLoadDataHandle.loadModalWareHouse();
+                GRLoadDataHandle.loadModalWareHouse(JSON.parse(this.getAttribute('data-row')));
                 $(row).css('background-color', '#ebfcf5');
             } else {
                 $(row).css('background-color', '');
             }
         });
 
-        tableWH.on('change', '.table-row-import', function() {
-            let valueWH = parseFloat(this.value);
-            let valueImport = parseFloat(tablePR[0].querySelector('.table-row-checkbox:checked').closest('tr').querySelector('.table-row-import').innerHTML);
-            let valueOrder = parseFloat(tablePR[0].querySelector('.table-row-checkbox:checked').closest('tr').querySelector('.table-row-quantity').innerHTML);
-            let value = valueImport + valueWH;
-
-            if (value <= valueOrder) {
-                tablePR[0].querySelector('.table-row-checkbox:checked').closest('tr').querySelector('.table-row-import').innerHTML = String(value);
-                tablePOProduct[0].querySelector('.table-row-checkbox:checked').closest('tr').querySelector('.table-row-import').innerHTML = String(value);
-            } else {
-                $.fn.notifyB({description: $.fn.transEle.attr('data-validate-import')}, 'failure');
-                return false
-            }
+        GRDataTableHandle.tableWH.on('change', '.table-row-import', function () {
+            GRLoadDataHandle.loadQuantityImport();
         });
 
-        tableLineDetail.on('change', '.table-row-price, .table-row-tax', function() {
+        btnLot.on('click',  function() {
+            for (let eleImport of GRDataTableHandle.tableWH[0].querySelectorAll('.table-row-import')) {
+                eleImport.value = '0';
+                eleImport.setAttribute('disabled', 'true');
+            }
+            $('#btn-lot-serial-area')[0].setAttribute('hidden', 'true');
+            $('#scroll-table-lot-serial')[0].removeAttribute('hidden');
+            $('#table-good-receipt-manage-lot-area')[0].removeAttribute('hidden');
+            $('#table-good-receipt-manage-serial-area')[0].setAttribute('hidden', 'true');
+        });
+
+        btnSerial.on('click',  function() {
+            for (let eleImport of GRDataTableHandle.tableWH[0].querySelectorAll('.table-row-import')) {
+                eleImport.value = '0';
+                eleImport.setAttribute('disabled', 'true');
+            }
+            for (let eleImport of GRDataTableHandle.tablePR[0].querySelectorAll('.table-row-import')) {
+                eleImport.innerHtml = '0';
+            }
+            for (let eleImport of GRDataTableHandle.tablePOProduct[0].querySelectorAll('.table-row-import')) {
+                eleImport.innerHtml = '0';
+            }
+            $('#btn-lot-serial-area')[0].setAttribute('hidden', 'true');
+            $('#scroll-table-lot-serial')[0].removeAttribute('hidden');
+            $('#table-good-receipt-manage-serial-area')[0].removeAttribute('hidden');
+            $('#table-good-receipt-manage-lot-area')[0].setAttribute('hidden', 'true');
+        });
+
+        btnNoLotSerial.on('click', function() {
+            for (let eleImport of GRDataTableHandle.tableWH[0].querySelectorAll('.table-row-import')) {
+                eleImport.value = '0';
+                eleImport.removeAttribute('disabled');
+            }
+            GRDataTableHandle.tableLot.DataTable().clear().draw();
+            GRDataTableHandle.tableSerial.DataTable().clear().draw();
+            $('#scroll-table-lot-serial')[0].setAttribute('hidden', 'true');
+            $('#btn-lot-serial-area')[0].removeAttribute('hidden');
+        });
+
+        GRDataTableHandle.tableLineDetail.on('change', '.table-row-price, .table-row-tax', function() {
             let row = this.closest('tr');
-            GRCalculateHandle.calculateMain(tableLineDetail, row);
+            GRCalculateHandle.calculateMain(GRDataTableHandle.tableLineDetail, row);
         });
 
         // Action on click button collapse
         $('#info-collapse').click(function () {
             $(this).toggleClass('fa-angle-double-up fa-angle-double-down');
         });
+
+        btnAddLot.on('click', function() {
+            if (GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked')) {
+                GRLoadDataHandle.loadNewRowLot();
+            } else {
+                $.fn.notifyB({description: $.fn.transEle.attr('data-validate-manage-lot')}, 'failure');
+                return false
+            }
+        });
+
+        GRDataTableHandle.tableLot.on('change', '.table-row-import', function() {
+            GRLoadDataHandle.loadQuantityImport();
+        });
+
+
 
     });
 });

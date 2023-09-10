@@ -400,6 +400,7 @@
             data-view-detail-info="{% trans 'View detail' %}"
             data-more-information="{% trans 'More information' %}"
             data-validate-import="{% trans 'Quantity must be purchase order quantity' %}"
+            data-validate-manage-lot="{% trans 'Must check one warehouse' %}"
         >
         <input
             type="hidden"
@@ -562,6 +563,10 @@
                                                 <tbody>
                                                 </tbody>
                                             </table>
+
+                                            <button type="button" class="btn btn-link btn-animated" id="btn-add-manage-lot">
+                                                <span><span class="icon"><span class="feather-icon"><i class="fa-regular fa-square-plus"></i></span></span><span>{% trans 'Add new' %}</span></span>
+                                            </button>
                                         </div>
 
                                         <div id="table-good-receipt-manage-serial-area" hidden>

@@ -5,7 +5,7 @@ class GRLoadDataHandle {
     static supplierSelectEle = $('#box-good-receipt-supplier');
     static initPOProductEle = $('#data-init-purchase-order-products');
     static PRDataEle = $('#purchase_requests_data');
-    static submitDataPRWHEle = $('#data-submit-pr-warehouse');
+    // static submitDataPRWHEle = $('#data-submit-pr-warehouse');
     static finalRevenueBeforeTax = document.getElementById('good-receipt-final-revenue-before-tax');
 
     static loadMoreInformation(ele, is_span = false) {
@@ -110,113 +110,113 @@ class GRLoadDataHandle {
         });
     };
 
-    static loadDataProductSelect(ele, is_change_item = true) {
-        if (ele.val()) {
-            let data = SelectDDControl.get_data_from_idx(ele, ele.val());
-            if (data) {
-                data['unit_of_measure'] = data?.['sale_information']?.['default_uom'];
-                data['uom_group'] = data?.['general_information']?.['uom_group'];
-                data['tax'] = data?.['sale_information']?.['tax_code'];
-                let uom = ele[0].closest('tr').querySelector('.table-row-uom-order-actual');
-                let price = ele[0].closest('tr').querySelector('.table-row-price');
-                let priceList = ele[0].closest('tr').querySelector('.table-row-price-list');
-                let tax = ele[0].closest('tr').querySelector('.table-row-tax');
-                // load UOM
-                if (uom && Object.keys(data.unit_of_measure).length !== 0 && Object.keys(data.uom_group).length !== 0) {
-                    GRLoadDataHandle.loadBoxUOM($(uom), data.unit_of_measure, data.uom_group.id);
-                } else {
-                    GRLoadDataHandle.loadBoxUOM($(uom));
-                }
-                // load PRICE
-                if (price && priceList) {
-                    GRLoadDataHandle.loadPriceProduct(ele[0], is_change_item);
-                }
-                // load TAX
-                if (tax && data.tax) {
-                    GRLoadDataHandle.loadBoxTax($(tax), data.tax);
-                } else {
-                    GRLoadDataHandle.loadBoxTax($(tax));
-                }
-                // load modal more information
-                GRLoadDataHandle.loadMoreInformation(ele);
-            }
-            $.fn.initMaskMoney2();
-        }
-    };
+    // static loadDataProductSelect(ele, is_change_item = true) {
+    //     if (ele.val()) {
+    //         let data = SelectDDControl.get_data_from_idx(ele, ele.val());
+    //         if (data) {
+    //             data['unit_of_measure'] = data?.['sale_information']?.['default_uom'];
+    //             data['uom_group'] = data?.['general_information']?.['uom_group'];
+    //             data['tax'] = data?.['sale_information']?.['tax_code'];
+    //             let uom = ele[0].closest('tr').querySelector('.table-row-uom-order-actual');
+    //             let price = ele[0].closest('tr').querySelector('.table-row-price');
+    //             let priceList = ele[0].closest('tr').querySelector('.table-row-price-list');
+    //             let tax = ele[0].closest('tr').querySelector('.table-row-tax');
+    //             // load UOM
+    //             if (uom && Object.keys(data.unit_of_measure).length !== 0 && Object.keys(data.uom_group).length !== 0) {
+    //                 GRLoadDataHandle.loadBoxUOM($(uom), data.unit_of_measure, data.uom_group.id);
+    //             } else {
+    //                 GRLoadDataHandle.loadBoxUOM($(uom));
+    //             }
+    //             // load PRICE
+    //             if (price && priceList) {
+    //                 GRLoadDataHandle.loadPriceProduct(ele[0], is_change_item);
+    //             }
+    //             // load TAX
+    //             if (tax && data.tax) {
+    //                 GRLoadDataHandle.loadBoxTax($(tax), data.tax);
+    //             } else {
+    //                 GRLoadDataHandle.loadBoxTax($(tax));
+    //             }
+    //             // load modal more information
+    //             GRLoadDataHandle.loadMoreInformation(ele);
+    //         }
+    //         $.fn.initMaskMoney2();
+    //     }
+    // };
 
-    static loadPriceProduct(eleProduct, is_change_item = true) {
-        let data = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
-        let is_change_price = false;
-        if (data) {
-            let price = eleProduct.closest('tr').querySelector('.table-row-price');
-            let priceList = eleProduct.closest('tr').querySelector('.table-row-price-list');
-            // load PRICE
-            if (price && priceList) {
-                let account_price_id = document.getElementById('customer-price-list')?.value;
-                let general_price_id = null;
-                let general_price = 0;
-                let customer_price = null;
-                let current_price_checked = price.getAttribute('value');
-                $(priceList).empty();
-                if (Array.isArray(data.price_list) && data.price_list.length > 0) {
-                    for (let i = 0; i < data.price_list.length; i++) {
-                        if (data.price_list[i]?.['price_type'] === 1) { // PRICE TYPE IS PRODUCT (PURCHASE)
-                            if (data.price_list[i].is_default === true) { // check & append GENERAL_PRICE_LIST
-                                general_price_id = data.price_list[i].id;
-                                general_price = parseFloat(data.price_list[i].value);
-                                $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option" data-value="${parseFloat(data.price_list[i].value)}">
-                                                    <div class="row">
-                                                        <div class="col-5"><span>${data.price_list[i].title}</span></div>
-                                                        <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
-                                                        <div class="col-2"><span class="valid-price">${data.price_list[i]?.['price_status']}</span></div>
-                                                    </div>
-                                                </button>`);
-                            }
-                            if (data.price_list[i].id === account_price_id && general_price_id !== account_price_id) { // check & append CUSTOMER_PRICE_LIST
-                                if (!["Expired", "Invalid"].includes(data.price_list[i]?.['price_status'])) { // Customer price valid
-                                    customer_price = parseFloat(data.price_list[i].value);
-                                    $(priceList).empty();
-                                    $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option option-btn-checked" data-value="${parseFloat(data.price_list[i].value)}">
-                                                        <div class="row">
-                                                            <div class="col-5"><span>${data.price_list[i].title}</span></div>
-                                                            <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
-                                                            <div class="col-2"><span class="valid-price">${data.price_list[i]?.['price_status']}</span></div>
-                                                        </div>
-                                                    </button>`);
-                                } else { // Customer price invalid, expired
-                                    $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option option-btn-checked" data-value="${parseFloat(data.price_list[i].value)}" disabled>
-                                                        <div class="row">
-                                                            <div class="col-5"><span>${data.price_list[i].title}</span></div>
-                                                            <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
-                                                            <div class="col-2"><span class="expired-price">${data.price_list[i]?.['price_status']}</span></div>
-                                                        </div>
-                                                    </button>`);
-                                }
-                            }
-                        }
-                    }
-                }
-                // get Price to display
-                if (is_change_item === true) {
-                    if (customer_price) {
-                        $(price).attr('value', String(customer_price));
-                    } else {
-                        $(price).attr('value', String(general_price));
-                    }
-                }
-                if (current_price_checked !== price.getAttribute('value')) {
-                    is_change_price = true;
-                }
-            }
-        }
-        $.fn.initMaskMoney2();
-        // If change price then remove promotion & shipping
-        if (is_change_price === true) {
-            let tableProduct = document.getElementById('datable-quotation-create-product');
-            deletePromotionRows($(tableProduct), true, false);
-            deletePromotionRows($(tableProduct), false, true);
-        }
-    };
+    // static loadPriceProduct(eleProduct, is_change_item = true) {
+    //     let data = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
+    //     let is_change_price = false;
+    //     if (data) {
+    //         let price = eleProduct.closest('tr').querySelector('.table-row-price');
+    //         let priceList = eleProduct.closest('tr').querySelector('.table-row-price-list');
+    //         // load PRICE
+    //         if (price && priceList) {
+    //             let account_price_id = document.getElementById('customer-price-list')?.value;
+    //             let general_price_id = null;
+    //             let general_price = 0;
+    //             let customer_price = null;
+    //             let current_price_checked = price.getAttribute('value');
+    //             $(priceList).empty();
+    //             if (Array.isArray(data.price_list) && data.price_list.length > 0) {
+    //                 for (let i = 0; i < data.price_list.length; i++) {
+    //                     if (data.price_list[i]?.['price_type'] === 1) { // PRICE TYPE IS PRODUCT (PURCHASE)
+    //                         if (data.price_list[i].is_default === true) { // check & append GENERAL_PRICE_LIST
+    //                             general_price_id = data.price_list[i].id;
+    //                             general_price = parseFloat(data.price_list[i].value);
+    //                             $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option" data-value="${parseFloat(data.price_list[i].value)}">
+    //                                                 <div class="row">
+    //                                                     <div class="col-5"><span>${data.price_list[i].title}</span></div>
+    //                                                     <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
+    //                                                     <div class="col-2"><span class="valid-price">${data.price_list[i]?.['price_status']}</span></div>
+    //                                                 </div>
+    //                                             </button>`);
+    //                         }
+    //                         if (data.price_list[i].id === account_price_id && general_price_id !== account_price_id) { // check & append CUSTOMER_PRICE_LIST
+    //                             if (!["Expired", "Invalid"].includes(data.price_list[i]?.['price_status'])) { // Customer price valid
+    //                                 customer_price = parseFloat(data.price_list[i].value);
+    //                                 $(priceList).empty();
+    //                                 $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option option-btn-checked" data-value="${parseFloat(data.price_list[i].value)}">
+    //                                                     <div class="row">
+    //                                                         <div class="col-5"><span>${data.price_list[i].title}</span></div>
+    //                                                         <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
+    //                                                         <div class="col-2"><span class="valid-price">${data.price_list[i]?.['price_status']}</span></div>
+    //                                                     </div>
+    //                                                 </button>`);
+    //                             } else { // Customer price invalid, expired
+    //                                 $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option option-btn-checked" data-value="${parseFloat(data.price_list[i].value)}" disabled>
+    //                                                     <div class="row">
+    //                                                         <div class="col-5"><span>${data.price_list[i].title}</span></div>
+    //                                                         <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
+    //                                                         <div class="col-2"><span class="expired-price">${data.price_list[i]?.['price_status']}</span></div>
+    //                                                     </div>
+    //                                                 </button>`);
+    //                             }
+    //                         }
+    //                     }
+    //                 }
+    //             }
+    //             // get Price to display
+    //             if (is_change_item === true) {
+    //                 if (customer_price) {
+    //                     $(price).attr('value', String(customer_price));
+    //                 } else {
+    //                     $(price).attr('value', String(general_price));
+    //                 }
+    //             }
+    //             if (current_price_checked !== price.getAttribute('value')) {
+    //                 is_change_price = true;
+    //             }
+    //         }
+    //     }
+    //     $.fn.initMaskMoney2();
+    //     // If change price then remove promotion & shipping
+    //     if (is_change_price === true) {
+    //         let tableProduct = document.getElementById('datable-quotation-create-product');
+    //         deletePromotionRows($(tableProduct), true, false);
+    //         deletePromotionRows($(tableProduct), false, true);
+    //     }
+    // };
 
     static loadBoxUOM(ele, dataUOM = {}, uom_group_id = null) {
         ele.initSelect2({
@@ -481,6 +481,28 @@ class GRLoadDataHandle {
         GRCalculateHandle.calculateTable(table);
     };
 
+    static loadAddRowLineDetail() {
+        let order = 1;
+        let tableEmpty = GRDataTableHandle.tableLineDetail[0].querySelector('.dataTables_empty');
+        let tableLen = GRDataTableHandle.tableLineDetail[0].tBodies[0].rows.length;
+        if (tableLen !== 0 && !tableEmpty) {
+            order = (tableLen + 1);
+        }
+        let data = {
+            'product': {},
+            'product_description': '',
+            'uom': {},
+            'quantity_import': '0',
+            'product_unit_price': 0,
+            'tax': {},
+            'product_tax_amount': 0,
+            'product_subtotal_price': 0,
+            'order': order,
+        }
+        let newRow = GRDataTableHandle.tableLineDetail.DataTable().row.add(data).draw().node();
+        GRLoadDataHandle.loadDataRow(newRow, GRDataTableHandle.tableLineDetail[0].id);
+    };
+
     static loadDataRowTable($table) {
         if (!$table[0].querySelector('.dataTables_empty')) {
             for (let i = 0; i < $table[0].tBodies[0].rows.length; i++) {
@@ -514,351 +536,11 @@ class GRLoadDataHandle {
 
 
 
-    static loadModalPurchaseRequestProductTable(is_remove = false, dataDetail = null) {
-        let tablePurchaseRequest = $('#datable-purchase-request');
-        let tablePurchaseRequestProduct = $('#datable-purchase-request-product');
-        let frm = new SetupFormSubmit(tablePurchaseRequestProduct);
-        let checked_pr_id_list = [];
-        let checked_data = {};
-        if (dataDetail) {
-            for (let dataProduct of dataDetail?.['purchase_order_products_data']) {
-                for (let PRProduct of dataProduct?.['purchase_request_products_data']) {
-                    checked_data[PRProduct?.['purchase_request_product_id']] = {
-                        'id': PRProduct?.['purchase_request_product_id'],
-                        'quantity_order': PRProduct?.['quantity_order'],
-                    }
-                }
-            }
-            for (let PRProduct of dataDetail?.['purchase_request_products_data']) {
-                checked_data[PRProduct?.['purchase_request_product_id']] = {
-                    'id': PRProduct?.['purchase_request_product_id'],
-                    'quantity_order': PRProduct?.['quantity_order'],
-                }
-            }
-            if (GRLoadDataHandle.PRDataEle.val()) {
-                for (let prId of JSON.parse(GRLoadDataHandle.PRDataEle.val())) {
-                    checked_pr_id_list.push(prId);
-                }
-            }
-        }
-        if (!tablePurchaseRequestProduct[0].querySelector('.dataTables_empty')) {
-            for (let eleChecked of tablePurchaseRequestProduct[0].querySelectorAll('.table-row-checkbox:checked')) {
-                checked_data[eleChecked.getAttribute('data-id')] = {
-                    'id': eleChecked.getAttribute('data-id'),
-                    'quantity_order': eleChecked.closest('tr').querySelector('.table-row-quantity-order').value,
-                };
-            }
-        }
-        for (let eleChecked of tablePurchaseRequest[0].querySelectorAll('.table-row-checkbox:checked')) {
-            checked_pr_id_list.push(eleChecked.getAttribute('data-id'));
-        }
-        tablePurchaseRequestProduct.DataTable().clear().draw();
-        if (checked_pr_id_list.length > 0) {
-            $.fn.callAjax2({
-                    'url': frm.dataUrl,
-                    'method': frm.dataMethod,
-                    'data': {'purchase_request_id__in': checked_pr_id_list.join(',')},
-                    'isDropdown': true,
-                }
-            ).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        if (data.hasOwnProperty('purchase_request_product_list') && Array.isArray(data.purchase_request_product_list)) {
-                            if (Object.keys(checked_data).length !== 0) {
-                                for (let prProduct of data.purchase_request_product_list) {
-                                    if (checked_data.hasOwnProperty(prProduct.id)) {
-                                        prProduct['is_checked'] = true;
-                                        prProduct['quantity_order'] = checked_data[prProduct.id].quantity_order;
-                                    }
-                                }
-                            }
-                            tablePurchaseRequestProduct.DataTable().rows.add(data.purchase_request_product_list).draw();
-                            if (dataDetail) {
-                                GRLoadDataHandle.loadPRProductNotInPO(dataDetail);
-                            }
-                            if (is_remove === true) {
-                                GRLoadDataHandle.loadDataShowPurchaseRequest();
-                                GRLoadDataHandle.loadTableProductByPurchaseRequest();
-                                GRLoadDataHandle.loadModalPurchaseQuotation(true);
-                            }
-                        }
-                    }
-                }
-            )
-        }
-        return true;
-    };
 
-    static loadOrHiddenMergeProductTable() {
-        let eleCheckbox = $('#merge-same-product');
-        if (eleCheckbox[0].checked === true) {
-            $('#datable-purchase-request-product')[0].setAttribute('hidden', 'true');
-            $('#datable-purchase-request-product_wrapper')[0].setAttribute('hidden', 'true');
-            $('#datable-purchase-request-product-merge')[0].removeAttribute('hidden');
-            $('#datable-purchase-request-product-merge_wrapper')[0].removeAttribute('hidden');
-            GRLoadDataHandle.loadDataMergeProductTable();
-        } else {
-            $('#datable-purchase-request-product-merge')[0].setAttribute('hidden', 'true');
-            $('#datable-purchase-request-product-merge_wrapper')[0].setAttribute('hidden', 'true');
-            $('#datable-purchase-request-product')[0].removeAttribute('hidden');
-            $('#datable-purchase-request-product_wrapper')[0].removeAttribute('hidden');
-        }
-        return true;
-    };
-
-    static loadTableProductByPurchaseRequest() {
-        let tablePurchaseOrderProductRequest = $('#datable-purchase-order-product-request');
-        let tablePurchaseOrderProductAdd = $('#datable-purchase-order-product-add');
-        let data = setupMergeProduct();
-        if (tablePurchaseOrderProductRequest[0].hasAttribute('hidden')) {
-            tablePurchaseOrderProductAdd[0].setAttribute('hidden', 'true');
-            $('#datable-purchase-order-product-add_wrapper')[0].setAttribute('hidden', 'true');
-            tablePurchaseOrderProductRequest[0].removeAttribute('hidden');
-            $('#datable-purchase-order-product-request_wrapper')[0].removeAttribute('hidden');
-        }
-        if (data.length > 0) {
-            tablePurchaseOrderProductRequest.DataTable().clear().draw();
-            tablePurchaseOrderProductRequest.DataTable().rows.add(data).draw();
-            GRLoadDataHandle.loadDataRowTable(tablePurchaseOrderProductRequest);
-        } else {
-            tablePurchaseOrderProductRequest.DataTable().clear().draw();
-            tablePurchaseOrderProductRequest.DataTable().rows.add(data).draw();
-        }
-        // restart totals
-        let elePretaxAmount = document.getElementById('purchase-order-product-pretax-amount');
-        let eleTaxes = document.getElementById('purchase-order-product-taxes');
-        let eleTotal = document.getElementById('purchase-order-product-total');
-        let elePretaxAmountRaw = document.getElementById('purchase-order-product-pretax-amount-raw');
-        let eleTaxesRaw = document.getElementById('purchase-order-product-taxes-raw');
-        let eleTotalRaw = document.getElementById('purchase-order-product-total-raw');
-        let finalRevenueBeforeTax = document.getElementById('purchase-order-final-revenue-before-tax');
-        $(elePretaxAmount).attr('data-init-money', String(0));
-        elePretaxAmountRaw.value = 0;
-        finalRevenueBeforeTax.value = 0;
-        $(eleTaxes).attr('data-init-money', String(0));
-        eleTaxesRaw.value = 0;
-        $(eleTotal).attr('data-init-money', String(0));
-        eleTotalRaw.value = 0;
-        $.fn.initMaskMoney2();
-        return true;
-    };
 
     // LOAD DETAIL
-    static loadDetailPage(data) {
-        $('#data-detail-page').val(JSON.stringify(data));
-        $('#purchase-order-title').val(data?.['title']);
-        document.getElementById('purchase-order-code').innerHTML = data?.['code'];
-        let eleStatus = $('#purchase-order-status');
-        let status_data = {
-            "Draft": "badge badge-soft-light",
-            "Created": "badge badge-soft-primary",
-            "Added": "badge badge-soft-info",
-            "Finish": "badge badge-soft-success",
-            "Cancel": "badge badge-soft-danger",
-        }
-        let statusHTML = `<span class="${status_data[data?.['system_status']]}">${data?.['system_status']}</span>`;
-        eleStatus.empty();
-        eleStatus.append(statusHTML);
-        $('#purchase-order-date-delivered').val(moment(data?.['date_created']).format('DD/MM/YYYY hh:mm A'));
-        GRLoadDataHandle.loadDataShowPRPQ(data);
-        PODataTableHandle.dataTablePurchaseRequest();
-        GRLoadDataHandle.loadModalPurchaseRequestProductTable(false, data);
-        GRLoadDataHandle.loadModalPurchaseQuotation(false, data);
-        GRLoadDataHandle.loadBoxSupplier(data?.['supplier']);
-        GRLoadDataHandle.loadBoxContact(data?.['contact']);
-        GRLoadDataHandle.loadTablesDetailPage(data);
-        GRLoadDataHandle.loadTotals(data);
-    };
 
-    static loadDataShowPRPQ(data) {
-        let from = $('#frm_purchase_order_create');
-        let elePurchaseRequest = $('#purchase-order-purchase-request');
-        let elePRAppend = ``;
-        let purchase_requests_data = [];
-        let elePurchaseQuotation = $('#purchase-order-purchase-quotation');
-        let elePQAppend = ``;
-        let purchase_quotations_data = [];
-        // PR
-        for (let dataPR of data?.['purchase_requests_data']) {
-            let prID = dataPR?.['id'];
-            let prCode = dataPR?.['code'];
-            let link = "";
-            let linkDetail = elePurchaseRequest.attr('data-link-detail');
-            link = linkDetail.format_url_with_uuid(prID);
-            if (from.attr('data-method') === 'GET') {
-                elePRAppend += `<div class="inline-elements-badge mr-2 mb-1">
-                                    <a href="${link}" target="_blank" class="link-primary underline_hover"><span>${prCode}</span></a>
-                                    <button type="button" class="btn btn-link btn-sm custom-btn-remove" data-id="${prID}" aria-label="Close" disabled>
-                                        <span aria-hidden="true"><i class="fas fa-times"></i></span>
-                                    </button>
-                                </div>`;
-            } else {
-                elePRAppend += `<div class="inline-elements-badge mr-2 mb-1">
-                                    <a href="${link}" target="_blank" class="link-primary underline_hover"><span>${prCode}</span></a>
-                                    <button type="button" class="btn btn-link btn-sm custom-btn-remove" data-id="${prID}" aria-label="Close">
-                                        <span aria-hidden="true"><i class="fas fa-times"></i></span>
-                                    </button>
-                                </div>`;
-            }
-            purchase_requests_data.push(prID);
-        }
-        elePurchaseRequest.append(elePRAppend);
-        GRLoadDataHandle.PRDataEle.val(JSON.stringify(purchase_requests_data));
-        // PQ
-        for (let dataPQ of data?.['purchase_quotations_data']) {
-            let pqID = dataPQ?.['purchase_quotation']?.['id'];
-            let pqCode = dataPQ?.['purchase_quotation']?.['code'];
-            let pqSupplier = dataPQ?.['purchase_quotation']?.['supplier'];
-            let pqSupplierStr = JSON.stringify(pqSupplier).replace(/"/g, "&quot;");
-            let link = "";
-            let linkDetail = elePurchaseQuotation.attr('data-link-detail');
-            link = linkDetail.format_url_with_uuid(pqID);
-            if (from.attr('data-method') === 'GET') {
-                if (dataPQ?.['is_use'] === false) {
-                    elePQAppend += `<div class="inline-elements-badge mr-2 mb-1">
-                                    <input class="form-check-input checkbox-circle checkbox-quotation" type="checkbox" data-id="${pqID}" data-code="${pqCode}" data-supplier="${pqSupplierStr}" value="option1" disabled>
-                                    <a href="${link}" target="_blank" class="link-primary underline_hover ml-3"><span>${pqCode}</span></a>
-                                    <button type="button" class="btn btn-link btn-sm custom-btn-remove" data-id="${pqID}" aria-label="Close" disabled>
-                                        <span aria-hidden="true"><i class="fas fa-times"></i></span>
-                                    </button>
-                                </div>`;
-                } else {
-                    elePQAppend += `<div class="inline-elements-badge mr-2 mb-1">
-                                    <input class="form-check-input checkbox-circle checkbox-quotation" type="checkbox" data-id="${pqID}" data-code="${pqCode}" data-supplier="${pqSupplierStr}" value="option1" checked disabled>
-                                    <a href="${link}" target="_blank" class="link-primary underline_hover ml-3"><span>${pqCode}</span></a>
-                                    <button type="button" class="btn btn-link btn-sm custom-btn-remove" data-id="${pqID}" aria-label="Close" disabled>
-                                        <span aria-hidden="true"><i class="fas fa-times"></i></span>
-                                    </button>
-                                </div>`;
-                }
-            } else {
-                if (dataPQ?.['is_use'] === false) {
-                    elePQAppend += `<div class="inline-elements-badge mr-2 mb-1">
-                                    <input class="form-check-input checkbox-circle checkbox-quotation" type="checkbox" data-id="${pqID}" data-code="${pqCode}" data-supplier="${pqSupplierStr}" value="option1">
-                                    <a href="${link}" target="_blank" class="link-primary underline_hover ml-3"><span>${pqCode}</span></a>
-                                    <button type="button" class="btn btn-link btn-sm custom-btn-remove" data-id="${pqID}" aria-label="Close">
-                                        <span aria-hidden="true"><i class="fas fa-times"></i></span>
-                                    </button>
-                                </div>`;
-                } else {
-                    elePQAppend += `<div class="inline-elements-badge mr-2 mb-1">
-                                    <input class="form-check-input checkbox-circle checkbox-quotation" type="checkbox" data-id="${pqID}" data-code="${pqCode}" data-supplier="${pqSupplierStr}" value="option1" checked>
-                                    <a href="${link}" target="_blank" class="link-primary underline_hover ml-3"><span>${pqCode}</span></a>
-                                    <button type="button" class="btn btn-link btn-sm custom-btn-remove" data-id="${pqID}" aria-label="Close">
-                                        <span aria-hidden="true"><i class="fas fa-times"></i></span>
-                                    </button>
-                                </div>`;
-                }
-            }
-            purchase_quotations_data.push({
-                'purchase_quotation': pqID,
-                'is_use': dataPQ?.['is_use']
-            })
-        }
-        elePurchaseQuotation.append(elePQAppend);
-        GRLoadDataHandle.PQDataEle.val(JSON.stringify(purchase_quotations_data));
-    };
 
-    static loadPRProductNotInPO(data) {
-        let PRProductIDList = [];
-        for (let PRProduct of data?.['purchase_request_products_data']) {
-            PRProductIDList.push(PRProduct?.['purchase_request_product_id'])
-        }
-        let PQCode = null;
-        for (let PQ of data?.['purchase_quotations_data']) {
-            if (PQ?.['is_use'] === true) {
-                PQCode = PQ?.['purchase_quotation']?.['code'];
-                break
-            }
-        }
-        let table = $('#datable-purchase-request-product');
-        for (let eleChecked of table[0].querySelectorAll('.table-row-checkbox:checked')) {
-            let row = eleChecked.closest('tr');
-            let dataRowRaw = row.querySelector('.table-row-order').getAttribute('data-row');
-            if (dataRowRaw) {
-                let dataRow = JSON.parse(dataRowRaw);
-                if (PRProductIDList.includes(dataRow?.['id'])) {
-                    eleChecked.classList.add('disabled-by-pq');
-                    eleChecked.setAttribute('disabled', 'true');
-                    row.querySelector('.table-row-quantity-order').setAttribute('disabled', 'true');
-                    $(row).css('background-color', '#f7f7f7');
-                    row.setAttribute('data-bs-toggle', 'tooltip');
-                    row.setAttribute('data-bs-placement', 'top');
-                    row.setAttribute('title', $.fn.transEle.attr('data-product-not-in') + ' ' + PQCode);
-                }
-            }
-        }
-    };
-
-    static loadTablesDetailPage(data) {
-        let form = $('#frm_purchase_order_create');
-        let tableProductAdd = $('#datable-purchase-order-product-add');
-        let tableProductRequest = $('#datable-purchase-order-product-request');
-        if (data?.['purchase_requests_data']) {
-            tableProductAdd[0].setAttribute('hidden', 'true');
-            $('#datable-purchase-order-product-add_wrapper')[0].setAttribute('hidden', 'true');
-            tableProductRequest[0].removeAttribute('hidden');
-            $('#datable-purchase-order-product-request_wrapper')[0].removeAttribute('hidden');
-            tableProductRequest.DataTable().rows.add(data?.['purchase_order_products_data']).draw();
-            GRLoadDataHandle.loadDataRowTable(tableProductRequest);
-            if (form.attr('data-method') === 'GET') {
-                GRLoadDataHandle.loadTableDisabled(tableProductRequest);
-            }
-        }
-    };
-
-    static loadTotals(data) {
-        let elePretaxAmount = document.getElementById('purchase-order-product-pretax-amount');
-        let eleTaxes = document.getElementById('purchase-order-product-taxes');
-        let eleTotal = document.getElementById('purchase-order-product-total');
-        let elePretaxAmountRaw = document.getElementById('purchase-order-product-pretax-amount-raw');
-        let eleTaxesRaw = document.getElementById('purchase-order-product-taxes-raw');
-        let eleTotalRaw = document.getElementById('purchase-order-product-total-raw');
-        let finalRevenueBeforeTax = document.getElementById('purchase-order-final-revenue-before-tax');
-        $(elePretaxAmount).attr('data-init-money', String(data?.['total_product_pretax_amount']));
-        elePretaxAmountRaw.value = data?.['total_product_pretax_amount'];
-        $(eleTaxes).attr('data-init-money', String(data?.['total_product_tax']));
-        eleTaxesRaw.value = data?.['total_product_tax'];
-        $(eleTotal).attr('data-init-money', String(data?.['total_product']));
-        eleTotalRaw.value = data?.['total_product'];
-        finalRevenueBeforeTax.value = data?.['total_product_revenue_before_tax'];
-    };
-
-    static loadTableDisabled(table) {
-        for (let ele of table[0].querySelectorAll('.table-row-item')) {
-            ele.setAttribute('disabled', 'true');
-            ele.classList.add('disabled-custom-show');
-        }
-        for (let ele of table[0].querySelectorAll('.table-row-uom-order-actual')) {
-            ele.setAttribute('disabled', 'true');
-            ele.classList.add('disabled-custom-show');
-        }
-        for (let ele of table[0].querySelectorAll('.table-row-quantity-order-actual')) {
-            ele.setAttribute('disabled', 'true');
-            ele.classList.add('disabled-custom-show');
-        }
-        for (let ele of table[0].querySelectorAll('.table-row-price')) {
-            ele.setAttribute('disabled', 'true');
-            ele.classList.add('disabled-custom-show');
-        }
-        for (let ele of table[0].querySelectorAll('.input-group-price')) {
-            ele.setAttribute('disabled', 'true');
-        }
-        for (let ele of table[0].querySelectorAll('.table-row-tax')) {
-            ele.setAttribute('disabled', 'true');
-            ele.classList.add('disabled-custom-show');
-        }
-        for (let ele of table[0].querySelectorAll('.table-row-checkbox')) {
-            ele.setAttribute('disabled', 'true');
-        }
-        for (let ele of table[0].querySelectorAll('.table-row-quantity-order')) {
-            ele.setAttribute('disabled', 'true');
-        }
-        for (let ele of table[0].querySelectorAll('.del-row')) {
-            ele.setAttribute('disabled', 'true');
-        }
-    };
 
 }
 
@@ -1178,59 +860,109 @@ class GRDataTableHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        return `<div class="row more-information-group">
-                                    <div class="input-group">
-                                        <span class="input-affix-wrapper">
-                                            <span class="input-prefix">
-                                                <div class="btn-group dropstart">
-                                                    <i
-                                                        class="fas fa-info-circle more-information"
-                                                        data-bs-toggle="dropdown"
-                                                        data-dropdown-animation
-                                                        aria-haspopup="true"
-                                                        aria-expanded="false"
-                                                        disabled
-                                                    >
-                                                    </i>
-                                                    <div class="dropdown-menu w-210p mt-4"></div>
-                                                </div>
+                        if (!GRLoadDataHandle.POSelectEle.val()) {
+                            return `<div class="row more-information-group">
+                                        <div class="input-group">
+                                            <span class="input-affix-wrapper">
+                                                <span class="input-prefix">
+                                                    <div class="btn-group dropstart">
+                                                        <i
+                                                            class="fas fa-info-circle more-information"
+                                                            data-bs-toggle="dropdown"
+                                                            data-dropdown-animation
+                                                            aria-haspopup="true"
+                                                            aria-expanded="false"
+                                                            disabled
+                                                        >
+                                                        </i>
+                                                        <div class="dropdown-menu w-210p mt-4"></div>
+                                                    </div>
+                                                </span>
+                                                <select
+                                                    class="form-select table-row-item"
+                                                    data-product-id="${row?.['product']?.['id']}"
+                                                    data-url="${GRDataTableHandle.productInitEle.attr('data-url')}"
+                                                    data-link-detail="${GRDataTableHandle.productInitEle.attr('data-link-detail')}"
+                                                    data-method="${GRDataTableHandle.productInitEle.attr('data-method')}"
+                                                    data-keyResp="product_sale_list"
+                                                    required
+                                                >
+                                                </select>
                                             </span>
-                                            <select
-                                                class="form-select table-row-item"
-                                                data-product-id="${row?.['product']?.['id']}"
-                                                data-url="${GRDataTableHandle.productInitEle.attr('data-url')}"
-                                                data-link-detail="${GRDataTableHandle.productInitEle.attr('data-link-detail')}"
-                                                data-method="${GRDataTableHandle.productInitEle.attr('data-method')}"
-                                                data-keyResp="product_sale_list"
-                                                required
-                                                disabled
-                                            >
-                                            </select>
-                                        </span>
-                                    </div>
-                                </div>`;
+                                        </div>
+                                    </div>`;
+                        } else {
+                            return `<div class="row more-information-group">
+                                        <div class="input-group">
+                                            <span class="input-affix-wrapper">
+                                                <span class="input-prefix">
+                                                    <div class="btn-group dropstart">
+                                                        <i
+                                                            class="fas fa-info-circle more-information"
+                                                            data-bs-toggle="dropdown"
+                                                            data-dropdown-animation
+                                                            aria-haspopup="true"
+                                                            aria-expanded="false"
+                                                            disabled
+                                                        >
+                                                        </i>
+                                                        <div class="dropdown-menu w-210p mt-4"></div>
+                                                    </div>
+                                                </span>
+                                                <select
+                                                    class="form-select table-row-item"
+                                                    data-product-id="${row?.['product']?.['id']}"
+                                                    data-url="${GRDataTableHandle.productInitEle.attr('data-url')}"
+                                                    data-link-detail="${GRDataTableHandle.productInitEle.attr('data-link-detail')}"
+                                                    data-method="${GRDataTableHandle.productInitEle.attr('data-method')}"
+                                                    data-keyResp="product_sale_list"
+                                                    required
+                                                    disabled
+                                                >
+                                                </select>
+                                            </span>
+                                        </div>
+                                    </div>`;
+                        }
+
                     },
                 },
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        return `<span class="table-row-description">${row.product_description}</span>`;
+                        return `<div class="row">
+                                    <input type="text" class="form-control table-row-description" value="${row.product_description}">
+                                </div>`;
                     }
                 },
                 {
                     targets: 3,
                     render: () => {
-                        return `<div class="row">
-                                    <select 
-                                        class="form-control table-row-uom"
-                                        data-url="${GRDataTableHandle.uomInitEle.attr('data-url')}"
-                                        data-method="${GRDataTableHandle.uomInitEle.attr('data-method')}"
-                                        data-keyResp="unit_of_measure"
-                                        required
-                                        disabled
-                                    >
-                                    </select>
-                                </div>`;
+                        if (!GRLoadDataHandle.POSelectEle.val()) {
+                            return `<div class="row">
+                                        <select 
+                                            class="form-control table-row-uom"
+                                            data-url="${GRDataTableHandle.uomInitEle.attr('data-url')}"
+                                            data-method="${GRDataTableHandle.uomInitEle.attr('data-method')}"
+                                            data-keyResp="unit_of_measure"
+                                            required
+                                        >
+                                        </select>
+                                    </div>`;
+                        } else {
+                            return `<div class="row">
+                                        <select 
+                                            class="form-control table-row-uom"
+                                            data-url="${GRDataTableHandle.uomInitEle.attr('data-url')}"
+                                            data-method="${GRDataTableHandle.uomInitEle.attr('data-method')}"
+                                            data-keyResp="unit_of_measure"
+                                            required
+                                            disabled
+                                        >
+                                        </select>
+                                    </div>`;
+                        }
+
                     }
                 },
                 {
@@ -1767,23 +1499,25 @@ class GRSubmitHandle {
 // COMMON FUNCTION
 function setupDataShowLineDetail() {
     let result = [];
-    let table = GRDataTableHandle.tablePOProduct;
-    if (!table[0].querySelector('.dataTables_empty')) {
-        let order = 0;
-        // Setup Merge Data by Product
-        for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
-            let row = table[0].tBodies[0].rows[i];
-            let quantityImport = parseFloat(row.querySelector('.table-row-import').innerHTML);
-            if (quantityImport > 0) {
-                let dataRowRaw = row.querySelector('.table-row-checkbox').getAttribute('data-row');
-                if (dataRowRaw) {
-                    order++;
-                    let dataRow = JSON.parse(dataRowRaw);
-                    dataRow['product_description'] = dataRow?.['product_description'] ? dataRow?.['product_description'] : '';
-                    dataRow['uom'] = dataRow?.['uom_order_actual'];
-                    dataRow['quantity_import'] = quantityImport;
-                    dataRow['order'] = order;
-                    result.push(dataRow);
+    if (GRLoadDataHandle.POSelectEle.val()) {
+        let table = GRDataTableHandle.tablePOProduct;
+        if (!table[0].querySelector('.dataTables_empty')) {
+            let order = 0;
+            // Setup Merge Data by Product
+            for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
+                let row = table[0].tBodies[0].rows[i];
+                let quantityImport = parseFloat(row.querySelector('.table-row-import').innerHTML);
+                if (quantityImport > 0) {
+                    let dataRowRaw = row.querySelector('.table-row-checkbox').getAttribute('data-row');
+                    if (dataRowRaw) {
+                        order++;
+                        let dataRow = JSON.parse(dataRowRaw);
+                        dataRow['product_description'] = dataRow?.['product_description'] ? dataRow?.['product_description'] : '';
+                        dataRow['uom'] = dataRow?.['uom_order_actual'];
+                        dataRow['quantity_import'] = quantityImport;
+                        dataRow['order'] = order;
+                        result.push(dataRow);
+                    }
                 }
             }
         }

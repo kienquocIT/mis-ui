@@ -5,7 +5,8 @@ $(function () {
         let formSubmit = $('#frm_good_receipt_create');
         // Elements
         let btnEdit = $('#btn-edit-product-good-receipt');
-        let btnAdd = $('#btn-confirm-add-product');
+        let btnAdd = $('#btn-add-product-good-receipt');
+        let btnConfirmAdd = $('#btn-confirm-add-product');
         let btnLot = $('#btn-manage-by-lot');
         let btnSerial = $('#btn-manage-by-serial');
         let btnNoLotSerial = $('#btn-no-manage-by-lot-serial');
@@ -42,6 +43,10 @@ $(function () {
            }
            let idAreaShow = 'custom-area-' +  String(GRLoadDataHandle.typeSelectEle.val());
            document.getElementById(idAreaShow).removeAttribute('hidden');
+           if (idAreaShow !== 'custom-area-1') {
+               btnEdit[0].setAttribute('hidden', 'true');
+               btnAdd[0].removeAttribute('hidden');
+           }
         });
 
         // Action on change dropdown PO
@@ -68,6 +73,10 @@ $(function () {
         });
 
         btnAdd.on('click', function() {
+            GRLoadDataHandle.loadAddRowLineDetail();
+        });
+
+        btnConfirmAdd.on('click', function() {
             GRLoadDataHandle.loadLineDetail();
         });
 

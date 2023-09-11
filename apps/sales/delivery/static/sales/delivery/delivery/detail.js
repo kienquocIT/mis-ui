@@ -387,7 +387,9 @@ $(async function () {
                         $('#modal_choise_logistics').modal('hide')
                     });
                 });
-            });
+            },
+                (err) => console.log(err)
+            );
         }
     }
 
@@ -465,6 +467,9 @@ $(async function () {
                         $('#save-stock').attr('disabled', true)
                     }
                 }
+                if (res?.employee_inherit){
+                    $('#selectEmployeeInherit').initSelect2().val(res.employee_inherit.id).trigger('change')
+                }
                 $('#textareaRemarks').val(res.remarks)
                 prodTable.setProdList = res.products
                 prodTable.setProdConfig = res.config_at_that_point
@@ -496,14 +501,16 @@ $(async function () {
             let _form = new SetupFormSubmit($form);
             const csr = $("[name=csrfmiddlewaretoken]").val();
             let putData = {}
-            putData['estimated_delivery_date'] = moment(
-                _form.dataForm['estimated_delivery_date'],
-                'DD/MM/YYYY hh:mm A'
-            ).format('YYYY-MM-DD hh:mm:ss')
-            putData['actual_delivery_date'] = moment(
-                _form.dataForm['actual_delivery_date'],
-                'DD/MM/YYYY hh:mm A'
-            ).format('YYYY-MM-DD hh:mm:ss')
+            if (_form.dataForm['estimated_delivery_date'])
+                putData['estimated_delivery_date'] = moment(
+                    _form.dataForm['estimated_delivery_date'],
+                    'DD/MM/YYYY hh:mm A'
+                ).format('YYYY-MM-DD hh:mm:ss')
+            if (_form.dataForm['actual_delivery_date'])
+                putData['actual_delivery_date'] = moment(
+                    _form.dataForm['actual_delivery_date'],
+                    'DD/MM/YYYY hh:mm A'
+                ).format('YYYY-MM-DD hh:mm:ss')
             putData['remarks'] = _form.dataForm['remarks']
             putData['order_delivery'] = $storedData.order_delivery
             putData['state'] = $storedData.state
@@ -518,6 +525,9 @@ $(async function () {
                 "shipping_address": $('#textareaShippingAddress').val(),
                 "billing_address": $('#textareaBilling').val(),
             }
+
+            putData['employee_inherit_id'] = $('#selectEmployeeInherit').val()
+
             let prodSub = []
             for (prod of prodTable.getProdList) {
                 if (prod.picked_quantity > 0)
@@ -528,11 +538,12 @@ $(async function () {
                         'order': prod.order,
                     })
             }
-            if (!prodSub || !prodSub.length) {
+            if (!prodSub.length && $('#wrap-employee_inherit').attr('data-is_lead').toLowerCase() !== 'true') {
+                // ko co and ko fai lead
                 $.fn.notifyB({description: $trans.attr('data-error-done')}, 'failure')
                 return false
             }
-            putData.products = prodSub
+            else putData.products = prodSub
             $.fn.callAjax2({
                 'url': _form.dataUrl,
                 'method': _form.dataMethod,

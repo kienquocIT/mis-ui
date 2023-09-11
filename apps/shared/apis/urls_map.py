@@ -318,6 +318,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PURCHASE_ORDER_DETAIL = StringUrl('purchasing/purchase-order')
     PURCHASE_REQUEST_LIST_FOR_PQR = StringUrl('purchasing/purchase-request-for-pqr/list')
     PURCHASE_REQUEST_PRODUCT_LIST = StringUrl('purchasing/purchase-request-product/list')
+    PURCHASE_ORDER_PRODUCT_LIST = StringUrl('purchasing/purchase-order-product/list')
+    PURCHASE_ORDER_SALE_LIST = StringUrl('purchasing/purchase-order/list-sale')
 
     # Purchasing
     PURCHASE_QUOTATION_REQUEST_LIST = StringUrl('purchasing/purchase-quotation-request/list')
@@ -332,3 +334,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PROCESS = StringUrl('sale-process/')
     SKIP_PROCESS_STEP = StringUrl('sale-process/step/skip/{pk}')
     SET_CURRENT_PROCESS_STEP = StringUrl('sale-process/step/set-current/{pk}')
+
+    # Expense item
+
+    EXPENSE_ITEM_LIST = StringUrl('saledata/expense-items')
+    EXPENSE_ITEM_DETAIL = StringUrl('saledata/expense-item/{pk}')

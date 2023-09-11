@@ -15,7 +15,7 @@ $(document).ready(function () {
                         if (data) {
                             $.fn.notifyB({description: "Successfully"}, 'success')
                             setTimeout(() => {
-                                window.location.replace($(this).attr('data-url-redirect'));
+                                window.location.replace($(this).attr('data-url-redirect').format_url_with_uuid(data.id));
                                 location.reload.bind(location);
                             }, 1000);
                         }

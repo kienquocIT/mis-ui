@@ -12,6 +12,7 @@ from apps.masterdata.saledata.views.accounts import (
 from apps.masterdata.saledata.views.config import PaymentsTermsListAPI, PaymentsTermsDetailAPI
 from apps.masterdata.saledata.views.expense import ExpenseList, ExpenseListAPI, ExpenseCreate, ExpenseDetail, \
     ExpenseDetailAPI, ExpenseForSaleListAPI, ExpenseUpdate
+from apps.masterdata.saledata.views.expense_item import ExpenseItemList, ExpenseItemListAPI, ExpenseItemDetailAPI
 from apps.masterdata.saledata.views.good_receipt import GoodReceiptList, GoodReceiptCreate, GoodReceiptListAPI, \
     GoodReceiptDetailAPI, GoodReceiptDetail, GoodReceiptEdit
 from apps.masterdata.saledata.views.product import (
@@ -47,15 +48,28 @@ urlpatterns = [
     path('masterdata/industry/create/api', IndustryCreateAPI.as_view(), name='IndustryCreateAPI'),
     path('masterdata/industry/api/<str:pk>', IndustryDetailAPI.as_view(), name='IndustryDetailAPI'),
     path('masterdata/account-type/list/api', AccountTypeListAPI.as_view(), name='AccountTypeListAPI'),
-    path('masterdata/account-type/create/api', AccountTypeCreateAPI.as_view(), name='AccountTypeCreateAPI'),
-    path('masterdata/account-type/api/<str:pk>', AccountTypeDetailAPI.as_view(), name='AccountTypeDetailAPI'),
+    path(
+        'masterdata/account-type/create/api', AccountTypeCreateAPI.as_view(), name='AccountTypeCreateAPI'
+    ),
+    path(
+        'masterdata/account-type/api/<str:pk>', AccountTypeDetailAPI.as_view(),
+        name='AccountTypeDetailAPI'
+    ),
     path('masterdata/account-group/list/api', AccountGroupListAPI.as_view(), name='AccountGroupListAPI'),
-    path('masterdata/account-group/create/api', AccountGroupCreateAPI.as_view(), name='AccountGroupCreateAPI'),
-    path('masterdata/account-group/api/<str:pk>', AccountGroupDetailAPI.as_view(), name='AccountGroupDetailAPI'),
+    path(
+        'masterdata/account-group/create/api', AccountGroupCreateAPI.as_view(),
+        name='AccountGroupCreateAPI'
+    ),
+    path(
+        'masterdata/account-group/api/<str:pk>', AccountGroupDetailAPI.as_view(),
+        name='AccountGroupDetailAPI'
+    ),
 ] + [
     path('contacts', ContactList.as_view(), name='ContactList'),
     path('contacts/api', ContactListAPI.as_view(), name='ContactListAPI'),
-    path('listnotmapaccount/api', ContactListNotMapAccountAPI.as_view(), name='ContactListNotMapAccountAPI'),
+    path(
+        'listnotmapaccount/api', ContactListNotMapAccountAPI.as_view(), name='ContactListNotMapAccountAPI'
+    ),
     path('contact/create', ContactCreate.as_view(), name='ContactCreate'),
     path('contact/create/api', ContactCreateAPI.as_view(), name='ContactCreateAPI'),
     path('contact/update/<str:pk>', ContactUpdate.as_view(), name='ContactUpdate'),
@@ -77,15 +91,26 @@ urlpatterns = [
 ] + [
     path('masterdata/product', ProductMasterDataList.as_view(), name='ProductMasterDataList'),
     path('masterdata/product-type/list/api', ProductTypeListAPI.as_view(), name='ProductTypeListAPI'),
-    path('masterdata/product-type/api/<str:pk>', ProductTypeDetailAPI.as_view(), name='ProductTypeDetailAPI'),
-    path('masterdata/product-category/list/api', ProductCategoryListAPI.as_view(), name='ProductCategoryListAPI'),
+    path(
+        'masterdata/product-type/api/<str:pk>', ProductTypeDetailAPI.as_view(),
+        name='ProductTypeDetailAPI'
+    ),
+    path(
+        'masterdata/product-category/list/api', ProductCategoryListAPI.as_view(),
+        name='ProductCategoryListAPI'
+    ),
     path(
         'masterdata/product-category/api/<str:pk>', ProductCategoryDetailAPI.as_view(),
         name='ProductCategoryDetailAPI'
     ),
     path('masterdata/expense-type/list/api', ExpenseTypeListAPI.as_view(), name='ExpenseTypeListAPI'),
-    path('masterdata/expense-type/api/<str:pk>', ExpenseTypeDetailAPI.as_view(), name='ExpenseTypeDetailAPI'),
-    path('masterdata/unit-of-measure/list/api', UnitOfMeasureListAPI.as_view(), name='UnitOfMeasureListAPI'),
+    path(
+        'masterdata/expense-type/api/<str:pk>', ExpenseTypeDetailAPI.as_view(),
+        name='ExpenseTypeDetailAPI'
+    ),
+    path(
+        'masterdata/unit-of-measure/list/api', UnitOfMeasureListAPI.as_view(), name='UnitOfMeasureListAPI'
+    ),
     path(
         'masterdata/unit-of-measure-group/list/api', UnitOfMeasureGroupListAPI.as_view(),
         name='UnitOfMeasureGroupListAPI'
@@ -94,7 +119,10 @@ urlpatterns = [
         'masterdata/unit-of-measure-group/api/<str:pk>', UnitOfMeasureGroupDetailAPI.as_view(),
         name='UnitOfMeasureGroupDetailAPI'
     ),
-    path('masterdata/unit-of-measure/api/<str:pk>', UnitOfMeasureDetailAPI.as_view(), name='UnitOfMeasureDetailAPI'),
+    path(
+        'masterdata/unit-of-measure/api/<str:pk>', UnitOfMeasureDetailAPI.as_view(),
+        name='UnitOfMeasureDetailAPI'
+    ),
     path(
         'masterdata/uom-group-labor/list/api',
         UnitOfMeasureOfGroupLaborListAPI.as_view(),
@@ -108,12 +136,15 @@ urlpatterns = [
     path('product/detail/<str:pk>', ProductDetail.as_view(), name='ProductDetail'),
     path('product/api/<str:pk>', ProductDetailAPI.as_view(), name='ProductDetailAPI'),
     path('products-sale/api', ProductForSaleListAPI.as_view(), name='ProductForSaleListAPI'),
-] + [
+    ] + [
     path('masterdata/price', PriceMasterDataList.as_view(), name='PriceMasterDataList'),
     path('masterdata/tax-category/api', TaxCategoryListAPI.as_view(), name='TaxCategoryListAPI'),
     path('masterdata/tax/api', TaxListAPI.as_view(), name='TaxListAPI'),
     path('masterdata/tax/api/<str:pk>', TaxDetailAPI.as_view(), name='TaxDetailAPI'),
-    path('masterdata/tax-category/api/<str:pk>', TaxCategoryDetailAPI.as_view(), name='TaxCategoryDetailAPI'),
+    path(
+        'masterdata/tax-category/api/<str:pk>', TaxCategoryDetailAPI.as_view(),
+        name='TaxCategoryDetailAPI'
+    ),
     path('masterdata/currency/api/', CurrencyListAPI.as_view(), name='CurrencyListAPI'),
     path('masterdata/currency/api/<str:pk>', CurrencyDetailAPI.as_view(), name='CurrencyDetailAPI'),
     path(
@@ -122,7 +153,8 @@ urlpatterns = [
         name='SyncSellingRateWithVCB'
     ),
     path(
-        'masterdata/payments-terms/api', PaymentsTermsListAPI.as_view(), name='PaymentsTermsListAPI'),
+        'masterdata/payments-terms/api', PaymentsTermsListAPI.as_view(), name='PaymentsTermsListAPI'
+    ),
     path(
         'masterdata/payments-terms/detail/api/<str:pk>',
         PaymentsTermsDetailAPI.as_view(),
@@ -138,15 +170,18 @@ urlpatterns = [
     path(
         'products-for-price-list/api/<str:pk>',
         UpdateProductForPriceListAPI.as_view(),
-        name='UpdateProductForPriceListAPI'),
+        name='UpdateProductForPriceListAPI'
+    ),
     path(
         'delete-products-for-price-list/api/<str:pk>',
         PriceListDeleteProductAPI.as_view(),
-        name='PriceListDeleteProductAPI'),
+        name='PriceListDeleteProductAPI'
+    ),
     path(
         'create-product-from-price-list/api/<str:pk>',
         ProductAddFromPriceListAPI.as_view(),
-        name='ProductAddFromPriceListAPI'),
+        name='ProductAddFromPriceListAPI'
+    ),
     path(
         'delete-currency-from-price-list/api/<str:pk>',
         DeleteCurrencyFromPriceListAPI.as_view(),
@@ -188,3 +223,10 @@ urlpatterns += [
     path('good-receipt/detail/api/<str:pk>', GoodReceiptDetailAPI.as_view(), name='GoodReceiptDetailAPI')
 ]
 # // WareHouse
+
+# Expense Item
+urlpatterns += [
+    path('expense-items', ExpenseItemList.as_view(), name='ExpenseItemList'),
+    path('expense-items/api', ExpenseItemListAPI.as_view(), name='ExpenseItemListAPI'),
+    path('expense-items/api/<str:pk>', ExpenseItemDetailAPI.as_view(), name='ExpenseItemDetailAPI'),
+]

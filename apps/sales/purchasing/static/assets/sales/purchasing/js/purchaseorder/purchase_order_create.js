@@ -6,8 +6,6 @@ $(function () {
         // Elements
         let elePurchaseRequest = $('#purchase-order-purchase-request');
         let elePurchaseQuotation = $('#purchase-order-purchase-quotation');
-        let eleBoxSupplier = $('#box-purchase-order-supplier');
-        let eleBoxContact = $('#box-purchase-order-contact');
         // Tables
         let tablePurchaseRequest = $('#datable-purchase-request');
         let tablePurchaseRequestProduct = $('#datable-purchase-request-product');
@@ -39,32 +37,18 @@ $(function () {
         });
         $('#purchase-order-date-delivered').val(null).trigger('change');
 
-        function checkDataTableRenderThenHidden() {
-            let element0 = $('#datable-purchase-order-product-request_wrapper');
-            let element1 = $('#datable-purchase-request-product-merge_wrapper');
-            if (element0.length && element1.length) { // hidden ele if condition pass
-                element0[0].setAttribute('hidden', 'true');
-                element1[0].setAttribute('hidden', 'true');
-            } else {
-                setTimeout(checkDataTableRenderThenHidden, 1000);  // call again after 1s if condition not pass yet
-            }
-        }
-        if (formSubmit.attr('data-method') === 'POST') {
-            checkDataTableRenderThenHidden();
-        }
-
 
 // EVENTS
         // Action on change dropdown supplier
-        eleBoxSupplier.on('change', function () {
+        POLoadDataHandle.supplierSelectEle.on('change', function () {
             if ($(this).val()) {
-                let dataSelected = SelectDDControl.get_data_from_idx(eleBoxSupplier, $(this).val());
+                let dataSelected = SelectDDControl.get_data_from_idx(POLoadDataHandle.supplierSelectEle, $(this).val());
                 if (dataSelected) {
-                    eleBoxContact.empty();
+                    POLoadDataHandle.contactSelectEle.empty();
                     POLoadDataHandle.loadBoxContact(dataSelected.owner, dataSelected.id);
                 }
             } else { // No Value => load again dropdowns
-                eleBoxContact.empty();
+                POLoadDataHandle.contactSelectEle.empty();
                 POLoadDataHandle.loadBoxContact();
             }
             POLoadDataHandle.loadMoreInformation($(this));
@@ -112,7 +96,7 @@ $(function () {
         tablePurchaseRequestProduct.on('change', '.table-row-quantity-order', function() {
             POValidateHandle.validateNumber(this);
             let remain = parseFloat(this.closest('tr').querySelector('.table-row-remain').innerHTML);
-            POValidateHandle.validateQuantityOrderAndRemain(this, remain);
+            POValidateHandle.validateQuantityOrderRequest(this, remain);
         });
 
         // Purchase quotation modal
@@ -193,7 +177,7 @@ $(function () {
             // Change quantity
             if ($(this).hasClass('table-row-quantity-order-actual')) {
                 POValidateHandle.validateNumber(this);
-                POValidateHandle.validateQuantityOrderAndUpdateStock(row);
+                POValidateHandle.validateQuantityOrderActualAndUpdateStock(row);
             }
             // Change uom
             if ($(this).hasClass('table-row-uom-order-actual')) {
@@ -205,6 +189,7 @@ $(function () {
                     let uomOrderData = SelectDDControl.get_data_from_idx($(eleUOMOrder), $(eleUOMOrder).val());
                     if (uomRequestData?.['id'] !== uomOrderData?.['id']) {
                         row.querySelector('.table-row-quantity-order-actual').value = 0;
+                        row.querySelector('.table-row-stock').innerHTML = '0';
                     }
                 }
             }

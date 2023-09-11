@@ -1,0 +1,156 @@
+.input-affix-wrapper .input-suffix {
+    padding: unset;
+}
+
+.div-input {
+    min-height: 38px;
+    margin-top: -0.4px
+}
+
+.inline-elements-badge {
+    display: inline-block;
+    background-color: #ebfcf5;
+    border-radius: 0.5rem;
+    border: 1px solid #00D67F;
+    padding: 6px;
+    font-size: 90%;
+    min-width: 25px;
+    text-align: center;
+    text-transform: capitalize;
+}
+
+.inline-elements-badge input {
+    display: inline-block;
+    margin-left: unset;
+}
+
+.custom-btn-remove {
+    padding: unset;
+    font-size: 13px;
+    color: #EB5757CC;
+}
+
+.custom-checkbox {
+    margin-top: 5px;
+}
+
+.modal-body-warning-add-product {
+    text-align: center;
+}
+
+.row.modal-footer-warning-add-product {
+    position: relative;
+    padding: 10px;
+    text-align: center;
+    border-top: 1px solid #c7c7c7;
+}
+
+.row.modal-footer-warning-add-product::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1px;
+    height: 100%;
+    background-color: #b5b5b5;
+}
+
+.btn-cancel-add-product {
+    color: red;
+}
+
+.btn-continue-add-product {
+    color: #00D67F;
+}
+
+.disabled-custom-show:disabled {
+    color: #0c0c0c;
+}
+
+.modal-xlg-custom {
+    max-width: 1380px;
+}
+
+.inline-elements {
+    display: inline-block;
+}
+
+.total-area .card {
+    margin-top: unset;
+    margin-bottom: unset;
+}
+
+.total-area .card.card-sm .card-body {
+    padding: 0.8rem;
+}
+
+.subtotal-area .card {
+    margin-top: unset;
+    margin-bottom: unset;
+}
+
+.subtotal-area .card.card-sm .card-body {
+    padding: 0.5rem;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+.select-filter {
+    margin-left: -35px;
+}
+
+.disabled-show-normal:disabled {
+    color: #0c0c0c;
+    background-color: white;
+}
+
+
+
+
+
+
+.fa-angle-double-up {
+    color: #007D88;
+    text-align: right;
+}
+
+.fa-angle-double-down {
+    color: #007D88;
+    text-align: right;
+}
+
+ul.quotation-tabs li.quotation-tab-item {
+  margin-right: 10px;
+}
+
+.fa-info-circle {
+    color: #298dff;
+}
+
+.option-btn-checked {
+    background-color: #f7f7f7;
+}
+
+.expired-price {
+    color: #EB5757CC;
+}
+
+.valid-price {
+    color: #00D67F;
+}
+
+.fa-angle-down {
+    font-size: x-small;
+    color: #c7c7c7;
+}

@@ -117,6 +117,9 @@ $(document).ready(async function () {
                 OpportunityLoadDetail.loadSaleTeam(opportunity_detail.opportunity_sale_team_datas);
 
                 if ($.fn.hasOwnProperties(opportunity_detail, ['sale_order'])) {
+                    let so_id = opportunity_detail.sale_order.id;
+                    let link = so_id !== undefined ? urlEle.data('url-related-sale-order').format_url_with_uuid(so_id): '#';
+                    $('#item-related-sale-order').attr('href', link)
                     if (opportunity_detail.sale_order.system_status === 0) {
                         condition_sale_oder_approved = true;
                         if ($.fn.hasOwnProperties(opportunity_detail.sale_order, ['delivery'])) {
@@ -126,6 +129,9 @@ $(document).ready(async function () {
                 }
 
                 if ($.fn.hasOwnProperties(opportunity_detail, ['quotation'])) {
+                    let quotation_id = opportunity_detail.quotation.id;
+                    let link = quotation_id !== undefined ? urlEle.data('url-related-quotation').format_url_with_uuid(quotation_id): '#';
+                    $('#item-related-quotation').attr('href', link)
                     if (opportunity_detail.quotation.is_customer_confirm === true) {
                         condition_is_quotation_confirm = true;
                     }
@@ -495,7 +501,6 @@ $(document).ready(async function () {
         loadWinRate();
     })
 
-
     function checkOppWonOrDelivery() {
         let check = false;
         let stage_id = $('.stage-selected').last().data('id');
@@ -505,6 +510,14 @@ $(document).ready(async function () {
         }
         return check;
     }
+
+    $('.item-detail-related-feature').on('click', function (){
+        if ($(this).attr('href') === '#'){
+           $(this).removeAttr('target');
+           OpportunityLoadDetail.renderAlert(`${$(this).text()} ${transEle.data('trans-not-created')}`);
+        }
+    })
+
 
     // toggle action and activity
     toggleShowActivity()
@@ -1545,7 +1558,7 @@ $(document).ready(async function () {
     function loadTimelineList(data_timeline_list) {
         const $urlElm = $('#url-factory')
         const $trans = $('#trans-factory')
-        $('#table-timeline').DataTable().destroy();
+        $('#table-timeline').DataTable().clear().destroy();
         let dtb = $('#table-timeline');
         const type_trans = {
             0: $trans.attr('data-activity-type01'),

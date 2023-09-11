@@ -166,8 +166,12 @@ class MenusCRM:
     PRODUCT = MenuCommon(
         name='Product', code='id_menu_product_list', view_name='ProductList', icon='<i class="bi bi-archive-fill"></i>',
     )
+    EXPENSE_ITEM = MenuCommon(
+        name='Expense Items', code='id_menu_expense_item_list', view_name='ExpenseItemList',
+        icon='<i class="bi bi-cash-coin"></i>',
+    )
     EXPENSE = MenuCommon(
-        name='Internal Expense Items', code='id_menu_expense_list', view_name='ExpenseList',
+        name='Internal Labor Items', code='id_menu_expense_list', view_name='ExpenseList',
         icon='<i class="bi bi-cash-coin"></i>',
     )
     INVENTORY = MenuCommon(
@@ -263,30 +267,48 @@ class MenusPurchase:
     )
 
     PURCHASE = MenuCommon(
-        name='Purchase', code='menu_purchase_activities', view_name='', icon='<i class="fas fa-shopping-cart"></i>',
+        name='Purchase Activities', code='menu_purchase_activities', view_name='', icon='<i class="bi bi-minecart"></i>',
         child=[
             MenuCommon(
                 name='Purchase Request',
                 code='menu_purchase_request_list',
                 view_name='PurchaseRequestList',
-                icon='<i class="bi bi-mailbox2"></i>',
+                icon='<i class="bi bi-caret-right-fill"></i>',
             ),
             MenuCommon(
                 name='Purchase Quotation Request',
                 code='id_menu_purchase_quotation_request_list',
                 view_name='PurchaseQuotationRequestList',
-                icon='<i class="bi bi-file-text-fill"></i>',
+                icon='<i class="bi bi-caret-right-fill"></i>',
             ),
             MenuCommon(
                 name='Purchase Quotation',
                 code='id_menu_purchase_quotation_list',
                 view_name='PurchaseQuotationList',
-                icon='<i class="bi bi-credit-card-2-front-fill"></i>',
+                icon='<i class="bi bi-caret-right-fill"></i>',
             ),
             MenuCommon(
                 name='Purchase Order', code='menu_purchase_order_list', view_name='PurchaseOrderList',
-                icon='<i class="bi bi-credit-card-2-back-fill"></i>',
+                icon='<i class="bi bi-caret-right-fill"></i>',
             ),
+        ],
+    )
+
+    INVENTORY = MenuCommon(
+        name='Inventory Activities', code='menu_inventory_activities', view_name='', icon='<i class="bi bi-shop-window"></i>',
+        child=[
+            MenuCommon(
+                name='Goods Receipt',
+                code='menu_goods_receipt_list',
+                view_name='GoodReceiptList',
+                icon='<i class="bi bi-arrow-right-square"></i>',
+            ),
+            # MenuCommon(
+            #     name='Inventory Adjustment',
+            #     code='menu_inventory_adjustment_list',
+            #     view_name='InventoryAdjustmentList',
+            #     icon='<i class="bi bi-sliders"></i>',
+            # ),
         ],
     )
 
@@ -343,6 +365,7 @@ class SpaceItem:
                 MenusCRM.QUOTATION,
                 MenusCRM.SALE_ORDER,
                 MenusCRM.PRODUCT,
+                MenusCRM.EXPENSE_ITEM,
                 MenusCRM.EXPENSE,
                 MenusCRM.INVENTORY,
                 MenusCRM.PRICING,
@@ -358,6 +381,7 @@ class SpaceItem:
             menus=[
                 MenusPurchase.HOME,
                 MenusPurchase.PURCHASE,
+                MenusPurchase.INVENTORY
             ],
         ),
         'hrm': SpaceCommon(

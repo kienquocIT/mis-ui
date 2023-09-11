@@ -38,10 +38,7 @@
 {% endblock %}
 {% block pageContent %}
     <div id="json-data">
-        <input id="emp-current-id" class="hidden" value="{{ data.employee_current_id }}">
-        <input id="data-sale-person" class="hidden">
-        <input id="group_id_emp_login" class="hidden">
-        <input id="data-product" class="hidden">
+        <input id="emp-current-id" class="hidden" value="{{ request.user.employee_current_data.id }}">
         {{ data.account_list | json_script:"account_list" }}
         {{ data.contact_list | json_script:"contact_list" }}
         {{ data.opportunity_list | json_script:"opportunity_list" }}
@@ -164,13 +161,11 @@
                         </div>
                         <div class="row text-right">
                             <div class="col-6 text-left">
-                                <a class="btn"
-                                   id="btn-auto-update-stage"
-                                   data-bs-toggle="tooltip"
-                                   data-bs-placement="top"
-                                   title="{% trans "Auto Update Stage" %}">
+                                <button type="button" class="btn btn-xs btn-primary ml-1"
+                                   id="btn-auto-update-stage">
                                     <i class="fa-solid fa-arrow-rotate-right"></i>
-                                </a>
+                                    {% trans "Auto Update Stage" %}
+                                </button>
                             </div>
                             <div class="col-6 text-right">
                                 <a href="#"><i class="bi bi-bar-chart-line-fill"></i></a>
@@ -236,8 +231,8 @@
                                             </div>
                                         </div>
                                         <div class="dropdown">
-                                            <button type="button" class="btn ml-3" data-bs-toggle="dropdown"><i
-                                                    class="fa-solid fa-arrows-spin"></i></button>
+                                            <button type="button" class="btn btn-primary btn-xs ml-2" data-bs-toggle="dropdown"><i
+                                                    class="fa-solid fa-arrows-spin"></i> {% trans 'Create Related Feature' %}</button>
                                             <div class="dropdown-menu">
                                                 <a class="dropdown-item btn-create-related-feature"
                                                    data-url="{% url 'QuotationCreate' %}"
@@ -254,6 +249,14 @@
                                                 <a class="dropdown-item btn-create-related-feature"
                                                    data-url="{% url 'ReturnAdvanceCreate' %}"
                                                    href="#">{% trans 'Return advance' %}</a>
+                                            </div>
+                                        </div>
+
+                                        <div class="dropdown">
+                                            <button type="button" class="btn btn-primary ml-2 btn-xs" data-bs-toggle="dropdown"><i class="bi bi-box-arrow-up-right"></i> {% trans 'View Related Feature' %}</button>
+                                            <div class="dropdown-menu">
+                                                <a class="dropdown-item item-detail-related-feature" id="item-related-quotation" href="#" target="_blank">{% trans 'Quotation' %}</a>
+                                                <a class="dropdown-item item-detail-related-feature" id="item-related-sale-order" href="#" target="_blank">{% trans 'Sale Order' %}</a>
                                             </div>
                                         </div>
                                     </div>
@@ -1240,6 +1243,8 @@
            data-url-contact="{% url 'ContactListAPI' %}"
            data-url-emp-detail="{% url 'EmployeeDetail' pk=0 %}"
            data-url-config="{% url 'OpportunityConfigAPI' %}"
+           data-url-related-quotation="{% url 'QuotationDetail' pk=0 %}"
+           data-url-related-sale-order="{% url 'SaleOrderDetail' pk=0 %}"
     >
     <input type="text" id="trans-factory"
            data-activity-type01="{% trans 'Call to customer' %}"
@@ -1250,6 +1255,7 @@
            data-trans-role-decision-maker="{% trans 'Only one decision maker can be selected' %}"
            data-trans-opp-win-deal="{% trans 'Opp has been Win Deal' %}"
            data-assignee_empty="{% trans 'Assignee is required' %}"
+           data-trans-not-created="{% trans 'has not been created for Opportunity' %}"
     >
 {% endblock %}
 {% block jsFooter %}

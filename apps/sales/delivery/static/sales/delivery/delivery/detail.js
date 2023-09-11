@@ -525,6 +525,9 @@ $(async function () {
                 "shipping_address": $('#textareaShippingAddress').val(),
                 "billing_address": $('#textareaBilling').val(),
             }
+
+            putData['employee_inherit_id'] = $('#selectEmployeeInherit').val()
+
             let prodSub = []
             for (prod of prodTable.getProdList) {
                 if (prod.picked_quantity > 0)
@@ -536,9 +539,11 @@ $(async function () {
                     })
             }
             if (!prodSub.length && $('#wrap-employee_inherit').attr('data-is_lead').toLowerCase() !== 'true') {
+                // ko co and ko fai lead
                 $.fn.notifyB({description: $trans.attr('data-error-done')}, 'failure')
                 return false
-            }else putData.products = prodSub
+            }
+            else putData.products = prodSub
             $.fn.callAjax2({
                 'url': _form.dataUrl,
                 'method': _form.dataMethod,

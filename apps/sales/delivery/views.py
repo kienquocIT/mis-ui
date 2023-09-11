@@ -15,19 +15,19 @@ __all__ = [
 from apps.shared.constant import DELIVERY_STATE
 
 
-def check_config_lead(user):
+def check_config_lead(user, get_p_or_d='picking'):
     resp = ServerAPI(user=user, url=ApiURL.DELIVERY_CONFIG).get()
     is_lead = False
-    person_p = []
-    p_lead = {}
+    person_list = []
+    lead = {}
+    kwag_lead = f'lead_{get_p_or_d}'  # noqa
+    kwag_person = f'person_{get_p_or_d}'  # noqa
     if resp.state:
-        lead = resp.result["lead_picking"].get("id")
-        if lead == user.employee_current_data.get("id"):
+        lead = resp.result[kwag_lead]
+        if lead.get("id") == user.employee_current_data.get("id"):
             is_lead = True
-        p_lead = resp.result["lead_picking"]
-        person_p = resp.result["person_picking"]
-
-    return is_lead, p_lead, person_p
+        person_list = resp.result[kwag_person]
+    return is_lead, lead, person_list
 
 
 class DeliveryConfigDetail(View):
@@ -100,11 +100,13 @@ class OrderPickingDetail(View):
         menu_active='menu_order_picking_list',
     )
     def get(self, request, *args, pk, **kwargs):
-        is_lead = check_config_lead(request.user)
+        is_lead, p_lead, person_p = check_config_lead(request.user)
         result = {
             'pk': pk,
             'state_choices': {key: value for key, value in PICKING_STATE},
-            'is_lead': is_lead
+            'is_lead': is_lead,
+            'lead': p_lead,
+            'person_list': person_p
         }
         return result, status.HTTP_200_OK
 
@@ -117,9 +119,13 @@ class OrderPickingEdit(View):
         menu_active='menu_order_picking_list',
     )
     def get(self, request, *args, pk, **kwargs):
+        is_lead, p_lead, person_p = check_config_lead(request.user)
         result = {
             'pk': pk,
             'state_choices': {key: value for key, value in PICKING_STATE},
+            'is_lead': is_lead,
+            'lead': p_lead,
+            'person_list': person_p
         }
         return result, status.HTTP_200_OK
 
@@ -193,13 +199,13 @@ class OrderDeliveryDetail(View):
         menu_active='menu_order_delivery_list',
     )
     def get(self, request, *args, pk, **kwargs):
-        is_lead, p_lead, person_pick = check_config_lead(request.user)
+        is_lead, lead, person_list = check_config_lead(request.user, 'delivery')
         result = {
             'pk': pk,
             'state_choices': {key: value for key, value in DELIVERY_STATE},
             'is_lead': is_lead,
-            'p_lead': p_lead,
-            'person_pick': person_pick
+            'lead': lead,
+            'person_list': person_list
         }
         return result, status.HTTP_200_OK
 
@@ -213,15 +219,15 @@ class OrderDeliveryEdit(View):
     )
     def get(self, request, *args, pk, **kwargs):
         input_mapping_properties = InputMappingProperties.DELIVERY_ORDER_DELIVERY
-        is_lead, p_lead, person_pick = check_config_lead(request.user)
+        is_lead, lead, person_list = check_config_lead(request.user, 'delivery')
         result = {
             'pk': pk,
             'state_choices': {key: value for key, value in DELIVERY_STATE},
             'input_mapping_properties': input_mapping_properties,
             'form_id': 'delivery_form',
             'is_lead': is_lead,
-            'p_lead': p_lead,
-            'person_pick': person_pick
+            'lead': lead,
+            'person_list': person_list
         }
         return result, status.HTTP_200_OK
 

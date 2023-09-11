@@ -161,13 +161,13 @@
                     'is_partial_ship': eleInputPartial.prop('checked'),
                 }
                 // nếu có check chọn xử lý picking thì ràng buộc lead picking
+                const pickLead = $('#inputPickingLead').val()
+                bodyData.lead_picking = pickLead
                 if (eleInputPicking.prop('checked')){
-                    const pickLead = $('#inputPickingLead').val()
                     if (!pickLead){
                         $.fn.notifyB({'description': $trans.attr('data-valid-p-lead'), 'timeout': 3000}, 'failure')
                         return false
                     }
-                    bodyData.lead_picking = pickLead
                 }
                 const personP = $('#inputPersonPicking').val()
                 if(personP.length > 0) bodyData.person_picking = personP

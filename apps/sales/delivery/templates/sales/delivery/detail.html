@@ -137,10 +137,10 @@
                 <div class="form-group">
                     <label for="selectEmployeeInherit" class="form-label">{% trans 'Employee Inherit' %}</label>
                     <select class="form-control" name="employee_inherit" id="selectEmployeeInherit" disabled>
-                        {% if data.is_lead %}
-                            <option value="{{ data.p_lead.id }}">{{ data.p_lead.full_name }}</option>
+                        {% if data.lead %}
+                            <option value="{{ data.lead.id }}">{{ data.lead.full_name }}</option>
                         {% endif %}
-                        {% for item in data.person_pick %}
+                        {% for item in data.person_list %}
                             <option value="{{ item.id }}">{{ item.full_name }}</option>
                         {% endfor %}
                     </select>

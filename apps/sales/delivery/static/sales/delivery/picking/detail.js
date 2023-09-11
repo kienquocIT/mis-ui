@@ -129,7 +129,7 @@ function getWarehouse() {
                         'id': firstData.id,
                         'title': firstData.title
                     }));
-                    initSelectBox($elmWarehouse);
+                    $elmWarehouse.initSelect2();
                 }
             })
     }
@@ -181,12 +181,12 @@ $(async function () {
             let warehouse_data = data?.['ware_house_data'];
             if (warehouse_data.hasOwnProperty('code')) {
                 $('#inputWareHouse').append(
-                    `<option value="{0}">{1}</option>`.format_by_idx(
+                    `<option value="{0}" selected>{1}</option>`.format_by_idx(
                         warehouse_data['id'],
                         warehouse_data['code'] + " - " + warehouse_data['title'],
                     )
-                ).attr('disabled', true)
-            }else{
+                ).initSelect2()
+            } else {
                 // load default warehouse
                 getWarehouse(pickupInit)
             }
@@ -198,6 +198,10 @@ $(async function () {
             }
             const toLocation = data?.to_location
             if (toLocation) $('#inputToLocation').val(toLocation)
+
+            if (data?.employee_inherit) {
+                $('#selectEmployeeInherit').initSelect2().val(data.employee_inherit.id).trigger('change')
+            }
 
             // load product list
             loadProductList(
@@ -357,21 +361,23 @@ $(async function () {
             return false
         }
         const pickingData = pickupInit.getPicking
-        if (_form.dataForm?.estimated_delivery_date) {
+        if (_form.dataForm?.estimated_delivery_date)
             pickingData['estimated_delivery_date'] = moment(_form.dataForm['estimated_delivery_date'],
                 'MM/DD/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
-        }
-        else{
-            $.fn.notifyB({description: $transElm.attr('data-est_invalid')}, 'failure')
-            return false
-        }
+        else delete pickingData['estimated_delivery_date']
+
         pickingData['ware_house'] = _form.dataForm['warehouse_id']
         pickingData['remarks'] = _form.dataForm['remarks']
         pickingData['to_location'] = _form.dataForm['to_location']
         pickingData['sale_order_id'] = pickingData['sale_order_data']['id']
 
+        const _EmployeeInherit = $('#selectEmployeeInherit').val() || ''
+        if (_EmployeeInherit){
+            pickingData['employee_inherit_id'] = _EmployeeInherit
+            delete pickingData['employee_inherit']
+        }
+
         let prodSub = []
-        const warehouseStock = pickupInit.getWarehouseList
         for (prod of pickupInit.getProdList) {
             if (prod.picked_quantity > 0)
                 prodSub.push({
@@ -385,11 +391,9 @@ $(async function () {
                     'order': prod.order,
                 })
         }
+
         pickingData.products = prodSub
-        if (!prodSub || !prodSub.length) {
-            $.fn.notifyB({description: $transElm.attr('data-error-done')}, 'failure')
-            return false
-        }
+
         //call ajax to update picking
         $.fn.callAjax(_form.dataUrl, _form.dataMethod, pickingData, csr)
             .then(

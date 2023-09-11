@@ -7,9 +7,9 @@ $(function () {
         let btnEdit = $('#btn-edit-product-good-receipt');
         let btnAdd = $('#btn-add-product-good-receipt');
         let btnConfirmAdd = $('#btn-confirm-add-product');
-        let btnLot = $('#btn-manage-by-lot');
-        let btnSerial = $('#btn-manage-by-serial');
-        let btnNoLotSerial = $('#btn-no-manage-by-lot-serial');
+        // let btnLot = $('#btn-manage-by-lot');
+        // let btnSerial = $('#btn-manage-by-serial');
+        // let btnNoLotSerial = $('#btn-no-manage-by-lot-serial');
         let btnAddLot = $('#btn-add-manage-lot');
 
         // Load init
@@ -164,14 +164,48 @@ $(function () {
             GRLoadDataHandle.loadQuantityImport();
         });
 
-        btnLot.on('click', function () {
-            if (GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked')) {
-                GRLoadDataHandle.loadAreaLotSerial(true, false);
-            } else {
-                $.fn.notifyB({description: $.fn.transEle.attr('data-validate-manage-lot')}, 'failure');
-                return false
-            }
-        });
+        // btnLot.on('click', function () {
+        //     if (GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked')) {
+        //         GRLoadDataHandle.loadAreaLotSerial(true, false);
+        //     } else {
+        //         $.fn.notifyB({description: $.fn.transEle.attr('data-validate-manage-lot')}, 'failure');
+        //         return false
+        //     }
+        // });
+
+        // btnSerial.on('click', function () {
+        //     if (GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked')) {
+        //         GRLoadDataHandle.loadAreaLotSerial(false, true);
+        //     } else {
+        //         $.fn.notifyB({description: $.fn.transEle.attr('data-validate-manage-lot')}, 'failure');
+        //         return false
+        //     }
+        // });
+
+        // btnNoLotSerial.on('click', function () {
+        //     for (let eleImport of GRDataTableHandle.tableWH[0].querySelectorAll('.table-row-import')) {
+        //         eleImport.value = '0';
+        //         eleImport.removeAttribute('disabled');
+        //     }
+        //     GRDataTableHandle.tableLot.DataTable().clear().draw();
+        //     GRDataTableHandle.tableSerial.DataTable().clear().draw();
+        //     for (let i = 0; i < GRDataTableHandle.tableWH[0].tBodies[0].rows.length; i++) {
+        //         let row = GRDataTableHandle.tableWH[0].tBodies[0].rows[i];
+        //         let dataWHCheckedRaw = row.querySelector('.table-row-checkbox').getAttribute('data-row');
+        //         if (dataWHCheckedRaw) {
+        //             let dataWHChecked = JSON.parse(dataWHCheckedRaw);
+        //             let keyToDelete = ['lot_data', 'serial_data'];
+        //             for (let key in dataWHChecked) {
+        //                 if (dataWHChecked.hasOwnProperty(key) && keyToDelete.includes(key)) {
+        //                     delete dataWHChecked[key];
+        //                 }
+        //             }
+        //             row.querySelector('.table-row-checkbox').setAttribute('data-row', JSON.stringify(dataWHChecked));
+        //         }
+        //     }
+        //     $('#scroll-table-lot-serial')[0].setAttribute('hidden', 'true');
+        //     $('#btn-lot-serial-area')[0].removeAttribute('hidden');
+        // });
 
         btnAddLot.on('click', function () {
             if (GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked')) {
@@ -184,40 +218,6 @@ $(function () {
 
         GRDataTableHandle.tableLot.on('change', '.table-row-import', function () {
             GRLoadDataHandle.loadQuantityImport();
-        });
-
-        btnSerial.on('click', function () {
-            if (GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked')) {
-                GRLoadDataHandle.loadAreaLotSerial(false, true);
-            } else {
-                $.fn.notifyB({description: $.fn.transEle.attr('data-validate-manage-lot')}, 'failure');
-                return false
-            }
-        });
-
-        btnNoLotSerial.on('click', function () {
-            for (let eleImport of GRDataTableHandle.tableWH[0].querySelectorAll('.table-row-import')) {
-                eleImport.value = '0';
-                eleImport.removeAttribute('disabled');
-            }
-            GRDataTableHandle.tableLot.DataTable().clear().draw();
-            GRDataTableHandle.tableSerial.DataTable().clear().draw();
-            for (let i = 0; i < GRDataTableHandle.tableWH[0].tBodies[0].rows.length; i++) {
-                let row = GRDataTableHandle.tableWH[0].tBodies[0].rows[i];
-                let dataWHCheckedRaw = row.querySelector('.table-row-checkbox').getAttribute('data-row');
-                if (dataWHCheckedRaw) {
-                    let dataWHChecked = JSON.parse(dataWHCheckedRaw);
-                    let keyToDelete = ['lot_data', 'serial_data'];
-                    for (let key in dataWHChecked) {
-                        if (dataWHChecked.hasOwnProperty(key) && keyToDelete.includes(key)) {
-                            delete dataWHChecked[key];
-                        }
-                    }
-                    row.querySelector('.table-row-checkbox').setAttribute('data-row', JSON.stringify(dataWHChecked));
-                }
-            }
-            $('#scroll-table-lot-serial')[0].setAttribute('hidden', 'true');
-            $('#btn-lot-serial-area')[0].removeAttribute('hidden');
         });
 
         GRDataTableHandle.tableSerial.on('change', '.table-row-serial-number', function () {
@@ -242,6 +242,43 @@ $(function () {
             value = value.replace("-", "").replace(/^0+(?=\d)/, '');
             // Update value of input
             this.value = value;
+        });
+
+// SUBMIT FORM
+        formSubmit.submit(function (e) {
+            e.preventDefault();
+            let _form = new SetupFormSubmit(formSubmit);
+            GRSubmitHandle.setupDataSubmit(_form);
+            let submitFields = [
+                'title',
+                'purchase_order',
+                'supplier',
+                'purchase_requests',
+                'remarks',
+                // line detail
+                'goods_receipt_product',
+                // system
+                'system_status',
+            ]
+            if (_form.dataForm) {
+                for (let key in _form.dataForm) {
+                    if (!submitFields.includes(key)) delete _form.dataForm[key]
+                }
+            }
+            let csr = $("[name=csrfmiddlewaretoken]").val();
+            $.fn.callAjax(_form.dataUrl, _form.dataMethod, _form.dataForm, csr)
+                .then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            $.fn.notifyB({description: data.message}, 'success')
+                            $.fn.redirectUrl(formSubmit.attr('data-url-redirect'), 1000);
+                        }
+                    },
+                    (errs) => {
+                        console.log(errs)
+                    }
+                )
         });
 
 

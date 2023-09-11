@@ -82,7 +82,7 @@
                         <div class="form-group">
                             <label class="form-label" for="good-receipt-date-created">{% trans 'Date' %}</label>
                             <div class="input-affix-wrapper">
-                                <input type="text" name="date-created" id="good-receipt-date-created"
+                                <input type="text" name="date_created" id="good-receipt-date-created"
                                        class="form-control date-picker" autocomplete="off">
                                 <span class="input-suffix">
                                     <i class="bi bi-calendar-week"></i>
@@ -106,7 +106,7 @@
                 <div class="row custom-area" id="custom-area-1">
                     <div class="col-6">
                         <div class="form-group">
-                            <label class="form-label">{% trans 'Purchase order' %}</label>
+                            <label class="form-label">{% trans 'Purchase order' %}<span class="required"></span></label>
                             <div class="input-group more-information-group">
                                 <span class="input-affix-wrapper">
                                     <span class="input-prefix">
@@ -136,7 +136,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="form-label" for="box-good-receipt-supplier">{% trans 'Select Supplier' %}</label>
+                            <label class="form-label" for="box-good-receipt-supplier">{% trans 'Select Supplier' %}<span class="required"></span></label>
                             <div class="input-group more-information-group">
                                 <span class="input-affix-wrapper">
                                     <span class="input-prefix">
@@ -286,15 +286,15 @@
                             >
                                 <thead>
                                 <tr>
-                                    <th>#</th>
+                                    <th class="w-5">#</th>
                                     <th>{% trans 'Product' %}<span class="required"></span></th>
-                                    <th>{% trans 'Description' %}</th>
+                                    <th class="w-10">{% trans 'Description' %}</th>
                                     <th>UoM<span class="required"></span></th>
                                     <th>{% trans 'Quantity' %}<span class="required"></span></th>
                                     <th class="w-20">{% trans 'Unit Price' %}<span class="required"></span></th>
                                     <th>{% trans 'Tax' %}</th>
                                     <th class="w-20">{% trans 'Subtotal Price' %}</th>
-                                    <th>{% trans 'Actions' %}</th>
+                                    <th class="w-5">{% trans 'Actions' %}</th>
                                 </tr>
                                 </thead>
                                 <tbody>

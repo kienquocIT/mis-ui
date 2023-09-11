@@ -22,7 +22,7 @@ def check_config_lead(user, get_p_or_d='picking'):
     lead = {}
     kwag_lead = f'lead_{get_p_or_d}'  # noqa
     kwag_person = f'person_{get_p_or_d}'  # noqa
-    if resp.state:
+    if resp.state and kwag_lead in resp.result and kwag_person in resp.result:
         lead = resp.result[kwag_lead]
         if lead.get("id") == user.employee_current_data.get("id"):
             is_lead = True

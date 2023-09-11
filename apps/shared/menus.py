@@ -267,7 +267,7 @@ class MenusPurchase:
     )
 
     PURCHASE = MenuCommon(
-        name='Purchase Activities', code='menu_purchase_activities', view_name='', icon='<i class="bi bi-minecart"></i>',
+        name='Purchase Activities', code='menu_purchase_activities', view_name='', icon='<i class="fas fa-shopping-cart"></i>',
         child=[
             MenuCommon(
                 name='Purchase Request',
@@ -289,7 +289,7 @@ class MenusPurchase:
             ),
             MenuCommon(
                 name='Purchase Order', code='menu_purchase_order_list', view_name='PurchaseOrderList',
-                icon='<i class="bi bi-caret-right-fill"></i>',
+                icon='<i class="fas fa-money-check"></i>',
             ),
         ],
     )
@@ -297,12 +297,12 @@ class MenusPurchase:
     INVENTORY = MenuCommon(
         name='Inventory Activities', code='menu_inventory_activities', view_name='', icon='<i class="bi bi-shop-window"></i>',
         child=[
-            MenuCommon(
-                name='Goods Receipt',
-                code='menu_goods_receipt_list',
-                view_name='GoodReceiptList',
-                icon='<i class="bi bi-arrow-right-square"></i>',
-            ),
+            # MenuCommon(
+            #     name='Goods Receipt',
+            #     code='menu_goods_receipt_list',
+            #     view_name='GoodsReceiptList',
+            #     icon='<i class="bi bi-arrow-right-square"></i>',
+            # ),
             # MenuCommon(
             #     name='Inventory Adjustment',
             #     code='menu_inventory_adjustment_list',

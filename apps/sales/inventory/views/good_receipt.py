@@ -6,12 +6,12 @@ from rest_framework.views import APIView
 from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg, InputMappingProperties
 
 
-class GoodReceiptList(View):
+class GoodsReceiptList(View):
     permission_classes = [IsAuthenticated]
 
     @mask_view(
         auth_require=True,
-        template='sales/inventory/goodreceipt/good_receipt_list.html',
+        template='sales/inventory/goodreceipt/goods_receipt_list.html',
         menu_active='menu_goods_receipt_list',
         breadcrumb='',
     )
@@ -19,10 +19,10 @@ class GoodReceiptList(View):
         return {}, status.HTTP_200_OK
 
 
-class GoodReceiptCreate(View):
+class GoodsReceiptCreate(View):
     @mask_view(
         auth_require=True,
-        template='sales/inventory/goodreceipt/good_receipt_create.html',
+        template='sales/inventory/goodreceipt/goods_receipt_create.html',
         menu_active='menu_goods_receipt_list',
         breadcrumb='',
     )

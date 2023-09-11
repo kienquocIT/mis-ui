@@ -11,7 +11,7 @@ class GoodReceiptList(View):
 
     @mask_view(
         auth_require=True,
-        template='sales/inventory/goodreceipt/good_receipt_list.html',
+        template='sales/inventory/goodreceipt/goods_receipt_list.html',
         menu_active='menu_goods_receipt_list',
         breadcrumb='',
     )
@@ -22,7 +22,7 @@ class GoodReceiptList(View):
 class GoodReceiptCreate(View):
     @mask_view(
         auth_require=True,
-        template='sales/inventory/goodreceipt/good_receipt_create.html',
+        template='sales/inventory/goodreceipt/goods_receipt_create.html',
         menu_active='menu_goods_receipt_list',
         breadcrumb='',
     )

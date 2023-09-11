@@ -2,7 +2,7 @@ from django.views import View
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg
+from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg, PermCheck
 
 
 class PurchaseQuotationRequestList(View):
@@ -12,6 +12,7 @@ class PurchaseQuotationRequestList(View):
         template='sales/purchasing/purchasequotationrequest/purchase_quotation_request_list.html',
         menu_active='id_menu_purchase_quotation_request_list',
         breadcrumb='PURCHASE_QUOTATION_REQUEST_LIST_PAGE',
+        perm_check=PermCheck(url=ApiURL.PURCHASE_QUOTATION_REQUEST_LIST, method='GET'),
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -45,6 +46,7 @@ class PurchaseQuotationRequestCreateFromPR(View):
         template='sales/purchasing/purchasequotationrequest/purchase_quotation_request_create_from_PR.html',
         menu_active='',
         breadcrumb='PURCHASE_QUOTATION_REQUEST_CREATE_PAGE_FROM_PR',
+        perm_check=PermCheck(url=ApiURL.PURCHASE_QUOTATION_REQUEST_LIST, method='POST'),
     )
     def get(self, request, *args, **kwargs):
         resp1 = ServerAPI(user=request.user, url=ApiURL.TAX_LIST).get()
@@ -79,6 +81,7 @@ class PurchaseQuotationRequestCreateManual(View):
         template='sales/purchasing/purchasequotationrequest/purchase_quotation_request_create_manual.html',
         menu_active='',
         breadcrumb='PURCHASE_QUOTATION_REQUEST_CREATE_PAGE_MANUAL',
+        perm_check=PermCheck(url=ApiURL.PURCHASE_QUOTATION_REQUEST_LIST, method='POST'),
     )
     def get(self, request, *args, **kwargs):
         resp1 = ServerAPI(user=request.user, url=ApiURL.TAX_LIST).get()
@@ -120,6 +123,7 @@ class PurchaseQuotationRequestDetail(View):
         template='sales/purchasing/purchasequotationrequest/purchase_quotation_request_detail.html',
         menu_active='',
         breadcrumb='PURCHASE_QUOTATION_REQUEST_DETAIL_PAGE',
+        perm_check=PermCheck(url=ApiURL.PURCHASE_QUOTATION_REQUEST_DETAIL, method='GET', fill_key=['pk']),
     )
     def get(self, request, *args, **kwargs):
         resp1 = ServerAPI(user=request.user, url=ApiURL.TAX_LIST).get()

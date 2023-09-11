@@ -99,7 +99,6 @@ $(function () {
         });
 
         GRDataTableHandle.tablePR.on('click', '.table-row-checkbox', function () {
-            // let dataRow = JSON.parse($(this).attr('data-row'));
             let is_checked = false;
             if (this.checked === true) {
                 is_checked = true;
@@ -122,16 +121,51 @@ $(function () {
             }
         });
 
+        GRDataTableHandle.tableWH.on('click', '.table-row-checkbox', function () {
+            let is_checked = false;
+            if (this.checked === true) {
+                is_checked = true;
+            }
+            for (let eleCheck of GRDataTableHandle.tableWH[0].querySelectorAll('.table-row-checkbox')) {
+                eleCheck.checked = false;
+                let row = eleCheck.closest('tr');
+                $(row).css('background-color', '');
+            }
+            GRStoreDataHandle.storeDataLot();
+            GRStoreDataHandle.storeDataSerial();
+            let row = this.closest('tr');
+            GRDataTableHandle.tableLot.DataTable().clear().draw();
+            GRDataTableHandle.tableSerial.DataTable().clear().draw();
+            if (is_checked === true) {
+                this.checked = true;
+                GRLoadDataHandle.loadNewRowsLot();
+                GRLoadDataHandle.loadNewRowsSerial();
+                $(row).css('background-color', '#ebfcf5');
+            } else {
+                $(row).css('background-color', '');
+            }
+        });
+
         GRDataTableHandle.tableWH.on('change', '.table-row-import', function () {
             GRLoadDataHandle.loadQuantityImport();
         });
 
         btnLot.on('click',  function() {
-            GRLoadDataHandle.loadAreaLotSerial(true, false);
+            if (GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked')) {
+                GRLoadDataHandle.loadAreaLotSerial(true, false);
+            } else {
+                $.fn.notifyB({description: $.fn.transEle.attr('data-validate-manage-lot')}, 'failure');
+                return false
+            }
         });
 
-        btnSerial.on('click',  function() {
-            GRLoadDataHandle.loadAreaLotSerial(false, true);
+        btnSerial.on('click', function () {
+            if (GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked')) {
+                GRLoadDataHandle.loadAreaLotSerial(false, true);
+            } else {
+                $.fn.notifyB({description: $.fn.transEle.attr('data-validate-manage-lot')}, 'failure');
+                return false
+            }
         });
 
         btnNoLotSerial.on('click', function() {
@@ -141,6 +175,19 @@ $(function () {
             }
             GRDataTableHandle.tableLot.DataTable().clear().draw();
             GRDataTableHandle.tableSerial.DataTable().clear().draw();
+            for (let i = 0; i < GRDataTableHandle.tableWH[0].tBodies[0].rows.length; i++) {
+                let row = GRDataTableHandle.tableWH[0].tBodies[0].rows[i];
+                let dataWHCheckedRaw = row.querySelector('.table-row-checkbox').getAttribute('data-row');
+                if (dataWHCheckedRaw) {
+                    let dataWHChecked = JSON.parse(dataWHCheckedRaw);
+                    let keyToDelete = ['lot_data', 'serial_data'];
+                    for (let key in dataWHChecked) {
+                        if (dataWHChecked.hasOwnProperty(key) && keyToDelete.includes(key)) {
+                            delete dataWHChecked[key];
+                        }
+                    }
+                }
+            }
             $('#scroll-table-lot-serial')[0].setAttribute('hidden', 'true');
             $('#btn-lot-serial-area')[0].removeAttribute('hidden');
         });
@@ -156,12 +203,7 @@ $(function () {
         });
 
         btnAddLot.on('click', function() {
-            if (GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked')) {
-                GRLoadDataHandle.loadNewRowLot();
-            } else {
-                $.fn.notifyB({description: $.fn.transEle.attr('data-validate-manage-lot')}, 'failure');
-                return false
-            }
+            GRLoadDataHandle.loadAddRowLot();
         });
 
         GRDataTableHandle.tableLot.on('change', '.table-row-import', function() {

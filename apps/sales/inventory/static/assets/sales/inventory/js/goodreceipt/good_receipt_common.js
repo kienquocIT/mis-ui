@@ -293,47 +293,92 @@ class GRLoadDataHandle {
             eleImport.value = '0';
             eleImport.setAttribute('disabled', 'true');
         }
-        GRDataTableHandle.tablePR[0].querySelector('.table-row-checkbox:checked').closest('tr').querySelector('.table-row-import').innerHtml = '0';
-        GRDataTableHandle.tablePOProduct[0].querySelector('.table-row-checkbox:checked').closest('tr').querySelector('.table-row-import').innerHtml = '0';
+        GRDataTableHandle.tablePR[0].querySelector('.table-row-checkbox:checked').closest('tr').querySelector('.table-row-import').innerHTML = '0';
+        GRDataTableHandle.tablePOProduct[0].querySelector('.table-row-checkbox:checked').closest('tr').querySelector('.table-row-import').innerHTML = '0';
         $('#btn-lot-serial-area')[0].setAttribute('hidden', 'true');
         $('#scroll-table-lot-serial')[0].removeAttribute('hidden');
-
+        GRDataTableHandle.tableLot.DataTable().clear().draw();
+        GRDataTableHandle.tableSerial.DataTable().clear().draw();
         if (is_lot === true) {
             $('#table-good-receipt-manage-lot-area')[0].removeAttribute('hidden');
             $('#table-good-receipt-manage-serial-area')[0].setAttribute('hidden', 'true');
         } else if (is_serial === true) {
             $('#table-good-receipt-manage-serial-area')[0].removeAttribute('hidden');
             $('#table-good-receipt-manage-lot-area')[0].setAttribute('hidden', 'true');
+            GRLoadDataHandle.loadNewRowsSerial();
         }
     };
 
-    static loadNewRowLot() {
-        let $table = GRDataTableHandle.tableLot;
-        let data = {
-            'lot_number': '',
-            'quantity_import': '',
-            'expire_date': '',
-            'manufacture_date': '',
+    static loadNewRowsLot() {
+        let eleWHDataRaw = GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked').getAttribute('data-row');
+        if (eleWHDataRaw) {
+            let eleWHData = JSON.parse(eleWHDataRaw);
+            if (eleWHData?.['lot_data']) {
+                GRDataTableHandle.tableLot.DataTable().rows.add(eleWHData?.['lot_data']).draw();
+            }
         }
-        let newRow = $table.DataTable().row.add(data).draw().node();
-        $(newRow.querySelector('.table-row-expire-date')).daterangepicker({
-            minYear: 1901,
-            singleDatePicker: true,
-            timePicker: true,
-            showDropdowns: true,
-            locale: {
-                format: 'DD/MM/YYYY'
+    };
+
+    static loadAddRowLot() {
+        let eleWHDataRaw = GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked').getAttribute('data-row');
+        if (eleWHDataRaw) {
+            let eleWHData = JSON.parse(eleWHDataRaw);
+            let $table = GRDataTableHandle.tableLot;
+            let data = {
+                'warehouse_id': eleWHData?.['id'],
+                'lot_number': '',
+                'quantity_import': '',
+                'expire_date': '',
+                'manufacture_date': '',
             }
-        });
-        $(newRow.querySelector('.table-row-manufacture-date')).daterangepicker({
-            minYear: 1901,
-            singleDatePicker: true,
-            timePicker: true,
-            showDropdowns: true,
-            locale: {
-                format: 'DD/MM/YYYY'
+            let newRow = $table.DataTable().row.add(data).draw().node();
+            GRLoadDataHandle.loadLotSerialDatePicker(newRow);
+        }
+    };
+
+    static loadNewRowsSerial() {
+        let eleWHDataRaw = GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked').getAttribute('data-row');
+        if (eleWHDataRaw) {
+            let eleWHData = JSON.parse(eleWHDataRaw);
+            if (eleWHData?.['serial_data']) {
+                GRDataTableHandle.tableSerial.DataTable().rows.add(eleWHData?.['serial_data']).draw();
+            } else {
+                let elePRCheckedQuantity = parseFloat(GRDataTableHandle.tablePR[0].querySelector('.table-row-checkbox:checked').closest('tr').querySelector('.table-row-quantity').innerHTML);
+                for (let i = 0; i < elePRCheckedQuantity; i++) {
+                    let data = {
+                        'warehouse_id': eleWHData?.['id'],
+                        'vendor_serial_number': '',
+                        'serial_number': '',
+                        'expire_date': '',
+                        'manufacture_date': '',
+                        'warranty_start': '',
+                        'warranty_end': '',
+                    }
+                    let newRow = GRDataTableHandle.tableSerial.DataTable().row.add(data).draw().node();
+                    GRLoadDataHandle.loadLotSerialDatePicker(newRow);
+                    $(newRow.querySelector('.table-row-warranty-start')).daterangepicker({
+                        minYear: 1901,
+                        singleDatePicker: true,
+                        timePicker: true,
+                        showDropdowns: true,
+                        locale: {
+                            format: 'DD/MM/YYYY'
+                        }
+                    });
+                    $(newRow.querySelector('.table-row-warranty-start')).val(null).trigger('change');
+                    $(newRow.querySelector('.table-row-warranty-end')).daterangepicker({
+                        minYear: 1901,
+                        singleDatePicker: true,
+                        timePicker: true,
+                        showDropdowns: true,
+                        locale: {
+                            format: 'DD/MM/YYYY'
+                        }
+                    });
+                    $(newRow.querySelector('.table-row-warranty-end')).val(null).trigger('change');
+                }
             }
-        });
+        }
     };
 
     static loadQuantityImport() {
@@ -395,6 +440,29 @@ class GRLoadDataHandle {
         return true;
     };
 
+    static loadLotSerialDatePicker(newRow) {
+        $(newRow.querySelector('.table-row-expire-date')).daterangepicker({
+            minYear: 1901,
+            singleDatePicker: true,
+            timePicker: true,
+            showDropdowns: true,
+            locale: {
+                format: 'DD/MM/YYYY'
+            }
+        });
+        $(newRow.querySelector('.table-row-expire-date')).val(null).trigger('change');
+        $(newRow.querySelector('.table-row-manufacture-date')).daterangepicker({
+            minYear: 1901,
+            singleDatePicker: true,
+            timePicker: true,
+            showDropdowns: true,
+            locale: {
+                format: 'DD/MM/YYYY'
+            }
+        });
+        $(newRow.querySelector('.table-row-manufacture-date')).val(null).trigger('change');
+    };
+
     static loadLineDetail() {
         let table = GRDataTableHandle.tableLineDetail;
         let data = setupDataShowLineDetail();
@@ -425,6 +493,9 @@ class GRLoadDataHandle {
             GRLoadDataHandle.loadBoxTax($(row.querySelector('.table-row-tax')), dataRow?.['tax']);
         }
     };
+
+
+
 
 
 
@@ -526,7 +597,6 @@ class GRLoadDataHandle {
         }
         return true;
     };
-
 
     static loadTableProductByPurchaseRequest() {
         let tablePurchaseOrderProductRequest = $('#datable-purchase-order-product-request');
@@ -994,7 +1064,7 @@ class GRDataTableHandle {
                     targets: 1,
                     render: (data, type, row) => {
                         return `<div class="row">
-                                    <input type="text" class="form-control table-row-import" value="${row?.['quantity_import'] ? row?.['quantity_import'] : '0'}">
+                                    <input type="text" class="form-control table-row-import" value="${row?.['quantity_import'] ? row?.['quantity_import'] : ''}">
                                 </div>`;
                     }
                 },
@@ -1396,6 +1466,76 @@ class GRStoreDataHandle {
                 let dataPRChecked = JSON.parse(dataPRCheckedRaw);
                 dataPRChecked['warehouse_data'] = new_data;
                 tablePR[0].querySelector(`.table-row-checkbox[data-id="${PRProductID}"]`).setAttribute('data-row', JSON.stringify(dataPRChecked));
+            }
+        }
+        return true
+    };
+
+    static storeDataLot() {
+        let new_data = [];
+        let table = GRDataTableHandle.tableLot;
+        let tableWH = GRDataTableHandle.tableWH;
+        if (!table[0].querySelector('.dataTables_empty')) {
+            let WHID = null;
+            for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
+                let row = table[0].tBodies[0].rows[i];
+                let lotNumber =row.querySelector('.table-row-lot-number').value;
+                let quantityImport = parseFloat(row.querySelector('.table-row-import').value);
+                let expireDate = row.querySelector('.table-row-expire-date').value;
+                let manufactureDate = row.querySelector('.table-row-manufacture-date').value;
+                let dataRowRaw = row.querySelector('.table-row-lot-number').getAttribute('data-row');
+                if (dataRowRaw) {
+                    let dataRow = JSON.parse(dataRowRaw);
+                    dataRow['lot_number'] = lotNumber;
+                    dataRow['quantity_import'] = quantityImport;
+                    dataRow['expire_date'] = expireDate;
+                    dataRow['manufacture_date'] = manufactureDate;
+                    new_data.push(dataRow);
+                    WHID = dataRow?.['warehouse_id'];
+                }
+            }
+            let dataWHCheckedRaw = tableWH[0].querySelector(`.table-row-checkbox[data-id="${WHID}"]`).getAttribute('data-row');
+            if (dataWHCheckedRaw) {
+                let dataWHChecked = JSON.parse(dataWHCheckedRaw);
+                dataWHChecked['lot_data'] = new_data;
+                tableWH[0].querySelector(`.table-row-checkbox[data-id="${WHID}"]`).setAttribute('data-row', JSON.stringify(dataWHChecked));
+            }
+        }
+        return true
+    };
+
+    static storeDataSerial() {
+        let new_data = [];
+        let table = GRDataTableHandle.tableSerial;
+        let tableWH = GRDataTableHandle.tableWH;
+        if (!table[0].querySelector('.dataTables_empty')) {
+            let WHID = null;
+            for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
+                let row = table[0].tBodies[0].rows[i];
+                let vendorSerialNumber =row.querySelector('.table-row-vendor-serial-number').value;
+                let serialNumber =row.querySelector('.table-row-serial-number').value;
+                let expireDate = row.querySelector('.table-row-expire-date').value;
+                let manufactureDate = row.querySelector('.table-row-manufacture-date').value;
+                let warrantyStart = row.querySelector('.table-row-warranty-start').value;
+                let warrantyEnd = row.querySelector('.table-row-warranty-end').value;
+                let dataRowRaw = row.querySelector('.table-row-vendor-serial-number').getAttribute('data-row');
+                if (dataRowRaw) {
+                    let dataRow = JSON.parse(dataRowRaw);
+                    dataRow['vendor_serial_number'] = vendorSerialNumber;
+                    dataRow['serial_number'] = serialNumber;
+                    dataRow['expire_date'] = expireDate;
+                    dataRow['manufacture_date'] = manufactureDate;
+                    dataRow['warranty_start'] = warrantyStart;
+                    dataRow['warranty_end'] = warrantyEnd;
+                    new_data.push(dataRow);
+                    WHID = dataRow?.['warehouse_id'];
+                }
+            }
+            let dataWHCheckedRaw = tableWH[0].querySelector(`.table-row-checkbox[data-id="${WHID}"]`).getAttribute('data-row');
+            if (dataWHCheckedRaw) {
+                let dataWHChecked = JSON.parse(dataWHCheckedRaw);
+                dataWHChecked['serial_data'] = new_data;
+                tableWH[0].querySelector(`.table-row-checkbox[data-id="${WHID}"]`).setAttribute('data-row', JSON.stringify(dataWHChecked));
             }
         }
         return true

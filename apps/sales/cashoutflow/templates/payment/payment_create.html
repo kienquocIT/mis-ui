@@ -62,12 +62,12 @@
                                             <label class="form-check-label col-10" for="radio-purchase">{% trans 'Purchase' %}</label>
                                         </div>
                                     </div>
-                                    <div class="row">
-                                        <div class="form-check">
-                                            <input type="radio" id="radio-special" name="sale_code_type" value="3" class="col-2 form-check-input sale_code_type">
-                                            <label class="form-check-label col-10" for="radio-special">{% trans 'MULTI' %}</label>
-                                        </div>
-                                    </div>
+{#                                    <div class="row">#}
+{#                                        <div class="form-check">#}
+{#                                            <input type="radio" id="radio-special" name="sale_code_type" value="3" class="col-2 form-check-input sale_code_type" disabled>#}
+{#                                            <label class="form-check-label col-10" for="radio-special">{% trans 'MULTI' %}</label>#}
+{#                                        </div>#}
+{#                                    </div>#}
                                 </div>
                             </div>
                         </div>
@@ -238,20 +238,19 @@
             <div class="tab-pane fade show active mb-25" id="tab_line_detail">
                 <div class="row">
                     <table id="tab_line_detail_datatable" class="table nowrap w-100"
-                           data-url-uom-list="{% url 'UnitOfMeasureListAPI' %}"
-                           data-url-tax-list="{% url 'TaxListAPI' %}"
-                           data-url-unit-price-list="{% url 'ProductDetailAPI' '0' %}">
+                           data-url-expense-type-list="{% url 'ExpenseItemListAPI' %}"
+                           data-url-tax-list="{% url 'TaxListAPI' %}">
                         <thead>
                         <tr>
                             <th class="text-center" style="width: 2%"></th>
-                            <th class="required" style="width: 17%">{% trans 'Product items' %}</th>
-                            <th style="width: 11%">{% trans 'Type' %}</th>
+                            <th class="required" style="width: 14%">{% trans 'Expense item' %}</th>
+                            <th style="width: 14%">{% trans 'Description' %}</th>
                             <th class="required" style="width: 7%">{% trans 'UoM' %}</th>
                             <th class="required" style="width: 6%">{% trans 'Quantity' %}</th>
                             <th class="required" style="width: 13%">{% trans 'Unit price' %}</th>
                             <th style="width: 8%">{% trans 'Tax' %}</th>
-                            <th style="width: 13%">{% trans 'Subtotal price' %}</th>
-                            <th style="width: 13%">{% trans 'After tax subtotal' %}</th>
+                            <th class="required" style="width: 13%">{% trans 'Subtotal price' %}</th>
+                            <th class="required" style="width: 13%">{% trans 'After tax subtotal' %}</th>
                             <th class="required" style="width: 9%">{% trans 'Document number' %}</th>
                             <th style="width: 1%"></th>
                         </tr>
@@ -287,19 +286,19 @@
                                     </table>
                                 </div>
                                 <h1></h1>
-                                <div data-simplebar class="nicescroll-bar">
-                                    <div data-simplebar class="product-tables nicescroll-bar"></div>
-                                </div>
+                                <div data-simplebar class="product-tables h-100 overflow-y-scroll"></div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-2">
-                        <button type="button" class="btn btn-link btn-animated" id="btn-add-row-line-detail">
-                            <span><span class="icon">
-                                <span class="feather-icon"><i class="bi bi-plus-circle"></i></span></span>
+                    <div class="col-8">
+                        <button id="btn-add-row-line-detail" class="disabled btn btn-soft-primary w-20" type="button" data-bs-toggle="modal" data-bs-target="#modal-shipping-address">
+                            <span>
                                 <span>{% trans "Add new row" %}</span>
+                                <span class="icon">
+                                    <i class="fas fa-plus-circle"></i>
+                                </span>
                             </span>
                         </button>
                     </div>

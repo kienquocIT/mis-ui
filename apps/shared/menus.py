@@ -168,7 +168,7 @@ class MenusCRM:
     )
     EXPENSE_ITEM = MenuCommon(
         name='Expense Items', code='id_menu_expense_item_list', view_name='ExpenseItemList',
-        icon='<i class="bi bi-cash-coin"></i>',
+        icon='<i class="bi bi-wallet2"></i>',
     )
     EXPENSE = MenuCommon(
         name='Internal Labor Items', code='id_menu_expense_list', view_name='ExpenseList',
@@ -303,12 +303,12 @@ class MenusPurchase:
                 view_name='GoodReceiptList',
                 icon='<i class="bi bi-arrow-right-square"></i>',
             ),
-            MenuCommon(
-                name='Inventory Adjustment',
-                code='menu_inventory_adjustment_list',
-                view_name='InventoryAdjustmentList',
-                icon='<i class="bi bi-sliders"></i>',
-            ),
+            # MenuCommon(
+            #     name='Inventory Adjustment',
+            #     code='menu_inventory_adjustment_list',
+            #     view_name='InventoryAdjustmentList',
+            #     icon='<i class="bi bi-sliders"></i>',
+            # ),
         ],
     )
 

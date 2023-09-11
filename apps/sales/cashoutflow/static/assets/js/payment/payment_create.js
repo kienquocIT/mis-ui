@@ -21,7 +21,7 @@ $(document).ready(function () {
     const urlParams = new URLSearchParams(window.location.search);
     let param = null;
     let param_temp_1 = urlParams.get('sale_code_mapped');
-    if (param_temp_1) {param = param_temp_1};
+    if (param_temp_1) {param = param_temp_1}
     let param_temp_2 = urlParams.get('opportunity');
     if (param_temp_2) {param = param_temp_2};
     const sale_code_mapped_parameter = param;

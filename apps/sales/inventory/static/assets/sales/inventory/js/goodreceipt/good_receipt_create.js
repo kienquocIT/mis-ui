@@ -127,31 +127,11 @@ $(function () {
         });
 
         btnLot.on('click',  function() {
-            for (let eleImport of GRDataTableHandle.tableWH[0].querySelectorAll('.table-row-import')) {
-                eleImport.value = '0';
-                eleImport.setAttribute('disabled', 'true');
-            }
-            $('#btn-lot-serial-area')[0].setAttribute('hidden', 'true');
-            $('#scroll-table-lot-serial')[0].removeAttribute('hidden');
-            $('#table-good-receipt-manage-lot-area')[0].removeAttribute('hidden');
-            $('#table-good-receipt-manage-serial-area')[0].setAttribute('hidden', 'true');
+            GRLoadDataHandle.loadAreaLotSerial(true, false);
         });
 
         btnSerial.on('click',  function() {
-            for (let eleImport of GRDataTableHandle.tableWH[0].querySelectorAll('.table-row-import')) {
-                eleImport.value = '0';
-                eleImport.setAttribute('disabled', 'true');
-            }
-            for (let eleImport of GRDataTableHandle.tablePR[0].querySelectorAll('.table-row-import')) {
-                eleImport.innerHtml = '0';
-            }
-            for (let eleImport of GRDataTableHandle.tablePOProduct[0].querySelectorAll('.table-row-import')) {
-                eleImport.innerHtml = '0';
-            }
-            $('#btn-lot-serial-area')[0].setAttribute('hidden', 'true');
-            $('#scroll-table-lot-serial')[0].removeAttribute('hidden');
-            $('#table-good-receipt-manage-serial-area')[0].removeAttribute('hidden');
-            $('#table-good-receipt-manage-lot-area')[0].setAttribute('hidden', 'true');
+            GRLoadDataHandle.loadAreaLotSerial(false, true);
         });
 
         btnNoLotSerial.on('click', function() {

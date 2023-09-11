@@ -288,6 +288,25 @@ class GRLoadDataHandle {
         return true;
     };
 
+    static loadAreaLotSerial(is_lot = false, is_serial = false) {
+        for (let eleImport of GRDataTableHandle.tableWH[0].querySelectorAll('.table-row-import')) {
+            eleImport.value = '0';
+            eleImport.setAttribute('disabled', 'true');
+        }
+        GRDataTableHandle.tablePR[0].querySelector('.table-row-checkbox:checked').closest('tr').querySelector('.table-row-import').innerHtml = '0';
+        GRDataTableHandle.tablePOProduct[0].querySelector('.table-row-checkbox:checked').closest('tr').querySelector('.table-row-import').innerHtml = '0';
+        $('#btn-lot-serial-area')[0].setAttribute('hidden', 'true');
+        $('#scroll-table-lot-serial')[0].removeAttribute('hidden');
+
+        if (is_lot === true) {
+            $('#table-good-receipt-manage-lot-area')[0].removeAttribute('hidden');
+            $('#table-good-receipt-manage-serial-area')[0].setAttribute('hidden', 'true');
+        } else if (is_serial === true) {
+            $('#table-good-receipt-manage-serial-area')[0].removeAttribute('hidden');
+            $('#table-good-receipt-manage-lot-area')[0].setAttribute('hidden', 'true');
+        }
+    };
+
     static loadNewRowLot() {
         let $table = GRDataTableHandle.tableLot;
         let data = {

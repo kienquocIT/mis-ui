@@ -37,16 +37,16 @@ $(function () {
         });
         // $('#good-receipt-date-created').val(null).trigger('change');
 
-        GRLoadDataHandle.typeSelectEle.on('change', function() {
-           for (let eleArea of formSubmit[0].querySelectorAll('.custom-area')) {
-               eleArea.setAttribute('hidden', 'true');
-           }
-           let idAreaShow = 'custom-area-' +  String(GRLoadDataHandle.typeSelectEle.val());
-           document.getElementById(idAreaShow).removeAttribute('hidden');
-           if (idAreaShow !== 'custom-area-1') {
-               btnEdit[0].setAttribute('hidden', 'true');
-               btnAdd[0].removeAttribute('hidden');
-           }
+        GRLoadDataHandle.typeSelectEle.on('change', function () {
+            for (let eleArea of formSubmit[0].querySelectorAll('.custom-area')) {
+                eleArea.setAttribute('hidden', 'true');
+            }
+            let idAreaShow = 'custom-area-' + String(GRLoadDataHandle.typeSelectEle.val());
+            document.getElementById(idAreaShow).removeAttribute('hidden');
+            if (idAreaShow !== 'custom-area-1') {
+                btnEdit[0].setAttribute('hidden', 'true');
+                btnAdd[0].removeAttribute('hidden');
+            }
         });
 
         // Action on change dropdown PO
@@ -68,15 +68,16 @@ $(function () {
             GRLoadDataHandle.loadMoreInformation($(this));
         });
 
-        btnEdit.on('click', function() {
+        btnEdit.on('click', function () {
             GRLoadDataHandle.loadModalProduct();
         });
 
-        btnAdd.on('click', function() {
+        btnAdd.on('click', function () {
             GRLoadDataHandle.loadAddRowLineDetail();
         });
 
-        btnConfirmAdd.on('click', function() {
+        btnConfirmAdd.on('click', function () {
+            GRStoreDataHandle.storeDataAll();
             GRLoadDataHandle.loadLineDetail();
         });
 
@@ -118,8 +119,13 @@ $(function () {
                 $(row).css('background-color', '');
             }
             //
+            GRStoreDataHandle.storeDataLot();
+            GRStoreDataHandle.storeDataSerial();
             GRStoreDataHandle.storeDataWH();
             let row = this.closest('tr');
+            GRDataTableHandle.tableLot.DataTable().clear().draw();
+            GRDataTableHandle.tableSerial.DataTable().clear().draw();
+            $('#scroll-table-lot-serial')[0].setAttribute('hidden', 'true');
             GRDataTableHandle.tableWH.DataTable().clear().draw();
             if (is_checked === true) {
                 this.checked = true;
@@ -147,8 +153,7 @@ $(function () {
             GRDataTableHandle.tableSerial.DataTable().clear().draw();
             if (is_checked === true) {
                 this.checked = true;
-                GRLoadDataHandle.loadNewRowsLot();
-                GRLoadDataHandle.loadNewRowsSerial();
+                GRLoadDataHandle.loadNewRowsLotOrNewRowsSerial();
                 $(row).css('background-color', '#ebfcf5');
             } else {
                 $(row).css('background-color', '');
@@ -159,7 +164,7 @@ $(function () {
             GRLoadDataHandle.loadQuantityImport();
         });
 
-        btnLot.on('click',  function() {
+        btnLot.on('click', function () {
             if (GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked')) {
                 GRLoadDataHandle.loadAreaLotSerial(true, false);
             } else {
@@ -168,11 +173,16 @@ $(function () {
             }
         });
 
-        btnAddLot.on('click', function() {
-            GRLoadDataHandle.loadAddRowLot();
+        btnAddLot.on('click', function () {
+            if (GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked')) {
+                GRLoadDataHandle.loadAddRowLot();
+            } else {
+                $.fn.notifyB({description: $.fn.transEle.attr('data-validate-manage-lot')}, 'failure');
+                return false
+            }
         });
 
-        GRDataTableHandle.tableLot.on('change', '.table-row-import', function() {
+        GRDataTableHandle.tableLot.on('change', '.table-row-import', function () {
             GRLoadDataHandle.loadQuantityImport();
         });
 
@@ -185,7 +195,7 @@ $(function () {
             }
         });
 
-        btnNoLotSerial.on('click', function() {
+        btnNoLotSerial.on('click', function () {
             for (let eleImport of GRDataTableHandle.tableWH[0].querySelectorAll('.table-row-import')) {
                 eleImport.value = '0';
                 eleImport.removeAttribute('disabled');
@@ -210,11 +220,11 @@ $(function () {
             $('#btn-lot-serial-area')[0].removeAttribute('hidden');
         });
 
-        GRDataTableHandle.tableSerial.on('change', '.table-row-serial-number', function() {
+        GRDataTableHandle.tableSerial.on('change', '.table-row-serial-number', function () {
             GRLoadDataHandle.loadQuantityImport();
         });
 
-        GRDataTableHandle.tableLineDetail.on('change', '.table-row-price, .table-row-tax', function() {
+        GRDataTableHandle.tableLineDetail.on('change', '.table-row-price, .table-row-tax', function () {
             let row = this.closest('tr');
             GRCalculateHandle.calculateMain(GRDataTableHandle.tableLineDetail, row);
         });
@@ -233,10 +243,6 @@ $(function () {
             // Update value of input
             this.value = value;
         });
-
-
-
-
 
 
     });

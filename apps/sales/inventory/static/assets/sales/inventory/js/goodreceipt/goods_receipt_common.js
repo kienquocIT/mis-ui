@@ -264,6 +264,7 @@ class GRLoadDataHandle {
         if (dataPR?.['warehouse_data']) {
             tableWareHouse.DataTable().clear().draw();
             tableWareHouse.DataTable().rows.add(dataPR?.['warehouse_data']).draw();
+            GRLoadDataHandle.loadAreaLotOrAreaSerial();
         } else {
             $.fn.callAjax2({
                     'url': frm.dataUrl,
@@ -280,6 +281,7 @@ class GRLoadDataHandle {
                             }
                             tableWareHouse.DataTable().clear().draw();
                             tableWareHouse.DataTable().rows.add(data.warehouse_list).draw();
+                            GRLoadDataHandle.loadAreaLotOrAreaSerial();
                         }
                     }
                 }
@@ -288,14 +290,39 @@ class GRLoadDataHandle {
         return true;
     };
 
+    static loadAreaLotOrAreaSerial() {
+        let dataPOProductCheckedRaw = GRDataTableHandle.tablePOProduct[0].querySelector('.table-row-checkbox:checked').getAttribute('data-row');
+        if (dataPOProductCheckedRaw) {
+            let dataPOProductChecked = JSON.parse(dataPOProductCheckedRaw);
+            if (dataPOProductChecked?.['product']?.['general_traceability_method'] === 1) {
+                GRLoadDataHandle.loadAreaLotSerial(true, false);
+            }
+            if (dataPOProductChecked?.['product']?.['general_traceability_method'] === 2) {
+                GRLoadDataHandle.loadAreaLotSerial(false, true);
+            }
+        }
+    };
+
+    static loadNewRowsLotOrNewRowsSerial() {
+        let dataPOProductCheckedRaw = GRDataTableHandle.tablePOProduct[0].querySelector('.table-row-checkbox:checked').getAttribute('data-row');
+        if (dataPOProductCheckedRaw) {
+            let dataPOProductChecked = JSON.parse(dataPOProductCheckedRaw);
+            if (dataPOProductChecked?.['product']?.['general_traceability_method'] === 1) {
+                GRLoadDataHandle.loadNewRowsLot();
+            }
+            if (dataPOProductChecked?.['product']?.['general_traceability_method'] === 2) {
+                GRLoadDataHandle.loadNewRowsSerial();
+            }
+        }
+    };
+
     static loadAreaLotSerial(is_lot = false, is_serial = false) {
         for (let eleImport of GRDataTableHandle.tableWH[0].querySelectorAll('.table-row-import')) {
-            eleImport.value = '0';
             eleImport.setAttribute('disabled', 'true');
         }
-        GRDataTableHandle.tablePR[0].querySelector('.table-row-checkbox:checked').closest('tr').querySelector('.table-row-import').innerHTML = '0';
-        GRDataTableHandle.tablePOProduct[0].querySelector('.table-row-checkbox:checked').closest('tr').querySelector('.table-row-import').innerHTML = '0';
-        $('#btn-lot-serial-area')[0].setAttribute('hidden', 'true');
+        // GRDataTableHandle.tablePR[0].querySelector('.table-row-checkbox:checked').closest('tr').querySelector('.table-row-import').innerHTML = '0';
+        // GRDataTableHandle.tablePOProduct[0].querySelector('.table-row-checkbox:checked').closest('tr').querySelector('.table-row-import').innerHTML = '0';
+        // $('#btn-lot-serial-area')[0].setAttribute('hidden', 'true');
         $('#scroll-table-lot-serial')[0].removeAttribute('hidden');
         GRDataTableHandle.tableLot.DataTable().clear().draw();
         GRDataTableHandle.tableSerial.DataTable().clear().draw();
@@ -305,7 +332,7 @@ class GRLoadDataHandle {
         } else if (is_serial === true) {
             $('#table-good-receipt-manage-serial-area')[0].removeAttribute('hidden');
             $('#table-good-receipt-manage-lot-area')[0].setAttribute('hidden', 'true');
-            GRLoadDataHandle.loadNewRowsSerial();
+            // GRLoadDataHandle.loadNewRowsSerial();
         }
     };
 
@@ -1288,6 +1315,14 @@ class GRStoreDataHandle {
         }
         return true
     };
+
+    static storeDataAll() {
+        GRStoreDataHandle.storeDataSerial();
+        GRStoreDataHandle.storeDataLot();
+        GRStoreDataHandle.storeDataWH();
+        GRStoreDataHandle.storeDataPR();
+        return true;
+    }
 }
 
 // Validate

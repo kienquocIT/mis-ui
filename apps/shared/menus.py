@@ -303,12 +303,12 @@ class MenusPurchase:
                 view_name='GoodReceiptList',
                 icon='<i class="bi bi-arrow-right-square"></i>',
             ),
-            # MenuCommon(
-            #     name='Inventory Adjustment',
-            #     code='menu_inventory_adjustment_list',
-            #     view_name='InventoryAdjustmentList',
-            #     icon='<i class="bi bi-sliders"></i>',
-            # ),
+            MenuCommon(
+                name='Inventory Adjustment',
+                code='menu_inventory_adjustment_list',
+                view_name='InventoryAdjustmentList',
+                icon='<i class="bi bi-sliders"></i>',
+            ),
         ],
     )
 

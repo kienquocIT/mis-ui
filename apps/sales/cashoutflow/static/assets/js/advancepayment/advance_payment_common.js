@@ -851,6 +851,7 @@ function LoadDetailAP(option) {
                 APLoadBeneficiary(data.beneficiary);
 
                 if (Object.keys(data?.['supplier']).length !== 0) {
+                    APLoadSupplier(data?.['supplier'])
                     InforSpanSupplier(data?.['supplier']);
                     LoadBankAccount(data?.['supplier']?.['bank_accounts_mapped']);
                 }
@@ -1054,7 +1055,8 @@ class AdvancePaymentHandle {
             }
         }
         else {
-            delete frm.dataForm['sale_code']
+            $.fn.notifyB({description: 'Sale code must not be NULL'}, 'failure');
+            return false;
         }
 
         return {

@@ -137,20 +137,22 @@
                 <div class="col-1 text-right"><button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button></div>
             </div>
             <div class="offcanvas-body">
-                <table class="table nowrap w-100" id="table-select-products">
-                    <thead>
-                    <th class="w-10">
-                        <span class="form-check">
-                            <input type="checkbox" class="form-check-input" id="selected_all_product" data-warehouse-id="eaa85067-2e41-4a1f-b1ff-2f71d9ccc0d6" data-product-id="7fd70eae-f3c4-4fc8-8bf4-5e64f330127a" autocomplete="off">
-                            <label class="form-check-label"></label>
-                        </span>
-                    </th>
-                    <th class="w-30">{% trans 'Warehouse' %}</th>
-                    <th class="w-20">{% trans 'Code' %}</th>
-                    <th class="w-40">{% trans 'Product' %}</th>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+                <div data-simplebar class="h-50 overflow-y-scroll">
+                    <table class="table nowrap w-100" id="table-select-products">
+                        <thead>
+                        <th class="w-10">
+                            <span class="form-check">
+                                <input type="checkbox" class="form-check-input" id="selected_all_product" data-warehouse-id="eaa85067-2e41-4a1f-b1ff-2f71d9ccc0d6" data-product-id="7fd70eae-f3c4-4fc8-8bf4-5e64f330127a" autocomplete="off">
+                                <label class="form-check-label"></label>
+                            </span>
+                        </th>
+                        <th class="w-30">{% trans 'Warehouse' %}</th>
+                        <th class="w-20">{% trans 'Code' %}</th>
+                        <th class="w-40">{% trans 'Product' %}</th>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </form>

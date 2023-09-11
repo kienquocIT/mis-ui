@@ -17,6 +17,7 @@ addRowLineDetailBtn.on('click', async function () {
         $.fn.notifyB({description: 'Please select at least 1 warehouse'}, 'warning');
     }
     else {
+        selectAllProductBtn.prop('checked', false);
         LoadTableSelectProduct(warehouseSelectBox.val());
     }
 })

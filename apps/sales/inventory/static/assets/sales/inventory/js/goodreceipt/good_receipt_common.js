@@ -391,6 +391,15 @@ class GRLoadDataHandle {
             }
             GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked').closest('tr').querySelector('.table-row-import').value = String(valueWHNew);
         }
+        if (!GRDataTableHandle.tableSerial[0].querySelector('.dataTables_empty')) {
+            let valueWHNew = 0;
+            for (let eleSerialNumber of GRDataTableHandle.tableSerial[0].querySelectorAll('.table-row-serial-number')) {
+                if (eleSerialNumber.value !== '') {
+                    valueWHNew++;
+                }
+            }
+            GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked').closest('tr').querySelector('.table-row-import').value = String(valueWHNew);
+        }
         let valuePRNew = 0;
         for (let eleImport of GRDataTableHandle.tableWH[0].querySelectorAll('.table-row-import')) {
             valuePRNew += parseFloat(eleImport.value);
@@ -1064,7 +1073,7 @@ class GRDataTableHandle {
                     targets: 1,
                     render: (data, type, row) => {
                         return `<div class="row">
-                                    <input type="text" class="form-control table-row-import" value="${row?.['quantity_import'] ? row?.['quantity_import'] : ''}">
+                                    <input type="text" class="form-control table-row-import validated-number" value="${row?.['quantity_import'] ? row?.['quantity_import'] : ''}" required>
                                 </div>`;
                     }
                 },
@@ -1110,7 +1119,7 @@ class GRDataTableHandle {
                     targets: 1,
                     render: (data, type, row) => {
                         return `<div class="row">
-                                    <input type="text" class="form-control table-row-serial-number" value="${row?.['serial_number'] ? row?.['serial_number'] : ''}">
+                                    <input type="text" class="form-control table-row-serial-number" value="${row?.['serial_number'] ? row?.['serial_number'] : ''}" required>
                                 </div>`;
                     }
                 },
@@ -1227,9 +1236,16 @@ class GRDataTableHandle {
                 {
                     targets: 4,
                     render: (data, type, row) => {
-                        return `<div class="row">
-                                    <input type="text" class="form-control table-row-quantity validated-number" value="${row.product_quantity}" required>
-                                </div>`;
+                        if (!GRLoadDataHandle.POSelectEle.val()) {
+                            return `<div class="row">
+                                        <input type="text" class="form-control table-row-import validated-number" value="${row.quantity_import}" required>
+                                    </div>`;
+                        } else {
+                            return `<div class="row">
+                                        <input type="text" class="form-control table-row-import validated-number" value="${row.quantity_import}" required disabled>
+                                    </div>`;
+                        }
+
                     }
                 },
                 {
@@ -1362,7 +1378,7 @@ class GRCalculateHandle {
         if (elePrice) {
             price = $(elePrice).valCurrency();
         }
-        let eleQuantity = row.querySelector('.table-row-quantity');
+        let eleQuantity = row.querySelector('.table-row-import');
         if (eleQuantity) {
             if (eleQuantity.value) {
                 quantity = parseFloat(eleQuantity.value)

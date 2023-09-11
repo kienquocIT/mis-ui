@@ -159,6 +159,14 @@ $(function () {
             }
         });
 
+        btnAddLot.on('click', function() {
+            GRLoadDataHandle.loadAddRowLot();
+        });
+
+        GRDataTableHandle.tableLot.on('change', '.table-row-import', function() {
+            GRLoadDataHandle.loadQuantityImport();
+        });
+
         btnSerial.on('click', function () {
             if (GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked')) {
                 GRLoadDataHandle.loadAreaLotSerial(false, true);
@@ -186,10 +194,15 @@ $(function () {
                             delete dataWHChecked[key];
                         }
                     }
+                    row.querySelector('.table-row-checkbox').setAttribute('data-row', JSON.stringify(dataWHChecked));
                 }
             }
             $('#scroll-table-lot-serial')[0].setAttribute('hidden', 'true');
             $('#btn-lot-serial-area')[0].removeAttribute('hidden');
+        });
+
+        GRDataTableHandle.tableSerial.on('change', '.table-row-serial-number', function() {
+            GRLoadDataHandle.loadQuantityImport();
         });
 
         GRDataTableHandle.tableLineDetail.on('change', '.table-row-price, .table-row-tax', function() {
@@ -202,13 +215,18 @@ $(function () {
             $(this).toggleClass('fa-angle-double-up fa-angle-double-down');
         });
 
-        btnAddLot.on('click', function() {
-            GRLoadDataHandle.loadAddRowLot();
+        $('#productModalCenter').on('change', '.validated-number', function () {
+            let value = this.value;
+            // Replace non-digit characters with an empty string
+            value = value.replace(/[^0-9.]/g, '');
+            // Remove unnecessary zeros from the integer part
+            value = value.replace("-", "").replace(/^0+(?=\d)/, '');
+            // Update value of input
+            this.value = value;
         });
 
-        GRDataTableHandle.tableLot.on('change', '.table-row-import', function() {
-            GRLoadDataHandle.loadQuantityImport();
-        });
+
+
 
 
 

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static i18n %}
 {% block cssHeader %}
-    <link href="{% static 'assets/sales/inventory/css/goodreceipt/good_receipt_create.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'assets/sales/inventory/css/goodreceipt/goods_receipt_create.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
@@ -19,7 +19,7 @@
 {% block pageContent %}
     <form
             data-url=""
-            data-url-redirect="{% url 'GoodReceiptList' %}"
+            data-url-redirect="{% url 'GoodsReceiptList' %}"
             data-method="POST"
             id="frm_good_receipt_create"
             method="post"
@@ -48,7 +48,7 @@
                             <div class="input-group">
                                 <span class="input-affix-wrapper">
                                     <span class="input-prefix">
-                                        <i class="fas fa-box-open text-brown"></i>
+                                        <i class="fas fa-boxes text-brown"></i>
                                     </span>
                                     <select
                                         class="form-select"
@@ -310,6 +310,10 @@
                                         data-bs-target="#productModalCenter"
                                     >
                                         <span><span class="icon"><span class="feather-icon"><i class="far fa-edit"></i></span></span><span>{% trans 'Edit' %} {% trans 'Product' %}</span></span>
+                                    </button>
+
+                                    <button type="button" class="btn btn-link btn-animated" id="btn-add-product-good-receipt" hidden>
+                                        <span><span class="icon"><span class="feather-icon"><i class="fa-regular fa-square-plus"></i></span></span><span>{% trans 'Add Product' %}</span></span>
                                     </button>
                                 </div>
                                 <div class="col-10"></div>
@@ -613,6 +617,6 @@
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
 
-    <script src="{% static 'assets/sales/inventory/js/goodreceipt/good_receipt_common.js' %}"></script>
-    <script src="{% static 'assets/sales/inventory/js/goodreceipt/good_receipt_create.js' %}"></script>
+    <script src="{% static 'assets/sales/inventory/js/goodreceipt/goods_receipt_common.js' %}"></script>
+    <script src="{% static 'assets/sales/inventory/js/goodreceipt/goods_receipt_create.js' %}"></script>
 {% endblock %}

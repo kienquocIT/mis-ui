@@ -6,8 +6,8 @@ from apps.sales.inventory.views import (
 
 urlpatterns = [
     # good receipt
-    path('good-receipt/list', GoodReceiptList.as_view(), name='GoodReceiptList'),
-    path('good-receipt/create', GoodReceiptCreate.as_view(), name='GoodReceiptCreate'),
+    path('goods-receipt/list', GoodsReceiptList.as_view(), name='GoodsReceiptList'),
+    path('goods-receipt/create', GoodsReceiptCreate.as_view(), name='GoodsReceiptCreate'),
     # inventory adjustment
     path('inventory-adjustment/list', InventoryAdjustmentList.as_view(), name='InventoryAdjustmentList'),
     path('inventory-adjustment/create', InventoryAdjustmentCreate.as_view(), name='InventoryAdjustmentCreate'),

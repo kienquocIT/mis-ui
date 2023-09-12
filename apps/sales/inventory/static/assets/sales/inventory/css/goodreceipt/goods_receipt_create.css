@@ -69,7 +69,8 @@
 }
 
 .modal-xlg-custom {
-    max-width: 1380px;
+    max-width: 1680px;
+    margin-left: 100px;
 }
 
 .inline-elements {

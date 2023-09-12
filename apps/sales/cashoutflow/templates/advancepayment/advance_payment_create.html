@@ -260,21 +260,19 @@
             <div class="tab-pane fade show active mb-25" id="tab_line_detail">
                 <div class="row">
                     <table id="tab_line_detail_datatable" class="table nowrap w-100"
-                           data-url-product-list="{% url 'ProductListAPI' %}"
-                           data-url-uom-list="{% url 'UnitOfMeasureListAPI' %}"
-                           data-url-tax-list="{% url 'TaxListAPI' %}"
-                           data-url-unit-price-list="{% url 'ProductDetailAPI' '0' %}">
+                           data-url-expense-type-list="{% url 'ExpenseItemListAPI' %}"
+                           data-url-tax-list="{% url 'TaxListAPI' %}">
                         <thead>
                         <tr>
                             <th class="text-center" style="width: 2%"></th>
-                            <th class="required" style="width: 18%">{% trans 'Product items' %}</th>
-                            <th style="width: 12%">{% trans 'Type' %}</th>
+                            <th class="required" style="width: 18%">{% trans 'Expense name' %}</th>
+                            <th class="required" style="width: 12%">{% trans 'Type' %}</th>
                             <th class="required" style="width: 7%">{% trans 'UoM' %}</th>
                             <th class="required" style="width: 6%">{% trans 'Quantity' %}</th>
                             <th class="required" style="width: 14%">{% trans 'Unit price' %}</th>
                             <th style="width: 10%">{% trans 'Tax' %}</th>
-                            <th style="width: 14%">{% trans 'Subtotal price' %}</th>
-                            <th style="width: 14%">{% trans 'After tax subtotal' %}</th>
+                            <th class="required" style="width: 14%">{% trans 'Subtotal price' %}</th>
+                            <th class="required" style="width: 14%">{% trans 'After tax subtotal' %}</th>
                             <th style="width: 1%"></th>
                         </tr>
                         </thead>

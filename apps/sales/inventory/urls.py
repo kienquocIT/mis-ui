@@ -1,13 +1,14 @@
 from django.urls import path
 
-from apps.sales.inventory.views import GoodsReceiptList, GoodsReceiptCreate
+from apps.sales.inventory.views import (
+    GoodsReceiptList, GoodsReceiptCreate, InventoryAdjustmentList, InventoryAdjustmentCreate
+)
 
 urlpatterns = [
     # good receipt
     path('goods-receipt/list', GoodsReceiptList.as_view(), name='GoodsReceiptList'),
-    # path('purchase-order/api/lists', PurchaseOrderListAPI.as_view(), name='PurchaseOrderListAPI'),
     path('goods-receipt/create', GoodsReceiptCreate.as_view(), name='GoodsReceiptCreate'),
-    # path('purchase-order/detail/<str:pk>', PurchaseOrderDetail.as_view(), name='PurchaseOrderDetail'),
-    # path('purchase-order/detail-api/<str:pk>', PurchaseOrderDetailAPI.as_view(), name='PurchaseOrderDetailAPI'),
-    # path('purchase-order/update/<str:pk>', PurchaseOrderUpdate.as_view(), name='PurchaseOrderUpdate'),
+    # inventory adjustment
+    path('inventory-adjustment/list', InventoryAdjustmentList.as_view(), name='InventoryAdjustmentList'),
+    path('inventory-adjustment/create', InventoryAdjustmentCreate.as_view(), name='InventoryAdjustmentCreate'),
 ]

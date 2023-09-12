@@ -39,39 +39,7 @@
                     </div>
                     <div class="row form-group">
                         <label id="sale-code-label-id" class="col-3 col-form-label required">{% trans "Sale/Purchase code" %}</label>
-                        <div class="col-2">
-                            <button style="width: 100%" id="btn-change-sale-code-type" type="button" aria-expanded="false"
-                                    data-bs-toggle="dropdown" class="btn btn-outline-light dropdown-toggle">Sale</button>
-                            <div role="menu" class="dropdown-menu" style="min-width: 150%; width: 150%">
-                                <div class="row ml-3">
-                                    <div class="row">
-                                        <div class="form-check">
-                                            <input type="radio" id="radio-non-sale" name="sale_code_type" value="2" class="col-2 form-check-input sale_code_type" disabled>
-                                            <label class="form-check-label col-10" for="radio-non-sale">{% trans 'Non-sale' %}</label>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="form-check">
-                                            <input type="radio" id="radio-sale" name="sale_code_type" value="0" class="col-2 form-check-input sale_code_type" checked>
-                                            <label class="form-check-label col-10" for="radio-sale">{% trans 'Sale' %}</label>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="form-check">
-                                            <input type="radio" id="radio-purchase" name="sale_code_type" value="1" class="col-2 form-check-input sale_code_type" disabled>
-                                            <label class="form-check-label col-10" for="radio-purchase">{% trans 'Purchase' %}</label>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="form-check">
-                                            <input type="radio" id="radio-special" name="sale_code_type" value="3" class="col-2 form-check-input sale_code_type">
-                                            <label class="form-check-label col-10" for="radio-special">{% trans 'MULTI' %}</label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-7">
+                        <div class="col-9">
                             <select id="sale-code-select-box" class="select2"
                                     data-url-opp="{% url 'OpportunityListAPI' %}"
                                     data-url-quotation="{% url 'QuotationListAPI' %}"
@@ -120,7 +88,7 @@
                     <div class="row form-group">
                         <label class="col-3 col-form-label required" id="supplier-label">{% trans "Method" %}</label>
                         <div class="col-9">
-                            <select class="form-select">
+                            <select class="form-select" id="ap-method">
                                 <option selected></option>
                                 <option value="0">{% trans "Cash" %}</option>
                                 <option value="1">{% trans "Bank transfer" %}</option>
@@ -238,20 +206,19 @@
             <div class="tab-pane fade show active mb-25" id="tab_line_detail">
                 <div class="row">
                     <table id="tab_line_detail_datatable" class="table nowrap w-100"
-                           data-url-uom-list="{% url 'UnitOfMeasureListAPI' %}"
-                           data-url-tax-list="{% url 'TaxListAPI' %}"
-                           data-url-unit-price-list="{% url 'ProductDetailAPI' '0' %}">
+                           data-url-expense-type-list="{% url 'ExpenseItemListAPI' %}"
+                           data-url-tax-list="{% url 'TaxListAPI' %}">
                         <thead>
                         <tr>
                             <th class="text-center" style="width: 2%"></th>
-                            <th class="required" style="width: 17%">{% trans 'Product items' %}</th>
-                            <th style="width: 11%">{% trans 'Type' %}</th>
+                            <th class="required" style="width: 14%">{% trans 'Expense item' %}</th>
+                            <th style="width: 14%">{% trans 'Description' %}</th>
                             <th class="required" style="width: 7%">{% trans 'UoM' %}</th>
                             <th class="required" style="width: 6%">{% trans 'Quantity' %}</th>
                             <th class="required" style="width: 13%">{% trans 'Unit price' %}</th>
                             <th style="width: 8%">{% trans 'Tax' %}</th>
-                            <th style="width: 13%">{% trans 'Subtotal price' %}</th>
-                            <th style="width: 13%">{% trans 'After tax subtotal' %}</th>
+                            <th class="required" style="width: 13%">{% trans 'Subtotal price' %}</th>
+                            <th class="required" style="width: 13%">{% trans 'After tax subtotal' %}</th>
                             <th class="required" style="width: 9%">{% trans 'Document number' %}</th>
                             <th style="width: 1%"></th>
                         </tr>
@@ -287,19 +254,19 @@
                                     </table>
                                 </div>
                                 <h1></h1>
-                                <div data-simplebar class="nicescroll-bar">
-                                    <div data-simplebar class="product-tables nicescroll-bar"></div>
-                                </div>
+                                <div data-simplebar class="product-tables h-100 overflow-y-scroll"></div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-2">
-                        <button type="button" class="btn btn-link btn-animated" id="btn-add-row-line-detail">
-                            <span><span class="icon">
-                                <span class="feather-icon"><i class="bi bi-plus-circle"></i></span></span>
+                    <div class="col-8">
+                        <button id="btn-add-row-line-detail" class="disabled btn btn-soft-primary w-20" type="button" data-bs-toggle="modal" data-bs-target="#modal-shipping-address">
+                            <span>
                                 <span>{% trans "Add new row" %}</span>
+                                <span class="icon">
+                                    <i class="fas fa-plus-circle"></i>
+                                </span>
                             </span>
                         </button>
                     </div>
@@ -338,7 +305,7 @@
             </div>
             <div class="tab-pane fade" id="tab_bank_info">
                 <div class="row">
-                    <div class="row" id="list-bank-account-information">
+                    <div class="row">
                         <div class="row">
                             <div class="col-12">
                                 <div id="notify-none-bank-account" class="alert alert-secondary" role="alert">
@@ -348,6 +315,7 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row" id="list-bank-account-information"></div>
                 </div>
             </div>
             <div class="tab-pane fade" id="tab_attachment">
@@ -367,6 +335,6 @@
     <script src="{% static 'vendors/dropify/dist/js/dropify.min.js' %}"></script>
     <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>
     <script src="{% static 'vendors/jquery-steps/build/jquery.steps.min.js' %}" type="text/javascript"></script>
-    <script src="{% static "assets/js/payment/payment_create_common.js" %}"></script>
-    <script src="{% static "assets/js/payment/payment_create_main.js" %}"></script>
+    <script src="{% static "assets/js/payment/payment_common.js" %}"></script>
+    <script src="{% static "assets/js/payment/payment_create.js" %}"></script>
 {% endblock %}

@@ -100,18 +100,20 @@ class QuotationLoadDataHandle {
                     let btnCopy = document.getElementById('btn-copy-quotation');
                     let eleTooltipBtnCopy = document.getElementById('tooltip-btn-copy');
                     btnCopy.setAttribute('disabled', 'true');
-                    eleTooltipBtnCopy.removeAttribute('data-bs-original-title');
-                    eleTooltipBtnCopy.setAttribute('data-bs-placement', 'top');
-                    let titleText = '';
-                    if (dataOpp.is_close_lost === true || dataOpp.is_deal_close === true) {
-                        titleText += $.fn.transEle.attr('data-opp-closed');
-                        titleText += ',';
+                    if (eleTooltipBtnCopy) {
+                        eleTooltipBtnCopy.removeAttribute('data-bs-original-title');
+                        eleTooltipBtnCopy.setAttribute('data-bs-placement', 'top');
+                        let titleText = '';
+                        if (dataOpp.is_close_lost === true || dataOpp.is_deal_close === true) {
+                            titleText += $.fn.transEle.attr('data-opp-closed');
+                            titleText += ',';
+                        }
+                        if (dataOpp.sale_order_id !== null) {
+                            titleText += $.fn.transEle.attr('data-opp-had-sale-order');
+                            titleText += ',';
+                        }
+                        eleTooltipBtnCopy.setAttribute('title', titleText);
                     }
-                    if (dataOpp.sale_order_id !== null) {
-                        titleText += $.fn.transEle.attr('data-opp-had-sale-order');
-                        titleText += ',';
-                    }
-                    eleTooltipBtnCopy.setAttribute('title', titleText);
                 }
             }
         }
@@ -741,9 +743,11 @@ class QuotationLoadDataHandle {
                 let btnCopy = document.getElementById('btn-copy-quotation');
                 let eleTooltipBtnCopy = document.getElementById('tooltip-btn-copy');
                 btnCopy.setAttribute('disabled', 'true');
-                eleTooltipBtnCopy.removeAttribute('data-bs-original-title');
-                eleTooltipBtnCopy.setAttribute('data-bs-placement', 'top');
-                eleTooltipBtnCopy.setAttribute('title', $.fn.transEle.attr('data-not-allow-use'));
+                if (eleTooltipBtnCopy) {
+                    eleTooltipBtnCopy.removeAttribute('data-bs-original-title');
+                    eleTooltipBtnCopy.setAttribute('data-bs-placement', 'top');
+                    eleTooltipBtnCopy.setAttribute('title', $.fn.transEle.attr('data-not-allow-use'));
+                }
             }
         }
         if (is_copy === true) {
@@ -1713,7 +1717,7 @@ class QuotationDataTableHandle {
         let $tables = $('#datable-quotation-create-promotion');
         $tables.DataTableDefault({
             data: data ? data : [],
-            searching: false,
+            // searching: false,
             paging: false,
             ordering: false,
             info: false,
@@ -1919,7 +1923,7 @@ class QuotationDataTableHandle {
         let $tables = $('#datable-quotation-create-shipping');
         $tables.DataTableDefault({
             data: data ? data : [],
-            searching: false,
+            // searching: false,
             paging: false,
             ordering: false,
             info: false,

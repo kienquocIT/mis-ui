@@ -16,7 +16,7 @@ $(function () {
                     $('#delivery_date').val(data_detail.delivered_date.split(' ')[0]);
                     $('#note').val(data_detail.note);
 
-                    $('#table-purchase-quotation-request-products-selected').DataTable().destroy();
+                    $('#table-purchase-quotation-request-products-selected').DataTable().clear().destroy();
                     $('#table-purchase-quotation-request-products-selected').DataTableDefault({
                         reloadCurrency: true,
                         paging: false,
@@ -105,7 +105,7 @@ $(function () {
                     $('#delivery_date').val(data_detail.delivered_date.split(' ')[0]);
                     $('#note').val(data_detail.note);
 
-                    $('#table-purchase-quotation-request-products-selected').DataTable().destroy();
+                    $('#table-purchase-quotation-request-products-selected').DataTable().clear().destroy();
                     $('#table-purchase-quotation-request-products-selected').DataTableDefault({
                         reloadCurrency: true,
                         paging: false,

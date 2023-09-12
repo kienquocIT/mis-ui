@@ -150,8 +150,9 @@ $(function () {
                                     }, 1000);
                                 }
                             },
-                            () => {
+                            (err) => {
                                 WindowControl.hideLoading();
+                                $.fn.notifyB({"description": err?.data?.errors, "timeout": 3500}, 'failure')
                             }
                         )
                     })

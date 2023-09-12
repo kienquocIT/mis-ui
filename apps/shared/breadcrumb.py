@@ -208,6 +208,12 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
         _('Sale Process'), 'SaleProcess'
     )
 
+    # Expense item
+
+    EXPENSE_ITEM_LIST_PAGE = BreadcrumbChildren(
+        _('Expense List'), 'ExpenseItemList'
+    )
+
 
 class BreadcrumbView:
     """menu vertical item view"""
@@ -565,4 +571,9 @@ class BreadcrumbView:
     # process
     SALE_PROCESS_PAGE = [
         BreadcrumbItem.SALE_PROCESS_PAGE
+    ]
+
+    # expense item
+    EXPENSE_ITEM_LIST_PAGE = [
+        BreadcrumbItem.EXPENSE_ITEM_LIST_PAGE
     ]

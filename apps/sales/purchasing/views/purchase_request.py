@@ -82,3 +82,13 @@ class PurchaseRequestProductListAPI(APIView):
         data = request.query_params.dict()
         resp = ServerAPI(request=request, user=request.user, url=ApiURL.PURCHASE_REQUEST_PRODUCT_LIST).get(data)
         return resp.auto_return(key_success='purchase_request_product_list')
+
+
+class PurchaseRequestListForPQRAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.PURCHASE_REQUEST_LIST_FOR_PQR).get()
+        return resp.auto_return(key_success='purchase_request_list')

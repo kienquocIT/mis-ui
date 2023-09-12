@@ -1,5 +1,7 @@
 $(document).ready(async function () {
-    await LoadDetailProduct('update');
+    await new ProductHandle().load();
+
+    LoadDetailProduct('update');
 
     let pk = $.fn.getPkDetail()
     $('#form-update-product').submit(function (event) {

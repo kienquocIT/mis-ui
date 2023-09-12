@@ -75,13 +75,16 @@ class AssignToSetup {
                             {
                                 "id": "",
                                 "full_name": "",
-                                "selected": !userSelect.hasOwnProperty('id')
+                                "selected": true
                             }
                         ]
                         let checkDup = false
                         for (const item of data.opportunity.opportunity_sale_team_datas){
                             let temp = false
-                            if (userSelect.hasOwnProperty('id') && userSelect.id === item?.member.id) temp = true
+                            if (userSelect.hasOwnProperty('id') && userSelect.id === item?.member.id){
+                                temp = true
+                                selectOpt[0].selected = false
+                            }
                             selectOpt.push({
                                 'id': item?.member?.id,
                                 "full_name": item?.member?.name,
@@ -92,8 +95,10 @@ class AssignToSetup {
                         // add user inherit in list user assign
                         if (!checkDup){
                             let temp = false
-                            if (userSelect.hasOwnProperty('id') && userSelect.id === data.opportunity.sale_person.id)
+                            if (userSelect.hasOwnProperty('id') && userSelect.id === data.opportunity.sale_person.id){
                                 temp = true
+                                selectOpt[0].selected = false
+                            }
                             selectOpt.push({
                                 "id": data.opportunity.sale_person.id,
                                 "full_name": data.opportunity.sale_person.full_name,

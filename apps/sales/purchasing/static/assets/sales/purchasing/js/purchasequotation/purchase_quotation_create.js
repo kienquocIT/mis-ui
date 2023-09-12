@@ -157,21 +157,40 @@ $(function () {
             })
 
             $('#row-' + row_count + ' .product-select-box').on('change', function () {
-                let parent_tr = $(this).closest('tr');
-                parent_tr.find('.product-type').val($(this).find('option:selected').attr('data-type'));
-                parent_tr.find('.product-tax-select-box').val($(this).find('option:selected').attr('data-tax-id'));
+                let current_value = $(this).val();
+                let current_row = $(this).closest('tr').find('.number').text();
+                let flag = true;
+                $('#table-purchase-quotation-products-selected tbody tr').each(function () {
+                    let temp_value = $(this).find('.product-select-box option:selected').attr('value');
+                    let temp_row = $(this).closest('tr').find('.number').text();
+                    if (temp_value === current_value && temp_row !== current_row) {
+                        $.fn.notifyB({description: "Can not select selected item"}, 'failure');
+                        flag = false;
+                        return false;
+                    }
+                })
 
-                $('#' + parent_tr.attr('id') + ' .product-unit-price-select-box').attr('value', '');
-                $('#' + parent_tr.attr('id') + ' .product-quantity').val(1);
-                $('#' + parent_tr.attr('id') + ' .product-subtotal-price').attr('value', '');
-                $('#' + parent_tr.attr('id') + ' .product-subtotal-price-after-tax').attr('value', '');
-                calculate_price($('#table-purchase-quotation-products-selected tbody tr'));
+                if (flag) {
+                    let parent_tr = $(this).closest('tr');
+                    parent_tr.find('.product-type').val($(this).find('option:selected').attr('data-type'));
+                    parent_tr.find('.product-tax-select-box').val($(this).find('option:selected').attr('data-tax-id'));
 
-                if ($(this).find('option:selected').val() !== '') {
-                    loadProductUomList(parent_tr.attr('id'), $(this).find('option:selected').attr('data-uom-group-id'));
-                } else {
-                    $('#' + parent_tr.attr('id') + ' .product-uom-select-box').empty();
-                    $('#' + parent_tr.attr('id') + ' .dropdown-menu').html('');
+                    $('#' + parent_tr.attr('id') + ' .product-unit-price-select-box').attr('value', '');
+                    $('#' + parent_tr.attr('id') + ' .product-quantity').val(1);
+                    $('#' + parent_tr.attr('id') + ' .product-subtotal-price').attr('value', '');
+                    $('#' + parent_tr.attr('id') + ' .product-subtotal-price-after-tax').attr('value', '');
+                    calculate_price($('#table-purchase-quotation-products-selected tbody tr'));
+
+                    if ($(this).find('option:selected').val() !== '') {
+                        loadProductUomList(parent_tr.attr('id'), $(this).find('option:selected').attr('data-uom-group-id'));
+                    } else {
+                        $('#' + parent_tr.attr('id') + ' .product-uom-select-box').empty();
+                        $('#' + parent_tr.attr('id') + ' .dropdown-menu').html('');
+                    }
+                }
+                else {
+                    loadProductList('row-' + row_count.toString());
+                    loadProductTaxList('row-' + row_count.toString());
                 }
             })
         });
@@ -198,10 +217,10 @@ $(function () {
             product_list.map(function (item) {
                 if (item.product_choice.includes(2)) {
                     let tax_code_id = '';
-                    if (item.sale_information.tax_code) {
-                        tax_code_id = item.sale_information.tax_code.id;
+                    if (item.sale_tax) {
+                        tax_code_id = item.sale_tax.id;
                     }
-                    ele.append(`<option data-uom-group-id="` + item.general_information.uom_group.id + `" data-type="` + item.general_information.product_type.title + `" data-tax-id="` + tax_code_id + `" value="` + item.id + `">` + item.title + `</option>`);
+                    ele.append(`<option data-uom-group-id="` + item.general_uom_group.id + `" data-type="` + item.general_product_type.title + `" data-tax-id="` + tax_code_id + `" value="` + item.id + `">` + item.title + `</option>`);
                 }
             })
         }
@@ -372,17 +391,20 @@ $(function () {
 
             frm.dataForm['products_selected'] = []
             $('#table-purchase-quotation-products-selected tbody tr').each(function (index, element) {
-                frm.dataForm['products_selected'].push(
-                    {
-                        'product_id': $(this).find('.product-select-box option:selected').attr('value'),
-                        'product_description': $(this).find('.product-description').val(),
-                        'product_uom_id': $(this).find('.product-uom-select-box option:selected').attr('value'),
-                        'product_quantity': $(this).find('.product-quantity').attr('value'),
-                        'product_unit_price': $(this).find('.pr-unit-price-input').attr('value'),
-                        'product_taxes': $(this).find('.product-tax-select-box option:selected').attr('value'),
-                        'product_subtotal_price': $(this).find('.pr-subtotal-price-input').attr('data-init-money'),
-                    }
-                )
+                if ($(this).find('.product-select-box option:selected').attr('value') !== '') {
+                    frm.dataForm['products_selected'].push(
+                        {
+                            'product_id': $(this).find('.product-select-box option:selected').attr('value'),
+                            'product_description': $(this).find('.product-description').val(),
+                            'product_uom_id': $(this).find('.product-uom-select-box option:selected').attr('value'),
+                            'product_quantity': $(this).find('.product-quantity').attr('value'),
+                            'product_unit_price': $(this).find('.pr-unit-price-input').attr('value'),
+                            'product_taxes': $(this).find('.product-tax-select-box option:selected').attr('value'),
+                            'product_subtotal_price': $(this).find('.pr-subtotal-price-input').attr('data-init-money'),
+                        }
+                    )
+                }
+
             })
 
             frm.dataForm['pretax_price'] = $('#pretax-value').attr('data-init-money');

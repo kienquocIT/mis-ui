@@ -4050,3 +4050,91 @@ msgstr "Một số ứng dụng phụ thuộc đang mở"
 #
 msgid "Depend on apps"
 msgstr "Một số ứng dụng phụ thuộc"
+
+#
+msgid "has not been created for Opportunity"
+msgstr "chưa được tạo cho cơ hội kinh doanh"
+
+#
+msgid "Auto Update Stage"
+msgstr "Tự động cập nhật giai đoạn"
+
+#
+msgid "Create Related Feature"
+msgstr "Tạo các chức năng liên quan"
+
+#
+msgid "View Related Feature"
+msgstr "Xem các chức năng liên quan"
+
+#
+msgid "Price In"
+msgstr "Giá tính bằng"
+
+#
+msgid "price list does not allow configuration."
+msgstr "Bảng giá không được cho phép cấu hình"
+
+#
+msgid "Get item from"
+msgstr "Lấy sản phẩm (chi phí) từ"
+
+#
+msgid "Save Setting"
+msgstr "Lưu cài đặt"
+
+#
+msgid "Save Item Price"
+msgstr "Lưu giá của sản phẩm (chi phí)"
+
+#
+msgid "Delete this item ?"
+msgstr "Xóa mục này ?"
+
+#
+msgid "Can not delete this item!"
+msgstr "Không thể xóa mục này"
+
+#
+msgid "You can update can delete in tab setting"
+msgstr "Bạn có thể cập nhật có thể xóa ở mục cài đặt"
+
+#
+msgid "Delivered Date"
+msgstr "Hạn giao hàng"
+
+#
+msgid "Purchase Status"
+msgstr "Trạng thái mua"
+
+#
+msgid "Request For"
+msgstr "Yêu cầu cho"
+
+#
+msgid "Request"
+msgstr "Yêu cầu"
+
+#
+msgid "Note"
+msgstr "Chú ý"
+
+#
+msgid "Purchase Request"
+msgstr "Yêu cầu mua hàng"
+
+#
+msgid "Order Code"
+msgstr "Mã bán hàng"
+
+#
+msgid "Supplier Name"
+msgstr "Tên nhà cung cấp"
+
+#
+msgid "Owner Name"
+msgstr "Tên quản lý"
+
+#
+msgid "Contact Name"
+msgstr "Tên liên hệ"

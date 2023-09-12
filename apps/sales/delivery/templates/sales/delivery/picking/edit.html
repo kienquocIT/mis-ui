@@ -141,7 +141,8 @@
                     <tr>
                         <th>#</th>
                         <th>{% trans 'Product' %}
-                            <i class="fas fa-info-circle icon-info"
+
+                            <i class="fas fa-info-circle icon-info tit_visible_tb-head"
                                data-bs-toggle="tooltip"
                                data-bs-placement="bottom"
                                title="{% trans 'Press row here to open detail page.' %}"></i>
@@ -155,8 +156,10 @@
                                 <span class="mr-4">
                                     {% trans 'Done' %}
                                 </span>
-                                <span class="mr-2">{% trans 'All' %}</span>
-                                <input type="checkbox" id="idxDoneAll"/>
+                                <div class="tit_visible_tb-head">
+                                    <span class="mr-2">{% trans 'All' %}</span>
+                                    <input type="checkbox" id="idxDoneAll"/>
+                                </div>
                             </div>
                         </th>
                     </tr>
@@ -176,7 +179,9 @@
            data-error-warehouse="{% trans 'Warehouse is required!' %}"
            data-outstock="{% trans 'Product in Warehouse out of stock' %}"
            data-warehouse="{% trans 'Warehouse' %}"
-           data-stock="{% trans 'Available in Store place' %}"
+           data-stock="{% trans 'Stock' %}"
+           data-store="{% trans 'Store place' %}"
+           data-picking-area="{% trans 'Picking area' %}"
            data-view-detail="{% trans 'View detail' %}"
     >
     <input type="hidden" id="url-factory"

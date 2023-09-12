@@ -162,7 +162,7 @@
                         <div class="row text-right">
                             <div class="col-6 text-left">
                                 <button type="button" class="btn btn-xs btn-primary ml-1"
-                                   id="btn-auto-update-stage">
+                                        id="btn-auto-update-stage">
                                     <i class="fa-solid fa-arrow-rotate-right"></i>
                                     {% trans "Auto Update Stage" %}
                                 </button>
@@ -231,8 +231,10 @@
                                             </div>
                                         </div>
                                         <div class="dropdown">
-                                            <button type="button" class="btn btn-primary btn-xs ml-2" data-bs-toggle="dropdown"><i
-                                                    class="fa-solid fa-arrows-spin"></i> {% trans 'Create Related Feature' %}</button>
+                                            <button type="button" class="btn btn-primary btn-xs ml-2"
+                                                    data-bs-toggle="dropdown"><i
+                                                    class="fa-solid fa-arrows-spin"></i> {% trans 'Create Related Feature' %}
+                                            </button>
                                             <div class="dropdown-menu">
                                                 <a class="dropdown-item btn-create-related-feature"
                                                    data-url="{% url 'QuotationCreate' %}"
@@ -253,10 +255,17 @@
                                         </div>
 
                                         <div class="dropdown">
-                                            <button type="button" class="btn btn-primary ml-2 btn-xs" data-bs-toggle="dropdown"><i class="bi bi-box-arrow-up-right"></i> {% trans 'View Related Feature' %}</button>
+                                            <button type="button" class="btn btn-primary ml-2 btn-xs"
+                                                    data-bs-toggle="dropdown"><i
+                                                    class="bi bi-box-arrow-up-right"></i> {% trans 'View Related Feature' %}
+                                            </button>
                                             <div class="dropdown-menu">
-                                                <a class="dropdown-item item-detail-related-feature" id="item-related-quotation" href="#" target="_blank">{% trans 'Quotation' %}</a>
-                                                <a class="dropdown-item item-detail-related-feature" id="item-related-sale-order" href="#" target="_blank">{% trans 'Sale Order' %}</a>
+                                                <a class="dropdown-item item-detail-related-feature"
+                                                   id="item-related-quotation" href="#"
+                                                   target="_blank">{% trans 'Quotation' %}</a>
+                                                <a class="dropdown-item item-detail-related-feature"
+                                                   id="item-related-sale-order" href="#"
+                                                   target="_blank">{% trans 'Sale Order' %}</a>
                                             </div>
                                         </div>
                                     </div>
@@ -617,6 +626,10 @@
                                                                 <a class="dropdown-item btn-detail-member"
                                                                    target="_blank"
                                                                    href="#">{% trans "View Detail" %}</a>
+                                                                <a class="dropdown-item btn-set-perm-member"
+                                                                   data-bs-toggle="modal"
+                                                                   data-bs-target="#modal-set-perm"
+                                                                   href="#">{% trans "Set Permission" %}</a>
                                                                 <a class="dropdown-item btn-remove-card"
                                                                    href="#">{% trans "Remove" %}</a>
                                                             </div>
@@ -659,7 +672,8 @@
                     </div>
                     <div class="modal-body">
                         <div class="table-responsive">
-                            <table class="table nowrap w-lg-750p" id="dtbMember" data-method="GET" data-url="{% url 'EmployeeListAPI' %}">
+                            <table class="table nowrap w-lg-750p" id="dtbMember" data-method="GET"
+                                   data-url="{% url 'EmployeeListAPI' %}">
                                 <thead>
                                 <tr>
                                     <th></th>
@@ -1228,6 +1242,29 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal set permission for team member -->
+    <div class="modal fade" id="modal-set-perm" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'Set Permission For Member' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true"></span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                    <button type="button" class="btn btn-primary">{% trans 'Save' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     {{ data.type_customer|json_script:'data_type_customer' }}
     {{ data.role_customer|json_script:'data_role_customer' }}
 {% endblock %}

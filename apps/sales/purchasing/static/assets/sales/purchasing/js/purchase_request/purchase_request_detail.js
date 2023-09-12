@@ -24,7 +24,6 @@ $(document).ready(function () {
 
                 if (detail.sale_order !== null) {
                     $('[name="sale_order"]').val(detail.sale_order.code);
-
                 }
 
                 let table_product = $('#datatable-pr-product').DataTable();

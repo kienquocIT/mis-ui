@@ -2,7 +2,7 @@ from django.views import View
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg
+from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg, PermCheck
 
 
 class PurchaseQuotationList(View):
@@ -12,6 +12,7 @@ class PurchaseQuotationList(View):
         template='sales/purchasing/purchasequotation/purchase_quotation_list.html',
         menu_active='id_menu_purchase_quotation_list',
         breadcrumb='PURCHASE_QUOTATION_LIST_PAGE',
+        perm_check=PermCheck(url=ApiURL.PURCHASE_QUOTATION_LIST, method='GET'),
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -46,6 +47,7 @@ class PurchaseQuotationCreate(View):
         template='sales/purchasing/purchasequotation/purchase_quotation_create.html',
         menu_active='',
         breadcrumb='PURCHASE_QUOTATION_CREATE_PAGE',
+        perm_check=PermCheck(url=ApiURL.PURCHASE_QUOTATION_LIST, method='POST'),
     )
     def get(self, request, *args, **kwargs):
         resp1 = ServerAPI(user=request.user, url=ApiURL.TAX_LIST).get()
@@ -91,6 +93,7 @@ class PurchaseQuotationDetail(View):
         template='sales/purchasing/purchasequotation/purchase_quotation_detail.html',
         menu_active='',
         breadcrumb='PURCHASE_QUOTATION_DETAIL_PAGE',
+        perm_check=PermCheck(url=ApiURL.PURCHASE_QUOTATION_DETAIL, method='GET', fill_key=['pk']),
     )
     def get(self, request, *args, **kwargs):
         resp1 = ServerAPI(user=request.user, url=ApiURL.TAX_LIST).get()

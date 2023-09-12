@@ -139,6 +139,8 @@ class HandlePlanApp {
                 })
 
                 $(row).on('change', '.app-my-checkbox', function () {
+                    console.log($(this));
+
                     $(row).find('.show-depend-on').popover('hide');
                     let checkEle$ = $(this);
                     let isChecked = checkEle$.prop('checked');
@@ -146,10 +148,12 @@ class HandlePlanApp {
                     if (isChecked === true) {
                         checkEle$.attr('data-app-depend-on').split(",").map(
                             (app_id) => {
-                                $('.app-my-checkbox[data-id="' + app_id + '"]').prop('checked', true).trigger('change');
+                                let eleTmp = $('.app-my-checkbox[data-id="' + app_id + '"]');
+                                if (eleTmp.prop('checked') === false) eleTmp.prop('checked', true).trigger('change');
                             }
                         );
-                    } else if (!HandlePlanApp.checkDependIsOn(checkEle$.data('id'))) {
+                    }
+                    else if (!HandlePlanApp.checkDependIsOn(checkEle$.data('id'))) {
                         $(this).prop('checked', true);
                         return false;
                     }

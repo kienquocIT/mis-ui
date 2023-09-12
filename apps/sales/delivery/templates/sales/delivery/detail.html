@@ -133,7 +133,20 @@
                     <p id="state"></p>
                 </div>
             </div>
-            <div class="col-xs-12 col-sm-6 offset-sm-6 offset-xs-0">
+            <div class="col-xs-12 col-sm-6">
+                <div class="form-group">
+                    <label for="selectEmployeeInherit" class="form-label">{% trans 'Employee Inherit' %}</label>
+                    <select class="form-control" name="employee_inherit" id="selectEmployeeInherit" disabled>
+                        {% if data.lead %}
+                            <option value="{{ data.lead.id }}">{{ data.lead.full_name }}</option>
+                        {% endif %}
+                        {% for item in data.person_list %}
+                            <option value="{{ item.id }}">{{ item.full_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-6">
                 <div class="form-group">
                     <label for="textareaRemarks" class="form-label">{% trans 'Notes' %}</label>
                     <textarea class="form-control" name="remarks" id="textareaRemarks" readonly></textarea>

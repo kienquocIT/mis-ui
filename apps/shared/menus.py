@@ -297,12 +297,12 @@ class MenusPurchase:
     INVENTORY = MenuCommon(
         name='Inventory', code='menu_inventory_activities', view_name='', icon='<i class="fas fa-clipboard-check"></i>',
         child=[
-            MenuCommon(
-                name='Goods receipt',
-                code='menu_goods_receipt_list',
-                view_name='GoodsReceiptList',
-                icon='<i class="fas fa-file-import"></i>',
-            ),
+            # MenuCommon(
+            #     name='Goods receipt',
+            #     code='menu_goods_receipt_list',
+            #     view_name='GoodsReceiptList',
+            #     icon='<i class="fas fa-file-import"></i>',
+            # ),
             # MenuCommon(
             #     name='Inventory Adjustment',
             #     code='menu_inventory_adjustment_list',

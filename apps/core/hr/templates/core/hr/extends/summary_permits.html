@@ -1,21 +1,68 @@
 {% load i18n %}
-<p class="mb-3">Special of self: xxx</p>
-<p class="mb-3">Belong to x role: []</p>
-<p class="mb-3">Summary for all:</p>
-<table class="table nowrap w-100" id="tbl-summary-permissions">
-    <thead>
-    <tr>
-        <th>#</th>
-        <th>{% trans 'Application' %}</th>
-        <th>{% trans 'View' %}</th>
-        <th>{% trans 'Create' %}</th>
-        <th>{% trans 'Edit' %}</th>
-        <th>{% trans 'Delete' %}</th>
-        <th>{% trans 'Jurisdiction' %}</th>
-    </tr>
-    </thead>
-    <tbody></tbody>
-</table>
 
 
-<select id="IDXXX"></select>
+<div class="row">
+    <div class="col-12 col-md-4">
+        <div class="card bg-charcoal-light-5">
+            <div class="card-header">Self</div>
+            <div class="card-body">
+                <h5 class="card-title">Light Card</h5>
+                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
+                    card's content.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h6>Apps Using</h6>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-wrap">
+                    <div class="table-responsive">
+                        <table class="table mb-0">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Username</th>
+                                <th>Role</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <th scope="row">1</th>
+                                <td>Self</td>
+                                <td><span class="badge badge-danger">admin</span></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">2</th>
+                                <td>Role</td>
+                                <td><span class="badge badge-info">member</span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <table class="table nowrap w-100" id="tbl-summary-permissions">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>{% trans 'Application' %}</th>
+                <th>{% trans 'View' %}</th>
+                <th>{% trans 'Create' %}</th>
+                <th>{% trans 'Edit' %}</th>
+                <th>{% trans 'Delete' %}</th>
+                <th>{% trans 'Jurisdiction' %}</th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+

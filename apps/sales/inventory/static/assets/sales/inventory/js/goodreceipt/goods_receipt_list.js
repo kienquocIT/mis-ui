@@ -18,31 +18,7 @@ $(function () {
                         throw Error('Call data raise errors.')
                     },
                 },
-                columnDefs: [
-                    {
-                        "width": "15%",
-                        "targets": 0
-                    }, {
-                        "width": "20%",
-                        "targets": 1
-                    }, {
-                        "width": "20%",
-                        "targets": 2
-                    }, {
-                        "width": "10%",
-                        "targets": 3
-                    }, {
-                        "width": "15%",
-                        "targets": 4
-                    }, {
-                        "width": "15%",
-                        "targets": 5,
-                    },
-                    {
-                        "width": "5%",
-                        "targets": 6,
-                    },
-                ],
+                columnDefs: [],
                 columns: [
                     {
                         targets: 0,

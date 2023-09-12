@@ -6,19 +6,21 @@
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-outline-primary" type="submit" form="frm_good_receipt_create">
-        <span>
-            <span>{% trans 'Save' %}</span>
-            <span class="icon">
-                <i class="fa-regular fa-floppy-disk"></i>
+    <a href="{% url 'GoodsReceiptUpdate' data.data.doc_id %}">
+        <button class="btn btn-outline-primary">
+            <span>
+                <span>{% trans 'Edit' %}</span>
+                <span class="icon">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                </span>
             </span>
-        </span>
-    </button>
+        </button>
+    </a>
 {% endblock %}
 
 {% block pageContent %}
     <form
-            data-url="{% url 'GoodsReceiptListAPI' %}"
+            data-url="{% url 'GoodsReceiptDetailAPI' data.data.doc_id %}"
             data-url-redirect="{% url 'GoodsReceiptList' %}"
             data-method="POST"
             id="frm_good_receipt_create"
@@ -621,5 +623,5 @@
     <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
 
     <script src="{% static 'assets/sales/inventory/js/goodreceipt/goods_receipt_common.js' %}"></script>
-    <script src="{% static 'assets/sales/inventory/js/goodreceipt/goods_receipt_create.js' %}"></script>
+    <script src="{% static 'assets/sales/inventory/js/goodreceipt/goods_receipt_detail.js' %}"></script>
 {% endblock %}

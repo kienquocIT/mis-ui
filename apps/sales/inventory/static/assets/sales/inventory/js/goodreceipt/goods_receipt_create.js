@@ -38,15 +38,7 @@ $(function () {
         // $('#good-receipt-date-created').val(null).trigger('change');
 
         GRLoadDataHandle.typeSelectEle.on('change', function () {
-            for (let eleArea of formSubmit[0].querySelectorAll('.custom-area')) {
-                eleArea.setAttribute('hidden', 'true');
-            }
-            let idAreaShow = 'custom-area-' + String(GRLoadDataHandle.typeSelectEle.val());
-            document.getElementById(idAreaShow).removeAttribute('hidden');
-            if (idAreaShow !== 'custom-area-1') {
-                btnEdit[0].setAttribute('hidden', 'true');
-                btnAdd[0].removeAttribute('hidden');
-            }
+            GRLoadDataHandle.loadCustomAreaByType();
         });
 
         // Action on change dropdown PO

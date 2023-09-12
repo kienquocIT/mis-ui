@@ -68,6 +68,34 @@ class GoodsReceiptListAPI(APIView):
         )
 
 
+class GoodsReceiptDetail(View):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        template='sales/inventory/goodreceipt/goods_receipt_detail.html',
+        menu_active='menu_goods_receipt_list',
+        breadcrumb='',
+    )
+    def get(self, request, pk, *args, **kwargs):
+        return {'data': {'doc_id': pk}}, status.HTTP_200_OK
+
+
+class GoodsReceiptUpdate(View):
+    @mask_view(
+        auth_require=True,
+        template='sales/inventory/goodreceipt/goods_receipt_update.html',
+        menu_active='menu_goods_receipt_list',
+        breadcrumb='',
+    )
+    def get(self, request, pk, *args, **kwargs):
+        # input_mapping_properties = InputMappingProperties.PURCHASING_PURCHASE_ORDER
+        return {
+                   'data': {'doc_id': pk},
+                   # 'input_mapping_properties': input_mapping_properties, 'form_id': 'frm_purchase_order_create'
+               }, status.HTTP_200_OK
+
+
 class GoodsReceiptDetailAPI(APIView):
 
     @mask_view(

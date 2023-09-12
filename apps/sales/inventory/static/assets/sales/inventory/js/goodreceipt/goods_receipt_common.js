@@ -9,7 +9,7 @@ class GRLoadDataHandle {
     static finalRevenueBeforeTax = document.getElementById('good-receipt-final-revenue-before-tax');
 
     static loadMoreInformation(ele, is_span = false) {
-        let optionSelected = null;
+        let optionSelected;
         if (is_span === false) {
             optionSelected = ele;
         } else {
@@ -61,25 +61,42 @@ class GRLoadDataHandle {
         }
     };
 
-    static loadBoxType() {
+    static loadBoxType(dataType = null) {
         let ele = GRLoadDataHandle.typeSelectEle;
-        let dataType = [
-            {
-                'id': 3,
-                'title': 'For product'
-            },
-            {
-                'id': 2,
-                'title': 'For inventory adjustment'
-            },
-            {
-                'id': 1,
-                'title': 'For purchase order'
-            },
-        ];
+        if (!dataType) {
+            dataType = [
+                {
+                    'id': 3,
+                    'title': 'For product'
+                },
+                {
+                    'id': 2,
+                    'title': 'For inventory adjustment'
+                },
+                {
+                    'id': 1,
+                    'title': 'For purchase order'
+                },
+            ];
+        }
         ele.initSelect2({
             data: dataType,
         });
+    };
+
+    static loadCustomAreaByType() {
+        let formSubmit = $('#frm_good_receipt_create');
+        let btnEdit = $('#btn-edit-product-good-receipt');
+        let btnAdd = $('#btn-add-product-good-receipt');
+        for (let eleArea of formSubmit[0].querySelectorAll('.custom-area')) {
+            eleArea.setAttribute('hidden', 'true');
+        }
+        let idAreaShow = 'custom-area-' + String(GRLoadDataHandle.typeSelectEle.val());
+        document.getElementById(idAreaShow).removeAttribute('hidden');
+        if (idAreaShow !== 'custom-area-1') {
+            btnEdit[0].setAttribute('hidden', 'true');
+            btnAdd[0].removeAttribute('hidden');
+        }
     };
 
     static loadBoxPO(dataPO = {}) {
@@ -505,7 +522,7 @@ class GRLoadDataHandle {
         table.DataTable().clear().draw();
         table.DataTable().rows.add(data).draw();
         GRLoadDataHandle.loadDataRowTable(table);
-        GRCalculateHandle.calculateTable(table);
+        // GRCalculateHandle.calculateTable(table);
     };
 
     static loadAddRowLineDetail() {
@@ -537,6 +554,7 @@ class GRLoadDataHandle {
                 let table_id = $table[0].id;
                 GRLoadDataHandle.loadDataRow(row, table_id);
             }
+            GRCalculateHandle.calculateTable($table);
         }
     };
 
@@ -565,7 +583,41 @@ class GRLoadDataHandle {
 
 
 
+
     // LOAD DETAIL
+    static loadDetailPage(data) {
+        $('#good-receipt-title').val(data?.['title']);
+        $('#good-receipt-note').val(data?.['remarks']);
+        let eleStatus = $('#goods-receipt-status');
+        let status_data = {
+            "Draft": "badge badge-soft-light",
+            "Created": "badge badge-soft-primary",
+            "Added": "badge badge-soft-info",
+            "Finish": "badge badge-soft-success",
+            "Cancel": "badge badge-soft-danger",
+        }
+        let statusHTML = `<span class="${status_data[data?.['system_status']]}">${data?.['system_status']}</span>`;
+        eleStatus.empty();
+        eleStatus.append(statusHTML);
+        let type_data = {
+            '1': 'For purchase order',
+            '2': 'For inventory adjustment',
+            '3': 'For production',
+        }
+        let idAreaShow = String(data?.['goods_receipt_type'] + 1);
+        GRLoadDataHandle.loadBoxType({
+            'id': idAreaShow,
+            'title': type_data[idAreaShow],
+        });
+        GRLoadDataHandle.loadCustomAreaByType();
+        if (idAreaShow === '1') {
+            GRLoadDataHandle.loadBoxPO(data?.['purchase_order']);
+            GRLoadDataHandle.loadBoxSupplier(data?.['supplier']);
+            GRLoadDataHandle.loadDataShowPR(data?.['purchase_requests']);
+        }
+        GRDataTableHandle.tableLineDetail.DataTable().rows.add(data?.['goods_receipt_product']).draw();
+        GRLoadDataHandle.loadDataRowTable(GRDataTableHandle.tableLineDetail);
+    }
 
 
 
@@ -1461,6 +1513,7 @@ function setupDataShowLineDetail(is_submit = false) {
                                 'product_title',
                                 'product_code',
                                 'product_description',
+                                'product_unit_price',
                                 'product_subtotal_price',
                                 'product_subtotal_price_after_tax',
                                 'order',

@@ -1167,6 +1167,9 @@
                                 }, 1000);
                             }
                         },
+                        (err) =>{
+                            $.fn.notifyB({"description": err?.data?.errors, "timeout": 3500}, 'failure')
+                        }
                     )
                 }
                 event.preventDefault();

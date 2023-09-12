@@ -118,7 +118,7 @@ $(document).ready(async function () {
 
                 if ($.fn.hasOwnProperties(opportunity_detail, ['sale_order'])) {
                     let so_id = opportunity_detail.sale_order.id;
-                    let link = so_id !== undefined ? urlEle.data('url-related-sale-order').format_url_with_uuid(so_id): '#';
+                    let link = so_id !== undefined ? urlEle.data('url-related-sale-order').format_url_with_uuid(so_id) : '#';
                     $('#item-related-sale-order').attr('href', link)
                     if (opportunity_detail.sale_order.system_status === 0) {
                         condition_sale_oder_approved = true;
@@ -130,7 +130,7 @@ $(document).ready(async function () {
 
                 if ($.fn.hasOwnProperties(opportunity_detail, ['quotation'])) {
                     let quotation_id = opportunity_detail.quotation.id;
-                    let link = quotation_id !== undefined ? urlEle.data('url-related-quotation').format_url_with_uuid(quotation_id): '#';
+                    let link = quotation_id !== undefined ? urlEle.data('url-related-quotation').format_url_with_uuid(quotation_id) : '#';
                     $('#item-related-quotation').attr('href', link)
                     if (opportunity_detail.quotation.is_customer_confirm === true) {
                         condition_is_quotation_confirm = true;
@@ -162,6 +162,26 @@ $(document).ready(async function () {
         table.addClass('tag-change');
         $(`.box-select-product-category option[value="${removedOption.id}"]`).remove();
         OpportunityLoadDetail.getTotalPrice();
+        table.find('.select-box-product').each(function (){
+            let optionSelected = $(this).find('option:selected');
+            OpportunityLoadDropdown.loadProduct(
+                $(this),
+                {'id': optionSelected.val(), 'title': optionSelected.text()},
+                OpportunityLoadDropdown.productCategorySelectEle.val()
+            );
+        })
+    });
+
+    OpportunityLoadDropdown.productCategorySelectEle.on('select2:select', function (e) {
+        let table = $('#table-products');
+        table.find('.select-box-product').each(function (){
+            let optionSelected = $(this).find('option:selected');
+            OpportunityLoadDropdown.loadProduct(
+                $(this),
+                {'id': optionSelected.val(), 'title': optionSelected.text()},
+                OpportunityLoadDropdown.productCategorySelectEle.val()
+            );
+        })
     });
 
     $(document).on('change', '.select-box-product', function () {
@@ -169,20 +189,25 @@ $(document).ready(async function () {
         let product = SelectDDControl.get_data_from_idx($(this), $(this).val());
         ele_tr.find(`.input-product-name`).attr('value', product.title)
 
+        let [product_category_ele, uom_ele, tax_ele] = [ele_tr.find(`.box-select-product-category`), ele_tr.find(`.box-select-uom`), ele_tr.find(`.box-select-tax`)];
+        product_category_ele.empty();
+        uom_ele.empty();
+        tax_ele.empty();
+
         OpportunityLoadDropdown.loadSubProductCategory(
-            ele_tr.find(`.box-select-product-category`),
+            product_category_ele,
             product?.['general_information'].product_category,
             OpportunityLoadDropdown.productCategorySelectEle.val(),
         )
 
         OpportunityLoadDropdown.loadUoM(
-            ele_tr.find(`.box-select-uom`),
+            uom_ele,
             product?.['sale_information']?.['default_uom'],
             product,
         )
 
         OpportunityLoadDropdown.loadTax(
-            ele_tr.find(`.box-select-tax`),
+            tax_ele,
             product?.['sale_information'].tax_code,
         )
 
@@ -511,10 +536,10 @@ $(document).ready(async function () {
         return check;
     }
 
-    $('.item-detail-related-feature').on('click', function (){
-        if ($(this).attr('href') === '#'){
-           $(this).removeAttr('target');
-           OpportunityLoadDetail.renderAlert(`${$(this).text()} ${transEle.data('trans-not-created')}`);
+    $('.item-detail-related-feature').on('click', function () {
+        if ($(this).attr('href') === '#') {
+            $(this).removeAttr('target');
+            OpportunityLoadDetail.renderAlert(`${$(this).text()} ${transEle.data('trans-not-created')}`);
         }
     })
 
@@ -1347,15 +1372,14 @@ $(document).ready(async function () {
 
             const assign_to = $('#selectAssignTo').select2('data')[0]
             let assign_toData = {}
-            if (assign_to){
+            if (assign_to) {
                 assign_toData = {
                     'id': assign_to.id,
                     'first_name': assign_to.text.split('. ')[1],
                     'last_name': assign_to.text.split('. ')[0],
                 }
                 formData.employee_inherit_id = assign_to.id
-            }
-            else{
+            } else {
                 $.fn.notifyB({'description': $('#trans-factory').attr('data-assignee_empty')}, 'failure')
                 return false
             }
@@ -1416,7 +1440,7 @@ $(document).ready(async function () {
                         callAjaxtoLoadTimeLineList();
                     }
                 },
-                (error) =>{
+                (error) => {
                     console.log(error)
                 }
             )

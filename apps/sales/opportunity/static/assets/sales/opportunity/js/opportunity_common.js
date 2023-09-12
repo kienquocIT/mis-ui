@@ -254,7 +254,6 @@ class OpportunityLoadDetail {
         $.fn.initMaskMoney2();
     }
 
-
     static loadDetailTableCompetitor(table, data) {
         data.opportunity_competitors_datas.map(function (item) {
             table.DataTable().row.add(item).draw();
@@ -275,7 +274,6 @@ class OpportunityLoadDetail {
         let tr_current_ele = table.find('tbody tr').last();
         OpportunityLoadDropdown.loadCompetitor(tr_current_ele.find('.box-select-competitor'), {}, OpportunityLoadDropdown.customerSelectEle.val());
     }
-
 
     static loadDetailTableContactRole(table, data) {
         data.opportunity_contact_role_datas.map(function (item) {
@@ -669,7 +667,7 @@ class OpportunityLoadDetail {
         let ele_decision_maker = $('#input-decision-maker');
         if (ele.val() === '0') {
             let table = this.contactRoleTableEle;
-            if (table.find('.box-select-role').not($(this)).find('option[value="0"]:selected').length === 1) {
+            if (table.find('.box-select-role').not(ele).find('option[value="0"]:selected').length === 1) {
                 ele.val('');
                 Swal.fire({
                     icon: 'error',
@@ -677,7 +675,7 @@ class OpportunityLoadDetail {
                     text: transEle.data('trans-role-decision-maker'),
                 })
             } else {
-                let ele_contact = $(this).closest('tr').find('.box-select-contact option:selected');
+                let ele_contact = ele.closest('tr').find('.box-select-contact option:selected');
                 this.setDataDecisionMaker(ele_decision_maker, ele_contact.text(), ele_contact.val());
             }
         }

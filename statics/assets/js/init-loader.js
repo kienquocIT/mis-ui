@@ -82,7 +82,7 @@ $.fn.extend({
     notifyB: function (option, typeAlert = null) {
         setTimeout(function () {
             $('.alert.alert-dismissible .close').addClass('btn-close').removeClass('close');
-        }, 100);
+        }, option.timeout || 100);
         let msg = "";
         if (option.title) {
             msg += option.title;

@@ -10,7 +10,6 @@ $(function () {
         loadDataTableProduct([]);
         ReturnAdvanceLoadPage.loadMethodPayment();
 
-
         if (advance_payment !== null) {
             ReturnAdvanceLoadPage.loadAdvancePayment(choose_AP_ele, {}, {'advance_payment': advance_payment});
             loadDetailAdvancePayment(advance_payment.id);

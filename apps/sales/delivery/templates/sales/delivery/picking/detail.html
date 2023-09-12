@@ -4,7 +4,6 @@
 {% block title %}{% trans 'Picking detail' %}{% endblock %}
 {% block cssHeader %}
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css">
-    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
     <style>
         input::-webkit-outer-spin-button,
         input::-webkit-inner-spin-button {
@@ -101,6 +100,20 @@
                     <textarea class="form-control" name="remarks" id="inputRemarks" readonly></textarea>
                 </div>
             </div>
+            <div class="col-xl-3 col-lg-4 col-md-6 col-12 mb-3">
+                <div class="form-group">
+                    <label for="inputRemarks" class="form-label">{% trans 'Employee Inherit' %}</label>
+                    <select class="form-select" name="employee_inherit" id="selectEmployeeInherit" disabled>
+                        <option value=""></option>
+                        {% if data.lead %}
+                            <option value="{{ data.lead.id }}">{{ data.lead.full_name }}</option>
+                        {% endif %}
+                        {% for item in data.person_list %}
+                            <option value="{{ item.id }}">{{ item.full_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
         </div>
     </form>
     <div class="row mb-3">
@@ -170,8 +183,6 @@
 {% block jsFooter %}
     <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
-    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
-    <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
     <script src="{% static 'sales/delivery/picking/detail.js' %}"></script>
 {% endblock %}
 

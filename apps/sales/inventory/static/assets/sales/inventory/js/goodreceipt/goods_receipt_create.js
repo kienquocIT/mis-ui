@@ -247,6 +247,7 @@ $(function () {
                 'supplier',
                 'purchase_requests',
                 'remarks',
+                'date_received',
                 // line detail
                 'goods_receipt_product',
                 // system

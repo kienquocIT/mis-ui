@@ -588,6 +588,7 @@ class GRLoadDataHandle {
     static loadDetailPage(data) {
         $('#good-receipt-title').val(data?.['title']);
         $('#good-receipt-note').val(data?.['remarks']);
+        $('#good-receipt-date-received').val(moment(data?.['date_received']).format('MM/DD/YYYY'));
         let eleStatus = $('#goods-receipt-status');
         let status_data = {
             "Draft": "badge badge-soft-light",
@@ -617,7 +618,32 @@ class GRLoadDataHandle {
         }
         GRDataTableHandle.tableLineDetail.DataTable().rows.add(data?.['goods_receipt_product']).draw();
         GRLoadDataHandle.loadDataRowTable(GRDataTableHandle.tableLineDetail);
-    }
+        GRLoadDataHandle.loadTableDisabled(GRDataTableHandle.tableLineDetail);
+    };
+
+    static loadTableDisabled(table) {
+        for (let ele of table[0].querySelectorAll('.table-row-item')) {
+            ele.setAttribute('disabled', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-description')) {
+            ele.setAttribute('disabled', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-uom')) {
+            ele.setAttribute('disabled', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-price')) {
+            ele.setAttribute('disabled', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-tax')) {
+            ele.setAttribute('disabled', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-import')) {
+            ele.setAttribute('disabled', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.del-row')) {
+            ele.setAttribute('disabled', 'true');
+        }
+    };
 
 
 
@@ -1461,9 +1487,9 @@ class GRSubmitHandle {
         if (GRLoadDataHandle.PRDataEle.val()) {
             _form.dataForm['purchase_requests'] = JSON.parse(GRLoadDataHandle.PRDataEle.val());
         }
-        let dateVal = $('#good-receipt-date-created').val();
+        let dateVal = $('#good-receipt-date-received').val();
         if (dateVal) {
-            _form.dataForm['date_created'] = moment(dateVal,
+            _form.dataForm['date_received'] = moment(dateVal,
                 'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
         }
         let products_data_setup = GRSubmitHandle.setupDataProduct();

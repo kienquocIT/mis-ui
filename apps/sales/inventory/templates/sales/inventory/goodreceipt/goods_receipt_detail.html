@@ -46,11 +46,11 @@
                 <div class="row" id="common-information-area">
                     <div class="col-6">
                         <div class="form-group">
-                            <label class="form-label" for="box-good-receipt-type">{% trans 'Good receipt type' %}<span class="required"></span></label>
+                            <label class="form-label" for="box-good-receipt-type">{% trans 'Goods receipt type' %}<span class="required"></span></label>
                             <div class="input-group">
                                 <span class="input-affix-wrapper">
                                     <span class="input-prefix">
-                                        <i class="fas fa-boxes text-brown"></i>
+                                        <i class="fas fa-clipboard-check text-pumpkin"></i>
                                     </span>
                                     <select
                                         class="form-select"
@@ -61,6 +61,7 @@
                                         name="good_receipt_type"
                                         data-keyResp=""
                                         required
+                                        disabled
                                     >
                                     </select>
                                 </span>
@@ -75,6 +76,7 @@
                                         name="title"
                                         id="good-receipt-title"
                                         required
+                                        disabled
                                     >
                                 </span>
                             </div>
@@ -82,10 +84,10 @@
                     </div>
                     <div class="col-6">
                         <div class="form-group">
-                            <label class="form-label" for="good-receipt-date-created">{% trans 'Date' %}</label>
+                            <label class="form-label" for="good-receipt-date-received">{% trans 'Date' %}</label>
                             <div class="input-affix-wrapper">
-                                <input type="text" name="date_created" id="good-receipt-date-created"
-                                       class="form-control date-picker" autocomplete="off">
+                                <input type="text" name="date_received" id="good-receipt-date-received"
+                                       class="form-control date-picker" autocomplete="off" disabled>
                                 <span class="input-suffix">
                                     <i class="bi bi-calendar-week"></i>
                                 </span>
@@ -99,6 +101,7 @@
                                         type="text" class="form-control"
                                         name="remarks"
                                         id="good-receipt-note"
+                                        disabled
                                     >
                                 </span>
                             </div>
@@ -133,6 +136,7 @@
                                             name="purchase_order"
                                             data-keyResp="purchase_order_sale_list"
                                             required
+                                            disabled
                                     ></select>
                                 </span>
                             </div>
@@ -163,6 +167,7 @@
                                             name="supplier"
                                             data-keyResp="account_sale_list"
                                             required
+                                            disabled
                                     ></select>
                                 </span>
                             </div>
@@ -193,6 +198,7 @@
                                     name=""
                                     data-keyResp=""
                                     required
+                                    disabled
                             >
                             </select>
                         </div>
@@ -213,6 +219,7 @@
                                     name=""
                                     data-keyResp=""
                                     required
+                                    disabled
                             >
                             </select>
                         </div>
@@ -242,6 +249,7 @@
                                             name=""
                                             data-keyResp=""
                                             required
+                                            disabled
                                     ></select>
                                 </span>
                             </div>
@@ -310,11 +318,12 @@
                                         id="btn-edit-product-good-receipt"
                                         data-bs-toggle="modal"
                                         data-bs-target="#productModalCenter"
+                                        disabled
                                     >
                                         <span><span class="icon"><span class="feather-icon"><i class="far fa-edit"></i></span></span><span>{% trans 'Edit' %} {% trans 'Product' %}</span></span>
                                     </button>
 
-                                    <button type="button" class="btn btn-link btn-animated" id="btn-add-product-good-receipt" hidden>
+                                    <button type="button" class="btn btn-link btn-animated" id="btn-add-product-good-receipt" hidden disabled>
                                         <span><span class="icon"><span class="feather-icon"><i class="fa-regular fa-square-plus"></i></span></span><span>{% trans 'Add Product' %}</span></span>
                                     </button>
                                 </div>

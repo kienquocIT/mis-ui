@@ -162,6 +162,7 @@ $(document).ready(function () {
                 },
                 (errs) => {
                     WindowControl.hideLoading();
+                    $.fn.notifyB({"description": errs?.data?.errors, "timeout": 3500}, 'failure')
                 }
             )
         }

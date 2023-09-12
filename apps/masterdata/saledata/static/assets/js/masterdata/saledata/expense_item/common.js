@@ -83,6 +83,9 @@ class ExpenseItemLoadPage {
             let dtb = $(dtb_id)
             dtb.DataTableDefault({
                 data: data,
+                searching: false,
+                paginate: false,
+                dom: '',
                 columns: columns,
             });
         }
@@ -132,9 +135,10 @@ class ExpenseItemLoadPage {
         let idTbl = UtilControl.generateRandomString(12);
         let dtbSub = `<table id="${idTbl}" class="table nowrap w-100 mb-5">${theadTable}</table>`;
         btn.closest('tr').after(
-            `<tr class="child-expense-item-list"><td colspan="6"><div class="child-expense-group pt-3 pb-3 ml-3 pl-5 pr-5 hidden-simple">${dtbSub}</div></td></tr>`
+            `<tr class="child-expense-item-list"><td colspan="5"><div class="child-expense-group pt-3 pb-3 hidden-simple">${dtbSub}</div></td></tr>`
         );
         let expense_child_data = this.getDataExpenseChild(btn.data('id'));
+        $(`#${idTbl} thead`).addClass('hidden');
         this.loadChildDtbList(`#${idTbl}`, expense_child_data)
     }
 
@@ -177,7 +181,6 @@ class ExpenseItemLoadPage {
         if(titleEle.hasClass('tag-changed')){
             data['title'] = titleEle.val()
         }
-        console.log(desEle.hasClass('tag-changed'))
         if(desEle.hasClass('tag-changed')){
             data['description'] = desEle.val()
         }

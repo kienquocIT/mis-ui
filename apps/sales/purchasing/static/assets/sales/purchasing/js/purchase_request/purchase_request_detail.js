@@ -2,7 +2,7 @@ $(document).ready(function () {
     const frmDetail = $('#frm-detail-pr');
     const pk = $.fn.getPkDetail();
 
-    loadDtbPrProductDetail([]);
+    PurchaseRequestAction.loadDtbPrProductDetail([]);
 
     function loadDetail() {
         let url = frmDetail.data('url').format_url_with_uuid(pk);

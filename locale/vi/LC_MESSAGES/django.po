@@ -4110,3 +4110,7 @@ msgstr "Tên quản lý"
 #
 msgid "Contact Name"
 msgstr "Tên liên hệ"
+
+#
+msgid "Num of product request can not greater than num of product remain"
+msgstr "Số lượng sản phẩm yêu cầu không thể lớn hơn số lượng chưa giao"

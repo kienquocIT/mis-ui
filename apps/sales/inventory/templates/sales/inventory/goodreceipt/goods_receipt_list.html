@@ -1,16 +1,16 @@
 {% extends 'base.html' %}
 {% load static i18n %}
-{% block title %}{% trans 'Good receipt list' %}{% endblock %}
+{% block title %}{% trans 'Goods receipt list' %}{% endblock %}
 {% block cssHeader %}
 {% endblock %}
 
 {% block pageAction %}
-    <a href="{% url 'GoodReceiptCreate' %}"
+    <a href="{% url 'GoodsReceiptCreate' %}"
        data-bs-toggle="tooltip"
        data-bs-placement="top"
-       title="{% trans 'Create Good Receipt' %}"
-       id="create_good_receipt_button"
-       data-bs-original-title="Add Good Receipt">
+       title="{% trans 'Create Goods Receipt' %}"
+       id="create_goods_receipt_button"
+       data-bs-original-title="Add Goods Receipt">
             <button class="btn btn-outline-primary">
                 <span>
                     <span>{% trans 'Add' %}</span>
@@ -23,8 +23,8 @@
 {% endblock %}
 
 {% block pageContent %}
-    <input type="hidden" id="good-receipt-link"
-           data-link-update=""
+    <input type="hidden" id="goods-receipt-link"
+           data-link-update="{% url 'GoodsReceiptDetailAPI' 1 %}"
            data-link-list="{% url 'GoodsReceiptList' %}"
     >
     <input
@@ -34,19 +34,19 @@
         data-cancel="{% trans 'Cancel' %}"
     >
     <table
-            id="table_good_receipt_list"
+            id="datable_goods_receipt_list"
             class="table nowrap w-100 mb-5"
-            data-url=""
+            data-url="{% url 'GoodsReceiptListAPI' %}"
             data-method="get"
     >
         <thead>
         <tr>
             <th>{% trans 'Code' %}</th>
             <th>{% trans 'Name' %}</th>
-            <th>{% trans 'Supplier' %}</th>
-            <th>{% trans 'Delivered date' %}</th>
+            <th>{% trans 'Type' %}</th>
+            <th>{% trans 'IA/PO' %} {% trans 'Code' %}</th>
+            <th>{% trans 'Received date' %}</th>
             <th>{% trans 'Status' %}</th>
-            <th>{% trans 'Receipt status' %}</th>
             <th>{% trans 'Actions' %}</th>
         </tr>
         </thead>
@@ -58,5 +58,5 @@
 {% block jsFooter %}
     <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
 
-{#    <script src="{% static 'assets/sales/purchasing/js/purchaseorder/purchase_order_list.js' %}"></script>#}
+    <script src="{% static 'assets/sales/inventory/js/goodreceipt/goods_receipt_list.js' %}"></script>
 {% endblock %}

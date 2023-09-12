@@ -261,9 +261,7 @@ $(function () {
                 'system_status',
             ]
             if (_form.dataForm) {
-                for (let key in _form.dataForm) {
-                    if (!submitFields.includes(key)) delete _form.dataForm[key]
-                }
+                filterFieldList(submitFields, _form.dataForm);
             }
             let csr = $("[name=csrfmiddlewaretoken]").val();
             $.fn.callAjax(_form.dataUrl, _form.dataMethod, _form.dataForm, csr)

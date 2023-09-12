@@ -18,7 +18,7 @@
 
 {% block pageContent %}
     <form
-            data-url=""
+            data-url="{% url 'GoodsReceiptListAPI' %}"
             data-url-redirect="{% url 'GoodsReceiptList' %}"
             data-method="POST"
             id="frm_good_receipt_create"
@@ -95,7 +95,7 @@
                                 <span class="input-affix-wrapper">
                                     <input
                                         type="text" class="form-control"
-                                        name="title"
+                                        name="remarks"
                                         id="good-receipt-note"
                                     >
                                 </span>

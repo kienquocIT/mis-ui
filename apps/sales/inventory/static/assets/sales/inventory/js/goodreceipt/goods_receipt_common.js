@@ -1205,8 +1205,8 @@ class GRStoreDataHandle {
                 if (dataRowRaw) {
                     let dataRow = JSON.parse(dataRowRaw);
                     dataRow['quantity_import'] = quantityImport;
-                    new_data.push(dataRow);
                     POProductID = dataRow?.['purchase_order_product_id'];
+                    new_data.push(dataRow);
                 }
             }
             let dataPOCheckedRaw = tablePO[0].querySelector(`.table-row-checkbox[data-id="${POProductID}"]`).getAttribute('data-row');
@@ -1231,9 +1231,10 @@ class GRStoreDataHandle {
                 let dataRowRaw = row.querySelector('.table-row-checkbox').getAttribute('data-row');
                 if (dataRowRaw) {
                     let dataRow = JSON.parse(dataRowRaw);
+                    dataRow['warehouse'] = dataRow?.['id'];
                     dataRow['quantity_import'] = quantityImport;
-                    new_data.push(dataRow);
                     PRProductID = dataRow?.['purchase_request_product_id'];
+                    new_data.push(dataRow);
                 }
             }
             let dataPRCheckedRaw = tablePR[0].querySelector(`.table-row-checkbox[data-id="${PRProductID}"]`).getAttribute('data-row');
@@ -1265,8 +1266,8 @@ class GRStoreDataHandle {
                     dataRow['quantity_import'] = quantityImport;
                     dataRow['expire_date'] = expireDate;
                     dataRow['manufacture_date'] = manufactureDate;
-                    new_data.push(dataRow);
                     WHID = dataRow?.['warehouse_id'];
+                    new_data.push(dataRow);
                 }
             }
             let dataWHCheckedRaw = tableWH[0].querySelector(`.table-row-checkbox[data-id="${WHID}"]`).getAttribute('data-row');
@@ -1302,8 +1303,8 @@ class GRStoreDataHandle {
                     dataRow['manufacture_date'] = manufactureDate;
                     dataRow['warranty_start'] = warrantyStart;
                     dataRow['warranty_end'] = warrantyEnd;
-                    new_data.push(dataRow);
                     WHID = dataRow?.['warehouse_id'];
+                    new_data.push(dataRow);
                 }
             }
             let dataWHCheckedRaw = tableWH[0].querySelector(`.table-row-checkbox[data-id="${WHID}"]`).getAttribute('data-row');
@@ -1406,13 +1407,13 @@ class GRSubmitHandle {
 
     static setupDataSubmit(_form) {
         if (GRLoadDataHandle.PRDataEle.val()) {
-            _form.dataForm['purchase_requests_data'] = JSON.parse(GRLoadDataHandle.PRDataEle.val());
+            _form.dataForm['purchase_requests'] = JSON.parse(GRLoadDataHandle.PRDataEle.val());
         }
-        // let dateVal = $('#purchase-order-date-delivered').val();
-        // if (dateVal) {
-        //     _form.dataForm[''] = moment(dateVal,
-        //         'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
-        // }
+        let dateVal = $('#good-receipt-date-created').val();
+        if (dateVal) {
+            _form.dataForm['date_created'] = moment(dateVal,
+                'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
+        }
         let products_data_setup = GRSubmitHandle.setupDataProduct();
         if (products_data_setup.length > 0) {
             _form.dataForm['goods_receipt_product'] = products_data_setup;
@@ -1450,7 +1451,7 @@ function setupDataShowLineDetail(is_submit = false) {
                         dataRow['quantity_import'] = quantityImport;
                         dataRow['order'] = order;
                         if (is_submit === true) {
-                            let submitFields = [
+                            let field_list = [
                                 'purchase_order_product',
                                 'purchase_request_products_data',
                                 'product',
@@ -1464,8 +1465,59 @@ function setupDataShowLineDetail(is_submit = false) {
                                 'product_subtotal_price_after_tax',
                                 'order',
                             ]
-                            for (let key in dataRow) {
-                                if (!submitFields.includes(key)) delete dataRow[key]
+                            filterFieldList(field_list, dataRow);
+                            dataRow['product'] = dataRow?.['product']?.['id']
+                            dataRow['uom'] = dataRow?.['uom']?.['id']
+                            dataRow['tax'] = dataRow?.['tax']?.['id']
+                            for (let pr_product of dataRow?.['purchase_request_products_data'] ? dataRow?.['purchase_request_products_data'] : []) {
+                                let field_list = [
+                                    'purchase_request_product',
+                                    'quantity_import',
+                                    'warehouse_data',
+                                ]
+                                filterFieldList(field_list, pr_product);
+                                pr_product['purchase_request_product'] = pr_product?.['purchase_request_product']?.['id']
+                                for (let warehouse of pr_product?.['warehouse_data'] ? pr_product?.['warehouse_data'] : []) {
+                                    let field_list = [
+                                        'warehouse',
+                                        'quantity_import',
+                                        'lot_data',
+                                        'serial_data',
+                                    ]
+                                    filterFieldList(field_list, warehouse);
+                                    for (let lot of warehouse?.['lot_data'] ? warehouse?.['lot_data'] : []) {
+                                        let field_list = [
+                                            'lot_number',
+                                            'quantity_import',
+                                            'expire_date',
+                                            'manufacture_date',
+                                        ]
+                                        filterFieldList(field_list, lot);
+                                        lot['expire_date'] = moment(lot?.['expire_date'],
+                                            'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
+                                        lot['manufacture_date'] = moment(lot?.['manufacture_date'],
+                                            'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
+                                    }
+                                    for (let serial of warehouse?.['serial_data'] ? warehouse?.['serial_data'] : []) {
+                                        let field_list = [
+                                            'vendor_serial_number',
+                                            'serial_number',
+                                            'expire_date',
+                                            'manufacture_date',
+                                            'warranty_start',
+                                            'warranty_end',
+                                        ]
+                                        filterFieldList(field_list, serial);
+                                        serial['expire_date'] = moment(serial?.['expire_date'],
+                                            'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
+                                        serial['manufacture_date'] = moment(serial?.['manufacture_date'],
+                                            'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
+                                        serial['warranty_start'] = moment(serial?.['warranty_start'],
+                                            'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
+                                        serial['warranty_end'] = moment(serial?.['warranty_end'],
+                                            'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
+                                    }
+                                }
                             }
                         }
                         result.push(dataRow);
@@ -1477,4 +1529,9 @@ function setupDataShowLineDetail(is_submit = false) {
     return result
 }
 
-
+function filterFieldList(field_list, data_json) {
+    for (let key in data_json) {
+        if (!field_list.includes(key)) delete data_json[key]
+    }
+    return data_json;
+}

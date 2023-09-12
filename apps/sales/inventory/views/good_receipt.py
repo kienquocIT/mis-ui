@@ -6,6 +6,22 @@ from rest_framework.views import APIView
 from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg, InputMappingProperties
 
 
+def create_goods_receipt(request, url, msg):
+    resp = ServerAPI(user=request.user, url=url).post(request.data)
+    if resp.state:
+        resp.result['message'] = msg
+        return resp.result, status.HTTP_201_CREATED
+    return resp.auto_return()
+
+
+def update_goods_receipt(request, url, pk, msg):
+    resp = ServerAPI(user=request.user, url=url.push_id(pk)).put(request.data)
+    if resp.state:
+        resp.result['message'] = msg
+        return resp.result, status.HTTP_201_CREATED
+    return resp.auto_return()
+
+
 class GoodsReceiptList(View):
     permission_classes = [IsAuthenticated]
 
@@ -28,3 +44,48 @@ class GoodsReceiptCreate(View):
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
+
+
+class GoodsReceiptListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.GOODS_RECEIPT_LIST).get(data)
+        return resp.auto_return(key_success='goods_receipt_list')
+
+    @mask_view(
+        auth_require=True,
+        is_api=True
+    )
+    def post(self, request, *args, **kwargs):
+        return create_goods_receipt(
+            request=request,
+            url=ApiURL.GOODS_RECEIPT_LIST,
+            msg=SaleMsg.GOODS_RECEIPT_CREATE
+        )
+
+
+class GoodsReceiptDetailAPI(APIView):
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.GOODS_RECEIPT_DETAIL.push_id(pk)).get()
+        return resp.auto_return()
+
+    @mask_view(
+        auth_require=True,
+        is_api=True
+    )
+    def put(self, request, *args, pk, **kwargs):
+        return update_goods_receipt(
+            request=request,
+            url=ApiURL.GOODS_RECEIPT_DETAIL,
+            pk=pk,
+            msg=SaleMsg.GOODS_RECEIPT_UPDATE
+        )

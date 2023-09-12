@@ -274,7 +274,6 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # good receipt
     GOOD_RECEIPT_API = StringUrl('saledata/good-receipt')
-    GOODS_RECEIPT_PRODUCTs = StringUrl('saledata/goods-receipt-products')
     GOOD_RECEIPT_PRODUCT_API = StringUrl('saledata/good-receipt/product')
 
     # return advance

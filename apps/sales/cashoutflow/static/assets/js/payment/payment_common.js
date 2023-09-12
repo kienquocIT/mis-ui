@@ -168,7 +168,7 @@ function PaymentLoadBeneficiary(data, filter=[]) {
     })
 }
 
-function getPaymentSaleCode() {
+function getPaymentSaleCode(sale_code_mapped_param, type_param) {
     let call_opp_list = $.fn.callAjax(saleCodeEle.attr('data-url-opp'), 'GET').then((resp) => {
         let data = $.fn.switcherResp(resp);
         if (data) {
@@ -226,7 +226,67 @@ function getPaymentSaleCode() {
             }
         }
         let sale_code_list = so_list.concat(quo_list).concat(opp_list);
-        PaymentLoadSaleCode([{}].concat(sale_code_list));
+        if (sale_code_mapped_param !== null) {
+            let sale_code_mapped_obj = null;
+            if (type_param === 0) {
+                sale_code_mapped_obj = SO_LIST.filter(function (element) {
+                    return element.id === sale_code_mapped_param;
+                })
+            }
+            if (type_param === 1) {
+                sale_code_mapped_obj = QUO_LIST.filter(function (element) {
+                    return element.id === sale_code_mapped_param;
+                })
+            }
+            if (type_param === 2) {
+                sale_code_mapped_obj = OPP_LIST.filter(function (element) {
+                    return element.id === sale_code_mapped_param;
+                })
+            }
+            PaymentLoadSaleCode(sale_code_mapped_obj)
+            saleCodeEle.prop('disabled', true);
+            let obj_sale_code = JSON.parse($('#' + saleCodeEle.attr('data-idx-data-loaded')).text())[sale_code_mapped_param];
+            let get_opp_obj_mapped = OPP_LIST.filter(function (item) {
+                return item.id === obj_sale_code.opportunity?.['id'] ? obj_sale_code.opportunity?.['id'] : obj_sale_code?.['id'];
+            })
+            let sale_team = [obj_sale_code?.['sale_person'].id];
+            if (get_opp_obj_mapped.length === 1) {
+                for (let i = 0; i < get_opp_obj_mapped[0].opportunity_sale_team_datas.length; i++) {
+                    sale_team.push(get_opp_obj_mapped[0].opportunity_sale_team_datas[i].member.id)
+                }
+            }
+            PaymentLoadBeneficiary(initEmployee, sale_team)
+
+            let call_ap_list = $.fn.callAjax($('#form-create-payment').attr('data-url-list'), 'GET').then((resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('advance_payment_list')) {
+                        return data?.['advance_payment_list'];
+                    }
+                    return [];
+                }
+            })
+            Promise.all([call_ap_list]).then((results) => {
+                let all_product_items = [];
+                for (let i = 0; i < results[0].length; i++) {
+                    if (results[0][i]?.['sale_order_mapped']['id'] === sale_code_mapped_param || results[0][i]?.['quotation_mapped']['id'] === sale_code_mapped_param || results[0][i]?.['opportunity_mapped']['id'] === sale_code_mapped_param) {
+                        all_product_items = all_product_items.concat(results[0][i]?.['product_items'])
+                    }
+                }
+                if (sale_code_mapped_obj.length > 0 && type_param === 0) {
+                    loadSaleOrderProduct(sale_code_mapped_param, all_product_items);
+                }
+                if (sale_code_mapped_obj.length > 0 && type_param === 1) {
+                    loadQuotationProduct(sale_code_mapped_param, all_product_items);
+                }
+            }).catch((error) => {
+                console.log(error)
+                $.fn.notifyB({description: "Load Sale Code Failed!"}, 'failure');
+            });
+        }
+        else {
+            PaymentLoadSaleCode([{}].concat(sale_code_list));
+        }
     }).catch((error) => {
         console.log(error)
         $.fn.notifyB({description: "Load Sale Code Failed!"}, 'failure');
@@ -986,6 +1046,7 @@ $("#wizard").steps({
 });
 let wizard_t0 =  $('#wizard-t-0');
 let wizard_t1 =  $('#wizard-t-1');
+let content = $('.content');
 wizard_t0.attr('hidden', true);
 wizard_t0.closest('li').append(`<span id="tab-1-offCanvas" class="text-primary mr-3" style="font-size: xx-large; font-weight: bolder">1. Select Advance Payment</span>`);
 wizard_t1.attr('hidden', true);
@@ -1260,7 +1321,7 @@ function LoadDetailPayment() {
                             </td>
                             <td colspan="2">
                                 <div class="input-group">
-                                    <input data-return-type="number" placeholder="Click button to select payment value" class="value-converted-from-ap-inp form-control mask-money" value="${data_row_detail?.['converted_value']}" disabledsss>
+                                    <input data-return-type="number" placeholder="Click button to select payment value" class="value-converted-from-ap-inp form-control mask-money" value="${data_row_detail?.['converted_value']}" disabled>
                                     <button style="border: 1px solid #ced4da" data-bs-toggle="offcanvas" 
                                     data-bs-target="#offcanvasSelectDetailAP" aria-controls="offcanvasExample" 
                                     class="disabled btn btn-icon btn-flush-primary flush-soft-hover btn-add-payment-value" type="button">
@@ -1316,13 +1377,13 @@ function LoadDetailPayment() {
 }
 
 class PaymentHandle {
-    load() {
+    load(sale_code_mapped, type) {
         PaymentLoadCreatedDate();
         PaymentLoadCreator(initEmployee);
         PaymentLoadBeneficiary(initEmployee);
         InforSpanBeneficiary(initEmployee);
         PaymentLoadSupplier();
-        getPaymentSaleCode();
+        getPaymentSaleCode(sale_code_mapped, type);
         $('#btn-add-row-line-detail').removeClass('disabled');
     }
     combinesData(frmEle) {

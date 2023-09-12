@@ -47,10 +47,12 @@ saleCodeTypeEle.on('change', function () {
 APTypeEle.on('change', function () {
     if (APTypeEle.val() === '1') {
         supplierEle.prop('disabled', false);
+        $('#supplier-label').addClass('required');
         APLoadSupplier();
     }
     else {
         supplierEle.prop('disabled', true);
+        $('#supplier-label').removeClass('required');
     }
 })
 
@@ -852,7 +854,7 @@ function LoadDetailAP(option) {
 
                 if (Object.keys(data?.['supplier']).length !== 0) {
                     APLoadSupplier(data?.['supplier'])
-                    InforSpanSupplier(data?.['supplier']);
+                    InforSpanSupplier(data?.['supplier']);v
                     LoadBankAccount(data?.['supplier']?.['bank_accounts_mapped']);
                 }
 
@@ -958,13 +960,22 @@ class AdvancePaymentHandle {
 
         frm.dataForm['title'] = $('#title').val();
 
-        frm.dataForm['supplier'] = supplierEle.val();
-
-        frm.dataForm['return_date'] = $('#return_date_id').val();
-
         frm.dataForm['sale_code_type'] = parseInt($('input[name="sale_code_type"]:checked').val());
         if (![0, 1, 2].includes(frm.dataForm['sale_code_type'])) {
             $.fn.notifyB({description: 'Sale code type must be in [0, 1, 2]'}, 'failure');
+            return false;
+        }
+
+        frm.dataForm['supplier'] = supplierEle.val();
+
+        frm.dataForm['advance_payment_type'] = parseInt(APTypeEle.val())
+        if (![0, 1].includes(frm.dataForm['advance_payment_type'])) {
+            $.fn.notifyB({description: 'Advance Payment type must be in [0, 1, 2]'}, 'failure');
+            return false;
+        }
+
+        if (frm.dataForm['advance_payment_type'] === 1 && frm.dataForm['supplier'] === null) {
+            $.fn.notifyB({description: 'Supplier is required.'}, 'failure');
             return false;
         }
 
@@ -974,11 +985,7 @@ class AdvancePaymentHandle {
             return false;
         }
 
-        frm.dataForm['advance_payment_type'] = parseInt(APTypeEle.val())
-        if (![0, 1].includes(frm.dataForm['advance_payment_type'])) {
-            $.fn.notifyB({description: 'Advance Payment type must be in [0, 1, 2]'}, 'failure');
-            return false;
-        }
+        frm.dataForm['return_date'] = $('#return_date_id').val();
 
         frm.dataForm['creator_name'] = APCreatorEle.val();
         if (frm.dataForm['creator_name'] === '') {

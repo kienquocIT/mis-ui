@@ -3,12 +3,18 @@
         id="idBlockRangeMasterElement"
         class="hidden"
         data-msg-least-one="{% trans 'Allow at least one permit' %}"
+        data-msg-select-range="{% trans 'Range for permit is required' %}"
+        data-msg-merge-range-empty="{% trans 'The combined range of the selected permissions has no matches' %}"
         data-msg-need-drop="{% trans 'Need drop this row when allow at least one permit' %}"
         data-msg-are-u-sure="{% trans 'Are you sure?' %}"
         data-msg-not-revert="{% trans "You won't be able to revert this!" %}"
         data-msg-yes-delete-it="{% trans 'Yes, delete it!' %}"
         data-msg-cancel="{% trans 'Cancel' %}"
         data-msg-delete="{% trans 'Delete' %}"
+        data-msg-depend-app="{% trans 'Some app depend is open' %}"
+        data-msg-depend-app-show="{% trans 'Depend on apps' %}"
+        data-msg-same-range-of-main="{% trans 'Same range of main' %}"
+        data-msg-incorrect-line="{% trans 'Some data is incorrect at line' %}"
 ></span>
 {#<button class="btn btn-danger" type="button" onclick="new HandlePermissions().combinesData()">Click</button>#}
 {#{% if add_new_enabled == "true" %}#}
@@ -27,20 +33,25 @@
         <th>#</th>
         <th>{% trans 'Application' %}</th>
         <th>{% trans 'All' %}</th>
-        <th>{% trans 'Create' %}</th>
-        <th>{% trans 'View' %}</th>
-        <th>{% trans 'Edit' %}</th>
-        <th>{% trans 'Delete' %}</th>
+        <th id="headingPermitCreate">{% trans 'Create' %}</th>
+        <th id="headingPermitView">{% trans 'View' %}</th>
+        <th id="headingPermitEdit">{% trans 'Edit' %}</th>
+        <th id="headingPermitDelete">{% trans 'Delete' %}</th>
         <th>{% trans 'Jurisdiction' %}</th>
         <th>
-            <div class="d-flex align-items-center justify-content-end">{% trans 'Actions' %}</div>
+            <div class="d-flex align-items-center justify-content-end">
+                <span class="mr-1">{% trans 'Actions' %}</span>
+                <span class="icon mr-1">
+                    <i class="fa-regular fa-square-caret-left" id="btnCollapseSubAll" style="cursor: pointer;"></i>
+                </span>
+            </div>
         </th>
     </tr>
     </thead>
     <tbody></tbody>
     {% if add_new_enabled == "true" %}
         <tfoot>
-        <tr class="bg-green-light-5">
+        <tr class="bg-green-light-5" id="row_for_setup_new">
             <td>
                 <i
                         class="fa-solid fa-circle-info text-info"
@@ -56,7 +67,7 @@
                 <div class="form-check form-switch">
                     <label for="newRowAllCheck" class="hidden"></label>
                     <input
-                            type="checkbox" class="form-check-input row-e-all" name="all-1"
+                            type="checkbox" class="form-check-input row-e-all-foot" name="all-1"
                             id="newRowAllCheck"
                     >
                 </div>
@@ -65,7 +76,7 @@
                 <div class="form-check form-switch">
                     <label for="newRowCreateCheck" class="hidden"></label>
                     <input
-                            type="checkbox" class="form-check-input row-e-child" name="all-1"
+                            type="checkbox" class="form-check-input row-e-child-foot row-e-child-create" name="all-1"
                             id="newRowCreateCheck"
                     >
                 </div>
@@ -74,7 +85,7 @@
                 <div class="form-check form-switch">
                     <label for="newRowViewCheck" class="hidden"></label>
                     <input
-                            type="checkbox" class="form-check-input row-e-child" name="all-1"
+                            type="checkbox" class="form-check-input row-e-child-foot row-e-child-view" name="all-1"
                             id="newRowViewCheck"
                     >
                 </div>
@@ -83,7 +94,7 @@
                 <div class="form-check form-switch">
                     <label for="newRowEditCheck" class="hidden"></label>
                     <input
-                            type="checkbox" class="form-check-input row-e-child" name="all-1"
+                            type="checkbox" class="form-check-input row-e-child-foot row-e-child-edit" name="all-1"
                             id="newRowEditCheck"
                     >
                 </div>
@@ -92,14 +103,14 @@
                 <div class="form-check form-switch">
                     <label for="newRowDeleteCheck" class="hidden"></label>
                     <input
-                            type="checkbox" class="form-check-input row-e-child" name="all-1"
+                            type="checkbox" class="form-check-input row-e-child-foot row-e-child-delete" name="all-1"
                             id="newRowDeleteCheck"
                     >
                 </div>
             </td>
             <td>
                 <label for="newRowRange" class="hidden"></label>
-                <select class="form-control" id="newRowRange">
+                <select class="form-control" id="newRowRange" name="permission-range">
                     <option value="1">{% trans "Themselves" %}</option>
                     <option value="2">{% trans "Their staff" %}</option>
                     <option value="3">{% trans "Member in their group" %}</option>
@@ -112,6 +123,11 @@
                             class="btn btn-primary" type="button" id="btnAddNewRowPerms"
                     >{% trans 'Add' %}</button>
                 </div>
+            </td>
+        </tr>
+        <tr class="hidden">
+            <td colspan="9" id="sub_for_setup_new" class="wrap-text">
+
             </td>
         </tr>
         <tr class="bg-sky-light-5">

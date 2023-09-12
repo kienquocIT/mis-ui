@@ -1582,7 +1582,7 @@ class WFRTControl {
 }
 
 class UtilControl {
-    static parseJsonDefault(data, defaultReturn = {}) {
+    static parseJson(data, defaultReturn = {}) {
         try {
             return JSON.parse(data);
         } catch (error) {
@@ -1590,7 +1590,7 @@ class UtilControl {
         }
     }
 
-    static dumpJsonDefault(data, defaultReturn = '{}') {
+    static dumpJson(data, defaultReturn = '{}') {
         try {
             return JSON.stringify(data);
         } catch (error) {
@@ -1614,6 +1614,19 @@ class UtilControl {
                 v = c === 'x' ? r : (r & 0x3 | 0x8);
             return v.toString(16);
         });
+    }
+
+    static checkUUID4(data){
+        if (
+            typeof data === "string" && (
+                data.length === 36 // string type
+                || data.length === 36 - 4 // hex type
+            )
+        ){
+            const regexExp = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/gi;
+            return regexExp.test(data);
+        }
+        return false;
     }
 
     static arraysEqual(a, b) {
@@ -1778,9 +1791,8 @@ class DTBControl {
         let rowData = $x.fn.getRowData($(clsThis));
         let newData = func(clsThis, rowIdx, rowData);
         let dtbAfter = dtb.row(rowIdx).data(newData);
-        if (isDraw === true) {
-            dtbAfter.draw(false);
-        }
+        if (isDraw === true) dtbAfter.draw(false, true);
+        return dtbAfter;
     }
 
     checkRowSelect(opts) {
@@ -2154,9 +2166,8 @@ class DTBControl {
                                         id="${fakeIdx}"
                                         class="custom-filter-manual-dtb form-select form-select-sm"
                                         ${attrHTML.join(" ")}
-                                    >
-                                        ${dataOnload.join("")}
-                                    </select>
+                                        data-onload='${JSON.stringify(config.data || [])}'
+                                    ></select>
                                 </div>
                             </div>
                         `);
@@ -2176,6 +2187,7 @@ class DTBControl {
                     data-bs-toggle="tooltip"
                     data-bs-placement="bottom"
                     title="${$.fn.transEle.attr('data-msg-open-close-filter')}"
+                    type="button"
                 >
                     <span>
                         <span class="icon dtb-icon-btn-filter"><i class="fa-solid fa-filter" style="color: #707070;"></i></span>
@@ -2241,7 +2253,7 @@ class DTBControl {
                     <option selected></option>
                         ${keySort.join("")}
                 </select>
-                <button class="btn btn-light custom-order-asc-dtb w-35p" disabled>
+                <button class="btn btn-light custom-order-asc-dtb w-35p" type="button" disabled>
                     <i class="fa-solid fa-arrow-down-a-z"></i>
                 </button>
             </div>
@@ -2345,13 +2357,16 @@ class DTBControl {
         setTimeout(
             () => {
                 wrapperEle.find('select.custom-filter-manual-dtb').each(function () {
-                    $(this).initSelect2({allowClear: true})
+                    $(this).initSelect2({
+                        allowClear: true,
+                        keepIdNullHasText: true,
+                    })
                 });
                 wrapperEle.find('input.custom-visible-item-dtb').each(function () {
                     $(this).trigger('change');
                 })
             },
-            0
+            1000
         )
     }
 
@@ -2589,9 +2604,17 @@ class DTBControl {
         let clsThis = this;
         let rowIdx = this.opts?.['rowIdx'];
         if (rowIdx === true) {
-            return function (row, data, displayNum, displayIndex, dataIndex) {
-                let pageInfo = $(clsThis.dtb$).DataTable().page.info();
-                let counter = pageInfo.start + displayNum + 1;
+            return function (row, data, displayNum) {
+                let dtbTmp = $(clsThis.dtb$).DataTable();
+                let pageInfo = dtbTmp.page.info();
+                let counter = '';
+                if (pageInfo['serverSide'] === true) {
+                    // serverSide --> displayNum was reset to 0 when render --> so page number * page size + display
+                    counter = pageInfo.start + displayNum + 1;
+                } else {
+                    // for datatable not use serverSide.
+                    counter = displayNum + 1;
+                }
                 let htmlDisplay = `${counter}`;
                 let callbackGetLinkBlank = clsThis.callbackGetLinkBlank;
                 let urlTargetHTML = callbackGetLinkBlank ? callbackGetLinkBlank(data) : null;
@@ -3231,8 +3254,11 @@ let $x = {
 
         parseDateTime: UtilControl.parseDateTime,
         parseDate: UtilControl.parseDate,
+        parseJson: UtilControl.parseJson,
+        dumpJson: UtilControl.dumpJson,
 
         randomStr: UtilControl.generateRandomString,
+        checkUUID4: UtilControl.checkUUID4,
     },
 }
 

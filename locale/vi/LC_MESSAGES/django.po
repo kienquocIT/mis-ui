@@ -433,6 +433,18 @@ msgid "Active the employee after created"
 msgstr "Kích hoạt nhân viên sau khi tạo"
 
 #
+msgid "Summary of permissions"
+msgstr "Tóm tắt quyền"
+
+#
+msgid "Same range of main"
+msgstr "Sử dụng phạm vi của quyền chính"
+
+#
+msgid "Some data is incorrect at line"
+msgstr "Một số dòng chưa đủ dữ liệu"
+
+#
 msgid "Permission"
 msgstr "Quyền hạn"
 
@@ -2573,6 +2585,14 @@ msgid "Allow at least one permit"
 msgstr "Cho phép ít nhất một quyền"
 
 #
+msgid "Range for permit is required"
+msgstr "Phạm vi cho quyền không được để trống"
+
+#
+msgid "The combined range of the selected permissions has no matches"
+msgstr "Phạm vi kết hợp của các quyền đã chọn không có kết quả trùng khớp"
+
+#
 msgid "Are you sure?"
 msgstr "Bạn chắc chắn?"
 
@@ -4022,3 +4042,11 @@ msgstr "Đăng ký"
 #
 msgid "About Us"
 msgstr "Về chúng tôi"
+
+#
+msgid "Some app depend is open"
+msgstr "Một số ứng dụng phụ thuộc đang mở"
+
+#
+msgid "Depend on apps"
+msgstr "Một số ứng dụng phụ thuộc"

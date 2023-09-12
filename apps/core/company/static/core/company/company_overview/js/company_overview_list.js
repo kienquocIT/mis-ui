@@ -222,7 +222,6 @@ $(function () {
                             if (companyIdSelected) {
                                 d.company_id = companyIdSelected;
                                 let stateUser = $('#chooseStateUser').val();
-                                console.log(companyIdSelected, stateUser);
                                 switch (stateUser) {
                                     case 'all':
                                         break

@@ -491,9 +491,11 @@ class SelectDDControl {
             initData = data.map((item) => {
                 let selected = item?.['selected']
                 if (typeof selected !== "boolean") selected = autoSelected;
+                let _txt = this.callbackTextDisplay(item, keyText);
                 return {
                     'id': this.callbackValueId(item, keyId),
-                    'text': this.callbackTextDisplay(item, keyText),
+                    'text': _txt,
+                    'title': _txt,
                     'data': item,
                     'selected': selected,
                 }
@@ -529,7 +531,7 @@ class SelectDDControl {
                 }, ...config,
             }
         }
-        return ajaxConfig ? {'ajax': ajaxConfig} : {};
+        return {'ajax': (ajaxConfig ? ajaxConfig : null)};
     }
 
     constructor(selectEle, opts) {
@@ -600,10 +602,23 @@ class SelectDDControl {
         let dataSelected = this._ele_collect_selected(hasAjax);
         let dataOnload = this.initData;
         if (this.ele && this.ele.length > 0 && Array.isArray(dataOnload) && Array.isArray(dataSelected)) {
-            let optHTML = this.initData.concat(dataSelected).map((item) => {
+            let sumData = this.initData.concat(dataSelected);
+            if (!hasAjax){
+                config['ajax'] = null;
+                config['data'] = sumData.map(
+                    (item)=>{
+                        return {
+                            ...item,
+                            // prepare text to title for templateResult callback
+                            'title': item?.['text'] ? item?.['text']: item?.['title'] ? item['title'] : '',
+                        }
+                    }
+                );
+            }
+            let optHTML = sumData.map((item) => {
                 let idn = item?.['id'];
                 let textShow = item?.['text'];
-                if (idn || (!idn && textShow && this.keepIdNullHasText)) {
+                if (idn || (!idn && this.keepIdNullHasText)) {
                     this._forceUpdateDataBackupLoaded(idn, item?.['data'] || {});
                     return `<option value="${idn}" ${item?.selected ? "selected" : ""}>${textShow || ''}</option>`;
                 }

@@ -37,6 +37,11 @@ class PermitSummaryHandle {
     renderAppOfUser(plan_app, updateEleExist = true) {
         let htmlArr = [];
         if (Array.isArray(plan_app) && plan_app.length > 0) {
+            plan_app = plan_app.sort(
+                (a, b) => {
+                    return a.title.localeCompare(b.title);
+                }
+            );
             plan_app.map(
                 (item) => {
                     let applicationList = item['application'] || [];
@@ -44,6 +49,11 @@ class PermitSummaryHandle {
                         let idxHeading = $x.fn.randomStr(32);
                         let idxCollapse = $x.fn.randomStr(32);
                         let appHtml = [];
+                        applicationList = applicationList.sort(
+                            (a, b) => {
+                                return a.title.localeCompare(b.title);
+                            }
+                        )
                         applicationList.map(
                             (item2) => {
                                 appHtml.push(PermitSummaryHandle.renderAppShowing(item2));

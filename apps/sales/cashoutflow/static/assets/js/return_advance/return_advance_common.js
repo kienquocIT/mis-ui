@@ -65,6 +65,7 @@ function loadDetailAdvancePayment(id, type = 'create') {
         if (data) {
             if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('advance_payment_detail')) {
                 let ele_beneficiary = $('#chooseBeneficiary');
+                ele_beneficiary.empty();
                 let sale_code_ele = $('[name="sale_code"]');
                 if (data?.['advance_payment_detail']?.['sale_order_mapped'].length > 0) {
                     sale_code_ele.val(data?.['advance_payment_detail']?.['sale_order_mapped'][0].opportunity.code);
@@ -230,7 +231,7 @@ class ReturnAdvanceLoadPage {
     static loadBeneficiary(ele, data) {
         ele.initSelect2({
             data: data,
-            keyText: 'name',
+            keyText: 'full_name',
         })
     }
 

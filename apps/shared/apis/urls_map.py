@@ -341,3 +341,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     EXPENSE_ITEM_LIST = StringUrl('saledata/expense-items')
     EXPENSE_ITEM_DETAIL = StringUrl('saledata/expense-item/{pk}')
+
+    # Inventory
+    GOODS_RECEIPT_LIST = StringUrl('inventory/goods-receipt/list')
+    GOODS_RECEIPT_DETAIL = StringUrl('inventory/goods-receipt')

@@ -18,8 +18,8 @@ $(document).ready(function () {
             ele_request_for.attr('data-id', 0);
             ele_sale_order.closest('.form-group').removeClass('hidden');
             btn_add_product.addClass('hidden');
-            loadSaleOrder();
-            loadDtbSOProduct([]);
+            PurchaseRequestAction.loadSaleOrder();
+            PurchaseRequestAction.loadDtbSOProduct([]);
             break;
         case 'stock':
             ele_request_for.val('Stock');
@@ -51,21 +51,21 @@ $(document).ready(function () {
     PurchaseRequestLoadPage.loadSupplier()
 
 
-    loadDtbPRProduct();
+    PurchaseRequestAction.loadDtbPRProduct();
 
     // event in model select product from sale order
     $(document).on('change', '.inp-check-so', function () {
         let table_so_product = $('#datatable-product-of-so').DataTable();
         if ($(this).is(':checked')) {
             $('.inp-check-so').not($(this)).prop('checked', false);
-            loadSOProduct(dict_so, dict_so_product, $(this).data('id'), table_so_product);
+            PurchaseRequestAction.loadSOProduct(dict_so, dict_so_product, $(this).data('id'), table_so_product);
         } else {
 
         }
     })
 
     $(document).on('click', '#btn-select-so-product', function () {
-        let ele_url = PurchaseRequestLoadPage.urlEle;
+        let ele_url = urlEle;
         let table_pr_product = $('#datatable-pr-product').DataTable();
         table_pr_product.clear().draw();
         $('.inp-check-so-product:checked').each(function () {
@@ -114,8 +114,8 @@ $(document).ready(function () {
     $(document).on('change', '.inp-unit-price', function () {
         let tr_current = $(this).closest('tr');
         if (tr_current.find('.inp-quantity').val() !== '') {
-            loadPriceSubProduct(tr_current);
-            loadFinalPrice($(this).closest('table'));
+            PurchaseRequestAction.loadPriceSubProduct(tr_current);
+            PurchaseRequestAction.loadFinalPrice($(this).closest('table'));
 
         }
     })
@@ -123,8 +123,9 @@ $(document).ready(function () {
     $(document).on('change', '.inp-quantity', function () {
         let tr_current = $(this).closest('tr');
         if (tr_current.find('.inp-unit-price').val() !== '') {
-            loadPriceSubProduct(tr_current);
-            loadFinalPrice($(this).closest('table'));
+            PurchaseRequestAction.loadPriceSubProduct(tr_current);
+            PurchaseRequestAction.loadPriceSubProduct(tr_current);
+            PurchaseRequestAction.loadFinalPrice($(this).closest('table'));
             $.fn.initMaskMoney2();
         }
     })
@@ -132,8 +133,8 @@ $(document).ready(function () {
     $(document).on('change', '.box-select-tax', function () {
         let tr_current = $(this).closest('tr');
         if (tr_current.find('.inp-quantity').val() !== '' && tr_current.find('.inp-unit-price').attr('value') !== 0) {
-            loadPriceSubProduct(tr_current);
-            loadFinalPrice($(this).closest('table'));
+            PurchaseRequestAction.loadPriceSubProduct(tr_current);
+            PurchaseRequestAction.loadFinalPrice($(this).closest('table'));
             $.fn.initMaskMoney2();
         }
     })
@@ -146,8 +147,10 @@ $(document).ready(function () {
         let last_row = table.find('tbody tr').last();
         let productSelectEle = last_row.find('.box-select-product');
         let taxSelectEle = last_row.find('.box-select-tax');
-        PurchaseRequestLoadPage.loadProduct(productSelectEle);
-        PurchaseRequestLoadPage.loadTax(taxSelectEle)
+
+        let list_selected = PurchaseRequestAction.getListPrProductSelected(productSelectEle);
+        PurchaseRequestLoadPage.loadProduct(productSelectEle, {}, list_selected);
+        PurchaseRequestLoadPage.loadTax(taxSelectEle);
     })
 
     $(document).on('change', '.box-select-product', function () {
@@ -156,44 +159,49 @@ $(document).ready(function () {
         let ele_uom = ele_tr_current.find('.box-select-uom');
         let ele_tax = ele_tr_current.find('.box-select-tax');
 
-        PurchaseRequestLoadPage.loadUoM(ele_uom, product?.['sale_information']?.['default_uom'], {'group': product?.['general_information'].uom_group.id});
+        ele_uom.empty();
+        ele_tax.empty();
+
         PurchaseRequestLoadPage.loadTax(ele_tax, product?.['sale_information'].tax_code);
-        let ele_url = PurchaseRequestLoadPage.urlEle;
-        loadProductDetail(ele_tr_current, ele_url, product)
+        PurchaseRequestLoadPage.loadUoM(ele_uom, product?.['sale_information']?.['default_uom'], {'group': product?.['general_information'].uom_group.id});
+
+        let ele_url = urlEle;
+        PurchaseRequestAction.loadProductDetail(ele_tr_current, ele_url, product)
+        PurchaseRequestAction.delOptionProductSelected($(this));
     })
 
     $(document).on('click', '#btn-select-type-sale-order', function () {
-        updateURLParameter('sale-order');
+        PurchaseRequestAction.updateURLParameter('sale-order');
         ele_request_for.val('Sale Order');
         ele_request_for.attr('data-id', 0);
         ele_sale_order.closest('.form-group').removeClass('hidden');
         btn_add_product.addClass('hidden');
         btn_change_pr_product.removeClass('hidden');
-        loadSaleOrder();
-        loadDtbSOProduct([]);
-        deleteDtbPRProduct();
+        PurchaseRequestAction.loadSaleOrder();
+        PurchaseRequestAction.loadDtbSOProduct([]);
+        PurchaseRequestAction.deleteDtbPRProduct();
         $(this).closest('.modal').modal('hide');
     })
 
     $(document).on('click', '#btn-select-type-stock', function () {
-        updateURLParameter('stock');
+        PurchaseRequestAction.updateURLParameter('stock');
         ele_request_for.val('Stock');
         ele_request_for.attr('data-id', 1);
         ele_sale_order.closest('.form-group').addClass('hidden');
         btn_change_pr_product.addClass('hidden');
         btn_add_product.removeClass('hidden');
-        deleteDtbPRProduct();
+        PurchaseRequestAction.deleteDtbPRProduct();
         $(this).closest('.modal').modal('hide');
     })
 
     $(document).on('click', '#btn-select-type-other', function () {
-        updateURLParameter('other');
+        PurchaseRequestAction.updateURLParameter('other');
         ele_request_for.val('Other');
         ele_request_for.attr('data-id', 2);
         ele_sale_order.closest('.form-group').addClass('hidden');
         btn_change_pr_product.addClass('hidden');
         btn_add_product.removeClass('hidden');
-        deleteDtbPRProduct();
+        PurchaseRequestAction.deleteDtbPRProduct();
         $(this).closest('.modal').modal('hide');
     })
 
@@ -203,7 +211,7 @@ $(document).ready(function () {
         {
             submitHandler: function (form) {
                 let frm = new SetupFormSubmit($(form));
-                let frm_data = getDataForm(frm.dataForm, ele_request_for, ele_sale_order);
+                let frm_data = PurchaseRequestAction.getDataForm(frm.dataForm, ele_request_for, ele_sale_order);
                 $.fn.callAjax2({
                     url: frm.dataUrl,
                     method: frm.dataMethod,

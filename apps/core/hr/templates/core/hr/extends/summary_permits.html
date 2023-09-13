@@ -4,42 +4,31 @@
 <div class="row">
     <div class="col-12 col-md-4">
         <div class="card bg-charcoal-light-5">
-            <div class="card-header">Self</div>
+            <div class="card-header">{% trans 'Application using in Self' %}</div>
             <div class="card-body">
-                <h5 class="card-title">Light Card</h5>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-                    card's content.</p>
+                <p class="card-text">
+                    Some quick example text to build on the card title and make up the bulk of the card's content.
+                </p>
             </div>
         </div>
     </div>
     <div class="col-12 col-md-8">
         <div class="card">
             <div class="card-header">
-                <h6>Apps Using</h6>
+                <p class="card-text">{% trans 'Application using in Role' %}</p>
             </div>
             <div class="card-body p-0">
-                <div class="table-wrap">
+                <div class="table-wrap px-5 pb-3">
                     <div class="table-responsive">
-                        <table class="table mb-0">
+                        <table class="table table-advance-1 w-100 mb-0" id="dtb-apps-using">
                             <thead>
                             <tr>
-                                <th>#</th>
-                                <th>Username</th>
-                                <th>Role</th>
+                                <td>#</td>
+                                <th>{% trans 'Role' %}</th>
+                                <th>{% trans 'Application' %}</th>
                             </tr>
                             </thead>
-                            <tbody>
-                            <tr>
-                                <th scope="row">1</th>
-                                <td>Self</td>
-                                <td><span class="badge badge-danger">admin</span></td>
-                            </tr>
-                            <tr>
-                                <th scope="row">2</th>
-                                <td>Role</td>
-                                <td><span class="badge badge-info">member</span></td>
-                            </tr>
-                            </tbody>
+                            <tbody></tbody>
                         </table>
                     </div>
                 </div>

@@ -1,13 +1,12 @@
 {% load i18n %}
 
-
 <div class="row">
     <div class="col-12 col-md-4">
         <div class="card bg-charcoal-light-5">
             <div class="card-header">{% trans 'Application using in Self' %}</div>
             <div class="card-body">
-                <p class="card-text">
-                    Some quick example text to build on the card title and make up the bulk of the card's content.
+                <p class="card-text" id="appOfSelf">
+                    All app selected of Self
                 </p>
             </div>
         </div>
@@ -20,7 +19,10 @@
             <div class="card-body p-0">
                 <div class="table-wrap px-5 pb-3">
                     <div class="table-responsive">
-                        <table class="table table-advance-1 w-100 mb-0" id="dtb-apps-using">
+                        <table
+                                class="table table-advance-1 w-100 mb-0" id="dtb-apps-using"
+                                data-url="{% url 'RoleDetailAPI' pk='__pk__' %}"
+                        >
                             <thead>
                             <tr>
                                 <td>#</td>
@@ -38,10 +40,13 @@
 </div>
 <div class="row">
     <div class="col-12">
-        <table class="table nowrap w-100" id="tbl-summary-permissions">
+        <table
+                class="table nowrap w-100" id="tbl-summary-permissions"
+        >
             <thead>
             <tr>
                 <th>#</th>
+                <th>{% trans 'Belong To Roles' %}</th>
                 <th>{% trans 'Application' %}</th>
                 <th>{% trans 'View' %}</th>
                 <th>{% trans 'Create' %}</th>

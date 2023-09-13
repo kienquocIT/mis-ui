@@ -5,6 +5,9 @@ $(function () {
             $x.fn.renderCodeBreadcrumb(employeeData);
             new HandlePermissions().loadData(employeeData.plan_app, employeeData.permission_by_configured || []);
             new HandlePlanApp().appendPlanAppOfEmployee(employeeData.plan_app);
+            let permitSummary = new PermitSummaryHandle(null, null, employeeData.permission_by_configured);
+            permitSummary.renderAppOfUser(employeeData.plan_app);
+            permitSummary.renderRoleAppTable(employeeData.role);
 
             EmployeeLoadPage.firstNameEle.val(employeeData.first_name);
             EmployeeLoadPage.lastNameEle.val(employeeData.last_name);

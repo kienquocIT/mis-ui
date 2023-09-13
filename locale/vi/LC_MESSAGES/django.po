@@ -4154,3 +4154,15 @@ msgstr "Ứng dụng đang sử dụng của chính nó"
 #
 msgid "Please check/selected depends on apps at Packages - Applications then try again"
 msgstr "Kiểm tra/Chọn sử dụng ứng dụng phụ thuộc của ứng dụng này tại khu vực Gói - Ứng dụng. Sau đó thử lại"
+
+#
+msgid "Show more"
+msgstr "Xem thêm"
+
+#
+msgid "Show less"
+msgstr "Thu gọn"
+
+#
+msgid "Belong To Roles"
+msgstr "Thuộc về Vai Trò"

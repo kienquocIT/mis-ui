@@ -2207,22 +2207,24 @@ class DTBControl {
         filterEle.find('input[type="search"]').addClass('form-control w-200p');
 
         // handle sort
+        let preKeyVisible = settings.aoHeader[0].map((item) => {return $(item.cell).text().trim();});
         let keyVisible = [];
+
         let keySort = [];
         settings.aoColumns.map(
-            (colConfig) => {
+            (colConfig, idx) => {
                 let colSortSTitle = colConfig?.['sTitle'] || '';
-
                 let colSortEnabled = colConfig?.['orderable'] || false;
                 let colSortMKey = colConfig?.['mData'] || '';
                 if (colSortEnabled && colSortMKey) {
                     keySort.push(`<option value="${colSortMKey}">${colSortSTitle}</option>`);
                 }
 
+                let colText = preKeyVisible[idx];
                 let isVisible = colConfig?.['bVisible'] || false;
                 let idxCol = colConfig?.['idx'];
                 let randomStringData = $x.fn.randomStr(32);
-                if (colSortSTitle)
+                if (colText)
                     keyVisible.push(`
                         <li class="d-flex align-items-center justify-content-between mb-1">
                             <div class="form-check">
@@ -2232,7 +2234,7 @@ class DTBControl {
                                     id="${randomStringData}" ${isVisible ? 'checked' : ''}
                                     data-idx="${idxCol}"
                                 >
-                                <label class="form-check-label" for="${randomStringData}">${colSortSTitle}</label>
+                                <label class="form-check-label" for="${randomStringData}">${colText}</label>
                             </div>
                         </li>
                     `)
@@ -2699,12 +2701,11 @@ class DTBControl {
         };
         return function (settings, json) {
             $(this.api().table().container()).find('input').attr('autocomplete', 'off');
-            initCompleteManual(settings, json);
-            DTBControl.parseHeaderDropdownFilter(
+            initCompleteManual.bind(this)(settings, json);
+            DTBControl.parseHeaderDropdownFilter.bind(this)(
                 (clsThis.opts?.['columns'] || []), settings, clsThis.dtb$
             );
-            // DTBControl.parseFilter(clsThis.dtb$);
-            DTBControl.parseFilter2(clsThis.dtb$, settings, json);
+            DTBControl.parseFilter2.bind(this)(clsThis.dtb$, settings, json);
         }
     }
 

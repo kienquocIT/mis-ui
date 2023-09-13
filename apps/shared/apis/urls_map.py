@@ -339,3 +339,13 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     EXPENSE_ITEM_LIST = StringUrl('saledata/expense-items')
     EXPENSE_ITEM_DETAIL = StringUrl('saledata/expense-item/{pk}')
+
+    # Application for Opportunity permission
+    APPLICATION_OPPORTUNITY_PERMISSION = StringUrl('base/applications-opportunity-permit')
+
+    # Opportunity Detail
+    OPPORTUNITY_MEMBER_DETAIL = StringUrl('opportunity/member/detail/{pk}')
+
+    # Opportunity add member, delete member
+    OPPORTUNITY_ADD_MEMBER = StringUrl('opportunity/add-member/{pk}')
+    OPPORTUNITY_DELETE_MEMBER = StringUrl('opportunity/member/delete/{pk}')

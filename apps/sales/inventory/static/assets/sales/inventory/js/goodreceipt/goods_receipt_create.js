@@ -48,9 +48,9 @@ $(function () {
                 let dataSelected = SelectDDControl.get_data_from_idx(GRLoadDataHandle.POSelectEle, $(this).val());
                 // load supplier
                 GRLoadDataHandle.supplierSelectEle.empty();
-                GRLoadDataHandle.loadBoxSupplier(dataSelected.supplier);
+                GRLoadDataHandle.loadBoxSupplier(dataSelected?.['supplier']);
                 // load PR
-                GRLoadDataHandle.loadDataShowPR(dataSelected.purchase_requests_data);
+                GRLoadDataHandle.loadDataShowPR(dataSelected?.['purchase_requests_data']);
             }
             btnEdit.click();
         });
@@ -85,7 +85,7 @@ $(function () {
                 $(row).css('background-color', '#fff');
             }
             //
-            GRStoreDataHandle.storeDataPR();
+            GRStoreDataHandle.storeDataAll();
             let row = this.closest('tr');
             GRDataTableHandle.tablePR.DataTable().clear().draw();
             if (is_checked === true) {
@@ -111,9 +111,7 @@ $(function () {
                 $(row).css('background-color', '');
             }
             //
-            GRStoreDataHandle.storeDataLot();
-            GRStoreDataHandle.storeDataSerial();
-            GRStoreDataHandle.storeDataWH();
+            GRStoreDataHandle.storeDataAll();
             let row = this.closest('tr');
             GRDataTableHandle.tableLot.DataTable().clear().draw();
             GRDataTableHandle.tableSerial.DataTable().clear().draw();
@@ -138,8 +136,7 @@ $(function () {
                 let row = eleCheck.closest('tr');
                 $(row).css('background-color', '');
             }
-            GRStoreDataHandle.storeDataLot();
-            GRStoreDataHandle.storeDataSerial();
+            GRStoreDataHandle.storeDataAll();
             let row = this.closest('tr');
             GRDataTableHandle.tableLot.DataTable().clear().draw();
             GRDataTableHandle.tableSerial.DataTable().clear().draw();

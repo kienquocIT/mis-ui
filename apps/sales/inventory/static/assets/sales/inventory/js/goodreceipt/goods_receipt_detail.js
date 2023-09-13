@@ -20,6 +20,7 @@ $(function () {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     $.fn.compareStatusShowPageAction(data);
+                    $('#data-detail-page').val(JSON.stringify(data));
                     GRLoadDataHandle.loadDetailPage(data);
 
                     // WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);

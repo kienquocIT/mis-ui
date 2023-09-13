@@ -264,6 +264,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # warehouse
     WAREHOUSE_LIST = StringUrl('saledata/warehouses')
+    WAREHOUSE_LIST_FOR_INVENTORY_ADJUSTMENT = StringUrl('saledata/warehouses-for-inventory-adjustment')
     WAREHOUSE_DETAIL = StringUrl('saledata/warehouse/{pk}')
     WAREHOUSE_PRODUCT_LIST = StringUrl('saledata/warehouses-products')
     WAREHOUSE_STOCK_PRODUCT = StringUrl('saledata/warehouses/check/{product_id}/{uom_id}')
@@ -339,3 +340,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     EXPENSE_ITEM_LIST = StringUrl('saledata/expense-items')
     EXPENSE_ITEM_DETAIL = StringUrl('saledata/expense-item/{pk}')
+
+    # Inventory
+    GOODS_RECEIPT_LIST = StringUrl('inventory/goods-receipt/list')
+    GOODS_RECEIPT_DETAIL = StringUrl('inventory/goods-receipt')

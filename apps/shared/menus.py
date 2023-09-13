@@ -168,7 +168,7 @@ class MenusCRM:
     )
     EXPENSE_ITEM = MenuCommon(
         name='Expense Items', code='id_menu_expense_item_list', view_name='ExpenseItemList',
-        icon='<i class="bi bi-cash-coin"></i>',
+        icon='<i class="bi bi-wallet2"></i>',
     )
     EXPENSE = MenuCommon(
         name='Internal Labor Items', code='id_menu_expense_list', view_name='ExpenseList',
@@ -267,7 +267,7 @@ class MenusPurchase:
     )
 
     PURCHASE = MenuCommon(
-        name='Purchase Activities', code='menu_purchase_activities', view_name='', icon='<i class="fas fa-shopping-cart"></i>',
+        name='Purchasing', code='menu_purchase_activities', view_name='', icon='<i class="fas fa-shopping-cart"></i>',
         child=[
             MenuCommon(
                 name='Purchase Request',
@@ -295,13 +295,13 @@ class MenusPurchase:
     )
 
     INVENTORY = MenuCommon(
-        name='Inventory Activities', code='menu_inventory_activities', view_name='', icon='<i class="bi bi-shop-window"></i>',
+        name='Inventory', code='menu_inventory_activities', view_name='', icon='<i class="fas fa-clipboard-check"></i>',
         child=[
             # MenuCommon(
-            #     name='Goods Receipt',
+            #     name='Goods receipt',
             #     code='menu_goods_receipt_list',
             #     view_name='GoodsReceiptList',
-            #     icon='<i class="bi bi-arrow-right-square"></i>',
+            #     icon='<i class="fas fa-file-import"></i>',
             # ),
             # MenuCommon(
             #     name='Inventory Adjustment',

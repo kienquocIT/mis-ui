@@ -698,9 +698,9 @@ function getDataForm() {
     data['weight'] = parseFloat(weightEle.val());
     data['volume_id'] = volumeEle.attr('data-id');
     data['weight_id'] = weightEle.attr('data-id');
-    data['general_product_type'] = $('#general-select-box-product-type option:selected').attr('value');
-    data['general_product_category'] = $('#general-select-box-product-category option:selected').attr('value');
-    data['general_uom_group'] = $('#general-select-box-uom-group option:selected').attr('value');
+    data['product_types_mapped_list'] = $('#general-select-box-product-type').val();
+    data['general_product_category'] = $('#general-select-box-product-category').val();
+    data['general_uom_group'] = $('#general-select-box-uom-group').val();
     data['general_traceability_method'] = $('#general-select-box-traceability-method option:selected').attr('value');
 
     if (check_tab_sale.is(':checked') === true) {
@@ -757,7 +757,7 @@ function getDataForm() {
         data['purchase_tax'] = null;
     }
 
-    if (!data['general_product_type'] || !data['general_product_category'] || !data['general_uom_group']) {
+    if (!data['product_types_mapped_list'].length > 0 || !data['general_product_category'] || !data['general_uom_group']) {
         $.fn.notifyB({description: 'Some fields in General tab is missing'}, 'failure');
         return false
     }
@@ -864,7 +864,7 @@ function LoadDetailProduct(option) {
 
                 if (Object.keys(product_detail['general_information']).length !== 0) {
                     let general_information = product_detail['general_information'];
-                    loadGeneralProductType(general_information['product_type']);
+                    loadGeneralProductType(general_information['general_product_types_mapped']);
                     loadGeneralProductCategory(general_information['product_category']);
                     loadGeneralUoMGroup(general_information['uom_group']);
                     $('#general-select-box-traceability-method').val(general_information['traceability_method']);

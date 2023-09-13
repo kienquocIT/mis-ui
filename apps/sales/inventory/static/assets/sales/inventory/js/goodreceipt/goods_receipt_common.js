@@ -250,7 +250,7 @@ class GRLoadDataHandle {
         });
     };
 
-    static loadModalProduct() {
+    static loadModalProduct(is_detail = false) {
         let frm = new SetupFormSubmit(GRDataTableHandle.tablePOProduct);
         if (GRDataTableHandle.tablePOProduct[0].querySelector('.dataTables_empty')) {
             $.fn.callAjax2({
@@ -264,9 +264,27 @@ class GRLoadDataHandle {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         if (data.hasOwnProperty('purchase_order_product_list') && Array.isArray(data.purchase_order_product_list)) {
+                            if (is_detail === true) {
+                                let data_detail = JSON.parse($('#data-detail-page').val());
+                                if (GRLoadDataHandle.POSelectEle.val()) {
+                                    for (let data_product of data_detail?.['goods_receipt_product']) {
+                                        for (let dataPOProduct of data.purchase_order_product_list) {
+                                            if (dataPOProduct?.['id'] === data_product?.['purchase_order_product_id']) {
+                                                dataPOProduct['quantity_import'] = data_product?.['quantity_import'];
+                                                dataPOProduct['purchase_request_products_data'] = data_product?.['purchase_request_products_data'];
+                                                GRDataTableHandle.tablePR.DataTable().rows.add(data_product?.['purchase_request_products_data']).draw();
+                                                for (let dataPR of data_product?.['purchase_request_products_data']) {
+                                                    GRLoadDataHandle.loadModalWareHouse(dataPR);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                             GRLoadDataHandle.initPOProductEle.val(JSON.stringify(data.purchase_order_product_list));
                             GRDataTableHandle.tablePOProduct.DataTable().clear().draw();
                             GRDataTableHandle.tablePOProduct.DataTable().rows.add(data.purchase_order_product_list).draw();
+
                         }
                     }
                 }
@@ -584,8 +602,10 @@ class GRLoadDataHandle {
 
 
 
+
     // LOAD DETAIL
     static loadDetailPage(data) {
+        let formSubmit = $('#frm_good_receipt_create');
         $('#good-receipt-title').val(data?.['title']);
         $('#good-receipt-note').val(data?.['remarks']);
         $('#good-receipt-date-received').val(moment(data?.['date_received']).format('MM/DD/YYYY'));
@@ -618,7 +638,11 @@ class GRLoadDataHandle {
         }
         GRDataTableHandle.tableLineDetail.DataTable().rows.add(data?.['goods_receipt_product']).draw();
         GRLoadDataHandle.loadDataRowTable(GRDataTableHandle.tableLineDetail);
-        GRLoadDataHandle.loadTableDisabled(GRDataTableHandle.tableLineDetail);
+        if (formSubmit.attr('data-method') === 'GET') {
+            GRLoadDataHandle.loadTableDisabled(GRDataTableHandle.tableLineDetail);
+        }
+        //
+        GRLoadDataHandle.loadModalProduct(true);
     };
 
     static loadTableDisabled(table) {

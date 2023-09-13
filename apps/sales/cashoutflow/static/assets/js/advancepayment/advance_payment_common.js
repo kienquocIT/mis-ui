@@ -34,7 +34,6 @@ saleCodeTypeEle.on('change', function () {
         $('#sale-code-label-id').addClass('required');
         saleCodeEle.prop('disabled', false);
         APBeneficiaryEle.prop('disabled', false);
-        getSaleCode();
     }
     else if ($(this).val() === '2') {
         btn_sale_code_type.text('Non-sale');
@@ -943,6 +942,7 @@ class AdvancePaymentHandle {
         APLoadBeneficiary(initEmployee);
         InforSpanBeneficiary(initEmployee);
         APLoadSupplier();
+        getSaleCode();
     }
     combinesData(frmEle, for_update=false) {
         let frm = new SetupFormSubmit($(frmEle));

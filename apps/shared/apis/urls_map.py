@@ -184,6 +184,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # payment
     PAYMENT_LIST = StringUrl('cashoutflow/payments')
     PAYMENT_DETAIL = StringUrl('cashoutflow/payments')
+    PAYMENT_CONFIG_LIST = StringUrl('cashoutflow/payment-config')
 
     PAYMENT_COST_ITEMS_LIST = StringUrl('cashoutflow/payment-cost-items-list')
 

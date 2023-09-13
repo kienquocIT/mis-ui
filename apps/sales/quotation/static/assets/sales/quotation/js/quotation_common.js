@@ -922,6 +922,7 @@ class QuotationLoadDataHandle {
 // DataTable
 class QuotationDataTableHandle {
     static productInitEle = $('#data-init-quotation-create-tables-product');
+    static expenseItemInitEle = $('#data-init-quotation-create-tables-expense-item');
     static uomInitEle = $('#data-init-quotation-create-tables-uom');
     static taxInitEle = $('#data-init-quotation-create-tables-tax');
 
@@ -1536,75 +1537,49 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 1,
-                    width: "25%",
                     render: (data, type, row) => {
-                        let selectExpenseID = 'quotation-create-expense-box-expense-' + String(row.order);
-                        let checkboxExpenseItemID = 'check-box-expense-item-' + String(row.order);
-                        let checkboxPurchaseItemID = 'check-box-purchase-item-' + String(row.order);
-                        let data_title = row.expense.title;
-                        let data_id = row.expense.id;
-                        if (row.is_product === true) {
-                            data_title = row.product.title;
-                            data_id = row.product.id;
-                        }
-                        return `<div class="row dropdown-expense">
-                                        <div class="input-group">
-                                            <span class="input-affix-wrapper">
-                                                <span class="input-prefix">
-                                                    <div class="btn-group dropdown">
-                                                        <i
-                                                            class="fas fa-info-circle text-blue"
-                                                            data-bs-toggle="dropdown"
-                                                            data-dropdown-animation
-                                                            aria-haspopup="true"
-                                                            aria-expanded="false"
-                                                            disabled
-                                                        >
-                                                        </i>
-                                                        <div class="dropdown-menu w-210p mt-2 ml-3 expense-more-info"></div>
-                                                    </div>
-                                                </span>
-                                                <div class="dropdown">
-                                                    <div class="input-group input-group-expense-purchase-product" aria-expanded="false" data-bs-toggle="dropdown">
-                                                        <span class="input-affix-wrapper">
-                                                            <input 
-                                                                type="text" 
-                                                                class="form-control table-row-item disabled-show-normal" 
-                                                                value="${data_title}"
-                                                                data-value="${data_id}"
-                                                                style="padding-left: 38px"
-                                                                disabled
-                                                            >
-                                                            <span class="input-suffix">
-                                                                <i class="fas fa-angle-down"></i>
-                                                            </span>
-                                                        </span>
-                                                    </div>
-                                                    <div role="menu" class="dropdown-menu table-row-item-expense w-360p">
-                                                        <div class="row mb-2">
-                                                            <div class="col-6">
-                                                                <div class="form-check">
-                                                                    <input type="checkbox" class="form-check-input checkbox-expense-item" id="${checkboxExpenseItemID}" checked>
-                                                                    <label class="form-check-label" for="${checkboxExpenseItemID}">Expense items</label>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-6">
-                                                                <div class="form-check">
-                                                                    <input type="checkbox" class="form-check-input checkbox-purchasing-item" id="${checkboxPurchaseItemID}" checked>
-                                                                    <label class="form-check-label" for="${checkboxPurchaseItemID}">Purchasing items</label>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-250p position-relative overflow-y-scroll expense-option-list" id="${selectExpenseID}"></div>
-                                                    </div>
-                                                </div>
-                                            </span>
-                                        </div>
+                        return `<div class="row">
+                                    <input type="text" class="form-control table-row-expense-title" value="${row.expense_title}" required>
                                 </div>`;
                     }
                 },
                 {
                     targets: 2,
+                    render: (data, type, row) => {
+                        let selectExpenseItemID = 'quotation-create-expense-box-expense-item-' + String(row.order);
+                            return `<div class="row">
+                                <div class="input-group">
+                                    <span class="input-affix-wrapper">
+                                        <span class="input-prefix">
+                                            <div class="btn-group dropstart">
+                                                <i
+                                                    class="fas fa-info-circle text-blue"
+                                                    data-bs-toggle="dropdown"
+                                                    data-dropdown-animation
+                                                    aria-haspopup="true"
+                                                    aria-expanded="false"
+                                                    disabled
+                                                >
+                                                </i>
+                                                <div class="dropdown-menu w-210p mt-4"></div>
+                                            </div>
+                                        </span>
+                                        <select 
+                                        class="form-select table-row-item" 
+                                        id="${selectExpenseItemID}"
+                                        data-url="${QuotationDataTableHandle.expenseItemInitEle.attr('data-url')}"
+                                        data-link-detail="${QuotationDataTableHandle.expenseItemInitEle.attr('data-link-detail')}"
+                                        data-method="${QuotationDataTableHandle.expenseItemInitEle.attr('data-method')}"
+                                        data-keyResp="expense_item_list"
+                                        required>
+                                        </select>
+                                    </span>
+                                </div>
+                            </div>`;
+                    }
+                },
+                {
+                    targets: 3,
                     width: "5%",
                     render: (data, type, row) => {
                         let selectUOMID = 'quotation-create-expense-box-uom-' + String(row.order);
@@ -1622,7 +1597,7 @@ class QuotationDataTableHandle {
                     },
                 },
                 {
-                    targets: 3,
+                    targets: 4,
                     width: "10%",
                     render: (data, type, row) => {
                         return `<div class="row">
@@ -1631,7 +1606,7 @@ class QuotationDataTableHandle {
                     }
                 },
                 {
-                    targets: 4,
+                    targets: 5,
                     width: "20%",
                     render: (data, type, row) => {
                         return `<div class="row">
@@ -1655,7 +1630,7 @@ class QuotationDataTableHandle {
                     }
                 },
                 {
-                    targets: 5,
+                    targets: 6,
                     width: "10%",
                     render: (data, type, row) => {
                         let selectTaxID = 'quotation-create-expense-box-tax-' + String(row.order);
@@ -1685,7 +1660,7 @@ class QuotationDataTableHandle {
                     }
                 },
                 {
-                    targets: 6,
+                    targets: 7,
                     width: "20%",
                     render: (data, type, row) => {
                         return `<div class="row subtotal-area">
@@ -1702,7 +1677,7 @@ class QuotationDataTableHandle {
                     }
                 },
                 {
-                    targets: 7,
+                    targets: 8,
                     width: "5%",
                     render: () => {
                         return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`

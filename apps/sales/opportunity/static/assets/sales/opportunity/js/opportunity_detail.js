@@ -29,6 +29,7 @@ $(document).ready(async function () {
 
     // load input date time
     OpportunityLoadDetail.configDateTimeEle()
+    OpportunityLoadDetail.loadDtbApplication();
 
     if (config_is_select_stage) {
         $('#btn-auto-update-stage').hide();
@@ -162,11 +163,14 @@ $(document).ready(async function () {
         table.addClass('tag-change');
         $(`.box-select-product-category option[value="${removedOption.id}"]`).remove();
         OpportunityLoadDetail.getTotalPrice();
-        table.find('.select-box-product').each(function (){
+        table.find('.select-box-product').each(function () {
             let optionSelected = $(this).find('option:selected');
             OpportunityLoadDropdown.loadProduct(
                 $(this),
-                {'id': optionSelected.val(), 'title': optionSelected.text()},
+                {
+                    'id': optionSelected.val(),
+                    'title': optionSelected.text()
+                },
                 OpportunityLoadDropdown.productCategorySelectEle.val()
             );
         })
@@ -174,11 +178,14 @@ $(document).ready(async function () {
 
     OpportunityLoadDropdown.productCategorySelectEle.on('select2:select', function (e) {
         let table = $('#table-products');
-        table.find('.select-box-product').each(function (){
+        table.find('.select-box-product').each(function () {
             let optionSelected = $(this).find('option:selected');
             OpportunityLoadDropdown.loadProduct(
                 $(this),
-                {'id': optionSelected.val(), 'title': optionSelected.text()},
+                {
+                    'id': optionSelected.val(),
+                    'title': optionSelected.text()
+                },
                 OpportunityLoadDropdown.productCategorySelectEle.val()
             );
         })
@@ -400,22 +407,55 @@ $(document).ready(async function () {
         OpportunityLoadDetail.loadMemberForDtb().then();
     })
 
-    $(document).on('click', '#btn-add-member', function () {
-        OpportunityLoadDetail.addMember();
-    })
-
     $(document).on('click', '#dtbMember .input-select-member', function () {
         if ($(this).is(':checked')) {
-            $(this).closest('tr').addClass('tr-change selected');
+            $(this).closest('tr').addClass('tr-added selected');
         } else {
-            $(this).closest('tr').removeClass('tr-change selected');
+            alert('Khong the un check');
+            $(this).prop('checked', true);
         }
     })
 
-
     $(document).on('click', '.btn-remove-card', function () {
-        $(this).closest('.card').remove();
-        $('#card-member').addClass('tag-change');
+        let card = $(this).closest('.card');
+        let base_tran_ele = $('#base-trans-factory')
+        Swal.fire({
+            title: base_tran_ele.data('sure-delete'),
+            showCancelButton: true,
+            confirmButtonText: base_tran_ele.data('confirm'),
+        }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+                $.fn.callAjax2({
+                    url: urlEle.data('url-delete-member').format_url_with_uuid(card.data('id')),
+                    method: 'PUT',
+                    data: {
+                        'employee_delete': $('#emp-current-id').val(),
+                        'opportunity': pk,
+                    },
+                }).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            Swal.fire(base_tran_ele.data('success'), '', 'success');
+                            setTimeout(function () {
+                                window.location.reload();
+                            }, 1000)
+
+                        }
+                    },
+                    (errs) => {
+                        if ($.fn.hasOwnProperties(errs.data.errors, ['employee_current'])) {
+                            OpportunityLoadDetail.renderAlert(errs.data.errors.employee_current);
+                        }
+                        else if ($.fn.hasOwnProperties(errs.data.errors, ['member'])){
+                            OpportunityLoadDetail.renderAlert(errs.data.errors.member);
+                        }
+                    }
+                )
+
+            }
+        })
     })
 
     $(document).on('change', '.mask-money', function () {
@@ -494,7 +534,6 @@ $(document).ready(async function () {
         }
     })
 
-
     let list_stage_condition = []
     $(document).on('click', '#btn-auto-update-stage', function () {
         autoLoadStage(
@@ -543,6 +582,46 @@ $(document).ready(async function () {
         }
     })
 
+    // event permission for member
+    $(document).on('click', '.btn-set-perm-member', function () {
+        let id = $(this).closest('.card').data('id');
+        let method = 'GET';
+        let url = urlEle.data('url-member-detail').format_url_with_uuid(id);
+        OpportunityLoadDetail.loadMemberPermission(url, method);
+    })
+
+    const frm_add_member = $('#frm-add-member');
+    // submit form edit
+    SetupFormSubmit.validate(
+        frm_add_member,
+        {
+            submitHandler: function (form) {
+                let frm = new SetupFormSubmit($(form));
+                let data = {
+                    'members': OpportunityLoadDetail.getDataMember(),
+                    'employee_current': $('#emp-current-id').val(),
+                    'opportunity': pk,
+                }
+                $.fn.callAjax2({
+                    url: frm.dataUrl.format_url_with_uuid(pk),
+                    method: frm.dataMethod,
+                    data: data,
+                }).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
+                            setTimeout(function () {
+                                window.location.reload();
+                            }, 1000)
+                        }
+                    },
+                    (errs) => {
+                        $.fn.notifyB({description: errs.data.errors}, 'failure');
+                    }
+                )
+            }
+        })
 
     // toggle action and activity
     toggleShowActivity()

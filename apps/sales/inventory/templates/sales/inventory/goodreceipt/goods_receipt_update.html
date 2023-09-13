@@ -18,9 +18,9 @@
 
 {% block pageContent %}
     <form
-            data-url="{% url 'GoodsReceiptListAPI' %}"
+            data-url="{% url 'GoodsReceiptDetailAPI' data.data.doc_id %}"
             data-url-redirect="{% url 'GoodsReceiptList' %}"
-            data-method="POST"
+            data-method="PUT"
             id="frm_good_receipt_create"
             method="post"
     >
@@ -433,6 +433,10 @@
             type="hidden"
             id="data-submit-pr-warehouse"
         >
+        <input
+            type="hidden"
+            id="data-detail-page"
+        >
 
 
         <div class="modal fade mt-5" id="productModalCenter" tabindex="-1" role="dialog" aria-labelledby="productModalCenter" aria-hidden="true">
@@ -622,4 +626,5 @@
 
     <script src="{% static 'assets/sales/inventory/js/goodreceipt/goods_receipt_common.js' %}"></script>
     <script src="{% static 'assets/sales/inventory/js/goodreceipt/goods_receipt_create.js' %}"></script>
+    <script src="{% static 'assets/sales/inventory/js/goodreceipt/goods_receipt_detail.js' %}"></script>
 {% endblock %}

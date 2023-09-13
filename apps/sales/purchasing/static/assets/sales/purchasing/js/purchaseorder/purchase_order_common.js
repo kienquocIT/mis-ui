@@ -12,7 +12,7 @@ class POLoadDataHandle {
     static eleDivTablePRProductMerge = $('#table-purchase-request-product-merge-area');
 
     static loadMoreInformation(ele, is_span = false) {
-        let optionSelected = null;
+        let optionSelected;
         if (is_span === false) {
             optionSelected = ele;
         } else {
@@ -305,6 +305,10 @@ class POLoadDataHandle {
                     }
                 }
             )
+        } else {
+            POLoadDataHandle.loadDataShowPurchaseRequest();
+            POLoadDataHandle.loadTableProductByPurchaseRequest();
+            POLoadDataHandle.loadModalPurchaseQuotation(true);
         }
         return true;
     };
@@ -420,6 +424,9 @@ class POLoadDataHandle {
                         }
                     }
                 )
+            } else {
+                POLoadDataHandle.loadDataShowPurchaseQuotation();
+                POLoadDataHandle.loadPriceListByPurchaseQuotation();
             }
         }
         return true;
@@ -516,12 +523,6 @@ class POLoadDataHandle {
         let tablePurchaseOrderProductRequest = $('#datable-purchase-order-product-request');
         let tablePurchaseOrderProductAdd = $('#datable-purchase-order-product-add');
         let data = setupMergeProduct();
-        // if (tablePurchaseOrderProductRequest[0].hasAttribute('hidden')) {
-        //     tablePurchaseOrderProductAdd[0].setAttribute('hidden', 'true');
-        //     $('#datable-purchase-order-product-add_wrapper')[0].setAttribute('hidden', 'true');
-        //     tablePurchaseOrderProductRequest[0].removeAttribute('hidden');
-        //     $('#datable-purchase-order-product-request_wrapper')[0].removeAttribute('hidden');
-        // }
         POLoadDataHandle.eleDivTablePOProductAdd[0].setAttribute('hidden', 'true');
         POLoadDataHandle.eleDivTablePOProductRequest[0].removeAttribute('hidden');
         tablePurchaseOrderProductAdd.DataTable().clear().draw();
@@ -597,7 +598,7 @@ class POLoadDataHandle {
         }
     };
 
-    static loadDataRow(row, table_id) {
+    static loadDataRow(row) {
         // mask money
         $.fn.initMaskMoney2();
         let dataRowRaw = row.querySelector('.table-row-order').getAttribute('data-row');

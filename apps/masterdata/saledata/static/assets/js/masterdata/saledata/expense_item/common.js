@@ -82,10 +82,10 @@ class ExpenseItemLoadPage {
         if (!$.fn.DataTable.isDataTable(dtb_id)) {
             let dtb = $(dtb_id)
             dtb.DataTableDefault({
+                dom:'',
                 data: data,
                 searching: false,
                 paginate: false,
-                dom: '',
                 columns: columns,
             });
         }

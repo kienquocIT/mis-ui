@@ -938,7 +938,6 @@ class PermitBastionRule {
 
         let summaryDependsLocal = {};
         let summaryDependsApp = {};
-
         if (isView === true) {
             let viewDepend = permitMapping?.['view'] || {};
             __parseLocalDepends(summaryDependsLocal, viewDepend?.['local_depends_on'] || {});
@@ -1038,7 +1037,10 @@ class PermitBastionRule {
             typeof planDataBackup === 'object' &&
             planDataBackup.hasOwnProperty('id')
         )) {
-          throw Error('App | Plan data empty.')
+            $.fn.notifyB({
+                description: msgPerm.data('msg-check-app-depend-on-info')
+            }, 'failure');
+            throw Error('App | Plan data empty.');
         }
         let app_data = {
             "id": appDataBackup['id'],

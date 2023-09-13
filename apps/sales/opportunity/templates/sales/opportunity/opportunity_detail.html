@@ -660,45 +660,50 @@
                 </div>
             </div>
         </form>
-        <div class="modal fade" id="modalAddMember" tabindex="-1" role="dialog" aria-labelledby="exampleModalLarge01"
-             aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">{% trans "Add member to Sale team" %}</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="table-responsive">
-                            <table class="table nowrap w-lg-750p" id="dtbMember" data-method="GET"
-                                   data-url="{% url 'EmployeeListAPI' %}">
-                                <thead>
-                                <tr>
-                                    <th></th>
-                                    <th>{% trans "Employee Code" %}</th>
-                                    <th>{% trans "Employee Name" %}</th>
-                                    <th class="hidden">{% trans "Email" %}</th>
-                                    <th>
+
+        <form id="frm-add-member" data-method="PUT" data-url="{% url 'OpportunityAddMemberAPI' pk=0 %}">
+            <div class="modal fade" id="modalAddMember" tabindex="-1" role="dialog"
+                 aria-labelledby="exampleModalLarge01"
+                 aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">{% trans "Add member to Sale team" %}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="table-responsive">
+                                <table class="table nowrap w-lg-750p" id="dtbMember" data-method="GET"
+                                       data-url="{% url 'EmployeeListAPI' %}">
+                                    <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>{% trans "Employee Code" %}</th>
+                                        <th>{% trans "Employee Name" %}</th>
+                                        <th class="hidden">{% trans "Email" %}</th>
+                                        <th>
                                         <span class="form-check">
                                             <input type="checkbox" class="form-check-input check-select-all">
                                         </span>
-                                    </th>
-                                </tr>
-                                </thead>
-                            </table>
+                                        </th>
+                                    </tr>
+                                    </thead>
+                                </table>
+                            </div>
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary"
-                                data-bs-dismiss="modal">{% trans "Close" %}</button>
-                        <button type="button" class="btn btn-primary" id="btn-add-member">{% trans "Add" %}</button>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary"
+                                    data-bs-dismiss="modal">{% trans "Close" %}</button>
+                            <button type="submit" form="frm-add-member" class="btn btn-primary">{% trans "Add" %}</button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </form>
     </div>
+
 
     <div class="modal fade mt-10" id="create-new-call-log" tabindex="-1" role="dialog"
          aria-labelledby="createOpportunityModalForms" aria-hidden="true">
@@ -1244,26 +1249,54 @@
     </div>
 
     <!-- Modal set permission for team member -->
-    <div class="modal fade" id="modal-set-perm" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter"
-         aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">{% trans 'Set Permission For Member' %}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true"></span>
-                    </button>
-                </div>
-                <div class="modal-body">
-
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                    <button type="button" class="btn btn-primary">{% trans 'Save' %}</button>
+    <form id="frm-set-perm-member">
+        <div class="modal fade" id="modal-set-perm" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{% trans 'Set Permission For Member' %}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true"></span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="form-check col-6">
+                                <input type="checkbox" class="form-check-input" id="checkViewThisOpp"/>
+                                <label class="form-label"
+                                       for="checkViewThisOpp">{% trans 'Can View This Opportunity' %}</label>
+                            </div>
+                            <div class="form-check col-6">
+                                <input type="checkbox" class="form-check-input" id="checkCanAddMember"/>
+                                <label class="form-label" for="checkCanAddMember">{% trans 'Can add member' %}</label>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <table class="table table nowrap w-100 mb-5" data-method="GET"
+                                   data-url="{% url 'ApplicationForOpportunityPermitListAPI' %}"
+                                   id="table-applications">
+                                <thead>
+                                <tr>
+                                    <th>{% trans 'Function Name' %} </th>
+                                    <th>{% trans 'Create' %}</th>
+                                    <th>{% trans "Edit" %}</th>
+                                    <th>{% trans "View my activity" %}</th>
+                                    <th>{% trans "View opp member" %}</th>
+                                </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary"
+                                data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                        <button type="button" class="btn btn-primary">{% trans 'Save' %}</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </form>
 
     {{ data.type_customer|json_script:'data_type_customer' }}
     {{ data.role_customer|json_script:'data_role_customer' }}
@@ -1282,6 +1315,8 @@
            data-url-config="{% url 'OpportunityConfigAPI' %}"
            data-url-related-quotation="{% url 'QuotationDetail' pk=0 %}"
            data-url-related-sale-order="{% url 'SaleOrderDetail' pk=0 %}"
+           data-url-member-detail="{% url 'OpportunityMemberDetailAPI' pk=0 %}"
+           data-url-delete-member="{% url 'OpportunityDeleteMemberAPI' pk=0 %}"
     >
     <input type="text" id="trans-factory"
            data-activity-type01="{% trans 'Call to customer' %}"

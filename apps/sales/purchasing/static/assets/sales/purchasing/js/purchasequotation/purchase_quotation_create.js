@@ -172,7 +172,6 @@ $(function () {
 
                 if (flag) {
                     let parent_tr = $(this).closest('tr');
-                    parent_tr.find('.product-type').val($(this).find('option:selected').attr('data-type'));
                     parent_tr.find('.product-tax-select-box').val($(this).find('option:selected').attr('data-tax-id'));
 
                     $('#' + parent_tr.attr('id') + ' .product-unit-price-select-box').attr('value', '');
@@ -220,7 +219,7 @@ $(function () {
                     if (item.sale_tax) {
                         tax_code_id = item.sale_tax.id;
                     }
-                    ele.append(`<option data-uom-group-id="` + item.general_uom_group.id + `" data-type="` + item.general_product_type.title + `" data-tax-id="` + tax_code_id + `" value="` + item.id + `">` + item.title + `</option>`);
+                    ele.append(`<option data-uom-group-id="` + item.general_uom_group.id + `" data-tax-id="` + tax_code_id + `" value="` + item.id + `">` + item.title + `</option>`);
                 }
             })
         }

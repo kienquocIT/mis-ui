@@ -390,9 +390,7 @@ $(function () {
             }
             let newRow = tableExpense.DataTable().row.add(dataAdd).draw().node();
             // load data dropdown
-            let selectExpenseID = 'quotation-create-expense-box-expense-' + String(order);
-            QuotationLoadDataHandle.loadBoxQuotationExpense(selectExpenseID);
-            QuotationLoadDataHandle.loadBoxQuotationProductPurchasing(selectExpenseID);
+            QuotationLoadDataHandle.loadBoxQuotationExpenseItem($(newRow.querySelector('.table-row-item')));
             QuotationLoadDataHandle.loadBoxQuotationUOM($(newRow.querySelector('.table-row-uom')));
             QuotationLoadDataHandle.loadBoxQuotationTax($(newRow.querySelector('.table-row-tax')));
             // check disable
@@ -483,8 +481,6 @@ $(function () {
 // ******** Action on change data of table row EXPENSE => calculate data for row & calculate data total
         tableExpense.on('change', '.table-row-item, .table-row-quantity, .table-row-price, .table-row-tax', function () {
             let row = $(this)[0].closest('tr');
-            if ($(this).hasClass('table-row-item')) {
-            }
             QuotationCalculateCaseHandle.commonCalculate(tableExpense, row, false, false, true);
         });
 

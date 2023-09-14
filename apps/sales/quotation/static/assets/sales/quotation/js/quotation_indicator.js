@@ -248,8 +248,8 @@ function calculateIndicator(indicator_list) {
 
 function evaluateFormula(formulaText) {
     try {
-        const evaluated = eval(formulaText);
-        return evaluated;
+        return eval(formulaText);
+        // return evaluated;
     } catch (error) {
         return null;
     }
@@ -296,18 +296,18 @@ class indicatorFunctionHandle {
         let rightValue = null;
         let operator_list = ['===', '!==', '<', '>', '<=', '>='];
         let condition_operator = operator_list.filter((element) => item.function_data.includes(element))[0];
-        const operatorIndex = item.function_data.indexOf(condition_operator);
+        let operatorIndex = item.function_data.indexOf(condition_operator);
         if (operatorIndex !== -1 && operatorIndex > 0 && operatorIndex < item.function_data.length - 1) {
             leftValueJSON = item.function_data[operatorIndex - 1];
             rightValue = item.function_data[operatorIndex + 1];
         }
         let lastElement = item.function_data[item.function_data.length - 1];
         // Tab Products
-        if (data_form.quotation_products_data) {}
+        if (data_form?.['quotation_products_data']) {}
         // Tab Expense
         if (is_sale_order === false) {
-            if (data_form.quotation_expenses_data) {
-                functionBody = self.extractDataToSum(data_form.quotation_expenses_data, leftValueJSON, condition_operator, rightValue, lastElement);
+            if (data_form?.['quotation_expenses_data']) {
+                functionBody = self.extractDataToSum(data_form?.['quotation_expenses_data'], leftValueJSON, condition_operator, rightValue, lastElement);
             }
         } else {
             if (data_form?.['sale_order_expenses_data']) {

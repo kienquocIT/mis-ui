@@ -15,6 +15,7 @@
         data-msg-depend-app-show="{% trans 'Depend on apps' %}"
         data-msg-same-range-of-main="{% trans 'Same range of main' %}"
         data-msg-incorrect-line="{% trans 'Some data is incorrect at line' %}"
+        data-msg-check-app-depend-on-info="{% trans 'Please check/selected depends on apps at Packages - Applications then try again' %}"
 ></span>
 {#<button class="btn btn-danger" type="button" onclick="new HandlePermissions().combinesData()">Click</button>#}
 {#{% if add_new_enabled == "true" %}#}
@@ -130,23 +131,23 @@
 
             </td>
         </tr>
-        <tr class="bg-sky-light-5">
-            <td class="wrap-text" colspan="1">
-                <i
-                        class="fa-solid fa-bolt text-warning"
-                        data-bs-toggle="tooltip" data-bs-placement="right"
-                        title="{% trans 'Quick Setup' %}"
-                ></i>
-            </td>
-            <td colspan="8">
-                <button class="btn btn-primary mr-1" type="button">Normal</button>
-                <button class="btn btn-primary mr-1" type="button">Administrator</button>
-                <button class="btn btn-primary mr-1" type="button">HR Manager</button>
-                <button class="btn btn-primary mr-1" type="button">Warehouse Manager</button>
-                <button class="btn btn-primary mr-1" type="button">Picker</button>
-                <button class="btn btn-primary mr-1" type="button">Deliver</button>
-            </td>
-        </tr>
+{#        <tr class="bg-sky-light-5">#}
+{#            <td class="wrap-text" colspan="1">#}
+{#                <i#}
+{#                        class="fa-solid fa-bolt text-warning"#}
+{#                        data-bs-toggle="tooltip" data-bs-placement="right"#}
+{#                        title="{% trans 'Quick Setup' %}"#}
+{#                ></i>#}
+{#            </td>#}
+{#            <td colspan="8">#}
+{#                <button class="btn btn-primary mr-1" type="button">Normal</button>#}
+{#                <button class="btn btn-primary mr-1" type="button">Administrator</button>#}
+{#                <button class="btn btn-primary mr-1" type="button">HR Manager</button>#}
+{#                <button class="btn btn-primary mr-1" type="button">Warehouse Manager</button>#}
+{#                <button class="btn btn-primary mr-1" type="button">Picker</button>#}
+{#                <button class="btn btn-primary mr-1" type="button">Deliver</button>#}
+{#            </td>#}
+{#        </tr>#}
         </tfoot>
     {% else %}
         <div class="hidden">

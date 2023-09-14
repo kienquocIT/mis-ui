@@ -107,7 +107,7 @@ function loadBookmarkList() {
                 let scriptStorageItemData = jQuery(`<script>`);
                 scriptStorageItemData.addClass("bookmark-item-data hidden");
                 scriptStorageItemData.attr("type", "application/json");
-                scriptStorageItemData.text(UtilControl.dumpJsonDefault(item));
+                scriptStorageItemData.text($x.fn.dumpJson(item));
 
                 let btnActionHtml = $(`
                                         <div class="bookmark-item-action">

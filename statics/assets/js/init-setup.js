@@ -1616,13 +1616,13 @@ class UtilControl {
         });
     }
 
-    static checkUUID4(data){
+    static checkUUID4(data) {
         if (
             typeof data === "string" && (
                 data.length === 36 // string type
                 || data.length === 36 - 4 // hex type
             )
-        ){
+        ) {
             const regexExp = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/gi;
             return regexExp.test(data);
         }
@@ -2206,23 +2206,25 @@ class DTBControl {
         filterEle.addClass('mr-1');
         filterEle.find('input[type="search"]').addClass('form-control w-200p');
 
-        // handle visible && sort
+        // handle sort
+        let preKeyVisible = settings.aoHeader[0].map((item) => {return $(item.cell).text().trim();});
         let keyVisible = [];
+
         let keySort = [];
         settings.aoColumns.map(
-            (colConfig) => {
+            (colConfig, idx) => {
                 let colSortSTitle = colConfig?.['sTitle'] || '';
-
                 let colSortEnabled = colConfig?.['orderable'] || false;
                 let colSortMKey = colConfig?.['mData'] || '';
                 if (colSortEnabled && colSortMKey) {
                     keySort.push(`<option value="${colSortMKey}">${colSortSTitle}</option>`);
                 }
 
+                let colText = preKeyVisible[idx];
                 let isVisible = colConfig?.['bVisible'] || false;
                 let idxCol = colConfig?.['idx'];
                 let randomStringData = $x.fn.randomStr(32);
-                if(colSortSTitle)
+                if (colText)
                     keyVisible.push(`
                         <li class="d-flex align-items-center justify-content-between mb-1">
                             <div class="form-check">
@@ -2232,145 +2234,172 @@ class DTBControl {
                                     id="${randomStringData}" ${isVisible ? 'checked' : ''}
                                     data-idx="${idxCol}"
                                 >
-                                <label class="form-check-label" for="${randomStringData}">${colSortSTitle}</label>
+                                <label class="form-check-label" for="${randomStringData}">${colText}</label>
                             </div>
                         </li>
                     `)
             }
         )
 
+        let keySortHtml = '';
+        if (settings.oInit['enableSortColumns'] === true) {
+            keySortHtml = keySort.length > 0 ? `
+                <div 
+                    class="input-group input-group-sm w-115p ml-1"
+                    data-bs-toggle="tooltip"
+                    title="${$.fn.transEle.attr('data-msg-sorting-by')}"
+                >
+                    <select class="form-select form-select-sm w-80p custom-order-dtb">
+                        <option selected></option>
+                            ${keySort.join("")}
+                    </select>
+                    <button class="btn btn-light custom-order-asc-dtb w-35p" type="button" disabled>
+                        <i class="fa-solid fa-arrow-down-a-z"></i>
+                    </button>
+                </div>
+            ` : '';
+        }
+
         // handle tools
-        let cusToolData = DTBControl._parseCusTools(settings, wrapperEle) || [];
-
-        // render
-        let keySortHtml = keySort.length > 0 ? `
-            <div 
-                class="input-group input-group-sm w-115p ml-1"
-                data-bs-toggle="tooltip"
-                title="${$.fn.transEle.attr('data-msg-sorting-by')}"
-            >
-                <select class="form-select form-select-sm w-80p custom-order-dtb">
-                    <option selected></option>
-                        ${keySort.join("")}
-                </select>
-                <button class="btn btn-light custom-order-asc-dtb w-35p" type="button" disabled>
-                    <i class="fa-solid fa-arrow-down-a-z"></i>
-                </button>
-            </div>
-        ` : '';
-        let keyVisibleHtml = keyVisible.length > 0 ? `
-            <div 
-                class="btn-group btn-group-sm dropdown ml-1"
-                data-bs-toggle="tooltip"
-                title="${$.fn.transEle.attr('data-msg-show-hide-columns')}"
-            >
-                <button type="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <i class="fa-solid fa-list"></i>
-                </button>
-                <div class="dropdown-menu w-150p">
-                    <ul class="p-0 m-0 custom-visible-dtb">
-                        <li class="d-flex align-items-center justify-content-between mb-1">
-                            <div class="form-check">
-                                <input 
-                                    type="checkbox" 
-                                    class="form-check-input check-all" 
-                                    id="${dtb.attr('id')}-visible-check-all"
-                                >
-                                <blabel class="form-check-label" for="${dtb.attr('id')}-visible-check-all"><b>${$.fn.transEle.attr('data-all')}</b></label>
-                            </div>
-                        </li>
-                        ${keyVisible.join("")}
-                    </ul>
+        let cusToolHtml = '';
+        if (settings.oInit['let cusToolHtml'] === true) {
+            let cusToolData = DTBControl._parseCusTools(settings, wrapperEle) || [];
+            cusToolHtml = cusToolData.length > 0 ? `
+                <div 
+                    class="btn-group btn-group-sm dropdown ml-1"
+                    data-bs-toggle="tooltip"
+                    title="${$.fn.transEle.attr('data-msg-tools')}"
+                >
+                    <button type="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fa-regular fa-lightbulb"></i>
+                    </button>
+                    <div class="dropdown-menu w-150p">
+                        ${cusToolData.join("")}
+                    </div>
                 </div>
-            </div>
-        ` : '';
-        let cusToolHtml = cusToolData.length > 0 ? `
-            <div 
-                class="btn-group btn-group-sm dropdown ml-1"
-                data-bs-toggle="tooltip"
-                title="${$.fn.transEle.attr('data-msg-tools')}"
-            >
-                <button type="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <i class="fa-regular fa-lightbulb"></i>
-                </button>
-                <div class="dropdown-menu w-150p">
-                    ${cusToolData.join("")}
-                </div>
-            </div>
-        ` : '';
+            ` : '';
+        }
 
-        groupCustomEle.html(`
-            <div class="d-flex justify-content-end align-items-center">
-                ${keySortHtml}
-                ${keyVisibleHtml}
-                ${cusToolHtml}
-            </div>
-        `).on(
-            'change', 'select.custom-order-dtb', function () {
-                if ($(this).val()) {
-                    $(this).parent().find('.custom-order-asc-dtb').prop('disabled', false);
+        // handler visible
+        let keyVisibleHtml = '';
+        if (settings.oInit['enableVisibleColumns'] === true) {
+            keyVisibleHtml = keyVisible.length > 0 ? `
+                <div 
+                    class="btn-group btn-group-sm dropdown ml-1"
+                    data-bs-toggle="tooltip"
+                    title="${$.fn.transEle.attr('data-msg-show-hide-columns')}"
+                >
+                    <button type="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fa-solid fa-list"></i>
+                    </button>
+                    <div class="dropdown-menu w-150p">
+                        <ul class="p-0 m-0 custom-visible-dtb">
+                            <li class="d-flex align-items-center justify-content-between mb-1">
+                                <div class="form-check">
+                                    <input 
+                                        type="checkbox" 
+                                        class="form-check-input check-all" 
+                                        id="${dtb.attr('id')}-visible-check-all"
+                                    >
+                                    <blabel class="form-check-label" for="${dtb.attr('id')}-visible-check-all"><b>${$.fn.transEle.attr('data-all')}</b></label>
+                                </div>
+                            </li>
+                            ${keyVisible.join("")}
+                        </ul>
+                    </div>
+                </div>
+            ` : '';
+        }
+
+        if (
+            keySortHtml.length > 0 ||
+            keyVisibleHtml.length > 0 ||
+            cusToolHtml.length > 0
+        ) {
+            groupCustomEle.html(`
+                <div class="d-flex justify-content-end align-items-center">
+                    ${keySortHtml}
+                    ${keyVisibleHtml}
+                    ${cusToolHtml}
+                </div>
+            `).on(
+                'change', 'select.custom-order-dtb', function () {
+                    if ($(this).val()) {
+                        $(this).parent().find('.custom-order-asc-dtb').prop('disabled', false);
+                        dtb.DataTable().ajax.reload();
+                    } else {
+                        $(this).parent().find('.custom-order-asc-dtb').prop('disabled', true);
+                    }
+                }
+            ).on(
+                'click', 'button.custom-order-asc-dtb', function () {
+                    $(this).find('i').toggleClass('fa-arrow-down-a-z').toggleClass('fa-arrow-down-z-a');
                     dtb.DataTable().ajax.reload();
-                } else {
-                    $(this).parent().find('.custom-order-asc-dtb').prop('disabled', true);
                 }
-            }
-        ).on(
-            'click', 'button.custom-order-asc-dtb', function () {
-                $(this).find('i').toggleClass('fa-arrow-down-a-z').toggleClass('fa-arrow-down-z-a');
-                dtb.DataTable().ajax.reload();
-            }
-        ).on(
-            'change', 'input.custom-visible-item-dtb',
-            function () {
-                // handle check all
-                let ddEle = $(this).closest('.dropdown-menu');
-                let allEle = ddEle.find('input.check-all');
-                let arrChecked = true;
-                ddEle.find('input.custom-visible-item-dtb').each(function () {
-                    if ($(this).prop('checked') === false) arrChecked = false;
-                });
-                allEle.prop('checked', arrChecked);
+            ).on(
+                'change', 'input.custom-visible-item-dtb',
+                function () {
+                    // handle check all
+                    let ddEle = $(this).closest('.dropdown-menu');
+                    let allEle = ddEle.find('input.check-all');
+                    let arrChecked = true;
+                    ddEle.find('input.custom-visible-item-dtb').each(function () {
+                        if ($(this).prop('checked') === false) arrChecked = false;
+                    });
+                    allEle.prop('checked', arrChecked);
 
-                // handle this item
-                let idx = Number.parseInt($(this).attr('data-idx'));
-                if (Number.isInteger(idx)) {
+                    // handle this item
+                    let idx = Number.parseInt($(this).attr('data-idx'));
+                    if (Number.isInteger(idx)) {
+                        let currentVal = $(this).prop('checked');
+                        dtb.DataTable().column(idx).visible(currentVal);
+                    }
+                }
+            ).on(
+                'change', 'input.check-all',
+                function () {
                     let currentVal = $(this).prop('checked');
-                    dtb.DataTable().column(idx).visible(currentVal);
+                    $(this).closest('.dropdown-menu').find('input.custom-visible-item-dtb').each(function () {
+                        $(this).prop('checked', currentVal).trigger('change');
+                    });
                 }
-            }
-        ).on(
-            'change', 'input.check-all',
-            function () {
-                let currentVal = $(this).prop('checked');
-                $(this).closest('.dropdown-menu').find('input.custom-visible-item-dtb').each(function () {
-                    $(this).prop('checked', currentVal).trigger('change');
-                });
-            }
-        );
-        wrapperEle.on('change', 'select.custom-filter-manual-dtb', function () {
-            dtb.DataTable().ajax.reload();
-            DTBControl._summaryFilterToText(
-                textFilterEle, manualFilterEle,
-            )
-        });
+            );
+            wrapperEle.on('change', 'select.custom-filter-manual-dtb', function () {
+                dtb.DataTable().ajax.reload();
+                DTBControl._summaryFilterToText(
+                    textFilterEle, manualFilterEle,
+                )
+            });
 
-        setTimeout(
-            () => {
-                wrapperEle.find('select.custom-filter-manual-dtb').each(function () {
-                    $(this).initSelect2({
-                        allowClear: true,
-                        keepIdNullHasText: true,
+            setTimeout(
+                () => {
+                    wrapperEle.find('select.custom-filter-manual-dtb').each(function () {
+                        $(this).initSelect2({
+                            allowClear: true,
+                            keepIdNullHasText: true,
+                        })
+                    });
+                    wrapperEle.find('input.custom-visible-item-dtb').each(function () {
+                        $(this).trigger('change');
                     })
-                });
-                wrapperEle.find('input.custom-visible-item-dtb').each(function () {
-                    $(this).trigger('change');
-                })
-            },
-            1000
-        )
+                },
+                1000
+            )
+        } else {
+            // hidden toolbar when not any tool has already.
+            let stateHidden = true;
+            let eleHeaderToolbar = wrapperEle.find('.dtb-header-toolbar');
+            eleHeaderToolbar.children('div').each(function () {
+                if ($(this).children().length > 0) stateHidden = false;
+            });
+            if (stateHidden === true) eleHeaderToolbar.addClass('hidden');
+        }
     }
 
     static parseDomDtl(opts) {
+        // header Toolbar classs name
+        let headerToolbarClsName = opts['headerToolbarClsName'] || 'my-2';
+
         // stateDefaultPageControl: disable all toolbar
         let stateDefaultPageControl = typeof opts?.['stateDefaultPageControl'] === 'boolean' ? opts?.['stateDefaultPageControl'] : true;
         if (opts.hasOwnProperty('stateDefaultPageControl')) delete opts['stateDefaultPageControl'];
@@ -2382,7 +2411,7 @@ class DTBControl {
         //     "<'row mt-3'<'col-sm-12 col-md-6'i>>";
 
         // style 1
-        let domDTL = `<'d-flex mb-1'<'btnAddFilter mb-1'><'textFilter overflow-hidden mb-1'>f<'util-btn mb-1'>><'row manualFilter hidden mb-1'>` + 'rt' + `<'row' <'col-lg-6 col-md-12 d-flex cus-page-info'li><'col-lg-6 col-md-12'p>>`;
+        let domDTL = `<'d-flex dtb-header-toolbar ${headerToolbarClsName}'<'btnAddFilter'><'textFilter overflow-hidden'>f<'util-btn'>><'row manualFilter hidden'>` + 'rt' + `<'row' <'col-lg-6 col-md-12 d-flex cus-page-info'li><'col-lg-6 col-md-12'p>>`;
 
         let utilsDom = {
             // "l": Đại diện cho thanh điều hướng (paging) của DataTable.
@@ -2408,21 +2437,24 @@ class DTBControl {
 
         // show or hide search field
         if (opts.hasOwnProperty('visibleSearchField')) {
-            if ($.fn.isBoolean(opts['visibleSearchField'])) utilsDom.visibleSearchField = opts['visibleSearchField'];
+            if ($.fn.isBoolean(opts['visibleSearchField'])) {
+                utilsDom.visibleSearchField = opts['visibleSearchField'];
+                opts.searching = opts['visibleSearchField'];
+            }
             delete opts['visibleSearchField']
         }
         if (utilsDom.visibleSearchField === false) {
             domDTL = domDTL.replace('f>', '>').replaceAll('miner-group', 'miner-group hidden');
         }
 
-        // show or hide search field
+        // show or hide row total field
         if (opts.hasOwnProperty('visibleDisplayRowTotal')) {
             if ($.fn.isBoolean(opts['visibleDisplayRowTotal'])) utilsDom.visibleDisplayRowTotal = opts['visibleDisplayRowTotal'];
             delete opts['visibleDisplayRowTotal']
         }
         if (utilsDom.visibleDisplayRowTotal === false) domDTL = domDTL.replace('i>', '>');
 
-        // show or hide search field
+        // show or hide page field
         if (opts.hasOwnProperty('visiblePagination')) {
             if ($.fn.isBoolean(opts['visiblePagination'])) utilsDom.visiblePagination = opts['visiblePagination'];
             delete opts['visiblePagination']
@@ -2432,14 +2464,14 @@ class DTBControl {
             utilsDom['pageLength'] = -1; // full page
         }
 
-        // show or hide search field
+        // show or hide order field
         if (opts.hasOwnProperty('visibleOrder')) {
             if ($.fn.isBoolean(opts['visibleOrder'])) utilsDom.visibleOrder = opts['visibleOrder'];
             delete opts['visibleOrder']
         }
         if (utilsDom.visibleOrder === false) domDTL = domDTL.replace('r>', '>');
 
-        // show or hide search field
+        // show or hide row quantity field
         if (opts.hasOwnProperty('visibleRowQuantity')) {
             if ($.fn.isBoolean(opts['visibleRowQuantity'])) utilsDom.visibleRowQuantity = opts['visibleRowQuantity'];
             delete opts['visibleRowQuantity']
@@ -2669,12 +2701,11 @@ class DTBControl {
         };
         return function (settings, json) {
             $(this.api().table().container()).find('input').attr('autocomplete', 'off');
-            initCompleteManual(settings, json);
-            DTBControl.parseHeaderDropdownFilter(
+            initCompleteManual.bind(this)(settings, json);
+            DTBControl.parseHeaderDropdownFilter.bind(this)(
                 (clsThis.opts?.['columns'] || []), settings, clsThis.dtb$
             );
-            // DTBControl.parseFilter(clsThis.dtb$);
-            DTBControl.parseFilter2(clsThis.dtb$, settings, json);
+            DTBControl.parseFilter2.bind(this)(clsThis.dtb$, settings, json);
         }
     }
 
@@ -2690,10 +2721,36 @@ class DTBControl {
         );
     }
 
+    parseWhenAllToolbarWasDisabled(opts) {
+        let disableAll = opts['stateFullTableTools'];
+        if (disableAll === false || disableAll === true) {
+            opts.enableVisibleColumns = disableAll;
+            opts.enableSortColumns = disableAll;
+            opts.enableFilterCustom = disableAll;
+            opts.enableTools = disableAll;
+            opts.searching = disableAll;
+            opts.ordering = disableAll;
+            opts.visiblePaging = disableAll;
+            opts.visibleSearchField = disableAll;
+            opts.visibleDisplayRowTotal = disableAll;
+            opts.visiblePagination = disableAll;
+            opts.visibleOrder = disableAll;
+            opts.visibleRowQuantity = disableAll;
+
+            if (disableAll === false) {
+                opts.paginate = false;
+                opts.pageLength = -1;
+                opts.lengthMenu = [];
+            }
+        }
+        return opts;
+    }
+
     parseDtlOpts() {
+        // prepare config
+        this.opts = this.parseWhenAllToolbarWasDisabled(this.opts);
         // init table
         let [domOpts, domDTL] = DTBControl.parseDomDtl(this.opts);
-
         // ajax
         this.appendErrorConfirmAjax();
 
@@ -2701,6 +2758,13 @@ class DTBControl {
         this.setUpUseDataServer();
 
         return {
+            // default custom variable
+            stateFullTableTools: null,
+            enableVisibleColumns: true,
+            enableSortColumns: true,
+            enableFilterCustom: true,
+            enableTools: true,
+
             // scrollY: '400px',
             // scrollCollapse: true,
             // fixedHeader: true,
@@ -2733,7 +2797,8 @@ class DTBControl {
 
     init(opts) {
         this.opts = opts;
-        let tbl = this.dtb$.DataTable(this.parseDtlOpts(opts));
+        let config = this.parseDtlOpts(opts);
+        let tbl = this.dtb$.DataTable(config);
         let $this = this;
         tbl.on('init.dt', function (event, settings) {
             let divWrap = $(this).closest('.dataTables_wrapper');
@@ -2920,8 +2985,8 @@ class WindowControl {
         })
     }
 
-    static showUnauthenticated(opts, isRedirect=true) {
-        if (isRedirect === true){
+    static showUnauthenticated(opts, isRedirect = true) {
+        if (isRedirect === true) {
             Swal.fire({
                 title: globeMsgAuthExpires,
                 icon: 'error',

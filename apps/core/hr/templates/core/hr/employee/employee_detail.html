@@ -17,7 +17,7 @@
 {% endblock %}
 
 {% block pageContent %}
-    <ul class="nav nav-light nav-tabs">
+    <ul class="nav nav-line nav-light nav-tabs" id="myTabs">
         <li class="nav-item">
             <a class="nav-link active" data-bs-toggle="tab" href="#tab-info">
                 <span class="nav-link-text">{% trans 'General Information' %}</span>
@@ -31,6 +31,11 @@
         <li class="nav-item">
             <a class="nav-link" data-bs-toggle="tab" href="#tab-permissions">
                 <span class="nav-link-text">{% trans 'Permissions' %}</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#tab-summary-permissions">
+                <span class="nav-link-text">{% trans 'Summary of permissions' %}</span>
             </a>
         </li>
     </ul>
@@ -237,6 +242,9 @@
             <div class="tab-pane fade" id="tab-permissions">
                 {% include 'core/hr/extends/permissions.html' with add_new_enabled="false" %}
             </div>
+            <div class="tab-pane fade" id="tab-summary-permissions">
+                {% include 'core/hr/extends/summary_permits.html' %}
+            </div>
         </div>
     </div>
     <template class="template-factory hidden">
@@ -276,4 +284,5 @@
     <script src="{% static 'assets/js/core/hr/permissions.js' %}"></script>
     <script src="{% static 'assets/js/core/hr/plan_app.js' %}"></script>
     <script src="{% static 'assets/js/core/hr/employee/employee_detail.js' %}"></script>
+    <script src="{% static 'assets/js/core/hr/summary.js' %}"></script>
 {% endblock %}

@@ -938,7 +938,6 @@ class PermitBastionRule {
 
         let summaryDependsLocal = {};
         let summaryDependsApp = {};
-
         if (isView === true) {
             let viewDepend = permitMapping?.['view'] || {};
             __parseLocalDepends(summaryDependsLocal, viewDepend?.['local_depends_on'] || {});
@@ -1038,7 +1037,10 @@ class PermitBastionRule {
             typeof planDataBackup === 'object' &&
             planDataBackup.hasOwnProperty('id')
         )) {
-          throw Error('App | Plan data empty.')
+            $.fn.notifyB({
+                description: msgPerm.data('msg-check-app-depend-on-info')
+            }, 'failure');
+            throw Error('App | Plan data empty.');
         }
         let app_data = {
             "id": appDataBackup['id'],
@@ -1322,87 +1324,4 @@ class HandleFooterNew {
 
 // ***********************************************************************
 // * -- FOOTER
-// ***********************************************************************
-
-
-// ***********************************************************************
-// * SUMMARY
-// ***********************************************************************
-
-$('#tbl-summary-permissions').DataTableDefault({
-    rowIdx: true,
-    autoWidth: false,
-    data: [],
-    cusFilter: [
-        {
-            keyParam: "has_manager_custom",
-            placeholder: 'Application',
-            allowClear: true,
-            data: [
-                {
-                    'id': '',
-                    'title': '',
-                    'selected': true,
-                },
-                {
-                    'id': 'true',
-                    'title': 'Yes',
-                    'selected': false,
-                },
-                {
-                    'id': 'false',
-                    'title': 'No',
-                    'selected': false,
-                },
-            ]
-        },
-    ],
-    columns: [
-        {
-            width: "10%",
-            render: function (data, type, row, meta) {
-                return '';
-            },
-        },
-        {
-            width: "15%",
-            render: function (data, type, row, meta) {
-                return '';
-            },
-        },
-        {
-            width: "15%",
-            render: function (data, type, row, meta) {
-                return '';
-            },
-        },
-        {
-            width: "15%",
-            render: function (data, type, row, meta) {
-                return '';
-            },
-        },
-        {
-            width: "15%",
-            render: function (data, type, row, meta) {
-                return '';
-            },
-        },
-        {
-            width: "15%",
-            render: function (data, type, row, meta) {
-                return '';
-            },
-        },
-        {
-            width: "15%",
-            render: function (data, type, row, meta) {
-                return '';
-            },
-        },
-    ]
-});
-
-// ***********************************************************************
-// * -- SUMMARY
 // ***********************************************************************

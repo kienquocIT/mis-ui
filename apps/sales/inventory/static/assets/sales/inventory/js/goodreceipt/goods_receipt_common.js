@@ -250,7 +250,7 @@ class GRLoadDataHandle {
         });
     };
 
-    static loadModalProduct() {
+    static loadModalProduct(is_detail = false) {
         let frm = new SetupFormSubmit(GRDataTableHandle.tablePOProduct);
         if (GRDataTableHandle.tablePOProduct[0].querySelector('.dataTables_empty')) {
             $.fn.callAjax2({
@@ -264,9 +264,51 @@ class GRLoadDataHandle {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         if (data.hasOwnProperty('purchase_order_product_list') && Array.isArray(data.purchase_order_product_list)) {
+                            if (is_detail === true) {
+                                let data_detail = JSON.parse($('#data-detail-page').val());
+                                if (GRLoadDataHandle.POSelectEle.val()) {
+                                    for (let data_product of data_detail?.['goods_receipt_product']) {
+                                        for (let dataPOProduct of data.purchase_order_product_list) {
+                                            if (dataPOProduct?.['id'] === data_product?.['purchase_order_product_id']) {
+                                                dataPOProduct['quantity_import'] = data_product?.['quantity_import'];
+                                                for (let dataPR of data_product?.['purchase_request_products_data']) {
+                                                    dataPR['purchase_order_product_id'] = data_product?.['purchase_order_product_id'];
+                                                    dataPR['id'] = dataPR?.['purchase_request_product']?.['id'];
+                                                    for (let dataPRProduct of dataPOProduct?.['purchase_request_products_data']) {
+                                                        if (dataPRProduct?.['purchase_request_product']?.['id'] === dataPR['id']) {
+                                                            dataPR['quantity_order'] = dataPRProduct?.['quantity_order'];
+                                                        }
+                                                    }
+                                                    for (let dataWarehouse of dataPR?.['warehouse_data']) {
+                                                        dataWarehouse['warehouse'] = dataWarehouse?.['warehouse']?.['id'];
+                                                        dataWarehouse['purchase_request_product_id'] = dataPR?.['purchase_request_product']?.['id'];
+                                                        dataWarehouse['id'] = dataWarehouse?.['warehouse']?.['id'];
+                                                        dataWarehouse['title'] = dataWarehouse?.['warehouse']?.['title'];
+                                                        dataWarehouse['code'] = dataWarehouse?.['warehouse']?.['code'];
+                                                        for (let dataLot of dataWarehouse?.['lot_data']) {
+                                                            dataLot['warehouse_id'] = dataWarehouse?.['warehouse']?.['id'];
+                                                            dataLot['expire_date'] = moment(dataLot?.['expire_date']).format('DD/MM/YYYY hh:mm A');
+                                                            dataLot['manufacture_date'] = moment(dataLot?.['manufacture_date']).format('DD/MM/YYYY hh:mm A');
+                                                        }
+                                                        for (let dataSerial of dataWarehouse?.['serial_data']) {
+                                                            dataSerial['warehouse_id'] = dataWarehouse?.['warehouse']?.['id'];
+                                                            dataSerial['expire_date'] = moment(dataSerial?.['expire_date']).format('DD/MM/YYYY hh:mm A');
+                                                            dataSerial['manufacture_date'] = moment(dataSerial?.['manufacture_date']).format('DD/MM/YYYY hh:mm A');
+                                                            dataSerial['warranty_start'] = moment(dataSerial?.['warranty_start']).format('DD/MM/YYYY hh:mm A');
+                                                            dataSerial['warranty_end'] = moment(dataSerial?.['warranty_end']).format('DD/MM/YYYY hh:mm A');
+                                                        }
+                                                    }
+                                                }
+                                                dataPOProduct['purchase_request_products_data'] = data_product?.['purchase_request_products_data'];
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                             GRLoadDataHandle.initPOProductEle.val(JSON.stringify(data.purchase_order_product_list));
                             GRDataTableHandle.tablePOProduct.DataTable().clear().draw();
                             GRDataTableHandle.tablePOProduct.DataTable().rows.add(data.purchase_order_product_list).draw();
+
                         }
                     }
                 }
@@ -584,11 +626,18 @@ class GRLoadDataHandle {
 
 
 
+
     // LOAD DETAIL
     static loadDetailPage(data) {
+        let formSubmit = $('#frm_good_receipt_create');
         $('#good-receipt-title').val(data?.['title']);
         $('#good-receipt-note').val(data?.['remarks']);
-        $('#good-receipt-date-received').val(moment(data?.['date_received']).format('MM/DD/YYYY'));
+        if (formSubmit.attr('data-method') === 'GET') {
+            $('#good-receipt-date-received').val(moment(data?.['date_received']).format('MM/DD/YYYY'));
+        }
+        if (formSubmit.attr('data-method') === 'PUT') {
+            $('#good-receipt-date-received').val(moment(data?.['date_received']).format('DD/MM/YYYY hh:mm A'));
+        }
         let eleStatus = $('#goods-receipt-status');
         let status_data = {
             "Draft": "badge badge-soft-light",
@@ -618,7 +667,11 @@ class GRLoadDataHandle {
         }
         GRDataTableHandle.tableLineDetail.DataTable().rows.add(data?.['goods_receipt_product']).draw();
         GRLoadDataHandle.loadDataRowTable(GRDataTableHandle.tableLineDetail);
-        GRLoadDataHandle.loadTableDisabled(GRDataTableHandle.tableLineDetail);
+        if (formSubmit.attr('data-method') === 'GET') {
+            GRLoadDataHandle.loadTableDisabled(GRDataTableHandle.tableLineDetail);
+        }
+        //
+        GRLoadDataHandle.loadModalProduct(true);
     };
 
     static loadTableDisabled(table) {
@@ -1287,11 +1340,13 @@ class GRStoreDataHandle {
                     new_data.push(dataRow);
                 }
             }
-            let dataPOCheckedRaw = tablePO[0].querySelector(`.table-row-checkbox[data-id="${POProductID}"]`).getAttribute('data-row');
-            if (dataPOCheckedRaw) {
-                let dataPOChecked = JSON.parse(dataPOCheckedRaw);
-                dataPOChecked['purchase_request_products_data'] = new_data;
-                tablePO[0].querySelector(`.table-row-checkbox[data-id="${POProductID}"]`).setAttribute('data-row', JSON.stringify(dataPOChecked));
+            if (POProductID) {
+                let dataPOCheckedRaw = tablePO[0].querySelector(`.table-row-checkbox[data-id="${POProductID}"]`).getAttribute('data-row');
+                if (dataPOCheckedRaw) {
+                    let dataPOChecked = JSON.parse(dataPOCheckedRaw);
+                    dataPOChecked['purchase_request_products_data'] = new_data;
+                    tablePO[0].querySelector(`.table-row-checkbox[data-id="${POProductID}"]`).setAttribute('data-row', JSON.stringify(dataPOChecked));
+                }
             }
         }
         return true
@@ -1315,11 +1370,13 @@ class GRStoreDataHandle {
                     new_data.push(dataRow);
                 }
             }
-            let dataPRCheckedRaw = tablePR[0].querySelector(`.table-row-checkbox[data-id="${PRProductID}"]`).getAttribute('data-row');
-            if (dataPRCheckedRaw) {
-                let dataPRChecked = JSON.parse(dataPRCheckedRaw);
-                dataPRChecked['warehouse_data'] = new_data;
-                tablePR[0].querySelector(`.table-row-checkbox[data-id="${PRProductID}"]`).setAttribute('data-row', JSON.stringify(dataPRChecked));
+            if (PRProductID) {
+                let dataPRCheckedRaw = tablePR[0].querySelector(`.table-row-checkbox[data-id="${PRProductID}"]`).getAttribute('data-row');
+                if (dataPRCheckedRaw) {
+                    let dataPRChecked = JSON.parse(dataPRCheckedRaw);
+                    dataPRChecked['warehouse_data'] = new_data;
+                    tablePR[0].querySelector(`.table-row-checkbox[data-id="${PRProductID}"]`).setAttribute('data-row', JSON.stringify(dataPRChecked));
+                }
             }
         }
         return true
@@ -1348,11 +1405,13 @@ class GRStoreDataHandle {
                     new_data.push(dataRow);
                 }
             }
-            let dataWHCheckedRaw = tableWH[0].querySelector(`.table-row-checkbox[data-id="${WHID}"]`).getAttribute('data-row');
-            if (dataWHCheckedRaw) {
-                let dataWHChecked = JSON.parse(dataWHCheckedRaw);
-                dataWHChecked['lot_data'] = new_data;
-                tableWH[0].querySelector(`.table-row-checkbox[data-id="${WHID}"]`).setAttribute('data-row', JSON.stringify(dataWHChecked));
+            if (WHID) {
+                let dataWHCheckedRaw = tableWH[0].querySelector(`.table-row-checkbox[data-id="${WHID}"]`).getAttribute('data-row');
+                if (dataWHCheckedRaw) {
+                    let dataWHChecked = JSON.parse(dataWHCheckedRaw);
+                    dataWHChecked['lot_data'] = new_data;
+                    tableWH[0].querySelector(`.table-row-checkbox[data-id="${WHID}"]`).setAttribute('data-row', JSON.stringify(dataWHChecked));
+                }
             }
         }
         return true
@@ -1385,11 +1444,13 @@ class GRStoreDataHandle {
                     new_data.push(dataRow);
                 }
             }
-            let dataWHCheckedRaw = tableWH[0].querySelector(`.table-row-checkbox[data-id="${WHID}"]`).getAttribute('data-row');
-            if (dataWHCheckedRaw) {
-                let dataWHChecked = JSON.parse(dataWHCheckedRaw);
-                dataWHChecked['serial_data'] = new_data;
-                tableWH[0].querySelector(`.table-row-checkbox[data-id="${WHID}"]`).setAttribute('data-row', JSON.stringify(dataWHChecked));
+            if (WHID) {
+                let dataWHCheckedRaw = tableWH[0].querySelector(`.table-row-checkbox[data-id="${WHID}"]`).getAttribute('data-row');
+                if (dataWHCheckedRaw) {
+                    let dataWHChecked = JSON.parse(dataWHCheckedRaw);
+                    dataWHChecked['serial_data'] = new_data;
+                    tableWH[0].querySelector(`.table-row-checkbox[data-id="${WHID}"]`).setAttribute('data-row', JSON.stringify(dataWHChecked));
+                }
             }
         }
         return true

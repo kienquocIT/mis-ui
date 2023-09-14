@@ -6,23 +6,21 @@
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
 {% block pageAction %}
-    <a href="{% url 'GoodsReceiptUpdate' data.data.doc_id %}">
-        <button class="btn btn-outline-primary">
-            <span>
-                <span>{% trans 'Edit' %}</span>
-                <span class="icon">
-                    <i class="fa-regular fa-pen-to-square"></i>
-                </span>
+    <button class="btn btn-outline-primary" type="submit" form="frm_good_receipt_create">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
             </span>
-        </button>
-    </a>
+        </span>
+    </button>
 {% endblock %}
 
 {% block pageContent %}
     <form
             data-url="{% url 'GoodsReceiptDetailAPI' data.data.doc_id %}"
             data-url-redirect="{% url 'GoodsReceiptList' %}"
-            data-method="GET"
+            data-method="PUT"
             id="frm_good_receipt_create"
             method="post"
     >
@@ -61,7 +59,6 @@
                                         name="good_receipt_type"
                                         data-keyResp=""
                                         required
-                                        disabled
                                     >
                                     </select>
                                 </span>
@@ -76,7 +73,6 @@
                                         name="title"
                                         id="good-receipt-title"
                                         required
-                                        disabled
                                     >
                                 </span>
                             </div>
@@ -87,7 +83,7 @@
                             <label class="form-label" for="good-receipt-date-received">{% trans 'Date' %}</label>
                             <div class="input-affix-wrapper">
                                 <input type="text" name="date_received" id="good-receipt-date-received"
-                                       class="form-control date-picker" autocomplete="off" disabled>
+                                       class="form-control date-picker" autocomplete="off">
                                 <span class="input-suffix">
                                     <i class="bi bi-calendar-week"></i>
                                 </span>
@@ -101,7 +97,6 @@
                                         type="text" class="form-control"
                                         name="remarks"
                                         id="good-receipt-note"
-                                        disabled
                                     >
                                 </span>
                             </div>
@@ -136,7 +131,6 @@
                                             name="purchase_order"
                                             data-keyResp="purchase_order_sale_list"
                                             required
-                                            disabled
                                     ></select>
                                 </span>
                             </div>
@@ -167,7 +161,6 @@
                                             name="supplier"
                                             data-keyResp="account_sale_list"
                                             required
-                                            disabled
                                     ></select>
                                 </span>
                             </div>
@@ -197,8 +190,7 @@
                                     data-link-detail=""
                                     name="ia_number"
                                     data-keyResp=""
-                                    required
-                                    disabled
+{#                                    required#}
                             >
                             </select>
                         </div>
@@ -218,8 +210,7 @@
                                     data-link-detail=""
                                     name="product_order"
                                     data-keyResp=""
-                                    required
-                                    disabled
+{#                                    required#}
                             >
                             </select>
                         </div>
@@ -248,8 +239,7 @@
                                             data-link-detail="{% url "ProductDetail" 1 %}"
                                             name="production_report"
                                             data-keyResp=""
-                                            required
-                                            disabled
+{#                                            required#}
                                     ></select>
                                 </span>
                             </div>
@@ -318,12 +308,11 @@
                                         id="btn-edit-product-good-receipt"
                                         data-bs-toggle="modal"
                                         data-bs-target="#productModalCenter"
-                                        disabled
                                     >
                                         <span><span class="icon"><span class="feather-icon"><i class="far fa-edit"></i></span></span><span>{% trans 'Edit' %} {% trans 'Product' %}</span></span>
                                     </button>
 
-                                    <button type="button" class="btn btn-link btn-animated" id="btn-add-product-good-receipt" hidden disabled>
+                                    <button type="button" class="btn btn-link btn-animated" id="btn-add-product-good-receipt" hidden>
                                         <span><span class="icon"><span class="feather-icon"><i class="fa-regular fa-square-plus"></i></span></span><span>{% trans 'Add Product' %}</span></span>
                                     </button>
                                 </div>
@@ -636,5 +625,6 @@
     <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
 
     <script src="{% static 'assets/sales/inventory/js/goodreceipt/goods_receipt_common.js' %}"></script>
+    <script src="{% static 'assets/sales/inventory/js/goodreceipt/goods_receipt_create.js' %}"></script>
     <script src="{% static 'assets/sales/inventory/js/goodreceipt/goods_receipt_detail.js' %}"></script>
 {% endblock %}

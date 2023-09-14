@@ -305,6 +305,10 @@ class POLoadDataHandle {
                     }
                 }
             )
+        } else {
+            POLoadDataHandle.loadDataShowPurchaseRequest();
+            POLoadDataHandle.loadTableProductByPurchaseRequest();
+            POLoadDataHandle.loadModalPurchaseQuotation(true);
         }
         return true;
     };
@@ -420,6 +424,9 @@ class POLoadDataHandle {
                         }
                     }
                 )
+            } else {
+                POLoadDataHandle.loadDataShowPurchaseQuotation();
+                POLoadDataHandle.loadPriceListByPurchaseQuotation();
             }
         }
         return true;

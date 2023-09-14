@@ -214,6 +214,18 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
         _('Expense List'), 'ExpenseItemList'
     )
 
+    # Purchase order
+    PURCHASE_ORDER_LIST_PAGE = BreadcrumbChildren(_('Purchase order'), 'PurchaseOrderList')
+    PURCHASE_ORDER_CREATE_PAGE = BreadcrumbChildren(_('Purchase order create'), 'PurchaseOrderCreate')
+    PURCHASE_ORDER_DETAIL_PAGE = BreadcrumbChildren(_('Purchase order detail'))
+    PURCHASE_ORDER_UPDATE_PAGE = BreadcrumbChildren(_('Purchase order update'))
+
+    # Goods receipt
+    GOODS_RECEIPT_LIST_PAGE = BreadcrumbChildren(_('Goods receipt'), 'GoodsReceiptList')
+    GOODS_RECEIPT_CREATE_PAGE = BreadcrumbChildren(_('Goods receipt create'), 'GoodsReceiptCreate')
+    GOODS_RECEIPT_DETAIL_PAGE = BreadcrumbChildren(_('Goods receipt detail'))
+    GOODS_RECEIPT_UPDATE_PAGE = BreadcrumbChildren(_('Goods receipt update'))
+
 
 class BreadcrumbView:
     """menu vertical item view"""
@@ -577,3 +589,15 @@ class BreadcrumbView:
     EXPENSE_ITEM_LIST_PAGE = [
         BreadcrumbItem.EXPENSE_ITEM_LIST_PAGE
     ]
+
+    # Purchase order
+    PURCHASE_ORDER_LIST_PAGE = [BreadcrumbItem.PURCHASE_ORDER_LIST_PAGE]
+    PURCHASE_ORDER_CREATE_PAGE = PURCHASE_ORDER_LIST_PAGE + [BreadcrumbItem.PURCHASE_ORDER_CREATE_PAGE]
+    PURCHASE_ORDER_DETAIL_PAGE = PURCHASE_ORDER_LIST_PAGE + [BreadcrumbItem.PURCHASE_ORDER_DETAIL_PAGE]
+    PURCHASE_ORDER_UPDATE_PAGE = PURCHASE_ORDER_LIST_PAGE + [BreadcrumbItem.PURCHASE_ORDER_UPDATE_PAGE]
+
+    # Goods receipt
+    GOODS_RECEIPT_LIST_PAGE = [BreadcrumbItem.GOODS_RECEIPT_LIST_PAGE]
+    GOODS_RECEIPT_CREATE_PAGE = GOODS_RECEIPT_LIST_PAGE + [BreadcrumbItem.GOODS_RECEIPT_CREATE_PAGE]
+    GOODS_RECEIPT_DETAIL_PAGE = GOODS_RECEIPT_LIST_PAGE + [BreadcrumbItem.GOODS_RECEIPT_DETAIL_PAGE]
+    GOODS_RECEIPT_UPDATE_PAGE = GOODS_RECEIPT_LIST_PAGE + [BreadcrumbItem.GOODS_RECEIPT_UPDATE_PAGE]

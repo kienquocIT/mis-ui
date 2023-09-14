@@ -43,15 +43,7 @@ $(function () {
 
         // Action on change dropdown PO
         GRLoadDataHandle.POSelectEle.on('change', function () {
-            GRLoadDataHandle.loadMoreInformation($(this));
-            if ($(this).val()) {
-                let dataSelected = SelectDDControl.get_data_from_idx(GRLoadDataHandle.POSelectEle, $(this).val());
-                // load supplier
-                GRLoadDataHandle.supplierSelectEle.empty();
-                GRLoadDataHandle.loadBoxSupplier(dataSelected?.['supplier']);
-                // load PR
-                GRLoadDataHandle.loadDataShowPR(dataSelected?.['purchase_requests_data']);
-            }
+            GRLoadDataHandle.loadChangePO($(this));
             btnEdit.click();
         });
 

@@ -1076,7 +1076,7 @@ $(document).on("click", '.btn-add-payment-value', function() {
     $('.total-product-selected').attr('data-init-money', 0);
     $.fn.initMaskMoney2();
     $('.product-tables').html(``);
-    loadAPList(saleCodeEle.val());
+    loadAPList([saleCodeEle.val()]);
 });
 
 function calculate_sum_ap_product_items() {

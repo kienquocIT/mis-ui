@@ -317,6 +317,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PURCHASE_REQUEST_DETAIL = StringUrl('purchasing/purchase-request/{pk}')
     PURCHASE_ORDER_LIST = StringUrl('purchasing/purchase-order/list')
     PURCHASE_ORDER_DETAIL = StringUrl('purchasing/purchase-order')
+    PURCHASE_ORDER_DETAIL_PK = StringUrl('purchasing/purchase-order/{pk}')
     PURCHASE_REQUEST_LIST_FOR_PQR = StringUrl('purchasing/purchase-request-for-pqr/list')
     PURCHASE_REQUEST_PRODUCT_LIST = StringUrl('purchasing/purchase-request-product/list')
     PURCHASE_ORDER_PRODUCT_LIST = StringUrl('purchasing/purchase-order-product/list')
@@ -344,3 +345,4 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # Inventory
     GOODS_RECEIPT_LIST = StringUrl('inventory/goods-receipt/list')
     GOODS_RECEIPT_DETAIL = StringUrl('inventory/goods-receipt')
+    GOODS_RECEIPT_DETAIL_PK = StringUrl('inventory/goods-receipt/{pk}')

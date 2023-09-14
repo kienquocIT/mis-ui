@@ -19,6 +19,7 @@ $(function () {
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
+                    $x.fn.renderCodeBreadcrumb(data);
                     $.fn.compareStatusShowPageAction(data);
                     $('#data-detail-page').val(JSON.stringify(data));
                     GRLoadDataHandle.loadDetailPage(data);

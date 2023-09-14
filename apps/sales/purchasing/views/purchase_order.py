@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
-from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg, InputMappingProperties
+from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg, InputMappingProperties, PermCheck
 
 
 def create_purchase_order(request, url, msg):
@@ -75,7 +75,8 @@ class PurchaseOrderDetail(View):
         auth_require=True,
         template='sales/purchasing/purchaseorder/purchase_order_detail.html',
         menu_active='menu_purchase_order_list',
-        breadcrumb='PURCHASE_ORDER_CREATE_PAGE',
+        breadcrumb='PURCHASE_ORDER_DETAIL_PAGE',
+        perm_check=PermCheck(url=ApiURL.PURCHASE_ORDER_DETAIL_PK, method='GET', fill_key=['pk']),
     )
     def get(self, request, pk, *args, **kwargs):
         return {'data': {'doc_id': pk}}, status.HTTP_200_OK
@@ -87,6 +88,7 @@ class PurchaseOrderUpdate(View):
         template='sales/purchasing/purchaseorder/purchase_order_update.html',
         menu_active='menu_purchase_order_list',
         breadcrumb='PURCHASE_ORDER_UPDATE_PAGE',
+        perm_check=PermCheck(url=ApiURL.PURCHASE_ORDER_DETAIL_PK, method='PUT', fill_key=['pk']),
     )
     def get(self, request, pk, *args, **kwargs):
         input_mapping_properties = InputMappingProperties.PURCHASING_PURCHASE_ORDER

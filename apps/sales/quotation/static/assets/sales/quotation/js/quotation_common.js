@@ -1798,7 +1798,6 @@ class QuotationDataTableHandle {
         let $tables = $('#datable-copy-quotation');
         $tables.DataTableDefault({
             data: data ? data : [],
-            searching: false,
             paging: false,
             ordering: false,
             info: false,
@@ -1841,7 +1840,6 @@ class QuotationDataTableHandle {
         let $tables = $('#datable-copy-quotation-product');
         $tables.DataTableDefault({
             data: data ? data : [],
-            searching: false,
             paging: false,
             ordering: false,
             info: false,

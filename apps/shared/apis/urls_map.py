@@ -351,6 +351,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # Opportunity Detail
     OPPORTUNITY_MEMBER_DETAIL = StringUrl('opportunity/member/detail/{pk}')
 
-    # Opportunity add member, delete member
+    # Opportunity add member, delete member, set permission for member
     OPPORTUNITY_ADD_MEMBER = StringUrl('opportunity/add-member/{pk}')
     OPPORTUNITY_DELETE_MEMBER = StringUrl('opportunity/member/delete/{pk}')
+    SET_MEMBER_PERMISSION = StringUrl('opportunity/member/set/permission/{pk}')

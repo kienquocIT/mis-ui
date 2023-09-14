@@ -10,7 +10,7 @@ from apps.sales.opportunity.views import (
     OpportunityMeetingList, OpportunityMeetingListAPI, OpportunityMeetingDeleteAPI, OpportunityActivityLogListAPI,
     OpportunityDocumentList, OpportunityDocumentCreate, OpportunityDocumentListAPI, OpportunityDocumentDetailAPI,
     OpportunityDocumentDetail, OpportunityForSaleListAPI, OpportunityUpdate, OpportunityMemberDetailAPI,
-    OpportunityAddMemberAPI, OpportunityDeleteMemberAPI
+    OpportunityAddMemberAPI, OpportunityDeleteMemberAPI, OpportunityMemberPermissionUpdateAPI
 )
 
 urlpatterns = [
@@ -77,8 +77,13 @@ urlpatterns = [
     path('member/detail/api/<str:pk>', OpportunityMemberDetailAPI.as_view(), name='OpportunityMemberDetailAPI'),
     path('add-member/api/<str:pk>', OpportunityAddMemberAPI.as_view(), name='OpportunityAddMemberAPI'),
     path(
-        'opportunity/member/delete/api/<str:pk>',
+        'member/delete/api/<str:pk>',
         OpportunityDeleteMemberAPI.as_view(),
         name='OpportunityDeleteMemberAPI'
+    ),
+    path(
+        'member/set/permission/api/<str:pk>',
+        OpportunityMemberPermissionUpdateAPI.as_view(),
+        name='OpportunityMemberPermissionUpdateAPI'
     )
 ]

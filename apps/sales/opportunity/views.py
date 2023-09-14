@@ -498,3 +498,14 @@ class OpportunityDeleteMemberAPI(APIView):
     def put(self, request, pk, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_DELETE_MEMBER.fill_key(pk=pk)).put(request.data)
         return resp.auto_return()
+
+
+# update permission for member in Opportunity
+class OpportunityMemberPermissionUpdateAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.SET_MEMBER_PERMISSION.fill_key(pk=pk)).put(request.data)
+        return resp.auto_return()

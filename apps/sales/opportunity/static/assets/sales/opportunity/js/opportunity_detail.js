@@ -377,6 +377,17 @@ $(document).ready(async function () {
         {
             submitHandler: function (form) {
                 let frm = new SetupFormSubmit($(form));
+                autoLoadStage(
+                    true,
+                    false,
+                    list_stage_condition,
+                    list_stage,
+                    condition_sale_oder_approved,
+                    condition_is_quotation_confirm,
+                    condition_sale_oder_delivery_status,
+                    config_is_input_rate,
+                    dict_stage
+                );
                 frm.dataForm = OpportunityLoadDetail.getDataForm(frm.dataForm);
                 $.fn.callAjax2({
                     url: frm.dataUrl.format_url_with_uuid(pk),
@@ -447,13 +458,11 @@ $(document).ready(async function () {
                     (errs) => {
                         if ($.fn.hasOwnProperties(errs.data.errors, ['employee_current'])) {
                             OpportunityLoadDetail.renderAlert(errs.data.errors.employee_current);
-                        }
-                        else if ($.fn.hasOwnProperties(errs.data.errors, ['member'])){
+                        } else if ($.fn.hasOwnProperties(errs.data.errors, ['member'])) {
                             OpportunityLoadDetail.renderAlert(errs.data.errors.member);
                         }
                     }
                 )
-
             }
         })
     })
@@ -545,7 +554,8 @@ $(document).ready(async function () {
             condition_is_quotation_confirm,
             condition_sale_oder_delivery_status,
             config_is_input_rate,
-            dict_stage);
+            dict_stage
+        );
         $(this).tooltip('hide');
     })
 
@@ -585,13 +595,17 @@ $(document).ready(async function () {
     // event permission for member
     $(document).on('click', '.btn-set-perm-member', function () {
         let id = $(this).closest('.card').data('id');
+        $('#id-member').val(id);
         let method = 'GET';
         let url = urlEle.data('url-member-detail').format_url_with_uuid(id);
         OpportunityLoadDetail.loadMemberPermission(url, method);
     })
 
+    $(document).on('change', '#table-applications input', function () {
+        $(this).closest('tr').addClass('tr-updated')
+    })
+
     const frm_add_member = $('#frm-add-member');
-    // submit form edit
     SetupFormSubmit.validate(
         frm_add_member,
         {
@@ -604,6 +618,35 @@ $(document).ready(async function () {
                 }
                 $.fn.callAjax2({
                     url: frm.dataUrl.format_url_with_uuid(pk),
+                    method: frm.dataMethod,
+                    data: data,
+                }).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
+                            setTimeout(function () {
+                                window.location.reload();
+                            }, 1000)
+                        }
+                    },
+                    (errs) => {
+                        $.fn.notifyB({description: errs.data.errors}, 'failure');
+                    }
+                )
+            }
+        })
+
+    const frm_set_permission = $('#frm-set-perm-member');
+    SetupFormSubmit.validate(
+        frm_set_permission,
+        {
+            submitHandler: function (form) {
+                let frm = new SetupFormSubmit($(form));
+                let id = $('#id-member').val();
+                let data = OpportunityLoadDetail.getFormDataMemberPermission();
+                $.fn.callAjax2({
+                    url: frm.dataUrl.format_url_with_uuid(id),
                     method: frm.dataMethod,
                     data: data,
                 }).then(

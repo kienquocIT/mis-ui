@@ -705,6 +705,9 @@ class OpportunityLoadDetail {
             let frm = new SetupFormSubmit($table);
             $table.DataTableDefault({
                 useDataServer: true,
+                paging: false,
+                scrollY: '200px',
+                autoWidth: false,
                 ajax: {
                     url: frm.dataUrl,
                     type: frm.dataMethod,
@@ -746,15 +749,15 @@ class OpportunityLoadDetail {
                         targets: 3,
                         render: (data, type, row, meta) => {
                             if (!['Quotation', 'Sale Order', 'Contract', 'Delivery'].includes(row.title))
-                                return `<div class="form-check"><input type="checkbox" class="form-check-input check-yourself" /></div>`
+                                return `<div class="form-check"><input type="checkbox" class="form-check-input check-view-own" /></div>`
                             else
-                                return `<div class="form-check"><input type="checkbox" class="form-check-input check-view-yourself" disabled/></div>`
+                                return `<div class="form-check"><input type="checkbox" class="form-check-input check-view-own" disabled/></div>`
                         }
                     },
                     {
                         targets: 4,
                         render: (data, type, row, meta) => {
-                            return `<div class="form-check"><input type="checkbox" class="form-check-input check-view-other-member" /></div>`
+                            return `<div class="form-check"><input type="checkbox" class="form-check-input check-view-team-member" /></div>`
                         }
                     }
                 ],
@@ -772,9 +775,41 @@ class OpportunityLoadDetail {
                 let member_detail = data?.['member'];
                 $('#checkViewThisOpp').prop('checked', member_detail?.['permit_view_this_opp']);
                 $('#checkCanAddMember').prop('checked', member_detail?.['permit_add_member']);
-
+                let permit_app = member_detail?.['permit_app']
+                for (let key in permit_app) {
+                    if (permit_app.hasOwnProperty(key)) {
+                        let tr_current = $(`#table-applications .application_name[data-id=${key}]`).closest('tr');
+                        tr_current.find('.check-create').prop('checked', permit_app[key].is_create);
+                        tr_current.find('.check-edit').prop('checked', permit_app[key].is_edit);
+                        tr_current.find('.check-view_own').prop('checked', permit_app[key].is_view_own_activity);
+                        tr_current.find('.check-view-team-member').prop('checked', permit_app[key].is_view_team_activity);
+                    }
+                }
             }
         })
+    }
+
+    static getFormDataMemberPermission() {
+        let data = {}
+        data['employee_current'] = $('#emp-current-id').val();
+        data['permit_view_this_opp'] = $('#checkViewThisOpp').is(':checked');
+        data['permit_add_member'] = $('#checkCanAddMember').is(':checked');
+        let table = document.getElementById('table-applications');
+        let updated_tr_ele = table.getElementsByClassName('tr-updated');
+        let list_app = []
+        for (let i = 0; i < updated_tr_ele.length; i++) {
+            let currentElement = updated_tr_ele[i];
+            let data = {
+                'app': currentElement.querySelector('.application_name').getAttribute('data-id'),
+                'is_create': currentElement.querySelector('.check-create').checked,
+                'is_edit': currentElement.querySelector('.check-edit').checked,
+                'is_view_own_activity': currentElement.querySelector('.check-view-own').checked,
+                'is_view_team_activity': currentElement.querySelector('.check-view-team-member').checked,
+            }
+            list_app.push(data);
+        }
+        data['app_permit'] = list_app
+        return data
     }
 }
 
@@ -1592,9 +1627,6 @@ function autoLoadStage(
         let stage_selected_ele = $('.stage-selected');
         let input_rate_ele = $('#check-input-rate');
         let ele_close_deal = $('#input-close-deal');
-        if (stage_selected_ele.not(ele_close_deal.closest('.sub-stage')).last().data('id') !== id_stage_current) {
-            Swal.fire($('#opp-updated').text());
-        }
         let ele_stage = $(`.sub-stage`);
         let ele_stage_current = $(`.sub-stage[data-id="${id_stage_current}"]`);
         let index = ele_stage_current.index();

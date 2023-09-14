@@ -20,6 +20,7 @@ $(document).ready(function () {
                 keyParam: "has_manager_custom",
                 placeholder: msgData.attr('data-msg-by-group'),
                 allowClear: true,
+                keyText: "text",
                 data: [
                     {
                         'id': 'all',
@@ -38,7 +39,7 @@ $(document).ready(function () {
                         'id': 'staff',
                         'text': msgData.attr('data-msg-of-staff'),
                     },
-                ]
+                ],
             },
             {
                 dataUrl: urlEmployeeList,
@@ -68,7 +69,7 @@ $(document).ready(function () {
                 width: "5%",
                 'render': () => {
                     return ``;
-                }
+                },
             },
             {
                 orderable: true,
@@ -77,7 +78,7 @@ $(document).ready(function () {
                 render: (data, type, row) => {
                     let urlEditPage = msgData.attr('data-url').format_url_with_uuid(row.id);
                     return `<a href="${urlEditPage}"><span><b>` + row.name + `</b></span></a>`
-                }
+                },
             },
             {
                 width: "20%",
@@ -91,7 +92,7 @@ $(document).ready(function () {
                             return `<span class="badge ${list_class_badge[clsBadgeCurrent]} mt-1 ml-1">${item}</span>`;
                         }
                     ).join("");
-                }
+                },
             },
             {
                 width: "10%",
@@ -101,21 +102,21 @@ $(document).ready(function () {
                         return `<div class="row"><span style="width: 100%" class="badge badge-soft-orange">` + row.owner.fullname + `</span></div>`
                     }
                     return ``;
-                }
+                },
             },
             {
                 width: "10%",
                 data: 'phone',
                 render: (data, type, row) => {
                     return `<span>${row?.phone ? row.phone : ''}</span>`
-                }
+                },
             },
             {
                 width: "10%",
                 data: 'website',
                 render: (data, type, row) => {
                     return `<span>${row?.['website'] ? row['website'] : ''}</span>`
-                }
+                },
             },
             {
                 width: "25%",

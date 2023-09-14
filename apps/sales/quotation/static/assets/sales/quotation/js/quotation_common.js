@@ -2808,6 +2808,7 @@ class QuotationSubmitHandle {
                 if (dataExpenseItem) {
                     rowData['expense_item'] = dataExpenseItem.id;
                     rowData['expense_code'] = dataExpenseItem.code;
+                    rowData['expense_type_title'] = dataExpenseItem.title;
                 }
             }
             rowData['expense_title'] = row.querySelector('.table-row-expense-title').value;

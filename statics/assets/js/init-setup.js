@@ -2128,14 +2128,6 @@ class DTBControl {
                         (!config.dataUrl && config.data && Array.isArray(config.data) && config.data.length > 0)
                     ) {
                         let textSelected = '';
-                        let dataOnload = config.data.map(
-                            (item) => {
-                                if (item.selected === true) {
-                                    textSelected = item.text;
-                                }
-                                return `<option value="${item.id}" ${item.selected ? "selected" : ""}>${item.text}</option>`
-                            }
-                        )
                         let attrHTML = ['data-method="GET"'];
                         Object.keys(config).map(
                             (key) => {
@@ -2147,6 +2139,14 @@ class DTBControl {
                                     } else if (key === 'placeholder') {
                                         attrHTML.push(`data-placeholder="${config.placeholder}"`);
                                     } else if (key === 'data') {
+                                        config['data'].map(
+                                            (itemOnload) => {
+                                                if (itemOnload?.['selected'] === true) {
+                                                    let keyTextTmp = config?.['keyText'] || 'title';
+                                                    textSelected = itemOnload?.[keyTextTmp] || '';
+                                                }
+                                            }
+                                        )
                                     } else if (key === 'multiple') {
                                         attrHTML.push(`multiple`);
                                     } else if (key === 'allowClear') {
@@ -2157,6 +2157,7 @@ class DTBControl {
                                 }
                             }
                         )
+
                         let fakeIdx = $x.fn.randomStr(32);
                         cusFilterArr.push(`
                             <div class="col-12 col-md-4 w-200p mb-1">

@@ -773,14 +773,15 @@
                                     >
                                         <thead>
                                         <tr>
-                                            <th>STT</th>
-                                            <th>{% trans 'Expense' %}<span class="required"></span></th>
-                                            <th>{% trans 'Unit Of Measure' %}<span class="required"></span></th>
-                                            <th>{% trans 'Quantity' %}<span class="required"></span></th>
-                                            <th>{% trans 'Expense Price' %}<span class="required"></span></th>
-                                            <th>{% trans 'Tax' %}</th>
-                                            <th>{% trans 'Subtotal Price' %}</th>
-                                            <th>{% trans 'Actions' %}</th>
+                                            <th class="w-5">STT</th>
+                                            <th class="w-15">{% trans 'Expense name' %}<span class="required"></span></th>
+                                            <th class="w-10">{% trans 'Expense items' %}<span class="required"></span></th>
+                                            <th class="w-10">{% trans 'Unit Of Measure' %}<span class="required"></span></th>
+                                            <th class="w-5">{% trans 'Quantity' %}<span class="required"></span></th>
+                                            <th class="w-20">{% trans 'Expense Price' %}<span class="required"></span></th>
+                                            <th class="w-10">{% trans 'Tax' %}</th>
+                                            <th class="w-20">{% trans 'Subtotal Price' %}</th>
+                                            <th class="w-5">{% trans 'Actions' %}</th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -863,6 +864,13 @@
                                 id="data-init-quotation-create-tables-expense"
                                 data-url="{% url "ExpenseForSaleListAPI" %}"
                                 data-link-detail="{% url "ExpenseDetail" 1 %}"
+                                data-method="GET"
+                        >
+                        <input
+                                type="hidden"
+                                id="data-init-quotation-create-tables-expense-item"
+                                data-url="{% url "ExpenseItemListAPI" %}"
+                                data-link-detail="{% url "ExpenseItemDetailAPI" 1 %}"
                                 data-method="GET"
                         >
                         <input

@@ -250,6 +250,22 @@ class GRLoadDataHandle {
         });
     };
 
+    static loadChangePO($ele) {
+        GRLoadDataHandle.loadMoreInformation($ele);
+        GRDataTableHandle.tableLineDetail.DataTable().clear().draw();
+        GRCalculateHandle.calculateTotal(GRDataTableHandle.tableLineDetail[0]);
+        GRDataTableHandle.tablePOProduct.DataTable().clear().draw();
+
+        if ($ele.val()) {
+            let dataSelected = SelectDDControl.get_data_from_idx(GRLoadDataHandle.POSelectEle, $ele.val());
+            // load supplier
+            GRLoadDataHandle.supplierSelectEle.empty();
+            GRLoadDataHandle.loadBoxSupplier(dataSelected?.['supplier']);
+            // load PR
+            GRLoadDataHandle.loadDataShowPR(dataSelected?.['purchase_requests_data']);
+        }
+    };
+
     static loadModalProduct(is_detail = false) {
         let frm = new SetupFormSubmit(GRDataTableHandle.tablePOProduct);
         if (GRDataTableHandle.tablePOProduct[0].querySelector('.dataTables_empty')) {
@@ -1249,33 +1265,43 @@ class GRCalculateHandle {
         let eleTaxesRaw = document.getElementById('good-receipt-product-taxes-raw');
         let eleTotalRaw = document.getElementById('good-receipt-product-total-raw');
         let finalRevenueBeforeTax = document.getElementById('good-receipt-final-revenue-before-tax');
-        if (elePretaxAmount && eleTaxes && eleTotal) {
-            let tableLen = table.tBodies[0].rows.length;
-            for (let i = 0; i < tableLen; i++) {
-                let row = table.tBodies[0].rows[i];
-                // calculate Pretax Amount
-                let subtotalRaw = row.querySelector('.table-row-subtotal-raw');
-                if (subtotalRaw) {
-                    if (subtotalRaw.value) {
-                        pretaxAmount += parseFloat(subtotalRaw.value)
+        if (!table.querySelector('.dataTables_empty')) {
+            if (elePretaxAmount && eleTaxes && eleTotal) {
+                let tableLen = table.tBodies[0].rows.length;
+                for (let i = 0; i < tableLen; i++) {
+                    let row = table.tBodies[0].rows[i];
+                    // calculate Pretax Amount
+                    let subtotalRaw = row.querySelector('.table-row-subtotal-raw');
+                    if (subtotalRaw) {
+                        if (subtotalRaw.value) {
+                            pretaxAmount += parseFloat(subtotalRaw.value)
+                        }
+                    }
+                    // calculate Tax Amount
+                    let subTaxAmountRaw = row.querySelector('.table-row-tax-amount-raw');
+                    if (subTaxAmountRaw) {
+                        if (subTaxAmountRaw.value) {
+                            taxAmount += parseFloat(subTaxAmountRaw.value)
+                        }
                     }
                 }
-                // calculate Tax Amount
-                let subTaxAmountRaw = row.querySelector('.table-row-tax-amount-raw');
-                if (subTaxAmountRaw) {
-                    if (subTaxAmountRaw.value) {
-                        taxAmount += parseFloat(subTaxAmountRaw.value)
-                    }
-                }
+                let totalFinal = (pretaxAmount + taxAmount);
+                $(elePretaxAmount).attr('data-init-money', String(pretaxAmount));
+                elePretaxAmountRaw.value = pretaxAmount;
+                finalRevenueBeforeTax.value = pretaxAmount;
+                $(eleTaxes).attr('data-init-money', String(taxAmount));
+                eleTaxesRaw.value = taxAmount;
+                $(eleTotal).attr('data-init-money', String(totalFinal));
+                eleTotalRaw.value = totalFinal;
             }
-            let totalFinal = (pretaxAmount + taxAmount);
-            $(elePretaxAmount).attr('data-init-money', String(pretaxAmount));
-            elePretaxAmountRaw.value = pretaxAmount;
-            finalRevenueBeforeTax.value = pretaxAmount;
-            $(eleTaxes).attr('data-init-money', String(taxAmount));
-            eleTaxesRaw.value = taxAmount;
-            $(eleTotal).attr('data-init-money', String(totalFinal));
-            eleTotalRaw.value = totalFinal;
+        } else {
+            $(elePretaxAmount).attr('data-init-money', String(0));
+            elePretaxAmountRaw.value = '0';
+            finalRevenueBeforeTax.value = '0';
+            $(eleTaxes).attr('data-init-money', String(0));
+            eleTaxesRaw.value = '0';
+            $(eleTotal).attr('data-init-money', String(0));
+            eleTotalRaw.value = '0';
         }
         $.fn.initMaskMoney2();
         return true;

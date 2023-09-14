@@ -29,7 +29,7 @@ class GoodsReceiptList(View):
         auth_require=True,
         template='sales/inventory/goodreceipt/goods_receipt_list.html',
         menu_active='menu_goods_receipt_list',
-        breadcrumb='',
+        breadcrumb='GOODS_RECEIPT_LIST_PAGE',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -40,7 +40,7 @@ class GoodsReceiptCreate(View):
         auth_require=True,
         template='sales/inventory/goodreceipt/goods_receipt_create.html',
         menu_active='menu_goods_receipt_list',
-        breadcrumb='',
+        breadcrumb='GOODS_RECEIPT_CREATE_PAGE',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -75,7 +75,7 @@ class GoodsReceiptDetail(View):
         auth_require=True,
         template='sales/inventory/goodreceipt/goods_receipt_detail.html',
         menu_active='menu_goods_receipt_list',
-        breadcrumb='',
+        breadcrumb='GOODS_RECEIPT_DETAIL_PAGE',
     )
     def get(self, request, pk, *args, **kwargs):
         return {'data': {'doc_id': pk}}, status.HTTP_200_OK
@@ -86,7 +86,7 @@ class GoodsReceiptUpdate(View):
         auth_require=True,
         template='sales/inventory/goodreceipt/goods_receipt_update.html',
         menu_active='menu_goods_receipt_list',
-        breadcrumb='',
+        breadcrumb='GOODS_RECEIPT_UPDATE_PAGE',
     )
     def get(self, request, pk, *args, **kwargs):
         # input_mapping_properties = InputMappingProperties.PURCHASING_PURCHASE_ORDER

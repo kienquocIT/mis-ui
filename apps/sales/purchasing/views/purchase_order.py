@@ -39,8 +39,8 @@ class PurchaseOrderCreate(View):
     @mask_view(
         auth_require=True,
         template='sales/purchasing/purchaseorder/purchase_order_create.html',
-        menu_active='',
-        breadcrumb='',
+        menu_active='menu_purchase_order_list',
+        breadcrumb='PURCHASE_ORDER_CREATE_PAGE',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -75,7 +75,7 @@ class PurchaseOrderDetail(View):
         auth_require=True,
         template='sales/purchasing/purchaseorder/purchase_order_detail.html',
         menu_active='menu_purchase_order_list',
-        breadcrumb='PURCHASE_ORDER_DETAIL_PAGE',
+        breadcrumb='PURCHASE_ORDER_CREATE_PAGE',
     )
     def get(self, request, pk, *args, **kwargs):
         return {'data': {'doc_id': pk}}, status.HTTP_200_OK
@@ -86,7 +86,7 @@ class PurchaseOrderUpdate(View):
         auth_require=True,
         template='sales/purchasing/purchaseorder/purchase_order_update.html',
         menu_active='menu_purchase_order_list',
-        breadcrumb='PURCHASE_ORDER_DETAIL_PAGE',
+        breadcrumb='PURCHASE_ORDER_UPDATE_PAGE',
     )
     def get(self, request, pk, *args, **kwargs):
         input_mapping_properties = InputMappingProperties.PURCHASING_PURCHASE_ORDER

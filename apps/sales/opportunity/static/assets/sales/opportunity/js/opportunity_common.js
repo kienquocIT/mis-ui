@@ -781,7 +781,7 @@ class OpportunityLoadDetail {
                         let tr_current = $(`#table-applications .application_name[data-id=${key}]`).closest('tr');
                         tr_current.find('.check-create').prop('checked', permit_app[key].is_create);
                         tr_current.find('.check-edit').prop('checked', permit_app[key].is_edit);
-                        tr_current.find('.check-view_own').prop('checked', permit_app[key].is_view_own_activity);
+                        tr_current.find('.check-view-own').prop('checked', permit_app[key].is_view_own_activity);
                         tr_current.find('.check-view-team-member').prop('checked', permit_app[key].is_view_team_activity);
                     }
                 }

@@ -293,26 +293,26 @@ class MenusPurchase:
             ),
             MenuCommon(
                 name='Purchase Order', code='menu_purchase_order_list', view_name='PurchaseOrderList',
-                icon='<i class="fas fa-money-check"></i>',
+                icon='<i class="bi bi-caret-right-fill"></i>',
             ),
         ],
     )
 
     INVENTORY = MenuCommon(
-        name='Inventory', code='menu_inventory_activities', view_name='', icon='<i class="fas fa-clipboard-check"></i>',
+        name='Inventory', code='menu_inventory_activities', view_name='', icon='<i class="bi bi-shop-window"></i>',
         child=[
-            # MenuCommon(
-            #     name='Goods receipt',
-            #     code='menu_goods_receipt_list',
-            #     view_name='GoodsReceiptList',
-            #     icon='<i class="fas fa-file-import"></i>',
-            # ),
-            # MenuCommon(
-            #     name='Inventory Adjustment',
-            #     code='menu_inventory_adjustment_list',
-            #     view_name='InventoryAdjustmentList',
-            #     icon='<i class="bi bi-sliders"></i>',
-            # ),
+            MenuCommon(
+                name='Goods receipt',
+                code='menu_goods_receipt_list',
+                view_name='GoodsReceiptList',
+                icon='<i class="fas fa-file-import"></i>',
+            ),
+            MenuCommon(
+                name='Inventory Adjustment',
+                code='menu_inventory_adjustment_list',
+                view_name='InventoryAdjustmentList',
+                icon='<i class="bi bi-sliders"></i>',
+            ),
         ],
     )
 

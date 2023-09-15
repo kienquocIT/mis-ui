@@ -14,6 +14,7 @@ class PaymentList(View):
         template='payment/payment_list.html',
         breadcrumb='PAYMENT_LIST_PAGE',
         menu_active='id_menu_payment',
+        perm_check=PermCheck(url=ApiURL.PAYMENT_LIST, method='GET'),
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -27,6 +28,7 @@ class PaymentCreate(View):
         template='payment/payment_create.html',
         breadcrumb='PAYMENT_CREATE_PAGE',
         menu_active='menu_advance_payment_list',
+        perm_check=PermCheck(url=ApiURL.PAYMENT_LIST, method='POST'),
     )
     def get(self, request, *args, **kwargs):
         resp1 = ServerAPI(
@@ -69,6 +71,7 @@ class PaymentDetail(View):
         template='payment/payment_detail.html',
         breadcrumb='PAYMENT_DETAIL_PAGE',
         menu_active='menu_payment_detail',
+        perm_check=PermCheck(url=ApiURL.PAYMENT_DETAIL, method='GET', fill_key=['pk']),
     )
     def get(self, request, *args, **kwargs):
         resp1 = ServerAPI(

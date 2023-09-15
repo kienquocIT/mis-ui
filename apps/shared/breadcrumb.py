@@ -607,4 +607,3 @@ class BreadcrumbView:
 
     # Purchase request config
     PURCHASE_REQUEST_CONFIG_PAGE = [BreadcrumbItem.PURCHASE_REQUEST_CONFIG_PAGE]
-    

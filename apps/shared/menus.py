@@ -141,6 +141,10 @@ class MenusCoreConfigurations:
                 name='Internal Labor Items', code='id_menu_expense_list', view_name='ExpenseList',
                 icon='<i class="bi bi-cash-coin"></i>',
             ),
+            MenuCommon(
+                name='Purchase Request Config', code='menu_purchase_request_config', view_name='PurchaseRequestConfig',
+                icon='<i class="fas fa-shopping-cart"></i>',
+            ),
         ]
     )
 

@@ -226,6 +226,9 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     GOODS_RECEIPT_DETAIL_PAGE = BreadcrumbChildren(_('Goods receipt detail'))
     GOODS_RECEIPT_UPDATE_PAGE = BreadcrumbChildren(_('Goods receipt update'))
 
+    # Purchase request config
+    PURCHASE_REQUEST_CONFIG_PAGE = BreadcrumbChildren(_('Purchase Request'), 'PurchaseRequestConfig')
+
 
 class BreadcrumbView:
     """menu vertical item view"""
@@ -601,3 +604,6 @@ class BreadcrumbView:
     GOODS_RECEIPT_CREATE_PAGE = GOODS_RECEIPT_LIST_PAGE + [BreadcrumbItem.GOODS_RECEIPT_CREATE_PAGE]
     GOODS_RECEIPT_DETAIL_PAGE = GOODS_RECEIPT_LIST_PAGE + [BreadcrumbItem.GOODS_RECEIPT_DETAIL_PAGE]
     GOODS_RECEIPT_UPDATE_PAGE = GOODS_RECEIPT_LIST_PAGE + [BreadcrumbItem.GOODS_RECEIPT_UPDATE_PAGE]
+
+    # Purchase request config
+    PURCHASE_REQUEST_CONFIG_PAGE = [BreadcrumbItem.PURCHASE_REQUEST_CONFIG_PAGE]

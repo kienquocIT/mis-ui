@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
-from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg, InputMappingProperties
+from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg, InputMappingProperties, PermCheck
 
 
 def create_goods_receipt(request, url, msg):
@@ -76,6 +76,7 @@ class GoodsReceiptDetail(View):
         template='sales/inventory/goodreceipt/goods_receipt_detail.html',
         menu_active='menu_goods_receipt_list',
         breadcrumb='GOODS_RECEIPT_DETAIL_PAGE',
+        perm_check=PermCheck(url=ApiURL.GOODS_RECEIPT_DETAIL_PK, method='GET', fill_key=['pk']),
     )
     def get(self, request, pk, *args, **kwargs):
         return {'data': {'doc_id': pk}}, status.HTTP_200_OK
@@ -87,6 +88,7 @@ class GoodsReceiptUpdate(View):
         template='sales/inventory/goodreceipt/goods_receipt_update.html',
         menu_active='menu_goods_receipt_list',
         breadcrumb='GOODS_RECEIPT_UPDATE_PAGE',
+        perm_check=PermCheck(url=ApiURL.GOODS_RECEIPT_DETAIL_PK, method='PUT', fill_key=['pk']),
     )
     def get(self, request, pk, *args, **kwargs):
         # input_mapping_properties = InputMappingProperties.PURCHASING_PURCHASE_ORDER

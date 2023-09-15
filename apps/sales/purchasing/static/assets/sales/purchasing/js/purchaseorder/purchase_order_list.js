@@ -18,52 +18,28 @@ $(function () {
                         throw Error('Call data raise errors.')
                     },
                 },
-                columnDefs: [
-                    {
-                        "width": "15%",
-                        "targets": 0
-                    }, {
-                        "width": "20%",
-                        "targets": 1
-                    }, {
-                        "width": "20%",
-                        "targets": 2
-                    }, {
-                        "width": "10%",
-                        "targets": 3
-                    }, {
-                        "width": "15%",
-                        "targets": 4
-                    }, {
-                        "width": "15%",
-                        "targets": 5,
-                    },
-                    {
-                        "width": "5%",
-                        "targets": 6,
-                    },
-                ],
+                columnDefs: [],
                 columns: [
                     {
                         targets: 0,
                         render: (data, type, row) => {
-                            let link = $('#purchase-order-link').data('link-update').format_url_with_uuid(row.id);
-                            return `<a href="${link}" target="_blank" class="link-primary underline_hover"><span class="badge badge-soft-primary">${row.code}</span></a>`
+                            let link = $('#purchase-order-link').data('link-update').format_url_with_uuid(row?.['id']);
+                            return `<a href="${link}" target="_blank" class="link-primary underline_hover"><span class="badge badge-soft-primary">${row?.['code']}</span></a>`
                         }
                     },
                     {
                         targets: 1,
                         render: (data, type, row) => {
-                            const link = $('#purchase-order-link').data('link-update').format_url_with_uuid(row.id)
-                            return `<a href="${link}" target="_blank" class="link-primary underline_hover">${row.title}</a>`
+                            const link = $('#purchase-order-link').data('link-update').format_url_with_uuid(row?.['id'])
+                            return `<a href="${link}" target="_blank" class="link-primary underline_hover">${row?.['title']}</a>`
                         }
                     },
                     {
                         targets: 2,
                         render: (data, type, row) => {
                             let ele = `<p></p>`;
-                            if (Object.keys(row.supplier).length !== 0) {
-                                ele = `<p>${row.supplier.name}</p>`;
+                            if (Object.keys(row?.['supplier']).length !== 0) {
+                                ele = `<p>${row?.['supplier']?.['name']}</p>`;
                             }
                             return ele;
                         }
@@ -85,7 +61,7 @@ $(function () {
                                 "Finish": "badge badge-soft-success",
                                 "Cancel": "badge badge-soft-danger",
                             }
-                            return `<span class="${status_data[row.system_status]}">${row.system_status}</span>`;
+                            return `<span class="${status_data[row?.['system_status']]}">${row?.['system_status']}</span>`;
                         }
                     },
                     {
@@ -97,14 +73,14 @@ $(function () {
                                 "Received": "badge badge-soft-success",
                                 "None": "badge badge-soft-danger",
                             }
-                            return `<span class="${status_data[row.status_delivered]}">${row.status_delivered}</span>`;
+                            return `<span class="${status_data[row?.['receipt_status']]}">${row?.['receipt_status']}</span>`;
                         }
                     },
                     {
                         targets: 6,
                         className: 'action-center',
                         render: (data, type, row) => {
-                            const link = $('#purchase-order-link').data('link-update').format_url_with_uuid(row.id)
+                            const link = $('#purchase-order-link').data('link-update').format_url_with_uuid(row?.['id'])
                             return `<div class="dropdown">
                                     <i class="far fa-window-maximize" aria-expanded="false" data-bs-toggle="dropdown"></i>
                                     <div role="menu" class="dropdown-menu">

@@ -72,14 +72,14 @@ $(function () {
                                 "Finish": "badge badge-soft-success",
                                 "Cancel": "badge badge-soft-danger",
                             }
-                            return `<span class="${status_data[row.system_status]}">${row.system_status}</span>`;
+                            return `<span class="${status_data[row?.['system_status']]}">${row?.['system_status']}</span>`;
                         }
                     },
                     {
                         targets: 6,
                         className: 'action-center',
                         render: (data, type, row) => {
-                            const link = $('#goods-receipt-link').data('link-update').format_url_with_uuid(row.id)
+                            const link = $('#goods-receipt-link').data('link-update').format_url_with_uuid(row?.['id'])
                             return `<div class="dropdown">
                                     <i class="far fa-window-maximize" aria-expanded="false" data-bs-toggle="dropdown"></i>
                                     <div role="menu" class="dropdown-menu">

@@ -220,24 +220,9 @@ $(function () {
                         throw Error('Call data raise errors.')
                     },
                 },
-                columnDefs: [
-                    {
-                        "width": "5%",
-                        "targets": 0
-                    }, {
-                        "width": "40%",
-                        "targets": 1
-                    }, {
-                        "width": "5%",
-                        "targets": 2
-                    }, {
-                        "width": "45%",
-                        "targets": 3
-                    }, {
-                        "width": "5%",
-                        "targets": 4
-                    }
-                ],
+                paging: false,
+                info: false,
+                columnDefs: [],
                 columns: [
                     {
                         targets: 0,

@@ -1,5 +1,5 @@
 // Action load zone for initial node on click
-function loadZoneInitialNode(e) {
+function loadZoneInitialNode() {
     let tableNode = $('#datable-workflow-node-create');
     let button = tableNode[0].querySelector('.btn-initial-node-collaborator');
     let modalBody = button.closest('tr').querySelector('.modal-body');
@@ -143,10 +143,7 @@ $(function () {
             ordering: false,
             paginate: false,
             info: false,
-            drawCallback: function (row, data) {
-                // render icon after table callback
-                feather.replace();
-            },
+            drawCallback: function () {},
             rowCallback: function (row, data) {
                 setupInitNodeOrder(row, data)
             },
@@ -630,7 +627,7 @@ $(function () {
         }
 
 // Action on click btn edit row node
-        tableNode.on('click', '.workflow-node-edit-button', function (e) {
+        tableNode.on('click', '.workflow-node-edit-button', function () {
             let titleShow = $(this)[0].closest('tr').querySelector('.node-title-col-show');
             let titleInput = $(this)[0].closest('tr').querySelector('.node-title-col-edit');
             let remarkShow = $(this)[0].closest('tr').querySelector('.node-remark-col-show');
@@ -644,7 +641,7 @@ $(function () {
         });
 
 // Action on change node title
-        tableNode.on('change', '.node-title-col-edit', function (e) {
+        tableNode.on('change', '.node-title-col-edit', function () {
             let titleShow = $(this)[0].closest('tr').querySelector('.node-title-col-show');
             let titleInputVal = $(this).val();
             titleShow.innerHTML = ``;
@@ -654,7 +651,7 @@ $(function () {
         });
 
 // Action on change node description
-        tableNode.on('change', '.node-remark-col-edit', function (e) {
+        tableNode.on('change', '.node-remark-col-edit', function () {
             let remarkShow = $(this)[0].closest('tr').querySelector('.node-remark-col-show');
             let remarkInputVal = $(this).val();
             remarkShow.innerHTML = ``;

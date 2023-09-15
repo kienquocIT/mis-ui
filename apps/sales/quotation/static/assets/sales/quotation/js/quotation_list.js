@@ -51,23 +51,23 @@ $(function () {
                     {
                         targets: 0,
                         render: (data, type, row) => {
-                            const link = $('#quotation-link').data('link-update').format_url_with_uuid(row.id);
-                            return `<a href="${link}" target="_blank" class="link-primary underline_hover"><span class="badge badge-soft-primary">${row.code}</span></a>`
+                            const link = $('#quotation-link').data('link-update').format_url_with_uuid(row?.['id']);
+                            return `<a href="${link}" target="_blank" class="link-primary underline_hover"><span class="badge badge-soft-primary">${row?.['code']}</span></a>`
                         }
                     },
                     {
                         targets: 1,
                         render: (data, type, row) => {
-                            const link = $('#quotation-link').data('link-update').format_url_with_uuid(row.id)
-                            return `<a href="${link}" target="_blank" class="link-primary underline_hover">${row.title}</a>`
+                            const link = $('#quotation-link').data('link-update').format_url_with_uuid(row?.['id'])
+                            return `<a href="${link}" target="_blank" class="link-primary underline_hover">${row?.['title']}</a>`
                         }
                     },
                     {
                         targets: 2,
                         render: (data, type, row) => {
                             let ele = `<p></p>`;
-                            if (Object.keys(row.customer).length !== 0) {
-                                ele = `<p>${row.customer.title}</p>`;
+                            if (Object.keys(row?.['customer']).length !== 0) {
+                                ele = `<p>${row?.['customer']?.['title']}</p>`;
                             }
                             return ele;
                         }
@@ -85,14 +85,14 @@ $(function () {
                     {
                         targets: 4,
                         render: (data, type, row) => {
-                            let date_created = moment(row.date_created).format('YYYY-MM-DD');
+                            let date_created = moment(row?.['date_created']).format('YYYY-MM-DD');
                             return `<p>${date_created}</p>`
                         }
                     },
                     {
                         targets: 5,
                         render: (data, type, row) => {
-                            return `<span class="mask-money" data-init-money="${parseFloat(row.total_product)}"></span>`
+                            return `<span class="mask-money" data-init-money="${parseFloat(row?.['total_product'])}"></span>`
                         }
                     },
                     {
@@ -105,14 +105,14 @@ $(function () {
                                 "Finish": "badge badge-soft-success",
                                 "Cancel": "badge badge-soft-danger",
                             }
-                            return `<span class="${status_data[row.system_status]}">${row.system_status}</span>`;
+                            return `<span class="${status_data[row?.['system_status']]}">${row?.['system_status']}</span>`;
                         }
                     },
                     {
                         targets: 7,
                         className: 'action-center',
                         render: (data, type, row) => {
-                            const link = $('#quotation-link').data('link-update').format_url_with_uuid(row.id)
+                            const link = $('#quotation-link').data('link-update').format_url_with_uuid(row?.['id'])
                             return `<div class="dropdown">
                                     <i class="far fa-window-maximize" aria-expanded="false" data-bs-toggle="dropdown"></i>
                                     <div role="menu" class="dropdown-menu">

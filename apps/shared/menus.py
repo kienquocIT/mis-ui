@@ -136,8 +136,15 @@ class MenusCoreConfigurations:
             MenuCommon(
                 name='Payment', code='menu_payment_config', view_name='PaymentConfigList',
                 icon='<i class="bi bi-credit-card-fill"></i>',
-            )
-        ]
+            ),
+			MenuCommon(
+                name='Expense Items', code='id_menu_expense_item_list', view_name='ExpenseItemList',
+                icon='<i class="bi bi-wallet2"></i>',
+            ),
+            MenuCommon(
+                name='Internal Labor Items', code='id_menu_expense_list', view_name='ExpenseList',
+                icon='<i class="bi bi-cash-coin"></i>',
+            ),        ]
     )
 
 
@@ -169,14 +176,6 @@ class MenusCRM:
     )
     PRODUCT = MenuCommon(
         name='Product', code='id_menu_product_list', view_name='ProductList', icon='<i class="bi bi-archive-fill"></i>',
-    )
-    EXPENSE_ITEM = MenuCommon(
-        name='Expense Items', code='id_menu_expense_item_list', view_name='ExpenseItemList',
-        icon='<i class="bi bi-wallet2"></i>',
-    )
-    EXPENSE = MenuCommon(
-        name='Internal Labor Items', code='id_menu_expense_list', view_name='ExpenseList',
-        icon='<i class="bi bi-cash-coin"></i>',
     )
     INVENTORY = MenuCommon(
         name='Inventory', code='menu_inventory', view_name='#', icon='<i class="fas fa-clipboard-list"></i>',
@@ -369,8 +368,6 @@ class SpaceItem:
                 MenusCRM.QUOTATION,
                 MenusCRM.SALE_ORDER,
                 MenusCRM.PRODUCT,
-                MenusCRM.EXPENSE_ITEM,
-                MenusCRM.EXPENSE,
                 MenusCRM.INVENTORY,
                 MenusCRM.PRICING,
                 MenusCRM.CASH_OUTFLOW,

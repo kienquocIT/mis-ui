@@ -86,7 +86,6 @@ class ExpenseItemLoadPage {
                 data: data,
                 searching: false,
                 paginate: false,
-                dom: '',
                 columns: columns,
             });
         }

@@ -318,6 +318,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PURCHASE_REQUEST_DETAIL = StringUrl('purchasing/purchase-request/{pk}')
     PURCHASE_ORDER_LIST = StringUrl('purchasing/purchase-order/list')
     PURCHASE_ORDER_DETAIL = StringUrl('purchasing/purchase-order')
+    PURCHASE_ORDER_DETAIL_PK = StringUrl('purchasing/purchase-order/{pk}')
     PURCHASE_REQUEST_LIST_FOR_PQR = StringUrl('purchasing/purchase-request-for-pqr/list')
     PURCHASE_REQUEST_PRODUCT_LIST = StringUrl('purchasing/purchase-request-product/list')
     PURCHASE_ORDER_PRODUCT_LIST = StringUrl('purchasing/purchase-order-product/list')
@@ -345,3 +346,15 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # Inventory
     GOODS_RECEIPT_LIST = StringUrl('inventory/goods-receipt/list')
     GOODS_RECEIPT_DETAIL = StringUrl('inventory/goods-receipt')
+    GOODS_RECEIPT_DETAIL_PK = StringUrl('inventory/goods-receipt/{pk}')
+
+    # Application for Opportunity permission
+    APPLICATION_OPPORTUNITY_PERMISSION = StringUrl('base/applications-opportunity-permit')
+
+    # Opportunity Detail
+    OPPORTUNITY_MEMBER_DETAIL = StringUrl('opportunity/member/detail/{pk}')
+
+    # Opportunity add member, delete member, set permission for member
+    OPPORTUNITY_ADD_MEMBER = StringUrl('opportunity/add-member/{pk}')
+    OPPORTUNITY_DELETE_MEMBER = StringUrl('opportunity/member/delete/{pk}')
+    SET_MEMBER_PERMISSION = StringUrl('opportunity/member/set/permission/{pk}')

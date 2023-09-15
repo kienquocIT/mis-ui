@@ -747,13 +747,9 @@ $(function () {
             if (type === 'copy-from') { // COPY FROM (SALE ORDER CREATE -> CHOOSE QUOTATION)
                 // Begin load data copy FROM
                 document.getElementById('customer-price-list').value = dataCopy.customer?.['customer_price_list'];
-                QuotationLoadDataHandle.loadDetailQuotation(dataCopy, true);
                 QuotationLoadDataHandle.loadDataTablesAndDropDowns(dataCopy);
-                if (dataCopyTo.option === 'custom') {
-                    QuotationCalculateCaseHandle.calculateAllRowsTableProduct(tableProduct);
-                } else {
-                    QuotationCalculateCaseHandle.calculateAllRowsTableProduct(tableProduct);
-                }
+                QuotationCalculateCaseHandle.calculateAllRowsTableProduct(tableProduct);
+                QuotationLoadDataHandle.loadDetailQuotation(dataCopy, true);
 
             } else if (type === 'copy-to') { // COPY TO (QUOTATION DETAIL -> SALE ORDER CREATE)
                 // create URL and add to href
@@ -784,7 +780,6 @@ $(function () {
             if (eleDataCopy) {
                 if (eleDataCopy.val()) {
                     let dataRaw = JSON.parse(eleDataCopy.val());
-                    QuotationLoadDataHandle.loadDetailQuotation(dataCopy, true);
                     if (dataRaw.option === 'custom') { // if option copy is custom then setup data products & costs for load
                         let products = dataRaw.products;
                         let result = [];
@@ -809,11 +804,8 @@ $(function () {
                     // Begin load data copy TO
                     document.getElementById('customer-price-list').value = dataCopy.customer?.['customer_price_list'];
                     QuotationLoadDataHandle.loadDataTablesAndDropDowns(dataCopy);
-                    if (dataRaw.option === 'custom') {
-                        QuotationCalculateCaseHandle.calculateAllRowsTableProduct(tableProduct);
-                    } else {
-                        QuotationCalculateCaseHandle.calculateAllRowsTableProduct(tableProduct);
-                    }
+                    QuotationCalculateCaseHandle.calculateAllRowsTableProduct(tableProduct);
+                    QuotationLoadDataHandle.loadDetailQuotation(dataCopy, true);
                 }
             }
         }

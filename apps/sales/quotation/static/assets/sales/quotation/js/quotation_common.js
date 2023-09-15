@@ -71,7 +71,7 @@ class QuotationLoadDataHandle {
         }
     }
 
-    static loadBoxQuotationOpportunity(dataOpp = {}, sale_person_id = null, is_copy = false) {
+    static loadBoxQuotationOpportunity(dataOpp = {}, sale_person_id = null) {
         let ele = QuotationLoadDataHandle.opportunitySelectEle;
         let form = $('#frm_quotation_create');
         let data_filter = {
@@ -119,10 +119,6 @@ class QuotationLoadDataHandle {
         }
         // ReCheck Config when change Opportunity
         QuotationCheckConfigHandle.checkConfig(true);
-        // ReCheck Config when change Opportunity (If is copy)
-        if (is_copy === true) {
-            QuotationCheckConfigHandle.checkConfig(true, null, false, false, is_copy);
-        }
     };
 
     static loadBoxQuotationCustomer(dataCustomer = {}, sale_person_id = null) {
@@ -703,9 +699,9 @@ class QuotationLoadDataHandle {
         }
         if (data.opportunity) {
             if (data?.['sale_person']) {
-                self.loadBoxQuotationOpportunity(data.opportunity, data?.['sale_person']?.['id'], is_copy);
+                self.loadBoxQuotationOpportunity(data.opportunity, data?.['sale_person']?.['id']);
             } else {
-                self.loadBoxQuotationOpportunity(data.opportunity, null, is_copy);
+                self.loadBoxQuotationOpportunity(data.opportunity, null);
             }
         }
         if (data.customer) {
@@ -2243,7 +2239,6 @@ class QuotationCalculateCaseHandle {
 // Config
 class QuotationCheckConfigHandle {
     static checkConfig(is_change_opp = false, new_row = null, is_first_time = false, is_has_opp_detail = false, is_copy = false) {
-        let self = this;
         let form = document.getElementById('frm_quotation_create');
         let configRaw = $('#quotation-config-data').val();
         if (configRaw) {
@@ -2259,7 +2254,7 @@ class QuotationCheckConfigHandle {
                         if (!tableProduct.querySelector('.dataTables_empty')) {
                             for (let i = 0; i < tableProduct.tBodies[0].rows.length; i++) {
                                 let row = tableProduct.tBodies[0].rows[i];
-                                is_make_price_change = self.reCheckTable(config, row, true, false, is_make_price_change);
+                                is_make_price_change = QuotationCheckConfigHandle.reCheckTable(config, row, true, false, is_make_price_change);
                                 // Re Calculate all data of rows & total
                                 if (is_copy === false) {
                                     QuotationCalculateCaseHandle.commonCalculate($(tableProduct), row, true, false, false);
@@ -2287,7 +2282,7 @@ class QuotationCheckConfigHandle {
                     }
                 } else {
                     if (new_row) {
-                        is_make_price_change = self.reCheckTable(config, new_row, true, false, is_make_price_change);
+                        is_make_price_change = QuotationCheckConfigHandle.reCheckTable(config, new_row, true, false, is_make_price_change);
                     }
                 }
                 $.fn.initMaskMoney2();
@@ -2309,7 +2304,7 @@ class QuotationCheckConfigHandle {
                         if (!tableProduct.querySelector('.dataTables_empty')) {
                             for (let i = 0; i < tableProduct.tBodies[0].rows.length; i++) {
                                 let row = tableProduct.tBodies[0].rows[i];
-                                is_make_price_change = self.reCheckTable(config, row, false, true, is_make_price_change);
+                                is_make_price_change = QuotationCheckConfigHandle.reCheckTable(config, row, false, true, is_make_price_change);
                                 // Re Calculate all data of rows & total
                                 if (is_copy === false) {
                                     QuotationCalculateCaseHandle.commonCalculate($(tableProduct), row, true, false, false);
@@ -2337,7 +2332,7 @@ class QuotationCheckConfigHandle {
                     }
                 } else {
                     if (new_row) {
-                        is_make_price_change = self.reCheckTable(config, new_row, false, true, is_make_price_change);
+                        is_make_price_change = QuotationCheckConfigHandle.reCheckTable(config, new_row, false, true, is_make_price_change);
                     }
                 }
                 $.fn.initMaskMoney2();

@@ -865,7 +865,7 @@ class QuotationLoadDataHandle {
         if (!table[0].querySelector('.dataTables_empty')) {
             for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
                 let row = table[0].tBodies[0].rows[i];
-                let dataRow = JSON.parse(row.querySelector('.table-row-order').getAttribute('data-row'));
+                let dataRow = JSON.parse(row.querySelector('.table-row-order')?.getAttribute('data-row'));
                 if (is_expense === false) { // PRODUCT
                     $(row.querySelector('.table-row-item')).empty();
                     QuotationLoadDataHandle.loadBoxQuotationProduct($(row.querySelector('.table-row-item')), dataRow.product);

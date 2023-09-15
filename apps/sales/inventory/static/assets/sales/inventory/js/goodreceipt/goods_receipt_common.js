@@ -379,7 +379,7 @@ class GRLoadDataHandle {
     };
 
     static loadAreaLotOrAreaSerial() {
-        let dataPOProductCheckedRaw = GRDataTableHandle.tablePOProduct[0].querySelector('.table-row-checkbox:checked').getAttribute('data-row');
+        let dataPOProductCheckedRaw = GRDataTableHandle.tablePOProduct[0].querySelector('.table-row-checkbox:checked')?.getAttribute('data-row');
         if (dataPOProductCheckedRaw) {
             let dataPOProductChecked = JSON.parse(dataPOProductCheckedRaw);
             if (dataPOProductChecked?.['product']?.['general_traceability_method'] === 1) {
@@ -392,7 +392,7 @@ class GRLoadDataHandle {
     };
 
     static loadNewRowsLotOrNewRowsSerial() {
-        let dataPOProductCheckedRaw = GRDataTableHandle.tablePOProduct[0].querySelector('.table-row-checkbox:checked').getAttribute('data-row');
+        let dataPOProductCheckedRaw = GRDataTableHandle.tablePOProduct[0].querySelector('.table-row-checkbox:checked')?.getAttribute('data-row');
         if (dataPOProductCheckedRaw) {
             let dataPOProductChecked = JSON.parse(dataPOProductCheckedRaw);
             if (dataPOProductChecked?.['product']?.['general_traceability_method'] === 1) {
@@ -425,7 +425,7 @@ class GRLoadDataHandle {
     };
 
     static loadNewRowsLot() {
-        let eleWHDataRaw = GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked').getAttribute('data-row');
+        let eleWHDataRaw = GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked')?.getAttribute('data-row');
         if (eleWHDataRaw) {
             let eleWHData = JSON.parse(eleWHDataRaw);
             if (eleWHData?.['lot_data']) {
@@ -435,7 +435,7 @@ class GRLoadDataHandle {
     };
 
     static loadAddRowLot() {
-        let eleWHDataRaw = GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked').getAttribute('data-row');
+        let eleWHDataRaw = GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked')?.getAttribute('data-row');
         if (eleWHDataRaw) {
             let eleWHData = JSON.parse(eleWHDataRaw);
             let $table = GRDataTableHandle.tableLot;
@@ -452,7 +452,7 @@ class GRLoadDataHandle {
     };
 
     static loadNewRowsSerial() {
-        let eleWHDataRaw = GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked').getAttribute('data-row');
+        let eleWHDataRaw = GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked')?.getAttribute('data-row');
         if (eleWHDataRaw) {
             let eleWHData = JSON.parse(eleWHDataRaw);
             // if (eleWHData?.['serial_data']) {
@@ -639,7 +639,7 @@ class GRLoadDataHandle {
     static loadDataRow(row) {
         // mask money
         $.fn.initMaskMoney2();
-        let dataRowRaw = row.querySelector('.table-row-order').getAttribute('data-row');
+        let dataRowRaw = row.querySelector('.table-row-order')?.getAttribute('data-row');
         if (dataRowRaw) {
             let dataRow = JSON.parse(dataRowRaw);
             GRLoadDataHandle.loadBoxProduct($(row.querySelector('.table-row-item')), dataRow?.['product']);
@@ -1378,7 +1378,7 @@ class GRStoreDataHandle {
             for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
                 let row = table[0].tBodies[0].rows[i];
                 let quantityImport = parseFloat(row.querySelector('.table-row-import').innerHTML);
-                let dataRowRaw = row.querySelector('.table-row-checkbox').getAttribute('data-row');
+                let dataRowRaw = row.querySelector('.table-row-checkbox')?.getAttribute('data-row');
                 if (dataRowRaw) {
                     if (quantityImport > 0) {
                         let dataRow = JSON.parse(dataRowRaw);
@@ -1389,7 +1389,7 @@ class GRStoreDataHandle {
                 }
             }
             if (POProductID) {
-                let dataPOCheckedRaw = tablePO[0].querySelector(`.table-row-checkbox[data-id="${POProductID}"]`).getAttribute('data-row');
+                let dataPOCheckedRaw = tablePO[0].querySelector(`.table-row-checkbox[data-id="${POProductID}"]`)?.getAttribute('data-row');
                 if (dataPOCheckedRaw) {
                     let dataPOChecked = JSON.parse(dataPOCheckedRaw);
                     dataPOChecked['purchase_request_products_data'] = new_data;
@@ -1409,7 +1409,7 @@ class GRStoreDataHandle {
             for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
                 let row = table[0].tBodies[0].rows[i];
                 let quantityImport = parseFloat(row.querySelector('.table-row-import').value);
-                let dataRowRaw = row.querySelector('.table-row-checkbox').getAttribute('data-row');
+                let dataRowRaw = row.querySelector('.table-row-checkbox')?.getAttribute('data-row');
                 if (dataRowRaw) {
                     if (quantityImport > 0) {
                         let dataRow = JSON.parse(dataRowRaw);
@@ -1421,7 +1421,7 @@ class GRStoreDataHandle {
                 }
             }
             if (PRProductID) {
-                let dataPRCheckedRaw = tablePR[0].querySelector(`.table-row-checkbox[data-id="${PRProductID}"]`).getAttribute('data-row');
+                let dataPRCheckedRaw = tablePR[0].querySelector(`.table-row-checkbox[data-id="${PRProductID}"]`)?.getAttribute('data-row');
                 if (dataPRCheckedRaw) {
                     let dataPRChecked = JSON.parse(dataPRCheckedRaw);
                     dataPRChecked['warehouse_data'] = new_data;
@@ -1444,7 +1444,7 @@ class GRStoreDataHandle {
                 let quantityImport = parseFloat(row.querySelector('.table-row-import').value);
                 let expireDate = row.querySelector('.table-row-expire-date').value;
                 let manufactureDate = row.querySelector('.table-row-manufacture-date').value;
-                let dataRowRaw = row.querySelector('.table-row-lot-number').getAttribute('data-row');
+                let dataRowRaw = row.querySelector('.table-row-lot-number')?.getAttribute('data-row');
                 if (dataRowRaw) {
                     if (lotNumber && quantityImport > 0) {
                         let dataRow = JSON.parse(dataRowRaw);
@@ -1458,7 +1458,7 @@ class GRStoreDataHandle {
                 }
             }
             if (WHID) {
-                let dataWHCheckedRaw = tableWH[0].querySelector(`.table-row-checkbox[data-id="${WHID}"]`).getAttribute('data-row');
+                let dataWHCheckedRaw = tableWH[0].querySelector(`.table-row-checkbox[data-id="${WHID}"]`)?.getAttribute('data-row');
                 if (dataWHCheckedRaw) {
                     let dataWHChecked = JSON.parse(dataWHCheckedRaw);
                     dataWHChecked['lot_data'] = new_data;
@@ -1483,7 +1483,7 @@ class GRStoreDataHandle {
                 let manufactureDate = row.querySelector('.table-row-manufacture-date').value;
                 let warrantyStart = row.querySelector('.table-row-warranty-start').value;
                 let warrantyEnd = row.querySelector('.table-row-warranty-end').value;
-                let dataRowRaw = row.querySelector('.table-row-vendor-serial-number').getAttribute('data-row');
+                let dataRowRaw = row.querySelector('.table-row-vendor-serial-number')?.getAttribute('data-row');
                 if (dataRowRaw) {
                     if (vendorSerialNumber && serialNumber) {
                         let dataRow = JSON.parse(dataRowRaw);
@@ -1499,7 +1499,7 @@ class GRStoreDataHandle {
                 }
             }
             if (WHID) {
-                let dataWHCheckedRaw = tableWH[0].querySelector(`.table-row-checkbox[data-id="${WHID}"]`).getAttribute('data-row');
+                let dataWHCheckedRaw = tableWH[0].querySelector(`.table-row-checkbox[data-id="${WHID}"]`)?.getAttribute('data-row');
                 if (dataWHCheckedRaw) {
                     let dataWHChecked = JSON.parse(dataWHCheckedRaw);
                     dataWHChecked['serial_data'] = new_data;
@@ -1634,7 +1634,7 @@ function setupDataShowLineDetail(is_submit = false) {
                 let row = table[0].tBodies[0].rows[i];
                 let quantityImport = parseFloat(row.querySelector('.table-row-import').innerHTML);
                 if (quantityImport > 0) {
-                    let dataRowRaw = row.querySelector('.table-row-checkbox').getAttribute('data-row');
+                    let dataRowRaw = row.querySelector('.table-row-checkbox')?.getAttribute('data-row');
                     if (dataRowRaw) {
                         order++;
                         let dataRow = JSON.parse(dataRowRaw);

@@ -466,3 +466,46 @@ class OpportunityForSaleListAPI(APIView):
         data = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_SALE_LIST).get(data)
         return resp.auto_return(key_success='opportunity_sale_list')
+
+
+# Opportunity Member Detail
+class OpportunityMemberDetailAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(auth_require=True, is_api=True)
+    def get(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_MEMBER_DETAIL.fill_key(pk=pk)).get()
+        return resp.auto_return(key_success='member')
+
+
+# Add member for Opportunity
+class OpportunityAddMemberAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_ADD_MEMBER.fill_key(pk=pk)).put(request.data)
+        return resp.auto_return()
+
+
+# Remove member in Opportunity
+class OpportunityDeleteMemberAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_DELETE_MEMBER.fill_key(pk=pk)).put(request.data)
+        return resp.auto_return()
+
+
+# update permission for member in Opportunity
+class OpportunityMemberPermissionUpdateAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.SET_MEMBER_PERMISSION.fill_key(pk=pk)).put(request.data)
+        return resp.auto_return()

@@ -340,21 +340,20 @@ class OpportunityLoadDetail {
     }
 
 
-    static addMember() {
+    static getDataMember() {
         let ele_tr = $('#dtbMember').find('tr.selected');
-        let card_member = $('#card-member');
-        card_member.html('');
+        let list_result = []
         ele_tr.each(function () {
-            card_member.append($('.card-member-hidden').html());
-            let card = card_member.find('.card').last();
-            let member_id = $(this).find('.input-select-member').attr('data-id');
-            card.find('.btn-detail-member').attr('href', $('#url-member').val().format_url_with_uuid(member_id));
-            card.find('.card-title').text($(this).find('.span-emp-name').text());
-            card.find('.card-text').text($(this).find('.span-emp-email').text());
-            card.attr('data-id', member_id);
+            if ($(this).hasClass('tr-added')) {
+                list_result.push(
+                    {
+                        'id': $(this).find('.input-select-member').data('id')
+                    }
+                )
+            }
         })
-        $('#modalAddMember').modal('hide');
-        card_member.addClass('tag-change');
+        return list_result
+
     }
 
     static async loadMemberForDtb() {
@@ -365,8 +364,8 @@ class OpportunityLoadDetail {
         table.find('tbody tr').removeClass('selected');
         table.find('tbody tr .input-select-member').prop('checked', false);
         card_member.map(function () {
-            table.find(`.input-select-member[data-id="${$(this).attr('data-id')}"]`).prop('checked', true);
-            table.find(`.input-select-member[data-id="${$(this).attr('data-id')}"]`).closest('tr').addClass('selected');
+            table.find(`.input-select-member[data-id="${$(this).attr('data-member-id')}"]`).prop('checked', true);
+            table.find(`.input-select-member[data-id="${$(this).attr('data-member-id')}"]`).closest('tr').addClass('selected');
         })
     }
 
@@ -509,7 +508,8 @@ class OpportunityLoadDetail {
             card.find('.btn-detail-member').attr('href', urlEle.data('url-emp-detail').format_url_with_uuid(item.member.id));
             card.find('.card-title').text(item.member.name);
             card.find('.card-text').text(item.member.email);
-            card.attr('data-id', item.member.id);
+            card.attr('data-id', item.id);
+            card.attr('data-member-id', item.member.id);
         })
     }
 
@@ -697,6 +697,119 @@ class OpportunityLoadDetail {
             title: 'Oops...',
             text: text,
         })
+    }
+
+    static loadDtbApplication() {
+        if (!$.fn.DataTable.isDataTable('#table-applications')) {
+            let $table = $('#table-applications')
+            let frm = new SetupFormSubmit($table);
+            $table.DataTableDefault({
+                useDataServer: true,
+                paging: false,
+                scrollY: '200px',
+                autoWidth: false,
+                ajax: {
+                    url: frm.dataUrl,
+                    type: frm.dataMethod,
+                    dataSrc: function (resp) {
+                        let data = $.fn.switcherResp(resp);
+                        if (data && resp.data.hasOwnProperty('applications')) {
+                            return resp.data['applications'] ? resp.data['applications'] : [];
+                        }
+                        throw Error('Call data raise errors.')
+                    },
+                },
+                columns: [
+                    {
+                        data: 'title',
+                        targets: 0,
+                        render: (data, type, row, meta) => {
+                            return `<span class="application_name" data-id="${row.id}">${data}</span>`
+                        }
+                    },
+                    {
+                        targets: 1,
+                        render: (data, type, row, meta) => {
+                            if (!['Quotation', 'Sale Order', 'Contract', 'Delivery'].includes(row.title))
+                                return `<div class="form-check"><input type="checkbox" class="form-check-input check-create" /></div>`
+                            else
+                                return `<div class="form-check"><input type="checkbox" class="form-check-input check-create" disabled/></div>`
+                        }
+                    },
+                    {
+                        targets: 2,
+                        render: (data, type, row, meta) => {
+                            if (!['Quotation', 'Sale Order', 'Contract', 'Delivery'].includes(row.title))
+                                return `<div class="form-check"><input type="checkbox" class="form-check-input check-edit" /></div>`
+                            else
+                                return `<div class="form-check"><input type="checkbox" class="form-check-input check-edit" disabled/></div>`
+                        }
+                    },
+                    {
+                        targets: 3,
+                        render: (data, type, row, meta) => {
+                            if (!['Quotation', 'Sale Order', 'Contract', 'Delivery'].includes(row.title))
+                                return `<div class="form-check"><input type="checkbox" class="form-check-input check-view-own" /></div>`
+                            else
+                                return `<div class="form-check"><input type="checkbox" class="form-check-input check-view-own" disabled/></div>`
+                        }
+                    },
+                    {
+                        targets: 4,
+                        render: (data, type, row, meta) => {
+                            return `<div class="form-check"><input type="checkbox" class="form-check-input check-view-team-member" /></div>`
+                        }
+                    }
+                ],
+            });
+        }
+    }
+
+    static loadMemberPermission(url, method) {
+        $.fn.callAjax2({
+            url: url,
+            method: method,
+        }).then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                let member_detail = data?.['member'];
+                $('#checkViewThisOpp').prop('checked', member_detail?.['permit_view_this_opp']);
+                $('#checkCanAddMember').prop('checked', member_detail?.['permit_add_member']);
+                let permit_app = member_detail?.['permit_app']
+                for (let key in permit_app) {
+                    if (permit_app.hasOwnProperty(key)) {
+                        let tr_current = $(`#table-applications .application_name[data-id=${key}]`).closest('tr');
+                        tr_current.find('.check-create').prop('checked', permit_app[key].is_create);
+                        tr_current.find('.check-edit').prop('checked', permit_app[key].is_edit);
+                        tr_current.find('.check-view-own').prop('checked', permit_app[key].is_view_own_activity);
+                        tr_current.find('.check-view-team-member').prop('checked', permit_app[key].is_view_team_activity);
+                    }
+                }
+            }
+        })
+    }
+
+    static getFormDataMemberPermission() {
+        let data = {}
+        data['employee_current'] = $('#emp-current-id').val();
+        data['permit_view_this_opp'] = $('#checkViewThisOpp').is(':checked');
+        data['permit_add_member'] = $('#checkCanAddMember').is(':checked');
+        let table = document.getElementById('table-applications');
+        let updated_tr_ele = table.getElementsByClassName('tr-updated');
+        let list_app = []
+        for (let i = 0; i < updated_tr_ele.length; i++) {
+            let currentElement = updated_tr_ele[i];
+            let data = {
+                'app': currentElement.querySelector('.application_name').getAttribute('data-id'),
+                'is_create': currentElement.querySelector('.check-create').checked,
+                'is_edit': currentElement.querySelector('.check-edit').checked,
+                'is_view_own_activity': currentElement.querySelector('.check-view-own').checked,
+                'is_view_team_activity': currentElement.querySelector('.check-view-team-member').checked,
+            }
+            list_app.push(data);
+        }
+        data['app_permit'] = list_app
+        return data
     }
 }
 
@@ -1514,9 +1627,6 @@ function autoLoadStage(
         let stage_selected_ele = $('.stage-selected');
         let input_rate_ele = $('#check-input-rate');
         let ele_close_deal = $('#input-close-deal');
-        if (stage_selected_ele.not(ele_close_deal.closest('.sub-stage')).last().data('id') !== id_stage_current) {
-            Swal.fire($('#opp-updated').text());
-        }
         let ele_stage = $(`.sub-stage`);
         let ele_stage_current = $(`.sub-stage[data-id="${id_stage_current}"]`);
         let index = ele_stage_current.index();
@@ -1621,4 +1731,3 @@ function sortStage(list_stage) {
 
     return list_result
 }
-

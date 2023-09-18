@@ -137,14 +137,13 @@ class MenusCoreConfigurations:
                 name='Payment', code='menu_payment_config', view_name='PaymentConfigList',
                 icon='<i class="bi bi-credit-card-fill"></i>',
             ),
-			MenuCommon(
+            MenuCommon(
                 name='Expense Items', code='id_menu_expense_item_list', view_name='ExpenseItemList',
                 icon='<i class="bi bi-wallet2"></i>',
             ),
             MenuCommon(
                 name='Internal Labor Items', code='id_menu_expense_list', view_name='ExpenseList',
                 icon='<i class="bi bi-cash-coin"></i>',
-            ),        ]
             ),
             MenuCommon(
                 name='Leave', code='menu_leave_config', view_name='LeaveConfigDetail',

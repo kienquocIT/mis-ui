@@ -1061,10 +1061,6 @@ class AdvancePaymentHandle {
                 }
             }
         }
-        else {
-            $.fn.notifyB({description: 'Sale code must not be NULL'}, 'failure');
-            return false;
-        }
 
         return {
             url: frm.dataUrl,

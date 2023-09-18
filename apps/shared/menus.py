@@ -306,12 +306,12 @@ class MenusPurchase:
                 view_name='GoodsReceiptList',
                 icon='<i class="fas fa-file-import"></i>',
             ),
-            # MenuCommon(
-            #     name='Inventory Adjustment',
-            #     code='menu_inventory_adjustment_list',
-            #     view_name='InventoryAdjustmentList',
-            #     icon='<i class="bi bi-sliders"></i>',
-            # ),
+            MenuCommon(
+                name='Inventory Adjustment',
+                code='menu_inventory_adjustment_list',
+                view_name='InventoryAdjustmentList',
+                icon='<i class="bi bi-sliders"></i>',
+            ),
         ],
     )
 

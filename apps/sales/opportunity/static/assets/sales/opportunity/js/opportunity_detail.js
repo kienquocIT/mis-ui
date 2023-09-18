@@ -986,12 +986,15 @@ $(document).ready(async function () {
                 let selectOpt = '';
                 let memberList = []
                 if ($('#card-member-datas').length) memberList = JSON.parse($('#card-member-datas').text())
-                if ($('#card-member .card').length)
+                if ($('#card-member .card').length) {
                     $('#card-member .card').each(function () {
                         let opt = `<option value="${$(this).attr('data-id')}">${$(this).find('.card-title').text()
                         }</option>`
                         selectOpt += opt
                     })
+                    selectOpt += `<option value="${$('#select-box-sale-person').val()}">${
+                        $('#select-box-sale-person').text()}</option>`
+                }
 
                 else {
                     selectOpt = ''
@@ -1023,11 +1026,11 @@ $(document).ready(async function () {
                 }).then(
                     (resp) => {
                         const data = $.fn.switcherResp(resp);
-                        let assigneeList = data?.[$sltElm.attr('data-keyresp')]
+                        let assigneeList = data?.[$sltElm.attr('data-keyResp')]
                         for (const item of assigneeList) {
                             if (selectOpt.indexOf(item?.[$sltElm.attr('data-keyid')]) === -1) {
                                 let opt = `<option value="${item?.[$sltElm.attr('data-keyid')]
-                                }">${item?.[$sltElm.attr('data-keytext')]}</option>`
+                                }">${item?.[$sltElm.attr('data-keyText')]}</option>`
                                 selectOpt += opt
                             }
                         }

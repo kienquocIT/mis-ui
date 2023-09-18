@@ -491,6 +491,7 @@ $(function () {
                     assign_toData = {
                         'id': assign_to.id,
                         'full_name': assign_to.text,
+                        'full_name': assign_to.text,
                     }
                     formData.employee_inherit_id = assign_to.id
                 }

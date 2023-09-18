@@ -68,28 +68,28 @@ $(document).ready(function () {
                         data: 'advance_value',
                         className: 'wrap-text',
                         render: (data, type, row) => {
-                            return `<span class="mask-money text-primary" data-init-money="` + row.advance_value + `"></span>`
+                            return `<span class="mask-money text-primary" data-init-money="${row?.['advance_value']}"></span>`
                         }
                     },
                     {
                         data: 'to_payment',
                         className: 'wrap-text',
                         render: (data, type, row) => {
-                            return `<span class="mask-money text-primary" data-init-money="` + row.to_payment + `"></span>`
+                            return `<span class="mask-money text-primary" data-init-money="${row?.['to_payment']}"></span>`
                         }
                     },
                     {
                         data: 'return_value',
                         className: 'wrap-text',
                         render: (data, type, row) => {
-                            return `<span class="mask-money text-primary" data-init-money="` + row.return_value + `"></span>`
+                            return `<span class="mask-money text-primary" data-init-money="${row?.['return_value']}"></span>`
                         }
                     },
                     {
                         data: 'remain_value',
                         className: 'wrap-text',
                         render: (data, type, row) => {
-                            return `<span class="mask-money text-primary" data-init-money="` + row.remain_value + `"></span>`
+                            return `<span class="mask-money text-primary" data-init-money="${row?.['remain_value']}"></span>`
                         }
                     },
                     {
@@ -110,23 +110,21 @@ $(document).ready(function () {
                             let sale_code_id = '';
                             let is_close = false;
                             let flag = -1;
-                            console.log(row)
-                            if (Object.keys(row.sale_order_mapped).length !== 0) {
-                                sale_code_id = row.sale_order_mapped.id;
-                                is_close = row.sale_order_mapped.is_close;
+                            if (Object.keys(row?.['sale_order_mapped']).length !== 0) {
+                                sale_code_id = row?.['sale_order_mapped'].id;
+                                is_close = row?.['sale_order_mapped']['is_close'];
                                 flag = 0;
                             }
-                            if (Object.keys(row.quotation_mapped).length !== 0) {
-                                sale_code_id = row.quotation_mapped.id;
-                                is_close = row.quotation_mapped.is_close;
+                            if (Object.keys(row?.['quotation_mapped']).length !== 0) {
+                                sale_code_id = row?.['quotation_mapped'].id;
+                                is_close = row?.['quotation_mapped']['is_close'];
                                 flag = 1;
                             }
-                            if (Object.keys(row.opportunity_mapped).length !== 0) {
-                                sale_code_id = row.opportunity_mapped.id;
-                                is_close = row.opportunity_mapped.is_close;
+                            if (Object.keys(row?.['opportunity_mapped']).length !== 0) {
+                                sale_code_id = row?.['opportunity_mapped'].id;
+                                is_close = row?.['opportunity_mapped']['is_close'];
                                 flag = 2;
                             }
-                            console.log(sale_code_id)
                             let disabled = ''
                             if (is_close) {
                                 disabled = 'disabled';

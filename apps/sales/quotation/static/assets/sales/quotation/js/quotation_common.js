@@ -72,30 +72,33 @@ class QuotationLoadDataHandle {
     }
 
     static loadInitOpportunity() {
-        let dataInitOppRaw = $('#data-init-opportunity').val();
-        if (dataInitOppRaw) {
-            let dataInitOpp = JSON.parse(dataInitOppRaw);
-            $.fn.callAjax2({
-                    'url': QuotationLoadDataHandle.opportunitySelectEle.attr('data-url'),
-                    'method': QuotationLoadDataHandle.opportunitySelectEle.attr('data-method'),
-                    'isDropdown': true,
-                }
-            ).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        if (data.hasOwnProperty('opportunity_sale_list') && Array.isArray(data.opportunity_sale_list)) {
-                            for (let opp of data.opportunity_sale_list) {
-                                if (opp?.['id'] === dataInitOpp?.['id']) {
-                                    QuotationLoadDataHandle.loadBoxQuotationOpportunity(opp);
-                                    QuotationLoadDataHandle.opportunitySelectEle.change();
+        let form = $('#frm_quotation_create');
+        if (form.attr('data-method') === 'POST') {
+            let dataInitOppRaw = $('#data-init-opportunity').val();
+            if (dataInitOppRaw) {
+                let dataInitOpp = JSON.parse(dataInitOppRaw);
+                $.fn.callAjax2({
+                        'url': QuotationLoadDataHandle.opportunitySelectEle.attr('data-url'),
+                        'method': QuotationLoadDataHandle.opportunitySelectEle.attr('data-method'),
+                        'isDropdown': true,
+                    }
+                ).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            if (data.hasOwnProperty('opportunity_sale_list') && Array.isArray(data.opportunity_sale_list)) {
+                                for (let opp of data.opportunity_sale_list) {
+                                    if (opp?.['id'] === dataInitOpp?.['id']) {
+                                        QuotationLoadDataHandle.loadBoxQuotationOpportunity(opp);
+                                        QuotationLoadDataHandle.opportunitySelectEle.change();
+                                    }
+                                    break;
                                 }
-                                break;
                             }
                         }
                     }
-                }
-            )
+                )
+            }
         }
     };
 

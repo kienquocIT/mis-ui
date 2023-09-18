@@ -163,6 +163,9 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     # Opportunity Config
     OPPORTUNITY_CONFIG_PAGE = BreadcrumbChildren(_('Opportunity'), 'OpportunityConfig')
 
+    # Payment Config
+    PAYMENT_CONFIG_PAGE = BreadcrumbChildren(_('Payment Config'), 'PaymentConfigList')
+
     # Task
     OPPORTUNITY_TASK_CONFIG_PAGE = BreadcrumbChildren(_('Task config'), 'OpportunityTaskConfig')
     OPPORTUNITY_TASK_LIST_PAGE = BreadcrumbChildren(_('Task'), 'OpportunityTaskList')
@@ -521,6 +524,8 @@ class BreadcrumbView:
 
     # Opportunity Config
     OPPORTUNITY_CONFIG_PAGE = [BreadcrumbItem.OPPORTUNITY_CONFIG_PAGE]
+    PAYMENT_CONFIG_PAGE = [BreadcrumbItem.PAYMENT_CONFIG_PAGE]
+
     # Task
     OPPORTUNITY_TASK_CONFIG_PAGE = [BreadcrumbItem.OPPORTUNITY_TASK_CONFIG_PAGE]
     OPPORTUNITY_TASK_LIST_PAGE = [BreadcrumbItem.OPPORTUNITY_TASK_LIST_PAGE]

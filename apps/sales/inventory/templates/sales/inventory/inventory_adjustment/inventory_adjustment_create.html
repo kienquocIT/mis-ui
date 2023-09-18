@@ -22,7 +22,6 @@
           data-url-redirect="{% url 'GoodReceiptList' %}"
           data-method="POST"
           data-url-warehouse-product-list="{% url 'WareHouseListForInventoryAdjustmentAPI' %}"
-          data-url-goods-receipt-product-stock-list="{% url 'GoodReceiptProductListAPI' %}"
           id="frm_inventory_adjustment_create">
         {% csrf_token %}
         <div class="row">
@@ -142,7 +141,7 @@
                         <thead>
                         <th class="w-10">
                             <span class="form-check">
-                                <input type="checkbox" class="form-check-input" id="selected_all_product" data-warehouse-id="eaa85067-2e41-4a1f-b1ff-2f71d9ccc0d6" data-product-id="7fd70eae-f3c4-4fc8-8bf4-5e64f330127a" autocomplete="off">
+                                <input type="checkbox" class="form-check-input" id="selected_all_product">
                                 <label class="form-check-label"></label>
                             </span>
                         </th>

@@ -4166,3 +4166,18 @@ msgstr "Thu gọn"
 #
 msgid "Belong To Roles"
 msgstr "Thuộc về Vai Trò"
+#
+msgid "Person delivery"
+msgstr "Người giao hàng"
+#
+msgid "Person picking"
+msgstr "Người lấy hàng"
+#
+msgid "Employee inherit"
+msgstr "Người thụ hưởng"
+#
+msgid "Select coordinator for Picking activities"
+msgstr "Chọn người điều phối cho hoạt động lấy hàng"
+#
+msgid "Select coordinator for Delivery activities"
+msgstr "Chọn người điều phối cho hoạt động giao hàng"

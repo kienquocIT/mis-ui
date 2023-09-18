@@ -230,6 +230,13 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     GOODS_RECEIPT_UPDATE_PAGE = BreadcrumbChildren(_('Goods receipt update'))
 
 
+    # E-Office
+    # Leave
+    LEAVE_CONFIG = BreadcrumbChildren(
+        _('Leave Config'), 'LeaveConfigDetail'
+    )
+
+
 class BreadcrumbView:
     """menu vertical item view"""
 
@@ -606,3 +613,7 @@ class BreadcrumbView:
     GOODS_RECEIPT_CREATE_PAGE = GOODS_RECEIPT_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
     GOODS_RECEIPT_DETAIL_PAGE = GOODS_RECEIPT_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     GOODS_RECEIPT_UPDATE_PAGE = GOODS_RECEIPT_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+    ]
+
+    # e-office Leave
+    LEAVE_CONFIG_PAGE = [BreadcrumbItem.LEAVE_CONFIG]

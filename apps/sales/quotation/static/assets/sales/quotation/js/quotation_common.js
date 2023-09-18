@@ -71,6 +71,34 @@ class QuotationLoadDataHandle {
         }
     }
 
+    static loadInitOpportunity() {
+        let dataInitOppRaw = $('#data-init-opportunity').val();
+        if (dataInitOppRaw) {
+            let dataInitOpp = JSON.parse(dataInitOppRaw);
+            $.fn.callAjax2({
+                    'url': QuotationLoadDataHandle.opportunitySelectEle.attr('data-url'),
+                    'method': QuotationLoadDataHandle.opportunitySelectEle.attr('data-method'),
+                    'isDropdown': true,
+                }
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('opportunity_sale_list') && Array.isArray(data.opportunity_sale_list)) {
+                            for (let opp of data.opportunity_sale_list) {
+                                if (opp?.['id'] === dataInitOpp?.['id']) {
+                                    QuotationLoadDataHandle.loadBoxQuotationOpportunity(opp);
+                                    QuotationLoadDataHandle.opportunitySelectEle.change();
+                                }
+                                break;
+                            }
+                        }
+                    }
+                }
+            )
+        }
+    };
+
     static loadBoxQuotationOpportunity(dataOpp = {}, sale_person_id = null) {
         let ele = QuotationLoadDataHandle.opportunitySelectEle;
         let form = $('#frm_quotation_create');
@@ -596,9 +624,8 @@ class QuotationLoadDataHandle {
         }
     }
 
-    static loadAPIDetailQuotation(quotation_id, select_id) {
-        let jqueryId = '#' + quotation_id;
-        let ele = $(jqueryId);
+    static loadAPIDetailQuotation(select_id) {
+        let ele = $('#data-init-copy-quotation');
         let url = ele.attr('data-url-detail').format_url_with_uuid(select_id);
         let method = ele.attr('data-method');
         $.fn.callAjax(url, method).then(

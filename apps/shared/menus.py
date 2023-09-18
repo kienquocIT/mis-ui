@@ -148,7 +148,11 @@ class MenusCoreConfigurations:
             MenuCommon(
                 name='Leave', code='menu_leave_config', view_name='LeaveConfigDetail',
                 icon='<i class="fa-solid fa-arrow-right-from-bracket"></i>',
-            )
+            ),
+            MenuCommon(
+                name='Purchase Request Config', code='menu_purchase_request_config', view_name='PurchaseRequestConfig',
+                icon='<i class="fas fa-shopping-cart"></i>',
+            ),
         ]
     )
 

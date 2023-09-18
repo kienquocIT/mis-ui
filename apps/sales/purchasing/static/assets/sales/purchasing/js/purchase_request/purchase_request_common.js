@@ -310,6 +310,7 @@ class PurchaseRequestAction {
             let $table = $('#datatable-sale-order')
             let frm = new SetupFormSubmit($table);
             $table.DataTableDefault({
+                useDataServer: true,
                 rowIdx: true,
                 paging: false,
                 scrollY: '200px',
@@ -320,7 +321,7 @@ class PurchaseRequestAction {
                     dataSrc: function (resp) {
                         let data = $.fn.switcherResp(resp);
                         if (data && resp.data.hasOwnProperty('sale_order_list')) {
-                            return resp.data['sale_order_list'] ? resp.data['sale_order_list'] : [];
+                            return resp.data['sale_order_list'] ? resp.data['sale_order_list'] : []
                         }
                         throw Error('Call data raise errors.')
                     },

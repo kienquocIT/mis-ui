@@ -749,9 +749,8 @@ $(function () {
                 // Begin load data copy FROM
                 document.getElementById('customer-price-list').value = dataCopy.customer?.['customer_price_list'];
                 QuotationLoadDataHandle.loadDataTablesAndDropDowns(dataCopy);
-                QuotationCalculateCaseHandle.calculateAllRowsTableProduct(tableProduct);
                 QuotationLoadDataHandle.loadDetailQuotation(dataCopy, true);
-
+                QuotationCalculateCaseHandle.calculateAllRowsTableProduct(tableProduct);
             } else if (type === 'copy-to') { // COPY TO (QUOTATION DETAIL -> SALE ORDER CREATE)
                 // create URL and add to href
                 let eleRedirect = document.getElementById('link-to-sale-order-create');
@@ -805,8 +804,8 @@ $(function () {
                     // Begin load data copy TO
                     document.getElementById('customer-price-list').value = dataCopy.customer?.['customer_price_list'];
                     QuotationLoadDataHandle.loadDataTablesAndDropDowns(dataCopy);
-                    QuotationCalculateCaseHandle.calculateAllRowsTableProduct(tableProduct);
                     QuotationLoadDataHandle.loadDetailQuotation(dataCopy, true);
+                    QuotationCalculateCaseHandle.calculateAllRowsTableProduct(tableProduct);
                 }
             }
         }

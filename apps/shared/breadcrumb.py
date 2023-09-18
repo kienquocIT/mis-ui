@@ -585,4 +585,6 @@ class BreadcrumbView:
     ]
 
     # e-office Leave
-    LEAVE_CONFIG_PAGE = [BreadcrumbItem.LEAVE_CONFIG]
+    LEAVE_CONFIG_PAGE = [
+        BreadcrumbItem.LEAVE_CONFIG
+    ]

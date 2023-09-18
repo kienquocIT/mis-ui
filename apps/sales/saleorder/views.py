@@ -47,10 +47,12 @@ class SaleOrderCreate(View):
     )
     def get(self, request, *args, **kwargs):
         data_copy_to = request.GET.get('data_copy_to', "")
+        opportunity = request.GET.get('opportunity', "")
         result = {
             'data': {
                 'employee_current': json.dumps(request.user.employee_current_data),
-                'data_copy_to': data_copy_to
+                'data_copy_to': data_copy_to,
+                'opportunity': opportunity,
             }
         }
         return result, status.HTTP_200_OK

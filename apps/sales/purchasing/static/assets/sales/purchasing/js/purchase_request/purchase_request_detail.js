@@ -2,7 +2,7 @@ $(document).ready(function () {
     const frmDetail = $('#frm-detail-pr');
     const pk = $.fn.getPkDetail();
 
-    loadDtbPrProductDetail([]);
+    PurchaseRequestAction.loadDtbPrProductDetail([]);
 
     function loadDetail() {
         let url = frmDetail.data('url').format_url_with_uuid(pk);
@@ -24,7 +24,6 @@ $(document).ready(function () {
 
                 if (detail.sale_order !== null) {
                     $('[name="sale_order"]').val(detail.sale_order.code);
-
                 }
 
                 let table_product = $('#datatable-pr-product').DataTable();

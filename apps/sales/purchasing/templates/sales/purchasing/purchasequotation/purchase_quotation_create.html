@@ -25,14 +25,18 @@
     </button>
 {% endblock %}
 {% block pageContent %}
-    {{ data.data.tax_list | json_script:"tax_list" }}
-    {{ data.data.product_list | json_script:"product_list" }}
-    {{ data.data.account_list | json_script:"account_list" }}
-    {{ data.data.contact_list | json_script:"contact_list" }}
-    {{ data.data.uom_list | json_script:"uom_list" }}
-    {{ data.data.purchase_quotation_request_list | json_script:"purchase_quotation_request_list" }}
-
-    <form id="form-create-purchase-quotation" data-url="{% url 'PurchaseQuotationListAPI' %}" data-method="POST" data-url-redirect="{% url "PurchaseQuotationList" %}">
+    <form id="form-create-purchase-quotation"
+          data-url="{% url 'PurchaseQuotationListAPI' %}"
+          data-method="POST"
+          data-url-redirect="{% url "PurchaseQuotationList" %}"
+          data-url-tax="{% url "TaxListAPI" %}"
+          data-url-product="{% url "ProductListAPI" %}"
+          data-url-contact="{% url "ContactListAPI" %}"
+          data-url-uom="{% url "UnitOfMeasureListAPI" %}"
+          data-url-account="{% url "AccountListAPI" %}"
+          data-url-pqr="{% url "PurchaseQuotationRequestListAPI" %}"
+          data-url-pqr-detail="{% url "PurchaseQuotationRequestDetailAPI" pk=0 %}"
+    >
         <div class="row mt-1 ml-1 mr-1 collapse multi-collapse show" id="collapse-area">
             <div class="row">
                 <div class="col-6 pr-5">
@@ -111,11 +115,11 @@
                 </div>
             </div>
         </div>
-
-        <div class="row collapse-arrow text-center">
-            <i class="bi bi-arrows-expand text-primary" data-bs-toggle="collapse" data-bs-target="#collapse-area" data-bs-placement="top" aria-expanded="true" aria-controls="collapse-area" id="advance-info-collapse"></i>
+        <div class="row mb-3">
+            <a class="btn btn-flush-secondary flush-soft-hover" data-bs-toggle="collapse" data-bs-target="#collapse-area" aria-expanded="false" aria-controls="collapse-area">
+                <i class="bi bi-chevron-bar-expand text-secondary"></i>
+            </a>
         </div>
-
         <div class="row">
             <div class="col-12">
                 <ul class="nav nav-light nav-tabs">
@@ -131,7 +135,7 @@
                             <div class="tab-pane fade show active" id="tab_line_detail">
                                 <table class="table nowrap w-100" id="table-purchase-quotation-products-selected">
                                     <thead>
-                                    <th class="w-5">#</th>
+                                    <th class="w-5"></th>
                                     <th class="w-15 required">{% trans "Product" %}</th>
                                     <th class="w-10">{% trans "Description" %}</th>
                                     <th class="w-15 required">{% trans "UoM" %}</th>
@@ -210,10 +214,12 @@
     </form>
 {% endblock %}
 {% block jsFooter %}
-    <script src="{% static 'assets/sales/purchasing/js/purchasequotation/purchase_quotation_create.js' %}"></script>
     <!-- Daterangepicker JS -->
     <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/dropify/dist/js/dropify.min.js' %}"></script>
     <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>
+
+    <script src="{% static 'assets/sales/purchasing/js/purchasequotation/purchase_quotation_common.js' %}"></script>
+    <script src="{% static 'assets/sales/purchasing/js/purchasequotation/purchase_quotation_create.js' %}"></script>
 {% endblock %}

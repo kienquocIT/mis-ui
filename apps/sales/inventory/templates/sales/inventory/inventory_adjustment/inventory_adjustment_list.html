@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'Inventory Adjustment List' %}{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+{% block pageAction %}
+    <a href="{% url 'InventoryAdjustmentCreate' %}"
+       data-bs-toggle="tooltip"
+       data-bs-placement="top"
+       title="{% trans 'Create Inventory Adjustment' %}"
+       id="create_inventory_adjustment_button"
+       data-bs-original-title="Add Inventory Adjustment">
+        <button class="btn btn-outline-primary">
+            <span>
+                <span>{% trans 'Add' %}</span>
+                <span class="icon">
+                    <i class="fa-solid fa-plus"></i>
+                </span>
+            </span>
+        </button>
+    </a>
+{% endblock %}
+{% block pageContent %}
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
+{% endblock %}

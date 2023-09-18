@@ -7,9 +7,8 @@ $(function () {
         $('#chooseBeneficiary').prop('disabled', true);
 
         loadCreator(null);
-        loadDataTableProduct([]);
+        loadDataTableCost([]);
         ReturnAdvanceLoadPage.loadMethodPayment();
-
 
         if (advance_payment !== null) {
             ReturnAdvanceLoadPage.loadAdvancePayment(choose_AP_ele, {}, {'advance_payment': advance_payment});
@@ -59,7 +58,9 @@ $(function () {
                     let cost_list = []
                     tbProduct.find('tbody tr').each(function () {
                         cost_list.push({
-                            'advance_payment_cost': $(this).find('.span-product').attr('data-id'),
+                            'advance_payment_cost': $(this).find('.row-expense').data('id'),
+                            'expense_name': $(this).find('.row-expense').text(),
+                            'expense_type': $(this).find('.row-expense-type').data('id'),
                             'remain_value': parseFloat($(this).find('span.mask-money').attr('data-init-money')),
                             'return_value': $(this).find('input.mask-money').valCurrency(),
                         })

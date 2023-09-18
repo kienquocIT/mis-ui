@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static i18n %}
 {% block cssHeader %}
-    <link href="{% static 'assets/sales/inventory/css/goodreceipt/good_receipt_create.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'assets/sales/inventory/css/goodreceipt/goods_receipt_create.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
@@ -18,9 +18,9 @@
 
 {% block pageContent %}
     <form
-            data-url=""
-            data-url-redirect="{% url 'GoodReceiptList' %}"
-            data-method="POST"
+            data-url="{% url 'GoodsReceiptDetailAPI' data.data.doc_id %}"
+            data-url-redirect="{% url 'GoodsReceiptList' %}"
+            data-method="PUT"
             id="frm_good_receipt_create"
             method="post"
     >
@@ -33,9 +33,9 @@
                         <div class="row">
                             <div class="col-8"></div>
                             <div class="col-2">
-                                <h5 class="text-primary" id="good-receipt-code"></h5>
+                                <h5 class="text-primary" id="goods-receipt-code"></h5>
                             </div>
-                            <div class="col-2" id="good-receipt-status">
+                            <div class="col-2" id="goods-receipt-status">
                                 <span class="badge badge-soft-light">Draft</span>
                             </div>
                         </div>
@@ -44,11 +44,11 @@
                 <div class="row" id="common-information-area">
                     <div class="col-6">
                         <div class="form-group">
-                            <label class="form-label" for="box-good-receipt-type">{% trans 'Good receipt type' %}<span class="required"></span></label>
+                            <label class="form-label" for="box-good-receipt-type">{% trans 'Goods receipt type' %}<span class="required"></span></label>
                             <div class="input-group">
                                 <span class="input-affix-wrapper">
                                     <span class="input-prefix">
-                                        <i class="fas fa-box-open text-brown"></i>
+                                        <i class="fas fa-clipboard-check text-pumpkin"></i>
                                     </span>
                                     <select
                                         class="form-select"
@@ -80,9 +80,9 @@
                     </div>
                     <div class="col-6">
                         <div class="form-group">
-                            <label class="form-label" for="good-receipt-date-created">{% trans 'Date' %}</label>
+                            <label class="form-label" for="good-receipt-date-received">{% trans 'Date' %}</label>
                             <div class="input-affix-wrapper">
-                                <input type="text" name="date-created" id="good-receipt-date-created"
+                                <input type="text" name="date_received" id="good-receipt-date-received"
                                        class="form-control date-picker" autocomplete="off">
                                 <span class="input-suffix">
                                     <i class="bi bi-calendar-week"></i>
@@ -95,7 +95,7 @@
                                 <span class="input-affix-wrapper">
                                     <input
                                         type="text" class="form-control"
-                                        name="title"
+                                        name="remarks"
                                         id="good-receipt-note"
                                     >
                                 </span>
@@ -106,7 +106,7 @@
                 <div class="row custom-area" id="custom-area-1">
                     <div class="col-6">
                         <div class="form-group">
-                            <label class="form-label">{% trans 'Purchase order' %}</label>
+                            <label class="form-label">{% trans 'Purchase order' %}<span class="required"></span></label>
                             <div class="input-group more-information-group">
                                 <span class="input-affix-wrapper">
                                     <span class="input-prefix">
@@ -136,7 +136,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="form-label" for="box-good-receipt-supplier">{% trans 'Select Supplier' %}</label>
+                            <label class="form-label" for="box-good-receipt-supplier">{% trans 'Select Supplier' %}<span class="required"></span></label>
                             <div class="input-group more-information-group">
                                 <span class="input-affix-wrapper">
                                     <span class="input-prefix">
@@ -188,9 +188,9 @@
                                     data-url=""
                                     data-method="GET"
                                     data-link-detail=""
-                                    name=""
+                                    name="ia_number"
                                     data-keyResp=""
-                                    required
+{#                                    required#}
                             >
                             </select>
                         </div>
@@ -208,9 +208,9 @@
                                     data-url=""
                                     data-method="GET"
                                     data-link-detail=""
-                                    name=""
+                                    name="product_order"
                                     data-keyResp=""
-                                    required
+{#                                    required#}
                             >
                             </select>
                         </div>
@@ -237,9 +237,9 @@
                                             data-url="{% url "ProductForSaleListAPI" %}"
                                             data-method="GET"
                                             data-link-detail="{% url "ProductDetail" 1 %}"
-                                            name=""
+                                            name="production_report"
                                             data-keyResp=""
-                                            required
+{#                                            required#}
                                     ></select>
                                 </span>
                             </div>
@@ -286,15 +286,15 @@
                             >
                                 <thead>
                                 <tr>
-                                    <th>#</th>
+                                    <th class="w-5">#</th>
                                     <th>{% trans 'Product' %}<span class="required"></span></th>
-                                    <th>{% trans 'Description' %}</th>
+                                    <th class="w-10">{% trans 'Description' %}</th>
                                     <th>UoM<span class="required"></span></th>
                                     <th>{% trans 'Quantity' %}<span class="required"></span></th>
                                     <th class="w-20">{% trans 'Unit Price' %}<span class="required"></span></th>
                                     <th>{% trans 'Tax' %}</th>
                                     <th class="w-20">{% trans 'Subtotal Price' %}</th>
-                                    <th>{% trans 'Actions' %}</th>
+                                    <th class="w-5">{% trans 'Actions' %}</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -310,6 +310,10 @@
                                         data-bs-target="#productModalCenter"
                                     >
                                         <span><span class="icon"><span class="feather-icon"><i class="far fa-edit"></i></span></span><span>{% trans 'Edit' %} {% trans 'Product' %}</span></span>
+                                    </button>
+
+                                    <button type="button" class="btn btn-link btn-animated" id="btn-add-product-good-receipt" hidden>
+                                        <span><span class="icon"><span class="feather-icon"><i class="fa-regular fa-square-plus"></i></span></span><span>{% trans 'Add Product' %}</span></span>
                                     </button>
                                 </div>
                                 <div class="col-10"></div>
@@ -429,6 +433,10 @@
             type="hidden"
             id="data-submit-pr-warehouse"
         >
+        <input
+            type="hidden"
+            id="data-detail-page"
+        >
 
 
         <div class="modal fade mt-5" id="productModalCenter" tabindex="-1" role="dialog" aria-labelledby="productModalCenter" aria-hidden="true">
@@ -517,6 +525,7 @@
                                                 type="button"
                                                 class="btn btn-success btn-animated bg-green-light-5 w-40"
                                                 id="btn-manage-by-lot"
+                                                hidden
                                             >
                                                 <span class="text-teal">
                                                     <span>{% trans 'Manage by lot' %}</span>
@@ -528,6 +537,7 @@
                                                 type="button"
                                                 class="btn btn-success btn-animated bg-green-light-5 w-40"
                                                 id="btn-manage-by-serial"
+                                                hidden
                                             >
                                                 <span class="text-teal">
                                                     <span>{% trans 'Manage by serial' %}</span>
@@ -540,6 +550,7 @@
                                             type="button"
                                             class="btn btn-success bg-green-light-5 w-40"
                                             id="btn-no-manage-by-lot-serial"
+                                            hidden
                                         >
                                             <span class="text-teal">
                                                 <span>{% trans 'No manage by lot/serial' %}</span>
@@ -613,6 +624,7 @@
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
 
-    <script src="{% static 'assets/sales/inventory/js/goodreceipt/good_receipt_common.js' %}"></script>
-    <script src="{% static 'assets/sales/inventory/js/goodreceipt/good_receipt_create.js' %}"></script>
+    <script src="{% static 'assets/sales/inventory/js/goodreceipt/goods_receipt_common.js' %}"></script>
+    <script src="{% static 'assets/sales/inventory/js/goodreceipt/goods_receipt_create.js' %}"></script>
+    <script src="{% static 'assets/sales/inventory/js/goodreceipt/goods_receipt_detail.js' %}"></script>
 {% endblock %}

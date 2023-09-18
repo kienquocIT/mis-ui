@@ -30,21 +30,21 @@ $(function () {
                         {
                             data: 'code',
                             className: 'wrap-text w-15',
-                            render: (data, type, row, meta) => {
+                            render: (data, type, row) => {
                                 return `<span class="text-secondary">` + row.code + `</span>`
                             }
                         },
                         {
                             data: 'title',
                             className: 'wrap-text w-25',
-                            render: (data, type, row, meta) => {
+                            render: (data, type, row) => {
                                 return `<a class="link-primary underline_hover" target="_blank" href="` + $('#datatable_pqr_list').attr('data-url-detail').replace('0', row.id) + `"><span><b>` + row.title + `</b></span></a>`
                             }
                         },
                         {
                             data: 'purchase_requests w-15',
                             className: 'wrap-text',
-                            render: (data, type, row, meta) => {
+                            render: (data, type, row) => {
                                 let html = ``;
                                 for (let i = 0; i < row.purchase_requests.length; i++) {
                                     html += `<span class="badge badge-secondary mr-1 mb-1 w-30">${row.purchase_requests[i].code}</span>`;
@@ -55,28 +55,28 @@ $(function () {
                         {
                             data: 'delivered_date w-15',
                             className: 'wrap-text',
-                            render: (data, type, row, meta) => {
+                            render: (data, type, row) => {
                                 return row.delivered_date.split(' ')[0];
                             }
                         },
                         {
                             data: 'status',
                             className: 'wrap-text w-15',
-                            render: (data, type, row, meta) => {
+                            render: () => {
                                 return `<span class="text-success" id="status">Open</span>`
                             }
                         },
                         {
                             data: 'response_status w-10',
                             className: 'wrap-text',
-                            render: (data, type, row, meta) => {
+                            render: () => {
                                 return `<span class="text-primary" id="response_status">Wait</span>`
                             }
                         },
                         {
                             data: '',
                             className: 'wrap-text w-5',
-                            render: (data, type, row, meta) => {
+                            render: (data, type, row) => {
                                 return `<div class="dropdown">
                                             <a type="button" data-bs-toggle="dropdown"><i class="bi bi-three-dots-vertical"></i></a>
                                             <div class="dropdown-menu">

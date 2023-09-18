@@ -184,6 +184,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # payment
     PAYMENT_LIST = StringUrl('cashoutflow/payments')
     PAYMENT_DETAIL = StringUrl('cashoutflow/payments')
+    PAYMENT_CONFIG_LIST = StringUrl('cashoutflow/payment-config')
 
     PAYMENT_COST_ITEMS_LIST = StringUrl('cashoutflow/payment-cost-items-list')
 
@@ -264,6 +265,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # warehouse
     WAREHOUSE_LIST = StringUrl('saledata/warehouses')
+    WAREHOUSE_LIST_FOR_INVENTORY_ADJUSTMENT = StringUrl('saledata/warehouses-for-inventory-adjustment')
     WAREHOUSE_DETAIL = StringUrl('saledata/warehouse/{pk}')
     WAREHOUSE_PRODUCT_LIST = StringUrl('saledata/warehouses-products')
     WAREHOUSE_STOCK_PRODUCT = StringUrl('saledata/warehouses/check/{product_id}/{uom_id}')
@@ -316,6 +318,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PURCHASE_REQUEST_DETAIL = StringUrl('purchasing/purchase-request/{pk}')
     PURCHASE_ORDER_LIST = StringUrl('purchasing/purchase-order/list')
     PURCHASE_ORDER_DETAIL = StringUrl('purchasing/purchase-order')
+    PURCHASE_ORDER_DETAIL_PK = StringUrl('purchasing/purchase-order/{pk}')
     PURCHASE_REQUEST_LIST_FOR_PQR = StringUrl('purchasing/purchase-request-for-pqr/list')
     PURCHASE_REQUEST_PRODUCT_LIST = StringUrl('purchasing/purchase-request-product/list')
     PURCHASE_ORDER_PRODUCT_LIST = StringUrl('purchasing/purchase-order-product/list')
@@ -323,10 +326,10 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # Purchasing
     PURCHASE_QUOTATION_REQUEST_LIST = StringUrl('purchasing/purchase-quotation-request/list')
-    PURCHASE_QUOTATION_REQUEST_DETAIL = StringUrl('purchasing/purchase-quotation-request')
+    PURCHASE_QUOTATION_REQUEST_DETAIL = StringUrl('purchasing/purchase-quotation-request/{pk}')
     PURCHASE_QUOTATION_REQUEST_LIST_FOR_PQ = StringUrl('purchasing/purchase-quotation-request-for-pq/list')
     PURCHASE_QUOTATION_LIST = StringUrl('purchasing/purchase-quotation/list')
-    PURCHASE_QUOTATION_DETAIL = StringUrl('purchasing/purchase-quotation')
+    PURCHASE_QUOTATION_DETAIL = StringUrl('purchasing/purchase-quotation/{pk}')
     PURCHASE_QUOTATION_PRODUCT_LIST = StringUrl('purchasing/purchase-quotation-product/list')
 
     # Process
@@ -339,3 +342,19 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     EXPENSE_ITEM_LIST = StringUrl('saledata/expense-items')
     EXPENSE_ITEM_DETAIL = StringUrl('saledata/expense-item/{pk}')
+
+    # Inventory
+    GOODS_RECEIPT_LIST = StringUrl('inventory/goods-receipt/list')
+    GOODS_RECEIPT_DETAIL = StringUrl('inventory/goods-receipt')
+    GOODS_RECEIPT_DETAIL_PK = StringUrl('inventory/goods-receipt/{pk}')
+
+    # Application for Opportunity permission
+    APPLICATION_OPPORTUNITY_PERMISSION = StringUrl('base/applications-opportunity-permit')
+
+    # Opportunity Detail
+    OPPORTUNITY_MEMBER_DETAIL = StringUrl('opportunity/member/detail/{pk}')
+
+    # Opportunity add member, delete member, set permission for member
+    OPPORTUNITY_ADD_MEMBER = StringUrl('opportunity/add-member/{pk}')
+    OPPORTUNITY_DELETE_MEMBER = StringUrl('opportunity/member/delete/{pk}')
+    SET_MEMBER_PERMISSION = StringUrl('opportunity/member/set/permission/{pk}')

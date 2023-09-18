@@ -4,7 +4,7 @@ from apps.core.base.views import (
     PlanListAPI, TenantApplicationListAPI, ApplicationPropertyListAPI,
     ApplicationPropertyEmployeeListAPI, ApplicationPermissionAPI,
     CountryListAPI, CityListAPI, DistrictListAPI, DistrictAllListAPI, WardListAPI, WardAllListAPI,
-    BaseCurrencyListAPI, BaseItemUnitListAPI, IndicatorParamListAPI,
+    BaseCurrencyListAPI, BaseItemUnitListAPI, IndicatorParamListAPI, ApplicationForOpportunityPermitListAPI,
 )
 
 urlpatterns = [
@@ -27,4 +27,9 @@ urlpatterns = [
     path('perm-per-app/api', ApplicationPermissionAPI.as_view(), name="ApplicationPermissionAPI"),
     path('item-units/api', BaseItemUnitListAPI.as_view(), name="BaseItemUnitListAPI"),
     path('indicator-params/api', IndicatorParamListAPI.as_view(), name="IndicatorParamListAPI"),
+    path(
+        'opportunity-permit-applications/api',
+        ApplicationForOpportunityPermitListAPI.as_view(),
+        name='ApplicationForOpportunityPermitListAPI'
+    )
 ]

@@ -411,12 +411,18 @@
             </span>
             </div>
             <div id="box-select-so-product-uom">
-                <select class="form-control box-select-uom" data-method="GET"
-                        data-url="{% url "UnitOfMeasureListAPI" %}" data-keyResp="unit_of_measure"></select>
+                <select class="form-select box-select-uom"
+                        data-method="GET"
+                        data-url="{% url "UnitOfMeasureListAPI" %}"
+                        data-keyResp="unit_of_measure"
+                ></select>
             </div>
             <div id="box-select-so-product-tax">
-                <select class="form-control box-select-tax" data-method="GET"
-                        data-url="{% url "TaxListAPI" %}" data-keyResp="tax_list"></select>
+                <select class="form-select box-select-tax"
+                        data-method="GET"
+                        data-url="{% url "TaxListAPI" %}"
+                        data-keyResp="tax_list"
+                ></select>
             </div>
         </div>
     </form>
@@ -440,6 +446,7 @@
            data-url-so-product="{% url 'ProductListSaleOrderAPI' pk=0 %}"
            data-url-uom-group="{% url 'UnitOfMeasureGroupListAPI' %}"
            data-url-this-page="{% url 'PurchaseRequestCreate' %}"
+           data-url-uom="{% url 'UnitOfMeasureListAPI' %}"
     >
 {% endblock %}
 

@@ -14,6 +14,7 @@ $(function () {
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
+                    $x.fn.renderCodeBreadcrumb(data);
                     $.fn.compareStatusShowPageAction(data);
                     // store data detail
                     eleDataDetail.val(JSON.stringify(data));
@@ -28,7 +29,7 @@ $(function () {
                         $('#data-copy-quotation-detail').val(JSON.stringify(data))
                     } else {
                         if (Object.keys(data.quotation).length > 0) {
-                            QuotationLoadDataHandle.loadAPIDetailQuotation('data-init-copy-quotation', data.quotation.id);
+                            QuotationLoadDataHandle.loadAPIDetailQuotation(data.quotation.id);
                         }
                     }
 

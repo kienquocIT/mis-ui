@@ -48,7 +48,7 @@ function loadCreator(id) {
     },)
 }
 
-function loadProductTable(data) {
+function loadCostTable(data) {
     let table = $('#dtbProduct').DataTable();
     data.map(function (item) {
         table.row.add(item).draw().node();
@@ -65,6 +65,7 @@ function loadDetailAdvancePayment(id, type = 'create') {
         if (data) {
             if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('advance_payment_detail')) {
                 let ele_beneficiary = $('#chooseBeneficiary');
+                ele_beneficiary.empty();
                 let sale_code_ele = $('[name="sale_code"]');
                 if (data?.['advance_payment_detail']?.['sale_order_mapped'].length > 0) {
                     sale_code_ele.val(data?.['advance_payment_detail']?.['sale_order_mapped'][0].opportunity.code);
@@ -77,8 +78,10 @@ function loadDetailAdvancePayment(id, type = 'create') {
                 }
                 ReturnAdvanceLoadPage.loadBeneficiary(ele_beneficiary, data?.['advance_payment_detail'].beneficiary)
                 loadDetailBeneficiary(data?.['advance_payment_detail'].beneficiary.id);
+
+                console.log(data?.['advance_payment_detail'])
                 if (type === 'create') {
-                    loadProductTable(data?.['advance_payment_detail']?.['product_items'])
+                    loadCostTable(data?.['advance_payment_detail']?.['expense_items'])
                 }
             }
         }
@@ -86,7 +89,7 @@ function loadDetailAdvancePayment(id, type = 'create') {
     },)
 }
 
-function loadDataTableProduct(data) {
+function loadDataTableCost(data, is_detail = false) {
     if (!$.fn.DataTable.isDataTable('#dtbProduct')) {
         let $table = $('#dtbProduct')
         $table.DataTableDefault({
@@ -104,18 +107,18 @@ function loadDataTableProduct(data) {
                 },
                 {
                     targets: 1,
-                    data: 'product',
+                    data: 'expense_name',
                     className: 'wrap-text',
                     render: (data, type, row) => {
-                        return `<span class="text-primary span-product" data-id="${row.id}">${data.title}</span>`
+                        return `<span class="text-primary row-expense" data-id="${row.id}">${data}</span>`
                     }
                 },
                 {
-                    data: 'product',
+                    data: 'expense_type',
                     targets: 2,
                     className: 'wrap-text',
                     render: (data, type, row) => {
-                        return `<span>${data.type.title}</span>`
+                        return `<span class="row-expense-type" data-id="${data.id}">${data.title}</span>`
                     }
                 },
                 {
@@ -127,10 +130,17 @@ function loadDataTableProduct(data) {
                     }
                 },
                 {
+                    data: 'return_value',
                     targets: 4,
                     className: 'wrap-text',
                     render: (data, type, row) => {
-                        return `<input class="mask-money form-control return-price" type="text" data-return-type="number">`
+                        let value = data !== undefined ? data : '';
+                        if (is_detail) {
+                            return `<input class="mask-money form-control return-price" type="text" data-return-type="number" value="${value}" disabled>`
+                        }
+                        else{
+                            return `<input class="mask-money form-control return-price" type="text" data-return-type="number" value="${value}">`
+                        }
                     }
                 },
             ],
@@ -138,7 +148,7 @@ function loadDataTableProduct(data) {
     }
 }
 
-function loadDataTableProductPageDetail(data, type_page = 'create') {
+function loadDataTableProductPageDetailloadDataTableProductPageDetail(data, type_page = 'create') {
     if (!$.fn.DataTable.isDataTable('#dtbProduct')) {
         let $table = $('#dtbProduct')
         $table.DataTableDefault({
@@ -184,8 +194,7 @@ function loadDataTableProductPageDetail(data, type_page = 'create') {
                     render: (data, type, row) => {
                         if (type_page === 'detail') {
                             return `<input class="mask-money form-control return-price" type="text" data-return-type="number" value="${data}" disabled>`
-                        }
-                        else
+                        } else
                             return `<input class="mask-money form-control return-price" type="text" data-return-type="number" value="${data}">`
                     }
                 },
@@ -230,7 +239,7 @@ class ReturnAdvanceLoadPage {
     static loadBeneficiary(ele, data) {
         ele.initSelect2({
             data: data,
-            keyText: 'name',
+            keyText: 'full_name',
         })
     }
 
@@ -260,7 +269,7 @@ function loadDetail(id, frmDetail) {
             loadCreator(return_advance_detail.creator);
             $('[name="date_created"]').val(return_advance_detail.date_created.split(" ")[0]);
             $('[name="method"]').val(return_advance_detail.method);
-            loadProductTable(return_advance_detail.cost);
+            loadCostTable(return_advance_detail.cost);
             let total_value = return_advance_detail.cost.map(obj => obj?.['return_price']).reduce((a, b) => a + b, 0)
             $('#total-value').attr('data-init-money', total_value);
             if (return_advance_detail.money_received) {

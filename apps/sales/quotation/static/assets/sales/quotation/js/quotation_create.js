@@ -41,6 +41,7 @@ $(function () {
         QuotationDataTableHandle.dataTableCost();
         QuotationDataTableHandle.dataTableExpense();
 
+        // ele tables
         let tableProduct = $('#datable-quotation-create-product');
         let tableCost = $('#datable-quotation-create-cost');
         let tableExpense = $('#datable-quotation-create-expense');
@@ -390,9 +391,7 @@ $(function () {
             }
             let newRow = tableExpense.DataTable().row.add(dataAdd).draw().node();
             // load data dropdown
-            let selectExpenseID = 'quotation-create-expense-box-expense-' + String(order);
-            QuotationLoadDataHandle.loadBoxQuotationExpense(selectExpenseID);
-            QuotationLoadDataHandle.loadBoxQuotationProductPurchasing(selectExpenseID);
+            QuotationLoadDataHandle.loadBoxQuotationExpenseItem($(newRow.querySelector('.table-row-item')));
             QuotationLoadDataHandle.loadBoxQuotationUOM($(newRow.querySelector('.table-row-uom')));
             QuotationLoadDataHandle.loadBoxQuotationTax($(newRow.querySelector('.table-row-tax')));
             // check disable
@@ -483,8 +482,6 @@ $(function () {
 // ******** Action on change data of table row EXPENSE => calculate data for row & calculate data total
         tableExpense.on('change', '.table-row-item, .table-row-quantity, .table-row-price, .table-row-tax', function () {
             let row = $(this)[0].closest('tr');
-            if ($(this).hasClass('table-row-item')) {
-            }
             QuotationCalculateCaseHandle.commonCalculate(tableExpense, row, false, false, true);
         });
 
@@ -683,7 +680,7 @@ $(function () {
         tableCopyQuotation.on('click', '.table-row-check', function () {
             tableCopyQuotation.find('.table-row-check').prop('checked', false);
             $(this).prop('checked', true);
-            QuotationLoadDataHandle.loadAPIDetailQuotation('data-init-copy-quotation', $(this)[0].getAttribute('data-id'));
+            QuotationLoadDataHandle.loadAPIDetailQuotation($(this)[0].getAttribute('data-id'));
         });
 
 // Action on click button select quotation for copy
@@ -751,13 +748,9 @@ $(function () {
             if (type === 'copy-from') { // COPY FROM (SALE ORDER CREATE -> CHOOSE QUOTATION)
                 // Begin load data copy FROM
                 document.getElementById('customer-price-list').value = dataCopy.customer?.['customer_price_list'];
-                QuotationLoadDataHandle.loadDetailQuotation(dataCopy, true);
                 QuotationLoadDataHandle.loadDataTablesAndDropDowns(dataCopy);
-                if (dataCopyTo.option === 'custom') {
-                    QuotationCalculateCaseHandle.calculateAllRowsTableProduct(tableProduct);
-                } else {
-                    QuotationCalculateCaseHandle.calculateAllRowsTableProduct(tableProduct);
-                }
+                QuotationCalculateCaseHandle.calculateAllRowsTableProduct(tableProduct);
+                QuotationLoadDataHandle.loadDetailQuotation(dataCopy, true);
 
             } else if (type === 'copy-to') { // COPY TO (QUOTATION DETAIL -> SALE ORDER CREATE)
                 // create URL and add to href
@@ -775,7 +768,7 @@ $(function () {
             if (eleDataCopy) {
                 if (eleDataCopy.val()) {
                     let dataRaw = JSON.parse(eleDataCopy.val());
-                    QuotationLoadDataHandle.loadAPIDetailQuotation('data-init-copy-quotation', dataRaw.id);
+                    QuotationLoadDataHandle.loadAPIDetailQuotation(dataRaw.id);
                     checkElementValuesBeforeLoadDataCopy();
                     checkOppLoaded();
                 }
@@ -788,7 +781,6 @@ $(function () {
             if (eleDataCopy) {
                 if (eleDataCopy.val()) {
                     let dataRaw = JSON.parse(eleDataCopy.val());
-                    QuotationLoadDataHandle.loadDetailQuotation(dataCopy, true);
                     if (dataRaw.option === 'custom') { // if option copy is custom then setup data products & costs for load
                         let products = dataRaw.products;
                         let result = [];
@@ -813,11 +805,8 @@ $(function () {
                     // Begin load data copy TO
                     document.getElementById('customer-price-list').value = dataCopy.customer?.['customer_price_list'];
                     QuotationLoadDataHandle.loadDataTablesAndDropDowns(dataCopy);
-                    if (dataRaw.option === 'custom') {
-                        QuotationCalculateCaseHandle.calculateAllRowsTableProduct(tableProduct);
-                    } else {
-                        QuotationCalculateCaseHandle.calculateAllRowsTableProduct(tableProduct);
-                    }
+                    QuotationCalculateCaseHandle.calculateAllRowsTableProduct(tableProduct);
+                    QuotationLoadDataHandle.loadDetailQuotation(dataCopy, true);
                 }
             }
         }
@@ -842,6 +831,9 @@ $(function () {
                 setTimeout(checkOppLoaded, 1000);  // call again after 1s if condition not pass yet
             }
         }
+
+// Load init Opportunity
+        QuotationLoadDataHandle.loadInitOpportunity();
 
 // PROMOTION
 // Action on click button Check Available Promotion (show list promotions)

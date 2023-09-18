@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
+{% block title %}{% trans 'Product Detail' %}{% endblock %}
 {% block cssHeader %}
     <link href="{% static 'assets/css/masterdata/saledata/accounts/account_create.css' %}" rel="stylesheet"
           type="text/css"/>
@@ -114,7 +115,8 @@
                         <div class="row form-group">
                             <label class="col-4 col-form-label required">{% trans "Product Type" %}</label>
                             <div class="col-8">
-                                <select id="general-select-box-product-type" class="form-select" data-method="GET"
+                                <select id="general-select-box-product-type" class="form-select select2 select-multiple" data-method="GET"
+                                        multiple
                                         data-url="{% url 'ProductTypeListAPI' %}"></select>
                             </div>
                         </div>

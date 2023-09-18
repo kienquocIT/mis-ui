@@ -12,7 +12,7 @@ class POLoadDataHandle {
     static eleDivTablePRProductMerge = $('#table-purchase-request-product-merge-area');
 
     static loadMoreInformation(ele, is_span = false) {
-        let optionSelected = null;
+        let optionSelected;
         if (is_span === false) {
             optionSelected = ele;
         } else {
@@ -305,6 +305,10 @@ class POLoadDataHandle {
                     }
                 }
             )
+        } else {
+            POLoadDataHandle.loadDataShowPurchaseRequest();
+            POLoadDataHandle.loadTableProductByPurchaseRequest();
+            POLoadDataHandle.loadModalPurchaseQuotation(true);
         }
         return true;
     };
@@ -420,6 +424,9 @@ class POLoadDataHandle {
                         }
                     }
                 )
+            } else {
+                POLoadDataHandle.loadDataShowPurchaseQuotation();
+                POLoadDataHandle.loadPriceListByPurchaseQuotation();
             }
         }
         return true;
@@ -516,12 +523,6 @@ class POLoadDataHandle {
         let tablePurchaseOrderProductRequest = $('#datable-purchase-order-product-request');
         let tablePurchaseOrderProductAdd = $('#datable-purchase-order-product-add');
         let data = setupMergeProduct();
-        // if (tablePurchaseOrderProductRequest[0].hasAttribute('hidden')) {
-        //     tablePurchaseOrderProductAdd[0].setAttribute('hidden', 'true');
-        //     $('#datable-purchase-order-product-add_wrapper')[0].setAttribute('hidden', 'true');
-        //     tablePurchaseOrderProductRequest[0].removeAttribute('hidden');
-        //     $('#datable-purchase-order-product-request_wrapper')[0].removeAttribute('hidden');
-        // }
         POLoadDataHandle.eleDivTablePOProductAdd[0].setAttribute('hidden', 'true');
         POLoadDataHandle.eleDivTablePOProductRequest[0].removeAttribute('hidden');
         tablePurchaseOrderProductAdd.DataTable().clear().draw();
@@ -597,10 +598,10 @@ class POLoadDataHandle {
         }
     };
 
-    static loadDataRow(row, table_id) {
+    static loadDataRow(row) {
         // mask money
         $.fn.initMaskMoney2();
-        let dataRowRaw = row.querySelector('.table-row-order').getAttribute('data-row');
+        let dataRowRaw = row.querySelector('.table-row-order')?.getAttribute('data-row');
         if (dataRowRaw) {
             let dataRow = JSON.parse(dataRowRaw);
             POLoadDataHandle.loadBoxProduct($(row.querySelector('.table-row-item')), dataRow?.['product']);
@@ -944,7 +945,7 @@ class POLoadDataHandle {
         let table = $('#datable-purchase-request-product');
         for (let eleChecked of table[0].querySelectorAll('.table-row-checkbox:checked')) {
             let row = eleChecked.closest('tr');
-            let dataRowRaw = row.querySelector('.table-row-order').getAttribute('data-row');
+            let dataRowRaw = row.querySelector('.table-row-order')?.getAttribute('data-row');
             if (dataRowRaw) {
                 let dataRow = JSON.parse(dataRowRaw);
                 if (PRProductIDList.includes(dataRow?.['id'])) {
@@ -1871,7 +1872,7 @@ class POValidateHandle {
         let eleStock = row.querySelector('.table-row-stock');
         let quantity_request = eleQuantityRequest.innerHTML;
         let quantity_order = eleQuantityOrder.value;
-        let dataRowRaw = row.querySelector('.table-row-order').getAttribute('data-row');
+        let dataRowRaw = row.querySelector('.table-row-order')?.getAttribute('data-row');
         let eleUOMOrder = row.querySelector('.table-row-uom-order-actual');
         if (dataRowRaw && $(eleUOMOrder).val()) {
             let dataRow = JSON.parse(dataRowRaw);
@@ -1934,7 +1935,7 @@ class POSubmitHandle {
             }
             let row = eleChecked.closest('tr');
             let quantity_order = parseFloat(row.querySelector('.table-row-quantity-order').value);
-            let dataRowRaw = row.querySelector('.table-row-order').getAttribute('data-row');
+            let dataRowRaw = row.querySelector('.table-row-order')?.getAttribute('data-row');
             if (dataRowRaw) {
                 let dataRow = JSON.parse(dataRowRaw);
                 result.push({
@@ -2115,7 +2116,7 @@ function setupMergeProduct() {
             if (sale_order_id === "null") {
                 sale_order_id = null;
             }
-            let dataRowRaw = row.querySelector('.table-row-order').getAttribute('data-row');
+            let dataRowRaw = row.querySelector('.table-row-order')?.getAttribute('data-row');
             if (dataRowRaw) {
                 let dataRow = JSON.parse(dataRowRaw);
                 if (Object.keys(uom_reference).length === 0) {

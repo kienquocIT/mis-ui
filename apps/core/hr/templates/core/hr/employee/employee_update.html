@@ -16,7 +16,7 @@
 {% endblock %}
 
 {% block pageContent %}
-    <ul class="nav nav-light nav-tabs">
+    <ul class="nav nav-line nav-light nav-tabs">
         <li class="nav-item">
             <a class="nav-link active" data-bs-toggle="tab" href="#tab-info">
                 <span class="nav-link-text">{% trans 'General Information' %}</span>
@@ -52,12 +52,14 @@
                                     <label class="form-label">{% trans 'Select User' %}</label>
                                     <div class="input-affix-wrapper">
                                         <div class="dropdown input-prefix">
-                                            <i class="fas fa-info-circle text-blue"
-                                               data-bs-toggle="dropdown"
-                                               data-dropdown-animation
-                                               aria-haspopup="true"
-                                               aria-expanded="false"
-                                               disabled></i>
+                                            <i
+                                                    class="fas fa-info-circle text-blue"
+                                                    data-bs-toggle="dropdown"
+                                                    data-dropdown-animation
+                                                    aria-haspopup="true"
+                                                    aria-expanded="false"
+                                                    disabled
+                                            ></i>
                                             <div class="dropdown-menu w-210p mt-2"></div>
                                         </div>
                                         <select

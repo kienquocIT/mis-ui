@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
+{% block title %}{% trans 'Advance Payment Detail' %}{% endblock %}
 {% block cssHeader %}
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/dropify/dist/css/dropify.css' %}" rel="stylesheet" type="text/css"/>
@@ -271,14 +272,14 @@
                         <thead>
                         <tr>
                             <th class="text-center" style="width: 2%"></th>
-                            <th class="required" style="width: 18%">{% trans 'Product items' %}</th>
-                            <th style="width: 12%">{% trans 'Type' %}</th>
+                            <th class="required" style="width: 18%">{% trans 'Expense name' %}</th>
+                            <th class="required" style="width: 12%">{% trans 'Type' %}</th>
                             <th class="required" style="width: 7%">{% trans 'UoM' %}</th>
                             <th class="required" style="width: 6%">{% trans 'Quantity' %}</th>
                             <th class="required" style="width: 14%">{% trans 'Unit price' %}</th>
                             <th style="width: 10%">{% trans 'Tax' %}</th>
-                            <th style="width: 14%">{% trans 'Subtotal price' %}</th>
-                            <th style="width: 14%">{% trans 'After tax subtotal' %}</th>
+                            <th class="required" style="width: 14%">{% trans 'Subtotal price' %}</th>
+                            <th class="required" style="width: 14%">{% trans 'After tax subtotal' %}</th>
                             <th style="width: 1%"></th>
                         </tr>
                         </thead>

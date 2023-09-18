@@ -14,6 +14,7 @@ urlpatterns = \
         path('', include('apps.core.urls')),
         path('', include('apps.masterdata.urls')),
         path('', include('apps.sales.urls')),
+        path('', include('apps.eoffice.urls')),
         path('private-system/', include('apps.sharedapp.urls')),
     ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

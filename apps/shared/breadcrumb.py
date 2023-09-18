@@ -163,6 +163,9 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     # Opportunity Config
     OPPORTUNITY_CONFIG_PAGE = BreadcrumbChildren(_('Opportunity'), 'OpportunityConfig')
 
+    # Payment Config
+    PAYMENT_CONFIG_PAGE = BreadcrumbChildren(_('Payment Config'), 'PaymentConfigList')
+
     # Task
     OPPORTUNITY_TASK_CONFIG_PAGE = BreadcrumbChildren(_('Task config'), 'OpportunityTaskConfig')
     OPPORTUNITY_TASK_LIST_PAGE = BreadcrumbChildren(_('Task'), 'OpportunityTaskList')
@@ -212,6 +215,25 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
 
     EXPENSE_ITEM_LIST_PAGE = BreadcrumbChildren(
         _('Expense List'), 'ExpenseItemList'
+    )
+
+    # Purchase order
+    PURCHASE_ORDER_LIST_PAGE = BreadcrumbChildren(_('Purchase order'), 'PurchaseOrderList')
+    PURCHASE_ORDER_CREATE_PAGE = BreadcrumbChildren(_('Purchase order create'), 'PurchaseOrderCreate')
+    PURCHASE_ORDER_DETAIL_PAGE = BreadcrumbChildren(_('Purchase order detail'))
+    PURCHASE_ORDER_UPDATE_PAGE = BreadcrumbChildren(_('Purchase order update'))
+
+    # Goods receipt
+    GOODS_RECEIPT_LIST_PAGE = BreadcrumbChildren(_('Goods receipt'), 'GoodsReceiptList')
+    GOODS_RECEIPT_CREATE_PAGE = BreadcrumbChildren(_('Goods receipt create'), 'GoodsReceiptCreate')
+    GOODS_RECEIPT_DETAIL_PAGE = BreadcrumbChildren(_('Goods receipt detail'))
+    GOODS_RECEIPT_UPDATE_PAGE = BreadcrumbChildren(_('Goods receipt update'))
+
+
+    # E-Office
+    # Leave
+    LEAVE_CONFIG = BreadcrumbChildren(
+        _('Leave Config'), 'LeaveConfigDetail'
     )
 
 
@@ -435,9 +457,9 @@ class BreadcrumbView:
     QUOTATION_LIST_PAGE = [
         BreadcrumbItem.QUOTATION_LIST_PAGE
     ]
-    QUOTATION_CREATE_PAGE = QUOTATION_LIST_PAGE + [BreadcrumbItem.QUOTATION_CREATE_PAGE]
-    QUOTATION_DETAIL_PAGE = QUOTATION_LIST_PAGE + [BreadcrumbItem.QUOTATION_DETAIL_PAGE]
-    QUOTATION_UPDATE_PAGE = QUOTATION_LIST_PAGE + [BreadcrumbItem.QUOTATION_UPDATE_PAGE]
+    QUOTATION_CREATE_PAGE = QUOTATION_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+    QUOTATION_DETAIL_PAGE = QUOTATION_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    QUOTATION_UPDATE_PAGE = QUOTATION_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
     # Shipping
     SHIPPING_LIST_PAGE = [
@@ -451,9 +473,9 @@ class BreadcrumbView:
     SALE_ORDER_LIST_PAGE = [
         BreadcrumbItem.SALE_ORDER_LIST_PAGE
     ]
-    SALE_ORDER_CREATE_PAGE = SALE_ORDER_LIST_PAGE + [BreadcrumbItem.SALE_ORDER_CREATE_PAGE]
-    SALE_ORDER_DETAIL_PAGE = SALE_ORDER_LIST_PAGE + [BreadcrumbItem.SALE_ORDER_DETAIL_PAGE]
-    SALE_ORDER_UPDATE_PAGE = SALE_ORDER_LIST_PAGE + [BreadcrumbItem.SALE_ORDER_UPDATE_PAGE]
+    SALE_ORDER_CREATE_PAGE = SALE_ORDER_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+    SALE_ORDER_DETAIL_PAGE = SALE_ORDER_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    SALE_ORDER_UPDATE_PAGE = SALE_ORDER_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
     # Warehouse
     WAREHOUSE_LIST_PAGE = [
@@ -506,6 +528,8 @@ class BreadcrumbView:
 
     # Opportunity Config
     OPPORTUNITY_CONFIG_PAGE = [BreadcrumbItem.OPPORTUNITY_CONFIG_PAGE]
+    PAYMENT_CONFIG_PAGE = [BreadcrumbItem.PAYMENT_CONFIG_PAGE]
+
     # Task
     OPPORTUNITY_TASK_CONFIG_PAGE = [BreadcrumbItem.OPPORTUNITY_TASK_CONFIG_PAGE]
     OPPORTUNITY_TASK_LIST_PAGE = [BreadcrumbItem.OPPORTUNITY_TASK_LIST_PAGE]
@@ -576,4 +600,21 @@ class BreadcrumbView:
     # expense item
     EXPENSE_ITEM_LIST_PAGE = [
         BreadcrumbItem.EXPENSE_ITEM_LIST_PAGE
+    ]
+
+    # Purchase order
+    PURCHASE_ORDER_LIST_PAGE = [BreadcrumbItem.PURCHASE_ORDER_LIST_PAGE]
+    PURCHASE_ORDER_CREATE_PAGE = PURCHASE_ORDER_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+    PURCHASE_ORDER_DETAIL_PAGE = PURCHASE_ORDER_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    PURCHASE_ORDER_UPDATE_PAGE = PURCHASE_ORDER_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+
+    # Goods receipt
+    GOODS_RECEIPT_LIST_PAGE = [BreadcrumbItem.GOODS_RECEIPT_LIST_PAGE]
+    GOODS_RECEIPT_CREATE_PAGE = GOODS_RECEIPT_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+    GOODS_RECEIPT_DETAIL_PAGE = GOODS_RECEIPT_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    GOODS_RECEIPT_UPDATE_PAGE = GOODS_RECEIPT_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+
+    # e-office Leave
+    LEAVE_CONFIG_PAGE = [
+        BreadcrumbItem.LEAVE_CONFIG
     ]

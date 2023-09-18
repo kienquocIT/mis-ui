@@ -68,28 +68,28 @@ $(document).ready(function () {
                         data: 'advance_value',
                         className: 'wrap-text',
                         render: (data, type, row) => {
-                            return `<span class="mask-money text-primary" data-init-money="` + row.advance_value + `"></span>`
+                            return `<span class="mask-money text-primary" data-init-money="${row?.['advance_value']}"></span>`
                         }
                     },
                     {
                         data: 'to_payment',
                         className: 'wrap-text',
                         render: (data, type, row) => {
-                            return `<span class="mask-money text-primary" data-init-money="` + row.to_payment + `"></span>`
+                            return `<span class="mask-money text-primary" data-init-money="${row?.['to_payment']}"></span>`
                         }
                     },
                     {
                         data: 'return_value',
                         className: 'wrap-text',
                         render: (data, type, row) => {
-                            return `<span class="mask-money text-primary" data-init-money="` + row.return_value + `"></span>`
+                            return `<span class="mask-money text-primary" data-init-money="${row?.['return_value']}"></span>`
                         }
                     },
                     {
                         data: 'remain_value',
                         className: 'wrap-text',
                         render: (data, type, row) => {
-                            return `<span class="mask-money text-primary" data-init-money="` + row.remain_value + `"></span>`
+                            return `<span class="mask-money text-primary" data-init-money="${row?.['remain_value']}"></span>`
                         }
                     },
                     {
@@ -109,29 +109,38 @@ $(document).ready(function () {
                         render: (data, type, row) => {
                             let sale_code_id = '';
                             let is_close = false;
-                            if (row.sale_order_mapped) {
-                                sale_code_id = row.sale_order_mapped.id;
-                                is_close = row.sale_order_mapped.is_close;
+                            let flag = -1;
+                            if (Object.keys(row?.['sale_order_mapped']).length !== 0) {
+                                sale_code_id = row?.['sale_order_mapped'].id;
+                                is_close = row?.['sale_order_mapped']['is_close'];
+                                flag = 0;
                             }
-                            if (row.quotation_mapped) {
-                                sale_code_id = row.quotation_mapped.id;
-                                is_close = row.quotation_mapped.is_close;
+                            if (Object.keys(row?.['quotation_mapped']).length !== 0) {
+                                sale_code_id = row?.['quotation_mapped'].id;
+                                is_close = row?.['quotation_mapped']['is_close'];
+                                flag = 1;
                             }
-                            if (row.opportunity_mapped) {
-                                sale_code_id = row.opportunity_mapped.id;
-                                is_close = row.opportunity_mapped.is_close;
+                            if (Object.keys(row?.['opportunity_mapped']).length !== 0) {
+                                sale_code_id = row?.['opportunity_mapped'].id;
+                                is_close = row?.['opportunity_mapped']['is_close'];
+                                flag = 2;
                             }
                             let disabled = ''
                             if (is_close) {
                                 disabled = 'disabled';
                             }
                             let return_href = dtb.data('return-advance') + `?advance_payment={0}`.format_by_idx(encodeURIComponent(JSON.stringify({'id': row.id, 'title': row.title})));
-                            let to_payment_href = dtb.attr('data-payment') + `?sale_code_mapped={0}`.format_by_idx(sale_code_id);
+                            let to_payment_href = '';
+                            let html_to_payment = ''
+                            if (sale_code_id !== '') {
+                                to_payment_href = dtb.attr('data-payment') + `?sale_code_mapped=${encodeURIComponent(JSON.stringify(sale_code_id))}&type=${flag}`;
+                                html_to_payment = `<a class="dropdown-item" href="${to_payment_href}">To Payment</a>`
+                            }
                             return `<div class="dropdown">
                                         <a type="button" data-bs-toggle="dropdown"><i class="bi bi-three-dots-vertical"></i></a>
                                         <div class="dropdown-menu">
                                              <a class="dropdown-item ${disabled}" href="${return_href}">Return</a>
-                                             <a class="dropdown-item" href="${to_payment_href}">To Payment</a>
+                                             ${html_to_payment}
                                         </div>
                                     </div>`;
                         }

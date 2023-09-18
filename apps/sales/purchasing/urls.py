@@ -56,12 +56,12 @@ urlpatterns = [
         name='PurchaseQuotationRequestCreateManual'
     ),
     path(
-        'purchase-quotation-request/detail/<str:pk>',
+        'purchase-quotation-request/<str:pk>',
         PurchaseQuotationRequestDetail.as_view(),
         name='PurchaseQuotationRequestDetail'
     ),
     path(
-        'purchase-quotation-request/detail/api/<str:pk>',
+        'purchase-quotation-request/api/<str:pk>',
         PurchaseQuotationRequestDetailAPI.as_view(),
         name='PurchaseQuotationRequestDetailAPI'
     ),
@@ -82,12 +82,12 @@ urlpatterns = [
         name='PurchaseQuotationCreate'
     ),
     path(
-        'purchase-quotation/detail/<str:pk>',
+        'purchase-quotation/<str:pk>',
         PurchaseQuotationDetail.as_view(),
         name='PurchaseQuotationDetail'
     ),
     path(
-        'purchase-quotation/detail/api/<str:pk>',
+        'purchase-quotation/api/<str:pk>',
         PurchaseQuotationDetailAPI.as_view(),
         name='PurchaseQuotationDetailAPI'
     ),

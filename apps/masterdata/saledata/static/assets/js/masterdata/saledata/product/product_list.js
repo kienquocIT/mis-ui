@@ -25,10 +25,14 @@ $(document).ready(function () {
                     return `<a href="${url_detail.replace(0, row.id)}"><span><b>${row.title}</b></span></a>`
                 }
             }, {
-                'data': 'general_product_type',
+                'data': 'general_product_types_mapped',
                 render: (data, type, row) => {
-                    return `<span class="badge badge-soft-danger span-product-type" style="min-width: max-content; width: 50%">${
-                        row.general_product_type.title}</span>`
+                    console.log(row?.['general_product_types_mapped'])
+                    let html = ``;
+                    for (let i = 0; i < row?.['general_product_types_mapped'].length; i++) {
+                        html += `<span class="badge badge-soft-danger span-product-type ml-1 mb-1" style="min-width: max-content; width: 50%">${row?.['general_product_types_mapped'][i].title}</span>`
+                    }
+                    return html;
                 }
             }, {
                 'data': 'general_product_category',

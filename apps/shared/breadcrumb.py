@@ -214,6 +214,12 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
         _('Expense List'), 'ExpenseItemList'
     )
 
+    # E-Office
+    # Leave
+    LEAVE_CONFIG = BreadcrumbChildren(
+        _('Leave Config'), 'LeaveConfigDetail'
+    )
+
 
 class BreadcrumbView:
     """menu vertical item view"""
@@ -577,3 +583,6 @@ class BreadcrumbView:
     EXPENSE_ITEM_LIST_PAGE = [
         BreadcrumbItem.EXPENSE_ITEM_LIST_PAGE
     ]
+
+    # e-office Leave
+    LEAVE_CONFIG_PAGE = [BreadcrumbItem.LEAVE_CONFIG]

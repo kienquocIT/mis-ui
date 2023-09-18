@@ -132,6 +132,10 @@ class MenusCoreConfigurations:
             MenuCommon(
                 name='Task', code='menu_opportunity_task_config', view_name='OpportunityTaskConfig',
                 icon='<i class="fa-solid fa-clipboard-check"></i>',
+            ),
+            MenuCommon(
+                name='Leave', code='menu_leave_config', view_name='LeaveConfigDetail',
+                icon='<i class="fa-solid fa-arrow-right-from-bracket"></i>',
             )
         ]
     )

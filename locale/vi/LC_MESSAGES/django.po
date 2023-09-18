@@ -433,6 +433,18 @@ msgid "Active the employee after created"
 msgstr "Kích hoạt nhân viên sau khi tạo"
 
 #
+msgid "Summary of permissions"
+msgstr "Tóm tắt quyền"
+
+#
+msgid "Same range of main"
+msgstr "Sử dụng phạm vi của quyền chính"
+
+#
+msgid "Some data is incorrect at line"
+msgstr "Một số dòng chưa đủ dữ liệu"
+
+#
 msgid "Permission"
 msgstr "Quyền hạn"
 
@@ -2573,6 +2585,14 @@ msgid "Allow at least one permit"
 msgstr "Cho phép ít nhất một quyền"
 
 #
+msgid "Range for permit is required"
+msgstr "Phạm vi cho quyền không được để trống"
+
+#
+msgid "The combined range of the selected permissions has no matches"
+msgstr "Phạm vi kết hợp của các quyền đã chọn không có kết quả trùng khớp"
+
+#
 msgid "Are you sure?"
 msgstr "Bạn chắc chắn?"
 
@@ -4018,3 +4038,146 @@ msgstr "Khách hàng"
 #
 msgid "Registry"
 msgstr "Đăng ký"
+
+#
+msgid "About Us"
+msgstr "Về chúng tôi"
+
+#
+msgid "Some app depend is open"
+msgstr "Một số ứng dụng phụ thuộc đang mở"
+
+#
+msgid "Depend on apps"
+msgstr "Một số ứng dụng phụ thuộc"
+
+#
+msgid "has not been created for Opportunity"
+msgstr "chưa được tạo cho cơ hội kinh doanh"
+
+#
+msgid "Auto Update Stage"
+msgstr "Tự động cập nhật giai đoạn"
+
+#
+msgid "Create Related Feature"
+msgstr "Tạo các chức năng liên quan"
+
+#
+msgid "View Related Feature"
+msgstr "Xem các chức năng liên quan"
+
+#
+msgid "Price In"
+msgstr "Giá tính bằng"
+
+#
+msgid "price list does not allow configuration."
+msgstr "Bảng giá không được cho phép cấu hình"
+
+#
+msgid "Get item from"
+msgstr "Lấy sản phẩm (chi phí) từ"
+
+#
+msgid "Save Setting"
+msgstr "Lưu cài đặt"
+
+#
+msgid "Save Item Price"
+msgstr "Lưu giá của sản phẩm (chi phí)"
+
+#
+msgid "Delete this item ?"
+msgstr "Xóa mục này ?"
+
+#
+msgid "Can not delete this item!"
+msgstr "Không thể xóa mục này"
+
+#
+msgid "You can update can delete in tab setting"
+msgstr "Bạn có thể cập nhật có thể xóa ở mục cài đặt"
+
+#
+msgid "Delivered Date"
+msgstr "Hạn giao hàng"
+
+#
+msgid "Purchase Status"
+msgstr "Trạng thái mua"
+
+#
+msgid "Request For"
+msgstr "Yêu cầu cho"
+
+#
+msgid "Request"
+msgstr "Yêu cầu"
+
+#
+msgid "Note"
+msgstr "Chú ý"
+
+#
+msgid "Purchase Request"
+msgstr "Yêu cầu mua hàng"
+
+#
+msgid "Order Code"
+msgstr "Mã bán hàng"
+
+#
+msgid "Supplier Name"
+msgstr "Tên nhà cung cấp"
+
+#
+msgid "Owner Name"
+msgstr "Tên quản lý"
+
+#
+msgid "Contact Name"
+msgstr "Tên liên hệ"
+
+#
+msgid "Num of product request can not greater than num of product remain"
+msgstr "Số lượng sản phẩm yêu cầu không thể lớn hơn số lượng chưa giao"
+
+#
+msgid "Application using in Role"
+msgstr "Ứng dụng đang sử dụng của vai trò"
+
+#
+msgid "Application using in Self"
+msgstr "Ứng dụng đang sử dụng của chính nó"
+
+#
+msgid "Please check/selected depends on apps at Packages - Applications then try again"
+msgstr "Kiểm tra/Chọn sử dụng ứng dụng phụ thuộc của ứng dụng này tại khu vực Gói - Ứng dụng. Sau đó thử lại"
+
+#
+msgid "Show more"
+msgstr "Xem thêm"
+
+#
+msgid "Show less"
+msgstr "Thu gọn"
+
+#
+msgid "Belong To Roles"
+msgstr "Thuộc về Vai Trò"
+#
+msgid "Person delivery"
+msgstr "Người giao hàng"
+#
+msgid "Person picking"
+msgstr "Người lấy hàng"
+#
+msgid "Employee inherit"
+msgstr "Người thụ hưởng"
+#
+msgid "Select coordinator for Picking activities"
+msgstr "Chọn người điều phối cho hoạt động lấy hàng"
+#
+msgid "Select coordinator for Delivery activities"
+msgstr "Chọn người điều phối cho hoạt động giao hàng"

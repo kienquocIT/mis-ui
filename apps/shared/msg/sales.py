@@ -35,3 +35,5 @@ class SaleMsg:  # pylint: disable=too-few-public-methods
     PURCHASE_ORDER_UPDATE = _('Purchase order update successfully')
     PURCHASE_QUOTATION_REQUEST = _('Purchase Quotation Request create successfully')
     PURCHASE_QUOTATION = _('Purchase Quotation create successfully')
+    GOODS_RECEIPT_CREATE = _('Goods receipt create successfully')
+    GOODS_RECEIPT_UPDATE = _('Goods receipt update successfully')

@@ -196,7 +196,7 @@
                                                 data-url="{% url "EmployeeListAPI" %}"
                                                 data-method="GET"
                                                 data-link-detail="{% url 'EmployeeDetail' 1 %}"
-                                                name="employee_inherit"
+                                                name="employee_inherit_id"
                                                 data-keyResp="employee_list"
                                                 required
                                             ></select>
@@ -696,14 +696,15 @@
                                     >
                                         <thead>
                                         <tr>
-                                            <th>STT</th>
-                                            <th>{% trans 'Expense' %}<span class="required"></span></th>
-                                            <th>{% trans 'Unit Of Measure' %}<span class="required"></span></th>
-                                            <th>{% trans 'Quantity' %}<span class="required"></span></th>
-                                            <th>{% trans 'Expense Price' %}<span class="required"></span></th>
-                                            <th>{% trans 'Tax' %}</th>
-                                            <th>{% trans 'Subtotal Price' %}</th>
-                                            <th>{% trans 'Actions' %}</th>
+                                            <th class="w-5">STT</th>
+                                            <th class="w-15">{% trans 'Expense name' %}<span class="required"></span></th>
+                                            <th class="w-10">{% trans 'Expense items' %}<span class="required"></span></th>
+                                            <th class="w-10">{% trans 'Unit Of Measure' %}<span class="required"></span></th>
+                                            <th class="w-5">{% trans 'Quantity' %}<span class="required"></span></th>
+                                            <th class="w-20">{% trans 'Expense Price' %}<span class="required"></span></th>
+                                            <th class="w-10">{% trans 'Tax' %}</th>
+                                            <th class="w-20">{% trans 'Subtotal Price' %}</th>
+                                            <th class="w-5">{% trans 'Actions' %}</th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -789,6 +790,13 @@
                         >
                         <input
                                 type="hidden"
+                                id="data-init-quotation-create-tables-expense-item"
+                                data-url="{% url "ExpenseItemListAPI" %}"
+                                data-link-detail="{% url "ExpenseItemDetailAPI" 1 %}"
+                                data-method="GET"
+                        >
+                        <input
+                                type="hidden"
                                 id="data-init-quotation-create-tables-uom"
                                 data-url="{% url "UnitOfMeasureListAPI" %}"
                                 data-method="GET"
@@ -826,6 +834,11 @@
                                 data-url="{% url "ShippingCheckListAPI" %}"
                                 data-link-detail="{% url "ShippingDetail" 1 %}"
                                 data-method="GET"
+                        >
+                        <input
+                                type="hidden"
+                                id="data-init-opportunity"
+                                value="{{ data.data.opportunity }}"
                         >
                         <input
                                 type="hidden"

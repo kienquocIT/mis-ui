@@ -129,7 +129,7 @@ function getWarehouse() {
                         'id': firstData.id,
                         'title': firstData.title
                     }));
-                    initSelectBox($elmWarehouse);
+                    $elmWarehouse.initSelect2();
                 }
             })
     }
@@ -181,12 +181,12 @@ $(async function () {
             let warehouse_data = data?.['ware_house_data'];
             if (warehouse_data.hasOwnProperty('code')) {
                 $('#inputWareHouse').append(
-                    `<option value="{0}">{1}</option>`.format_by_idx(
+                    `<option value="{0}" selected>{1}</option>`.format_by_idx(
                         warehouse_data['id'],
                         warehouse_data['code'] + " - " + warehouse_data['title'],
                     )
-                ).attr('disabled', true)
-            }else{
+                ).initSelect2()
+            } else {
                 // load default warehouse
                 getWarehouse(pickupInit)
             }
@@ -198,6 +198,10 @@ $(async function () {
             }
             const toLocation = data?.to_location
             if (toLocation) $('#inputToLocation').val(toLocation)
+
+            if (data?.employee_inherit) {
+                $('#selectEmployeeInherit').initSelect2().val(data.employee_inherit.id).trigger('change')
+            }
 
             // load product list
             loadProductList(
@@ -219,7 +223,7 @@ $(async function () {
         $.fn.callAjax(
             $('#url-factory').attr('data-warehouse-stock'),
             'GET',
-            {'product_id': prod.product_data.id, uom_id:prod.uom_data.id}
+            {'product_id': prod.product_data.id, 'uom_id':prod.uom_data.id}
         ).then((resp) => {
             let data = $.fn.switcherResp(resp);
             const datas = data.warehouse_stock
@@ -227,10 +231,16 @@ $(async function () {
             let prodTotal = 0
             let prodName = ''
             let WHInfo = datas.filter((item)=> item.id === warehouseID)[0]
-            prodTotal = WHInfo.product_amount - WHInfo.picked_ready
+
+            prodTotal = WHInfo['original_info'].stock_amount - WHInfo['original_info'].sold_amount
             prodName = WHInfo.title
             htmlContent += `<div class="mb-1"><h6><i>${$elmTrans.attr('data-warehouse')}</i></h6><p>${prodName}</p></div>`;
-            htmlContent += `<div class="mb-1"><h6><i>${$elmTrans.attr('data-stock')}</i></h6><p>${prodTotal}</p></div>`;
+            htmlContent += `<div class="mb-1 d-flex justify-content-between">` +
+                            `<div><h6>${$elmTrans.attr('data-stock')}</h6>${prodTotal}</div>` +
+                            `<div><h6>${$elmTrans.attr('data-store')}</h6>${prodTotal - WHInfo['original_info'].picked_ready}</div>` +
+                            `<div><h6>${$elmTrans.attr('data-picking-area')}</h6>${WHInfo['original_info'].picked_ready}</div>` +
+                `</div>`;
+            htmlContent += `<div class="mb-1"><h6><i>UoM</i></h6><p>${WHInfo?.warehouse_uom?.title}</p></div>`;
             const link = $('#url-factory').attr('data-product-detail').format_url_with_uuid(prod.product_data.id);
             htmlContent += `<div class="dropdown-divider"></div><div class="text-right">
                             <a href="${link}" target="_blank" class="link-primary underline_hover">
@@ -267,7 +277,7 @@ $(async function () {
                                    aria-haspopup="true"
                                    aria-expanded="false" data-product-id="${row?.product_data?.id}"
                                    ></i>
-                                <div class="dropdown-menu w-210p mt-2"></div>
+                                <div class="dropdown-menu w-280p mt-2"></div>
                             </div> ${row?.['product_data']?.['title']}`
                     }
                 },
@@ -357,21 +367,23 @@ $(async function () {
             return false
         }
         const pickingData = pickupInit.getPicking
-        if (_form.dataForm?.estimated_delivery_date) {
+        if (_form.dataForm?.estimated_delivery_date)
             pickingData['estimated_delivery_date'] = moment(_form.dataForm['estimated_delivery_date'],
                 'MM/DD/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
-        }
-        else{
-            $.fn.notifyB({description: $transElm.attr('data-est_invalid')}, 'failure')
-            return false
-        }
+        else delete pickingData['estimated_delivery_date']
+
         pickingData['ware_house'] = _form.dataForm['warehouse_id']
         pickingData['remarks'] = _form.dataForm['remarks']
         pickingData['to_location'] = _form.dataForm['to_location']
         pickingData['sale_order_id'] = pickingData['sale_order_data']['id']
 
+        const _EmployeeInherit = $('#selectEmployeeInherit').val() || ''
+        if (_EmployeeInherit){
+            pickingData['employee_inherit_id'] = _EmployeeInherit
+            delete pickingData['employee_inherit']
+        }
+
         let prodSub = []
-        const warehouseStock = pickupInit.getWarehouseList
         for (prod of pickupInit.getProdList) {
             if (prod.picked_quantity > 0)
                 prodSub.push({
@@ -385,11 +397,9 @@ $(async function () {
                     'order': prod.order,
                 })
         }
+
         pickingData.products = prodSub
-        if (!prodSub || !prodSub.length) {
-            $.fn.notifyB({description: $transElm.attr('data-error-done')}, 'failure')
-            return false
-        }
+
         //call ajax to update picking
         $.fn.callAjax(_form.dataUrl, _form.dataMethod, pickingData, csr)
             .then(

@@ -2,7 +2,7 @@ from django.views import View
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from apps.shared import mask_view, ApiURL, ServerAPI, SaleMsg
+from apps.shared import mask_view, ApiURL, ServerAPI, SaleMsg, PermCheck
 from django.utils.translation import gettext_lazy as _
 
 
@@ -14,6 +14,7 @@ class PaymentList(View):
         template='payment/payment_list.html',
         breadcrumb='PAYMENT_LIST_PAGE',
         menu_active='id_menu_payment',
+        perm_check=PermCheck(url=ApiURL.PAYMENT_LIST, method='GET'),
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -27,33 +28,16 @@ class PaymentCreate(View):
         template='payment/payment_create.html',
         breadcrumb='PAYMENT_CREATE_PAGE',
         menu_active='menu_advance_payment_list',
+        perm_check=PermCheck(url=ApiURL.PAYMENT_LIST, method='POST'),
     )
     def get(self, request, *args, **kwargs):
-        resp1 = ServerAPI(user=request.user, url=ApiURL.SALE_ORDER_LIST_FOR_CASH_OUTFLOW).get()
-        resp2 = ServerAPI(user=request.user, url=ApiURL.QUOTATION_LIST_FOR_CASH_OUTFLOW).get()
-        resp3 = ServerAPI(user=request.user, url=ApiURL.PRODUCT_LIST).get()
-        resp4 = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_LIST).get()
-        resp5 = ServerAPI(user=request.user, url=ApiURL.ADVANCE_PAYMENT_LIST).get()
-        resp6 = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_LIST).get()
-        resp7 = ServerAPI(user=request.user, url=ApiURL.EMPLOYEE_LIST).get()
-        resp8 = ServerAPI(user=request.user, url=ApiURL.TAX_LIST).get()
-        resp9 = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE).get()
-        resp10 = ServerAPI(user=request.user, url=ApiURL.PAYMENT_COST_ITEMS_LIST).get()
-        return {'data':
-            {
-                'employee_current_id': request.user.employee_current_data.get('id', None),
-                'sale_order_list': resp1.result,
-                'quotation_list': resp2.result,
-                'product_list': resp3.result,
-                'account_list': resp4.result,
-                'advance_payment_list': resp5.result,
-                'opportunity_list': resp6.result,
-                'employee_list': resp7.result,
-                'tax_list': resp8.result,
-                'unit_of_measure': resp9.result,
-                'payment_cost_items_list': resp10.result
-            }
-        }, status.HTTP_200_OK
+        resp1 = ServerAPI(
+            user=request.user,
+            url=ApiURL.EMPLOYEE_DETAIL.push_id(request.user.employee_current_data.get('id', None))
+        ).get()
+        return {
+                   'data': {'employee_current': resp1.result}
+               }, status.HTTP_200_OK
 
 
 class PaymentListAPI(APIView):
@@ -87,34 +71,16 @@ class PaymentDetail(View):
         template='payment/payment_detail.html',
         breadcrumb='PAYMENT_DETAIL_PAGE',
         menu_active='menu_payment_detail',
+        perm_check=PermCheck(url=ApiURL.PAYMENT_DETAIL, method='GET', fill_key=['pk']),
     )
     def get(self, request, *args, **kwargs):
-        resp1 = ServerAPI(user=request.user, url=ApiURL.SALE_ORDER_LIST_FOR_CASH_OUTFLOW).get()
-        resp2 = ServerAPI(user=request.user, url=ApiURL.QUOTATION_LIST_FOR_CASH_OUTFLOW).get()
-        resp3 = ServerAPI(user=request.user, url=ApiURL.PRODUCT_LIST).get()
-        resp4 = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_LIST).get()
-        resp5 = ServerAPI(user=request.user, url=ApiURL.ADVANCE_PAYMENT_LIST).get()
-        resp6 = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_LIST).get()
-        resp7 = ServerAPI(user=request.user, url=ApiURL.EMPLOYEE_LIST).get()
-        resp8 = ServerAPI(user=request.user, url=ApiURL.TAX_LIST).get()
-        resp9 = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE).get()
-        resp10 = ServerAPI(user=request.user, url=ApiURL.PAYMENT_COST_ITEMS_LIST).get()
+        resp1 = ServerAPI(
+            user=request.user,
+            url=ApiURL.EMPLOYEE_DETAIL.push_id(request.user.employee_current_data.get('id', None))
+        ).get()
         return {
-            'data':
-                {
-                    'employee_current_id': request.user.employee_current_data.get('id', None),
-                    'sale_order_list': resp1.result,
-                    'quotation_list': resp2.result,
-                    'product_list': resp3.result,
-                    'account_list': resp4.result,
-                    'advance_payment_list': resp5.result,
-                    'opportunity_list': resp6.result,
-                    'employee_list': resp7.result,
-                    'tax_list': resp8.result,
-                    'unit_of_measure': resp9.result,
-                    'payment_cost_items_list': resp10.result
-                }
-        }, status.HTTP_200_OK
+                   'data': {'employee_current': resp1.result}
+               }, status.HTTP_200_OK
 
 
 class PaymentDetailAPI(APIView):
@@ -138,3 +104,37 @@ class PaymentCostItemsListAPI(APIView):
         data = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.PAYMENT_COST_ITEMS_LIST).get(data)
         return resp.auto_return(key_success='payment_cost_items_list')
+
+
+class PaymentConfigList(View):
+    @mask_view(
+        auth_require=True,
+        template='payment/payment_config.html',
+        menu_active='menu_payment_config',
+        breadcrumb='PAYMENT_CONFIG_PAGE',
+        perm_check=PermCheck(url=ApiURL.PAYMENT_CONFIG_LIST, method='GET'),
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
+class PaymentConfigListAPI(APIView):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.PAYMENT_CONFIG_LIST).get()
+        return resp.auto_return(key_success='payment_config_list')
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def post(self, request, *arg, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.PAYMENT_CONFIG_LIST).post(request.data)
+        if resp.state:
+            resp.result['message'] = SaleMsg.PAYMENT_CREATE
+            return resp.result, status.HTTP_200_OK
+        return resp.auto_return()

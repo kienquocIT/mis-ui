@@ -4,7 +4,6 @@
 {% block title %}{% trans 'Picking edit' %}{% endblock %}
 {% block cssHeader %}
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css">
-    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
     <style>
         input::-webkit-outer-spin-button,
         input::-webkit-inner-spin-button {
@@ -77,8 +76,8 @@
                                    disabled></i>
                                 <div class="dropdown-menu w-210p mt-2"></div>
                             </div>
-                            <select class="form-control dropdown-select_two" name="warehouse_id" id="inputWareHouse"
-                                    data-prefix="warehouse_list"
+                            <select class="form-control" name="warehouse_id" id="inputWareHouse"
+                                    data-keyResp="warehouse_list"
                                     data-url="{% url 'WareHouseListAPI' %}"
                                     data-link-detail="{% url 'WareHouseList' %}?show_detail=1"
                                     data-template-format="[{'name':'Title', 'value': 'title'},{'name':'Code', 'value': 'code'}]"
@@ -106,6 +105,21 @@
                     <textarea class="form-control" name="remarks" id="inputRemarks"></textarea>
                 </div>
             </div>
+            <div class="col-xl-3 col-lg-4 col-md-6 col-12 mb-3">
+                <div class="form-group">
+                    <label for="inputRemarks" class="form-label">{% trans 'Employee inherit' %}</label>
+                    <select class="form-select" name="employee_inherit"
+                            id="selectEmployeeInherit" {% if is_lead is False %}disabled{% endif %}>
+                        <option value=""></option>
+                        {% if data.lead %}
+                            <option value="{{ data.lead.id }}">{{ data.lead.full_name }}</option>
+                        {% endif %}
+                        {% for item in data.person_list %}
+                            <option value="{{ item.id }}">{{ item.full_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
         </div>
     </form>
     <div class="row mb-3">
@@ -127,7 +141,8 @@
                     <tr>
                         <th>#</th>
                         <th>{% trans 'Product' %}
-                            <i class="fas fa-info-circle icon-info"
+
+                            <i class="fas fa-info-circle icon-info tit_visible_tb-head"
                                data-bs-toggle="tooltip"
                                data-bs-placement="bottom"
                                title="{% trans 'Press row here to open detail page.' %}"></i>
@@ -141,8 +156,10 @@
                                 <span class="mr-4">
                                     {% trans 'Done' %}
                                 </span>
-                                <span class="mr-2">{% trans 'All' %}</span>
-                                <input type="checkbox" id="idxDoneAll"/>
+                                <div class="tit_visible_tb-head">
+                                    <span class="mr-2">{% trans 'All' %}</span>
+                                    <input type="checkbox" id="idxDoneAll"/>
+                                </div>
                             </div>
                         </th>
                     </tr>
@@ -160,12 +177,12 @@
     <input type="hidden" id="trans-factory"
            data-error-picked-quantity="{% trans 'Number is larger than Remain number' %}"
            data-error-warehouse="{% trans 'Warehouse is required!' %}"
-           data-error-done="{% trans 'Done column of line detail is empty!' %}"
            data-outstock="{% trans 'Product in Warehouse out of stock' %}"
            data-warehouse="{% trans 'Warehouse' %}"
-           data-stock="{% trans 'Available in Store place' %}"
+           data-stock="{% trans 'Stock' %}"
+           data-store="{% trans 'Store place' %}"
+           data-picking-area="{% trans 'Picking area' %}"
            data-view-detail="{% trans 'View detail' %}"
-           data-est_invalid="{% trans 'Estimate delivery date is required' %}"
     >
     <input type="hidden" id="url-factory"
            data-warehouse-stock="{% url 'WarehouseProductAPI' %}"
@@ -175,8 +192,6 @@
 {% block jsFooter %}
     <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
-    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
-    <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
     <script src="{% static 'sales/delivery/picking/detail.js' %}"></script>
 {% endblock %}
 

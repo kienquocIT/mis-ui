@@ -1,6 +1,7 @@
-'{% extends 'base.html' %}
+{% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
+{% block title %}{% trans 'Advance Payment Create' %}{% endblock %}
 {% block cssHeader %}
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/dropify/dist/css/dropify.css' %}" rel="stylesheet" type="text/css"/>
@@ -17,6 +18,9 @@
         #tab_line_detail_datatable input[disabled] {
             cursor: text;
         }
+        #tab_line_detail_datatable tbody .dropdown-toggle::after {
+            content: none;
+        }
     </style>
 {% endblock %}
 {% block jsHeader %}
@@ -32,16 +36,7 @@
     </button>
 {% endblock %}
 {% block pageContent %}
-    {{ data.data.sale_order_list | json_script:"sale_order_list" }}
-    {{ data.data.quotation_list | json_script:"quotation_list" }}
-    {{ data.data.product_list | json_script:"product_list" }}
-    {{ data.data.account_list | json_script:"account_list" }}
-    {{ data.data.advance_payment_list | json_script:"advance_payment_list" }}
-    {{ data.data.opportunity_list | json_script:"opportunity_list" }}
-    {{ data.data.employee_list | json_script:"employee_list" }}
-    {{ data.data.tax_list | json_script:"tax_list" }}
-    {{ data.data.unit_of_measure | json_script:"unit_of_measure" }}
-    {{ data.data.payment_cost_items_list | json_script:"payment_cost_items_list" }}
+    {{ data.data.employee_current | json_script:"employee_current" }}
     <form id="form-create-advance" data-method="POST" data-url-redirect="{% url "AdvancePaymentList" %}"
           data-url-list="{% url 'AdvancePaymentListAPI' %}"
           data-url-detail="{% url 'AdvancePaymentDetailAPI' '0' %}"
@@ -53,7 +48,7 @@
                     <div class="row form-group">
                         <label class="col-3 col-form-label required">{% trans "Name" %}</label>
                         <div class="col-9">
-                            <input class="form-control" name="title" required>
+                            <input class="form-control" id="title">
                         </div>
                     </div>
                     <div class="row form-group">
@@ -65,35 +60,38 @@
                                 <div class="row ml-3">
                                     <div class="row">
                                         <div class="form-check">
-                                            <input type="radio" id="radio-non-sale" name="sale_code_type" value="non-sale" class="col-2 form-check-input sale_code_type" checked>
-                                            <label class="form-check-label col-10" for="radio-non-sale">Non-sale</label>
+                                            <input type="radio" id="radio-non-sale" name="sale_code_type" value="2" class="col-2 form-check-input sale_code_type" checked>
+                                            <label class="form-check-label col-10" for="radio-non-sale">{% trans 'Non-sale' %}</label>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="form-check">
-                                            <input type="radio" id="radio-sale" name="sale_code_type" value="sale" class="col-2 form-check-input sale_code_type">
-                                            <label class="form-check-label col-10" for="radio-sale">Sale</label>
+                                            <input type="radio" id="radio-sale" name="sale_code_type" value="0" class="col-2 form-check-input sale_code_type">
+                                            <label class="form-check-label col-10" for="radio-sale">{% trans 'Sale' %}</label>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="form-check">
-                                            <input disabled type="radio" id="radio-purchase" name="sale_code_type" value="purchase" class="col-2 form-check-input sale_code_type">
-                                            <label class="form-check-label col-10" for="radio-purchase">Purchase</label>
+                                            <input disabled type="radio" id="radio-purchase" name="sale_code_type" value="1" class="col-2 form-check-input sale_code_type">
+                                            <label class="form-check-label col-10" for="radio-purchase">{% trans 'Purchase' %}</label>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="col-7">
-                            <select name="sale_code" id="sale-code-select-box"
-                                    class="select2" data-placeholder="Select Sale Code" disabled>
+                            <select id="sale-code-select-box" disabled
+                                    data-url-opp="{% url 'OpportunityListAPI' %}"
+                                    data-url-quotation="{% url 'QuotationListAPI' %}"
+                                    data-url-sale-order="{% url 'SaleOrderListAPI' %}"
+                                    class="select2" data-placeholder="Select Sale Code">
                             </select>
                         </div>
                     </div>
                     <div class="row form-group">
                         <label class="col-3 col-form-label required">{% trans "Type" %}</label>
                         <div class="col-9">
-                            <select class="form-select" name="advance_payment_type" id="type-select-box">
+                            <select class="form-select" id="type-select-box">
                                 <option selected></option>
                                 <option value="0">{% trans "To employee" %}</option>
                                 <option value="1">{% trans "To supplier" %}</option>
@@ -132,15 +130,15 @@
                                         </div>
                                     </span>
                                 </span>
-                                <select class="form-select" name="supplier" data-method="GET" id="supplier-select-box"
-                                        data-url="{% url 'AccountListAPI' %}" disabled></select>
+                                <select class="form-select" data-method="GET" id="supplier-select-box" disabled
+                                        data-url="{% url 'AccountListAPI' %}"></select>
                             </span>
                         </div>
                     </div>
                     <div class="row form-group">
                         <label class="col-3 col-form-label required" id="supplier-label">{% trans "Method" %}</label>
                         <div class="col-9">
-                            <select class="form-select" name="method">
+                            <select class="form-select" id="ap-method">
                                 <option selected></option>
                                 <option value="0">{% trans "Cash" %}</option>
                                 <option value="1">{% trans "Bank transfer" %}</option>
@@ -152,14 +150,20 @@
                     <div class="row form-group">
                         <label class="col-4 col-form-label required" id="supplier-label">{% trans "Created date" %}</label>
                         <div class="col-8">
-                            <input class="form-control" id="created_date_id" style="color: #6f6f6f" disabled>
+                            <input class="form-control" id="created_date_id" style="color: #6f6f6f">
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <label class="col-4 col-form-label required" id="supplier-label">{% trans "Return date" %}</label>
+                        <div class="col-8">
+                            <input class="form-control" id="return_date_id">
                         </div>
                     </div>
                     <div class="row form-group">
                         <label class="col-4 col-form-label required">{% trans "Creator" %}</label>
                         <div class="col-8">
                             <span class="input-affix-wrapper">
-                                <span class="input-prefix" id="creator-detail-span" hidden>
+                                <span class="input-prefix" id="creator-detail-span">
                                     <i class="fas fa-info-circle text-primary" aria-expanded="false" data-bs-toggle="dropdown"></i>
                                     <span role="menu" class="dropdown-menu ml-4 pl-3 pr-3 pt-3 pb-3" style="width: 25rem;">
                                         <div class="row">
@@ -183,10 +187,8 @@
                                         </div>
                                     </span>
                                 </span>
-                                <select class="form-select" style="color: black" name="creator_name" id="creator-select-box" data-method="GET"
-                                        data-url="{% url 'EmployeeListAPI' %}" disabled></select>
-                                <input id="data-init-advance-create-request-employee-id"
-                                        value="{{ data.data.employee_current_id }}" hidden>
+                                <select class="form-select" style="color: black" id="creator-select-box" data-method="GET"
+                                        data-url="{% url 'EmployeeListAPI' %}"></select>
                             </span>
                         </div>
                     </div>
@@ -218,22 +220,18 @@
                                         </div>
                                     </span>
                                 </span>
-                                <select class="form-select" name="beneficiary" id="beneficiary-select-box" data-method="GET"
+                                <select class="form-select" id="beneficiary-select-box" data-method="GET"
                                         data-url="{% url 'EmployeeListAPI' %}"></select>
                             </span>
-                        </div>
-                    </div>
-                    <div class="row form-group">
-                        <label class="col-4 col-form-label required" id="supplier-label">{% trans "Return date" %}</label>
-                        <div class="col-8">
-                            <input class="form-control" name="return_date" id="return_date_id" readonly>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="row collapse-arrow text-center">
-            <i class="bi bi-arrows-expand text-primary" data-bs-toggle="collapse" data-bs-target="#collapse-area" data-bs-placement="top" aria-expanded="true" aria-controls="collapse-area" id="advance-info-collapse"></i>
+        <div class="row mb-3">
+            <a class="btn btn-flush-secondary flush-soft-hover" data-bs-toggle="collapse" data-bs-target="#collapse-area" aria-expanded="false" aria-controls="collapse-area">
+                <i class="bi bi-chevron-bar-expand text-secondary"></i>
+            </a>
         </div>
         <div class="row ml-3 mr-3">
             <ul class="nav nav-light nav-tabs" id="tab-select-table">
@@ -263,20 +261,19 @@
             <div class="tab-pane fade show active mb-25" id="tab_line_detail">
                 <div class="row">
                     <table id="tab_line_detail_datatable" class="table nowrap w-100"
-                           data-url-uom-list="{% url 'UnitOfMeasureListAPI' %}"
-                           data-url-tax-list="{% url 'TaxListAPI' %}"
-                           data-url-unit-price-list="{% url 'ProductDetailAPI' '0' %}">
+                           data-url-expense-type-list="{% url 'ExpenseItemListAPI' %}"
+                           data-url-tax-list="{% url 'TaxListAPI' %}">
                         <thead>
                         <tr>
                             <th class="text-center" style="width: 2%"></th>
-                            <th class="required" style="width: 18%">{% trans 'Product items' %}</th>
-                            <th style="width: 12%">{% trans 'Type' %}</th>
+                            <th class="required" style="width: 18%">{% trans 'Expense name' %}</th>
+                            <th class="required" style="width: 12%">{% trans 'Type' %}</th>
                             <th class="required" style="width: 7%">{% trans 'UoM' %}</th>
                             <th class="required" style="width: 6%">{% trans 'Quantity' %}</th>
                             <th class="required" style="width: 14%">{% trans 'Unit price' %}</th>
                             <th style="width: 10%">{% trans 'Tax' %}</th>
-                            <th style="width: 14%">{% trans 'Subtotal price' %}</th>
-                            <th style="width: 14%">{% trans 'After tax subtotal' %}</th>
+                            <th class="required" style="width: 14%">{% trans 'Subtotal price' %}</th>
+                            <th class="required" style="width: 14%">{% trans 'After tax subtotal' %}</th>
                             <th style="width: 1%"></th>
                         </tr>
                         </thead>
@@ -285,15 +282,16 @@
                     </table>
                 </div>
                 <div class="row">
-                    <div class="col-2">
-                        <button type="button" class="btn btn-link btn-animated" id="btn-add-row-line-detail">
-                            <span><span class="icon">
-                                <span class="feather-icon"><i class="bi bi-plus-circle"></i></span></span>
+                    <div class="col-8">
+                        <button id="btn-add-row-line-detail" class="btn btn-soft-primary w-20" type="button" data-bs-toggle="modal" data-bs-target="#modal-shipping-address">
+                            <span>
                                 <span>{% trans "Add new row" %}</span>
+                                <span class="icon">
+                                    <i class="fas fa-plus-circle"></i>
+                                </span>
                             </span>
                         </button>
                     </div>
-                    <div class="col-6"></div>
                     <div class="col-4">
                         <div class="row">
                             <div class="col-12">
@@ -319,7 +317,7 @@
                                             <div class="row mt-5">
                                                 <div class="col-6">
                                                     <div class="form-check mt-2">
-                                                        <input type="checkbox" name="money_gave" class="form-check-input" id="money-gave">
+                                                        <input type="checkbox" class="form-check-input" id="money-gave">
                                                         <label class="text-primary">{% trans "Money gave/transferred" %}</label>
                                                     </div>
                                                 </div>
@@ -339,14 +337,15 @@
                     </div>
                 </div>
             </div>
-            <div class="tab-pane fade mb-25" id="tab_plan">
-                <div class="row" id="tab_plan_datatable_div">
+            <div class="tab-pane fade" id="tab_plan">
+                <div class="row">
                     <table id="tab_plan_datatable" hidden class="table nowrap w-100" data-method="GET"
                            data-url-payment-cost-items="{% url 'PaymentCostItemsListAPI' %}"
                            data-url-sale-order="{% url 'SaleOrderExpenseListAPI' %}"
                            data-url-quotation="{% url 'QuotationExpenseListAPI' %}">
                         <thead>
                         <tr>
+                            <th></th>
                             <th>{% trans 'Product items' %}</th>
                             <th>{% trans 'Tax' %}</th>
                             <th>{% trans 'Plan After Tax' %}</th>
@@ -371,7 +370,7 @@
             </div>
             <div class="tab-pane fade" id="tab_bank_info">
                 <div class="row">
-                    <div class="row" id="list-bank-account-information">
+                    <div class="row">
                         <div class="row">
                             <div class="col-12">
                                 <div id="notify-none-bank-account" class="alert alert-secondary" role="alert">
@@ -381,6 +380,7 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row" id="list-bank-account-information"></div>
                 </div>
             </div>
             <div class="tab-pane fade" id="tab_attachment">
@@ -390,84 +390,15 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Modal Bank Account -->
-            <div class="offcanvas offcanvas-end" id="modal-bank-account-information" tabindex="-1" role="dialog"
-                 aria-labelledby="exampleModalCenter" aria-hidden="true">
-                <div class="offcanvas-header mt-10 mb-3">
-                    <h5 id="offcanvasRightLabel">{% trans "Edit Bank Account" %}</h5>
-                    <button type="button" id="btn-close-edit-bank-account" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-                </div>
-                <div class="m-3">
-                    <div class="row" hidden>
-                        <div class="form-group">
-                            <input disabled class="form-control" id="bank-account-order">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group">
-                            <label class="label-field form-label required">{% trans "Country" %}</label>
-                            <select class="form-select" id="country-select-box-id" data-url="{% url "CountryListAPI" %}" data-method="GET">
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group">
-                            <label class="label-field form-label required">{% trans "Bank Name" %}</label>
-                            <input class="form-control" id="bank-name-id" type="text" placeholder="Ngan hang co phan Ngoai Thuong Viet Nam">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group">
-                            <label class="label-field form-label required">{% trans "Bank Code" %}</label>
-                            <input class="form-control" id="bank-code-id" type="text" oninput="this.value=this.value.toUpperCase()" placeholder="VCB">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group">
-                            <label class="label-field form-label required">{% trans "Account Name" %}</label>
-                            <input class="form-control" id="bank-account-name-id" type="text" placeholder="Cong ty phan mem MT Solutions">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group">
-                            <label class="label-field form-label required">{% trans "Account Number" %}</label>
-                            <input class="form-control" id="bank-account-number-id" type="text" placeholder="1234567890">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group">
-                            <label class="label-field form-label">{% trans "BIC/SWIFT Code" %}</label>
-                            <input class="form-control" id="bic-swift-code-id" type="text" oninput="this.value=this.value.toUpperCase()" placeholder="BFCEVNVXXXX">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-check ml-3">
-                            <input class="form-check-input" type="checkbox" value=""
-                                   id="make-default-shipping-address">
-                            <label class="form-check-label" for="make-default-shipping-address">
-                                {% trans "Make default address" %}
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="m-3 mt-5">
-                    <button type="button" class="btn btn-primary" id="save-changes-modal-bank-account">Update</button>
-                    <h6 class="mt-3 text-warning">
-                        <i class="bi bi-exclamation-triangle-fill"></i>
-                        &nbsp;Also update Bank infor in Account Detail.
-                    </h6>
-                </div>
-            </div>
-            <!-- End Modal Bank Account -->
         </div>
     </form>
 {% endblock %}
 {% block jsFooter %}
-    <script src="{% static "assets/js/advancepayment/advance_payment_create.js" %}"></script>
     <!-- Daterangepicker JS -->
     <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/dropify/dist/js/dropify.min.js' %}"></script>
     <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>
+    <script src="{% static "assets/js/advancepayment/advance_payment_common.js" %}"></script>
+    <script src="{% static "assets/js/advancepayment/advance_payment_create.js" %}"></script>
 {% endblock %}

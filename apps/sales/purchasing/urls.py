@@ -6,7 +6,8 @@ from apps.sales.purchasing.views import PurchaseOrderCreate, PurchaseRequestList
     PurchaseQuotationRequestListAPI, PurchaseQuotationRequestCreateFromPR, PurchaseQuotationRequestCreateManual, \
     PurchaseQuotationRequestDetail, PurchaseQuotationRequestDetailAPI, PurchaseQuotationList, PurchaseQuotationCreate, \
     PurchaseQuotationListAPI, PurchaseQuotationDetail, PurchaseQuotationDetailAPI, PurchaseRequestProductListAPI, \
-    PurchaseQuotationProductListAPI, PurchaseOrderUpdate
+    PurchaseQuotationProductListAPI, PurchaseOrderUpdate, PurchaseOrderProductListAPI, PurchaseOrderSaleListAPI, \
+    PurchaseRequestListForPQRAPI
 
 urlpatterns = [
     # purchase request
@@ -20,16 +21,19 @@ urlpatterns = [
         PurchaseRequestProductListAPI.as_view(),
         name='PurchaseRequestProductListAPI'
     ),
+    path('purchase-request/list-for-pqr/api', PurchaseRequestListForPQRAPI.as_view(), name='PurchaseRequestListForPQRAPI'),
 
     # purchase quotation request
     # purchase quotation
     # purchase order
     path('purchase-order/list', PurchaseOrderList.as_view(), name='PurchaseOrderList'),
     path('purchase-order/api/lists', PurchaseOrderListAPI.as_view(), name='PurchaseOrderListAPI'),
+    path('purchase-order/api/lists-sale', PurchaseOrderSaleListAPI.as_view(), name='PurchaseOrderSaleListAPI'),
     path('purchase-order/create', PurchaseOrderCreate.as_view(), name='PurchaseOrderCreate'),
     path('purchase-order/detail/<str:pk>', PurchaseOrderDetail.as_view(), name='PurchaseOrderDetail'),
     path('purchase-order/detail-api/<str:pk>', PurchaseOrderDetailAPI.as_view(), name='PurchaseOrderDetailAPI'),
     path('purchase-order/update/<str:pk>', PurchaseOrderUpdate.as_view(), name='PurchaseOrderUpdate'),
+    path('purchase-order-product/list', PurchaseOrderProductListAPI.as_view(), name='PurchaseOrderProductListAPI'),
 ] + [
     path(
         'purchase-quotation-request/lists',
@@ -52,12 +56,12 @@ urlpatterns = [
         name='PurchaseQuotationRequestCreateManual'
     ),
     path(
-        'purchase-quotation-request/detail/<str:pk>',
+        'purchase-quotation-request/<str:pk>',
         PurchaseQuotationRequestDetail.as_view(),
         name='PurchaseQuotationRequestDetail'
     ),
     path(
-        'purchase-quotation-request/detail/api/<str:pk>',
+        'purchase-quotation-request/api/<str:pk>',
         PurchaseQuotationRequestDetailAPI.as_view(),
         name='PurchaseQuotationRequestDetailAPI'
     ),
@@ -78,12 +82,12 @@ urlpatterns = [
         name='PurchaseQuotationCreate'
     ),
     path(
-        'purchase-quotation/detail/<str:pk>',
+        'purchase-quotation/<str:pk>',
         PurchaseQuotationDetail.as_view(),
         name='PurchaseQuotationDetail'
     ),
     path(
-        'purchase-quotation/detail/api/<str:pk>',
+        'purchase-quotation/api/<str:pk>',
         PurchaseQuotationDetailAPI.as_view(),
         name='PurchaseQuotationDetailAPI'
     ),

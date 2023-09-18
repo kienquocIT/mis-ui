@@ -1,4 +1,5 @@
 let dtb = $('#dtb-plan-app');
+let msgTransEle = $('#idBlockRangeMasterElement');
 
 function callAppList() {
     let frm = new SetupFormSubmit(dtb);
@@ -70,6 +71,12 @@ class HandlePlanApp {
                         if (applicationData && Array.isArray(applicationData)) {
                             let checkHtml = applicationData.map((item) => {
                                 let idxRandom = $x.cls.util.generateRandomString(32);
+                                let appDependOn = item?.['app_depend_on'] || [];
+                                let htmlDependOn = appDependOn.length > 0 ? `
+                                    <i 
+                                            class="fa-solid fa-circle-info ml-1 show-depend-on"
+                                    ></i>
+                                ` : '';
                                 return `
                                     <div class="col-md-3 col-sm-6 col-12"><div class="form-check">
                                         <input 
@@ -79,8 +86,10 @@ class HandlePlanApp {
                                             data-id="${item.id}"
                                             ${item?.['checked'] === true ? "checked" : ""}
                                             ${clsThis.isEdit ? "" : "disabled"}
+                                            data-app-depend-on="${appDependOn.join(',')}"
                                         />
                                         <label class="form-check-label wrap-text" for="${idxRandom}">${item.title}</label>
+                                        ${htmlDependOn}
                                     </div></div>`;
                             }).join("");
                             return `<div class="row">${checkHtml}</div>`;
@@ -102,9 +111,53 @@ class HandlePlanApp {
                     }
                 }
             ],
+            drawCallback: function (settings) {
+                $(clsThis.dtb).find('.app-my-checkbox').each(function () {
+                    let infoEle = $(this).parent().find('.show-depend-on');
+                    if (infoEle.data('bs-content') === '...') {
+                        let appDepend = $(this).attr('data-app-depend-on').split(",");
+                        let msg = HandlePlanApp.getDependOnTitle(appDepend);
+                        $(this).parent().find('.show-depend-on').attr('data-bs-content', msg.join(", ")).popover();
+                    }
+                })
+            },
             rowCallback: function (row, data, index) {
+                $(row).on('click', '.show-depend-on', function () {
+                    if (!$(this).data("bs.popover")) {
+                        let eleCheck = $(this).parent().find('.app-my-checkbox');
+                        let appDepend = $(eleCheck).attr('data-app-depend-on').split(",");
+                        let msg = HandlePlanApp.getDependOnTitle(appDepend);
+                        $(this).popover({
+                            content: msg.join(", "),
+                            title: msgTransEle.attr('data-msg-depend-app-show'),
+                            container: "#dtb-plan-app_wrapper",
+                            placement: "right",
+                        }).popover('show');
+                    } else {
+                        $(this).popover('toggle');
+                    }
+                })
+
                 $(row).on('change', '.app-my-checkbox', function () {
+                    console.log($(this));
+
+                    $(row).find('.show-depend-on').popover('hide');
                     let checkEle$ = $(this);
+                    let isChecked = checkEle$.prop('checked');
+
+                    if (isChecked === true) {
+                        checkEle$.attr('data-app-depend-on').split(",").map(
+                            (app_id) => {
+                                let eleTmp = $('.app-my-checkbox[data-id="' + app_id + '"]');
+                                if (eleTmp.prop('checked') === false) eleTmp.prop('checked', true).trigger('change');
+                            }
+                        );
+                    }
+                    else if (!HandlePlanApp.checkDependIsOn(checkEle$.data('id'))) {
+                        $(this).prop('checked', true);
+                        return false;
+                    }
+
                     $x.fn.updateDataRow($(row), function (clsThat, rowIdx, rowData) {
                         let dataId = checkEle$.attr('data-id');
                         let stateCheck = checkEle$.prop('checked');
@@ -139,6 +192,37 @@ class HandlePlanApp {
                 });
             }
         });
+    }
+
+    static getDependOnTitle(app_id_arr) {
+        let msg = [];
+        $('.app-my-checkbox:checked').filter(function () {
+            return app_id_arr.includes($(this).data('id'));
+        }).each(function () {
+            msg.push(
+                $(this).next('label').text()
+            )
+        });
+        return msg;
+    }
+
+    static checkDependIsOn(app_current_id) {
+        let state = true;
+        let msg = [];
+        $('.app-my-checkbox:checked').filter(function () {
+            return $(this).data('app-depend-on').includes(app_current_id)
+        }).each(function () {
+            state = false;
+            msg.push(
+                $(this).next('label').text()
+            )
+        });
+        if (state === false) {
+            $.fn.notifyB({
+                description: msgTransEle.data('msg-depend-app') + ' : ' + msg.join(", ")
+            }, 'failure');
+        }
+        return state;
     }
 
     // load step 2 | depends on step 1: loadData

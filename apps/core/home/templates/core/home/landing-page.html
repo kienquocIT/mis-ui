@@ -6,10 +6,10 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jampack - Admin CRM Dashboard Template</title>
+    <title>BFlow - Business Flow</title>
     <meta
             name="description"
-            content="A modern CRM Dashboard Template with reusable and flexible components for your SaaS web applications by hencework. Based on Bootstrap."
+            content="BFlow - Business Flow"
     />
 
     <!-- Favicon -->
@@ -20,7 +20,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
             rel="stylesheet"
-            href="//fonts.googleapis.com/css?family=Google+Sans:400,500|Roboto:400,400italic,500,500italic,700,700italic|Roboto+Mono:400,500,700&amp;display=swap"
+            href="//fonts.googleapis.com/css?family=Google+Sans:400,500,600|Roboto:400,400italic,500,500italic,700,700italic|Roboto+Mono:400,500,700&amp;display=swap"
     >
 
     <!-- CSS -->
@@ -32,6 +32,38 @@
     <link rel="stylesheet" href="{% static 'vendors/bootstrap/dist/css/bootstrap-grid.min.css' %}">
     <link rel="stylesheet" href="{% static 'vendors/bootstrap/dist/css/bootstrap-utilities.min.css' %}">
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
+
+    <link
+            rel="stylesheet"
+            href="{% static 'vendors/horizontal-vertical-timeline-plugin-jquery/dist/css/timeline.min.css' %}"
+    >
+
+    <style>
+        html, body {
+            color: rgb(32, 33, 36);
+            font: 400 16px/24px "Roboto", "Google Sans", "Roboto Mono", sans-serif;
+            -moz-osx-font-smoothing: grayscale;
+            -webkit-font-smoothing: antialiased;
+            height: 100%;
+            margin: 0;
+            -webkit-text-size-adjust: 100%;
+            -moz-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+            text-size-adjust: 100%
+        }
+
+        :root {
+            --bs-body-color: rgb(32, 33, 36);
+            --bs-body-font-family: "Roboto", "Google Sans", "Roboto Mono", sans-serif;
+            --bs-body-font-size: 16px;
+            --bs-body-font-weight: 400;
+            --bs-body-line-height: 24px;
+        }
+
+        .carousel-control-prev-icon, .carousel-control-next-icon {
+            background-image: none;
+        }
+    </style>
 </head>
 <body>
 <!-- Wrapper -->
@@ -45,6 +77,11 @@
                 <a class="navbar-brand d-xl-flex d-none" href="/">
                     <img
                             class="brand-img img-fluid" src="{% static 'assets/images/logo/logo-55x32.png' %}"
+                            alt="brand"
+                    />
+                    <img
+                            class="brand-img img-fluid" src="{% static 'assets/images/logo/text-logo.png' %}"
+                            width="70px"
                             alt="brand"
                     />
                 </a>
@@ -66,7 +103,7 @@
 							<span class="input-affix-wrapper input-search affix-border">
 								<input
                                         type="text" class="form-control  bg-transparent"
-                                        data-navbar-search-close="false" placeholder="Search..." aria-label="Search"
+                                        data-navbar-search-close="false" placeholder="Tìm kiếm..." aria-label="Search"
                                 >
 								<span class="input-suffix"><span>/</span>
 									<span class="btn-input-clear"><i class="bi bi-x-circle-fill"></i></span>
@@ -111,10 +148,16 @@
             <div class="nav-end-wrap">
                 <ul class="navbar-nav flex-row">
                     <li class="nav-item">
-                        <a href="{% url 'AuthLogin' %}" class="badge badge-primary px-3 py-2" style="margin-right: 10px!important; text-decoration: none;">{% trans 'Login' %}</a>
+                        <a
+                                href="{% url 'AuthLogin' %}" class="badge badge-primary px-3 py-2"
+                                style="margin-right: 10px!important; text-decoration: none;"
+                        >{% trans 'Login' %}</a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="badge badge-primary px-3 py-2" style="margin-right: 10px!important; text-decoration: none;">{% trans 'Registry' %}</a>
+                        <a
+                                href="#" class="badge badge-primary px-3 py-2"
+                                style="margin-right: 10px!important; text-decoration: none;"
+                        >{% trans 'Registry' %}</a>
                     </li>
                 </ul>
             </div>
@@ -128,9 +171,11 @@
         <!-- Brand -->
         <div class="menu-header d-xl-none">
 				<span>
-					<a class="navbar-brand" href="index.html">
-						<img class="brand-img img-fluid" src="dist/img/brand-sm.svg" alt="brand"/>
-						<img class="brand-img img-fluid" src="dist/img/Jampack.svg" alt="brand"/>
+					<a class="navbar-brand" href="/">
+						<img
+                                class="brand-img img-fluid" src="{% static 'assets/images/logo/logo-55x32.png' %}"
+                                alt="brand"
+                        />
 					</a>
 					<button class="btn btn-icon btn-rounded btn-flush-dark flush-soft-hover navbar-toggle">
 						<span class="icon">
@@ -159,623 +204,34 @@
             <div class="menu-content-wrap">
                 <div class="container-fluid menu-group">
                     <ul class="navbar-nav flex-column">
-                        <li class="nav-item active">
-                            <a class="nav-link" href="index.html">
-									<span class="nav-icon-wrap">
-										<span class="svg-icon">
-											<svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    class="icon icon-tabler icon-tabler-template" width="24" height="24"
-                                                    viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
-                                                    fill="none" stroke-linecap="round" stroke-linejoin="round"
-                                            >
-												<path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-												<rect x="4" y="4" width="16" height="4" rx="1"/>
-												<rect x="4" y="12" width="6" height="8" rx="1"/>
-												<line x1="14" y1="12" x2="20" y2="12"/>
-												<line x1="14" y1="16" x2="20" y2="16"/>
-												<line x1="14" y1="20" x2="20" y2="20"/>
-											</svg>
-										</span>
-									</span>
-                                <span class="nav-link-text">Dashboard</span>
-                                <span class="badge badge-sm badge-soft-pink ms-xl-2 ms-auto">Hot</span>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#intro">
+                                <span class="nav-link-text">{% trans 'Introduce' %}</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a
-                                    class="nav-link" href="javascript:void(0);" data-bs-toggle="collapse"
-                                    data-bs-target="#dash_chat"
-                            >
-									<span class="nav-icon-wrap">
-										<span class="svg-icon">
-											<svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    class="icon icon-tabler icon-tabler-message-dots" width="24"
-                                                    height="24" viewBox="0 0 24 24" stroke-width="2"
-                                                    stroke="currentColor" fill="none" stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                            >
-												<path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-												<path d="M4 21v-13a3 3 0 0 1 3 -3h10a3 3 0 0 1 3 3v6a3 3 0 0 1 -3 3h-9l-4 4"/>
-												<line x1="12" y1="11" x2="12" y2="11.01"/>
-												<line x1="8" y1="11" x2="8" y2="11.01"/>
-												<line x1="16" y1="11" x2="16" y2="11.01"/>
-											</svg>
-										</span>
-									</span>
-                                <span class="nav-link-text">Chat</span>
-                            </a>
-                            <ul id="dash_chat" class="nav flex-column collapse   nav-children">
-                                <li class="nav-item">
-                                    <ul class="nav flex-column">
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="chats.html"><span
-                                                    class="nav-link-text"
-                                            >Chats</span></a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="chats-group.html"><span class="nav-link-text">Groups</span></a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="chats-contact.html"><span class="nav-link-text">Contacts</span></a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a
-                                                    class="nav-link" href="javascript:void(0);"
-                                                    data-bs-toggle="collapse" data-bs-target="#dash_wizard"
-                                            >
-                                                <span class="nav-link-text">Chat Popup</span>
-                                            </a>
-                                            <ul id="dash_wizard" class="nav flex-column collapse   nav-children">
-                                                <li class="nav-item">
-                                                    <ul class="nav flex-column">
-                                                        <li class="nav-item">
-                                                            <a class="nav-link" href="chatpopup.html"><span
-                                                                    class="nav-link-text"
-                                                            >Direct Message</span></a>
-                                                        </li>
-                                                        <li class="nav-item">
-                                                            <a class="nav-link" href="chatbot.html"><span
-                                                                    class="nav-link-text"
-                                                            >Chatbot</span></a>
-                                                        </li>
-                                                    </ul>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="email.html">
-									<span class="nav-icon-wrap">
-										<span class="svg-icon">
-											<svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    class="icon icon-tabler icon-tabler-inbox" width="24" height="24"
-                                                    viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
-                                                    fill="none" stroke-linecap="round" stroke-linejoin="round"
-                                            >
-												<path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-												<rect x="4" y="4" width="16" height="16" rx="2"/>
-												<path d="M4 13h3l3 3h4l3 -3h3"/>
-											</svg>
-										</span>
-									</span>
-                                <span class="nav-link-text">Email</span>
+                            <a class="nav-link" href="#products">
+                                <span class="nav-link-text">{% trans 'Products' %}</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a
-                                    class="nav-link" href="javascript:void(0);" data-bs-toggle="collapse"
-                                    data-bs-target="#dash_scrumboard"
-                            >
-									<span class="nav-icon-wrap position-relative">
-										<span class="badge badge-sm badge-primary badge-sm badge-pill position-top-end-overflow">3</span>
-										<span class="svg-icon">
-											<svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    class="icon icon-tabler icon-tabler-layout-kanban" width="24"
-                                                    height="24" viewBox="0 0 24 24" stroke-width="2"
-                                                    stroke="currentColor" fill="none" stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                            >
-												<path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-												<line x1="4" y1="4" x2="10" y2="4"/>
-												<line x1="14" y1="4" x2="20" y2="4"/>
-												<rect x="4" y="8" width="6" height="12" rx="2"/>
-												<rect x="14" y="8" width="6" height="6" rx="2"/>
-											</svg>
-										</span>
-									</span>
-                                <span class="nav-link-text">Scrumboard</span>
-                            </a>
-                            <ul id="dash_scrumboard" class="nav flex-column collapse   nav-children">
-                                <li class="nav-item">
-                                    <ul class="nav flex-column">
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="projects-board.html"><span class="nav-link-text">All Boards</span></a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="kanban-board.html"><span class="nav-link-text">Project Kanban</span></a>
-                                        </li>
-
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="pipeline.html"><span class="nav-link-text">Pipeline Kanban</span></a>
-                                        </li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a
-                                    class="nav-link" href="javascript:void(0);" data-bs-toggle="collapse"
-                                    data-bs-target="#dash_contact"
-                            >
-									<span class="nav-icon-wrap">
-										<span class="svg-icon">
-											<svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    class="icon icon-tabler icon-tabler-notebook" width="24" height="24"
-                                                    viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
-                                                    fill="none" stroke-linecap="round" stroke-linejoin="round"
-                                            >
-												<path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-												<path d="M6 4h11a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-11a1 1 0 0 1 -1 -1v-14a1 1 0 0 1 1 -1m3 0v18"/>
-												<line x1="13" y1="8" x2="15" y2="8"/>
-												<line x1="13" y1="12" x2="15" y2="12"/>
-											</svg>
-										</span>
-									</span>
-                                <span class="nav-link-text">Contact</span>
-                            </a>
-                            <ul id="dash_contact" class="nav flex-column collapse   nav-children">
-                                <li class="nav-item">
-                                    <ul class="nav flex-column">
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="contact.html"><span class="nav-link-text">Contact List</span></a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="contact-cards.html"><span class="nav-link-text">Contact Cards</span></a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="edit-contact.html"><span class="nav-link-text">Edit Contact</span></a>
-                                        </li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a
-                                    class="nav-link" href="javascript:void(0);" data-bs-toggle="collapse"
-                                    data-bs-target="#dash_task"
-                            >
-									<span class="nav-icon-wrap">
-										<span class="svg-icon">
-											<svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    class="icon icon-tabler icon-tabler-list-details" width="24"
-                                                    height="24" viewBox="0 0 24 24" stroke-width="2"
-                                                    stroke="currentColor" fill="none" stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                            >
-												<path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-												<path d="M13 5h8"/>
-												<path d="M13 9h5"/>
-												<path d="M13 15h8"/>
-												<path d="M13 19h5"/>
-												<rect x="3" y="4" width="6" height="6" rx="1"/>
-												<rect x="3" y="14" width="6" height="6" rx="1"/>
-											</svg>
-										</span>
-									</span>
-                                <span class="nav-link-text position-relative">Todo
-										<span class="badge badge-danger badge-indicator position-absolute top-0 start-100"></span>
-									</span>
-                            </a>
-                            <ul id="dash_task" class="nav flex-column collapse   nav-children">
-                                <li class="nav-item">
-                                    <ul class="nav flex-column">
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="tasklist.html"><span class="nav-link-text">Tasklist</span></a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="gantt.html"><span
-                                                    class="nav-link-text"
-                                            >Gantt</span></a>
-                                        </li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a
-                                    class="nav-link" href="javascript:void(0);" data-bs-toggle="collapse"
-                                    data-bs-target="#dash_invoice"
-                            >
-									<span class="nav-icon-wrap">
-										<span class="svg-icon">
-											<svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    class="icon icon-tabler icon-tabler-file-digit" width="24"
-                                                    height="24" viewBox="0 0 24 24" stroke-width="2"
-                                                    stroke="currentColor" fill="none" stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                            >
-												<path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-												<path d="M14 3v4a1 1 0 0 0 1 1h4"/>
-												<rect x="9" y="12" width="3" height="5" rx="1"/>
-												<path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"/>
-												<path d="M15 12v5"/>
-											</svg>
-										</span>
-									</span>
-                                <span class="nav-link-text">Invoices</span>
-                            </a>
-                            <ul id="dash_invoice" class="nav flex-column collapse   nav-children">
-                                <li class="nav-item">
-                                    <ul class="nav flex-column">
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="invoice-list.html"><span class="nav-link-text">Invoice List</span></a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="invoice-templates.html"><span
-                                                    class="nav-link-text"
-                                            >Invoice Templates</span></a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="create-invoice.html"><span class="nav-link-text">Create Invoice</span></a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="invoice-preview.html"><span class="nav-link-text">Invoice Preview</span></a>
-                                        </li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="calendar.html">
-									<span class="nav-icon-wrap">
-										<span class="svg-icon">
-											<svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    class="icon icon-tabler icon-tabler-calendar-time" width="24"
-                                                    height="24" viewBox="0 0 24 24" stroke-width="2"
-                                                    stroke="currentColor" fill="none" stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                            >
-												<path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-												<path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4"/>
-												<circle cx="18" cy="18" r="4"/>
-												<path d="M15 3v4"/>
-												<path d="M7 3v4"/>
-												<path d="M3 11h16"/>
-												<path d="M18 16.496v1.504l1 1"/>
-											</svg>
-										</span>
-									</span>
-                                <span class="nav-link-text">Calendar</span>
+                            <a class="nav-link" href="#solutions">
+                                <span class="nav-link-text">{% trans 'Solutions' %}</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a
-                                    class="nav-link" href="javascript:void(0);" data-bs-toggle="collapse"
-                                    data-bs-target="#dash_file"
-                            >
-                                <span class="nav-icon-wrap"><span class="feather-icon"><i data-feather="file-text"></i></span></span>
-                                <span class="nav-link-text">File Manager</span>
-                            </a>
-                            <ul id="dash_file" class="nav flex-column collapse  nav-children">
-                                <li class="nav-item">
-                                    <ul class="nav flex-column">
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="file-manager-list.html"><span
-                                                    class="nav-link-text"
-                                            >List View</span></a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="file-manager-grid.html"><span
-                                                    class="nav-link-text"
-                                            >Grid View</span></a>
-                                        </li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="gallery.html">
-									<span class="nav-icon-wrap">
-										<span class="svg-icon">
-											<svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    class="icon icon-tabler icon-tabler-photo" width="24" height="24"
-                                                    viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
-                                                    fill="none" stroke-linecap="round" stroke-linejoin="round"
-                                            >
-												<path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-												<line x1="15" y1="8" x2="15.01" y2="8"/>
-												<rect x="4" y="4" width="16" height="16" rx="3"/>
-												<path d="M4 15l4 -4a3 5 0 0 1 3 0l5 5"/>
-												<path d="M14 14l1 -1a3 5 0 0 1 3 0l2 2"/>
-											</svg>
-										</span>
-									</span>
-                                <span class="nav-link-text">Gallery</span>
+                            <a class="nav-link" href="#customers">
+                                <span class="nav-link-text">{% trans 'Customers' %}</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a
-                                    class="nav-link" href="javascript:void(0);" data-bs-toggle="collapse"
-                                    data-bs-target="#dash_blog"
-                            >
-									<span class="nav-icon-wrap">
-										<span class="svg-icon">
-											<svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    class="icon icon-tabler icon-tabler-browser" width="24" height="24"
-                                                    viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
-                                                    fill="none" stroke-linecap="round" stroke-linejoin="round"
-                                            >
-												<path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-												<rect x="4" y="4" width="16" height="16" rx="1"/>
-												<line x1="4" y1="8" x2="20" y2="8"/>
-												<line x1="8" y1="4" x2="8" y2="8"/>
-											</svg>
-										</span>
-									</span>
-                                <span class="nav-link-text">Blog</span>
-                            </a>
-                            <ul id="dash_blog" class="nav flex-column collapse  nav-children">
-                                <li class="nav-item">
-                                    <ul class="nav flex-column">
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="posts.html"><span
-                                                    class="nav-link-text"
-                                            >Posts</span></a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="add-new-post.html"><span class="nav-link-text">Edit Posts</span></a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="post-detail.html"><span class="nav-link-text">Post Detail</span></a>
-                                        </li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a
-                                    class="nav-link" href="javascript:void(0);" data-bs-toggle="collapse"
-                                    data-bs-target="#dash_integ"
-                            >
-									<span class="nav-icon-wrap">
-										<span class="svg-icon">
-											<svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    class="icon icon-tabler icon-tabler-code" width="24" height="24"
-                                                    viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
-                                                    fill="none" stroke-linecap="round" stroke-linejoin="round"
-                                            >
-												<path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-												<polyline points="7 8 3 12 7 16"/>
-												<polyline points="17 8 21 12 17 16"/>
-												<line x1="14" y1="4" x2="10" y2="20"/>
-											</svg>
-										</span>
-									</span>
-                                <span class="nav-link-text">Integrations</span>
-                            </a>
-                            <ul id="dash_integ" class="nav flex-column collapse  nav-children">
-                                <li class="nav-item">
-                                    <ul class="nav flex-column">
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="all-apps.html"><span class="nav-link-text">All Apps</span></a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="integrations-detail.html"><span
-                                                    class="nav-link-text"
-                                            >App Detail</span></a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="integrations.html"><span class="nav-link-text">Integrations</span></a>
-                                        </li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a
-                                    class="nav-link" href="javascript:void(0);" data-bs-toggle="collapse"
-                                    data-bs-target="#dash_pages"
-                            >
-									<span class="nav-icon-wrap">
-										<span class="svg-icon">
-											<svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    class="icon icon-tabler icon-tabler-user-plus" width="24"
-                                                    height="24" viewBox="0 0 24 24" stroke-width="2"
-                                                    stroke="currentColor" fill="none" stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                            >
-												<path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-												<circle cx="9" cy="7" r="4"/>
-												<path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"/>
-												<path d="M16 11h6m-3 -3v6"/>
-											</svg>
-										</span>
-									</span>
-                                <span class="nav-link-text">Authentication</span>
-                            </a>
-                            <ul id="dash_pages" class="nav flex-column collapse  nav-children">
-                                <li class="nav-item">
-                                    <ul class="nav flex-column">
-                                        <li class="nav-item">
-                                            <a
-                                                    class="nav-link" href="javascript:void(0);"
-                                                    data-bs-toggle="collapse" data-bs-target="#dash_log"
-                                            >
-                                                <span class="nav-link-text">Log In</span>
-                                            </a>
-                                            <ul id="dash_log" class="nav flex-column collapse  nav-children">
-                                                <li class="nav-item">
-                                                    <ul class="nav flex-column">
-                                                        <li class="nav-item">
-                                                            <a class="nav-link" href="login.html"><span
-                                                                    class="nav-link-text"
-                                                            >Login</span></a>
-                                                        </li>
-                                                        <li class="nav-item">
-                                                            <a class="nav-link" href="login-simple.html"><span
-                                                                    class="nav-link-text"
-                                                            >Login Simple</span></a>
-                                                        </li>
-                                                        <li class="nav-item">
-                                                            <a class="nav-link" href="login-classic.html"><span
-                                                                    class="nav-link-text"
-                                                            >Login Classic</span></a>
-                                                        </li>
-                                                    </ul>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a
-                                                    class="nav-link" href="javascript:void(0);"
-                                                    data-bs-toggle="collapse" data-bs-target="#dash_sign"
-                                            >
-                                                <span class="nav-link-text">Sign Up</span>
-                                            </a>
-                                            <ul id="dash_sign" class="nav flex-column collapse  nav-children">
-                                                <li class="nav-item">
-                                                    <ul class="nav flex-column">
-                                                        <li class="nav-item">
-                                                            <a class="nav-link" href="signup.html"><span
-                                                                    class="nav-link-text"
-                                                            >Signup</span></a>
-                                                        </li>
-                                                        <li class="nav-item">
-                                                            <a class="nav-link" href="signup-simple.html"><span
-                                                                    class="nav-link-text"
-                                                            >Signup Simple</span></a>
-                                                        </li>
-                                                        <li class="nav-item">
-                                                            <a class="nav-link" href="signup-classic.html"><span
-                                                                    class="nav-link-text"
-                                                            >Signup Classic</span></a>
-                                                        </li>
-                                                    </ul>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="lock-screen.html"><span class="nav-link-text">Lock Screen</span></a>
-                                        </li>
-
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="reset-password.html"><span class="nav-link-text">Reset Password</span></a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="404.html"><span
-                                                    class="nav-link-text"
-                                            >Error 404</span></a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="503.html"><span
-                                                    class="nav-link-text"
-                                            >Error 503</span></a>
-                                        </li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a
-                                    class="nav-link" href="javascript:void(0);" data-bs-toggle="collapse"
-                                    data-bs-target="#dash_profile"
-                            >
-									<span class="nav-icon-wrap">
-										<span class="svg-icon">
-											<svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    class="icon icon-tabler icon-tabler-user-search" width="24"
-                                                    height="24" viewBox="0 0 24 24" stroke-width="2"
-                                                    stroke="currentColor" fill="none" stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                            >
-												<path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-												<circle cx="12" cy="7" r="4"/>
-												<path d="M6 21v-2a4 4 0 0 1 4 -4h1"/>
-												<circle cx="16.5" cy="17.5" r="2.5"/>
-												<path d="M18.5 19.5l2.5 2.5"/>
-											</svg>
-										</span>
-									</span>
-                                <span class="nav-link-text">Profile</span>
-                            </a>
-                            <ul id="dash_profile" class="nav flex-column collapse  nav-children">
-                                <li class="nav-item">
-                                    <ul class="nav flex-column">
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="profile.html">
-                                                <span class="nav-link-text">Profile</span>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="edit-profile.html">
-                                                <span class="nav-link-text">Edit Profile</span>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="account.html">
-                                                <span class="nav-link-text">Account</span>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="https://nubra-ui.hencework.com/" target="_blank">
-									<span class="nav-icon-wrap">
-										<span class="svg-icon">
-											<svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    class="icon icon-tabler icon-tabler-file-code-2" width="24"
-                                                    height="24" viewBox="0 0 24 24" stroke-width="2"
-                                                    stroke="currentColor" fill="none" stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                            >
-												<path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-												<path d="M10 12h-1v5h1"/>
-												<path d="M14 12h1v5h-1"/>
-												<path d="M14 3v4a1 1 0 0 0 1 1h4"/>
-												<path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"/>
-											</svg>
-										</span>
-									</span>
-                                <span class="nav-link-text">Documentation</span>
+                            <a class="nav-link" href="#about-us">
+                                <span class="nav-link-text">{% trans 'About Us' %}</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="https://nubra-ui.hencework.com/avatar.html" target="_blank">
-									<span class="nav-icon-wrap">
-										<span class="svg-icon">
-											<svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    class="icon icon-tabler icon-tabler-layout" width="24" height="24"
-                                                    viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
-                                                    fill="none" stroke-linecap="round" stroke-linejoin="round"
-                                            >
-												<path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-												<rect x="4" y="4" width="6" height="5" rx="2"/>
-												<rect x="4" y="13" width="6" height="7" rx="2"/>
-												<rect x="14" y="4" width="6" height="16" rx="2"/>
-											</svg>
-										</span>
-									</span>
-                                <span class="nav-link-text">Components</span>
+                            <a class="nav-link" href="#contact">
+                                <span class="nav-link-text">{% trans 'Contact' %}</span>
                             </a>
                         </li>
                     </ul>
@@ -790,45 +246,336 @@
     <!-- Main Content -->
     <div class="hk-pg-wrapper">
         <div class="container-xxl">
-            <!-- Page Header -->
-            <div class="hk-pg-header pg-header-wth-tab pt-7">
-                <div class="d-flex">
-                    <div class="d-flex flex-wrap justify-content-between flex-1">
-                        <div class="mb-lg-0 mb-2 me-8">
-                            <h1 class="pg-title">Welcome back</h1>
-                            <p>Create pages using a variety of features that leverage jampack components</p>
+            <!-- Page Body -->
+            <div class="hk-pg-body">
+                <div class="pb-10">
+                    <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+                        <ol class="carousel-indicators">
+                            <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active"></li>
+                            <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1"></li>
+                            <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2"></li>
+                        </ol>
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <img
+                                        class="d-block w-100" src="{% static 'assets/images/team/slide-6.jpg' %}"
+                                        alt="Số hóa và tự động"
+                                >
+                                <div class="carousel-caption d-none d-md-block">
+                                    <h5 class="text-white">Tự động hóa các quy trình</h5>
+                                    <p>Phần mềm quản trị doanh nghiệp có thể tự động hóa các quy trình thủ công, giúp tiết kiệm thời gian và chi phí cho doanh nghiệp.</p>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <img
+                                        class="d-block w-100" src="{% static 'assets/images/team/slide-4.jpg' %}"
+                                        alt="Third slide"
+                                >
+                                <div class="carousel-caption d-none d-md-block">
+                                    <h5 class="text-white">Thống nhất dữ liệu</h5>
+                                    <p>Phần mềm quản trị doanh nghiệp giúp thống nhất dữ liệu từ các phòng ban khác nhau trong doanh nghiệp. Điều này giúp doanh nghiệp dễ dàng truy cập và phân tích dữ liệu, từ đó đưa ra quyết định chính xác hơn.</p>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <img
+                                        class="d-block w-100" src="{% static 'assets/images/team/slide-3.jpg' %}"
+                                        alt="Second slide"
+                                >
+                                <div class="carousel-caption d-none d-md-block">
+                                    <h5 class="text-white">Báo cáo và phân tích dữ liệu</h5>
+                                    <p>Phần mềm quản trị doanh nghiệp cung cấp các công cụ báo cáo và phân tích dữ liệu mạnh mẽ. Điều này giúp doanh nghiệp hiểu rõ hơn về tình hình kinh doanh của mình, từ đó cải thiện hiệu quả hoạt động.</p>
+                                </div>
+                            </div>
                         </div>
-                        <div class="pg-header-action-wrap">
-                            <div class="input-group w-300p">
-									<span class="input-affix-wrapper">
-										<span class="input-prefix"><span class="feather-icon"><i
-                                                data-feather="calendar"
-                                        ></i></span></span>
-										<input
-                                                class="form-control form-wth-icon" name="datetimes"
-                                                value="Aug 18,2020 - Aug 19, 2020"
-                                        >
-									</span>
+                        <a
+                                class="carousel-control-prev" href="#carouselExampleIndicators" role="button"
+                                data-bs-slide="prev"
+                        >
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                        <a
+                                class="carousel-control-next" href="#carouselExampleIndicators" role="button"
+                                data-bs-slide="next"
+                        >
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </div>
+                </div>
+                <div id="intro" class="pb-10">
+                    <div class="title-lg title-wth-divider mb-5">
+                        <span>{% trans 'Introduce' %}</span>
+                    </div>
+                    <figure>
+                        <blockquote class="blockquote">
+                            <p class="lead">Trong thời đại số hóa ngày càng phát triển, việc quản lý và vận hành doanh
+                                nghiệp trở nên
+                                phức tạp hơn bao giờ hết. Để đảm bảo sự thành công và sự cạnh tranh, các tổ chức phải
+                                xem xét cách họ quản lý tài nguyên, dữ liệu và quy trình nội bộ. Đó là lý do tại sao
+                                phần mềm hỗ trợ vận hành doanh nghiệp trở thành một yếu tố quan trọng không thể thiếu
+                                trong môi trường kinh doanh ngày nay.</p>
+                            <p class="p-lg">
+                                <b>BFlow</b> là một giải pháp đột phá trong việc quản lý và tối ưu hóa hoạt động của
+                                doanh nghiệp. Được phát triển bởi các chuyên gia hàng đầu trong ngành công nghiệp phần
+                                mềm, Chúng tôi giúp doanh nghiệp của bạn nâng cao hiệu suất, giảm chi phí và tăng
+                                tính cạnh tranh.
+                            </p>
+                            <p class="p-lg">
+                                Hãy để chúng tôi là cầu nối giữa bạn và sự thành công của doanh nghiệp của bạn.
+                                Liên hệ với chúng tôi ngay hôm nay để biết thêm chi tiết và trải nghiệm sức mạnh của
+                                phần mềm này.
+                            </p>
+                        </blockquote>
+                        <figcaption class="blockquote-footer mt-3">
+                            <cite title="Source Title">BFlow Team</cite>
+                        </figcaption>
+                    </figure>
+                </div>
+                <div id="products" class="pb-10">
+                    <div class="title-lg title-wth-divider mb-5">
+                        <span>{% trans 'Products' %}</span>
+                    </div>
+                    <div class="card-group">
+                        <div class="card">
+                            <img
+                                    class="card-img-top" src="{% static 'assets/images/slide/management.jpg' %}"
+                                    alt="Card image cap"
+                            >
+                            <div class="card-body">
+                                <h4 class="card-title">Basic - Quản trị cơ cấu doanh nghiệp và quy trình làm việc</h4>
+                                <p class="card-text">
+                                    Sản phẩm này giúp doanh nghiệp quản lý cơ cấu tổ chức, quy trình làm việc và phân công nhiệm vụ. Điều này giúp doanh nghiệp hoạt động hiệu quả hơn, tránh tình trạng chồng chéo công việc và thiếu trách nhiệm.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <img
+                                    class="card-img-top" src="{% static 'assets/images/slide/sale.jpg' %}"
+                                    alt="Card image cap"
+                            >
+                            <div class="card-body">
+                                <h5 class="card-title">Sale - Hỗ trợ vận hành kho bãi và bán hàng</h5>
+                                <p class="card-text">
+                                    Sản phẩm này giúp doanh nghiệp quản lý kho bãi, hàng hóa, bán hàng và chăm sóc khách hàng. Điều này giúp doanh nghiệp nâng cao hiệu quả hoạt động kinh doanh, tăng doanh thu và lợi nhuận.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <img
+                                    class="card-img-top" src="{% static 'assets/images/slide/office.jpg' %}"
+                                    alt="Card image cap"
+                            >
+                            <div class="card-body">
+                                <h5 class="card-title">Office - Hỗ trợ các công cụ văn phòng</h5>
+                                <p class="card-text">
+                                    Sản phẩm này giúp doanh nghiệp sử dụng các công cụ văn phòng hiệu quả hơn, chẳng hạn như Microsoft Office, Google Docs, Slides, Sheets. Điều này giúp doanh nghiệp tiết kiệm thời gian và chi phí, nâng cao hiệu quả làm việc.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="solutions" class="pb-10">
+                    <div class="title-lg title-wth-divider mb-5">
+                        <span>{% trans 'Solutions' %}</span>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-lg-6">
+                            <div class="card">
+                                <img
+                                        class="card-img-top"
+                                        src="{% static 'assets/images/slide/cloud-software.jpg' %}"
+                                        alt="Card image cap"
+                                >
+                                <div class="card-body">
+                                    <h3 class="card-title">Cloud</h3>
+                                    <h5 class="card-subtitle mb-2 text-muted">Nền tảng đám mây</h5>
+                                    <div class="separator-full"></div>
+                                    <p class="card-text">
+                                    <h6>Khả năng Truy Cập Mọi Lúc, Mọi Nơi</h6>
+                                    <small class="text-muted">Bạn có thể làm việc từ xa và truy cập dữ liệu quan
+                                        trọng từ bất kỳ thiết bị nào có kết nối internet.</small>
+                                    </p>
+                                    <p class="card-text">
+                                    <h6>Tối Ưu Hóa Tài Nguyên</h6>
+                                    <small class="text-muted">Giảm thiểu tình trạng lãng phí tài nguyên với việc sử
+                                        dụng các tính năng đám mây linh hoạt, đảm bảo bạn trả tiền chỉ cho những gì
+                                        bạn thực sự sử dụng.</small>
+                                    </p>
+                                    <p class="card-text">
+                                    <h6>Bảo Mật Và Bảo Đảm Dữ Liệu</h6>
+                                    <small class="text-muted">Chúng tôi cam kết đảm bảo an toàn cho dữ liệu của bạn
+                                        thông qua các biện pháp bảo mật tiên tiến và dịch vụ sao lưu định
+                                        kỳ.</small>
+                                    </p>
+                                    <div class="separator-full"></div>
+                                    <a href="#" class="btn btn-primary">Trải nghiệm</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6">
+                            <div class="card">
+                                <img
+                                        class="card-img-top"
+                                        src="{% static 'assets/images/slide/on-premise-software.jpg' %}"
+                                        alt="Card image cap"
+                                >
+                                <div class="card-body">
+                                    <h3 class="card-title">On-premise</h3>
+                                    <h5 class="card-subtitle mb-2 text-muted">Triển khai nội bộ</h5>
+                                    <div class="separator-full"></div>
+                                    <p class="card-text">
+                                    <h6>Kiểm Soát Toàn Diện</h6>
+                                    <small class="text-muted">
+                                        Bạn có quyền kiểm soát hoàn toàn việc triển khai và quản lý hệ thống tại chỗ,
+                                        đảm bảo tuân thủ các quy tắc và quy định nội bộ.
+                                    </small>
+                                    </p>
+                                    <p class="card-text">
+                                    <h6>Tùy Chỉnh Tối Đa</h6>
+                                    <small class="text-muted">
+                                        Tận dụng tính linh hoạt của sản phẩm để tùy chỉnh nó theo nhu cầu cụ thể của bạn
+                                        và tích hợp hoàn hảo với hệ thống hiện có.
+                                    </small>
+                                    </p>
+                                    <p class="card-text">
+                                    <h6>Bảo Mật Dữ Liệu</h6>
+                                    <small class="text-muted">
+                                        Với việc dữ liệu được lưu trữ trên cơ sở dữ liệu nội bộ, bạn có thể áp dụng các
+                                        biện pháp bảo mật nghiêm ngặt và giữ an toàn cho thông tin quan trọng của bạn.
+                                    </small>
+                                    </p>
+                                    <div class="separator-full"></div>
+                                    <a href="#" class="btn btn-primary">Trải nghiệm</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="customers" class="pb-10">
+                    <div class="title-lg title-wth-divider mb-5">
+                        <span>{% trans 'Customers' %}</span>
+                    </div>
+                    <div id="owl_demo_2" class="owl-carousel owl-theme">
+                        <div class="item"><img src="{% static 'assets/images/customers/customer-1.jpg' %}" alt="Owl Image">
+                        </div>
+                        <div class="item"><img src="{% static 'assets/images/customers/customer-2.jpg' %}" alt="Owl Image">
+                        </div>
+                        <div class="item"><img src="{% static 'assets/images/customers/customer-3.jpg' %}" alt="Owl Image">
+                        </div>
+                        <div class="item"><img src="{% static 'assets/images/customers/customer-7.jpg' %}" alt="Owl Image">
+                        </div>
+                        <div class="item"><img src="{% static 'assets/images/customers/customer-5.jpg' %}" alt="Owl Image">
+                        </div>
+                        <div class="item"><img src="{% static 'assets/images/customers/customer-8.jpg' %}" alt="Owl Image">
+                        </div>
+                    </div>
+                </div>
+                <div id="about-us" class="pb-10">
+                    <div class="title-lg title-wth-divider mb-5">
+                        <span>{% trans 'About Us' %}</span>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-md-6 d-flex justify-content-center align-items-center mb-7">
+                            <img
+                                    src="{% static 'assets/images/team/team-work.jpg' %}"
+                                    style="object-fit: cover; max-height: 500px" alt=""
+                            >
+                        </div>
+                        <div class="col-12 col-md-6 mb-7">
+                            <h5 class="text-primary mb-5">Câu chuyện của chúng tôi</h5>
+                            <p>
+                                Câu chuyện của chúng tôi bắt đầu từ một ý tưởng đơn giản nhưng tận tâm: tạo ra một phần
+                                mềm quản trị doanh nghiệp giúp các doanh nhân và nhà quản lý thể hiện tiềm năng tối đa
+                                của họ. Tại ngọn đồi nhỏ này, một nhóm những cá nhân đam mê công nghệ và kinh doanh đã
+                                hợp tác nhau để xây dựng nên một ứng dụng mạnh mẽ, đáp ứng mọi nhu cầu của doanh nghiệp.
+                            </p>
+                            <p>
+                                Không gì có thể ngăn cản chúng tôi. Chúng tôi đã đánh bại hàng loạt khó khăn và thử
+                                thách, từ việc tìm nguồn tài trợ ban đầu đến việc đoàn kết phát triển sản phẩm. Chúng
+                                tôi đã luôn lắng nghe ý kiến phản hồi của khách hàng và liên tục cải tiến phần mềm của
+                                mình.
+                            </p>
+                            <p>
+                                Câu chuyện của chúng tôi không chỉ là về việc xây dựng một sản phẩm xuất sắc, mà còn là
+                                về việc xây dựng một cộng đồng đoanh nghiệp mạnh mẽ. Chúng tôi tự hào vì đã đồng hành
+                                cùng hàng ngàn doanh nghiệp trên khắp thế giới, giúp họ tăng cường hiệu suất và phát
+                                triển bền vững.
+                            </p>
+                            <p>
+                                Và câu chuyện của chúng tôi vẫn tiếp tục, với sự cam kết không ngừng nghỉ để đổi mới và
+                                phục vụ tốt hơn mỗi ngày. Chúng tôi hy vọng rằng phần mềm quản trị doanh nghiệp của
+                                chúng tôi sẽ luôn là người bạn đồng hành đáng tin cậy cho những người xây dựng và phát
+                                triển doanh nghiệp của mình.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="timeline">
+                            <div class="timeline__wrap">
+                                <div class="timeline__items">
+                                    <div class="timeline__item">
+                                        <div class="timeline__content">
+                                            <h2>09-2022</h2>
+                                            <h6>Thành lập công ty</h6>
+                                            <p>Hoàn thành tất cả các thủ tục pháp lý thành lập công ty.</p>
+                                            <p>Xây dựng đội ngũ phát triển sản phẩm.</p>
+                                        </div>
+                                    </div>
+                                    <div class="timeline__item">
+                                        <div class="timeline__content">
+                                            <h2>10-2023</h2>
+                                            <h6>Phát hành sản phẩm đầu tiên</h6>
+                                            <p>Phát hành phần mềm hỗ trợ việc kinh doanh của doanh nghiệp trên nền tảng
+                                                SAAS.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="contact">
+                    <div class="title-lg title-wth-divider mb-5">
+                        <span>{% trans 'Contact' %}</span>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-md-4">
+                            <ul>
+                                <li>
+                                    <b>Địa chỉ:</b>
+                                    <p>20 Đường số 22, Bình Hưng, Bình Chánh, Thành phố Hồ Chí Minh 70000, Việt Nam</p>
+                                </li>
+                                <li>
+                                    <b>Email:</b>
+                                    <p>support@mtsolution.com.vn</p>
+                                </li>
+                                <li>
+                                    <b>Số điện thoại:</b>
+                                    <p>**Đang cập nhật**</p>
+                                </li>
+                                <li>
+                                    <small class="text-muted text-warning">Bạn có thể để lại liên lạc và lời nhắn tại phần chat trong màng hình này. Đội hỗ trợ của chúng tôi sẽ nhanh chóng kết nối với bạn.</small>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-12 col-md-8">
+                            <div class="d-flex justify-content-center align-items-center">
+                                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15679.953959206854!2d106.68808435!3d10.735370199999998!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752fb753339b89%3A0xa83349079360b12b!2zMjAgxJDGsOG7nW5nIHPhu5EgMjIsIELDrG5oIEjGsG5nLCBCw6xuaCBDaMOhbmgsIFRow6BuaCBwaOG7kSBI4buTIENow60gTWluaCA3MDAwMCwgVmnhu4d0IE5hbQ!5e0!3m2!1svi!2s!4v1693989009427!5m2!1svi!2s" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- /Page Header -->
-
-            <!-- Page Body -->
-            <div class="hk-pg-body">
-
-            </div>
             <!-- /Page Body -->
         </div>
 
-       <!-- Page Footer -->
+        <!-- Page Footer -->
         <div class="hk-footer">
             <footer class="container-xxl footer">
                 <div class="row">
                     <div class="col-xl-8">
-                        <p class="footer-text"><span class="copy-text">Jampack © 2022 All rights reserved.</span> <a
+                        <p class="footer-text"><span class="copy-text">BFlow © 2023 All rights reserved.</span> <a
                                 href="#" class="" target="_blank"
                         >Privacy Policy</a><span class="footer-link-sep">|</span><a href="#" class="" target="_blank">T&C</a><span
                                 class="footer-link-sep"
@@ -873,6 +620,7 @@
 <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
 <!-- // Select2 JS -->
 
+<script src="{% static 'vendors/owl.carousel/dist/owl.carousel.min.js' %}"></script>
 <!-- Init JS -->
 <script src="{% static 'assets/js/init.js' %}"></script>
 <script src="{% static 'assets/js/cdn-clone/select2/init-select2.js' %}"></script>
@@ -889,10 +637,34 @@
         s1.setAttribute('crossorigin', '*');
         s0.parentNode.insertBefore(s1, s0);
     })();
+</script>
+<script>
+    $('#owl_demo_2').owlCarousel({
+        margin: 20,
+        autoplay: true,
+        responsiveClass: true,
+        responsive: {
+            0: {
+                items: 1
+            },
+            480: {
+                items: 2
+            },
+            800: {
+                items: 4
+            },
 
+        }
+    });
+</script>
 
-    {#$('select#sl1, select#sl2').initSelect2();#}
-    $('select#sl3').initSelect2();
+<script src="{% static 'vendors/horizontal-vertical-timeline-plugin-jquery/dist/js/timeline.min.js' %}"></script>
+<script>
+    $('.timeline').timeline({
+        horizontalStartPosition: 'top',
+        mode: 'horizontal',
+        visibleItems: 3,
+    });
 </script>
 </body>
 </html>

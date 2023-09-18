@@ -3,7 +3,7 @@ $(function () {
         const id = $.fn.getPkDetail()
         const frmDetail = $('#frmDetail');
 
-        loadDataTableProductPageDetail([], 'detail');
+        loadDataTableCost([], true);
         loadDetail(id, frmDetail);
 
         SetupFormSubmit.validate(

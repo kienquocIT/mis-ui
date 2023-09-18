@@ -8,8 +8,6 @@
             rel="stylesheet"
             type="text/css"
     />
-    <link href="{% static 'assets/css/masterdata/saledata/accounts/contact_create.css' %}" rel="stylesheet"
-          type="text/css"/>
     <link href="{% static 'vendors/monthpicker/monthpicker.css' %}" rel="stylesheet">
 {% endblock %}
 {% block jsHeader %}
@@ -103,38 +101,6 @@
                                     data-method="GET"
                                     data-url="{% url "IndustryListAPI" %}">
                             </select>
-                        </div>
-                    </div>
-                    <div class="dropdown-divider mt-5 mb-5"></div>
-                    <div class="mb-3">
-                        <h5 class="text-primary">{% trans 'Account owner information' %}</h5>
-                    </div>
-                    <div class="row">
-                        <div class="form-group col-12">
-                            <label class="label-field form-label">{% trans "Account Owner" %}</label>
-                            <select id="select-box-contact" class="form-select"
-                                    data-method="GET"
-                                    data-url="{% url "ContactListNotMapAccountAPI" %}"
-                                    data-url-detail="{% url "ContactDetailAPI" pk=0 %}">
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group col-12">
-                            <label class="label-field form-label">{% trans "Job Title" %}</label>
-                            <input disabled type="text" class="form-control input-cannot-edit" id="job_title">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group col-12">
-                            <label class="label-field form-label" for="owner-email-id">{% trans "Email" %}</label>
-                            <input disabled type="text" class="form-control input-cannot-edit" id="owner-email">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group col-12">
-                            <label class="label-field form-label" for="owner-mobile-id">{% trans "Mobile" %}</label>
-                            <input disabled type="text" class="form-control input-cannot-edit" id="owner-mobile">
                         </div>
                     </div>
                 </div>
@@ -314,19 +280,24 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="tab-pane fade show" id="tab_contacts">
                             <div class="row">
                                 <div id="section-contact-mapped-list" class="contact-mapped-list">
-                                    <h6 class="text-muted">{% trans 'Contacts Mapped' %}</h6>
                                     <table id="datatable_contact_list" class="table nowrap mt-3 w-100"
                                            data-method="GET">
                                         <thead>
-                                        <th>{% trans "Owner" %}</th>
-                                        <th>{% trans "Name" %}</th>
-                                        <th>{% trans "Job title" %}</th>
-                                        <th>{% trans "Phone number" %}</th>
-                                        <th>{% trans "Email address" %}</th>
+                                        <th class="w-15">
+                                            {% trans "Account Owner" %}
+                                            <i class="fas fa-info-circle icon-info"
+                                               data-bs-toggle="tooltip"
+                                               data-bs-placement="bottom"
+                                               title="{% trans 'Check here to select Account Owner.' %}">
+                                            </i>
+                                        </th>
+                                        <th class="w-35">{% trans "Name" %}</th>
+                                        <th class="w-15">{% trans "Job title" %}</th>
+                                        <th class="w-15">{% trans "Phone number" %}</th>
+                                        <th class="w-20">{% trans "Email address" %}</th>
                                         </thead>
                                         <tbody></tbody>
                                     </table>
@@ -345,7 +316,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="tab-pane fade show" id="tab_payment_terms">
                             <div class="row mt-6">
                                 <div class="col-6 mb-5" id="role-for-customer" hidden>

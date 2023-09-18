@@ -47,14 +47,24 @@ $(document).ready(function () {
                         data = moment(data, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY hh:mm A')
                     return data ? data : "--";
                 },
-            }, {
+            },
+            {
                 data: 'actual_delivery_date',
                 render: (data, type, row) => {
                     if (data)
                         data = moment(data, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY hh:mm A')
                     return data ? data : "--";
                 },
-            }, {
+            },
+            {
+                data: 'employee_inherit',
+                render: (row, type, data) => {
+                    let time = '--';
+                    if (Object.keys(row).length > 0) time = `${row.full_name}`
+                    return time
+                },
+            },
+            {
                 data: 'state',
                 class: 'text-center',
                 render: (data, type, row, meta) => {
@@ -118,7 +128,8 @@ $(document).ready(function () {
                             + `</div>`
                         return title;
                     },
-                }, {
+                },
+                {
                     data: 'code',
                     render: (row, type, data) => {
                         return row;
@@ -162,6 +173,7 @@ $(document).ready(function () {
                 },
                 (errs) => {
                     WindowControl.hideLoading();
+                    $.fn.notifyB({"description": errs?.data?.errors, "timeout": 3500}, 'failure')
                 }
             )
         }

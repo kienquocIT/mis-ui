@@ -75,7 +75,11 @@ INSTALLED_APPS = \
         'apps.sales.delivery',
         'apps.sales.task',
         'apps.sales.purchasing',
+        'apps.sales.inventory',
+    ] + [  # e-office Application
+        'apps.eoffice.leave',
     ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

@@ -18,8 +18,11 @@ $(function () {
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
+                    $x.fn.renderCodeBreadcrumb(data);
                     $.fn.compareStatusShowPageAction(data);
                     POLoadDataHandle.loadDetailPage(data);
+
+                    WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
                 }
             }
         )

@@ -161,3 +161,13 @@ class ApplicationPropertyOpportunityListAPI(APIView):
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(request=request, user=request.user, url=ApiURL.APPLICATION_PROPERTY_OPPORTUNITY_LIST).get()
         return resp.auto_return(key_success='property_opportunity_list')
+
+
+class ApplicationForOpportunityPermitListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.APPLICATION_OPPORTUNITY_PERMISSION).get()
+        return resp.auto_return(key_success='applications')

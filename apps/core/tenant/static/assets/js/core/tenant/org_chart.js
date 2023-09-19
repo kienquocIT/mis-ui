@@ -127,6 +127,19 @@ $(function () {
                     'exportFilename': 'MyOrgChart',
                     'createNode': function ($node, data) {
                         $($node).addClass('data-type-' + data['typeData']);
+                        if (data?.['group_level']){
+                            $($node).find('.title').append(`<span class="badge badge-light badge-sm ml-2" style="font-size: unset;">Lv.${data['group_level']}</span>`)
+                        }
+                        let levelOffset = data?.['levelOffset'] || -1;
+                        if (Number.isInteger(levelOffset) && levelOffset >= 0) {
+                            $node.css({
+                                'margin-top': (levelOffset * 70) + 'px',
+                                '--top': (-11 - levelOffset * 70) + 'px',
+                                '--height': (9 + levelOffset * 70) + 'px',
+                                '--top-cross-point': (-13 - levelOffset * 70) + 'px',
+                                '--height-cross-point': (11 + levelOffset * 70) + 'px'
+                            });
+                        }
                     }
                 });
             },

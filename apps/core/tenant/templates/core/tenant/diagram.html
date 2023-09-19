@@ -2,11 +2,8 @@
 {% load i18n %}
 {% load static %}
 
-{% block jsHeader %}
+{% block cssHeader %}
     <link rel="stylesheet" href="{% static 'assets/plugins/orgchart/orgchart.css' %}"/>
-    <script src="{% static 'vendors/es6-promise@4/es6-promise.min.js' %}"></script>
-    <script src="{% static 'vendors/es6-promise@4/es6-promise.auto.min.js' %}"></script>
-    <script src="{% static 'vendors/html2canvas_1.4.1/html2canvas.min.js' %}"></script>
     <style>
         #chart-container {
             position: relative;
@@ -48,6 +45,12 @@
             white-space: normal !important;
         }
     </style>
+{% endblock %}
+
+{% block jsHeader %}
+    <script src="{% static 'vendors/es6-promise_4/es6-promise.min.js' %}"></script>
+    <script src="{% static 'vendors/es6-promise_4/es6-promise.auto.min.js' %}"></script>
+    <script src="{% static 'vendors/html2canvas_1.4.1/html2canvas.min.js' %}"></script>
 {% endblock %}
 
 {% block pageContent %}

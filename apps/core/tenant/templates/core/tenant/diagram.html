@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block cssHeader %}
+    <link rel="stylesheet" href="{% static 'assets/plugins/orgchart/orgchart.css' %}"/>
+    <style>
+        #chart-container {
+            position: relative;
+            height: 80%;
+            border: 1px solid #aaa;
+            margin: 0.5rem;
+            overflow: auto;
+            text-align: center;
+        }
+
+        {# Customize Css #}
+        .orgchart {
+            background-image: unset;
+            background-size: unset; /* background square size */
+        }
+
+        .node .title {
+            margin-bottom: 0 !important;
+        }
+
+        .orgchart .node .title .parentNodeSymbol {
+            padding-right: 5px;
+        }
+
+        .orgchart .node .title {
+            width: 150px;
+            padding: 5px;
+            word-break: normal !important;
+            white-space: normal !important;
+            min-height: 20px;
+            height: unset;
+        }
+
+        .orgchart .node .content {
+            width: 150px;
+            min-height: 20px;
+            height: unset;
+            word-break: normal !important;
+            white-space: normal !important;
+        }
+
+        {# Customize Color by Type Data #}
+        {#// Tenant #}
+        .orgchart .node.data-type-0 .title {
+            background-color: #38C9A5;
+        }
+
+        .orgchart .node.data-type-0 .content {
+            border-color: #38C9A5;
+        }
+
+        {#// Company #}
+        .orgchart .node.data-type-1 .title {
+            background-color: #E4D02E;
+        }
+
+        .orgchart .node.data-type-1 .content {
+            border-color: #E4D02E;
+        }
+
+        {#// Group #}
+        .orgchart .node.data-type-2 .title {
+            background-color: #88B064;
+        }
+
+        .orgchart .node.data-type-2 .content {
+            border-color: #88B064;
+        }
+
+        {#// Employee #}
+        .orgchart .node.data-type-3 .title {
+            background-color: #C9425B;
+        }
+
+        .orgchart .node.data-type-3 .content {
+            border-color: #C9425B;
+        }
+
+    </style>
+{% endblock %}
+
+{% block jsHeader %}
+    <script src="{% static 'vendors/es6-promise_4/es6-promise.min.js' %}"></script>
+    <script src="{% static 'vendors/es6-promise_4/es6-promise.auto.min.js' %}"></script>
+    <script src="{% static 'vendors/html2canvas_1.4.1/html2canvas.min.js' %}"></script>
+{% endblock %}
+
+{% block pageContent %}
+    <div class="d-flex">
+        <div class="color-wrap w-200p p-2 mb-1 mr-1" style="background-color: #38C9A5;">
+            <div class="d-flex justify-content-between">
+                <span class="text-white color-code fs-7">{% trans 'Organization' %} -- {% trans 'Representative' %}</span>
+            </div>
+        </div>
+        <div class="color-wrap w-200p p-2 mb-1 mr-1" style="background-color: #E4D02E;">
+            <div class="d-flex justify-content-between">
+                <span class="text-white color-code fs-7">{% trans 'Company' %} -- {% trans 'Representative' %}</span>
+            </div>
+        </div>
+        <div class="color-wrap w-200p p-2 mb-1 mr-1" style="background-color: #88B064;">
+            <div class="d-flex justify-content-between">
+                <span class="text-white color-code fs-7">{% trans 'Department' %} -- {% trans 'Manager Person' %}</span>
+            </div>
+        </div>
+        <div class="color-wrap w-200p p-2 mb-1 mr-1" style="background-color: #C9425B;">
+            <div class="d-flex justify-content-between">
+                <span class="text-white color-code fs-7">{% trans 'Employee' %} -- {% trans 'Belong to Role' %}</span>
+            </div>
+        </div>
+    </div>
+    <div id="chart-container" data-url="{% url 'TenantDiagramAPI' %}"></div>
+
+    <span class="hidden" id="msgPrivate" data-msg-export-to-image="{% trans 'Export To Image' %}"></span>
+{% endblock %}
+
+{% block jsFooter %}
+    <script src="{% static 'vendors/jquery-mockjax_2.6.0/jquery.mockjax.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/orgchart/orgchart.js' %}"></script>
+    <script src="{% static 'assets/js/core/tenant/org_chart.js' %}"></script>
+{% endblock %}

@@ -481,7 +481,25 @@ class HandlePermissions {
                 app_id: item?.['app_data']?.['id'],
                 plan_id: item?.['plan_data']?.['id'], ...item
             }
-        });
+        }).sort(
+            (a, b) => {
+                let x1 = a.plan_data.title.toLowerCase();
+                let x2 = b.plan_data.title.toLowerCase();
+                if (x1 > x2) {
+                    return 1;
+                } else if (x1 < x2) {
+                    return -1;
+                } else {
+                    let y1 = a.app_data.title.toLowerCase();
+                    let y2 = b.app_data.title.toLowerCase();
+                    if (y1 >= y2) {
+                        return 1;
+                    } else if (y1 < y2) {
+                        return -1;
+                    }
+                }
+            }
+        )
         if (PermitBastionRule.validateDataSubmit(arr) === true) {
             return {
                 'hasChanged': false,

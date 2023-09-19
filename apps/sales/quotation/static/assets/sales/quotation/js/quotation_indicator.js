@@ -201,7 +201,7 @@ function calculateIndicator(indicator_list) {
         }
         // quotation value
         let quotationValue = 0;
-        let differenceValue = 0;
+        let differenceValue = value;
         // check if sale order then get quotation value
         let eleDetailQuotation = $('#data-copy-quotation-detail');
         if (eleDetailQuotation.length) {

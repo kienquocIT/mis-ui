@@ -66,6 +66,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # tenant
     TENANT_PLAN_LIST = StringUrl('tenant/tenant-plans')
+    TENANT_DIAGRAM = StringUrl('tenant/org-chart')
 
     # account
     ACCOUNT_USER_COMPANY = StringUrl('account/user-company')
@@ -358,3 +359,6 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     OPPORTUNITY_ADD_MEMBER = StringUrl('opportunity/add-member/{pk}')
     OPPORTUNITY_DELETE_MEMBER = StringUrl('opportunity/member/delete/{pk}')
     SET_MEMBER_PERMISSION = StringUrl('opportunity/member/set/permission/{pk}')
+
+    # Purchase request config
+    PURCHASE_REQUEST_CONFIG = StringUrl('purchasing/purchase-request/config')

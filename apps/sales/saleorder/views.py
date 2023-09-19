@@ -59,12 +59,23 @@ class SaleOrderCreate(View):
 
 
 class SaleOrderListAPI(APIView):
+
+    @classmethod
+    def convert_params(cls, params):
+        if 'delivery_call' in params and params.get('delivery_call'):
+            params['delivery_call'] = False
+        if 'is_approved' in params and params.get('is_approved'):
+            params['system_status'] = 3  # status finish
+            del params['is_approved']
+        return params
+
     @mask_view(
         auth_require=True,
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.SALE_ORDER_LIST).get()
+        params = self.convert_params(request.query_params.dict())
+        resp = ServerAPI(user=request.user, url=ApiURL.SALE_ORDER_LIST).get(params)
         return resp.auto_return(key_success='sale_order_list')
 
     @mask_view(

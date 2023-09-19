@@ -44,14 +44,24 @@ $(document).ready(function () {
                     if (row) time = moment(row).format('DD/MM/YYYY');
                     return time
                 },
-            }, {
+            },
+            {
                 data: 'estimated_delivery_date',
                 render: (row, type, data) => {
                     let time = '--';
                     if (row) time = moment(row).format('DD/MM/YYYY');
                     return time
                 },
-            }, {
+            },
+            {
+                data: 'employee_inherit',
+                render: (row, type, data) => {
+                    let time = '--';
+                    if (Object.keys(row).length > 0) time = `${row.full_name}`
+                    return time
+                },
+            },
+            {
                 data: 'state',
                 render: (data, type, row, meta) => {
                     let templateEle = `<span class="badge badge-warning badge-outline">{0}</span>`;

@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}
+    {% trans 'Delivery Config' %}
+{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+
+{% block pageAction %}
+    <a
+            class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret d-lg-inline-block d-none btn_support_submit"
+            data-bs-toggle="tooltip"
+            data-bs-placement="top"
+            data-bs-original-title="{% trans 'Save' %}"
+            data-form-id="formDeliveryConfig"
+    >
+        <span class="btn-icon-wrap">
+            <i class="far fa-save"></i>
+        </span>
+    </a>
+{% endblock %}
+
+{% block pageContent %}
+    <ul class="nav nav-light nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" data-bs-toggle="tab" href="#tab_general">
+                <span class="nav-link-text">{% trans 'General' %}</span>
+            </a>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane fade show active" id="tab_general">
+            <form
+                    id="formLeaeveConfig"
+                    data-url="{% url 'DeliveryConfigDetailAPI' %}"
+                    data-method="PUT"
+            >
+                {% csrf_token %}
+            đây là page leave config
+                <div class="col-xs-12 col-md-6">
+                    <label class="form-label">{% trans "Select coordinator for Delivery activities" %}:</label>
+                    <select class="form-control" name="lead_delivery" id="inputDeliveryLead"
+                            data-keyResp="employee_list"
+                            data-url="{% url 'EmployeeListAPI' %}"
+                            data-keyText="full_name"
+                            data-method="GET"
+                    >
+                        {% if data.config_data.lead_delivery %}
+                            <option value="{{ data.config_data.lead_delivery.id }}">
+                                {{ data.config_data.lead_delivery.full_name }}</option>
+                        {% endif %}
+                    </select>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+{% block dataHiddenGroup %}
+    <input type="text" id="trans-factory"
+    data-valid-p-lead="{% trans 'Please choice leader for Picking.' %}"
+    data-warn-d-lead="{% trans 'You should choose the leader of Delivery for feature Delivery is working correctly' %}">
+{% endblock %}
+
+{% block jsFooter %}
+
+{% endblock %}

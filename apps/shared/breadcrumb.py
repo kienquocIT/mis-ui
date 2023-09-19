@@ -54,6 +54,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     COMPANY_PAGE = BreadcrumbChildren(_('Company'), 'CompanyList')
     COMPANY_OVERVIEW_PAGE = BreadcrumbChildren(_('Company Overview'), 'CompanyListOverviewList')
     COMPANY_OVERVIEW_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+    COMPANY_DIAGRAM = BreadcrumbChildren(_('Company Diagram'), 'TenantDiagramView')
 
     # TENANT_INFORMATION_PAGE = BreadcrumbChildren('Tenant Information', 'TenantInformation')
 
@@ -229,6 +230,16 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     GOODS_RECEIPT_DETAIL_PAGE = BreadcrumbChildren(_('Goods receipt detail'))
     GOODS_RECEIPT_UPDATE_PAGE = BreadcrumbChildren(_('Goods receipt update'))
 
+    # Purchase request config
+    PURCHASE_REQUEST_CONFIG_PAGE = BreadcrumbChildren(_('Purchase Request'), 'PurchaseRequestConfig')
+
+    # E-Office
+    # Leave
+    LEAVE_CONFIG = BreadcrumbChildren(
+        _('Leave Config'), 'LeaveConfigDetail'
+    )
+
+
 
 class BreadcrumbView:
     """menu vertical item view"""
@@ -344,6 +355,11 @@ class BreadcrumbView:
     ]
     COMPANY_DETAIL_PAGE = COMPANY_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     COMPANY_UPDATE_PAGE = COMPANY_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+
+    COMPANY_DIAGRAM = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.COMPANY_DIAGRAM,
+    ]
 
     COMPANY_OVERVIEW_PAGE = [
         BreadcrumbItem.HOME_PAGE,
@@ -609,3 +625,11 @@ class BreadcrumbView:
     GOODS_RECEIPT_CREATE_PAGE = GOODS_RECEIPT_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
     GOODS_RECEIPT_DETAIL_PAGE = GOODS_RECEIPT_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     GOODS_RECEIPT_UPDATE_PAGE = GOODS_RECEIPT_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+
+    # e-office Leave
+    LEAVE_CONFIG_PAGE = [
+        BreadcrumbItem.LEAVE_CONFIG
+    ]
+
+    # Purchase request config
+    PURCHASE_REQUEST_CONFIG_PAGE = [BreadcrumbItem.PURCHASE_REQUEST_CONFIG_PAGE]

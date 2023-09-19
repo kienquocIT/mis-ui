@@ -287,6 +287,16 @@ class ProductDetail(View):
         return result, status.HTTP_200_OK
 
 
+class WarehouseGetProductsListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.WAREHOUSE_PRODUCT_LIST).get()
+        return resp.auto_return(key_success='warehouse_products_list')
+
+
 class ProductUpdate(View):
     permission_classes = [IsAuthenticated]
 

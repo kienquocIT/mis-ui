@@ -279,7 +279,7 @@ function loadInventoryDefaultUom(uom_list, url) {
             let uom_selected = inventoryDefaultUomEle.val();
             if (uom_selected !== '') {
                 let obj_uom_selected = JSON.parse($('#' + inventoryDefaultUomEle.attr('data-idx-data-loaded')).text())[uom_selected];
-                inventoryDefaultUomCodeEle.val(obj_uom_selected?.['uom_code']);
+                inventoryDefaultUomCodeEle.text(obj_uom_selected?.['uom_code']);
             }
         })
     }
@@ -300,7 +300,7 @@ function loadInventoryDefaultUom(uom_list, url) {
             let uom_selected = inventoryDefaultUomEle.val();
             if (uom_selected !== '') {
                 let obj_uom_selected = JSON.parse($('#' + inventoryDefaultUomEle.attr('data-idx-data-loaded')).text())[uom_selected];
-                inventoryDefaultUomCodeEle.val(obj_uom_selected?.['uom_code']);
+                inventoryDefaultUomCodeEle.text(obj_uom_selected?.['uom_code']);
             }
         })
     }
@@ -892,7 +892,7 @@ function LoadDetailProduct(option) {
                 if (Object.keys(product_detail['inventory_information']).length !== 0) {
                     let inventory_information = product_detail['inventory_information'];
                     loadInventoryDefaultUom(inventory_information['uom'], generalUomGroupEle.attr('data-url-detail').replace(0, generalUomGroupEle.val()));
-                    inventoryDefaultUomCodeEle.val(inventory_information['uom']['uom_code']);
+                    inventoryDefaultUomCodeEle.text(inventory_information['uom']['uom_code']);
                     $('#inventory-level-min').val(inventory_information['inventory_level_min']);
                     $('#inventory-level-max').val(inventory_information['inventory_level_max']);
 

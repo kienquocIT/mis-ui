@@ -15,14 +15,11 @@ function sum() {
 }
 
 function dataTableQuotationIndicator(data) {
-    // init dataTable
-    let listData = data ? data : [];
-    tableIndicator.DataTable({
-        data: listData,
-        searching: false,
-        ordering: false,
-        paginate: false,
+    tableIndicator.DataTableDefault({
+        data: data ? data : [],
+        paging: false,
         info: false,
+        columnDefs: [],
         drawCallback: function () {
             // render icon after table callback
             feather.replace();
@@ -60,14 +57,11 @@ function dataTableQuotationIndicator(data) {
 }
 
 function dataTableSaleOrderIndicator(data) {
-    // init dataTable
-    let listData = data ? data : [];
-    tableIndicator.DataTable({
-        data: listData,
-        searching: false,
-        ordering: false,
-        paginate: false,
+    tableIndicator.DataTableDefault({
+        data: data ? data : [],
+        paging: false,
         info: false,
+        columnDefs: [],
         drawCallback: function () {
             // render icon after table callback
             feather.replace();

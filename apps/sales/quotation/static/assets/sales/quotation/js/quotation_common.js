@@ -807,11 +807,9 @@ class QuotationLoadDataHandle {
         $('#quotation-create-customer-shipping').val(data?.['customer_shipping_id']);
         $('#quotation-create-customer-billing').val(data?.['customer_billing_id']);
         // product totals
-        if (is_copy === false) {
-            QuotationLoadDataHandle.loadTotal(data, true, false, false);
-            QuotationLoadDataHandle.loadTotal(data, false, true, false);
-            QuotationLoadDataHandle.loadTotal(data, false, false, true);
-        }
+        QuotationLoadDataHandle.loadTotal(data, true, false, false);
+        QuotationLoadDataHandle.loadTotal(data, false, true, false);
+        QuotationLoadDataHandle.loadTotal(data, false, false, true);
     }
 
     static loadDataProductAll() {

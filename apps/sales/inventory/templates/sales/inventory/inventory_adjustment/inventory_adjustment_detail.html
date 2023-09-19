@@ -7,7 +7,7 @@
     <link href="{% static 'vendors/dropify/dist/css/dropify.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-outline-primary" type="submit" form="frm_inventory_adjustment_create">
+    <button id="update-ia" class="btn btn-outline-primary" type="submit" form="frm_inventory_adjustment_detail">
         <span>
             <span>{% trans 'Save' %}</span>
             <span class="icon">
@@ -17,50 +17,61 @@
     </button>
 {% endblock %}
 {% block pageContent %}
-    <form data-url="{% url 'InventoryAdjustmentListAPI' %}"
-          data-url-redirect="{% url 'InventoryAdjustmentList' %}"
-          data-method="POST"
-          data-url-warehouse-product-list="{% url 'WareHouseListForInventoryAdjustmentAPI' %}"
-          id="frm_inventory_adjustment_create">
+    <form data-method="PUT" data-url-redirect="{% url "InventoryAdjustmentDetail" pk=0 %}"
+          data-url-list="{% url 'InventoryAdjustmentListAPI' %}"
+          data-url-detail="{% url 'InventoryAdjustmentDetailAPI' pk=0 %}"
+          data-url="{% url "InventoryAdjustmentDetailAPI" pk=0 %}"
+          id="frm_inventory_adjustment_detail">
         {% csrf_token %}
-        <div class="row">
-            <div class="col-6">
-                <div class="mb-3">
-                    <label for="title" class="form-label required">{% trans 'Title' %}</label>
-                    <input type="text" class="form-control" id="title" placeholder="Inventory adjustment in January">
-                </div>
-                <div class="mb-3">
-                    <label for="warehouse-select-box" class="form-label required">{% trans 'Warehouse' %}</label>
-                    <select class="form-select select2 select-multiple"
-                            data-url="{% url 'WareHouseListAPI' %}"
-                            data-method="GET"
-                            id="warehouse-select-box" multiple>
-                    </select>
-                </div>
+        <div class="row mr-3">
+            <div class="col-6 mb-1 text-right">
+                <h4><span id="ia-code" class="badge badge-soft-primary badge-outline text-primary"></span></h4>
             </div>
-            <div class="col-6">
-                <div class="row">
-                    <div class="mb-3 col-6">
-                        <label for="date" class="form-label required">{% trans 'Date' %}</label>
-                        <input type="text" class="form-control" id="date">
+        </div>
+        <div class="row mt-1 ml-1 mr-1 collapse multi-collapse show" id="collapse-area">
+            <div class="row">
+                <div class="col-6">
+                    <div class="mb-3">
+                        <label for="title" class="form-label required">{% trans 'Title' %}</label>
+                        <input type="text" class="form-control" id="title" placeholder="Inventory adjustment in January">
                     </div>
-                    <div class="mb-3 col-6">
-                        <label for="status" class="form-label required">{% trans 'Status' %}</label>
-                        <input type="text" class="form-control" id="status">
+                    <div class="mb-3">
+                        <label for="warehouse-select-box" class="form-label required">{% trans 'Warehouse' %}</label>
+                        <select class="form-select select2 select-multiple"
+                                data-url="{% url 'WareHouseListAPI' %}"
+                                data-method="GET"
+                                id="warehouse-select-box" multiple>
+                        </select>
                     </div>
                 </div>
-                <div class="mb-3">
-                    <label for="in-charge-select-box" class="form-label required">{% trans 'In charge' %}</label>
-                    <select class="form-select select2 select-multiple"
-                            data-url="{% url 'EmployeeListAPI' %}"
-                            data-method="GET"
-                            id="in-charge-select-box" multiple>
-                    </select>
+                <div class="col-6">
+                    <div class="row">
+                        <div class="mb-3 col-6">
+                            <label for="date" class="form-label required">{% trans 'Date' %}</label>
+                            <input type="text" class="form-control" id="date">
+                        </div>
+                        <div class="mb-3 col-6">
+                            <label for="status" class="form-label required">{% trans 'Status' %}</label>
+                            <input type="text" class="form-control" id="status">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="in-charge-select-box" class="form-label required">{% trans 'In charge' %}</label>
+                        <select class="form-select select2 select-multiple"
+                                data-url="{% url 'EmployeeListAPI' %}"
+                                data-method="GET"
+                                id="in-charge-select-box" multiple>
+                        </select>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="row mt-4">
-            <div class="col-11"></div>
+        <div class="row mt-3 mb-3">
+            <div class="col-11">
+                <a class="btn btn-flush-secondary flush-soft-hover w-100" data-bs-toggle="collapse" data-bs-target="#collapse-area" aria-expanded="false" aria-controls="collapse-area">
+                    <i class="bi bi-chevron-bar-expand text-secondary"></i>
+                </a>
+            </div>
             <div class="col-1">
                 <div class="btn-group dropdown w-100">
                     <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -91,17 +102,6 @@
             </ul>
             <div class="tab-content">
                 <div class="tab-pane fade show active" id="tab_block_line_detail">
-                    <button id="btn-add-row-line-detail" class="btn btn-soft-primary mb-3 w-20" type="button"
-                            data-bs-toggle="offcanvas"
-                            data-bs-target="#select-items-modal"
-                            aria-controls="offcanvasExample">
-                        <span>
-                            <span>{% trans 'Select products' %}</span>
-                            <span class="icon">
-                                <i class="bi bi-check-circle-fill"></i>
-                            </span>
-                        </span>
-                    </button>
                     <table data-url="{% url "WareHouseListAPI" %}"
                            data-warehouse-product-list="{% url 'WarehouseGetProductsListAPI' %}"
                            data-uom-list="{% url 'UnitOfMeasureListAPI' %}"
@@ -165,5 +165,5 @@
     <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
     <script src="{% static 'vendors/dropify/dist/js/dropify.min.js' %}"></script>
     <script src="{% static 'assets/sales/inventory/js/inventory_adjustment/inventory_adjustment_common.js' %}"></script>
-    <script src="{% static 'assets/sales/inventory/js/inventory_adjustment/inventory_adjustment_create.js' %}"></script>
+    <script src="{% static 'assets/sales/inventory/js/inventory_adjustment/inventory_adjustment_detail.js' %}"></script>
 {% endblock %}

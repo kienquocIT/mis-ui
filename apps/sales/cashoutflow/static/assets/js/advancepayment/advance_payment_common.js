@@ -484,264 +484,262 @@ function LoadBankAccount(data) {
 
 function loadSaleOrderProduct(filter_sale_order, ap_items_list) {
     let dtb = $('#tab_plan_datatable');
-    // if (filter_sale_order !== '') {
-    //     dtb.prop('hidden', false);
-    //     $('#notify-none-sale-code').prop('hidden', true);
-    // }
-    // else {
-    //     dtb.prop('hidden', true);
-    //     $('#notify-none-sale-code').prop('hidden', false);
-    // }
-    // dtb.DataTable().clear().destroy();
-    // let frm = new SetupFormSubmit(dtb);
-    // frm.dataUrl = dtb.attr('data-url-sale-order');
-    // dtb.DataTableDefault({
-    //     reloadCurrency: true,
-    //     rowIdx: true,
-    //     useDataServer: true,
-    //     dom: '',
-    //     ajax: {
-    //         url: frm.dataUrl + '?filter_sale_order=' + filter_sale_order,
-    //         type: frm.dataMethod,
-    //         dataSrc: function (resp) {
-    //             let data = $.fn.switcherResp(resp);
-    //             if (data) {
-    //                 let data_detail = data?.['sale_order_expense_list'];
-    //                 let result1 = []
-    //                 for (let i = 0; i < data_detail.length; i++) {
-    //                     let sum_AP_approved_list = ap_items_list.filter(function (element) {
-    //                         return element.product.id === data_detail[i].product_id;
-    //                     })
-    //                     let sum_AP_approved_value = 0;
-    //                     let sum_returned_value = 0;
-    //                     let sum_to_payment_value = 0;
-    //                     let sum_others_payment_value = 0;
-    //                     for (let i = 0; i < sum_AP_approved_list.length; i++) {
-    //                         sum_AP_approved_value += sum_AP_approved_list[i]?.['subtotal_price'];
-    //                         sum_returned_value += sum_AP_approved_list[i]?.['returned_total'];
-    //                         sum_to_payment_value += sum_AP_approved_list[i]?.['to_payment_total'];
-    //                     }
-    //                     let sum_available_value = data_detail[i].plan_after_tax - sum_AP_approved_value - sum_others_payment_value + sum_returned_value;
-    //                     if (sum_available_value < 0) {
-    //                         sum_available_value = 0;
-    //                     }
-    //                     if (data_detail[i].is_product) {
-    //                         result1.push({
-    //                             'expense_id': data_detail[i].expense_id ? data_detail[i].expense_id : data_detail[i].product_id,
-    //                             'expense_title': data_detail[i].expense_title ? data_detail[i].expense_title : data_detail[i].product_title,
-    //                             'tax': data_detail[i].tax,
-    //                             'plan_after_tax': data_detail[i].plan_after_tax,
-    //                             'sum_AP_approved': sum_AP_approved_value,
-    //                             'returned': sum_returned_value,
-    //                             'to_payment': sum_to_payment_value,
-    //                             'others_payment': sum_others_payment_value,
-    //                             'available': sum_available_value,
-    //                         })
-    //                     }
-    //                 }
-    //                 return result1;
-    //             }
-    //             return [];
-    //         },
-    //     },
-    //     columns: [
-    //         {
-    //             render: () => {
-    //                 return ``;
-    //             }
-    //         },
-    //         {
-    //             data: 'expense_title',
-    //             className: 'wrap-text',
-    //             render: (data, type, row) => {
-    //                 return `<a href="#"><span>` + row.expense_title + `</span></a>`
-    //             }
-    //         },
-    //         {
-    //             data: 'tax',
-    //             className: 'wrap-text',
-    //             render: (data, type, row) => {
-    //                 if (row.tax.title) {
-    //                     return `<span class="badge badge-soft-indigo badge-outline">` + row.tax.title + `</span>`
-    //                 }
-    //                 return ``
-    //             }
-    //         },
-    //         {
-    //             data: 'plan_after_tax',
-    //             className: 'wrap-text',
-    //             render: (data, type, row) => {
-    //                 return `<span class="mask-money text-primary" data-init-money="` + row.plan_after_tax + `"></span>`
-    //             }
-    //         },
-    //         {
-    //             data: 'sum_AP_approved',
-    //             className: 'wrap-text',
-    //             render: (data, type, row) => {
-    //                 return `<span class="mask-money text-primary" data-init-money="` + row.sum_AP_approved + `"></span>`
-    //             }
-    //         },
-    //         {
-    //             data: 'returned',
-    //             className: 'wrap-text',
-    //             render: (data, type, row) => {
-    //                 return `<span class="mask-money text-primary" data-init-money="` + row.returned + `"></span>`
-    //             }
-    //         },
-    //         {
-    //             data: 'to_payment',
-    //             className: 'wrap-text',
-    //             render: (data, type, row) => {
-    //                 return `<span class="mask-money text-primary" data-init-money="` + row.to_payment + `"></span>`
-    //             }
-    //         },
-    //         {
-    //             data: 'others_payment',
-    //             className: 'wrap-text',
-    //             render: (data, type, row) => {
-    //                 return `<span class="mask-money text-primary" data-init-money="` + row.others_payment + `"></span>`
-    //             }
-    //         },
-    //         {
-    //             data: 'available',
-    //             className: 'wrap-text',
-    //             render: (data, type, row) => {
-    //                 return `<span class="mask-money text-primary" data-init-money="` + row.available + `"></span>`
-    //             }
-    //         }
-    //     ],
-    // });
+    if (filter_sale_order !== '') {
+        dtb.prop('hidden', false);
+        $('#notify-none-sale-code').prop('hidden', true);
+    }
+    else {
+        dtb.prop('hidden', true);
+        $('#notify-none-sale-code').prop('hidden', false);
+    }
+    dtb.DataTable().clear().destroy();
+    let frm = new SetupFormSubmit(dtb);
+    frm.dataUrl = dtb.attr('data-url-sale-order');
+    dtb.DataTableDefault({
+        reloadCurrency: true,
+        rowIdx: true,
+        useDataServer: true,
+        dom: '',
+        ajax: {
+            url: frm.dataUrl + '?filter_sale_order=' + filter_sale_order,
+            type: frm.dataMethod,
+            dataSrc: function (resp) {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    let data_detail = data?.['sale_order_expense_list'];
+                    console.log(data_detail)
+                    let result1 = []
+                    for (let i = 0; i < data_detail.length; i++) {
+                        let sum_AP_approved_list = ap_items_list.filter(function (element) {
+                            return element.product.id === data_detail[i].product_id;
+                        })
+                        let sum_AP_approved_value = 0;
+                        let sum_returned_value = 0;
+                        let sum_to_payment_value = 0;
+                        let sum_others_payment_value = 0;
+                        for (let i = 0; i < sum_AP_approved_list.length; i++) {
+                            sum_AP_approved_value += sum_AP_approved_list[i]?.['subtotal_price'];
+                            sum_returned_value += sum_AP_approved_list[i]?.['returned_total'];
+                            sum_to_payment_value += sum_AP_approved_list[i]?.['to_payment_total'];
+                        }
+                        let sum_available_value = data_detail[i].plan_after_tax - sum_AP_approved_value - sum_others_payment_value + sum_returned_value;
+                        if (sum_available_value < 0) {
+                            sum_available_value = 0;
+                        }
+                        result1.push({
+                            'expense_title': data_detail[i].expense_title,
+                            'expense_item': data_detail[i].expense_item,
+                            'tax': data_detail[i].tax,
+                            'plan_after_tax': data_detail[i].plan_after_tax,
+                            'sum_AP_approved': sum_AP_approved_value,
+                            'returned': sum_returned_value,
+                            'to_payment': sum_to_payment_value,
+                            'others_payment': sum_others_payment_value,
+                            'available': sum_available_value,
+                        })
+                    }
+                    return result1;
+                }
+                return [];
+            },
+        },
+        columns: [
+            {
+                render: () => {
+                    return ``;
+                }
+            },
+            {
+                data: 'expense_item',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `<a href="#"><span>` + row.expense_item.title + `</span></a>`
+                }
+            },
+            {
+                data: 'tax',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    if (row.tax.title) {
+                        return `<span class="badge badge-soft-indigo badge-outline">` + row.tax.title + `</span>`
+                    }
+                    return ``
+                }
+            },
+            {
+                data: 'plan_after_tax',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `<span class="mask-money text-primary" data-init-money="` + row.plan_after_tax + `"></span>`
+                }
+            },
+            {
+                data: 'sum_AP_approved',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `<span class="mask-money text-primary" data-init-money="` + row.sum_AP_approved + `"></span>`
+                }
+            },
+            {
+                data: 'returned',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `<span class="mask-money text-primary" data-init-money="` + row.returned + `"></span>`
+                }
+            },
+            {
+                data: 'to_payment',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `<span class="mask-money text-primary" data-init-money="` + row.to_payment + `"></span>`
+                }
+            },
+            {
+                data: 'others_payment',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `<span class="mask-money text-primary" data-init-money="` + row.others_payment + `"></span>`
+                }
+            },
+            {
+                data: 'available',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `<span class="mask-money text-primary" data-init-money="` + row.available + `"></span>`
+                }
+            }
+        ],
+    });
 }
 
 function loadQuotationProduct(filter_quotation, ap_items_list) {
     let dtb = $('#tab_plan_datatable');
-    // if (filter_quotation !== '') {
-    //     dtb.prop('hidden', false);
-    //     $('#notify-none-sale-code').prop('hidden', true);
-    // }
-    // else {
-    //     dtb.prop('hidden', true);
-    //     $('#notify-none-sale-code').prop('hidden', false);
-    // }
-    // dtb.DataTable().clear().destroy();
-    // let frm = new SetupFormSubmit(dtb);
-    // frm.dataUrl = dtb.attr('data-url-sale-order');
-    // dtb.DataTableDefault({
-    //     reloadCurrency: true,
-    //     rowIdx: true,
-    //     useDataServer: true,
-    //     dom: '',
-    //     ajax: {
-    //         url: frm.dataUrl + '?filter_quotation=' + filter_quotation,
-    //         type: frm.dataMethod,
-    //         dataSrc: function (resp) {
-    //             let data = $.fn.switcherResp(resp);
-    //             if (data) {
-    //                 let data_detail = data?.['quotation_expense_list'];
-    //                 let result2 = []
-    //                 for (let i = 0; i < data_detail.length; i++) {
-    //                     let sum_AP_approved_list = ap_items_list.filter(function (element) {
-    //                         return element.product.id === data_detail[i].product_id;
-    //                     })
-    //                     let sum_AP_approved_value = 0;
-    //                     let sum_returned_value = 0;
-    //                     let sum_to_payment_value = 0;
-    //                     let sum_others_payment_value = 0;
-    //                     for (let i = 0; i < sum_AP_approved_list.length; i++) {
-    //                         sum_AP_approved_value += sum_AP_approved_list[i]?.['subtotal_price'];
-    //                         sum_returned_value += sum_AP_approved_list[i]?.['returned_total'];
-    //                         sum_to_payment_value += sum_AP_approved_list[i]?.['to_payment_total'];
-    //                     }
-    //                     let sum_available_value = data_detail[i].plan_after_tax - sum_AP_approved_value - sum_others_payment_value + sum_returned_value;
-    //                     if (sum_available_value < 0) {
-    //                         sum_available_value = 0;
-    //                     }
-    //                     if (data_detail[i].is_product) {
-    //                         result2.push({
-    //                             'expense_id': data_detail[i].expense_id ? data_detail[i].expense_id : data_detail[i].product_id,
-    //                             'expense_title': data_detail[i].expense_title ? data_detail[i].expense_title : data_detail[i].product_title,
-    //                             'tax': data_detail[i].tax,
-    //                             'plan_after_tax': data_detail[i].plan_after_tax,
-    //                             'sum_AP_approved': sum_AP_approved_value,
-    //                             'returned': sum_returned_value,
-    //                             'to_payment': sum_to_payment_value,
-    //                             'others_payment': sum_others_payment_value,
-    //                             'available': sum_available_value,
-    //                         })
-    //                     }
-    //                 }
-    //                 return result2;
-    //             }
-    //             return [];
-    //         },
-    //     },
-    //     columns: [
-    //         {
-    //             render: () => {
-    //                 return ``;
-    //             }
-    //         },
-    //         {
-    //             data: 'expense_title',
-    //             className: 'wrap-text',
-    //             render: (data, type, row) => {
-    //                 return `<a href="#"><span>` + row.expense_title + `</span></a>`
-    //             }
-    //         },
-    //         {
-    //             data: 'tax',
-    //             className: 'wrap-text',
-    //             render: (data, type, row) => {
-    //                 if (row.tax.title) {
-    //                     return `<span class="badge badge-soft-indigo badge-outline">` + row.tax.title + `</span>`
-    //                 }
-    //                 return ``
-    //             }
-    //         },
-    //         {
-    //             data: 'plan_after_tax',
-    //             className: 'wrap-text',
-    //             render: (data, type, row) => {
-    //                 return `<span class="mask-money text-primary" data-init-money="` + row.plan_after_tax + `"></span>`
-    //             }
-    //         },
-    //         {
-    //             data: 'sum_AP_approved',
-    //             className: 'wrap-text',
-    //             render: (data, type, row) => {
-    //                 return `<span class="mask-money text-primary" data-init-money="` + row.sum_AP_approved + `"></span>`
-    //             }
-    //         },
-    //         {
-    //             data: 'returned',
-    //             className: 'wrap-text',
-    //             render: (data, type, row) => {
-    //                 return `<span class="mask-money text-primary" data-init-money="` + row.returned + `"></span>`
-    //             }
-    //         },
-    //         {
-    //             data: 'to_payment',
-    //             className: 'wrap-text',
-    //             render: (data, type, row) => {
-    //                 return `<span class="mask-money text-primary" data-init-money="` + row.to_payment + `"></span>`
-    //             }
-    //         },
-    //         {
-    //             data: 'others_payment',
-    //             className: 'wrap-text',
-    //             render: (data, type, row) => {
-    //                 return `<span class="mask-money text-primary" data-init-money="` + row.others_payment + `"></span>`
-    //             }
-    //         },
-    //         {
-    //             data: 'available',
-    //             className: 'wrap-text',
-    //             render: (data, type, row) => {
-    //                 return `<span class="mask-money text-primary" data-init-money="` + row.available + `"></span>`
-    //             }
-    //         }
-    //     ],
-    // });
+    if (filter_quotation !== '') {
+        dtb.prop('hidden', false);
+        $('#notify-none-sale-code').prop('hidden', true);
+    }
+    else {
+        dtb.prop('hidden', true);
+        $('#notify-none-sale-code').prop('hidden', false);
+    }
+    dtb.DataTable().clear().destroy();
+    let frm = new SetupFormSubmit(dtb);
+    frm.dataUrl = dtb.attr('data-url-quotation');
+    dtb.DataTableDefault({
+        reloadCurrency: true,
+        rowIdx: true,
+        useDataServer: true,
+        dom: '',
+        ajax: {
+            url: frm.dataUrl + '?filter_quotation=' + filter_quotation,
+            type: frm.dataMethod,
+            dataSrc: function (resp) {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    let data_detail = data?.['quotation_expense_list'];
+                    console.log(data_detail)
+                    let result2 = []
+                    for (let i = 0; i < data_detail.length; i++) {
+                        let sum_AP_approved_list = ap_items_list.filter(function (element) {
+                            return element.product.id === data_detail[i].product_id;
+                        })
+                        let sum_AP_approved_value = 0;
+                        let sum_returned_value = 0;
+                        let sum_to_payment_value = 0;
+                        let sum_others_payment_value = 0;
+                        for (let i = 0; i < sum_AP_approved_list.length; i++) {
+                            sum_AP_approved_value += sum_AP_approved_list[i]?.['subtotal_price'];
+                            sum_returned_value += sum_AP_approved_list[i]?.['returned_total'];
+                            sum_to_payment_value += sum_AP_approved_list[i]?.['to_payment_total'];
+                        }
+                        let sum_available_value = data_detail[i].plan_after_tax - sum_AP_approved_value - sum_others_payment_value + sum_returned_value;
+                        if (sum_available_value < 0) {
+                            sum_available_value = 0;
+                        }
+                        result2.push({
+                            'expense_title': data_detail[i].expense_title,
+                            'expense_item': data_detail[i].expense_item,
+                            'tax': data_detail[i].tax,
+                            'plan_after_tax': data_detail[i].plan_after_tax,
+                            'sum_AP_approved': sum_AP_approved_value,
+                            'returned': sum_returned_value,
+                            'to_payment': sum_to_payment_value,
+                            'others_payment': sum_others_payment_value,
+                            'available': sum_available_value,
+                        })
+                    }
+                    return result2;
+                }
+                return [];
+            },
+        },
+        columns: [
+            {
+                render: () => {
+                    return ``;
+                }
+            },
+            {
+                data: 'expense_item',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `<a href="#"><span>` + row.expense_item.title + `</span></a>`
+                }
+            },
+            {
+                data: 'tax',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    if (row.tax.title) {
+                        return `<span class="badge badge-soft-indigo badge-outline">` + row.tax.title + `</span>`
+                    }
+                    return ``
+                }
+            },
+            {
+                data: 'plan_after_tax',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `<span class="mask-money text-primary" data-init-money="` + row.plan_after_tax + `"></span>`
+                }
+            },
+            {
+                data: 'sum_AP_approved',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `<span class="mask-money text-primary" data-init-money="` + row.sum_AP_approved + `"></span>`
+                }
+            },
+            {
+                data: 'returned',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `<span class="mask-money text-primary" data-init-money="` + row.returned + `"></span>`
+                }
+            },
+            {
+                data: 'to_payment',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `<span class="mask-money text-primary" data-init-money="` + row.to_payment + `"></span>`
+                }
+            },
+            {
+                data: 'others_payment',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `<span class="mask-money text-primary" data-init-money="` + row.others_payment + `"></span>`
+                }
+            },
+            {
+                data: 'available',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `<span class="mask-money text-primary" data-init-money="` + row.available + `"></span>`
+                }
+            }
+        ],
+    });
 }
 
 $(document).on("click", '#btn-add-row-line-detail', function () {

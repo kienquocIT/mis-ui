@@ -870,7 +870,7 @@ class PQRHandle {
         $('#table-purchase-quotation-request-products-selected tbody tr').each(function () {
             let product_id = $(this).find('.product-select-box').val();
             let product_uom_id = $(this).find('.product-uom-select-box').val();
-            let product_quantity = $(this).find('.pr-unit-price-input').val();
+            let product_quantity = $(this).find('.product-quantity').val();
             let product_unit_price = $(this).find('.pr-unit-price-input').attr('value');
             let product_subtotal_price = $(this).find('.pr-subtotal-price-input').attr('data-init-money');
             if (product_id !== '' && product_uom_id !== '' && product_quantity !== '' && product_unit_price !== '' && product_subtotal_price !== '') {

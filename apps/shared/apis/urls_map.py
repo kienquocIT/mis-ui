@@ -348,6 +348,9 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     GOODS_RECEIPT_LIST = StringUrl('inventory/goods-receipt/list')
     GOODS_RECEIPT_DETAIL = StringUrl('inventory/goods-receipt')
     GOODS_RECEIPT_DETAIL_PK = StringUrl('inventory/goods-receipt/{pk}')
+    INVENTORY_ADJUSTMENT_LIST = StringUrl('inventory/inventory-adjustments')
+    INVENTORY_ADJUSTMENT_DETAIL = StringUrl('inventory/inventory-adjustment/{pk}')
+    INVENTORY_ADJUSTMENT_PRODUCTS_LIST = StringUrl('inventory/inventory-adjustment/products')
 
     # Application for Opportunity permission
     APPLICATION_OPPORTUNITY_PERMISSION = StringUrl('base/applications-opportunity-permit')

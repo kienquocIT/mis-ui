@@ -1,9 +1,10 @@
 $(document).ready(function () {
-    new InventoryAdjustmentHandle().load();
+    LoadDetailIA('detail');
 
-    $('#frm_inventory_adjustment_create').submit(function (event) {
+    let pk = $.fn.getPkDetail();
+    $('#frm_inventory_adjustment_detail').submit(function (event) {
         event.preventDefault();
-        let combinesData = new InventoryAdjustmentHandle().combinesData($(this));
+        let combinesData = new InventoryAdjustmentHandle().combinesData($(this), true);
         console.log(combinesData)
         if (combinesData) {
             WindowControl.showLoading();
@@ -14,7 +15,7 @@ $(document).ready(function () {
                         if (data) {
                             $.fn.notifyB({description: "Successfully"}, 'success')
                             setTimeout(() => {
-                                window.location.replace($(this).attr('data-url-redirect'));
+                                window.location.replace($(this).attr('data-url-redirect').format_url_with_uuid(pk));
                                 location.reload.bind(location);
                             }, 1000);
                         }

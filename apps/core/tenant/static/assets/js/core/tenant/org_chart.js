@@ -125,6 +125,9 @@ $(function () {
                     'exportButtonName': $('#msgPrivate').data('msg-export-to-image'),
                     'exportButton': true,
                     'exportFilename': 'MyOrgChart',
+                    'createNode': function ($node, data) {
+                        $($node).addClass('data-type-' + data['typeData']);
+                    }
                 });
             },
             (errs) => {

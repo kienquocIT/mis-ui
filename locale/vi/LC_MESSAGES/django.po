@@ -4189,3 +4189,11 @@ msgstr "Chọn người điều phối cho hoạt động giao hàng"
 #
 msgid "Org Charts"
 msgstr "Cây Cơ Cấu"
+
+#
+msgid "Manager Person"
+msgstr "Người Quản Lý"
+
+#
+msgid "Belong to Role"
+msgstr "Có Vai Trò"

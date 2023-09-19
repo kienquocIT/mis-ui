@@ -181,7 +181,7 @@ $(function () {
             }
             // Change uom
             if ($(this).hasClass('table-row-uom-order-actual')) {
-                let dataRowRaw = row.querySelector('.table-row-order').getAttribute('data-row');
+                let dataRowRaw = row.querySelector('.table-row-order')?.getAttribute('data-row');
                 let eleUOMOrder = row.querySelector('.table-row-uom-order-actual');
                 if (dataRowRaw && $(eleUOMOrder).val()) {
                     let dataRow = JSON.parse(dataRowRaw);

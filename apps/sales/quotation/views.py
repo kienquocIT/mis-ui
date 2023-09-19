@@ -46,7 +46,11 @@ class QuotationCreate(View):
         breadcrumb='QUOTATION_CREATE_PAGE',
     )
     def get(self, request, *args, **kwargs):
-        return {'data': {'employee_current': json.dumps(request.user.employee_current_data)}}, status.HTTP_200_OK
+        opportunity = request.GET.get('opportunity', "")
+        return {'data': {
+            'employee_current': json.dumps(request.user.employee_current_data),
+            'opportunity': opportunity,
+        }}, status.HTTP_200_OK
 
 
 class QuotationListAPI(APIView):

@@ -223,7 +223,7 @@ $(async function () {
         $.fn.callAjax(
             $('#url-factory').attr('data-warehouse-stock'),
             'GET',
-            {'product_id': prod.product_data.id, uom_id:prod.uom_data.id}
+            {'product_id': prod.product_data.id, 'uom_id':prod.uom_data.id}
         ).then((resp) => {
             let data = $.fn.switcherResp(resp);
             const datas = data.warehouse_stock
@@ -231,10 +231,16 @@ $(async function () {
             let prodTotal = 0
             let prodName = ''
             let WHInfo = datas.filter((item)=> item.id === warehouseID)[0]
-            prodTotal = WHInfo.product_amount - WHInfo.picked_ready
+
+            prodTotal = WHInfo['original_info'].stock_amount - WHInfo['original_info'].sold_amount
             prodName = WHInfo.title
             htmlContent += `<div class="mb-1"><h6><i>${$elmTrans.attr('data-warehouse')}</i></h6><p>${prodName}</p></div>`;
-            htmlContent += `<div class="mb-1"><h6><i>${$elmTrans.attr('data-stock')}</i></h6><p>${prodTotal}</p></div>`;
+            htmlContent += `<div class="mb-1 d-flex justify-content-between">` +
+                            `<div><h6>${$elmTrans.attr('data-stock')}</h6>${prodTotal}</div>` +
+                            `<div><h6>${$elmTrans.attr('data-store')}</h6>${prodTotal - WHInfo['original_info'].picked_ready}</div>` +
+                            `<div><h6>${$elmTrans.attr('data-picking-area')}</h6>${WHInfo['original_info'].picked_ready}</div>` +
+                `</div>`;
+            htmlContent += `<div class="mb-1"><h6><i>UoM</i></h6><p>${WHInfo?.warehouse_uom?.title}</p></div>`;
             const link = $('#url-factory').attr('data-product-detail').format_url_with_uuid(prod.product_data.id);
             htmlContent += `<div class="dropdown-divider"></div><div class="text-right">
                             <a href="${link}" target="_blank" class="link-primary underline_hover">
@@ -271,7 +277,7 @@ $(async function () {
                                    aria-haspopup="true"
                                    aria-expanded="false" data-product-id="${row?.product_data?.id}"
                                    ></i>
-                                <div class="dropdown-menu w-210p mt-2"></div>
+                                <div class="dropdown-menu w-280p mt-2"></div>
                             </div> ${row?.['product_data']?.['title']}`
                     }
                 },

@@ -41,6 +41,7 @@ $(function () {
         QuotationDataTableHandle.dataTableCost();
         QuotationDataTableHandle.dataTableExpense();
 
+        // ele tables
         let tableProduct = $('#datable-quotation-create-product');
         let tableCost = $('#datable-quotation-create-cost');
         let tableExpense = $('#datable-quotation-create-expense');
@@ -679,7 +680,7 @@ $(function () {
         tableCopyQuotation.on('click', '.table-row-check', function () {
             tableCopyQuotation.find('.table-row-check').prop('checked', false);
             $(this).prop('checked', true);
-            QuotationLoadDataHandle.loadAPIDetailQuotation('data-init-copy-quotation', $(this)[0].getAttribute('data-id'));
+            QuotationLoadDataHandle.loadAPIDetailQuotation($(this)[0].getAttribute('data-id'));
         });
 
 // Action on click button select quotation for copy
@@ -748,9 +749,8 @@ $(function () {
                 // Begin load data copy FROM
                 document.getElementById('customer-price-list').value = dataCopy.customer?.['customer_price_list'];
                 QuotationLoadDataHandle.loadDataTablesAndDropDowns(dataCopy);
-                QuotationCalculateCaseHandle.calculateAllRowsTableProduct(tableProduct);
                 QuotationLoadDataHandle.loadDetailQuotation(dataCopy, true);
-
+                QuotationCalculateCaseHandle.calculateAllRowsTableProduct(tableProduct);
             } else if (type === 'copy-to') { // COPY TO (QUOTATION DETAIL -> SALE ORDER CREATE)
                 // create URL and add to href
                 let eleRedirect = document.getElementById('link-to-sale-order-create');
@@ -767,9 +767,9 @@ $(function () {
             if (eleDataCopy) {
                 if (eleDataCopy.val()) {
                     let dataRaw = JSON.parse(eleDataCopy.val());
-                    QuotationLoadDataHandle.loadAPIDetailQuotation('data-init-copy-quotation', dataRaw.id);
+                    QuotationLoadDataHandle.loadAPIDetailQuotation(dataRaw.id);
                     checkElementValuesBeforeLoadDataCopy();
-                    checkOppLoaded();
+                    // checkOppLoaded();
                 }
             }
         }
@@ -804,8 +804,8 @@ $(function () {
                     // Begin load data copy TO
                     document.getElementById('customer-price-list').value = dataCopy.customer?.['customer_price_list'];
                     QuotationLoadDataHandle.loadDataTablesAndDropDowns(dataCopy);
-                    QuotationCalculateCaseHandle.calculateAllRowsTableProduct(tableProduct);
                     QuotationLoadDataHandle.loadDetailQuotation(dataCopy, true);
+                    QuotationCalculateCaseHandle.calculateAllRowsTableProduct(tableProduct);
                 }
             }
         }
@@ -820,16 +820,19 @@ $(function () {
             }
         }
 
-        function checkOppLoaded() {
-            let oppVal = boxOpportunity.val();
-            let dataCopy = $('#data-copy-quotation-detail').val();
-            if (oppVal && dataCopy) {
-                let data = JSON.parse(dataCopy);
-                document.getElementById('quotation-final-revenue-before-tax').value = data.total_product_revenue_before_tax;
-            } else {
-                setTimeout(checkOppLoaded, 1000);  // call again after 1s if condition not pass yet
-            }
-        }
+        // function checkOppLoaded() {
+        //     let oppVal = boxOpportunity.val();
+        //     let dataCopy = $('#data-copy-quotation-detail').val();
+        //     if (oppVal && dataCopy) {
+        //         let data = JSON.parse(dataCopy);
+        //         document.getElementById('quotation-final-revenue-before-tax').value = data.total_product_revenue_before_tax;
+        //     } else {
+        //         setTimeout(checkOppLoaded, 1000);  // call again after 1s if condition not pass yet
+        //     }
+        // }
+
+// Load init Opportunity
+        QuotationLoadDataHandle.loadInitOpportunity();
 
 // PROMOTION
 // Action on click button Check Available Promotion (show list promotions)

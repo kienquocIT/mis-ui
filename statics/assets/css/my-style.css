@@ -325,3 +325,7 @@ div.inline {
     justify-content: center;
     align-items: center;
 }
+
+.custom-visible-dtb .tit_visible_tb-head{
+    display: none;
+}

@@ -60,7 +60,7 @@ $(document).ready(function () {
             $('.inp-check-so').not($(this)).prop('checked', false);
             PurchaseRequestAction.loadSOProduct(dict_so, dict_so_product, $(this).data('id'), table_so_product);
         } else {
-
+            table_so_product.clear().draw();
         }
     })
 

@@ -718,7 +718,6 @@ class QuotationLoadDataHandle {
 
     // Load detail
     static loadDetailQuotation(data, is_copy = false) {
-        let self = this;
         if (data.title && is_copy === false) {
             document.getElementById('quotation-create-title').value = data.title;
         }
@@ -729,31 +728,31 @@ class QuotationLoadDataHandle {
         }
         if (data.opportunity) {
             if (data?.['sale_person']) {
-                self.loadBoxQuotationOpportunity(data.opportunity, data?.['sale_person']?.['id']);
+                QuotationLoadDataHandle.loadBoxQuotationOpportunity(data.opportunity, data?.['sale_person']?.['id']);
             } else {
-                self.loadBoxQuotationOpportunity(data.opportunity, null);
+                QuotationLoadDataHandle.loadBoxQuotationOpportunity(data.opportunity, null);
             }
         }
         if (data.customer) {
             data.customer['name'] = data.customer.title;
             if (data?.['sale_person']) {
-                self.loadBoxQuotationCustomer(data.customer, data?.['sale_person']?.['id']);
+                QuotationLoadDataHandle.loadBoxQuotationCustomer(data.customer, data?.['sale_person']?.['id']);
             } else {
-                self.loadBoxQuotationCustomer(data.customer);
+                QuotationLoadDataHandle.loadBoxQuotationCustomer(data.customer);
             }
         }
         if (data.contact) {
             data.contact['fullname'] = data.contact.title;
-            self.loadBoxQuotationContact(data.contact, data.customer.id)
+            QuotationLoadDataHandle.loadBoxQuotationContact(data.contact, data.customer.id)
         }
         if (data?.['sale_person']) {
-            self.loadBoxQuotationSalePerson(data?.['sale_person'])
+            QuotationLoadDataHandle.loadBoxQuotationSalePerson(data?.['sale_person'])
         }
         if (data?.['payment_term']) {
-            self.loadBoxQuotationPaymentTerm(data?.['payment_term'])
+            QuotationLoadDataHandle.loadBoxQuotationPaymentTerm(data?.['payment_term'])
         }
         if (data.quotation && data?.['sale_person']) {
-            self.loadBoxSaleOrderQuotation('select-box-quotation', data.quotation.id, null, data?.['sale_person']?.['id'])
+            QuotationLoadDataHandle.loadBoxSaleOrderQuotation('select-box-quotation', data.quotation.id, null, data?.['sale_person']?.['id'])
         }
         if (data.date_created) {
             $('#quotation-create-date-created').val(moment(data.date_created).format('MM/DD/YYYY'));
@@ -796,7 +795,7 @@ class QuotationLoadDataHandle {
                                     <span class="quotation-title">${data.title}</span>
                                     <input type="hidden" class="data-info" value="${dataStr}">
                                 </option>`)
-            self.loadInformationSelectBox(boxQuotation);
+            QuotationLoadDataHandle.loadInformationSelectBox(boxQuotation);
         }
         if (data.quotation_logistic_data) {
             document.getElementById('quotation-create-shipping-address').value = data.quotation_logistic_data.shipping_address;
@@ -808,9 +807,11 @@ class QuotationLoadDataHandle {
         $('#quotation-create-customer-shipping').val(data?.['customer_shipping_id']);
         $('#quotation-create-customer-billing').val(data?.['customer_billing_id']);
         // product totals
-        self.loadTotal(data, true, false, false);
-        self.loadTotal(data, false, true, false);
-        self.loadTotal(data, false, false, true);
+        if (is_copy === false) {
+            QuotationLoadDataHandle.loadTotal(data, true, false, false);
+            QuotationLoadDataHandle.loadTotal(data, false, true, false);
+            QuotationLoadDataHandle.loadTotal(data, false, false, true);
+        }
     }
 
     static loadDataProductAll() {

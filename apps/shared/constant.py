@@ -50,6 +50,14 @@ WORKFLOW_ACTION = {
     5: [WorkflowMsg.ACTION_TODO, 'far fa-list-alt'],
 }
 
+SYSTEM_STATUS = (
+    (0, 'Draft'),
+    (1, 'Created'),
+    (2, 'Added'),
+    (3, 'Finish'),
+    (4, 'Cancel'),
+)
+
 # Opportunity
 
 TYPE_CUSTOMER = [
@@ -62,3 +70,5 @@ ROLE_CUSTOMER = [
     {"value": 1, "name": _('Influence')},
     {"value": 2, "name": _('Contact Involved')},
 ]
+
+

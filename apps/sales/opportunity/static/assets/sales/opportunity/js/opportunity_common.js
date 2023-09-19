@@ -157,15 +157,7 @@ class OpportunityLoadDropdown {
     static loadContact(ele, data, customer) {
         ele.initSelect2({
             data: data,
-            callbackDataResp(resp, keyResp) {
-                let list_result = []
-                resp.data[keyResp].map(function (item) {
-                    if (customer === item.account_name.id) {
-                        list_result.push(item)
-                    }
-                })
-                return list_result
-            }
+            'dataParams': {'account_name_id': customer},
         })
     }
 

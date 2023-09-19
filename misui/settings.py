@@ -60,6 +60,7 @@ INSTALLED_APPS = \
         'apps.core.auths',
         'apps.core.home',
         'apps.core.hr',
+        'apps.core.tenant',
         'apps.core.company',
         'apps.core.base',
         'apps.core.workflow',

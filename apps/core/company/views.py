@@ -6,8 +6,6 @@ from apps.shared import mask_view, ApiURL, ServerAPI, ServerMsg, TypeCheck
 
 
 class CompanyList(View):
-    permission_classes = [IsAuthenticated]
-
     @mask_view(
         auth_require=True,
         template='core/company/company_list.html',

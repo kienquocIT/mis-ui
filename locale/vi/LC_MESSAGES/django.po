@@ -2813,6 +2813,10 @@ msgid "Export to file"
 msgstr "Xuất thành file"
 
 #
+msgid "Export To Image"
+msgstr "Xuất thành hình ảnh"
+
+#
 msgid "Open/Close filter area"
 msgstr "Hiện/Ẩn khu vực lọc dữ liệu"
 
@@ -4166,3 +4170,7 @@ msgstr "Thu gọn"
 #
 msgid "Belong To Roles"
 msgstr "Thuộc về Vai Trò"
+
+#
+msgid "Org Charts"
+msgstr "Cây Cơ Cấu"

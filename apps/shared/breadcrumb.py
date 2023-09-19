@@ -54,6 +54,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     COMPANY_PAGE = BreadcrumbChildren(_('Company'), 'CompanyList')
     COMPANY_OVERVIEW_PAGE = BreadcrumbChildren(_('Company Overview'), 'CompanyListOverviewList')
     COMPANY_OVERVIEW_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+    COMPANY_DIAGRAM = BreadcrumbChildren(_('Company Diagram'), 'TenantDiagramView')
 
     # TENANT_INFORMATION_PAGE = BreadcrumbChildren('Tenant Information', 'TenantInformation')
 
@@ -344,6 +345,11 @@ class BreadcrumbView:
     ]
     COMPANY_DETAIL_PAGE = COMPANY_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     COMPANY_UPDATE_PAGE = COMPANY_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+
+    COMPANY_DIAGRAM = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.COMPANY_DIAGRAM,
+    ]
 
     COMPANY_OVERVIEW_PAGE = [
         BreadcrumbItem.HOME_PAGE,

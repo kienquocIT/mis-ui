@@ -63,6 +63,10 @@ class MenusCompanySystem:
             MenuCommon(
                 name='Group', code='menu_group_list', view_name='GroupList', icon='<i class="fas fa-users"></i>'
             ),
+            MenuCommon(
+                name='Org Charts', code='menu_company_diagram', view_name='TenantDiagramView',
+                icon='<i class="fa-solid fa-diagram-project"></i>',
+            ),
         ]
     )
     WORKFLOW_PROCESS = MenuCommon(

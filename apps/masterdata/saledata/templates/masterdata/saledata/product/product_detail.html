@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
+{% block title %}{% trans 'Product Detail' %}{% endblock %}
 {% block cssHeader %}
     <link href="{% static 'assets/css/masterdata/saledata/accounts/account_create.css' %}" rel="stylesheet"
           type="text/css"/>
@@ -251,7 +252,7 @@
                         <div class="form-group row">
                             <label class="col-4 col-form-label required">{% trans "UoM Code" %}</label>
                             <div class="col-8">
-                                <input id="inventory-uom-code" class="form-control" type="text">
+                                <span id="inventory-uom-code" class="badge badge-soft-secondary w-50"></span>
                             </div>
                         </div>
                     </div>
@@ -351,7 +352,6 @@
     {{ data.unit | json_script:"id-unit-list" }}
     {{ data.warehouse_product_list | json_script:"warehouse_product_list" }}
     {{ data.unit_of_measure | json_script:"unit_of_measure" }}
-    {{ data.unit_of_measure_group | json_script:"unit_of_measure_group" }}
     {{ data.currency_list | json_script:"currency_list" }}
 {% endblock %}
 {% block jsFooter %}

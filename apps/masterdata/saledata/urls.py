@@ -20,7 +20,7 @@ from apps.masterdata.saledata.views.product import (
     ProductCategoryListAPI, ExpenseTypeListAPI, UnitOfMeasureListAPI, UnitOfMeasureGroupListAPI,
     UnitOfMeasureDetailAPI, ProductTypeDetailAPI, ExpenseTypeDetailAPI, ProductCategoryDetailAPI,
     UnitOfMeasureGroupDetailAPI, ProductList, ProductCreate, ProductListAPI, ProductDetailAPI, ProductDetail,
-    ProductForSaleListAPI, ProductUpdate, UnitOfMeasureOfGroupLaborListAPI,
+    ProductForSaleListAPI, ProductUpdate, UnitOfMeasureOfGroupLaborListAPI, WarehouseGetProductsListAPI
 )
 from apps.masterdata.saledata.views.price import (
     PriceMasterDataList, TaxCategoryListAPI, TaxListAPI, TaxDetailAPI, TaxCategoryDetailAPI, CurrencyListAPI,
@@ -32,6 +32,7 @@ from apps.masterdata.saledata.views.shipping import ShippingList, ShippingCreate
     ShippingDetailAPI, ShippingCheckListAPI, ShippingUpdate
 from apps.masterdata.saledata.views.warehouse import (
     WareHouseList, WareHouseListAPI, WareHouseDetailAPI, WarehouseProductAPI, WareHouseListForInventoryAdjustmentAPI,
+    WareHouseCreate, WareHouseDetail, WareHouseUpdate,
 )
 
 urlpatterns = [
@@ -132,6 +133,7 @@ urlpatterns = [
     path('products', ProductList.as_view(), name='ProductList'),
     path('product/create', ProductCreate.as_view(), name='ProductCreate'),
     path('products/api', ProductListAPI.as_view(), name='ProductListAPI'),
+    path('warehouse-get-products/api', WarehouseGetProductsListAPI.as_view(), name='WarehouseGetProductsListAPI'),
     path('product/update/<str:pk>', ProductUpdate.as_view(), name='ProductUpdate'),
     path('product/detail/<str:pk>', ProductDetail.as_view(), name='ProductDetail'),
     path('product/api/<str:pk>', ProductDetailAPI.as_view(), name='ProductDetailAPI'),
@@ -208,6 +210,9 @@ urlpatterns = [
 # WareHouse
 urlpatterns += [
     path('warehouses', WareHouseList.as_view(), name='WareHouseList'),
+    path('warehouse/create', WareHouseCreate.as_view(), name='WareHouseCreate'),
+    path('warehouse/detail/<str:pk>', WareHouseDetail.as_view(), name='WareHouseDetail'),
+    path('warehouse/update/<str:pk>', WareHouseUpdate.as_view(), name='WareHouseUpdate'),
     path('warehouses/api', WareHouseListAPI.as_view(), name='WareHouseListAPI'),
     path(
         'warehouses-for-inventory-adjustment/api',

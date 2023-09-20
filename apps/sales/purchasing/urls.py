@@ -7,10 +7,12 @@ from apps.sales.purchasing.views import PurchaseOrderCreate, PurchaseRequestList
     PurchaseQuotationRequestDetail, PurchaseQuotationRequestDetailAPI, PurchaseQuotationList, PurchaseQuotationCreate, \
     PurchaseQuotationListAPI, PurchaseQuotationDetail, PurchaseQuotationDetailAPI, PurchaseRequestProductListAPI, \
     PurchaseQuotationProductListAPI, PurchaseOrderUpdate, PurchaseOrderProductListAPI, PurchaseOrderSaleListAPI, \
-    PurchaseRequestListForPQRAPI
+    PurchaseRequestListForPQRAPI, PurchaseRequestConfigAPI, PurchaseRequestConfig
 
 urlpatterns = [
     # purchase request
+    path('purchase-request/config', PurchaseRequestConfig.as_view(), name='PurchaseRequestConfig'),
+    path('purchase-request/config/api', PurchaseRequestConfigAPI.as_view(), name='PurchaseRequestConfigAPI'),
     path('purchase-request/list', PurchaseRequestList.as_view(), name='PurchaseRequestList'),
     path('purchase-request/create', PurchaseRequestCreate.as_view(), name='PurchaseRequestCreate'),
     path('purchase-request/list/api', PurchaseRequestListAPI.as_view(), name='PurchaseRequestListAPI'),
@@ -56,12 +58,12 @@ urlpatterns = [
         name='PurchaseQuotationRequestCreateManual'
     ),
     path(
-        'purchase-quotation-request/detail/<str:pk>',
+        'purchase-quotation-request/<str:pk>',
         PurchaseQuotationRequestDetail.as_view(),
         name='PurchaseQuotationRequestDetail'
     ),
     path(
-        'purchase-quotation-request/detail/api/<str:pk>',
+        'purchase-quotation-request/api/<str:pk>',
         PurchaseQuotationRequestDetailAPI.as_view(),
         name='PurchaseQuotationRequestDetailAPI'
     ),
@@ -82,12 +84,12 @@ urlpatterns = [
         name='PurchaseQuotationCreate'
     ),
     path(
-        'purchase-quotation/detail/<str:pk>',
+        'purchase-quotation/<str:pk>',
         PurchaseQuotationDetail.as_view(),
         name='PurchaseQuotationDetail'
     ),
     path(
-        'purchase-quotation/detail/api/<str:pk>',
+        'purchase-quotation/api/<str:pk>',
         PurchaseQuotationDetailAPI.as_view(),
         name='PurchaseQuotationDetailAPI'
     ),

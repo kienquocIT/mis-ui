@@ -6,7 +6,6 @@ from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg, PermCheck
 
 
 class PurchaseQuotationRequestList(View):
-
     @mask_view(
         auth_require=True,
         template='sales/purchasing/purchasequotationrequest/purchase_quotation_request_list.html',
@@ -49,14 +48,7 @@ class PurchaseQuotationRequestCreateFromPR(View):
         perm_check=PermCheck(url=ApiURL.PURCHASE_QUOTATION_REQUEST_LIST, method='POST'),
     )
     def get(self, request, *args, **kwargs):
-        resp1 = ServerAPI(user=request.user, url=ApiURL.TAX_LIST).get()
-        return {
-                   'data':
-                       {
-                           'employee_current_id': request.user.employee_current_data.get('id', None),
-                           'tax_list': resp1.result,
-                       }
-               }, status.HTTP_200_OK
+        return {}, status.HTTP_200_OK
 
 
 class PurchaseQuotationRequestCreateFromPRAPI(APIView):
@@ -75,7 +67,6 @@ class PurchaseQuotationRequestCreateFromPRAPI(APIView):
 
 
 class PurchaseQuotationRequestCreateManual(View):
-
     @mask_view(
         auth_require=True,
         template='sales/purchasing/purchasequotationrequest/purchase_quotation_request_create_manual.html',
@@ -84,20 +75,7 @@ class PurchaseQuotationRequestCreateManual(View):
         perm_check=PermCheck(url=ApiURL.PURCHASE_QUOTATION_REQUEST_LIST, method='POST'),
     )
     def get(self, request, *args, **kwargs):
-        resp1 = ServerAPI(user=request.user, url=ApiURL.TAX_LIST).get()
-        resp2 = ServerAPI(user=request.user, url=ApiURL.PURCHASE_REQUEST_LIST_FOR_PQR).get()
-        resp3 = ServerAPI(user=request.user, url=ApiURL.PRODUCT_LIST).get()
-        resp4 = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE).get()
-        return {
-                   'data':
-                       {
-                           'employee_current_id': request.user.employee_current_data.get('id', None),
-                           'tax_list': resp1.result,
-                           'purchase_request_list': resp2.result,
-                           'product_list': resp3.result,
-                           'unit_of_measure_list': resp4.result
-                       }
-               }, status.HTTP_200_OK
+        return {}, status.HTTP_200_OK
 
 
 class PurchaseQuotationRequestCreateManualAPI(APIView):
@@ -116,8 +94,6 @@ class PurchaseQuotationRequestCreateManualAPI(APIView):
 
 
 class PurchaseQuotationRequestDetail(View):
-    permission_classes = [IsAuthenticated]
-
     @mask_view(
         auth_require=True,
         template='sales/purchasing/purchasequotationrequest/purchase_quotation_request_detail.html',
@@ -126,25 +102,14 @@ class PurchaseQuotationRequestDetail(View):
         perm_check=PermCheck(url=ApiURL.PURCHASE_QUOTATION_REQUEST_DETAIL, method='GET', fill_key=['pk']),
     )
     def get(self, request, *args, **kwargs):
-        resp1 = ServerAPI(user=request.user, url=ApiURL.TAX_LIST).get()
-        resp2 = ServerAPI(user=request.user, url=ApiURL.PURCHASE_REQUEST_LIST_FOR_PQR).get()
-        return {
-                   'data':
-                       {
-                           'employee_current_id': request.user.employee_current_data.get('id', None),
-                           'tax_list': resp1.result,
-                           'purchase_request_list': resp2.result,
-                       }
-               }, status.HTTP_200_OK
+        return {}, status.HTTP_200_OK
 
 
 class PurchaseQuotationRequestDetailAPI(APIView):
-    permission_classes = [IsAuthenticated]
-
     @mask_view(
         auth_require=True,
         is_api=True,
     )
     def get(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.PURCHASE_QUOTATION_REQUEST_DETAIL.push_id(pk)).get()
+        resp = ServerAPI(user=request.user, url=ApiURL.PURCHASE_QUOTATION_REQUEST_DETAIL.fill_key(pk=pk)).get()
         return resp.auto_return(key_success='purchase_quotation_request_detail')

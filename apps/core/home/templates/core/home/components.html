@@ -106,6 +106,11 @@
         </table>
     </div>
     {% csrf_token %}
+
+    <div class="mt-15">
+        <div class="separator-full"></div>
+        <div id="timeline-container-force-position"></div>
+    </div>
 {% endblock %}
 
 {% block jsFooter %}
@@ -177,4 +182,63 @@
 
     <script src="{% static 'vendors/jquery/dist/jquery-ui.min.js' %}"></script>
     <script src="{% static 'assets/js/plugins/form-layout.js' %}"></script>
+
+
+    <script>
+
+        let htmlTramSo1 = `
+            <div>Noi dung so 11111</div>
+            <div>Noi dung so 22222</div>
+            <div>Noi dung so 33333</div>
+            <div>Noi dung so 44444</div>
+        `;
+
+        let mainEle = $('#timeline-container-force-position');
+        mainEle.on('timelineMe.done', function(){
+            $(this).find('.timeline-me-label').each(function(){
+                if ($(this).text().length === 0){
+                    $(this).closest('.timeline-me-label-wrapper').fadeOut();
+                }
+            })
+        })
+        mainEle.timelineMe({
+            items: [
+                {
+                    type: 'bigItem',
+                    shortContent: `<div class="p-3"><div class="text-center">2023/09/19 10:00 AM</div><div style="text-align: center;">Kết Thúc</div></div>`,
+                },
+                {
+                    type: 'bigItem',
+                    shortContent: `<div class="p-3"><div class="text-center">2023/09/19 10:00 AM</div><div style="text-align: center;">Phê Duyệt</div></div>`,
+                },
+                {
+                    type: 'smallItem',
+                    label: '2023/09/19 15:00',
+                    shortContent: 'short description 2',
+                    fullContent: htmlTramSo1,
+                    forcePosition: 'right',
+                    showMore: '<a class="custom-show-btn">+</a>',
+                    showLess: '<a class="custom-show-btn">-</a>'
+                },
+                {
+                    type: 'smallItem',
+                    label: '2023/09/19 10:00',
+                    labelClsName: 'station-system',
+                    shortContent: 'short description 1',
+                    fullContent: '<span style="color: red;">big description 1</span>: Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+                    forcePosition: 'right',
+                    showMore: '<a class="custom-show-btn">+</a>',
+                    showLess: '<a class="custom-show-btn">-</a>'
+                },
+                {
+                    type: 'bigItem',
+                    shortContent: `<div class="p-3"><div class="text-center">2023/09/19 10:00 AM</div><div style="text-align: center;">Trạm Số 1</div></div>`,
+                },
+                {
+                    type: 'bigItem',
+                    shortContent: `<div class="p-3"><div class="text-center">2023/09/19 10:00 AM</div><div style="text-align: center;">Khởi Tạo</div></div>`,
+                },
+            ]
+        });
+    </script>
 {% endblock %}

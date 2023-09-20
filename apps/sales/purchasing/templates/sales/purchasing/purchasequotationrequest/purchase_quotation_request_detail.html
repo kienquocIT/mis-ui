@@ -17,12 +17,9 @@
 {% block pageAction %}
 {% endblock %}
 {% block pageContent %}
-    {{ data.data.tax_list | json_script:"tax_list" }}
-    {{ data.data.purchase_request_list | json_script:"purchase_request_list" }}
-
     <form id="form-detail-purchase-quotation-request"
           data-url-redirect="{% url "PurchaseQuotationRequestList" %}"
-          data-url-detail="{% url 'PurchaseQuotationRequestDetailAPI' '0' %}">
+          data-url="{% url 'PurchaseQuotationRequestDetailAPI' pk=0 %}">
         {% csrf_token %}
         <div class="row mr-3">
             <div class="col-7 mb-1 pr-5 text-right">
@@ -91,11 +88,11 @@
                 </div>
             </div>
         </div>
-
-        <div class="row collapse-arrow text-center">
-            <i class="bi bi-arrows-expand text-primary" data-bs-toggle="collapse" data-bs-target="#collapse-area" data-bs-placement="top" aria-expanded="true" aria-controls="collapse-area" id="advance-info-collapse"></i>
+        <div class="row mb-3">
+            <a class="btn btn-flush-secondary flush-soft-hover" data-bs-toggle="collapse" data-bs-target="#collapse-area" aria-expanded="false" aria-controls="collapse-area">
+                <i class="bi bi-chevron-bar-expand text-secondary"></i>
+            </a>
         </div>
-
         <div class="row">
             <div class="col-12">
                 <ul class="nav nav-light nav-tabs">
@@ -111,12 +108,12 @@
                             <div class="tab-pane fade show active" id="tab_line_detail">
                                 <table class="table nowrap w-100" id="table-purchase-quotation-request-products-selected">
                                     <thead>
-                                    <th>#</th>
-                                    <th>{% trans "Product" %}</th>
+                                    <th></th>
+                                    <th class=" required">{% trans "Product" %}</th>
                                     <th>{% trans "Description" %}</th>
-                                    <th>{% trans "UoM" %}</th>
-                                    <th>{% trans "Quantity" %}</th>
-                                    <th>{% trans "PR Unit Price" %}
+                                    <th class=" required">{% trans "UoM" %}</th>
+                                    <th class=" required">{% trans "Quantity" %}</th>
+                                    <th class=" required">{% trans "PR Unit Price" %}
                                         <i class="fas fa-info-circle icon-info"
                                            data-bs-toggle="tooltip"
                                            data-bs-placement="top"
@@ -130,7 +127,7 @@
                                            title="{% trans 'If the products are merged, Default Tax will be got from the smallest UoM ratio product.' %}">
                                         </i>
                                     </th>
-                                    <th>{% trans "Subtotal Price" %}</th>
+                                    <th class=" required">{% trans "Subtotal Price" %}</th>
                                     </thead>
                                 </table>
                             </div>
@@ -173,10 +170,12 @@
     </form>
 {% endblock %}
 {% block jsFooter %}
-    <script src="{% static 'assets/sales/purchasing/js/purchasequotationrequest/purchase_quotation_request_detail.js' %}"></script>
     <!-- Daterangepicker JS -->
     <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/dropify/dist/js/dropify.min.js' %}"></script>
     <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>
+
+    <script src="{% static 'assets/sales/purchasing/js/purchasequotationrequest/purchase_quotation_request_common.js' %}"></script>
+    <script src="{% static 'assets/sales/purchasing/js/purchasequotationrequest/purchase_quotation_request_detail.js' %}"></script>
 {% endblock %}

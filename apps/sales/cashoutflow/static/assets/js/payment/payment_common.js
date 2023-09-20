@@ -8,7 +8,6 @@ let AP_db = $('#advance_payment_list_datatable')
 let OPP_LIST = [];
 let QUO_LIST = [];
 let SO_LIST = [];
-let sale_code_default_type = -1;
 let current_value_converted_from_ap = '';
 
 function PaymentLoadCreatedDate() {
@@ -168,7 +167,7 @@ function PaymentLoadBeneficiary(data, filter=[]) {
     })
 }
 
-function getPaymentSaleCode(sale_code_mapped_param, type_param) {
+async function getPaymentSaleCode(sale_code_mapped_param, type_param) {
     let call_opp_list = $.fn.callAjax(saleCodeEle.attr('data-url-opp'), 'GET').then((resp) => {
         let data = $.fn.switcherResp(resp);
         if (data) {
@@ -196,7 +195,20 @@ function getPaymentSaleCode(sale_code_mapped_param, type_param) {
             return [];
         }
     })
-    Promise.all([call_opp_list, call_quo_list, call_so_list]).then((results) => {
+    let call_user_perm = $.fn.callAjax($('#form-create-payment').attr('data-url-payment-perm'), 'GET').then((resp) => {
+        let data = $.fn.switcherResp(resp);
+        if (data) {
+            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('payment_config_list')) {
+                let user_allowed = data?.['payment_config_list'].filter(function (element) {
+                    return element.employee_allowed.id === initEmployee.id
+                });
+                return user_allowed.length > 0;
+
+            }
+            return false;
+        }
+    })
+    Promise.all([call_opp_list, call_quo_list, call_so_list, call_user_perm]).then((results) => {
         OPP_LIST = results[0];
         QUO_LIST = results[1];
         SO_LIST = results[2];
@@ -285,7 +297,15 @@ function getPaymentSaleCode(sale_code_mapped_param, type_param) {
             });
         }
         else {
-            PaymentLoadSaleCode([{}].concat(sale_code_list));
+            if (results[3]) {
+                saleCodeEle.prop('multiple', true);
+                saleCodeEle.addClass('select-multiple select2');
+                saleCodeEle.attr('data-placeholder', 'Select MULTI Sale Code');
+                PaymentLoadSaleCodeMULTI([].concat(sale_code_list));
+            }
+            else {
+                PaymentLoadSaleCode([{}].concat(sale_code_list));
+            }
         }
     }).catch((error) => {
         console.log(error)
@@ -305,14 +325,15 @@ function PaymentLoadSaleCode(sale_code) {
                 }
             }
             let ele = $('<div class="row col-12" data-bs-toggle="tooltip" data-bs-placement="right" title="' + opp_code + '"></div>');
-            ele.append('<div class="col-4">' + data.data?.['code'] + '</div>');
-            ele.append('<div class="col-8">' + data.data?.['title'] + '</div>');
+            ele.append(`<div class="col-4">${data.data?.['code']}</div>`);
+            ele.append(`<div class="col-8">${data.data?.['title']}</div>`);
             return ele;
         },
         data: sale_code,
         keyId: 'id',
         keyText: 'title',
     }).on('change', function () {
+        PaymentBeneficiaryEle.prop('disabled', false);
         let sale_code_selected_id = saleCodeEle.val()
         if (sale_code_selected_id !== '') {
             let obj_sale_code = JSON.parse($('#' + saleCodeEle.attr('data-idx-data-loaded')).text())[sale_code_selected_id];
@@ -371,6 +392,33 @@ function PaymentLoadSaleCode(sale_code) {
             });
         }
 
+        $('#tab_line_detail_datatable tbody').html(``);
+        $('#tab_plan_datatable tbody').html(``);
+    })
+}
+
+function PaymentLoadSaleCodeMULTI(sale_code) {
+    for (let i = 0; i < sale_code.length; i++) {
+        let data_row = sale_code[i];
+        let opp_code = 'No Opportunity';
+        if (Object.keys(data_row).includes('opportunity')) {
+            if (Object.keys(data_row.opportunity).length !== 0) {
+                opp_code = data_row.opportunity['code'];
+            }
+        }
+        let html = $(`<option class="row col-12" data-bs-toggle="tooltip" data-bs-placement="right" value="${data_row?.['id']}" title="rrr">${data_row?.['code']} - ${data_row?.['title']}</option>`);
+        saleCodeEle.append(html);
+    }
+    saleCodeEle.initSelect2({
+        templateResult: function(data) {
+            let ele = $(`<div class="row col-12" data-bs-toggle="tooltip" data-bs-placement="right" title="${data.title}"></div>`);
+            ele.append(`<div class="col-5">${data.text.split(' - ')[0]}</div>`);
+            ele.append(`<div class="col-7">${data.text.split(' - ')[1]}</div>`);
+            return ele;
+        }
+    })
+    saleCodeEle.on('change', function () {
+        PaymentBeneficiaryEle.prop('disabled', true);
         $('#tab_line_detail_datatable tbody').html(``);
         $('#tab_plan_datatable tbody').html(``);
     })
@@ -678,7 +726,7 @@ function count_row(table_body, option) {
         count = count + 1;
         $(this).text(count);
         $(this).closest('tr').attr('id', 'row-' + count.toString());
-        let sale_code_length = 1;
+        let sale_code_length = [].concat(saleCodeEle.val()).length;
         let detail_product_element = $(this).closest('tr').nextAll().slice(0, sale_code_length + 1)
         detail_product_element.each(function () {
             $(this).attr('class', 'row-detail-product-' + count.toString());
@@ -744,7 +792,6 @@ function loadAPList(sale_code_id) {
     AP_db.DataTableDefault({
         reloadCurrency: true,
         dom: "",
-        visibleDisplayRowTotal: false,
         paging: false,
         ajax: {
             url: AP_db.attr('data-url'),
@@ -875,35 +922,37 @@ $(document).on("click", '#btn-add-row-line-detail', function () {
         $.fn.notifyB({description: 'Select Sale code first.'}, 'warning');
     }
     else {
-        let sale_code_length = 1;
+        let sale_code_list = [].concat(saleCodeEle.val());
+        let sale_code_length = sale_code_list.length;
         let sale_code_code_list = [];
-        let flag = 0;
-        let sale_code_mapped = SO_LIST.filter(function (element) {
-                return element.id === saleCodeEle.val();
+
+        for (let i = 0; i < sale_code_length; i++) {
+            let flag = 0;
+            let sale_code_mapped = SO_LIST.filter(function (element) {
+                return element.id === sale_code_list[i];
             })
-        if (sale_code_mapped === null) {
-            flag = 1;
-            sale_code_mapped = QUO_LIST.filter(function (element) {
-                return element.id === saleCodeEle.val();
-            })
-        }
-        if (sale_code_mapped === null) {
-            flag = 2;
-            sale_code_mapped = OPP_LIST.filter(function (element) {
-                return element.id === saleCodeEle.val();
-            })
+            if (sale_code_mapped === null) {
+                flag = 1;
+                sale_code_mapped = QUO_LIST.filter(function (element) {
+                    return element.id === sale_code_list[i];
+                })
+            }
+            if (sale_code_mapped === null) {
+                flag = 2;
+                sale_code_mapped = OPP_LIST.filter(function (element) {
+                    return element.id === sale_code_list[i];
+                })
+            }
+            if (sale_code_mapped[0] !== null) {
+                sale_code_mapped = sale_code_mapped[0];
+                if (Object.keys(sale_code_mapped.opportunity).length !== 0 && [0, 1, 2].includes(flag)) {
+                    sale_code_code_list.push(sale_code_mapped.opportunity.code);
+                } else {
+                    sale_code_code_list.push(sale_code_mapped.code);
+                }
+            }
         }
 
-        if (sale_code_mapped[0] !== null) {
-            sale_code_mapped = sale_code_mapped[0];
-            if (Object.keys(sale_code_mapped.opportunity).length !== 0 && [1, 2].includes(flag)) {
-                sale_code_code_list.push(sale_code_mapped.opportunity.code);
-            }
-            else {
-                sale_code_code_list.push(sale_code_mapped.code);
-            }
-        }
-        let sale_code_selected_in_sb = [saleCodeEle.val()];
         tableLineDetail.append(`<tr id="" class="row-number">
             <td class="number text-center"></td>
             <td><select class="form-select expense-type-select-box"></select></td>
@@ -942,7 +991,7 @@ $(document).on("click", '#btn-add-row-line-detail', function () {
             tableLineDetail.append(`<tr class="" hidden>
                 <td colspan="1"></td>
                 <td colspan="1">
-                    <span class="sale_code_product_detail badge badge-outline badge-soft-primary" data-sale-code-id="` + sale_code_selected_in_sb[i] + `"><b>` + sale_code_code_list[i] + `</b></span>
+                    <span class="sale_code_product_detail badge badge-outline badge-soft-primary" data-sale-code-id="` + sale_code_list[i] + `"><b>` + sale_code_code_list[i] + `</b></span>
                 </td>
                 <td colspan="2">
                     <input data-return-type="number" placeholder="Enter payment value" class="value-inp form-control mask-money ">
@@ -986,51 +1035,48 @@ $(document).on("click", '#btn-add-row-line-detail', function () {
         let row_count = count_row(tableLineDetail, 1);
 
         changePrice('row-' + row_count);
-
-        $('.btn-del-line-detail').on('click', function () {
-            $(this).closest('tr').remove();
-            count_row(tableLineDetail, 2);
-        });
-        $('.btn-row-toggle').on('click', function() {
-            let this_row = $('#row-' + row_count.toString());
-            let this_product_item = this_row.find('.expense-type-select-box');
-            let this_uom = this_row.find('.expense-uom-input');
-            let this_quantity = this_row.find('.expense_quantity');
-            let this_unit_price = this_row.find('.expense-unit-price-input');
-            let this_subtotal_price = this_row.find('.expense-subtotal-price');
-            let this_after_tax_subtotal = this_row.find('.expense-subtotal-price-after-tax');
-            let this_document_number = this_row.find('.expense-document-number');
-
-            if (this_product_item.val() && this_uom.val() && this_quantity.val() && this_unit_price.attr('value')
-                && this_subtotal_price.attr('value') && this_after_tax_subtotal.attr('value') && this_document_number.val())
-            {
-                let row_number = this_row.attr('id').split('-')[1];
-                let detail_product_id = '.row-detail-product-' + row_number;
-                if ($(detail_product_id).is(":hidden")) {
-                    $(detail_product_id).prop('hidden', false);
-                }
-                else {
-                    $(detail_product_id).prop('hidden', true);
-                }
-            }
-        });
-        $('.btn-add-payment-value').on('click', function() {
-            $('.total-converted').attr('hidden', true);
-            $("#tab-1-offCanvas").attr('style', "font-size: xx-large; font-weight: bolder");
-            $("#tab-2-offCanvas").attr('style', "font-size: large; font-weight: bolder");
-            current_value_converted_from_ap = $(this);
-            $('.total-product-selected').attr('data-init-money', 0);
-            $.fn.initMaskMoney2();
-            $('.product-tables').html(``);
-            $('#wizard-t-0').click();
-            if (sale_code_default_type === -1) {
-                loadAPList(sale_code_selected_in_sb);
-            }
-            else {
-                // loadAPOnly(sale_code_mapped_parameter);
-            }
-        });
     }
+});
+
+$(document).on("click", '.btn-del-line-detail', function () {
+    let this_row = $(this).closest('tr');
+    let all_child_row = $('.row-detail-product-' + this_row.attr('id').split('-')[1]);
+    this_row.remove();
+    all_child_row.remove();
+    count_row(tableLineDetail, 2);
+});
+
+$(document).on("click", '.btn-row-toggle', function() {
+    let this_row = $(this).closest('tr');
+    let this_product_item = this_row.find('.expense-type-select-box');
+    let this_uom = this_row.find('.expense-uom-input');
+    let this_quantity = this_row.find('.expense_quantity');
+    let this_unit_price = this_row.find('.expense-unit-price-input');
+    let this_subtotal_price = this_row.find('.expense-subtotal-price');
+    let this_after_tax_subtotal = this_row.find('.expense-subtotal-price-after-tax');
+    let this_document_number = this_row.find('.expense-document-number');
+
+    if (this_product_item.val() && this_uom.val() && this_quantity.val() && this_unit_price.attr('value')
+        && this_subtotal_price.attr('value') && this_after_tax_subtotal.attr('value') && this_document_number.val())
+    {
+        let row_number = this_row.attr('id').split('-')[1];
+        let detail_product_id = '.row-detail-product-' + row_number;
+        if ($(detail_product_id).is(":hidden")) {
+            $(detail_product_id).prop('hidden', false);
+        }
+        else {
+            $(detail_product_id).prop('hidden', true);
+        }
+    }
+});
+
+$(document).on("click", '.btn-add-payment-value', function() {
+    $('.total-converted').attr('hidden', true);
+    current_value_converted_from_ap = $(this);
+    $('.total-product-selected').attr('data-init-money', 0);
+    $.fn.initMaskMoney2();
+    $('.product-tables').html(``);
+    loadAPList([saleCodeEle.val()]);
 });
 
 function calculate_sum_ap_product_items() {
@@ -1041,26 +1087,18 @@ function calculate_sum_ap_product_items() {
     return result_total_value;
 }
 
-$("#wizard").steps({
-    transitionEffect: 'slide',
-});
-let wizard_t0 =  $('#wizard-t-0');
-let wizard_t1 =  $('#wizard-t-1');
-let content = $('.content');
-wizard_t0.attr('hidden', true);
-wizard_t0.closest('li').append(`<span id="tab-1-offCanvas" class="text-primary mr-3" style="font-size: xx-large; font-weight: bolder">1. Select Advance Payment</span>`);
-wizard_t1.attr('hidden', true);
-wizard_t1.closest('li').append(`<span id="tab-2-offCanvas" class="text-primary ml-3" style="font-size: larger; font-weight: bolder">2. Select Product</span>`);
-content.css({
-    'background': 'none'
-}).addClass('h-70');
-$('#wizard-p-0').addClass('w-100');
-$('#advance_payment_list_datatable_wrapper').addClass('h-80');
-let actions = $('.actions');
-actions.find('a[href="#next"]').on('click', function () {
-    $('.total-converted').attr('hidden', false);
-    $("#tab-2-offCanvas").attr('style', "font-size: xx-large; font-weight: bolder");
-    $("#tab-1-offCanvas").attr('style', "font-size: large; font-weight: bolder");
+$("#next-btn").on('click', function () {
+    $('#offcanvasRightLabel').text($('#offcanvasRightLabel').attr('data-text-2'));
+    $('#step1').prop('hidden', true);
+    $('#step2').prop('hidden', false);
+    $('#next-btn').prop('hidden', true);
+    $('#previous-btn').prop('hidden', false);
+    $('#finish-btn').prop('hidden', false);
+    $('#total-converted').attr('hidden', false);
+
+    let tab2 = $('.product-tables');
+    tab2.html(``);
+
     let selected_ap_list = [];
     let selected_ap_code_list = [];
     $('.ap-selected').each(function () {
@@ -1070,20 +1108,9 @@ actions.find('a[href="#next"]').on('click', function () {
         }
     })
     if (selected_ap_list.length === 0) {
-        setTimeout(function(){
-        $('.alert.alert-dismissible .close').addClass('btn-close').removeClass('close');
-        },100);
-        $.notify("Warning: Select at least 1 Advance Payment Item for next step.", {
-            animate: {
-                enter: 'animated bounceInDown',
-                exit: 'animated bounceOutUp'
-            },
-            type: "dismissible alert-warning",
-        });
+        $.fn.notifyB({description: 'Warning: Select at least 1 Advance Payment Item for next step.'}, 'warning');;
     }
     else {
-        let tab2 = $('.product-tables');
-        tab2.html(``);
         for (let i = 0; i < selected_ap_list.length; i++) {
             $.fn.callAjax(AP_db.attr('data-url-ap-detail').replace('/0', '/' + selected_ap_list[i]), AP_db.attr('data-method')).then((resp) => {
                 let data = $.fn.switcherResp(resp);
@@ -1091,9 +1118,7 @@ actions.find('a[href="#next"]').on('click', function () {
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('advance_payment_detail')) {
                         let ap_item_detail = data.advance_payment_detail;
                         if (ap_item_detail.expense_items.length > 0) {
-                            tab2.append(`<div class="mt-7 mb-3 row">
-                                <div class="col-2 mt-2"><span class="ap-code-span badge badge-primary">` + selected_ap_code_list[i] + `</span></div>
-                            </div>`)
+                            tab2.append(`<span class="ap-code-span badge badge-primary mb-3">` + selected_ap_code_list[i] + `</span>`)
                             tab2.append(`<table id="expense-item-table-` + ap_item_detail.id + `" class="table nowrap w-100">
                                 <thead>
                                     <tr>
@@ -1191,12 +1216,16 @@ actions.find('a[href="#next"]').on('click', function () {
         }
     }
 })
-actions.find('a[href="#previous"]').on('click', function () {
-    $('.total-converted').attr('hidden', true);
-    $("#tab-1-offCanvas").attr('style', "font-size: xx-large; font-weight: bolder");
-    $("#tab-2-offCanvas").attr('style', "font-size: large; font-weight: bolder");
+$("#previous-btn").on('click', function () {
+    $('#offcanvasRightLabel').text($('#offcanvasRightLabel').attr('data-text-1'));
+    $('#step1').prop('hidden', false);
+    $('#step2').prop('hidden', true);
+    $('#next-btn').prop('hidden', false);
+    $('#previous-btn').prop('hidden', true);
+    $('#finish-btn').prop('hidden', true);
+    $('#total-converted').attr('hidden', true);
 })
-actions.find('a[href="#finish"]').on('click', function () {
+$("#finish-btn").on('click', function () {
     $('.total-converted').attr('hidden', true);
     let result_total_value = calculate_sum_ap_product_items();
     current_value_converted_from_ap.closest('div').find('.value-converted-from-ap-inp').attr('value', result_total_value);
@@ -1209,19 +1238,7 @@ actions.find('a[href="#finish"]').on('click', function () {
     current_value_converted_from_ap.closest('tr').find('.detail-ap-items').text(JSON.stringify(get_ap_product_items()));
 
     $.fn.initMaskMoney2();
-    $('#offcanvasSelectDetailAP').offcanvas('hide');
 })
-actions.find('ul').prepend(`<li aria-disabled="false" class="total-converted" hidden>
-        <label class="col-form-label text-primary text-decoration-underline"><b>TOTAL</b></label>
-    </li>
-    <li aria-disabled="false" class="total-converted" hidden>
-        <div class="row form-group">
-            <div class="col-12 text-left">
-                <span style="font-size: x-large" class="mask-money total-product-selected text-primary" data-init-money="0"></span>
-            </div>
-        </div>
-    </li>`)
-$('#wizard-p-1').addClass('w-100');
 
 function Disable() {
     $('.form-control').prop('disabled', true).css({color: 'black'});
@@ -1246,17 +1263,18 @@ function LoadDetailPayment() {
 
                 $('#payment-code').text(data.code);
                 $('#title').val(data.title);
-                let sale_code_mapped = null;
-                if (data.sale_order_mapped.length > 0) {
-                    sale_code_mapped = data.sale_order_mapped[0];
-                }
-                if (data.quotation_mapped.length > 0) {
-                    sale_code_mapped = data.quotation_mapped[0];
-                }
-                if (data.opportunity_mapped.length > 0) {
-                    sale_code_mapped = data.opportunity_mapped[0];
-                }
+
+                let sale_order_mapped = data?.['sale_order_mapped']
+                let quotation_mapped = data?.['quotation_mapped']
+                let opportunity_mapped = data?.['opportunity_mapped']
+                let sale_code_mapped = sale_order_mapped.concat(quotation_mapped).concat(opportunity_mapped)
+
+                saleCodeEle.prop('multiple', true);
+                saleCodeEle.addClass('select-multiple select2');
+                saleCodeEle.attr('data-placeholder', 'Select MULTI Sale Code');
                 PaymentLoadSaleCode(sale_code_mapped)
+
+
                 if (Object.keys(data?.['supplier']).length !== 0) {
                     PaymentLoadSupplier(data?.['supplier'])
                     InforSpanSupplier(data?.['supplier']);
@@ -1273,6 +1291,10 @@ function LoadDetailPayment() {
 
                 for (let i = 0; i < data?.['expense_items'].length; i++) {
                     let data_row = data?.['expense_items'][i];
+                    let tax_html = ``;
+                    if (Object.keys(data_row?.['expense_tax']).length !== 0) {
+                        tax_html = `<option selected>${data_row?.['expense_tax']['title']}</option>`;
+                    }
                     tableLineDetail.append(`<tr id="row-${parseInt(i+1)}" class="row-number">
                         <td class="number text-center">${parseInt(i+1)}</td>
                         <td><select class="form-select expense-type-select-box"><option selected>${data_row?.['expense_type']['title']}</option></select></td>
@@ -1280,7 +1302,7 @@ function LoadDetailPayment() {
                         <td><input class="form-control expense-uom-input" value="${data_row?.['expense_uom_name']}"></td>
                         <td><input type="number" min="1" class="form-control expense_quantity" value="${data_row?.['expense_quantity']}"></td>
                         <td><input data-return-type="number" type="text" class="form-control expense-unit-price-input mask-money" value="${data_row?.['expense_unit_price']}"></td>
-                        <td><select class="form-select expense-tax-select-box" data-method="GET"><option selected>${data_row?.['expense_tax']['title']}</option></select></td>
+                        <td><select class="form-select expense-tax-select-box" data-method="GET">${tax_html}</select></td>
                         <td><input type="text" data-return-type="number" class="form-control expense-subtotal-price mask-money" value="${data_row?.['expense_subtotal_price']}" disabled></td>
                         <td><input type="text" data-return-type="number" class="form-control expense-subtotal-price-after-tax mask-money" value="${data_row?.['expense_after_tax_price']}" disabled></td>
                         <td><input type="text" class="form-control expense-document-number" value="${data_row?.['document_number']}"></td>
@@ -1306,12 +1328,12 @@ function LoadDetailPayment() {
                         </td>
                         <td colspan="1"></td>
                     </tr>`)
-                    for (let i = 0; i < data_row?.['expense_ap_detail_list'].length; i++) {
-                        let data_row_detail = data_row?.['expense_ap_detail_list'][i];
-                        tableLineDetail.append(`<tr class="" hidden>
+                    for (let j = 0; j < data_row?.['expense_ap_detail_list'].length; j++) {
+                        let data_row_detail = data_row?.['expense_ap_detail_list'][j];
+                        tableLineDetail.append(`<tr class="row-detail-product-1" hidden>
                             <td colspan="1"></td>
                             <td colspan="1">
-                                <span class="sale_code_product_detail badge badge-outline badge-soft-primary" data-sale-code-id="` + sale_code_mapped.id + `"><b>` + sale_code_mapped.code + `</b></span>
+                                <span class="sale_code_product_detail badge badge-outline badge-soft-primary" data-sale-code-id="${data_row_detail?.['sale_code_mapped']}"><b>${data_row_detail?.['sale_code_mapped_code']}</b></span>
                             </td>
                             <td colspan="2">
                                 <input data-return-type="number" placeholder="Enter payment value" class="value-inp form-control mask-money" value="${data_row_detail?.['real_value']}">
@@ -1342,32 +1364,7 @@ function LoadDetailPayment() {
                     }
 
                     count_row(tableLineDetail, 1);
-
-                    $('.btn-row-toggle').on('click', function() {
-                        let this_row = $('#row-' + parseInt(i+1).toString());
-                        let this_product_item = this_row.find('.expense-type-select-box');
-                        let this_uom = this_row.find('.expense-uom-input');
-                        let this_quantity = this_row.find('.expense_quantity');
-                        let this_unit_price = this_row.find('.expense-unit-price-input');
-                        let this_subtotal_price = this_row.find('.expense-subtotal-price');
-                        let this_after_tax_subtotal = this_row.find('.expense-subtotal-price-after-tax');
-                        let this_document_number = this_row.find('.expense-document-number');
-
-                        if (this_product_item.val() && this_uom.val() && this_quantity.val() && this_unit_price.attr('value')
-                            && this_subtotal_price.attr('value') && this_after_tax_subtotal.attr('value') && this_document_number.val())
-                        {
-                            let row_number = this_row.attr('id').split('-')[1];
-                            let detail_product_id = '.row-detail-product-' + row_number;
-                            if ($(detail_product_id).is(":hidden")) {
-                                $(detail_product_id).prop('hidden', false);
-                            }
-                            else {
-                                $(detail_product_id).prop('hidden', true);
-                            }
-                        }
-                    });
                 }
-
 
                 $.fn.initMaskMoney2();
 
@@ -1377,7 +1374,7 @@ function LoadDetailPayment() {
 }
 
 class PaymentHandle {
-    load(sale_code_mapped, type) {
+    async load(sale_code_mapped, type) {
         PaymentLoadCreatedDate();
         PaymentLoadCreator(initEmployee);
         PaymentLoadBeneficiary(initEmployee);
@@ -1395,32 +1392,40 @@ class PaymentHandle {
             return false;
         }
 
-        frm.dataForm['sale_code'] = saleCodeEle.val();
-        let flag = 0;
-        let sale_code_mapped = SO_LIST.filter(function (element) {
-                return element.id === saleCodeEle.val();
+        frm.dataForm['sale_code_list'] = [];
+        let sale_code_list = [].concat(saleCodeEle.val());
+        for (let i = 0; i < sale_code_list.length; i++) {
+            let flag = 0;
+            let sale_code_mapped = SO_LIST.filter(function (element) {
+                return element.id === sale_code_list[i];
             })
-        if (sale_code_mapped === null) {
-            flag = 1;
-            sale_code_mapped = QUO_LIST.filter(function (element) {
-                return element.id === saleCodeEle.val();
-            })
-        }
-        if (sale_code_mapped === null) {
-            flag = 2;
-            sale_code_mapped = OPP_LIST.filter(function (element) {
-                return element.id === saleCodeEle.val();
-            })
-        }
-        if (sale_code_mapped !== null || ![0, 1, 2].includes(frm.dataForm['sale_code_detail'])) {
-            frm.dataForm['sale_code_detail'] = flag;
-        }
-        else {
-            $.fn.notifyB({description: 'Sale code detail must be in [0, 1, 2]'}, 'failure');
-            return false;
+            if (sale_code_mapped === null) {
+                flag = 1;
+                sale_code_mapped = QUO_LIST.filter(function (element) {
+                    return element.id === sale_code_list[i];
+                })
+            }
+            if (sale_code_mapped === null) {
+                flag = 2;
+                sale_code_mapped = OPP_LIST.filter(function (element) {
+                    return element.id === sale_code_list[i];
+                })
+            }
+            if (sale_code_mapped !== null || ![0, 1, 2].includes(flag)) {
+                frm.dataForm['sale_code_list'].push({
+                    'sale_code_id': sale_code_list[i],
+                    'sale_code_detail': flag
+                })
+            } else {
+                $.fn.notifyB({description: 'Sale code detail must be in [0, 1, 2]'}, 'failure');
+                return false;
+            }
         }
 
         frm.dataForm['sale_code_type'] = 0;
+        if (frm.dataForm['sale_code_list'].length > 1) {
+            frm.dataForm['sale_code_type'] = 3;
+        }
         if (![0, 3].includes(frm.dataForm['sale_code_type'])) {
             $.fn.notifyB({description: 'Sale code type must be in [0, 3]'}, 'failure');
             return false;
@@ -1469,7 +1474,7 @@ class PaymentHandle {
                 let document_number = tableLineDetail.find(row_id + ' .expense-document-number').val();
 
                 let expense_ap_detail_list = [];
-                let sale_code_len = 1;
+                let sale_code_len = sale_code_list.length;
                 let sale_code_item = tableLineDetail.find(row_id).nextAll().slice(1, sale_code_len + 1);
                 sale_code_item.each(function() {
                     let expense_items_detail_list = [];
@@ -1490,6 +1495,7 @@ class PaymentHandle {
                     }
                     expense_ap_detail_list.push({
                         'sale_code_mapped': $(this).find('.sale_code_product_detail').attr('data-sale-code-id'),
+                        'sale_code_mapped_code': $(this).find('.sale_code_product_detail').text(),
                         'real_value': real_value,
                         'converted_value': converted_value,
                         'sum_value': sum_value,
@@ -1515,6 +1521,7 @@ class PaymentHandle {
 
                 if (expense_after_tax_price !== expense_detail_value) {
                     $.fn.notifyB({description: 'Detail tab - line ' + i.toString() + ': product value must be equal to sum Sale Code value.'}, 'failure');
+                    return false;
                 }
             }
         }

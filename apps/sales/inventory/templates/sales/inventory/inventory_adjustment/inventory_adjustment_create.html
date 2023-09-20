@@ -2,7 +2,6 @@
 {% load static i18n %}
 {% block title %}{% trans 'Inventory Adjustment Create' %}{% endblock %}
 {% block cssHeader %}
-    <link href="{% static 'assets/sales/inventory/css/goodreceipt/good_receipt_create.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'vendors/dropify/dist/css/dropify.css' %}" rel="stylesheet" type="text/css"/>
@@ -18,11 +17,10 @@
     </button>
 {% endblock %}
 {% block pageContent %}
-    <form data-url=""
-          data-url-redirect="{% url 'GoodReceiptList' %}"
+    <form data-url="{% url 'InventoryAdjustmentListAPI' %}"
+          data-url-redirect="{% url 'InventoryAdjustmentList' %}"
           data-method="POST"
           data-url-warehouse-product-list="{% url 'WareHouseListForInventoryAdjustmentAPI' %}"
-          data-url-goods-receipt-product-stock-list="{% url 'GoodReceiptProductListAPI' %}"
           id="frm_inventory_adjustment_create">
         {% csrf_token %}
         <div class="row">
@@ -104,18 +102,21 @@
                             </span>
                         </span>
                     </button>
-                    <table class="table nowrap w-100" id="table-line-detail">
+                    <table data-url="{% url "WareHouseListAPI" %}"
+                           data-warehouse-product-list="{% url 'WarehouseGetProductsListAPI' %}"
+                           data-uom-list="{% url 'UnitOfMeasureListAPI' %}"
+                           data-method="GET"
+                           class="table nowrap w-100" id="table-line-detail">
                         <thead>
-                        <th>{% trans 'Product' %}</th>
+                        <th>{% trans 'Product name' %}</th>
                         <th>{% trans 'Warehouse' %}</th>
                         <th>{% trans 'Unit of measure' %}</th>
                         <th>{% trans 'Book quantity' %}</th>
                         <th>{% trans 'Count' %}</th>
                         <th>{% trans 'Difference' %}</th>
-                        <th>{% trans 'Select for action' %}</th>
+                        <th>{% trans 'Select for actions' %}</th>
                         <th>{% trans 'Action type' %}</th>
                         <th>{% trans 'Action status' %}</th>
-                        <th></th>
                         </thead>
                         <tbody></tbody>
                     </table>
@@ -137,17 +138,17 @@
                 <div class="col-1 text-right"><button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button></div>
             </div>
             <div class="offcanvas-body">
-                <div data-simplebar class="h-50 overflow-y-scroll">
+                <div style="overflow: auto; height: 70vh; overflow-x: hidden">
                     <table class="table nowrap w-100" id="table-select-products">
                         <thead>
                         <th class="w-10">
                             <span class="form-check">
-                                <input type="checkbox" class="form-check-input" id="selected_all_product" data-warehouse-id="eaa85067-2e41-4a1f-b1ff-2f71d9ccc0d6" data-product-id="7fd70eae-f3c4-4fc8-8bf4-5e64f330127a" autocomplete="off">
+                                <input type="checkbox" class="form-check-input" id="selected_all_product">
                                 <label class="form-check-label"></label>
                             </span>
                         </th>
-                        <th class="w-30">{% trans 'Warehouse' %}</th>
                         <th class="w-20">{% trans 'Code' %}</th>
+                        <th class="w-30">{% trans 'Warehouse' %}</th>
                         <th class="w-40">{% trans 'Product' %}</th>
                         </thead>
                         <tbody></tbody>

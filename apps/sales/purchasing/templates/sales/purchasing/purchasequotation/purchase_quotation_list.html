@@ -9,7 +9,7 @@
 {% block pageAction %}
     <a data-bs-placement="top"
        title="{% trans 'Create New Purchase Quotation' %}"
-       data-redirect="{% url "PurchaseQuotationCreate" %}"
+       href="{% url "PurchaseQuotationCreate" %}"
        id="create_purchase_quotation_button">
         <button class="btn btn-outline-primary">
             <span>

@@ -60,6 +60,7 @@ INSTALLED_APPS = \
         'apps.core.auths',
         'apps.core.home',
         'apps.core.hr',
+        'apps.core.tenant',
         'apps.core.company',
         'apps.core.base',
         'apps.core.workflow',
@@ -76,7 +77,10 @@ INSTALLED_APPS = \
         'apps.sales.task',
         'apps.sales.purchasing',
         'apps.sales.inventory',
+    ] + [  # e-office Application
+        'apps.eoffice.leave',
     ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

@@ -66,6 +66,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # tenant
     TENANT_PLAN_LIST = StringUrl('tenant/tenant-plans')
+    TENANT_DIAGRAM = StringUrl('tenant/org-chart')
 
     # account
     ACCOUNT_USER_COMPANY = StringUrl('account/user-company')
@@ -185,6 +186,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # payment
     PAYMENT_LIST = StringUrl('cashoutflow/payments')
     PAYMENT_DETAIL = StringUrl('cashoutflow/payments')
+    PAYMENT_CONFIG_LIST = StringUrl('cashoutflow/payment-config')
 
     PAYMENT_COST_ITEMS_LIST = StringUrl('cashoutflow/payment-cost-items-list')
 
@@ -326,10 +328,10 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # Purchasing
     PURCHASE_QUOTATION_REQUEST_LIST = StringUrl('purchasing/purchase-quotation-request/list')
-    PURCHASE_QUOTATION_REQUEST_DETAIL = StringUrl('purchasing/purchase-quotation-request')
+    PURCHASE_QUOTATION_REQUEST_DETAIL = StringUrl('purchasing/purchase-quotation-request/{pk}')
     PURCHASE_QUOTATION_REQUEST_LIST_FOR_PQ = StringUrl('purchasing/purchase-quotation-request-for-pq/list')
     PURCHASE_QUOTATION_LIST = StringUrl('purchasing/purchase-quotation/list')
-    PURCHASE_QUOTATION_DETAIL = StringUrl('purchasing/purchase-quotation')
+    PURCHASE_QUOTATION_DETAIL = StringUrl('purchasing/purchase-quotation/{pk}')
     PURCHASE_QUOTATION_PRODUCT_LIST = StringUrl('purchasing/purchase-quotation-product/list')
 
     # Process
@@ -347,6 +349,9 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     GOODS_RECEIPT_LIST = StringUrl('inventory/goods-receipt/list')
     GOODS_RECEIPT_DETAIL = StringUrl('inventory/goods-receipt')
     GOODS_RECEIPT_DETAIL_PK = StringUrl('inventory/goods-receipt/{pk}')
+    INVENTORY_ADJUSTMENT_LIST = StringUrl('inventory/inventory-adjustments')
+    INVENTORY_ADJUSTMENT_DETAIL = StringUrl('inventory/inventory-adjustment/{pk}')
+    INVENTORY_ADJUSTMENT_PRODUCTS_LIST = StringUrl('inventory/inventory-adjustment/products')
 
     # Application for Opportunity permission
     APPLICATION_OPPORTUNITY_PERMISSION = StringUrl('base/applications-opportunity-permit')
@@ -358,3 +363,13 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     OPPORTUNITY_ADD_MEMBER = StringUrl('opportunity/add-member/{pk}')
     OPPORTUNITY_DELETE_MEMBER = StringUrl('opportunity/member/delete/{pk}')
     SET_MEMBER_PERMISSION = StringUrl('opportunity/member/set/permission/{pk}')
+
+    # Purchase request config
+    PURCHASE_REQUEST_CONFIG = StringUrl('purchasing/purchase-request/config')
+
+    # e-Office
+    # leave
+    LEAVE_CONFIG = StringUrl('leave/config')
+    LEAVE_CREATE = StringUrl('leave/leave-type/create')
+    LEAVE_DETAIL = StringUrl('leave/leave-type/detail/{pk}')
+

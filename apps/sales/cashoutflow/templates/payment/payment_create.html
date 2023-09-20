@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
+{% block title %}{% trans 'Payment Create' %}{% endblock %}
 {% block cssHeader %}
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/dropify/dist/css/dropify.css' %}" rel="stylesheet" type="text/css"/>
@@ -26,6 +27,7 @@
           data-url-list="{% url 'AdvancePaymentListAPI' %}"
           data-url-redirect="{% url "PaymentList" %}"
           data-url="{% url "PaymentListAPI" %}"
+          data-url-payment-perm="{% url 'PaymentConfigListAPI' %}"
     >
         {% csrf_token %}
         <div class="row mt-1 ml-1 mr-1 collapse multi-collapse show" id="collapse-area">
@@ -165,7 +167,7 @@
                                         </div>
                                     </span>
                                 </span>
-                                <select class="form-select" id="beneficiary-select-box" data-method="GET"
+                                <select disabled class="form-select" id="beneficiary-select-box" data-method="GET"
                                         data-url="{% url 'EmployeeListAPI' %}"></select>
                             </span>
                         </div>
@@ -226,38 +228,6 @@
                         <tbody>
                         </tbody>
                     </table>
-                    <div class="offcanvas offcanvas-end w-75" tabindex="-1" id="offcanvasSelectDetailAP" aria-labelledby="offcanvasTopLabel">
-                        <div class="offcanvas-header mt-10">
-                            <h5 id="offcanvasRightLabel"></h5>
-                            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-                        </div>
-                        <div class="offcanvas-body">
-                            <div id="wizard">
-                                <h1></h1>
-                                <div>
-                                    <table id="advance_payment_list_datatable" class="table nowrap w-100"
-                                           data-method="GET" data-url="{% url 'AdvancePaymentListAPI' %}"
-                                           data-url-ap-detail="{% url 'AdvancePaymentDetailAPI' '0' %}"
-                                    >
-                                        <thead>
-                                            <tr>
-                                                <th class="w-5"></th>
-                                                <th class="w-15">{% trans 'Code' %}</th>
-                                                <th class="w-20">{% trans 'Name' %}</th>
-                                                <th class="w-15">{% trans 'To Payment' %}</th>
-                                                <th class="w-15">{% trans 'Return' %}</th>
-                                                <th class="w-15">{% trans 'Remain' %}</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <h1></h1>
-                                <div data-simplebar class="product-tables h-100 overflow-y-scroll"></div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
                 <div class="row">
                     <div class="col-8">
@@ -322,6 +292,69 @@
                 <div class="row">
                     <div class="col-12">
                         <input type="file" id="input-file-now" class="dropify">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="offcanvas offcanvas-end w-75" tabindex="-1" id="offcanvasSelectDetailAP" aria-labelledby="offcanvasTopLabel">
+            <div class="offcanvas-header mt-10">
+                <h5 id="offcanvasRightLabel" data-text-1="{% trans 'Select Advances Payment' %}" data-text-2="{% trans 'Select Expense Items' %}">{% trans 'Select Advances Payment' %}</h5>
+                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <div id="step1" style="overflow: auto; height: 70vh">
+                    <table id="advance_payment_list_datatable" class="table nowrap w-100"
+                           data-method="GET" data-url="{% url 'AdvancePaymentListAPI' %}"
+                           data-url-ap-detail="{% url 'AdvancePaymentDetailAPI' '0' %}"
+                    >
+                        <thead>
+                            <tr>
+                                <th class="w-5"></th>
+                                <th class="w-15">{% trans 'Code' %}</th>
+                                <th class="w-20">{% trans 'Name' %}</th>
+                                <th class="w-15">{% trans 'To Payment' %}</th>
+                                <th class="w-15">{% trans 'Return' %}</th>
+                                <th class="w-15">{% trans 'Remain' %}</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <div id="step2" class="product-tables" style="overflow: auto; height: 70vh" hidden></div>
+
+                <div class="row">
+                    <div class="col-6 text-left">
+                        <div class="form-group" id="total-converted" hidden>
+                            <label class="col-form-label text-primary text-decoration-underline"><b>{% trans 'TOTAL' %}</b></label>
+                            <span class="mask-money total-product-selected text-primary" data-init-money="0"></span>
+                        </div>
+                    </div>
+                    <div class="col-6 text-right">
+                        <button class="btn btn-outline-secondary" id="previous-btn" type="button" hidden>
+                            <span>
+                                <span class="icon">
+                                    <i class="bi bi-arrow-left-circle"></i>
+                                </span>
+                                <span>{% trans 'Previous' %}</span>
+                            </span>
+                        </button>
+                        <button class="btn btn-outline-primary" id="next-btn" type="button">
+                            <span>
+                                <span>{% trans 'Next' %}</span>
+                                <span class="icon">
+                                    <i class="bi bi-arrow-right-circle"></i>
+                                </span>
+                            </span>
+                        </button>
+                        <button class="btn btn-primary" data-bs-dismiss="offcanvas" id="finish-btn" type="button" hidden>
+                            <span>
+                                <span>{% trans 'Finish' %}</span>
+                                <span class="icon">
+                                    <i class="bi bi-clipboard-check"></i>
+                                </span>
+                            </span>
+                        </button>
                     </div>
                 </div>
             </div>

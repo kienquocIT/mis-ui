@@ -249,25 +249,15 @@
                         <table
                                 id="datable-workflow-node-create"
                                 class="table nowrap w-100 mb-5"
-                                width="100%"
                         >
                             <thead>
                             <tr>
-                                <th data-orderable="false">
-                            <span class="form-check">
-                                <input
-                                        type="checkbox"
-                                        class="form-check-input check-select-all"
-                                        id="customCheck1"
-                                >
-                                <label class="form-check-label" for="customCheck1"></label>
-                            </span>
-                                </th>
-                                <th data-orderable="false">{% trans 'Node name' %}</th>
-                                <th data-orderable="false">{% trans 'Description' %}</th>
-                                <th data-orderable="false">{% trans 'Node Actions' %}</th>
-                                <th data-orderable="false">{% trans 'Collaborators' %}</th>
-                                <th data-orderable="false">{% trans 'Actions' %}</th>
+                                <th class="w-10">#</th>
+                                <th class="w-20">{% trans 'Node name' %}</th>
+                                <th class="w-20">{% trans 'Description' %}</th>
+                                <th class="w-20">{% trans 'Node Actions' %}</th>
+                                <th class="w-20">{% trans 'Collaborators' %}</th>
+                                <th class="w-10">{% trans 'Actions' %}</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -361,6 +351,33 @@
         data-username="{% trans 'Username' %}"
         data-select-company="{% trans 'Select Company' %}"
         data-description="{% trans 'Description' %}"
+    >
+
+
+
+    <input
+        type="hidden"
+        id="data-init-property-employee"
+        data-url="{% url "ApplicationPropertyEmployeeListAPI" %}"
+        data-method="GET"
+    >
+    <input
+        type="hidden"
+        id="data-init-company"
+        data-url="{% url "CompanyListAPI" %}"
+        data-method="GET"
+    >
+    <input
+        type="hidden"
+        id="data-init-employee"
+        data-url="{% url "EmployeeListAPI" %}"
+        data-method="GET"
+    >
+    <input
+        type="hidden"
+        id="data-init-employee-company"
+        data-url="{% url "EmployeeCompanyListAPI" %}"
+        data-method="GET"
     >
     <!--- modal add and edit zone--->
     <div class="modal fade"
@@ -537,9 +554,9 @@
 
     <script src="{% static 'assets/core/workflow/js/workflow-flowchart.js' %}"></script>
     <script src="{% static 'assets/core/workflow/js/wf_common.js' %}"></script>
+    <script src="{% static 'assets/core/workflow/js/workflow_node_common.js' %}"></script>
     <script src="{% static 'assets/js/plugins/conditions/conditions.js' %}"></script>
     <script src="{% static 'assets/core/workflow/js/wf_detail.js' %}"></script>
-    <script src="{% static 'assets/core/workflow/js/workflow_node_detail.js' %}"></script>
 
     <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
 {% endblock %}

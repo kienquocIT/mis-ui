@@ -26,7 +26,9 @@ $(function () {
             tokenSeparators: [',', ' ']
         })
 
-        initTableZone()
+        // init DataTable
+        initTableZone();
+        NodeLoadDataHandle.loadSystemNode();
 
         // form submit
         $('#btn-create_workflow').on('click', function (e) {
@@ -34,16 +36,16 @@ $(function () {
             let $form = document.getElementById('form-create_workflow')
             let _form = new SetupFormSubmit($('#form-create_workflow'))
             _form.dataForm['zone'] = $('#table_workflow_zone').DataTable().data().toArray()
-            let nodeTableData = setupDataNode(true);
+            let nodeData = NodeSubmitHandle.setupDataSubmit();
             // check status Node before submit
-            if (nodeTableData === false) {
-                $.fn.notifyB({description: $.fn.transEle.attr('data-check-complete-node')}, 'failure');
-                return false
-            }
+            // if (nodeData === false) {
+            //     $.fn.notifyB({description: $.fn.transEle.attr('data-check-complete-node')}, 'failure');
+            //     return false
+            // }
             // get exit node condition for node list
             // if (COMMIT_NODE_LIST)
             let flowNode = FlowJsP.getCommitNode
-            for (let item of nodeTableData) {
+            for (let item of nodeData) {
                 if (flowNode.hasOwnProperty(item.order)){
                     let node = document.getElementById(`control-${item.order}`);
                     let offset = jsPlumb.getOffset(node);
@@ -58,7 +60,7 @@ $(function () {
                     item.coordinates = {}
                 }
             }
-            _form.dataForm['node'] = nodeTableData
+            _form.dataForm['node'] = nodeData;
 
             // convert associate to json
             let associate_temp = _form.dataForm['associate'].replaceAll('\\', '');
@@ -113,6 +115,62 @@ $(function () {
                     }
                 )
         });
+
+
+
+
+        // NODE EVENTS
+        NodeDataTableHandle.tableNode.on('click', '.btn-node-collab', function() {
+            NodeLoadDataHandle.loadZoneDD(this.closest('tr'));
+        });
+
+        NodeLoadDataHandle.btnAddNode.on('click', function() {
+            NodeLoadDataHandle.loadAddRowTableNode();
+            NodeLoadDataHandle.nodeModalTitleEle.val("");
+            NodeLoadDataHandle.nodeModalDescriptionEle.val("");
+        });
+
+        NodeDataTableHandle.tableNode.on('click', '.check-action-node', function() {
+            NodeLoadDataHandle.loadCheckGroupAction(this);
+            NodeLoadDataHandle.loadDoneFailAction(this);
+        });
+
+        NodeDataTableHandle.tableNode.on('change', '.box-list-source', function() {
+            NodeLoadDataHandle.loadAreaByListSource(this);
+        });
+
+        NodeDataTableHandle.tableNode.on('click', '.checkbox-node-zone-all', function() {
+            let eleZoneDD = this.closest('.dropdown-zone');
+            for (let eleCheckbox of eleZoneDD.querySelectorAll('.checkbox-node-zone')) {
+                eleCheckbox.checked = this.checked;
+            }
+            NodeLoadDataHandle.loadZoneShow(this);
+        });
+
+        NodeDataTableHandle.tableNode.on('click', '.checkbox-node-zone', function() {
+            NodeLoadDataHandle.loadZoneShow(this);
+        });
+
+        NodeDataTableHandle.tableNode.on('click', '.button-add-out-form-employee', function() {
+            NodeLoadDataHandle.loadOutFormEmployeeShow(this);
+        });
+
+        NodeDataTableHandle.tableNode.on('change', '.box-in-workflow-company', function() {
+            let boxEmployee = this.closest('.collab-in-workflow-area').querySelector('.box-in-workflow-employee');
+            $(boxEmployee).empty();
+            NodeLoadDataHandle.loadBoxEmployee($(boxEmployee));
+        });
+
+        NodeDataTableHandle.tableNode.on('click', '.button-add-in-workflow-employee', function() {
+            NodeLoadDataHandle.loadInWFEmployeeShow(this);
+        });
+
+        NodeDataTableHandle.tableNode.on('click', '.btn-add-collab-create', function() {
+            NodeLoadDataHandle.loadDoneFailCollab(this);
+        });
+
+
+
 
     });
 });

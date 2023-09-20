@@ -591,7 +591,7 @@ class JSPlumbsHandle {
 
     init() {
         // get node list from func node
-        this.setNodeList = setupDataNode();
+        this.setNodeList = NodeSubmitHandle.setupDataSubmit(true);
         this.setNodeState = this.nodeData;
         if ($('#form-detail_workflow').length){
             // detail and update page

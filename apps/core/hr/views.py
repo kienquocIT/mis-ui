@@ -168,14 +168,10 @@ class EmployeeDetailAPI(APIView):
 class EmployeeCompanyListAPI(APIView):
     permission_classes = [IsAuthenticated]
 
-    @mask_view(
-        auth_require=True,
-        is_api=True
-    )
-    def get(self, request, company_id, *args, **kwargs):
-        resp = ServerAPI(
-            request=request, url=(ApiURL.EMPLOYEE_COMPANY_NEW.fill_key(company_id=company_id)), user=request.user
-        ).get()
+    @mask_view(auth_require=True, is_api=True)
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(request=request, url=ApiURL.EMPLOYEE_COMPANY_LIST, user=request.user).get(data)
         return resp.auto_return(key_success='employee_company_list')
 
 

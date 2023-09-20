@@ -9,6 +9,7 @@ from .permissions import PermsMsg
 from .sale import MDConfigMsg
 from .sales import SaleMsg
 from .promotion import PromotionMsg
+from .eoffice import LeaveMsg
 
 
 class BaseMsg:

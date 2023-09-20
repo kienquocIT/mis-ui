@@ -340,3 +340,10 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     EXPENSE_ITEM_LIST = StringUrl('saledata/expense-items')
     EXPENSE_ITEM_DETAIL = StringUrl('saledata/expense-item/{pk}')
+
+    # e-Office
+    # leave
+    LEAVE_CONFIG = StringUrl('leave/config')
+    LEAVE_CREATE = StringUrl('leave/leave-type/create')
+    LEAVE_DETAIL = StringUrl('leave/leave-type/detail/{pk}')
+

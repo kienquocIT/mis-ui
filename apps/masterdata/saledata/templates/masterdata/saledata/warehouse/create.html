@@ -3,6 +3,7 @@
 {% load static %}
 {% block title %}{% trans 'Warehouse Create' %}{% endblock %}
 {% block cssHeader %}
+    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
@@ -17,7 +18,8 @@
     </button>
 {% endblock %}
 {% block pageContent %}
-    <form id="frmCreate" data-method="POST" data-url="{% url 'WareHouseListAPI' %}" data-url-redirect="{% url 'WareHouseList' %}">
+    <form id="frmCreate" data-method="POST" data-url="{% url 'WareHouseListAPI' %}"
+          data-url-redirect="{% url 'WareHouseList' %}">
         <div class="row">
             <div class="form-group col-6">
                 <label class="form-label required">
@@ -174,6 +176,8 @@
 
 {% endblock %}
 {% block jsFooter %}
+    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
     <script src="{% static 'assets/js/masterdata/saledata/warehouse/common.js' %}"></script>
     <script src="{% static 'assets/js/masterdata/saledata/warehouse/create.js' %}"></script>
 {% endblock %}

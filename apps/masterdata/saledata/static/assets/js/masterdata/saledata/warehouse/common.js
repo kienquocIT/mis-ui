@@ -52,12 +52,12 @@ class WarehouseLoadPage {
             'city': cityEle.val(),
             'district': districtEle.val(),
             'ward': wardEle.val(),
-            'type': type,
+            'warehouse_type': type,
             'agency': agencyEle.val(),
             'full_address': $('#warehouseAddress').val(),
             'is_active': $('#inputActive').is(':checked'),
         }
-        if (type !== 3) {
+        if (type !== '3') {
             delete data['agency']
         }
         return data
@@ -72,28 +72,32 @@ class WarehouseLoadPage {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 let detail = data?.['warehouse_detail'];
+                $x.fn.renderCodeBreadcrumb(detail);
                 $('#inpTitle').val(detail.title);
                 $('#inpRemarks').val(detail.remarks);
 
                 let agencyParentEle = agencyEle.closest('.form-group');
-                switch (detail.type){
+                let typeEle = $('#warehouseType')
+                switch (detail.warehouse_type) {
                     case 1:
                         $('#checkDropShip').prop('checked', true);
+                        typeEle.val(1);
                         break;
                     case 2:
                         $('#checkBinLocation').prop('checked', true);
+                        typeEle.val(2);
                         break;
                     case 3:
                         $('#checkAgencyLocation').prop('checked', true);
                         agencyParentEle.removeClass('hidden');
-                        WarehouseLoadPage.loadAgency(detail.agency)
+                        WarehouseLoadPage.loadAgency(detail.agency);
+                        typeEle.val(3);
                         break;
                 }
 
                 $('#inputActive').prop('checked', detail.is_active);
                 $('#warehouseAddress').val(detail.full_address);
                 $('#addressDetail').val(detail.address);
-                console.log(detail);
                 this.loadCities(detail.city);
                 this.loadDistrict(detail.district);
                 this.loadWard(detail.ward);
@@ -102,7 +106,7 @@ class WarehouseLoadPage {
     }
 
     static getFormDataUpdate() {
-        type = $('#warehouseType').val();
+        let type = $('#warehouseType').val();
         let data = {
             'title': $('#inpTitle').val(),
             'remarks': $('#inpRemarks').val(),
@@ -110,19 +114,19 @@ class WarehouseLoadPage {
             'city': cityEle.val(),
             'district': districtEle.val(),
             'ward': wardEle.val(),
-            'type': type,
+            'warehouse_type': type,
             'agency': agencyEle.val(),
             'full_address': $('#warehouseAddress').val(),
             'is_active': $('#inputActive').is(':checked'),
         }
-        if (type !== 3) {
+        if (type !== '3') {
             data['agency'] = null;
         }
         return data
     }
 }
 
-function eventPage(){
+function eventPage() {
     $('#saveWarehouseAddress').on('click', function () {
         let city = SelectDDControl.get_data_from_idx(cityEle, cityEle.val());
         let district = SelectDDControl.get_data_from_idx(districtEle, districtEle.val());
@@ -146,15 +150,21 @@ function eventPage(){
 
     $(".checkType").change(function () {
         let typeEle = $('#warehouseType');
-        let id = $(this).attr("id");
-        $(".checkType").not(this).prop("checked", false);
+        if ($(this).is(':checked')) {
+            let id = $(this).attr("id");
+            $(".checkType").not(this).prop("checked", false);
 
-        if (id === "checkDropShip") {
-            typeEle.val(1);
-        } else if (id === "checkBinLocation") {
-            typeEle.val(2);
-        } else if (id === "checkAgencyLocation") {
-            typeEle.val(3);
+            if (id === "checkDropShip") {
+                typeEle.val(1);
+            } else if (id === "checkBinLocation") {
+                typeEle.val(2);
+            } else if (id === "checkAgencyLocation") {
+                typeEle.val(3);
+            }
         }
+        else{
+            typeEle.val(0);
+        }
+
     });
 }

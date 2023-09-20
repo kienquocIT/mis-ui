@@ -237,4 +237,14 @@ $(document).ready(function(){
     })
     $('#inputNoM').initSelect2()
     $('#selectPaidBy').initSelect2()
+    $('.date-picker').daterangepicker({
+        minYear: 1901,
+        singleDatePicker: true,
+        timePicker: false,
+        showDropdowns: true,
+        locale: {
+            format: 'DD/MM/YYYY'
+        }
+    });
+    $('.date-picker').val(null).trigger('change');
 });

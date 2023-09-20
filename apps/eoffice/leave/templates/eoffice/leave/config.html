@@ -4,6 +4,7 @@
     {% trans 'Leave Config' %}
 {% endblock %}
 {% block cssHeader %}
+    <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
     <style>
         .btn-remove-row[disabled],
         .btn-edit-row[disabled]{
@@ -232,5 +233,7 @@
 {% endblock %}
 
 {% block jsFooter %}
+    <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'assets/e-offices/leave/config.js' %}"></script>
 {% endblock %}

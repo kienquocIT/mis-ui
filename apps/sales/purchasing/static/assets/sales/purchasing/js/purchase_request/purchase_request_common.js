@@ -17,8 +17,9 @@ class PurchaseRequestLoadPage {
                 return list_result
             }
         }).on('change', function () {
-            PurchaseRequestLoadPage.loadContact({}, $(this).val());
+            PurchaseRequestLoadPage.contactSelectEle.empty();
             let supplier_current = SelectDDControl.get_data_from_idx($(this), $(this).val());
+            PurchaseRequestLoadPage.loadContact(supplier_current.owner, $(this).val());
             let ele_parent = $(this).closest('.input-affix-wrapper');
             ele_parent.find('a').attr('href', urlEle.data('url-account-detail').format_url_with_uuid(supplier_current.id));
             ele_parent.find('.span-supplier-name').text(supplier_current.name);
@@ -31,15 +32,7 @@ class PurchaseRequestLoadPage {
     static loadContact(data, account_id) {
         this.contactSelectEle.initSelect2({
             data: data,
-            callbackDataResp(resp, keyResp) {
-                let list_result = []
-                resp.data[keyResp].map(function (item) {
-                    if (item?.['account_name'].id === account_id) {
-                        list_result.push(item)
-                    }
-                })
-                return list_result
-            }
+            'dataParams': {'account_name_id': account_id},
         }).on('change', function () {
             let ele_url = urlEle;
             let contact_current = SelectDDControl.get_data_from_idx($(this), $(this).val());

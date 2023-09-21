@@ -1,11 +1,23 @@
 from django.views import View
+from rest_framework import status
+from rest_framework.views import APIView
 
-from apps.shared import mask_view, ServerAPI, ApiURL
+from apps.shared import mask_view, ServerAPI, ApiURL, PAID_BY
 
-__all__ = ['LeaveConfigDetail']
+__all__ = ['LeaveConfigDetail', 'LeaveTypeConfigAPI']
+
+from apps.shared.msg import LeaveMsg
 
 
 class LeaveConfigDetail(View):
+
+    @classmethod
+    def callback_success(cls, result):
+        return {
+            'PAID_BY': PAID_BY,
+            'config_data': result
+        }
+
     @mask_view(
         login_require=True,
         auth_require=True,
@@ -14,5 +26,42 @@ class LeaveConfigDetail(View):
         breadcrumb='LEAVE_CONFIG_PAGE',
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_CONFIG).get()
-        return resp.auto_return(key_success='config_data')
+        resp = ServerAPI(user=request.user, url=ApiURL.LEAVE_CONFIG).get()
+        return resp.auto_return(callback_success=self.callback_success)
+
+
+class LeaveTypeConfigAPI(APIView):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def post(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.LEAVE_CREATE).post(request.data)
+        if resp.state:
+            resp.result['message'] = LeaveMsg.LEAVE_TYPE_CREATE
+            return resp.result, status.HTTP_200_OK
+        return resp.auto_return()
+
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.LEAVE_DETAIL.fill_key(pk=pk)).put(request.data)
+        if resp.state:
+            resp.result['message'] = LeaveMsg.LEAVE_TYPE_UPDATE
+            return resp.result, status.HTTP_200_OK
+        return resp.auto_return()
+
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True
+    )
+    def delete(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.LEAVE_DETAIL.fill_key(pk=pk)).delete({})
+        if resp.state:
+            return {'message': LeaveMsg.LEAVE_TYPE_DELETE}, status.HTTP_200_OK
+        return resp.auto_return()

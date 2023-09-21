@@ -365,3 +365,10 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # Purchase request config
     PURCHASE_REQUEST_CONFIG = StringUrl('purchasing/purchase-request/config')
+
+    # e-Office
+    # leave
+    LEAVE_CONFIG = StringUrl('leave/config')
+    LEAVE_CREATE = StringUrl('leave/leave-type/create')
+    LEAVE_DETAIL = StringUrl('leave/leave-type/detail/{pk}')
+

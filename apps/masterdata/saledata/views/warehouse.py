@@ -6,6 +6,7 @@ from apps.shared import mask_view, ApiURL, ServerAPI
 __all__ = [
     'WareHouseList', 'WareHouseListAPI', 'WareHouseDetailAPI',
     'WarehouseProductAPI', 'WareHouseListForInventoryAdjustmentAPI',
+    'WareHouseCreate', 'WareHouseDetail', 'WareHouseUpdate'
 ]
 
 
@@ -47,7 +48,7 @@ class WareHouseDetailAPI(APIView):
     )
     def get(self, request, *args, pk, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.WAREHOUSE_DETAIL.fill_key(pk=pk)).get()
-        return resp.auto_return(key_success='warehouse_list')
+        return resp.auto_return(key_success='warehouse_detail')
 
     @mask_view(
         login_require=True,
@@ -89,3 +90,36 @@ class WareHouseListForInventoryAdjustmentAPI(APIView):
         params = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.WAREHOUSE_LIST_FOR_INVENTORY_ADJUSTMENT).get(params)
         return resp.auto_return(key_success='warehouses_products_list')
+
+
+class WareHouseCreate(View):
+    @mask_view(
+        auth_require=True,
+        template='masterdata/saledata/warehouse/create.html',
+        breadcrumb='WAREHOUSE_CREATE_PAGE',
+        menu_active='menu_warehouse_list',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
+class WareHouseDetail(View):
+    @mask_view(
+        auth_require=True,
+        template='masterdata/saledata/warehouse/detail.html',
+        breadcrumb='WAREHOUSE_DETAIL_PAGE',
+        menu_active='menu_warehouse_list',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
+class WareHouseUpdate(View):
+    @mask_view(
+        auth_require=True,
+        template='masterdata/saledata/warehouse/update.html',
+        breadcrumb='WAREHOUSE_UPDATE_PAGE',
+        menu_active='menu_warehouse_list',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK

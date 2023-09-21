@@ -247,4 +247,11 @@ $(document).ready(function(){
         }
     });
     $('.date-picker').val(null).trigger('change');
+
+    $('.nav-item a').on('click', function(){
+        const href = $(this).attr('href')
+        const $btn = $('.open-modal-btn button')
+        if (href === '#leave_year_senior') $btn.addClass('hidden')
+        else $btn.removeClass('hidden')
+    })
 });

@@ -109,10 +109,32 @@
             </div>
         </div>
     </div>
-    <div id="chart-container" data-url="{% url 'TenantDiagramAPI' %}"></div>
+    <div class="row">
+        <div class="col-lg-10 col-md-8 col-12">
+            <div id="chart-container" data-url="{% url 'TenantDiagramAPI' %}"></div>
+        </div>
+        <div class="col-lg-2 col-md-4 col-12 zone-show-employee-group">
+            <div class="w-100 d-flex justify-content-start">
+                <span>{% trans 'Member of Group' %}</span>
+                <button class="ml-auto btn btn-xs btn-rounded" id="closeEmployeeOfGroup">
+                    <div class="icon">
+                        <i class="fa-solid fa-xmark"></i>
+                    </div>
+                </button>
+            </div>
+            <div class="w-100 border-top border-primary my-2 pt-2">
+                <div class="spinner-grow hidden" role="status" id="chart-employee-of-group-loading">
+                    <span class="sr-only">{% trans 'Loading' %}...</span>
+                </div>
+                <div id="chart-employee-of-group"></div>
+            </div>
+        </div>
+    </div>
+
     <div class="progress progress-bar-rounded mb-5 hidden" id="idxProgressLoadAll">
         <div
-                class="progress-bar progress-bar-striped progress-width-animated bg-success w-0" role="progressbar" id="idxProgressLoadAllNum" aria-valuenow="0"
+                class="progress-bar progress-bar-striped progress-width-animated bg-success w-0" role="progressbar"
+                id="idxProgressLoadAllNum" aria-valuenow="0"
                 aria-valuemin="0"
                 aria-valuemax="100"
         ></div>
@@ -125,7 +147,8 @@
         <button type="button" class="oc-reset-first-btn btn btn-soft-primary mr-3 mb-1">{% trans 'Reset' %}</button>
         <div
                 class="input-group mr-3 mb-1 w-300p"
-                data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'Available for currently displayed elements' %}"
+                data-bs-toggle="tooltip" data-bs-placement="top"
+                title="{% trans 'Available for currently displayed elements' %}"
         >
             <select class="form-select" id="idx-source-action">
                 <option value="tenant">{% trans 'Tenant' %}</option>

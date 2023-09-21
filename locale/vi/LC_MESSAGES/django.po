@@ -4221,3 +4221,11 @@ msgstr "Hiển thị"
 #
 msgid "Hide"
 msgstr "Ẩn"
+
+#
+msgid "Member of Group"
+msgstr "Thành viên của phòng ban"
+
+#
+msgid "Empty"
+msgstr "Không có dữ liệu"

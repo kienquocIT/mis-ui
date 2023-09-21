@@ -8,6 +8,58 @@ $(function () {
         let percentOfEachGroup = 0;
         let maxLevel = 0;
 
+        $('#closeEmployeeOfGroup').on('click', function (){
+           $(this).closest('.zone-show-employee-group').addClass('hidden').prev('div').alterClass('col-*').addClass('col-12');
+        });
+
+        let eleEmployeeOfGroup = $('#chart-employee-of-group');
+        let eleEmployeeOfGroupLoading = $('#chart-employee-of-group-loading');
+
+        function employeeOfGroupActiveLoading(isResetData = false){
+            eleEmployeeOfGroupLoading.removeClass('hidden');
+            if (isResetData === true) eleEmployeeOfGroup.html("");
+        }
+
+        function employeeOfGroupDeActiveLoading(isResetData = false){
+            eleEmployeeOfGroupLoading.addClass('hidden');
+            if (isResetData === true) eleEmployeeOfGroup.html("");
+        }
+
+        eleContainer.on('click', '.node', function (){
+            if ($(this).hasClass('data-type-2')){
+                employeeOfGroupActiveLoading(true);
+                $.fn.callAjax2({
+                    url: ajaxUrl,
+                    type: 'GET',
+                    data: {
+                        'get_employee': '1',
+                        'get_employee__group_id': $(this).attr('id'),
+                    }
+                }).then(
+                    (resp)=>{
+                        employeeOfGroupDeActiveLoading();
+                        let data = $.fn.switcherResp(resp);
+                        let orgChartData = data?.['org_chart'] || [];
+                        let htmlChild = orgChartData.map(
+                            (item) => {
+                                return `<li>${item.full_name}</li>`
+                            }
+                        );
+                        if (htmlChild.length > 0){
+                            eleEmployeeOfGroup.html(`<ol>${htmlChild.join("")}</ol>`);
+                        } else {
+                            eleEmployeeOfGroup.html(`<span class="text-warning">${$.fn.transEle.data('msg-empty')}!</span>`);
+                        }
+                    },
+                    (errs) => {
+                        employeeOfGroupDeActiveLoading();
+                    }
+                )
+            } else {
+                employeeOfGroupDeActiveLoading(true);
+            }
+        })
+
         let sourceActionEle = $('#idx-source-action');
         $('#idx-btn-show').on('click', function (){
             let ele = null;

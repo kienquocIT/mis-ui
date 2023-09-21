@@ -181,7 +181,7 @@ div.inline {
 }
 
 .util-btn {
-    justify-content: flex-end;
+    margin-left: auto;
 }
 
 .row-custom-filter {

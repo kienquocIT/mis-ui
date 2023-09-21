@@ -70,26 +70,33 @@ class SetupFormSubmit {
     validate(opts) {
         if (this.formSelected) {
             let submitHandler = opts?.['submitHandler'];
-            this.formSelected.validate({
-                focusInvalid: true,
-                validClass: "is-valid",
-                errorClass: "is-invalid",
-                errorElement: "small",
-                showErrors: function (errorMap, errorList) {
-                    this.defaultShowErrors();
-                },
-                errorPlacement: function (error, element) {
-                    element.closest('.form-group').append(error);
-                    // error.insertAfter(element);
-                    error.css({
-                        'color': "red",
-                    })
-                },
-                submitHandler: function (form, event) {
-                    event.preventDefault();
-                    submitHandler ? submitHandler($(form), event) : form.submit();
-                },
-                onsubmit: true, // !!submitHandler,
+            if (opts.hasOwnProperty('submitHandler')){
+                delete opts['submitHandler'];
+            }
+
+            this.formSelected.each(function () {
+                $(this).validate({
+                    focusInvalid: true,
+                    validClass: "is-valid",
+                    errorClass: "is-invalid",
+                    errorElement: "small",
+                    showErrors: function (errorMap, errorList) {
+                        this.defaultShowErrors();
+                    },
+                    errorPlacement: function (error, element) {
+                        element.closest('.form-group').append(error);
+                        // error.insertAfter(element);
+                        error.css({
+                            'color': "red",
+                        })
+                    },
+                    submitHandler: function (form, event) {
+                        event.preventDefault();
+                        submitHandler ? submitHandler($(form), event) : form.submit();
+                    },
+                    onsubmit: true, // !!submitHandler,
+                    ...opts,
+                })
             })
         } else {
             throw Error('Form element must be required!');
@@ -2208,7 +2215,9 @@ class DTBControl {
         filterEle.find('input[type="search"]').addClass('form-control w-200p');
 
         // handle sort
-        let preKeyVisible = settings.aoHeader[0].map((item) => {return $(item.cell).text().trim();});
+        let preKeyVisible = settings.aoHeader[0].map((item) => {
+            return $(item.cell).text().trim();
+        });
         let keyVisible = [];
 
         let keySort = [];
@@ -3041,7 +3050,7 @@ class WindowControl {
 }
 
 class PersonControl {
-    static shortNameGlobe(personData, shortNameKey=null) {
+    static shortNameGlobe(personData, shortNameKey = null) {
         if (typeof personData === 'object') {
             if (shortNameKey === null) {
                 if ($.fn.hasOwnProperties(personData, ['first_name', 'last_name'])) {
@@ -3069,7 +3078,7 @@ class PersonControl {
         return '';
     }
 
-    static renderAvatar(personData, clsName = "", appendHtml = "", shortNameKey=null) {
+    static renderAvatar(personData, clsName = "", appendHtml = "", shortNameKey = null) {
         let avatar = personData?.['avatar'];
         let htmlTooltipFullname = `data-bs-toggle="tooltip" data-bs-placement="bottom" title="${personData?.['full_name']}"`;
         let shortName = PersonControl.shortNameGlobe(personData, shortNameKey);

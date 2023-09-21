@@ -345,6 +345,7 @@ class BreadcrumbView:
 
     GROUP_LEVEL_LIST_PAGE = [
         BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.GROUP_LIST_PAGE,
         BreadcrumbItem.GROUP_LEVEL_LIST_PAGE,
     ]
 

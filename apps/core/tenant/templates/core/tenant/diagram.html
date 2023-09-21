@@ -7,7 +7,7 @@
     <style>
         #chart-container {
             position: relative;
-            height: 80%;
+            min-height: 500px;
             border: 1px solid #aaa;
             margin: 0.5rem;
             overflow: auto;
@@ -28,19 +28,10 @@
             padding-right: 5px;
         }
 
-        .orgchart .node .title {
-            width: 180px;
+        .orgchart .node .title, .orgchart .node .content {
+            width: 250px;
+            height: 40px;
             padding: 5px;
-            word-break: normal !important;
-            white-space: normal !important;
-            min-height: 20px;
-            height: unset;
-        }
-
-        .orgchart .node .content {
-            width: 180px;
-            min-height: 20px;
-            height: unset;
             word-break: normal !important;
             white-space: normal !important;
         }
@@ -115,8 +106,20 @@
         </div>
     </div>
     <div id="chart-container" data-url="{% url 'TenantDiagramAPI' %}"></div>
-
-    <span class="hidden" id="msgPrivate" data-msg-export-to-image="{% trans 'Export To Image' %}"></span>
+    <div class="progress progress-bar-rounded mb-5 hidden" id="idxProgressLoadAll">
+        <div
+                class="progress-bar progress-bar-striped progress-width-animated bg-success w-0" role="progressbar" id="idxProgressLoadAllNum" aria-valuenow="0"
+                aria-valuemin="0"
+                aria-valuemax="100"
+        ></div>
+    </div>
+    <div class="d-flex">
+        <button
+                type="button" class="oc-export-btn btn btn-soft-primary mr-1 mb-1"
+        >{% trans 'Export To Image' %}</button>
+        <button type="button" class="oc-get-all-btn btn btn-soft-primary mr-1 mb-1">{% trans 'Get all' %}</button>
+        <button type="button" class="oc-reset-first-btn btn btn-soft-primary mr-1 mb-1">{% trans 'Reset' %}</button>
+    </div>
 {% endblock %}
 
 {% block jsFooter %}

@@ -4197,3 +4197,15 @@ msgstr "Người Quản Lý"
 #
 msgid "Belong to Role"
 msgstr "Có Vai Trò"
+
+#
+msgid "Get all"
+msgstr "Lấy tất cả"
+
+#
+msgid "Reset"
+msgstr "Làm lại"
+
+#
+msgid "Re-Password not match Password"
+msgstr "Mật khẩu không khớp"

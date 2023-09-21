@@ -39,7 +39,7 @@ $(document).ready(function () {
     }
 
     $('#auto-create-pw').on('change', function () {
-        let passwordEle = $('#password');
+        let passwordEle = $('#mypassword');
         let confirmPasswordEle = $('#confirm-password');
         if ($(this).is(':checked') === true) {
             const pw = generatePW();
@@ -65,41 +65,57 @@ $(document).ready(function () {
 
     loadCompanySelectEle($('#select-box-company'));
 
-    jQuery.validator.setDefaults({
-        debug: true,
-        success: "valid"
-    });
+    let msgEle = $('#trans-factory');
     let frm = $('#form-create-user');
-    frm.validate({
-        errorElement: 'p',
-        errorClass: 'is-invalid cl-red',
-    })
-    SetupFormSubmit.validate(
-        frm,
+    new SetupFormSubmit(frm).validate(
         {
+            rules: {
+                'mypassword': {
+                    required: true,
+                    minlength: 6,
+                },
+                'confirm_password': {
+                    required: true,
+                    equalTo: '#mypassword',
+                }
+            },
+            messages: {
+                'confirm_password': {
+                    equalTo: msgEle.data('msg-password-not-match'),
+                }
+            },
             submitHandler: function (form) {
                 let frm = new SetupFormSubmit($(form));
-                if ($("#password").val() !== $("#confirm-password").val()) {
-                    $.fn.notifyB({description: $('#trans-factory').data('trans-confirm-password')}, 'warning')
-                } else {
-                    $.fn.callAjax2({
-                        url: frm.dataUrl,
-                        method: frm.dataMethod,
-                        data: frm.dataForm,
-                    })
-                        .then(
-                            (resp) => {
-                                let data = $.fn.switcherResp(resp);
-                                if (data) {
-                                    $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
-                                    $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
-                                }
-                            },
-                            (errs) => {
-                                $.fn.notifyB({description: errs.data.errors}, 'failure');
-                            }
-                        )
-                }
+                let bodyData = frm.dataForm;
+                bodyData['password'] = frm.dataForm['mypassword'];
+                return $.fn.callAjax2({
+                    url: frm.dataUrl,
+                    method: frm.dataMethod,
+                    data: bodyData,
+                }).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
+                            $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
+                        }
+                    },
+                    (errs) => {
+                        $.fn.notifyB({description: errs.data.errors}, 'failure');
+                    }
+                )
             }
-        });
+        }
+    );
+    // frm.validate({
+    //     rules: {
+    //         'mypassword': {
+    //             required: true,
+    //             minlength: 6,
+    //         },
+    //         'confirm_password': {
+    //             equalTo: '#mypassword',
+    //         }
+    //     },
+    // })
 });

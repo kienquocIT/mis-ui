@@ -11,6 +11,20 @@
             margin: 0 !important;
         }
         .text-cursor{cursor: pointer}
+
+        .cus-loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 9999;
+            background: #fff;
+            opacity: .5;
+            display: flex;
+            width: 100%;
+            height: 100%;
+            justify-content: center;
+            align-items: center;
+        }
     </style>
 {% endblock %}
 {% block jsHeader %}
@@ -53,7 +67,7 @@
             </div>
             <div class="col-xl-3 col-lg-4 col-md-6 col-12 mb-3">
                 <div class="form-group">
-                    <label for="inputEstimateDeliveryDate" class="form-label required">
+                    <label for="inputEstimateDeliveryDate" class="form-label">
                         {% trans 'Estimate Delivery Date' %}</label>
                     <div class="input-affix-wrapper">
                         <input type="text" name="estimated_delivery_date" id="inputEstimateDeliveryDate"

@@ -157,9 +157,7 @@ function dataTableEmployee() {
                 throw Error('Call data raise errors.')
             },
         },
-        searching: false,
         paging: false,
-        ordering: false,
         info: false,
         columnDefs: [],
         columns: [
@@ -249,9 +247,7 @@ function dataTableEmployeeShow(data) {
     let $table = $('#datable_employee_show_list');
     $table.DataTableDefault({
         data: data ? data : [],
-        searching: false,
         paging: false,
-        ordering: false,
         info: false,
         columnDefs: [],
         columns: [
@@ -287,7 +283,6 @@ function dataTableEmployeeShow(data) {
                 }
             },
         ],
-        drawCallback: function () {
-        },
+        drawCallback: function () {},
     });
 }

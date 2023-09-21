@@ -19,6 +19,8 @@ $(function () {
                         throw Error('Call data raise errors.')
                     },
                 },
+                paging: false,
+                info: false,
                 columnDefs: [
                     {
                         "width": "5%",

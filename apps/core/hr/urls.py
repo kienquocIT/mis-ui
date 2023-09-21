@@ -18,7 +18,8 @@ urlpatterns = [
     path('employee/<str:pk>', EmployeeDetailAPI.as_view(), name='EmployeeDetailAPI'),
     path('employee/detail/<str:pk>', EmployeeDetail.as_view(), name='EmployeeDetail'),
     path('employee/update/<str:pk>', EmployeeUpdate.as_view(), name='EmployeeUpdate'),
-    path('employee/company/<str:company_id>', EmployeeCompanyListAPI.as_view(), name='EmployeeCompanyListAPI'),
+    # path('employee/company/<str:company_id>', EmployeeCompanyListAPI.as_view(), name='EmployeeCompanyListAPI'),
+    path('employee-company', EmployeeCompanyListAPI.as_view(), name='EmployeeCompanyListAPI'),
 
     path('role', RoleList.as_view(), name='RoleList'),
     path('role/api', RoleListAPI.as_view(), name='RoleListAPI'),

@@ -80,6 +80,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     EMPLOYEE_COMPANY = StringUrl('hr/employee/company')
     EMPLOYEE_COMPANY_NEW = StringUrl('hr/employee/company/{company_id}')
     EMPLOYEE_TENANT = StringUrl('hr/employee/tenant')
+    EMPLOYEE_COMPANY_LIST = StringUrl('hr/employees-company')
 
     # organization/group
     GROUP_LEVEL_LIST = StringUrl('hr/levels')

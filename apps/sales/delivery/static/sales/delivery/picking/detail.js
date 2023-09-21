@@ -61,6 +61,7 @@ class pickupUtil {
             $('#idxDoneAll').prop('checked', true)
         else
             $('#idxDoneAll').prop('checked', false)
+        $('.cus-loading').remove()
     }
 
     checkAllHandle() {
@@ -324,6 +325,8 @@ $(async function () {
                         // format số âm, nhiều số 0. Ex. 0001, số thập phân.
                         let value = this.value.replace("-", "").replace(/^0+(?=\d)/, '').replace(/\.\d+$/, '');
                         this.value = value
+                        $('body').append('<div class="cus-loading"><div class="spinner-border" role="status">' +
+                            '<span class="sr-only"></span></div></div>')
                         const listCompare = await pickupInit.getWarehouseStock(data)
                         if (listCompare > 0 && listCompare >= parseFloat(value)) {
                             pickupInit.pickedQuantityUtil(value, index);
@@ -334,6 +337,7 @@ $(async function () {
                                 'failure'
                             );
                             $(this).addClass('is-invalid cl-red')
+                            $('.cus-loading').remove()
                         }
                     }
                 })
@@ -397,26 +401,24 @@ $(async function () {
                     'order': prod.order,
                 })
         }
-
         pickingData.products = prodSub
 
         //call ajax to update picking
-        $.fn.callAjax(_form.dataUrl, _form.dataMethod, pickingData, csr)
-            .then(
-                (resp) => {
-                    const data = $.fn.switcherResp(resp);
-                    const description = (_form.dataMethod.toLowerCase() === 'put') ? data.detail : data.message;
-                    if (data) {
-                        $.fn.notifyB({description: description}, 'success')
-                        $.fn.redirectUrl($($form).attr('data-url-redirect'), 3000);
-                    }
-                },
-                (errs) => {
-                    if (errs.data.errors.hasOwnProperty('detail')) {
-                        $.fn.notifyB({description: String(errs.data.errors['detail'])}, 'failure')
-                    }
+        $.fn.callAjax2({
+            'url': _form.dataUrl, 'method': _form.dataMethod, 'data': pickingData
+        })
+            .then((resp) => {
+                const data = $.fn.switcherResp(resp);
+                const description = (_form.dataMethod.toLowerCase() === 'put') ? data.detail : data.message;
+                if (data) {
+                    $.fn.notifyB({description: description}, 'success')
+                    $.fn.redirectUrl($($form).attr('data-url-redirect'), 3000);
                 }
-            )
+            }, (errs) => {
+                if (errs.data.errors.hasOwnProperty('detail')) {
+                    $.fn.notifyB({description: String(errs.data.errors['detail'])}, 'failure')
+                }
+            })
             .catch((err) => {
                 console.log(err)
             })

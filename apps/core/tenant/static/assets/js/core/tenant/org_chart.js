@@ -8,6 +8,51 @@ $(function () {
         let percentOfEachGroup = 0;
         let maxLevel = 0;
 
+        let sourceActionEle = $('#idx-source-action');
+        $('#idx-btn-show').on('click', function (){
+            let ele = null;
+            switch (sourceActionEle.val()) {
+                case 'tenant':
+                    ele = eleContainer.find('.data-type-0');
+                    break
+                case 'company':
+                    ele = eleContainer.find('.data-type-1');
+                    break
+                case 'department':
+                    ele = eleContainer.find('.data-type-2');
+                    break
+                case 'employee':
+                    ele = eleContainer.find('.data-type-3');
+
+                    break
+            }
+            if (ele !== null && ele.length > 0){
+                ele.closest('.hierarchy').removeClass('hidden').closest('.nodes').prev('.node').removeClass('hidden-pseudo')
+            }
+        });
+        $('#idx-btn-hide').on('click', function (){
+            let ele = null;
+            switch (sourceActionEle.val()) {
+                case 'tenant':
+                    ele = eleContainer.find('.data-type-0');
+                    break
+                case 'company':
+                    ele = eleContainer.find('.data-type-1');
+                    break
+                case 'department':
+                    ele = eleContainer.find('.data-type-2');
+                    break
+                case 'employee':
+                    ele = eleContainer.find('.data-type-3');
+
+                    break
+            }
+            if (ele !== null && ele.length > 0){
+                ele.closest('.hierarchy').addClass('hidden').closest('.nodes').prev('.node').addClass('hidden-pseudo')
+            }
+        });
+
+
         $.fn.OrgChart.prototype.loadNodes = function (rel, url, $edge) {
             let that = this;
             let opts = this.options;
@@ -296,7 +341,7 @@ $(function () {
                             )
                         }
                         else {
-                            item['relationship'] = '100';
+                            item['relationship'] = '000';
                         }
                         return item;
                     }

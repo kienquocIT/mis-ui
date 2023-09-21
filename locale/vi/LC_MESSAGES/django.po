@@ -4209,3 +4209,15 @@ msgstr "Làm lại"
 #
 msgid "Re-Password not match Password"
 msgstr "Mật khẩu không khớp"
+
+#
+msgid "Available for currently displayed elements"
+msgstr "Có sẵn cho các phần tử hiện đang hiển thị"
+
+#
+msgid "Show"
+msgstr "Hiển thị"
+
+#
+msgid "Hide"
+msgstr "Ẩn"

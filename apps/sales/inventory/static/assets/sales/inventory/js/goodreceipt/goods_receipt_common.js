@@ -3,6 +3,7 @@ class GRLoadDataHandle {
     static typeSelectEle = $('#box-good-receipt-type');
     static POSelectEle = $('#box-good-receipt-purchase-order');
     static supplierSelectEle = $('#box-good-receipt-supplier');
+    static IASelectEle = $('#box-good-receipt-ia-number');
     static initPOProductEle = $('#data-init-purchase-order-products');
     static PRDataEle = $('#purchase_requests_data');
     // static submitDataPRWHEle = $('#data-submit-pr-warehouse');
@@ -118,6 +119,14 @@ class GRLoadDataHandle {
             },
         });
         GRLoadDataHandle.loadMoreInformation(ele);
+    };
+
+    static loadBoxIA(dataIA = {}) {
+        let ele = GRLoadDataHandle.IASelectEle;
+        ele.initSelect2({
+            data: dataIA,
+            disabled: !(ele.attr('data-url')),
+        });
     };
 
     static loadBoxProduct(ele, dataProduct = {}) {

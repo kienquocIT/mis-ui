@@ -17,6 +17,7 @@ $(function () {
             GRLoadDataHandle.loadBoxType();
             GRLoadDataHandle.loadBoxPO();
             GRLoadDataHandle.loadBoxSupplier();
+            GRLoadDataHandle.loadBoxIA();
             GRDataTableHandle.dataTableGoodReceiptPOProduct();
             GRDataTableHandle.dataTableGoodReceiptPR();
             GRDataTableHandle.dataTableGoodReceiptWH();

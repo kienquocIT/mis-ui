@@ -373,7 +373,8 @@ class JSPlumbsHandle {
             });
 
             // check if workflow detail or edit page show flowchart
-            if ($('#form-detail_workflow').length) {
+            let $form = $('#form-create_workflow');
+            if (['GET', 'PUT'].includes($form.attr('data-method'))) {
                 instance.doWhileSuspended(function () {
                     $('#flowchart_workflow .clone').each(function () {
                         let is_id = $(this).attr('id')
@@ -593,7 +594,8 @@ class JSPlumbsHandle {
         // get node list from func node
         this.setNodeList = NodeSubmitHandle.setupDataSubmit(true);
         this.setNodeState = this.nodeData;
-        if ($('#form-detail_workflow').length){
+        let $form = $('#form-create_workflow');
+        if (['GET', 'PUT'].includes($form.attr('data-method'))){
             // detail and update page
             if (!has_edited){
                 $('#node_dragbox').empty();

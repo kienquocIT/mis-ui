@@ -79,117 +79,120 @@ $(function () {
 
 
     $(document).ready(function() {
-        let $form = $('#form-detail_workflow')
+        let formSubmit = $('#form-create_workflow');
         // call ajax get info wf detail
-        $.fn.callAjax($form.data('url'), 'GET')
-            .then(
+        $.fn.callAjax2({
+            url: formSubmit.data('url'),
+            method: 'GET',
+            isLoading: true,
+        }).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         prepareDataAndRenderHTML(data);
                         NodeLoadDataHandle.loadDetailNode(data?.['node']);
-                        clickEditForm();
-                        UpdateFormSubmit();
+                        // clickEditForm();
+                        // UpdateFormSubmit();
                     }
                 }
             )
 
         // form submit
-        $('#btn-detail_workflow').on('click', function (e) {
-            e.preventDefault()
-            let $form = document.getElementById('form-detail_workflow')
-            let _form = new SetupFormSubmit($('#form-detail_workflow'))
-            let dataZone = $('#table_workflow_zone').DataTable().data().toArray()
-            if (dataZone.length && typeof dataZone[0] === 'object')
-                // convert property list from object to id array list
-                for (let item of dataZone){
-                    let property_temp = []
-                    for (let val of item.property_list){
-                        property_temp.push(val.id)
-                    }
-                    item.property_list = property_temp
-                }
-            _form.dataForm['zone'] = dataZone
-            let nodeTableData = NodeSubmitHandle.setupDataSubmit();
-            // check status Node before submit
-            // if (nodeTableData === false) {
-            //     $.fn.notifyB({description: $.fn.transEle.attr('data-check-complete-node')}, 'failure');
-            //     return false
-            // }
-            // add condition object for node list
-            // if (COMMIT_NODE_LIST)
-            let flowNode = FlowJsP.getCommitNode
-            for (let item of nodeTableData) {
-                if (flowNode.hasOwnProperty(item.order)){
-                    const node = document.getElementById(`control-${item.order}`);
-                    const offset = jsPlumb.getOffset(node);
-                    //add coord of node
-                    item.coordinates = {
-                        top: offset.top,
-                        left: offset.left,
-                    }
-                    item.condition = flowNode[item.order]
-                }
-                else{
-                    item.condition = []
-                    item.coordinates = {}
-                }
-
-            }
-            _form.dataForm['node'] = nodeTableData
-
-            // convert associate to json
-            let associate_temp = _form.dataForm['associate'].replaceAll('\\', '');
-            if (associate_temp) {
-                let associate_data_submit = [];
-               let associate_data_json =  JSON.parse(associate_temp);
-               for (let item of associate_data_json) {
-                   if (typeof item.node_in === "object"){
-                       // case from detail page update workflow if node_in is not order number
-                       item.node_in = item.node_in.order
-                       item.node_out = item.node_out.order
-                   }
-                   associate_data_submit.push(item);
-               }
-               _form.dataForm['association'] = associate_data_submit;
-            }
-
-            let submitFields = [
-                'title',
-                'application',
-                'node',
-                'zone',
-                'is_multi_company',
-                'is_define_zone',
-                'actions_rename',
-                'association',
-            ]
-            if (_form.dataForm) {
-                for (let key in _form.dataForm) {
-                    if (!submitFields.includes(key)) delete _form.dataForm[key]
-                }
-            }
-            let temp = _form.dataForm['actions_rename']
-            if (temp) _form.dataForm['actions_rename'] = JSON.parse(temp)
-            else _form.dataForm['actions_rename'] = []
-
-            let csr = $("[name=csrfmiddlewaretoken]").val()
-
-            $.fn.callAjax(_form.dataUrl, _form.dataMethod, _form.dataForm, csr)
-                .then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyB({description: data.message}, 'success')
-                            $.fn.redirectUrl($($form).attr('data-url-redirect'), 3000);
-                        }
-                    },
-                    (errs) => {
-                        console.log(errs)
-                        $.fn.notifyB({description: "Workflow create fail"}, 'failure')
-                    }
-                )
-        });
+        // $('#btn-detail_workflow').on('click', function (e) {
+        //     e.preventDefault()
+        //     let $form = document.getElementById('form-detail_workflow')
+        //     let _form = new SetupFormSubmit($('#form-detail_workflow'))
+        //     let dataZone = $('#table_workflow_zone').DataTable().data().toArray()
+        //     if (dataZone.length && typeof dataZone[0] === 'object')
+        //         // convert property list from object to id array list
+        //         for (let item of dataZone){
+        //             let property_temp = []
+        //             for (let val of item.property_list){
+        //                 property_temp.push(val.id)
+        //             }
+        //             item.property_list = property_temp
+        //         }
+        //     _form.dataForm['zone'] = dataZone
+        //     let nodeTableData = NodeSubmitHandle.setupDataSubmit();
+        //     // check status Node before submit
+        //     // if (nodeTableData === false) {
+        //     //     $.fn.notifyB({description: $.fn.transEle.attr('data-check-complete-node')}, 'failure');
+        //     //     return false
+        //     // }
+        //     // add condition object for node list
+        //     // if (COMMIT_NODE_LIST)
+        //     let flowNode = FlowJsP.getCommitNode
+        //     for (let item of nodeTableData) {
+        //         if (flowNode.hasOwnProperty(item.order)){
+        //             const node = document.getElementById(`control-${item.order}`);
+        //             const offset = jsPlumb.getOffset(node);
+        //             //add coord of node
+        //             item.coordinates = {
+        //                 top: offset.top,
+        //                 left: offset.left,
+        //             }
+        //             item.condition = flowNode[item.order]
+        //         }
+        //         else{
+        //             item.condition = []
+        //             item.coordinates = {}
+        //         }
+        //
+        //     }
+        //     _form.dataForm['node'] = nodeTableData
+        //
+        //     // convert associate to json
+        //     let associate_temp = _form.dataForm['associate'].replaceAll('\\', '');
+        //     if (associate_temp) {
+        //         let associate_data_submit = [];
+        //        let associate_data_json =  JSON.parse(associate_temp);
+        //        for (let item of associate_data_json) {
+        //            if (typeof item.node_in === "object"){
+        //                // case from detail page update workflow if node_in is not order number
+        //                item.node_in = item.node_in.order
+        //                item.node_out = item.node_out.order
+        //            }
+        //            associate_data_submit.push(item);
+        //        }
+        //        _form.dataForm['association'] = associate_data_submit;
+        //     }
+        //
+        //     let submitFields = [
+        //         'title',
+        //         'application',
+        //         'node',
+        //         'zone',
+        //         'is_multi_company',
+        //         'is_define_zone',
+        //         'actions_rename',
+        //         'association',
+        //     ]
+        //     if (_form.dataForm) {
+        //         for (let key in _form.dataForm) {
+        //             if (!submitFields.includes(key)) delete _form.dataForm[key]
+        //         }
+        //     }
+        //     let temp = _form.dataForm['actions_rename']
+        //     if (temp) _form.dataForm['actions_rename'] = JSON.parse(temp)
+        //     else _form.dataForm['actions_rename'] = []
+        //
+        //     let csr = $("[name=csrfmiddlewaretoken]").val()
+        //
+        //     $.fn.callAjax(_form.dataUrl, _form.dataMethod, _form.dataForm, csr)
+        //         .then(
+        //             (resp) => {
+        //                 let data = $.fn.switcherResp(resp);
+        //                 if (data) {
+        //                     $.fn.notifyB({description: data.message}, 'success')
+        //                     $.fn.redirectUrl($($form).attr('data-url-redirect'), 3000);
+        //                 }
+        //             },
+        //             (errs) => {
+        //                 console.log(errs)
+        //                 $.fn.notifyB({description: "Workflow create fail"}, 'failure')
+        //             }
+        //         )
+        // });
 
     }); // end document ready
-}, jQuery);
+});

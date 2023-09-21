@@ -11,27 +11,25 @@
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-flush-primary flush-soft-hover"
-            type="button" id="btn-create_workflow" data-bs-toggle="tooltip" data-bs-placement="top" title="Save"
-            data-bs-original-title="Save">
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="save"></i>
-            </span>
-            <span class="font-3 ml-1">
-                {% trans 'Save' %}
+    <button class="btn btn-outline-primary" type="submit" form="form-create_workflow">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
             </span>
         </span>
     </button>
 {% endblock %}
 
 {% block pageContent %}
-    <form data-url="{% url 'WorkflowCreateAPI' %}"
-          data-url-redirect="{% url 'WorkflowList' %}"
-          data-method="POST"
-          id="form-create_workflow"
-          style="padding: 10px"
-          method="post">
+    <form
+            data-url="{% url 'WorkflowCreateAPI' %}"
+            data-url-redirect="{% url 'WorkflowList' %}"
+            data-method="POST"
+            id="form-create_workflow"
+            style="padding: 10px"
+            method="post"
+    >
         {% csrf_token %}
         <input type="hidden" name="actions_rename">
         <input type="hidden" name="associate" id="node-associate">
@@ -386,7 +384,7 @@
                                 </div>
                             </div>
                         </div>
-                        <label for="company_list_choose">{% trans 'Select property' %}:</label>
+                        <label for="property_list_choices">{% trans 'Select property' %}:</label>
                         <select class="form-control dropdown-select_two"
                                 data-placeholder="{% trans 'Nothing selected' %}"
                                 name="property_list"

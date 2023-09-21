@@ -50,7 +50,7 @@
                             <div class="input-group">
                                 <span class="input-affix-wrapper">
                                     <span class="input-prefix">
-                                        <i class="fas fa-clipboard-check text-pumpkin"></i>
+                                        <i class="fas fa-clipboard-check text-brown"></i>
                                     </span>
                                     <select
                                         class="form-select"
@@ -192,12 +192,11 @@
                             <select
                                     class="form-select"
                                     id="box-good-receipt-ia-number"
-                                    data-url=""
+                                    data-url="{% url 'InventoryAdjustmentListAPI' %}"
                                     data-method="GET"
                                     data-link-detail=""
                                     name="ia_number"
-                                    data-keyResp=""
-                                    required
+                                    data-keyResp="inventory_adjustment_list"
                                     disabled
                             >
                             </select>

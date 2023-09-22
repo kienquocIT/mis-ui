@@ -311,7 +311,7 @@ class MenusPurchase:
     )
 
     INVENTORY = MenuCommon(
-        name='Inventory', code='menu_inventory_activities', view_name='', icon='<i class="bi bi-shop-window"></i>',
+        name='Inventory', code='menu_inventory_activities', view_name='', icon='<i class="fas fa-clipboard-check"></i>',
         child=[
             MenuCommon(
                 name='Goods receipt',

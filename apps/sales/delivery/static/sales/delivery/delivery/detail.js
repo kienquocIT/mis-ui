@@ -418,7 +418,7 @@ $(async function () {
 
                 const res = $.fn.switcherResp(req);
                 prepareHTMLConfig(res.config_at_that_point)
-
+                $x.fn.renderCodeBreadcrumb(res);
                 const $saleOrder = $('#inputSaleOrder');
                 $saleOrder.val(res.sale_order_data.code)
                 $('.title-code').text(res.code)

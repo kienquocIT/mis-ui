@@ -211,6 +211,10 @@ $(function () {
             GRCalculateHandle.calculateMain(GRDataTableHandle.tableLineDetail, row);
         });
 
+        GRDataTableHandle.tableLineDetail.on('click', '.del-row', function() {
+            deleteRowTable(this.closest('tr'), GRDataTableHandle.tableLineDetail);
+        });
+
         // Action on click button collapse
         $('#info-collapse').click(function () {
             $(this).toggleClass('fa-angle-double-up fa-angle-double-down');

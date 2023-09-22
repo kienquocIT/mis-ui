@@ -1,5 +1,3 @@
-let finalRevenueBeforeTax = document.getElementById('purchase-order-final-revenue-before-tax');
-
 // LoadData
 class POLoadDataHandle {
     static supplierSelectEle = $('#box-purchase-order-supplier');
@@ -10,6 +8,7 @@ class POLoadDataHandle {
     static eleDivTablePOProductAdd = $('#table-purchase-order-product-add-area');
     static eleDivTablePRProduct = $('#table-purchase-request-product-area');
     static eleDivTablePRProductMerge = $('#table-purchase-request-product-merge-area');
+    static finalRevenueBeforeTax = document.getElementById('purchase-order-final-revenue-before-tax');
 
     static loadMoreInformation(ele, is_span = false) {
         let optionSelected;
@@ -525,7 +524,6 @@ class POLoadDataHandle {
         let data = setupMergeProduct();
         POLoadDataHandle.eleDivTablePOProductAdd[0].setAttribute('hidden', 'true');
         POLoadDataHandle.eleDivTablePOProductRequest[0].removeAttribute('hidden');
-        tablePurchaseOrderProductAdd.DataTable().clear().draw();
         if (data.length > 0) {
             tablePurchaseOrderProductRequest.DataTable().clear().draw();
             tablePurchaseOrderProductRequest.DataTable().rows.add(data).draw();
@@ -541,10 +539,9 @@ class POLoadDataHandle {
         let elePretaxAmountRaw = document.getElementById('purchase-order-product-pretax-amount-raw');
         let eleTaxesRaw = document.getElementById('purchase-order-product-taxes-raw');
         let eleTotalRaw = document.getElementById('purchase-order-product-total-raw');
-        let finalRevenueBeforeTax = document.getElementById('purchase-order-final-revenue-before-tax');
         $(elePretaxAmount).attr('data-init-money', String(0));
         elePretaxAmountRaw.value = 0;
-        finalRevenueBeforeTax.value = 0;
+        POLoadDataHandle.finalRevenueBeforeTax.value = 0;
         $(eleTaxes).attr('data-init-money', String(0));
         eleTaxesRaw.value = 0;
         $(eleTotal).attr('data-init-money', String(0));
@@ -800,10 +797,9 @@ class POLoadDataHandle {
             let elePretaxAmountRaw = document.getElementById('purchase-order-product-pretax-amount-raw');
             let eleTaxesRaw = document.getElementById('purchase-order-product-taxes-raw');
             let eleTotalRaw = document.getElementById('purchase-order-product-total-raw');
-            let finalRevenueBeforeTax = document.getElementById('purchase-order-final-revenue-before-tax');
             $(elePretaxAmount).attr('data-init-money', String(0));
             elePretaxAmountRaw.value = '0';
-            finalRevenueBeforeTax.value = '0';
+            POLoadDataHandle.finalRevenueBeforeTax.value = '0';
             $(eleTaxes).attr('data-init-money', String(0));
             eleTaxesRaw.value = '0';
             $(eleTotal).attr('data-init-money', String(0));
@@ -991,14 +987,13 @@ class POLoadDataHandle {
         let elePretaxAmountRaw = document.getElementById('purchase-order-product-pretax-amount-raw');
         let eleTaxesRaw = document.getElementById('purchase-order-product-taxes-raw');
         let eleTotalRaw = document.getElementById('purchase-order-product-total-raw');
-        let finalRevenueBeforeTax = document.getElementById('purchase-order-final-revenue-before-tax');
         $(elePretaxAmount).attr('data-init-money', String(data?.['total_product_pretax_amount']));
         elePretaxAmountRaw.value = data?.['total_product_pretax_amount'];
         $(eleTaxes).attr('data-init-money', String(data?.['total_product_tax']));
         eleTaxesRaw.value = data?.['total_product_tax'];
         $(eleTotal).attr('data-init-money', String(data?.['total_product']));
         eleTotalRaw.value = data?.['total_product'];
-        finalRevenueBeforeTax.value = data?.['total_product_revenue_before_tax'];
+        POLoadDataHandle.finalRevenueBeforeTax.value = data?.['total_product_revenue_before_tax'];
     };
 
     static loadTableDisabled(table) {
@@ -1752,7 +1747,6 @@ class POCalculateHandle {
         let elePretaxAmountRaw = document.getElementById('purchase-order-product-pretax-amount-raw');
         let eleTaxesRaw = document.getElementById('purchase-order-product-taxes-raw');
         let eleTotalRaw = document.getElementById('purchase-order-product-total-raw');
-        let finalRevenueBeforeTax = document.getElementById('purchase-order-final-revenue-before-tax');
         if (elePretaxAmount && eleTaxes && eleTotal) {
             let tableLen = table.tBodies[0].rows.length;
             for (let i = 0; i < tableLen; i++) {
@@ -1775,7 +1769,7 @@ class POCalculateHandle {
             let totalFinal = (pretaxAmount + taxAmount);
             $(elePretaxAmount).attr('data-init-money', String(pretaxAmount));
             elePretaxAmountRaw.value = pretaxAmount;
-            finalRevenueBeforeTax.value = pretaxAmount;
+            POLoadDataHandle.finalRevenueBeforeTax.value = pretaxAmount;
             $(eleTaxes).attr('data-init-money', String(taxAmount));
             eleTaxesRaw.value = taxAmount;
             $(eleTotal).attr('data-init-money', String(totalFinal));
@@ -2065,7 +2059,7 @@ class POSubmitHandle {
         _form.dataForm['total_product_pretax_amount'] = parseFloat($('#purchase-order-product-pretax-amount-raw').val());
         _form.dataForm['total_product_tax'] = parseFloat($('#purchase-order-product-taxes-raw').val());
         _form.dataForm['total_product'] = parseFloat($('#purchase-order-product-total-raw').val());
-        _form.dataForm['total_product_revenue_before_tax'] = parseFloat(finalRevenueBeforeTax.value);
+        _form.dataForm['total_product_revenue_before_tax'] = parseFloat(POLoadDataHandle.finalRevenueBeforeTax.value);
         // system fields
         if (_form.dataMethod === "POST") {
             _form.dataForm['system_status'] = 1;

@@ -101,7 +101,8 @@
             $chartContainer.append($chart);
 
             // append the export button
-            if (this.options.exportButton && !$('.oc-export-btn').length) {
+            // if (this.options.exportButton && !$('.oc-export-btn').length) {
+            if (this.options.exportButton) { // allow custom button + override attachExportButton to customize js
                 this.attachExportButton();
             }
 

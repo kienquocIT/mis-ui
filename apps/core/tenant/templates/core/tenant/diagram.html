@@ -7,7 +7,7 @@
     <style>
         #chart-container {
             position: relative;
-            height: 80%;
+            min-height: 500px;
             border: 1px solid #aaa;
             margin: 0.5rem;
             overflow: auto;
@@ -18,6 +18,7 @@
         .orgchart {
             background-image: unset;
             background-size: unset; /* background square size */
+            padding: 50px;
         }
 
         .node .title {
@@ -28,19 +29,10 @@
             padding-right: 5px;
         }
 
-        .orgchart .node .title {
-            width: 180px;
+        .orgchart .node .title, .orgchart .node .content {
+            width: 250px;
+            height: 40px;
             padding: 5px;
-            word-break: normal !important;
-            white-space: normal !important;
-            min-height: 20px;
-            height: unset;
-        }
-
-        .orgchart .node .content {
-            width: 180px;
-            min-height: 20px;
-            height: unset;
             word-break: normal !important;
             white-space: normal !important;
         }
@@ -82,6 +74,9 @@
             border-color: #C9425B;
         }
 
+        .node.hidden-pseudo::after {
+            display: none;
+        }
     </style>
 {% endblock %}
 
@@ -114,9 +109,57 @@
             </div>
         </div>
     </div>
-    <div id="chart-container" data-url="{% url 'TenantDiagramAPI' %}"></div>
+    <div class="row">
+        <div class="col-lg-10 col-md-8 col-12">
+            <div id="chart-container" data-url="{% url 'TenantDiagramAPI' %}"></div>
+        </div>
+        <div class="col-lg-2 col-md-4 col-12 zone-show-employee-group">
+            <div class="w-100 d-flex justify-content-start">
+                <span>{% trans 'Member of Group' %}</span>
+                <button class="ml-auto btn btn-xs btn-rounded" id="closeEmployeeOfGroup">
+                    <div class="icon">
+                        <i class="fa-solid fa-xmark"></i>
+                    </div>
+                </button>
+            </div>
+            <div class="w-100 border-top border-primary my-2 pt-2">
+                <div class="spinner-grow hidden" role="status" id="chart-employee-of-group-loading">
+                    <span class="sr-only">{% trans 'Loading' %}...</span>
+                </div>
+                <div id="chart-employee-of-group"></div>
+            </div>
+        </div>
+    </div>
 
-    <span class="hidden" id="msgPrivate" data-msg-export-to-image="{% trans 'Export To Image' %}"></span>
+    <div class="progress progress-bar-rounded mb-5 hidden" id="idxProgressLoadAll">
+        <div
+                class="progress-bar progress-bar-striped progress-width-animated bg-success w-0" role="progressbar"
+                id="idxProgressLoadAllNum" aria-valuenow="0"
+                aria-valuemin="0"
+                aria-valuemax="100"
+        ></div>
+    </div>
+    <div class="d-flex">
+        <button
+                type="button" class="oc-export-btn btn btn-soft-primary mr-3 mb-1"
+        >{% trans 'Export To Image' %}</button>
+        <button type="button" class="oc-get-all-btn btn btn-soft-primary mr-3 mb-1">{% trans 'Get all' %}</button>
+        <button type="button" class="oc-reset-first-btn btn btn-soft-primary mr-3 mb-1">{% trans 'Reset' %}</button>
+        <div
+                class="input-group mr-3 mb-1 w-300p"
+                data-bs-toggle="tooltip" data-bs-placement="top"
+                title="{% trans 'Available for currently displayed elements' %}"
+        >
+            <select class="form-select" id="idx-source-action">
+                <option value="tenant">{% trans 'Tenant' %}</option>
+                <option value="company">{% trans 'Company' %}</option>
+                <option value="department">{% trans 'Department' %}</option>
+                <option value="employee">{% trans 'Employee' %}</option>
+            </select>
+            <button class="btn btn-soft-primary" type="button" id="idx-btn-show">{% trans 'Show' %}</button>
+            <button class="btn btn-soft-primary" type="button" id="idx-btn-hide">{% trans 'Hide' %}</button>
+        </div>
+    </div>
 {% endblock %}
 
 {% block jsFooter %}

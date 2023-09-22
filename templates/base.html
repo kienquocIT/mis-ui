@@ -2,15 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}{{ base.tenant_current_data.code|upper }}{% endblock %}
-        &#8901; {{ base.tenant_current_data|parsed_title_page|safe }}</title>
-    <meta name="description" content="Management Information System"/>
-
-    <link rel="shortcut icon" href="{% static 'assets/images/logo/logo-28x16.png' %}">
-    <link rel="icon" href="{% static 'assets/images/logo/logo-28x16.png' %}" type="image/x-icon">
+    {% include 'extends/systems/meta_header.html' %}
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -169,6 +161,7 @@
     <!-- /Vertical Nav -->
 
     <!-- Main Content -->
+    {% block fullBody %}
     <div class="hk-pg-wrapper pb-0">
         <div class="hk-pg-body py-0">
             <div class="blogapp-wrap blogapp-sidebar-toggle">
@@ -349,6 +342,7 @@
             </div>
         </div>
     </div>
+    {% endblock %}
     <!-- /Main Content -->
 </div>
 <!-- /Wrapper -->

@@ -1,6 +1,6 @@
 from django.urls import path
 from apps.core.home.views import (
-    HomeView, LandingPageView,
+    HomeView, NotFoundView, ServerMaintainView, LandingPageView,
     ComponentCollections, TermsAndConditionsView, HelpAndSupportView, UtilitiesView,
     BookMarkListAPI, BookMarkDetailAPI,
     DocPinedListAPI, DocPinedDetailAPI,
@@ -9,6 +9,8 @@ from apps.core.home.views import (
 
 urlpatterns = [
     path('', HomeView.as_view(), name='HomeView'),
+    path('404', NotFoundView.as_view(), name='NotFoundView'),
+    path('503', ServerMaintainView.as_view(), name='ServerMaintainView'),
     path('introduce', LandingPageView.as_view(), name='LandingPageView'),
     path('terms', TermsAndConditionsView.as_view(), name='TermsAndConditionsView'),
     path('help-and-support', HelpAndSupportView.as_view(), name='HelpAndSupportView'),

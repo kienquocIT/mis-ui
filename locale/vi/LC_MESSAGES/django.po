@@ -4321,3 +4321,15 @@ msgstr "Số ngày thêm"
 #
 msgid "Unit: Year"
 msgstr "Đơn vị: Năm"
+
+#
+msgid "Return to home"
+msgstr "Trở về trang chủ"
+
+#
+msgid "Sorry, the requested page cannot be found. Try finding with another name."
+msgstr "Xin lỗi, không thể tìm thấy trang được yêu cầu. Hãy thử tìm với một tên khác."
+
+#
+msgid "Server is temporarily unable to handle the request. This may be due to the server being overloaded or down for maintenance."
+msgstr "Máy chủ tạm thời không thể xử lý yêu cầu. Điều này có thể do máy chủ bị quá tải hoặc ngừng hoạt động để bảo trì."

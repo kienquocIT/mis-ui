@@ -365,3 +365,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # Purchase request config
     PURCHASE_REQUEST_CONFIG = StringUrl('purchasing/purchase-request/config')
+
+    # Goods transfer
+    GOODS_TRANSFER_LIST = StringUrl('inventory/good-transfer/list')
+    GOODS_TRANSFER_DETAIL = StringUrl('inventory/good-transfer/{pk}')

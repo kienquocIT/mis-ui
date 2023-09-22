@@ -92,3 +92,35 @@ class PurchaseRequestListForPQRAPI(APIView):
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(request=request, user=request.user, url=ApiURL.PURCHASE_REQUEST_LIST_FOR_PQR).get()
         return resp.auto_return(key_success='purchase_request_list')
+
+
+class PurchaseRequestConfig(View):
+    @mask_view(
+        auth_require=True,
+        template='sales/purchasing/purchase_request/config.html',
+        menu_active='menu_purchase_request_config',
+        breadcrumb='PURCHASE_REQUEST_CONFIG_PAGE',
+        perm_check=PermCheck(url=ApiURL.PURCHASE_REQUEST_CONFIG, method='GET'),
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
+class PurchaseRequestConfigAPI(APIView):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.PURCHASE_REQUEST_CONFIG).get()
+        return resp.auto_return(key_success='config')
+
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.PURCHASE_REQUEST_CONFIG).put(request.data)
+        return resp.auto_return()

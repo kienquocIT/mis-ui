@@ -17,6 +17,7 @@ $(function () {
             GRLoadDataHandle.loadBoxType();
             GRLoadDataHandle.loadBoxPO();
             GRLoadDataHandle.loadBoxSupplier();
+            GRLoadDataHandle.loadBoxIA();
             GRDataTableHandle.dataTableGoodReceiptPOProduct();
             GRDataTableHandle.dataTableGoodReceiptPR();
             GRDataTableHandle.dataTableGoodReceiptWH();
@@ -208,6 +209,10 @@ $(function () {
         GRDataTableHandle.tableLineDetail.on('change', '.table-row-price, .table-row-tax', function () {
             let row = this.closest('tr');
             GRCalculateHandle.calculateMain(GRDataTableHandle.tableLineDetail, row);
+        });
+
+        GRDataTableHandle.tableLineDetail.on('click', '.del-row', function() {
+            deleteRowTable(this.closest('tr'), GRDataTableHandle.tableLineDetail);
         });
 
         // Action on click button collapse

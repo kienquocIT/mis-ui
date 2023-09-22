@@ -66,6 +66,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # tenant
     TENANT_PLAN_LIST = StringUrl('tenant/tenant-plans')
+    TENANT_DIAGRAM = StringUrl('tenant/org-chart')
 
     # account
     ACCOUNT_USER_COMPANY = StringUrl('account/user-company')
@@ -79,6 +80,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     EMPLOYEE_COMPANY = StringUrl('hr/employee/company')
     EMPLOYEE_COMPANY_NEW = StringUrl('hr/employee/company/{company_id}')
     EMPLOYEE_TENANT = StringUrl('hr/employee/tenant')
+    EMPLOYEE_COMPANY_LIST = StringUrl('hr/employees-company')
 
     # organization/group
     GROUP_LEVEL_LIST = StringUrl('hr/levels')
@@ -347,6 +349,9 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     GOODS_RECEIPT_LIST = StringUrl('inventory/goods-receipt/list')
     GOODS_RECEIPT_DETAIL = StringUrl('inventory/goods-receipt')
     GOODS_RECEIPT_DETAIL_PK = StringUrl('inventory/goods-receipt/{pk}')
+    INVENTORY_ADJUSTMENT_LIST = StringUrl('inventory/inventory-adjustments')
+    INVENTORY_ADJUSTMENT_DETAIL = StringUrl('inventory/inventory-adjustment/{pk}')
+    INVENTORY_ADJUSTMENT_PRODUCTS_LIST = StringUrl('inventory/inventory-adjustment/products')
 
     # Application for Opportunity permission
     APPLICATION_OPPORTUNITY_PERMISSION = StringUrl('base/applications-opportunity-permit')
@@ -358,3 +363,13 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     OPPORTUNITY_ADD_MEMBER = StringUrl('opportunity/add-member/{pk}')
     OPPORTUNITY_DELETE_MEMBER = StringUrl('opportunity/member/delete/{pk}')
     SET_MEMBER_PERMISSION = StringUrl('opportunity/member/set/permission/{pk}')
+
+    # Purchase request config
+    PURCHASE_REQUEST_CONFIG = StringUrl('purchasing/purchase-request/config')
+
+    # e-Office
+    # leave
+    LEAVE_CONFIG = StringUrl('leave/config')
+    LEAVE_CREATE = StringUrl('leave/leave-type/create')
+    LEAVE_DETAIL = StringUrl('leave/leave-type/detail/{pk}')
+

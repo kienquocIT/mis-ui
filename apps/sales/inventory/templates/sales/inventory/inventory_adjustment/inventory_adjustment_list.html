@@ -21,7 +21,27 @@
     </a>
 {% endblock %}
 {% block pageContent %}
+    <div>
+        <table id="inventory_adjustment_list" class="table nowrap w-100 mb-5" data-method="GET"
+               data-url="{% url 'InventoryAdjustmentListAPI' %}"
+               data-url-detail="{% url 'InventoryAdjustmentDetail' '0' %}"
+        >
+            <thead>
+            <th></th>
+            <th>{% trans "Code" %}</th>
+            <th>{% trans "Title" %}
+                <i class="fas fa-info-circle icon-info"
+                   data-bs-toggle="tooltip"
+                   data-bs-placement="bottom"
+                   title="{% trans 'Press row here to open detail page.' %}">
+                </i>
+            </th>
+            <th>{% trans "Warehouses" %}</th>
+            <th>{% trans "Date" %}</th>
+            </thead>
+        </table>
+    </div>
 {% endblock %}
 {% block jsFooter %}
-    <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
+    <script src="{% static 'assets/sales/inventory/js/inventory_adjustment/inventory_adjustment_list.js' %}"></script>
 {% endblock %}

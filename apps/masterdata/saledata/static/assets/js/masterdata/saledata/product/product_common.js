@@ -190,36 +190,19 @@ function loadSaleTaxCode(tax_list) {
 }
 
 function loadSaleDefaultUom(uom_list, url) {
-    if (uom_list === null) {
-        saleDefaultUomEle.initSelect2({
-            ajax: {
-                url: url,
-                method: 'GET',
-            },
-            callbackDataResp: function (resp, keyResp) {
-                return resp.data[keyResp]?.['uom'];
-            },
-            data: null,
-            keyResp: 'uom_group',
-            keyId: 'uom_id',
-            keyText: 'uom_title',
-        })
-    }
-    else {
-        saleDefaultUomEle.initSelect2({
-            ajax: {
-                url: url,
-                method: 'GET',
-            },
-            callbackDataResp: function (resp, keyResp) {
-                return resp.data[keyResp]?.['uom'];
-            },
-            data: uom_list,
-            keyResp: 'uom_group',
-            keyId: 'uom_id',
-            keyText: 'uom_title',
-        })
-    }
+    saleDefaultUomEle.initSelect2({
+        ajax: {
+            url: url,
+            method: 'GET',
+        },
+        callbackDataResp: function (resp, keyResp) {
+            return resp.data[keyResp]?.['uom'];
+        },
+        data: (uom_list ? uom_list : null),
+        keyResp: 'uom_group',
+        keyId: 'uom_id',
+        keyText: 'uom_title',
+    })
 }
 
 async function loadPriceList() {
@@ -262,81 +245,41 @@ async function loadPriceList() {
 }
 
 function loadInventoryDefaultUom(uom_list, url) {
-    if (uom_list === null) {
-        inventoryDefaultUomEle.initSelect2({
-            ajax: {
-                url: url,
-                method: 'GET',
-            },
-            callbackDataResp: function (resp, keyResp) {
-                return resp.data[keyResp]?.['uom'];
-            },
-            data: (uom_list ? uom_list : null),
-            keyResp: 'uom_group',
-            keyId: 'uom_id',
-            keyText: 'uom_title',
-        }).on('change', function () {
-            let uom_selected = inventoryDefaultUomEle.val();
-            if (uom_selected !== '') {
-                let obj_uom_selected = JSON.parse($('#' + inventoryDefaultUomEle.attr('data-idx-data-loaded')).text())[uom_selected];
-                inventoryDefaultUomCodeEle.val(obj_uom_selected?.['uom_code']);
-            }
-        })
-    }
-    else {
-        inventoryDefaultUomEle.initSelect2({
-            ajax: {
-                url: url,
-                method: 'GET',
-            },
-            callbackDataResp: function (resp, keyResp) {
-                return resp.data[keyResp]?.['uom'];
-            },
-            data: uom_list,
-            keyResp: 'uom_group',
-            keyId: 'uom_id',
-            keyText: 'uom_title',
-        }).on('change', function () {
-            let uom_selected = inventoryDefaultUomEle.val();
-            if (uom_selected !== '') {
-                let obj_uom_selected = JSON.parse($('#' + inventoryDefaultUomEle.attr('data-idx-data-loaded')).text())[uom_selected];
-                inventoryDefaultUomCodeEle.val(obj_uom_selected?.['uom_code']);
-            }
-        })
-    }
+    inventoryDefaultUomEle.initSelect2({
+        ajax: {
+            url: url,
+            method: 'GET',
+        },
+        callbackDataResp: function (resp, keyResp) {
+            return resp.data[keyResp]?.['uom'];
+        },
+        data: (uom_list ? uom_list : null),
+        keyResp: 'uom_group',
+        keyId: 'uom_id',
+        keyText: 'uom_title',
+    }).on('change', function () {
+        let uom_selected = inventoryDefaultUomEle.val();
+        if (uom_selected !== '') {
+            let obj_uom_selected = JSON.parse($('#' + inventoryDefaultUomEle.attr('data-idx-data-loaded')).text())[uom_selected];
+            inventoryDefaultUomCodeEle.text(obj_uom_selected?.['uom_code']);
+        }
+    })
 }
 
 function loadPurchaseDefaultUom(uom_list, url) {
-    if (uom_list === null) {
-        purchaseDefaultUomEle.initSelect2({
-            ajax: {
-                url: url,
-                method: 'GET',
-            },
-            callbackDataResp: function (resp, keyResp) {
-                return resp.data[keyResp]?.['uom'];
-            },
-            data: (uom_list ? uom_list : null),
-            keyResp: 'uom_group',
-            keyId: 'uom_id',
-            keyText: 'uom_title',
-        })
-    }
-    else {
-        purchaseDefaultUomEle.initSelect2({
-            ajax: {
-                url: url,
-                method: 'GET',
-            },
-            callbackDataResp: function (resp, keyResp) {
-                return resp.data[keyResp]?.['uom'];
-            },
-            data: uom_list,
-            keyResp: 'uom_group',
-            keyId: 'uom_id',
-            keyText: 'uom_title',
-        })
-    }
+    purchaseDefaultUomEle.initSelect2({
+        ajax: {
+            url: url,
+            method: 'GET',
+        },
+        callbackDataResp: function (resp, keyResp) {
+            return resp.data[keyResp]?.['uom'];
+        },
+        data: (uom_list ? uom_list : null),
+        keyResp: 'uom_group',
+        keyId: 'uom_id',
+        keyText: 'uom_title',
+    })
 }
 
 function loadPurchaseTaxCode(tax_list) {
@@ -698,9 +641,9 @@ function getDataForm() {
     data['weight'] = parseFloat(weightEle.val());
     data['volume_id'] = volumeEle.attr('data-id');
     data['weight_id'] = weightEle.attr('data-id');
-    data['product_types_mapped_list'] = $('#general-select-box-product-type').val();
-    data['general_product_category'] = $('#general-select-box-product-category').val();
-    data['general_uom_group'] = $('#general-select-box-uom-group').val();
+    data['product_types_mapped_list'] = generalProductTypeEle.val();
+    data['general_product_category'] = generalProductCateEle.val();
+    data['general_uom_group'] = generalUomGroupEle.val();
     data['general_traceability_method'] = $('#general-select-box-traceability-method option:selected').attr('value');
 
     if (check_tab_sale.is(':checked') === true) {
@@ -803,9 +746,9 @@ class ProductHandle {
         loadGeneralUoMGroup();
         loadSaleTaxCode();
         loadPurchaseTaxCode();
-        loadSaleDefaultUom();
-        loadInventoryDefaultUom();
-        loadPurchaseDefaultUom();
+        loadSaleDefaultUom(null, generalUomGroupEle.attr('data-url-detail').replace(0, generalUomGroupEle.val()));
+        loadInventoryDefaultUom(null, generalUomGroupEle.attr('data-url-detail').replace(0, generalUomGroupEle.val()));
+        loadPurchaseDefaultUom(null, generalUomGroupEle.attr('data-url-detail').replace(0, generalUomGroupEle.val()));
         loadBaseItemUnit();
         loadWareHouseList();
         loadWareHouseOverView();
@@ -892,7 +835,7 @@ function LoadDetailProduct(option) {
                 if (Object.keys(product_detail['inventory_information']).length !== 0) {
                     let inventory_information = product_detail['inventory_information'];
                     loadInventoryDefaultUom(inventory_information['uom'], generalUomGroupEle.attr('data-url-detail').replace(0, generalUomGroupEle.val()));
-                    inventoryDefaultUomCodeEle.val(inventory_information['uom']['uom_code']);
+                    inventoryDefaultUomCodeEle.text(inventory_information['uom']['uom_code']);
                     $('#inventory-level-min').val(inventory_information['inventory_level_min']);
                     $('#inventory-level-max').val(inventory_information['inventory_level_max']);
 

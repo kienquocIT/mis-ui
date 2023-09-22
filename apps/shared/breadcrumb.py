@@ -54,6 +54,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     COMPANY_PAGE = BreadcrumbChildren(_('Company'), 'CompanyList')
     COMPANY_OVERVIEW_PAGE = BreadcrumbChildren(_('Company Overview'), 'CompanyListOverviewList')
     COMPANY_OVERVIEW_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+    COMPANY_DIAGRAM = BreadcrumbChildren(_('Company Diagram'), 'TenantDiagramView')
 
     # TENANT_INFORMATION_PAGE = BreadcrumbChildren('Tenant Information', 'TenantInformation')
 
@@ -143,6 +144,13 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     GOOD_RECEIPT_CREATE_PAGE = BreadcrumbChildren(_('Good receipt create'), 'GoodReceiptCreate')
     GOOD_RECEIPT_EDIT_PAGE = BreadcrumbChildren(_('Good receipt edit'))
     GOOD_RECEIPT_DETAIL_PAGE = BreadcrumbChildren(_('Good receipt detail'))
+
+    # Inventory Adjustment
+    INVENTORY_ADJUSTMENT_LIST_PAGE = BreadcrumbChildren(_('Inventory Adjustment'), 'InventoryAdjustmentList')
+    INVENTORY_ADJUSTMENT_CREATE_PAGE = BreadcrumbChildren(_('Inventory Adjustment create'), 'InventoryAdjustmentCreate')
+    INVENTORY_ADJUSTMENT_EDIT_PAGE = BreadcrumbChildren(_('Inventory Adjustment edit'))
+    INVENTORY_ADJUSTMENT_DETAIL_PAGE = BreadcrumbChildren(_('Inventory Adjustment detail'))
+
     # Transition Data Config
     DELIVERY_CONFIG_PAGE = BreadcrumbChildren(_('Delivery'), 'DeliveryConfigDetail')
     DELIVERY_PICKING_LIST_PAGE = BreadcrumbChildren(_('Picking'), 'OrderPickingList')
@@ -225,12 +233,15 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     GOODS_RECEIPT_DETAIL_PAGE = BreadcrumbChildren(_('Goods receipt detail'))
     GOODS_RECEIPT_UPDATE_PAGE = BreadcrumbChildren(_('Goods receipt update'))
 
+    # Purchase request config
+    PURCHASE_REQUEST_CONFIG_PAGE = BreadcrumbChildren(_('Purchase Request'), 'PurchaseRequestConfig')
 
     # E-Office
     # Leave
     LEAVE_CONFIG = BreadcrumbChildren(
         _('Leave Config'), 'LeaveConfigDetail'
     )
+
 
 
 class BreadcrumbView:
@@ -330,6 +341,7 @@ class BreadcrumbView:
 
     GROUP_LEVEL_LIST_PAGE = [
         BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.GROUP_LIST_PAGE,
         BreadcrumbItem.GROUP_LEVEL_LIST_PAGE,
     ]
 
@@ -347,6 +359,11 @@ class BreadcrumbView:
     ]
     COMPANY_DETAIL_PAGE = COMPANY_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     COMPANY_UPDATE_PAGE = COMPANY_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+
+    COMPANY_DIAGRAM = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.COMPANY_DIAGRAM,
+    ]
 
     COMPANY_OVERVIEW_PAGE = [
         BreadcrumbItem.HOME_PAGE,
@@ -477,15 +494,25 @@ class BreadcrumbView:
     WAREHOUSE_LIST_PAGE = [
         BreadcrumbItem.WAREHOUSE_LIST_PAGE,
     ]
+    WAREHOUSE_CREATE_PAGE = WAREHOUSE_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+    WAREHOUSE_DETAIL_PAGE = WAREHOUSE_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    WAREHOUSE_UPDATE_PAGE = WAREHOUSE_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
     # Good receipt
     GOOD_RECEIPT_LIST_PAGE = [
         BreadcrumbItem.GOOD_RECEIPT_LIST_PAGE
     ]
-
     GOOD_RECEIPT_CREATE_PAGE = GOOD_RECEIPT_LIST_PAGE + [BreadcrumbItem.GOOD_RECEIPT_CREATE_PAGE]
     GOOD_RECEIPT_EDIT_PAGE = GOOD_RECEIPT_LIST_PAGE + [BreadcrumbItem.GOOD_RECEIPT_EDIT_PAGE]
     GOOD_RECEIPT_DETAIL_PAGE = GOOD_RECEIPT_LIST_PAGE + [BreadcrumbItem.GOOD_RECEIPT_DETAIL_PAGE]
+
+    # Inventory Adjustment
+    INVENTORY_ADJUSTMENT_LIST_PAGE = [
+        BreadcrumbItem.INVENTORY_ADJUSTMENT_LIST_PAGE
+    ]
+    INVENTORY_ADJUSTMENT_CREATE_PAGE = INVENTORY_ADJUSTMENT_LIST_PAGE + [BreadcrumbItem.INVENTORY_ADJUSTMENT_CREATE_PAGE]
+    INVENTORY_ADJUSTMENT_EDIT_PAGE = INVENTORY_ADJUSTMENT_LIST_PAGE + [BreadcrumbItem.INVENTORY_ADJUSTMENT_EDIT_PAGE]
+    INVENTORY_ADJUSTMENT_DETAIL_PAGE = INVENTORY_ADJUSTMENT_LIST_PAGE + [BreadcrumbItem.INVENTORY_ADJUSTMENT_DETAIL_PAGE]
 
     # Return Advance
     RETURN_ADVANCE_LIST_PAGE = [
@@ -614,3 +641,13 @@ class BreadcrumbView:
     LEAVE_CONFIG_PAGE = [
         BreadcrumbItem.LEAVE_CONFIG
     ]
+
+    # Purchase request config
+    PURCHASE_REQUEST_CONFIG_PAGE = [BreadcrumbItem.PURCHASE_REQUEST_CONFIG_PAGE]
+
+    # Inventory Adjustment
+    INVENTORY_ADJUSTMENT_LIST_PAGE = [BreadcrumbItem.INVENTORY_ADJUSTMENT_LIST_PAGE]
+    INVENTORY_ADJUSTMENT_CREATE_PAGE = INVENTORY_ADJUSTMENT_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+    INVENTORY_ADJUSTMENT_DETAIL_PAGE = INVENTORY_ADJUSTMENT_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    INVENTORY_ADJUSTMENT_UPDATE_PAGE = INVENTORY_ADJUSTMENT_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+

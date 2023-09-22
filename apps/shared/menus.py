@@ -63,6 +63,10 @@ class MenusCompanySystem:
             MenuCommon(
                 name='Group', code='menu_group_list', view_name='GroupList', icon='<i class="fas fa-users"></i>'
             ),
+            MenuCommon(
+                name='Org Charts', code='menu_company_diagram', view_name='TenantDiagramView',
+                icon='<i class="fa-solid fa-diagram-project"></i>',
+            ),
         ]
     )
     WORKFLOW_PROCESS = MenuCommon(
@@ -148,7 +152,11 @@ class MenusCoreConfigurations:
             MenuCommon(
                 name='Leave', code='menu_leave_config', view_name='LeaveConfigDetail',
                 icon='<i class="fa-solid fa-arrow-right-from-bracket"></i>',
-            )
+            ),
+            MenuCommon(
+                name='Purchase Request Config', code='menu_purchase_request_config', view_name='PurchaseRequestConfig',
+                icon='<i class="fas fa-shopping-cart"></i>',
+            ),
         ]
     )
 
@@ -303,7 +311,7 @@ class MenusPurchase:
     )
 
     INVENTORY = MenuCommon(
-        name='Inventory', code='menu_inventory_activities', view_name='', icon='<i class="bi bi-shop-window"></i>',
+        name='Inventory', code='menu_inventory_activities', view_name='', icon='<i class="fas fa-clipboard-check"></i>',
         child=[
             MenuCommon(
                 name='Goods receipt',

@@ -154,6 +154,7 @@ $(async function () {
             // load sale order
             pickupInit.setPicking = data.picking_detail
             data = data.picking_detail
+            $x.fn.renderCodeBreadcrumb(data);
             $('#inputSaleOrder').val(data?.sale_order_data?.code);
             $('.title-code').text(data.code)
             // state

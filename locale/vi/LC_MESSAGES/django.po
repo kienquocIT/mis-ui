@@ -4229,3 +4229,95 @@ msgstr "Thành viên của phòng ban"
 #
 msgid "Empty"
 msgstr "Không có dữ liệu"
+
+#
+msgid "Leave"
+msgstr "Nghỉ phép"
+
+#
+msgid "Leave config"
+msgstr "Cấu hình nghỉ phép"
+
+#
+msgid "Leave type"
+msgstr "Loại nghỉ phép"
+
+#
+msgid "Year's Seniority"
+msgstr "Thâm niên"
+
+#
+msgid "Paid by"
+msgstr "Thanh toán bởi"
+
+#
+msgid "Balance management"
+msgstr "Quản lý số dư"
+
+#
+msgid "Number of months the balance will expire"
+msgstr "Số tháng số dư sẽ hết hạn"
+
+#
+msgid "Number of paid annual leave days"
+msgstr "Số ngày phép mặc định"
+
+#
+msgid "Leave type create successfully"
+msgstr "Tạo loại phép thành công"
+
+#
+msgid "Leave type delete successfully"
+msgstr "Xoá loại phép thành công"
+
+#
+msgid "Leave type update successfully"
+msgstr "Sửa loại phép thành công"
+
+#
+msgid "Company salary"
+msgstr "Công ty chi trả"
+
+#
+msgid "Social insurance"
+msgstr "Bảo Hiểm Xã Hội chi trả"
+
+#
+msgid "Unpaid"
+msgstr "Không chi trả"
+
+#
+msgid "Type name"
+msgstr "Tên loại"
+
+#
+msgid "Number of annual days"
+msgstr "Số ngày phép"
+
+#
+msgid "Expiration management"
+msgstr "Quản lý ngày hết hạn"
+
+#
+msgid "Date expired"
+msgstr "Ngày hết hạn"
+
+#
+msgid "Wrong number, min is 12 and number format is integer"
+msgstr "Sai định dạng, là số nguyên và nhõ nhất là 12"
+
+#
+msgid "From"
+msgstr "Từ"
+
+#
+msgid "To"
+msgstr "Đến"
+
+#
+msgid "Added days"
+msgstr "Số ngày thêm"
+
+#
+msgid "Unit: Year"
+msgstr "Đơn vị: Năm"

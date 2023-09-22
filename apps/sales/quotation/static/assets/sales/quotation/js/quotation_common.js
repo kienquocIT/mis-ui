@@ -149,7 +149,11 @@ class QuotationLoadDataHandle {
             }
         }
         // ReCheck Config when change Opportunity
-        QuotationCheckConfigHandle.checkConfig(true);
+        if (!dataOpp?.['is_copy']) {
+            QuotationCheckConfigHandle.checkConfig(true);
+        } else {
+            QuotationCheckConfigHandle.checkConfig(true, null, false, false, true);
+        }
     };
 
     static loadBoxQuotationCustomer(dataCustomer = {}, sale_person_id = null) {
@@ -718,22 +722,25 @@ class QuotationLoadDataHandle {
 
     // Load detail
     static loadDetailQuotation(data, is_copy = false) {
-        if (data.title && is_copy === false) {
+        if (data?.['title'] && is_copy === false) {
             document.getElementById('quotation-create-title').value = data.title;
         }
-        if (data.code && is_copy === false) {
+        if (data?.['code'] && is_copy === false) {
             if ($('#quotation-create-code').length) {
                 document.getElementById('quotation-create-code').innerHTML = data.code;
             }
         }
-        if (data.opportunity) {
+        if (data?.['opportunity']) {
+            if (is_copy === true) {
+               data.opportunity['is_copy'] = true;
+            }
             if (data?.['sale_person']) {
                 QuotationLoadDataHandle.loadBoxQuotationOpportunity(data.opportunity, data?.['sale_person']?.['id']);
             } else {
                 QuotationLoadDataHandle.loadBoxQuotationOpportunity(data.opportunity, null);
             }
         }
-        if (data.customer) {
+        if (data?.['customer']) {
             data.customer['name'] = data.customer.title;
             if (data?.['sale_person']) {
                 QuotationLoadDataHandle.loadBoxQuotationCustomer(data.customer, data?.['sale_person']?.['id']);
@@ -807,10 +814,14 @@ class QuotationLoadDataHandle {
         $('#quotation-create-customer-shipping').val(data?.['customer_shipping_id']);
         $('#quotation-create-customer-billing').val(data?.['customer_billing_id']);
         // product totals
-        QuotationLoadDataHandle.loadTotal(data, true, false, false);
-        QuotationLoadDataHandle.loadTotal(data, false, true, false);
-        QuotationLoadDataHandle.loadTotal(data, false, false, true);
-    }
+        if (is_copy === false) {
+            QuotationLoadDataHandle.loadTotal(data, true, false, false);
+            QuotationLoadDataHandle.loadTotal(data, false, true, false);
+            QuotationLoadDataHandle.loadTotal(data, false, false, true);
+        } else {
+            $('#quotation-create-product-discount').val(data?.['total_product_discount_rate']);
+        }
+    };
 
     static loadDataProductAll() {
         let table = document.getElementById('datable-quotation-create-product');
@@ -2200,14 +2211,23 @@ class QuotationCalculateCaseHandle {
                 }
             }
             // store discount amount
-            if (!form.classList.contains('sale-order')) {
-                if (discountAmountOnTotal > 0) {
-                    $(eleDiscountAmount).attr('value', String(discountAmountOnTotal));
-                    eleDiscountAmountRaw.value = discountAmountOnTotal;
-                } else {
-                    $(eleDiscountAmount).attr('value', String(discountAmount));
-                    eleDiscountAmountRaw.value = discountAmount;
-                }
+            // if (!form.classList.contains('sale-order')) {
+            //     if (discountAmountOnTotal > 0) {
+            //         $(eleDiscountAmount).attr('value', String(discountAmountOnTotal));
+            //         eleDiscountAmountRaw.value = discountAmountOnTotal;
+            //     } else {
+            //         $(eleDiscountAmount).attr('value', String(discountAmount));
+            //         eleDiscountAmountRaw.value = discountAmount;
+            //     }
+            // } else {
+            //     $(eleDiscountAmount).attr('value', String(discountAmount));
+            //     eleDiscountAmountRaw.value = discountAmount;
+            // }
+
+
+            if (discountAmountOnTotal > 0) {
+                $(eleDiscountAmount).attr('value', String(discountAmountOnTotal));
+                eleDiscountAmountRaw.value = discountAmountOnTotal;
             } else {
                 $(eleDiscountAmount).attr('value', String(discountAmount));
                 eleDiscountAmountRaw.value = discountAmount;

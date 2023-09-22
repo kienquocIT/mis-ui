@@ -605,7 +605,7 @@ class GRLoadDataHandle {
 
     static loadLineDetail() {
         let table = GRDataTableHandle.tableLineDetail;
-        let data = setupDataShowLineDetail();
+        let data = GRSubmitHandle.setupDataShowLineDetail();
         table.DataTable().clear().draw();
         table.DataTable().rows.add(data).draw();
         GRLoadDataHandle.loadDataRowTable(table);
@@ -1531,10 +1531,110 @@ class GRStoreDataHandle {
 // Submit Form
 class GRSubmitHandle {
 
+    static setupDataShowLineDetail(is_submit = false) {
+        let result = [];
+        if (GRLoadDataHandle.POSelectEle.val()) {
+            let table = GRDataTableHandle.tablePOProduct;
+            if (!table[0].querySelector('.dataTables_empty')) {
+                let order = 0;
+                // Setup Merge Data by Product
+                for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
+                    let row = table[0].tBodies[0].rows[i];
+                    let quantityImport = parseFloat(row.querySelector('.table-row-import').innerHTML);
+                    if (quantityImport > 0) {
+                        let dataRowRaw = row.querySelector('.table-row-checkbox')?.getAttribute('data-row');
+                        if (dataRowRaw) {
+                            order++;
+                            let dataRow = JSON.parse(dataRowRaw);
+                            dataRow['purchase_order_product'] = dataRow?.['id'];
+                            dataRow['product_description'] = dataRow?.['product_description'] ? dataRow?.['product_description'] : '';
+                            dataRow['uom'] = dataRow?.['uom_order_actual'];
+                            dataRow['quantity_import'] = quantityImport;
+                            dataRow['order'] = order;
+                            if (is_submit === true) {
+                                let field_list = [
+                                    'purchase_order_product',
+                                    'purchase_request_products_data',
+                                    'product',
+                                    'uom',
+                                    'tax',
+                                    'quantity_import',
+                                    'product_title',
+                                    'product_code',
+                                    'product_description',
+                                    'product_unit_price',
+                                    'product_subtotal_price',
+                                    'product_subtotal_price_after_tax',
+                                    'order',
+                                ]
+                                filterFieldList(field_list, dataRow);
+                                dataRow['product'] = dataRow?.['product']?.['id']
+                                dataRow['uom'] = dataRow?.['uom']?.['id']
+                                dataRow['tax'] = dataRow?.['tax']?.['id']
+                                for (let pr_product of dataRow?.['purchase_request_products_data'] ? dataRow?.['purchase_request_products_data'] : []) {
+                                    let field_list = [
+                                        'purchase_request_product',
+                                        'quantity_import',
+                                        'warehouse_data',
+                                    ]
+                                    filterFieldList(field_list, pr_product);
+                                    pr_product['purchase_request_product'] = pr_product?.['purchase_request_product']?.['id']
+                                    for (let warehouse of pr_product?.['warehouse_data'] ? pr_product?.['warehouse_data'] : []) {
+                                        let field_list = [
+                                            'warehouse',
+                                            'quantity_import',
+                                            'lot_data',
+                                            'serial_data',
+                                        ]
+                                        filterFieldList(field_list, warehouse);
+                                        for (let lot of warehouse?.['lot_data'] ? warehouse?.['lot_data'] : []) {
+                                            let field_list = [
+                                                'lot_number',
+                                                'quantity_import',
+                                                'expire_date',
+                                                'manufacture_date',
+                                            ]
+                                            filterFieldList(field_list, lot);
+                                            lot['expire_date'] = moment(lot?.['expire_date'],
+                                                'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
+                                            lot['manufacture_date'] = moment(lot?.['manufacture_date'],
+                                                'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
+                                        }
+                                        for (let serial of warehouse?.['serial_data'] ? warehouse?.['serial_data'] : []) {
+                                            let field_list = [
+                                                'vendor_serial_number',
+                                                'serial_number',
+                                                'expire_date',
+                                                'manufacture_date',
+                                                'warranty_start',
+                                                'warranty_end',
+                                            ]
+                                            filterFieldList(field_list, serial);
+                                            serial['expire_date'] = moment(serial?.['expire_date'],
+                                                'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
+                                            serial['manufacture_date'] = moment(serial?.['manufacture_date'],
+                                                'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
+                                            serial['warranty_start'] = moment(serial?.['warranty_start'],
+                                                'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
+                                            serial['warranty_end'] = moment(serial?.['warranty_end'],
+                                                'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
+                                        }
+                                    }
+                                }
+                            }
+                            result.push(dataRow);
+                        }
+                    }
+                }
+            }
+        }
+        return result
+    };
+
     static setupDataProduct() {
         let result = [];
         if (GRLoadDataHandle.POSelectEle.val()) {
-            return setupDataShowLineDetail(true);
+            return GRSubmitHandle.setupDataShowLineDetail(true);
         } else {
             let table = GRDataTableHandle.tableLineDetail[0];
             if (table.querySelector('.dataTables_empty')) {
@@ -1632,109 +1732,33 @@ class GRSubmitHandle {
 }
 
 // COMMON FUNCTION
-function setupDataShowLineDetail(is_submit = false) {
-    let result = [];
-    if (GRLoadDataHandle.POSelectEle.val()) {
-        let table = GRDataTableHandle.tablePOProduct;
-        if (!table[0].querySelector('.dataTables_empty')) {
-            let order = 0;
-            // Setup Merge Data by Product
-            for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
-                let row = table[0].tBodies[0].rows[i];
-                let quantityImport = parseFloat(row.querySelector('.table-row-import').innerHTML);
-                if (quantityImport > 0) {
-                    let dataRowRaw = row.querySelector('.table-row-checkbox')?.getAttribute('data-row');
-                    if (dataRowRaw) {
-                        order++;
-                        let dataRow = JSON.parse(dataRowRaw);
-                        dataRow['purchase_order_product'] = dataRow?.['id'];
-                        dataRow['product_description'] = dataRow?.['product_description'] ? dataRow?.['product_description'] : '';
-                        dataRow['uom'] = dataRow?.['uom_order_actual'];
-                        dataRow['quantity_import'] = quantityImport;
-                        dataRow['order'] = order;
-                        if (is_submit === true) {
-                            let field_list = [
-                                'purchase_order_product',
-                                'purchase_request_products_data',
-                                'product',
-                                'uom',
-                                'tax',
-                                'quantity_import',
-                                'product_title',
-                                'product_code',
-                                'product_description',
-                                'product_unit_price',
-                                'product_subtotal_price',
-                                'product_subtotal_price_after_tax',
-                                'order',
-                            ]
-                            filterFieldList(field_list, dataRow);
-                            dataRow['product'] = dataRow?.['product']?.['id']
-                            dataRow['uom'] = dataRow?.['uom']?.['id']
-                            dataRow['tax'] = dataRow?.['tax']?.['id']
-                            for (let pr_product of dataRow?.['purchase_request_products_data'] ? dataRow?.['purchase_request_products_data'] : []) {
-                                let field_list = [
-                                    'purchase_request_product',
-                                    'quantity_import',
-                                    'warehouse_data',
-                                ]
-                                filterFieldList(field_list, pr_product);
-                                pr_product['purchase_request_product'] = pr_product?.['purchase_request_product']?.['id']
-                                for (let warehouse of pr_product?.['warehouse_data'] ? pr_product?.['warehouse_data'] : []) {
-                                    let field_list = [
-                                        'warehouse',
-                                        'quantity_import',
-                                        'lot_data',
-                                        'serial_data',
-                                    ]
-                                    filterFieldList(field_list, warehouse);
-                                    for (let lot of warehouse?.['lot_data'] ? warehouse?.['lot_data'] : []) {
-                                        let field_list = [
-                                            'lot_number',
-                                            'quantity_import',
-                                            'expire_date',
-                                            'manufacture_date',
-                                        ]
-                                        filterFieldList(field_list, lot);
-                                        lot['expire_date'] = moment(lot?.['expire_date'],
-                                            'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
-                                        lot['manufacture_date'] = moment(lot?.['manufacture_date'],
-                                            'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
-                                    }
-                                    for (let serial of warehouse?.['serial_data'] ? warehouse?.['serial_data'] : []) {
-                                        let field_list = [
-                                            'vendor_serial_number',
-                                            'serial_number',
-                                            'expire_date',
-                                            'manufacture_date',
-                                            'warranty_start',
-                                            'warranty_end',
-                                        ]
-                                        filterFieldList(field_list, serial);
-                                        serial['expire_date'] = moment(serial?.['expire_date'],
-                                            'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
-                                        serial['manufacture_date'] = moment(serial?.['manufacture_date'],
-                                            'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
-                                        serial['warranty_start'] = moment(serial?.['warranty_start'],
-                                            'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
-                                        serial['warranty_end'] = moment(serial?.['warranty_end'],
-                                            'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
-                                    }
-                                }
-                            }
-                        }
-                        result.push(dataRow);
-                    }
-                }
-            }
-        }
-    }
-    return result
-}
-
 function filterFieldList(field_list, data_json) {
     for (let key in data_json) {
         if (!field_list.includes(key)) delete data_json[key]
     }
     return data_json;
-}
+};
+
+function deleteRowTable(currentRow, $table) {
+    // Get the index of the current row within the DataTable
+    let rowIndex = $table.DataTable().row(currentRow).index();
+    let row = $table.DataTable().row(rowIndex);
+    // Delete current row
+    row.remove().draw();
+    // Re order
+    reOrderRowTable($table);
+    // Re calculate
+    GRCalculateHandle.calculateTable($table);
+};
+
+function reOrderRowTable($table) {
+    for (let i = 0; i < $table[0].tBodies[0].rows.length; i++) {
+        let row = $table[0].tBodies[0].rows[i];
+        let dataRowRaw = row?.querySelector('.table-row-order')?.getAttribute('data-row');
+        if (dataRowRaw) {
+            let dataRow = JSON.parse(dataRowRaw);
+            dataRow['order'] = (i + 1);
+            row?.querySelector('.table-row-order').setAttribute('data-row', JSON.stringify(dataRow));
+        }
+    }
+};

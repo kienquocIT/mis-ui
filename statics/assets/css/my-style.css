@@ -184,6 +184,10 @@ div.inline {
     margin-left: auto;
 }
 
+.dataTables_filter + .util-btn {
+    margin-left: unset;
+}
+
 .row-custom-filter {
     margin-bottom: 0 !important;
     padding-bottom: 0 !important;

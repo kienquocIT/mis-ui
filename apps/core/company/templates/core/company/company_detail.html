@@ -83,22 +83,6 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-6">
-                <div class="form-group">
-                    <label class="form-label"><b>{% trans 'Language' %}</b></label>
-                    <select class="form-select" name="langugae" id="form-language" disabled>
-                        {% if data.company.language == 'vi' %}
-                        <option value="vi" selected>vi</option>
-                        <option value="en">en</option>
-                        {% else %}
-                        <option value="vi">vi</option>
-                        <option value="en" selected>en</option>
-                        {% endif %}
-                    </select>
-                </div>
-            </div>
-        </div>
     </div>
 {% endblock %}
 {% block jsFooter %}

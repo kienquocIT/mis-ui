@@ -296,6 +296,7 @@ class GRLoadDataHandle {
                                         for (let dataPOProduct of data.purchase_order_product_list) {
                                             if (dataPOProduct?.['id'] === data_product?.['purchase_order_product_id']) {
                                                 dataPOProduct['quantity_import'] = data_product?.['quantity_import'];
+                                                // If PO have PR
                                                 for (let dataPR of data_product?.['purchase_request_products_data']) {
                                                     dataPR['purchase_order_product_id'] = data_product?.['purchase_order_product_id'];
                                                     dataPR['id'] = dataPR?.['purchase_request_product']?.['id'];
@@ -306,25 +307,16 @@ class GRLoadDataHandle {
                                                     }
                                                     for (let dataWarehouse of dataPR?.['warehouse_data']) {
                                                         dataWarehouse['purchase_request_product_id'] = dataPR?.['purchase_request_product']?.['id'];
-                                                        dataWarehouse['id'] = dataWarehouse?.['warehouse']?.['id'];
-                                                        dataWarehouse['title'] = dataWarehouse?.['warehouse']?.['title'];
-                                                        dataWarehouse['code'] = dataWarehouse?.['warehouse']?.['code'];
-                                                        dataWarehouse['warehouse'] = dataWarehouse?.['warehouse']?.['id'];
-                                                        for (let dataLot of dataWarehouse?.['lot_data']) {
-                                                            dataLot['warehouse_id'] = dataWarehouse?.['warehouse']?.['id'];
-                                                            dataLot['expire_date'] = moment(dataLot?.['expire_date']).format('DD/MM/YYYY hh:mm A');
-                                                            dataLot['manufacture_date'] = moment(dataLot?.['manufacture_date']).format('DD/MM/YYYY hh:mm A');
-                                                        }
-                                                        for (let dataSerial of dataWarehouse?.['serial_data']) {
-                                                            dataSerial['warehouse_id'] = dataWarehouse?.['warehouse']?.['id'];
-                                                            dataSerial['expire_date'] = moment(dataSerial?.['expire_date']).format('DD/MM/YYYY hh:mm A');
-                                                            dataSerial['manufacture_date'] = moment(dataSerial?.['manufacture_date']).format('DD/MM/YYYY hh:mm A');
-                                                            dataSerial['warranty_start'] = moment(dataSerial?.['warranty_start']).format('DD/MM/YYYY hh:mm A');
-                                                            dataSerial['warranty_end'] = moment(dataSerial?.['warranty_end']).format('DD/MM/YYYY hh:mm A');
-                                                        }
+                                                        GRLoadDataHandle.loadDetailWHLotSerial(dataWarehouse);
                                                     }
                                                 }
                                                 dataPOProduct['purchase_request_products_data'] = data_product?.['purchase_request_products_data'];
+                                                // If PO doesn't have PR
+                                                for (let dataWarehouse of data_product?.['warehouse_data']) {
+                                                    dataWarehouse['purchase_order_product_id'] = data_product?.['purchase_order_product_id'];
+                                                    GRLoadDataHandle.loadDetailWHLotSerial(dataWarehouse);
+                                                }
+                                                dataPOProduct['warehouse_data'] = data_product?.['warehouse_data'];
                                             }
                                         }
                                     }
@@ -711,6 +703,25 @@ class GRLoadDataHandle {
         }
         //
         GRLoadDataHandle.loadModalProduct(true);
+    };
+
+    static loadDetailWHLotSerial(dataWarehouse) {
+        dataWarehouse['id'] = dataWarehouse?.['warehouse']?.['id'];
+        dataWarehouse['title'] = dataWarehouse?.['warehouse']?.['title'];
+        dataWarehouse['code'] = dataWarehouse?.['warehouse']?.['code'];
+        dataWarehouse['warehouse'] = dataWarehouse?.['warehouse']?.['id'];
+        for (let dataLot of dataWarehouse?.['lot_data']) {
+            dataLot['warehouse_id'] = dataWarehouse?.['warehouse']?.['id'];
+            dataLot['expire_date'] = moment(dataLot?.['expire_date']).format('DD/MM/YYYY hh:mm A');
+            dataLot['manufacture_date'] = moment(dataLot?.['manufacture_date']).format('DD/MM/YYYY hh:mm A');
+        }
+        for (let dataSerial of dataWarehouse?.['serial_data']) {
+            dataSerial['warehouse_id'] = dataWarehouse?.['warehouse']?.['id'];
+            dataSerial['expire_date'] = moment(dataSerial?.['expire_date']).format('DD/MM/YYYY hh:mm A');
+            dataSerial['manufacture_date'] = moment(dataSerial?.['manufacture_date']).format('DD/MM/YYYY hh:mm A');
+            dataSerial['warranty_start'] = moment(dataSerial?.['warranty_start']).format('DD/MM/YYYY hh:mm A');
+            dataSerial['warranty_end'] = moment(dataSerial?.['warranty_end']).format('DD/MM/YYYY hh:mm A');
+        }
     };
 
     static loadTableDisabled(table) {

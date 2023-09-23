@@ -6,6 +6,8 @@ from apps.sales.inventory.views import (
     InventoryAdjustmentList, InventoryAdjustmentCreate, InventoryAdjustmentListAPI,
     InventoryAdjustmentListAPI, InventoryAdjustmentDetailAPI, InventoryAdjustmentDetail
 )
+from apps.sales.inventory.views.goods_transfer import GoodsTransferList, GoodsTransferDetail, GoodsTransferCreate, \
+    GoodsTransferListAPI, GoodsTransferDetailAPI
 
 urlpatterns = [
     # good receipt
@@ -22,4 +24,13 @@ urlpatterns = [
     path('inventory-adjustment/api', InventoryAdjustmentListAPI.as_view(), name='InventoryAdjustmentListAPI'),
     path('inventory-adjustment/<str:pk>', InventoryAdjustmentDetail.as_view(), name='InventoryAdjustmentDetail'),
     path('inventory-adjustment/api/<str:pk>', InventoryAdjustmentDetailAPI.as_view(), name='InventoryAdjustmentDetailAPI'),
+]
+
+# goods transfer
+urlpatterns += [
+    path('goods-transfer/list', GoodsTransferList.as_view(), name='GoodsTransferList'),
+    path('goods-transfer/create', GoodsTransferCreate.as_view(), name='GoodsTransferCreate'),
+    path('goods-transfer/detail/<str:pk>', GoodsTransferDetail.as_view(), name='GoodsTransferDetail'),
+    path('goods-transfer/list/api', GoodsTransferListAPI.as_view(), name='GoodsTransferListAPI'),
+    path('goods-transfer/detail/api/<str:pk>', GoodsTransferDetailAPI.as_view(), name='GoodsTransferDetailAPI'),
 ]

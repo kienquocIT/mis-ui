@@ -116,7 +116,6 @@ $(document).ready(function () {
         if (tr_current.find('.inp-quantity').val() !== '') {
             PurchaseRequestAction.loadPriceSubProduct(tr_current);
             PurchaseRequestAction.loadFinalPrice($(this).closest('table'));
-
         }
     })
 

@@ -722,39 +722,59 @@ class OpportunityLoadDetail {
                     {
                         targets: 1,
                         render: (data, type, row, meta) => {
-                            if (!['Quotation', 'Sale Order', 'Contract', 'Delivery'].includes(row.title))
-                                return `<div class="form-check"><input type="checkbox" class="form-check-input check-create" /></div>`
-                            else
-                                return `<div class="form-check"><input type="checkbox" class="form-check-input check-create" disabled/></div>`
+                            return `<div class="form-check form-switch"><input type="checkbox" class="form-check-input check-all" /></div>`
                         }
                     },
                     {
                         targets: 2,
                         render: (data, type, row, meta) => {
-                            if (!['Quotation', 'Sale Order', 'Contract', 'Delivery'].includes(row.title))
-                                return `<div class="form-check"><input type="checkbox" class="form-check-input check-edit" /></div>`
-                            else
-                                return `<div class="form-check"><input type="checkbox" class="form-check-input check-edit" disabled/></div>`
+                            return `<div class="form-check form-switch"><input type="checkbox" class="form-check-input check-create" /></div>`
                         }
                     },
                     {
                         targets: 3,
                         render: (data, type, row, meta) => {
-                            if (!['Quotation', 'Sale Order', 'Contract', 'Delivery'].includes(row.title))
-                                return `<div class="form-check"><input type="checkbox" class="form-check-input check-view-own" /></div>`
-                            else
-                                return `<div class="form-check"><input type="checkbox" class="form-check-input check-view-own" disabled/></div>`
+                            return `<div class="form-check form-switch"><input type="checkbox" class="form-check-input check-view" /></div>`
                         }
                     },
                     {
                         targets: 4,
                         render: (data, type, row, meta) => {
-                            return `<div class="form-check"><input type="checkbox" class="form-check-input check-view-team-member" /></div>`
+                            return `<div class="form-check form-switch"><input type="checkbox" class="form-check-input check-edit" /></div>`
                         }
-                    }
+                    },
+                    {
+                        targets: 5,
+                        render: (data, type, row, meta) => {
+                            return `<div class="form-check form-switch"><input type="checkbox" class="form-check-input check-delete" /></div>`
+                        }
+                    },
+                    {
+                        targets: 6,
+                        render: (data, type, row, meta) => {
+                            return `<select class="form-select box-select-belong-to">`
+                        }
+                    },
+
                 ],
-            });
+            })
         }
+    }
+
+    static loadBelongTo(ele) {
+        let data = [
+            {
+                'id': 0,
+                'title': 'User'
+            },
+            {
+                'id': 1,
+                'title': 'Opp member'
+            },
+        ]
+        ele.initSelect2({
+            data: data
+        })
     }
 
     static loadMemberPermission(url, method) {
@@ -771,10 +791,15 @@ class OpportunityLoadDetail {
                 for (let key in permit_app) {
                     if (permit_app.hasOwnProperty(key)) {
                         let tr_current = $(`#table-applications .application_name[data-id=${key}]`).closest('tr');
+                        tr_current.find('.check-all').prop('checked', permit_app[key].all);
                         tr_current.find('.check-create').prop('checked', permit_app[key].is_create);
+                        tr_current.find('.check-view').prop('checked', permit_app[key]?.['is_view']);
                         tr_current.find('.check-edit').prop('checked', permit_app[key].is_edit);
-                        tr_current.find('.check-view-own').prop('checked', permit_app[key].is_view_own_activity);
-                        tr_current.find('.check-view-team-member').prop('checked', permit_app[key].is_view_team_activity);
+                        tr_current.find('.check-delete').prop('checked', permit_app[key]?.['is_delete']);
+                        tr_current.find('.box-select-belong-to').empty();
+                        OpportunityLoadDetail.loadBelongTo(tr_current.find('.box-select-belong-to'));
+                        tr_current.find(`.box-select-belong-to`).val(permit_app[key]?.['belong_to']).trigger('change');
+                        tr_current.removeClass('tr-updated')
                     }
                 }
             }
@@ -793,15 +818,22 @@ class OpportunityLoadDetail {
             let currentElement = updated_tr_ele[i];
             let data = {
                 'app': currentElement.querySelector('.application_name').getAttribute('data-id'),
+                'is_all': currentElement.querySelector('.check-all').checked,
                 'is_create': currentElement.querySelector('.check-create').checked,
                 'is_edit': currentElement.querySelector('.check-edit').checked,
-                'is_view_own_activity': currentElement.querySelector('.check-view-own').checked,
-                'is_view_team_activity': currentElement.querySelector('.check-view-team-member').checked,
+                'is_view': currentElement.querySelector('.check-view').checked,
+                'is_delete': currentElement.querySelector('.check-delete').checked,
+                'belong_to': parseInt(currentElement.querySelector('.box-select-belong-to').value),
             }
             list_app.push(data);
         }
         data['app_permit'] = list_app
         return data
+    }
+
+    static checkAllPermissionChecked(ele){
+        let elements = ele.find('.check-create, .check-view, .check-delete, .check-edit');
+        return elements.filter(":not(:checked)").length === 0;
     }
 }
 

@@ -69,7 +69,7 @@ class OpportunityUpdate(View):
 
     @mask_view(
         auth_require=True,
-        template='sales/opportunity/opportunity_detail.html',
+        template='sales/opportunity/opportunity_update.html',
         menu_active='',
         breadcrumb='OPPORTUNITY_UPDATE_PAGE',
         perm_check=PermCheck(url=ApiURL.OPPORTUNITY_DETAIL, method='PUT', fill_key=['pk']),

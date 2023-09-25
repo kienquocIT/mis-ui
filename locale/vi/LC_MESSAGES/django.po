@@ -4369,3 +4369,10 @@ msgstr "Số lượng đặt mua"
 #
 msgid "Received date"
 msgstr "Ngày nhận"
+#
+msgid "Project"
+msgstr "Dự án"
+
+#
+msgid "Inheritor"
+msgstr "Người thụ hưởng"

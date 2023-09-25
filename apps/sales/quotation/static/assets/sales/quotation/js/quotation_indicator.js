@@ -398,9 +398,10 @@ $(function () {
 
         // Clear data indicator store then call API to get new
         $('#btn-refresh-quotation-indicator').on('click', function () {
+            let transEle = $('#app-trans-factory');
             document.getElementById('quotation-indicator-data').value = "";
             indicatorClass.loadQuotationIndicator('quotation-indicator-data');
-            $.fn.notifyB({description: $.fn.transEle.attr('data-refreshed')}, 'success');
+            $.fn.notifyB({description: transEle.attr('data-refreshed')}, 'success');
         });
 
     });

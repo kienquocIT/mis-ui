@@ -461,6 +461,8 @@
     {% endif %}
     <script src="{% static 'assets/js/cdn-clone/select2/init-select2.js' %}"></script>
     <script src="{% static 'assets/js/chips-init.js' %}"></script>
+    <script src="{% static 'vendors/jquery-mockjax_2.6.0/jquery.mockjax.min.js' %}"></script>
+    <script src="{% static 'assets/js/extends/the-documents/bastion_field.js' %}"></script>
     <script src="{% static 'assets/js/init-setup.js' %}"></script>
     <script src="{% static 'assets/js/init-loader.js' %}"></script>
     <!-- // Init JS -->
@@ -527,7 +529,14 @@
             checkSizeScreen();
         })
 
-
+        {# Auto init select2 #}
+        $(document).ready(function (){
+            $('.auto-init-select2').each(function (){
+                if($(this).data('url')){
+                    $(this).initSelect2();
+                }
+            });
+        })
     </script>
 
     <!-- Customize JS -->

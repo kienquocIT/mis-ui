@@ -243,6 +243,7 @@ $(function () {
                     {
                         targets: 2,
                         render: (data, type, row) => {
+                            let transEle = $('#app-trans-factory');
                             let modalID = "indicatorEditModalCenter" + String(row.order);
                             let modalTarget = "#indicatorEditModalCenter" + String(row.order);
                             let tabIndicatorID = "tab_indicator_" + String(row.order);
@@ -267,7 +268,7 @@ $(function () {
                                         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title">${$.fn.transEle.attr('data-edit-formula')}</h5>
+                                                    <h5 class="modal-title">${transEle.attr('data-edit-formula')}</h5>
                                                     <button
                                                             type="button" class="btn-close"
                                                             data-bs-dismiss="modal" aria-label="Close"
@@ -278,7 +279,7 @@ $(function () {
                                                 <div class="modal-body">
                                                     <div class="row">
                                                         <div class="form-group">
-                                                            <label class="form-label">${$.fn.transEle.attr('data-editor')}</label>
+                                                            <label class="form-label">${transEle.attr('data-editor')}</label>
                                                             <textarea class="form-control indicator-editor" rows="4" cols="50" name=""></textarea>
                                                         </div>
                                                     </div>
@@ -286,22 +287,22 @@ $(function () {
                                                         <ul class="nav nav-light">
                                                             <li class="nav-item">
                                                                 <a class="nav-link active" data-bs-toggle="tab" href="${tabIndicatorHref}">
-                                                                <span class="nav-link-text">${$.fn.transEle.attr('data-indicator')}</span>
+                                                                <span class="nav-link-text">${transEle.attr('data-indicator')}</span>
                                                                 </a>
                                                             </li>
                                                             <li class="nav-item">
                                                                 <a class="nav-link" data-bs-toggle="tab" href="${tabPropertyHref}">
-                                                                <span class="nav-link-text">${$.fn.transEle.attr('data-property')}</span>
+                                                                <span class="nav-link-text">${transEle.attr('data-property')}</span>
                                                                 </a>
                                                             </li>
                                                             <li class="nav-item">
                                                                 <a class="nav-link" data-bs-toggle="tab" href="${tabFunctionHref}">
-                                                                <span class="nav-link-text">${$.fn.transEle.attr('data-function')}</span>
+                                                                <span class="nav-link-text">${transEle.attr('data-function')}</span>
                                                                 </a>
                                                             </li>
                                                             <li class="nav-item">
                                                                 <a class="nav-link" data-bs-toggle="tab" href="${tabOperatorHref}">
-                                                                <span class="nav-link-text">${$.fn.transEle.attr('data-operator')}</span>
+                                                                <span class="nav-link-text">${transEle.attr('data-operator')}</span>
                                                                 </a>
                                                             </li>
                                                         </ul>
@@ -337,13 +338,13 @@ $(function () {
                                                         <span class="valid-indicator-formula ml-1"></span>
                                                     </div>
                                                     <div class="col-6 modal-edit-formula-action">
-                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">${$.fn.transEle.attr('data-btn-close')}</button>
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">${transEle.attr('data-btn-close')}</button>
                                                         <button 
                                                             type="button" 
                                                             class="btn btn-primary btn-edit-indicator"
                                                             data-id="${row.id}"
                                                             data-bs-dismiss="modal"
-                                                        >${$.fn.transEle.attr('data-btn-save')}</button>
+                                                        >${transEle.attr('data-btn-save')}</button>
                                                     </div>
                                                 </div>
                                             </div>

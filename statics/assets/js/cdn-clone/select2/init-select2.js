@@ -311,7 +311,7 @@ class SelectDDControl {
         if (params.term) query.search = params.term;
         query.page = params.page || this.page;
         query.pageSize = params.pageSize || this.pageSize;
-        return {...query, ...this._ajax_parse_params_external()}
+        return $x.fn.removeEmptyValuesFromObj({...query, ...this._ajax_parse_params_external()});
     }
 
     _ajax_parse_headers(headers) {

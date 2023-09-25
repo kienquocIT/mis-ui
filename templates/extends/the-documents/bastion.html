@@ -1,0 +1,111 @@
+{% load static i18n bastion_fields %}
+{% if has_opp == True or has_prj == True or has_inherit == True %}
+    <div
+            class="accordion accordion-card accordion-soft accordion-icon my-3"
+            id="bastionFieldTheDocument"
+            data-current-feature="{{ data.feature_code }}"
+    >
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="bastion-field-heading">
+                <button
+                        class="accordion-button {% if is_open != True %} collapsed {% endif %}"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#bastion-field-collapse" aria-expanded="true"
+                        aria-controls="bastion-field-collapse"
+                        id="btnBastionField"
+                >
+                    <div class="d-flex align-items-center">
+                        <i class="fa-regular fa-star mr-2 {% if opp_required == True or prj_required == True or inherit_required == True %} text-danger {% endif %}"></i>
+                        {% if has_opp == True %} <span><span class="{% if opp_required == True %} required {% endif %}">{% trans 'Opportunity' %}</span></span> {% endif %}
+                        {% if has_prj == True %} <span><span class="{% if prj_required == True %} required {% endif %}">{% trans 'Project' %}</span></span> {% endif %}
+                        {% if has_inherit == True %} <span><span class="{% if inherit_required == True %} required {% endif %}">{% trans 'Inheritor' %}</span></span> {% endif %}
+                    </div>
+                </button>
+            </h2>
+            <div
+                    id="bastion-field-collapse"
+                    class="accordion-collapse collapse {% if is_open == True %}show {% endif %}"
+                    aria-labelledby="bastion-field-heading" data-bs-parent="#bastionFieldTheDocument"
+            >
+                <div class="accordion-body">
+                    <div class="container-fluid my-5">
+                        <div class="row">
+                            {% cls_name_of_bastion_field has_opp has_prj has_inherit as clsNameBastionField %}
+
+                            {% if has_opp == True %}
+                                <div class="{{ clsNameBastionField }}">
+                                    <div class="form-group">
+                                        <label
+                                                for="opportunity"
+                                                class="form-label {% if opp_required == True %} required {% endif %}"
+                                        >
+                                            {% trans 'Opportunity' %}
+                                        </label>
+                                        <select
+                                                name="opportunity"
+                                                id="opportunity"
+                                                class="form-select"
+                                                data-url="{% url 'OpportunityListAPI' %}"
+                                                data-method="GET"
+                                                data-keyResp="opportunity_list"
+                                                data-params='{"feature_code": "{{ data.feature_code }}"}'
+                                                data-keyText="title"
+                                                {% if opp_required == True %} required {% endif %}
+                                                {% if opp_disabled == True %} disabled {% endif %}
+                                                {% if opp_readonly == True %} readonly="" {% endif %}
+                                        ></select>
+                                    </div>
+                                </div>
+                            {% endif %}
+                            {% if has_prj == True %}
+                                <div class="{{ clsNameBastionField }}">
+                                    <div class="form-group">
+                                        <label
+                                                for="project"
+                                                class="form-label {% if prj_required == True %} required {% endif %}"
+                                        >
+                                            {% trans 'Project' %}
+                                        </label>
+                                        <select
+                                                name="project"
+                                                id="project"
+                                                class="form-select"
+                                                {% if prj_required == True %} required {% endif %}
+                                                {% if prj_disabled == True %} disabled {% endif %}
+                                                {% if prj_readonly == True %} readonly="" {% endif %}
+                                        ></select>
+                                    </div>
+                                </div>
+                            {% endif %}
+                            {% if has_inherit == True %}
+                                <div class="{{ clsNameBastionField }}">
+                                    <div class="form-group">
+                                        <label
+                                                for="employee_inherit"
+                                                class="form-label {% if inherit_required == True %} required {% endif %}"
+                                        >
+                                            {% trans 'Inheritor' %}
+                                        </label>
+                                        <select
+                                                name="employee_inherit"
+                                                id="employee_inherit"
+                                                class="form-select"
+                                                data-url="{% url 'EmployeeListAPI' %}"
+                                                data-keyResp="employee_list"
+                                                data-params='{"feature_code": "{{ data.feature_code }}"}'
+                                                data-keyText="full_name"
+                                                {% if inherit_required == True %} required {% endif %}
+                                                {% if inherit_disabled == True %} disabled {% endif %}
+                                                {% if inherit_readonly == True %} readonly="" {% endif %}
+                                        ></select>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}

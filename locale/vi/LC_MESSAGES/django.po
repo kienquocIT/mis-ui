@@ -4333,3 +4333,11 @@ msgstr "Xin lỗi, không thể tìm thấy trang được yêu cầu. Hãy th�
 #
 msgid "Server is temporarily unable to handle the request. This may be due to the server being overloaded or down for maintenance."
 msgstr "Máy chủ tạm thời không thể xử lý yêu cầu. Điều này có thể do máy chủ bị quá tải hoặc ngừng hoạt động để bảo trì."
+
+#
+msgid "Project"
+msgstr "Dự án"
+
+#
+msgid "Inheritor"
+msgstr "Người thụ hưởng"

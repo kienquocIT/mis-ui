@@ -70,7 +70,7 @@ class SetupFormSubmit {
     validate(opts) {
         if (this.formSelected) {
             let submitHandler = opts?.['submitHandler'];
-            if (opts.hasOwnProperty('submitHandler')){
+            if (opts.hasOwnProperty('submitHandler')) {
                 delete opts['submitHandler'];
             }
 
@@ -1777,6 +1777,24 @@ class UtilControl {
         }
     }
 
+    static removeEmptyValuesFromObj(object) {
+        for (let key in object) {
+            if (object.hasOwnProperty(key)) {
+                let value = object[key];
+                if (value === null || value === undefined || value === '') {
+                    delete object[key];
+                }
+            }
+        }
+        return object;
+    }
+
+    static getRandomArbitrary(min, max) {
+        min = Math.ceil(min);
+        max = Math.ceil(max);
+        return Math.ceil(Math.random() * (max - min) + min);
+
+    }
 }
 
 class DTBControl {
@@ -3318,6 +3336,7 @@ let $x = {
         dtb: DTBControl,
         person: PersonControl,
         doc: DocumentControl,
+        bastionField: BastionFieldControl,
     },
     fn: {
         fileInit: FileUtils.init,
@@ -3344,6 +3363,8 @@ let $x = {
         renderCodeBreadcrumb: DocumentControl.renderCodeBreadcrumb,
         buttonLinkBlank: DocumentControl.buttonLinkBlank,
 
+        getFeatureCode: BastionFieldControl.getFeatureCode,
+
         parseDateTime: UtilControl.parseDateTime,
         parseDate: UtilControl.parseDate,
         parseJson: UtilControl.parseJson,
@@ -3351,6 +3372,9 @@ let $x = {
 
         randomStr: UtilControl.generateRandomString,
         checkUUID4: UtilControl.checkUUID4,
+
+        removeEmptyValuesFromObj: UtilControl.removeEmptyValuesFromObj,
+        getRandomArbitrary: UtilControl.getRandomArbitrary,
     },
 }
 

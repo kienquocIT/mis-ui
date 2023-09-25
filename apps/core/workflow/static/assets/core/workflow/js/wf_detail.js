@@ -116,7 +116,7 @@ $(function () {
         //     let nodeTableData = NodeSubmitHandle.setupDataSubmit();
         //     // check status Node before submit
         //     // if (nodeTableData === false) {
-        //     //     $.fn.notifyB({description: $.fn.transEle.attr('data-check-complete-node')}, 'failure');
+        //     //     $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-check-complete-node')}, 'failure');
         //     //     return false
         //     // }
         //     // add condition object for node list

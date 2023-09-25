@@ -9,6 +9,7 @@ class POLoadDataHandle {
     static eleDivTablePRProduct = $('#table-purchase-request-product-area');
     static eleDivTablePRProductMerge = $('#table-purchase-request-product-merge-area');
     static finalRevenueBeforeTax = document.getElementById('purchase-order-final-revenue-before-tax');
+    static transEle = $('#app-trans-factory');
 
     static loadMoreInformation(ele, is_span = false) {
         let optionSelected;
@@ -39,7 +40,7 @@ class POLoadDataHandle {
                 }
                 // end
                 let info = ``;
-                info += `<h6 class="dropdown-header header-wth-bg">${$.fn.transEle.attr('data-more-information')}</h6>`;
+                info += `<h6 class="dropdown-header header-wth-bg">${POLoadDataHandle.transEle.attr('data-more-information')}</h6>`;
                 for (let key in data) {
                     if (['id', 'title', 'name', 'fullname', 'full_name', 'code'].includes(key)) {
                         if (key === 'id') {
@@ -55,7 +56,7 @@ class POLoadDataHandle {
                 info += `<div class="dropdown-divider"></div>
                     <div class="row float-right">
                         <a href="${link}" target="_blank" class="link-primary underline_hover">
-                            <span><span>${$.fn.transEle.attr('data-view-detail-info')}</span><span class="icon ml-1"><span class="feather-icon"><i class="fas fa-arrow-circle-right"></i></span></span></span>
+                            <span><span>${POLoadDataHandle.transEle.attr('data-view-detail-info')}</span><span class="icon ml-1"><span class="feather-icon"><i class="fas fa-arrow-circle-right"></i></span></span></span>
                         </a>
                     </div>`;
                 dropdownContent.innerHTML = info;
@@ -721,7 +722,7 @@ class POLoadDataHandle {
                         $(row).css('background-color', '#f7f7f7');
                         row.setAttribute('data-bs-toggle', 'tooltip');
                         row.setAttribute('data-bs-placement', 'top');
-                        row.setAttribute('title', $.fn.transEle.attr('data-product-not-in') + ' ' + ele.getAttribute('data-code'));
+                        row.setAttribute('title', POLoadDataHandle.transEle.attr('data-product-not-in') + ' ' + ele.getAttribute('data-code'));
                     }
                 }
             }
@@ -951,7 +952,7 @@ class POLoadDataHandle {
                     $(row).css('background-color', '#f7f7f7');
                     row.setAttribute('data-bs-toggle', 'tooltip');
                     row.setAttribute('data-bs-placement', 'top');
-                    row.setAttribute('title', $.fn.transEle.attr('data-product-not-in') + ' ' + PQCode);
+                    row.setAttribute('title', POLoadDataHandle.transEle.attr('data-product-not-in') + ' ' + PQCode);
                 }
             }
         }
@@ -1856,7 +1857,7 @@ class POValidateHandle {
     static validateQuantityOrderRequest(ele, remain) {
         if (parseFloat(ele.value) > remain) {
             ele.value = '0';
-            $.fn.notifyB({description: $.fn.transEle.attr('data-validate-order-request')}, 'failure');
+            $.fn.notifyB({description: POLoadDataHandle.transEle.attr('data-validate-order-request')}, 'failure');
         }
     };
 
@@ -1876,7 +1877,7 @@ class POValidateHandle {
                 if (parseFloat(quantity_order) < parseFloat(quantity_request)) {
                     eleQuantityOrder.value = '0';
                     eleStock.innerHTML = '0';
-                    $.fn.notifyB({description: $.fn.transEle.attr('data-validate-order-actual')}, 'failure');
+                    $.fn.notifyB({description: POLoadDataHandle.transEle.attr('data-validate-order-actual')}, 'failure');
                     return false
                 } else {
                     eleStock.innerHTML = String(parseFloat(quantity_order) - parseFloat(quantity_request));
@@ -1894,7 +1895,7 @@ class POValidateHandle {
                 // if ((parseFloat(quantity_order) * uomOrderExchangeRate) < (parseFloat(quantity_request) * uomRequestExchangeRate)) {
                 //     eleQuantityOrder.value = '0';
                 //     eleStock.innerHTML = '0';
-                //     $.fn.notifyB({description: $.fn.transEle.attr('data-validate-order-actual')}, 'failure');
+                //     $.fn.notifyB({description: POLoadDataHandle.transEle.attr('data-validate-order-actual')}, 'failure');
                 //     return false
                 // } else {
                 //    eleStock.innerHTML = String(differenceExchangeValue / uomRequestExchangeRate);
@@ -1904,7 +1905,7 @@ class POValidateHandle {
                 if ((parseFloat(quantity_order) * finalRatio) < (parseFloat(quantity_request))) {
                     eleQuantityOrder.value = '0';
                     eleStock.innerHTML = '0';
-                    $.fn.notifyB({description: $.fn.transEle.attr('data-validate-order-actual')}, 'failure');
+                    $.fn.notifyB({description: POLoadDataHandle.transEle.attr('data-validate-order-actual')}, 'failure');
                     return false
                 } else {
                    eleStock.innerHTML = String((parseFloat(quantity_order) * finalRatio) - parseFloat(quantity_request));

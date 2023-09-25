@@ -2,6 +2,8 @@
 $(function () {
     $(document).ready(function () {
 
+        let transEle = $('#app-trans-factory');
+
         function loadDbl() {
             let $table = $('#table_purchase_order_list')
             let frm = new SetupFormSubmit($table);
@@ -84,9 +86,9 @@ $(function () {
                             return `<div class="dropdown">
                                     <i class="far fa-window-maximize" aria-expanded="false" data-bs-toggle="dropdown"></i>
                                     <div role="menu" class="dropdown-menu">
-                                        <a class="dropdown-item" href="${link}">${$.fn.transEle.attr('data-change')}</a>
+                                        <a class="dropdown-item" href="${link}">${transEle.attr('data-change')}</a>
                                         <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" href="#">${$.fn.transEle.attr('data-cancel')}</a>
+                                        <a class="dropdown-item" href="#">${transEle.attr('data-cancel')}</a>
                                     </div>
                                 </div>`;
                         },

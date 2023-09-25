@@ -3,7 +3,7 @@ class NodeLoadDataHandle {
     static btnAddNode = $('#btn-add-new-node-create');
     static nodeModalTitleEle = $('#modal-node-name-create');
     static nodeModalDescriptionEle = $('#modal-node-description-create');
-
+    static transEle = $('#node-trans-factory');
     static dataSystemNode = [
         {
             'id': 'abccf657-7dce-4a14-9601-f6c4c4f2722a',
@@ -779,7 +779,7 @@ class NodeDataTableHandle {
                                                                             </span>
                                                                             <div class="offcanvas offcanvas-end w-60 mt-4" tabindex="-1" id="${idOutFormCanvas}" aria-labelledby="${idOutFormCanvas}">
                                                                                 <div class="offcanvas-header">
-                                                                                    <h5 id="offcanvasRightLabel">${$.fn.transEle.attr('data-add-employee')}</h5>
+                                                                                    <h5 id="offcanvasRightLabel">${NodeLoadDataHandle.transEle.attr('data-add-employee')}</h5>
                                                                                 </div>
                                                                                 <div class="offcanvas-body form-group">
                                                                                     <table
@@ -789,9 +789,9 @@ class NodeDataTableHandle {
                                                                                     >
                                                                                         <thead>
                                                                                         <tr>
-                                                                                            <th>${$.fn.transEle.attr('data-code')}</th>
-                                                                                            <th>${$.fn.transEle.attr('data-full-name')}</th>
-                                                                                            <th>${$.fn.transEle.attr('data-role')}</th>
+                                                                                            <th>${NodeLoadDataHandle.transEle.attr('data-code')}</th>
+                                                                                            <th>${NodeLoadDataHandle.transEle.attr('data-full-name')}</th>
+                                                                                            <th>${NodeLoadDataHandle.transEle.attr('data-role')}</th>
                                                                                             <th></th>
                                                                                         </tr>
                                                                                         </thead>
@@ -800,13 +800,13 @@ class NodeDataTableHandle {
                                                                                     </table>
                                                                                     <br><br>
                                                                                     <div class="modal-footer">
-                                                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas">${$.fn.transEle.attr('data-btn-close')}</button>
+                                                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas">${NodeLoadDataHandle.transEle.attr('data-btn-close')}</button>
                                                                                         <button
                                                                                                 type="button" 
                                                                                                 class="btn btn-primary button-add-out-form-employee" 
                                                                                                 data-bs-dismiss="offcanvas"
                                                                                                 id=""
-                                                                                        >${$.fn.transEle.attr('data-btn-save')}
+                                                                                        >${NodeLoadDataHandle.transEle.attr('data-btn-save')}
                                                                                         </button>
                                                                                     </div>
                                                                                 </div>
@@ -841,18 +841,18 @@ class NodeDataTableHandle {
                                                                 <div class="row">
                                                                     <div class="col-2">
                                                                         <button type="button" class="btn btn-link btn-animated" data-bs-toggle="offcanvas" data-bs-target="#${idInWFCanvas}" aria-controls="${idInWFCanvas}">
-                                                                            <span><span class="icon"><span class="feather-icon"><i class="fa-regular fa-square-plus"></i></span></span><span>${$.fn.transEle.attr('data-add-employee')}</span></span>
+                                                                            <span><span class="icon"><span class="feather-icon"><i class="fa-regular fa-square-plus"></i></span></span><span>${NodeLoadDataHandle.transEle.attr('data-add-employee')}</span></span>
                                                                         </button>
                                                                     </div>
                                                                     <div class="col-10"></div>
                                                                 </div>
                                                                 <div class="offcanvas offcanvas-end w-60 mt-4" tabindex="-1" id="${idInWFCanvas}" aria-labelledby="${idInWFCanvas}">
                                                                     <div class="offcanvas-header">
-                                                                        <h5 id="offcanvasRightLabel">${$.fn.transEle.attr('data-add-employee')}</h5>
+                                                                        <h5 id="offcanvasRightLabel">${NodeLoadDataHandle.transEle.attr('data-add-employee')}</h5>
                                                                     </div>
                                                                     <div class="offcanvas-body form-group">
                                                                         <div class="form-group">
-                                                                            <label class="form-label">${$.fn.transEle.attr('data-select-company')}</label>
+                                                                            <label class="form-label">${NodeLoadDataHandle.transEle.attr('data-select-company')}</label>
                                                                             <select 
                                                                                 class="form-control box-in-workflow-company"
                                                                                 data-url="${NodeDataTableHandle.companyInitEle.attr('data-url')}"
@@ -895,7 +895,7 @@ class NodeDataTableHandle {
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="form-label">
-                                                                                ${$.fn.transEle.attr('data-description')}
+                                                                                ${NodeLoadDataHandle.transEle.attr('data-description')}
                                                                             </label>
                                                                             <textarea
                                                                                     class="form-control"
@@ -905,13 +905,13 @@ class NodeDataTableHandle {
                                                                         </div>
                                                                         <br><br>
                                                                         <div class="modal-footer">
-                                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas">${$.fn.transEle.attr('data-btn-close')}</button>
+                                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas">${NodeLoadDataHandle.transEle.attr('data-btn-close')}</button>
                                                                             <button
                                                                                     type="button" 
                                                                                     class="btn btn-primary button-add-in-workflow-employee" 
                                                                                     data-bs-dismiss="offcanvas"
                                                                                     id=""
-                                                                            >${$.fn.transEle.attr('data-btn-save')}
+                                                                            >${NodeLoadDataHandle.transEle.attr('data-btn-save')}
                                                                             </button>
                                                                         </div>
                                                                     </div>
@@ -934,8 +934,8 @@ class NodeDataTableHandle {
                                                             </div>
                                                         </div>
                                                         <div class="modal-footer">
-                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">${$.fn.transEle.attr('data-btn-close')}</button>
-                                                            <button type="button" class="btn btn-primary btn-add-collab-create" data-bs-dismiss="modal">${$.fn.transEle.attr('data-btn-save')}</button>
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">${NodeLoadDataHandle.transEle.attr('data-btn-close')}</button>
+                                                            <button type="button" class="btn btn-primary btn-add-collab-create" data-bs-dismiss="modal">${NodeLoadDataHandle.transEle.attr('data-btn-save')}</button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -988,8 +988,8 @@ class NodeDataTableHandle {
                                                             </div>
                                                         </div>
                                                         <div class="modal-footer">
-                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">${$.fn.transEle.attr('data-btn-close')}</button>
-                                                            <button type="button" class="btn btn-primary btn-add-collab-initital-create" data-bs-dismiss="modal">${$.fn.transEle.attr('data-btn-save')}</button>
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">${NodeLoadDataHandle.transEle.attr('data-btn-close')}</button>
+                                                            <button type="button" class="btn btn-primary btn-add-collab-initital-create" data-bs-dismiss="modal">${NodeLoadDataHandle.transEle.attr('data-btn-save')}</button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1042,8 +1042,8 @@ class NodeDataTableHandle {
                                                             </div>
                                                         </div>
                                                         <div class="modal-footer">
-                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">${$.fn.transEle.attr('data-btn-close')}</button>
-                                                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">${$.fn.transEle.attr('data-btn-save')}</button>
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">${NodeLoadDataHandle.transEle.attr('data-btn-close')}</button>
+                                                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">${NodeLoadDataHandle.transEle.attr('data-btn-save')}</button>
                                                         </div>
                                                     </div>
                                                 </div>

@@ -4335,6 +4335,41 @@ msgid "Server is temporarily unable to handle the request. This may be due to th
 msgstr "Máy chủ tạm thời không thể xử lý yêu cầu. Điều này có thể do máy chủ bị quá tải hoặc ngừng hoạt động để bảo trì."
 
 #
+msgid "Purchase order"
+msgstr "Đơn mua hàng"
+
+#
+msgid "Delivered date"
+msgstr "Ngày giao hàng"
+
+#
+msgid "Delivered status"
+msgstr "Trạng thái giao hàng"
+
+#
+msgid "Select items from purchase request"
+msgstr "Chọn sản phẩm từ yêu cầu mua hàng"
+
+#
+msgid "Quantity order must be less than quantity remain"
+msgstr "Số lượng đặt mua phải nhỏ hơn số lượng chưa mua"
+
+#
+msgid "Quantity order actually must be greater than or equal quantity order on request"
+msgstr "Số lượng đặt mua thực tế phải lớn hơn hoặc bằng số lượng yêu cầu"
+
+#
+msgid "Remain (PO)"
+msgstr "Chưa mua"
+
+#
+msgid "Quantity order"
+msgstr "Số lượng đặt mua"
+
+#
+msgid "Received date"
+msgstr "Ngày nhận"
+#
 msgid "Project"
 msgstr "Dự án"
 

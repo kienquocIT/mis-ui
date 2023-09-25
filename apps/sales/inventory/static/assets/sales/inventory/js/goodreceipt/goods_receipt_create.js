@@ -83,9 +83,11 @@ $(function () {
             GRDataTableHandle.tablePR.DataTable().clear().draw();
             if (is_checked === true) {
                 this.checked = true;
-                if (dataRow?.['purchase_request_products_data'].length > 0) {
+                if (dataRow?.['purchase_request_products_data'].length > 0) { // If PO have PR
                     GRDataTableHandle.tablePR.DataTable().rows.add(dataRow?.['purchase_request_products_data']).draw();
                     $('#scroll-table-pr')[0].removeAttribute('hidden');
+                } else { // If PO doesn't have PR
+                    GRLoadDataHandle.loadModalWareHouse(JSON.parse(this.getAttribute('data-row')));
                 }
                 $(row).css('background-color', '#ebfcf5');
             } else {
@@ -150,7 +152,7 @@ $(function () {
         //     if (GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked')) {
         //         GRLoadDataHandle.loadAreaLotSerial(true, false);
         //     } else {
-        //         $.fn.notifyB({description: $.fn.transEle.attr('data-validate-manage-lot')}, 'failure');
+        //         $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-validate-manage-lot')}, 'failure');
         //         return false
         //     }
         // });
@@ -159,7 +161,7 @@ $(function () {
         //     if (GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked')) {
         //         GRLoadDataHandle.loadAreaLotSerial(false, true);
         //     } else {
-        //         $.fn.notifyB({description: $.fn.transEle.attr('data-validate-manage-lot')}, 'failure');
+        //         $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-validate-manage-lot')}, 'failure');
         //         return false
         //     }
         // });
@@ -193,7 +195,7 @@ $(function () {
             if (GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked')) {
                 GRLoadDataHandle.loadAddRowLot();
             } else {
-                $.fn.notifyB({description: $.fn.transEle.attr('data-validate-manage-lot')}, 'failure');
+                $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-validate-manage-lot')}, 'failure');
                 return false
             }
         });

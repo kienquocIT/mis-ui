@@ -57,7 +57,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">{% trans 'Purchase request' %}</label>
+                            <label class="form-label">{% trans 'Purchase Request' %}</label>
                             <div class="input-group">
                                 <span class="input-affix-wrapper">
                                     <div class="form-control div-input" id="purchase-order-purchase-request" data-link-detail="{% url "PurchaseRequestDetail" 1 %}"></div>
@@ -93,7 +93,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="form-label" for="box-purchase-order-supplier">{% trans 'Select Supplier' %}</label>
+                            <label class="form-label" for="box-purchase-order-supplier">{% trans 'Supplier' %}</label>
                             <div class="input-group more-information-group">
                                 <span class="input-affix-wrapper">
                                     <span class="input-prefix">
@@ -354,7 +354,7 @@
 
         <input
             type="hidden"
-            id="base-trans-factory"
+            id="app-trans-factory"
             data-view-detail-info="{% trans 'View detail' %}"
             data-more-information="{% trans 'More information' %}"
             data-product-not-in="{% trans 'Product is not in' %}"
@@ -472,7 +472,7 @@
                                                 <th>{% trans 'PR Code' %}</th>
                                                 <th>{% trans 'Unit Of Measure' %}</th>
                                                 <th class="w-5">{% trans 'Quantity' %}</th>
-                                                <th class="w-5">{% trans 'Remain' %}</th>
+                                                <th class="w-5">{% trans 'Remain (PO)' %}</th>
                                                 <th class="w-5">{% trans 'Quantity order' %}</th>
                                             </tr>
                                             </thead>

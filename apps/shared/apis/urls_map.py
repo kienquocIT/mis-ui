@@ -377,3 +377,6 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # Goods transfer
     GOODS_TRANSFER_LIST = StringUrl('inventory/good-transfer/list')
     GOODS_TRANSFER_DETAIL = StringUrl('inventory/good-transfer/{pk}')
+
+    #Opportunity Member List
+    OPPORTUNITY_MEMBER_LIST = StringUrl('opportunity/member/list/{pk}')

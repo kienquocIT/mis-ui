@@ -1,6 +1,8 @@
 $(document).ready(function (){
     let frm = $('#frmUpdate');
     let pk = $.fn.getPkDetail();
+    WarehouseLoadPage.loadAgency();
+
     WarehouseLoadPage.loadDetail(frm, pk);
 
     eventPage();

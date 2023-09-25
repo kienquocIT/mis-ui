@@ -154,11 +154,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     # Transition Data Config
     DELIVERY_CONFIG_PAGE = BreadcrumbChildren(_('Delivery'), 'DeliveryConfigDetail')
     DELIVERY_PICKING_LIST_PAGE = BreadcrumbChildren(_('Picking'), 'OrderPickingList')
-    DELIVERY_PICKING_DETAIL_PAGE = BreadcrumbChildren(_('Picking detail'))
-    DELIVERY_PICKING_EDIT_PAGE = BreadcrumbChildren(_('Picking edit'))
     DELIVERY_LIST_PAGE = BreadcrumbChildren(_('Delivery list'), 'OrderDeliveryList')
-    DELIVERY_DETAIL_PAGE = BreadcrumbChildren(_('Delivery Detail'))
-    DELIVERY_EDIT_PAGE = BreadcrumbChildren(_('Delivery edit'))
 
     # Return Advance
     RETURN_ADVANCE_LIST_PAGE = BreadcrumbChildren(_('Return Advance'), 'ReturnAdvanceList')
@@ -240,12 +236,14 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     # Purchase request config
     PURCHASE_REQUEST_CONFIG_PAGE = BreadcrumbChildren(_('Purchase Request'), 'PurchaseRequestConfig')
 
+    # Goods transfer
+    GOODS_TRANSFER_LIST_PAGE = BreadcrumbChildren(_('Goods Transfer'), 'GoodsTransferList')
+
     # E-Office
     # Leave
     LEAVE_CONFIG = BreadcrumbChildren(
         _('Leave Config'), 'LeaveConfigDetail'
     )
-
 
 
 class BreadcrumbView:
@@ -530,13 +528,13 @@ class BreadcrumbView:
     ORDER_PICKING_LIST_PAGE = [
         BreadcrumbItem.DELIVERY_PICKING_LIST_PAGE,
     ]
-    ORDER_PICKING_DETAIL_PAGE = ORDER_PICKING_LIST_PAGE + [BreadcrumbItem.DELIVERY_PICKING_DETAIL_PAGE]
-    ORDER_PICKING_EDIT_PAGE = ORDER_PICKING_LIST_PAGE + [BreadcrumbItem.DELIVERY_PICKING_EDIT_PAGE]
+    ORDER_PICKING_DETAIL_PAGE = ORDER_PICKING_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    ORDER_PICKING_EDIT_PAGE = ORDER_PICKING_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
     ORDER_DELIVERY_LIST_PAGE = [
         BreadcrumbItem.DELIVERY_LIST_PAGE,
     ]
-    ORDER_DELIVERY_DETAIL_PAGE = ORDER_DELIVERY_LIST_PAGE + [BreadcrumbItem.DELIVERY_DETAIL_PAGE]
-    ORDER_DELIVERY_EDIT_PAGE = ORDER_DELIVERY_LIST_PAGE + [BreadcrumbItem.DELIVERY_EDIT_PAGE]
+    ORDER_DELIVERY_DETAIL_PAGE = ORDER_DELIVERY_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    ORDER_DELIVERY_EDIT_PAGE = ORDER_DELIVERY_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
     # Transition Data Config
     DELIVERY_CONFIG = [
@@ -654,4 +652,9 @@ class BreadcrumbView:
     INVENTORY_ADJUSTMENT_CREATE_PAGE = INVENTORY_ADJUSTMENT_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
     INVENTORY_ADJUSTMENT_DETAIL_PAGE = INVENTORY_ADJUSTMENT_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     INVENTORY_ADJUSTMENT_UPDATE_PAGE = INVENTORY_ADJUSTMENT_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+
+    # Goods transfer
+    GOODS_TRANSFER_LIST_PAGE = [BreadcrumbItem.GOODS_TRANSFER_LIST_PAGE]
+    GOODS_TRANSFER_CREATE_PAGE = GOODS_TRANSFER_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+    GOODS_TRANSFER_DETAIL_PAGE = GOODS_TRANSFER_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
 

@@ -260,7 +260,6 @@ class PurchaseRequestAction {
 
     getHtmlProductTitle(row, product) {
         let ele_trans = $('#trans-factory');
-        let ele_url = urlEle;
         return `<span class="input-affix-wrapper">
                 <span class="input-prefix" id="dropdownBeneficiary">
                     <i class="fas fa-info-circle text-primary" aria-expanded="false"
@@ -270,7 +269,7 @@ class PurchaseRequestAction {
                         <div class="row">
                             <span class="col-7">${ele_trans.data('trans-more-info')}</span>
                             <a class="col-5 text-right" target="_blank"
-                               href="${ele_url.data('url-product-detail')}">
+                               href="${urlEle.data('url-product-detail')}">
                                 <span class="badge btn-outline-primary">${ele_trans.data('trans-more')}&nbsp;<i
                                     class="bi bi-arrow-right"></i></span>
                             </a>

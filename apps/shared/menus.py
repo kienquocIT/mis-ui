@@ -304,7 +304,7 @@ class MenusPurchase:
                 icon='<i class="bi bi-caret-right-fill"></i>',
             ),
             MenuCommon(
-                name='Purchase Order', code='menu_purchase_order_list', view_name='PurchaseOrderList',
+                name='Purchase order', code='menu_purchase_order_list', view_name='PurchaseOrderList',
                 icon='<i class="bi bi-caret-right-fill"></i>',
             ),
         ],

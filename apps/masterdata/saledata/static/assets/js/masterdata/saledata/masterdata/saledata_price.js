@@ -77,7 +77,7 @@ $(document).ready(function () {
                                 let vndCurrency = $.grep(resp.data['currency_list'], function (currency) {
                                     return currency.abbreviation === "VND";
                                 })[0];
-                                if (vndCurrency !== undefined && vndCurrency.is_primary) {
+                                if (vndCurrency !== undefined && vndCurrency?.['is_primary']) {
                                     for (let i = 0; i < resp.data['currency_list'].length; i++) {
                                         resp.data['currency_list'][i]['round_number'] = 2;
                                     }
@@ -88,7 +88,7 @@ $(document).ready(function () {
                                 }
 
                                 resp.data['currency_list'].map(function (item) {
-                                    if (item.is_primary === true) {
+                                    if (item?.['is_primary'] === true) {
                                         $('.abbreviation-primary').text(item.abbreviation);
                                     }
                                 });
@@ -132,7 +132,7 @@ $(document).ready(function () {
                             className: 'wrap-text',
                             render: (data, type, row, meta) => {
                                 if (data !== null) {
-                                    if (row.is_primary === true) {
+                                    if (row?.['is_primary'] === true) {
                                         return `<span class="badge badge-success badge-indicator badge-indicator-xl"></span>`
                                     } else {
                                         return `<span>{0}</span>`.format_by_idx(
@@ -344,63 +344,95 @@ $(document).ready(function () {
     loadBaseCurrency();
     loadCurrency();
 
+    $('#select-box-type').initSelect2({
+        data: [
+            {
+                'id': '0',
+                'title': $transElm.data('trans-sale'),
+            },
+            {
+                'id': '1',
+                'title': $transElm.data('trans-purchase'),
+            }
+        ]
+    })
+
 //submit form create tax category
     let form_create_tax_category = $('#form-create-tax-category')
-    SetupFormSubmit.validate(
-        form_create_tax_category,
-        {
-            submitHandler: function (form) {
-                let frm = new SetupFormSubmit($(form));
-                $.fn.callAjax2({
-                    'url': frm.dataUrl,
-                    'method': frm.dataMethod,
-                    'data': frm.dataForm
-                }).then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyB({description: "Successfully"}, 'success')
-                            $('#modal-section-tax-category').modal('hide');
-                            $('#datatable-tax-category').DataTable().ajax.reload();
-                        }
-                    },
-                    (errs) => {
-                    }
-                )
+    new SetupFormSubmit(form_create_tax_category).validate({
+        rules: {
+            title: {
+                required: true,
             }
-        })
+        },
+        submitHandler: function (form) {
+            let frm = new SetupFormSubmit($(form));
+            $.fn.callAjax2({
+                'url': frm.dataUrl,
+                'method': frm.dataMethod,
+                'data': frm.dataForm
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: "Successfully"}, 'success')
+                        $('#modal-section-tax-category').modal('hide');
+                        $('#datatable-tax-category').DataTable().ajax.reload();
+                    }
+                },
+                (errs) => {
+                }
+            )
+        }
+    })
 
 //submit form create tax
     let form_create_tax = $('#form-create-tax')
-    SetupFormSubmit.validate(
-        form_create_tax,
-        {
-            submitHandler: function (form) {
-                let frm = new SetupFormSubmit($(form));
-                if ($('#select-box-type').val().length > 1) {
-                    frm.dataForm['type'] = '2';
-                } else {
-                    frm.dataForm['type'] = $('#select-box-type').val()[0];
-                }
-                $.fn.callAjax2({
-                    'url': frm.dataUrl,
-                    'method': frm.dataMethod,
-                    'data': frm.dataForm
-                }).then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyB({description: "Successfully"}, 'success')
-                            $('#modal-section-tax').hide();
-                            $('#datatable-tax').DataTable().ajax.reload();
-                        }
-                    },
-                    (errs) => {
-
-                    }
-                )
+    new SetupFormSubmit(form_create_tax).validate({
+        rules: {
+            code: {
+                required: true
+            },
+            title: {
+                required: true,
+            },
+            category: {
+                required: true,
+            },
+            rate: {
+                required: true,
+            },
+            tax_type: {
+                required: true
             }
-        })
+        },
+        submitHandler: function (form) {
+            let frm = new SetupFormSubmit($(form));
+            let typeSelectEle = $('#select-box-type');
+            if (typeSelectEle.val().length > 1) {
+                frm.dataForm['type'] = '2';
+            } else {
+                frm.dataForm['type'] = typeSelectEle.val()[0];
+            }
+            $.fn.callAjax2({
+                'url': frm.dataUrl,
+                'method': frm.dataMethod,
+                'data': frm.dataForm
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: "Successfully"}, 'success')
+                        $('#modal-section-tax').hide();
+                        $('#datatable-tax').DataTable().ajax.reload();
+                    }
+                },
+                (errs) => {
+
+                }
+            )
+        }
+    })
 
     let url_detail = ''
 // show detail tax
@@ -420,12 +452,25 @@ $(document).ready(function () {
                         $('#select-box-category-update').initSelect2({
                             'data': data.tax.category
                         })
+                        let typeEle = $('#tax-type');
+                        typeEle.initSelect2({
+                            data: [
+                                {
+                                    'id': '0',
+                                    'title': $transElm.data('trans-sale'),
+                                },
+                                {
+                                    'id': '1',
+                                    'title': $transElm.data('trans-purchase'),
+                                }
+                            ]
+                        })
                         if (data.tax.type === 0) {
-                            $('#tax-type').val(['0']).trigger("change");
+                            typeEle.val(['0']).trigger("change");
                         } else if (data.tax.type === 1) {
-                            $('#tax-type').val(['1']).trigger("change");
+                            typeEle.val(['1']).trigger("change");
                         } else {
-                            $('#tax-type').val(['0', '1']).trigger("change");
+                            typeEle.val(['0', '1']).trigger("change");
                         }
                     }
                 }
@@ -452,97 +497,120 @@ $(document).ready(function () {
 
 //form update tax
     let form_update_tax = $('#form-update-tax')
-    SetupFormSubmit.validate(
-        form_update_tax,
-        {
-            submitHandler: function (form) {
-                let frm = new SetupFormSubmit($(form));
-                let tax_type_ele = $('#tax-type')
-                if (tax_type_ele.val().length > 1) {
-                    frm.dataForm['type'] = '2';
-                } else {
-                    frm.dataForm['type'] = tax_type_ele.val()[0];
-                }
-                frm.dataForm['category'] = $('#select-box-category-update').val();
-                $.fn.callAjax2({
-                    'url': url_detail,
-                    'method': frm.dataMethod,
-                    'data': frm.dataForm
-                }).then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyB({description: "Successfully"}, 'success')
-                            $('#modal-detail-tax').modal('hide');
-                            $('#datatable-tax').DataTable().ajax.reload();
-                        }
-                    },
-                    (errs) => {
-                    }
-                )
+    new SetupFormSubmit(form_update_tax).validate({
+        rules: {
+            code: {
+                required: true
+            },
+            title: {
+                required: true,
+            },
+            category: {
+                required: true,
+            },
+            rate: {
+                required: true,
+            },
+            tax_type: {
+                required: true
             }
-        })
+        },
+        submitHandler: function (form) {
+            let frm = new SetupFormSubmit($(form));
+            let tax_type_ele = $('#tax-type')
+            if (tax_type_ele.val().length > 1) {
+                frm.dataForm['type'] = '2';
+            } else {
+                frm.dataForm['type'] = tax_type_ele.val()[0];
+            }
+            frm.dataForm['category'] = $('#select-box-category-update').val();
+            $.fn.callAjax2({
+                'url': url_detail,
+                'method': frm.dataMethod,
+                'data': frm.dataForm
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: "Successfully"}, 'success')
+                        $('#modal-detail-tax').modal('hide');
+                        $('#datatable-tax').DataTable().ajax.reload();
+                    }
+                },
+                (errs) => {
+                }
+            )
+        }
+    })
 
 //form update tax category
     let form_update_tax_category = $('#form-update-tax-category')
-    SetupFormSubmit.validate(
-        form_update_tax_category,
-        {
-            submitHandler: function (form) {
-                let frm = new SetupFormSubmit($(form));
-        $.fn.callAjax2({
-            'url': url_detail,
-            'method': frm.dataMethod,
-            'data': frm.dataForm,
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    $.fn.notifyB({description: "Successfully"}, 'success')
-                    $('#modal-detail-tax-category').modal('hide');
-                    $('#datatable-tax-category').DataTable().ajax.reload();
-                }
-            },
-            (errs) => {
+    new SetupFormSubmit(form_update_tax_category).validate({
+        rules: {
+            title: {
+                required: true,
             }
-        )
-    }})
+        },
+        submitHandler: function (form) {
+            let frm = new SetupFormSubmit($(form));
+            $.fn.callAjax2({
+                'url': url_detail,
+                'method': frm.dataMethod,
+                'data': frm.dataForm,
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: "Successfully"}, 'success')
+                        $('#modal-detail-tax-category').modal('hide');
+                        $('#datatable-tax-category').DataTable().ajax.reload();
+                    }
+                },
+                (errs) => {
+                }
+            )
+        }
+    })
 
 // form create currency
     let form_create_currency = $('#form-create-currency')
-    SetupFormSubmit.validate(
-        form_create_currency,
-        {
-            submitHandler: function (form) {
-                let frm = new SetupFormSubmit($(form));
-
-        if (frm.dataForm['rate'] === '') {
-            frm.dataForm['rate'] = null;
-        }
-
-        let currency_ele = $('#currency_name');
-        let currency_obj = SelectDDControl.get_data_from_idx(currency_ele, currency_ele.val());
-        frm.dataForm['abbreviation'] = currency_obj.code;
-        frm.dataForm['title'] = currency_obj.title;
-
-        $.fn.callAjax2({
-            'url': frm.dataUrl,
-            'method': frm.dataMethod,
-            'data': frm.dataForm
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    $.fn.notifyB({description: "Successfully"}, 'success')
-                    $('#modal-section-currency').modal('hide');
-                    $('#datatable-currency').DataTable().ajax.reload();
-                }
-            },
-            (errs) => {
-
+    new SetupFormSubmit(form_create_currency).validate({
+        rules: {
+            currency: {
+                required: true,
             }
-        )
-    }})
+        },
+        submitHandler: function (form) {
+            let frm = new SetupFormSubmit($(form));
+
+            if (frm.dataForm['rate'] === '') {
+                frm.dataForm['rate'] = null;
+            }
+
+            let currency_ele = $('#currency_name');
+            let currency_obj = SelectDDControl.get_data_from_idx(currency_ele, currency_ele.val());
+            frm.dataForm['abbreviation'] = currency_obj.code;
+            frm.dataForm['title'] = currency_obj.title;
+
+            $.fn.callAjax2({
+                'url': frm.dataUrl,
+                'method': frm.dataMethod,
+                'data': frm.dataForm
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: "Successfully"}, 'success')
+                        $('#modal-section-currency').modal('hide');
+                        $('#datatable-currency').DataTable().ajax.reload();
+                    }
+                },
+                (errs) => {
+
+                }
+            )
+        }
+    })
 
 
 // show detail currency
@@ -828,7 +896,6 @@ $(document).ready(function () {
                     targets: 1,
                     render: (row, type, data) => {
                         let textValue = data.value
-                        let UnitType = parseInt(data.unit_type.value ? data.unit_type.value : data.unit_type)
                         return `<p><span class="mask-money">${textValue}</span></p>`
                     }
                 },

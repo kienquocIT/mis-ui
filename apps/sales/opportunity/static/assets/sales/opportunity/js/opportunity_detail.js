@@ -601,8 +601,27 @@ $(document).ready(async function () {
         OpportunityLoadDetail.loadMemberPermission(url, method);
     })
 
-    $(document).on('change', '#table-applications input', function () {
+    $(document).on('change', '#table-applications input, #table-applications select', function () {
         $(this).closest('tr').addClass('tr-updated')
+    })
+
+    $(document).on('change', '.check-all', function () {
+        let tr_current = $(this).closest('tr');
+        if ($(this).is(':checked')) {
+            tr_current.find('input').prop('checked', true);
+        } else {
+            tr_current.find('input').prop('checked', false);
+        }
+    })
+
+    $(document).on('change', '.check-create, .check-view, .check-delete, .check-edit', function () {
+        let tr_current = $(this).closest('tr');
+        if (OpportunityLoadDetail.checkAllPermissionChecked(tr_current)) {
+            tr_current.find('.check-all').prop('checked', true);
+        }
+        else{
+            tr_current.find('.check-all').prop('checked', false);
+        }
     })
 
     const frm_add_member = $('#frm-add-member');

@@ -373,3 +373,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     LEAVE_CREATE = StringUrl('leave/leave-type/create')
     LEAVE_DETAIL = StringUrl('leave/leave-type/detail/{pk}')
 
+
+    # Goods transfer
+    GOODS_TRANSFER_LIST = StringUrl('inventory/good-transfer/list')
+    GOODS_TRANSFER_DETAIL = StringUrl('inventory/good-transfer/{pk}')

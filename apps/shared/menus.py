@@ -325,6 +325,12 @@ class MenusPurchase:
                 view_name='InventoryAdjustmentList',
                 icon='<i class="bi bi-sliders"></i>',
             ),
+            MenuCommon(
+                name='Goods Transfer',
+                code='menu_goods_transfer_list',
+                view_name='GoodsTransferList',
+                icon='<i class="fas fa-exchange-alt"></i>',
+            ),
         ],
     )
 

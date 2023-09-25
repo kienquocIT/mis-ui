@@ -793,7 +793,8 @@ class OpportunityLoadDetail {
                 for (let key in permit_app) {
                     if (permit_app.hasOwnProperty(key)) {
                         let tr_current = $(`#table-applications .application_name[data-id=${key}]`).closest('tr');
-                        tr_current.find('.check-all').prop('checked', permit_app[key].all);
+                        tr_current.find('input[type="checkbox"]').prop('checked', false);
+                        tr_current.find('.check-all').prop('checked', permit_app[key].is_all);
                         tr_current.find('.check-create').prop('checked', permit_app[key].is_create);
                         tr_current.find('.check-view').prop('checked', permit_app[key]?.['is_view']);
                         tr_current.find('.check-edit').prop('checked', permit_app[key].is_edit);

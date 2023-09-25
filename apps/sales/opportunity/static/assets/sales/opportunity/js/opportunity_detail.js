@@ -667,9 +667,7 @@ $(document).ready(async function () {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
-                            setTimeout(function () {
-                                window.location.reload();
-                            }, 1000)
+                            $('#modal-set-perm').modal('hide');
                         }
                     },
                     (errs) => {

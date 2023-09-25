@@ -53,7 +53,7 @@ $(function () {
             let nodeData = NodeSubmitHandle.setupDataSubmit();
             // check status Node before submit
             // if (nodeData === false) {
-            //     $.fn.notifyB({description: $.fn.transEle.attr('data-check-complete-node')}, 'failure');
+            //     $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-check-complete-node')}, 'failure');
             //     return false
             // }
             // get exit node condition for node list

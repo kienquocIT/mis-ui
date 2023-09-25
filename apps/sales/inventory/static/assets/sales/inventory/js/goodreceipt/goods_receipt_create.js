@@ -152,7 +152,7 @@ $(function () {
         //     if (GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked')) {
         //         GRLoadDataHandle.loadAreaLotSerial(true, false);
         //     } else {
-        //         $.fn.notifyB({description: $.fn.transEle.attr('data-validate-manage-lot')}, 'failure');
+        //         $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-validate-manage-lot')}, 'failure');
         //         return false
         //     }
         // });
@@ -161,7 +161,7 @@ $(function () {
         //     if (GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked')) {
         //         GRLoadDataHandle.loadAreaLotSerial(false, true);
         //     } else {
-        //         $.fn.notifyB({description: $.fn.transEle.attr('data-validate-manage-lot')}, 'failure');
+        //         $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-validate-manage-lot')}, 'failure');
         //         return false
         //     }
         // });
@@ -195,7 +195,7 @@ $(function () {
             if (GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked')) {
                 GRLoadDataHandle.loadAddRowLot();
             } else {
-                $.fn.notifyB({description: $.fn.transEle.attr('data-validate-manage-lot')}, 'failure');
+                $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-validate-manage-lot')}, 'failure');
                 return false
             }
         });

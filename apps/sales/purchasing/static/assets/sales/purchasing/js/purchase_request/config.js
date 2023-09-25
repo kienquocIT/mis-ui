@@ -31,9 +31,12 @@ $(document).ready(function () {
     let frm_detail = $('#frm-config-detail');
     PurchaseRequestConfigLoadPage.loadDetail(frm_detail);
 
-    SetupFormSubmit.validate(
-        frm_detail,
-        {
+    new SetupFormSubmit(frm_detail).validate({
+            rules: {
+                employee_reference: {
+                    required: true,
+                },
+            },
             submitHandler: function (form) {
                 let frm = new SetupFormSubmit($(form));
                 let list_data = [];

@@ -139,43 +139,60 @@ $(document).ready(function () {
 
     // submit form create price list
     let frm = $('#form-create-price');
-    SetupFormSubmit.validate(
-        frm,
-        {
-            submitHandler: function (form) {
-                let frm = new SetupFormSubmit($(form));
-
-                frm.dataForm['currency'] = selectCurrencyEle.val();
-                if (frm.dataForm['currency'].length === 0) {
-                    frm.dataForm['currency'] = null;
+    new SetupFormSubmit(frm).validate({
+        rules: {
+            title: {
+                required: true,
+            },
+            currency: {
+                required: true,
+            },
+            factor: {
+                required: true,
+            },
+            price_list_type: {
+                required: true,
+            },
+            price_list_mapped: {
+                required: function () {
+                    return $("#checkbox-copy-source").is(':checked');
                 }
-
-                let valid_time_ele = $('#valid_time')
-                if (valid_time_ele.val()) {
-                    frm.dataForm['valid_time_start'] = valid_time_ele.val().split(' - ')[0];
-                    frm.dataForm['valid_time_end'] = valid_time_ele.val().split(' - ')[1]
-                }
-
-                frm.dataForm['auto_update'] = !!$('[name="auto_update"]').is(':checked');
-                frm.dataForm['can_delete'] = !!$('[name="can_delete"]').is(':checked');
-
-                $.fn.callAjax2({
-                    url: frm.dataUrl,
-                    method: frm.dataMethod,
-                    data: frm.dataForm
-                }).then((resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
-                            $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
-                        }
-                    },
-                    (errs) => {
-                        $.fn.notifyB({description: errs.data.errors}, 'failure');
-                    }
-                )
             }
-        });
+        },
+        submitHandler: function (form) {
+            let frm = new SetupFormSubmit($(form));
+
+            frm.dataForm['currency'] = selectCurrencyEle.val();
+            if (frm.dataForm['currency'].length === 0) {
+                frm.dataForm['currency'] = null;
+            }
+
+            let valid_time_ele = $('#valid_time')
+            if (valid_time_ele.val()) {
+                frm.dataForm['valid_time_start'] = valid_time_ele.val().split(' - ')[0];
+                frm.dataForm['valid_time_end'] = valid_time_ele.val().split(' - ')[1]
+            }
+
+            frm.dataForm['auto_update'] = !!$('[name="auto_update"]').is(':checked');
+            frm.dataForm['can_delete'] = !!$('[name="can_delete"]').is(':checked');
+
+            $.fn.callAjax2({
+                url: frm.dataUrl,
+                method: frm.dataMethod,
+                data: frm.dataForm
+            }).then((resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
+                        $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
+                    }
+                },
+                (errs) => {
+                    $.fn.notifyB({description: errs.data.errors}, 'failure');
+                }
+            )
+        }
+    });
 
     // onchange select box select-box-price-list
     priceListSelectEle.on('change', function () {

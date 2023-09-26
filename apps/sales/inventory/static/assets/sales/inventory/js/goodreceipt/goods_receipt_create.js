@@ -23,7 +23,8 @@ $(function () {
             GRDataTableHandle.dataTableGoodReceiptWH();
             GRDataTableHandle.dataTableGoodReceiptWHLot();
             GRDataTableHandle.dataTableGoodReceiptWHSerial();
-            GRDataTableHandle.dataTableGoodReceiptLineDetail();
+            GRDataTableHandle.dataTableGoodReceiptLineDetailPO();
+            GRDataTableHandle.dataTableGoodReceiptLineDetailIA();
         }
 
         // run datetimepicker
@@ -208,13 +209,13 @@ $(function () {
             GRLoadDataHandle.loadQuantityImport();
         });
 
-        GRDataTableHandle.tableLineDetail.on('change', '.table-row-price, .table-row-tax', function () {
+        GRDataTableHandle.tableLineDetailPO.on('change', '.table-row-price, .table-row-tax', function () {
             let row = this.closest('tr');
-            GRCalculateHandle.calculateMain(GRDataTableHandle.tableLineDetail, row);
+            GRCalculateHandle.calculateMain(GRDataTableHandle.tableLineDetailPO, row);
         });
 
-        GRDataTableHandle.tableLineDetail.on('click', '.del-row', function() {
-            deleteRowTable(this.closest('tr'), GRDataTableHandle.tableLineDetail);
+        GRDataTableHandle.tableLineDetailPO.on('click', '.del-row', function() {
+            deleteRowTable(this.closest('tr'), GRDataTableHandle.tableLineDetailPO);
         });
 
         // Action on click button collapse
@@ -230,6 +231,15 @@ $(function () {
             value = value.replace("-", "").replace(/^0+(?=\d)/, '');
             // Update value of input
             this.value = value;
+        });
+
+        GRLoadDataHandle.IASelectEle.on('change', function () {
+            if ($(this).val()) {
+                let dataSelected = SelectDDControl.get_data_from_idx(GRLoadDataHandle.IASelectEle, $(this).val());
+                GRDataTableHandle.tableLineDetailIA.DataTable().rows.add(dataSelected?.['inventory_adjustment_product']).draw();
+                GRLoadDataHandle.loadDataRowTable(GRDataTableHandle.tableLineDetailIA);
+            }
+
         });
 
 // SUBMIT FORM

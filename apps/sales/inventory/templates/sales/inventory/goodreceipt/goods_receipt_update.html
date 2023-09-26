@@ -181,15 +181,15 @@
                 <div class="row custom-area" id="custom-area-2" hidden>
                     <div class="col-6">
                         <div class="form-group">
-                            <label class="form-label" for="box-good-receipt-ia-number">{% trans 'IA number' %}</label>
+                            <label class="form-label" for="box-good-receipt-inventory-adjustment">{% trans 'IA number' %}</label>
                             <select
                                     class="form-select"
-                                    id="box-good-receipt-ia-number"
-                                    data-url="{% url 'InventoryAdjustmentListAPI' %}"
+                                    id="box-good-receipt-inventory-adjustment"
+                                    data-url="{% url 'InventoryAdjustmentOtherListAPI' %}"
                                     data-method="GET"
                                     data-link-detail=""
-                                    name="ia_number"
-                                    data-keyResp="inventory_adjustment_list"
+                                    name="inventory_adjustment"
+                                    data-keyResp="inventory_adjustment_other_list"
                             >
                             </select>
                         </div>
@@ -278,7 +278,7 @@
                     <div class="tab-pane fade show active" id="tab_line_detail">
                         <div class="row">
                             <table
-                                id="datable-good-receipt-line-detail"
+                                id="datable-good-receipt-line-detail-po"
                                 class="table nowrap w-100 mb-5"
                                 data-url=""
                                 data-method="get"

@@ -8,7 +8,7 @@ $(function () {
         GRDataTableHandle.dataTableGoodReceiptWH();
         GRDataTableHandle.dataTableGoodReceiptWHLot();
         GRDataTableHandle.dataTableGoodReceiptWHSerial();
-        GRDataTableHandle.dataTableGoodReceiptLineDetail();
+        GRDataTableHandle.dataTableGoodReceiptLineDetailPO();
 
         // call ajax get info quotation detail
         $.fn.callAjax2({

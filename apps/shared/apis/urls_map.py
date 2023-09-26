@@ -352,6 +352,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     INVENTORY_ADJUSTMENT_LIST = StringUrl('inventory/inventory-adjustments')
     INVENTORY_ADJUSTMENT_DETAIL = StringUrl('inventory/inventory-adjustment/{pk}')
     INVENTORY_ADJUSTMENT_PRODUCTS_LIST = StringUrl('inventory/inventory-adjustment/products')
+    INVENTORY_ADJUSTMENT_OTHER_LIST = StringUrl('inventory/inventory-adjustments-other')
 
     # Application for Opportunity permission
     APPLICATION_OPPORTUNITY_PERMISSION = StringUrl('base/applications-opportunity-permit')

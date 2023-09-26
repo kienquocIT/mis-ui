@@ -4,7 +4,7 @@ from apps.sales.inventory.views import (
     GoodsReceiptList, GoodsReceiptCreate, GoodsReceiptListAPI,
     GoodsReceiptDetailAPI, GoodsReceiptDetail, GoodsReceiptUpdate,
     InventoryAdjustmentList, InventoryAdjustmentCreate, InventoryAdjustmentListAPI,
-    InventoryAdjustmentListAPI, InventoryAdjustmentDetailAPI, InventoryAdjustmentDetail
+    InventoryAdjustmentListAPI, InventoryAdjustmentDetailAPI, InventoryAdjustmentDetail, InventoryAdjustmentOtherListAPI
 )
 from apps.sales.inventory.views.goods_transfer import GoodsTransferList, GoodsTransferDetail, GoodsTransferCreate, \
     GoodsTransferListAPI, GoodsTransferDetailAPI
@@ -20,6 +20,11 @@ urlpatterns = [
     # inventory adjustment
     path('inventory-adjustment/list', InventoryAdjustmentList.as_view(), name='InventoryAdjustmentList'),
     path('inventory-adjustment/api/list', InventoryAdjustmentListAPI.as_view(), name='InventoryAdjustmentListAPI'),
+    path(
+        'inventory-adjustment/api/list-other',
+        InventoryAdjustmentOtherListAPI.as_view(),
+        name='InventoryAdjustmentOtherListAPI'
+    ),
     path('inventory-adjustment/create', InventoryAdjustmentCreate.as_view(), name='InventoryAdjustmentCreate'),
     path('inventory-adjustment/api', InventoryAdjustmentListAPI.as_view(), name='InventoryAdjustmentListAPI'),
     path('inventory-adjustment/<str:pk>', InventoryAdjustmentDetail.as_view(), name='InventoryAdjustmentDetail'),

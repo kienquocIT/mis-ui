@@ -88,3 +88,14 @@ class InventoryAdjustmentDetailAPI(APIView):
             resp.result['message'] = SaleMsg.IA_UPDATE
             return resp.result, status.HTTP_200_OK
         return resp.auto_return()
+
+
+# Inventory adjustment use for other apps
+class InventoryAdjustmentOtherListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.INVENTORY_ADJUSTMENT_OTHER_LIST).get()
+        return resp.auto_return(key_success='inventory_adjustment_other_list')

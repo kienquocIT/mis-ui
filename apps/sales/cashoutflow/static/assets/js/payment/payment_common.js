@@ -931,21 +931,21 @@ $(document).on("click", '#btn-add-row-line-detail', function () {
             let sale_code_mapped = SO_LIST.filter(function (element) {
                 return element.id === sale_code_list[i];
             })
-            if (sale_code_mapped === null) {
+            if (sale_code_mapped.length === 0) {
                 flag = 1;
                 sale_code_mapped = QUO_LIST.filter(function (element) {
                     return element.id === sale_code_list[i];
                 })
             }
-            if (sale_code_mapped === null) {
+            if (sale_code_mapped.length === 0) {
                 flag = 2;
                 sale_code_mapped = OPP_LIST.filter(function (element) {
                     return element.id === sale_code_list[i];
                 })
             }
-            if (sale_code_mapped[0] !== null) {
+            if (sale_code_mapped.length > 0) {
                 sale_code_mapped = sale_code_mapped[0];
-                if (Object.keys(sale_code_mapped.opportunity).length !== 0 && [0, 1, 2].includes(flag)) {
+                if (sale_code_mapped.opportunity && [0, 1, 2].includes(flag)) {
                     sale_code_code_list.push(sale_code_mapped.opportunity.code);
                 } else {
                     sale_code_code_list.push(sale_code_mapped.code);
@@ -1068,6 +1068,9 @@ $(document).on("click", '.btn-row-toggle', function() {
             $(detail_product_id).prop('hidden', true);
         }
     }
+    else {
+        $.fn.notifyB({description: 'Warning: Missing fields in row.'}, 'warning');;
+    }
 });
 
 $(document).on("click", '.btn-add-payment-value', function() {
@@ -1108,7 +1111,7 @@ $("#next-btn").on('click', function () {
         }
     })
     if (selected_ap_list.length === 0) {
-        $.fn.notifyB({description: 'Warning: Select at least 1 Advance Payment Item for next step.'}, 'warning');;
+            $.fn.notifyB({description: 'Warning: Select at least 1 Advance Payment Item for next step.'}, 'warning');
     }
     else {
         for (let i = 0; i < selected_ap_list.length; i++) {
@@ -1380,7 +1383,7 @@ class PaymentHandle {
         PaymentLoadBeneficiary(initEmployee);
         InforSpanBeneficiary(initEmployee);
         PaymentLoadSupplier();
-        getPaymentSaleCode(sale_code_mapped, type);
+        await getPaymentSaleCode(sale_code_mapped, type);
         $('#btn-add-row-line-detail').removeClass('disabled');
     }
     combinesData(frmEle) {
@@ -1399,19 +1402,19 @@ class PaymentHandle {
             let sale_code_mapped = SO_LIST.filter(function (element) {
                 return element.id === sale_code_list[i];
             })
-            if (sale_code_mapped === null) {
+            if (sale_code_mapped.length === 0) {
                 flag = 1;
                 sale_code_mapped = QUO_LIST.filter(function (element) {
                     return element.id === sale_code_list[i];
                 })
             }
-            if (sale_code_mapped === null) {
+            if (sale_code_mapped.length === 0) {
                 flag = 2;
                 sale_code_mapped = OPP_LIST.filter(function (element) {
                     return element.id === sale_code_list[i];
                 })
             }
-            if (sale_code_mapped !== null || ![0, 1, 2].includes(flag)) {
+            if (sale_code_mapped.length > 0 || ![0, 1, 2].includes(flag)) {
                 frm.dataForm['sale_code_list'].push({
                     'sale_code_id': sale_code_list[i],
                     'sale_code_detail': flag

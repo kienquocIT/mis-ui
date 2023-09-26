@@ -58,6 +58,9 @@
                             </div>
                         </div>
                         <div class="row">
+                            {% include 'extends/the-documents/bastion.html' with has_opp=True has_prj=True has_inherit=True is_open=False opp_disabled=True prj_disabled=True inherit_disabled=True %}
+                        </div>
+                        <div class="row">
                             <div class="col-6">
                                 <div class="form-group">
                                     <label class="form-label" for="quotation-create-title">{% trans 'Title' %}<span class="required"></span></label>
@@ -855,6 +858,10 @@
                                 type="hidden"
                                 id="quotation-check-promotion"
                         >
+                        <input
+                                type="hidden"
+                                id="quotation-copy-discount-on-total"
+                        >
                     </div>
                 </div>
 
@@ -923,7 +930,7 @@
         </div>
         <input
             type="hidden"
-            id="base-trans-factory"
+            id="app-trans-factory"
             data-check-if-shipping-address="{% trans 'Please select shipping address' %}"
             data-select-address="{% trans 'Select this address' %}"
             data-view-detail-info="{% trans 'View detail' %}"
@@ -948,4 +955,6 @@
     <script src="{% static 'assets/sales/quotation/js/quotation_common.js' %}"></script>
     <script src="{% static 'assets/sales/quotation/js/quotation_create.js' %}"></script>
     <script src="{% static 'assets/sales/quotation/js/quotation_indicator.js' %}"></script>
+
+    <script src="{% static 'assets/js/extends/the-documents/auto-init.js' %}"></script>
 {% endblock %}

@@ -15,14 +15,11 @@ function sum() {
 }
 
 function dataTableQuotationIndicator(data) {
-    // init dataTable
-    let listData = data ? data : [];
-    tableIndicator.DataTable({
-        data: listData,
-        searching: false,
-        ordering: false,
-        paginate: false,
+    tableIndicator.DataTableDefault({
+        data: data ? data : [],
+        paging: false,
         info: false,
+        columnDefs: [],
         drawCallback: function () {
             // render icon after table callback
             feather.replace();
@@ -60,14 +57,11 @@ function dataTableQuotationIndicator(data) {
 }
 
 function dataTableSaleOrderIndicator(data) {
-    // init dataTable
-    let listData = data ? data : [];
-    tableIndicator.DataTable({
-        data: listData,
-        searching: false,
-        ordering: false,
-        paginate: false,
+    tableIndicator.DataTableDefault({
+        data: data ? data : [],
+        paging: false,
         info: false,
+        columnDefs: [],
         drawCallback: function () {
             // render icon after table callback
             feather.replace();
@@ -404,9 +398,10 @@ $(function () {
 
         // Clear data indicator store then call API to get new
         $('#btn-refresh-quotation-indicator').on('click', function () {
+            let transEle = $('#app-trans-factory');
             document.getElementById('quotation-indicator-data').value = "";
             indicatorClass.loadQuotationIndicator('quotation-indicator-data');
-            $.fn.notifyB({description: $.fn.transEle.attr('data-refreshed')}, 'success');
+            $.fn.notifyB({description: transEle.attr('data-refreshed')}, 'success');
         });
 
     });

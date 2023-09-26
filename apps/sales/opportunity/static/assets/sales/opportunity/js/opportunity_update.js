@@ -370,7 +370,6 @@ $(document).ready(async function () {
         }
     })
 
-
     // submit form edit
     SetupFormSubmit.validate(
         frmDetail,
@@ -422,12 +421,12 @@ $(document).ready(async function () {
         if ($(this).is(':checked')) {
             $(this).closest('tr').addClass('tr-added selected');
         } else {
-            alert('Khong the un check');
             $(this).prop('checked', true);
         }
     })
 
-    $(document).on('click', '.btn-remove-card', function () {
+    $(document).on('click', '.btn-remove-card', function (event) {
+        event.preventDefault();
         let card = $(this).closest('.card');
         let base_tran_ele = $('#base-trans-factory')
         Swal.fire({
@@ -435,7 +434,6 @@ $(document).ready(async function () {
             showCancelButton: true,
             confirmButtonText: base_tran_ele.data('confirm'),
         }).then((result) => {
-            /* Read more about isConfirmed, isDenied below */
             if (result.isConfirmed) {
                 $.fn.callAjax2({
                     url: urlEle.data('url-delete-member').format_url_with_uuid(card.data('id')),
@@ -449,10 +447,7 @@ $(document).ready(async function () {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             Swal.fire(base_tran_ele.data('success'), '', 'success');
-                            setTimeout(function () {
-                                window.location.reload();
-                            }, 1000)
-
+                            OpportunityLoadDetail.reloadMemberList(pk);
                         }
                     },
                     (errs) => {
@@ -601,8 +596,27 @@ $(document).ready(async function () {
         OpportunityLoadDetail.loadMemberPermission(url, method);
     })
 
-    $(document).on('change', '#table-applications input', function () {
+    $(document).on('change', '#table-applications input, #table-applications select', function () {
         $(this).closest('tr').addClass('tr-updated')
+    })
+
+    $(document).on('change', '.check-all', function () {
+        let tr_current = $(this).closest('tr');
+        if ($(this).is(':checked')) {
+            tr_current.find('input').prop('checked', true);
+        } else {
+            tr_current.find('input').prop('checked', false);
+        }
+    })
+
+    $(document).on('change', '.check-create, .check-view, .check-delete, .check-edit', function () {
+        let tr_current = $(this).closest('tr');
+        if (OpportunityLoadDetail.checkAllPermissionChecked(tr_current)) {
+            tr_current.find('.check-all').prop('checked', true);
+        }
+        else{
+            tr_current.find('.check-all').prop('checked', false);
+        }
     })
 
     const frm_add_member = $('#frm-add-member');
@@ -625,9 +639,8 @@ $(document).ready(async function () {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
-                            setTimeout(function () {
-                                window.location.reload();
-                            }, 1000)
+                            OpportunityLoadDetail.reloadMemberList(pk);
+                            $('#modalAddMember').modal('hide');
                         }
                     },
                     (errs) => {
@@ -654,9 +667,7 @@ $(document).ready(async function () {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
-                            setTimeout(function () {
-                                window.location.reload();
-                            }, 1000)
+                            $('#modal-set-perm').modal('hide');
                         }
                     },
                     (errs) => {

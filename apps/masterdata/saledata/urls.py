@@ -32,6 +32,7 @@ from apps.masterdata.saledata.views.shipping import ShippingList, ShippingCreate
     ShippingDetailAPI, ShippingCheckListAPI, ShippingUpdate
 from apps.masterdata.saledata.views.warehouse import (
     WareHouseList, WareHouseListAPI, WareHouseDetailAPI, WarehouseProductAPI, WareHouseListForInventoryAdjustmentAPI,
+    WareHouseCreate, WareHouseDetail, WareHouseUpdate,
 )
 
 urlpatterns = [
@@ -209,6 +210,9 @@ urlpatterns = [
 # WareHouse
 urlpatterns += [
     path('warehouses', WareHouseList.as_view(), name='WareHouseList'),
+    path('warehouse/create', WareHouseCreate.as_view(), name='WareHouseCreate'),
+    path('warehouse/detail/<str:pk>', WareHouseDetail.as_view(), name='WareHouseDetail'),
+    path('warehouse/update/<str:pk>', WareHouseUpdate.as_view(), name='WareHouseUpdate'),
     path('warehouses/api', WareHouseListAPI.as_view(), name='WareHouseListAPI'),
     path(
         'warehouses-for-inventory-adjustment/api',

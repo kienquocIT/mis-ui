@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Warehouse Detail' %}{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <a href="{% url 'WareHouseUpdate' pk=0 %}" id="btn-edit">
+        <button class="btn btn-outline-primary">
+            <span>
+                <span>{% trans 'Edit' %}</span>
+                <span class="icon">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                </span>
+            </span>
+        </button>
+    </a>
+{% endblock %}
+{% block pageContent %}
+    <form id="frmDetail" data-method="GET" data-url-detail="{% url 'WareHouseDetailAPI' pk=0 %}" data-url-redirect="{% url 'WareHouseList' %}">
+        <div class="row">
+            <div class="form-group col-6">
+                <label class="form-label required">
+                    {% trans 'Name' %}
+                </label>
+                <input type="text" class="form-control" name="title" id="inpTitle" disabled>
+            </div>
+
+            <div class="col-2 form-check mt-5">
+                <input type="checkbox" id="checkDropShip" class="form-check-input checkType" disabled>
+                <label class="form-label" for="checkDropShip">{% trans 'Drop Ship' %}</label>
+            </div>
+
+            <div class="col-2 form-check mt-5">
+                <input type="checkbox" id="checkBinLocation" class="form-check-input checkType" disabled>
+                <label class="form-label" for="checkBinLocation">{% trans 'Bin Location' %}</label>
+            </div>
+
+            <div class="col-2 form-check mt-5">
+                <input type="checkbox" id="checkAgencyLocation" class="form-check-input checkType" disabled>
+                <label class="form-label" for="checkAgencyLocation">{% trans 'Agency / Parner Location' %}</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6 form-group">
+                <label class="form-label">{% trans 'Description' %}</label>
+                <textarea class="form-control" name="remarks" id="inpRemarks" disabled></textarea>
+            </div>
+            <div class="col-6 form-group hidden">
+                <label class="form-label">{% trans 'Agency / Partner' %}</label>
+                <select
+                        id="boxSelectAgency"
+                        class="form-select"
+                        data-method="GET"
+                        data-url="{% url 'AccountListAPI' %}"
+                        data-keyResp="account_list"
+                        data-keyText="name" disabled
+                ></select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-check form-switch mt-2 mb-2 ml-3">
+                <input type="checkbox" class="form-check-input" id="inputActive" checked name="is_active" disabled>
+                <label for="inputActive" class="form-label">{% trans 'Active' %}</label>
+            </div>
+        </div>
+
+        <div class="row">
+            <ul class="nav nav-light nav-tabs" id="tab-select">
+                <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#tab-address">
+                        <span class="nav-link-text">{% trans 'Address' %}</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link disabled" data-bs-toggle="tab" href="#tab-bin-location" id="link-tab-sale">
+                        <span class="nav-link-text">{% trans 'Bin Location' %}</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="tab-address">
+                <div class="row">
+                    <div class="col-3">
+                        <label class="form-label required">{% trans "Warehouse Address" %}</label>
+                    </div>
+                    <div class="col-7"></div>
+                    <div class="col-2 text-right">
+                    </div>
+                </div>
+                <textarea class="form-control" readonly id="warehouseAddress"></textarea>
+            </div>
+            <div class="tab-pane fade" id="tab-bin-location">
+            </div>
+        </div>
+    </form>
+
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/js/masterdata/saledata/warehouse/common.js' %}"></script>
+    <script src="{% static 'assets/js/masterdata/saledata/warehouse/detail.js' %}"></script>
+{% endblock %}

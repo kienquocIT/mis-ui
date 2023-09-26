@@ -1280,10 +1280,12 @@
                                 <thead>
                                 <tr>
                                     <th>{% trans 'Function Name' %} </th>
+                                    <th>{% trans 'All' %}</th>
                                     <th>{% trans 'Create' %}</th>
+                                    <th>{% trans "View" %}</th>
                                     <th>{% trans "Edit" %}</th>
-                                    <th>{% trans "View my activity" %}</th>
-                                    <th>{% trans "View opp member" %}</th>
+                                    <th>{% trans "Delete" %}</th>
+                                    <th>{% trans "Belong to" %}</th>
                                 </tr>
                                 </thead>
                             </table>
@@ -1318,6 +1320,7 @@
            data-url-related-sale-order="{% url 'SaleOrderDetail' pk=0 %}"
            data-url-member-detail="{% url 'OpportunityMemberDetailAPI' pk=0 %}"
            data-url-delete-member="{% url 'OpportunityDeleteMemberAPI' pk=0 %}"
+           data-url-member-list="{% url 'OpportunityMemberListAPI' pk=0 %}"
     >
     <input type="text" id="trans-factory"
            data-activity-type01="{% trans 'Call to customer' %}"
@@ -1341,5 +1344,5 @@
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
 
     <script src="{% static 'assets/sales/opportunity/js/opportunity_common.js' %}"></script>
-    <script src="{% static 'assets/sales/opportunity/js/opportunity_detail.js' %}"></script>
+    <script src="{% static 'assets/sales/opportunity/js/opportunity_update.js' %}"></script>
 {% endblock %}

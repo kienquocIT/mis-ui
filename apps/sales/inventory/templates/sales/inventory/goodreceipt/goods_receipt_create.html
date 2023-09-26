@@ -48,7 +48,7 @@
                             <div class="input-group">
                                 <span class="input-affix-wrapper">
                                     <span class="input-prefix">
-                                        <i class="fas fa-clipboard-check text-pumpkin"></i>
+                                        <i class="fas fa-clipboard-check text-brown"></i>
                                     </span>
                                     <select
                                         class="form-select"
@@ -136,7 +136,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="form-label" for="box-good-receipt-supplier">{% trans 'Select Supplier' %}<span class="required"></span></label>
+                            <label class="form-label" for="box-good-receipt-supplier">{% trans 'Supplier' %}<span class="required"></span></label>
                             <div class="input-group more-information-group">
                                 <span class="input-affix-wrapper">
                                     <span class="input-prefix">
@@ -166,7 +166,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">{% trans 'Purchase request' %}</label>
+                            <label class="form-label">{% trans 'Purchase Request' %}</label>
                             <div class="input-group">
                                 <span class="input-affix-wrapper">
                                     <div class="form-control div-input" id="good-receipt-purchase-request" data-link-detail="{% url "PurchaseRequestDetail" 1 %}"></div>
@@ -185,12 +185,11 @@
                             <select
                                     class="form-select"
                                     id="box-good-receipt-ia-number"
-                                    data-url=""
+                                    data-url="{% url 'InventoryAdjustmentListAPI' %}"
                                     data-method="GET"
                                     data-link-detail=""
                                     name="ia_number"
-                                    data-keyResp=""
-                                    required
+                                    data-keyResp="inventory_adjustment_list"
                             >
                             </select>
                         </div>
@@ -400,7 +399,7 @@
 
         <input
             type="hidden"
-            id="base-trans-factory"
+            id="app-trans-factory"
             data-view-detail-info="{% trans 'View detail' %}"
             data-more-information="{% trans 'More information' %}"
             data-validate-import="{% trans 'Quantity must be purchase order quantity' %}"

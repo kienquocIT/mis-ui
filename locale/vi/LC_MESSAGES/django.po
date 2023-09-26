@@ -4189,3 +4189,190 @@ msgstr "Chọn người điều phối cho hoạt động giao hàng"
 #
 msgid "Org Charts"
 msgstr "Cây Cơ Cấu"
+
+#
+msgid "Manager Person"
+msgstr "Người Quản Lý"
+
+#
+msgid "Belong to Role"
+msgstr "Có Vai Trò"
+
+#
+msgid "Get all"
+msgstr "Lấy tất cả"
+
+#
+msgid "Reset"
+msgstr "Làm lại"
+
+#
+msgid "Re-Password not match Password"
+msgstr "Mật khẩu không khớp"
+
+#
+msgid "Available for currently displayed elements"
+msgstr "Có sẵn cho các phần tử hiện đang hiển thị"
+
+#
+msgid "Show"
+msgstr "Hiển thị"
+
+#
+msgid "Hide"
+msgstr "Ẩn"
+
+#
+msgid "Member of Group"
+msgstr "Thành viên của phòng ban"
+
+#
+msgid "Empty"
+msgstr "Không có dữ liệu"
+
+#
+msgid "Leave"
+msgstr "Nghỉ phép"
+
+#
+msgid "Leave config"
+msgstr "Cấu hình nghỉ phép"
+
+#
+msgid "Leave type"
+msgstr "Loại nghỉ phép"
+
+#
+msgid "Year's Seniority"
+msgstr "Thâm niên"
+
+#
+msgid "Paid by"
+msgstr "Thanh toán bởi"
+
+#
+msgid "Balance management"
+msgstr "Quản lý số dư"
+
+#
+msgid "Number of months the balance will expire"
+msgstr "Số tháng số dư sẽ hết hạn"
+
+#
+msgid "Number of paid annual leave days"
+msgstr "Số ngày phép mặc định"
+
+#
+msgid "Leave type create successfully"
+msgstr "Tạo loại phép thành công"
+
+#
+msgid "Leave type delete successfully"
+msgstr "Xoá loại phép thành công"
+
+#
+msgid "Leave type update successfully"
+msgstr "Sửa loại phép thành công"
+
+#
+msgid "Company salary"
+msgstr "Công ty chi trả"
+
+#
+msgid "Social insurance"
+msgstr "Bảo Hiểm Xã Hội chi trả"
+
+#
+msgid "Unpaid"
+msgstr "Không chi trả"
+
+#
+msgid "Type name"
+msgstr "Tên loại"
+
+#
+msgid "Number of annual days"
+msgstr "Số ngày phép"
+
+#
+msgid "Expiration management"
+msgstr "Quản lý ngày hết hạn"
+
+#
+msgid "Date expired"
+msgstr "Ngày hết hạn"
+
+#
+msgid "Wrong number, min is 12 and number format is integer"
+msgstr "Sai định dạng, là số nguyên và nhõ nhất là 12"
+
+#
+msgid "From"
+msgstr "Từ"
+
+#
+msgid "To"
+msgstr "Đến"
+
+#
+msgid "Added days"
+msgstr "Số ngày thêm"
+
+#
+msgid "Unit: Year"
+msgstr "Đơn vị: Năm"
+
+#
+msgid "Return to home"
+msgstr "Trở về trang chủ"
+
+#
+msgid "Sorry, the requested page cannot be found. Try finding with another name."
+msgstr "Xin lỗi, không thể tìm thấy trang được yêu cầu. Hãy thử tìm với một tên khác."
+
+#
+msgid "Server is temporarily unable to handle the request. This may be due to the server being overloaded or down for maintenance."
+msgstr "Máy chủ tạm thời không thể xử lý yêu cầu. Điều này có thể do máy chủ bị quá tải hoặc ngừng hoạt động để bảo trì."
+
+#
+msgid "Purchase order"
+msgstr "Đơn mua hàng"
+
+#
+msgid "Delivered date"
+msgstr "Ngày giao hàng"
+
+#
+msgid "Delivered status"
+msgstr "Trạng thái giao hàng"
+
+#
+msgid "Select items from purchase request"
+msgstr "Chọn sản phẩm từ yêu cầu mua hàng"
+
+#
+msgid "Quantity order must be less than quantity remain"
+msgstr "Số lượng đặt mua phải nhỏ hơn số lượng chưa mua"
+
+#
+msgid "Quantity order actually must be greater than or equal quantity order on request"
+msgstr "Số lượng đặt mua thực tế phải lớn hơn hoặc bằng số lượng yêu cầu"
+
+#
+msgid "Remain (PO)"
+msgstr "Chưa mua"
+
+#
+msgid "Quantity order"
+msgstr "Số lượng đặt mua"
+
+#
+msgid "Received date"
+msgstr "Ngày nhận"
+#
+msgid "Project"
+msgstr "Dự án"
+
+#
+msgid "Inheritor"
+msgstr "Người thụ hưởng"

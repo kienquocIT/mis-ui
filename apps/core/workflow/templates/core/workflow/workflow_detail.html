@@ -12,29 +12,25 @@
     <link href="{% static 'assets/core/workflow/css/wf_detail.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-flush-primary flush-soft-hover hidden"
-            type="button" id="btn-detail_workflow" data-bs-toggle="tooltip" data-bs-placement="top"
-            title="{% trans 'Update' %}"
-            data-bs-original-title="{% trans 'Update' %}">
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="save"></i>
-            </span>
-            <span class="loading-icon spinner-border spinner-border-sm hidden" role="status" aria-hidden="true"></span>
-            <span class="font-3 ml-1">
-                {% trans 'Update' %}
+    <button class="btn btn-outline-primary" type="submit" form="form-create_workflow" id="btn-detail_workflow">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
             </span>
         </span>
     </button>
 {% endblock %}
 
 {% block pageContent %}
-    <form data-url="{% url 'WorkflowDetailAPI' data.data.doc_id %}"
-          data-url-redirect="{% url 'WorkflowList' %}"
-          data-method="PUT"
-          id="form-detail_workflow"
-          method="post"
-          readonly>
+    <form
+            data-url="{% url 'WorkflowDetailAPI' data.data.doc_id %}"
+            data-url-redirect="{% url 'WorkflowList' %}"
+            data-method="PUT"
+            id="form-create_workflow"
+            method="post"
+            readonly
+    >
         {% csrf_token %}
         <input type="hidden" name="actions_rename">
         <input type="hidden" name="associate" id="node-associate">
@@ -97,7 +93,7 @@
                                    id="id-dhtmlefine_zone" name="define_zone"
                                    disabled
                             >
-                            <label class="form-check-label" for="id-define_zone">{% trans 'Define zone' %}</label>
+                            <label class="form-check-label" for="id-dhtmlefine_zone">{% trans 'Define zone' %}</label>
                         </div>
                     </div>
                     <div class="col-12">
@@ -212,7 +208,6 @@
                                                     type="text" class="form-control"
                                                     placeholder="Node A"
                                                     id="modal-node-name-create"
-                                                    required
                                             >
                                             <span class="form-text text-muted">{% trans 'Name of Node' %}</span>
                                         </div>
@@ -249,25 +244,15 @@
                         <table
                                 id="datable-workflow-node-create"
                                 class="table nowrap w-100 mb-5"
-                                width="100%"
                         >
                             <thead>
                             <tr>
-                                <th data-orderable="false">
-                            <span class="form-check">
-                                <input
-                                        type="checkbox"
-                                        class="form-check-input check-select-all"
-                                        id="customCheck1"
-                                >
-                                <label class="form-check-label" for="customCheck1"></label>
-                            </span>
-                                </th>
-                                <th data-orderable="false">{% trans 'Node name' %}</th>
-                                <th data-orderable="false">{% trans 'Description' %}</th>
-                                <th data-orderable="false">{% trans 'Node Actions' %}</th>
-                                <th data-orderable="false">{% trans 'Collaborators' %}</th>
-                                <th data-orderable="false">{% trans 'Actions' %}</th>
+                                <th class="w-10">#</th>
+                                <th class="w-20">{% trans 'Node name' %}</th>
+                                <th class="w-20">{% trans 'Description' %}</th>
+                                <th class="w-20">{% trans 'Node Actions' %}</th>
+                                <th class="w-20">{% trans 'Collaborators' %}</th>
+                                <th class="w-10">{% trans 'Actions' %}</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -351,7 +336,7 @@
     <input type="hidden" id="zone-list">
     <input
         type="hidden"
-        id="base-trans-factory"
+        id="node-trans-factory"
         data-check-complete-node="{% trans 'Please complete nodes data' %}"
         data-btn-close="{% trans 'Close' %}"
         data-btn-save="{% trans 'Save' %}"
@@ -361,6 +346,33 @@
         data-username="{% trans 'Username' %}"
         data-select-company="{% trans 'Select Company' %}"
         data-description="{% trans 'Description' %}"
+    >
+
+
+
+    <input
+        type="hidden"
+        id="data-init-property-employee"
+        data-url="{% url "ApplicationPropertyEmployeeListAPI" %}"
+        data-method="GET"
+    >
+    <input
+        type="hidden"
+        id="data-init-company"
+        data-url="{% url "CompanyListAPI" %}"
+        data-method="GET"
+    >
+    <input
+        type="hidden"
+        id="data-init-employee"
+        data-url="{% url "EmployeeListAPI" %}"
+        data-method="GET"
+    >
+    <input
+        type="hidden"
+        id="data-init-employee-company"
+        data-url="{% url "EmployeeCompanyListAPI" %}"
+        data-method="GET"
     >
     <!--- modal add and edit zone--->
     <div class="modal fade"
@@ -401,7 +413,7 @@
                                 </div>
                             </div>
                         </div>
-                        <label for="company_list_choose">{% trans 'Select property' %}:</label>
+                        <label for="property_list_choices">{% trans 'Select property' %}:</label>
                         <select class="form-control dropdown-select_two"
                                 data-placeholder="{% trans 'Nothing selected' %}"
                                 name="property_list"
@@ -537,9 +549,10 @@
 
     <script src="{% static 'assets/core/workflow/js/workflow-flowchart.js' %}"></script>
     <script src="{% static 'assets/core/workflow/js/wf_common.js' %}"></script>
+    <script src="{% static 'assets/core/workflow/js/workflow_node_common.js' %}"></script>
+    <script src="{% static 'assets/core/workflow/js/workflow-create.js' %}"></script>
     <script src="{% static 'assets/js/plugins/conditions/conditions.js' %}"></script>
     <script src="{% static 'assets/core/workflow/js/wf_detail.js' %}"></script>
-    <script src="{% static 'assets/core/workflow/js/workflow_node_detail.js' %}"></script>
 
     <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
 {% endblock %}

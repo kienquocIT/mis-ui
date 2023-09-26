@@ -70,26 +70,33 @@ class SetupFormSubmit {
     validate(opts) {
         if (this.formSelected) {
             let submitHandler = opts?.['submitHandler'];
-            this.formSelected.validate({
-                focusInvalid: true,
-                validClass: "is-valid",
-                errorClass: "is-invalid",
-                errorElement: "small",
-                showErrors: function (errorMap, errorList) {
-                    this.defaultShowErrors();
-                },
-                errorPlacement: function (error, element) {
-                    element.closest('.form-group').append(error);
-                    // error.insertAfter(element);
-                    error.css({
-                        'color': "red",
-                    })
-                },
-                submitHandler: function (form, event) {
-                    event.preventDefault();
-                    submitHandler ? submitHandler($(form), event) : form.submit();
-                },
-                onsubmit: true, // !!submitHandler,
+            if (opts.hasOwnProperty('submitHandler')) {
+                delete opts['submitHandler'];
+            }
+
+            this.formSelected.each(function () {
+                $(this).validate({
+                    focusInvalid: true,
+                    validClass: "is-valid",
+                    errorClass: "is-invalid",
+                    errorElement: "small",
+                    showErrors: function (errorMap, errorList) {
+                        this.defaultShowErrors();
+                    },
+                    errorPlacement: function (error, element) {
+                        element.closest('.form-group').append(error);
+                        // error.insertAfter(element);
+                        error.css({
+                            'color': "red",
+                        })
+                    },
+                    submitHandler: function (form, event) {
+                        event.preventDefault();
+                        submitHandler ? submitHandler($(form), event) : form.submit();
+                    },
+                    onsubmit: true, // !!submitHandler,
+                    ...opts,
+                })
             })
         } else {
             throw Error('Form element must be required!');
@@ -1770,6 +1777,24 @@ class UtilControl {
         }
     }
 
+    static removeEmptyValuesFromObj(object) {
+        for (let key in object) {
+            if (object.hasOwnProperty(key)) {
+                let value = object[key];
+                if (value === null || value === undefined || value === '') {
+                    delete object[key];
+                }
+            }
+        }
+        return object;
+    }
+
+    static getRandomArbitrary(min, max) {
+        min = Math.ceil(min);
+        max = Math.ceil(max);
+        return Math.ceil(Math.random() * (max - min) + min);
+
+    }
 }
 
 class DTBControl {
@@ -2208,7 +2233,9 @@ class DTBControl {
         filterEle.find('input[type="search"]').addClass('form-control w-200p');
 
         // handle sort
-        let preKeyVisible = settings.aoHeader[0].map((item) => {return $(item.cell).text().trim();});
+        let preKeyVisible = settings.aoHeader[0].map((item) => {
+            return $(item.cell).text().trim();
+        });
         let keyVisible = [];
 
         let keySort = [];
@@ -3041,7 +3068,7 @@ class WindowControl {
 }
 
 class PersonControl {
-    static shortNameGlobe(personData, shortNameKey=null) {
+    static shortNameGlobe(personData, shortNameKey = null) {
         if (typeof personData === 'object') {
             if (shortNameKey === null) {
                 if ($.fn.hasOwnProperties(personData, ['first_name', 'last_name'])) {
@@ -3069,7 +3096,7 @@ class PersonControl {
         return '';
     }
 
-    static renderAvatar(personData, clsName = "", appendHtml = "", shortNameKey=null) {
+    static renderAvatar(personData, clsName = "", appendHtml = "", shortNameKey = null) {
         let avatar = personData?.['avatar'];
         let htmlTooltipFullname = `data-bs-toggle="tooltip" data-bs-placement="bottom" title="${personData?.['full_name']}"`;
         let shortName = PersonControl.shortNameGlobe(personData, shortNameKey);
@@ -3309,6 +3336,7 @@ let $x = {
         dtb: DTBControl,
         person: PersonControl,
         doc: DocumentControl,
+        bastionField: BastionFieldControl,
     },
     fn: {
         fileInit: FileUtils.init,
@@ -3335,6 +3363,8 @@ let $x = {
         renderCodeBreadcrumb: DocumentControl.renderCodeBreadcrumb,
         buttonLinkBlank: DocumentControl.buttonLinkBlank,
 
+        getFeatureCode: BastionFieldControl.getFeatureCode,
+
         parseDateTime: UtilControl.parseDateTime,
         parseDate: UtilControl.parseDate,
         parseJson: UtilControl.parseJson,
@@ -3342,6 +3372,9 @@ let $x = {
 
         randomStr: UtilControl.generateRandomString,
         checkUUID4: UtilControl.checkUUID4,
+
+        removeEmptyValuesFromObj: UtilControl.removeEmptyValuesFromObj,
+        getRandomArbitrary: UtilControl.getRandomArbitrary,
     },
 }
 

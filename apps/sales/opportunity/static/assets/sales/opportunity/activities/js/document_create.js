@@ -31,9 +31,24 @@ $(document).ready(function () {
     })
 
     let frmCreate = $('#frm-create-opportunity-document')
-    SetupFormSubmit.validate(
-        frmCreate,
-        {
+    new SetupFormSubmit(frmCreate).validate({
+        rules: {
+            opportunity: {
+                required: true,
+            },
+            subject: {
+                required: true,
+            },
+            kind_of_product: {
+                required: true,
+            },
+            request_completed_date: {
+                required: true,
+            },
+            person_in_charge: {
+                required: true,
+            }
+        },
             submitHandler: function (form) {
                 let frm = new SetupFormSubmit($(form));
                 frm.dataForm['opportunity'] = $('#box-select-opportunity').val();

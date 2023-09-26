@@ -304,14 +304,14 @@ class MenusPurchase:
                 icon='<i class="bi bi-caret-right-fill"></i>',
             ),
             MenuCommon(
-                name='Purchase Order', code='menu_purchase_order_list', view_name='PurchaseOrderList',
+                name='Purchase order', code='menu_purchase_order_list', view_name='PurchaseOrderList',
                 icon='<i class="bi bi-caret-right-fill"></i>',
             ),
         ],
     )
 
     INVENTORY = MenuCommon(
-        name='Inventory', code='menu_inventory_activities', view_name='', icon='<i class="bi bi-shop-window"></i>',
+        name='Inventory', code='menu_inventory_activities', view_name='', icon='<i class="fas fa-clipboard-check"></i>',
         child=[
             MenuCommon(
                 name='Goods receipt',
@@ -324,6 +324,12 @@ class MenusPurchase:
                 code='menu_inventory_adjustment_list',
                 view_name='InventoryAdjustmentList',
                 icon='<i class="bi bi-sliders"></i>',
+            ),
+            MenuCommon(
+                name='Goods Transfer',
+                code='menu_goods_transfer_list',
+                view_name='GoodsTransferList',
+                icon='<i class="fas fa-exchange-alt"></i>',
             ),
         ],
     )

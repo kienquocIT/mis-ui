@@ -181,7 +181,11 @@ div.inline {
 }
 
 .util-btn {
-    justify-content: flex-end;
+    margin-left: auto;
+}
+
+.dataTables_filter + .util-btn {
+    margin-left: unset;
 }
 
 .row-custom-filter {
@@ -328,4 +332,16 @@ div.inline {
 
 .custom-visible-dtb .tit_visible_tb-head{
     display: none;
+}
+
+/* bastion field : opp - prj - inherit */
+#btnBastionField span:not(:last-child):after {
+    font-family: 'FontAwesome';
+    margin-right: 5px;
+    margin-left: 5px;
+    content: '\f068';
+}
+
+#btnBastionField span:last-child {
+
 }

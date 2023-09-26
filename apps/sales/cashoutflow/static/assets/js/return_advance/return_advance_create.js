@@ -46,9 +46,20 @@ $(function () {
         })
 
         const frmCreate = $('#frmCreate');
-        SetupFormSubmit.validate(
-            frmCreate,
-            {
+        new SetupFormSubmit(frmCreate).validate({
+            rules: {
+                title: {
+                    required: true,
+                },
+                agency: {
+                    required: function () {
+                        return $('#checkAgencyLocation').is(':checked');
+                    },
+                },
+                full_address: {
+                    required: true,
+                }
+            },
                 submitHandler: function (form) {
                     let frm = new SetupFormSubmit($(form));
                     frm.dataForm['creator'] = $('[name="creator"]').attr('data-id');

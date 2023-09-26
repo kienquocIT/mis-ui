@@ -80,6 +80,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     EMPLOYEE_COMPANY = StringUrl('hr/employee/company')
     EMPLOYEE_COMPANY_NEW = StringUrl('hr/employee/company/{company_id}')
     EMPLOYEE_TENANT = StringUrl('hr/employee/tenant')
+    EMPLOYEE_COMPANY_LIST = StringUrl('hr/employees-company')
 
     # organization/group
     GROUP_LEVEL_LIST = StringUrl('hr/levels')
@@ -365,3 +366,17 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # Purchase request config
     PURCHASE_REQUEST_CONFIG = StringUrl('purchasing/purchase-request/config')
+
+    # e-Office
+    # leave
+    LEAVE_CONFIG = StringUrl('leave/config')
+    LEAVE_CREATE = StringUrl('leave/leave-type/create')
+    LEAVE_DETAIL = StringUrl('leave/leave-type/detail/{pk}')
+
+
+    # Goods transfer
+    GOODS_TRANSFER_LIST = StringUrl('inventory/good-transfer/list')
+    GOODS_TRANSFER_DETAIL = StringUrl('inventory/good-transfer/{pk}')
+
+    #Opportunity Member List
+    OPPORTUNITY_MEMBER_LIST = StringUrl('opportunity/member/list/{pk}')

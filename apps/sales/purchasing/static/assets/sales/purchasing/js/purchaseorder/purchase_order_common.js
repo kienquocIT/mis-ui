@@ -1,5 +1,3 @@
-let finalRevenueBeforeTax = document.getElementById('purchase-order-final-revenue-before-tax');
-
 // LoadData
 class POLoadDataHandle {
     static supplierSelectEle = $('#box-purchase-order-supplier');
@@ -10,6 +8,8 @@ class POLoadDataHandle {
     static eleDivTablePOProductAdd = $('#table-purchase-order-product-add-area');
     static eleDivTablePRProduct = $('#table-purchase-request-product-area');
     static eleDivTablePRProductMerge = $('#table-purchase-request-product-merge-area');
+    static finalRevenueBeforeTax = document.getElementById('purchase-order-final-revenue-before-tax');
+    static transEle = $('#app-trans-factory');
 
     static loadMoreInformation(ele, is_span = false) {
         let optionSelected;
@@ -40,7 +40,7 @@ class POLoadDataHandle {
                 }
                 // end
                 let info = ``;
-                info += `<h6 class="dropdown-header header-wth-bg">${$.fn.transEle.attr('data-more-information')}</h6>`;
+                info += `<h6 class="dropdown-header header-wth-bg">${POLoadDataHandle.transEle.attr('data-more-information')}</h6>`;
                 for (let key in data) {
                     if (['id', 'title', 'name', 'fullname', 'full_name', 'code'].includes(key)) {
                         if (key === 'id') {
@@ -56,7 +56,7 @@ class POLoadDataHandle {
                 info += `<div class="dropdown-divider"></div>
                     <div class="row float-right">
                         <a href="${link}" target="_blank" class="link-primary underline_hover">
-                            <span><span>${$.fn.transEle.attr('data-view-detail-info')}</span><span class="icon ml-1"><span class="feather-icon"><i class="fas fa-arrow-circle-right"></i></span></span></span>
+                            <span><span>${POLoadDataHandle.transEle.attr('data-view-detail-info')}</span><span class="icon ml-1"><span class="feather-icon"><i class="fas fa-arrow-circle-right"></i></span></span></span>
                         </a>
                     </div>`;
                 dropdownContent.innerHTML = info;
@@ -525,7 +525,6 @@ class POLoadDataHandle {
         let data = setupMergeProduct();
         POLoadDataHandle.eleDivTablePOProductAdd[0].setAttribute('hidden', 'true');
         POLoadDataHandle.eleDivTablePOProductRequest[0].removeAttribute('hidden');
-        tablePurchaseOrderProductAdd.DataTable().clear().draw();
         if (data.length > 0) {
             tablePurchaseOrderProductRequest.DataTable().clear().draw();
             tablePurchaseOrderProductRequest.DataTable().rows.add(data).draw();
@@ -541,10 +540,9 @@ class POLoadDataHandle {
         let elePretaxAmountRaw = document.getElementById('purchase-order-product-pretax-amount-raw');
         let eleTaxesRaw = document.getElementById('purchase-order-product-taxes-raw');
         let eleTotalRaw = document.getElementById('purchase-order-product-total-raw');
-        let finalRevenueBeforeTax = document.getElementById('purchase-order-final-revenue-before-tax');
         $(elePretaxAmount).attr('data-init-money', String(0));
         elePretaxAmountRaw.value = 0;
-        finalRevenueBeforeTax.value = 0;
+        POLoadDataHandle.finalRevenueBeforeTax.value = 0;
         $(eleTaxes).attr('data-init-money', String(0));
         eleTaxesRaw.value = 0;
         $(eleTotal).attr('data-init-money', String(0));
@@ -724,7 +722,7 @@ class POLoadDataHandle {
                         $(row).css('background-color', '#f7f7f7');
                         row.setAttribute('data-bs-toggle', 'tooltip');
                         row.setAttribute('data-bs-placement', 'top');
-                        row.setAttribute('title', $.fn.transEle.attr('data-product-not-in') + ' ' + ele.getAttribute('data-code'));
+                        row.setAttribute('title', POLoadDataHandle.transEle.attr('data-product-not-in') + ' ' + ele.getAttribute('data-code'));
                     }
                 }
             }
@@ -800,10 +798,9 @@ class POLoadDataHandle {
             let elePretaxAmountRaw = document.getElementById('purchase-order-product-pretax-amount-raw');
             let eleTaxesRaw = document.getElementById('purchase-order-product-taxes-raw');
             let eleTotalRaw = document.getElementById('purchase-order-product-total-raw');
-            let finalRevenueBeforeTax = document.getElementById('purchase-order-final-revenue-before-tax');
             $(elePretaxAmount).attr('data-init-money', String(0));
             elePretaxAmountRaw.value = '0';
-            finalRevenueBeforeTax.value = '0';
+            POLoadDataHandle.finalRevenueBeforeTax.value = '0';
             $(eleTaxes).attr('data-init-money', String(0));
             eleTaxesRaw.value = '0';
             $(eleTotal).attr('data-init-money', String(0));
@@ -955,7 +952,7 @@ class POLoadDataHandle {
                     $(row).css('background-color', '#f7f7f7');
                     row.setAttribute('data-bs-toggle', 'tooltip');
                     row.setAttribute('data-bs-placement', 'top');
-                    row.setAttribute('title', $.fn.transEle.attr('data-product-not-in') + ' ' + PQCode);
+                    row.setAttribute('title', POLoadDataHandle.transEle.attr('data-product-not-in') + ' ' + PQCode);
                 }
             }
         }
@@ -991,14 +988,13 @@ class POLoadDataHandle {
         let elePretaxAmountRaw = document.getElementById('purchase-order-product-pretax-amount-raw');
         let eleTaxesRaw = document.getElementById('purchase-order-product-taxes-raw');
         let eleTotalRaw = document.getElementById('purchase-order-product-total-raw');
-        let finalRevenueBeforeTax = document.getElementById('purchase-order-final-revenue-before-tax');
         $(elePretaxAmount).attr('data-init-money', String(data?.['total_product_pretax_amount']));
         elePretaxAmountRaw.value = data?.['total_product_pretax_amount'];
         $(eleTaxes).attr('data-init-money', String(data?.['total_product_tax']));
         eleTaxesRaw.value = data?.['total_product_tax'];
         $(eleTotal).attr('data-init-money', String(data?.['total_product']));
         eleTotalRaw.value = data?.['total_product'];
-        finalRevenueBeforeTax.value = data?.['total_product_revenue_before_tax'];
+        POLoadDataHandle.finalRevenueBeforeTax.value = data?.['total_product_revenue_before_tax'];
     };
 
     static loadTableDisabled(table) {
@@ -1752,7 +1748,6 @@ class POCalculateHandle {
         let elePretaxAmountRaw = document.getElementById('purchase-order-product-pretax-amount-raw');
         let eleTaxesRaw = document.getElementById('purchase-order-product-taxes-raw');
         let eleTotalRaw = document.getElementById('purchase-order-product-total-raw');
-        let finalRevenueBeforeTax = document.getElementById('purchase-order-final-revenue-before-tax');
         if (elePretaxAmount && eleTaxes && eleTotal) {
             let tableLen = table.tBodies[0].rows.length;
             for (let i = 0; i < tableLen; i++) {
@@ -1775,7 +1770,7 @@ class POCalculateHandle {
             let totalFinal = (pretaxAmount + taxAmount);
             $(elePretaxAmount).attr('data-init-money', String(pretaxAmount));
             elePretaxAmountRaw.value = pretaxAmount;
-            finalRevenueBeforeTax.value = pretaxAmount;
+            POLoadDataHandle.finalRevenueBeforeTax.value = pretaxAmount;
             $(eleTaxes).attr('data-init-money', String(taxAmount));
             eleTaxesRaw.value = taxAmount;
             $(eleTotal).attr('data-init-money', String(totalFinal));
@@ -1862,7 +1857,7 @@ class POValidateHandle {
     static validateQuantityOrderRequest(ele, remain) {
         if (parseFloat(ele.value) > remain) {
             ele.value = '0';
-            $.fn.notifyB({description: $.fn.transEle.attr('data-validate-order-request')}, 'failure');
+            $.fn.notifyB({description: POLoadDataHandle.transEle.attr('data-validate-order-request')}, 'failure');
         }
     };
 
@@ -1882,7 +1877,7 @@ class POValidateHandle {
                 if (parseFloat(quantity_order) < parseFloat(quantity_request)) {
                     eleQuantityOrder.value = '0';
                     eleStock.innerHTML = '0';
-                    $.fn.notifyB({description: $.fn.transEle.attr('data-validate-order-actual')}, 'failure');
+                    $.fn.notifyB({description: POLoadDataHandle.transEle.attr('data-validate-order-actual')}, 'failure');
                     return false
                 } else {
                     eleStock.innerHTML = String(parseFloat(quantity_order) - parseFloat(quantity_request));
@@ -1900,7 +1895,7 @@ class POValidateHandle {
                 // if ((parseFloat(quantity_order) * uomOrderExchangeRate) < (parseFloat(quantity_request) * uomRequestExchangeRate)) {
                 //     eleQuantityOrder.value = '0';
                 //     eleStock.innerHTML = '0';
-                //     $.fn.notifyB({description: $.fn.transEle.attr('data-validate-order-actual')}, 'failure');
+                //     $.fn.notifyB({description: POLoadDataHandle.transEle.attr('data-validate-order-actual')}, 'failure');
                 //     return false
                 // } else {
                 //    eleStock.innerHTML = String(differenceExchangeValue / uomRequestExchangeRate);
@@ -1910,7 +1905,7 @@ class POValidateHandle {
                 if ((parseFloat(quantity_order) * finalRatio) < (parseFloat(quantity_request))) {
                     eleQuantityOrder.value = '0';
                     eleStock.innerHTML = '0';
-                    $.fn.notifyB({description: $.fn.transEle.attr('data-validate-order-actual')}, 'failure');
+                    $.fn.notifyB({description: POLoadDataHandle.transEle.attr('data-validate-order-actual')}, 'failure');
                     return false
                 } else {
                    eleStock.innerHTML = String((parseFloat(quantity_order) * finalRatio) - parseFloat(quantity_request));
@@ -2065,7 +2060,7 @@ class POSubmitHandle {
         _form.dataForm['total_product_pretax_amount'] = parseFloat($('#purchase-order-product-pretax-amount-raw').val());
         _form.dataForm['total_product_tax'] = parseFloat($('#purchase-order-product-taxes-raw').val());
         _form.dataForm['total_product'] = parseFloat($('#purchase-order-product-total-raw').val());
-        _form.dataForm['total_product_revenue_before_tax'] = parseFloat(finalRevenueBeforeTax.value);
+        _form.dataForm['total_product_revenue_before_tax'] = parseFloat(POLoadDataHandle.finalRevenueBeforeTax.value);
         // system fields
         if (_form.dataMethod === "POST") {
             _form.dataForm['system_status'] = 1;

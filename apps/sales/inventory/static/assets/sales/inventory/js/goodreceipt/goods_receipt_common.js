@@ -3,10 +3,12 @@ class GRLoadDataHandle {
     static typeSelectEle = $('#box-good-receipt-type');
     static POSelectEle = $('#box-good-receipt-purchase-order');
     static supplierSelectEle = $('#box-good-receipt-supplier');
+    static IASelectEle = $('#box-good-receipt-ia-number');
     static initPOProductEle = $('#data-init-purchase-order-products');
     static PRDataEle = $('#purchase_requests_data');
     // static submitDataPRWHEle = $('#data-submit-pr-warehouse');
     static finalRevenueBeforeTax = document.getElementById('good-receipt-final-revenue-before-tax');
+    static transEle = $('#app-trans-factory');
 
     static loadMoreInformation(ele, is_span = false) {
         let optionSelected;
@@ -37,7 +39,7 @@ class GRLoadDataHandle {
                 }
                 // end
                 let info = ``;
-                info += `<h6 class="dropdown-header header-wth-bg">${$.fn.transEle.attr('data-more-information')}</h6>`;
+                info += `<h6 class="dropdown-header header-wth-bg">${GRLoadDataHandle.transEle.attr('data-more-information')}</h6>`;
                 for (let key in data) {
                     if (['id', 'title', 'name', 'fullname', 'full_name', 'code'].includes(key)) {
                         if (key === 'id') {
@@ -53,7 +55,7 @@ class GRLoadDataHandle {
                 info += `<div class="dropdown-divider"></div>
                     <div class="row float-right">
                         <a href="${link}" target="_blank" class="link-primary underline_hover">
-                            <span><span>${$.fn.transEle.attr('data-view-detail-info')}</span><span class="icon ml-1"><span class="feather-icon"><i class="fas fa-arrow-circle-right"></i></span></span></span>
+                            <span><span>${GRLoadDataHandle.transEle.attr('data-view-detail-info')}</span><span class="icon ml-1"><span class="feather-icon"><i class="fas fa-arrow-circle-right"></i></span></span></span>
                         </a>
                     </div>`;
                 dropdownContent.innerHTML = info;
@@ -118,6 +120,14 @@ class GRLoadDataHandle {
             },
         });
         GRLoadDataHandle.loadMoreInformation(ele);
+    };
+
+    static loadBoxIA(dataIA = {}) {
+        let ele = GRLoadDataHandle.IASelectEle;
+        ele.initSelect2({
+            data: dataIA,
+            disabled: !(ele.attr('data-url')),
+        });
     };
 
     static loadBoxProduct(ele, dataProduct = {}) {
@@ -287,6 +297,7 @@ class GRLoadDataHandle {
                                         for (let dataPOProduct of data.purchase_order_product_list) {
                                             if (dataPOProduct?.['id'] === data_product?.['purchase_order_product_id']) {
                                                 dataPOProduct['quantity_import'] = data_product?.['quantity_import'];
+                                                // If PO have PR
                                                 for (let dataPR of data_product?.['purchase_request_products_data']) {
                                                     dataPR['purchase_order_product_id'] = data_product?.['purchase_order_product_id'];
                                                     dataPR['id'] = dataPR?.['purchase_request_product']?.['id'];
@@ -297,25 +308,16 @@ class GRLoadDataHandle {
                                                     }
                                                     for (let dataWarehouse of dataPR?.['warehouse_data']) {
                                                         dataWarehouse['purchase_request_product_id'] = dataPR?.['purchase_request_product']?.['id'];
-                                                        dataWarehouse['id'] = dataWarehouse?.['warehouse']?.['id'];
-                                                        dataWarehouse['title'] = dataWarehouse?.['warehouse']?.['title'];
-                                                        dataWarehouse['code'] = dataWarehouse?.['warehouse']?.['code'];
-                                                        dataWarehouse['warehouse'] = dataWarehouse?.['warehouse']?.['id'];
-                                                        for (let dataLot of dataWarehouse?.['lot_data']) {
-                                                            dataLot['warehouse_id'] = dataWarehouse?.['warehouse']?.['id'];
-                                                            dataLot['expire_date'] = moment(dataLot?.['expire_date']).format('DD/MM/YYYY hh:mm A');
-                                                            dataLot['manufacture_date'] = moment(dataLot?.['manufacture_date']).format('DD/MM/YYYY hh:mm A');
-                                                        }
-                                                        for (let dataSerial of dataWarehouse?.['serial_data']) {
-                                                            dataSerial['warehouse_id'] = dataWarehouse?.['warehouse']?.['id'];
-                                                            dataSerial['expire_date'] = moment(dataSerial?.['expire_date']).format('DD/MM/YYYY hh:mm A');
-                                                            dataSerial['manufacture_date'] = moment(dataSerial?.['manufacture_date']).format('DD/MM/YYYY hh:mm A');
-                                                            dataSerial['warranty_start'] = moment(dataSerial?.['warranty_start']).format('DD/MM/YYYY hh:mm A');
-                                                            dataSerial['warranty_end'] = moment(dataSerial?.['warranty_end']).format('DD/MM/YYYY hh:mm A');
-                                                        }
+                                                        GRLoadDataHandle.loadDetailWHLotSerial(dataWarehouse);
                                                     }
                                                 }
                                                 dataPOProduct['purchase_request_products_data'] = data_product?.['purchase_request_products_data'];
+                                                // If PO doesn't have PR
+                                                for (let dataWarehouse of data_product?.['warehouse_data']) {
+                                                    dataWarehouse['purchase_order_product_id'] = data_product?.['purchase_order_product_id'];
+                                                    GRLoadDataHandle.loadDetailWHLotSerial(dataWarehouse);
+                                                }
+                                                dataPOProduct['warehouse_data'] = data_product?.['warehouse_data'];
                                             }
                                         }
                                     }
@@ -333,15 +335,9 @@ class GRLoadDataHandle {
         return true;
     };
 
-    static loadModalWareHouse(dataPR) {
+    static loadModalWareHouse(dataStore, is_has_pr = false) {
         let tableWareHouse = GRDataTableHandle.tableWH;
         let frm = new SetupFormSubmit(tableWareHouse);
-        // if (dataPR?.['warehouse_data']) {
-        //     tableWareHouse.DataTable().clear().draw();
-        //     tableWareHouse.DataTable().rows.add(dataPR?.['warehouse_data']).draw();
-        //     GRLoadDataHandle.loadAreaLotOrAreaSerial();
-        // } else {}
-
         $.fn.callAjax2({
                 'url': frm.dataUrl,
                 'method': frm.dataMethod,
@@ -353,9 +349,13 @@ class GRLoadDataHandle {
                 if (data) {
                     if (data.hasOwnProperty('warehouse_list') && Array.isArray(data.warehouse_list)) {
                         for (let item of data.warehouse_list) {
-                            item['purchase_request_product_id'] = dataPR?.['id'];
-                            if (dataPR?.['warehouse_data']) {
-                                for (let dataPRWH of dataPR?.['warehouse_data']) {
+                            if (is_has_pr === true) {
+                                item['purchase_request_product_id'] = dataStore?.['id'];
+                            } else {
+                                item['purchase_order_product_id'] = dataStore?.['id'];
+                            }
+                            if (dataStore?.['warehouse_data']) {
+                                for (let dataPRWH of dataStore?.['warehouse_data']) {
                                     if (dataPRWH?.['id'] === item?.['id']) {
                                         item['quantity_import'] = dataPRWH?.['quantity_import'] ? dataPRWH?.['quantity_import'] : 0;
                                         if (dataPRWH?.['lot_data']) {
@@ -504,8 +504,8 @@ class GRLoadDataHandle {
     };
 
     static loadQuantityImport() {
-        let valuePROrder = parseFloat(GRDataTableHandle.tablePR[0].querySelector('.table-row-checkbox:checked').closest('tr').querySelector('.table-row-quantity').innerHTML);
-        let valuePOOrder = parseFloat(GRDataTableHandle.tablePOProduct[0].querySelector('.table-row-checkbox:checked').closest('tr').querySelector('.table-row-quantity').innerHTML);
+        let valuePROrder = parseFloat(GRDataTableHandle.tablePR[0]?.querySelector('.table-row-checkbox:checked')?.closest('tr')?.querySelector('.table-row-quantity').innerHTML);
+        let valuePOOrder = parseFloat(GRDataTableHandle.tablePOProduct[0]?.querySelector('.table-row-checkbox:checked')?.closest('tr')?.querySelector('.table-row-quantity').innerHTML);
         if (!GRDataTableHandle.tableLot[0].querySelector('.dataTables_empty')) {
             let valueWHNew = 0;
             for (let eleImport of GRDataTableHandle.tableLot[0].querySelectorAll('.table-row-import')) {
@@ -526,21 +526,31 @@ class GRLoadDataHandle {
         for (let eleImport of GRDataTableHandle.tableWH[0].querySelectorAll('.table-row-import')) {
             valuePRNew += parseFloat(eleImport.value);
         }
-        if (valuePRNew <= valuePROrder) {
-            GRDataTableHandle.tablePR[0].querySelector('.table-row-checkbox:checked').closest('tr').querySelector('.table-row-import').innerHTML = String(valuePRNew);
-        } else {
-            $.fn.notifyB({description: $.fn.transEle.attr('data-validate-import')}, 'failure');
-            return false
+        if (valuePROrder) {
+            if (valuePRNew <= valuePROrder) {
+                GRDataTableHandle.tablePR[0].querySelector('.table-row-checkbox:checked').closest('tr').querySelector('.table-row-import').innerHTML = String(valuePRNew);
+            } else {
+                $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-validate-import')}, 'failure');
+                return false
+            }
         }
         let valuePONew = 0;
-        for (let eleImport of GRDataTableHandle.tablePR[0].querySelectorAll('.table-row-import')) {
-            valuePONew += parseFloat(eleImport.innerHTML);
-        }
-        if (valuePONew <= valuePOOrder) {
-            GRDataTableHandle.tablePOProduct[0].querySelector('.table-row-checkbox:checked').closest('tr').querySelector('.table-row-import').innerHTML = String(valuePONew);
+        if (valuePROrder) {
+            for (let eleImport of GRDataTableHandle.tablePR[0].querySelectorAll('.table-row-import')) {
+                valuePONew += parseFloat(eleImport.innerHTML);
+            }
         } else {
-            $.fn.notifyB({description: $.fn.transEle.attr('data-validate-import')}, 'failure');
-            return false
+            for (let eleImport of GRDataTableHandle.tableWH[0].querySelectorAll('.table-row-import')) {
+                valuePONew += parseFloat(eleImport.value);
+            }
+        }
+        if (valuePOOrder) {
+            if (valuePONew <= valuePOOrder) {
+                GRDataTableHandle.tablePOProduct[0].querySelector('.table-row-checkbox:checked').closest('tr').querySelector('.table-row-import').innerHTML = String(valuePONew);
+            } else {
+                $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-validate-import')}, 'failure');
+                return false
+            }
         }
     };
 
@@ -596,7 +606,7 @@ class GRLoadDataHandle {
 
     static loadLineDetail() {
         let table = GRDataTableHandle.tableLineDetail;
-        let data = setupDataShowLineDetail();
+        let data = GRSubmitHandle.setupDataShowLineDetail();
         table.DataTable().clear().draw();
         table.DataTable().rows.add(data).draw();
         GRLoadDataHandle.loadDataRowTable(table);
@@ -649,20 +659,6 @@ class GRLoadDataHandle {
     };
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     // LOAD DETAIL
     static loadDetailPage(data) {
         let formSubmit = $('#frm_good_receipt_create');
@@ -710,6 +706,25 @@ class GRLoadDataHandle {
         GRLoadDataHandle.loadModalProduct(true);
     };
 
+    static loadDetailWHLotSerial(dataWarehouse) {
+        dataWarehouse['id'] = dataWarehouse?.['warehouse']?.['id'];
+        dataWarehouse['title'] = dataWarehouse?.['warehouse']?.['title'];
+        dataWarehouse['code'] = dataWarehouse?.['warehouse']?.['code'];
+        dataWarehouse['warehouse'] = dataWarehouse?.['warehouse']?.['id'];
+        for (let dataLot of dataWarehouse?.['lot_data']) {
+            dataLot['warehouse_id'] = dataWarehouse?.['warehouse']?.['id'];
+            dataLot['expire_date'] = moment(dataLot?.['expire_date']).format('DD/MM/YYYY hh:mm A');
+            dataLot['manufacture_date'] = moment(dataLot?.['manufacture_date']).format('DD/MM/YYYY hh:mm A');
+        }
+        for (let dataSerial of dataWarehouse?.['serial_data']) {
+            dataSerial['warehouse_id'] = dataWarehouse?.['warehouse']?.['id'];
+            dataSerial['expire_date'] = moment(dataSerial?.['expire_date']).format('DD/MM/YYYY hh:mm A');
+            dataSerial['manufacture_date'] = moment(dataSerial?.['manufacture_date']).format('DD/MM/YYYY hh:mm A');
+            dataSerial['warranty_start'] = moment(dataSerial?.['warranty_start']).format('DD/MM/YYYY hh:mm A');
+            dataSerial['warranty_end'] = moment(dataSerial?.['warranty_end']).format('DD/MM/YYYY hh:mm A');
+        }
+    };
+
     static loadTableDisabled(table) {
         for (let ele of table[0].querySelectorAll('.table-row-item')) {
             ele.setAttribute('disabled', 'true');
@@ -733,7 +748,6 @@ class GRLoadDataHandle {
             ele.setAttribute('disabled', 'true');
         }
     };
-
 
 
 }
@@ -1404,8 +1418,10 @@ class GRStoreDataHandle {
         let new_data = [];
         let table = GRDataTableHandle.tableWH;
         let tablePR = GRDataTableHandle.tablePR;
+        let tablePO = GRDataTableHandle.tablePOProduct;
         if (!table[0].querySelector('.dataTables_empty')) {
             let PRProductID = null;
+            let POProductID = null;
             for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
                 let row = table[0].tBodies[0].rows[i];
                 let quantityImport = parseFloat(row.querySelector('.table-row-import').value);
@@ -1416,6 +1432,7 @@ class GRStoreDataHandle {
                         dataRow['warehouse'] = dataRow?.['id'];
                         dataRow['quantity_import'] = quantityImport;
                         PRProductID = dataRow?.['purchase_request_product_id'];
+                        POProductID = dataRow?.['purchase_order_product_id'];
                         new_data.push(dataRow);
                     }
                 }
@@ -1426,6 +1443,14 @@ class GRStoreDataHandle {
                     let dataPRChecked = JSON.parse(dataPRCheckedRaw);
                     dataPRChecked['warehouse_data'] = new_data;
                     tablePR[0].querySelector(`.table-row-checkbox[data-id="${PRProductID}"]`).setAttribute('data-row', JSON.stringify(dataPRChecked));
+                }
+            }
+            if (POProductID) {
+                let dataPOCheckedRaw = tablePO[0].querySelector(`.table-row-checkbox[data-id="${POProductID}"]`)?.getAttribute('data-row');
+                if (dataPOCheckedRaw) {
+                    let dataPOChecked = JSON.parse(dataPOCheckedRaw);
+                    dataPOChecked['warehouse_data'] = new_data;
+                    tablePO[0].querySelector(`.table-row-checkbox[data-id="${POProductID}"]`).setAttribute('data-row', JSON.stringify(dataPOChecked));
                 }
             }
         }
@@ -1440,7 +1465,7 @@ class GRStoreDataHandle {
             let WHID = null;
             for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
                 let row = table[0].tBodies[0].rows[i];
-                let lotNumber =row.querySelector('.table-row-lot-number').value;
+                let lotNumber = row.querySelector('.table-row-lot-number').value;
                 let quantityImport = parseFloat(row.querySelector('.table-row-import').value);
                 let expireDate = row.querySelector('.table-row-expire-date').value;
                 let manufactureDate = row.querySelector('.table-row-manufacture-date').value;
@@ -1477,8 +1502,8 @@ class GRStoreDataHandle {
             let WHID = null;
             for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
                 let row = table[0].tBodies[0].rows[i];
-                let vendorSerialNumber =row.querySelector('.table-row-vendor-serial-number').value;
-                let serialNumber =row.querySelector('.table-row-serial-number').value;
+                let vendorSerialNumber = row.querySelector('.table-row-vendor-serial-number').value;
+                let serialNumber = row.querySelector('.table-row-serial-number').value;
                 let expireDate = row.querySelector('.table-row-expire-date').value;
                 let manufactureDate = row.querySelector('.table-row-manufacture-date').value;
                 let warrantyStart = row.querySelector('.table-row-warranty-start').value;
@@ -1522,10 +1547,118 @@ class GRStoreDataHandle {
 // Submit Form
 class GRSubmitHandle {
 
+    static setupDataShowLineDetail(is_submit = false) {
+        let result = [];
+        if (GRLoadDataHandle.POSelectEle.val()) {
+            let table = GRDataTableHandle.tablePOProduct;
+            if (!table[0].querySelector('.dataTables_empty')) {
+                let order = 0;
+                // Setup Merge Data by Product
+                for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
+                    let row = table[0].tBodies[0].rows[i];
+                    let quantityImport = parseFloat(row.querySelector('.table-row-import').innerHTML);
+                    if (quantityImport > 0) {
+                        let dataRowRaw = row.querySelector('.table-row-checkbox')?.getAttribute('data-row');
+                        if (dataRowRaw) {
+                            order++;
+                            let dataRow = JSON.parse(dataRowRaw);
+                            dataRow['purchase_order_product'] = dataRow?.['id'];
+                            dataRow['product_description'] = dataRow?.['product_description'] ? dataRow?.['product_description'] : '';
+                            dataRow['uom'] = dataRow?.['uom_order_actual'];
+                            dataRow['quantity_import'] = quantityImport;
+                            dataRow['order'] = order;
+                            if (is_submit === true) {
+                                let field_list = [
+                                    'purchase_order_product',
+                                    'product',
+                                    'uom',
+                                    'tax',
+                                    'quantity_import',
+                                    'product_title',
+                                    'product_code',
+                                    'product_description',
+                                    'product_unit_price',
+                                    'product_subtotal_price',
+                                    'product_subtotal_price_after_tax',
+                                    'order',
+                                    'purchase_request_products_data',
+                                    'warehouse_data'
+                                ]
+                                filterFieldList(field_list, dataRow);
+                                dataRow['product'] = dataRow?.['product']?.['id']
+                                dataRow['uom'] = dataRow?.['uom']?.['id']
+                                dataRow['tax'] = dataRow?.['tax']?.['id']
+                                // If PO have PR
+                                for (let pr_product of dataRow?.['purchase_request_products_data'] ? dataRow?.['purchase_request_products_data'] : []) {
+                                    let field_list = [
+                                        'purchase_request_product',
+                                        'quantity_import',
+                                        'warehouse_data',
+                                    ]
+                                    filterFieldList(field_list, pr_product);
+                                    pr_product['purchase_request_product'] = pr_product?.['purchase_request_product']?.['id']
+                                    GRSubmitHandle.setupDataWHLotSerial(pr_product);
+                                }
+                                // If PO doesn't have PR
+                                GRSubmitHandle.setupDataWHLotSerial(dataRow);
+                            }
+                            result.push(dataRow);
+                        }
+                    }
+                }
+            }
+        }
+        return result
+    };
+
+    static setupDataWHLotSerial(dataStore) {
+        for (let warehouse of dataStore?.['warehouse_data'] ? dataStore?.['warehouse_data'] : []) {
+            let field_list = [
+                'warehouse',
+                'quantity_import',
+                'lot_data',
+                'serial_data',
+            ]
+            filterFieldList(field_list, warehouse);
+            for (let lot of warehouse?.['lot_data'] ? warehouse?.['lot_data'] : []) {
+                let field_list = [
+                    'lot_number',
+                    'quantity_import',
+                    'expire_date',
+                    'manufacture_date',
+                ]
+                filterFieldList(field_list, lot);
+                lot['expire_date'] = moment(lot?.['expire_date'],
+                    'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
+                lot['manufacture_date'] = moment(lot?.['manufacture_date'],
+                    'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
+            }
+            for (let serial of warehouse?.['serial_data'] ? warehouse?.['serial_data'] : []) {
+                let field_list = [
+                    'vendor_serial_number',
+                    'serial_number',
+                    'expire_date',
+                    'manufacture_date',
+                    'warranty_start',
+                    'warranty_end',
+                ]
+                filterFieldList(field_list, serial);
+                serial['expire_date'] = moment(serial?.['expire_date'],
+                    'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
+                serial['manufacture_date'] = moment(serial?.['manufacture_date'],
+                    'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
+                serial['warranty_start'] = moment(serial?.['warranty_start'],
+                    'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
+                serial['warranty_end'] = moment(serial?.['warranty_end'],
+                    'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
+            }
+        }
+    };
+
     static setupDataProduct() {
         let result = [];
         if (GRLoadDataHandle.POSelectEle.val()) {
-            return setupDataShowLineDetail(true);
+            return GRSubmitHandle.setupDataShowLineDetail(true);
         } else {
             let table = GRDataTableHandle.tableLineDetail[0];
             if (table.querySelector('.dataTables_empty')) {
@@ -1623,109 +1756,33 @@ class GRSubmitHandle {
 }
 
 // COMMON FUNCTION
-function setupDataShowLineDetail(is_submit = false) {
-    let result = [];
-    if (GRLoadDataHandle.POSelectEle.val()) {
-        let table = GRDataTableHandle.tablePOProduct;
-        if (!table[0].querySelector('.dataTables_empty')) {
-            let order = 0;
-            // Setup Merge Data by Product
-            for (let i = 0; i < table[0].tBodies[0].rows.length; i++) {
-                let row = table[0].tBodies[0].rows[i];
-                let quantityImport = parseFloat(row.querySelector('.table-row-import').innerHTML);
-                if (quantityImport > 0) {
-                    let dataRowRaw = row.querySelector('.table-row-checkbox')?.getAttribute('data-row');
-                    if (dataRowRaw) {
-                        order++;
-                        let dataRow = JSON.parse(dataRowRaw);
-                        dataRow['purchase_order_product'] = dataRow?.['id'];
-                        dataRow['product_description'] = dataRow?.['product_description'] ? dataRow?.['product_description'] : '';
-                        dataRow['uom'] = dataRow?.['uom_order_actual'];
-                        dataRow['quantity_import'] = quantityImport;
-                        dataRow['order'] = order;
-                        if (is_submit === true) {
-                            let field_list = [
-                                'purchase_order_product',
-                                'purchase_request_products_data',
-                                'product',
-                                'uom',
-                                'tax',
-                                'quantity_import',
-                                'product_title',
-                                'product_code',
-                                'product_description',
-                                'product_unit_price',
-                                'product_subtotal_price',
-                                'product_subtotal_price_after_tax',
-                                'order',
-                            ]
-                            filterFieldList(field_list, dataRow);
-                            dataRow['product'] = dataRow?.['product']?.['id']
-                            dataRow['uom'] = dataRow?.['uom']?.['id']
-                            dataRow['tax'] = dataRow?.['tax']?.['id']
-                            for (let pr_product of dataRow?.['purchase_request_products_data'] ? dataRow?.['purchase_request_products_data'] : []) {
-                                let field_list = [
-                                    'purchase_request_product',
-                                    'quantity_import',
-                                    'warehouse_data',
-                                ]
-                                filterFieldList(field_list, pr_product);
-                                pr_product['purchase_request_product'] = pr_product?.['purchase_request_product']?.['id']
-                                for (let warehouse of pr_product?.['warehouse_data'] ? pr_product?.['warehouse_data'] : []) {
-                                    let field_list = [
-                                        'warehouse',
-                                        'quantity_import',
-                                        'lot_data',
-                                        'serial_data',
-                                    ]
-                                    filterFieldList(field_list, warehouse);
-                                    for (let lot of warehouse?.['lot_data'] ? warehouse?.['lot_data'] : []) {
-                                        let field_list = [
-                                            'lot_number',
-                                            'quantity_import',
-                                            'expire_date',
-                                            'manufacture_date',
-                                        ]
-                                        filterFieldList(field_list, lot);
-                                        lot['expire_date'] = moment(lot?.['expire_date'],
-                                            'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
-                                        lot['manufacture_date'] = moment(lot?.['manufacture_date'],
-                                            'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
-                                    }
-                                    for (let serial of warehouse?.['serial_data'] ? warehouse?.['serial_data'] : []) {
-                                        let field_list = [
-                                            'vendor_serial_number',
-                                            'serial_number',
-                                            'expire_date',
-                                            'manufacture_date',
-                                            'warranty_start',
-                                            'warranty_end',
-                                        ]
-                                        filterFieldList(field_list, serial);
-                                        serial['expire_date'] = moment(serial?.['expire_date'],
-                                            'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
-                                        serial['manufacture_date'] = moment(serial?.['manufacture_date'],
-                                            'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
-                                        serial['warranty_start'] = moment(serial?.['warranty_start'],
-                                            'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
-                                        serial['warranty_end'] = moment(serial?.['warranty_end'],
-                                            'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
-                                    }
-                                }
-                            }
-                        }
-                        result.push(dataRow);
-                    }
-                }
-            }
-        }
-    }
-    return result
-}
-
 function filterFieldList(field_list, data_json) {
     for (let key in data_json) {
         if (!field_list.includes(key)) delete data_json[key]
     }
     return data_json;
+}
+
+function deleteRowTable(currentRow, $table) {
+    // Get the index of the current row within the DataTable
+    let rowIndex = $table.DataTable().row(currentRow).index();
+    let row = $table.DataTable().row(rowIndex);
+    // Delete current row
+    row.remove().draw();
+    // Re order
+    reOrderRowTable($table);
+    // Re calculate
+    GRCalculateHandle.calculateTable($table);
+}
+
+function reOrderRowTable($table) {
+    for (let i = 0; i < $table[0].tBodies[0].rows.length; i++) {
+        let row = $table[0].tBodies[0].rows[i];
+        let dataRowRaw = row?.querySelector('.table-row-order')?.getAttribute('data-row');
+        if (dataRowRaw) {
+            let dataRow = JSON.parse(dataRowRaw);
+            dataRow['order'] = (i + 1);
+            row?.querySelector('.table-row-order').setAttribute('data-row', JSON.stringify(dataRow));
+        }
+    }
 }

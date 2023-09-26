@@ -35,6 +35,24 @@ class HomeView(View):
         return redirect(reverse('LandingPageView'))
 
 
+class NotFoundView(View):
+    @mask_view(
+        login_require=True, auth_require=False,
+        template='extends/systems/404.html',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
+class ServerMaintainView(View):
+    @mask_view(
+        login_require=False, auth_require=False,
+        template='extends/systems/503.html',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
 class BookMarkListAPI(APIView):
     @mask_view(is_api=True, login_require=True, auth_require=True)
     def get(self, request, *args, **kwargs):
@@ -152,6 +170,8 @@ class GatewayMiddleDetailView(APIView):
             if is_redirect is True:
                 return redirect(link_data)
             return {'url': link_data}, status.HTTP_200_OK
+        if is_redirect is True:
+            return redirect('NotFoundView')
         return {}, status.HTTP_404_NOT_FOUND
 
 

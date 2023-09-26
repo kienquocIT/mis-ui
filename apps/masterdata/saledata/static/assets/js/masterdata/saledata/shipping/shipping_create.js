@@ -55,9 +55,23 @@ $(document).ready(function () {
     })
 
     const frmCreateShipping = $('#frmCreateShipping')
-    SetupFormSubmit.validate(
-        frmCreateShipping,
-        {
+    new SetupFormSubmit(frmCreateShipping).validate({
+        rules: {
+            title: {
+                required: true,
+            },
+            margin: {
+                required: true,
+            },
+            currency: {
+                required: true,
+            },
+            fixed_price: {
+                required: function (){
+                    return $('#inputAmount').is(':checked');
+                }
+            }
+        },
             submitHandler: function (form) {
                 let frm = new SetupFormSubmit($(form));
                 frm.dataForm['fixed_price'] = $('[name="fixed_price"]').valCurrency();

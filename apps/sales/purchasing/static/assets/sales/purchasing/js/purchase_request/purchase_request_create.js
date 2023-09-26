@@ -205,28 +205,48 @@ $(document).ready(function () {
     })
 
     const frm_create = $('#form-create-pr');
-    SetupFormSubmit.validate(
-        frm_create,
-        {
-            submitHandler: function (form) {
-                let frm = new SetupFormSubmit($(form));
-                let frm_data = PurchaseRequestAction.getDataForm(frm.dataForm, ele_request_for, ele_sale_order);
-                $.fn.callAjax2({
-                    url: frm.dataUrl,
-                    method: frm.dataMethod,
-                    data: frm_data
-                }).then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
-                            $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
-                        }
-                    }, (errs) => {
-                        $.fn.notifyB({description: errs.data.errors}, 'failure');
+    new SetupFormSubmit(frm_create).validate({
+        rules: {
+            title: {
+                required: true,
+            },
+            delivered_date: {
+                required: true,
+            },
+            supplier: {
+                required: true,
+            },
+            request_for: {
+                required: true,
+            },
+            contact: {
+                required: true,
+            },
+            sale_order: {
+                required: function () {
+                    return $('input[name="request_for"]').data('id') === 0
+                },
+            },
+        },
+        submitHandler: function (form) {
+            let frm = new SetupFormSubmit($(form));
+            let frm_data = PurchaseRequestAction.getDataForm(frm.dataForm, ele_request_for, ele_sale_order);
+            $.fn.callAjax2({
+                url: frm.dataUrl,
+                method: frm.dataMethod,
+                data: frm_data
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
+                        $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
                     }
-                )
-            }
-        })
+                }, (errs) => {
+                    $.fn.notifyB({description: errs.data.errors}, 'failure');
+                }
+            )
+        }
+    })
 
 })

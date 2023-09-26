@@ -1,4 +1,4 @@
-$(document).ready(function (){
+$(document).ready(function () {
     let frm = $('#frmUpdate');
     let pk = $.fn.getPkDetail();
     WarehouseLoadPage.loadAgency();
@@ -7,9 +7,20 @@ $(document).ready(function (){
 
     eventPage();
 
-    SetupFormSubmit.validate(
-        frm,
-        {
+    new SetupFormSubmit(frm).validate({
+            rules: {
+                title: {
+                    required: true,
+                },
+                agency: {
+                    required: function () {
+                        return $('#checkAgencyLocation').is(':checked');
+                    },
+                },
+                full_address: {
+                    required: true,
+                }
+            },
             submitHandler: function (form) {
                 let frm = new SetupFormSubmit($(form));
                 let data = WarehouseLoadPage.getFormDataUpdate();

@@ -54,6 +54,7 @@
                 <select
                         id="boxSelectAgency"
                         class="form-select"
+                        name="agency"
                         data-method="GET"
                         data-url="{% url 'AccountListAPI' %}"
                         data-keyResp="account_list"
@@ -105,7 +106,7 @@
                         </button>
                     </div>
                 </div>
-                <textarea class="form-control" readonly id="warehouseAddress"></textarea>
+                <textarea class="form-control" name="full_address" readonly id="warehouseAddress"></textarea>
             </div>
             <div class="tab-pane fade" id="tab-bin-location">
             </div>

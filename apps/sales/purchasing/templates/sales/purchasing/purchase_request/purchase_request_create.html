@@ -73,6 +73,7 @@
                     <select
                             class="form-control select2"
                             id="box-select-supplier"
+                            name="supplier"
                             data-method="GET"
                             data-url="{% url "AccountListAPI" %}"
                             data-keyResp="account_list"
@@ -137,6 +138,7 @@
                             class="form-select"
                             id="box-select-contact"
                             data-method="GET"
+                            name="contact"
                             data-url="{% url "ContactListAPI" %}"
                             data-keyResp="contact_list"
                             data-keyText="fullname"

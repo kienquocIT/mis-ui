@@ -130,51 +130,38 @@ function getSaleCode() {
         OPP_LIST = results[0];
         QUO_LIST = results[1];
         SO_LIST = results[2];
-        let so_list = results[2];
-        let quo_list = results[1];
-        let opp_list = results[0];
-        for (let i = 0; i < so_list.length; i++) {
-            let get_quo_id = so_list[i].quotation?.['id'];
-            let get_opp_id = so_list[i].opportunity?.['id'];
+        let so_list_temp = results[2];
+        let quo_list_temp = results[1];
+        let opp_list_temp = results[0];
+        for (let i = 0; i < so_list_temp.length; i++) {
+            let get_quo_id = so_list_temp[i].quotation?.['id'];
+            let get_opp_id = so_list_temp[i].opportunity?.['id'];
             if (get_quo_id !== undefined) {
-                quo_list = quo_list.filter(function (item) {
+                quo_list_temp = quo_list_temp.filter(function (item) {
                     return item.id !== get_quo_id;
                 })
             }
             if (get_opp_id !== undefined) {
-                opp_list = opp_list.filter(function (item) {
+                opp_list_temp = opp_list_temp.filter(function (item) {
                     return item.id !== get_opp_id;
                 })
             }
         }
-        for (let i = 0; i < quo_list.length; i++) {
-            let get_opp_id = quo_list[i].opportunity?.['id'];
+        for (let i = 0; i < quo_list_temp.length; i++) {
+            let get_opp_id = quo_list_temp[i].opportunity?.['id'];
             if (get_opp_id !== undefined) {
-                opp_list = opp_list.filter(function (item) {
+                opp_list_temp = opp_list_temp.filter(function (item) {
                     return item.id !== get_opp_id;
                 })
             }
         }
-        let sale_code_list_temp = so_list.concat(quo_list).concat(opp_list);
+        let sale_code_list_temp = so_list_temp.concat(quo_list_temp).concat(opp_list_temp);
         let sale_code_list = [];
         for (let i = 0; i < sale_code_list_temp.length; i++) {
-            let sale_person = sale_code_list_temp[i].sale_person;
+            let sale_person = sale_code_list_temp[i]['sale_person'];
 
-            let opp_mapped = {
-                'id': sale_code_list_temp[i].id,
-                'code': sale_code_list_temp[i].code,
-                'title': sale_code_list_temp[i].title,
-            };
-            if (sale_code_list_temp[i].opportunity !== undefined) {
-                opp_mapped = sale_code_list_temp[i].opportunity;
-            }
-
-            let opp_sale_team = []
-            if (Object.keys(opp_mapped).length !== 0) {
-                opp_sale_team = OPP_LIST.filter(function (element) {
-                    return element.id === opp_mapped.id
-                })[0].opportunity_sale_team_datas;
-            }
+            let opp_mapped = sale_code_list_temp[i].opportunity || {'id': sale_code_list_temp[i].id, 'code': sale_code_list_temp[i].code,  'title': sale_code_list_temp[i].title};
+            let opp_sale_team = (Object.keys(opp_mapped).length !== 0 && sale_code_list_temp[i].opportunity_sale_team_datas !== undefined) ? sale_code_list_temp[i].opportunity_sale_team_datas : [];
 
             let sale_team = [];
             let flag = 0;
@@ -186,15 +173,10 @@ function getSaleCode() {
             }
             sale_code_list_temp[i]['sale_team'] = sale_team;
 
-            let get_app_data_ap = initEmployee.permission_by_configured.filter(function (element) {
-                return element.app_data.code === 'advancepayment';
-            })
-            let can_create = false;
-            if (get_app_data_ap.length > 0) {
-                can_create = get_app_data_ap[0].create;
-            }
+            let get_app_data_ap = initEmployee.permission_by_configured.find(element => element.app_data.code === 'advancepayment');
+            let can_create = get_app_data_ap ? get_app_data_ap.create : false;
 
-            if (initEmployee.id === sale_person.id || flag === 1 || can_create === true) {
+            if (initEmployee.id === sale_person.id || flag === 1 || can_create) {
                 sale_code_list.push(sale_code_list_temp[i])
             }
         }

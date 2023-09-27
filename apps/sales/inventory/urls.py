@@ -3,8 +3,9 @@ from django.urls import path
 from apps.sales.inventory.views import (
     GoodsReceiptList, GoodsReceiptCreate, GoodsReceiptListAPI,
     GoodsReceiptDetailAPI, GoodsReceiptDetail, GoodsReceiptUpdate,
-    InventoryAdjustmentList, InventoryAdjustmentCreate, InventoryAdjustmentListAPI,
-    InventoryAdjustmentListAPI, InventoryAdjustmentDetailAPI, InventoryAdjustmentDetail
+    InventoryAdjustmentList, InventoryAdjustmentCreate,
+    InventoryAdjustmentListAPI, InventoryAdjustmentDetailAPI, InventoryAdjustmentDetail, GoodsIssueList,
+    GoodsIssueCreate, GoodsIssueDetail, GoodsIssueListAPI, GoodsIssueDetailAPI, InventoryAdjustmentProductListAPI
 )
 from apps.sales.inventory.views.goods_transfer import GoodsTransferList, GoodsTransferDetail, GoodsTransferCreate, \
     GoodsTransferListAPI, GoodsTransferDetailAPI
@@ -24,6 +25,11 @@ urlpatterns = [
     path('inventory-adjustment/api', InventoryAdjustmentListAPI.as_view(), name='InventoryAdjustmentListAPI'),
     path('inventory-adjustment/<str:pk>', InventoryAdjustmentDetail.as_view(), name='InventoryAdjustmentDetail'),
     path('inventory-adjustment/api/<str:pk>', InventoryAdjustmentDetailAPI.as_view(), name='InventoryAdjustmentDetailAPI'),
+    path(
+        'inventory-adjustment/product/list/api/<str:ia_id>',
+        InventoryAdjustmentProductListAPI.as_view(),
+        name='InventoryAdjustmentProductListAPI'
+    ),
 ]
 
 # goods transfer
@@ -33,4 +39,13 @@ urlpatterns += [
     path('goods-transfer/detail/<str:pk>', GoodsTransferDetail.as_view(), name='GoodsTransferDetail'),
     path('goods-transfer/list/api', GoodsTransferListAPI.as_view(), name='GoodsTransferListAPI'),
     path('goods-transfer/detail/api/<str:pk>', GoodsTransferDetailAPI.as_view(), name='GoodsTransferDetailAPI'),
+]
+
+# goods issue
+urlpatterns += [
+    path('goods-issue/list', GoodsIssueList.as_view(), name='GoodsIssueList'),
+    path('goods-issue/create', GoodsIssueCreate.as_view(), name='GoodsIssueCreate'),
+    path('goods-issue/detail/<str:pk>', GoodsIssueDetail.as_view(), name='GoodsIssueDetail'),
+    path('goods-issue/list/api', GoodsIssueListAPI.as_view(), name='GoodsIssueListAPI'),
+    path('goods-issue/detail/api/<str:pk>', GoodsIssueDetailAPI.as_view(), name='GoodsIssueDetailAPI'),
 ]

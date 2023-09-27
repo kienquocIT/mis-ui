@@ -351,7 +351,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     GOODS_RECEIPT_DETAIL_PK = StringUrl('inventory/goods-receipt/{pk}')
     INVENTORY_ADJUSTMENT_LIST = StringUrl('inventory/inventory-adjustments')
     INVENTORY_ADJUSTMENT_DETAIL = StringUrl('inventory/inventory-adjustment/{pk}')
-    INVENTORY_ADJUSTMENT_PRODUCTS_LIST = StringUrl('inventory/inventory-adjustment/products')
+    INVENTORY_ADJUSTMENT_PRODUCT_LIST = StringUrl('inventory/inventory-adjustment/product/list/{ia_id}')
 
     # Application for Opportunity permission
     APPLICATION_OPPORTUNITY_PERMISSION = StringUrl('base/applications-opportunity-permit')
@@ -373,10 +373,13 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     LEAVE_CREATE = StringUrl('leave/leave-type/create')
     LEAVE_DETAIL = StringUrl('leave/leave-type/detail/{pk}')
 
-
     # Goods transfer
-    GOODS_TRANSFER_LIST = StringUrl('inventory/good-transfer/list')
-    GOODS_TRANSFER_DETAIL = StringUrl('inventory/good-transfer/{pk}')
+    GOODS_TRANSFER_LIST = StringUrl('inventory/goods-transfer/list')
+    GOODS_TRANSFER_DETAIL = StringUrl('inventory/goods-transfer/{pk}')
 
-    #Opportunity Member List
+    # Opportunity Member List
     OPPORTUNITY_MEMBER_LIST = StringUrl('opportunity/member/list/{pk}')
+
+    # Goods issue
+    GOODS_ISSUE_LIST = StringUrl('inventory/goods-issue/list')
+    GOODS_ISSUE_DETAIL = StringUrl('inventory/goods-issue/{pk}')

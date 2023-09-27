@@ -38,8 +38,8 @@ selectProductBtn.on('click', async function () {
                 <td data-id="${selected_product[i].product_warehouse_id}" class="text-primary product_id_td">${selected_product[i].product_title}</td>
                 <td data-id="${selected_product[i].warehouse_id}" class="warehouse_id_td"><i class="fas fa-warehouse"></i> ${selected_product[i].warehouse_title}</td>
                 <td data-id="${selected_product[i].product_inventory_uom_id}" class="uom_id_td">${selected_product[i].product_inventory_uom_title}</td>
-                <td class="quantity-td">${selected_product[i].stock_amount}</td>
-                <td><input class="form-control count-input" type="text" placeholder="Number" value="${selected_product[i].stock_amount}"></td>
+                <td class="quantity-td">${selected_product[i].available_amount}</td>
+                <td><input class="form-control count-input" type="text" placeholder="Number" value="${selected_product[i].available_amount}"></td>
                 <td class="difference_td">0</td>
                 <td>
                     <span class="form-check">
@@ -175,7 +175,7 @@ function LoadTableSelectProduct(warehouse_list) {
                                             'product_title': product_temp[j]['product']['title'],
                                             'product_inventory_uom_id': product_temp[j]['inventory_uom']['id'],
                                             'product_inventory_uom_title': product_temp[j]['inventory_uom']['title'],
-                                            'stock_amount': product_temp[j]['stock_amount'],
+                                            'available_amount': product_temp[j]['available_amount'],
                                         }
                                         data_list.push(data_temp)
                                         data_dict[product_temp[j]['id']] = data_temp;
@@ -262,10 +262,10 @@ function getDataForm() {
         let select_for_action = $(this).find('.selected_for_actions').is(':checked');
         let action_status = 0;
         let action_type = 0;
-        if (count > product_obj.stock_amount){
+        if (count > product_obj.available_amount){
             action_type = 2;
         }
-        else if(count < product_obj.stock_amount){
+        else if(count < product_obj.available_amount){
             action_type = 1;
         }
         else{
@@ -276,7 +276,7 @@ function getDataForm() {
             'product_mapped_id': product_obj.product_id,
             'warehouse_mapped_id': product_obj.warehouse_id,
             'uom_mapped_id': product_obj.product_inventory_uom_id,
-            'book_quantity': product_obj.stock_amount,
+            'book_quantity': product_obj.available_amount,
             'count': count,
             'action_type': action_type,
             'select_for_action': select_for_action,

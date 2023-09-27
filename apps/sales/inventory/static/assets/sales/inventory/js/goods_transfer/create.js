@@ -111,7 +111,7 @@ $(document).ready(function () {
         transEle.data('trans-date-format')
     );
 
-    $('#frmCreate').validate({
+    new SetupFormSubmit($('#frmCreate')).validate({
         rules: {
             title: {
                 required: true,
@@ -129,8 +129,6 @@ $(document).ready(function () {
                 }
             }
         },
-        errorElement: 'p',
-        errorClass: 'is-invalid cl-red',
         submitHandler: function (form) {
             let frm = new SetupFormSubmit($(form));
             let frm_data = GoodsTransferLoadPage.getDataForm(frm.dataForm);

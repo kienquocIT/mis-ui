@@ -331,6 +331,12 @@ class MenusPurchase:
                 view_name='GoodsTransferList',
                 icon='<i class="fas fa-exchange-alt"></i>',
             ),
+            MenuCommon(
+                name='Goods issue',
+                code='menu_goods_issue_list',
+                view_name='GoodsIssueList',
+                icon='<i class="fas fa-file-export"></i>',
+            ),
         ],
     )
 

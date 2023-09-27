@@ -107,6 +107,8 @@ $(document).ready(function () {
                 title: 'Oops...',
                 text: ele_trans.data('trans-request-greater-remain'),
             })
+            $(this).val(0);
+            $(this).closest('tr').find('.inp-check-so-product').prop('checked', false)
         }
     })
 

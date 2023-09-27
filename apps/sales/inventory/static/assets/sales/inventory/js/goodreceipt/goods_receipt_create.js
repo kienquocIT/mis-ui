@@ -250,6 +250,7 @@ $(function () {
             let submitFields = [
                 'title',
                 'purchase_order',
+                'inventory_adjustment',
                 'supplier',
                 'purchase_requests',
                 'remarks',

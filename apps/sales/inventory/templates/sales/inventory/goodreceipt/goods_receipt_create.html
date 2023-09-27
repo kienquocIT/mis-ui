@@ -181,7 +181,7 @@
                 <div class="row custom-area" id="custom-area-2" hidden>
                     <div class="col-6">
                         <div class="form-group">
-                            <label class="form-label" for="box-good-receipt-inventory-adjustment">{% trans 'IA number' %}</label>
+                            <label class="form-label" for="box-good-receipt-inventory-adjustment">{% trans 'IA number' %}<span class="required"></span></label>
                             <select
                                     class="form-select"
                                     id="box-good-receipt-inventory-adjustment"
@@ -190,6 +190,7 @@
                                     data-link-detail=""
                                     name="inventory_adjustment"
                                     data-keyResp="inventory_adjustment_other_list"
+                                    required
                             >
                             </select>
                         </div>

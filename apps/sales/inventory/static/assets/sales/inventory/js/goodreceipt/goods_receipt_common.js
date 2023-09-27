@@ -1807,10 +1807,14 @@ class GRSubmitHandle {
 
     static setupDataProduct() {
         let result = [];
-        if (GRLoadDataHandle.POSelectEle.val()) {
-            return GRSubmitHandle.setupDataShowLineDetail(true);
-        } else {
-            let table = GRDataTableHandle.tableLineDetailPO[0];
+        let type = GRLoadDataHandle.typeSelectEle.val();
+        if (type === '1') { // for PO
+            if (GRLoadDataHandle.POSelectEle.val()) {
+                return GRSubmitHandle.setupDataShowLineDetail(true);
+            }
+        }
+        if (type === '2') { // for IA
+            let table = GRDataTableHandle.tableLineDetailIA[0];
             if (table.querySelector('.dataTables_empty')) {
                 return []
             }
@@ -1840,6 +1844,14 @@ class GRSubmitHandle {
                             rowData['uom'] = dataInfo.id;
                         }
                     }
+                    let eleQuantityImport = row.querySelector('.table-row-import');
+                    if (eleQuantityImport) {
+                        rowData['quantity_import'] = parseFloat(eleQuantityImport.value);
+                    }
+                    let elePrice = row.querySelector('.table-row-price');
+                    if (elePrice) {
+                        rowData['product_unit_price'] = $(elePrice).valCurrency();
+                    }
                     let eleTax = row.querySelector('.table-row-tax');
                     if ($(eleTax).val()) {
                         let dataInfo = SelectDDControl.get_data_from_idx($(eleTax), $(eleTax).val());
@@ -1855,13 +1867,12 @@ class GRSubmitHandle {
                     if (eleTaxAmount) {
                         rowData['product_tax_amount'] = parseFloat(eleTaxAmount.value);
                     }
-                    let eleQuantityImport = row.querySelector('.table-row-import');
-                    if (eleQuantityImport) {
-                        rowData['quantity_import'] = parseFloat(eleQuantityImport.value);
-                    }
-                    let elePrice = row.querySelector('.table-row-price');
-                    if (elePrice) {
-                        rowData['product_unit_price'] = $(elePrice).valCurrency();
+                    let eleWH = row.querySelector('.table-row-warehouse');
+                    if ($(eleWH).val()) {
+                        let dataInfo = SelectDDControl.get_data_from_idx($(eleWH), $(eleWH).val());
+                        if (dataInfo) {
+                            rowData['warehouse'] = dataInfo.id;
+                        }
                     }
                     let eleSubtotal = row.querySelector('.table-row-subtotal-raw');
                     if (eleSubtotal) {
@@ -1882,6 +1893,15 @@ class GRSubmitHandle {
     };
 
     static setupDataSubmit(_form) {
+        let type = GRLoadDataHandle.typeSelectEle.val();
+        if (type === '1') {
+            _form.dataForm['inventory_adjustment'] = null;
+        }
+        if (type === '2') {
+            _form.dataForm['purchase_order'] = null;
+            _form.dataForm['supplier'] = null;
+        }
+        _form.dataForm['goods_receipt_type'] = (parseInt(type) - 1);
         if (GRLoadDataHandle.PRDataEle.val()) {
             _form.dataForm['purchase_requests'] = JSON.parse(GRLoadDataHandle.PRDataEle.val());
         }

@@ -248,6 +248,7 @@ $(function () {
             let _form = new SetupFormSubmit(formSubmit);
             GRSubmitHandle.setupDataSubmit(_form);
             let submitFields = [
+                'goods_receipt_type',
                 'title',
                 'purchase_order',
                 'inventory_adjustment',

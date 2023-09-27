@@ -713,14 +713,21 @@ class GRLoadDataHandle {
             GRLoadDataHandle.loadBoxPO(data?.['purchase_order']);
             GRLoadDataHandle.loadBoxSupplier(data?.['supplier']);
             GRLoadDataHandle.loadDataShowPR(data?.['purchase_requests']);
+            GRDataTableHandle.tableLineDetailPO.DataTable().rows.add(data?.['goods_receipt_product']).draw();
+            GRLoadDataHandle.loadDataRowTable(GRDataTableHandle.tableLineDetailPO);
+            if (formSubmit.attr('data-method') === 'GET') {
+                GRLoadDataHandle.loadTableDisabled(GRDataTableHandle.tableLineDetailPO);
+            }
+            GRLoadDataHandle.loadModalProduct(true);
         }
-        GRDataTableHandle.tableLineDetailPO.DataTable().rows.add(data?.['goods_receipt_product']).draw();
-        GRLoadDataHandle.loadDataRowTable(GRDataTableHandle.tableLineDetailPO);
-        if (formSubmit.attr('data-method') === 'GET') {
-            GRLoadDataHandle.loadTableDisabled(GRDataTableHandle.tableLineDetailPO);
+        if (idAreaShow === '2') {
+            GRLoadDataHandle.loadBoxIA(data?.['inventory_adjustment']);
+            GRDataTableHandle.tableLineDetailIA.DataTable().rows.add(data?.['goods_receipt_product']).draw();
+            GRLoadDataHandle.loadDataRowTable(GRDataTableHandle.tableLineDetailIA);
+            if (formSubmit.attr('data-method') === 'GET') {
+                GRLoadDataHandle.loadTableDisabled(GRDataTableHandle.tableLineDetailIA);
+            }
         }
-        //
-        GRLoadDataHandle.loadModalProduct(true);
     };
 
     static loadDetailWHLotSerial(dataWarehouse) {
@@ -1723,6 +1730,7 @@ class GRSubmitHandle {
                                     'product',
                                     'uom',
                                     'tax',
+                                    'warehouse',
                                     'quantity_import',
                                     'product_title',
                                     'product_code',

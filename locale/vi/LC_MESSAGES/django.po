@@ -4376,3 +4376,19 @@ msgstr "Dự án"
 #
 msgid "Inheritor"
 msgstr "Người thụ hưởng"
+
+#
+msgid "Purchase order create successfully"
+msgstr "Tạo đơn mua hàng thành công"
+
+#
+msgid "Purchase order update successfully"
+msgstr "Cập nhật đơn mua hàng thành công"
+
+#
+msgid "Goods receipt create successfully"
+msgstr "Tạo đơn nhập hàng thành công"
+
+#
+msgid "Goods receipt update successfully"
+msgstr "Cập nhật đơn nhập hàng thành công"

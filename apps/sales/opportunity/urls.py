@@ -23,7 +23,6 @@ urlpatterns = [
     path('detail/<str:pk>', OpportunityDetail.as_view(), name='OpportunityDetail'),
     path('update/<str:pk>', OpportunityUpdate.as_view(), name='OpportunityUpdate'),
     path('api/<str:pk>', OpportunityDetailAPI.as_view(), name='OpportunityDetailAPI'),
-
     path(
         'config/decision-factors/api',
         OpportunityCustomerDecisionFactorListAPI.as_view(),

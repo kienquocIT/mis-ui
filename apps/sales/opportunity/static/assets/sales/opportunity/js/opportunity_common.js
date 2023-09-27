@@ -903,7 +903,7 @@ function loadDtbOpportunityList() {
                 {
                     targets: 4,
                     render: (data, type, row) => {
-                        return `<span class="badge badge badge-soft-success  ml-2 mt-2">${row?.['sale_person'].name}</span>`
+                        return `<span class="badge badge badge-soft-success  ml-2 mt-2">${row?.['sale_person'].full_name}</span>`
                     }
                 },
                 {

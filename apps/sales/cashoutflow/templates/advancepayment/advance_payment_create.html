@@ -40,7 +40,8 @@
     <form id="form-create-advance" data-method="POST" data-url-redirect="{% url "AdvancePaymentList" %}"
           data-url-list="{% url 'AdvancePaymentListAPI' %}"
           data-url-detail="{% url 'AdvancePaymentDetailAPI' '0' %}"
-          data-url="{% url "AdvancePaymentListAPI" %}">
+          data-url="{% url "AdvancePaymentListAPI" %}"
+    >
         {% csrf_token %}
         <div class="row mt-1 ml-1 mr-1 collapse multi-collapse show" id="collapse-area">
             <div class="row">
@@ -347,13 +348,19 @@
                         <tr>
                             <th></th>
                             <th>{% trans 'Expense type' %}</th>
-                            <th>{% trans 'Tax' %}</th>
                             <th>{% trans 'Plan After Tax' %}</th>
                             <th>{% trans 'AP Approved' %}</th>
                             <th>{% trans 'Return' %}</th>
                             <th>{% trans 'To Payment' %}</th>
                             <th>{% trans 'Other Payment' %}</th>
-                            <th>{% trans 'Available' %}</th>
+                            <th>
+                                {% trans 'Available' %}
+                                <i class="fas fa-info-circle icon-info"
+                                   data-bs-toggle="tooltip"
+                                   data-bs-placement="bottom"
+                                   title="{% trans 'Available = Plan after Tax - Other payments - AP approved + Returned' %}">
+                                </i>
+                            </th>
                         </tr>
                         </thead>
                         <tbody></tbody>

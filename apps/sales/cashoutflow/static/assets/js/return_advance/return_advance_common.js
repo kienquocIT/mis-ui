@@ -68,9 +68,9 @@ function loadDetailAdvancePayment(id, type = 'create') {
                 ele_beneficiary.empty();
                 let sale_code_ele = $('[name="sale_code"]');
                 if (data?.['advance_payment_detail']?.['sale_order_mapped'].length > 0) {
-                    sale_code_ele.val(data?.['advance_payment_detail']?.['sale_order_mapped'][0].opportunity.code);
+                    sale_code_ele.val(data?.['advance_payment_detail']?.['sale_order_mapped'][0].opportunity_linked.code);
                 } else if (data?.['advance_payment_detail']?.['quotation_mapped'].length > 0) {
-                    sale_code_ele.val(data?.['advance_payment_detail']?.['quotation_mapped'][0].opportunity.code);
+                    sale_code_ele.val(data?.['advance_payment_detail']?.['quotation_mapped'][0].opportunity_linked.code);
                 } else if (data?.['advance_payment_detail']?.['opportunity_mapped'].length > 0) {
                     sale_code_ele.val(data?.['advance_payment_detail']?.['opportunity_mapped'][0].code);
                 } else {

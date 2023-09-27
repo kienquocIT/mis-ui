@@ -159,9 +159,17 @@ function getSaleCode() {
         let sale_code_list = [];
         for (let i = 0; i < sale_code_list_temp.length; i++) {
             let sale_person = sale_code_list_temp[i].sale_person;
-            let opp_mapped = sale_code_list_temp[i].opportunity;
-            let opp_sale_team = sale_code_list_temp[i].opportunity_sale_team_datas;
 
+            let opp_mapped = {
+                'id': sale_code_list_temp[i].id,
+                'code': sale_code_list_temp[i].code,
+                'title': sale_code_list_temp[i].title,
+            };
+            if (sale_code_list_temp[i].opportunity !== undefined) {
+                opp_mapped = sale_code_list_temp[i].opportunity;
+            }
+
+            let opp_sale_team = []
             if (Object.keys(opp_mapped).length !== 0) {
                 opp_sale_team = OPP_LIST.filter(function (element) {
                     return element.id === opp_mapped.id

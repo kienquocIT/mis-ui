@@ -134,12 +134,17 @@ function LoadPurchaseRequestProductsTable() {
     $('.form-check-purchase-request:checked').each(function () {
         PR_code_badge_style.push($(this).closest('tr').find('.pr-code-span').attr('class'))
         let purchase_request_get = $(this).attr('id');
+        console.log(purchase_request_get)
+        console.log(PURCHASE_REQUEST_LIST.filter(function(element) {
+                return element.id === purchase_request_get
+            }))
         purchase_request_products_data = purchase_request_products_data.concat(
             PURCHASE_REQUEST_LIST.filter(function(element) {
                 return element.id === purchase_request_get
             })[0].product_list
         )
     })
+    console.log(purchase_request_products_data)
     let last_purchase_request_code = '';
     let style_order = -1;
     PRProductsTable.DataTable().clear().destroy();
@@ -301,13 +306,12 @@ function calculate_price(table_tr) {
     let sum_tax_value = 0;
     let sum_price_after_tax_value = 0;
     table_tr.each(function () {
-        let quantity = $(this).find('.product-quantity').val();
-        let pr_unit_price = $(this).find('.pr-unit-price-input').attr('value');
-        let tax_rate = 0;
-        if ($(this).find('.product-tax-select-box').val()) {
-            let tax_selected = JSON.parse($('#' + $(this).find('.product-tax-select-box').attr('data-idx-data-loaded')).text())[$(this).find('.product-tax-select-box').val()];
-            tax_rate = tax_selected.rate;
+        let quantity = $(this).find('.product-quantity').text();
+        if (quantity === '') {
+            quantity = $(this).find('.product-quantity').val();
         }
+        let pr_unit_price = $(this).find('.pr-unit-price-input').attr('value');
+        let tax_rate = parseFloat($(this).find('.product-tax-select-box option:selected').attr('data-rate'));
         let current_pre_tax_value = parseFloat(quantity) * parseFloat(pr_unit_price);
         sum_price_pre_tax_value += current_pre_tax_value;
         sum_tax_value += current_pre_tax_value * tax_rate / 100;
@@ -332,18 +336,14 @@ function loadProductList(row_id, data) {
     })
 }
 
-function loadProductTaxList(row_id, data) {
+function loadProductTaxList(row_id) {
     let ele = $('#' + row_id + ' .product-tax-select-box');
-    ele.initSelect2({
-        ajax: {
-            url: PQRProductsSelectedTable.attr('data-url-tax'),
-            method: 'GET',
-        },
-        data: (data ? data : null),
-        keyResp: 'tax_list',
-        keyId: 'id',
-        keyText: 'title',
-    })
+    let html = ``;
+    html += `<option data-rate="0"></option>`;
+    for (let i = 0; i < TAX_LIST.length; i++) {
+        html += `<option data-rate="${TAX_LIST[i].rate}" value="${TAX_LIST[i].id}">${TAX_LIST[i].title} (${TAX_LIST[i].rate}%)</option>`;
+    }
+    ele.append(html);
 }
 
 function loadProductUomList(row_id, data, uom_group_id) {
@@ -742,7 +742,7 @@ $(document).on("click", '#new-product-btn', function () {
             <td><select class="form-select product-uom-select-box" data-method="GET"><option selected></option></select></td>
             <td><input type="number" min="1" onchange="this.value=checkInputQuantity(this.value)" class="form-control product-quantity" value="1"></td>
             <td><input type="text" data-return-type="number" class="form-control pr-unit-price-input mask-money" style="color: black; background: none"></td>
-            <td><select class="form-select product-tax-select-box" data-method="GET"><option selected></option></select></td>
+            <td><select class="form-select product-tax-select-box" data-method="GET"></select></td>
             <td><span class="pr-subtotal-price-input mask-money text-primary" data-init-money=""></span></td>
             <td><button class="btn-del-line-detail btn text-danger btn-link btn-animated" title="Delete row"><span class="icon"><i class="bi bi-dash-circle"></i></span></button></td>
         </tr>
@@ -785,7 +785,10 @@ $(document).on("click", '#btn-show-modal', function () {
 })
 
 $(document).on("change", '.pr-unit-price-input', function () {
-    let quantity = $(this).closest('tr').find('.product-quantity').val();
+    let quantity = $(this).closest('tr').find('.product-quantity').text();
+    if (quantity === '') {
+        quantity = $(this).closest('tr').find('.product-quantity').val();
+    }
     let pr_unit_price = $(this).closest('tr').find('.pr-unit-price-input').attr('value');
     let new_sub_total_price = parseFloat(pr_unit_price) * parseFloat(quantity);
     $(this).closest('tr').find('.pr-subtotal-price-input').attr('data-init-money', new_sub_total_price)
@@ -794,7 +797,10 @@ $(document).on("change", '.pr-unit-price-input', function () {
 })
 
 $(document).on("change", '.product-tax-select-box', function () {
-    let quantity = $(this).closest('tr').find('.product-quantity').val();
+    let quantity = $(this).closest('tr').find('.product-quantity').text();
+    if (quantity === '') {
+        quantity = $(this).closest('tr').find('.product-quantity').val();
+    }
     let pr_unit_price = $(this).closest('tr').find('.pr-unit-price-input').attr('value');
     let new_sub_total_price = parseFloat(pr_unit_price) * parseFloat(quantity);
     $(this).closest('tr').find('.pr-subtotal-price-input').attr('data-init-money', new_sub_total_price)
@@ -803,7 +809,10 @@ $(document).on("change", '.product-tax-select-box', function () {
 })
 
 $(document).on("change", '.product-quantity', function () {
-    let quantity = $(this).closest('tr').find('.product-quantity').val();
+    let quantity = $(this).closest('tr').find('.product-quantity').text();
+    if (quantity === '') {
+        quantity = $(this).closest('tr').find('.product-quantity').val();
+    }
     let pr_unit_price = $(this).closest('tr').find('.pr-unit-price-input').attr('value');
     let new_sub_total_price = parseFloat(pr_unit_price) * parseFloat(quantity);
     $(this).closest('tr').find('.pr-subtotal-price-input').attr('data-init-money', new_sub_total_price)
@@ -824,7 +833,7 @@ class PQRHandle {
         $('#table-purchase-quotation-request-products-selected tbody tr').each(function () {
             let product_id = $(this).find('.product-title').attr('data-product-id');
             let product_uom_id = $(this).find('.product-uom').attr('data-product-uom-id');
-            let product_quantity =  $(this).find('.product-quantity').val();
+            let product_quantity =  $(this).find('.product-quantity').text();
             let product_unit_price = $(this).find('.pr-unit-price-input').attr('value');
             let product_subtotal_price = $(this).find('.pr-subtotal-price-input').attr('data-init-money');
             if (product_id !== '' && product_uom_id !== '' && product_quantity !== '' && product_unit_price !== '' && product_subtotal_price !== '') {

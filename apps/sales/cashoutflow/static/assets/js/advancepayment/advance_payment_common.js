@@ -193,7 +193,7 @@ function getSaleCode() {
             if (get_app_data_ap.length > 0) {
                 can_create = get_app_data_ap[0].create;
             }
-            
+
             if (initEmployee.id === sale_person.id || flag === 1 || can_create === true) {
                 sale_code_list.push(sale_code_list_temp[i])
             }

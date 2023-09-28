@@ -53,10 +53,11 @@
                 <select
                         id="boxSelectAgency"
                         class="form-select"
+                        name="agency"
                         data-method="GET"
-                        data-url="{% url 'AccountListAPI' %}"
-                        data-keyResp="account_list"
-                        data-keyText="name" disabled
+                        data-url="{% url 'AccountForSaleListAPI' %}"
+                        data-keyResp="account_sale_list"
+                        data-keyText="name"
                 ></select>
             </div>
         </div>

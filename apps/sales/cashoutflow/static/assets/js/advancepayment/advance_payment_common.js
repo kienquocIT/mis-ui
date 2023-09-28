@@ -1,5 +1,4 @@
 const initEmployee = JSON.parse($('#employee_current').text());
-console.log(initEmployee)
 let APCreatorEle = $('#creator-select-box')
 let APBeneficiaryEle = $('#beneficiary-select-box')
 let saleCodeEle = $('#sale-code-select-box')
@@ -8,6 +7,8 @@ let APTypeEle = $('#type-select-box')
 let supplierEle = $('#supplier-select-box')
 let tableLineDetail = $('#tab_line_detail_datatable')
 let money_gave = $('#money-gave')
+let btn_sale_code_type = $('#btn-change-sale-code-type')
+let sale_code_loading_span = $('#sale-code-loading-span')
 let OPP_LIST = [];
 let QUO_LIST = [];
 let SO_LIST = [];
@@ -29,14 +30,11 @@ saleCodeTypeEle.on('change', function () {
     plan_dtb.DataTable().clear().destroy();
     plan_dtb.prop('hidden', true);
     $('#notify-none-sale-code').prop('hidden', false);
-    let btn_sale_code_type = $('#btn-change-sale-code-type');
     if ($(this).val() === '0') {
-        getSaleCode();
         btn_sale_code_type.text('Sale');
         $('#sale-code-label-id').addClass('required');
-        saleCodeEle.prop('disabled', false);
-        APBeneficiaryEle.html('');
-        $('#beneficiary-detail-span').prop('hidden', true);
+        sale_code_loading_span.attr('hidden', false);
+        getSaleCode();
     }
     else if ($(this).val() === '2') {
         btn_sale_code_type.text('Non-sale');
@@ -181,6 +179,11 @@ function getSaleCode() {
             }
         }
         APLoadSaleCode([{}].concat(sale_code_list));
+
+        saleCodeEle.prop('disabled', false);
+        APBeneficiaryEle.html('');
+        $('#beneficiary-detail-span').prop('hidden', true);
+        sale_code_loading_span.attr('hidden', true);
     }).catch((error) => {
         console.log(error)
         $.fn.notifyB({description: "Load Sale Code Failed!"}, 'failure');
@@ -268,8 +271,15 @@ function APLoadSaleCode(sale_code) {
 
                                 let all_expense_items = [];
                                 for (let i = 0; i < results[0].length; i++) {
-                                    if (sale_code_selected_id_list['sale_order_linked_id'] === results[0][i]?.['sale_order_mapped']['id'] || sale_code_selected_id_list['quotation_linked_id'] === results[0][i]?.['quotation_mapped']['id'] || sale_code_selected_id_list['opportunity_linked_id'] === results[0][i]?.['opportunity_mapped']['id']) {
-                                        all_expense_items = all_expense_items.concat(results[0][i]?.['expense_items'])
+                                    let item = results[0][i];
+                                    let so_mapped_id = item?.['sale_order_mapped']['id'];
+                                    let quo_mapped_id = item?.['quotation_mapped']['id'];
+                                    let opp_mapped_id = item?.['opportunity_mapped']['id'];
+
+                                    if ((sale_code_selected_id_list['sale_order_linked_id'] === so_mapped_id && so_mapped_id !== undefined) ||
+                                        (sale_code_selected_id_list['quotation_linked_id'] === quo_mapped_id && quo_mapped_id !== undefined) ||
+                                        (sale_code_selected_id_list['opportunity_linked_id'] === opp_mapped_id && opp_mapped_id !== undefined)) {
+                                        all_expense_items = all_expense_items.concat(item?.['expense_items']);
                                     }
                                 }
                                 if (sale_code_selected_id_list['sale_order_linked_id']) {
@@ -876,7 +886,6 @@ function LoadDetailAP(option) {
                 plan_dtb.DataTable().clear().destroy();
                 plan_dtb.prop('hidden', true);
                 $('#notify-none-sale-code').prop('hidden', false);
-                let btn_sale_code_type = $('#btn-change-sale-code-type');
                 if (data.sale_code_type === 0) {
                     $("#radio-sale").prop("checked", true);
                     btn_sale_code_type.text('Sale');
@@ -950,8 +959,15 @@ function LoadDetailAP(option) {
                     Promise.all([call_ap_list]).then((results) => {
                         let all_expense_items = [];
                         for (let i = 0; i < results[0].length; i++) {
-                            if (sale_code_selected_id_list['sale_order_linked_id'] === results[0][i]?.['sale_order_mapped']['id'] || sale_code_selected_id_list['quotation_linked_id'] === results[0][i]?.['quotation_mapped']['id'] || sale_code_selected_id_list['opportunity_linked_id'] === results[0][i]?.['opportunity_mapped']['id']) {
-                                all_expense_items = all_expense_items.concat(results[0][i]?.['expense_items'])
+                            let item = results[0][i];
+                            let so_mapped_id = item?.['sale_order_mapped']['id'];
+                            let quo_mapped_id = item?.['quotation_mapped']['id'];
+                            let opp_mapped_id = item?.['opportunity_mapped']['id'];
+
+                            if ((sale_code_selected_id_list['sale_order_linked_id'] === so_mapped_id && so_mapped_id !== undefined) ||
+                                (sale_code_selected_id_list['quotation_linked_id'] === quo_mapped_id && quo_mapped_id !== undefined) ||
+                                (sale_code_selected_id_list['opportunity_linked_id'] === opp_mapped_id && opp_mapped_id !== undefined)) {
+                                all_expense_items = all_expense_items.concat(item?.['expense_items']);
                             }
                         }
                         if (sale_code_selected_id_list['sale_order_linked_id']) {

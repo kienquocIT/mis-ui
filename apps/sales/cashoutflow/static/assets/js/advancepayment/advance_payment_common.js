@@ -1,5 +1,4 @@
 const initEmployee = JSON.parse($('#employee_current').text());
-console.log(initEmployee)
 let APCreatorEle = $('#creator-select-box')
 let APBeneficiaryEle = $('#beneficiary-select-box')
 let saleCodeEle = $('#sale-code-select-box')
@@ -669,9 +668,6 @@ function loadSaleOrderExpensesPlan(filter_sale_order, ap_items_list, payment_val
 }
 
 function loadQuotationExpensesPlan(filter_quotation, ap_items_list, payment_value_list, returned_value_list) {
-    console.log(ap_items_list)
-    console.log(payment_value_list)
-    console.log(returned_value_list)
     let dtb = $('#tab_plan_datatable');
     if (filter_quotation !== '') {
         dtb.prop('hidden', false);
@@ -730,7 +726,6 @@ function loadQuotationExpensesPlan(filter_quotation, ap_items_list, payment_valu
                         let sum_AP_approved_list = ap_items_list.filter(function (element) {
                             return element.expense_type.id === result[i].expense_item.id;
                         })
-                        console.log(sum_AP_approved_list)
                         for (let k = 0; k < sum_AP_approved_list.length; k++) {
                             sum_AP_approved_value += sum_AP_approved_list[k]?.['expense_after_tax_price'];
                         }

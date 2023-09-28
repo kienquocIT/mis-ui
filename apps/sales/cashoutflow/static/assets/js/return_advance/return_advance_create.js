@@ -51,54 +51,64 @@ $(function () {
                 title: {
                     required: true,
                 },
-                agency: {
-                    required: function () {
-                        return $('#checkAgencyLocation').is(':checked');
-                    },
+                advance_payment: {
+                    required: true,
                 },
-                full_address: {
+                sale_code: {
+                    required: true,
+                },
+                method: {
+                    required: true,
+                },
+                date_created: {
+                    required: true,
+                },
+                creator: {
+                    required: true,
+                },
+                beneficiary: {
                     required: true,
                 }
             },
-                submitHandler: function (form) {
-                    let frm = new SetupFormSubmit($(form));
-                    frm.dataForm['creator'] = $('[name="creator"]').attr('data-id');
-                    frm.dataForm['status'] = 0;
-                    frm.dataForm['money_received'] = !!$('#money-received').is(':checked');
-                    let tbProduct = $('#dtbProduct');
-                    let cost_list = []
-                    tbProduct.find('tbody tr').each(function () {
-                        cost_list.push({
-                            'advance_payment_cost': $(this).find('.row-expense').data('id'),
-                            'expense_name': $(this).find('.row-expense').text(),
-                            'expense_type': $(this).find('.row-expense-type').data('id'),
-                            'remain_value': parseFloat($(this).find('span.mask-money').attr('data-init-money')),
-                            'return_value': $(this).find('input.mask-money').valCurrency(),
-                        })
+            submitHandler: function (form) {
+                let frm = new SetupFormSubmit($(form));
+                frm.dataForm['creator'] = $('[name="creator"]').attr('data-id');
+                frm.dataForm['status'] = 0;
+                frm.dataForm['money_received'] = !!$('#money-received').is(':checked');
+                let tbProduct = $('#dtbProduct');
+                let cost_list = []
+                tbProduct.find('tbody tr').each(function () {
+                    cost_list.push({
+                        'advance_payment_cost': $(this).find('.row-expense').data('id'),
+                        'expense_name': $(this).find('.row-expense').text(),
+                        'expense_type': $(this).find('.row-expense-type').data('id'),
+                        'remain_value': parseFloat($(this).find('span.mask-money').attr('data-init-money')),
+                        'return_value': $(this).find('input.mask-money').valCurrency(),
                     })
-                    frm.dataForm['cost'] = cost_list;
-                    frm.dataForm['return_total'] = $('#total-value').attr('data-init-money');
+                })
+                frm.dataForm['cost'] = cost_list;
+                frm.dataForm['return_total'] = $('#total-value').attr('data-init-money');
 
-                    frm.dataForm['advance_payment'] = $('#chooseAdvancePayment').val();
-                    frm.dataForm['beneficiary'] = $('#chooseBeneficiary').val();
+                frm.dataForm['advance_payment'] = $('#chooseAdvancePayment').val();
+                frm.dataForm['beneficiary'] = $('#chooseBeneficiary').val();
 
-                    $.fn.callAjax2({
-                        'url': frm.dataUrl,
-                        'method': frm.dataMethod,
-                        'data': frm.dataForm,
-                    }).then(
-                        (resp) => {
-                            let data = $.fn.switcherResp(resp);
-                            if (data) {
-                                $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
-                                $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
-                            }
-                        },
-                        (errs) => {
-                            $.fn.notifyB({description: errs.data.errors}, 'failure');
+                $.fn.callAjax2({
+                    'url': frm.dataUrl,
+                    'method': frm.dataMethod,
+                    'data': frm.dataForm,
+                }).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
+                            $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
                         }
-                    )
-                }
-            })
+                    },
+                    (errs) => {
+                        $.fn.notifyB({description: errs.data.errors}, 'failure');
+                    }
+                )
+            }
+        })
     })
 })

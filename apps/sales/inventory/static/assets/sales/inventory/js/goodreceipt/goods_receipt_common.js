@@ -306,20 +306,19 @@ class GRLoadDataHandle {
                                             if (dataPOProduct?.['id'] === data_product?.['purchase_order_product_id']) {
                                                 dataPOProduct['quantity_import'] = data_product?.['quantity_import'];
                                                 // If PO have PR
-                                                for (let dataPR of data_product?.['purchase_request_products_data']) {
-                                                    dataPR['purchase_order_product_id'] = data_product?.['purchase_order_product_id'];
-                                                    dataPR['id'] = dataPR?.['purchase_request_product']?.['id'];
-                                                    for (let dataPRProduct of dataPOProduct?.['purchase_request_products_data']) {
-                                                        if (dataPRProduct?.['purchase_request_product']?.['id'] === dataPR['id']) {
-                                                            dataPR['quantity_order'] = dataPRProduct?.['quantity_order'];
+                                                for (let dataPRProduct of dataPOProduct?.['purchase_request_products_data']) {
+                                                    dataPRProduct['id'] = dataPRProduct?.['purchase_request_product']?.['id'];
+                                                    for (let dataPR of data_product?.['purchase_request_products_data']) {
+                                                        if (dataPRProduct['id'] === dataPR?.['purchase_request_product']?.['id']) {
+                                                            dataPRProduct['quantity_import'] = dataPR?.['quantity_import'];
+                                                            for (let dataWarehouse of dataPR?.['warehouse_data']) {
+                                                                dataWarehouse['purchase_request_product_id'] = dataPR?.['purchase_request_product']?.['id'];
+                                                                GRLoadDataHandle.loadDetailWHLotSerial(dataWarehouse);
+                                                            }
+                                                            dataPRProduct['warehouse_data'] = dataPR?.['warehouse_data'];
                                                         }
                                                     }
-                                                    for (let dataWarehouse of dataPR?.['warehouse_data']) {
-                                                        dataWarehouse['purchase_request_product_id'] = dataPR?.['purchase_request_product']?.['id'];
-                                                        GRLoadDataHandle.loadDetailWHLotSerial(dataWarehouse);
-                                                    }
                                                 }
-                                                dataPOProduct['purchase_request_products_data'] = data_product?.['purchase_request_products_data'];
                                                 // If PO doesn't have PR
                                                 for (let dataWarehouse of data_product?.['warehouse_data']) {
                                                     dataWarehouse['purchase_order_product_id'] = data_product?.['purchase_order_product_id'];
@@ -341,6 +340,35 @@ class GRLoadDataHandle {
             )
         }
         return true;
+    };
+
+    static loadCheckPOProduct(ele) {
+        let row = ele.closest('tr');
+        let dataRow = JSON.parse($(ele).attr('data-row'));
+        let is_checked = false;
+        if (ele.checked === true) {
+            is_checked = true;
+        }
+        for (let eleCheck of GRDataTableHandle.tablePOProduct[0].querySelectorAll('.table-row-checkbox')) {
+            eleCheck.checked = false;
+            let row = eleCheck.closest('tr');
+            $(row).css('background-color', '#fff');
+        }
+        //
+        GRStoreDataHandle.storeDataAll();
+        GRDataTableHandle.tablePR.DataTable().clear().draw();
+        if (is_checked === true) {
+            ele.checked = true;
+            if (dataRow?.['purchase_request_products_data'].length > 0) { // If PO have PR
+                GRDataTableHandle.tablePR.DataTable().rows.add(dataRow?.['purchase_request_products_data']).draw();
+                $('#scroll-table-pr')[0].removeAttribute('hidden');
+            } else { // If PO doesn't have PR
+                GRLoadDataHandle.loadModalWareHouse(JSON.parse(ele.getAttribute('data-row')));
+            }
+            $(row).css('background-color', '#ebfcf5');
+        } else {
+            $(row).css('background-color', '#fff');
+        }
     };
 
     static loadModalWareHouse(dataStore, is_has_pr = false) {
@@ -428,7 +456,6 @@ class GRLoadDataHandle {
         } else if (is_serial === true) {
             $('#table-good-receipt-manage-serial-area')[0].removeAttribute('hidden');
             $('#table-good-receipt-manage-lot-area')[0].setAttribute('hidden', 'true');
-            // GRLoadDataHandle.loadNewRowsSerial();
         }
     };
 
@@ -463,51 +490,30 @@ class GRLoadDataHandle {
         let eleWHDataRaw = GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked')?.getAttribute('data-row');
         if (eleWHDataRaw) {
             let eleWHData = JSON.parse(eleWHDataRaw);
-            // if (eleWHData?.['serial_data']) {
-            //     GRDataTableHandle.tableSerial.DataTable().rows.add(eleWHData?.['serial_data']).draw();
-            // } else {}
-
-            let serial_store_length = 0;
             if (eleWHData?.['serial_data']) {
                 if (eleWHData?.['serial_data'].length > 0) {
-                    serial_store_length = eleWHData?.['serial_data'].length;
                     GRDataTableHandle.tableSerial.DataTable().rows.add(eleWHData?.['serial_data']).draw();
                 }
             }
-            let elePRCheckedQuantity = parseFloat(GRDataTableHandle.tablePR[0].querySelector('.table-row-checkbox:checked').closest('tr').querySelector('.table-row-quantity').innerHTML);
-            for (let i = 0; i < (elePRCheckedQuantity - serial_store_length); i++) {
-                let data = {
-                    'warehouse_id': eleWHData?.['id'],
-                    'vendor_serial_number': '',
-                    'serial_number': '',
-                    'expire_date': '',
-                    'manufacture_date': '',
-                    'warranty_start': '',
-                    'warranty_end': '',
-                }
-                let newRow = GRDataTableHandle.tableSerial.DataTable().row.add(data).draw().node();
-                GRLoadDataHandle.loadLotSerialDatePicker(newRow);
-                $(newRow.querySelector('.table-row-warranty-start')).daterangepicker({
-                    minYear: 1901,
-                    singleDatePicker: true,
-                    timePicker: true,
-                    showDropdowns: true,
-                    locale: {
-                        format: 'DD/MM/YYYY'
-                    }
-                });
-                $(newRow.querySelector('.table-row-warranty-start')).val(null).trigger('change');
-                $(newRow.querySelector('.table-row-warranty-end')).daterangepicker({
-                    minYear: 1901,
-                    singleDatePicker: true,
-                    timePicker: true,
-                    showDropdowns: true,
-                    locale: {
-                        format: 'DD/MM/YYYY'
-                    }
-                });
-                $(newRow.querySelector('.table-row-warranty-end')).val(null).trigger('change');
+        }
+    };
+
+    static loadAddRowSerial() {
+        let eleWHDataRaw = GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked')?.getAttribute('data-row');
+        if (eleWHDataRaw) {
+            let eleWHData = JSON.parse(eleWHDataRaw);
+            let $table = GRDataTableHandle.tableSerial;
+            let data = {
+                'warehouse_id': eleWHData?.['id'],
+                'vendor_serial_number': '',
+                'serial_number': '',
+                'expire_date': '',
+                'manufacture_date': '',
+                'warranty_start': '',
+                'warranty_end': '',
             }
+            let newRow = $table.DataTable().row.add(data).draw().node();
+            GRLoadDataHandle.loadLotSerialDatePicker(newRow);
         }
     };
 
@@ -590,26 +596,55 @@ class GRLoadDataHandle {
     };
 
     static loadLotSerialDatePicker(newRow) {
-        $(newRow.querySelector('.table-row-expire-date')).daterangepicker({
-            minYear: 1901,
-            singleDatePicker: true,
-            timePicker: true,
-            showDropdowns: true,
-            locale: {
-                format: 'DD/MM/YYYY'
-            }
-        });
-        $(newRow.querySelector('.table-row-expire-date')).val(null).trigger('change');
-        $(newRow.querySelector('.table-row-manufacture-date')).daterangepicker({
-            minYear: 1901,
-            singleDatePicker: true,
-            timePicker: true,
-            showDropdowns: true,
-            locale: {
-                format: 'DD/MM/YYYY'
-            }
-        });
-        $(newRow.querySelector('.table-row-manufacture-date')).val(null).trigger('change');
+        if (newRow.querySelector('.table-row-expire-date')) {
+            $(newRow.querySelector('.table-row-expire-date')).daterangepicker({
+                minYear: 1901,
+                singleDatePicker: true,
+                timePicker: true,
+                showDropdowns: true,
+                locale: {
+                    format: 'DD/MM/YYYY'
+                }
+            });
+            $(newRow.querySelector('.table-row-expire-date')).val(null).trigger('change');
+        }
+        if (newRow.querySelector('.table-row-manufacture-date')) {
+            $(newRow.querySelector('.table-row-manufacture-date')).daterangepicker({
+                minYear: 1901,
+                singleDatePicker: true,
+                timePicker: true,
+                showDropdowns: true,
+                locale: {
+                    format: 'DD/MM/YYYY'
+                }
+            });
+            $(newRow.querySelector('.table-row-manufacture-date')).val(null).trigger('change');
+        }
+
+        if (newRow.querySelector('.table-row-warranty-start')) {
+            $(newRow.querySelector('.table-row-warranty-start')).daterangepicker({
+                minYear: 1901,
+                singleDatePicker: true,
+                timePicker: true,
+                showDropdowns: true,
+                locale: {
+                    format: 'DD/MM/YYYY'
+                }
+            });
+            $(newRow.querySelector('.table-row-warranty-start')).val(null).trigger('change');
+        }
+        if (newRow.querySelector('.table-row-warranty-end')) {
+            $(newRow.querySelector('.table-row-warranty-end')).daterangepicker({
+                minYear: 1901,
+                singleDatePicker: true,
+                timePicker: true,
+                showDropdowns: true,
+                locale: {
+                    format: 'DD/MM/YYYY'
+                }
+            });
+            $(newRow.querySelector('.table-row-warranty-end')).val(null).trigger('change');
+        }
     };
 
     static loadLineDetail() {
@@ -1394,7 +1429,7 @@ class GRDataTableHandle {
                                     <input 
                                         type="text" 
                                         class="form-control mask-money table-row-price" 
-                                        value="${row.product_unit_price}"
+                                        value="${row?.['product_unit_price']}"
                                         data-return-type="number"
                                     >
                                     </div>`;
@@ -1405,12 +1440,12 @@ class GRDataTableHandle {
                     render: (data, type, row) => {
                         return `<div class="row subtotal-area">
                                     <div class="card card-sm">
-                                        <span class="card-body mask-money table-row-subtotal" data-init-money="${parseFloat(row.product_subtotal_price)}"></span>
+                                        <span class="card-body mask-money table-row-subtotal" data-init-money="${parseFloat(row?.['product_subtotal_price'])}"></span>
                                     </div>
                                     <input
                                         type="text"
                                         class="form-control table-row-subtotal-raw"
-                                        value="${row.product_subtotal_price}"
+                                        value="${row?.['product_subtotal_price']}"
                                         hidden
                                     >
                                 </div>`;
@@ -1551,12 +1586,12 @@ class GRStoreDataHandle {
                 let quantityImport = parseFloat(row.querySelector('.table-row-import').innerHTML);
                 let dataRowRaw = row.querySelector('.table-row-checkbox')?.getAttribute('data-row');
                 if (dataRowRaw) {
-                    if (quantityImport > 0) {
+                    // if (quantityImport > 0) {
                         let dataRow = JSON.parse(dataRowRaw);
                         dataRow['quantity_import'] = quantityImport;
                         POProductID = dataRow?.['purchase_order_product_id'];
                         new_data.push(dataRow);
-                    }
+                    // }
                 }
             }
             if (POProductID) {
@@ -1747,6 +1782,7 @@ class GRSubmitHandle {
                                 dataRow['uom'] = dataRow?.['uom']?.['id']
                                 dataRow['tax'] = dataRow?.['tax']?.['id']
                                 // If PO have PR
+                                let pr_product_submit_list = [];
                                 for (let pr_product of dataRow?.['purchase_request_products_data'] ? dataRow?.['purchase_request_products_data'] : []) {
                                     let field_list = [
                                         'purchase_request_product',
@@ -1754,6 +1790,12 @@ class GRSubmitHandle {
                                         'warehouse_data',
                                     ]
                                     filterFieldList(field_list, pr_product);
+                                    if (pr_product?.['quantity_import'] > 0) {
+                                        pr_product_submit_list.push(pr_product);
+                                    }
+                                }
+                                dataRow['purchase_request_products_data'] = pr_product_submit_list;
+                                for (let pr_product of dataRow?.['purchase_request_products_data'] ? dataRow?.['purchase_request_products_data'] : []) {
                                     pr_product['purchase_request_product'] = pr_product?.['purchase_request_product']?.['id']
                                     GRSubmitHandle.setupDataWHLotSerial(pr_product);
                                 }

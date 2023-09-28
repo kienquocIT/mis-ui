@@ -552,7 +552,6 @@ class POLoadDataHandle {
     };
 
     static loadTableProductNoPurchaseRequest() {
-        POLoadDataHandle.loadDataWhenClearPR(true);
         let tablePurchaseOrderProductRequest = $('#datable-purchase-order-product-request');
         let tablePurchaseOrderProductAdd = $('#datable-purchase-order-product-add');
         let order = 1;

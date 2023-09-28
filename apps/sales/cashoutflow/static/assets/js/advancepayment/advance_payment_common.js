@@ -7,6 +7,8 @@ let APTypeEle = $('#type-select-box')
 let supplierEle = $('#supplier-select-box')
 let tableLineDetail = $('#tab_line_detail_datatable')
 let money_gave = $('#money-gave')
+let btn_sale_code_type = $('#btn-change-sale-code-type')
+let sale_code_loading_span = $('#sale-code-loading-span')
 let OPP_LIST = [];
 let QUO_LIST = [];
 let SO_LIST = [];
@@ -28,14 +30,11 @@ saleCodeTypeEle.on('change', function () {
     plan_dtb.DataTable().clear().destroy();
     plan_dtb.prop('hidden', true);
     $('#notify-none-sale-code').prop('hidden', false);
-    let btn_sale_code_type = $('#btn-change-sale-code-type');
     if ($(this).val() === '0') {
-        getSaleCode();
         btn_sale_code_type.text('Sale');
         $('#sale-code-label-id').addClass('required');
-        saleCodeEle.prop('disabled', false);
-        APBeneficiaryEle.html('');
-        $('#beneficiary-detail-span').prop('hidden', true);
+        sale_code_loading_span.attr('hidden', false);
+        getSaleCode();
     }
     else if ($(this).val() === '2') {
         btn_sale_code_type.text('Non-sale');
@@ -180,6 +179,11 @@ function getSaleCode() {
             }
         }
         APLoadSaleCode([{}].concat(sale_code_list));
+
+        saleCodeEle.prop('disabled', false);
+        APBeneficiaryEle.html('');
+        $('#beneficiary-detail-span').prop('hidden', true);
+        sale_code_loading_span.attr('hidden', true);
     }).catch((error) => {
         console.log(error)
         $.fn.notifyB({description: "Load Sale Code Failed!"}, 'failure');
@@ -882,7 +886,6 @@ function LoadDetailAP(option) {
                 plan_dtb.DataTable().clear().destroy();
                 plan_dtb.prop('hidden', true);
                 $('#notify-none-sale-code').prop('hidden', false);
-                let btn_sale_code_type = $('#btn-change-sale-code-type');
                 if (data.sale_code_type === 0) {
                     $("#radio-sale").prop("checked", true);
                     btn_sale_code_type.text('Sale');

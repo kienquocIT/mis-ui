@@ -73,6 +73,11 @@
     margin-left: 100px;
 }
 
+.modal-fullscreen.modal-fullscreen-custom {
+    width: 97vw;
+    height: 90%;
+}
+
 .inline-elements {
     display: inline-block;
 }

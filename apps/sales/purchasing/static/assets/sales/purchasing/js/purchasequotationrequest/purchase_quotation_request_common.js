@@ -6,6 +6,7 @@ let PRProductsForMergeTable = $('#table-select-purchase-request-products-for-mer
 let PQRProductsSelectedTable = $('#table-purchase-quotation-request-products-selected')
 let PURCHASE_REQUEST_LIST = [];
 let TAX_LIST = [];
+let UOM_LIST = [];
 
 PQRSelectBoxEle.prop('disabled', true);
 
@@ -30,6 +31,19 @@ async function LoadTaxList() {
             if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('tax_list')) {
                 TAX_LIST = data?.['tax_list'];
                 return data?.['tax_list'];
+            }
+            return [];
+        }
+    })
+}
+
+async function LoadUoMList() {
+    await $.fn.callAjax(PQRProductsSelectedTable.attr('data-url-uom'), 'GET').then((resp) => {
+        let data = $.fn.switcherResp(resp);
+        if (data) {
+            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('unit_of_measure')) {
+                UOM_LIST = data?.['unit_of_measure'];
+                return data?.['unit_of_measure'];
             }
             return [];
         }
@@ -134,17 +148,12 @@ function LoadPurchaseRequestProductsTable() {
     $('.form-check-purchase-request:checked').each(function () {
         PR_code_badge_style.push($(this).closest('tr').find('.pr-code-span').attr('class'))
         let purchase_request_get = $(this).attr('id');
-        console.log(purchase_request_get)
-        console.log(PURCHASE_REQUEST_LIST.filter(function(element) {
-                return element.id === purchase_request_get
-            }))
         purchase_request_products_data = purchase_request_products_data.concat(
             PURCHASE_REQUEST_LIST.filter(function(element) {
                 return element.id === purchase_request_get
             })[0].product_list
         )
     })
-    console.log(purchase_request_products_data)
     let last_purchase_request_code = '';
     let style_order = -1;
     PRProductsTable.DataTable().clear().destroy();
@@ -157,7 +166,7 @@ function LoadPurchaseRequestProductsTable() {
                 data: '',
                 className: 'wrap-text w-10',
                 render: (data, type, row) => {
-                    return `<input id="${row.id}" data-title="${row.title}"data-uom-id="${row.uom.id}" data-uom-title="${row.uom.title}" data-quantity="${row.quantity}" data-pr-unit-price="${row.product_unit_price}" data-tax-id="${row.tax.id}" data-tax-value="${row.tax.value}" data-tax-code="${row.tax.code}" data-pr-code="${row?.['purchase_request_code']}" type="checkbox" class="form-check-purchase-request-products">`;
+                    return `<input id="${row.id}" data-title="${row.title}" data-uom-group-id="${row.uom_group.id}" data-uom-id="${row.uom.id}" data-uom-title="${row.uom.title}" data-quantity="${row.quantity}" data-pr-unit-price="${row.product_unit_price}" data-tax-id="${row.tax.id}" data-tax-value="${row.tax.value}" data-tax-code="${row.tax.code}" data-pr-code="${row?.['purchase_request_code']}" type="checkbox" class="form-check-purchase-request-products">`;
                 }
             },
             {
@@ -238,6 +247,7 @@ function LoadPurchaseRequestProductsTableForMerge(product_id_list) {
                 "id": temp[0].id,
                 "title": temp[0].title,
                 "uom": Object.keys(smallestRatioElement.uom).length > 0 ? smallestRatioElement.uom : {},
+                "uom_group": temp[0].uom_group,
                 "quantity": sum_converted_item,
                 "purchase_request_code_list": pr_code_list,
                 "product_unit_price": smallestRatioElement.product_unit_price,
@@ -246,7 +256,7 @@ function LoadPurchaseRequestProductsTableForMerge(product_id_list) {
         )
     }
 
-    PRProductsForMergeTable.DataTable().destroy();
+    PRProductsForMergeTable.DataTable().clear().destroy();
     PRProductsForMergeTable.DataTableDefault({
         paging: false,
         dom: "<'row mt-3 miner-group'>" + "<'row mt-3'<'col-sm-12'tr>>",
@@ -256,7 +266,7 @@ function LoadPurchaseRequestProductsTableForMerge(product_id_list) {
                 data: '',
                 className: 'wrap-text w-10',
                 render: (data, type, row) => {
-                    return `<input checked id="${row.id}" data-title="${row.title}" data-uom-id="${row.uom.id}" data-uom-title="${row.uom.title}" data-quantity="${row.quantity}" data-pr-unit-price="${row.product_unit_price}" data-tax-id="${row.tax.id}" data-tax-value="${row.tax.value}" data-tax-code="${row.tax.code}" type="checkbox" class="form-check-purchase-request-products-for-merge">`;
+                    return `<input checked id="${row.id}" data-title="${row.title}" data-uom-group-id="${row.uom_group.id}" data-uom-id="${row.uom.id}" data-uom-title="${row.uom.title}" data-quantity="${row.quantity}" data-pr-unit-price="${row.product_unit_price}" data-tax-id="${row.tax.id}" data-tax-value="${row.tax.value}" data-tax-code="${row.tax.code}" type="checkbox" class="form-check-purchase-request-products-for-merge">`;
                 }
             },
             {
@@ -306,10 +316,7 @@ function calculate_price(table_tr) {
     let sum_tax_value = 0;
     let sum_price_after_tax_value = 0;
     table_tr.each(function () {
-        let quantity = $(this).find('.product-quantity').text();
-        if (quantity === '') {
-            quantity = $(this).find('.product-quantity').val();
-        }
+        let quantity = $(this).find('.product-quantity').val();
         let pr_unit_price = $(this).find('.pr-unit-price-input').attr('value');
         let tax_rate = parseFloat($(this).find('.product-tax-select-box option:selected').attr('data-rate'));
         let current_pre_tax_value = parseFloat(quantity) * parseFloat(pr_unit_price);
@@ -643,6 +650,7 @@ $(document).on("click", '#btn_create_new_purchase_quotation_request', function (
             'product_title': $(this).attr('data-title'),
             'uom_id': $(this).attr('data-uom-id'),
             'uom_title': $(this).attr('data-uom-title'),
+            'uom_group_id': $(this).attr('data-uom-group-id'),
             'quantity': $(this).attr('data-quantity'),
             'pr_unit_price': $(this).attr('data-pr-unit-price'),
             'tax_id': $(this).attr('data-tax-id'),
@@ -686,16 +694,27 @@ $(document).on("click", '#btn_create_new_purchase_quotation_request', function (
             },
             {
                 data: 'uom',
-                className: 'wrap-text w-10 text-center',
+                className: 'wrap-text w-10',
                 render: (data, type, row) => {
-                    return `<span class="product-uom" data-product-uom-id="${row.uom_id}">${row.uom_title}</span>`;
+                    let html = ``;
+                    html += `<option value=""></option>`;
+                    for (let i = 0; i < UOM_LIST.length; i++) {
+                        if (UOM_LIST[i].group.id === row.uom_group_id) {
+                            if (UOM_LIST[i].id === row.uom_id) {
+                                html += `<option selected value="${UOM_LIST[i].id}">${UOM_LIST[i].title}</option>`;
+                            } else {
+                                html += `<option value="${UOM_LIST[i].id}">${UOM_LIST[i].title}</option>`;
+                            }
+                        }
+                    }
+                    return `<select class="form-select product-uom-select-box" data-method="GET">` + html + `</select>`;
                 }
             },
             {
                 data: 'quantity',
-                className: 'wrap-text w-10 text-center',
+                className: 'wrap-text w-10',
                 render: (data, type, row) => {
-                    return `<span class="product-quantity">${row.quantity}</span>`;
+                    return `<input class="form-control product-quantity" value="${row.quantity}">`;
                 }
             },
             {
@@ -785,10 +804,7 @@ $(document).on("click", '#btn-show-modal', function () {
 })
 
 $(document).on("change", '.pr-unit-price-input', function () {
-    let quantity = $(this).closest('tr').find('.product-quantity').text();
-    if (quantity === '') {
-        quantity = $(this).closest('tr').find('.product-quantity').val();
-    }
+    let quantity = $(this).closest('tr').find('.product-quantity').val();
     let pr_unit_price = $(this).closest('tr').find('.pr-unit-price-input').attr('value');
     let new_sub_total_price = parseFloat(pr_unit_price) * parseFloat(quantity);
     $(this).closest('tr').find('.pr-subtotal-price-input').attr('data-init-money', new_sub_total_price)
@@ -797,10 +813,7 @@ $(document).on("change", '.pr-unit-price-input', function () {
 })
 
 $(document).on("change", '.product-tax-select-box', function () {
-    let quantity = $(this).closest('tr').find('.product-quantity').text();
-    if (quantity === '') {
-        quantity = $(this).closest('tr').find('.product-quantity').val();
-    }
+    let quantity = $(this).closest('tr').find('.product-quantity').val();
     let pr_unit_price = $(this).closest('tr').find('.pr-unit-price-input').attr('value');
     let new_sub_total_price = parseFloat(pr_unit_price) * parseFloat(quantity);
     $(this).closest('tr').find('.pr-subtotal-price-input').attr('data-init-money', new_sub_total_price)
@@ -809,10 +822,7 @@ $(document).on("change", '.product-tax-select-box', function () {
 })
 
 $(document).on("change", '.product-quantity', function () {
-    let quantity = $(this).closest('tr').find('.product-quantity').text();
-    if (quantity === '') {
-        quantity = $(this).closest('tr').find('.product-quantity').val();
-    }
+    let quantity = $(this).closest('tr').find('.product-quantity').val();
     let pr_unit_price = $(this).closest('tr').find('.pr-unit-price-input').attr('value');
     let new_sub_total_price = parseFloat(pr_unit_price) * parseFloat(quantity);
     $(this).closest('tr').find('.pr-subtotal-price-input').attr('data-init-money', new_sub_total_price)
@@ -832,8 +842,8 @@ class PQRHandle {
         frm.dataForm['products_selected'] = []
         $('#table-purchase-quotation-request-products-selected tbody tr').each(function () {
             let product_id = $(this).find('.product-title').attr('data-product-id');
-            let product_uom_id = $(this).find('.product-uom').attr('data-product-uom-id');
-            let product_quantity =  $(this).find('.product-quantity').text();
+            let product_uom_id = $(this).find('.product-uom-select-box').val();
+            let product_quantity = $(this).find('.product-quantity').val();
             let product_unit_price = $(this).find('.pr-unit-price-input').attr('value');
             let product_subtotal_price = $(this).find('.pr-subtotal-price-input').attr('data-init-money');
             if (product_id !== '' && product_uom_id !== '' && product_quantity !== '' && product_unit_price !== '' && product_subtotal_price !== '') {

@@ -239,7 +239,11 @@ $(function () {
                 GRDataTableHandle.tableLineDetailIA.DataTable().rows.add(dataSelected?.['inventory_adjustment_product']).draw();
                 GRLoadDataHandle.loadDataRowTable(GRDataTableHandle.tableLineDetailIA);
             }
+        });
 
+        GRDataTableHandle.tableLineDetailIA.on('change', '.table-row-price', function () {
+            let row = this.closest('tr');
+            GRCalculateHandle.calculateMain(GRDataTableHandle.tableLineDetailIA, row);
         });
 
 // SUBMIT FORM

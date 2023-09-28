@@ -1394,7 +1394,7 @@ class GRDataTableHandle {
                                     <input 
                                         type="text" 
                                         class="form-control mask-money table-row-price" 
-                                        value="${row.product_unit_price}"
+                                        value="${row?.['product_unit_price']}"
                                         data-return-type="number"
                                     >
                                     </div>`;
@@ -1405,12 +1405,12 @@ class GRDataTableHandle {
                     render: (data, type, row) => {
                         return `<div class="row subtotal-area">
                                     <div class="card card-sm">
-                                        <span class="card-body mask-money table-row-subtotal" data-init-money="${parseFloat(row.product_subtotal_price)}"></span>
+                                        <span class="card-body mask-money table-row-subtotal" data-init-money="${parseFloat(row?.['product_subtotal_price'])}"></span>
                                     </div>
                                     <input
                                         type="text"
                                         class="form-control table-row-subtotal-raw"
-                                        value="${row.product_subtotal_price}"
+                                        value="${row?.['product_subtotal_price']}"
                                         hidden
                                     >
                                 </div>`;

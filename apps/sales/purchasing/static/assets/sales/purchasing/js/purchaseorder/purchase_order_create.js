@@ -158,6 +158,7 @@ $(function () {
 
         // Action on click btn continue to add product
         $('#btn-continue-add-product').on('click', function() {
+            POLoadDataHandle.loadDataWhenClearPR(true);
             POLoadDataHandle.loadTableProductNoPurchaseRequest();
         });
 

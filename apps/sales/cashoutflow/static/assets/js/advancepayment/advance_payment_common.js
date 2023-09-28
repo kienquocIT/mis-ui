@@ -268,8 +268,15 @@ function APLoadSaleCode(sale_code) {
 
                                 let all_expense_items = [];
                                 for (let i = 0; i < results[0].length; i++) {
-                                    if (sale_code_selected_id_list['sale_order_linked_id'] === results[0][i]?.['sale_order_mapped']['id'] || sale_code_selected_id_list['quotation_linked_id'] === results[0][i]?.['quotation_mapped']['id'] || sale_code_selected_id_list['opportunity_linked_id'] === results[0][i]?.['opportunity_mapped']['id']) {
-                                        all_expense_items = all_expense_items.concat(results[0][i]?.['expense_items'])
+                                    let item = results[0][i];
+                                    let so_mapped_id = item?.['sale_order_mapped']['id'];
+                                    let quo_mapped_id = item?.['quotation_mapped']['id'];
+                                    let opp_mapped_id = item?.['opportunity_mapped']['id'];
+
+                                    if ((sale_code_selected_id_list['sale_order_linked_id'] === so_mapped_id && so_mapped_id !== undefined) ||
+                                        (sale_code_selected_id_list['quotation_linked_id'] === quo_mapped_id && quo_mapped_id !== undefined) ||
+                                        (sale_code_selected_id_list['opportunity_linked_id'] === opp_mapped_id && opp_mapped_id !== undefined)) {
+                                        all_expense_items = all_expense_items.concat(item?.['expense_items']);
                                     }
                                 }
                                 if (sale_code_selected_id_list['sale_order_linked_id']) {
@@ -662,6 +669,9 @@ function loadSaleOrderExpensesPlan(filter_sale_order, ap_items_list, payment_val
 }
 
 function loadQuotationExpensesPlan(filter_quotation, ap_items_list, payment_value_list, returned_value_list) {
+    console.log(ap_items_list)
+    console.log(payment_value_list)
+    console.log(returned_value_list)
     let dtb = $('#tab_plan_datatable');
     if (filter_quotation !== '') {
         dtb.prop('hidden', false);
@@ -720,6 +730,7 @@ function loadQuotationExpensesPlan(filter_quotation, ap_items_list, payment_valu
                         let sum_AP_approved_list = ap_items_list.filter(function (element) {
                             return element.expense_type.id === result[i].expense_item.id;
                         })
+                        console.log(sum_AP_approved_list)
                         for (let k = 0; k < sum_AP_approved_list.length; k++) {
                             sum_AP_approved_value += sum_AP_approved_list[k]?.['expense_after_tax_price'];
                         }
@@ -950,8 +961,15 @@ function LoadDetailAP(option) {
                     Promise.all([call_ap_list]).then((results) => {
                         let all_expense_items = [];
                         for (let i = 0; i < results[0].length; i++) {
-                            if (sale_code_selected_id_list['sale_order_linked_id'] === results[0][i]?.['sale_order_mapped']['id'] || sale_code_selected_id_list['quotation_linked_id'] === results[0][i]?.['quotation_mapped']['id'] || sale_code_selected_id_list['opportunity_linked_id'] === results[0][i]?.['opportunity_mapped']['id']) {
-                                all_expense_items = all_expense_items.concat(results[0][i]?.['expense_items'])
+                            let item = results[0][i];
+                            let so_mapped_id = item?.['sale_order_mapped']['id'];
+                            let quo_mapped_id = item?.['quotation_mapped']['id'];
+                            let opp_mapped_id = item?.['opportunity_mapped']['id'];
+
+                            if ((sale_code_selected_id_list['sale_order_linked_id'] === so_mapped_id && so_mapped_id !== undefined) ||
+                                (sale_code_selected_id_list['quotation_linked_id'] === quo_mapped_id && quo_mapped_id !== undefined) ||
+                                (sale_code_selected_id_list['opportunity_linked_id'] === opp_mapped_id && opp_mapped_id !== undefined)) {
+                                all_expense_items = all_expense_items.concat(item?.['expense_items']);
                             }
                         }
                         if (sale_code_selected_id_list['sale_order_linked_id']) {

@@ -1,5 +1,5 @@
 function loadDetailBeneficiary(id) {
-    let ele = $('[name="creator"]');
+    let ele = $('[name="employee_created"]');
     let frm = new SetupFormSubmit(ele);
     $.fn.callAjax2({
         'url': frm.getUrlDetail(id),
@@ -22,7 +22,7 @@ function loadDetailBeneficiary(id) {
 }
 
 function loadCreator(id) {
-    let ele = $('[name="creator"]');
+    let ele = $('[name="employee_created"]');
     let frm = new SetupFormSubmit(ele);
     if (id === null) {
         id = ele.attr('data-id')
@@ -67,19 +67,15 @@ function loadDetailAdvancePayment(id, type = 'create') {
                 let ele_beneficiary = $('#chooseBeneficiary');
                 ele_beneficiary.empty();
                 let sale_code_ele = $('[name="sale_code"]');
-                if (data?.['advance_payment_detail']?.['sale_order_mapped'].length > 0) {
-                    sale_code_ele.val(data?.['advance_payment_detail']?.['sale_order_mapped'][0].opportunity_linked.code);
-                } else if (data?.['advance_payment_detail']?.['quotation_mapped'].length > 0) {
-                    sale_code_ele.val(data?.['advance_payment_detail']?.['quotation_mapped'][0].opportunity_linked.code);
-                } else if (data?.['advance_payment_detail']?.['opportunity_mapped'].length > 0) {
-                    sale_code_ele.val(data?.['advance_payment_detail']?.['opportunity_mapped'][0].code);
-                } else {
+                if (data?.['advance_payment_detail']?.['sale_code_relate']?.['opportunity_linked'].hasOwnProperty('code')){
+                    sale_code_ele.val(data?.['advance_payment_detail']?.['sale_code_relate']?.['opportunity_linked'].code);
+                }
+                else {
                     sale_code_ele.val('');
                 }
                 ReturnAdvanceLoadPage.loadBeneficiary(ele_beneficiary, data?.['advance_payment_detail'].beneficiary)
                 loadDetailBeneficiary(data?.['advance_payment_detail'].beneficiary.id);
 
-                console.log(data?.['advance_payment_detail'])
                 if (type === 'create') {
                     loadCostTable(data?.['advance_payment_detail']?.['expense_items'])
                 }
@@ -141,61 +137,6 @@ function loadDataTableCost(data, is_detail = false) {
                         else{
                             return `<input class="mask-money form-control return-price" type="text" data-return-type="number" value="${value}">`
                         }
-                    }
-                },
-            ],
-        });
-    }
-}
-
-function loadDataTableProductPageDetailloadDataTableProductPageDetail(data, type_page = 'create') {
-    if (!$.fn.DataTable.isDataTable('#dtbProduct')) {
-        let $table = $('#dtbProduct')
-        $table.DataTableDefault({
-            rowIdx: true,
-            reloadCurrency: true,
-            data: data,
-            columns: [
-                {
-                    targets: 0,
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
-                        return ``
-                    }
-                },
-                {
-                    targets: 1,
-                    data: 'product',
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
-                        return `<span class="text-primary">${data.title}</span>`
-                    }
-                },
-                {
-                    data: 'product_type',
-                    targets: 2,
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
-                        return `<span>${data}</span>`
-                    }
-                },
-                {
-                    data: 'remain_total',
-                    targets: 3,
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
-                        return `<span class="mask-money" data-init-money="${data}"></span>`
-                    }
-                },
-                {
-                    data: 'return_price',
-                    targets: 4,
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
-                        if (type_page === 'detail') {
-                            return `<input class="mask-money form-control return-price" type="text" data-return-type="number" value="${data}" disabled>`
-                        } else
-                            return `<input class="mask-money form-control return-price" type="text" data-return-type="number" value="${data}">`
                     }
                 },
             ],
@@ -266,7 +207,7 @@ function loadDetail(id, frmDetail) {
             $('[name="title"]').val(return_advance_detail.title);
             ReturnAdvanceLoadPage.loadAdvancePayment(choose_AP_ele, return_advance_detail.advance_payment, {});
             loadDetailAdvancePayment(return_advance_detail.advance_payment.id, 'detail');
-            loadCreator(return_advance_detail.creator);
+            loadCreator(return_advance_detail.employee_created);
             $('[name="date_created"]').val(return_advance_detail.date_created.split(" ")[0]);
             $('[name="method"]').val(return_advance_detail.method);
             loadCostTable(return_advance_detail.cost);

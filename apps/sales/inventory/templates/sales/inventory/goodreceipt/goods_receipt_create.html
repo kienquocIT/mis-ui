@@ -432,7 +432,7 @@
             data-view-detail-info="{% trans 'View detail' %}"
             data-more-information="{% trans 'More information' %}"
             data-validate-import="{% trans 'Quantity import must be less than purchase order quantity' %}"
-            data-validate-manage-lot="{% trans 'Must select one warehouse' %}"
+            data-validate-no-warehouse="{% trans 'Must select one warehouse' %}"
         >
         <input
             type="hidden"
@@ -470,14 +470,14 @@
 
 
         <div class="modal fade mt-5" id="productModalCenter" tabindex="-1" role="dialog" aria-labelledby="productModalCenter" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-xlg-custom" role="document">
+            <div class="modal-dialog modal-dialog-centered modal-fullscreen modal-fullscreen-custom ml-5 mt-5" role="document">
                 <div class="modal-content">
                     <div class="modal-body">
-                        <div class="row mb-2"><h6>{% trans 'Product list' %}</h6></div>
+                        <div class="row ml-2"><h6>{% trans 'Product list' %}</h6></div>
                         <div class="row">
                             <div class="col-6">
                                 <div class="row mb-2">
-                                    <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-250p position-relative overflow-y-scroll">
+                                    <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-350p position-relative overflow-y-scroll">
                                         <table
                                             id="datable-good-receipt-po-product"
                                             class="table nowrap w-100"
@@ -501,7 +501,7 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-250p position-relative overflow-y-scroll" id="scroll-table-pr" hidden>
+                                    <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-350p position-relative overflow-y-scroll" id="scroll-table-pr" hidden>
                                         <table
                                             id="datable-good-receipt-purchase-request"
                                             class="table nowrap w-100"
@@ -527,7 +527,7 @@
                             </div>
                             <div class="col-6">
                                 <div class="row mb-2">
-                                    <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-250p position-relative overflow-y-scroll">
+                                    <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-350p position-relative overflow-y-scroll">
                                         <table
                                             id="datable-good-receipt-warehouse"
                                             class="table nowrap w-100"
@@ -575,7 +575,7 @@
                                             </button>
                                         </div>
                                     </div>
-                                    <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-250p position-relative overflow-y-scroll" id="scroll-table-lot-serial" hidden>
+                                    <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-350p position-relative overflow-y-scroll" id="scroll-table-lot-serial" hidden>
                                         <button
                                             type="button"
                                             class="btn btn-success bg-green-light-5 w-40"
@@ -595,8 +595,8 @@
                                             >
                                                 <thead>
                                                 <tr>
-                                                    <th>{% trans 'Lot number' %}</th>
-                                                    <th>{% trans 'Quantity' %}</th>
+                                                    <th>{% trans 'Lot number' %}<span class="required"></span></th>
+                                                    <th>{% trans 'Quantity' %}<span class="required"></span></th>
                                                     <th>{% trans 'Expiration date' %}</th>
                                                     <th>{% trans 'Manufacturing date' %}</th>
                                                 </tr>
@@ -619,8 +619,8 @@
                                             >
                                                 <thead>
                                                 <tr>
-                                                    <th>{% trans 'Venedor serial no.' %}</th>
-                                                    <th>{% trans 'Serial no.' %}</th>
+                                                    <th>{% trans 'Venedor serial no.' %}<span class="required"></span></th>
+                                                    <th>{% trans 'Serial no.' %}<span class="required"></span></th>
                                                     <th>{% trans 'Expiration date' %}</th>
                                                     <th>{% trans 'Mfr date' %}</th>
                                                     <th>{% trans 'Warranty start' %}</th>
@@ -630,6 +630,10 @@
                                                 <tbody>
                                                 </tbody>
                                             </table>
+
+                                            <button type="button" class="btn btn-link btn-animated" id="btn-add-manage-serial">
+                                                <span><span class="icon"><span class="feather-icon"><i class="fa-regular fa-square-plus"></i></span></span><span>{% trans 'Add new' %}</span></span>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>

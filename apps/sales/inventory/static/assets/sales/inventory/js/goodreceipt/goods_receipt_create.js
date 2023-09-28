@@ -69,32 +69,7 @@ $(function () {
         });
 
         GRDataTableHandle.tablePOProduct.on('click', '.table-row-checkbox', function () {
-            let dataRow = JSON.parse($(this).attr('data-row'));
-            let is_checked = false;
-            if (this.checked === true) {
-                is_checked = true;
-            }
-            for (let eleCheck of GRDataTableHandle.tablePOProduct[0].querySelectorAll('.table-row-checkbox')) {
-                eleCheck.checked = false;
-                let row = eleCheck.closest('tr');
-                $(row).css('background-color', '#fff');
-            }
-            //
-            GRStoreDataHandle.storeDataAll();
-            let row = this.closest('tr');
-            GRDataTableHandle.tablePR.DataTable().clear().draw();
-            if (is_checked === true) {
-                this.checked = true;
-                if (dataRow?.['purchase_request_products_data'].length > 0) { // If PO have PR
-                    GRDataTableHandle.tablePR.DataTable().rows.add(dataRow?.['purchase_request_products_data']).draw();
-                    $('#scroll-table-pr')[0].removeAttribute('hidden');
-                } else { // If PO doesn't have PR
-                    GRLoadDataHandle.loadModalWareHouse(JSON.parse(this.getAttribute('data-row')));
-                }
-                $(row).css('background-color', '#ebfcf5');
-            } else {
-                $(row).css('background-color', '#fff');
-            }
+            GRLoadDataHandle.loadCheckPOProduct(this);
         });
 
         GRDataTableHandle.tablePR.on('click', '.table-row-checkbox', function () {
@@ -116,7 +91,7 @@ $(function () {
             GRDataTableHandle.tableWH.DataTable().clear().draw();
             if (is_checked === true) {
                 this.checked = true;
-                GRLoadDataHandle.loadModalWareHouse(JSON.parse(this.getAttribute('data-row')));
+                GRLoadDataHandle.loadModalWareHouse(JSON.parse(this.getAttribute('data-row')), true);
                 $(row).css('background-color', '#ebfcf5');
             } else {
                 $(row).css('background-color', '');

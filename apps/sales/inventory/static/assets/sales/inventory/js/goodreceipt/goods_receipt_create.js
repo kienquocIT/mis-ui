@@ -11,6 +11,7 @@ $(function () {
         // let btnSerial = $('#btn-manage-by-serial');
         // let btnNoLotSerial = $('#btn-no-manage-by-lot-serial');
         let btnAddLot = $('#btn-add-manage-lot');
+        let btnAddSerial = $('#btn-add-manage-serial');
 
         // Load init
         if (formSubmit.attr('data-method') === 'POST') {
@@ -153,7 +154,7 @@ $(function () {
         //     if (GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked')) {
         //         GRLoadDataHandle.loadAreaLotSerial(true, false);
         //     } else {
-        //         $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-validate-manage-lot')}, 'failure');
+        //         $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-validate-no-warehouse')}, 'failure');
         //         return false
         //     }
         // });
@@ -162,7 +163,7 @@ $(function () {
         //     if (GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked')) {
         //         GRLoadDataHandle.loadAreaLotSerial(false, true);
         //     } else {
-        //         $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-validate-manage-lot')}, 'failure');
+        //         $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-validate-no-warehouse')}, 'failure');
         //         return false
         //     }
         // });
@@ -196,13 +197,22 @@ $(function () {
             if (GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked')) {
                 GRLoadDataHandle.loadAddRowLot();
             } else {
-                $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-validate-manage-lot')}, 'failure');
+                $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-validate-no-warehouse')}, 'failure');
                 return false
             }
         });
 
         GRDataTableHandle.tableLot.on('change', '.table-row-import', function () {
             GRLoadDataHandle.loadQuantityImport();
+        });
+
+        btnAddSerial.on('click', function () {
+            if (GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked')) {
+                GRLoadDataHandle.loadAddRowSerial();
+            } else {
+                $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-validate-no-warehouse')}, 'failure');
+                return false
+            }
         });
 
         GRDataTableHandle.tableSerial.on('change', '.table-row-serial-number', function () {

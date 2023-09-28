@@ -511,6 +511,25 @@ class GRLoadDataHandle {
         }
     };
 
+    static loadAddRowSerial() {
+        let eleWHDataRaw = GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked')?.getAttribute('data-row');
+        if (eleWHDataRaw) {
+            let eleWHData = JSON.parse(eleWHDataRaw);
+            let $table = GRDataTableHandle.tableSerial;
+            let data = {
+                'warehouse_id': eleWHData?.['id'],
+                'vendor_serial_number': '',
+                'serial_number': '',
+                'expire_date': '',
+                'manufacture_date': '',
+                'warranty_start': '',
+                'warranty_end': '',
+            }
+            let newRow = $table.DataTable().row.add(data).draw().node();
+            GRLoadDataHandle.loadLotSerialDatePicker(newRow);
+        }
+    };
+
     static loadQuantityImport() {
         let valuePROrder = parseFloat(GRDataTableHandle.tablePR[0]?.querySelector('.table-row-checkbox:checked')?.closest('tr')?.querySelector('.table-row-quantity').innerHTML);
         let valuePOOrder = parseFloat(GRDataTableHandle.tablePOProduct[0]?.querySelector('.table-row-checkbox:checked')?.closest('tr')?.querySelector('.table-row-quantity').innerHTML);

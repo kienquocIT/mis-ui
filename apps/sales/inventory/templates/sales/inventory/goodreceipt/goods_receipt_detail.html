@@ -428,7 +428,7 @@
             data-view-detail-info="{% trans 'View detail' %}"
             data-more-information="{% trans 'More information' %}"
             data-validate-import="{% trans 'Quantity import must be less than purchase order quantity' %}"
-            data-validate-manage-lot="{% trans 'Must select one warehouse' %}"
+            data-validate-no-warehouse="{% trans 'Must select one warehouse' %}"
         >
         <input
             type="hidden"
@@ -589,8 +589,8 @@
                                             >
                                                 <thead>
                                                 <tr>
-                                                    <th>{% trans 'Lot number' %}</th>
-                                                    <th>{% trans 'Quantity' %}</th>
+                                                    <th>{% trans 'Lot number' %}<span class="required"></span></th>
+                                                    <th>{% trans 'Quantity' %}<span class="required"></span></th>
                                                     <th>{% trans 'Expiration date' %}</th>
                                                     <th>{% trans 'Manufacturing date' %}</th>
                                                 </tr>
@@ -598,10 +598,6 @@
                                                 <tbody>
                                                 </tbody>
                                             </table>
-
-                                            <button type="button" class="btn btn-link btn-animated" id="btn-add-manage-lot">
-                                                <span><span class="icon"><span class="feather-icon"><i class="fa-regular fa-square-plus"></i></span></span><span>{% trans 'Add new' %}</span></span>
-                                            </button>
                                         </div>
 
                                         <div id="table-good-receipt-manage-serial-area" hidden>
@@ -613,8 +609,8 @@
                                             >
                                                 <thead>
                                                 <tr>
-                                                    <th>{% trans 'Venedor serial no.' %}</th>
-                                                    <th>{% trans 'Serial no.' %}</th>
+                                                    <th>{% trans 'Venedor serial no.' %}<span class="required"></span></th>
+                                                    <th>{% trans 'Serial no.' %}<span class="required"></span></th>
                                                     <th>{% trans 'Expiration date' %}</th>
                                                     <th>{% trans 'Mfr date' %}</th>
                                                     <th>{% trans 'Warranty start' %}</th>

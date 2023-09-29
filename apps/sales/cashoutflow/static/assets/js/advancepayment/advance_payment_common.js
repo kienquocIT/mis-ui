@@ -293,6 +293,20 @@ function APLoadSaleCode(sale_code) {
                             }
                         })
                 }
+                else {
+                    let check_is_so = SO_LIST.filter(function (element) {
+                        return element.id === sale_code_selected_id;
+                    })
+                    let check_is_quo = QUO_LIST.filter(function (element) {
+                        return element.id === sale_code_selected_id;
+                    })
+                    if (check_is_so.length > 0) {
+                        loadSaleOrderExpensesPlan(sale_code_selected_id)
+                    }
+                    if (check_is_quo.length > 0) {
+                        loadQuotationExpensesPlan(sale_code_selected_id)
+                    }
+                }
             }).catch((error) => {
                 console.log(error)
                 $.fn.notifyB({description: "Load Sale Code Failed!"}, 'failure');
@@ -522,7 +536,7 @@ function LoadBankAccount(data) {
     }
 }
 
-function loadSaleOrderExpensesPlan(filter_sale_order, ap_items_list, payment_value_list, returned_value_list) {
+function loadSaleOrderExpensesPlan(filter_sale_order, ap_items_list=[], payment_value_list=[], returned_value_list=[]) {
     let dtb = $('#tab_plan_datatable');
     if (filter_sale_order !== '') {
         dtb.prop('hidden', false);
@@ -671,7 +685,7 @@ function loadSaleOrderExpensesPlan(filter_sale_order, ap_items_list, payment_val
     });
 }
 
-function loadQuotationExpensesPlan(filter_quotation, ap_items_list, payment_value_list, returned_value_list) {
+function loadQuotationExpensesPlan(filter_quotation, ap_items_list=[], payment_value_list=[], returned_value_list=[]) {
     let dtb = $('#tab_plan_datatable');
     if (filter_quotation !== '') {
         dtb.prop('hidden', false);

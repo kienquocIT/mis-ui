@@ -243,10 +243,12 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     GOODS_ISSUE_LIST_PAGE = BreadcrumbChildren(_('Goods Issue'), 'GoodsIssueList')
 
     # E-Office
-    # Leave
+    #  Leave
     LEAVE_CONFIG = BreadcrumbChildren(
         _('Leave Config'), 'LeaveConfigDetail'
     )
+    # Working calendar
+    WORKING_CALENDAR_CONFIG = BreadcrumbChildren(_('Working calendar'), 'WorkingCalendarConfig')
 
 
 class BreadcrumbView:
@@ -644,7 +646,12 @@ class BreadcrumbView:
 
     # e-office Leave
     LEAVE_CONFIG_PAGE = [
+        BreadcrumbItem.HOME_PAGE,
         BreadcrumbItem.LEAVE_CONFIG
+    ]
+    WORKING_CALENDAR_CONFIG = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.WORKING_CALENDAR_CONFIG
     ]
 
     # Purchase request config

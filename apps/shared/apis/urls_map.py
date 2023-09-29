@@ -368,12 +368,17 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PURCHASE_REQUEST_CONFIG = StringUrl('purchasing/purchase-request/config')
 
     # e-Office
-    # leave
+    #  leave
     LEAVE_CONFIG = StringUrl('leave/config')
     LEAVE_CREATE = StringUrl('leave/leave-type/create')
     LEAVE_DETAIL = StringUrl('leave/leave-type/detail/{pk}')
 
-    # Goods transfer
+    #  Working calendar config
+    WORKING_CALENDAR_CONFIG = StringUrl('leave/working-calendar/config')
+    WORKING_CALENDAR_YEAR = StringUrl('leave/working-calendar/year')
+    WORKING_CALENDAR_HOLIDAY = StringUrl('leave/working-calendar/holiday')
+
+    #  Goods transfer
     GOODS_TRANSFER_LIST = StringUrl('inventory/goods-transfer/list')
     GOODS_TRANSFER_DETAIL = StringUrl('inventory/goods-transfer/{pk}')
 

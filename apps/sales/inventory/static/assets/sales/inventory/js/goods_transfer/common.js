@@ -5,14 +5,8 @@ class GoodsTransferLoadPage {
     static loadAgency(ele, data) {
         ele.initSelect2({
             data: data,
-            callbackDataResp(resp, keyResp) {
-                let list_result = []
-                resp.data[keyResp].map(function (item) {
-                    if (item.account_type.includes('Partner')) {
-                        list_result.push(item)
-                    }
-                })
-                return list_result
+            dataParams: {
+                'account_types_mapped__account_type_order': 2
             }
         })
     }

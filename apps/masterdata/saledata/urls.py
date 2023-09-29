@@ -16,9 +16,8 @@ from apps.masterdata.saledata.views.expense_item import ExpenseItemList, Expense
 from apps.masterdata.saledata.views.good_receipt import GoodReceiptList, GoodReceiptCreate, GoodReceiptListAPI, \
     GoodReceiptDetailAPI, GoodReceiptDetail, GoodReceiptEdit
 from apps.masterdata.saledata.views.product import (
-    ProductMasterDataList, ProductTypeListAPI,
-    ProductCategoryListAPI, ExpenseTypeListAPI, UnitOfMeasureListAPI, UnitOfMeasureGroupListAPI,
-    UnitOfMeasureDetailAPI, ProductTypeDetailAPI, ExpenseTypeDetailAPI, ProductCategoryDetailAPI,
+    ProductMasterDataList, ProductTypeListAPI, ProductCategoryListAPI, UnitOfMeasureListAPI,
+    UnitOfMeasureGroupListAPI, UnitOfMeasureDetailAPI, ProductTypeDetailAPI, ProductCategoryDetailAPI,
     UnitOfMeasureGroupDetailAPI, ProductList, ProductCreate, ProductListAPI, ProductDetailAPI, ProductDetail,
     ProductForSaleListAPI, ProductUpdate, UnitOfMeasureOfGroupLaborListAPI, WarehouseGetProductsListAPI
 )
@@ -103,11 +102,6 @@ urlpatterns = [
     path(
         'masterdata/product-category/api/<str:pk>', ProductCategoryDetailAPI.as_view(),
         name='ProductCategoryDetailAPI'
-    ),
-    path('masterdata/expense-type/list/api', ExpenseTypeListAPI.as_view(), name='ExpenseTypeListAPI'),
-    path(
-        'masterdata/expense-type/api/<str:pk>', ExpenseTypeDetailAPI.as_view(),
-        name='ExpenseTypeDetailAPI'
     ),
     path(
         'masterdata/unit-of-measure/list/api', UnitOfMeasureListAPI.as_view(), name='UnitOfMeasureListAPI'

@@ -7,14 +7,8 @@ class PurchaseRequestLoadPage {
     static loadSupplier(data) {
         this.supplierSelectEle.initSelect2({
             data: data,
-            callbackDataResp(resp, keyResp) {
-                let list_result = []
-                resp.data[keyResp].map(function (item) {
-                    if (item.account_type.includes('Supplier')) {
-                        list_result.push(item)
-                    }
-                })
-                return list_result
+            dataParams: {
+                'account_types_mapped__account_type_order': 1
             }
         }).on('change', function () {
             PurchaseRequestLoadPage.contactSelectEle.empty();

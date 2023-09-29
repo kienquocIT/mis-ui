@@ -67,9 +67,6 @@ $(document).ready(function () {
             case 'section-product-category':
                 loadProDuctCategory()
                 break;
-            case 'section-expense-type':
-                loadExpenseType()
-                break;
         }
         $(".lookup-data").hide()
         let id_tag = `#` + section
@@ -138,31 +135,6 @@ $(document).ready(function () {
                             let data = $.fn.switcherResp(resp);
                             if (data && resp.data.hasOwnProperty('product_category_list')) {
                                 return resp.data['product_category_list'] ? resp.data['product_category_list'] : []
-                            }
-                            throw Error('Call data raise errors.')
-                        },
-                    },
-                    columns: column_product_expense,
-                },
-            );
-        }
-    }
-
-    function loadExpenseType() {
-        if (!$.fn.DataTable.isDataTable('#datatable-expense-type-list')) {
-            let tbl = $('#datatable-expense-type-list');
-            let frm = new SetupFormSubmit(tbl);
-            tbl.DataTableDefault(
-                {
-                    useDataServer: true,
-                    rowIdx: true,
-                    ajax: {
-                        url: frm.dataUrl,
-                        type: frm.dataMethod,
-                        dataSrc: function (resp) {
-                            let data = $.fn.switcherResp(resp);
-                            if (data && resp.data.hasOwnProperty('expense_type_list')) {
-                                return resp.data['expense_type_list'] ? resp.data['expense_type_list'] : []
                             }
                             throw Error('Call data raise errors.')
                         },
@@ -405,8 +377,6 @@ $(document).ready(function () {
                 data_url = $('#form-create-product-and-expense').attr('data-url-product-type');
             } else if (lookup === 'section-product-category') {
                 data_url = $('#form-create-product-and-expense').attr('data-url-product-category');
-            } else if (lookup === 'section-expense-type') {
-                data_url = $('#form-create-product-and-expense').attr('data-url-expense-type');
             }
             $.fn.callAjax2({
                 'url': data_url,
@@ -422,8 +392,6 @@ $(document).ready(function () {
                             $('#datatable-product-type-list').DataTable().ajax.reload();
                         } else if (lookup === 'section-product-category') {
                             $('#datatable-product-category-list').DataTable().ajax.reload();
-                        } else if (lookup === 'section-expense-type') {
-                            $('#datatable-expense-type-list').DataTable().ajax.reload();
                         }
                     }
                 },
@@ -710,29 +678,6 @@ $(document).ready(function () {
         )
     })
 
-// load detail Expense Type
-    $(document).on('click', '#datatable-expense-type-list .btn-detail', function () {
-        let url = $('#form-edit-product-and-expense').attr('data-url-expense-type')
-        url_update = url.replace(0, $(this).attr('data-id'));
-        $('#modal-detail-product-and-expense h5').text('Edit Expense Type');
-        let url_detail = $(this).closest('table').attr('data-url-detail').replace(0, $(this).attr('data-id'))
-        $.fn.callAjax2({
-            'url': url_detail,
-            'method': 'GET',
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('expense_type')) {
-                        $('#inp-edit-name').val(data.expense_type.title);
-                        $('#inp-edit-description').val(data.expense_type.description);
-                    }
-                }
-            },
-            (errs) => {
-            }
-        )
-    })
 
 // load detail UoM Group
     $(document).on('click', '#datatable-unit-measure-group-list .btn-detail', function () {
@@ -782,8 +727,6 @@ $(document).ready(function () {
                             $('#datatable-product-type-list').DataTable().ajax.reload();
                         } else if (activeEle.attr('data-collapse') === 'section-product-category') {
                             $('#datatable-product-category-list').DataTable().ajax.reload();
-                        } else {
-                            $('#datatable-expense-type-list').DataTable().ajax.reload();
                         }
                     }
                 },

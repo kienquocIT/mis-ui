@@ -94,44 +94,6 @@ class ProductCategoryDetailAPI(APIView):
         return resp.auto_return(key_success='product_category')
 
 
-class ExpenseTypeListAPI(APIView):
-    permission_classes = [IsAuthenticated]
-
-    @mask_view(
-        auth_require=True,
-        is_api=True,
-    )
-    def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.EXPENSE_TYPE_LIST).get()
-        return resp.auto_return(key_success='expense_type_list')
-
-    @mask_view(
-        auth_require=True,
-        is_api=True,
-    )
-    def post(self, request, *arg, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.EXPENSE_TYPE_LIST).post(request.data)
-        return resp.auto_return()
-
-
-class ExpenseTypeDetailAPI(APIView):
-    @mask_view(
-        auth_require=True,
-        is_api=True,
-    )
-    def get(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.EXPENSE_TYPE_DETAIL.fill_key(pk=pk)).get()
-        return resp.auto_return(key_success='expense_type')
-
-    @mask_view(
-        auth_require=True,
-        is_api=True,
-    )
-    def put(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.EXPENSE_TYPE_DETAIL.fill_key(pk=pk)).put(request.data)
-        return resp.auto_return(key_success='expense_type')
-
-
 class UnitOfMeasureListAPI(APIView):
     permission_classes = [IsAuthenticated]
 

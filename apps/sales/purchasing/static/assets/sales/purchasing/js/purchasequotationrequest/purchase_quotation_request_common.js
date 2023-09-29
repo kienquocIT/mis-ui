@@ -6,6 +6,7 @@ let PRProductsForMergeTable = $('#table-select-purchase-request-products-for-mer
 let PQRProductsSelectedTable = $('#table-purchase-quotation-request-products-selected')
 let PURCHASE_REQUEST_LIST = [];
 let TAX_LIST = [];
+let UOM_LIST = [];
 
 PQRSelectBoxEle.prop('disabled', true);
 
@@ -30,6 +31,19 @@ async function LoadTaxList() {
             if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('tax_list')) {
                 TAX_LIST = data?.['tax_list'];
                 return data?.['tax_list'];
+            }
+            return [];
+        }
+    })
+}
+
+async function LoadUoMList() {
+    await $.fn.callAjax(PQRProductsSelectedTable.attr('data-url-uom'), 'GET').then((resp) => {
+        let data = $.fn.switcherResp(resp);
+        if (data) {
+            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('unit_of_measure')) {
+                UOM_LIST = data?.['unit_of_measure'];
+                return data?.['unit_of_measure'];
             }
             return [];
         }
@@ -152,7 +166,7 @@ function LoadPurchaseRequestProductsTable() {
                 data: '',
                 className: 'wrap-text w-10',
                 render: (data, type, row) => {
-                    return `<input id="${row.id}" data-title="${row.title}"data-uom-id="${row.uom.id}" data-uom-title="${row.uom.title}" data-quantity="${row.quantity}" data-pr-unit-price="${row.product_unit_price}" data-tax-id="${row.tax.id}" data-tax-value="${row.tax.value}" data-tax-code="${row.tax.code}" data-pr-code="${row?.['purchase_request_code']}" type="checkbox" class="form-check-purchase-request-products">`;
+                    return `<input id="${row.id}" data-title="${row.title}" data-uom-group-id="${row.uom_group.id}" data-uom-id="${row.uom.id}" data-uom-title="${row.uom.title}" data-quantity="${row.quantity}" data-pr-unit-price="${row.product_unit_price}" data-tax-id="${row.tax.id}" data-tax-value="${row.tax.value}" data-tax-code="${row.tax.code}" data-pr-code="${row?.['purchase_request_code']}" type="checkbox" class="form-check-purchase-request-products">`;
                 }
             },
             {
@@ -233,6 +247,7 @@ function LoadPurchaseRequestProductsTableForMerge(product_id_list) {
                 "id": temp[0].id,
                 "title": temp[0].title,
                 "uom": Object.keys(smallestRatioElement.uom).length > 0 ? smallestRatioElement.uom : {},
+                "uom_group": temp[0].uom_group,
                 "quantity": sum_converted_item,
                 "purchase_request_code_list": pr_code_list,
                 "product_unit_price": smallestRatioElement.product_unit_price,
@@ -241,7 +256,7 @@ function LoadPurchaseRequestProductsTableForMerge(product_id_list) {
         )
     }
 
-    PRProductsForMergeTable.DataTable().destroy();
+    PRProductsForMergeTable.DataTable().clear().destroy();
     PRProductsForMergeTable.DataTableDefault({
         paging: false,
         dom: "<'row mt-3 miner-group'>" + "<'row mt-3'<'col-sm-12'tr>>",
@@ -251,7 +266,7 @@ function LoadPurchaseRequestProductsTableForMerge(product_id_list) {
                 data: '',
                 className: 'wrap-text w-10',
                 render: (data, type, row) => {
-                    return `<input checked id="${row.id}" data-title="${row.title}" data-uom-id="${row.uom.id}" data-uom-title="${row.uom.title}" data-quantity="${row.quantity}" data-pr-unit-price="${row.product_unit_price}" data-tax-id="${row.tax.id}" data-tax-value="${row.tax.value}" data-tax-code="${row.tax.code}" type="checkbox" class="form-check-purchase-request-products-for-merge">`;
+                    return `<input checked id="${row.id}" data-title="${row.title}" data-uom-group-id="${row.uom_group.id}" data-uom-id="${row.uom.id}" data-uom-title="${row.uom.title}" data-quantity="${row.quantity}" data-pr-unit-price="${row.product_unit_price}" data-tax-id="${row.tax.id}" data-tax-value="${row.tax.value}" data-tax-code="${row.tax.code}" type="checkbox" class="form-check-purchase-request-products-for-merge">`;
                 }
             },
             {
@@ -303,11 +318,7 @@ function calculate_price(table_tr) {
     table_tr.each(function () {
         let quantity = $(this).find('.product-quantity').val();
         let pr_unit_price = $(this).find('.pr-unit-price-input').attr('value');
-        let tax_rate = 0;
-        if ($(this).find('.product-tax-select-box').val()) {
-            let tax_selected = JSON.parse($('#' + $(this).find('.product-tax-select-box').attr('data-idx-data-loaded')).text())[$(this).find('.product-tax-select-box').val()];
-            tax_rate = tax_selected.rate;
-        }
+        let tax_rate = parseFloat($(this).find('.product-tax-select-box option:selected').attr('data-rate'));
         let current_pre_tax_value = parseFloat(quantity) * parseFloat(pr_unit_price);
         sum_price_pre_tax_value += current_pre_tax_value;
         sum_tax_value += current_pre_tax_value * tax_rate / 100;
@@ -332,18 +343,14 @@ function loadProductList(row_id, data) {
     })
 }
 
-function loadProductTaxList(row_id, data) {
+function loadProductTaxList(row_id) {
     let ele = $('#' + row_id + ' .product-tax-select-box');
-    ele.initSelect2({
-        ajax: {
-            url: PQRProductsSelectedTable.attr('data-url-tax'),
-            method: 'GET',
-        },
-        data: (data ? data : null),
-        keyResp: 'tax_list',
-        keyId: 'id',
-        keyText: 'title',
-    })
+    let html = ``;
+    html += `<option data-rate="0"></option>`;
+    for (let i = 0; i < TAX_LIST.length; i++) {
+        html += `<option data-rate="${TAX_LIST[i].rate}" value="${TAX_LIST[i].id}">${TAX_LIST[i].title} (${TAX_LIST[i].rate}%)</option>`;
+    }
+    ele.append(html);
 }
 
 function loadProductUomList(row_id, data, uom_group_id) {
@@ -643,6 +650,7 @@ $(document).on("click", '#btn_create_new_purchase_quotation_request', function (
             'product_title': $(this).attr('data-title'),
             'uom_id': $(this).attr('data-uom-id'),
             'uom_title': $(this).attr('data-uom-title'),
+            'uom_group_id': $(this).attr('data-uom-group-id'),
             'quantity': $(this).attr('data-quantity'),
             'pr_unit_price': $(this).attr('data-pr-unit-price'),
             'tax_id': $(this).attr('data-tax-id'),
@@ -686,16 +694,27 @@ $(document).on("click", '#btn_create_new_purchase_quotation_request', function (
             },
             {
                 data: 'uom',
-                className: 'wrap-text w-10 text-center',
+                className: 'wrap-text w-10',
                 render: (data, type, row) => {
-                    return `<span class="product-uom" data-product-uom-id="${row.uom_id}">${row.uom_title}</span>`;
+                    let html = ``;
+                    html += `<option value=""></option>`;
+                    for (let i = 0; i < UOM_LIST.length; i++) {
+                        if (UOM_LIST[i].group.id === row.uom_group_id) {
+                            if (UOM_LIST[i].id === row.uom_id) {
+                                html += `<option selected value="${UOM_LIST[i].id}">${UOM_LIST[i].title}</option>`;
+                            } else {
+                                html += `<option value="${UOM_LIST[i].id}">${UOM_LIST[i].title}</option>`;
+                            }
+                        }
+                    }
+                    return `<select class="form-select product-uom-select-box" data-method="GET">` + html + `</select>`;
                 }
             },
             {
                 data: 'quantity',
-                className: 'wrap-text w-10 text-center',
+                className: 'wrap-text w-10',
                 render: (data, type, row) => {
-                    return `<span class="product-quantity">${row.quantity}</span>`;
+                    return `<input class="form-control product-quantity" value="${row.quantity}">`;
                 }
             },
             {
@@ -742,7 +761,7 @@ $(document).on("click", '#new-product-btn', function () {
             <td><select class="form-select product-uom-select-box" data-method="GET"><option selected></option></select></td>
             <td><input type="number" min="1" onchange="this.value=checkInputQuantity(this.value)" class="form-control product-quantity" value="1"></td>
             <td><input type="text" data-return-type="number" class="form-control pr-unit-price-input mask-money" style="color: black; background: none"></td>
-            <td><select class="form-select product-tax-select-box" data-method="GET"><option selected></option></select></td>
+            <td><select class="form-select product-tax-select-box" data-method="GET"></select></td>
             <td><span class="pr-subtotal-price-input mask-money text-primary" data-init-money=""></span></td>
             <td><button class="btn-del-line-detail btn text-danger btn-link btn-animated" title="Delete row"><span class="icon"><i class="bi bi-dash-circle"></i></span></button></td>
         </tr>
@@ -823,8 +842,8 @@ class PQRHandle {
         frm.dataForm['products_selected'] = []
         $('#table-purchase-quotation-request-products-selected tbody tr').each(function () {
             let product_id = $(this).find('.product-title').attr('data-product-id');
-            let product_uom_id = $(this).find('.product-uom').attr('data-product-uom-id');
-            let product_quantity =  $(this).find('.product-quantity').val();
+            let product_uom_id = $(this).find('.product-uom-select-box').val();
+            let product_quantity = $(this).find('.product-quantity').val();
             let product_unit_price = $(this).find('.pr-unit-price-input').attr('value');
             let product_subtotal_price = $(this).find('.pr-subtotal-price-input').attr('data-init-money');
             if (product_id !== '' && product_uom_id !== '' && product_quantity !== '' && product_unit_price !== '' && product_subtotal_price !== '') {

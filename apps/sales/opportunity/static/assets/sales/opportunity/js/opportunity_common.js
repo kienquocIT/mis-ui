@@ -9,20 +9,10 @@ class OpportunityLoadDropdown {
     static loadCustomer(data, config, emp_current) {
         this.customerSelectEle.initSelect2({
             data: data,
-            callbackDataResp(resp, keyResp) {
-                if (config) {
-                    let list_result = []
-                    resp.data[keyResp].map(function (item) {
-                        let list_id_am = item.manager.map(obj => obj.id)
-                        if (list_id_am.includes(emp_current)) {
-                            list_result.push(item)
-                        }
-                    })
-                    return list_result
-                } else {
-                    return resp.data[keyResp]
-                }
-            }
+            dataParams: {
+                'account_types_mapped__account_type_order': 0,
+                'employee__id': emp_current,
+            },
         })
     }
 
@@ -136,6 +126,9 @@ class OpportunityLoadDropdown {
     static loadCompetitor(ele, data, customer) {
         ele.initSelect2({
             data: data,
+            dataParams: {
+                'account_types_mapped__account_type_order': 3,
+            },
             callbackDataResp(resp, keyResp) {
                 let list_result = []
                 resp.data[keyResp].map(function (item) {
@@ -494,6 +487,7 @@ class OpportunityLoadDetail {
 
     static loadSaleTeam(data) {
         let card_member = $('#card-member');
+        card_member.empty();
         data.map(function (item) {
             card_member.append($('.card-member-hidden').html());
             let card = card_member.find('.card').last();
@@ -667,8 +661,9 @@ class OpportunityLoadDetail {
                     text: transEle.data('trans-role-decision-maker'),
                 })
             } else {
-                let ele_contact = ele.closest('tr').find('.box-select-contact option:selected');
-                this.setDataDecisionMaker(ele_decision_maker, ele_contact.text(), ele_contact.val());
+                let ele_contact = ele.closest('tr').find('.box-select-contact');
+                let contact_data = SelectDDControl.get_data_from_idx(ele_contact, ele_contact.val());
+                this.setDataDecisionMaker(ele_decision_maker, contact_data.fullname, contact_data.id);
             }
         }
 
@@ -679,7 +674,7 @@ class OpportunityLoadDetail {
 
     static setDataDecisionMaker(ele_decision_maker, value, id) {
         ele_decision_maker.val(value);
-        ele_decision_maker.attr(id);
+        ele_decision_maker.attr('data-id', id);
         ele_decision_maker.addClass('tag-change');
     }
 
@@ -791,7 +786,8 @@ class OpportunityLoadDetail {
                 for (let key in permit_app) {
                     if (permit_app.hasOwnProperty(key)) {
                         let tr_current = $(`#table-applications .application_name[data-id=${key}]`).closest('tr');
-                        tr_current.find('.check-all').prop('checked', permit_app[key].all);
+                        tr_current.find('input[type="checkbox"]').prop('checked', false);
+                        tr_current.find('.check-all').prop('checked', permit_app[key].is_all);
                         tr_current.find('.check-create').prop('checked', permit_app[key].is_create);
                         tr_current.find('.check-view').prop('checked', permit_app[key]?.['is_view']);
                         tr_current.find('.check-edit').prop('checked', permit_app[key].is_edit);
@@ -831,9 +827,23 @@ class OpportunityLoadDetail {
         return data
     }
 
-    static checkAllPermissionChecked(ele){
+    static checkAllPermissionChecked(ele) {
         let elements = ele.find('.check-create, .check-view, .check-delete, .check-edit');
         return elements.filter(":not(:checked)").length === 0;
+    }
+
+    static reloadMemberList(pk) {
+        let url = urlEle.data('url-member-list').format_url_with_uuid(pk);
+        $.fn.callAjax2({
+            'url': url,
+            'method': 'get'
+        }).then(
+            (resp) => {
+                const data = $.fn.switcherResp(resp);
+                let data_member = data?.['opportunity_member']?.['sale_team'];
+                OpportunityLoadDetail.loadSaleTeam(data_member);
+            }
+        )
     }
 }
 
@@ -886,7 +896,7 @@ function loadDtbOpportunityList() {
                 {
                     targets: 4,
                     render: (data, type, row) => {
-                        return `<span class="badge badge badge-soft-success  ml-2 mt-2">${row?.['sale_person'].name}</span>`
+                        return `<span class="badge badge badge-soft-success  ml-2 mt-2">${row?.['sale_person'].full_name}</span>`
                     }
                 },
                 {
@@ -1323,7 +1333,7 @@ function loadDtbCompetitor(data) {
                 {
                     className: 'wrap-text',
                     render: () => {
-                        return `<select class="form-control box-select-competitor" data-method="GET" data-url="${urlEle.data('url-competitor')}" data-keyResp="account_list" data-keyText="name" required></select>`
+                        return `<select class="form-control box-select-competitor" data-method="GET" data-url="${urlEle.data('url-competitor')}" data-keyResp="account_sale_list" data-keyText="name" required></select>`
                     }
                 },
                 {

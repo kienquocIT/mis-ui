@@ -69,6 +69,10 @@ class MenusCompanySystem:
             ),
         ]
     )
+    WORKING_CALENDAR = MenuCommon(
+        name='Working calendar', code='menu_working_calendar', view_name='WorkingCalendarConfig',
+        icon='<i class="fa-regular fa-calendar-days"></i>',
+    )
     WORKFLOW_PROCESS = MenuCommon(
         name='Process Management', code='menu_process_management', icon='<i class="fab fa-stumbleupon-circle"></i>',
         child=[
@@ -283,35 +287,35 @@ class MenusPurchase:
     )
 
     PURCHASE = MenuCommon(
-        name='Purchasing', code='menu_purchase_activities', view_name='', icon='<i class="fas fa-shopping-cart"></i>',
+        name='Purchasing', code='menu_purchase_activities', view_name='', icon='<i class="fas fa-cart-arrow-down"></i>',
         child=[
             MenuCommon(
                 name='Purchase Request',
                 code='menu_purchase_request_list',
                 view_name='PurchaseRequestList',
-                icon='<i class="bi bi-caret-right-fill"></i>',
+                icon='<i class="fas fa-file-upload"></i>',
             ),
             MenuCommon(
                 name='Purchase Quotation Request',
                 code='id_menu_purchase_quotation_request_list',
                 view_name='PurchaseQuotationRequestList',
-                icon='<i class="bi bi-caret-right-fill"></i>',
+                icon='<i class="fas fa-file-invoice-dollar"></i>',
             ),
             MenuCommon(
                 name='Purchase Quotation',
                 code='id_menu_purchase_quotation_list',
                 view_name='PurchaseQuotationList',
-                icon='<i class="bi bi-caret-right-fill"></i>',
+                icon='<i class="fas fa-file-alt"></i>',
             ),
             MenuCommon(
                 name='Purchase order', code='menu_purchase_order_list', view_name='PurchaseOrderList',
-                icon='<i class="bi bi-caret-right-fill"></i>',
+                icon='<i class="fas fa-file-contract"></i>',
             ),
         ],
     )
 
     INVENTORY = MenuCommon(
-        name='Inventory', code='menu_inventory_activities', view_name='', icon='<i class="fas fa-clipboard-check"></i>',
+        name='Inventory', code='menu_inventory_activities', view_name='', icon='<i class="fas fa-store"></i>',
         child=[
             MenuCommon(
                 name='Goods receipt',
@@ -330,6 +334,12 @@ class MenusPurchase:
                 code='menu_goods_transfer_list',
                 view_name='GoodsTransferList',
                 icon='<i class="fas fa-exchange-alt"></i>',
+            ),
+            MenuCommon(
+                name='Goods issue',
+                code='menu_goods_issue_list',
+                view_name='GoodsIssueList',
+                icon='<i class="fas fa-file-export"></i>',
             ),
         ],
     )
@@ -424,6 +434,7 @@ class SpaceItem:
                 MenusCompanySystem.COMPANY_LIST,
                 MenusCompanySystem.USER_LIST,
                 MenusCompanySystem.ORG_CHART,
+                MenusCompanySystem.WORKING_CALENDAR,
                 MenusCompanySystem.WORKFLOW_PROCESS,
                 MenusCompanySystem.TENANT_MANAGE,
             ],

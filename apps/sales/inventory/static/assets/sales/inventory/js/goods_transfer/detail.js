@@ -3,5 +3,4 @@ $(document).ready(function () {
     let frmDetail = $('#frmDetail');
     GoodsTransferLoadPage.loadDtbProduct([]);
     GoodsTransferLoadPage.loadGoodsTransferDetail(frmDetail, pk);
-
 })

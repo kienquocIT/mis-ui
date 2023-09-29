@@ -2,7 +2,7 @@ from django.views import View
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from apps.shared import mask_view, ApiURL, ServerAPI, SaleMsg
+from apps.shared import mask_view, ApiURL, ServerAPI, SaleMsg, PermCheck
 
 
 class AdvancePaymentList(View):
@@ -13,28 +13,10 @@ class AdvancePaymentList(View):
         template='advancepayment/advance_payment_list.html',
         breadcrumb='ADVANCE_PAYMENT_LIST_PAGE',
         menu_active='id_menu_advance_payment',
+        perm_check=PermCheck(url=ApiURL.ADVANCE_PAYMENT_LIST, method='GET'),
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
-
-
-class AdvancePaymentCreate(View):
-    permission_classes = [IsAuthenticated]
-
-    @mask_view(
-        auth_require=True,
-        template='advancepayment/advance_payment_create.html',
-        breadcrumb='ADVANCE_PAYMENT_CREATE_PAGE',
-        menu_active='menu_advance_payment_list',
-    )
-    def get(self, request, *args, **kwargs):
-        resp1 = ServerAPI(
-            user=request.user,
-            url=ApiURL.EMPLOYEE_DETAIL.push_id(request.user.employee_current_data.get('id', None))
-        ).get()
-        return {
-                   'data': {'employee_current': resp1.result}
-               }, status.HTTP_200_OK
 
 
 class AdvancePaymentListAPI(APIView):
@@ -61,6 +43,26 @@ class AdvancePaymentListAPI(APIView):
         return resp.auto_return()
 
 
+class AdvancePaymentCreate(View):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        template='advancepayment/advance_payment_create.html',
+        breadcrumb='ADVANCE_PAYMENT_CREATE_PAGE',
+        menu_active='menu_advance_payment_list',
+        perm_check=PermCheck(url=ApiURL.ADVANCE_PAYMENT_LIST, method='POST'),
+    )
+    def get(self, request, *args, **kwargs):
+        resp1 = ServerAPI(
+            user=request.user,
+            url=ApiURL.EMPLOYEE_DETAIL.push_id(request.user.employee_current_data.get('id', None))
+        ).get()
+        return {
+                   'data': {'employee_current': resp1.result}
+               }, status.HTTP_200_OK
+
+
 class AdvancePaymentDetail(View):
     permission_classes = [IsAuthenticated]
 
@@ -69,6 +71,7 @@ class AdvancePaymentDetail(View):
         template='advancepayment/advance_payment_detail.html',
         breadcrumb='ADVANCE_PAYMENT_DETAIL_PAGE',
         menu_active='menu_advance_payment_detail',
+        perm_check=PermCheck(url=ApiURL.ADVANCE_PAYMENT_DETAIL, method='GET', fill_key=['pk']),
     )
     def get(self, request, *args, **kwargs):
         resp1 = ServerAPI(

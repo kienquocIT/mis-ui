@@ -10,7 +10,8 @@ from apps.sales.opportunity.views import (
     OpportunityMeetingList, OpportunityMeetingListAPI, OpportunityMeetingDeleteAPI, OpportunityActivityLogListAPI,
     OpportunityDocumentList, OpportunityDocumentCreate, OpportunityDocumentListAPI, OpportunityDocumentDetailAPI,
     OpportunityDocumentDetail, OpportunityForSaleListAPI, OpportunityUpdate, OpportunityMemberDetailAPI,
-    OpportunityAddMemberAPI, OpportunityDeleteMemberAPI, OpportunityMemberPermissionUpdateAPI
+    OpportunityAddMemberAPI, OpportunityDeleteMemberAPI, OpportunityMemberPermissionUpdateAPI, OpportunityMemberListAPI,
+    OpportunityListForCashOutFlowAPI
 )
 
 urlpatterns = [
@@ -18,12 +19,16 @@ urlpatterns = [
     path('config/api', OpportunityConfigAPI.as_view(), name='OpportunityConfigAPI'),
     path('lists', OpportunityList.as_view(), name='OpportunityList'),
     path('api/lists', OpportunityListAPI.as_view(), name='OpportunityListAPI'),
+    path(
+        'api/lists-for-cash-outflow',
+        OpportunityListForCashOutFlowAPI.as_view(),
+        name='OpportunityListForCashOutFlowAPI'
+    ),
     path('api/lists-sale', OpportunityForSaleListAPI.as_view(), name='OpportunityForSaleListAPI'),
 
     path('detail/<str:pk>', OpportunityDetail.as_view(), name='OpportunityDetail'),
     path('update/<str:pk>', OpportunityUpdate.as_view(), name='OpportunityUpdate'),
     path('api/<str:pk>', OpportunityDetailAPI.as_view(), name='OpportunityDetailAPI'),
-
     path(
         'config/decision-factors/api',
         OpportunityCustomerDecisionFactorListAPI.as_view(),
@@ -85,5 +90,6 @@ urlpatterns = [
         'member/set/permission/api/<str:pk>',
         OpportunityMemberPermissionUpdateAPI.as_view(),
         name='OpportunityMemberPermissionUpdateAPI'
-    )
+    ),
+    path('member/list/api/<str:pk>', OpportunityMemberListAPI.as_view(), name='OpportunityMemberListAPI'),
 ]

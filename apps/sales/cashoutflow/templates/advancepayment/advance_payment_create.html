@@ -40,7 +40,8 @@
     <form id="form-create-advance" data-method="POST" data-url-redirect="{% url "AdvancePaymentList" %}"
           data-url-list="{% url 'AdvancePaymentListAPI' %}"
           data-url-detail="{% url 'AdvancePaymentDetailAPI' '0' %}"
-          data-url="{% url "AdvancePaymentListAPI" %}">
+          data-url="{% url "AdvancePaymentListAPI" %}"
+    >
         {% csrf_token %}
         <div class="row mt-1 ml-1 mr-1 collapse multi-collapse show" id="collapse-area">
             <div class="row">
@@ -80,12 +81,17 @@
                             </div>
                         </div>
                         <div class="col-7">
-                            <select id="sale-code-select-box" disabled
-                                    data-url-opp="{% url 'OpportunityListAPI' %}"
-                                    data-url-quotation="{% url 'QuotationListAPI' %}"
-                                    data-url-sale-order="{% url 'SaleOrderListAPI' %}"
-                                    class="select2" data-placeholder="Select Sale Code">
-                            </select>
+                            <span class="input-affix-wrapper">
+                                <span class="input-prefix" id="sale-code-loading-span" hidden>
+                                    <div class="spinner-border spinner-border-sm" role="status"></div>
+                                </span>
+                                <select id="sale-code-select-box" disabled
+                                        data-url-opp="{% url 'OpportunityListForCashOutFlowAPI' %}"
+                                        data-url-quotation="{% url 'QuotationListForCashOutflowAPI' %}"
+                                        data-url-sale-order="{% url 'SaleOrderListForCashOutflowAPI' %}"
+                                        class="select2" data-placeholder="Select Sale Code">
+                                </select>
+                            </span>
                         </div>
                     </div>
                     <div class="row form-group">
@@ -346,14 +352,21 @@
                         <thead>
                         <tr>
                             <th></th>
-                            <th>{% trans 'Expense type' %}</th>
-                            <th>{% trans 'Tax' %}</th>
-                            <th>{% trans 'Plan After Tax' %}</th>
-                            <th>{% trans 'AP Approved' %}</th>
-                            <th>{% trans 'Return' %}</th>
-                            <th>{% trans 'To Payment' %}</th>
-                            <th>{% trans 'Other Payment' %}</th>
-                            <th>{% trans 'Available' %}</th>
+                            <th>{% trans 'Product items' %}</th>
+                            <th><i class="fas fa-clipboard-list"></i>&nbsp;{% trans 'Plan After Tax' %}</th>
+                            <th><i class="fas fa-clipboard-check"></i>&nbsp;{% trans 'AP Approved' %}</th>
+                            <th><i class="fas fa-undo-alt"></i>&nbsp;{% trans 'Return' %}</th>
+                            <th><i class="fas fa-exchange-alt"></i>&nbsp;{% trans 'To Payment' %}</th>
+                            <th><i class="fas fa-money-bill-wave"></i>&nbsp;{% trans 'Other Payment' %}</th>
+                            <th>
+                                <i class="far fa-check-square"></i>&nbsp;
+                                {% trans 'Available' %}
+                                <i class="fas fa-info-circle icon-info"
+                                   data-bs-toggle="tooltip"
+                                   data-bs-placement="bottom"
+                                   title="{% trans 'Available = Plan after Tax - Other payments - AP approved + Returned' %}">
+                                </i>
+                            </th>
                         </tr>
                         </thead>
                         <tbody></tbody>

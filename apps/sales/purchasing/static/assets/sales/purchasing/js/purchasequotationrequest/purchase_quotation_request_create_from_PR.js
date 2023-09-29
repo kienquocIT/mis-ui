@@ -1,5 +1,6 @@
 $(document).ready(async function () {
     await LoadTaxList();
+    await LoadUoMList();
 
     $('#form-create-purchase-quotation-request').submit(function (event) {
         event.preventDefault();

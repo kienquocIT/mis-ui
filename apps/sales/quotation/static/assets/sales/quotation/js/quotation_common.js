@@ -822,11 +822,6 @@ class QuotationLoadDataHandle {
         $('#quotation-create-customer-shipping').val(data?.['customer_shipping_id']);
         $('#quotation-create-customer-billing').val(data?.['customer_billing_id']);
         // product totals
-        // if (is_copy === false) {
-        //     QuotationLoadDataHandle.loadTotal(data, true, false, false);
-        // } else {
-        //     $('#quotation-create-product-discount').val(data?.['total_product_discount_rate']);
-        // }
         QuotationLoadDataHandle.loadTotal(data, true, false, false);
         QuotationLoadDataHandle.loadTotal(data, false, true, false);
         QuotationLoadDataHandle.loadTotal(data, false, false, true);
@@ -964,6 +959,19 @@ class QuotationLoadDataHandle {
         }
         for (let ele of table[0].querySelectorAll('.del-row')) {
             ele.setAttribute('disabled', 'true');
+        }
+    };
+
+    static loadReApplyPromotion(data, table) {
+        if (Object.keys(data?.['customer']).length > 0) {
+            let dataProductList = data?.['quotation_products_data'];
+            for (let dataProduct of dataProductList) {
+                if (Object.keys(dataProduct?.['promotion']).length > 0) {
+                    let check = promotionClass.checkAvailablePromotion(dataProduct?.['promotion'], data?.['customer']?.['id']);
+                    let promotionResult = promotionClass.getPromotionResult(check?.['condition']);
+                    promotionClass.reCalculateIfPromotion(table, promotionResult?.['discount_rate_on_order'], promotionResult?.['product_price']);
+                }
+            }
         }
     };
 
@@ -2127,11 +2135,17 @@ class QuotationCalculateCaseHandle {
                     discountAmount = ((pretaxAmount * discount_on_total) / 100);
                     // check if shipping fee then minus before calculate discount
                     if (shippingFee > 0) {
-                        discountAmount = (((pretaxAmount - shippingFee) * discount_on_total) / 100)
+                        discountAmount = (((pretaxAmount - shippingFee) * discount_on_total) / 100);
                     }
                 } else {
                     discount_on_total = parseFloat(discountTotalRate);
-                    let discountAmountOnTotal = (((pretaxAmount - discountAmount) * discount_on_total) / 100);
+                    let discountAmountOnTotal = 0;
+                    // check if shipping fee then minus before calculate discount
+                    if (shippingFee > 0) {
+                        discountAmountOnTotal = (((pretaxAmount - discountAmount - shippingFee) * discount_on_total) / 100);
+                    } else {
+                        discountAmountOnTotal = (((pretaxAmount - discountAmount) * discount_on_total) / 100);
+                    }
                     discountAmount += discountAmountOnTotal;
 
                     if (pretaxAmount > 0) {
@@ -2275,8 +2289,6 @@ class QuotationCalculateCaseHandle {
             let row = table[0].tBodies[0].rows[i];
             if (row.querySelector('.table-row-item')) {
                 QuotationCalculateCaseHandle.calculate(row);
-
-                // QuotationCalculateCaseHandle.commonCalculate(table, row, true, false, false);
             }
         }
         QuotationCalculateCaseHandle.updateTotal(table[0], true, false, false);

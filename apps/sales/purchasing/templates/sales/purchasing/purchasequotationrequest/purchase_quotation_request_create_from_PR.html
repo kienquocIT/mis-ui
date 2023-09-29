@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load i18n static %}
-{% block title %}{% trans 'Purchase Quotation Request Create From Purchase Request' %}{% endblock %}
+{% block title %}{% trans 'Purchase Quotation Request (From PR)' %}{% endblock %}
 {% block cssHeader %}
     <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}"/>
     <style>
@@ -107,6 +107,7 @@
                                 <table class="table nowrap w-100"
                                        id="table-purchase-quotation-request-products-selected"
                                        data-url-tax="{% url 'TaxListAPI' %}"
+                                       data-url-uom="{% url 'UnitOfMeasureListAPI' %}"
                                 >
                                     <thead>
                                     <th></th>

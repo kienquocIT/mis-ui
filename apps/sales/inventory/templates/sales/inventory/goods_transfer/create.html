@@ -2,8 +2,6 @@
 {% load static i18n %}
 {% block title %}{% trans 'Goods Transfer Create' %}{% endblock %}
 {% block cssHeader %}
-    <link href="{% static 'assets/sales/inventory/css/goodreceipt/goods_receipt_create.css' %}" rel="stylesheet"
-          type="text/css"/>
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
@@ -64,11 +62,11 @@
                     <label class="form-label">{% trans 'Agency' %}</label>
                     <select
                             id="box-select-agency"
-                            class="form-control"
+                            class="form-select"
                             name="agency"
                             data-method="GET"
-                            data-url="{% url 'AccountListAPI' %}"
-                            data-keyResp="account_list"
+                            data-url="{% url 'AccountForSaleListAPI' %}"
+                            data-keyResp="account_sale_list"
                             data-keyText="name"
                     ></select>
                 </div>

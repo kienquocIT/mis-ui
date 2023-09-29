@@ -156,57 +156,63 @@ $(document).ready(function () {
 
     // submit form create lookup data
     let frm = $('#form-create-lookup');
-    SetupFormSubmit.validate(
-        frm,
-        {
-            submitHandler: function (form) {
-                let frm = new SetupFormSubmit($(form));
-                let frm_data = frm.dataForm;
-                let lookup = $(form).attr('data-lookup');
-                let data_url = ''
-                if (lookup === 'salutation') {
-                    data_url = $('#form-create-lookup').attr('data-url-salutation');
-                } else if (lookup === 'interests') {
-                    data_url = $('#form-create-lookup').attr('data-url-interests');
-                }
-
-                if (frm_data['code'] === '') {
-                    frm_data['code'] = null;
-                }
-
-                if (frm_data['title'] === '') {
-                    frm_data['title'] = null;
-                }
-
-                $.fn.callAjax2({
-                    'url': data_url,
-                    'method': frm.dataMethod,
-                    'data': frm_data
-                }).then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyB({description: "Successfully"}, 'success')
-                            if (lookup === 'salutation') {
-                                let table = $('#datatable_salutation_list').DataTable();
-                                setTimeout(function () {
-                                    table.ajax.reload();
-                                    $('#modal-lookup-data').modal('hide');
-                                })
-
-                            } else {
-                                let table = $('#datatable_interests_list').DataTable();
-                                setTimeout(function () {
-                                    table.ajax.reload();
-                                    $('#modal-lookup-data').modal('hide');
-                                })
-                            }
-                        }
-                    },
-                    (errs) => {
-                    })
+    new SetupFormSubmit(frm).validate({
+        rules: {
+            code: {
+                required: true,
+            },
+            title: {
+                required: true,
             }
-        })
+        },
+        submitHandler: function (form) {
+            let frm = new SetupFormSubmit($(form));
+            let frm_data = frm.dataForm;
+            let lookup = $(form).attr('data-lookup');
+            let data_url = ''
+            if (lookup === 'salutation') {
+                data_url = $('#form-create-lookup').attr('data-url-salutation');
+            } else if (lookup === 'interests') {
+                data_url = $('#form-create-lookup').attr('data-url-interests');
+            }
+
+            if (frm_data['code'] === '') {
+                frm_data['code'] = null;
+            }
+
+            if (frm_data['title'] === '') {
+                frm_data['title'] = null;
+            }
+
+            $.fn.callAjax2({
+                'url': data_url,
+                'method': frm.dataMethod,
+                'data': frm_data
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: "Successfully"}, 'success')
+                        if (lookup === 'salutation') {
+                            let table = $('#datatable_salutation_list').DataTable();
+                            setTimeout(function () {
+                                table.ajax.reload();
+                                $('#modal-lookup-data').modal('hide');
+                            })
+
+                        } else {
+                            let table = $('#datatable_interests_list').DataTable();
+                            setTimeout(function () {
+                                table.ajax.reload();
+                                $('#modal-lookup-data').modal('hide');
+                            })
+                        }
+                    }
+                },
+                (errs) => {
+                })
+        }
+    })
 
     $(document).on('click', '.edit-button', function () {
         if ($(this).attr('data-type') === 'salutation') {
@@ -227,9 +233,9 @@ $(document).ready(function () {
                 if (data) {
                     if (resp.hasOwnProperty('data')) {
                         if (resp.data.hasOwnProperty('salutation')) {
-                            $('#name-update').val(data.salutation.title);
-                            $('#code-update').val(data.salutation.code);
-                            $('#description-update').val(data.salutation.description);
+                            $('#name-update').val(data?.['salutation'].title);
+                            $('#code-update').val(data?.['salutation'].code);
+                            $('#description-update').val(data?.['salutation'].description);
                         } else if (resp.data.hasOwnProperty('interest')) {
                             $('#name-update').val(data.interest.title);
                             $('#code-update').val(data.interest.code);
@@ -242,45 +248,51 @@ $(document).ready(function () {
     })
 
     const frm_update = $('#form-update-masterdata');
-    SetupFormSubmit.validate(
-        frm_update,
-        {
-            submitHandler: function (form) {
-                let frm = new SetupFormSubmit($(form));
-                let inp_name = $('#name-update');
-                let inp_code = $('#code-update');
-                let inp_des = $('#description-update');
-                let data_form = {
-                    'code': inp_code.val(),
-                    'title': inp_name.val(),
-                    'description': inp_des.val(),
-                }
-
-                if (data_form['title'] === '') {
-                    data_form['title'] = null;
-                }
-
-                $.fn.callAjax2({
-                    'url': frm.dataForm['url_detail'],
-                    'method': frm.dataMethod,
-                    'data': data_form
-                }).then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyB({description: "Successfully"}, 'success')
-                            $('#modal-update-data').modal('hide');
-                            if ($('#inp-type').val() === 'salutation') {
-                                $('#datatable_salutation_list').DataTable().ajax.reload();
-                            } else {
-                                $('#datatable_interests_list').DataTable().ajax.reload();
-                            }
-                        }
-                    },
-                    (errs) => {
-                    }
-                )
+    new SetupFormSubmit(frm_update).validate({
+        rules: {
+            code: {
+                required: true,
+            },
+            title: {
+                required: true,
             }
-        });
+        },
+        submitHandler: function (form) {
+            let frm = new SetupFormSubmit($(form));
+            let inp_name = $('#name-update');
+            let inp_code = $('#code-update');
+            let inp_des = $('#description-update');
+            let data_form = {
+                'code': inp_code.val(),
+                'title': inp_name.val(),
+                'description': inp_des.val(),
+            }
+
+            if (data_form['title'] === '') {
+                data_form['title'] = null;
+            }
+
+            $.fn.callAjax2({
+                'url': frm.dataForm['url_detail'],
+                'method': frm.dataMethod,
+                'data': data_form
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: "Successfully"}, 'success')
+                        $('#modal-update-data').modal('hide');
+                        if ($('#inp-type').val() === 'salutation') {
+                            $('#datatable_salutation_list').DataTable().ajax.reload();
+                        } else {
+                            $('#datatable_interests_list').DataTable().ajax.reload();
+                        }
+                    }
+                },
+                (errs) => {
+                }
+            )
+        }
+    });
 })
 ;

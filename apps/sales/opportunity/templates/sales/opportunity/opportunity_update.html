@@ -1312,7 +1312,7 @@
            data-url-product-category="{% url 'ProductCategoryListAPI' %}"
            data-url-tax="{% url 'TaxListAPI' %}"
            data-url-uom="{% url 'UnitOfMeasureListAPI' %}"
-           data-url-competitor="{% url 'AccountListAPI' %}"
+           data-url-competitor="{% url 'AccountForSaleListAPI' %}"
            data-url-contact="{% url 'ContactListAPI' %}"
            data-url-emp-detail="{% url 'EmployeeDetail' pk=0 %}"
            data-url-config="{% url 'OpportunityConfigAPI' %}"
@@ -1320,6 +1320,7 @@
            data-url-related-sale-order="{% url 'SaleOrderDetail' pk=0 %}"
            data-url-member-detail="{% url 'OpportunityMemberDetailAPI' pk=0 %}"
            data-url-delete-member="{% url 'OpportunityDeleteMemberAPI' pk=0 %}"
+           data-url-member-list="{% url 'OpportunityMemberListAPI' pk=0 %}"
     >
     <input type="text" id="trans-factory"
            data-activity-type01="{% trans 'Call to customer' %}"
@@ -1343,5 +1344,5 @@
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
 
     <script src="{% static 'assets/sales/opportunity/js/opportunity_common.js' %}"></script>
-    <script src="{% static 'assets/sales/opportunity/js/opportunity_detail.js' %}"></script>
+    <script src="{% static 'assets/sales/opportunity/js/opportunity_update.js' %}"></script>
 {% endblock %}

@@ -166,8 +166,6 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PRODUCT_TYPE_DETAIL = StringUrl('saledata/product-type/{pk}')
     PRODUCT_CATEGORY_LIST = StringUrl('saledata/product-categories')
     PRODUCT_CATEGORY_DETAIL = StringUrl('saledata/product-category/{pk}')
-    EXPENSE_TYPE_LIST = StringUrl('saledata/expense-types')
-    EXPENSE_TYPE_DETAIL = StringUrl('saledata/expense-type/{pk}')
     UNIT_OF_MEASURE_GROUP = StringUrl('saledata/units-of-measure-group')
     UNIT_OF_MEASURE_GROUP_DETAIL = StringUrl('saledata/unit-of-measure-group/{pk}')
     UNIT_OF_MEASURE = StringUrl('saledata/units-of-measure')
@@ -218,6 +216,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # opportunity
     OPPORTUNITY_LIST = StringUrl('opportunity/lists')
+    OPPORTUNITY_LIST_FOR_CASH_OUTFLOW = StringUrl('opportunity/lists-for-cash-outflow')
     OPPORTUNITY_CALL_LOG_LIST = StringUrl('opportunity/call-log/lists')
     OPPORTUNITY_CALL_LOG_DELETE = StringUrl('opportunity/delete-call-log/{pk}')
     OPPORTUNITY_EMAIL_LIST = StringUrl('opportunity/send-email/lists')
@@ -256,7 +255,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # sale order
     SALE_ORDER_LIST = StringUrl('saleorder/list')
-    SALE_ORDER_LIST_FOR_CASH_OUTFLOW = StringUrl('saleorder/list-for-cashoutflow')
+    SALE_ORDER_LIST_FOR_CASH_OUTFLOW = StringUrl('saleorder/list-for-cash-outflow')
     SALE_ORDER_DETAIL = StringUrl('saleorder')
     SALE_ORDER_EXPENSE_LIST = StringUrl('saleorder/saleorder-expense-list/lists')
     SALE_ORDER_CONFIG = StringUrl('saleorder/config')
@@ -351,7 +350,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     GOODS_RECEIPT_DETAIL_PK = StringUrl('inventory/goods-receipt/{pk}')
     INVENTORY_ADJUSTMENT_LIST = StringUrl('inventory/inventory-adjustments')
     INVENTORY_ADJUSTMENT_DETAIL = StringUrl('inventory/inventory-adjustment/{pk}')
-    INVENTORY_ADJUSTMENT_PRODUCTS_LIST = StringUrl('inventory/inventory-adjustment/products')
+    INVENTORY_ADJUSTMENT_PRODUCT_LIST = StringUrl('inventory/inventory-adjustment/product/list/{ia_id}')
+    INVENTORY_ADJUSTMENT_OTHER_LIST = StringUrl('inventory/inventory-adjustments-other')
 
     # Application for Opportunity permission
     APPLICATION_OPPORTUNITY_PERMISSION = StringUrl('base/applications-opportunity-permit')
@@ -368,12 +368,23 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PURCHASE_REQUEST_CONFIG = StringUrl('purchasing/purchase-request/config')
 
     # e-Office
-    # leave
+    #  leave
     LEAVE_CONFIG = StringUrl('leave/config')
     LEAVE_CREATE = StringUrl('leave/leave-type/create')
     LEAVE_DETAIL = StringUrl('leave/leave-type/detail/{pk}')
 
+    #  Working calendar config
+    WORKING_CALENDAR_CONFIG = StringUrl('leave/working-calendar/config')
+    WORKING_CALENDAR_YEAR = StringUrl('leave/working-calendar/year')
+    WORKING_CALENDAR_HOLIDAY = StringUrl('leave/working-calendar/holiday')
 
-    # Goods transfer
-    GOODS_TRANSFER_LIST = StringUrl('inventory/good-transfer/list')
-    GOODS_TRANSFER_DETAIL = StringUrl('inventory/good-transfer/{pk}')
+    #  Goods transfer
+    GOODS_TRANSFER_LIST = StringUrl('inventory/goods-transfer/list')
+    GOODS_TRANSFER_DETAIL = StringUrl('inventory/goods-transfer/{pk}')
+
+    # Opportunity Member List
+    OPPORTUNITY_MEMBER_LIST = StringUrl('opportunity/member/list/{pk}')
+
+    # Goods issue
+    GOODS_ISSUE_LIST = StringUrl('inventory/goods-issue/list')
+    GOODS_ISSUE_DETAIL = StringUrl('inventory/goods-issue/{pk}')

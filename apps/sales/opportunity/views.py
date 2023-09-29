@@ -50,6 +50,18 @@ class OpportunityListAPI(APIView):
         )
 
 
+class OpportunityListForCashOutFlowAPI(APIView):
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_LIST_FOR_CASH_OUTFLOW).get(data)
+        return resp.auto_return(key_success='opportunity_list')
+
+
 class OpportunityDetail(View):
     permission_classes = [IsAuthenticated]
 
@@ -69,7 +81,7 @@ class OpportunityUpdate(View):
 
     @mask_view(
         auth_require=True,
-        template='sales/opportunity/opportunity_detail.html',
+        template='sales/opportunity/opportunity_update.html',
         menu_active='',
         breadcrumb='OPPORTUNITY_UPDATE_PAGE',
         perm_check=PermCheck(url=ApiURL.OPPORTUNITY_DETAIL, method='PUT', fill_key=['pk']),
@@ -509,3 +521,14 @@ class OpportunityMemberPermissionUpdateAPI(APIView):
     def put(self, request, pk, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.SET_MEMBER_PERMISSION.fill_key(pk=pk)).put(request.data)
         return resp.auto_return()
+
+
+# opportunity member list
+class OpportunityMemberListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, pk, *arg, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_MEMBER_LIST.fill_key(pk=pk)).get()
+        return resp.auto_return(key_success='opportunity_member')

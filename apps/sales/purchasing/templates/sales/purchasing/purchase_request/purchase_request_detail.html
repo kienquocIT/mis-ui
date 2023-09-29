@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static i18n %}
-{% block title %}{% trans 'Purchase Request Create' %}{% endblock %}
+{% block title %}{% trans 'Purchase Request Detail' %}{% endblock %}
 {% block cssHeader %}
     <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}"/>
 {% endblock %}
@@ -73,11 +73,12 @@
                     <select
                             class="form-control select2"
                             id="box-select-supplier"
+                            name="supplier"
                             data-method="GET"
-                            data-url="{% url "AccountListAPI" %}"
-                            data-keyResp="account_list"
+                            data-url="{% url "AccountForSaleListAPI" %}"
+                            data-keyResp="account_sale_list"
                             data-keyText="name"
-                            disabled
+                            required
                     >
                     </select>
                 </span>

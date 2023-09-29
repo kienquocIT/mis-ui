@@ -283,35 +283,35 @@ class MenusPurchase:
     )
 
     PURCHASE = MenuCommon(
-        name='Purchasing', code='menu_purchase_activities', view_name='', icon='<i class="fas fa-shopping-cart"></i>',
+        name='Purchasing', code='menu_purchase_activities', view_name='', icon='<i class="fas fa-cart-arrow-down"></i>',
         child=[
             MenuCommon(
                 name='Purchase Request',
                 code='menu_purchase_request_list',
                 view_name='PurchaseRequestList',
-                icon='<i class="bi bi-caret-right-fill"></i>',
+                icon='<i class="fas fa-file-upload"></i>',
             ),
             MenuCommon(
                 name='Purchase Quotation Request',
                 code='id_menu_purchase_quotation_request_list',
                 view_name='PurchaseQuotationRequestList',
-                icon='<i class="bi bi-caret-right-fill"></i>',
+                icon='<i class="fas fa-file-invoice-dollar"></i>',
             ),
             MenuCommon(
                 name='Purchase Quotation',
                 code='id_menu_purchase_quotation_list',
                 view_name='PurchaseQuotationList',
-                icon='<i class="bi bi-caret-right-fill"></i>',
+                icon='<i class="fas fa-file-alt"></i>',
             ),
             MenuCommon(
                 name='Purchase order', code='menu_purchase_order_list', view_name='PurchaseOrderList',
-                icon='<i class="bi bi-caret-right-fill"></i>',
+                icon='<i class="fas fa-file-contract"></i>',
             ),
         ],
     )
 
     INVENTORY = MenuCommon(
-        name='Inventory', code='menu_inventory_activities', view_name='', icon='<i class="fas fa-clipboard-check"></i>',
+        name='Inventory', code='menu_inventory_activities', view_name='', icon='<i class="fas fa-store"></i>',
         child=[
             MenuCommon(
                 name='Goods receipt',

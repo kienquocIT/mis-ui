@@ -69,6 +69,10 @@ class MenusCompanySystem:
             ),
         ]
     )
+    WORKING_CALENDAR = MenuCommon(
+        name='Working calendar', code='menu_working_calendar', view_name='WorkingCalendarConfig',
+        icon='<i class="fa-regular fa-calendar-days"></i>',
+    )
     WORKFLOW_PROCESS = MenuCommon(
         name='Process Management', code='menu_process_management', icon='<i class="fab fa-stumbleupon-circle"></i>',
         child=[
@@ -424,6 +428,7 @@ class SpaceItem:
                 MenusCompanySystem.COMPANY_LIST,
                 MenusCompanySystem.USER_LIST,
                 MenusCompanySystem.ORG_CHART,
+                MenusCompanySystem.WORKING_CALENDAR,
                 MenusCompanySystem.WORKFLOW_PROCESS,
                 MenusCompanySystem.TENANT_MANAGE,
             ],

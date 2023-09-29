@@ -297,3 +297,14 @@ class ProductListSaleOrderAPI(APIView):
     def get(self, request, pk, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_LIST_SALE_ORDER.fill_key(pk=pk)).get()
         return resp.auto_return(key_success='so_product_list')
+
+
+class SaleOrderPurchasingStaffListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.SALE_ORDER_LIST_FOR_PURCHASING_STAFF).get(params)
+        return resp.auto_return(key_success='sale_order_list')

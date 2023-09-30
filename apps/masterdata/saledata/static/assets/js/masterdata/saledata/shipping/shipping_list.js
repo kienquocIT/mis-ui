@@ -2,8 +2,11 @@ $(document).ready(function () {
     function loadShipping() {
         if (!$.fn.DataTable.isDataTable('#dtbShipping')) {
             let dtb = $('#dtbShipping');
+            let urlDetail = dtb.data('url-detail');
             let frm = new SetupFormSubmit(dtb);
             dtb.DataTableDefault({
+                rowIdx: true,
+                useDataServer: true,
                 ajax: {
                     url: frm.dataUrl,
                     type: frm.dataMethod,
@@ -25,8 +28,8 @@ $(document).ready(function () {
                         data: 'code',
                         className: 'wrap-text',
                         render: (data, type, row, meta) => {
-                            return `<a href="{0}"><span class="badge badge-soft-primary">{1}</span></a>`.format_by_idx(
-                                frm.getUrlDetail(row.id), data
+                            return `<a href="{0}"><span class="badge badge-soft-primary">{1}</span></a>{2}`.format_by_idx(
+                                frm.getUrlDetail(row.id), data, $x.fn.buttonLinkBlank(urlDetail.format_url_with_uuid(row.id))
                             )
                         }
                     },

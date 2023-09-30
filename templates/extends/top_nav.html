@@ -1,4 +1,4 @@
-{% load static i18n string_utils %}
+{% load static i18n string_utils person_utils %}
 <!-- Top Navbar -->
 <nav class="hk-navbar navbar navbar-expand-xl navbar-light fixed-top">
     <div class="container-fluid">
@@ -8,71 +8,58 @@
                     class="icon"
             ><span class="feather-icon"><i data-feather="align-left"></i></span></span></button>
 
+            <!-- Space -->
+            <div
+                    class="btn-group mr-3"
+                    id="menu-tenant"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="right"
+                    data-bs-original-title="Space Menus"
+                    data-space-selected="{{ base.space_current_detail.code }}"
+            >
+                <button
+                        id="menu-tenant-text"
+                        type="button" class="btn btn-outline-light dropdown-toggle"
+                        data-bs-toggle="dropdown"
+                        data-dropdown-animation aria-haspopup="true" aria-expanded="false"
+                >
+                    {% if base.space_current_detail.name %}
+                        {{ base.space_current_detail.icon|safe }} {{ base.space_current_detail.name }}
+                    {% else %}
+                        _
+                    {% endif %}
+                </button>
+                <div
+                        class="dropdown-menu" data-url="{% url 'SpaceChangeView' %}"
+                        data-url-redirect="{% url 'HomeView' %}" data-method="PUT"
+                >
+                    {% csrf_token %}
+                    {% for item in base.space_list %}
+                        {% if item.child|length > 0 %}
+                            <h6 class="dropdown-header">{{ item.name }}</h6>
+                            {% for item_child in item.child %}
+                                <a
+                                        class="dropdown-item space-item {% if base.space_current_detail.code == item_child.code %} text-success {% endif %}"
+                                        data-space-code="{{ item_child.code }}"
+                                        data-space-name="{{ item_child.name }}"
+                                        href="#"
+                                >
+                                    {{ item_child.icon|safe }}
+                                    <span class="ml-1">{{ item_child.name }}</span>
+                                </a>
+                            {% endfor %}
+                        {% else %}
+                            <a
+                                    class="dropdown-item  {% if base.space_current_detail.code == item_child.code %} text-success {% endif %}"
+                                    href="#"
+                            >{{ item.name }}</a>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            <!-- // Space -->
+
             <!-- Search -->
-            {% random_int 14 as num_random %}
-            {% if num_random == 1 %}
-                <a href="{% url 'DefaultDataView' %}">
-                    <i class="fas fa-cat"></i>
-                </a>
-            {% elif num_random == 2 %}
-                <a href="{% url 'DefaultDataView' %}">
-                    <i class="fas fa-crow" href="{% url 'DefaultDataView' %}"></i>
-                </a>
-            {% elif num_random == 3 %}
-                <a href="{% url 'DefaultDataView' %}">
-                    <i class="fas fa-spider" href="{% url 'DefaultDataView' %}"></i>
-                </a>
-            {% elif num_random == 4 %}
-                <a href="{% url 'DefaultDataView' %}">
-                    <i class="fas fa-paw" href="{% url 'DefaultDataView' %}"></i>
-                </a>
-            {% elif num_random == 5 %}
-                <a href="{% url 'DefaultDataView' %}">
-                    <i class="fas fa-otter" href="{% url 'DefaultDataView' %}"></i>
-                </a>
-            {% elif num_random == 6 %}
-                <a href="{% url 'DefaultDataView' %}">
-                    <i class="fas fa-kiwi-bird" href="{% url 'DefaultDataView' %}"></i>
-                </a>
-            {% elif num_random == 7 %}
-                <a href="{% url 'DefaultDataView' %}">
-                    <i class="fas fa-horse-head" href="{% url 'DefaultDataView' %}"></i>
-                </a>
-            {% elif num_random == 8 %}
-                <a href="{% url 'DefaultDataView' %}">
-                    <i class="fas fa-horse" href="{% url 'DefaultDataView' %}"></i>
-                </a>
-            {% elif num_random == 9 %}
-                <a href="{% url 'DefaultDataView' %}">
-                    <i class="fas fa-hippo" href="{% url 'DefaultDataView' %}"></i>
-                </a>
-            {% elif num_random == 10 %}
-                <a href="{% url 'DefaultDataView' %}">
-                    <i class="fas fa-frog" href="{% url 'DefaultDataView' %}"></i>
-                </a>
-            {% elif num_random == 11 %}
-                <a href="{% url 'DefaultDataView' %}">
-                    <i class="fas fa-fish" href="{% url 'DefaultDataView' %}"></i>
-                </a>
-            {% elif num_random == 12 %}
-                <a href="{% url 'DefaultDataView' %}">
-                    <i class="fas fa-dragon" href="{% url 'DefaultDataView' %}"></i>
-                </a>
-            {% elif num_random == 13 %}
-                <a href="{% url 'DefaultDataView' %}">
-                    <i class="fas fa-dove" href="{% url 'DefaultDataView' %}"></i>
-                </a>
-            {% elif num_random == 14 %}
-                <a href="{% url 'DefaultDataView' %}">
-                    <i class="fas fa-dog" href="{% url 'DefaultDataView' %}"></i>
-                </a>
-            {% endif %}
-            <select class="form-select" style="margin-left: 10px;margin-right: 10px;" id="menu-tenant">
-                <option selected>Select...</option>
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
-            </select>
             <form class="dropdown navbar-search">
                 <div
                         class="dropdown-toggle no-caret" data-bs-toggle="dropdown" data-dropdown-animation
@@ -85,7 +72,8 @@
 							<span class="input-affix-wrapper input-search affix-border">
 								<input
                                         type="text" class="form-control  bg-transparent"
-                                        data-navbar-search-close="false" placeholder="Search..." aria-label="Search"
+                                        data-navbar-search-close="false" placeholder="{% trans 'Search' %}..."
+                                        aria-label="Search"
                                 >
 								<span class="input-suffix"><span>/</span>
 									<span class="btn-input-clear"><i class="bi bi-x-circle-fill"></i></span>
@@ -118,104 +106,8 @@
                         </div>
                     </div>
                     <!--/ Mobile Search -->
-                    <div data-simplebar class="dropdown-body p-2">
-                        <h6 class="dropdown-header">Recent Search
-                        </h6>
-                        <div class="dropdown-item bg-transparent">
-                            <a href="#" class="badge badge-pill badge-soft-secondary">Grunt</a>
-                            <a href="#" class="badge badge-pill badge-soft-secondary">Node JS</a>
-                            <a href="#" class="badge badge-pill badge-soft-secondary">SCSS</a>
-                        </div>
-                        <div class="dropdown-divider"></div>
-                        <h6 class="dropdown-header">Help
-                        </h6>
-                        <a href="javascript:void(0);" class="dropdown-item">
-                            <div class="media align-items-center">
-                                <div class="media-head me-2">
-                                    <div class="avatar avatar-icon avatar-xs avatar-soft-light avatar-rounded">
-											<span class="initial-wrap">
-												<span class="svg-icon">
-													<svg
-                                                            xmlns="http://www.w3.org/2000/svg"
-                                                            class="icon icon-tabler icon-tabler-corner-down-right"
-                                                            width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
-                                                            stroke="currentColor" fill="none" stroke-linecap="round"
-                                                            stroke-linejoin="round"
-                                                    >
-														<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-														<path d="M6 6v6a3 3 0 0 0 3 3h10l-4 -4m0 8l4 -4"></path>
-													 </svg>
-												</span>
-											</span>
-                                    </div>
-                                </div>
-                                <div class="media-body"></div>
-                            </div>
-                        </a>
-                        <a href="javascript:void(0);" class="dropdown-item">
-                            <div class="media align-items-center">
-                                <div class="media-head me-2">
-                                    <div class="avatar avatar-icon avatar-xs avatar-soft-light avatar-rounded">
-											<span class="initial-wrap">
-												<span class="svg-icon">
-													<svg
-                                                            xmlns="http://www.w3.org/2000/svg"
-                                                            class="icon icon-tabler icon-tabler-corner-down-right"
-                                                            width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
-                                                            stroke="currentColor" fill="none" stroke-linecap="round"
-                                                            stroke-linejoin="round"
-                                                    >
-														<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-														<path d="M6 6v6a3 3 0 0 0 3 3h10l-4 -4m0 8l4 -4"></path>
-													 </svg>
-												</span>
-											</span>
-                                    </div>
-                                </div>
-                                <div class="media-body">
-                                    View detail documentation
-                                </div>
-                            </div>
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <h6 class="dropdown-header">Users
-                        </h6>
-                        <a href="javascript:void(0);" class="dropdown-item">
-                            <div class="media align-items-center">
-                                <div class="media-head me-2">
-                                    <div class="avatar avatar-xs avatar-rounded">
-                                        <img src="" alt="user" class="avatar-img">
-                                    </div>
-                                </div>
-                                <div class="media-body"></div>
-                            </div>
-                        </a>
-                        <a href="javascript:void(0);" class="dropdown-item">
-                            <div class="media align-items-center">
-                                <div class="media-head me-2">
-                                    <div class="avatar avatar-xs avatar-soft-primary avatar-rounded">
-                                        <span class="initial-wrap">J</span>
-                                    </div>
-                                </div>
-                                <div class="media-body">
-                                    Joe Jackson
-                                </div>
-                            </div>
-                        </a>
-                        <a href="javascript:void(0);" class="dropdown-item">
-                            <div class="media align-items-center">
-                                <div class="media-head me-2">
-                                    <div class="avatar avatar-xs avatar-rounded">
-                                        <img src="" alt="user" class="avatar-img">
-                                    </div>
-                                </div>
-                                <div class="media-body">
-                                    Maria Richard
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="dropdown-footer d-xl-flex d-none"><a href="#"><u>Search all</u></a></div>
+                    <div data-simplebar class="dropdown-body p-2"></div>
+                    <div class="dropdown-footer d-xl-flex d-none"><a href="#"><u></u></a></div>
                 </div>
             </form>
             <!-- /Search -->
@@ -229,56 +121,67 @@
                     <div class="dropdown dropdown-notifications">
                         <a
                                 href="#"
-                                class="btn btn-icon btn-rounded btn-flush-dark flush-soft-hover dropdown-toggle no-caret"
+                                class="btn btn-icon btn-rounded btn-flush-dark flush-soft-hover dropdown-toggle no-caret mr-1"
                                 data-bs-toggle="dropdown" data-dropdown-animation role="button" aria-haspopup="true"
                                 aria-expanded="false"
+                                id="notifyDropdownData"
+                                data-url="{% url 'MyNotifyAllAPI' %}"
+                                data-method="GET"
                         >
-                            <span class="icon">
+                            <span
+                                    id="idxNotifyBell"
+                                    data-url="{% url 'MyNotifyNoDoneCountAPI' %}"
+                                    class="icon"
+                                    data-bs-toggle="tooltip"
+                                    data-bs-placement="top"
+                                    data-bs-original-title="{% trans 'Notifications' %}"
+                            >
                                 <span class="position-relative">
-                                    <span class="feather-icon">
-                                        <i data-feather="bell"></i>
-                                    </span>
-                                    <span class="badge badge-success badge-indicator position-top-end-overflow-1">
-                                    </span>
+                                    <div class="avatar avatar-icon avatar-xxs avatar-rounded">
+                                        <span class="initial-wrap">
+                                            <i class="fa-regular fa-bell fa-sm my-bell" id="idxNotifyBellIcon"></i>
+                                        </span>
+                                        <span
+                                                class="badge badge-warning badge-sm position-top-end-overflow-1"
+                                                id="my-notify-count"
+                                        ></span>
+                                    </div>
                                 </span>
                             </span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end p-0">
-                            <h6 class="dropdown-header px-4 fs-6">{% trans 'Notifications' %}
-                                <a href="#" class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover">
-                                    <span class="icon">
-                                        <span class="feather-icon">
-                                            <i data-feather="settings"></i>
-                                        </span>
-                                    </span>
-                                </a>
+                            <h6 class="dropdown-header px-4 fs-6">
+                                {% trans 'Notifications' %}
+                                <div>
+                                    <button
+                                            class="btn btn-icon btn-rounded bg-dark-hover mr-1"
+                                            id="btnNotifySeenAll"
+                                            data-url="{% url 'MyNotifySeenAllAPI' %}"
+                                            data-method="PUT"
+                                            data-bs-toggle="tooltip"
+                                            data-bs-placement="bottom"
+                                            data-bs-original-title="{% trans 'Seen all' %}"
+                                    >
+                                        <span class="icon"><i class="fa-solid fa-check-double"></i></span>
+                                    </button>
+                                    <button
+                                            class="btn btn-icon btn-rounded bg-dark-hover mr-1"
+                                            id="btnNotifyClearAll"
+                                            data-url="{% url 'MyNotifyCleanAllAPI' %}"
+                                            data-method="DELETE"
+                                            data-bs-toggle="tooltip"
+                                            data-bs-placement="bottom"
+                                            data-bs-original-title="{% trans 'Delete all viewed notifications' %}"
+                                    >
+                                        <span class="icon"><i class="fa-regular fa-trash-can"></i></span>
+                                    </button>
+                                </div>
                             </h6>
-                            <div data-simplebar class="dropdown-body  p-2">
-                                <a href="javascript:void(0);" class="dropdown-item">
-                                    <div class="media">
-                                        <div class="media-head">
-                                            <div class="avatar avatar-rounded avatar-sm">
-                                                <img
-                                                        src="{% static 'assets/images/avatar/avatar.jpg' %}" alt="user"
-                                                        class="avatar-img"
-                                                >
-                                            </div>
-                                        </div>
-                                        <div class="media-body">
-                                            <div>
-                                                <div class="notifications-text">Morgan Freeman accepted your
-                                                    invitation to join the team
-                                                </div>
-                                                <div class="notifications-info">
-                                                    <span class="badge badge-soft-success">Collaboration</span>
-                                                    <div class="notifications-time">Today, 10:14 PM</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </a>
+                            <div data-simplebar class="dropdown-body p-2">
+                                <div id="idxNotifyShowData"></div>
                             </div>
-                            <div class="dropdown-footer"><a href="#"><u>View all notifications</u></a></div>
+                            <div class="dropdown-footer hidden"><a href="#"><u>{% trans 'View all notifications' %}</u></a>
+                            </div>
                         </div>
                     </div>
                 </li>
@@ -289,12 +192,7 @@
                                 data-bs-toggle="dropdown" data-dropdown-animation data-bs-auto-close="outside"
                                 aria-expanded="false"
                         >
-                            <div class="avatar avatar-rounded avatar-xs">
-                                <img
-                                        src="{% static 'assets/images/avatar/avatar.jpg' %}" alt="user"
-                                        class="avatar-img"
-                                >
-                            </div>
+                            {{ base|render_avatar|safe }}
                         </a>
                         <div
                                 class="modal fade" id="switchMyCompany" tabindex="-1" role="dialog"
@@ -365,8 +263,14 @@
                             <div class="p-2">
                                 <div class="media">
                                     <div class="media-head me-2">
-                                        <div class="avatar avatar-primary avatar-sm avatar-rounded">
-                                            <span class="initial-wrap">{{ base.fullname|shorten_name:True }}</span>
+                                        <div class="position-relative avatar avatar-primary avatar-sm avatar-rounded my-avatar">
+                                            {{ base|render_avatar_tag|safe }}
+                                            <div
+                                                    id="btnUploadMyAvatar"
+                                                    class="position-absolute rounded-circle btn bg-dark opacity-80 top-0 left-0 h-100 w-100 d-flex justify-content-center align-items-center my-upload-avatar d-none"
+                                            >
+                                                <i class="fa-solid fa-camera text-white"></i>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="media-body">
@@ -374,7 +278,9 @@
                                             {{ base.fullname }}
                                         </div>
                                         <div class="fs-7">
-                                            <a href="mailto:{{ base.email }}">{{ base.email }}</a>
+                                            <a
+                                                    id="email-request-owner" href="mailto:{{ base.email }}"
+                                            >{{ base.email }}</a>
                                         </div>
                                     </div>
                                 </div>
@@ -392,13 +298,11 @@
                                         data-id="{{ base.company_current_data.id }}"
                                         style="max-width: 20em;overflow: hidden;text-overflow: ellipsis;"
                                 >
-                                    <span
-                                            class="dropdown-icon feather-icon"
-                                            data-bs-toggle="modal" data-bs-target="#switchMyCompany"
-                                    >
+                                    <span id="btnChangeCurrentCompany" class="dropdown-icon" data-bs-toggle="modal" data-bs-target="#switchMyCompany">
                                         <i
-                                                data-feather="refresh-cw"
-                                                data-bs-toggle="tooltip" data-bs-placement="left"
+                                                class="fa-solid fa-retweet"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-placement="left"
                                                 title="Click to switch company"
                                         ></i>
                                     </span>
@@ -423,12 +327,6 @@
                                     <a class="dropdown-item" href="/">{% trans 'Profile' %}</a>
                                 {% endif %}
                             {% endif %}
-                            <a class="dropdown-item" href="#">
-                                <span class="dropdown-icon feather-icon">
-                                    <i data-feather="settings"></i>
-                                </span>
-                                <span>{% trans 'Settings' %}</span>
-                            </a>
                             <a id="link-logout" class="dropdown-item" href="{% url 'AuthLogout' %}">
                                 <span class="dropdown-icon feather-icon">
                                     <i data-feather="log-out"></i>
@@ -437,28 +335,47 @@
                             </a>
 
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#">
+                            <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalRaiseTicket">
                                 <span class="dropdown-icon feather-icon">
                                     <i data-feather="tag"></i>
                                 </span>
                                 <span>{% trans 'Raise a ticket' %}</span>
                             </a>
-                            <a class="dropdown-item" href="#">
+                            <a class="dropdown-item" href="{% url 'TermsAndConditionsView' %}">
                                 <span class="dropdown-icon feather-icon">
                                     <i data-feather="book"></i>
                                 </span>
                                 <span>{% trans 'Terms & Conditions' %}</span>
                             </a>
-                            <a class="dropdown-item" href="#">
+                            <a class="dropdown-item" href="{% url 'HelpAndSupportView' %}">
                                 <span class="dropdown-icon feather-icon">
                                     <i data-feather="help-circle"></i>
                                 </span>
                                 <span>{% trans 'Help & Support' %}</span>
                             </a>
-                            <div class="dark-mode-btn">
-                                <input type="checkbox" id="dark_mode_btn" class="hidden">
-                                <label for="dark_mode_btn" class="dark_mode_lb"></label>
-                            </div>
+
+                            {% if is_debug %}
+                                <div class="dropdown-divider"></div>
+                                <h6 class="dropdown-header">Testing Product</h6>
+                                <a class="dropdown-item" href="{% url 'UtilitiesView' %}">
+                                    <span class="dropdown-icon">
+                                        <i class="fa-solid fa-toolbox"></i>
+                                    </span>
+                                    <span>Utility tools page</span>
+                                </a>
+                                <a class="dropdown-item" href="{% url 'DefaultDataView' %}">
+                                    <span class="dropdown-icon">
+                                        <i class="fa-solid fa-table"></i>
+                                    </span>
+                                    <span>System default data page</span>
+                                </a>
+                                <a class="dropdown-item" href="{% url 'ComponentCollections' %}">
+                                    <span class="dropdown-icon">
+                                        <i class="fa-solid fa-puzzle-piece"></i>
+                                    </span>
+                                    <span>Components</span>
+                                </a>
+                            {% endif %}
                         </div>
                     </div>
                 </li>

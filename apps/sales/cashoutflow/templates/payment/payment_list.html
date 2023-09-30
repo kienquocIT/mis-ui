@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Payment List' %}{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <a href="{% url "PaymentCreate" %}">
+        <button id="btn-show-modal-create" class="btn btn-outline-primary" type="button">
+            <span>
+                <span>{% trans 'Add' %}</span>
+                <span class="icon">
+                    <i class="fa-solid fa-plus"></i>
+                </span>
+            </span>
+        </button>
+    </a>
+{% endblock %}
+{% block pageContent %}
+    <div id="section-advance-list">
+        <table id="datatable_payment_list" class="table nowrap w-100 mb-5" data-method="GET"
+               data-url="{% url 'PaymentListAPI' %}"
+               data-url-detail="{% url 'PaymentDetail' '0' %}"
+               data-type-translate-approved="{% trans 'Approved' %}"
+        >
+            <thead>
+            <th>#</th>
+            <th>{% trans "Code" %}</th>
+            <th>{% trans "Name" %}
+                <i class="fas fa-info-circle icon-info"
+                   data-bs-toggle="tooltip"
+                   data-bs-placement="bottom"
+                   title="{% trans 'Press row here to open detail page.' %}">
+                </i>
+            </th>
+            <th>{% trans "Created date" %}</th>
+            <th>{% trans "Payment value" %}</th>
+            <th>{% trans "Status" %}</th>
+            </thead>
+        </table>
+    </div>
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/js/payment/payment_list.js' %}"></script>
+{% endblock %}

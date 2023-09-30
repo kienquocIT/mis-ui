@@ -622,8 +622,6 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 ;(function() {
-
-    "use strict";
     var root = this;
 
     var Biltong = root.Biltong = {
@@ -796,9 +794,6 @@
 }).call(typeof window !== 'undefined' ? window : this);
 ;
 (function () {
-
-    "use strict";
-
     /**
      * Creates a Touch object.
      * @param view
@@ -1497,7 +1492,6 @@
 
 ;(function() {
 
-    "use strict";
     var root = this;
 
     var _suggest = function(list, item, head) {
@@ -3592,7 +3586,6 @@
  */
  ;(function() {
 
-  "use strict";
 
    var root = this;
 
@@ -3894,8 +3887,6 @@
  * Dual licensed under the MIT and GPL2 licenses.
  */
 ;(function () {
-
-    "use strict";
 
     var root = this;
 
@@ -7205,8 +7196,6 @@
  * Dual licensed under the MIT and GPL2 licenses.
  */
 ;(function() {
-
-    "use strict";
     var root = this, _jp = root.jsPlumb, _ju = root.jsPlumbUtil;
 
     // ------------------------------ BEGIN OverlayCapablejsPlumbUIComponent --------------------------------------------
@@ -7515,8 +7504,6 @@
  * Dual licensed under the MIT and GPL2 licenses.
  */
 ;(function () {
-
-    "use strict";
     var root = this, _jp = root.jsPlumb, _ju = root.jsPlumbUtil;
 
     // create the drag handler for a connection
@@ -8790,7 +8777,7 @@
 ;
 (function () {
 
-    "use strict";
+
     var root = this,
         _jp = root.jsPlumb,
         _ju = root.jsPlumbUtil;
@@ -9446,7 +9433,7 @@
 ;
 (function () {
 
-    "use strict";
+
 
     var root = this,
         _ju = root.jsPlumbUtil,
@@ -10741,7 +10728,7 @@
 ;
 (function () {
 
-    "use strict";
+
 
     var root = this,
         _ju = root.jsPlumbUtil,
@@ -10795,7 +10782,7 @@
 ;
 (function () {
 
-    "use strict";
+
     var root = this, _jp = root.jsPlumb, _ju = root.jsPlumbUtil, _jg = root.Biltong;
 
     _jp.Segments = {

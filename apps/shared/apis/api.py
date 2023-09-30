@@ -1,17 +1,66 @@
 """share all popular class function for use together purpose"""
-from typing import Callable, TypedDict
+from typing import Callable, TypedDict, Union, Literal
 import requests
 
 from django.db.models import Model
 from django.conf import settings
 from django.http import response
+from requests_toolbelt import MultipartEncoder
 from rest_framework import status
 
-from .urls_map import ApiURL
+from .urls_map import ApiURL, StringUrl
 
 api_url_refresh_token = ApiURL.refresh_token
 
 REQUEST_TIMEOUT = 1 + 60
+
+
+class PermCheck:
+    def __init__(
+            self, url: StringUrl, method: Literal['GET', 'POST', 'PUT', 'DELETE', 'get', 'post', 'put', 'delete'],
+            fill_key: list[str] = None, fixed_fill_key: dict = None,
+            data: dict = None,
+    ):
+        self.url = url
+        self.method = method.upper()
+        self.fill_key = fill_key if isinstance(fill_key, list) else []
+        self.fixed_fill_key = fixed_fill_key if isinstance(fixed_fill_key, dict) else {}
+        self.data = data if isinstance(data, dict) else {}
+
+    def parse_url(self, view_kwargs: dict):
+        fill_data = {**self.fixed_fill_key}
+        for key in self.fill_key:
+            data_key = view_kwargs.get(key, None)
+            if data_key:
+                fill_data[key] = data_key
+            else:
+                return None
+        return self.url.fill_key(**fill_data)
+
+    def valid(self, request, view_kwargs: dict = None) -> (bool, tuple):
+        real_url = self.parse_url(view_kwargs=view_kwargs if isinstance(view_kwargs, dict) else {})
+        if real_url:
+            cls_api = ServerAPI(
+                request=request,
+                user=request.user,
+                url=real_url,
+                is_check_perm=True,
+            )
+            if self.method == 'GET':
+                resp = cls_api.get(data=self.data)
+            elif self.method == 'POST':
+                resp = cls_api.post(data=self.data)
+            elif self.method == 'PUT':
+                resp = cls_api.put(data=self.data)
+            elif self.method == 'DELETE':
+                resp = cls_api.delete(data=self.data)
+            else:
+                return False, RespData.resp_403()
+
+            if not resp.state:
+                return False, resp.auto_return()
+            return True, RespData.resp_200(data={})
+        return False, RespData.resp_403()
 
 
 class RespDict(TypedDict, total=False):
@@ -185,6 +234,66 @@ class RespData:
                     data_all[key] = func_call(data_all[key])
         return data_all
 
+    def auto_return(
+            self,
+            key_success: str = None,
+            callback_success: callable = None,
+            status_success: int = None,
+            callback_errors: callable = None,
+    ) -> tuple[dict or list, int]:
+        if not status_success:
+            status_success = status.HTTP_200_OK
+
+        if self.state:
+            page_info = {
+                settings.UI_RESP_KEY_PAGE_SIZE: self.page_size,
+                settings.UI_RESP_KEY_PAGE_COUNT: self.page_count,
+                settings.UI_RESP_KEY_PAGE_NEXT: self.page_next,
+                settings.UI_RESP_KEY_PAGE_PREVIOUS: self.page_previous,
+            }
+            if callback_success:
+                return {**callback_success(self.result), **page_info}, status_success
+            if key_success:
+                return {key_success: self.result, **page_info}, status_success
+            return self.result, status_success
+        elif self.status == 401:
+            return self.resp_401()
+        elif self.status == 403:
+            return self.resp_403()
+        elif self.status == 404:
+            return self.resp_404()
+        elif self.status == 405:
+            return self.resp_403()
+        elif self.status >= 500:
+            return self.resp_500()
+        if callback_errors:
+            return self.resp_400(errors_data=callback_errors(self.errors))
+        return self.resp_400({'errors': self.errors})
+
+    @classmethod
+    def resp_200(cls, data: list or dict):
+        return data, status.HTTP_200_OK
+
+    @classmethod
+    def resp_400(cls, errors_data: dict):
+        return {'render_api_status': 1400, **errors_data}, status.HTTP_400_BAD_REQUEST
+
+    @classmethod
+    def resp_401(cls):
+        return {}, status.HTTP_401_UNAUTHORIZED  # mask_view return 302 (redirect to log in)
+
+    @classmethod
+    def resp_403(cls):
+        return {'render_api_status': 1403}, status.HTTP_403_FORBIDDEN
+
+    @classmethod
+    def resp_404(cls):
+        return {'render_api_status': 1404}, status.HTTP_404_NOT_FOUND
+
+    @classmethod
+    def resp_500(cls):
+        return {'render_api_status': 1500}, status.HTTP_500_INTERNAL_SERVER_ERROR
+
 
 class DictFillResp(dict):
     """fill data for response request"""
@@ -332,7 +441,7 @@ class APIUtil:
             _result=resp_json.get(cls.key_response_data, {}),
             _errors=resp_json.get(cls.key_response_err, {}),
             _status=resp_json.get(cls.key_response_status, resp.status_code),
-            _page_size=resp_json.get(cls.key_response_status, resp.status_code),
+            _page_size=resp_json.get(cls.key_response_page_size, resp.status_code),
             _page_count=resp_json.get(cls.key_response_page_count, None),
             _page_next=resp_json.get(cls.key_response_page_next, None),
             _page_previous=resp_json.get(cls.key_response_page_previous, None),
@@ -360,7 +469,12 @@ class APIUtil:
                     resp = requests.get(url=safe_url, headers=headers, timeout=REQUEST_TIMEOUT)
         return self.get_data_from_resp(resp)
 
-    def call_post(self, safe_url: str, headers: dict, data: dict) -> RespData:
+    def call_post(
+            self,
+            safe_url: str,
+            headers: dict,
+            data: Union[dict, MultipartEncoder],
+    ) -> RespData:
         """
         Support ServerAPI call to server with POST method.
         (refresh token after recall if token is expires)
@@ -374,12 +488,32 @@ class APIUtil:
             result: (dict or list) : is Response Data from API
             errors: (dict) : is Error Data from API
         """
-        resp = requests.post(
-            url=safe_url,
-            headers=headers,
-            json=data,
-            timeout=REQUEST_TIMEOUT
-        )
+        if 'content-type' in headers:
+            content_type = headers.get('content-type', None)
+        elif 'Content-Type' in headers:
+            content_type = headers.get('Content-Type', None)
+        else:
+            content_type = None
+
+        config = {
+            'url': safe_url,
+            'headers': headers,
+            'timeout': REQUEST_TIMEOUT,
+        }
+
+        if content_type:
+            match content_type.split(":")[0]:
+                case 'multipart/form-data':
+                    config['files'] = data
+                case 'application/json':
+                    config['json'] = data
+                case _:
+                    config['data'] = data
+        else:
+            headers['content-type'] = 'application/json'
+            config['data'] = data
+
+        resp = requests.post(**config)
         if resp.status_code == 401:
             if self.user_obj:
                 # refresh token
@@ -459,13 +593,33 @@ class ServerAPI:
     """
 
     def __init__(self, url, **kwargs):
+        self.cus_headers = kwargs.get('cus_headers', None)
+        api_domain = kwargs.get('api_domain', settings.API_DOMAIN)
         self.user = kwargs.get('user', None)
         if url.startswith('\\'):
-            self.url = settings.API_DOMAIN + url[1:]
+            self.url = api_domain + url[1:]
         else:
-            self.url = settings.API_DOMAIN + url
+            self.url = api_domain + url
 
         self.is_minimal = kwargs.get('is_minimal', False)
+        self.is_secret_ui = kwargs.get('is_secret_ui', False)
+        self.request = kwargs.get('request', None)
+        self.is_check_perm = kwargs.get('is_check_perm', False)
+
+        if self.request:
+            self.query_params = getattr(self.request, 'query_params', {})
+        else:
+            self.query_params = {}
+
+        self.is_dropdown = kwargs.get('is_dropdown', False)
+
+    @property
+    def setup_header_dropdown(self):
+        if self.request:
+            data_is_dd = self.request.META.get('HTTP_DTISDD', None)
+            if data_is_dd == 'true' or self.is_dropdown is True:
+                return {'DATAISDD': 'true'}
+        return {}
 
     @property
     def headers(self) -> dict:
@@ -478,12 +632,39 @@ class ServerAPI:
         data = {
             'content-type': 'application/json',
             'Accept-Language': 'vi',
+            **self.setup_header_dropdown,
         }
         if self.user and getattr(self.user, 'access_token', None):
             data.update(APIUtil.key_authenticated(access_token=self.user.access_token))
         if self.is_minimal is True:
             data[settings.API_KEY_MINIMAL] = settings.API_KEY_VALUE_MINIMAL
+
+        if self.is_check_perm is True:
+            data['DATAHASPERM'] = 'true'
+
+        if self.is_secret_ui:
+            data.update(
+                {
+                    settings.MEDIA_KEY_FLAG: 'true',
+                    settings.MEDIA_KEY_SECRET_TOKEN_UI: settings.MEDIA_SECRET_TOKEN_UI,
+                }
+            )
+        if self.cus_headers:
+            return {
+                **data,
+                **self.cus_headers
+            }
         return data
+
+    @property
+    def setup_query_params(self):
+        ctx = {}
+        if hasattr(self.request, 'query_params'):
+            return {
+                key: value
+                for key, value in self.request.query_params.dict().items() if key not in ['_'] and value
+            }
+        return ctx
 
     def get(self, data=None):
         """
@@ -493,10 +674,14 @@ class ServerAPI:
 
         Returns: APIUtil --> call_get()
         """
-        safe_url = self.url
-        if data and isinstance(data, dict):
-            url_encode = [f"{key}={val}" for key, val in data.items()]
-            safe_url += f'?{"&".join(url_encode)}'
+
+        params = {
+            **self.setup_query_params,
+            **(data if isinstance(data, dict) else {}),
+        }
+
+        url_encode = [f"{key}={val}" for key, val in params.items()]
+        safe_url = self.url + f'?{"&".join(url_encode)}'
         return APIUtil(user_obj=self.user).call_get(safe_url=safe_url, headers=self.headers)
 
     def post(self, data) -> RespData:
@@ -507,13 +692,13 @@ class ServerAPI:
 
         Returns: APIUtil --> call_post()
         """
-        if isinstance(data, dict):
+        if isinstance(data, (dict, MultipartEncoder)):
             return APIUtil(user_obj=self.user).call_post(
                 safe_url=self.url,
                 headers=self.headers,
                 data=data
             )
-        raise ValueError('Body data for POST request must be dictionary')
+        raise ValueError('Body data for POST request must be dictionary or MultipartEncoder')
 
     def put(self, data) -> RespData:
         """
@@ -544,3 +729,7 @@ class ServerAPI:
             headers=self.headers,
             data=data if data and isinstance(data, dict) else {}
         )
+
+    @classmethod
+    def empty_200(cls):
+        return {}, status.HTTP_200_OK

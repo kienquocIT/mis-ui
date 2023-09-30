@@ -1,69 +1,30 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
+{% block title %}{% trans 'Expense Create' %}{% endblock %}
 {% block cssHeader %}
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
-       href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="" type="submit" form="frmCreateExpense"
-       data-bs-original-title="Save">
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="save"></i>
+    <button class="btn btn-outline-primary" type="submit" form="frm-create-expense">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
             </span>
         </span>
     </button>
-
-    <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
-       href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
-       data-bs-original-title="Refresh">
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="refresh-cw"></i>
-            </span>
-        </span>
-    </a>
 {% endblock %}
 {% block pageContent %}
-    <form id="frmCreateExpense" data-method="POST" data-url="{% url "ExpenseListAPI" %}" data-url-redirect="{% url "ExpenseList" %}">
+    <form id="frm-create-expense" data-method="POST" data-url="{% url "ExpenseListAPI" %}"
+          data-url-redirect="{% url "ExpenseList" %}">
         {% csrf_token %}
-        {{ data.content.price_list|json_script:"id-price-list" }}
-        {{ data.content.currency_list|json_script:"id-currency-list" }}
         <div class="row">
-            <div class="col-3 form-group">
-                <label class="form-label required">{% trans 'Code' %}</label>
-                <input class="form-control" type="text" placeholder="CODE" name="code">
-            </div>
-            <div class="col-6">
+            <div class="col-4">
                 <label class="form-label required">{% trans 'Name' %}</label>
-                <input class="form-control" type="text" placeholder="Input Name" name="title">
-            </div>
-            <div class="col-3 mt-3">
-                <div class="form-check form-check-inline mt-2">
-                    <input class="form-check-input" type="checkbox" id="check-tab-inventory" value="option1"
-                           disabled>
-                    <label class="form-check-label" for="check-tab-inventory">{% trans "Inventory" %}</label>
-                </div>
-                <div class="form-check form-check-inline mt-2">
-                    <input class="form-check-input" type="checkbox" id="check-tab-sale" value="option2" disabled>
-                    <label class="form-check-label" for="check-tab-sale">{% trans "Sale" %}</label>
-                </div>
-                <div class="form-check form-check-inline mt-2">
-                    <input class="form-check-input" type="checkbox" id="check-tab-purchase" value="option3"
-                           disabled>
-                    <label class="form-check-label" for="check-tab-purchase">{% trans "Purchase" %}</label>
-                </div>
-                <div class="wrap-text inline mt-1">
-                    <i
-                            class="fas fa-info-circle icon-info"
-                            data-bs-toggle="tooltip"
-                            data-bs-placement="bottom"
-                            title="{% trans 'Not apply Sale and Inventory for Expense' %}"
-                    ></i>
-                </div>
+                <input class="form-control" type="text" placeholder="Input Name" name="title" required>
             </div>
         </div>
 
@@ -74,57 +35,52 @@
                         <span class="nav-link-text">{% trans 'General' %}</span>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link disabled" data-bs-toggle="tab" id="link-tab-purchasing">
-                        <span class="nav-link-text">{% trans 'Purchasing' %}</span>
-                    </a>
-                </li>
             </ul>
         </div>
         <div class="tab-content">
             <div class="tab-pane fade show active" id="tab_general">
                 <div class="row">
                     <div class="form-group col-3">
-                        <label class="form-label required">{% trans "Expense Type" %}</label>
-                        <select id="chooseExpenseType" class="select2 form-control" data-method="GET"
-                                data-url="{% url 'ExpenseTypeListAPI' %}" name="expense_type"></select>
-                    </div>
-                    <div class="form-group col-3">
                         <label class="form-label required">{% trans "UoM Group" %}</label>
-                        <select id="chooseUoMGroup" class="select2 form-control" data-method="GET"
-                                data-url="{% url "UnitOfMeasureGroupListAPI" %}"
-                                data-url-detail="{% url "UnitOfMeasureGroupDetailAPI" pk=0 %}"
-                                name="uom_group"></select>
+                        <input id="chooseUoMGroup" data-method="GET" class="form-control" readonly
+                               data-url="{% url "UnitOfMeasureGroupListAPI" %}"
+                               name="uom_group" data-id="" required/>
                     </div>
                     <div class="form-group col-3">
                         <label class="form-label required">{% trans "UoM" %}</label>
-                        <select id="chooseUom" class="select2 form-control" data-method="GET"
-                                data-url="{% url "UnitOfMeasureListAPI" %}"
-                                name="uom"></select>
+                        <select id="chooseUom" class="form-select" data-method="GET"
+                                data-url="{% url "UnitOfMeasureOfGroupLaborListAPI" %}"
+                                name="uom" required></select>
                     </div>
-                    <div class="form-group col-3">
-                        <label class="form-label">{% trans "Tax Code" %}</label>
-                        <select id="chooseTaxCode" class="select2 form-control" data-method="GET"
-                                data-url="{% url "TaxListAPI" %}" name="tax_code"></select>
-                    </div>
-                </div>
-                <div class="row">
                     <div class="col-6 form-group" id="choosePriceList" data-method="GET"
                          data-url="{% url "PriceListAPI" %}">
                         <label class="form-label">{% trans "Price List" %}</label>
-                        <input type="select" class="form-select dropdown-toggle" data-bs-toggle="dropdown"
+                        <input class="form-select dropdown-toggle" data-bs-toggle="dropdown" id="dropdown-price-list"
                                oninput="this.value=''"
                                data-bs-display="static" aria-expanded="false" placeholder="Select Price List">
                         <ul class="dropdown-menu dropdown-menu-end dropdown-menu-lg-start w-100 ul-price-list">
                         </ul>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-3 form-group">
+                        <label class="form-label">{% trans "Role" %}</label>
+                        <select class="form-select" id="chooseRole" data-method="GET"
+                                data-url="{% url "RoleListAPI" %}" multiple name="role"></select>
+                    </div>
+                </div>
             </div>
         </div>
     </form>
 {% endblock %}
+{% block dataHiddenGroup %}
+    <input type="text" id="url-factory"
+           data-price_list="{% url 'PriceListAPI' %}"
+           data-currency_list="{% url 'CurrencyListAPI' %}"
+    >
+{% endblock %}
 {% block jsFooter %}
+    <script src="{% static 'assets/js/masterdata/saledata/expense/expense_common.js' %}"></script>
     <script src="{% static 'assets/js/masterdata/saledata/expense/expense_create.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
-    <script src="{% static "assets/js/masterdata/saledata/product/vietnam-number-separator.js" %}"></script>
 {% endblock %}

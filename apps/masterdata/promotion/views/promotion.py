@@ -5,11 +5,10 @@ from rest_framework import status
 from rest_framework.views import APIView
 
 from apps.core.workflow.views.config import WORKFLOW_TYPE
-from apps.shared import mask_view, ServerAPI, ApiURL, PromotionMsg, CUSTOMER_REVENUE, COMPANY_SIZE
-from django.utils.translation import gettext_lazy as _
+from apps.shared import mask_view, ServerAPI, ApiURL, PromotionMsg, CUSTOMER_REVENUE, COMPANY_SIZE, PermCheck
 
 __all__ = ['PromotionList', 'PromotionCreate', 'PromotionListAPI', 'PromotionCreateAPI',
-           'PromotionDetail', 'PromotionDetailAPI', 'PromotionCheckListAPI']
+           'PromotionDetail', 'PromotionDetailAPI', 'PromotionCheckListAPI', 'PromotionEdit']
 
 
 class PromotionList(View):
@@ -17,7 +16,7 @@ class PromotionList(View):
         auth_require=True,
         template='masterdata/promotion/promotion_list.html',
         breadcrumb='PROMOTION_LIST_PAGE',
-        menu_active='menu_pricing',
+        menu_active='id_menu_promotion_list',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -29,13 +28,9 @@ class PromotionListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.PROMOTION_LIST).get()
-        if resp.state:
-            return {'promotion_list': resp.result}, status.HTTP_200_OK
-
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST
+        params = request.query_params.dict()
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.PROMOTION_LIST).get(params)
+        return resp.auto_return(key_success='promotion_list')
 
 
 class PromotionCreate(View):
@@ -44,6 +39,7 @@ class PromotionCreate(View):
         template='masterdata/promotion/promotion_create.html',
         breadcrumb='PROMOTION_CREATE_PAGE',
         menu_active='menu_pricing',
+        perm_check=PermCheck(url=ApiURL.PROMOTION_LIST, method='post',),
     )
     def get(self, request, *args, **kwargs):
         return {
@@ -60,14 +56,11 @@ class PromotionCreateAPI(APIView):
     )
     def post(self, request, *args, **kwargs):
         data = request.data
-        resp = ServerAPI(user=request.user, url=ApiURL.PROMOTION_LIST).post(data)
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.PROMOTION_LIST).post(data)
         if resp.state:
             resp.result['message'] = PromotionMsg.CREATE
             return resp.result, status.HTTP_200_OK
-
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        return resp.auto_return()
 
 
 class PromotionDetail(View):
@@ -86,43 +79,49 @@ class PromotionDetail(View):
                }, status.HTTP_200_OK
 
 
+class PromotionEdit(View):
+    @mask_view(
+        auth_require=True,
+        template='masterdata/promotion/promotion_edit.html',
+        breadcrumb='PROMOTION_EDIT_PAGE',
+        menu_active='menu_pricing',
+    )
+    def get(self, request, pk, *args, **kwargs):
+        return {
+                   'doc_id': pk,
+                   'revenue': CUSTOMER_REVENUE,
+                   'company_size': COMPANY_SIZE,
+                   'cus_operator': WORKFLOW_TYPE[4],
+               }, status.HTTP_200_OK
+
+
 class PromotionDetailAPI(APIView):
     @mask_view(
         auth_require=True,
         is_api=True,
     )
     def get(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.PROMOTION_DETAIL.push_id(pk)).get()
-        if resp.state:
-            return resp.result, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.PROMOTION_DETAIL.push_id(pk)).get()
+        return resp.auto_return()
 
     @mask_view(
         auth_require=True,
         is_api=True,
     )
     def put(self, request, pk, *args, **kwargs):
-        req = ServerAPI(user=request.user, url=ApiURL.PROMOTION_DETAIL.push_id(pk)).put(request.data)
-        if req.state:
-            return req.result, status.HTTP_200_OK
-        elif req.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': req.errors}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.PROMOTION_DETAIL.push_id(pk)).put(request.data)
+        return resp.auto_return()
 
     @mask_view(
         auth_require=True,
         is_api=True
     )
     def delete(self, request, pk, *args, **kwargs):
-        req = ServerAPI(user=request.user, url=ApiURL.PROMOTION_DETAIL.push_id(pk)).delete(request.data)
-        if req.state:
-            req.result['message'] = PromotionMsg.DELETE
-            return req.result, status.HTTP_200_OK
-        elif req.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': req.errors}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.PROMOTION_DETAIL.push_id(pk)).delete(request.data)
+        if resp.state:
+            resp.result['message'] = PromotionMsg.DELETE
+            return resp.result, status.HTTP_200_OK
+        return resp.auto_return()
 
 
 class PromotionCheckListAPI(APIView):
@@ -132,11 +131,6 @@ class PromotionCheckListAPI(APIView):
     )
     def get(self, request, *args, **kwargs):
         data = request.query_params.dict()
-        resp = ServerAPI(user=request.user, url=ApiURL.PROMOTION_CHECK_LIST).get(data)
-        if resp.state:
-            return {'promotion_check_list': resp.result}, status.HTTP_200_OK
-
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': _('Failed to load resource')}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.PROMOTION_CHECK_LIST).get(data)
+        return resp.auto_return(key_success='promotion_check_list')
 

@@ -2,7 +2,7 @@ from django.views import View
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from apps.shared import mask_view, ApiURL, ServerAPI
+from apps.shared import mask_view, ApiURL, ServerAPI, SaleMsg, PermCheck
 
 
 class AdvancePaymentList(View):
@@ -12,10 +12,35 @@ class AdvancePaymentList(View):
         auth_require=True,
         template='advancepayment/advance_payment_list.html',
         breadcrumb='ADVANCE_PAYMENT_LIST_PAGE',
-        menu_active='menu_advance_payment_list',
+        menu_active='id_menu_advance_payment',
+        perm_check=PermCheck(url=ApiURL.ADVANCE_PAYMENT_LIST, method='GET'),
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
+
+
+class AdvancePaymentListAPI(APIView):
+    permission_classes = [IsAuthenticated]  # noqa
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.ADVANCE_PAYMENT_LIST).get(params)
+        return resp.auto_return(key_success='advance_payment_list')
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def post(self, request, *arg, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.ADVANCE_PAYMENT_LIST).post(request.data)
+        if resp.state:
+            resp.result['message'] = SaleMsg.ADVANCE_PAYMENT_CREATE
+            return resp.result, status.HTTP_201_CREATED
+        return resp.auto_return()
 
 
 class AdvancePaymentCreate(View):
@@ -26,56 +51,16 @@ class AdvancePaymentCreate(View):
         template='advancepayment/advance_payment_create.html',
         breadcrumb='ADVANCE_PAYMENT_CREATE_PAGE',
         menu_active='menu_advance_payment_list',
+        perm_check=PermCheck(url=ApiURL.ADVANCE_PAYMENT_LIST, method='POST'),
     )
     def get(self, request, *args, **kwargs):
-        resp1 = ServerAPI(user=request.user, url=ApiURL.SALE_ORDER_LIST).get()
-        resp2 = ServerAPI(user=request.user, url=ApiURL.QUOTATION_LIST).get()
-        resp3 = ServerAPI(user=request.user, url=ApiURL.EXPENSE_LIST).get()
-        resp4 = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_LIST).get()
-        return {'data':
-            {
-                'employee_current_id': request.user.employee_current_data.get('id', None),
-                'sale_order_list': resp1.result,
-                'quotation_list': resp2.result,
-                'expense_list': resp3.result,
-                'account_list': resp4.result,
-            }
-        }, status.HTTP_200_OK
-
-
-class AdvancePaymentListAPI(APIView):
-    permission_classes = [IsAuthenticated] # noqa
-
-    @mask_view(
-        auth_require=True,
-        is_api=True,
-    )
-    def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.ADVANCE_PAYMENT_LIST).get()
-        if resp.state:
-            return {'advance_payment_list': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
-
-    @mask_view(
-        auth_require=True,
-        is_api=True,
-    )
-    def post(self, request, *arg, **kwargs):
-        data = request.data
-        response = ServerAPI(user=request.user, url=ApiURL.ADVANCE_PAYMENT_LIST).post(data)
-        if response.state:
-            return response.result, status.HTTP_200_OK
-        if response.errors:
-            if isinstance(response.errors, dict):
-                err_msg = ""
-                for key, value in response.errors.items():
-                    err_msg += str(key) + ': ' + str(value)
-                    break
-                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
-            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
-        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        resp1 = ServerAPI(
+            user=request.user,
+            url=ApiURL.EMPLOYEE_DETAIL.push_id(request.user.employee_current_data.get('id', None))
+        ).get()
+        return {
+                   'data': {'employee_current': resp1.result}
+               }, status.HTTP_200_OK
 
 
 class AdvancePaymentDetail(View):
@@ -86,21 +71,16 @@ class AdvancePaymentDetail(View):
         template='advancepayment/advance_payment_detail.html',
         breadcrumb='ADVANCE_PAYMENT_DETAIL_PAGE',
         menu_active='menu_advance_payment_detail',
+        perm_check=PermCheck(url=ApiURL.ADVANCE_PAYMENT_DETAIL, method='GET', fill_key=['pk']),
     )
     def get(self, request, *args, **kwargs):
-        resp1 = ServerAPI(user=request.user, url=ApiURL.SALE_ORDER_LIST).get()
-        resp2 = ServerAPI(user=request.user, url=ApiURL.QUOTATION_LIST).get()
-        resp3 = ServerAPI(user=request.user, url=ApiURL.EXPENSE_LIST).get()
-        resp4 = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_LIST).get()
-        return {'data':
-            {
-                'employee_current_id': request.user.employee_current_data.get('id', None),
-                'sale_order_list': resp1.result,
-                'quotation_list': resp2.result,
-                'expense_list': resp3.result,
-                'account_list': resp4.result,
-            }
-        }, status.HTTP_200_OK
+        resp1 = ServerAPI(
+            user=request.user,
+            url=ApiURL.EMPLOYEE_DETAIL.push_id(request.user.employee_current_data.get('id', None))
+        ).get()
+        return {
+                   'data': {'employee_current': resp1.result}
+               }, status.HTTP_200_OK
 
 
 class AdvancePaymentDetailAPI(APIView):
@@ -111,30 +91,17 @@ class AdvancePaymentDetailAPI(APIView):
         is_api=True,
     )
     def get(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.ADVANCE_PAYMENT_DETAIL + pk).get()
+        resp = ServerAPI(user=request.user, url=ApiURL.ADVANCE_PAYMENT_DETAIL.push_id(pk)).get()
+        return resp.auto_return(key_success='advance_payment_detail')
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, pk, *arg, **kwargs):
+        data = request.data
+        resp = ServerAPI(user=request.user, url=ApiURL.ADVANCE_PAYMENT_DETAIL.push_id(pk)).put(data)
         if resp.state:
-            return {
-                       'advance_payment_detail': resp.result,
-                   }, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
-#
-#     @mask_view(
-#         auth_require=True,
-#         is_api=True,
-#     )
-#     def put(self, request, pk, *arg, **kwargs):
-#         data = request.data
-#         response = ServerAPI(user=request.user, url=ApiURL.PRODUCT_DETAIL + pk).put(data)
-#         if response.state:
-#             return response.result, status.HTTP_200_OK
-#         if response.errors:
-#             if isinstance(response.errors, dict):
-#                 err_msg = ""
-#                 for key, value in response.errors.items():
-#                     err_msg += str(key) + ': ' + str(value)
-#                     break
-#                 return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
-#             return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
-#         return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+            resp.result['message'] = SaleMsg.ADVANCE_PAYMENT_UPDATE
+            return resp.result, status.HTTP_200_OK
+        return resp.auto_return()

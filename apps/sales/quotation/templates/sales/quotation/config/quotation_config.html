@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block cssHeader %}
+    <link href="{% static 'assets/sales/quotation/css/quotation_config.css' %}" rel="stylesheet" type="text/css"/>
+{% endblock %}
+{% block pageAction %}
+    <button class="btn btn-flush-primary flush-soft-hover"
+            type="button" id="btn-edit_quotation_config" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit"
+            data-bs-original-title="Edit">
+        <span class="icon">
+            <span class="feather-icon">
+                <i class="far fa-edit"></i>
+            </span>
+            <span class="font-3 ml-1">
+                {% trans 'Edit' %}
+            </span>
+        </span>
+    </button>
+    <button class="btn btn-flush-primary flush-soft-hover" id="btn-create_quotation_config"
+            type="submit" form="frm_quotation_config_create" data-bs-toggle="tooltip" data-bs-placement="top" title="Save"
+            data-bs-original-title="Save" hidden>
+        <span class="icon">
+            <span class="feather-icon">
+                <i data-feather="save"></i>
+            </span>
+            <span class="font-3 ml-1">
+                {% trans 'Save' %}
+            </span>
+        </span>
+    </button>
+{% endblock %}
+
+{% block pageContent %}
+    <div class="row">
+        <ul class="nav nav-light nav-tabs">
+            <li class="nav-item" id="tab-config">
+                <a class="nav-link active" data-bs-toggle="tab" href="#tab_config">
+                    <span class="nav-link-text">{% trans 'General' %}</span>
+                </a>
+            </li>
+            <li class="nav-item" id="tab-indicator">
+                <a class="nav-link" data-bs-toggle="tab" href="#tab_indicator">
+                    <span class="nav-link-text">{% trans 'Indicator' %}</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <form
+            data-url="{% url 'QuotationConfigDetailAPI' %}"
+            data-url-redirect="{% url 'QuotationConfigDetail' %}"
+            data-method="PUT"
+            id="frm_quotation_config_create"
+            method="post"
+    >
+        {% csrf_token %}
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="tab_config">
+                {% include 'sales/quotation/config/general_tab.html' %}
+            </div>
+            <div class="tab-pane fade" id="tab_indicator">
+                {% include 'sales/quotation/config/indicator_tab.html' %}
+            </div>
+        </div>
+    </form>
+
+
+    <input
+            type="hidden"
+            id="init-indicator-list"
+            class="quotation-config"
+    >
+    <input
+            type="hidden"
+            id="init-indicator-property-param"
+            class="quotation-config"
+            data-url="{% url "ApplicationPropertyListAPI" %}"
+            data-method="GET"
+    >
+    <input
+            type="hidden"
+            id="init-indicator-param-list"
+            class="quotation-config"
+            data-url="{% url "IndicatorParamListAPI" %}"
+            data-method="GET"
+    >
+{% endblock %}
+
+
+{% block jsFooter %}
+    <script src="{% static 'vendors/simplebar/dist/simplebar.min.js' %}"></script>
+
+    <script src="{% static 'assets/sales/quotation/js/quotation_config.js' %}"></script>
+{% endblock %}

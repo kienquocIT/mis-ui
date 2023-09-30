@@ -3,6 +3,7 @@ $(function(){
     let $table = $('#promotion-list'),
         url = $table.attr('data-url');
     $table.DataTableDefault({
+        useDataServer: true,
         ajax: {
             url: url,
             type: "GET",
@@ -11,12 +12,14 @@ $(function(){
         columns: [
             {
                 targets: 0,
+                orderable: false,
                 render: (row, type, data) => {
                     return ``
                 }
             },
             {
                 targets: 1,
+                data: 'title',
                 render: (row, type, data) => {
                     let url = $('#url-factory').attr('data-detail').format_url_with_uuid(data.id)
                     return `<p><a href="${url}" target="_blank" class="text-decoration-underline">${data.title}</a></p>`;
@@ -24,6 +27,7 @@ $(function(){
             },
             {
                 targets: 2,
+                orderable: false,
                 class: 'text-center',
                 render: (row, type, data) => {
                     let isValid = '<span class="badge badge-indicator badge-indicator-xl badge-green"></span>'
@@ -49,6 +53,7 @@ $(function(){
                 }
             },
             {
+                orderable: false,
                 targets: 3,
                 render: (row, type, data) => {
                     return `<div class="actions-btn text-center">
@@ -58,7 +63,7 @@ $(function(){
                                    data-id="${data?.id ? data.id : ''}"
                                    data-action="delete">
                                     <span class="btn-icon-wrap">
-                                        <i class="bi bi-trash"></i>
+                                        <i class="fa-regular fa-trash-can"></i>
                                     </span>
                                 </a>
                             </div>`;
@@ -73,6 +78,7 @@ $(function(){
                 let url = $('#url-factory').attr('data-detail-api').format_url_with_uuid(data.id)
                 DataTableAction.delete(url, data, crf, row)
             })
-        }
-    }, false);
+        },
+        rowIdx: false,
+    });
 });

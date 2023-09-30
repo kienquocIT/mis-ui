@@ -3,473 +3,68 @@
 <div data-simplebar class="nicescroll-bar">
     <div class="menu-content-wrap">
         <div class="menu-group">
-            <div class="nav-header">
-                <span>Apps</span>
-            </div>
-            <ul class="navbar-nav flex-column">
-                <li class="nav-item" id="menu_company_list">
-                    <a class="nav-link" href="{% url 'CompanyList' %}">
-                        <span class="nav-icon-wrap">
-                            <span class="svg-icon menu-child-icon">
-                                <i class="fas fa-building"></i>
-                            </span>
-                        </span>
-                        <span class="nav-link-text">{% trans 'Company' %}</span>
-                    </a>
-                </li>
-                <li class="nav-item" id="menu_user_list">
-                    <a class="nav-link" href="{% url 'UserList' %}">
-                        <span class="nav-icon-wrap">
-                            <span class="svg-icon menu-child-icon">
-                                <i class="fas fa-user"></i>
-                            </span>
-                        </span>
-                        <span class="nav-link-text">{% trans 'User' %}</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a
-                            class="nav-link" href="javascript:void(0);" data-bs-toggle="collapse"
-                            data-bs-target="#menu_org_child"
-                    >
-                        <span class="nav-icon-wrap">
-                            <span class="svg-icon menu-child-icon">
-                                <i class="fas fa-sitemap"></i>
-                            </span>
-                        </span>
-                        <span class="nav-link-text">{% trans 'Organization' %}</span>
-                    </a>
-                    <ul id="menu_org_child" class="nav flex-column collapse  nav-children">
-                        <li class="nav-item">
-                            <ul class="nav flex-column">
-                                <li class="nav-item" id="menu_employee_list">
-                                    <a class="nav-link" href="{% url 'EmployeeList' %}">
-                                        <span class="nav-icon-wrap">
-                                            <span class="svg-icon menu-child-icon">
-                                                <i class="fas fa-user-tie"></i>
-                                            </span>
-                                        </span>
-                                        <span class="nav-link-text">
-                                            {% trans 'Employee' %}
-                                        </span>
-                                    </a>
-                                </li>
-                                <li class="nav-item" id="menu_role_list">
-                                    <a class="nav-link" href="{% url 'RoleList' %}">
-                                        <span class="nav-icon-wrap">
-                                            <span class="svg-icon menu-child-icon">
-                                                <i class="fas fa-users-cog"></i>
-                                            </span>
-                                        </span>
-                                        <span class="nav-link-text">
-                                            {% trans 'Role' %}
-                                        </span>
-                                    </a>
-                                </li>
-                                <li class="nav-item" id="menu_group_list">
-                                    <a class="nav-link" href="{% url 'GroupList' %}">
-                                        <span class="nav-icon-wrap">
-                                            <span class="svg-icon menu-child-icon">
-                                                <i class="fas fa-users"></i>
-                                            </span>
-                                        </span>
-                                        <span class="nav-link-text">
-                                            {% trans 'Group' %}
-                                        </span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-                <li class="nav-item">
-                    <a
-                            class="nav-link" href="javascript:void(0);" data-bs-toggle="collapse"
-                            data-bs-target="#menu_process_management"
-                    >
-                        <span class="nav-icon-wrap">
-                            <span class="svg-icon menu-child-icon">
-                                <i class="fab fa-stumbleupon-circle"></i>
-                            </span>
-                        </span>
-                        <span class="nav-link-text">{% trans 'Process Management' %}</span>
-                    </a>
-                    <ul id="menu_process_management" class="nav flex-column collapse  nav-children">
-                        <li class="nav-item">
-                            <ul class="nav flex-column">
-                                <li class="nav-item" id="menu_workflow_list">
-                                    <a class="nav-link" href="{% url 'WorkflowList' %}">
-                                        <span class="nav-icon-wrap">
-                                            <span class="svg-icon menu-child-icon">
-                                                <i class="fas fa-shapes"></i>
-                                            </span>
-                                        </span>
-                                        <span class="nav-link-text">
-                                            {% trans 'Workflow' %}
-                                        </span>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">
-                                        <span class="nav-icon-wrap">
-                                            <span class="svg-icon menu-child-icon">
-                                                <i class="fab fa-phabricator"></i>
-                                            </span>
-                                        </span>
-                                        <span class="nav-link-text">
-                                            {% trans 'Business Process' %}
-                                        </span>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">
-                                        <span class="nav-icon-wrap">
-                                            <span class="svg-icon menu-child-icon">
-                                                <i class="fas fa-robot"></i>
-                                            </span>
-                                        </span>
-                                        <span class="nav-link-text">
-                                            {% trans 'Automation' %}
-                                        </span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-                <li class="nav-item">
-                    <a
-                            class="nav-link" href="javascript:void(0);" data-bs-toggle="collapse"
-                            data-bs-target="#menu_tenant_child"
-                    >
-                        <span class="nav-icon-wrap">
-                            <span class="svg-icon menu-child-icon">
-                                <i class="fas fa-hotel"></i>
-                            </span>
-                        </span>
-                        <span class="nav-link-text">{% trans 'Tenant' %}</span>
-                    </a>
-                    <ul id="menu_tenant_child" class="nav flex-column collapse  nav-children">
-                        <li class="nav-item">
-                            <ul class="nav flex-column">
-                                <li class="nav-item" id="menu_company_overview_list">
-                                    <a class="nav-link" href="{% url 'CompanyListOverviewList' %}">
-                                        <span class="nav-icon-wrap">
-                                            <span class="svg-icon menu-child-icon">
-                                                <i class="fas fa-cog"></i>
-                                            </span>
-                                        </span>
-                                        <span class="nav-link-text">
-                                            {% trans 'Company Overview' %}
-                                        </span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-    </div>
-    <div class="menu-content-wrap">
-        <div class="menu-group">
-            <div class="nav-header">
-                <span>CRM</span>
-            </div>
-            <ul class="navbar-nav flex-column">
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'ContactList' %}">
-                        <span class="nav-icon-wrap">
-                            <span class="svg-icon menu-child-icon">
-                                <i class="bi bi-journal-bookmark-fill"></i>
-                            </span>
-                        </span>
-                        <span class="nav-link-text">{% trans 'Contact' %}</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'AccountList' %}">
-                        <span class="nav-icon-wrap">
-                            <span class="svg-icon menu-child-icon">
-                                <i class="bi bi-person-rolodex"></i>
-                            </span>
-                        </span>
-                        <span class="nav-link-text">{% trans 'Account' %}</span>
-                    </a>
-                </li>
-                <li class="nav-item" id="menu_opportunity_list">
-                    <a class="nav-link" href="{% url 'OpportunityList' %}">
-                        <span class="nav-icon-wrap">
-                            <span class="svg-icon menu-child-icon">
-                                <i class="far fa-lightbulb"></i>
-                            </span>
-                        </span>
-                        <span class="nav-link-text">{% trans 'Opportunity' %}</span>
-                    </a>
-                </li>
-                <li class="nav-item" id="menu_quotation_list">
-                    <a class="nav-link" href="{% url 'QuotationList' %}">
-                        <span class="nav-icon-wrap">
-                            <span class="svg-icon menu-child-icon">
-                                <i class="fas fa-file-invoice-dollar"></i>
-                            </span>
-                        </span>
-                        <span class="nav-link-text">{% trans 'Quotation' %}</span>
-                    </a>
-                </li>
-                <li class="nav-item" id="menu_sale_order_list">
-                    <a class="nav-link" href="{% url 'SaleOrderList' %}">
-                        <span class="nav-icon-wrap">
-                            <span class="svg-icon menu-child-icon">
-                                <i class="fas fa-file-invoice"></i>
-                            </span>
-                        </span>
-                        <span class="nav-link-text">{% trans 'Sale Order' %}</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'ProductList' %}">
-                        <span class="nav-icon-wrap">
-                            <span class="svg-icon menu-child-icon">
-                                <i class="bi bi-archive-fill"></i>
-                            </span>
-                        </span>
-                        <span class="nav-link-text">{% trans 'Product' %}</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a
-                            class="nav-link" href="javascript:void(0);" data-bs-toggle="collapse"
-                            data-bs-target="#menu_masterdata"
-                    >
-                        <span class="nav-icon-wrap">
-                            <span class="svg-icon menu-child-icon">
-                                <i class="bi bi-mastodon"></i>
-                            </span>
-                        </span>
-                        <span class="nav-link-text">{% trans 'Master data config' %}</span>
-                    </a>
-                    <ul id="menu_masterdata" class="nav flex-column collapse  nav-children">
-                        <li class="nav-item">
-                            <ul class="nav flex-column">
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{% url "ContactMasterDataList" %}">
-                                        <span class="nav-icon-wrap">
-                                            <span class="svg-icon menu-child-icon">
-                                                <i class="bi bi-journal-bookmark-fill"></i>
-                                            </span>
-                                        </span>
-                                        <span class="nav-link-text">
-                                            {% trans 'Contact' %}
-                                        </span>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{% url "AccountMasterDataList" %}">
-                                        <span class="nav-icon-wrap">
-                                            <span class="svg-icon menu-child-icon">
-                                                <i class="bi bi-person-rolodex"></i>
-                                            </span>
-                                        </span>
-                                        <span class="nav-link-text">
-                                            {% trans 'Account' %}
-                                        </span>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{% url "ProductMasterDataList" %}">
-                                        <span class="nav-icon-wrap">
-                                            <span class="svg-icon menu-child-icon">
-                                                <i class="bi bi-diagram-2-fill"></i>
-                                            </span>
-                                        </span>
-                                        <span class="nav-link-text">
-                                            {% trans 'Items' %}
-                                        </span>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{% url "PriceMasterDataList" %}">
-                                        <span class="nav-icon-wrap">
-                                            <span class="svg-icon menu-child-icon">
-                                                <i class="bi bi-currency-exchange"></i>
-                                            </span>
-                                        </span>
-                                        <span class="nav-link-text">
-                                            {% trans 'Price' %}
-                                        </span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-                <li class="nav-item">
-                    <a
-                            class="nav-link" href="javascript:void(0);" data-bs-toggle="collapse"
-                            data-bs-target="#menu_pricing"
-                    >
-                        <span class="nav-icon-wrap">
-                            <span class="svg-icon menu-child-icon">
-                                <i class="bi bi-currency-exchange"></i>
-                            </span>
-                        </span>
-                        <span class="nav-link-text">{% trans 'Pricing' %}</span>
-                    </a>
-                    <ul id="menu_pricing" class="nav flex-column collapse  nav-children">
-                        <li class="nav-item">
-                            <ul class="nav flex-column">
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{% url "PriceList" %}">
-                                        <span class="nav-icon-wrap">
-                                            <span class="svg-icon menu-child-icon">
-                                                <i class="bi bi-cash-coin"></i>
-                                            </span>
-                                        </span>
-                                        <span class="nav-link-text">
-                                            {% trans 'Price List' %}
-                                        </span>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{% url "ShippingList" %}">
-                                        <span class="nav-icon-wrap">
-                                            <span class="svg-icon menu-child-icon">
-                                                <i class="bi bi-truck-flatbed"></i>
-                                            </span>
-                                        </span>
-                                        <span class="nav-link-text">
-                                            {% trans 'Shipping' %}
-                                        </span>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{% url "PromotionList" %}">
-                                        <span class="nav-icon-wrap">
-                                            <span class="svg-icon menu-child-icon">
-                                                <i class="bi bi-percent"></i>
-                                            </span>
-                                        </span>
-                                        <span class="nav-link-text">
-                                            {% trans 'Promotion List' %}
-                                        </span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'ExpenseList' %}">
-                        <span class="nav-icon-wrap">
-                            <span class="svg-icon menu-child-icon">
-                                <i class="bi bi-cash-coin"></i>
-                            </span>
-                        </span>
-                        <span class="nav-link-text">{% trans 'Expense' %}</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a
-                            class="nav-link" href="javascript:void(0);" data-bs-toggle="collapse"
-                            data-bs-target="#menu_inventory"
-                    >
-                        <span class="nav-icon-wrap">
-                            <span class="svg-icon menu-child-icon">
-                                <i class="fas fa-clipboard-list"></i>
-                            </span>
-                        </span>
-                        <span class="nav-link-text">{% trans 'Inventory' %}</span>
-                    </a>
-                    <ul id="menu_inventory" class="nav flex-column collapse  nav-children">
-                        <li class="nav-item">
-                            <ul class="nav flex-column">
-                                <li class="nav-item" id="menu_warehouse_list">
-                                    <a class="nav-link" href="{% url "WareHouseList" %}">
-                                        <span class="nav-icon-wrap">
-                                            <span class="svg-icon menu-child-icon">
-                                                <i class="fas fa-warehouse"></i>
-                                            </span>
-                                        </span>
-                                        <span class="nav-link-text">
-                                            {% trans 'WareHouse List' %}
-                                        </span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <ul class="nav flex-column">
-                                <li class="nav-item" id="menu_good_receipt_list">
-                                    <a class="nav-link" href="{% url "GoodReceiptList" %}">
-                                        <span class="nav-icon-wrap">
-                                            <span class="svg-icon menu-child-icon">
-                                                <i class="bi bi-receipt font-4"></i>
-                                            </span>
-                                        </span>
-                                        <span class="nav-link-text">
-                                            {% trans 'Good Receipt List' %}
-                                        </span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="javascript:void(0);" data-bs-toggle="collapse"
-                       data-bs-target="#menu_cash_outflow">
-                        <span class="nav-icon-wrap">
-                            <span class="svg-icon menu-child-icon">
-                                <i class="bi bi-arrow-left-right"></i>
-                            </span>
-                        </span>
-                        <span class="nav-link-text">{% trans 'Cash Outflow' %}</span>
-                    </a>
-                    <ul id="menu_cash_outflow" class="nav flex-column collapse nav-children">
-                        <li class="nav-item">
-                            <ul class="nav flex-column">
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{% url 'AdvancePaymentList' %}">
-                                        <span class="nav-icon-wrap">
-                                            <span class="svg-icon menu-child-icon">
-                                                <i class="bi bi-coin"></i>
-                                            </span>
-                                        </span>
-                                        <span class="nav-link-text">
-                                            {% trans 'Advance Payment' %}
-                                        </span>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">
-                                        <span class="nav-icon-wrap">
-                                            <span class="svg-icon menu-child-icon">
-                                                <i class="bi bi-coin"></i>
-                                            </span>
-                                        </span>
-                                        <span class="nav-link-text">
-                                            {% trans 'Payment' %}
-                                        </span>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">
-                                        <span class="nav-icon-wrap">
-                                            <span class="svg-icon menu-child-icon">
-                                                <i class="bi bi-coin"></i>
-                                            </span>
-                                        </span>
-                                        <span class="nav-link-text">
-                                            {% trans 'Return Advance' %}
-                                        </span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
+
+            {% if base.menus and base.menus|length > 0 %}
+                <!-- Test -->
+                {% if base.space_current_data.name %}
+                    <div class="nav-header">
+                        <span>{{ base.space_current_data.name }}</span>
+                    </div>
+                {% endif %}
+                <ul class="navbar-nav flex-column">
+
+                    {% for item in base.menus %}
+                        {% if item.child|length > 0 %}
+                            <li class="nav-item">
+                                <a
+                                        class="nav-link" href="javascript:void(0);" data-bs-toggle="collapse"
+                                        data-bs-target="#{{ item.code }}"
+                                >
+                                <span class="nav-icon-wrap">
+                                    <span class="svg-icon menu-child-icon">
+                                        {{ item.icon|safe }}
+                                    </span>
+                                </span>
+                                    <span class="nav-link-text">{% trans item.name %}</span>
+                                </a>
+                                <ul id="{{ item.code }}" class="nav flex-column collapse  nav-children">
+                                    <li class="nav-item">
+                                        <ul class="nav flex-column">
+                                            {% for child in item.child %}
+                                                <li class="nav-item" id="{{ child.code }}">
+                                                    <a class="nav-link" href="{{ child.url }}">
+                                                    <span class="nav-icon-wrap">
+                                                        <span class="svg-icon menu-child-icon">
+                                                            {{ child.icon|safe }}
+                                                        </span>
+                                                    </span>
+                                                        <span class="nav-link-text">
+                                                        {% trans child.name %}
+                                                    </span>
+                                                    </a>
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                        {% else %}
+                            <li class="nav-item" id="{{ item.code }}">
+                                <a class="nav-link" href="{{ item.url }}">
+                                <span class="nav-icon-wrap">
+                                    <span class="svg-icon menu-child-icon">
+                                        {{ item.icon|safe }}
+                                    </span>
+                                </span>
+                                    <span class="nav-link-text">{% trans item.name %}</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+                <div class="mb-10"></div>
+                <!-- // Test -->
+            {% endif %}
         </div>
     </div>
 </div>

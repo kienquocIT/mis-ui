@@ -1,298 +1,270 @@
+let urlEle = $('#url-factory');
 $(document).ready(function () {
-    "use strict";
-    $(function () {
-        let url_detail = $('#datatable-price-list').attr('data-url-detail');
-        let config = {
-            dom: '<"row"<"col-7 mb-3"<"blog-toolbar-left">><"col-5 mb-3"<"blog-toolbar-right"flip>>><"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
-            ordering: false,
-            columnDefs: [{
-                "searchable": false, "orderable": false, // "targets": [0,1,3,4,5,6,7,8,9]
-            }],
-            order: [2, 'asc'],
-            language: {
-                search: "",
-                searchPlaceholder: "Search",
-                info: "_START_ - _END_ of _TOTAL_",
-                sLengthMenu: "View  _MENU_",
-                paginate: {
-                    next: '<i class="ri-arrow-right-s-line"></i>', // or '→'
-                    previous: '<i class="ri-arrow-left-s-line"></i>' // or '←'
-                }
-            },
-            drawCallback: function () {
-                $('.dataTables_paginate > .pagination').addClass('custom-pagination pagination-simple');
-                feather.replace();
-            },
-            data: [],
-            columns: [{
-                'render': (data, type, row, meta) => {
-                    let currentId = "chk_sel_" + String(meta.row + 1)
-                    return `<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select" id="${currentId}" data-id=` + row.id + `><label class="form-check-label" for="${currentId}"></label></span>`;
-                }
-            }, {
-                'data': 'title', render: (data, type, row, meta) => {
-                    if (row.is_default) {
-                        return `<a class="btn-detail" href="` + url_detail.replace(0, row.id) + `">
-                            <span><b>` + row.title.toUpperCase() + `</b></span>
-                        </a>`
-                    } else {
-                        return `<a class="btn-detail" href="` + url_detail.replace(0, row.id) + `">
-                            <span><b>` + row.title + `</b></span>
-                        </a>`
-                    }
-                }
-            }, {
-                'data': 'type', render: (data, type, row, meta) => {
-                    if (row.price_list_type.value === 0) {
-                        return `<center><span style="width: 20%; min-width: max-content" class="badge badge-soft-danger badge-pill">` + row.price_list_type.name + `</span></center>`
-                    } else if (row.price_list_type.value === 1) {
-                        return `<center><span style="width: 20%; min-width: max-content" class="badge badge-soft-indigo badge-pill">` + row.price_list_type.name + `</span></center>`
-                    } else if (row.price_list_type.value === 2) {
-                        return `<center><span style="width: 20%; min-width: max-content" class="badge badge-soft-green badge-pill">` + row.price_list_type.name + `</span></center>`
-                    } else {
-                        return ''
-                    }
-                }
-            }, {
-                'data': 'status', render: (data, type, row, meta) => {
-                    let badge_type = '';
-                    let text_type = '';
-                    if (row.status === 'Valid') {
-                        badge_type = 'badge-green'
-                        text_type = 'text-green'
-                    } else if (row.status === 'Invalid') {
-                        badge_type = 'badge-orange'
-                        text_type = 'text-orange'
-                    } else if (row.status === 'Expired') {
-                        badge_type = 'badge-red'
-                        text_type = 'text-danger'
-                    } else {
-                        badge_type = 'badge-gray'
-                        text_type = 'text-gray'
-                    }
+    let selectCurrencyEle = $('#select-box-currency');
+    let priceListSelectEle = $('#select-box-price-list');
+    $('#select-box-type').initSelect2();
 
-                    return `<span class="badge badge-indicator badge-indicator-xl ` + badge_type + `"></span><span class="`+text_type+`">&nbsp;` + row.status + `</span>`;
-                }
-            }, {
-                'className': 'action-center', 'render': (data, type, row, meta) => {
-                    if (row.is_default === false) {
-                        return `<a data-method="DELETE" data-id="` + row.id + `" class="btn btn-icon btn-del btn btn-icon btn-flush-danger flush-soft-hover btn-rounded del-button delete-price-list-btn">
-                                <span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span>
-                                </a>`;
-                    } else {
-                        return ``
-                    }
-                }
-            }]
-        }
+    function loadPriceList(ele, data) {
+        ele.initSelect2({
+            data: data,
+        })
+    }
 
-        function initDataTable(config, id_table) {
-            /*DataTable Init*/
-            let dtb = $(id_table);
-            if (dtb.length > 0) {
-                var targetDt = dtb.DataTable(config);
-                /*Checkbox Add*/
-                $(document).on('click', '.del-button', function () {
-                    targetDt.rows('.selected').remove().draw(false);
-                    return false;
-                });
-                $("div.blog-toolbar-left").html('<div class="d-xxl-flex d-none align-items-center"> <select class="form-select form-select-sm w-120p"><option selected>Bulk actions</option><option value="1">Edit</option><option value="2">Move to trash</option></select> <button class="btn btn-sm btn-light ms-2">Apply</button></div><div class="d-xxl-flex d-none align-items-center form-group mb-0"> <label class="flex-shrink-0 mb-0 me-2">Sort by:</label> <select class="form-select form-select-sm w-130p"><option selected>Date Created</option><option value="1">Date Edited</option><option value="2">Frequent Contacts</option><option value="3">Recently Added</option> </select></div> <select class="d-flex align-items-center w-130p form-select form-select-sm"><option selected>Export to CSV</option><option value="2">Export to PDF</option><option value="3">Send Message</option><option value="4">Delegate Access</option> </select>');
-                dtb.parent().addClass('table-responsive');
-            }
-        }
+    function loadCurrency(ele, data) {
+        ele.initSelect2({
+            data: data,
+        })
+    }
 
-        function loadTablePriceList() {
-            const table = $('#datatable-price-list')
-            let ele = $('#select-box-price-list')
-            ele.html('');
-            $.fn.callAjax(table.attr('data-url'), table.attr('data-method')).then((resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    // console.log(data)
-                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('price_list')) {
-                        config['data'] = resp.data.price_list;
-                        ele.append(`<option></option>`)
-                        data.price_list.map(function (item) {
-                            ele.append(`<option value="` + item.id + `">` + item.title + `</option>`)
-                        })
-                    }
-                    initDataTable(config, '#datatable-price-list');
-                }
-            }, (errs) => {
-                initDataTable(config, '#datatable-price-list');
-            },)
-        }
+    loadCurrency(selectCurrencyEle);
+    $(document).on('click', '#btn-add-new', function () {
+        loadPriceList(priceListSelectEle);
+    })
 
-        function loadCurrency() {
-            $('#select-box-currency').select2();
-            let ele = $('#select-box-currency');
-            let url = ele.attr('data-url');
-            let method = ele.attr('data-method');
-            $.fn.callAjax(url, method).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        ele.text("");
-                        if (data.hasOwnProperty('currency_list') && Array.isArray(data.currency_list)) {
-                            data.currency_list.map(function (item) {
-                                if (item.is_primary) {
-                                    ele.append(`<option disabled data-primary="1" value="` + item.id + `" selected>` + item.title + `</option>`);
-                                } else
-                                    ele.append(`<option data-primary="0" value="` + item.id + `">` + item.title + `</option>`);
-                            })
+    function loadDtbPriceList() {
+        if (!$.fn.DataTable.isDataTable('#datatable-price-list')) {
+            let $table = $('#datatable-price-list')
+            let frm = new SetupFormSubmit($table);
+            $table.DataTableDefault({
+                rowIdx: true,
+                useDataServer: true,
+                ajax: {
+                    url: frm.dataUrl,
+                    type: frm.dataMethod,
+                    dataSrc: function (resp) {
+                        let data = $.fn.switcherResp(resp);
+                        if (data && resp.data.hasOwnProperty('price_list')) {
+                            return resp.data['price_list'] ? resp.data['price_list'] : [];
+                        }
+                        throw Error('Call data raise errors.')
+                    },
+                },
+
+                columns: [
+                    {
+                        render: () => {
+                            return ``;
+                        }
+                    }, {
+                        data: 'title',
+                        render: (data, type, row) => {
+                            return `<a class="btn-detail" href="${urlEle.data('url-detail').format_url_with_uuid(row.id)}">
+                                        <span><b>${data}</b></span>
+                                    </a>${$x.fn.buttonLinkBlank(urlEle.data('url-detail').format_url_with_uuid(row.id))}`
+
+                        }
+                    }, {
+                        data: 'price_list_type',
+                        className: 'text-center',
+                        render: (data) => {
+                            if (data.value === 0) {
+                                return `<span style="width: 20%; min-width: max-content" class="badge badge-soft-danger badge-pill">${data.name}</span>`
+                            } else if (data.value === 1) {
+                                return `<span style="width: 20%; min-width: max-content" class="badge badge-soft-indigo badge-pill">${data.name}</span>`
+                            } else if (data.value === 2) {
+                                return `<span style="width: 20%; min-width: max-content" class="badge badge-soft-green badge-pill">${data.name}</span>`
+                            } else {
+                                return ''
+                            }
+                        }
+                    }, {
+                        data: 'status',
+                        render: (data) => {
+                            let badge_type;
+                            if (data === 'Valid') {
+                                badge_type = 'text-success'
+                            } else if (data === 'Invalid') {
+                                badge_type = 'text-orange'
+                            } else if (data === 'Expired') {
+                                badge_type = 'text-danger'
+                            } else {
+                                badge_type = 'text-gray'
+                            }
+
+                            return `<span class="${badge_type}">${data}</span>`;
+                        }
+                    }, {
+                        className: 'action-center',
+                        render: (data, type, row) => {
+                            if (row.is_default === false) {
+                                return `<a data-method="DELETE" data-id="${row.id}" class="btn btn-icon btn-del btn btn-icon btn-flush-danger flush-soft-hover btn-rounded del-button delete-price-list-btn">
+                                    <span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span>
+                                    </a>`;
+                            } else {
+                                return ``
+                            }
                         }
                     }
-                }
-            )
+                ],
+            });
         }
+    }
 
-        loadCurrency();
-        loadTablePriceList();
+    loadDtbPriceList();
 
-        $('#btn-show-modal-create').on('click', function () {
-            let primaryOption = $('#select-box-currency').find('option[data-primary="1"]').text();
-            $('ul').find(`li[title="` + primaryOption + `"]`).find('span').prop('hidden', true);
-        })
-        $('#select-box-currency').on('change', function () {
-            let primaryOption = $('#select-box-currency').find('option[data-primary="1"]').text();
-            $('ul').find(`li[title="` + primaryOption + `"]`).find('span').prop('hidden', true);
-        })
+    //logic checkbox
+    $('#checkbox-copy-source').on('change', function () {
+        if ($(this).prop("checked")) {
+            priceListSelectEle.removeAttr('disabled');
+            $('#checkbox-update-auto').removeAttr('disabled');
+            $('#select-box-currency').prop('disabled', true);
+            $('#factor-inp').prop('readonly', false);
+        } else {
+            let check_auto_update_ele = $('#checkbox-update-auto');
+            let check_can_del_ele = $('#checkbox-can-delete');
+            let factor_ele = $('#factor-inp')
+            check_auto_update_ele.prop('checked', false);
+            check_can_del_ele.prop('checked', false);
+            priceListSelectEle.attr('disabled', 'disabled');
+            priceListSelectEle.find('option').prop('selected', false);
+            check_auto_update_ele.attr('disabled', 'disabled');
+            check_can_del_ele.attr('disabled', 'disabled');
+            $('#select-box-currency').prop('disabled', false);
+            factor_ele.val(1);
+            factor_ele.prop('readonly', true);
+        }
+    })
 
-        //logic checkbox
-        $('#checkbox-copy-source').on('change', function () {
-            if ($(this).prop("checked")) {
-                $('#select-box-price-list').removeAttr('disabled');
-                $('#checkbox-update-auto').removeAttr('disabled');
-                $('#select-box-currency').prop('disabled', true);
-                $('#factor-inp').prop('readonly', false);
-            } else {
-                $('#checkbox-update-auto').prop('checked', false);
-                $('#checkbox-can-delete').prop('checked', false);
-                $('#select-box-price-list').attr('disabled', 'disabled');
-                $('#select-box-price-list').find('option').prop('selected', false);
-                $('#checkbox-update-auto').attr('disabled', 'disabled');
-                $('#checkbox-can-delete').attr('disabled', 'disabled');
-                $('#select-box-currency').prop('disabled', false);
-                $('#factor-inp').val(1);
-                $('#factor-inp').prop('readonly', true);
+    $('#checkbox-update-auto').on('change', function () {
+        if ($(this).prop("checked")) {
+            $('#checkbox-can-delete').removeAttr('disabled');
+            $('#factor-inp').val('');
+        } else {
+            let check_can_del_ele = $('#checkbox-can-delete')
+            check_can_del_ele.prop('checked', false);
+            check_can_del_ele.attr('disabled', 'disabled');
+            $('#factor-inp').val(1);
+        }
+    })
+
+    // submit form create price list
+    let frm = $('#form-create-price');
+    new SetupFormSubmit(frm).validate({
+        rules: {
+            title: {
+                required: true,
+            },
+            currency: {
+                required: true,
+            },
+            factor: {
+                required: true,
+            },
+            price_list_type: {
+                required: true,
+            },
+            price_list_mapped: {
+                required: function () {
+                    return $("#checkbox-copy-source").is(':checked');
+                }
             }
-        })
+        },
+        submitHandler: function (form) {
+            let frm = new SetupFormSubmit($(form));
 
-        $('#checkbox-update-auto').on('change', function () {
-            if ($(this).prop("checked")) {
-                $('#checkbox-can-delete').removeAttr('disabled');
-                $('#factor-inp').val('');
-            } else {
-                $('#checkbox-can-delete').prop('checked', false);
-                $('#checkbox-can-delete').attr('disabled', 'disabled');
-                $('#factor-inp').val(1);
-            }
-        })
-
-        // submit form create price list
-        let frm = $('#form-create-price')
-        frm.submit(function (event) {
-            event.preventDefault();
-            let csr = $("input[name=csrfmiddlewaretoken]").val();
-            let frm = new SetupFormSubmit($(this));
-
-            frm.dataForm['currency'] = $('#select-box-currency').val();
-            frm.dataForm['currency'].push($('#select-box-currency').find('option[data-primary="1"]').val())
+            frm.dataForm['currency'] = selectCurrencyEle.val();
             if (frm.dataForm['currency'].length === 0) {
                 frm.dataForm['currency'] = null;
             }
 
-            if ($('#valid_time').val()) {
-                frm.dataForm['valid_time_start'] = $('#valid_time').val().split(' - ')[0];
-                frm.dataForm['valid_time_end'] = $('#valid_time').val().split(' - ')[1]
+            let valid_time_ele = $('#valid_time')
+            if (valid_time_ele.val()) {
+                frm.dataForm['valid_time_start'] = valid_time_ele.val().split(' - ')[0];
+                frm.dataForm['valid_time_end'] = valid_time_ele.val().split(' - ')[1]
             }
 
-            $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
-                .then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyPopup({description: "Successfully"}, 'success')
-                            $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
-                        }
-                    },
-                    (errs) => {
-                        // $.fn.notifyPopup({description: errs.data.errors}, 'failure');
-                    }
-                )
-        });
+            frm.dataForm['auto_update'] = !!$('[name="auto_update"]').is(':checked');
+            frm.dataForm['can_delete'] = !!$('[name="can_delete"]').is(':checked');
 
-        // onchange select box select-box-price-list
-        $('#select-box-price-list').on('change', function () {
-            let data_url = $(this).attr('data-url').replace(0, $(this).val())
-            $.fn.callAjax(data_url, 'GET').then(
-                (resp) => {
+            $.fn.callAjax2({
+                url: frm.dataUrl,
+                method: frm.dataMethod,
+                data: frm.dataForm
+            }).then((resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        if (data.hasOwnProperty('price')) {
-                            $('#select-box-currency').val(data.price.currency).trigger('change');
-                        }
+                        $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
+                        $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
                     }
+                },
+                (errs) => {
+                    $.fn.notifyB({description: errs.data.errors}, 'failure');
                 }
             )
-        })
+        }
+    });
 
-        /* Date range picker with times*/
-        $('#valid_time').daterangepicker({
-            timePicker: true,
-            startDate: moment().startOf('millisecond').add(5, 'minutes'),
-            endDate: moment().startOf('millisecond').add(24, 'millisecond').add(5, 'minutes'),
-            "cancelClass": "btn-secondary",
-            locale: {
-                format: 'YYYY-MM-DD HH:mm'
-            },
-            drops: 'up'
-        });
-
-        $(document).on("click", '.delete-price-list-btn', function (e) {
-            Swal.fire({
-                html:
-                    '<div><i class="ri-delete-bin-6-line fs-5 text-danger"></i></div>' +
-                    '<h6 class="text-danger">Delete Price List ?</h6>',
-                customClass: {
-                    confirmButton: 'btn btn-outline-secondary text-danger',
-                    cancelButton: 'btn btn-outline-secondary text-gray',
-                    container: 'swal2-has-bg'
-                },
-                showCancelButton: true,
-                buttonsStyling: false,
-                confirmButtonText: 'Yes',
-                cancelButtonText: 'No',
-                reverseButtons: true,
-            }).then((result) => {
-                if (result.value) {
-                    let data_url = $(this).closest('table').attr('data-url-delete').replace(0, $(this).attr('data-id'))
-                    let csr = $("input[name=csrfmiddlewaretoken]").val();
-                    $.fn.callAjax(data_url, 'PUT', {}, csr)
-                        .then(
-                            (resp) => {
-                                let data = $.fn.switcherResp(resp);
-                                if (data) {
-                                    $.fn.notifyPopup({description: "Successfully"}, 'success')
-                                    setTimeout(function () {
-                                        location.reload()
-                                    }, 1000);
-                                }
-                            },
-                            (errs) => {
-                                // $.fn.notifyPopup({description: errs.data.errors}, 'failure');
-                                Swal.fire({
-                                    html:
-                                        '<div><h6 class="text-danger mb-0">Source Price List can not be deleted!</h6></div>',
-                                    customClass: {
-                                        content: 'text-center',
-                                        confirmButton: 'btn btn-primary',
-                                    },
-                                    buttonsStyling: false,
-                                })
-                            })
+    // onchange select box select-box-price-list
+    priceListSelectEle.on('change', function () {
+        let data_url = $(this).data('url-detail').format_url_with_uuid($(this).val());
+        $.fn.callAjax2({
+            url: data_url,
+            method: 'GET'
+        }).then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                if (data.hasOwnProperty('price')) {
+                    loadCurrency(selectCurrencyEle, data.price.currency);
                 }
-            })
-        });
+            }
+        })
     })
+
+    // function load
+
+    /* Date range picker with times*/
+    $('#valid_time').daterangepicker({
+        timePicker: true,
+        startDate: moment().startOf('millisecond').add(5, 'minutes'),
+        endDate: moment().startOf('millisecond').add(24, 'millisecond').add(5, 'minutes'),
+        "cancelClass": "btn-secondary",
+        locale: {
+            format: 'YYYY-MM-DD HH:mm'
+        },
+        drops: 'up'
+    });
+
+    $(document).on("click", '.delete-price-list-btn', function () {
+
+        Swal.fire({
+            html: '<div><i class="ri-delete-bin-6-line fs-5 text-danger"></i></div>' + '<h6 class="text-danger">Delete Price List ?</h6>',
+            customClass: {
+                confirmButton: 'btn btn-outline-secondary text-danger',
+                cancelButton: 'btn btn-outline-secondary text-gray',
+                container: 'swal2-has-bg'
+            },
+            showCancelButton: true,
+            buttonsStyling: false,
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No',
+            reverseButtons: true,
+        }).then((result) => {
+            if (result.value) {
+                let data_url = $(this).closest('table').attr('data-url-delete').replace(0, $(this).attr('data-id'))
+                $.fn.callAjax2({
+                    url: data_url,
+                    method: 'PUT',
+                    data: {},
+                }).then((resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: "Successfully"}, 'success')
+                        setTimeout(function () {
+                            location.reload()
+                        }, 1000);
+                    }
+                }, () => {
+                    Swal.fire({
+                        html: '<div><h6 class="text-danger mb-0">Source/Non-empty Price List can not be deleted!</h6></div>',
+                        customClass: {
+                            content: 'text-center',
+                            confirmButton: 'btn btn-primary',
+                        },
+                        buttonsStyling: false,
+                    })
+                })
+            }
+        })
+    });
+
 })

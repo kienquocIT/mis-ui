@@ -4,7 +4,7 @@ from django.views import View
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from apps.shared import mask_view, ApiURL, ServerAPI, MDConfigMsg
+from apps.shared import mask_view, ApiURL, ServerAPI, MDConfigMsg, PermCheck
 
 PAYMENTS_TERMS_UNIT = [
     {'value': 0, 'text': MDConfigMsg.PT_UNIT_PERCENT},
@@ -31,8 +31,8 @@ class PriceMasterDataList(View):
     @mask_view(
         auth_require=True,
         template='masterdata/saledata/masterdata/saledata_price.html',
-        breadcrumb='CONTACT_LIST_PAGE',
-        menu_active='menu_contact_list',
+        breadcrumb='MASTER_DATA_PRICE_PAGE',
+        menu_active='id_menu_master_data_price',
     )
     def get(self, request, *args, **kwargs):
         return {
@@ -51,30 +51,15 @@ class TaxCategoryListAPI(APIView):
     )
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.TAX_CATEGORY_LIST).get()
-        if resp.state:
-            return {'tax_category_list': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        return resp.auto_return(key_success='tax_category_list')
 
     @mask_view(
         auth_require=True,
         is_api=True,
     )
     def post(self, request, *arg, **kwargs):
-        data = request.data  # noqa
-        response = ServerAPI(user=request.user, url=ApiURL.TAX_CATEGORY_LIST).post(data)
-        if response.state:
-            return response.result, status.HTTP_200_OK
-        if response.errors:
-            if isinstance(response.errors, dict):
-                err_msg = ""
-                for key, value in response.errors.items():
-                    err_msg += str(key) + ': ' + str(value)
-                    break
-                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
-            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
-        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        resp = ServerAPI(user=request.user, url=ApiURL.TAX_CATEGORY_LIST).post(request.data)
+        return resp.auto_return()
 
 
 class TaxListAPI(APIView):
@@ -86,31 +71,15 @@ class TaxListAPI(APIView):
     )
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.TAX_LIST).get()
-        if resp.state:
-            return {'tax_list': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        else:
-            return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        return resp.auto_return(key_success='tax_list')
 
     @mask_view(
         auth_require=True,
         is_api=True,
     )
     def post(self, request, *arg, **kwargs):
-        data = request.data  # noqa
-        response = ServerAPI(user=request.user, url=ApiURL.TAX_LIST).post(data)
-        if response.state:
-            return response.result, status.HTTP_200_OK
-        if response.errors:
-            if isinstance(response.errors, dict):
-                err_msg = ""
-                for key, value in response.errors.items():
-                    err_msg += str(key) + ': ' + str(value)
-                    break
-                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
-            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
-        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        resp = ServerAPI(user=request.user, url=ApiURL.TAX_LIST).post(request.data)
+        return resp.auto_return()
 
 
 class TaxDetailAPI(APIView):
@@ -119,31 +88,16 @@ class TaxDetailAPI(APIView):
         is_api=True,
     )
     def get(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.TAX_DETAIL + pk).get()
-        if resp.state:
-            return {'tax': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        else:
-            return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(user=request.user, url=ApiURL.TAX_DETAIL.fill_key(pk=pk)).get()
+        return resp.auto_return(key_success='tax')
 
     @mask_view(
         auth_require=True,
         is_api=True,
     )
     def put(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.TAX_DETAIL + pk).put(request.data)  # noqa
-        if resp.state:
-            return {'tax': resp.result}, status.HTTP_200_OK
-        if resp.errors:
-            if isinstance(resp.errors, dict):
-                err_msg = ""
-                for key, value in resp.errors.items():
-                    err_msg += str(key) + ': ' + str(value)
-                    break
-                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
-            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
-        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        resp = ServerAPI(user=request.user, url=ApiURL.TAX_DETAIL.fill_key(pk=pk)).put(request.data)
+        return resp.auto_return(key_success='tax')
 
 
 class TaxCategoryDetailAPI(APIView):
@@ -152,31 +106,16 @@ class TaxCategoryDetailAPI(APIView):
         is_api=True,
     )
     def get(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.TAX_CATEGORY_DETAIL + pk).get()
-        if resp.state:
-            return {'tax_category': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        else:
-            return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(user=request.user, url=ApiURL.TAX_CATEGORY_DETAIL.fill_key(pk=pk)).get()
+        return resp.auto_return(key_success='tax_category')
 
     @mask_view(
         auth_require=True,
         is_api=True,
     )
     def put(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.TAX_CATEGORY_DETAIL + pk).put(request.data)  # noqa
-        if resp.state:
-            return {'tax': resp.result}, status.HTTP_200_OK
-        if resp.errors:
-            if isinstance(resp.errors, dict):
-                err_msg = ""
-                for key, value in resp.errors.items():
-                    err_msg += str(key) + ': ' + str(value)
-                    break
-                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
-            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
-        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        resp = ServerAPI(user=request.user, url=ApiURL.TAX_CATEGORY_DETAIL.fill_key(pk=pk)).put(request.data)
+        return resp.auto_return(key_success='tax')
 
 
 class CurrencyListAPI(APIView):
@@ -189,31 +128,15 @@ class CurrencyListAPI(APIView):
     def get(self, request, *args, **kwargs):
         params = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.CURRENCY_LIST).get(params)
-        if resp.state:
-            return {'currency_list': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        else:
-            return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        return resp.auto_return(key_success='currency_list')
 
     @mask_view(
         auth_require=True,
         is_api=True,
     )
     def post(self, request, *arg, **kwargs):
-        data = request.data  # noqa
-        response = ServerAPI(user=request.user, url=ApiURL.CURRENCY_LIST).post(data)
-        if response.state:
-            return response.result, status.HTTP_200_OK
-        if response.errors:
-            if isinstance(response.errors, dict):
-                err_msg = ""
-                for key, value in response.errors.items():
-                    err_msg += str(key) + ': ' + str(value)
-                    break
-                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
-            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
-        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        resp = ServerAPI(user=request.user, url=ApiURL.CURRENCY_LIST).post(request.data)
+        return resp.auto_return()
 
 
 class CurrencyDetailAPI(APIView):
@@ -222,31 +145,16 @@ class CurrencyDetailAPI(APIView):
         is_api=True,
     )
     def get(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.CURRENCY_DETAIL + pk).get()
-        if resp.state:
-            return {'currency': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        else:
-            return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(user=request.user, url=ApiURL.CURRENCY_DETAIL.fill_key(pk=pk)).get()
+        return resp.auto_return(key_success='currency')
 
     @mask_view(
         auth_require=True,
         is_api=True,
     )
     def put(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.CURRENCY_DETAIL + pk).put(request.data)  # noqa
-        if resp.state:
-            return {'tax': resp.result}, status.HTTP_200_OK
-        if resp.errors:
-            if isinstance(resp.errors, dict):
-                err_msg = ""
-                for key, value in resp.errors.items():
-                    err_msg += str(key) + ': ' + str(value)
-                    break
-                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
-            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
-        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        resp = ServerAPI(user=request.user, url=ApiURL.CURRENCY_DETAIL.fill_key(pk=pk)).put(request.data)
+        return resp.auto_return(key_success='tax')
 
 
 class SyncSellingRateWithVCB(APIView):
@@ -255,12 +163,9 @@ class SyncSellingRateWithVCB(APIView):
         is_api=True,
     )
     def put(self, request, pk, *args, **kwargs):
-        all_currencies = None
         resp = ServerAPI(user=request.user, url=ApiURL.CURRENCY_LIST).get()
         if resp.state:
             all_currencies = resp.result
-
-        if all_currencies:
             primary = filter(lambda x: x['is_primary'], all_currencies)
             primary_abbreviation = list(map(lambda x: x['abbreviation'], primary))
 
@@ -295,22 +200,15 @@ class SyncSellingRateWithVCB(APIView):
                 abbreviation_currency_id = list(map(lambda x: x['id'], abbreviation_list))
 
                 if len(abbreviation_currency_id) > 0 and sell != '-':
-                    resp = ServerAPI(user=request.user, url=ApiURL.SYNC_SELLING_RATE + abbreviation_currency_id[0]).put(
+                    resp = ServerAPI(user=request.user, url=ApiURL.SYNC_SELLING_RATE.fill_key(
+                        pk=abbreviation_currency_id[0])
+                    ).put(
                         {'rate': sell}
                     )
-                    if resp.state:
-                        continue
-                    if resp.errors: # noqa
-                        if isinstance(resp.errors, dict):
-                            err_msg = ""
-                            for key, value in resp.errors.items():
-                                err_msg += str(key) + ': ' + str(value)
-                                break
-                            return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
-                        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
-                    return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+                    if not resp.state:
+                        return resp.auto_return()
             return {}, status.HTTP_200_OK
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        return resp.auto_return()
 
 
 class PriceList(View):
@@ -320,7 +218,8 @@ class PriceList(View):
         auth_require=True,
         template='masterdata/saledata/price/price_list.html',
         breadcrumb='PRICE_LIST_PAGE',
-        menu_active='menu_contact_list',
+        menu_active='id_menu_pricing_list',
+        perm_check=PermCheck(url=ApiURL.PRICE_LIST, method='GET'),
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -334,11 +233,23 @@ class PriceListDetail(View):
         template='masterdata/saledata/price/price_list_detail.html',
         breadcrumb='PRICE_LIST_DETAIL_PAGE',
         menu_active='menu_contact_list',
+        perm_check=PermCheck(url=ApiURL.PRICE_DETAIL, method='GET', fill_key=['pk']),
     )
     def get(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.CURRENCY_LIST).get()
-        if resp.state:
-            return {'currency_list': resp.result}, status.HTTP_200_OK
+        return {}, status.HTTP_200_OK
+
+
+class PriceListUpdate(View):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        template='masterdata/saledata/price/price_list_update.html',
+        breadcrumb='PRICE_LIST_UPDATE_PAGE',
+        menu_active='menu_contact_list',
+        perm_check=PermCheck(url=ApiURL.PRICE_DETAIL, method='PUT', fill_key=['pk']),
+    )
+    def get(self, request, pk, *args, **kwargs):
         return {}, status.HTTP_200_OK
 
 
@@ -351,31 +262,15 @@ class PriceListAPI(APIView):
     )
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.PRICE_LIST).get()
-        if resp.state:
-            return {'price_list': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        else:
-            return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        return resp.auto_return(key_success='price_list')
 
     @mask_view(
         auth_require=True,
         is_api=True,
     )
     def post(self, request, *arg, **kwargs):
-        data = request.data  # noqa
-        response = ServerAPI(user=request.user, url=ApiURL.PRICE_LIST).post(data)
-        if response.state:
-            return response.result, status.HTTP_200_OK
-        if response.errors:
-            if isinstance(response.errors, dict):
-                err_msg = ""
-                for key, value in response.errors.items():
-                    err_msg += str(key) + ': ' + str(value)
-                    break
-                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
-            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
-        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        resp = ServerAPI(user=request.user, url=ApiURL.PRICE_LIST).post(request.data)
+        return resp.auto_return()
 
 
 class PriceDetailAPI(APIView):
@@ -386,31 +281,16 @@ class PriceDetailAPI(APIView):
         is_api=True,
     )
     def get(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.PRICE_DETAIL + pk).get() # noqa
-        if resp.state:
-            return {'price': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        else:
-            return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(user=request.user, url=ApiURL.PRICE_DETAIL.fill_key(pk=pk)).get()
+        return resp.auto_return(key_success='price')
 
     @mask_view(
         auth_require=True,
         is_api=True,
     )
     def put(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.PRICE_DETAIL + pk).put(request.data)  # noqa
-        if resp.state:
-            return {'price': resp.result}, status.HTTP_200_OK
-        if resp.errors: # noqa
-            if isinstance(resp.errors, dict):
-                err_msg = ""
-                for key, value in resp.errors.items():
-                    err_msg += str(key) + ': ' + str(value)
-                    break
-                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
-            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
-        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        resp = ServerAPI(user=request.user, url=ApiURL.PRICE_DETAIL.fill_key(pk=pk)).put(request.data)
+        return resp.auto_return(key_success='price')
 
 
 class PriceDeleteAPI(APIView):
@@ -421,18 +301,8 @@ class PriceDeleteAPI(APIView):
         is_api=True,
     )
     def put(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.PRICE_DELETE + pk).put(request.data)  # noqa
-        if resp.state:
-            return {'price': resp.result}, status.HTTP_200_OK
-        if resp.errors: # noqa
-            if isinstance(resp.errors, dict):
-                err_msg = ""
-                for key, value in resp.errors.items():
-                    err_msg += str(key) + ': ' + str(value)
-                    break
-                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
-            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
-        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        resp = ServerAPI(user=request.user, url=ApiURL.PRICE_DELETE.fill_key(pk=pk)).put(request.data)
+        return resp.auto_return(key_success='price')
 
 
 class UpdateProductForPriceListAPI(APIView):
@@ -443,40 +313,20 @@ class UpdateProductForPriceListAPI(APIView):
         is_api=True,
     )
     def put(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCTS_FOR_PRICE_LIST + pk).put(request.data)  # noqa
-        if resp.state:
-            return {'price': resp.result}, status.HTTP_200_OK
-        if resp.errors:  # noqa
-            if isinstance(resp.errors, dict):
-                err_msg = ""
-                for key, value in resp.errors.items():
-                    err_msg += str(key) + ': ' + str(value)
-                    break
-                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
-            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
-        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCTS_FOR_PRICE_LIST.fill_key(pk=pk)).put(request.data)
+        return resp.auto_return(key_success='price')
 
 
 class PriceListDeleteProductAPI(APIView):
-    permission_classes = [IsAuthenticated]  # noqa
+    permission_classes = [IsAuthenticated]
 
     @mask_view(
         auth_require=True,
         is_api=True,
     )
     def put(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.PRICE_LIST_DELETE_PRODUCT + pk).put(request.data)  # noqa
-        if resp.state:
-            return {'price': resp.result}, status.HTTP_200_OK
-        if resp.errors:  # noqa
-            if isinstance(resp.errors, dict):
-                err_msg = ""
-                for key, value in resp.errors.items():
-                    err_msg += str(key) + ': ' + str(value)
-                    break
-                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
-            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
-        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        resp = ServerAPI(user=request.user, url=ApiURL.PRICE_LIST_DELETE_PRODUCT.fill_key(pk=pk)).put(request.data)
+        return resp.auto_return(key_success='price')
 
 
 class ProductAddFromPriceListAPI(APIView):
@@ -488,18 +338,8 @@ class ProductAddFromPriceListAPI(APIView):
     )
     def put(self, request, pk, *arg, **kwargs):
         data = request.data  # noqa
-        response = ServerAPI(user=request.user, url=ApiURL.PRODUCT_ADD_FROM_PRICE_LIST + pk).put(data)
-        if response.state:
-            return response.result, status.HTTP_200_OK
-        if response.errors:
-            if isinstance(response.errors, dict):
-                err_msg = ""
-                for key, value in response.errors.items():
-                    err_msg += str(key) + ': ' + str(value)
-                    break
-                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
-            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
-        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_ADD_FROM_PRICE_LIST.fill_key(pk=pk)).put(data)
+        return resp.auto_return()
 
 
 class DeleteCurrencyFromPriceListAPI(APIView):
@@ -510,17 +350,8 @@ class DeleteCurrencyFromPriceListAPI(APIView):
         is_api=True,
     )
     def put(self, request, pk, *arg, **kwargs):
-        data = request.data  # noqa
-        response = ServerAPI(user=request.user, url=ApiURL.DELETE_CURRENCY_FROM_PRICE_LIST + pk).put(data)
-        if response.state:
-            return response.result, status.HTTP_200_OK
-        if response.errors:
-            if isinstance(response.errors, dict):
-                err_msg = ""
-                for key, value in response.errors.items():
-                    err_msg += str(key) + ': ' + str(value)
-                    break
-                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
-            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
-        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        resp = ServerAPI(user=request.user, url=ApiURL.DELETE_CURRENCY_FROM_PRICE_LIST.fill_key(pk=pk)).put(
+            request.data
+        )
+        return resp.auto_return()
 

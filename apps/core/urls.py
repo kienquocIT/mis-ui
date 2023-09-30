@@ -8,6 +8,6 @@ urlpatterns = [
     path('base/', include('apps.core.base.urls')),
     path('tenant/', include('apps.core.tenant.urls')),
     path('workflow/', include('apps.core.workflow.urls')),
-
-    path('', include('apps.core.home.urls')),  # home page
+    path('attachment/', include('apps.core.attachment.urls')),
+    path('sale-process/', include('apps.core.process.urls')),
 ]

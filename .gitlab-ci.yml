@@ -8,7 +8,7 @@ variables:
 
 default:
 #  image: python:3.11.1-alpine3.17
-  image: localhost:5000/python3-11-gitlab-ci
+  image: localhost:5000/python3-11-gitlab-ci-full
   #services:
   #  - mysql:8.0
 

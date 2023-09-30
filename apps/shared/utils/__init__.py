@@ -3,7 +3,17 @@ import string
 
 import random
 
-__all__ = ['RandomGenerate', 'LocaleInfo']
+__all__ = [
+    'RandomGenerate',
+    'TypeCheck',
+    'FORMATTING',
+]
+
+from datetime import datetime, date
+from typing import Union
+from uuid import UUID
+
+from django.conf import settings
 
 
 class RandomGenerate:
@@ -149,36 +159,103 @@ class RandomGenerate:
         return ''
 
 
-class LocaleInfo:
-    currencies = {
-        'vi': {
-            'currency_name': 'Đồng',
-            'currency_symbol': 'VND',
-            'prefix': '',
-            'suffix': ' VND',
-            'affixesStay': True,
-            'thousands': '.',
-            'decimal': ',',
-            'precision': 0,
-            'allowZero': True,
-            'allowNegative': False,
-        },
-        'en': {
-            'currency_name': 'Dollar',
-            'currency_symbol': '$',
-            'prefix': '$ ',
-            'suffix': '',
-            'affixesStay': True,
-            'thousands': ',',
-            'decimal': '.',
-            'precision': 2,
-            'allowZero': True,
-            'allowNegative': True,
-        }
-    }
+class TypeCheck:
+    @staticmethod
+    def check_uuid(data: any, return_data=False) -> Union[UUID, bool, None]:
+        # check
+        try:
+            if isinstance(data, UUID):
+                data_checked = data
+            else:
+                data_checked = UUID(data)
+        except (Exception,):
+            data_checked = None
+
+        # return
+        if return_data is True:
+            return data_checked if data_checked else None
+        if data_checked:
+            return True
+        return False
 
     @classmethod
-    def get_currency(cls, locale_code):
-        if locale_code in cls.currencies:
-            return cls.currencies[locale_code]
-        return cls.currencies['vi']
+    def check_uuid_list(cls, data: list[any], return_data=False) -> Union[list, bool]:
+        result = []
+        if data and isinstance(data, list):
+            for idx_val in data:
+                tmp = cls.check_uuid(idx_val, return_data=return_data)
+                if return_data is True:
+                    if tmp is not None:
+                        result.append(tmp)
+                else:
+                    result.append(tmp)
+                    if tmp is False:
+                        break
+
+        if return_data is True:
+            return result
+        if len(result) == len(data) and all(result) is True:
+            return True
+        return False
+
+    @classmethod
+    def list_child_type(cls, data: list, child_type: type) -> bool:
+        if isinstance(data, list):
+            return all(isinstance(x, child_type) for x in data)
+        return False
+
+    @classmethod
+    def dict_child_type(cls, data: dict, key_type: type, value_type: type) -> bool:
+        if isinstance(data, dict):
+            return all(
+                all(
+                    [isinstance(key, key_type), isinstance(value, value_type)]
+                ) for key, value in data.items()
+            )
+        return False
+
+    @staticmethod
+    def get_bool(data: Union[str, int, bool]):
+        if isinstance(data, bool):
+            return data
+        if data in ['true', 'True', '1', 1]:
+            return True
+        if data in ['false', 'False', '0', 0]:
+            return False
+        raise ValueError("Data isn't boolean format.")
+
+
+class FORMATTING:
+    DATETIME = settings.REST_FRAMEWORK['DATETIME_FORMAT']
+    DATE = settings.REST_FRAMEWORK['DATE_FORMAT']
+    PAGE_SIZE = settings.REST_FRAMEWORK['PAGE_SIZE']
+
+    @classmethod
+    def parse_datetime(cls, value):
+        if isinstance(value, datetime):
+            return datetime.strftime(value, cls.DATETIME) if value else None
+        return str(value)
+
+    @classmethod
+    def parse_to_datetime(cls, value_str):
+        if value_str:
+            if isinstance(value_str, datetime):
+                return value_str
+            if isinstance(value_str, str):
+                return datetime.strptime(value_str, cls.DATETIME)
+        return None
+
+    @classmethod
+    def parse_date(cls, value):
+        if isinstance(value, date):
+            return datetime.strftime(value, cls.DATE) if value else None
+        return str(value)
+
+    @classmethod
+    def parse_to_date(cls, value_str):
+        if value_str:
+            if isinstance(value_str, date):
+                return value_str
+            if isinstance(value_str, str):
+                return datetime.strptime(value_str, cls.DATE)
+        return None

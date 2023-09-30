@@ -1,35 +1,27 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
+{% block title %}{% trans 'Expense List' %}{% endblock %}
 {% block cssHeader %}
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
-       href="{% url "ExpenseCreate" %}" data-bs-toggle="tooltip" data-bs-placement="top" title=""
-       data-bs-original-title="Add">
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="plus"></i>
+    <a href="{% url "ExpenseCreate" %}">
+        <button class="btn btn-outline-primary">
+            <span>
+                <span>{% trans 'Add' %}</span>
+                <span class="icon">
+                    <i class="fa-solid fa-plus"></i>
+                </span>
             </span>
-        </span>
-    </a>
-
-    <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover no-caret flex-shrink-0 d-lg-inline-block d-none"
-       href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
-       data-bs-original-title="Refresh">
-        <span class="icon">
-            <span class="feather-icon">
-                <i data-feather="refresh-cw"></i>
-            </span>
-        </span>
+        </button>
     </a>
 {% endblock %}
 {% block pageContent %}
     <table id="dtbExpense" class="table nowrap w-100 mb-5"
            data-method="GET" data-url="{% url "ExpenseListAPI" %}"
-           data-url-detail="{% url "ExpenseDetail" pk=1 %}">
+           data-url-detail="{% url "ExpenseDetail" pk=0 %}">
         <thead>
         <tr>
             <th>
@@ -46,7 +38,6 @@
                 ></i>
             </th>
             <th class="wrap-text">{% trans 'Name' %}</th>
-            <th class="wrap-text">{% trans "ExpenseType" %}</th>
         </tr>
         </thead>
     </table>

@@ -1,0 +1,169 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'Inventory Adjustment Create' %}{% endblock %}
+{% block cssHeader %}
+    <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'vendors/dropify/dist/css/dropify.css' %}" rel="stylesheet" type="text/css"/>
+{% endblock %}
+{% block pageAction %}
+    <button id="update-ia" class="btn btn-outline-primary" type="submit" form="frm_inventory_adjustment_detail">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
+            </span>
+        </span>
+    </button>
+{% endblock %}
+{% block pageContent %}
+    <form data-method="PUT" data-url-redirect="{% url "InventoryAdjustmentDetail" pk=0 %}"
+          data-url-list="{% url 'InventoryAdjustmentListAPI' %}"
+          data-url-detail="{% url 'InventoryAdjustmentDetailAPI' pk=0 %}"
+          data-url="{% url "InventoryAdjustmentDetailAPI" pk=0 %}"
+          id="frm_inventory_adjustment_detail">
+        {% csrf_token %}
+        <div class="row mr-3">
+            <div class="col-6 mb-1 text-right">
+                <h4><span id="ia-code" class="badge badge-soft-primary badge-outline text-primary"></span></h4>
+            </div>
+        </div>
+        <div class="row mt-1 ml-1 mr-1 collapse multi-collapse show" id="collapse-area">
+            <div class="row">
+                <div class="col-6">
+                    <div class="mb-3">
+                        <label for="title" class="form-label required">{% trans 'Title' %}</label>
+                        <input type="text" class="form-control" id="title" placeholder="Inventory adjustment in January">
+                    </div>
+                    <div class="mb-3">
+                        <label for="warehouse-select-box" class="form-label required">{% trans 'Warehouse' %}</label>
+                        <select class="form-select select2 select-multiple"
+                                data-url="{% url 'WareHouseListAPI' %}"
+                                data-method="GET"
+                                id="warehouse-select-box" multiple>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row">
+                        <div class="mb-3 col-6">
+                            <label for="date" class="form-label required">{% trans 'Date' %}</label>
+                            <input type="text" class="form-control" id="date">
+                        </div>
+                        <div class="mb-3 col-6">
+                            <label for="status" class="form-label required">{% trans 'Status' %}</label>
+                            <input type="text" class="form-control" id="status">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="in-charge-select-box" class="form-label required">{% trans 'In charge' %}</label>
+                        <select class="form-select select2 select-multiple"
+                                data-url="{% url 'EmployeeListAPI' %}"
+                                data-method="GET"
+                                id="in-charge-select-box" multiple>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-3 mb-3">
+            <div class="col-11">
+                <a class="btn btn-flush-secondary flush-soft-hover w-100" data-bs-toggle="collapse" data-bs-target="#collapse-area" aria-expanded="false" aria-controls="collapse-area">
+                    <i class="bi bi-chevron-bar-expand text-secondary"></i>
+                </a>
+            </div>
+            <div class="col-1">
+                <div class="btn-group dropdown w-100">
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {% trans 'Actions' %}
+                    </button>
+                    <div class="dropdown-menu dropdown-bordered">
+                        <a class="dropdown-item" href="#"><i class="bi bi-arrow-up"></i><span>&nbsp;&nbsp;{% trans 'Get Increase Items' %}</span></a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#"><i class="bi bi-arrow-down"></i></i><span>&nbsp;&nbsp;{% trans 'Get Decrease Items' %}</span></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <ul class="nav nav-tabs nav-icon nav-light">
+                <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#tab_block_line_detail">
+                        <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-justify-left"></i></span></span>
+                        <span class="nav-link-text">{% trans 'Line Detail' %}</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#tab_block_attachment">
+                        <span class="nav-icon-wrap"><span class="feather-icon"><i data-feather="file-text"></i></span></span>
+                        <span class="nav-link-text">{% trans 'Attachment' %}</span>
+                    </a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="tab_block_line_detail">
+                    <table data-url="{% url "WareHouseListAPI" %}"
+                           data-warehouse-product-list="{% url 'WarehouseGetProductsListAPI' %}"
+                           data-uom-list="{% url 'UnitOfMeasureListAPI' %}"
+                           data-method="GET"
+                           class="table nowrap w-100" id="table-line-detail">
+                        <thead>
+                        <th>{% trans 'Product name' %}</th>
+                        <th>{% trans 'Warehouse' %}</th>
+                        <th>{% trans 'Unit of measure' %}</th>
+                        <th>{% trans 'Book quantity' %}</th>
+                        <th>{% trans 'Count' %}</th>
+                        <th>{% trans 'Difference' %}</th>
+                        <th>{% trans 'Select for actions' %}</th>
+                        <th>{% trans 'Action type' %}</th>
+                        <th>{% trans 'Action status' %}</th>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <div class="tab-pane fade" id="tab_block_attachment">
+                    <div class="row">
+                        <div class="col-12">
+                            <input type="file" id="input-file-now" class="dropify">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="offcanvas offcanvas-end mt-9 w-50" tabindex="-1" id="select-items-modal" aria-labelledby="offcanvasTopLabel">
+            <div class="offcanvas-header row">
+                <div class="col-9"><h5 id="offcanvasRightLabel">{% trans 'Select products from warehouses' %}</h5></div>
+                <div class="col-2"><button id="btn-select-product" type="button" class="btn btn-primary w-100" data-bs-dismiss="offcanvas">{% trans 'Select' %}</button></div>
+                <div class="col-1 text-right"><button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button></div>
+            </div>
+            <div class="offcanvas-body">
+                <div style="overflow: auto; height: 70vh; overflow-x: hidden">
+                    <table class="table nowrap w-100" id="table-select-products">
+                        <thead>
+                        <th class="w-10">
+                            <span class="form-check">
+                                <input type="checkbox" class="form-check-input" id="selected_all_product">
+                                <label class="form-check-label"></label>
+                            </span>
+                        </th>
+                        <th class="w-20">{% trans 'Code' %}</th>
+                        <th class="w-30">{% trans 'Warehouse' %}</th>
+                        <th class="w-40">{% trans 'Product' %}</th>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
+    <script src="{% static 'vendors/dropify/dist/js/dropify.min.js' %}"></script>
+    <script src="{% static 'assets/sales/inventory/js/inventory_adjustment/inventory_adjustment_common.js' %}"></script>
+    <script src="{% static 'assets/sales/inventory/js/inventory_adjustment/inventory_adjustment_detail.js' %}"></script>
+{% endblock %}

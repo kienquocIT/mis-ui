@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+
+{% block pageAction %}
+    <button class="btn btn-outline-primary" type="submit" form="form-role">
+            <span>
+                <span>{% trans 'Save' %}</span>
+                <span class="icon">
+                    <i class="fa-regular fa-floppy-disk"></i>
+                </span>
+            </span>
+    </button>
+{% endblock %}
+
+{% block pageContent %}
+    <form
+            id="form-role"
+            data-method="PUT"
+            data-url="{% url "RoleUpdateAPI" pk=pk %}"
+    >
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-12 col-xs-6 col-md-4 form-group">
+                <label class="form-label required" for="title">{% trans 'Role name' %}</label>
+                <input class="form-control" name="title" id="title">
+            </div>
+            <div class="col-12 col-xs-6 col-md-4 form-group">
+                <label class="form-label required" for="abbreviation">{% trans 'Abbreviation' %}</label>
+                <input class="form-control" name="abbreviation" id="abbreviation">
+            </div>
+            <div class="col-12 col-xs-6 col-md-4 form-group">
+                <label class="form-label" for="selectMembers">{% trans 'Member' %}</label>
+                <select
+                        id="selectMembers"
+                        data-url="{% url 'EmployeeListAPI' %}"
+                        data-method="GET"
+                        data-keyResp="employee_list"
+                        data-keyText="full_name"
+                        multiple
+                ></select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <ul class="nav nav-light nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#plan-app">
+                            <span class="nav-link-text">{% trans 'Plan-Application' %}</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#permissions">
+                            <span class="nav-link-text">{% trans 'Permission' %}</span>
+                        </a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane show active" id="plan-app">
+                        {% include 'core/hr/extends/plan_apps.html' with add_new_enabled="true" warning_license="true" warning_enabled="true" %}
+                    </div>
+                    <div class="tab-pane fade" id="permissions">
+                        {% include 'core/hr/extends/permissions.html' with add_new_enabled="true" %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+
+{% block jsFooter %}
+    <script>
+        let urlDetail = "{% url 'RoleDetailAPI' pk=pk %}";
+    </script>
+    <script src="{% static 'assets/js/core/hr/permissions.js' %}"></script>
+    <script src="{% static 'assets/js/core/hr/plan_app.js' %}"></script>
+    <script src="{% static 'assets/js/core/hr/role/roles_common.js' %}"></script>
+    <script src="{% static 'assets/js/core/hr/role/role_update.js' %}"></script>
+{% endblock %}

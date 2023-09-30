@@ -9,11 +9,12 @@ from apps.shared import BreadcrumbView
 
 urlpatterns = \
     [
-        path('admin/', admin.site.urls),
+        path('system-admin/', admin.site.urls),
+        path('', include('apps.core.home.urls')),
         path('', include('apps.core.urls')),
         path('', include('apps.masterdata.urls')),
-        path('private-system/', include('apps.sharedapp.urls')),
         path('', include('apps.sales.urls')),
+        path('', include('apps.eoffice.urls')),
     ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

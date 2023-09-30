@@ -167,8 +167,8 @@
     "paginate": {
         "first": "Đầu tiên",
         "last": "Cuối cùng",
-        "next": "Sau",
-        "previous": "Trước"
+        "next": "<i class=\"ri-arrow-right-s-line\"></i>",
+        "previous": "<i class=\"ri-arrow-left-s-line\"></i>"
     },
     "search": "",
     "zeroRecords": "Không tìm thấy kết quả",

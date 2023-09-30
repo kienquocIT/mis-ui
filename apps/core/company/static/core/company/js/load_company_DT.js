@@ -1,23 +1,27 @@
 /*Blog Init*/
-"use strict";
 $(function () {
-    $(document).ready(function () {
-        let company_current_id = $('#company-current-id').attr('data-id')
-        let config = {
-            ordering: false,
-            paginate: false,
-            language: {
-                search: "",
-                searchPlaceholder: "Search",
-                info: "",
-                sLengthMenu: "View  MENU",
+    let company_current_id = $('#company-current-id').attr('data-id')
+    let dtb = $('#datable_company_list');
+    let frm = new SetupFormSubmit(dtb);
+    dtb.DataTableDefault({
+        rowIdx: true,
+        useDataServer: true,
+        ajax: {
+            url: frm.dataUrl,
+            type: frm.dataMethod,
+            data: function (d) {
+                d.is_done = false;
             },
-            drawCallback: function () {
-                $('.dataTables_paginate > .pagination').addClass('custom-pagination pagination-simple');
-                feather.replace();
+            dataSrc: function (resp) {
+                let data = $.fn.switcherResp(resp);
+                if (data && data.hasOwnProperty('company_list')) {
+                    return resp.data['company_list'] ? resp.data['company_list'] : [];
+                }
+                throw Error('Call data raise errors.')
             },
-            data: [],
-            columns: [{
+        },
+        columns: [
+            {
                 width: '5%',
                 render: () => {
                     return '';
@@ -86,153 +90,94 @@ $(function () {
                         return `<div>` + bt2 + bt3 + `</div>`;
                     }
                 }
-            },]
-        }
+            },
+        ]
+    });
 
-        function initDataTable(config) {
-            /*DataTable Init*/
-            let dtb = $('#datable_company_list');
-            if (dtb.length > 0) {
-                var targetDt = dtb.DataTable(config);
-                /*Checkbox Add*/
-                var tdCnt = 0;
-                $('table tr').each(function () {
-                    $('<span class="form-check mb-0"><input type="checkbox" class="form-check-input check-select" id="chk_sel_' + tdCnt + '"><label class="form-check-label" for="chk_sel_' + tdCnt + '"></label></span>').appendTo($(this).find("td:first-child"));
-                    tdCnt++;
-                });
-                $(document).on('click', '.del-button', function () {
-                    targetDt.rows('.selected').remove().draw(false);
-                    return false;
-                });
-                $("div.blog-toolbar-left").html('<div class="d-xxl-flex d-none align-items-center"> <select class="form-select form-select-sm w-120p"><option selected>Bulk actions</option><option value="1">Edit</option><option value="2">Move to trash</option></select> <button class="btn btn-sm btn-light ms-2">Apply</button></div><div class="d-xxl-flex d-none align-items-center form-group mb-0"> <label class="flex-shrink-0 mb-0 me-2">Sort by:</label> <select class="form-select form-select-sm w-130p"><option selected>Date Created</option><option value="1">Date Edited</option><option value="2">Frequent Contacts</option><option value="3">Recently Added</option> </select></div> <select class="d-flex align-items-center w-130p form-select form-select-sm"><option selected>Export to CSV</option><option value="2">Export to PDF</option><option value="3">Send Message</option><option value="4">Delegate Access</option> </select>');
-                dtb.parent().addClass('table-responsive');
-
-
-                /*Select all using checkbox*/
-                var DT1 = dtb.DataTable();
-                $(".check-select-all").on("click", function (e) {
-                    $('.check-select').attr('checked', true);
-                    if ($(this).is(":checked")) {
-                        DT1.rows().select();
-                        $('.check-select').prop('checked', true);
-                    } else {
-                        DT1.rows().deselect();
-                        $('.check-select').prop('checked', false);
-                    }
-                });
-                $(".check-select").on("click", function (e) {
-                    if ($(this).is(":checked")) {
-                        $(this).closest('tr').addClass('selected');
-                    } else {
-                        $(this).closest('tr').removeClass('selected');
-                        $('.check-select-all').prop('checked', false);
-                    }
-                });
+    // Load Data Config
+    $('html').on('click', '.btn-setting', function (e) {
+        e.preventDefault();
+        let rowData = DTBControl.getRowData($(this));
+        let modalControl = $('#modal-setting');
+        Promise.all([
+            $.ajax(
+                modalControl.attr('data-url-detail'),
+                'GET'
+            ),
+            $.ajax(
+                modalControl.attr('data-url-currency-list'),
+                'GET'
+            )
+        ]).then(([result1, result2]) => {
+            let data1 = $.fn.switcherResp(result1);
+            let data2 = $.fn.switcherResp(result2);
+            let myCurrency = $('#idxCurrencyDefault');
+            myCurrency.closest('.modal').find('.modal-title').text(
+                DTBControl.getRowData($(this))?.['title']
+            )
+            if (data2['currency_list']) {
+                myCurrency.empty();
+                for (let i = 0; i < data2['currency_list'].length; i++) {
+                    let option = $('<option>').val(
+                        data2['currency_list'][i]['currency'].code
+                    ).text(
+                        data2['currency_list'][i]['currency'].code +
+                        ' - ' +
+                        data2['currency_list'][i]['currency'].title
+                    );
+                    myCurrency.append(option);
+                }
+                myCurrency.trigger('change');
             }
-        }
-
-        function loadDataTable() {
-            let tb = $('#datable_company_list');
-            $.fn.callAjax(tb.attr('data-url'), tb.attr('data-method')).then((resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data && resp.hasOwnProperty('data') && resp.data.hasOwnProperty('company_list')) {
-                    config['data'] = resp.data['company_list'] ? resp.data['company_list'] : [];
-                }
-                if (resp.data?.['company_list']?.[0]?.['tenant_auto_create_company'] === false) {
-                    const add_company_div = document.getElementById("add_company_button");
-                    add_company_div.remove();
-                }
-            }).then(() => initDataTable(config))
-        }
-
-        loadDataTable();
-
-
-        // Load Data Config
-        $('html').on('click', '.btn-setting', function (e) {
-            e.preventDefault();
-            let rowData = $(this).getRowData();
-            let modalControl = $('#modal-setting');
-            Promise.all([
-                $.ajax(
-                    modalControl.attr('data-url-detail'),
-                    'GET'
-                ),
-                $.ajax(
-                    modalControl.attr('data-url-currency-list'),
-                    'GET'
-                )
-            ]).then(([result1, result2]) => {
-                let data1 = $.fn.switcherResp(result1);
-                let data2 = $.fn.switcherResp(result2);
-                let myCurrency = $('#idxCurrencyDefault');
-                myCurrency.closest('.modal').find('.modal-title').text(
-                    $(this).getRowData()?.['title']
-                )
-                if (data2['currency_list']) {
-                    myCurrency.empty();
-                    for (let i = 0; i < data2['currency_list'].length; i++) {
-                        let option = $('<option>').val(
-                            data2['currency_list'][i]['currency'].code
-                        ).text(
-                            data2['currency_list'][i]['currency'].code +
-                            ' - ' +
-                            data2['currency_list'][i]['currency'].title
-                        );
-                        myCurrency.append(option);
-                    }
-                    myCurrency.trigger('change');
-                }
-                if (data1['config']) {
-                    $('#idxLanguage').val(data1['config']['language']).trigger('change.select2');
-                    myCurrency.val(data1['config']['currency']['code']).trigger('change.select2');
-                    $('#idxCurrencyMaskPrefix').val(data1['config']['currency_rule'].prefix);
-                    $('#idxCurrencyMaskSuffix').val(data1['config']['currency_rule'].suffix);
-                    $('#idxCurrencyMaskThousand').val(data1['config']['currency_rule'].thousands);
-                    $('#idxCurrencyMaskDecimal').val(data1['config']['currency_rule'].decimal);
-                    $('#idxCurrencyMaskPrecision').val(data1['config']['currency_rule'].precision);
-                }
-            })
-        })
-
-        $('#tblCompanySetting').on('submit', function (e) {
-            $.fn.showLoading();
-
-            let csr = $("input[name=csrfmiddlewaretoken]").val();
-            let frm = new SetupFormSubmit($(this));
-            let dataBody = frm.dataForm
-            dataBody['currency_rule'] = $.fn.groupDataFromPrefix(dataBody, 'currency_rule__');
-
-            if (
-                dataBody['currency_rule'] &&
-                (
-                        dataBody['currency_rule']['thousands'] &&
-                        dataBody['currency_rule']['decimal'] &&
-                        dataBody['currency_rule']['thousands'] === dataBody['currency_rule']['decimal']
-                )
-            ) {
-                $.fn.hideLoading();
-                $.fn.notifyB({
-                    'description': "Decimal values are not allowed to be the same as thousands"
-                }, 'failure');
-                e.preventDefault();
-            } else if (dataBody['currency_rule'] && dataBody['currency_rule']['thousands'] === '.' && !dataBody['currency_rule']['decimal']){
-                $.fn.hideLoading();
-                $.fn.notifyB({
-                    'description': "Decimal default values is dot(.), please select thousand value isn't dot(.)"
-                }, 'failure');
-                e.preventDefault();
-            }
-            else {
-                $.fn.callAjax(frm.dataUrl, frm.dataMethod, dataBody, csr).then((resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data['status'] === 200) {
-                        window.location.reload();
-                    }
-                }, (errs) => {
-                    $.fn.hideLoading();
-                });
+            if (data1['config']) {
+                $('#idxLanguage').val(data1['config']['language']).trigger('change.select2');
+                myCurrency.val(data1['config']['currency']['code']).trigger('change.select2');
+                $('#idxCurrencyMaskPrefix').val(data1['config']['currency_rule'].prefix);
+                $('#idxCurrencyMaskSuffix').val(data1['config']['currency_rule'].suffix);
+                $('#idxCurrencyMaskThousand').val(data1['config']['currency_rule'].thousands);
+                $('#idxCurrencyMaskDecimal').val(data1['config']['currency_rule'].decimal);
+                $('#idxCurrencyMaskPrecision').val(data1['config']['currency_rule'].precision);
             }
         })
     })
+
+    $('#tblCompanySetting').on('submit', function (e) {
+        WindowControl.showLoading();
+
+        let csr = $("input[name=csrfmiddlewaretoken]").val();
+        let frm = new SetupFormSubmit($(this));
+        let dataBody = frm.dataForm
+        dataBody['currency_rule'] = SetupFormSubmit.groupDataFromPrefix(dataBody, 'currency_rule__');
+
+        if (
+            dataBody['currency_rule'] &&
+            (
+                dataBody['currency_rule']['thousands'] &&
+                dataBody['currency_rule']['decimal'] &&
+                dataBody['currency_rule']['thousands'] === dataBody['currency_rule']['decimal']
+            )
+        ) {
+            WindowControl.hideLoading();
+            $.fn.notifyB({
+                'description': "Decimal values are not allowed to be the same as thousands"
+            }, 'failure');
+            e.preventDefault();
+        } else if (dataBody['currency_rule'] && dataBody['currency_rule']['thousands'] === '.' && !dataBody['currency_rule']['decimal']) {
+            WindowControl.hideLoading();
+            $.fn.notifyB({
+                'description': "Decimal default values is dot(.), please select thousand value isn't dot(.)"
+            }, 'failure');
+            e.preventDefault();
+        } else {
+            $.fn.callAjax(frm.dataUrl, frm.dataMethod, dataBody, csr).then((resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data['status'] === 200) {
+                    window.location.reload();
+                }
+            }, (errs) => {
+                WindowControl.hideLoading();
+            });
+        }
+    })
+
 });

@@ -1,0 +1,180 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Warehouse Update' %}{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <button class="btn btn-outline-primary" type="submit" form="frmUpdate">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
+            </span>
+        </span>
+    </button>
+{% endblock %}
+{% block pageContent %}
+    <form id="frmUpdate" data-method="GET" data-url-detail="{% url 'WareHouseDetailAPI' pk=0 %}" data-url-redirect="{% url 'WareHouseList' %}">
+        <div class="row">
+            <div class="form-group col-6">
+                <label class="form-label required">
+                    {% trans 'Name' %}
+                </label>
+                <input type="text" class="form-control" name="title" id="inpTitle">
+            </div>
+
+            <div class="col-2 form-check mt-5">
+                <input type="checkbox" id="checkDropShip" class="form-check-input checkType" disabled>
+                <label class="form-label" for="checkDropShip">{% trans 'Drop Ship' %}</label>
+            </div>
+
+            <div class="col-2 form-check mt-5">
+                <input type="checkbox" id="checkBinLocation" class="form-check-input checkType" disabled>
+                <label class="form-label" for="checkBinLocation">{% trans 'Bin Location' %}</label>
+            </div>
+
+            <div class="col-2 form-check mt-5">
+                <input type="checkbox" id="checkAgencyLocation" class="form-check-input checkType">
+                <label class="form-label" for="checkAgencyLocation">{% trans 'Agency / Parner Location' %}</label>
+            </div>
+            <input class="hidden" value="0" id="warehouseType">
+        </div>
+        <div class="row">
+            <div class="col-6 form-group">
+                <label class="form-label">{% trans 'Description' %}</label>
+                <textarea class="form-control" name="remarks" id="inpRemarks"></textarea>
+            </div>
+            <div class="col-6 form-group hidden">
+                <label class="form-label">{% trans 'Agency / Partner' %}</label>
+                <select
+                        id="boxSelectAgency"
+                        class="form-select"
+                        name="agency"
+                        data-method="GET"
+                        data-url="{% url 'AccountForSaleListAPI' %}"
+                        data-keyResp="account_sale_list"
+                        data-keyText="name"
+                ></select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-check form-switch mt-2 mb-2 ml-3">
+                <input type="checkbox" class="form-check-input" id="inputActive" checked name="is_active">
+                <label for="inputActive" class="form-label">{% trans 'Active' %}</label>
+            </div>
+        </div>
+
+        <div class="row">
+            <ul class="nav nav-light nav-tabs" id="tab-select">
+                <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#tab-address">
+                        <span class="nav-link-text">{% trans 'Address' %}</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link disabled" data-bs-toggle="tab" href="#tab-bin-location" id="link-tab-sale">
+                        <span class="nav-link-text">{% trans 'Bin Location' %}</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="tab-address">
+                <div class="row">
+                    <div class="col-3">
+                        <label class="form-label required">{% trans "Warehouse Address" %}</label>
+                    </div>
+                    <div class="col-7"></div>
+                    <div class="col-2 text-right">
+                        <button
+                                data-bs-toggle="modal" data-bs-target="#modalWarehouseAddress"
+                                type="button" style="background: none;border: none; color: #007D88"
+                        >
+                        <span
+                                class="btn-add-tenant" id="btnEditAddress" data-bs-toggle="tooltip"
+                                data-bs-placement="bottom"
+                                title="{% trans 'Edit Work address' %}"
+                        >
+                            <i class="fas fa-plus-circle"></i>
+                            {% trans 'Edit' %}
+                        </span>
+                        </button>
+                    </div>
+                </div>
+                <textarea class="form-control" readonly name="full_address" id="warehouseAddress"></textarea>
+            </div>
+            <div class="tab-pane fade" id="tab-bin-location">
+            </div>
+        </div>
+
+        <div
+                class="modal fade" id="modalWarehouseAddress" tabindex="-1" role="dialog"
+                aria-labelledby="exampleModalCenter" aria-hidden="true"
+        >
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{% trans 'Edit Warehouse Address' %}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="form-group">
+                                    <label class="form-label">{% trans "Address" %}</label>
+                                    <input
+                                            class="form-control" type="text" id="addressDetail"
+                                            placeholder="Number 20, 22 street, Him Lam residential area"
+                                    >
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group">
+                                    <label class="form-label">{% trans "Province" %}</label>
+                                    <select
+                                            class="form-select" id="warehouseCity" aria-label=".form-select-sm"
+                                            data-url="{% url "CityListAPI" %}" data-method="GET"
+                                    ></select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group">
+                                    <label class="form-label">{% trans "District" %}</label>
+                                    <select
+                                            class="form-select" id="warehouseDistrict" aria-label=".form-select-sm"
+                                            data-url="{% url "DistrictAllListAPI" %}" data-method="GET"
+                                    ></select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group">
+                                    <label class="form-label">{% trans "Ward" %}</label>
+                                    <select
+                                            class="form-select" id="warehouseWard" aria-label=".form-select-sm"
+                                            data-url="{% url "WardAllListAPI" %}" data-method="GET"
+                                    ></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary"
+                                    data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                            <button type="button" class="btn btn-primary"
+                                    id="saveWarehouseAddress">{% trans 'Save' %}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/js/masterdata/saledata/warehouse/common.js' %}"></script>
+    <script src="{% static 'assets/js/masterdata/saledata/warehouse/update.js' %}"></script>
+{% endblock %}

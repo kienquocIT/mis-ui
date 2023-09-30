@@ -3,11 +3,11 @@
 }
 
 .fa-file-alt {
-    font-size: larger;
+    font-size: x-large;
 }
 
 .fa-chart-bar {
-    font-size: larger;
+    font-size: x-large;
 }
 
 .dropdown-menu .dropdown-header.header-wth-bg {
@@ -23,16 +23,19 @@
     background-color: white;
 }
 
+.disabled-show-normal:disabled {
+    color: #0c0c0c;
+    background-color: white;
+}
+
 .fa-angle-double-up {
     color: #007D88;
-    text-align: center;
-    font-size: x-large;
+    text-align: right;
 }
 
 .fa-angle-double-down {
     color: #007D88;
-    text-align: center;
-    font-size: x-large;
+    text-align: right;
 }
 
 ul.quotation-tabs {
@@ -49,14 +52,91 @@ a.dropdown-item.table-row-price-option:hover {
     color: white;
 }
 
-.fa-info-circle {
-    color: #298dff;
+.modal-body-invalid-promotion {
+    text-align: center;
 }
 
-.fa-gift {
-    color: #e92990;
+.row.modal-footer-invalid-promotion {
+    position: relative;
+    padding: 10px;
+    text-align: center;
+    border-top: 1px solid #c7c7c7;
 }
 
-.fa-shipping-fast {
-    color: #c39749;
+.row.modal-footer-invalid-promotion::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1px;
+    height: 100%;
+    background-color: #b5b5b5;
+}
+
+.btn-remove-promotion {
+    color: red;
+}
+
+.btn-see-promotion {
+    color: #00D67F;
+}
+
+.option-btn-checked {
+    background-color: #f7f7f7;
+}
+
+.expired-price {
+    color: #EB5757CC;
+}
+
+.valid-price {
+    color: #00D67F;
+}
+
+.fa-angle-down {
+    font-size: x-small;
+    color: #c7c7c7;
+}
+
+.status-draft:disabled {
+    background-color: #e9ecef;
+    color: #6f6f6f;
+}
+
+.status-created:disabled {
+    background-color: #ebf5f5;
+    color: #007D88;
+}
+
+.status-added:disabled {
+    background-color: #edfcfe;
+    color: #18DDEF;
+}
+
+.status-finish:disabled {
+    background-color: #ebfcf5;
+    color: #00ab66;
+}
+
+.status-cancel:disabled {
+    background-color: #ffebeb;
+    color: #e60000;
+}
+
+.total-area .card {
+    margin-top: unset;
+}
+
+.total-area .card.card-sm .card-body {
+    padding: 0.8rem;
+}
+
+.subtotal-area .card {
+    margin-top: unset;
+    margin-bottom: unset;
+}
+
+.subtotal-area .card.card-sm .card-body {
+    padding: 0.5rem;
 }

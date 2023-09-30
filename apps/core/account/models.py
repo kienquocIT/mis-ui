@@ -5,10 +5,11 @@ from django.contrib.auth.models import PermissionsMixin
 from django.conf import settings
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import models
-from django.db.models import Manager
 from django.utils import timezone
 
 from apps.shared import AuthMsg, RandomGenerate
+
+from .managers import AccountManager
 
 
 class AuthUser(AbstractBaseUser, PermissionsMixin):
@@ -41,7 +42,11 @@ class AuthUser(AbstractBaseUser, PermissionsMixin):
 
     last_login = models.DateTimeField(verbose_name='Last Login', null=True)
 
-    objects = Manager()
+    is_active = models.BooleanField(verbose_name='active', default=True)
+    is_staff = models.BooleanField(verbose_name='staff status', default=False)
+    is_superuser = models.BooleanField(default=False, verbose_name='superuser')
+
+    objects = AccountManager()
 
     EMAIL_FIELD = 'email'
     USERNAME_FIELD = 'username_auth'
@@ -77,6 +82,8 @@ class AuthUser(AbstractBaseUser, PermissionsMixin):
 
 
 class User(AuthUser):
+    ui_space_selected = models.CharField(max_length=100, null=True, default=None, help_text='Space code of user')
+
     tenant_current_data = models.JSONField(default=dict, help_text='{"id": "", "title": "", "code": ""}')
     company_current_data = models.JSONField(default=dict, help_text='{"id": "", "title": "", "code": ""}')
     space_current_data = models.JSONField(default=dict, help_text='{"id": "", "title": "", "code": ""}')
@@ -85,6 +92,15 @@ class User(AuthUser):
     )
     companies_data = models.JSONField(default=list, help_text='[{...company detail...},]')
     is_admin_tenant = models.BooleanField(default=False)
+
+    def update_avatar_hash(self, media_path_hash):
+        if media_path_hash:
+            self.avatar = media_path_hash
+            self.save()
+
+    @property
+    def avatar_url(self):
+        return f'{settings.MEDIA_PUBLIC_DOMAIN}p/f/avatar/{self.avatar}' if self.avatar else None
 
     class Meta:
         verbose_name = 'Account User'
@@ -108,23 +124,6 @@ class User(AuthUser):
         if state_check:
             try:
                 user = User.objects.get(username_auth=api_result['username_auth'], user_id=api_result['id'])
-                user.user_id = api_result['id']
-                user.username = api_result['username']
-                user.first_name = api_result['first_name']
-                user.last_name = api_result['last_name']
-                user.email = api_result.get('email', '')
-                user.phone = api_result.get('phone', '')
-                user.dob = api_result.get('dob', None)
-                user.gender = api_result.get('gender', None)
-                user.language = api_result.get('language', settings.LANGUAGE_CODE)
-                user.avatar = api_result.get('avatar', None)
-                user.is_admin_tenant = api_result.get('is_admin_tenant', False)
-                user.tenant_current_data = api_result.get('tenant_current', {})
-                user.company_current_data = api_result.get('company_current', {})
-                user.space_current_data = api_result.get('space_current', {})
-                user.employee_current_data = api_result.get('employee_current', {})
-                user.companies_data = api_result.get('companies', [])
-                user.save()
             except User.DoesNotExist:
                 user = User.objects.create(
                     user_id=api_result['id'],
@@ -137,13 +136,29 @@ class User(AuthUser):
                     dob=api_result.get('dob', None),
                     gender=api_result.get('gender', None),
                     language=api_result.get('language', settings.LANGUAGE_CODE),
-                    avatar=api_result.get('avatar', None),
+                    avatar=api_result.get('media_avatar_hash', None),
                     is_admin_tenant=api_result.get('is_admin_tenant', False),
                 )
             except Exception as err:
                 msg_err = f'The regis user process raise exception over happy case. (msg: {str(err)})'
                 print(msg_err)
                 return None
+            user.user_id = api_result['id']
+            user.username = api_result['username']
+            user.first_name = api_result['first_name']
+            user.last_name = api_result['last_name']
+            user.email = api_result.get('email', '')
+            user.phone = api_result.get('phone', '')
+            user.dob = api_result.get('dob', None)
+            user.gender = api_result.get('gender', None)
+            user.language = api_result.get('language', settings.LANGUAGE_CODE)
+            user.is_admin_tenant = api_result.get('is_admin_tenant', False)
+            user.tenant_current_data = api_result.get('tenant_current', {})
+            user.company_current_data = api_result.get('company_current', {})
+            user.space_current_data = api_result.get('space_current', {})
+            user.employee_current_data = api_result.get('employee_current', {})
+            user.avatar = user.employee_current_data.get('media_avatar_hash', None)
+            user.companies_data = api_result.get('companies', [])
             user.access_token = api_result['token']['access_token']
             user.refresh_token = api_result['token']['refresh_token']
             user.last_login = timezone.now()

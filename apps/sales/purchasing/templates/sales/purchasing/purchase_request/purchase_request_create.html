@@ -1,0 +1,460 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'Purchase Request Create' %}{% endblock %}
+{% block cssHeader %}
+    <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}"/>
+{% endblock %}
+{% block pageAction %}
+
+    <button class="btn btn-outline-primary" type="submit" form="form-create-pr">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
+            </span>
+        </span>
+    </button>
+{% endblock %}
+{% block pageContent %}
+    <form id="form-create-pr" data-url="{% url "PurchaseRequestListAPI" %}" data-method="POST"
+          data-url-redirect="{% url "PurchaseRequestList" %}">
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-label required">{% trans 'Name' %}</label>
+                    <input class="form-control" placeholder="Input Name" name="title" required/>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-label required">{% trans 'Delivered Date' %}</label>
+                    <input class="form-control" name="delivered_date" required/>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-label required">{% trans 'Supplier' %}</label>
+                    <span class="input-affix-wrapper">
+                    <span class="input-prefix" id="dropdownBeneficiary">
+                        <i class="fas fa-info-circle text-primary" aria-expanded="false"
+                           data-bs-toggle="dropdown"></i>
+                        <span role="menu" class="dropdown-menu ml-4 pl-3 pr-3 pt-3 pb-3"
+                              style="width: 25rem;">
+                            <div class="row">
+                                <span class="col-7">{% trans "More information" %}</span>
+                                <a class="col-5 text-right" target="_blank"
+                                   href="{% url 'AccountDetail' pk=0 %}">
+                                    <span class="badge btn-outline-primary">{% trans "More" %}&nbsp;<i
+                                            class="bi bi-arrow-right"></i></span>
+                                </a>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <div class="row">
+                                <span class="col-5">{% trans "Supplier Name" %}</span>
+                                <span class="col-7 text-primary span-supplier-name"></span>
+                            </div>
+                            <div class="row">
+                                <span class="col-5">{% trans "Code" %}</span>
+                                <span class="col-7 text-primary span-supplier-code"></span>
+                            </div>
+                            <div class="row">
+                                <span class="col-5">{% trans "Owner Name" %}</span>
+                                <span class="col-7 text-primary span-supplier-owner"></span>
+                            </div>
+                            <div class="row">
+                                <span class="col-5">{% trans "Industry" %}</span>
+                                <span class="col-7 text-primary span-supplier-industry"></span>
+                            </div>
+                        </span>
+                    </span>
+                    <select
+                            class="form-control select2"
+                            id="box-select-supplier"
+                            name="supplier"
+                            data-method="GET"
+                            data-url="{% url "AccountForSaleListAPI" %}"
+                            data-keyResp="account_sale_list"
+                            data-keyText="name"
+                            required
+                    >
+                    </select>
+                </span>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-label">{% trans 'Status' %}</label>
+                    <input class="form-control" name="system_status" value="{% trans 'Draft' %}" readonly
+                           data-value="0" required/>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-label required">{% trans 'Contact' %}</label>
+                    <span class="input-affix-wrapper">
+                    <span class="input-prefix" id="dropdownBeneficiary">
+                        <i class="fas fa-info-circle text-primary" aria-expanded="false"
+                           data-bs-toggle="dropdown"></i>
+                        <span role="menu" class="dropdown-menu ml-4 pl-3 pr-3 pt-3 pb-3"
+                              style="width: 25rem;">
+                            <div class="row">
+                                <span class="col-7">{% trans "More information" %}</span>
+                                <a class="col-5 text-right" target="_blank"
+                                   href="{% url 'ContactDetail' pk=0 %}">
+                                    <span class="badge btn-outline-primary">{% trans "More" %}&nbsp;<i
+                                            class="bi bi-arrow-right"></i></span>
+                                </a>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <div class="row">
+                                <span class="col-5">{% trans "Contact Name" %}</span>
+                                <span class="col-7 text-primary span-contact-name"></span>
+                            </div>
+                            <div class="row">
+                                <span class="col-5">{% trans "Job Title" %}</span>
+                                <span class="col-7 text-primary span-contact-job-title"></span>
+                            </div>
+                            <div class="row">
+                                <span class="col-5">{% trans "Mobile" %}</span>
+                                <span class="col-7 text-primary span-contact-mobile"></span>
+                            </div>
+                            <div class="row">
+                                <span class="col-5">{% trans "Email" %}</span>
+                                <span class="col-7 text-primary span-contact-email"></span>
+                            </div>
+                            <div class="row">
+                                <span class="col-5">{% trans "Report to" %}</span>
+                                <span class="col-7 text-primary span-contact-report-to"></span>
+                            </div>
+                        </span>
+                    </span>
+                    <select
+                            class="form-select"
+                            id="box-select-contact"
+                            data-method="GET"
+                            name="contact"
+                            data-url="{% url "ContactListAPI" %}"
+                            data-keyResp="contact_list"
+                            data-keyText="fullname"
+                            required
+                    >
+                    </select>
+                </span>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-label">{% trans 'Purchase Status' %}</label>
+                    <input class="form-control" name="purchase_status" value="Wait" data-value="0" readonly required/>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-label required">{% trans 'Request For' %}</label>
+                    <span class="input-affix-wrapper">
+                        <span class="input-prefix" id="dropdownCreator">
+                            <a href="#" data-bs-toggle="modal" data-bs-target="#modal-select-request-for">
+                                <i class="fa-solid fa-ellipsis text-primary"></i>
+                            </a>
+                        </span>
+                        <input type="text" class="form-control" name="request_for" readonly>
+                    </span>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-label">{% trans 'Note' %}</label>
+                    <input class="form-control" name="note"/>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-label required">{% trans 'Order Code' %}</label>
+                    <input class="form-control" name="sale_order" readonly/>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-3">
+            <ul class="nav nav-light nav-tabs" id="purchase-request-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#tab_line_detail">
+                        <span class="nav-link-text">{% trans 'Line Detail' %}</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#tab_attachment">
+                        <span class="nav-link-text">{% trans 'Attachment' %}</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="tab-content" id="tab-content-purchase-request-product">
+            <div class="tab-pane fade show active" id="tab_line_detail">
+                <table id="datatable-pr-product" class="table nowrap w-100 mb-5">
+                    <thead>
+                    <th class="w-5">#</th>
+                    <th>{% trans "Product" %}</th>
+                    <th>{% trans "Description" %}</th>
+                    <th>{% trans "UoM" %}</th>
+                    <th>{% trans "Quantity" %}</th>
+                    <th>{% trans "Unit Price" %}</th>
+                    <th>{% trans "Tax" %}</th>
+                    <th>{% trans "Subtotal Price" %}</th>
+                    </thead>
+                </table>
+                <div class="row">
+                    <div class="col-5">
+                        <button type="button"
+                                class="btn btn-primary btn-change-pr-product"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modal-select-sale-order"
+                        >{% trans 'Change' %}</button>
+
+                        <div class="dropdown">
+                            <button
+                                    type="button" data-bs-toggle="dropdown"
+                                    class="btn btn-primary btn-add-product dropdown-toggle"
+                            >{% trans 'Add' %}</button>
+                            <div role="menu" class="dropdown-menu dropdown-select-uom-group">
+                                <a class="dropdown-item btn-add-pr-product" href="#">{% trans "New Product" %}</a>
+                                <div class="dropdown-divider"></div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-7 mt-5">
+                        <div class="row mb-2">
+                            <div class="col-6"><p>{% trans 'Pretax Amount' %}</p></div>
+                            <div class="col-6">
+                                <input
+                                        id="input-product-pretax-amount"
+                                        type="text"
+                                        class="form-control mask-money"
+                                        data-return-type="number"
+                                        readonly
+                                >
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-6"><p>{% trans 'Taxes' %}</p></div>
+                            <div class="col-6">
+                                <input
+                                        id="input-product-taxes"
+                                        type="text"
+                                        class="form-control mask-money"
+                                        data-return-type="number"
+                                        readonly
+                                >
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row mb-2">
+                            <div class="col-6"><b>{% trans 'Total' %}</b></div>
+                            <div class="col-6">
+                                <input
+                                        id="input-product-total"
+                                        type="text"
+                                        class="form-control mask-money"
+                                        data-return-type="number"
+                                        readonly
+                                >
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade show active" id="tab_attachment">
+
+            </div>
+        </div>
+
+        <div class="modal fade" id="modal-select-sale-order" tabindex="-1" role="dialog"
+             aria-labelledby="exampleModalLarge01" aria-hidden="true">
+            <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{% trans 'Select Items' %}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-5 border">
+                                <table id="datatable-sale-order" class="table nowrap w-100 mb-5"
+                                       data-url="{% url "SaleOrderListAPI" %}"
+                                       data-method="GET">
+                                    <thead>
+                                    <th class="w-5">#</th>
+                                    <th class="w-5"></th>
+                                    <th class="w-60">{% trans "Name" %}</th>
+                                    <th class="w-30">{% trans "Code" %}</th>
+                                    </thead>
+                                </table>
+                            </div>
+                            <div class="col-7 border">
+                                <table id="datatable-product-of-so" class="table nowrap mb-5 w-lg-630p"
+                                       data-method="GET"
+                                       data-url="{% url 'ProductListSaleOrderAPI' pk=0 %}"
+                                >
+                                    <thead>
+                                    <th class="w-5">#</th>
+                                    <th class="w-5"></th>
+                                    <th class="w-45">{% trans "Product" %}</th>
+                                    <th class="w-15">{% trans "Quantity" %}</th>
+                                    <th class="w-15">{% trans "Remain" %}</th>
+                                    <th class="w-15">{% trans "Request" %}</th>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary"
+                                data-bs-dismiss="modal">{% trans "Cancel" %}</button>
+                        <button type="button" class="btn btn-primary"
+                                id="btn-select-so-product">{% trans 'Next' %}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="modal-select-request-for" tabindex="-1" role="dialog"
+             aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">{% trans 'Select type of purchase' %}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-4">
+                                <button type="button" class="btn btn-info w-100" type="button"
+                                        id="btn-select-type-sale-order" data-bs-toggle="modal"
+                                        data-bs-target="#modal-select-sale-order">{% trans 'For Sale Order' %}</button>
+                            </div>
+                            <div class="col-4">
+                                <button class="btn btn-primary w-100" type="button"
+                                        id="btn-select-type-stock">{% trans 'For Stock' %}</button>
+                            </div>
+                            <div class="col-4">
+                                <button class="btn btn-warning w-100" type="button"
+                                        id="btn-select-type-other">{% trans 'For Other' %}</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary"
+                                data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="hidden">
+            <div id="box-select-so-product">
+            <span class="input-affix-wrapper">
+                <span class="input-prefix" id="dropdownBeneficiary">
+                    <i class="fas fa-info-circle text-primary" aria-expanded="false"
+                       data-bs-toggle="dropdown"></i>
+                    <span role="menu" class="dropdown-menu ml-4 pl-3 pr-3 pt-3 pb-3"
+                          style="width: 25rem;">
+                        <div class="row">
+                            <span class="col-7">{% trans "More information" %}</span>
+                            <a class="col-5 text-right"
+                               href="{% url 'ProductDetail' pk=0 %}">
+                                <span class="badge btn-outline-primary">{% trans "More" %}&nbsp;<i
+                                        class="bi bi-arrow-right"></i></span>
+                            </a>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <div class="row">
+                            <span class="col-5">{% trans "Product Name" %}</span>
+                            <span class="col-7 text-primary span-product-name"></span>
+                        </div>
+                        <div class="row">
+                            <span class="col-5">{% trans "Code" %}</span>
+                            <span class="col-7 text-primary span-product-code"></span>
+                        </div>
+                        <div class="row">
+                            <span class="col-5">{% trans "UoM Group" %}</span>
+                            <span class="col-7 text-primary span-product-uom-group"></span>
+                        </div>
+                        <div class="row">
+                            <span class="col-5">{% trans "UoM" %}</span>
+                            <span class="col-7 text-primary span-product-uom"></span>
+                        </div>
+                    </span>
+                </span>
+                <select
+                        class="form-control box-select-product"
+                        data-method="GET"
+                        data-url="{% url "ProductForSaleListAPI" %}"
+                        data-keyResp="product_sale_list"
+                >
+                </select>
+            </span>
+            </div>
+            <div id="box-select-so-product-uom">
+                <select class="form-select box-select-uom"
+                        data-method="GET"
+                        data-url="{% url "UnitOfMeasureListAPI" %}"
+                        data-keyResp="unit_of_measure"
+                ></select>
+            </div>
+            <div id="box-select-so-product-tax">
+                <select class="form-select box-select-tax"
+                        data-method="GET"
+                        data-url="{% url "TaxListAPI" %}"
+                        data-keyResp="tax_list"
+                ></select>
+            </div>
+        </div>
+    </form>
+
+
+{% endblock %}
+{% block dataHiddenGroup %}
+    <input id="trans-factory"
+           data-trans-more-info="{% trans 'More Information' %}"
+           data-trans-more="{% trans 'More' %}"
+           data-trans-product-name="{% trans 'Product Name' %}"
+           data-trans-code="{% trans 'Code' %}"
+           data-trans-view-detail="{% trans 'View Detail' %}"
+           data-trans-request-greater-remain="{% trans "Num of product request can not greater than num of product remain" %}"
+    />
+
+    <input type="text" id="url-factory"
+           data-url-product-detail="{% url 'ProductDetail' pk=0 %}"
+           data-url-account-detail="{% url 'AccountDetail' pk=0 %}"
+           data-url-contact-detail="{% url 'ContactDetail' pk=0 %}"
+           data-url-so-product="{% url 'ProductListSaleOrderAPI' pk=0 %}"
+           data-url-uom-group="{% url 'UnitOfMeasureGroupListAPI' %}"
+           data-url-this-page="{% url 'PurchaseRequestCreate' %}"
+           data-url-uom="{% url 'UnitOfMeasureListAPI' %}"
+    >
+{% endblock %}
+
+{% block jsFooter %}
+    <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'assets/sales/purchasing/js/purchase_request/purchase_request_common.js' %}"></script>
+    <script src="{% static 'assets/sales/purchasing/js/purchase_request/purchase_request_create.js' %}"></script>
+{% endblock %}

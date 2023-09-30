@@ -1,24 +1,17 @@
-{% load static i18n compress %}
+{% load static i18n compress string_utils %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Meta Tags -->
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {% if base.tenant_current_data %}
-        <title>{{ base.tenant_current_data.code|upper }} - {{ base.tenant_current_data.title }}</title>
-    {% else %}
-        <title>MIS - {% block title %}Management Information System{% endblock %}</title>
-    {% endif %}
-    <meta name="description" content="MIS - Management Information System - quantrimis.com.vn"/>
+    {% include 'extends/systems/meta_header.html' %}
 
-    <!-- Favicon -->
-    <link rel="shortcut icon" href="{% static 'assets/images/logo/logo-28x16.png' %}">
-    <link rel="icon" href="{% static 'assets/images/logo/logo-28x16.png' %}" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+            rel="stylesheet"
+            href="//fonts.googleapis.com/css?family=Google+Sans:400,500|Roboto:400,400italic,500,500italic,700,700italic|Roboto+Mono:400,500,700&amp;display=swap"
+    >
 
     {% compress css %}
-        <link href="{% static 'assets/css/dark-mode.css' %}" rel="stylesheet" type="text/css">
         <!-- Data Table CSS -->
         <link
                 href="{% static 'vendors/datatables.net-bs5/css/dataTables.bootstrap5.min.css' %}" rel="stylesheet"
@@ -32,26 +25,117 @@
                 href="{% static 'vendors/bootstrap@4.0.0/dist/css/bootstrap.min.css' %}"
                 rel="stylesheet" type="text/css"
         />
+        <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
+        <link
+                href="{% static 'vendors/select2/dist/css/select2-bootstrap4.min.css' %}" rel="stylesheet"
+                type="text/css"
+        >
+        <link href="{% static 'vendors/sweetalert2/dist/sweetalert2.min.css' %}" rel="stylesheet" type="text/css">
 
-        <!-- CSS -->
+        <!-- Tour -->
+        <link href="{% static 'vendors/hopscotch/dist/css/hopscotch.min.css' %}" rel="stylesheet" type="text/css">
+    {% endcompress %}
+
+    {% compress css %}
         <link href="{% static 'assets/css/style.css' %}" rel="stylesheet" type="text/css">
         <link href="{% static 'assets/css/loading-spinner.css' %}" rel="stylesheet" type="text/css">
-        <link href="{% static 'assets/css/font-awesome.min.css' %}">
         <link href="{% static 'assets/css/my-style.css' %}" rel="stylesheet" type="text/css">
         <link href="{% static 'assets/css/notify.css' %}" rel="stylesheet" type="text/css">
+        <link href="{% static 'assets/css/plugins/drawer.css' %}" rel="stylesheet" type="text/css">
+        <link href="{% static 'assets/css/plugins/datatable/dist/css/table-advance-1.css' %}" rel="stylesheet" type="text/css">
+        <link href="{% static 'vendors/timeline-me/jquery.timelineMe.css' %}" rel="stylesheet" type="text/css">
+        <link href="{% static 'vendors/timeline-me/timelineMe.custom.css' %}" rel="stylesheet" type="text/css">
+
         <style>
-            @font-face {
-                font-family: "Roboto";
-                src: url({% static 'assets/fonts/roboto/Roboto-Regular.ttf' %});
+            html, body {
+                color: rgb(32, 33, 36);
+                font: 400 16px/24px "Roboto", "Google Sans", "Roboto Mono", sans-serif;
+                -moz-osx-font-smoothing: grayscale;
+                -webkit-font-smoothing: antialiased;
+                height: 100%;
+                margin: 0;
+                -webkit-text-size-adjust: 100%;
+                -moz-text-size-adjust: 100%;
+                -ms-text-size-adjust: 100%;
+                text-size-adjust: 100%
+            }
+
+            :root {
+                --bs-body-color: rgb(32, 33, 36);
+                --bs-body-font-family: "Roboto", "Google Sans", "Roboto Mono", sans-serif;
+                --bs-body-font-size: 16px;
+                --bs-body-font-weight: 400;
+                --bs-body-line-height: 24px;
+            }
+
+            {#  Override css of select2 for select2 working in Bootstrap Modal  #}
+            .select2-close-mask {
+                z-index: 2099;
+            }
+
+            .select2-dropdown {
+                z-index: 3051;
+            }
+
+            {# bell ringing #}
+            @keyframes bell-shake {
+                0% {
+                    transform: rotate(0deg);
+                }
+                20% {
+                    transform: rotate(0deg);
+                }
+                40% {
+                    transform: rotate(15deg);
+                }
+                50% {
+                    transform: rotate(-15deg);
+                }
+                60% {
+                    transform: rotate(15deg);
+                }
+                80% {
+                    transform: rotate(0deg);
+                }
+                100% {
+                    transform: rotate(0deg);
+                }
+            }
+
+            .my-bell-ring {
+                animation: bell-shake 1s infinite;
+            }
+
+            {#  -- bell ringing #}
+
+            .my-avatar:hover .my-upload-avatar {
+                display: flex !important;
             }
         </style>
-        <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
 
         {% block cssHeader %}
         {% endblock %}
     {% endcompress %}
-    <script src="{% static 'assets/js/dark-mode.js' %}" async></script>
+
+    {% if is_ga_enabled %}
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-4GDQQTC98X"></script>
+    {% endif %}
     {% compress js %}
+        {% if is_ga_enabled %}
+            <script type="text/javascript">
+                window.dataLayer = window.dataLayer || [];
+
+                function gtag() {
+                    dataLayer.push(arguments);
+                }
+
+                gtag('js', new Date());
+
+                gtag('config', 'G-4GDQQTC98X', {
+                    'user_id': `{{ base.username_auth }} {{ base.user_id }}`,
+                });
+            </script>
+        {% endif %}
         {% block jsHeader %}{% endblock %}
     {% endcompress %}
 </head>
@@ -77,198 +161,387 @@
     <!-- /Vertical Nav -->
 
     <!-- Main Content -->
+    {% block fullBody %}
     <div class="hk-pg-wrapper pb-0">
         <div class="hk-pg-body py-0">
             <div class="blogapp-wrap blogapp-sidebar-toggle">
-                <nav class="blogapp-sidebar">
-                    {% include 'extends/app_sidebar.html' %}
-                </nav>
                 <div class="blogapp-content">
                     <div class="blogapp-detail-wrap">
                         <header class="blog-header">
                             <div class="d-flex align-items-center">
-                                {% include 'extends/breadcrumb.html' %}
+                                <button class="btn mr-1 hidden" id="btn-show-breadcrumb"><i
+                                        class="fa-solid fa-bars"
+                                ></i></button>
+                                <div id="breadcrumb-data">
+                                    {% include 'extends/breadcrumb.html' %}
+                                </div>
                             </div>
-                            <div class="blog-options-wrap">
+                            <div class="blog-options-wrap" id="idxPageAction">
+                                <div class="{% if pk %}hidden{% endif %}" id="idxRealAction">
+                                    {% block pageAction %}{% endblock %}
+                                </div>
+                                <button
+                                        type="submit"
+                                        class="hidden btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
+                                        form=""
+                                        data-value=""
+                                        id="idxSaveInZoneWF"
+                                >
+                                    <span
+                                            class="icon"
+                                            data-bs-toggle="tooltip"
+                                            data-bs-placement="bottom"
+                                            data-bs-original-title="{% trans 'Save in Zone' %}"
+                                    ><i class="fa-solid fa-floppy-disk"></i></span>
+                                </button>
 
-                                {% block pageAction %}{% endblock %}
+                                <button
+                                        class="hidden btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
+                                        type="submit"
+                                        form=""
+                                        data-wf-action=""
+                                        id="idxSaveInZoneWFThenNext"
+                                        data-bs-toggle="tooltip"
+                                        data-bs-placement="bottom"
+                                        data-bs-original-title="{% trans 'Save in zone then call next station' %}"
+                                >
+                                    {#                                    <i class="icon-action-wf fa-solid fa-floppy-disk"></i>#}
+                                    {#                                    <i class="icon-action-wf fa-solid fa-check"></i>#}
+                                    <span class="icon">
+                                        <i class="fa-solid fa-check-double text-success"></i>
+                                    </span>
+                                </button>
+
+
+                                <button
+                                        type="button"
+                                        class="hidden btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
+                                        id="btn-active-edit-zone-wf"
+                                >
+                                    <span
+                                            class="icon"
+                                            data-bs-toggle="tooltip"
+                                            data-bs-placement="bottom"
+                                            data-bs-original-title="{% trans 'Open edit in Zones' %}"
+                                    ><i class="fa-solid fa-unlock"></i></span>
+                                </button>
+                                <button
+                                        type="button"
+                                        class="hidden btn-action-wf btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
+                                        data-value=""
+                                        id="btnMainAction"
+                                        data-bs-toggle="tooltip"
+                                        data-bs-placement="bottom"
+                                        data-bs-original-title="{% trans 'Approval' %}"
+                                >
+                                    <span
+                                            class="icon"
+                                    ></span>
+                                </button>
+
+                                <div class="dropdown hidden">
+                                    <button
+                                            aria-expanded="false" data-bs-toggle="dropdown"
+                                            class="btn btn-default btn-icon btn-flush-dark btn-rounded flush-soft-hover"
+                                            type="button"
+                                    >
+                                        <span
+                                                class="icon"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-placement="bottom"
+                                                data-bs-original-title="{% trans 'More actions' %}"
+                                        >
+                                            ...
+                                        </span>
+                                    </button>
+                                    <div role="menu" class="dropdown-menu" id="idxGroupAction">
+                                        {% for key, value in base_workflow.items %}
+                                            <li class="hidden btn-action-wf" data-value="{{ key }}">
+                                                <div class="dropdown-item"><i
+                                                        class="icon-action-wf mr-1 {{ value.1 }}"
+                                                ></i> {{ value.0 }}</div>
+                                            </li>
+                                        {% endfor %}
+                                    </div>
+                                    {% if base_workflow.length > 0 %}
+                                        {% csrf_token %}
+                                    {% endif %}
+                                </div>
 
                                 <div class="v-separator  d-lg-inline-block d-none"></div>
-                                <a
-                                        class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover hk-navbar-togglable flex-shrink-0  d-lg-inline-block d-none"
-                                        href="#" data-bs-toggle="tooltip" data-bs-placement="top" title=""
-                                        data-bs-original-title="Collapse"
+
+                                <button
+                                        id="btnLogShow"
+                                        class="hidden btn btn-icon btn-rounded bg-dark-hover mr-1 ntt-drawer-toggle-link"
+                                        data-drawer-target="#drawer_log_data"
+                                        data-drawer-active="false"
+                                        href="#"
+                                        data-bs-toggle="tooltip"
+                                        data-bs-placement="bottom"
+                                        data-bs-original-title="{% trans 'Log' %}"
+                                        data-url-runtime-detail="{% url 'FlowRuntimeDetailAPI' pk=1 %}"
                                 >
-										<span class="icon">
-											<span class="feather-icon"><i data-feather="chevron-up"></i></span>
-											<span class="feather-icon d-none"><i data-feather="chevron-down"></i></span>
-										</span>
-                                </a>
+                                    <span class="icon icon-xs">
+                                        <i class="fas fa-history fa-sm"></i>
+                                    </span>
+                                </button>
+                                <button
+                                        class="btn btn-icon btn-rounded bg-dark-hover mr-1 hk-navbar-togglable"
+                                        data-bs-toggle="tooltip"
+                                        data-bs-placement="bottom"
+                                        data-bs-original-title="{% trans 'Collapse' %}"
+                                >
+                                    <span class="icon">
+                                        <i class="fa-solid fa-chevron-up fa-sm"></i>
+                                        <i class="fa-solid fa-chevron-down fa-sm d-none"></i>
+                                        <!-- <span class="feather-icon"><i data-feather="chevron-up"></i></span> -->
+                                        <!-- <span class="feather-icon d-none"><i data-feather="chevron-down"></i></span> -->
+                                    </span>
+                                </button>
                             </div>
                             <div class="hk-sidebar-togglable active"></div>
                         </header>
                         <div class="blog-body">
-                            <div data-simplebar class="nicescroll-bar">
+                            <div data-simplebar class="nicescroll-bar" id="idxPageContent">
                                 {% block pageContent %}
                                 {% endblock %}
                             </div>
+                        </div>
+                        <div class="blog-utility">
+                            <!-- spinner loading -->
+                            {% include "extends/utility/loading.html" %}
+                            <!-- /spinner loading -->
+
+                            <!-- /Message translate base -->
+                            {% include 'trans.html' %}
+                            <!-- /Message translate base -->
+
+                            <!-- Some data in single page | please override block in feature template-->
+                            <div class="hidden">
+                                <!-- Render Company Config and some json -->
+                                {% if data.input_mapping_properties %}
+                                    {{ data.input_mapping_properties|json_script:"input_mapping_properties" }}
+                                {% endif %}
+                                {{ config|json_script:"idConfigValue" }}
+                                <!-- // Render Company Config and some json -->
+
+                                {% block dataHiddenGroup %}{% endblock %}
+                            </div>
+                            <!-- // Some data in single page | please override block in feature template-->
+
+                            <!-- Drawer Log and Activity -->
+                            {% include "extends/utility/drawer_log.html" %}
+                            <!-- // Drawer Log and Activity -->
+
+                            <!-- Raise a ticket -->
+                            {% include "extends/utility/raise_ticket.html" %}
+                            <!-- // Raise a ticket -->
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- /Page Body -->
     </div>
+    {% endblock %}
     <!-- /Main Content -->
-
-    <!-- spinner loading -->
-    <div id="loadingContainer" class="loading-container hidden">
-        <div class="my-spinner">
-            <div class="my-circle my-circle-1"></div>
-            <div class="my-circle my-circle-2"></div>
-            <div class="my-circle my-circle-3"></div>
-            <div class="my-circle my-circle-4"></div>
-            <div class="my-circle my-circle-5"></div>
-        </div>
-    </div>
-    <!-- /spinner loading -->
-    <!-- Message translate usually -->
-    <div class="hidden">
-        <span id="msg-user-language">{{ base.language }}</span>
-        <span id="msg-datatable-language-config">
-            {% if base.language == 'vi' %}
-                {% static 'assets/js/cdn-clone/datatable/i18n/vi.json' %}
-            {% elif base.language == 'en' %}
-                {% static 'assets/js/cdn-clone/datatable/i18n/en.json' %}
-            {% else %}
-                <!-- Proud of Vietnamese products -->
-                {% static 'assets/js/cdn-clone/datatable/i18n/vi.json' %}
-            {% endif %}
-        </span>
-        <span id="urlCompanyConfig" data-url="{% url 'CompanyConfigDetailAPI' %}"></span>
-        <span id="urlCompanyConfigData"></span>
-
-        <span id="urlCompanyConfig1" data-url="{% url 'CompanyConfigDetailAPI' %}"></span>
-        <span id="urlCompanyConfigData1"></span>
-
-        <span id="msgFieldRequired">{% trans 'This field is required' %}</span>
-        <span id="msgSuccess">{% trans 'Successfully' %}</span>
-    </div>
-    <!-- /Message translate usually -->
-    <!-- /Message translate base -->
-    <input
-            type="hidden" id="base-trans-factory" data-view-detail="{% trans 'View detail' %}"
-            data-more-info="{% trans 'More Information' %}"
-            data-draft="{% trans 'Draft' %}"
-            data-created="{% trans 'Created' %}"
-            data-added="{% trans 'Added' %}"
-            data-finish="{% trans 'Finish' %}"
-            data-cancel="{% trans 'Cancel' %}"
-    >
-    <!-- /Message translate base -->
-
-    <!-- Render Company Config -->
-    {{ config|json_script:"idConfigValue" }}
-    <!-- // Render Company Config -->
 </div>
 <!-- /Wrapper -->
+
 
 {% compress js %}
     <!-- jQuery -->
     <script src="{% static 'vendors/jquery/dist/jquery.min.js' %}"></script>
     <script src="{% static 'vendors/jquery-validate/jquery.validate.min.js' %}"></script>
+    <!-- // jQuery -->
 
     <!-- Bootstrap Core JS -->
     <script src="{% static 'vendors/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+    <!-- // Bootstrap Core JS -->
 
     <!-- FeatherIcons JS -->
     <script src="{% static 'assets/js/feather.min.js' %}"></script>
+    <!-- // FeatherIcons JS -->
 
     <!-- Fancy Dropdown JS -->
     <script src="{% static 'assets/js/dropdown-bootstrap-extended.js' %}"></script>
+    <!-- // Fancy Dropdown JS -->
 
     <!-- Simplebar JS -->
     <script src="{% static 'vendors/simplebar/dist/simplebar.min.js' %}"></script>
+    <!-- // Simplebar JS -->
 
     <!-- Data Table JS -->
-    <script src="{% static 'vendors/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'vendors/datatables.net/js/jquery.dataTables.min.v1.js' %}"></script>
     <script src="{% static 'vendors/datatables.net-bs5/js/dataTables.bootstrap5.min.js' %}"></script>
     <script src="{% static 'vendors/datatables.net-select/js/dataTables.select.min.js' %}"></script>
+    <script src="{% static 'vendors/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'vendors/datatables.net-buttons-bs5/js/buttons.bootstrap5.min.js' %}"></script>
+    <script src="{% static 'vendors/datatables.net-buttons/js/buttons.flash.min.js' %}"></script>
+    <script src="{% static 'vendors/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+    <script src="{% static 'vendors/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+    <script src="{% static 'vendors/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'vendors/datatables.net-responsive-bs5/js/responsive.bootstrap5.min.js' %}"></script>
+    <!-- // Data Table JS -->
+
+    <!-- Timeline ME -->
+    <script src="{% static 'vendors/timeline-me/jquery.timelineMe.js' %}"></script>
+    <script src="{% static 'vendors/timeline-me/timelineMe.custom.js' %}"></script>
+    <!-- // Timeline ME -->
 
     <!-- Select2 JS -->
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+    <!-- // Select2 JS -->
+
+    <!-- Sweet Alert 2 -->
+    <script src="{% static 'vendors/sweetalert2/dist/sweetalert2.min.js' %}"></script>
+
+    <!-- Tour -->
+    <script src="{% static 'vendors/hopscotch/dist/js/hopscotch.min.js' %}"></script>
 
     <!-- Init JS -->
+    <script src="{% static 'assets/js/plugins/drawer.js' %}"></script>
     <script src="{% static 'assets/js/notify.js' %}"></script>
     <script src="{% static 'assets/js/bootstrap-notify.min.js' %}"></script>
-    <script src="{% static 'assets/js/init.js' %}"></script>
-    <script src="{% static 'assets/js/chips-init.js' %}"></script>
-    <script src="{% static 'assets/js/init-loader.js' %}"></script>
-    <script src="{% static 'vendors/datatables.net/js/jquery.dataTables.min.js' %}"></script>
-    <script src="{% static 'vendors/filter-multi-select-main/dist/filter-multi-select-bundle.min.js' %}"></script>
-    <script>
-        <!-- util -->
 
-        function active_menu(item) {
-            if (item.length > 0) {
-                item.first().addClass('active')
-                let parent = item.first().parents('.nav-item');
-                if (parent.length > 0) {
-                    parent.first().addClass('active');
-                    active_menu(parent.first());
-                }
-            }
-            return null;
-        }
+    <script type="application/javascript">
+        // all variable data global with CONST!! --> keep don't change value of variable
+        const globeLanguage = "{{ base.language }}";
+        const globeApiStatusOfRender = "{{ data.render_api_status }}";
+        const globeUrlNotDeny = ['/log/notify/me/count'];
+        const globePK = "{{ pk }}";
+        const globeMediaDomain = "{{ base.domain_cloud }}";
+        const globePrefixAvatar = "{{ base.avatar_prefix }}";
+        const globeIsDebug = "{{ is_debug }}";
 
-        function menu_handler() {
-            let nav_data = $('#get-menu-active');
-            let menu_id_active = nav_data.attr('data-nav-menu');
-            if (menu_id_active) {
-                let ele_menu = $('#' + menu_id_active);
-                if (ele_menu) {
-                    active_menu(ele_menu);
-                }
-            }
-            let tenant_code_active = nav_data.attr('data-nav-tenant');
-            if (tenant_code_active) $('#menu-tenant').children('option[value=' + tenant_code_active + ']').attr('selected', 'selected');
-        }
+        // url
+        const globeUrlCompanyConfig = "{% url 'CompanyConfigDetailAPI' %}";
 
-        <!-- ## function utils -->
+        // DataTable
+        const globeDTBLanguageConfig = "{% if base.language == 'en' %}{% static 'assets/js/cdn-clone/datatable/i18n/en.json' %}{% else %}{% static 'assets/js/cdn-clone/datatable/i18n/vi.json' %}{% endif %}";
+        const globeGoToEndPage = "{% trans 'Current page automatically goes to end page after the new row was added' %}";
 
-        $(document).on('focus', 'input.mask-money', function () {
-            return MaskMoney2.focusInputMoney($(this));
-        });
-        $(document).on('blur', 'input.mask-money', function () {
-            return MaskMoney2.blurInputMoney($(this));
-        });
-        $(document).on('input', 'input.mask-money', function () {
-            return MaskMoney2.realtimeInputMoney($(this));
-        });
+        // gateway
+        const globeGatewayMiddleListView = "{% url 'GatewayMiddleListView' plan='_plan_' app='_app_' %}";
+        const globeGatewayMiddleDetailView = "{% url 'GatewayMiddleDetailView' plan='_plan_' app='_app_' pk='_pk_' %}";
+        const globeGatewayViewNameListView = "{% url 'GatewayViewNameListView' %}";
+        const globeGatewayViewNameParseView = "{% url 'GatewayViewNameParseView' view_name='_view_name_' %}";
 
-        $(document).ready(function () {
-            <!-- Loading table ajax -->
-            $(document).find('table').each((idx, tbl) => {
-                $(tbl).on('preXhr.dt', (e, settings, data) => $.fn.showLoading());
-                $(tbl).on('draw.dt', () => $.fn.hideLoading());
-            });
-            <!-- ## Loading table ajax -->
+        // attachment
+        const globeUrlAttachmentUpload = "{% url 'AttachmentUpload' %}";
+        const globeUrlAvatarUpload = "{% url 'EmployeeUploadAvatarAPI' %}";
+        const globeMaxFileSize = "{% trans 'Maximum size {size}MiB' %}.";
+        const globeFileDeny = "{% trans 'File type not allowed for uploading' %}";
+        const globeFileAccept = "{% trans 'It must be one of the following file types:' %}";
 
-            <!-- Active menu -->
-            menu_handler();
-            <!-- ## Active menu -->
+        // workflow
+        const globeTaskDetail = "{% url 'FlowRuntimeTaskDetailAPI' pk=1 %}";
+        const globeFormMappedZone = "{% if data.form_id %}{{ data.form_id }}{% endif %}";
 
-            <!-- Init Mask Money -->
-            $.fn.initMaskMoney2();
-            <!-- ## Init Mask Money -->
+        // msg
+        const globeResourceLoadFailed = "{% trans 'Failed to load resource' %}.";
+        const globeMsgAuthExpires = "{% trans 'The session login was expired' %}";
+        const globeLoginPage = "{% trans 'Login page' %}";
+        const globeHomePage = "{% trans 'Home Page' %}";
+        const globePreviousPage = "{% trans 'Previous page' %}";
+        const globeMsgUnlimited = "{% trans 'Unlimited' %}";
 
-            <!-- Init select2 -->
-            $(".select2").select2();
-            <!-- ## Init select2 -->
-        });
+        // http msg
+        const globeMsgHttp404 = "{% trans 'Not found' %}";
+        const globeMsgHttp403 = "{% trans 'Forbidden' %}";
+        const globeMsgHttp500 = "{% trans 'Internal Server Errors' %}";
+
     </script>
-    {% block jsFooter %}
-    {% endblock %}
+
+    <script src="{% static 'assets/js/init.js' %}"></script>
+    {% if base.language == 'vi' %}
+        <script src="{% static 'assets/js/cdn-clone/select2/i18n/vi.js' %}"></script>
+        <script src="{% static 'assets/js/cdn-clone/jquery-validation/localization/message_vi.js' %}"></script>
+    {% else %}
+        <script src="{% static 'assets/js/cdn-clone/select2/i18n/en.js' %}"></script>
+    {% endif %}
+    <script src="{% static 'assets/js/cdn-clone/select2/init-select2.js' %}"></script>
+    <script src="{% static 'assets/js/chips-init.js' %}"></script>
+    <script src="{% static 'vendors/jquery-mockjax_2.6.0/jquery.mockjax.min.js' %}"></script>
+    <script src="{% static 'assets/js/extends/the-documents/bastion_field.js' %}"></script>
+    <script src="{% static 'assets/js/init-setup.js' %}"></script>
+    <script src="{% static 'assets/js/init-loader.js' %}"></script>
+    <!-- // Init JS -->
+
+    <script type="application/javascript">
+        let isDenied = false;
+        switch (globeApiStatusOfRender) {
+            case "1401":
+                isDenied = true;
+                WindowControl.showUnauthenticated();
+                break;
+            case "1403":
+                isDenied = true;
+                WindowControl.showForbidden();
+                break;
+            case "1404":
+                isDenied = true;
+                WindowControl.showNotFound();
+                break;
+            case "1500":
+                isDenied = true;
+                WindowControl.showSVErrors();
+                break;
+        }
+        $(window).on("load", function () {
+            if (!$('#menu-tenant').attr('data-space-selected')) {
+                hopscotch.startTour({
+                    id: "hopscotch-light",
+                    steps: [
+                        {
+                            target: "menu-tenant",
+                            placement: 'bottom',
+                            title: "{% trans 'Choose a space menus' %}",
+                            content: "{% trans 'Each Space has different menus.' %}",
+                        },
+                    ],
+                    showPrevButton: true,
+                });
+            }
+        });
+
+        function checkSizeScreen() {
+            let wWidth = $(window).width();
+            if (wWidth < 768) {
+                let realActionEle = $('#idxRealAction');
+                realActionEle.find('.icon').parent('span').each(function () {
+                    let spanShowEle = $(this).children('span:not(.icon)');
+                    $(this).attr('data-bs-toggle', 'tooltip');
+                    $(this).attr('data-bs-placement', 'bottom');
+                    $(this).attr('title', spanShowEle.text());
+                    spanShowEle.remove();
+                });
+                $('#btn-show-breadcrumb').addClass('hidden');
+                $('#breadcrumb-data').addClass('hidden');
+            }
+            if (wWidth < 350) {
+                $('#menu-tenant-text').text("_");
+            }
+        }
+
+        checkSizeScreen();
+
+        $(window).on("resize", function () {
+            checkSizeScreen();
+        })
+
+        {# Auto init select2 #}
+        $(document).ready(function (){
+            $('.auto-init-select2').each(function (){
+                if($(this).data('url')){
+                    $(this).initSelect2();
+                }
+            });
+        })
+    </script>
+
+    <!-- Customize JS -->
+    {% block jsFooter %}{% endblock %}
+    <!-- // Customize JS -->
 {% endcompress %}
 </body>
 </html>

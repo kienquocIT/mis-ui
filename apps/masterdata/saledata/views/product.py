@@ -2,7 +2,7 @@ from django.views import View
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from apps.shared import mask_view, ApiURL, ServerAPI
+from apps.shared import mask_view, ApiURL, ServerAPI, PermCheck
 
 
 class ProductMasterDataList(View):
@@ -12,7 +12,7 @@ class ProductMasterDataList(View):
         auth_require=True,
         template='masterdata/saledata/masterdata/saledata_product_list.html',
         breadcrumb='PRODUCT_MASTER_DATA_LIST_PAGE',
-        menu_active='menu_account_list',
+        menu_active='id_menu_master_data_product',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -27,30 +27,15 @@ class ProductTypeListAPI(APIView):
     )
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_TYPE_LIST).get()
-        if resp.state:
-            return {'product_type_list': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        return resp.auto_return(key_success='product_type_list')
 
     @mask_view(
         auth_require=True,
         is_api=True,
     )
     def post(self, request, *arg, **kwargs):
-        data = request.data
-        response = ServerAPI(user=request.user, url=ApiURL.PRODUCT_TYPE_LIST).post(data)
-        if response.state:
-            return response.result, status.HTTP_200_OK
-        if response.errors:
-            if isinstance(response.errors, dict):
-                err_msg = ""
-                for key, value in response.errors.items():
-                    err_msg += str(key) + ': ' + str(value)
-                    break
-                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
-            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
-        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_TYPE_LIST).post(request.data)
+        return resp.auto_return()
 
 
 class ProductTypeDetailAPI(APIView):
@@ -59,30 +44,16 @@ class ProductTypeDetailAPI(APIView):
         is_api=True,
     )
     def get(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_TYPE_DETAIL + pk).get()
-        if resp.state:
-            return {'product_type': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_TYPE_DETAIL.fill_key(pk=pk)).get()
+        return resp.auto_return(key_success='product_type')
 
     @mask_view(
         auth_require=True,
         is_api=True,
     )
     def put(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_TYPE_DETAIL + pk).put(request.data)
-        if resp.state:
-            return {'product_type': resp.result}, status.HTTP_200_OK
-        if resp.errors:
-            if isinstance(resp.errors, dict):
-                err_msg = ""
-                for key, value in resp.errors.items():
-                    err_msg += str(key) + ': ' + str(value)
-                    break
-                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
-            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
-        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_TYPE_DETAIL.fill_key(pk=pk)).put(request.data)
+        return resp.auto_return(key_success='product_type')
 
 
 class ProductCategoryListAPI(APIView):
@@ -94,30 +65,15 @@ class ProductCategoryListAPI(APIView):
     )
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_CATEGORY_LIST).get()
-        if resp.state:
-            return {'product_category_list': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        return resp.auto_return(key_success='product_category_list')
 
     @mask_view(
         auth_require=True,
         is_api=True,
     )
     def post(self, request, *arg, **kwargs):
-        data = request.data
-        response = ServerAPI(user=request.user, url=ApiURL.PRODUCT_CATEGORY_LIST).post(data)
-        if response.state:
-            return response.result, status.HTTP_200_OK
-        if response.errors:
-            if isinstance(response.errors, dict):
-                err_msg = ""
-                for key, value in response.errors.items():
-                    err_msg += str(key) + ': ' + str(value)
-                    break
-                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
-            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
-        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_CATEGORY_LIST).post(request.data)
+        return resp.auto_return()
 
 
 class ProductCategoryDetailAPI(APIView):
@@ -126,97 +82,16 @@ class ProductCategoryDetailAPI(APIView):
         is_api=True,
     )
     def get(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_CATEGORY_DETAIL + pk).get()
-        if resp.state:
-            return {'product_category': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_CATEGORY_DETAIL.fill_key(pk=pk)).get()
+        return resp.auto_return(key_success='product_category')
 
     @mask_view(
         auth_require=True,
         is_api=True,
     )
     def put(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_CATEGORY_DETAIL + pk).put(request.data)
-        if resp.state:
-            return {'product_category': resp.result}, status.HTTP_200_OK
-        if resp.errors:
-            if isinstance(resp.errors, dict):
-                err_msg = ""
-                for key, value in resp.errors.items():
-                    err_msg += str(key) + ': ' + str(value)
-                    break
-                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
-            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
-        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
-
-
-class ExpenseTypeListAPI(APIView):
-    permission_classes = [IsAuthenticated]
-
-    @mask_view(
-        auth_require=True,
-        is_api=True,
-    )
-    def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.EXPENSE_TYPE_LIST).get()
-        if resp.state:
-            return {'expense_type_list': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
-
-    @mask_view(
-        auth_require=True,
-        is_api=True,
-    )
-    def post(self, request, *arg, **kwargs):
-        data = request.data
-        response = ServerAPI(user=request.user, url=ApiURL.EXPENSE_TYPE_LIST).post(data)
-        if response.state:
-            return response.result, status.HTTP_200_OK
-        if response.errors:
-            if isinstance(response.errors, dict):
-                err_msg = ""
-                for key, value in response.errors.items():
-                    err_msg += str(key) + ': ' + str(value)
-                    break
-                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
-            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
-        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
-
-
-class ExpenseTypeDetailAPI(APIView):
-    @mask_view(
-        auth_require=True,
-        is_api=True,
-    )
-    def get(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.EXPENSE_TYPE_DETAIL + pk).get()
-        if resp.state:
-            return {'expense_type': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
-
-    @mask_view(
-        auth_require=True,
-        is_api=True,
-    )
-    def put(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.EXPENSE_TYPE_DETAIL + pk).put(request.data)
-        if resp.state:
-            return {'expense_type': resp.result}, status.HTTP_200_OK
-        if resp.errors:
-            if isinstance(resp.errors, dict):
-                err_msg = ""
-                for key, value in resp.errors.items():
-                    err_msg += str(key) + ': ' + str(value)
-                    break
-                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
-            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
-        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_CATEGORY_DETAIL.fill_key(pk=pk)).put(request.data)
+        return resp.auto_return(key_success='product_category')
 
 
 class UnitOfMeasureListAPI(APIView):
@@ -229,30 +104,15 @@ class UnitOfMeasureListAPI(APIView):
     def get(self, request, *args, **kwargs):
         params = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE).get(params)
-        if resp.state:
-            return {'unit_of_measure': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        return resp.auto_return(key_success='unit_of_measure')
 
     @mask_view(
         auth_require=True,
         is_api=True,
     )
     def post(self, request, *arg, **kwargs):
-        data = request.data
-        response = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE).post(data)
-        if response.state:
-            return response.result, status.HTTP_200_OK
-        if response.errors:
-            if isinstance(response.errors, dict):
-                err_msg = ""
-                for key, value in response.errors.items():
-                    err_msg += str(key) + ': ' + str(value)
-                    break
-                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
-            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
-        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        resp = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE).post(request.data)
+        return resp.auto_return()
 
 
 class UnitOfMeasureDetailAPI(APIView):
@@ -261,30 +121,16 @@ class UnitOfMeasureDetailAPI(APIView):
         is_api=True,
     )
     def get(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE_DETAIL + pk).get()
-        if resp.state:
-            return {'unit_of_measure': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE_DETAIL.fill_key(pk=pk)).get()
+        return resp.auto_return(key_success='unit_of_measure')
 
     @mask_view(
         auth_require=True,
         is_api=True,
     )
     def put(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE_DETAIL + pk).put(request.data)
-        if resp.state:
-            return {'unit_of_measure': resp.result}, status.HTTP_200_OK
-        if resp.errors:
-            if isinstance(resp.errors, dict):
-                err_msg = ""
-                for key, value in resp.errors.items():
-                    err_msg += str(key) + ': ' + str(value)
-                    break
-                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
-            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
-        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        resp = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE_DETAIL.fill_key(pk=pk)).put(request.data)
+        return resp.auto_return(key_success='unit_of_measure')
 
 
 class UnitOfMeasureGroupListAPI(APIView):
@@ -296,30 +142,15 @@ class UnitOfMeasureGroupListAPI(APIView):
     )
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE_GROUP).get()
-        if resp.state:
-            return {'unit_of_measure_group': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        return resp.auto_return(key_success='unit_of_measure_group')
 
     @mask_view(
         auth_require=True,
         is_api=True,
     )
     def post(self, request, *arg, **kwargs):
-        data = request.data
-        response = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE_GROUP).post(data)
-        if response.state:
-            return response.result, status.HTTP_200_OK
-        if response.errors:
-            if isinstance(response.errors, dict):
-                err_msg = ""
-                for key, value in response.errors.items():
-                    err_msg += str(key) + ': ' + str(value)
-                    break
-                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
-            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
-        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        resp = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE_GROUP).post(request.data)
+        return resp.auto_return()
 
 
 class UnitOfMeasureGroupDetailAPI(APIView):
@@ -328,30 +159,16 @@ class UnitOfMeasureGroupDetailAPI(APIView):
         is_api=True,
     )
     def get(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE_GROUP_DETAIL + pk).get()
-        if resp.state:
-            return {'uom_group': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE_GROUP_DETAIL.fill_key(pk=pk)).get()
+        return resp.auto_return(key_success='uom_group')
 
     @mask_view(
         auth_require=True,
         is_api=True,
     )
     def put(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE_GROUP_DETAIL + pk).put(request.data)
-        if resp.state:
-            return {'uom_group': resp.result}, status.HTTP_200_OK
-        if resp.errors:
-            if isinstance(resp.errors, dict):
-                err_msg = ""
-                for key, value in resp.errors.items():
-                    err_msg += str(key) + ': ' + str(value)
-                    break
-                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
-            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
-        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        resp = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE_GROUP_DETAIL.fill_key(pk=pk)).put(request.data)
+        return resp.auto_return(key_success='uom_group')
 
 
 class ProductList(View):
@@ -361,7 +178,7 @@ class ProductList(View):
         auth_require=True,
         template='masterdata/saledata/product/product_list.html',
         breadcrumb='PRODUCT_LIST_PAGE',
-        menu_active='menu_product_list',
+        menu_active='id_menu_product_list',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -375,12 +192,15 @@ class ProductCreate(View):
         template='masterdata/saledata/product/product_create.html',
         breadcrumb='PRODUCT_CREATE_PAGE',
         menu_active='menu_product_list',
+        perm_check=PermCheck(url=ApiURL.PRODUCT_LIST, method='post'),
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(url=ApiURL.ITEM_UNIT_LIST, user=request.user).get()
-        if resp.state:
-            return {'unit': resp.result}, status.HTTP_200_OK
-        return {}, status.HTTP_200_OK
+        resp0 = ServerAPI(url=ApiURL.ITEM_UNIT_LIST, user=request.user).get()
+        resp1 = ServerAPI(url=ApiURL.CURRENCY_LIST, user=request.user).get()
+        return {
+            'unit': resp0.result,
+            'currency_list': resp1.result
+        }, status.HTTP_200_OK
 
 
 class ProductListAPI(APIView):
@@ -391,31 +211,17 @@ class ProductListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_LIST).get()
-        if resp.state:
-            return {'product_list': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_LIST).get(params)
+        return resp.auto_return(key_success='product_list')
 
     @mask_view(
         auth_require=True,
         is_api=True,
     )
     def post(self, request, *arg, **kwargs):
-        data = request.data
-        response = ServerAPI(user=request.user, url=ApiURL.PRODUCT_LIST).post(data)
-        if response.state:
-            return response.result, status.HTTP_200_OK
-        if response.errors:
-            if isinstance(response.errors, dict):
-                err_msg = ""
-                for key, value in response.errors.items():
-                    err_msg += str(key) + ': ' + str(value)
-                    break
-                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
-            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
-        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_LIST).post(request.data)
+        return resp.auto_return()
 
 
 class ProductDetail(View):
@@ -427,12 +233,52 @@ class ProductDetail(View):
         breadcrumb='PRODUCT_DETAIL_PAGE',
         menu_active='menu_product_detail',
     )
-
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(url=ApiURL.ITEM_UNIT_LIST, user=request.user).get()
-        if resp.state:
-            return {'unit': resp.result}, status.HTTP_200_OK
-        return {}, status.HTTP_200_OK
+        resp0 = ServerAPI(url=ApiURL.ITEM_UNIT_LIST, user=request.user).get()
+        resp1 = ServerAPI(user=request.user, url=ApiURL.WAREHOUSE_PRODUCT_LIST).get()
+        resp2 = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE).get()
+        resp3 = ServerAPI(url=ApiURL.CURRENCY_LIST, user=request.user).get()
+        result = {
+            'unit': resp0.result,
+            'warehouse_product_list': resp1.result,
+            'unit_of_measure': resp2.result,
+            'currency_list': resp3.result,
+        }
+        return result, status.HTTP_200_OK
+
+
+class WarehouseGetProductsListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.WAREHOUSE_PRODUCT_LIST).get(params)
+        return resp.auto_return(key_success='warehouse_products_list')
+
+
+class ProductUpdate(View):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        template='masterdata/saledata/product/product_update.html',
+        breadcrumb='PRODUCT_UPDATE_PAGE',
+        menu_active='menu_product_update',
+    )
+    def get(self, request, *args, **kwargs):
+        resp0 = ServerAPI(url=ApiURL.ITEM_UNIT_LIST, user=request.user).get()
+        resp1 = ServerAPI(user=request.user, url=ApiURL.WAREHOUSE_PRODUCT_LIST).get()
+        resp2 = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE).get()
+        resp3 = ServerAPI(url=ApiURL.CURRENCY_LIST, user=request.user).get()
+        result = {
+            'unit': resp0.result,
+            'warehouse_product_list': resp1.result,
+            'unit_of_measure': resp2.result,
+            'currency_list': resp3.result,
+        }
+        return result, status.HTTP_200_OK
 
 
 class ProductDetailAPI(APIView):
@@ -443,28 +289,37 @@ class ProductDetailAPI(APIView):
         is_api=True,
     )
     def get(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_DETAIL + pk).get()
-        if resp.state:
-            return {'product': resp.result}, status.HTTP_200_OK
-        elif resp.status == 401:
-            return {}, status.HTTP_401_UNAUTHORIZED
-        return {'errors': resp.errors}, status.HTTP_400_BAD_REQUEST
+        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_DETAIL.fill_key(pk=pk)).get()
+        return resp.auto_return(key_success='product')
 
     @mask_view(
         auth_require=True,
         is_api=True,
     )
     def put(self, request, pk, *arg, **kwargs):
-        data = request.data
-        response = ServerAPI(user=request.user, url=ApiURL.PRODUCT_DETAIL + pk).put(data)
-        if response.state:
-            return response.result, status.HTTP_200_OK
-        if response.errors:
-            if isinstance(response.errors, dict):
-                err_msg = ""
-                for key, value in response.errors.items():
-                    err_msg += str(key) + ': ' + str(value)
-                    break
-                return {'errors': err_msg}, status.HTTP_400_BAD_REQUEST
-            return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
-        return {}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_DETAIL.fill_key(pk=pk)).put(request.data)
+        return resp.auto_return()
+
+
+# Product List use for Sale Apps
+class ProductForSaleListAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_SALE_LIST).get(data)
+        return resp.auto_return(key_success='product_sale_list')
+
+
+class UnitOfMeasureOfGroupLaborListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.UOM_OF_GROUP_LABOR_LIST).get()
+        return resp.auto_return(key_success='uom_of_group_labor')

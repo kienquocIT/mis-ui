@@ -6,11 +6,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | Minh Tam Solution</title>
-    <meta
-            name="description"
-            content="Minh Tam Solution"
-    />
+    <title>{% trans 'Login' %} &#8901; Minh Tâm Solution</title>
+    <meta name="description" content="Minh Tam Solution"/>
 
     <!-- Favicon -->
     <link rel="shortcut icon" href="{% static 'assets/images/logo/logo-28x16.png' %}">
@@ -41,7 +38,10 @@
                 <div class="row">
                     <div class="col-sm-10 position-relative mx-auto">
                         <div class="auth-content py-8">
-                            <form class="w-100" id="form-login" data-url="" data-url-redirect="" data-method="POST">
+                            <form
+                                    class="w-100" id="form-login" data-url="" data-url-redirect="" data-method="POST"
+                                    autocomplete="off"
+                            >
                                 <div class="row">
                                     <div class="col-lg-5 col-md-7 col-sm-10 mx-auto">
                                         <div class="text-center mb-7">
@@ -130,6 +130,7 @@
                                                         >{% trans 'Keep me logged in' %}</label>
                                                     </div>
                                                 </div>
+                                                <div id="recapcha" class="mt-1 mb-1"></div>
                                                 <input
                                                         type="submit" class="btn btn-primary btn-uppercase btn-block"
                                                         value="{% trans 'Login' %}" tabindex="4"
@@ -182,12 +183,36 @@
         </div>
     </div>
     <!-- /spinner loading -->
+    <div class="hidden">
+        <span id="flagNotifyKey" data-value={{ is_notify_key }}></span>
+        <span
+                id="errLoginIncorrect" data-value="{% trans 'The username or password is incorrect' %}"
+                data-captcha-require="{% trans 'Please solve the captcha.' %}"
+        ></span>
+    </div>
 </div>
 <!-- /Wrapper -->
+
+<script type="text/javascript">
+    let ggCaptChaEnabled = "{{ captcha_enabled }}";
+    var onloadCallback = function () {
+        if (ggCaptChaEnabled === 'True') {
+            grecaptcha.render('recapcha', {
+                'sitekey': '{{ secret_key_gg }}'
+            });
+        }
+    };
+</script>
+<script
+        src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit"
+        async defer
+>
+</script>
 
 {% compress js %}
     <!-- jQuery -->
     <script src="{% static 'vendors/jquery/dist/jquery.min.js' %}"></script>
+    <script src="{% static 'vendors/jquery-validate/jquery.validate.min.js' %}"></script>
 
     <!-- Bootstrap Core JS -->
     <script src="{% static 'vendors/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
@@ -207,40 +232,256 @@
 
     <!-- Init JS -->
     <script src="{% static 'assets/js/init.js' %}"></script>
+    <script>
+        // support for Form Submit
+        class SetupFormSubmitLogin {
+            constructor(formSelected, urlDefault = null, urlRedirectDefault = null, dataMethodDefault = null) {
+                this.formSelected = formSelected;
 
+                // URL call API
+                this.dataUrl = formSelected.attr('data-url');
+                if (!this.dataUrl) this.dataUrl = urlDefault ? urlDefault : window.location.pathname;
+
+                // METHOD call API
+                this.dataMethod = formSelected.attr('data-method');
+                if (!this.dataMethod) {
+                    if (dataMethodDefault) {
+                        this.dataMethod = dataMethodDefault
+                    } else {
+                        throw ('Data Method do not support! It is ' + this.dataMethod);
+                    }
+                }
+
+                // URL REDIRECT after success callback
+                this.dataUrlRedirect = formSelected.attr('data-url-redirect');
+                if (!this.dataUrlRedirect) this.dataUrlRedirect = urlRedirectDefault ? urlRedirectDefault : null;
+
+                // REDIRECT TIMEOUT
+                this.dataRedirectTimeout = formSelected.attr('data-redirect-timeout');
+                if (!this.dataRedirectTimeout) this.dataRedirectTimeout = this.dataRedirectTimeout ? this.dataRedirectTimeout : 1000;
+
+                // Data body get from form input
+                this.dataForm = $.fn.serializerObjectLogin(formSelected);
+
+                // URL DETAIL
+                this.dataUrlDetail = formSelected.attr('data-url-detail');
+                if (!this.dataUrlRedirect) this.dataUrlRedirect = urlRedirectDefault ? urlRedirectDefault : null;
+                if (this.dataUrlDetail) {
+                    this.dataUrlDetail = this.dataUrlDetail.split("/").slice(0, -1).join("/") + "/";
+                }
+            }
+
+            getUrlDetail(pk) {
+                if (this.dataUrlDetail && pk) {
+                    return this.dataUrlDetail + pk.toString();
+                }
+                return null;
+            }
+
+            static getUrlDetailWithID(url, pk) {
+                url = url.split("/").slice(0, -1).join("/") + "/";
+                if (url && pk) {
+                    return url + pk.toString();
+                }
+                return null;
+            }
+        }
+
+        $.fn.extend({
+            redirectUrlLogin: function (redirectPath, timeout = 0, params = '') {
+                setTimeout(() => {
+                    if (params && (params !== '' && params !== undefined)) {
+                        window.location.href = redirectPath + '?' + params;
+                    } else {
+                        window.location.href = redirectPath;
+                    }
+                }, timeout);
+            },
+            notifyBLogin: function (option, typeAlert = null) {
+                setTimeout(function () {
+                    $('.alert.alert-dismissible .close').addClass('btn-close').removeClass('close');
+                }, 100);
+                let msg = "";
+                if (option.title) {
+                    msg += option.title;
+                }
+                if (option.description) {
+                    let des_tmp = '';
+                    if (typeof option.description === 'string') {
+                        des_tmp = option.description;
+                    } else if (Array.isArray(option.description)) {
+                        des_tmp = option.description.join(", ");
+                    } else if (typeof option.description === 'object') {
+                        let des_tmp_arr = [];
+                        for (const [_key, value] of Object.entries(option.description)) {
+                            des_tmp_arr.push(value);
+                        }
+                        des_tmp = des_tmp_arr.join(", ");
+                    } else {
+                        des_tmp = option.description.toString();
+                    }
+                    if (msg) {
+                        msg += ": " + des_tmp;
+                    } else {
+                        msg = des_tmp;
+                    }
+                }
+                let alert_config = {
+                    animate: {
+                        enter: 'animated bounceInDown',
+                        exit: 'animated bounceOutUp'
+                    },
+                    type: "dismissible alert-primary",
+                    z_index: 2147483647, /* Maximum index */
+                }
+                switch (typeAlert) {
+                    case 'success':
+                        alert_config['type'] = "dismissible alert-success";
+                        break
+                    case 'failure':
+                        alert_config['type'] = "dismissible alert-danger";
+                        break
+                    case 'warning':
+                        alert_config['type'] = "dismissible alert-warning";
+                        break
+                    case 'info':
+                        alert_config['type'] = "dismissible alert-info";
+                        break
+                }
+                $.notify(msg, alert_config);
+            },
+            serializerObjectLogin: function (formSelected) {
+                return formSelected.serializeArray().reduce((o, kv) => ({
+                    ...o,
+                    [kv.name]: kv.value
+                }), {});
+            },
+            showLoadingLogin: function (timeout) {
+                $('#loadingContainer').removeClass('hidden');
+                if (timeout) {
+                    setTimeout($.fn.hideLoadingLogin, (timeout > 100 ? timeout : 1000));
+                }
+            },
+            hideLoadingLogin: function () {
+                setTimeout(() => {
+                    $('#loadingContainer').addClass('hidden');
+                }, 250,)
+            },
+            callAjaxLogin: function (url, method, data = {}, csrfToken = null, headers = {}, content_type = "application/json") {
+                return new Promise(function (resolve, reject) {
+                    // Setup then Call Ajax
+                    let ctx = {
+                        url: url,
+                        type: method,
+                        dataType: 'json',
+                        contentType: content_type,
+                        data: content_type === "application/json" ? JSON.stringify(data) : data,
+                        headers: {
+                            "X-CSRFToken": (csrfToken === true ? $("input[name=csrfmiddlewaretoken]").val() : csrfToken), ...headers
+                        },
+                        success: function (rest, textStatus, jqXHR) {
+                            resolve(rest);
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            reject(jqXHR.responseJSON);
+                        },
+                    };
+                    if (method.toLowerCase() === 'get') ctx.data = data
+                    $.ajax(ctx);
+                });
+            },
+
+        })
+    </script>
 
     <!-- Custom JS -->
     <script>
         $(document).ready(function () {
             $('#form-login').submit(function (event) {
-                $.fn.showLoading();
-                $.fn.formSubmit($('#form-login')).then(
-                    (resp) => {
-                        let path_redirect = "/";
-                        const params = Object.fromEntries(new URLSearchParams(location.search));
-                        if (params.next) {
-                            path_redirect = params.next;
-                        }
-                        $.fn.redirectUrl(path_redirect, 1500);  // 1.5 seconds
-                    },
-                    (errs) => {
-                        $.fn.hideLoading();
-                    },
-                );
                 event.preventDefault();
-            });
 
-            //
+                let state = false;
+                if (ggCaptChaEnabled === 'True') {
+                    let response = grecaptcha.getResponse();
+                    if (!response) {
+                        $.fn.notifyBLogin({
+                            'description': $('#errLoginIncorrect').attr('data-captcha-require')
+                        }, 'failure');
+                        return false;
+                    } else {
+                        state = true;
+                    }
+                } else {
+                    state = true;
+                }
+
+                if (state) {
+                    $.fn.showLoadingLogin();
+                    let frm = new SetupFormSubmitLogin($(this));
+                    if (frm.dataUrl && frm.dataMethod) {
+                        if (ggCaptChaEnabled === 'True' && !frm.dataForm['g-recaptcha-response']) {
+                            $.fn.notifyBLogin({
+                                'description': $('#errLoginIncorrect').attr('data-captcha-require')
+                            }, 'failure');
+                            setTimeout(
+                                () => {
+                                    $.fn.hideLoadingLogin();
+                                }, 2000
+                            )
+                            return false;
+                        }
+                        $.fn.callAjaxLogin(
+                            frm.dataUrl,
+                            frm.dataMethod,
+                            {
+                                ...frm.dataForm,
+                                'g_recaptcha_response': frm.dataForm?.['g-recaptcha-response'] || ''
+                            }
+                        ).then(
+                            (resp) => {
+                                let data = resp.data;
+                                if (data.status === 200) {
+                                    localStorage.setItem('tenant_code', frm.dataForm['tenant_code']);
+                                    $.fn.notifyBLogin({description: data.detail}, 'success');
+                                    let path_redirect = "/";
+                                    const params = Object.fromEntries(new URLSearchParams(location.search));
+                                    if (params.next) {
+                                        path_redirect = params.next;
+                                    }
+                                    $.fn.redirectUrlLogin(path_redirect, 800);
+                                }
+                                setTimeout(
+                                    () => {
+                                        $.fn.hideLoadingLogin();
+                                    }, 2000
+                                )
+                            },
+                            (err) => {
+                                $.fn.notifyBLogin({
+                                    'description': $('#errLoginIncorrect').attr('data-value')
+                                }, 'failure')
+                                $.fn.hideLoadingLogin();
+                            }
+                        )
+                    } else throw 'Setup call raise exception with URL or method is incorrect.!';
+                }
+            })
+
             function loadTenantList() {
                 let tenant_element = $('#tenant-select');
                 if (tenant_element.attr('data-loaded') !== true) {
-                    $.fn.callAjax(tenant_element.attr('data-url'), tenant_element.attr('data-method')).then(
+                    $.fn.callAjaxLogin(tenant_element.attr('data-url'), tenant_element.attr('data-method')).then(
                         (resp) => {
+                            let beforeTenantCode = localStorage.getItem('tenant_code');
                             let code_list = [];
                             tenant_element.attr('data-loaded', true);
                             tenant_element.children().remove();
                             resp.result.map((element) => {
-                                tenant_element.append(`<option value="` + element.code + `">` + String.format('{0} - {1}', element.code, element.title) + `</option>`);
+                                if (beforeTenantCode && element.code === beforeTenantCode) {
+                                    tenant_element.append(`<option value="` + element.code + `" selected="selected">` + String.format('{0} - {1}', element.code, element.title) + `</option>`);
+                                } else {
+                                    tenant_element.append(`<option value="` + element.code + `">` + String.format('{0} - {1}', element.code, element.title) + `</option>`);
+                                }
                                 code_list.push(element.code);
                             });
 
@@ -251,7 +492,7 @@
                                     tenant_element.find('option[value=' + code_selected + ']').attr('selected', 'selected');
                                 }
                             }
-                            tenant_element.children().last().attr('selected', 'selected');
+                            {#tenant_element.children().last().attr('selected', 'selected');#}
                         },
                         (err) => {
                             tenant_element.attr('data-loaded', false);

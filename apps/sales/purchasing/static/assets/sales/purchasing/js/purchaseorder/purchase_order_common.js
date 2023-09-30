@@ -8,7 +8,8 @@ class POLoadDataHandle {
     static eleDivTablePOProductAdd = $('#table-purchase-order-product-add-area');
     static eleDivTablePRProduct = $('#table-purchase-request-product-area');
     static eleDivTablePRProductMerge = $('#table-purchase-request-product-merge-area');
-    static finalRevenueBeforeTax = document.getElementById('purchase-order-final-revenue-before-tax');
+    static finalRevenueBeforeTaxAdd = document.getElementById('purchase-order-add-final-revenue-before-tax');
+    static finalRevenueBeforeTaxRequest = document.getElementById('purchase-order-request-final-revenue-before-tax');
     static transEle = $('#app-trans-factory');
 
     static loadMoreInformation(ele, is_span = false) {
@@ -521,7 +522,6 @@ class POLoadDataHandle {
 
     static loadTableProductByPurchaseRequest() {
         let tablePurchaseOrderProductRequest = $('#datable-purchase-order-product-request');
-        let tablePurchaseOrderProductAdd = $('#datable-purchase-order-product-add');
         let data = setupMergeProduct();
         POLoadDataHandle.eleDivTablePOProductAdd[0].setAttribute('hidden', 'true');
         POLoadDataHandle.eleDivTablePOProductRequest[0].removeAttribute('hidden');
@@ -534,15 +534,15 @@ class POLoadDataHandle {
             tablePurchaseOrderProductRequest.DataTable().rows.add(data).draw();
         }
         // restart totals
-        let elePretaxAmount = document.getElementById('purchase-order-product-pretax-amount');
-        let eleTaxes = document.getElementById('purchase-order-product-taxes');
-        let eleTotal = document.getElementById('purchase-order-product-total');
-        let elePretaxAmountRaw = document.getElementById('purchase-order-product-pretax-amount-raw');
-        let eleTaxesRaw = document.getElementById('purchase-order-product-taxes-raw');
-        let eleTotalRaw = document.getElementById('purchase-order-product-total-raw');
+        let elePretaxAmount = document.getElementById('purchase-order-product-request-pretax-amount');
+        let eleTaxes = document.getElementById('purchase-order-product-request-taxes');
+        let eleTotal = document.getElementById('purchase-order-product-request-total');
+        let elePretaxAmountRaw = document.getElementById('purchase-order-product-request-pretax-amount-raw');
+        let eleTaxesRaw = document.getElementById('purchase-order-product-request-taxes-raw');
+        let eleTotalRaw = document.getElementById('purchase-order-product-request-total-raw');
         $(elePretaxAmount).attr('data-init-money', String(0));
         elePretaxAmountRaw.value = 0;
-        POLoadDataHandle.finalRevenueBeforeTax.value = 0;
+        POLoadDataHandle.finalRevenueBeforeTaxRequest.value = 0;
         $(eleTaxes).attr('data-init-money', String(0));
         eleTaxesRaw.value = 0;
         $(eleTotal).attr('data-init-money', String(0));
@@ -791,15 +791,15 @@ class POLoadDataHandle {
         // ReCalculate Totals
         let table = $('#datable-purchase-order-product-request');
         if (table[0].querySelector('.dataTables_empty')) {
-            let elePretaxAmount = document.getElementById('purchase-order-product-pretax-amount');
-            let eleTaxes = document.getElementById('purchase-order-product-taxes');
-            let eleTotal = document.getElementById('purchase-order-product-total');
-            let elePretaxAmountRaw = document.getElementById('purchase-order-product-pretax-amount-raw');
-            let eleTaxesRaw = document.getElementById('purchase-order-product-taxes-raw');
-            let eleTotalRaw = document.getElementById('purchase-order-product-total-raw');
+            let elePretaxAmount = document.getElementById('purchase-order-product-request-pretax-amount');
+            let eleTaxes = document.getElementById('purchase-order-product-request-taxes');
+            let eleTotal = document.getElementById('purchase-order-product-request-total');
+            let elePretaxAmountRaw = document.getElementById('purchase-order-product-request-pretax-amount-raw');
+            let eleTaxesRaw = document.getElementById('purchase-order-product-request-taxes-raw');
+            let eleTotalRaw = document.getElementById('purchase-order-product-request-total-raw');
             $(elePretaxAmount).attr('data-init-money', String(0));
             elePretaxAmountRaw.value = '0';
-            POLoadDataHandle.finalRevenueBeforeTax.value = '0';
+            POLoadDataHandle.finalRevenueBeforeTaxRequest.value = '0';
             $(eleTaxes).attr('data-init-money', String(0));
             eleTaxesRaw.value = '0';
             $(eleTotal).attr('data-init-money', String(0));
@@ -981,19 +981,30 @@ class POLoadDataHandle {
     };
 
     static loadTotals(data) {
-        let elePretaxAmount = document.getElementById('purchase-order-product-pretax-amount');
-        let eleTaxes = document.getElementById('purchase-order-product-taxes');
-        let eleTotal = document.getElementById('purchase-order-product-total');
-        let elePretaxAmountRaw = document.getElementById('purchase-order-product-pretax-amount-raw');
-        let eleTaxesRaw = document.getElementById('purchase-order-product-taxes-raw');
-        let eleTotalRaw = document.getElementById('purchase-order-product-total-raw');
+        let elePretaxAmount = document.getElementById('purchase-order-product-add-pretax-amount');
+        let eleTaxes = document.getElementById('purchase-order-product-add-taxes');
+        let eleTotal = document.getElementById('purchase-order-product-add-total');
+        let elePretaxAmountRaw = document.getElementById('purchase-order-product-add-pretax-amount-raw');
+        let eleTaxesRaw = document.getElementById('purchase-order-product-add-taxes-raw');
+        let eleTotalRaw = document.getElementById('purchase-order-product-add-total-raw');
+        if (data?.['purchase_requests_data']) {
+            if (data?.['purchase_requests_data'].length > 0) {
+                elePretaxAmount = document.getElementById('purchase-order-product-request-pretax-amount');
+                eleTaxes = document.getElementById('purchase-order-product-request-taxes');
+                eleTotal = document.getElementById('purchase-order-product-request-total');
+                elePretaxAmountRaw = document.getElementById('purchase-order-product-request-pretax-amount-raw');
+                eleTaxesRaw = document.getElementById('purchase-order-product-request-taxes-raw');
+                eleTotalRaw = document.getElementById('purchase-order-product-request-total-raw');
+            }
+        }
         $(elePretaxAmount).attr('data-init-money', String(data?.['total_product_pretax_amount']));
         elePretaxAmountRaw.value = data?.['total_product_pretax_amount'];
         $(eleTaxes).attr('data-init-money', String(data?.['total_product_tax']));
         eleTaxesRaw.value = data?.['total_product_tax'];
         $(eleTotal).attr('data-init-money', String(data?.['total_product']));
         eleTotalRaw.value = data?.['total_product'];
-        POLoadDataHandle.finalRevenueBeforeTax.value = data?.['total_product_revenue_before_tax'];
+        POLoadDataHandle.finalRevenueBeforeTaxAdd.value = data?.['total_product_revenue_before_tax'];
+        POLoadDataHandle.finalRevenueBeforeTaxRequest.value = data?.['total_product_revenue_before_tax'];
     };
 
     static loadTableDisabled(table) {
@@ -1099,8 +1110,6 @@ class PODataTableHandle {
                     }
                 },
             ],
-            drawCallback: function () {
-            },
         });
     };
 
@@ -1111,7 +1120,6 @@ class PODataTableHandle {
             // searching: false,
             paging: false,
             info: false,
-            columnDefs: [],
             columns: [
                 {
                     targets: 0,
@@ -1227,8 +1235,6 @@ class PODataTableHandle {
                     }
                 },
             ],
-            drawCallback: function () {
-            },
         });
     };
 
@@ -1239,7 +1245,6 @@ class PODataTableHandle {
             // searching: false,
             paging: false,
             info: false,
-            columnDefs: [],
             columns: [
                 {
                     targets: 0,
@@ -1302,8 +1307,6 @@ class PODataTableHandle {
                     }
                 },
             ],
-            drawCallback: function () {
-            },
         });
     };
 
@@ -1313,7 +1316,6 @@ class PODataTableHandle {
             data: data ? data : [],
             paging: false,
             info: false,
-            columnDefs: [],
             columns: [
                 {
                     targets: 0,
@@ -1366,8 +1368,6 @@ class PODataTableHandle {
                     }
                 },
             ],
-            drawCallback: function () {
-            },
         });
     };
 
@@ -1377,7 +1377,6 @@ class PODataTableHandle {
             data: data ? data : [],
             paging: false,
             info: false,
-            columnDefs: [],
             columns: [
                 {
                     targets: 0,
@@ -1536,7 +1535,6 @@ class PODataTableHandle {
                     }
                 },
             ],
-            drawCallback: function () {},
         });
     };
 
@@ -1548,39 +1546,39 @@ class PODataTableHandle {
             info: false,
             columnDefs: [
                 {
-                    "width": "5%",
+                    "width": "2%",
                     "targets": 0
                 },
                 {
-                    "width": "20%",
+                    "width": "15%",
                     "targets": 1
                 },
                 {
-                    "width": "10%",
+                    "width": "20%",
                     "targets": 2
                 },
                 {
-                    "width": "10%",
+                    "width": "5%",
                     "targets": 3,
                 },
                 {
-                    "width": "10%",
+                    "width": "5%",
                     "targets": 4,
                 },
                 {
-                    "width": "15%",
+                    "width": "25%",
                     "targets": 5,
                 },
                 {
-                    "width": "10%",
+                    "width": "5%",
                     "targets": 6,
                 },
                 {
-                    "width": "15%",
+                    "width": "20%",
                     "targets": 7,
                 },
                 {
-                    "width": "5%",
+                    "width": "3%",
                     "targets": 8,
                 }
             ],
@@ -1730,7 +1728,6 @@ class PODataTableHandle {
                     }
                 },
             ],
-            drawCallback: function () {},
         });
     };
 
@@ -1741,12 +1738,20 @@ class POCalculateHandle {
     static calculateTotal(table) {
         let pretaxAmount = 0;
         let taxAmount = 0;
-        let elePretaxAmount = document.getElementById('purchase-order-product-pretax-amount');
-        let eleTaxes = document.getElementById('purchase-order-product-taxes');
-        let eleTotal = document.getElementById('purchase-order-product-total');
-        let elePretaxAmountRaw = document.getElementById('purchase-order-product-pretax-amount-raw');
-        let eleTaxesRaw = document.getElementById('purchase-order-product-taxes-raw');
-        let eleTotalRaw = document.getElementById('purchase-order-product-total-raw');
+        let elePretaxAmount = document.getElementById('purchase-order-product-add-pretax-amount');
+        let eleTaxes = document.getElementById('purchase-order-product-add-taxes');
+        let eleTotal = document.getElementById('purchase-order-product-add-total');
+        let elePretaxAmountRaw = document.getElementById('purchase-order-product-add-pretax-amount-raw');
+        let eleTaxesRaw = document.getElementById('purchase-order-product-add-taxes-raw');
+        let eleTotalRaw = document.getElementById('purchase-order-product-add-total-raw');
+        if (POLoadDataHandle.PRDataEle.val()) {
+            elePretaxAmount = document.getElementById('purchase-order-product-request-pretax-amount');
+            eleTaxes = document.getElementById('purchase-order-product-request-taxes');
+            eleTotal = document.getElementById('purchase-order-product-request-total');
+            elePretaxAmountRaw = document.getElementById('purchase-order-product-request-pretax-amount-raw');
+            eleTaxesRaw = document.getElementById('purchase-order-product-request-taxes-raw');
+            eleTotalRaw = document.getElementById('purchase-order-product-request-total-raw');
+        }
         if (elePretaxAmount && eleTaxes && eleTotal) {
             let tableLen = table.tBodies[0].rows.length;
             for (let i = 0; i < tableLen; i++) {
@@ -1769,7 +1774,8 @@ class POCalculateHandle {
             let totalFinal = (pretaxAmount + taxAmount);
             $(elePretaxAmount).attr('data-init-money', String(pretaxAmount));
             elePretaxAmountRaw.value = pretaxAmount;
-            POLoadDataHandle.finalRevenueBeforeTax.value = pretaxAmount;
+            POLoadDataHandle.finalRevenueBeforeTaxAdd.value = pretaxAmount;
+            POLoadDataHandle.finalRevenueBeforeTaxRequest.value = pretaxAmount;
             $(eleTaxes).attr('data-init-money', String(taxAmount));
             eleTaxesRaw.value = taxAmount;
             $(eleTotal).attr('data-init-money', String(totalFinal));
@@ -2056,10 +2062,17 @@ class POSubmitHandle {
         if (products_data_setup.length > 0) {
             _form.dataForm['purchase_order_products_data'] = products_data_setup;
         }
-        _form.dataForm['total_product_pretax_amount'] = parseFloat($('#purchase-order-product-pretax-amount-raw').val());
-        _form.dataForm['total_product_tax'] = parseFloat($('#purchase-order-product-taxes-raw').val());
-        _form.dataForm['total_product'] = parseFloat($('#purchase-order-product-total-raw').val());
-        _form.dataForm['total_product_revenue_before_tax'] = parseFloat(POLoadDataHandle.finalRevenueBeforeTax.value);
+        if (POLoadDataHandle.PRDataEle.val()) {
+            _form.dataForm['total_product_pretax_amount'] = parseFloat($('#purchase-order-product-request-pretax-amount-raw').val());
+            _form.dataForm['total_product_tax'] = parseFloat($('#purchase-order-product-request-taxes-raw').val());
+            _form.dataForm['total_product'] = parseFloat($('#purchase-order-product-request-total-raw').val());
+            _form.dataForm['total_product_revenue_before_tax'] = parseFloat(POLoadDataHandle.finalRevenueBeforeTaxRequest.value);
+        } else {
+            _form.dataForm['total_product_pretax_amount'] = parseFloat($('#purchase-order-product-add-pretax-amount-raw').val());
+            _form.dataForm['total_product_tax'] = parseFloat($('#purchase-order-product-add-taxes-raw').val());
+            _form.dataForm['total_product'] = parseFloat($('#purchase-order-product-add-total-raw').val());
+            _form.dataForm['total_product_revenue_before_tax'] = parseFloat(POLoadDataHandle.finalRevenueBeforeTaxAdd.value);
+        }
         // system fields
         if (_form.dataMethod === "POST") {
             _form.dataForm['system_status'] = 1;

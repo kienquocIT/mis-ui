@@ -237,6 +237,44 @@
                                     </thead>
                                     <tbody>
                                     </tbody>
+                                    <tfoot>
+                                    <tr>
+                                        <th colspan="5"></th>
+                                        <th colspan="5">
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <h6 class="mb-3" style="text-align: right">{% trans 'Pretax Amount' %}:</h6>
+                                                </div>
+                                                <div class="col-1"></div>
+                                                <div class="col-5">
+                                                    <h6 class="mb-3"><span class="mask-money" data-init-money="0" id="purchase-order-product-request-pretax-amount"></span></h6>
+                                                    <input id="purchase-order-product-request-pretax-amount-raw" type="text" class="form-control" value="0" hidden>
+                                                    <input type="hidden" id="purchase-order-request-final-revenue-before-tax">
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <h6 class="mb-3" style="text-align: right">{% trans 'Taxes' %}:</h6>
+                                                </div>
+                                                <div class="col-1"></div>
+                                                <div class="col-5">
+                                                    <h6 class="mb-3"><span class="mask-money" data-init-money="0" id="purchase-order-product-request-taxes"></span></h6>
+                                                    <input id="purchase-order-product-request-taxes-raw" type="text" class="form-control" value="0" hidden>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <h6 class="mb-3" style="text-align: right">{% trans 'Total' %}:</h6>
+                                                </div>
+                                                <div class="col-1"></div>
+                                                <div class="col-5">
+                                                    <h6 class="mb-3"><span class="mask-money" data-init-money="0" id="purchase-order-product-request-total"></span></h6>
+                                                    <input id="purchase-order-product-request-total-raw" type="text" class="form-control" value="0" hidden>
+                                                </div>
+                                            </div>
+                                        </th>
+                                    </tr>
+                                    </tfoot>
                                 </table>
                             </div>
 
@@ -262,73 +300,52 @@
                                     </thead>
                                     <tbody>
                                     </tbody>
+                                    <tfoot>
+                                    <tr>
+                                        <th colspan="2" class="align-text-top">
+                                            <div class="row">
+                                                <button type="button" class="btn btn-link btn-animated" id="btn-add-product-purchase-order">
+                                                    <span><span class="icon"><span class="feather-icon"><i class="fa-regular fa-square-plus"></i></span></span><span>{% trans 'Add Product' %}</span></span>
+                                                </button>
+                                            </div>
+                                        </th>
+                                        <th colspan="2"></th>
+                                        <th colspan="5">
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <h6 class="mb-3" style="text-align: right">{% trans 'Pretax Amount' %}:</h6>
+                                                </div>
+                                                <div class="col-1"></div>
+                                                <div class="col-5">
+                                                    <h6 class="mb-3"><span class="mask-money" data-init-money="0" id="purchase-order-product-add-pretax-amount"></span></h6>
+                                                    <input id="purchase-order-product-add-pretax-amount-raw" type="text" class="form-control" value="0" hidden>
+                                                    <input type="hidden" id="purchase-order-add-final-revenue-before-tax">
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <h6 class="mb-3" style="text-align: right">{% trans 'Taxes' %}:</h6>
+                                                </div>
+                                                <div class="col-1"></div>
+                                                <div class="col-5">
+                                                    <h6 class="mb-3"><span class="mask-money" data-init-money="0" id="purchase-order-product-add-taxes"></span></h6>
+                                                    <input id="purchase-order-product-add-taxes-raw" type="text" class="form-control" value="0" hidden>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <h6 class="mb-3" style="text-align: right">{% trans 'Total' %}:</h6>
+                                                </div>
+                                                <div class="col-1"></div>
+                                                <div class="col-5">
+                                                    <h6 class="mb-3"><span class="mask-money" data-init-money="0" id="purchase-order-product-add-total"></span></h6>
+                                                    <input id="purchase-order-product-add-total-raw" type="text" class="form-control" value="0" hidden>
+                                                </div>
+                                            </div>
+                                        </th>
+                                    </tr>
+                                    </tfoot>
                                 </table>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-2">
-                                    <button type="button" class="btn btn-link btn-animated" id="btn-add-product-purchase-order">
-                                        <span><span class="icon"><span class="feather-icon"><i class="fa-regular fa-square-plus"></i></span></span><span>{% trans 'Add Product' %}</span></span>
-                                    </button>
-                                </div>
-                                <div class="col-10"></div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-6"></div>
-                            <div class="col-6" id="quotation-tab-product-totals">
-                                <div class="row mb-2">
-                                    <div class="col-4"><p>{% trans 'Pretax Amount' %}</p></div>
-                                    <div class="col-1"></div>
-                                    <div class="col-7 total-area">
-                                        <div class="card card-sm">
-                                            <span class="card-body mask-money" data-init-money="0" id="purchase-order-product-pretax-amount"></span>
-                                        </div>
-                                        <input
-                                            id="purchase-order-product-pretax-amount-raw"
-                                            type="text"
-                                            class="form-control"
-                                            value="0"
-                                            hidden
-                                        >
-                                        <input
-                                            type="hidden"
-                                            id="purchase-order-final-revenue-before-tax"
-                                        >
-                                    </div>
-                                </div>
-                                <div class="row mb-2">
-                                    <div class="col-4"><p>{% trans 'Taxes' %}</p></div>
-                                    <div class="col-1"></div>
-                                    <div class="col-7 total-area">
-                                        <div class="card card-sm">
-                                            <span class="card-body mask-money" data-init-money="0" id="purchase-order-product-taxes"></span>
-                                        </div>
-                                        <input
-                                            id="purchase-order-product-taxes-raw"
-                                            type="text"
-                                            class="form-control"
-                                            value="0"
-                                            hidden
-                                        >
-                                    </div>
-                                </div>
-                                <div class="row mb-2">
-                                    <div class="col-4"><b>{% trans 'Total' %}</b></div>
-                                    <div class="col-1"></div>
-                                    <div class="col-7 total-area">
-                                        <div class="card card-sm">
-                                            <span class="card-body mask-money" data-init-money="0" id="purchase-order-product-total"></span>
-                                        </div>
-                                        <input
-                                            id="purchase-order-product-total-raw"
-                                            type="text"
-                                            class="form-control"
-                                            value="0"
-                                            hidden
-                                        >
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>

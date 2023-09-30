@@ -20,6 +20,10 @@ $(document).ready(function(){
         let _form = new SetupFormSubmit($form);
         let formData = _form.dataForm
         if (formData.code !== 'AN') formData.no_of_paid = formData.no_of_paid_normal
+        if (!formData.is_check_expiration){
+            formData.is_check_expiration = false
+            formData.data_expired = 0
+        }
 
         const clone = $.extend({}, formData); // clone for update to table when user update purpose
         delete formData.is_lt_system
@@ -79,23 +83,25 @@ $(document).ready(function(){
             $modal.find('.prev-type').removeClass('hidden')
             $('#inputNoM').val(data.prev_year).trigger('change')
         }
-        else{
-             $modal.find('.create-or-edit').removeClass('hidden')
-            $('#selectPaidBy').val(data.paid_by).trigger('change')
-            $('#txtAreaRemark').val(data.remark)
-            $('#inputBalanceControl').prop('checked', data.balance_control)
-            if (data.is_check_expiration)
-                $('#inputExpired').prop('checked', data.is_check_expiration).closest('.form-check').removeClass('hidden')
-            else $('#inputExpired').closest('.form-check').addClass('hidden')
-            if (data?.data_expired)
-                $('#inputDataExpired').val(data.data_expired).closest('.form-group').removeClass('hidden')
-            else $('#inputDataExpired').closest('.form-group').addClass('hidden')
-            $('[name="is_lt_system"]').val(data.is_lt_system)
-            $('[name="is_lt_edit"]').val(data.is_lt_edit)
-            $('[name="type_idx"]').val(data.idx)
-            $('#inputSubNoD').val(data.no_of_paid)
+        else $modal.find('.create-or-edit').removeClass('hidden')
 
+        $('#selectPaidBy').val(data.paid_by).trigger('change')
+        $('#txtAreaRemark').val(data.remark)
+        $('#inputBalanceControl').prop('checked', data.balance_control)
+        if (data.balance_control)
+            $('#inputExpired').removeClass('hidden')
+        if (data.is_check_expiration){
+            $('#inputExpired').prop('checked', data.is_check_expiration).closest('.form-check').removeClass('hidden')
+            $('#inputDataExpired').val(data.data_expired).closest('.form-group').removeClass('hidden')
         }
+        else{
+            $('#inputExpired').closest('.form-check').addClass('hidden')
+            $('#inputDataExpired').closest('.form-group').addClass('hidden')
+        }
+        $('[name="is_lt_system"]').val(data.is_lt_system)
+        $('[name="is_lt_edit"]').val(data.is_lt_edit)
+        $('#inputSubNoD').val(data.no_of_paid)
+        $('[name="type_idx"]').val(data.idx)
         $('#type_id').val(data.id)
         $('#inputCode').val(data.code)
         $('#inputTitle').val(data.title)
@@ -248,10 +254,15 @@ $(document).ready(function(){
     });
     $('.date-picker').val(null).trigger('change');
 
+
     $('.nav-item a').on('click', function(){
         const href = $(this).attr('href')
         const $btn = $('.open-modal-btn button')
         if (href === '#leave_year_senior') $btn.addClass('hidden')
         else $btn.removeClass('hidden')
+    })
+
+    $('#modal_leave_type').on('hidden.bs.modal', function(e){
+        $(this).find('form')[0].reset()
     })
 });

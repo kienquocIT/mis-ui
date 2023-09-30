@@ -244,3 +244,16 @@ class QuotationIndicatorRestoreAPI(APIView):
             pk=pk,
             msg=SaleMsg.QUOTATION_INDICATOR_RESTORE
         )
+
+
+class QuotationPrint(View):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        template='sales/quotation/quotation_print.html',
+        menu_active='menu_quotation_list',
+        breadcrumb='QUOTATION_DETAIL_PAGE',
+    )
+    def get(self, request, pk, *args, **kwargs):
+        return {'data': {'doc_id': pk}}, status.HTTP_200_OK

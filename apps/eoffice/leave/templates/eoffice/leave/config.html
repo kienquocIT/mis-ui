@@ -14,6 +14,12 @@
         .btn-edit-row{
             color: #262a2e !important;
         }
+
+        @media (min-width: 576px) {
+            .modal-dialog {
+                margin: 4.75rem auto;
+            }
+        }
     </style>
 {% endblock %}
 
@@ -81,7 +87,7 @@
         </div>
     </div>
     <div class="modal fade" id="modal_leave_type">
-        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">{% trans 'Leave type' %}</h5>

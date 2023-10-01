@@ -24,16 +24,8 @@
 {% endblock %}
 
 {% block pageAction %}
-    <a href="{% url 'LeaveTypeCreate' %}" class="open-modal-btn">
-        <button class="btn btn-outline-primary">
-            <span>
-                <span>{% trans 'Add' %}</span>
-                <span class="icon">
-                    <i class="fa-solid fa-plus"></i>
-                </span>
-            </span>
-        </button>
-    </a>
+    {% url 'LeaveTypeCreate' as s_url %}
+    {% include 'extends/utility/save_btn.html' with s_frm_txt='create_form' s_class='open-modal-btn' %}
 {% endblock %}
 
 {% block pageContent %}

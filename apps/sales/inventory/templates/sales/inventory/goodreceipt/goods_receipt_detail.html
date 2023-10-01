@@ -298,80 +298,57 @@
                                     <thead>
                                     <tr>
                                         <th class="w-5">#</th>
-                                        <th>{% trans 'Product' %}<span class="required"></span></th>
-                                        <th class="w-10">{% trans 'Description' %}</th>
-                                        <th>UoM<span class="required"></span></th>
-                                        <th>{% trans 'Quantity' %}<span class="required"></span></th>
+                                        <th class="w-15">{% trans 'Product' %}<span class="required"></span></th>
+                                        <th class="w-20">{% trans 'Description' %}</th>
+                                        <th class="w-5">UoM<span class="required"></span></th>
+                                        <th class="w-5">{% trans 'Quantity' %}<span class="required"></span></th>
                                         <th class="w-20">{% trans 'Unit Price' %}<span class="required"></span></th>
-                                        <th>{% trans 'Tax' %}</th>
+                                        <th class="w-5">{% trans 'Tax' %}</th>
                                         <th class="w-20">{% trans 'Subtotal Price' %}</th>
                                         <th class="w-5">{% trans 'Actions' %}</th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     </tbody>
+                                    <tfoot>
+                                    <tr>
+                                        <th colspan="4"></th>
+                                        <th colspan="5">
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <h6 class="mb-3" style="text-align: right">{% trans 'Pretax Amount' %}:</h6>
+                                                </div>
+                                                <div class="col-1"></div>
+                                                <div class="col-5">
+                                                    <h6 class="mb-3"><span class="mask-money" data-init-money="0" id="good-receipt-product-pretax-amount"></span></h6>
+                                                    <input id="good-receipt-product-pretax-amount-raw" type="text" class="form-control" value="0" hidden>
+                                                    <input type="hidden" id="good-receipt-final-revenue-before-tax">
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <h6 class="mb-3" style="text-align: right">{% trans 'Taxes' %}:</h6>
+                                                </div>
+                                                <div class="col-1"></div>
+                                                <div class="col-5">
+                                                    <h6 class="mb-3"><span class="mask-money" data-init-money="0" id="good-receipt-product-taxes"></span></h6>
+                                                    <input id="good-receipt-product-taxes-raw" type="text" class="form-control" value="0" hidden>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <h6 class="mb-3" style="text-align: right">{% trans 'Total' %}:</h6>
+                                                </div>
+                                                <div class="col-1"></div>
+                                                <div class="col-5">
+                                                    <h6 class="mb-3"><span class="mask-money" data-init-money="0" id="good-receipt-product-total"></span></h6>
+                                                    <input id="good-receipt-product-total-raw" type="text" class="form-control" value="0" hidden>
+                                                </div>
+                                            </div>
+                                        </th>
+                                    </tr>
+                                    </tfoot>
                                 </table>
-                                <div class="row mb-2">
-                                    <div class="col-2"></div>
-                                    <div class="col-10"></div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-6"></div>
-                                <div class="col-6" id="quotation-tab-product-totals">
-                                    <div class="row mb-2">
-                                        <div class="col-4"><p>{% trans 'Pretax Amount' %}</p></div>
-                                        <div class="col-1"></div>
-                                        <div class="col-7 total-area">
-                                            <div class="card card-sm">
-                                                <span class="card-body mask-money" data-init-money="0" id="good-receipt-product-pretax-amount"></span>
-                                            </div>
-                                            <input
-                                                id="good-receipt-product-pretax-amount-raw"
-                                                type="text"
-                                                class="form-control"
-                                                value="0"
-                                                hidden
-                                            >
-                                            <input
-                                                type="hidden"
-                                                id="good-receipt-final-revenue-before-tax"
-                                            >
-                                        </div>
-                                    </div>
-                                    <div class="row mb-2">
-                                        <div class="col-4"><p>{% trans 'Taxes' %}</p></div>
-                                        <div class="col-1"></div>
-                                        <div class="col-7 total-area">
-                                            <div class="card card-sm">
-                                                <span class="card-body mask-money" data-init-money="0" id="good-receipt-product-taxes"></span>
-                                            </div>
-                                            <input
-                                                id="good-receipt-product-taxes-raw"
-                                                type="text"
-                                                class="form-control"
-                                                value="0"
-                                                hidden
-                                            >
-                                        </div>
-                                    </div>
-                                    <div class="row mb-2">
-                                        <div class="col-4"><b>{% trans 'Total' %}</b></div>
-                                        <div class="col-1"></div>
-                                        <div class="col-7 total-area">
-                                            <div class="card card-sm">
-                                                <span class="card-body mask-money" data-init-money="0" id="good-receipt-product-total"></span>
-                                            </div>
-                                            <input
-                                                id="good-receipt-product-total-raw"
-                                                type="text"
-                                                class="form-control"
-                                                value="0"
-                                                hidden
-                                            >
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                         <div class="row custom-line-detail" id="custom-line-detail-2" hidden>

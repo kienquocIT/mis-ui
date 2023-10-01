@@ -111,6 +111,13 @@
         <div class="separator-full"></div>
         <div id="timeline-container-force-position"></div>
     </div>
+
+    <h2 class="h2 mt-15 mb-6" >Button add group cho page</h2>
+    <section class="wrap_btn-add-group pb-30" id="btn_add_group">
+        {% url 'CityListAPI' as s_url %}
+        {% url 'CityListAPI' as s_draft_url %}
+        {%  include 'extends/utility/save_btn.html' with s_class='add_cl_custom' s_frm_txt='form_btn_name' s_btn_name='Add new btn text here' %}
+    </section>
 {% endblock %}
 
 {% block jsFooter %}

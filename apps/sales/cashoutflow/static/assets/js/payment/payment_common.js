@@ -3,12 +3,25 @@ let PaymentCreatorEle = $('#creator-select-box')
 let PaymentBeneficiaryEle = $('#beneficiary-select-box')
 let supplierEle = $('#supplier-select-box')
 let saleCodeEle = $('#sale-code-select-box')
+let sale_code_loading_span = $('#sale-code-loading-span')
 let tableLineDetail = $('#tab_line_detail_datatable')
 let AP_db = $('#advance_payment_list_datatable')
 let OPP_LIST = [];
 let QUO_LIST = [];
 let SO_LIST = [];
 let current_value_converted_from_ap = '';
+
+$('#input-file-now').dropify({
+    messages: {
+        'default': 'Drag and drop your file here.',
+    },
+    tpl: {
+        message: '<div class="dropify-message">' +
+            '<span class="file-icon"></span>' +
+            '<h5>{{ default }}</h5>' +
+            '</div>',
+    }
+});
 
 function PaymentLoadCreatedDate() {
     $('#created_date_id').dateRangePickerDefault({
@@ -44,16 +57,6 @@ function InforSpanSupplier(data) {
     $('#supplier-code').text(data?.['code']);
     $('#supplier-owner').text(data?.['owner']['fullname']);
     $('#supplier-industry').text(data?.['industry']['title']);
-    let url = btn_detail.attr('data-url').replace('0', data?.['id']);
-    btn_detail.attr('href', url);
-}
-
-function InforSpanBeneficiary(data) {
-    let btn_detail = $('#btn-detail-beneficiary-tab');
-    $('#beneficiary-detail-span').prop('hidden', false);
-    $('#beneficiary-name').text(data?.['full_name']);
-    $('#beneficiary-code').text(data?.['code']);
-    $('#beneficiary-department').text(data?.['group']['title']);
     let url = btn_detail.attr('data-url').replace('0', data?.['id']);
     btn_detail.attr('href', url);
 }
@@ -140,31 +143,18 @@ function PaymentLoadSupplier(data) {
     })
 }
 
-function PaymentLoadBeneficiary(data, filter=[]) {
-    PaymentBeneficiaryEle.initSelect2({
-        ajax: {
-            url: PaymentBeneficiaryEle.attr('data-url'),
-            method: 'GET',
-        },
-        callbackDataResp: function (resp, keyResp) {
-            let result = [data];
-            if (filter.length > 0) {
-                for (let i = 0; i < resp.data[keyResp].length; i++) {
-                    if (filter.includes(resp.data[keyResp][i].id)) {
-                        result.push(resp.data[keyResp][i])
-                    }
-                }
-            }
-            return result;
-        },
-        data: (data ? data : null),
-        keyResp: 'employee_list',
-        keyId: 'id',
-        keyText: 'full_name',
-    }).on('change', function () {
-        let obj_selected = JSON.parse($('#' + PaymentBeneficiaryEle.attr('data-idx-data-loaded')).text())[PaymentBeneficiaryEle.val()];
-        InforSpanBeneficiary(obj_selected);
-    })
+function PaymentLoadBeneficiary(data) {
+    PaymentBeneficiaryEle.html('');
+    PaymentBeneficiaryEle.append(`<option value="${data.id}">${data.full_name}</option>`)
+    PaymentBeneficiaryEle.select2();
+    PaymentBeneficiaryEle.prop('disabled', true);
+    let btn_detail = $('#btn-detail-beneficiary-tab');
+    $('#beneficiary-detail-span').prop('hidden', false);
+    $('#beneficiary-name').text(data?.['full_name']);
+    $('#beneficiary-code').text(data?.['code']);
+    $('#beneficiary-department').text(data?.['group']['title']);
+    let url = btn_detail.attr('data-url').replace('0', data?.['id']);
+    btn_detail.attr('href', url);
 }
 
 async function getPaymentSaleCode(sale_code_mapped_param, type_param) {
@@ -212,32 +202,56 @@ async function getPaymentSaleCode(sale_code_mapped_param, type_param) {
         OPP_LIST = results[0];
         QUO_LIST = results[1];
         SO_LIST = results[2];
-        let so_list = results[2];
-        let quo_list = results[1];
-        let opp_list = results[0];
-        for (let i = 0; i < so_list.length; i++) {
-            let get_quo_id = so_list[i].quotation?.['id'];
-            let get_opp_id = so_list[i].opportunity?.['id'];
+        let so_list_temp = results[2];
+        let quo_list_temp = results[1];
+        let opp_list_temp = results[0];
+        for (let i = 0; i < so_list_temp.length; i++) {
+            let get_quo_id = so_list_temp[i].quotation?.['id'];
+            let get_opp_id = so_list_temp[i].opportunity?.['id'];
             if (get_quo_id !== undefined) {
-                quo_list = quo_list.filter(function (item) {
+                quo_list_temp = quo_list_temp.filter(function (item) {
                     return item.id !== get_quo_id;
                 })
             }
             if (get_opp_id !== undefined) {
-                opp_list = opp_list.filter(function (item) {
+                opp_list_temp = opp_list_temp.filter(function (item) {
                     return item.id !== get_opp_id;
                 })
             }
         }
-        for (let i = 0; i < quo_list.length; i++) {
-            let get_opp_id = quo_list[i].opportunity?.['id'];
+        for (let i = 0; i < quo_list_temp.length; i++) {
+            let get_opp_id = quo_list_temp[i].opportunity?.['id'];
             if (get_opp_id !== undefined) {
-                opp_list = opp_list.filter(function (item) {
+                opp_list_temp = opp_list_temp.filter(function (item) {
                     return item.id !== get_opp_id;
                 })
             }
         }
-        let sale_code_list = so_list.concat(quo_list).concat(opp_list);
+        let sale_code_list_temp = so_list_temp.concat(quo_list_temp).concat(opp_list_temp);
+        let sale_code_list = [];
+        for (let i = 0; i < sale_code_list_temp.length; i++) {
+            let sale_person = sale_code_list_temp[i]['sale_person'];
+
+            let opp_mapped = sale_code_list_temp[i].opportunity || {'id': sale_code_list_temp[i].id, 'code': sale_code_list_temp[i].code,  'title': sale_code_list_temp[i].title};
+            let opp_sale_team = (Object.keys(opp_mapped).length !== 0 && sale_code_list_temp[i].opportunity_sale_team_datas !== undefined) ? sale_code_list_temp[i].opportunity_sale_team_datas : [];
+
+            let sale_team = [];
+            let flag = 0;
+            for (let i = 0; i < opp_sale_team.length; i++) {
+                sale_team.push(opp_sale_team[i].member)
+                if (opp_sale_team[i].member.id === initEmployee.id) {
+                    flag = 1;
+                }
+            }
+            sale_code_list_temp[i]['sale_team'] = sale_team;
+
+            let get_app_data_ap = initEmployee.permission_by_configured.find(element => element.app_data.code === 'advancepayment');
+            let can_create = get_app_data_ap ? get_app_data_ap.create : false;
+
+            if (initEmployee.id === sale_person.id || flag === 1 || can_create) {
+                sale_code_list.push(sale_code_list_temp[i])
+            }
+        }
         if (sale_code_mapped_param !== null) {
             let sale_code_mapped_obj = null;
             if (type_param === 0) {
@@ -257,17 +271,12 @@ async function getPaymentSaleCode(sale_code_mapped_param, type_param) {
             }
             PaymentLoadSaleCode(sale_code_mapped_obj)
             saleCodeEle.prop('disabled', true);
-            let obj_sale_code = JSON.parse($('#' + saleCodeEle.attr('data-idx-data-loaded')).text())[sale_code_mapped_param];
-            let get_opp_obj_mapped = OPP_LIST.filter(function (item) {
-                return item.id === obj_sale_code.opportunity?.['id'] ? obj_sale_code.opportunity?.['id'] : obj_sale_code?.['id'];
-            })
-            let sale_team = [obj_sale_code?.['sale_person'].id];
-            if (get_opp_obj_mapped.length === 1) {
-                for (let i = 0; i < get_opp_obj_mapped[0].opportunity_sale_team_datas.length; i++) {
-                    sale_team.push(get_opp_obj_mapped[0].opportunity_sale_team_datas[i].member.id)
-                }
-            }
-            PaymentLoadBeneficiary(initEmployee, sale_team)
+            PaymentLoadBeneficiary(initEmployee)
+
+            let sale_code_selected_id = sale_code_mapped_obj[0].id
+            tableLineDetail.find('tbody').html('');
+            let obj_sale_code = JSON.parse($('#' + saleCodeEle.attr('data-idx-data-loaded')).text())[sale_code_selected_id];
+            PaymentLoadBeneficiary(obj_sale_code.sale_person)
 
             let call_ap_list = $.fn.callAjax($('#form-create-payment').attr('data-url-list'), 'GET').then((resp) => {
                 let data = $.fn.switcherResp(resp);
@@ -279,17 +288,86 @@ async function getPaymentSaleCode(sale_code_mapped_param, type_param) {
                 }
             })
             Promise.all([call_ap_list]).then((results) => {
-                let all_product_items = [];
+                let ap_selected = null;
                 for (let i = 0; i < results[0].length; i++) {
-                    if (results[0][i]?.['sale_order_mapped']['id'] === sale_code_mapped_param || results[0][i]?.['quotation_mapped']['id'] === sale_code_mapped_param || results[0][i]?.['opportunity_mapped']['id'] === sale_code_mapped_param) {
-                        all_product_items = all_product_items.concat(results[0][i]?.['product_items'])
+                    let ap_opp_mapped = results[0][i]?.['opportunity_mapped'];
+                    let ap_quo_mapped = results[0][i]?.['quotation_mapped'];
+                    let ap_so_mapped = results[0][i]?.['sale_order_mapped'];
+                    if (Object.keys(ap_opp_mapped).length !== 0) {
+                        if (sale_code_selected_id === ap_opp_mapped.id) {
+                            ap_selected = results[0][i].id;
+                            break;
+                        }
+                    }
+                    if (Object.keys(ap_quo_mapped).length !== 0) {
+                        if (sale_code_selected_id === ap_quo_mapped.id) {
+                            ap_selected = results[0][i].id;
+                            break;
+                        }
+                    }
+                    if (Object.keys(ap_so_mapped).length !== 0) {
+                        if (sale_code_selected_id === ap_so_mapped.id) {
+                            ap_selected = results[0][i].id;
+                            break;
+                        }
                     }
                 }
-                if (sale_code_mapped_obj.length > 0 && type_param === 0) {
-                    loadSaleOrderProduct(sale_code_mapped_param, all_product_items);
+                if (ap_selected !== null) {
+                    let url_loaded = $('#form-create-payment').attr('data-url-detail').replace(0, ap_selected);
+                    $.fn.callAjax(url_loaded, 'GET').then(
+                        (resp) => {
+                            let data = $.fn.switcherResp(resp);
+                            if (data) {
+                                data = data['advance_payment_detail'];
+                                let sale_code_selected_id_list = {};
+
+                                if (Object.keys(data?.['sale_code_relate']).includes('opportunity_linked')) {
+                                    sale_code_selected_id_list['opportunity_linked_id'] = data?.['sale_code_relate']['opportunity_linked'].id;
+                                }
+                                if (Object.keys(data?.['sale_code_relate']).includes('quotation_linked')) {
+                                    sale_code_selected_id_list['quotation_linked_id'] = data?.['sale_code_relate']['quotation_linked'].id;
+                                }
+                                if (Object.keys(data?.['sale_code_relate']).includes('sale_order_linked')) {
+                                    sale_code_selected_id_list['sale_order_linked_id'] = data?.['sale_code_relate']['sale_order_linked'].id;
+                                }
+
+                                let all_expense_items = [];
+                                for (let i = 0; i < results[0].length; i++) {
+                                    let item = results[0][i];
+                                    let so_mapped_id = item?.['sale_order_mapped']['id'];
+                                    let quo_mapped_id = item?.['quotation_mapped']['id'];
+                                    let opp_mapped_id = item?.['opportunity_mapped']['id'];
+
+                                    if ((sale_code_selected_id_list['sale_order_linked_id'] === so_mapped_id && so_mapped_id !== undefined) ||
+                                        (sale_code_selected_id_list['quotation_linked_id'] === quo_mapped_id && quo_mapped_id !== undefined) ||
+                                        (sale_code_selected_id_list['opportunity_linked_id'] === opp_mapped_id && opp_mapped_id !== undefined)) {
+                                        all_expense_items = all_expense_items.concat(item?.['expense_items']);
+                                    }
+                                }
+                                if (sale_code_selected_id_list['sale_order_linked_id']) {
+                                    loadSaleOrderExpensesPlan(sale_code_selected_id_list['sale_order_linked_id'], all_expense_items, data?.['payment_value_list'], data?.['returned_value_list']);
+                                }
+                                else if (sale_code_selected_id_list['quotation_linked_id']) {
+                                    loadQuotationExpensesPlan(sale_code_selected_id_list['quotation_linked_id'], all_expense_items, data?.['payment_value_list'], data?.['returned_value_list']);
+                                }
+
+                                $.fn.initMaskMoney2();
+                            }
+                        })
                 }
-                if (sale_code_mapped_obj.length > 0 && type_param === 1) {
-                    loadQuotationProduct(sale_code_mapped_param, all_product_items);
+                else {
+                    let check_is_so = SO_LIST.filter(function (element) {
+                        return element.id === sale_code_selected_id;
+                    })
+                    let check_is_quo = QUO_LIST.filter(function (element) {
+                        return element.id === sale_code_selected_id;
+                    })
+                    if (check_is_so.length > 0) {
+                        loadSaleOrderExpensesPlan(sale_code_selected_id)
+                    }
+                    if (check_is_quo.length > 0) {
+                        loadQuotationExpensesPlan(sale_code_selected_id)
+                    }
                 }
             }).catch((error) => {
                 console.log(error)
@@ -306,7 +384,9 @@ async function getPaymentSaleCode(sale_code_mapped_param, type_param) {
             else {
                 PaymentLoadSaleCode([{}].concat(sale_code_list));
             }
+            saleCodeEle.prop('disabled', false);
         }
+        sale_code_loading_span.attr('hidden', true);
     }).catch((error) => {
         console.log(error)
         $.fn.notifyB({description: "Load Sale Code Failed!"}, 'failure');
@@ -333,36 +413,12 @@ function PaymentLoadSaleCode(sale_code) {
         keyId: 'id',
         keyText: 'title',
     }).on('change', function () {
-        PaymentBeneficiaryEle.prop('disabled', false);
-        let sale_code_selected_id = saleCodeEle.val()
+        $('#tab_plan_datatable tbody').html('')
+        let sale_code_selected_id = saleCodeEle.val();
         if (sale_code_selected_id !== '') {
+            tableLineDetail.find('tbody').html('');
             let obj_sale_code = JSON.parse($('#' + saleCodeEle.attr('data-idx-data-loaded')).text())[sale_code_selected_id];
-            let get_opp_obj_mapped = OPP_LIST.filter(function (item) {
-                return item.id === obj_sale_code.opportunity?.['id'] ? obj_sale_code.opportunity?.['id'] : obj_sale_code?.['id'];
-            })
-            let sale_team = [obj_sale_code?.['sale_person'].id];
-            if (get_opp_obj_mapped.length === 1) {
-                for (let i = 0; i < get_opp_obj_mapped[0].opportunity_sale_team_datas.length; i++) {
-                    sale_team.push(get_opp_obj_mapped[0].opportunity_sale_team_datas[i].member.id)
-                }
-            }
-            PaymentLoadBeneficiary(initEmployee, sale_team)
-            let type = 0;
-            let sale_code_selected = SO_LIST.filter(function (element) {
-                return element.id === sale_code_selected_id;
-            });
-            if (sale_code_selected.length === 0) {
-                sale_code_selected = QUO_LIST.filter(function (element) {
-                    return element.id === sale_code_selected_id;
-                })
-                type = 1;
-            }
-            if (sale_code_selected.length === 0) {
-                sale_code_selected = OPP_LIST.filter(function (element) {
-                    return element.id === sale_code_selected_id;
-                })
-                type = 2;
-            }
+            PaymentLoadBeneficiary(obj_sale_code.sale_person)
 
             let call_ap_list = $.fn.callAjax($('#form-create-payment').attr('data-url-list'), 'GET').then((resp) => {
                 let data = $.fn.switcherResp(resp);
@@ -374,26 +430,92 @@ function PaymentLoadSaleCode(sale_code) {
                 }
             })
             Promise.all([call_ap_list]).then((results) => {
-                let all_product_items = [];
+                let ap_selected = null;
                 for (let i = 0; i < results[0].length; i++) {
-                    if (results[0][i]?.['sale_order_mapped']['id'] === sale_code_selected_id || results[0][i]?.['quotation_mapped']['id'] === sale_code_selected_id || results[0][i]?.['opportunity_mapped']['id'] === sale_code_selected_id) {
-                        all_product_items = all_product_items.concat(results[0][i]?.['product_items'])
+                    let ap_opp_mapped = results[0][i]?.['opportunity_mapped'];
+                    let ap_quo_mapped = results[0][i]?.['quotation_mapped'];
+                    let ap_so_mapped = results[0][i]?.['sale_order_mapped'];
+                    if (Object.keys(ap_opp_mapped).length !== 0) {
+                        if (sale_code_selected_id === ap_opp_mapped.id) {
+                            ap_selected = results[0][i].id;
+                            break;
+                        }
+                    }
+                    if (Object.keys(ap_quo_mapped).length !== 0) {
+                        if (sale_code_selected_id === ap_quo_mapped.id) {
+                            ap_selected = results[0][i].id;
+                            break;
+                        }
+                    }
+                    if (Object.keys(ap_so_mapped).length !== 0) {
+                        if (sale_code_selected_id === ap_so_mapped.id) {
+                            ap_selected = results[0][i].id;
+                            break;
+                        }
                     }
                 }
-                if (sale_code_selected.length > 0 && type === 0) {
-                    loadSaleOrderProduct(sale_code_selected_id, all_product_items);
+                if (ap_selected !== null) {
+                    let url_loaded = $('#form-create-payment').attr('data-url-detail').replace(0, ap_selected);
+                    $.fn.callAjax(url_loaded, 'GET').then(
+                        (resp) => {
+                            let data = $.fn.switcherResp(resp);
+                            if (data) {
+                                data = data['advance_payment_detail'];
+                                let sale_code_selected_id_list = {};
+
+                                if (Object.keys(data?.['sale_code_relate']).includes('opportunity_linked')) {
+                                    sale_code_selected_id_list['opportunity_linked_id'] = data?.['sale_code_relate']['opportunity_linked'].id;
+                                }
+                                if (Object.keys(data?.['sale_code_relate']).includes('quotation_linked')) {
+                                    sale_code_selected_id_list['quotation_linked_id'] = data?.['sale_code_relate']['quotation_linked'].id;
+                                }
+                                if (Object.keys(data?.['sale_code_relate']).includes('sale_order_linked')) {
+                                    sale_code_selected_id_list['sale_order_linked_id'] = data?.['sale_code_relate']['sale_order_linked'].id;
+                                }
+
+                                let all_expense_items = [];
+                                for (let i = 0; i < results[0].length; i++) {
+                                    let item = results[0][i];
+                                    let so_mapped_id = item?.['sale_order_mapped']['id'];
+                                    let quo_mapped_id = item?.['quotation_mapped']['id'];
+                                    let opp_mapped_id = item?.['opportunity_mapped']['id'];
+
+                                    if ((sale_code_selected_id_list['sale_order_linked_id'] === so_mapped_id && so_mapped_id !== undefined) ||
+                                        (sale_code_selected_id_list['quotation_linked_id'] === quo_mapped_id && quo_mapped_id !== undefined) ||
+                                        (sale_code_selected_id_list['opportunity_linked_id'] === opp_mapped_id && opp_mapped_id !== undefined)) {
+                                        all_expense_items = all_expense_items.concat(item?.['expense_items']);
+                                    }
+                                }
+                                if (sale_code_selected_id_list['sale_order_linked_id']) {
+                                    loadSaleOrderExpensesPlan(sale_code_selected_id_list['sale_order_linked_id'], all_expense_items, data?.['payment_value_list'], data?.['returned_value_list']);
+                                }
+                                else if (sale_code_selected_id_list['quotation_linked_id']) {
+                                    loadQuotationExpensesPlan(sale_code_selected_id_list['quotation_linked_id'], all_expense_items, data?.['payment_value_list'], data?.['returned_value_list']);
+                                }
+
+                                $.fn.initMaskMoney2();
+                            }
+                        })
                 }
-                if (sale_code_selected.length > 0 && type === 1) {
-                    loadQuotationProduct(sale_code_selected_id, all_product_items);
+                else {
+                    let check_is_so = SO_LIST.filter(function (element) {
+                        return element.id === sale_code_selected_id;
+                    })
+                    let check_is_quo = QUO_LIST.filter(function (element) {
+                        return element.id === sale_code_selected_id;
+                    })
+                    if (check_is_so.length > 0) {
+                        loadSaleOrderExpensesPlan(sale_code_selected_id)
+                    }
+                    if (check_is_quo.length > 0) {
+                        loadQuotationExpensesPlan(sale_code_selected_id)
+                    }
                 }
             }).catch((error) => {
                 console.log(error)
                 $.fn.notifyB({description: "Load Sale Code Failed!"}, 'failure');
             });
         }
-
-        $('#tab_line_detail_datatable tbody').html(``);
-        $('#tab_plan_datatable tbody').html(``);
     })
 }
 
@@ -422,268 +544,6 @@ function PaymentLoadSaleCodeMULTI(sale_code) {
         $('#tab_line_detail_datatable tbody').html(``);
         $('#tab_plan_datatable tbody').html(``);
     })
-}
-
-function loadSaleOrderProduct(filter_sale_order, ap_items_list) {
-    let dtb = $('#tab_plan_datatable');
-    // if (filter_sale_order !== '') {
-    //     dtb.prop('hidden', false);
-    //     $('#notify-none-sale-code').prop('hidden', true);
-    // }
-    // else {
-    //     dtb.prop('hidden', true);
-    //     $('#notify-none-sale-code').prop('hidden', false);
-    // }
-    // dtb.DataTable().clear().destroy();
-    // let frm = new SetupFormSubmit(dtb);
-    // frm.dataUrl = dtb.attr('data-url-sale-order');
-    // dtb.DataTableDefault({
-    //     reloadCurrency: true,
-    //     rowIdx: true,
-    //     useDataServer: true,
-    //     dom: '',
-    //     ajax: {
-    //         url: frm.dataUrl + '?filter_sale_order=' + filter_sale_order,
-    //         type: frm.dataMethod,
-    //         dataSrc: function (resp) {
-    //             let data = $.fn.switcherResp(resp);
-    //             if (data) {
-    //                 let data_detail = data?.['sale_order_expense_list'];
-    //                 let result1 = []
-    //                 for (let i = 0; i < data_detail.length; i++) {
-    //                     let sum_AP_approved_list = ap_items_list.filter(function (element) {
-    //                         return element.product.id === data_detail[i].product_id;
-    //                     })
-    //                     let sum_AP_approved_value = 0;
-    //                     let sum_returned_value = 0;
-    //                     let sum_to_payment_value = 0;
-    //                     let sum_others_payment_value = 0;
-    //                     for (let i = 0; i < sum_AP_approved_list.length; i++) {
-    //                         sum_AP_approved_value += sum_AP_approved_list[i]?.['subtotal_price'];
-    //                         sum_returned_value += sum_AP_approved_list[i]?.['returned_total'];
-    //                         sum_to_payment_value += sum_AP_approved_list[i]?.['to_payment_total'];
-    //                     }
-    //                     let sum_available_value = data_detail[i].plan_after_tax - sum_AP_approved_value - sum_others_payment_value + sum_returned_value;
-    //                     if (sum_available_value < 0) {
-    //                         sum_available_value = 0;
-    //                     }
-    //                     if (data_detail[i].is_product) {
-    //                         result1.push({
-    //                             'expense_id': data_detail[i].expense_id ? data_detail[i].expense_id : data_detail[i].product_id,
-    //                             'expense_title': data_detail[i].expense_title ? data_detail[i].expense_title : data_detail[i].product_title,
-    //                             'tax': data_detail[i].tax,
-    //                             'plan_after_tax': data_detail[i].plan_after_tax,
-    //                             'sum_AP_approved': sum_AP_approved_value,
-    //                             'returned': sum_returned_value,
-    //                             'to_payment': sum_to_payment_value,
-    //                             'others_payment': sum_others_payment_value,
-    //                             'available': sum_available_value,
-    //                         })
-    //                     }
-    //                 }
-    //                 return result1;
-    //             }
-    //             return [];
-    //         },
-    //     },
-    //     columns: [
-    //         {
-    //             render: () => {
-    //                 return ``;
-    //             }
-    //         },
-    //         {
-    //             data: 'expense_title',
-    //             className: 'wrap-text',
-    //             render: (data, type, row) => {
-    //                 return `<a href="#"><span>` + row.expense_title + `</span></a>`
-    //             }
-    //         },
-    //         {
-    //             data: 'tax',
-    //             className: 'wrap-text',
-    //             render: (data, type, row) => {
-    //                 if (row.tax.title) {
-    //                     return `<span class="badge badge-soft-indigo badge-outline">` + row.tax.title + `</span>`
-    //                 }
-    //                 return ``
-    //             }
-    //         },
-    //         {
-    //             data: 'plan_after_tax',
-    //             className: 'wrap-text',
-    //             render: (data, type, row) => {
-    //                 return `<span class="mask-money text-primary" data-init-money="` + row.plan_after_tax + `"></span>`
-    //             }
-    //         },
-    //         {
-    //             data: 'sum_AP_approved',
-    //             className: 'wrap-text',
-    //             render: (data, type, row) => {
-    //                 return `<span class="mask-money text-primary" data-init-money="` + row.sum_AP_approved + `"></span>`
-    //             }
-    //         },
-    //         {
-    //             data: 'returned',
-    //             className: 'wrap-text',
-    //             render: (data, type, row) => {
-    //                 return `<span class="mask-money text-primary" data-init-money="` + row.returned + `"></span>`
-    //             }
-    //         },
-    //         {
-    //             data: 'to_payment',
-    //             className: 'wrap-text',
-    //             render: (data, type, row) => {
-    //                 return `<span class="mask-money text-primary" data-init-money="` + row.to_payment + `"></span>`
-    //             }
-    //         },
-    //         {
-    //             data: 'others_payment',
-    //             className: 'wrap-text',
-    //             render: (data, type, row) => {
-    //                 return `<span class="mask-money text-primary" data-init-money="` + row.others_payment + `"></span>`
-    //             }
-    //         },
-    //         {
-    //             data: 'available',
-    //             className: 'wrap-text',
-    //             render: (data, type, row) => {
-    //                 return `<span class="mask-money text-primary" data-init-money="` + row.available + `"></span>`
-    //             }
-    //         }
-    //     ],
-    // });
-}
-
-function loadQuotationProduct(filter_quotation, ap_items_list) {
-    let dtb = $('#tab_plan_datatable');
-    // if (filter_quotation !== '') {
-    //     dtb.prop('hidden', false);
-    //     $('#notify-none-sale-code').prop('hidden', true);
-    // }
-    // else {
-    //     dtb.prop('hidden', true);
-    //     $('#notify-none-sale-code').prop('hidden', false);
-    // }
-    // dtb.DataTable().clear().destroy();
-    // let frm = new SetupFormSubmit(dtb);
-    // frm.dataUrl = dtb.attr('data-url-sale-order');
-    // dtb.DataTableDefault({
-    //     reloadCurrency: true,
-    //     rowIdx: true,
-    //     useDataServer: true,
-    //     dom: '',
-    //     ajax: {
-    //         url: frm.dataUrl + '?filter_quotation=' + filter_quotation,
-    //         type: frm.dataMethod,
-    //         dataSrc: function (resp) {
-    //             let data = $.fn.switcherResp(resp);
-    //             if (data) {
-    //                 let data_detail = data?.['quotation_expense_list'];
-    //                 let result2 = []
-    //                 for (let i = 0; i < data_detail.length; i++) {
-    //                     let sum_AP_approved_list = ap_items_list.filter(function (element) {
-    //                         return element.product.id === data_detail[i].product_id;
-    //                     })
-    //                     let sum_AP_approved_value = 0;
-    //                     let sum_returned_value = 0;
-    //                     let sum_to_payment_value = 0;
-    //                     let sum_others_payment_value = 0;
-    //                     for (let i = 0; i < sum_AP_approved_list.length; i++) {
-    //                         sum_AP_approved_value += sum_AP_approved_list[i]?.['subtotal_price'];
-    //                         sum_returned_value += sum_AP_approved_list[i]?.['returned_total'];
-    //                         sum_to_payment_value += sum_AP_approved_list[i]?.['to_payment_total'];
-    //                     }
-    //                     let sum_available_value = data_detail[i].plan_after_tax - sum_AP_approved_value - sum_others_payment_value + sum_returned_value;
-    //                     if (sum_available_value < 0) {
-    //                         sum_available_value = 0;
-    //                     }
-    //                     if (data_detail[i].is_product) {
-    //                         result2.push({
-    //                             'expense_id': data_detail[i].expense_id ? data_detail[i].expense_id : data_detail[i].product_id,
-    //                             'expense_title': data_detail[i].expense_title ? data_detail[i].expense_title : data_detail[i].product_title,
-    //                             'tax': data_detail[i].tax,
-    //                             'plan_after_tax': data_detail[i].plan_after_tax,
-    //                             'sum_AP_approved': sum_AP_approved_value,
-    //                             'returned': sum_returned_value,
-    //                             'to_payment': sum_to_payment_value,
-    //                             'others_payment': sum_others_payment_value,
-    //                             'available': sum_available_value,
-    //                         })
-    //                     }
-    //                 }
-    //                 return result2;
-    //             }
-    //             return [];
-    //         },
-    //     },
-    //     columns: [
-    //         {
-    //             render: () => {
-    //                 return ``;
-    //             }
-    //         },
-    //         {
-    //             data: 'expense_title',
-    //             className: 'wrap-text',
-    //             render: (data, type, row) => {
-    //                 return `<a href="#"><span>` + row.expense_title + `</span></a>`
-    //             }
-    //         },
-    //         {
-    //             data: 'tax',
-    //             className: 'wrap-text',
-    //             render: (data, type, row) => {
-    //                 if (row.tax.title) {
-    //                     return `<span class="badge badge-soft-indigo badge-outline">` + row.tax.title + `</span>`
-    //                 }
-    //                 return ``
-    //             }
-    //         },
-    //         {
-    //             data: 'plan_after_tax',
-    //             className: 'wrap-text',
-    //             render: (data, type, row) => {
-    //                 return `<span class="mask-money text-primary" data-init-money="` + row.plan_after_tax + `"></span>`
-    //             }
-    //         },
-    //         {
-    //             data: 'sum_AP_approved',
-    //             className: 'wrap-text',
-    //             render: (data, type, row) => {
-    //                 return `<span class="mask-money text-primary" data-init-money="` + row.sum_AP_approved + `"></span>`
-    //             }
-    //         },
-    //         {
-    //             data: 'returned',
-    //             className: 'wrap-text',
-    //             render: (data, type, row) => {
-    //                 return `<span class="mask-money text-primary" data-init-money="` + row.returned + `"></span>`
-    //             }
-    //         },
-    //         {
-    //             data: 'to_payment',
-    //             className: 'wrap-text',
-    //             render: (data, type, row) => {
-    //                 return `<span class="mask-money text-primary" data-init-money="` + row.to_payment + `"></span>`
-    //             }
-    //         },
-    //         {
-    //             data: 'others_payment',
-    //             className: 'wrap-text',
-    //             render: (data, type, row) => {
-    //                 return `<span class="mask-money text-primary" data-init-money="` + row.others_payment + `"></span>`
-    //             }
-    //         },
-    //         {
-    //             data: 'available',
-    //             className: 'wrap-text',
-    //             render: (data, type, row) => {
-    //                 return `<span class="mask-money text-primary" data-init-money="` + row.available + `"></span>`
-    //             }
-    //         }
-    //     ],
-    // });
 }
 
 function loadExpenseType(row_id, data) {
@@ -917,6 +777,304 @@ function loadAPList(sale_code_id) {
     });
 }
 
+function loadSaleOrderExpensesPlan(filter_sale_order, ap_items_list=[], payment_value_list=[], returned_value_list=[]) {
+    let dtb = $('#tab_plan_datatable');
+    if (filter_sale_order !== '') {
+        dtb.prop('hidden', false);
+        $('#notify-none-sale-code').prop('hidden', true);
+    }
+    else {
+        dtb.prop('hidden', true);
+        $('#notify-none-sale-code').prop('hidden', false);
+    }
+    dtb.DataTable().clear().destroy();
+    let frm = new SetupFormSubmit(dtb);
+    frm.dataUrl = dtb.attr('data-url-sale-order');
+    dtb.DataTableDefault({
+        reloadCurrency: true,
+        rowIdx: true,
+        useDataServer: true,
+        dom: '',
+        ajax: {
+            url: frm.dataUrl + '?filter_sale_order=' + filter_sale_order,
+            type: frm.dataMethod,
+            dataSrc: function (resp) {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    let data_detail = data?.['sale_order_expense_list'];
+                    let result = []
+                    for (let i = 0; i < data_detail.length; i++) {
+                        let existed = result.filter(function (element) {
+                            return element.expense_item.id === data_detail[i].expense_item.id;
+                        });
+                        if (existed.length === 0) {
+                            result.push({
+                                'id': data_detail[i].id,
+                                'expense_title': data_detail[i].expense_title,
+                                'expense_item': data_detail[i].expense_item,
+                                'plan_after_tax': 0,
+                                'sum_AP_approved': 0,
+                                'returned': 0,
+                                'to_payment': 0,
+                                'others_payment': 0,
+                                'available': 0,
+                            })
+                        }
+                    }
+                    for (let i = 0; i < result.length; i++) {
+                        let sum_plan_after_tax = 0;
+                        let sum_AP_approved_value = 0;
+                        let sum_returned_value = 0;
+                        let sum_to_payment_value = 0;
+                        let sum_others_payment_value = 0;
+
+                        for (let j = 0; j < data_detail.length; j++) {
+                            if (data_detail[j].expense_item.id === result[i].expense_item.id) {
+                                sum_plan_after_tax = sum_plan_after_tax + data_detail[j].plan_after_tax;
+                            }
+                        }
+                        let sum_AP_approved_list = ap_items_list.filter(function (element) {
+                            return element.expense_type.id === result[i].expense_item.id;
+                        })
+                        for (let k = 0; k < sum_AP_approved_list.length; k++) {
+                            sum_AP_approved_value += sum_AP_approved_list[k]?.['expense_after_tax_price'];
+                        }
+                        for (let l = 0; l < payment_value_list.length; l++) {
+                            if (payment_value_list[l].expense_type_id === result[i].expense_item.id) {
+                                sum_to_payment_value += payment_value_list[l].converted_value;
+                                sum_others_payment_value += payment_value_list[l].real_value;
+                            }
+                        }
+                        for (let m = 0; m < returned_value_list.length; m++) {
+                            if (returned_value_list[m].expense_type_id === result[i].expense_item.id) {
+                                sum_returned_value += returned_value_list[m].returned_value;
+                            }
+                        }
+                        let sum_available_value = sum_plan_after_tax - sum_AP_approved_value - sum_others_payment_value + sum_returned_value;
+                        if (sum_available_value < 0) {
+                            sum_available_value = 0;
+                        }
+
+                        result[i].plan_after_tax = sum_plan_after_tax;
+                        result[i].sum_AP_approved = sum_AP_approved_value;
+                        result[i].returned = sum_returned_value;
+                        result[i].to_payment = sum_to_payment_value;
+                        result[i].others_payment = sum_others_payment_value;
+                        result[i].available = sum_available_value;
+                    }
+                    return result;
+                }
+                return [];
+            },
+        },
+        columns: [
+            {
+                render: () => {
+                    return ``;
+                }
+            },
+            {
+                data: 'expense_item',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `<a href="#"><span>` + row.expense_item.title + `</span></a>`
+                }
+            },
+            {
+                data: 'plan_after_tax',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `<span class="mask-money text-primary" data-init-money="` + row.plan_after_tax + `"></span>`
+                }
+            },
+            {
+                data: 'sum_AP_approved',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `<span class="mask-money text-primary" data-init-money="` + row.sum_AP_approved + `"></span>`
+                }
+            },
+            {
+                data: 'returned',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `<span class="mask-money text-primary" data-init-money="` + row.returned + `"></span>`
+                }
+            },
+            {
+                data: 'to_payment',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `<span class="mask-money text-primary" data-init-money="` + row.to_payment + `"></span>`
+                }
+            },
+            {
+                data: 'others_payment',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `<span class="mask-money text-primary" data-init-money="` + row.others_payment + `"></span>`
+                }
+            },
+            {
+                data: 'available',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `<span class="mask-money text-primary" data-init-money="` + row.available + `"></span>`
+                }
+            }
+        ],
+    });
+}
+
+function loadQuotationExpensesPlan(filter_quotation, ap_items_list=[], payment_value_list=[], returned_value_list=[]) {
+    let dtb = $('#tab_plan_datatable');
+    if (filter_quotation !== '') {
+        dtb.prop('hidden', false);
+        $('#notify-none-sale-code').prop('hidden', true);
+    }
+    else {
+        dtb.prop('hidden', true);
+        $('#notify-none-sale-code').prop('hidden', false);
+    }
+    dtb.DataTable().clear().destroy();
+    let frm = new SetupFormSubmit(dtb);
+    frm.dataUrl = dtb.attr('data-url-quotation');
+    dtb.DataTableDefault({
+        reloadCurrency: true,
+        rowIdx: true,
+        useDataServer: true,
+        dom: '',
+        ajax: {
+            url: frm.dataUrl + '?filter_quotation=' + filter_quotation,
+            type: frm.dataMethod,
+            dataSrc: function (resp) {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    let data_detail = data?.['quotation_expense_list'];
+                    let result = []
+                    for (let i = 0; i < data_detail.length; i++) {
+                        let existed = result.filter(function (element) {
+                            return element.expense_item.id === data_detail[i].expense_item.id;
+                        });
+                        if (existed.length === 0) {
+                            result.push({
+                                'id': data_detail[i].id,
+                                'expense_title': data_detail[i].expense_title,
+                                'expense_item': data_detail[i].expense_item,
+                                'plan_after_tax': 0,
+                                'sum_AP_approved': 0,
+                                'returned': 0,
+                                'to_payment': 0,
+                                'others_payment': 0,
+                                'available': 0,
+                            })
+                        }
+                    }
+                    for (let i = 0; i < result.length; i++) {
+                        let sum_plan_after_tax = 0;
+                        let sum_AP_approved_value = 0;
+                        let sum_returned_value = 0;
+                        let sum_to_payment_value = 0;
+                        let sum_others_payment_value = 0;
+
+                        for (let j = 0; j < data_detail.length; j++) {
+                            if (data_detail[j].expense_item.id === result[i].expense_item.id) {
+                                sum_plan_after_tax = sum_plan_after_tax + data_detail[j].plan_after_tax;
+                            }
+                        }
+                        let sum_AP_approved_list = ap_items_list.filter(function (element) {
+                            return element.expense_type.id === result[i].expense_item.id;
+                        })
+                        for (let k = 0; k < sum_AP_approved_list.length; k++) {
+                            sum_AP_approved_value += sum_AP_approved_list[k]?.['expense_after_tax_price'];
+                        }
+                        for (let l = 0; l < payment_value_list.length; l++) {
+                            if (payment_value_list[l].expense_type_id === result[i].expense_item.id) {
+                                sum_to_payment_value += payment_value_list[l].converted_value;
+                                sum_others_payment_value += payment_value_list[l].real_value;
+                            }
+                        }
+                        for (let m = 0; m < returned_value_list.length; m++) {
+                            if (returned_value_list[m].expense_type_id === result[i].expense_item.id) {
+                                sum_returned_value += returned_value_list[m].returned_value;
+                            }
+                        }
+                        let sum_available_value = sum_plan_after_tax - sum_AP_approved_value - sum_others_payment_value + sum_returned_value;
+                        if (sum_available_value < 0) {
+                            sum_available_value = 0;
+                        }
+
+                        result[i].plan_after_tax = sum_plan_after_tax;
+                        result[i].sum_AP_approved = sum_AP_approved_value;
+                        result[i].returned = sum_returned_value;
+                        result[i].to_payment = sum_to_payment_value;
+                        result[i].others_payment = sum_others_payment_value;
+                        result[i].available = sum_available_value;
+                    }
+                    return result;
+                }
+                return [];
+            },
+        },
+        columns: [
+            {
+                render: () => {
+                    return ``;
+                }
+            },
+            {
+                data: 'expense_item',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `<span data-id="${row?.['expense_item'].id}">${row?.['expense_item'].title}</span>`
+                }
+            },
+            {
+                data: 'plan_after_tax',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `<span class="mask-money text-primary" data-init-money="${row?.['plan_after_tax']}"></span>`
+                }
+            },
+            {
+                data: 'sum_AP_approved',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `<span class="mask-money text-primary" data-init-money="${row?.['sum_AP_approved']}"></span>`
+                }
+            },
+            {
+                data: 'returned',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `<span class="mask-money text-primary" data-init-money="${row?.['returned']}"></span>`
+                }
+            },
+            {
+                data: 'to_payment',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `<span class="mask-money text-primary" data-init-money="${row?.['to_payment']}"></span>`
+                }
+            },
+            {
+                data: 'others_payment',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `<span class="mask-money text-primary" data-init-money="${row?.['others_payment']}"></span>`
+                }
+            },
+            {
+                data: 'available',
+                className: 'wrap-text',
+                render: (data, type, row) => {
+                    return `<span class="mask-money text-primary" data-init-money="${row?.['available']}"></span>`
+                }
+            }
+        ],
+    });
+}
+
 $(document).on("click", '#btn-add-row-line-detail', function () {
     if (saleCodeEle.val() === '') {
         $.fn.notifyB({description: 'Select Sale code first.'}, 'warning');
@@ -1069,7 +1227,7 @@ $(document).on("click", '.btn-row-toggle', function() {
         }
     }
     else {
-        $.fn.notifyB({description: 'Warning: Missing fields in row.'}, 'warning');;
+        $.fn.notifyB({description: 'Warning: Missing fields in row.'}, 'warning');
     }
 });
 
@@ -1080,6 +1238,14 @@ $(document).on("click", '.btn-add-payment-value', function() {
     $.fn.initMaskMoney2();
     $('.product-tables').html(``);
     loadAPList([saleCodeEle.val()]);
+
+    $('#offcanvasRightLabel').text($('#offcanvasRightLabel').attr('data-text-1'));
+    $('#step1').prop('hidden', false);
+    $('#step2').prop('hidden', true);
+    $('#next-btn').prop('hidden', false);
+    $('#previous-btn').prop('hidden', true);
+    $('#finish-btn').prop('hidden', true);
+    $('#total-converted').attr('hidden', true);
 });
 
 function calculate_sum_ap_product_items() {
@@ -1276,7 +1442,7 @@ function LoadDetailPayment() {
                 saleCodeEle.addClass('select-multiple select2');
                 saleCodeEle.attr('data-placeholder', 'Select MULTI Sale Code');
                 PaymentLoadSaleCode(sale_code_mapped)
-
+                PaymentLoadBeneficiary(data.beneficiary)
 
                 if (Object.keys(data?.['supplier']).length !== 0) {
                     PaymentLoadSupplier(data?.['supplier'])
@@ -1289,8 +1455,6 @@ function LoadDetailPayment() {
                 $('#created_date_id').val(data.date_created.split(' ')[0]);
 
                 PaymentLoadCreator(initEmployee)
-                PaymentLoadBeneficiary(data.beneficiary)
-                InforSpanBeneficiary(initEmployee);
 
                 for (let i = 0; i < data?.['expense_items'].length; i++) {
                     let data_row = data?.['expense_items'][i];
@@ -1380,8 +1544,6 @@ class PaymentHandle {
     async load(sale_code_mapped, type) {
         PaymentLoadCreatedDate();
         PaymentLoadCreator(initEmployee);
-        PaymentLoadBeneficiary(initEmployee);
-        InforSpanBeneficiary(initEmployee);
         PaymentLoadSupplier();
         await getPaymentSaleCode(sale_code_mapped, type);
         $('#btn-add-row-line-detail').removeClass('disabled');

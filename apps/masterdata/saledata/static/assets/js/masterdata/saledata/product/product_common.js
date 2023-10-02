@@ -779,80 +779,81 @@ class ProductHandle {
 function LoadDetailProduct(option) {
     let pk = $.fn.getPkDetail()
     $.fn.callAjax($('#form-update-product').data('url').format_url_with_uuid(pk), 'GET').then(
-        (resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                WFRTControl.setWFRuntimeID(data['product']?.['workflow_runtime_id']);
-                let product_detail = data['product'];
-                $.fn.compareStatusShowPageAction(data);
+         async (resp) => {
+             let data = $.fn.switcherResp(resp);
+             if (data) {
+                 await loadPriceList();
+                 WFRTControl.setWFRuntimeID(data['product']?.['workflow_runtime_id']);
+                 let product_detail = data['product'];
+                 $.fn.compareStatusShowPageAction(data);
 
-                $('#product-code').text(product_detail['code']);
-                $('#title').val(product_detail['title']);
-                $('#description').val(product_detail['description']);
+                 $('#product-code').text(product_detail['code']);
+                 $('#title').val(product_detail['title']);
+                 $('#description').val(product_detail['description']);
 
-                if (product_detail['product_choice'].includes(0)) {
-                    $('#check-tab-sale').attr('checked', true);
-                    $('#link-tab-sale').removeClass('disabled');
-                }
+                 if (product_detail['product_choice'].includes(0)) {
+                     $('#check-tab-sale').attr('checked', true);
+                     $('#link-tab-sale').removeClass('disabled');
+                 }
 
-                if (product_detail['product_choice'].includes(1)) {
-                    $('#check-tab-inventory').attr('checked', true);
-                    $('#link-tab-inventory').removeClass('disabled');
-                }
+                 if (product_detail['product_choice'].includes(1)) {
+                     $('#check-tab-inventory').attr('checked', true);
+                     $('#link-tab-inventory').removeClass('disabled');
+                 }
 
-                if (product_detail['product_choice'].includes(2)) {
-                    $('#check-tab-purchase').attr('checked', true);
-                    $('#link-tab-purchase').removeClass('disabled');
-                }
+                 if (product_detail['product_choice'].includes(2)) {
+                     $('#check-tab-purchase').attr('checked', true);
+                     $('#link-tab-purchase').removeClass('disabled');
+                 }
 
-                if (Object.keys(product_detail['general_information']).length !== 0) {
-                    let general_information = product_detail['general_information'];
-                    loadGeneralProductType(general_information['general_product_types_mapped']);
-                    loadGeneralProductCategory(general_information['product_category']);
-                    loadGeneralUoMGroup(general_information['uom_group']);
-                    $('#general-select-box-traceability-method').val(general_information['traceability_method']);
-                    if (Object.keys(general_information['product_size']).length !== 0) {
-                        lengthEle.val(general_information['product_size']['length']);
-                        widthEle.val(general_information['product_size']['width']);
-                        heightEle.val(general_information['product_size']['height']);
-                        volumeEle.val(general_information['product_size']['volume']['value']);
-                        weightEle.val(general_information['product_size']['weight']['value']);
-                    }
-                }
+                 if (Object.keys(product_detail['general_information']).length !== 0) {
+                     let general_information = product_detail['general_information'];
+                     loadGeneralProductType(general_information['general_product_types_mapped']);
+                     loadGeneralProductCategory(general_information['product_category']);
+                     loadGeneralUoMGroup(general_information['uom_group']);
+                     $('#general-select-box-traceability-method').val(general_information['traceability_method']);
+                     if (Object.keys(general_information['product_size']).length !== 0) {
+                         lengthEle.val(general_information['product_size']['length']);
+                         widthEle.val(general_information['product_size']['width']);
+                         heightEle.val(general_information['product_size']['height']);
+                         volumeEle.val(general_information['product_size']['volume']['value']);
+                         weightEle.val(general_information['product_size']['weight']['value']);
+                     }
+                 }
 
-                if (Object.keys(product_detail['sale_information']).length !== 0) {
-                    let sale_information = product_detail['sale_information'];
-                    loadSaleDefaultUom(sale_information['default_uom'], generalUomGroupEle.attr('data-url-detail').replace(0, generalUomGroupEle.val()));
-                    loadSaleTaxCode(sale_information['tax']);
-                    $('#sale-cost').attr('value', sale_information['sale_product_cost']);
-                    for (let i = 0; i < sale_information['sale_product_price_list'].length; i++) {
-                        let item = sale_information['sale_product_price_list'][i];
-                        $(`.input_price_list[data-id="` + item.id + `"]`).attr('value', item.price);
-                    }
-                    $.fn.initMaskMoney2();
-                }
+                 if (Object.keys(product_detail['sale_information']).length !== 0) {
+                     let sale_information = product_detail['sale_information'];
+                     loadSaleDefaultUom(sale_information['default_uom'], generalUomGroupEle.attr('data-url-detail').replace(0, generalUomGroupEle.val()));
+                     loadSaleTaxCode(sale_information['tax']);
+                     $('#sale-cost').attr('value', sale_information['sale_product_cost']);
+                     for (let i = 0; i < sale_information['sale_product_price_list'].length; i++) {
+                         let item = sale_information['sale_product_price_list'][i];
+                         $(`.input_price_list[data-id="` + item.id + `"]`).attr('value', item.price);
+                     }
+                     $.fn.initMaskMoney2();
+                 }
 
-                if (Object.keys(product_detail['inventory_information']).length !== 0) {
-                    let inventory_information = product_detail['inventory_information'];
-                    loadInventoryDefaultUom(inventory_information['uom'], generalUomGroupEle.attr('data-url-detail').replace(0, generalUomGroupEle.val()));
-                    inventoryDefaultUomCodeEle.text(inventory_information['uom']['uom_code']);
-                    $('#inventory-level-min').val(inventory_information['inventory_level_min']);
-                    $('#inventory-level-max').val(inventory_information['inventory_level_max']);
+                 if (Object.keys(product_detail['inventory_information']).length !== 0) {
+                     let inventory_information = product_detail['inventory_information'];
+                     loadInventoryDefaultUom(inventory_information['uom'], generalUomGroupEle.attr('data-url-detail').replace(0, generalUomGroupEle.val()));
+                     inventoryDefaultUomCodeEle.text(inventory_information['uom']['uom_code']);
+                     $('#inventory-level-min').val(inventory_information['inventory_level_min']);
+                     $('#inventory-level-max').val(inventory_information['inventory_level_max']);
 
-                    let warehouse_stock_list = GetProductFromWareHouseStockList(product_detail.id, product_detail?.['inventory_information']['uom']['uom_id']);
-                    loadWareHouseListDetail(warehouse_stock_list);
-                    loadWareHouseOverViewDetail(warehouse_stock_list);
-                }
+                     let warehouse_stock_list = GetProductFromWareHouseStockList(product_detail.id, product_detail?.['inventory_information']['uom']['uom_id']);
+                     loadWareHouseListDetail(warehouse_stock_list);
+                     loadWareHouseOverViewDetail(warehouse_stock_list);
+                 }
 
-                if (Object.keys(product_detail['purchase_information']).length !== 0) {
-                    let purchase_information = product_detail['purchase_information'];
-                    loadPurchaseDefaultUom(purchase_information['default_uom'], generalUomGroupEle.attr('data-url-detail').replace(0, generalUomGroupEle.val()));
-                    loadPurchaseTaxCode(purchase_information['tax']);
-                }
+                 if (Object.keys(product_detail['purchase_information']).length !== 0) {
+                     let purchase_information = product_detail['purchase_information'];
+                     loadPurchaseDefaultUom(purchase_information['default_uom'], generalUomGroupEle.attr('data-url-detail').replace(0, generalUomGroupEle.val()));
+                     loadPurchaseTaxCode(purchase_information['tax']);
+                 }
 
-                $.fn.initMaskMoney2();
+                 $.fn.initMaskMoney2();
 
-                Disable(option);
-            }
-        })
+                 Disable(option);
+             }
+         })
 }

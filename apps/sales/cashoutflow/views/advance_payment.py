@@ -6,7 +6,6 @@ from apps.shared import mask_view, ApiURL, ServerAPI, SaleMsg, PermCheck
 
 
 class AdvancePaymentList(View):
-    permission_classes = [IsAuthenticated]
 
     @mask_view(
         auth_require=True,

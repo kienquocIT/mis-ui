@@ -27,18 +27,10 @@
         {% csrf_token %}
         <div class="container-fluid">
             <div class="collapse multi-collapse show" id="collapseExample">
-                <div class="row mb-2">
-                    <div class="col-6"></div>
-                    <div class="col-6">
-                        <div class="row">
-                            <div class="col-8"></div>
-                            <div class="col-2">
-                                <h5 class="text-primary" id="goods-receipt-code"></h5>
-                            </div>
-                            <div class="col-2" id="goods-receipt-status">
-                                <span class="badge badge-soft-light">Draft</span>
-                            </div>
-                        </div>
+                <div class="row">
+                    <div class="d-flex justify-content-end">
+                        <h5 class="text-primary mr-3" id="goods-receipt-code"></h5>
+                        <span class="badge badge-soft-light" id="goods-receipt-status">Draft</span>
                     </div>
                 </div>
                 <div class="row" id="common-information-area">

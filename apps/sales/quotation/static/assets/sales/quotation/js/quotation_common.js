@@ -784,9 +784,8 @@ class QuotationLoadDataHandle {
                 "Finish": "badge badge-soft-success",
                 "Cancel": "badge badge-soft-danger",
             }
-            let statusHTML = `<span class="${status_data[data?.['system_status']]}">${data?.['system_status']}</span>`;
-            eleStatus.empty();
-            eleStatus.append(statusHTML);
+            eleStatus[0].className = status_data[data?.['system_status']];
+            eleStatus[0].innerHTML = data?.['system_status'];
             // check if is not finish then disable btn copy
             if (!['Added', 'Finish'].includes(data?.['system_status'])) {
                 let btnCopy = document.getElementById('btn-copy-quotation');
@@ -2970,7 +2969,6 @@ class QuotationSubmitHandle {
         if (dateCreatedVal) {
             _form.dataForm['date_created'] = moment(dateCreatedVal).format('YYYY-MM-DD HH:mm:ss')
         }
-        _form.dataForm['status'] = $('#quotation-create-status').val();
         _form.dataForm['total_product_pretax_amount'] = parseFloat($('#quotation-create-product-pretax-amount-raw').val());
         let totalProductDiscountRate = $('#quotation-create-product-discount').val();
         if (totalProductDiscountRate) {

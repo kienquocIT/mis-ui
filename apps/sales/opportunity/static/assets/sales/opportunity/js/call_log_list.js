@@ -4,6 +4,7 @@ $(function () {
         const account_list = JSON.parse($('#account_list').text());
         const contact_list = JSON.parse($('#contact_list').text());
         const opportunity_list = JSON.parse($('#opportunity_list').text());
+        let CALL_LOG_LIST = [];
 
         function LoadSaleCodeList(employee_current_id) {
             let $sale_code_sb = $('#sale-code-select-box');
@@ -164,6 +165,7 @@ $(function () {
                         dataSrc: function (resp) {
                             let data = $.fn.switcherResp(resp);
                             if (data && resp.data.hasOwnProperty('call_log_list')) {
+                                CALL_LOG_LIST = resp.data['call_log_list'];
                                 return resp.data['call_log_list'] ? resp.data['call_log_list'] : [];
                             }
                             throw Error('Call data raise errors.')
@@ -231,7 +233,7 @@ $(function () {
 
         $(document).on('click', '#table_opportunity_call_log_list .detail-call-log-button', function () {
             let call_log_id = $(this).attr('data-id');
-            let call_log_obj = JSON.parse($('#call_log_list').text()).filter(function(item) {
+            let call_log_obj = CALL_LOG_LIST.filter(function(item) {
                 return item.id === call_log_id;
             })[0]
             $('#detail-subject-input').val(call_log_obj.subject);

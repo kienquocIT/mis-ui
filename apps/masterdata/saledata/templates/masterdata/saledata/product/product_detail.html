@@ -309,17 +309,6 @@
                             <th>{% trans "Warehouse Name" %}</th>
                             <th>{% trans "Stock" %}</th>
                             </thead>
-                            <tfoot>
-                                <tr style="background-color: #ebf5f5">
-                                    <th class="text-primary text-center wrap-text w-15" style="font-weight: bolder; font-size: larger" rowspan="1" colspan="1"></th>
-                                    <th class="text-primary text-center wrap-text w-25" style="font-weight: bolder; font-size: larger" rowspan="1" colspan="1">
-                                        {% trans 'TOTAL' %}
-                                    </th>
-                                    <th class="text-primary text-center wrap-text w-15" style="font-weight: bolder; font-size: larger" rowspan="1" colspan="1">
-                                        <span style="font-weight: bolder">0</span>
-                                    </th>
-                                </tr>
-                            </tfoot>
                         </table>
                     </div>
                 </div>
@@ -350,8 +339,7 @@
         </div>
     </form>
     {{ data.unit | json_script:"id-unit-list" }}
-    {{ data.warehouse_product_list | json_script:"warehouse_product_list" }}
-    {{ data.unit_of_measure | json_script:"unit_of_measure" }}
+    {{ data.warehouse_list | json_script:"warehouse_list" }}
     {{ data.currency_list | json_script:"currency_list" }}
 {% endblock %}
 {% block jsFooter %}

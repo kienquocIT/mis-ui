@@ -54,31 +54,6 @@ $(function () {
         // mask money
         $.fn.initMaskMoney2();
 
-        // enable edit
-        $('#btn-edit_quotation').on('click', function () {
-            $(this)[0].setAttribute('hidden', true)
-            $('#btn-create_quotation')[0].removeAttribute('hidden');
-            $form.find('.disabled-but-edit').removeAttr('disabled').removeClass('disabled-but-edit');
-            $form.find('#quotation-customer-confirm').removeAttr('disabled');
-
-            // Render dataTable again then load data dropdown for Tabs
-            let data = JSON.parse(eleDataDetail.val());
-            QuotationLoadDataHandle.loadDataTablesAndDropDowns(data);
-
-            // Check config when begin edit
-            let check_config = QuotationCheckConfigHandle.checkConfig(true);
-
-            // load again total products if after check config the price change
-            if (check_config.hasOwnProperty('is_make_price_change')) {
-                if (check_config.is_make_price_change === false) {
-                    QuotationLoadDataHandle.loadTotal(data, true, false, false);
-                }
-            }
-
-        });
-
-
-
 
     });
 });

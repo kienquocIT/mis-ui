@@ -151,10 +151,6 @@ div.inline {
     display: inline-block !important;
 }
 
-.dropdown-menu-end {
-    min-width: 280px;
-}
-
 .dataTables_paginate span {
     margin: 0 5px;
 }

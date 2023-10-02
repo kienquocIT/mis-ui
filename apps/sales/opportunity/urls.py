@@ -20,7 +20,7 @@ urlpatterns = [
     path('lists', OpportunityList.as_view(), name='OpportunityList'),
     path('api/lists', OpportunityListAPI.as_view(), name='OpportunityListAPI'),
     path(
-        'api/lists-for-cash-outflow',
+        'api/list-for-cash-outflow',
         OpportunityListForCashOutFlowAPI.as_view(),
         name='OpportunityListForCashOutFlowAPI'
     ),

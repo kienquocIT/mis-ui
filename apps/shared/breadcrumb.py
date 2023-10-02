@@ -58,9 +58,6 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
 
     # TENANT_INFORMATION_PAGE = BreadcrumbChildren('Tenant Information', 'TenantInformation')
 
-    # components
-    COMPONENTS_PAGE = BreadcrumbChildren(_('Component'), 'ComponentCollections')
-
     # Workflow
     WORKFLOW_LIST_PAGE = BreadcrumbChildren(_('Workflow'), 'WorkflowList')
     WORKFLOW_CREATE_PAGE = BreadcrumbChildren(_('Workflow create'), 'WorkflowCreate')

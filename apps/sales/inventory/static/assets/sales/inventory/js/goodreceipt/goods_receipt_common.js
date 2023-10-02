@@ -1302,13 +1302,11 @@ class GRDataTableHandle {
                     targets: 7,
                     render: (data, type, row) => {
                         return `<div class="row subtotal-area">
-                                    <div class="card card-sm">
-                                        <span class="card-body mask-money table-row-subtotal" data-init-money="${parseFloat(row.product_subtotal_price)}"></span>
-                                    </div>
+                                    <p><span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row?.['product_subtotal_price'] ? row?.['product_subtotal_price'] : '0')}"></span></p>
                                     <input
                                         type="text"
                                         class="form-control table-row-subtotal-raw"
-                                        value="${row.product_subtotal_price}"
+                                        value="${row?.['product_subtotal_price']}"
                                         hidden
                                     >
                                 </div>`;
@@ -1331,7 +1329,6 @@ class GRDataTableHandle {
             data: data ? data : [],
             paging: false,
             info: false,
-            columnDefs: [],
             columns: [
                 {
                     targets: 0,
@@ -1439,9 +1436,7 @@ class GRDataTableHandle {
                     targets: 7,
                     render: (data, type, row) => {
                         return `<div class="row subtotal-area">
-                                    <div class="card card-sm">
-                                        <span class="card-body mask-money table-row-subtotal" data-init-money="${parseFloat(row?.['product_subtotal_price'])}"></span>
-                                    </div>
+                                    <p><span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row?.['product_subtotal_price'] ? row?.['product_subtotal_price'] : '0')}"></span></p>
                                     <input
                                         type="text"
                                         class="form-control table-row-subtotal-raw"
@@ -1452,8 +1447,6 @@ class GRDataTableHandle {
                     }
                 },
             ],
-            drawCallback: function () {
-            },
         });
     };
 

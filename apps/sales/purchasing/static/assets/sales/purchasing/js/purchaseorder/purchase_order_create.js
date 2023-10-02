@@ -149,17 +149,18 @@ $(function () {
 
         // Action on click button add product
         $('#btn-add-product-purchase-order').on('click', function() {
-            if (elePurchaseRequest[0].innerHTML) {
-                $('#btn-warning-add-product').click();
-            } else {
-                POLoadDataHandle.loadTableProductNoPurchaseRequest();
-            }
+            POLoadDataHandle.loadAddRowTableProductAdd();
+        });
+
+        // Action on click button add product if request
+        $('#btn-add-product-purchase-order-if-request').on('click', function() {
+            $('#btn-warning-add-product').click();
         });
 
         // Action on click btn continue to add product
         $('#btn-continue-add-product').on('click', function() {
             POLoadDataHandle.loadDataWhenClearPR(true);
-            POLoadDataHandle.loadTableProductNoPurchaseRequest();
+            POLoadDataHandle.loadAddRowTableProductAdd();
         });
 
         // Action on change data on row of tablePurchaseOrderProductAdd

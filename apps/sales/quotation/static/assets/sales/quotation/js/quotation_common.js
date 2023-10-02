@@ -991,21 +991,17 @@ class QuotationDataTableHandle {
             data: data ? data : [],
             paging: false,
             info: false,
-            drawCallback: function () {
-            },
-            rowCallback: function (row, data, index) {
-            },
             columnDefs: [
                 {
                     "width": "5%",
                     "targets": 0
                 },
                 {
-                    "width": "15%",
+                    "width": "10%",
                     "targets": 1
                 },
                 {
-                    "width": "10%",
+                    "width": "15%",
                     "targets": 2
                 },
                 {
@@ -1025,11 +1021,11 @@ class QuotationDataTableHandle {
                     "targets": 6,
                 },
                 {
-                    "width": "10%",
+                    "width": "5%",
                     "targets": 7,
                 },
                 {
-                    "width": "15%",
+                    "width": "20%",
                     "targets": 8,
                 },
                 {
@@ -1042,14 +1038,14 @@ class QuotationDataTableHandle {
                     targets: 0,
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
-                        return `<span class="table-row-order" data-row="${dataRow}">${row.order}</span>`
+                        return `<span class="table-row-order" data-row="${dataRow}">${row?.['order']}</span>`
                     }
                 },
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        if (row.is_promotion === false && row.is_shipping === false) { // PRODUCT
-                            let selectProductID = 'quotation-create-product-box-product-' + String(row.order);
+                        if (row?.['is_promotion'] === false && row?.['is_shipping'] === false) { // PRODUCT
+                            let selectProductID = 'quotation-create-product-box-product-' + String(row?.['order']);
                             return `<div class="row">
                                 <div class="input-group">
                                     <span class="input-affix-wrapper">
@@ -1079,7 +1075,7 @@ class QuotationDataTableHandle {
                                     </span>
                                 </div>
                             </div>`;
-                        } else if (row.is_promotion === true && row.is_shipping === false) { // PROMOTION
+                        } else if (row?.['is_promotion'] === true && row?.['is_shipping'] === false) { // PROMOTION
                             let link = "";
                             let linkDetail = $('#data-init-quotation-create-promotion').data('link-detail');
                             if (linkDetail) {
@@ -1115,7 +1111,7 @@ class QuotationDataTableHandle {
                                                 <i class="fas fa-shipping-fast text-teal"></i>
                                             </a>
                                         </span>
-                                        <input type="text" class="form-control table-row-shipping disabled-custom-show" value="${row.product_title}" data-id="${row.shipping.id}" data-shipping-price-margin="${price_margin}" data-bs-toggle="tooltip" title="${row.product_title}" disabled>
+                                        <input type="text" class="form-control table-row-shipping disabled-custom-show" value="${row?.['product_title']}" data-id="${row?.['shipping']?.['id']}" data-shipping-price-margin="${price_margin}" data-bs-toggle="tooltip" title="${row?.['product_title']}" disabled>
                                     </span>
                                 </div>
                                 </div>`;
@@ -1125,13 +1121,13 @@ class QuotationDataTableHandle {
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        if (row.is_promotion === false && row.is_shipping === false) {
+                        if (row?.['is_promotion'] === false && row?.['is_shipping'] === false) {
                             return `<div class="row">
-                                <input type="text" class="form-control table-row-description" value="${row.product_description}">
+                                <input type="text" class="form-control table-row-description" value="${row?.['product_description']}">
                             </div>`;
                         } else {
                             return `<div class="row">
-                                        <input type="text" class="form-control table-row-description disabled-custom-show" value="${row.product_description}" data-bs-toggle="tooltip" title="${row.product_description}" disabled>
+                                        <input type="text" class="form-control table-row-description disabled-custom-show" value="${row?.['product_description']}" data-bs-toggle="tooltip" title="${row?.['product_description']}" disabled>
                                     </div>`;
                         }
                     }
@@ -1139,8 +1135,8 @@ class QuotationDataTableHandle {
                 {
                     targets: 3,
                     render: (data, type, row) => {
-                        if (row.is_promotion === false && row.is_shipping === false) {
-                            let selectUOMID = 'quotation-create-product-box-uom-' + String(row.order);
+                        if (row?.['is_promotion'] === false && row?.['is_shipping'] === false) {
+                            let selectUOMID = 'quotation-create-product-box-uom-' + String(row?.['order']);
                             return `<div class="row">
                                         <select 
                                             class="form-select table-row-uom"
@@ -1155,7 +1151,7 @@ class QuotationDataTableHandle {
                         } else {
                             return `<div class="row">
                                         <select class="form-select table-row-uom disabled-custom-show" required disabled>
-                                            <option value="${row.unit_of_measure.id}">${row.product_uom_title}</option>
+                                            <option value="${row?.['unit_of_measure']?.['id']}">${row?.['product_uom_title']}</option>
                                         </select>
                                     </div>`;
                         }
@@ -1165,13 +1161,13 @@ class QuotationDataTableHandle {
                 {
                     targets: 4,
                     render: (data, type, row) => {
-                        if (row.is_promotion === false && row.is_shipping === false) {
+                        if (row?.['is_promotion'] === false && row?.['is_shipping'] === false) {
                             return `<div class="row">
-                                <input type="text" class="form-control table-row-quantity validated-number" value="${row.product_quantity}" required>
+                                <input type="text" class="form-control table-row-quantity validated-number" value="${row?.['product_quantity']}" required>
                             </div>`;
                         } else {
                             return `<div class="row">
-                                <input type="text" class="form-control table-row-quantity validated-number disabled-custom-show" value="${row.product_quantity}" disabled>
+                                <input type="text" class="form-control table-row-quantity validated-number disabled-custom-show" value="${row?.['product_quantity']}" disabled>
                             </div>`;
                         }
                     }
@@ -1179,7 +1175,7 @@ class QuotationDataTableHandle {
                 {
                     targets: 5,
                     render: (data, type, row) => {
-                        if (row.is_promotion === false && row.is_shipping === false) { // PRODUCT
+                        if (row?.['is_promotion'] === false && row?.['is_shipping'] === false) { // PRODUCT
                             return `<div class="row">
                                 <div class="dropdown">
                                     <div class="input-group dropdown-action input-group-price" aria-expanded="false" data-bs-toggle="dropdown">
@@ -1187,7 +1183,7 @@ class QuotationDataTableHandle {
                                         <input 
                                             type="text" 
                                             class="form-control mask-money table-row-price" 
-                                            value="${row.product_unit_price}"
+                                            value="${row?.['product_unit_price']}"
                                             data-return-type="number"
                                         >
                                         <span class="input-suffix table-row-btn-dropdown-price-list"><i class="fas fa-angle-down"></i></span>
@@ -1206,7 +1202,7 @@ class QuotationDataTableHandle {
                                         <input 
                                             type="text" 
                                             class="form-control mask-money table-row-price disabled-custom-show" 
-                                            value="${row.product_unit_price}"
+                                            value="${row?.['product_unit_price']}"
                                             data-return-type="number"
                                             disabled
                                         >
@@ -1224,7 +1220,7 @@ class QuotationDataTableHandle {
                 {
                     targets: 6,
                     render: (data, type, row) => {
-                        if (row.is_promotion === false && row.is_shipping === false) {
+                        if (row?.['is_promotion'] === false && row?.['is_shipping'] === false) {
                             return `<div class="row">
                                 <div class="input-group">
                                     <span class="input-affix-wrapper">
@@ -1272,14 +1268,14 @@ class QuotationDataTableHandle {
                 {
                     targets: 7,
                     render: (data, type, row) => {
-                        let selectTaxID = 'quotation-create-product-box-tax-' + String(row.order);
+                        let selectTaxID = 'quotation-create-product-box-tax-' + String(row?.['order']);
                         let taxID = "";
                         let taxRate = "0";
-                        if (row.tax) {
-                            taxID = row.tax.id;
-                            taxRate = row.tax.value;
+                        if (row?.['tax']) {
+                            taxID = row?.['tax']?.['id'];
+                            taxRate = row?.['tax']?.['value'];
                         }
-                        if (row.is_promotion === false && row.is_shipping === false) {
+                        if (row?.['is_promotion'] === false && row?.['is_shipping'] === false) {
                             return `<div class="row">
                                 <select 
                                     class="form-select table-row-tax"
@@ -1292,14 +1288,14 @@ class QuotationDataTableHandle {
                                 <input
                                     type="text"
                                     class="form-control mask-money table-row-tax-amount"
-                                    value="${row.product_tax_amount}"
+                                    value="${row?.['product_tax_amount']}"
                                     data-return-type="number"
                                     hidden
                                 >
                                 <input
                                     type="text"
                                     class="form-control table-row-tax-amount-raw"
-                                    value="${row.product_tax_amount}"
+                                    value="${row?.['product_tax_amount']}"
                                     hidden
                                 >
                             </div>`;
@@ -1311,14 +1307,14 @@ class QuotationDataTableHandle {
                                 <input
                                     type="text"
                                     class="form-control mask-money table-row-tax-amount"
-                                    value="${row.product_tax_amount}"
+                                    value="${row?.['product_tax_amount']}"
                                     data-return-type="number"
                                     hidden
                                 >
                                 <input
                                     type="text"
                                     class="form-control table-row-tax-amount-raw"
-                                    value="${row.product_tax_amount}"
+                                    value="${row?.['product_tax_amount']}"
                                     hidden
                                 >
                             </div>`;
@@ -1329,13 +1325,11 @@ class QuotationDataTableHandle {
                     targets: 8,
                     render: (data, type, row) => {
                         return `<div class="row subtotal-area">
-                                <div class="card card-sm">
-                                    <span class="card-body mask-money table-row-subtotal" data-init-money="${parseFloat(row.product_subtotal_price)}"></span>
-                                </div>
+                                <p><span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row?.['product_subtotal_price'] ? row?.['product_subtotal_price'] : '0')}"></span></p>
                                 <input
                                     type="text"
                                     class="form-control table-row-subtotal-raw"
-                                    value="${row.product_subtotal_price}"
+                                    value="${row?.['product_subtotal_price']}"
                                     hidden
                                 >
                             </div>`;
@@ -1359,11 +1353,6 @@ class QuotationDataTableHandle {
             data: data ? data : [],
             paging: false,
             info: false,
-            columnDefs: [],
-            drawCallback: function () {
-            },
-            rowCallback: function (row, data) {
-            },
             columns: [
                 {
                     targets: 0,
@@ -1547,9 +1536,7 @@ class QuotationDataTableHandle {
                     width: "20%",
                     render: (data, type, row) => {
                         return `<div class="row subtotal-area">
-                                <div class="card card-sm">
-                                    <span class="card-body mask-money table-row-subtotal" data-init-money="${parseFloat(row.product_subtotal_price)}"></span>
-                                </div>
+                                <p><span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row?.['product_subtotal_price'] ? row?.['product_subtotal_price'] : '0')}"></span></p>
                                 <input
                                     type="text"
                                     class="form-control table-row-subtotal-raw"
@@ -1578,12 +1565,6 @@ class QuotationDataTableHandle {
             data: data ? data : [],
             paging: false,
             info: false,
-            columnDefs: [],
-            drawCallback: function () {
-                $.fn.initMaskMoney2();
-            },
-            rowCallback: function (row, data) {
-            },
             columns: [
                 {
                     targets: 0,
@@ -1716,9 +1697,7 @@ class QuotationDataTableHandle {
                     targets: 7,
                     render: (data, type, row) => {
                         return `<div class="row subtotal-area">
-                                <div class="card card-sm">
-                                    <span class="card-body mask-money table-row-subtotal" data-init-money="${parseFloat(row.expense_subtotal_price)}"></span>
-                                </div>
+                                <p><span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row?.['expense_subtotal_price'] ? row?.['expense_subtotal_price'] : '0')}"></span></p>
                                 <input
                                     type="text"
                                     class="form-control table-row-subtotal-raw"

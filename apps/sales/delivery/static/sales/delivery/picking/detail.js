@@ -242,7 +242,7 @@ $(async function () {
                             `<div><h6>${$elmTrans.attr('data-store')}</h6>${prodTotal - WHInfo['original_info'].picked_ready}</div>` +
                             `<div><h6>${$elmTrans.attr('data-picking-area')}</h6>${WHInfo['original_info'].picked_ready}</div>` +
                 `</div>`;
-            htmlContent += `<div class="mb-1"><h6><i>UoM</i></h6><p>${WHInfo?.warehouse_uom?.title}</p></div>`;
+            htmlContent += `<div class="mb-1"><h6><i>UoM</i></h6><p>${WHInfo?.warehouse_uom?.title || '--'}</p></div>`;
             const link = $('#url-factory').attr('data-product-detail').format_url_with_uuid(prod.product_data.id);
             htmlContent += `<div class="dropdown-divider"></div><div class="text-right">
                             <a href="${link}" target="_blank" class="link-primary underline_hover">

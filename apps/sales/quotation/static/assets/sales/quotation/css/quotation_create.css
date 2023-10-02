@@ -38,15 +38,6 @@
     text-align: right;
 }
 
-ul.quotation-tabs {
-  display: flex;
-  justify-content: center;
-}
-
-ul.quotation-tabs li.quotation-tab-item {
-  margin-right: 10px;
-}
-
 a.dropdown-item.table-row-price-option:hover {
     background-color: blue;
     color: white;

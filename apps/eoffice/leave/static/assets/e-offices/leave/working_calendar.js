@@ -4,45 +4,10 @@ $(document).ready(function () {
     const $urlElm = $('#url-factory')
     const $formHld = $('#formHoliday')
     const $modalH = $('#modal_holidays')
-
-    function deleteYear(elm=undefined){
-        let $elm = elm ? elm : $('.wrap_years ul li button')
-        $elm.each(function(){
-            $(this).off().on('click', function(){
-                const yearID = $(this).closest('.year-item').attr('data-year-id')
-                $.fn.callAjax2({
-                    'url': $urlElm.attr('data-year-delete').format_url_with_uuid(yearID),
-                    'method': 'delete'
-                })
-                    .then((resp) => {
-                            if (resp.status === 200){
-                                $.fn.notifyB({description: resp.data.message}, 'success')
-                                $(this).closest('li.year-item').remove()
-                            }
-                        },
-                        (errs) => {
-                            $.fn.notifyB({description: errs.data.errors.detail}, 'failure')
-                        })
-            })
-        })
-    }
-
-    class HolidayHandle {
-        init() {
-            HolidayHandle.load()
-            HolidayHandle.create()
-        }
-
-        static load() {
-            let $elm = $('.wrap_holidays .tab-pane')
-            $elm.each(function () {
-                const harshData = $(this).find('script').text().replaceAll("'", '"')
-                const data = JSON.parse(harshData) || []
-                const $table = $(this).find('table')
-                $table.DataTableDefault({
+    const _tableConfig = {
                     info: false,
                     paging: false,
-                    data: data || [],
+                    data: [],
                     columns: [
                         {
                             data: 'holiday_date_to',
@@ -80,7 +45,43 @@ $(document).ready(function () {
                         })
                         $('.btn-remove-row', row).off().on('click', () => HolidayHandle.delete(data.id, index))
                     },
+                }
+
+    function deleteYear(elm=undefined){
+        let $elm = elm ? elm : $('.wrap_years ul li button')
+        $elm.each(function(){
+            $(this).off().on('click', function(){
+                const yearID = $(this).closest('.year-item').attr('data-year-id')
+                $.fn.callAjax2({
+                    'url': $urlElm.attr('data-year-delete').format_url_with_uuid(yearID),
+                    'method': 'delete'
                 })
+                    .then((resp) => {
+                            if (resp.status === 200){
+                                $.fn.notifyB({description: resp.data.message}, 'success')
+                                $(this).closest('li.year-item').remove()
+                            }
+                        },
+                        (errs) => {
+                            $.fn.notifyB({description: errs.data.errors.detail}, 'failure')
+                        })
+            })
+        })
+    }
+
+    class HolidayHandle {
+        init() {
+            HolidayHandle.load()
+            HolidayHandle.create()
+        }
+
+        static load() {
+            let $elm = $('.wrap_holidays .tab-pane')
+            $elm.each(function () {
+                const harshData = $(this).find('script').text().replaceAll("'", '"')
+                const data = JSON.parse(harshData) || []
+                const $table = $(this).find('table')
+                $table.DataTableDefault({..._table_config, ...{'data':data}})
             })
         }
 
@@ -126,10 +127,13 @@ $(document).ready(function () {
                                     "holiday_date_to": data.holiday_date_to,
                                     "remark": data.remark
                                 }]
-                                const table = $(currentTb).DataTable()
+                                let _table
+                                if (!$.fn.DataTable.isDataTable(currentTb))
+                                    $(currentTb).DataTableDefault(_tableConfig)
+                                _table = $(currentTb).DataTable()
                                 if (dataBody?.id)
-                                    table.row(dataBody.idx).data(dataBody).draw()
-                                else table.rows.add(newItem).draw()
+                                    _table.row(dataBody.idx).data(dataBody).draw()
+                                else _table.rows.add(newItem).draw()
                                 $.fn.notifyB({description: data.message}, 'success')
                                 $('#modal_holidays').modal('hide')
                             }
@@ -166,8 +170,17 @@ $(document).ready(function () {
                         elmItem.find('.nav-link-text').text(data.config_year)
                         $('.wrap_years ul').append(elmItem)
                         deleteYear(elmItem.find('button'))
+                        // add holidays table
+                        let $holidayTable = $($('.holidays-tabs').html())
+                        $holidayTable.attr('data-year-id', data.id).attr('id', 'years_' + data.config_year)
+                        $holidayTable.find('table').attr('id', 'holidays_' + data.config_year)
+                        $('.wrap_holidays .tab-content').append($holidayTable);
                         $.fn.notifyB({description: data.message}, 'success')
                         $('#modal_years').modal('hide')
+                        if ($('.wrap_years .year-item').length === 1){
+                            $('.wrap_years .year-item a').addClass('active')
+                            $('.wrap_holidays .tab-pane').addClass('active show')
+                        }
                     }
                 },
                 (errs) => {

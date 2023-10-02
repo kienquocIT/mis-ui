@@ -5,6 +5,7 @@ $(function () {
         const contact_list = JSON.parse($('#contact_list').text());
         const opportunity_list = JSON.parse($('#opportunity_list').text());
         const employee_list = JSON.parse($('#employee_list').text());
+        let MEETING_LIST = []
 
         function LoadMeetingSaleCodeList(employee_current_id) {
             let $sc_sb = $('#meeting-sale-code-select-box');
@@ -170,7 +171,7 @@ $(function () {
                         dataSrc: function (resp) {
                             let data = $.fn.switcherResp(resp);
                             if (data && resp.data.hasOwnProperty('meeting_list')) {
-                                console.log(data)
+                                MEETING_LIST = resp.data['meeting_list']
                                 return resp.data['meeting_list'] ? resp.data['meeting_list'] : [];
                             }
                             throw Error('Call data raise errors.')
@@ -245,7 +246,7 @@ $(function () {
 
         $(document).on('click', '#table_opportunity_meeting_list .detail-meeting-button', function () {
             let meeting_id = $(this).attr('data-id');
-            let meeting_obj = JSON.parse($('#meeting_list').text()).filter(function(item) {
+            let meeting_obj = MEETING_LIST.filter(function(item) {
                 return item.id === meeting_id;
             })[0]
             $('#detail-meeting-subject-input').val(meeting_obj.subject);

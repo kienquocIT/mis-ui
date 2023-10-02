@@ -19,7 +19,7 @@
 
 {% block pageContent %}
     <form
-            data-url="{% url 'PurchaseOrderDetailAPI' data.data.doc_id %}"
+            data-url="{% url 'PurchaseOrderDetailAPI' pk=pk %}"
             data-url-redirect="{% url 'PurchaseOrderList' %}"
             data-method="PUT"
             id="frm_purchase_order_create"

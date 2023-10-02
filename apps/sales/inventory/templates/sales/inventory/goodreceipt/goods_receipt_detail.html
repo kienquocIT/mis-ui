@@ -6,7 +6,7 @@
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
 {% block pageAction %}
-    <a href="{% url 'GoodsReceiptUpdate' data.data.doc_id %}">
+    <a href="{% url 'GoodsReceiptUpdate' pk=pk %}">
         <button class="btn btn-outline-primary">
             <span>
                 <span>{% trans 'Edit' %}</span>
@@ -20,7 +20,7 @@
 
 {% block pageContent %}
     <form
-            data-url="{% url 'GoodsReceiptDetailAPI' data.data.doc_id %}"
+            data-url="{% url 'GoodsReceiptDetailAPI' pk=pk %}"
             data-url-redirect="{% url 'GoodsReceiptList' %}"
             data-method="GET"
             id="frm_good_receipt_create"

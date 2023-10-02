@@ -32,7 +32,7 @@
     </div>
 
     <form
-            data-url="{% url 'QuotationDetailAPI' data.data.doc_id %}"
+            data-url="{% url 'QuotationDetailAPI' pk=pk %}"
             data-url-redirect="{% url 'QuotationList' %}"
             data-method="PUT"
             id="frm_quotation_create"
@@ -230,6 +230,14 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="d-flex justify-content-end">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="quotation-customer-confirm">
+                                <label class="form-check-label" for="quotation-customer-confirm">{% trans 'Customer Confirm' %}</label>
+                            </div>
+                        </div>
+                    </div>
                     <div class="row collapse-arrow mt-2 mb-2">
                         <i
                             class="fas fa-angle-double-up"
@@ -243,53 +251,28 @@
                     </div>
                     <div class="row">
                         <div class="row">
-                            <div class="col-7">
-                                <ul class="nav nav-light nav-tabs" id="quotation-tabs">
-                                    <li class="nav-item">
-                                        <a class="nav-link active" data-bs-toggle="tab" href="#tab_line_detail">
-                                            <span class="nav-link-text">{% trans 'Line Detail' %}</span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" data-bs-toggle="tab" href="#tab_logistic">
-                                            <span class="nav-link-text">{% trans 'Logistics' %}</span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item quotation-cost">
-                                        <a class="nav-link" data-bs-toggle="tab" href="#tab_cost">
-                                            <span class="nav-link-text">{% trans 'Cost' %}</span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" data-bs-toggle="tab" href="#tab_expense">
-                                            <span class="nav-link-text">{% trans 'Expense' %}</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="col-5">
-                                <div class="row">
-                                    <div class="col-2">
-                                        <button type="button" class="btn btn-soft-primary">{% trans 'Print' %}</button>
-                                    </div>
-                                    <div class="col-3">
-                                        <button type="button" class="btn btn-soft-primary">{% trans 'Send Email' %}</button>
-                                    </div>
-                                    <div class="col-5">
-                                        <div class="form-check mt-2">
-                                            <input
-                                                    type="checkbox" class="form-check-input"
-                                                    id="quotation-customer-confirm"
-                                            >
-                                            <label
-                                                    class="form-check-label disabled-label"
-                                                    for="quotation-customer-confirm"
-                                            >{% trans 'Customer Confirm' %}</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-2"></div>
-                                </div>
-                            </div>
+                            <ul class="nav nav-light nav-tabs" id="quotation-tabs">
+                                <li class="nav-item">
+                                    <a class="nav-link active" data-bs-toggle="tab" href="#tab_line_detail">
+                                        <span class="nav-link-text">{% trans 'Line Detail' %}</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-bs-toggle="tab" href="#tab_logistic">
+                                        <span class="nav-link-text">{% trans 'Logistics' %}</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item quotation-cost">
+                                    <a class="nav-link" data-bs-toggle="tab" href="#tab_cost">
+                                        <span class="nav-link-text">{% trans 'Cost' %}</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-bs-toggle="tab" href="#tab_expense">
+                                        <span class="nav-link-text">{% trans 'Expense' %}</span>
+                                    </a>
+                                </li>
+                            </ul>
                         </div>
 
                         <div class="tab-content" id="tab-content-quotation-product">

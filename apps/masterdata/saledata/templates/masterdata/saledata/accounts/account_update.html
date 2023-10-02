@@ -13,15 +13,6 @@
     <link href="{% static 'vendors/monthpicker/monthpicker.css' %}" rel="stylesheet">
 {% endblock %}
 {% block jsHeader %}
-    <script>
-        window.addEventListener("load", function () {
-            let screenHeight = window.screen.height * 0.7;
-            $('.scroll-div').css({
-                'overflow': 'auto',
-                'height': screenHeight.toString() + 'px',
-            })
-        });
-    </script>
 {% endblock %}
 {% block pageAction %}
     <button id="save-account" class="btn btn-outline-primary" type="submit" form="form-detail-update-account">

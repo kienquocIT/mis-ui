@@ -16,8 +16,7 @@ let heightEle = $('#height');
 let volumeEle = $('#volume');
 let weightEle = $('#weight');
 let productImageEle = $('#product-image');
-let warehouseProductListEle = $('#warehouse_product_list');
-let unitOfMeasureListEle = $('#unit_of_measure');
+let warehouseListEle = $('#warehouse_list');
 const currency_list = JSON.parse($('#currency_list').text());
 let currency_primary = null;
 for (let i = 0; i < currency_list.length; i++) {
@@ -29,14 +28,11 @@ const item_unit_dict = JSON.parse($('#id-unit-list').text()).reduce((obj, item) 
     obj[item.title] = item;
     return obj;
 }, {});
-let warehouse_product_list = [];
-if (warehouseProductListEle.text() !== '') {
-    warehouse_product_list = JSON.parse(warehouseProductListEle.text());
+let warehouse_list = [];
+if (warehouseListEle.text() !== '') {
+    warehouse_list = JSON.parse(warehouseListEle.text());
 }
-let unit_of_measure_list = [];
-if (unitOfMeasureListEle.text() !== '') {
-    unit_of_measure_list = JSON.parse(unitOfMeasureListEle.text());
-}
+console.log(warehouse_list)
 
 productImageEle.dropify({
     messages: {
@@ -401,170 +397,54 @@ function loadWareHouseOverView() {
     }
 }
 
-function ConvertToUnitUoM(uom_id_src, uom_id_des) {
-    let get_uom_src_item = unit_of_measure_list.filter(function (item) {
-        return item.id === uom_id_src;
-    })
-    let get_uom_des_item = unit_of_measure_list.filter(function (item) {
-        return item.id === uom_id_des;
-    })
-    let ratio_src = get_uom_src_item[0].ratio;
-    let ratio_des = get_uom_des_item[0].ratio;
-    return ratio_src / ratio_des
-}
-
-function GetProductFromWareHouseStockList(product_id, uom_id_des) {
-    let product_get_from_wh_product_list = warehouse_product_list.filter(function (item) {
-        return item.product === product_id;
-    })
-    let warehouse_stock_list = [];
-    for (let i = 0; i < product_get_from_wh_product_list.length; i++) {
-        let calculated_ratio = ConvertToUnitUoM(product_get_from_wh_product_list[i].uom, uom_id_des);
-        let raw_stock_quantity = calculated_ratio * product_get_from_wh_product_list[i]?.['stock_amount'];
-        let delivered_quantity = calculated_ratio * product_get_from_wh_product_list[i]?.['sold_amount'];
-        let ready_quantity = calculated_ratio * product_get_from_wh_product_list[i]?.['picked_ready'];
-
-        warehouse_stock_list.push(
-            {
-                'warehouse_id': product_get_from_wh_product_list[i].warehouse,
-                'stock': raw_stock_quantity - delivered_quantity,
-                'wait_for_delivery': ready_quantity,
-                'wait_for_receipt': 0,
-            }
-        );
-    }
-    return warehouse_stock_list;
-}
-
-function loadWareHouseListDetail(warehouse_stock_list) {
+function loadWareHouseListDetail(product_warehouse_detail, warehouse_list) {
     let dtb = $('#datatable-warehouse-list');
     dtb.DataTable().clear().destroy();
-    let frm = new SetupFormSubmit(dtb);
     dtb.DataTableDefault({
         dom: '',
         paging: false,
-        ajax: {
-            url: frm.dataUrl,
-            type: frm.dataMethod,
-            dataSrc: function (resp) {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (data?.['warehouse_list'].length > 0) {
-                        for (let i = 0; i < data?.['warehouse_list'].length; i++) {
-                            let value_list = warehouse_stock_list.filter(function (item) {
-                                return item.warehouse_id === data?.['warehouse_list'][i].id;
-                            });
-                            let stock_value = 0;
-                            let wait_for_delivery_value = 0;
-                            let wait_for_receipt_value = 0;
-                            for (let i = 0; i < value_list.length; i++) {
-                                stock_value = stock_value + value_list[i].stock;
-                                wait_for_delivery_value = wait_for_delivery_value + value_list[i].wait_for_delivery;
-                                wait_for_receipt_value = wait_for_receipt_value + value_list[i].wait_for_receipt;
-                            }
-                            let available_value = stock_value - wait_for_delivery_value + wait_for_receipt_value;
-                            resp.data['warehouse_list'][i].stock_value = stock_value;
-                            resp.data['warehouse_list'][i].wait_for_delivery_value = wait_for_delivery_value;
-                            resp.data['warehouse_list'][i].wait_for_receipt_value = wait_for_receipt_value;
-                            resp.data['warehouse_list'][i].available_value = available_value;
-                        }
-                        return resp.data['warehouse_list'];
-                    } else {
-                        return [];
-                    }
-                }
-                return [];
-            },
-        },
+        data: warehouse_list,
         columns: [
             {
                 data: 'code',
                 className: 'wrap-text w-15',
                 render: (data, type, row) => {
-                    return `<span class="text-secondary">` + row.code + `</span>`
+                    return `<span class="text-secondary" data-id="${row.id}">${row.code}</span>`;
                 }
             },
             {
                 data: 'title',
                 className: 'wrap-text text-center w-25',
                 render: (data, type, row) => {
-                    return `<span class="text-secondary"><b>` + row.title + `</b></span>`
+                    return `<span class="text-secondary"><b>${row.title}</b></span>`
                 }
             },
             {
-                data: 'stock_value',
+                data: '',
                 className: 'wrap-text text-center w-15',
                 render: (data, type, row) => {
-                    return `<span>` + row.stock_value + `</span>`
+                    let warehouse_data = product_warehouse_detail.filter(function (element) {
+                        return element.warehouse.id === row.id;
+                    })
+                    if (warehouse_data.length > 0) {
+                        return `<span>${warehouse_data[0].stock_amount}</span>`;
+                    }
+                    else {
+                        return `<span>0</span>`;
+                    }
                 }
             },
         ],
-        footerCallback: function () {
-            let api = this.api();
-
-            let sum2 = api
-                .column(2, {page: 'current'})
-                .data()
-                .reduce(function (a, b) {
-                    return parseFloat(a) + parseFloat(b);
-                }, 0);
-
-            $(api.column(2).footer()).html(`<span style="font-weight: bolder">` + sum2 + `</span>`);
-        }
     });
 }
 
-function loadWareHouseOverViewDetail(warehouse_stock_list) {
+function loadWareHouseOverViewDetail(data_overview) {
     let dtb = $('#datatable-warehouse-overview');
     dtb.DataTable().clear().destroy();
-    let frm = new SetupFormSubmit(dtb);
     dtb.DataTableDefault({
         dom: '',
         paging: false,
-        ajax: {
-            url: frm.dataUrl,
-            type: frm.dataMethod,
-            dataSrc: function (resp) {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (data?.['warehouse_list'].length > 0) {
-                        let sum_stock = 0;
-                        let sum_wait_for_delivery_value = 0;
-                        let sum_wait_for_receipt_value = 0;
-                        let sum_available_value = 0;
-
-                        for (let i = 0; i < data?.['warehouse_list'].length; i++) {
-                            let value_list = warehouse_stock_list.filter(function (item) {
-                                return item.warehouse_id === data?.['warehouse_list'][i].id;
-                            });
-                            let stock_value = 0;
-                            let wait_for_delivery_value = 0;
-                            let wait_for_receipt_value = 0;
-                            for (let i = 0; i < value_list.length; i++) {
-                                stock_value = stock_value + value_list[i].stock;
-                                wait_for_delivery_value = wait_for_delivery_value + value_list[i].wait_for_delivery;
-                                wait_for_receipt_value = wait_for_receipt_value + value_list[i].wait_for_receipt;
-                            }
-                            let available_value = stock_value - wait_for_delivery_value + wait_for_receipt_value;
-
-                            sum_stock = sum_stock + stock_value;
-                            sum_wait_for_delivery_value = sum_wait_for_delivery_value + wait_for_delivery_value;
-                            sum_wait_for_receipt_value = sum_wait_for_receipt_value + wait_for_receipt_value;
-                            sum_available_value = sum_available_value + available_value;
-                        }
-                        return [{
-                            'sum_stock': sum_stock,
-                            'sum_wait_for_delivery_value': sum_wait_for_delivery_value,
-                            'sum_wait_for_receipt_value': sum_wait_for_receipt_value,
-                            'sum_available_value': sum_available_value
-                        }];
-                    } else {
-                        return [];
-                    }
-                }
-                return [];
-            },
-        },
+        data: data_overview,
         columns: [
             {
                 data: 'sum_stock',
@@ -579,26 +459,26 @@ function loadWareHouseOverViewDetail(warehouse_stock_list) {
                 }
             },
             {
-                data: 'sum_wait_for_delivery_value',
+                data: 'sum_wait_for_delivery',
                 className: 'wrap-text text-center w-25',
                 render: (data, type, row) => {
-                    if (row.sum_wait_for_delivery_value > 0) {
-                        return `<span style="font-weight: bolder" class="text-primary">${row.sum_wait_for_delivery_value}</span>`
+                    if (row.sum_wait_for_delivery > 0) {
+                        return `<span style="font-weight: bolder" class="text-primary">${row.sum_wait_for_delivery}</span>`
                     }
                     else {
-                        return `<span style="font-weight: bolder" class="text-danger">${row.sum_wait_for_delivery_value}</span>`
+                        return `<span style="font-weight: bolder" class="text-danger">${row.sum_wait_for_delivery}</span>`
                     }
                 }
             },
             {
-                data: 'sum_wait_for_receipt_value',
+                data: 'sum_wait_for_receipt',
                 className: 'wrap-text text-center w-25',
                 render: (data, type, row) => {
-                    if (row.sum_wait_for_receipt_value > 0) {
-                        return `<span style="font-weight: bolder" class="text-primary">${row.sum_wait_for_receipt_value}</span>`
+                    if (row.sum_wait_for_receipt > 0) {
+                        return `<span style="font-weight: bolder" class="text-primary">${row.sum_wait_for_receipt}</span>`
                     }
                     else {
-                        return `<span style="font-weight: bolder" class="text-danger">${row.sum_wait_for_receipt_value}</span>`
+                        return `<span style="font-weight: bolder" class="text-danger">${row.sum_wait_for_receipt}</span>`
                     }
                 }
             },
@@ -786,6 +666,7 @@ function LoadDetailProduct(option) {
                  WFRTControl.setWFRuntimeID(data['product']?.['workflow_runtime_id']);
                  let product_detail = data['product'];
                  $.fn.compareStatusShowPageAction(data);
+                 console.log(product_detail)
 
                  $('#product-code').text(product_detail['code']);
                  $('#title').val(product_detail['title']);
@@ -840,9 +721,26 @@ function LoadDetailProduct(option) {
                      $('#inventory-level-min').val(inventory_information['inventory_level_min']);
                      $('#inventory-level-max').val(inventory_information['inventory_level_max']);
 
-                     let warehouse_stock_list = GetProductFromWareHouseStockList(product_detail.id, product_detail?.['inventory_information']['uom']['uom_id']);
-                     loadWareHouseListDetail(warehouse_stock_list);
-                     loadWareHouseOverViewDetail(warehouse_stock_list);
+                     loadWareHouseListDetail(product_detail['product_warehouse_detail'], warehouse_list);
+                     let data_overview = [];
+                     let sum_stock = 0;
+                     let sum_wait_for_delivery = 0;
+                     let sum_wait_for_receipt = 0;
+                     let sum_available_value = 0;
+                     for (let i = 0; i < product_detail['product_warehouse_detail'].length; i++) {
+                         let temp = product_detail['product_warehouse_detail'][i];
+                         sum_stock += temp.stock_amount;
+                         sum_wait_for_delivery += temp?.['wait_for_delivery_amount'];
+                         sum_wait_for_receipt += temp?.['wait_for_receipt_amount'];
+                         sum_available_value += temp.stock_amount - temp?.['wait_for_delivery_amount'] + temp?.['wait_for_receipt_amount'];
+                     }
+                     data_overview.push({
+                         'sum_stock': sum_stock,
+                         'sum_wait_for_delivery': sum_wait_for_delivery,
+                         'sum_wait_for_receipt': sum_wait_for_receipt,
+                         'sum_available_value': sum_available_value
+                     })
+                     loadWareHouseOverViewDetail(data_overview);
                  }
 
                  if (Object.keys(product_detail['purchase_information']).length !== 0) {

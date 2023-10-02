@@ -993,7 +993,7 @@ class QuotationDataTableHandle {
             info: false,
             columnDefs: [
                 {
-                    "width": "1%",
+                    "width": "5%",
                     "targets": 0
                 },
                 {
@@ -1001,7 +1001,7 @@ class QuotationDataTableHandle {
                     "targets": 1
                 },
                 {
-                    "width": "20%",
+                    "width": "15%",
                     "targets": 2
                 },
                 {
@@ -1009,11 +1009,11 @@ class QuotationDataTableHandle {
                     "targets": 3,
                 },
                 {
-                    "width": "3%",
+                    "width": "5%",
                     "targets": 4,
                 },
                 {
-                    "width": "23%",
+                    "width": "20%",
                     "targets": 5,
                 },
                 {
@@ -1021,15 +1021,15 @@ class QuotationDataTableHandle {
                     "targets": 6,
                 },
                 {
-                    "width": "12%",
+                    "width": "5%",
                     "targets": 7,
                 },
                 {
-                    "width": "15%",
+                    "width": "20%",
                     "targets": 8,
                 },
                 {
-                    "width": "1%",
+                    "width": "5%",
                     "targets": 9,
                 }
             ],

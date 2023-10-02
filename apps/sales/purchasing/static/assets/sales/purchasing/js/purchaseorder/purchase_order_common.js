@@ -823,9 +823,8 @@ class POLoadDataHandle {
             "Finish": "badge badge-soft-success",
             "Cancel": "badge badge-soft-danger",
         }
-        let statusHTML = `<span class="${status_data[data?.['system_status']]}">${data?.['system_status']}</span>`;
-        eleStatus.empty();
-        eleStatus.append(statusHTML);
+        eleStatus[0].className = status_data[data?.['system_status']];
+        eleStatus[0].innerHTML = data?.['system_status'];
         $('#purchase-order-date-delivered').val(moment(data?.['date_created']).format('DD/MM/YYYY hh:mm A'));
         POLoadDataHandle.loadDataShowPRPQ(data);
         PODataTableHandle.dataTablePurchaseRequest();

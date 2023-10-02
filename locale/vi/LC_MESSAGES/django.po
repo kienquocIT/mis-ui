@@ -810,7 +810,7 @@ msgstr "Từ chối"
 
 #
 msgid "Return"
-msgstr "Hoàn ứng"
+msgstr "Trả Về"
 
 
 #
@@ -3527,7 +3527,7 @@ msgstr "Toán tử"
 
 #
 msgid "Returned"
-msgstr "Đã hoàn ứng"
+msgstr "Đã trả về"
 
 #
 msgid "To employee"

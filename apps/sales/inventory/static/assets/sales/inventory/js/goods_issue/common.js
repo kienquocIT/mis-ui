@@ -21,8 +21,10 @@ class GoodsIssueLoadPage {
                         });
                         let data_dict = {};
                         product_list.map(function (item) {
-                            data_dict[item.id] = item;
-                            tableEle.DataTable().row.add(item).draw();
+                            if (!item.action_status) {
+                                data_dict[item.id] = item;
+                                tableEle.DataTable().row.add(item).draw();
+                            }
                         })
                         $('#data-ia-product').text(JSON.stringify(data_dict));
                     }
@@ -94,7 +96,6 @@ class GoodsIssueLoadPage {
                             return `<span class="col-warehouse">${data.title}</span>`
                         },
                     }, {
-                        className: 'wrap-text',
                         render: (data, type, row) => {
                             return `<input class="form-control mask-money col-unit-cost"/>`;
                         },
@@ -163,7 +164,7 @@ class GoodsIssueLoadPage {
         $.fn.initMaskMoney2();
     }
 
-    static generateRowProductLiquidation(){
+    static generateRowProductLiquidation() {
         let table = $('#dtbProductLiquidation')
         let data = {
             'uom': {
@@ -179,11 +180,11 @@ class GoodsIssueLoadPage {
         GoodsIssueLoadPage.loadWarehouse(whSelectEle, {});
     }
 
-    static getDataProductForIA(dataForm){
+    static getDataProductForIA(dataForm) {
         let rows = $('#dtbProductIA tbody tr');
         let dict_product = JSON.parse($('#data-ia-product').text());
         let list_product = [];
-        rows.each(function (){
+        rows.each(function () {
             let obj = dict_product[$(this).find('.col-product').data('id')];
             let data = {
                 'inventory_adjustment_item': obj.id,
@@ -201,10 +202,10 @@ class GoodsIssueLoadPage {
         return dataForm
     }
 
-    static getDataProductForLiquidation(dataForm){
+    static getDataProductForLiquidation(dataForm) {
         let rows = $('#dtbProductLiquidation tbody tr');
         let list_product = [];
-        rows.each(function (){
+        rows.each(function () {
             let productEle = $(this).find('.box-select-product')
             let obj = SelectDDControl.get_data_from_idx(productEle, productEle.val());
             let data = {
@@ -223,7 +224,7 @@ class GoodsIssueLoadPage {
         return dataForm
     }
 
-    static loadGoodsIssueDetail(frmDetail, pk){
+    static loadGoodsIssueDetail(frmDetail, pk) {
         let url = frmDetail.data('url').format_url_with_uuid(pk);
         let iaSelectEle = $('#box-select-ia');
         $.fn.callAjax2({
@@ -250,7 +251,7 @@ class GoodsIssueLoadPage {
         })
     }
 
-    static loadDtbProductPageDetail(data){
+    static loadDtbProductPageDetail(data) {
         if (!$.fn.DataTable.isDataTable('#dtbProduct')) {
             let dtb = $('#dtbProduct');
             dtb.DataTableDefault({

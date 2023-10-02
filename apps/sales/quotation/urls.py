@@ -3,7 +3,7 @@ from apps.sales.quotation.views import (
     QuotationCreate, QuotationList, QuotationListAPI, QuotationDetail, QuotationConfigDetail,
     QuotationDetailAPI, QuotationExpenseListAPI, QuotationConfigDetailAPI,
     QuotationIndicatorListAPI, QuotationIndicatorDetailAPI, QuotationIndicatorRestoreAPI, QuotationUpdate,
-    QuotationListForCashOutflowAPI
+    QuotationListForCashOutflowAPI, QuotationPrint
 )
 
 urlpatterns = [
@@ -21,4 +21,5 @@ urlpatterns = [
     path('detail-api/<str:pk>', QuotationDetailAPI.as_view(), name='QuotationDetailAPI'),
     path('update/<str:pk>', QuotationUpdate.as_view(), name='QuotationUpdate'),
     path('quotation-expense-list', QuotationExpenseListAPI.as_view(), name='QuotationExpenseListAPI'),
+    path('print/<str:pk>', QuotationPrint.as_view(), name='QuotationPrint'),
 ]

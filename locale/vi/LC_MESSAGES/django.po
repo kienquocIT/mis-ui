@@ -4387,11 +4387,11 @@ msgstr "Cập nhật đơn mua hàng thành công"
 
 #
 msgid "Goods receipt create successfully"
-msgstr "Tạo đơn nhập hàng thành công"
+msgstr "Tạo đơn nhập kho thành công"
 
 #
 msgid "Goods receipt update successfully"
-msgstr "Cập nhật đơn nhập hàng thành công"
+msgstr "Cập nhật đơn nhập kho thành công"
 
 #
 msgid "Must select one warehouse"
@@ -4400,3 +4400,7 @@ msgstr "Phải chọn một kho"
 #
 msgid "Quantity import must be less than purchase order quantity"
 msgstr "Số lượng nhập kho phải nhỏ hơn số lượng đặt mua"
+
+#
+msgid "Goods receipt"
+msgstr "Nhập kho"

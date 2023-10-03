@@ -819,7 +819,7 @@ class POLoadDataHandle {
     static loadDetailPage(data) {
         $('#data-detail-page').val(JSON.stringify(data));
         $('#purchase-order-title').val(data?.['title']);
-        document.getElementById('purchase-order-code').innerHTML = data?.['code'];
+        // document.getElementById('purchase-order-code').innerHTML = data?.['code'];
         let eleStatus = $('#purchase-order-status');
         let status_data = {
             "Draft": "badge badge-soft-light",

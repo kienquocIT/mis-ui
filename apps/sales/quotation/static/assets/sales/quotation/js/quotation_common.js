@@ -735,11 +735,11 @@ class QuotationLoadDataHandle {
         if (data?.['title'] && is_copy === false) {
             document.getElementById('quotation-create-title').value = data.title;
         }
-        if (data?.['code'] && is_copy === false) {
-            if ($('#quotation-create-code').length) {
-                document.getElementById('quotation-create-code').innerHTML = data.code;
-            }
-        }
+        // if (data?.['code'] && is_copy === false) {
+        //     if ($('#quotation-create-code').length) {
+        //         document.getElementById('quotation-create-code').innerHTML = data.code;
+        //     }
+        // }
         if (data?.['opportunity']) {
             if (is_copy === true) {
                 data.opportunity['is_copy'] = true;

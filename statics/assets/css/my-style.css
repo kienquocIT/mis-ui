@@ -338,6 +338,14 @@ div.inline {
     content: '\f068';
 }
 
-#btnBastionField span:last-child {
-
+/* save group css */
+.save-btn-group .dropdown-toggle:after{
+    width:8px;
+}
+.save-btn-group .btn-outline-primary.dropdown-toggle.show:focus{
+    box-shadow: unset;
+}
+.save-btn-group .btn-outline-primary.dropdown-toggle.show{
+    background-color: #007D88;
+    border-color: #007D88;
 }

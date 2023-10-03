@@ -473,10 +473,15 @@ class QuotationLoadDataHandle {
             if (is_expense === true) {
                 data = JSON.parse(productData.value);
             }
+            let description = ele[0].closest('tr').querySelector('.table-row-description');
             let uom = ele[0].closest('tr').querySelector('.table-row-uom');
             let price = ele[0].closest('tr').querySelector('.table-row-price');
             let priceList = ele[0].closest('tr').querySelector('.table-row-price-list');
             let tax = ele[0].closest('tr').querySelector('.table-row-tax');
+            // load Description
+            if (description) {
+                description.innerHTML = data?.['description'];
+            }
             // load UOM
             if (uom && data.unit_of_measure && data.uom_group) {
                 $(uom).empty();
@@ -790,7 +795,9 @@ class QuotationLoadDataHandle {
             if (!['Added', 'Finish'].includes(data?.['system_status'])) {
                 let btnCopy = document.getElementById('btn-copy-quotation');
                 let eleTooltipBtnCopy = document.getElementById('tooltip-btn-copy');
-                btnCopy.setAttribute('disabled', 'true');
+                if (btnCopy) {
+                    btnCopy.setAttribute('disabled', 'true');
+                }
                 if (eleTooltipBtnCopy) {
                     eleTooltipBtnCopy.removeAttribute('data-bs-original-title');
                     eleTooltipBtnCopy.setAttribute('data-bs-placement', 'top');
@@ -1120,15 +1127,9 @@ class QuotationDataTableHandle {
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        if (row?.['is_promotion'] === false && row?.['is_shipping'] === false) {
-                            return `<div class="row">
-                                <input type="text" class="form-control table-row-description" value="${row?.['product_description']}">
-                            </div>`;
-                        } else {
-                            return `<div class="row">
-                                        <input type="text" class="form-control table-row-description disabled-custom-show" value="${row?.['product_description']}" data-bs-toggle="tooltip" title="${row?.['product_description']}" disabled>
-                                    </div>`;
-                        }
+                        return `<div class="row">
+                                    <p><span class="table-row-description">${row?.['product']?.['description'] ? row?.['product']?.['description'] : ''}</span></p>
+                                </div>`;
                     }
                 },
                 {
@@ -2566,7 +2567,7 @@ class QuotationSubmitHandle {
                 }
                 let eleDescription = row.querySelector('.table-row-description');
                 if (eleDescription) {
-                    rowData['product_description'] = eleDescription.value;
+                    rowData['product_description'] = eleDescription.innerHTML;
                 }
                 let eleQuantity = row.querySelector('.table-row-quantity');
                 if (eleQuantity) {

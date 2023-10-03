@@ -101,13 +101,18 @@ class POLoadDataHandle {
         if (ele.val()) {
             let data = SelectDDControl.get_data_from_idx(ele, ele.val());
             if (data) {
-                data['unit_of_measure'] = data?.['sale_information']?.['default_uom'];
+                data['unit_of_measure'] = data?.['purchase_information']?.['uom'];
                 data['uom_group'] = data?.['general_information']?.['uom_group'];
-                data['tax'] = data?.['sale_information']?.['tax_code'];
+                data['tax'] = data?.['purchase_information']?.['tax'];
+                let description = ele[0].closest('tr').querySelector('.table-row-description');
                 let uom = ele[0].closest('tr').querySelector('.table-row-uom-order-actual');
                 let price = ele[0].closest('tr').querySelector('.table-row-price');
                 let priceList = ele[0].closest('tr').querySelector('.table-row-price-list');
                 let tax = ele[0].closest('tr').querySelector('.table-row-tax');
+                // load Description
+                if (description) {
+                    description.innerHTML = data?.['description'];
+                }
                 // load UOM
                 if (uom && Object.keys(data.unit_of_measure).length !== 0 && Object.keys(data.uom_group).length !== 0) {
                     POLoadDataHandle.loadBoxUOM($(uom), data.unit_of_measure, data.uom_group.id);
@@ -1381,7 +1386,7 @@ class PODataTableHandle {
                     targets: 0,
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
-                        return `<span class="table-row-order" id="${row.id}" data-row="${dataRow}">${row.order}</span>`
+                        return `<span class="table-row-order" id="${row?.['id']}" data-row="${dataRow}">${row?.['order']}</span>`
                     }
                 },
                 {
@@ -1420,33 +1425,35 @@ class PODataTableHandle {
                                 </div>`;
                     },
                 },
-                // {
-                //     targets: 2,
-                //     render: (data, type, row) => {
-                //         return `<span class="table-row-description">${row.product_description}</span>`;
-                //     }
-                // },
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        let dataStr = JSON.stringify(row.uom_order_request).replace(/"/g, "&quot;");
-                        return `<span class="table-row-uom-order-request" id="${row.uom_order_request.id}">${row.uom_order_request.title}<input type="hidden" class="data-info" value="${dataStr}"></span>`;
+                        return `<div class="row">
+                                    <p><span class="table-row-description">${row?.['product']?.['description'] ? row?.['product']?.['description'] : ''}</span></p>
+                                </div>`;
                     }
                 },
                 {
                     targets: 3,
                     render: (data, type, row) => {
-                        return `<span class="table-row-quantity-order-request">${row.product_quantity_order_request}</span>`;
+                        let dataStr = JSON.stringify(row?.['uom_order_request']).replace(/"/g, "&quot;");
+                        return `<span class="table-row-uom-order-request" id="${row?.['uom_order_request']?.['id']}">${row?.['uom_order_request']?.['title']}<input type="hidden" class="data-info" value="${dataStr}"></span>`;
                     }
                 },
                 {
                     targets: 4,
                     render: (data, type, row) => {
-                        return `<span class="table-row-stock">${row.stock}</span>`
+                        return `<span class="table-row-quantity-order-request">${row?.['product_quantity_order_request']}</span>`;
                     }
                 },
                 {
                     targets: 5,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-stock">${row?.['stock']}</span>`
+                    }
+                },
+                {
+                    targets: 6,
                     render: () => {
                         return `<div class="row">
                                     <select 
@@ -1461,7 +1468,7 @@ class PODataTableHandle {
                     }
                 },
                 {
-                    targets: 6,
+                    targets: 7,
                     render: (data, type, row) => {
                         return `<div class="row">
                                     <input type="text" class="form-control table-row-quantity-order-actual validated-number" value="${row.product_quantity_order_actual}" required>
@@ -1469,7 +1476,7 @@ class PODataTableHandle {
                     }
                 },
                 {
-                    targets: 7,
+                    targets: 8,
                     render: (data, type, row) => {
                         return `<div class="row">
                                     <div class="dropdown">
@@ -1478,7 +1485,7 @@ class PODataTableHandle {
                                             <input 
                                                 type="text" 
                                                 class="form-control mask-money table-row-price" 
-                                                value="${row.product_unit_price}"
+                                                value="${row?.['product_unit_price']}"
                                                 data-return-type="number"
                                             >
                                             <span class="input-suffix table-row-btn-dropdown-price-list"><i class="fas fa-angle-down"></i></span>
@@ -1491,7 +1498,7 @@ class PODataTableHandle {
                     }
                 },
                 {
-                    targets: 8,
+                    targets: 9,
                     render: (data, type, row) => {
                         return `<div class="row">
                                 <select 
@@ -1504,21 +1511,21 @@ class PODataTableHandle {
                                 <input
                                     type="text"
                                     class="form-control mask-money table-row-tax-amount"
-                                    value="${row.product_tax_amount}"
+                                    value="${row?.['product_tax_amount']}"
                                     data-return-type="number"
                                     hidden
                                 >
                                 <input
                                     type="text"
                                     class="form-control table-row-tax-amount-raw"
-                                    value="${row.product_tax_amount}"
+                                    value="${row?.['product_tax_amount']}"
                                     hidden
                                 >
                             </div>`;
                     }
                 },
                 {
-                    targets: 9,
+                    targets: 10,
                     render: (data, type, row) => {
                         return `<div class="row subtotal-area">
                                     <p><span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row?.['product_subtotal_price'] ? row?.['product_subtotal_price'] : '0')}"></span></p>
@@ -1625,7 +1632,7 @@ class PODataTableHandle {
                     targets: 2,
                     render: (data, type, row) => {
                         return `<div class="row">
-                                    <input type="text" class="form-control table-row-description" value="${row.product_description}">
+                                    <p><span class="table-row-description">${row?.['product']?.['description'] ? row?.['product']?.['description'] : ''}</span></p>
                                 </div>`;
                     }
                 },
@@ -1970,7 +1977,7 @@ class POSubmitHandle {
                 }
                 let eleDescription = row.querySelector('.table-row-description');
                 if (eleDescription) {
-                    rowData['product_description'] = eleDescription.value;
+                    rowData['product_description'] = eleDescription.innerHTML;
                 }
                 let eleUOMRequest = row.querySelector('.table-row-uom-order-request');
                 if (eleUOMRequest) {
@@ -2125,7 +2132,7 @@ function setupMergeProduct() {
                     uom_reference = dataRow?.['uom']?.['uom_group']?.['uom_reference'];
                 }
                 if (Object.keys(uom_default).length === 0) {
-                    uom_default = dataRow?.['product']?.['sale_information']?.['default_uom'];
+                    uom_default = dataRow?.['product']?.['purchase_information']?.['uom'];
                 }
                 let tax = dataRow?.['tax'];
                 let product_id = dataRow?.['product']?.['id'];
@@ -2137,10 +2144,6 @@ function setupMergeProduct() {
                     quantity = (parseFloat(dataRow?.['quantity']) * finalRatio);
                     quantity_order = (parseFloat(row.querySelector('.table-row-quantity-order').value) * finalRatio);
                     remain = ((parseFloat(row.querySelector('.table-row-remain').innerHTML) * finalRatio) - quantity_order);
-
-                    // quantity = (parseFloat(dataRow?.['quantity']) * parseFloat(dataRow?.['uom']?.['ratio']));
-                    // quantity_order = (parseFloat(row.querySelector('.table-row-quantity-order').value) * parseFloat(dataRow?.['uom']?.['ratio']));
-                    // remain = ((parseFloat(row.querySelector('.table-row-remain').innerHTML) * parseFloat(dataRow?.['uom']?.['ratio'])) - quantity_order);
                 }
                 // origin data to check
                 let quantity_origin = parseFloat(dataRow?.['quantity']);

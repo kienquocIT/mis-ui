@@ -9,20 +9,10 @@ class OpportunityLoadDropdown {
     static loadCustomer(data, config, emp_current) {
         this.customerSelectEle.initSelect2({
             data: data,
-            callbackDataResp(resp, keyResp) {
-                if (config) {
-                    let list_result = []
-                    resp.data[keyResp].map(function (item) {
-                        let list_id_am = item.manager.map(obj => obj.id)
-                        if (list_id_am.includes(emp_current)) {
-                            list_result.push(item)
-                        }
-                    })
-                    return list_result
-                } else {
-                    return resp.data[keyResp]
-                }
-            }
+            dataParams: {
+                'account_types_mapped__account_type_order': 0,
+                'employee__id': emp_current,
+            },
         })
     }
 
@@ -136,6 +126,9 @@ class OpportunityLoadDropdown {
     static loadCompetitor(ele, data, customer) {
         ele.initSelect2({
             data: data,
+            dataParams: {
+                'account_types_mapped__account_type_order': 3,
+            },
             callbackDataResp(resp, keyResp) {
                 let list_result = []
                 resp.data[keyResp].map(function (item) {
@@ -1340,7 +1333,7 @@ function loadDtbCompetitor(data) {
                 {
                     className: 'wrap-text',
                     render: () => {
-                        return `<select class="form-control box-select-competitor" data-method="GET" data-url="${urlEle.data('url-competitor')}" data-keyResp="account_list" data-keyText="name" required></select>`
+                        return `<select class="form-control box-select-competitor" data-method="GET" data-url="${urlEle.data('url-competitor')}" data-keyResp="account_sale_list" data-keyText="name" required></select>`
                     }
                 },
                 {

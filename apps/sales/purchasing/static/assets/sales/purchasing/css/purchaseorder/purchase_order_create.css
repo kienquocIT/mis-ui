@@ -73,26 +73,13 @@
     margin-left: 100px;
 }
 
+.modal-fullscreen.modal-fullscreen-custom {
+    width: 97vw;
+    height: 90%;
+}
+
 .inline-elements {
     display: inline-block;
-}
-
-.total-area .card {
-    margin-top: unset;
-    margin-bottom: unset;
-}
-
-.total-area .card.card-sm .card-body {
-    padding: 0.8rem;
-}
-
-.subtotal-area .card {
-    margin-top: unset;
-    margin-bottom: unset;
-}
-
-.subtotal-area .card.card-sm .card-body {
-    padding: 0.5rem;
 }
 
 
@@ -154,29 +141,4 @@ ul.quotation-tabs li.quotation-tab-item {
 .fa-angle-down {
     font-size: x-small;
     color: #c7c7c7;
-}
-
-.status-draft:disabled {
-    background-color: #f7f7f7;
-    color: #6f6f6f;
-}
-
-.status-created:disabled {
-    background-color: #ebf5f5;
-    color: #007D88;
-}
-
-.status-added:disabled {
-    background-color: #edfcfe;
-    color: #18DDEF;
-}
-
-.status-finish:disabled {
-    background-color: #ebfcf5;
-    color: #00ab66;
-}
-
-.status-cancel:disabled {
-    background-color: #ffebeb;
-    color: #e60000;
 }

@@ -85,11 +85,11 @@
                                     class="form-select"
                                     id="select-box-customer"
                                     data-close-on-select="true"
-                                    data-url="{% url "AccountListAPI" %}"
+                                    data-url="{% url "AccountForSaleListAPI" %}"
                                     data-method="GET"
                                     name="customer"
                                     required
-                                    data-keyResp="account_list"
+                                    data-keyResp="account_sale_list"
                                     data-keyText="name"
                             ></select>
                         </div>
@@ -118,7 +118,7 @@
                         <div class="mb-3 form-group">
                             <label class="form-label required">{% trans "Sale Person" %}</label>
                             <select class="form-select"
-                                    name="employee_inherit"
+                                    name="employee_inherit_id"
                                     id="select-box-sale-person"
                                     data-method="GET"
                                     data-url="{% url 'EmployeeListAPI' %}"

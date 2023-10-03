@@ -39,7 +39,6 @@
                             <select id="chooseAdvancePayment" class="form-select" data-method="GET"
                                     data-url="{% url "AdvancePaymentListAPI" %}"
                                     data-keyResp="advance_payment_list"
-                                    data-url-detail="{% url "AdvancePaymentDetailAPI" pk=0 %}"
                                     data-close-on-select="true"
                                     name="advance_payment">
                             </select>
@@ -102,7 +101,7 @@
                             </span>
                         </span>
                         <input data-url-detail="{% url 'EmployeeDetailAPI' '0' %}" data-method="GET"
-                               data-id="{{ data.employee_current_id }}" class="form-control" type="text" name="creator"
+                               data-id="{{ data.employee_current_id }}" class="form-control" type="text" name="employee_created"
                                readonly>
                     </span>
                         </div>
@@ -139,10 +138,13 @@
                                         </div>
                                     </span>
                                 </span>
-                                <select class="form-control select2" name="beneficiary" id="chooseBeneficiary"
+                                <select class="form-select" name="employee_inherit"
+                                        id="chooseBeneficiary"
                                         data-close-on-select="true"
                                         data-method="GET"
-                                        data-url="{% url 'EmployeeListAPI' %}"></select>
+                                        data-url="{% url 'EmployeeListAPI' %}">
+
+                                </select>
                             </span>
                         </div>
                     </div>

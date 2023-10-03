@@ -810,7 +810,7 @@ msgstr "Từ chối"
 
 #
 msgid "Return"
-msgstr "Trả về"
+msgstr "Trả Về"
 
 
 #
@@ -1195,7 +1195,7 @@ msgstr "Tài khoản cha"
 
 #
 msgid "Tax Code"
-msgstr "Mã số thuế"
+msgstr "Thuế"
 
 #
 msgid "Annual Revenue"
@@ -1467,7 +1467,7 @@ msgstr "Tỉnh"
 
 #
 msgid "Inventory"
-msgstr "Hàng tồn kho"
+msgstr "Kho - giao hàng"
 
 #
 msgid "Sale"
@@ -1527,7 +1527,7 @@ msgstr "Sản phẩm"
 
 #
 msgid "Warehouse"
-msgstr "Kho"
+msgstr "Kho hàng"
 
 #
 msgid "Quantity"
@@ -1543,7 +1543,7 @@ msgstr "Thuế"
 
 #
 msgid "Subtotal price"
-msgstr "Tổng tiền"
+msgstr "Thành tiền"
 
 #
 msgid "Add Product"
@@ -1616,7 +1616,7 @@ msgstr "Chỉnh sửa Danh xưng"
 
 #
 msgid "Tax Category"
-msgstr "Danh mục thuế"
+msgstr "Loại thuế"
 
 #
 msgid "Selling rate"
@@ -1648,7 +1648,7 @@ msgstr "Thêm dòng mới"
 
 #
 msgid "Value"
-msgstr "Chi phí giá vốn"
+msgstr "Giá trị"
 
 #
 msgid "Value type"
@@ -1792,7 +1792,7 @@ msgstr "Có thể xóa mục này trong bảng giá"
 
 #
 msgid "Factor"
-msgstr "Yếu tố"
+msgstr "Hệ số"
 
 #
 msgid "Select list type"
@@ -1852,11 +1852,11 @@ msgstr "Quản lý bởi"
 
 #
 msgid "Default UoM"
-msgstr "Giá trị đo mặc định"
+msgstr "Đơn vị tính"
 
 #
 msgid "Product Dimension and Weight Control"
-msgstr "Kiểm soát Kích thước và Trọng lượng Sản phẩm"
+msgstr "Kích thước và trọng lượng sản phẩm"
 
 #
 msgid "Length"
@@ -1872,11 +1872,11 @@ msgstr "Cao"
 
 #
 msgid "Volume"
-msgstr "Độ lớn"
+msgstr "Thể tích"
 
 #
 msgid "Weight"
-msgstr "Nặng"
+msgstr "Cân nặng"
 
 #
 msgid "UoM Code"
@@ -2028,7 +2028,7 @@ msgstr "Ngày Tạo"
 
 #
 msgid "Return date"
-msgstr "Ngày hoàn trả"
+msgstr "Ngày hoàn ứng"
 
 #
 msgid "Advance value"
@@ -2068,7 +2068,7 @@ msgstr "Mã cơ hội kinh doanh"
 
 #
 msgid "Method"
-msgstr "Phương thức"
+msgstr "Phương thức thanh toán"
 
 #
 msgid "Cash"
@@ -2076,7 +2076,7 @@ msgstr "Tiền mặt"
 
 #
 msgid "Bank transfer"
-msgstr "Chuyển khoản ngân hàng"
+msgstr "Chuyển khoản"
 
 #
 msgid "More"
@@ -2137,7 +2137,7 @@ msgstr "Cơ hội kinh doanh"
 
 #
 msgid "Opportunity link to quotation"
-msgstr "Cơ hội kinh doanh liên kết với giá báo"
+msgstr "Cơ hội kinh doanh liên kết với báo giá"
 
 #
 msgid "Customer link to quotation"
@@ -2185,7 +2185,7 @@ msgstr "Hậu cần"
 
 #
 msgid "Cost"
-msgstr "Chi phí giá vốn"
+msgstr "Giá trị"
 
 #
 msgid "Expense"
@@ -2209,7 +2209,7 @@ msgstr "Thành tiền"
 
 #
 msgid "Add Shipping Fee"
-msgstr "Thêm phí vận chuyển"
+msgstr "Phí vận chuyển"
 
 #
 msgid "Shipping"
@@ -2217,7 +2217,7 @@ msgstr "Vận chuyển"
 
 #
 msgid "Check available promotion"
-msgstr "Kiểm tra khuyến mãi khả dụng"
+msgstr "Chương trình khuyến mãi"
 
 #
 msgid "Promotion"
@@ -2229,7 +2229,7 @@ msgstr "Địa chỉ thanh toán"
 
 #
 msgid "Cost Price"
-msgstr "Giá cả"
+msgstr "Đơn giá"
 
 #
 msgid "Expense Price"
@@ -2486,7 +2486,7 @@ msgstr "Chi tiết đơn hàng"
 
 #
 msgid "WareHouse"
-msgstr "Kho"
+msgstr "Kho Hàng"
 
 #
 msgid "Return Advance"
@@ -2952,7 +2952,7 @@ msgstr "Cấu hình dữ liệu chính"
 
 #
 msgid "Items"
-msgstr "Mục"
+msgstr "Danh mục"
 
 #
 msgid "Price"
@@ -3527,7 +3527,7 @@ msgstr "Toán tử"
 
 #
 msgid "Returned"
-msgstr "Đã hoàn ứng"
+msgstr "Đã trả về"
 
 #
 msgid "To employee"
@@ -3543,7 +3543,7 @@ msgstr "Tổng trước thuế"
 
 #
 msgid "Money gave/transferred"
-msgstr "Đã nhận tiền"
+msgstr "Tiền đã nhận / đã chi"
 
 #
 msgid "Supplier name"
@@ -4009,7 +4009,7 @@ msgstr "Tiếp Tục"
 
 #
 msgid "All selected purchase requests and related datas will be removed"
-msgstr "Tất cả yêu cầu mua hàng đã chọn và dữ liệu liên quan sẽ bị loại bỏ"
+msgstr "Tất cả yêu cầu mua hàng đã chọn và dữ liệu liên quan sẽ bị xóa"
 
 #
 msgid "Product is not in"
@@ -4376,3 +4376,27 @@ msgstr "Dự án"
 #
 msgid "Inheritor"
 msgstr "Người thụ hưởng"
+
+#
+msgid "Purchase order create successfully"
+msgstr "Tạo đơn mua hàng thành công"
+
+#
+msgid "Purchase order update successfully"
+msgstr "Cập nhật đơn mua hàng thành công"
+
+#
+msgid "Goods receipt create successfully"
+msgstr "Tạo đơn nhập hàng thành công"
+
+#
+msgid "Goods receipt update successfully"
+msgstr "Cập nhật đơn nhập hàng thành công"
+
+#
+msgid "Must select one warehouse"
+msgstr "Phải chọn một kho"
+
+#
+msgid "Quantity import must be less than purchase order quantity"
+msgstr "Số lượng nhập kho phải nhỏ hơn số lượng đặt mua"

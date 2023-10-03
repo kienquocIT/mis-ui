@@ -1,7 +1,3 @@
-.quotation-horizon {
-    background-color: #3c3f43;
-}
-
 .fa-file-alt {
     font-size: x-large;
 }
@@ -36,15 +32,6 @@
 .fa-angle-double-down {
     color: #007D88;
     text-align: right;
-}
-
-ul.quotation-tabs {
-  display: flex;
-  justify-content: center;
-}
-
-ul.quotation-tabs li.quotation-tab-item {
-  margin-right: 10px;
 }
 
 a.dropdown-item.table-row-price-option:hover {
@@ -97,46 +84,4 @@ a.dropdown-item.table-row-price-option:hover {
 .fa-angle-down {
     font-size: x-small;
     color: #c7c7c7;
-}
-
-.status-draft:disabled {
-    background-color: #e9ecef;
-    color: #6f6f6f;
-}
-
-.status-created:disabled {
-    background-color: #ebf5f5;
-    color: #007D88;
-}
-
-.status-added:disabled {
-    background-color: #edfcfe;
-    color: #18DDEF;
-}
-
-.status-finish:disabled {
-    background-color: #ebfcf5;
-    color: #00ab66;
-}
-
-.status-cancel:disabled {
-    background-color: #ffebeb;
-    color: #e60000;
-}
-
-.total-area .card {
-    margin-top: unset;
-}
-
-.total-area .card.card-sm .card-body {
-    padding: 0.8rem;
-}
-
-.subtotal-area .card {
-    margin-top: unset;
-    margin-bottom: unset;
-}
-
-.subtotal-area .card.card-sm .card-body {
-    padding: 0.5rem;
 }

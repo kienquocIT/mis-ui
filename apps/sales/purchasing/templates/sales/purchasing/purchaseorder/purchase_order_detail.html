@@ -7,7 +7,7 @@
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
 {% block pageAction %}
-    <a href="{% url 'PurchaseOrderUpdate' data.data.doc_id %}">
+    <a href="{% url 'PurchaseOrderUpdate' pk=pk %}">
         <button class="btn btn-outline-primary">
             <span>
                 <span>{% trans 'Edit' %}</span>
@@ -21,7 +21,7 @@
 
 {% block pageContent %}
     <form
-            data-url="{% url 'PurchaseOrderDetailAPI' data.data.doc_id %}"
+            data-url="{% url 'PurchaseOrderDetailAPI' pk=pk %}"
             data-url-redirect="{% url 'PurchaseOrderList' %}"
             data-method="GET"
             id="frm_purchase_order_create"
@@ -31,17 +31,9 @@
         <div class="container-fluid">
             <div class="collapse multi-collapse show" id="collapseExample">
                 <div class="row">
-                    <div class="col-6"></div>
-                    <div class="col-6">
-                        <div class="row">
-                            <div class="col-8"></div>
-                            <div class="col-2">
-                                <h5 class="text-primary" id="purchase-order-code"></h5>
-                            </div>
-                            <div class="col-2" id="purchase-order-status">
-                                <span class="badge badge-soft-success"></span>
-                            </div>
-                        </div>
+                    <div class="d-flex justify-content-end">
+                        <h5 class="text-primary mr-3" id="purchase-order-code"></h5>
+                        <span class="badge badge-soft-light" id="purchase-order-status"></span>
                     </div>
                 </div>
                 <div class="row" id="common-information-area">
@@ -229,20 +221,58 @@
                                     <thead>
                                     <tr>
                                         <th class="w-5">#</th>
-                                        <th>{% trans 'Product' %}</th>
+                                        <th class="w-20">{% trans 'Product' %}</th>
     {#                                    <th>{% trans 'Description' %}</th>#}
                                         <th class="w-5">UoM (PR)</th>
                                         <th class="w-5">{% trans 'Quantity' %} (PR)</th>
                                         <th class="w-5">{% trans 'Stock' %}</th>
                                         <th class="w-5">UoM (PO)<span class="required"></span></th>
                                         <th class="w-5">{% trans 'Quantity' %} (PO)<span class="required"></span></th>
-                                        <th class="w-15">{% trans 'Unit Price' %}<span class="required"></span></th>
-                                        <th class="w-10">{% trans 'Tax' %}</th>
-                                        <th class="w-20">{% trans 'Subtotal Price' %}</th>
+                                        <th class="w-20">{% trans 'Unit Price' %}<span class="required"></span></th>
+                                        <th class="w-5">{% trans 'Tax' %}</th>
+                                        <th class="w-25">{% trans 'Subtotal Price' %}</th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     </tbody>
+                                    <tfoot>
+                                    <tr>
+                                        <th colspan="5"></th>
+                                        <th colspan="5">
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <h6 class="mb-3" style="text-align: right">{% trans 'Pretax Amount' %}:</h6>
+                                                </div>
+                                                <div class="col-1"></div>
+                                                <div class="col-5">
+                                                    <h6 class="mb-3"><span class="mask-money" data-init-money="0" id="purchase-order-product-request-pretax-amount"></span></h6>
+                                                    <input id="purchase-order-product-request-pretax-amount-raw" type="text" class="form-control" value="0" hidden>
+                                                    <input type="hidden" id="purchase-order-request-final-revenue-before-tax">
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <h6 class="mb-3" style="text-align: right">{% trans 'Taxes' %}:</h6>
+                                                </div>
+                                                <div class="col-1"></div>
+                                                <div class="col-5">
+                                                    <h6 class="mb-3"><span class="mask-money" data-init-money="0" id="purchase-order-product-request-taxes"></span></h6>
+                                                    <input id="purchase-order-product-request-taxes-raw" type="text" class="form-control" value="0" hidden>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <h6 class="mb-3" style="text-align: right">{% trans 'Total' %}:</h6>
+                                                </div>
+                                                <div class="col-1"></div>
+                                                <div class="col-5">
+                                                    <h6 class="mb-3"><span class="mask-money" data-init-money="0" id="purchase-order-product-request-total"></span></h6>
+                                                    <input id="purchase-order-product-request-total-raw" type="text" class="form-control" value="0" hidden>
+                                                </div>
+                                            </div>
+                                        </th>
+                                    </tr>
+                                    </tfoot>
                                 </table>
                             </div>
 
@@ -268,73 +298,45 @@
                                     </thead>
                                     <tbody>
                                     </tbody>
+                                    <tfoot>
+                                    <tr>
+                                        <th colspan="4"></th>
+                                        <th colspan="5">
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <h6 class="mb-3" style="text-align: right">{% trans 'Pretax Amount' %}:</h6>
+                                                </div>
+                                                <div class="col-1"></div>
+                                                <div class="col-5">
+                                                    <h6 class="mb-3"><span class="mask-money" data-init-money="0" id="purchase-order-product-add-pretax-amount"></span></h6>
+                                                    <input id="purchase-order-product-add-pretax-amount-raw" type="text" class="form-control" value="0" hidden>
+                                                    <input type="hidden" id="purchase-order-add-final-revenue-before-tax">
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <h6 class="mb-3" style="text-align: right">{% trans 'Taxes' %}:</h6>
+                                                </div>
+                                                <div class="col-1"></div>
+                                                <div class="col-5">
+                                                    <h6 class="mb-3"><span class="mask-money" data-init-money="0" id="purchase-order-product-add-taxes"></span></h6>
+                                                    <input id="purchase-order-product-add-taxes-raw" type="text" class="form-control" value="0" hidden>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <h6 class="mb-3" style="text-align: right">{% trans 'Total' %}:</h6>
+                                                </div>
+                                                <div class="col-1"></div>
+                                                <div class="col-5">
+                                                    <h6 class="mb-3"><span class="mask-money" data-init-money="0" id="purchase-order-product-add-total"></span></h6>
+                                                    <input id="purchase-order-product-add-total-raw" type="text" class="form-control" value="0" hidden>
+                                                </div>
+                                            </div>
+                                        </th>
+                                    </tr>
+                                    </tfoot>
                                 </table>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-2">
-                                    <button type="button" class="btn btn-link btn-animated" id="btn-add-product-purchase-order" disabled>
-                                        <span><span class="icon"><span class="feather-icon"><i class="fa-regular fa-square-plus"></i></span></span><span>{% trans 'Add Product' %}</span></span>
-                                    </button>
-                                </div>
-                                <div class="col-10"></div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-6"></div>
-                            <div class="col-6" id="quotation-tab-product-totals">
-                                <div class="row mb-2">
-                                    <div class="col-4"><p>{% trans 'Pretax Amount' %}</p></div>
-                                    <div class="col-1"></div>
-                                    <div class="col-7 total-area">
-                                        <div class="card card-sm">
-                                            <span class="card-body mask-money" data-init-money="0" id="purchase-order-product-pretax-amount"></span>
-                                        </div>
-                                        <input
-                                            id="purchase-order-product-pretax-amount-raw"
-                                            type="text"
-                                            class="form-control"
-                                            value="0"
-                                            hidden
-                                        >
-                                        <input
-                                            type="hidden"
-                                            id="purchase-order-final-revenue-before-tax"
-                                        >
-                                    </div>
-                                </div>
-                                <div class="row mb-2">
-                                    <div class="col-4"><p>{% trans 'Taxes' %}</p></div>
-                                    <div class="col-1"></div>
-                                    <div class="col-7 total-area">
-                                        <div class="card card-sm">
-                                            <span class="card-body mask-money" data-init-money="0" id="purchase-order-product-taxes"></span>
-                                        </div>
-                                        <input
-                                            id="purchase-order-product-taxes-raw"
-                                            type="text"
-                                            class="form-control"
-                                            value="0"
-                                            hidden
-                                        >
-                                    </div>
-                                </div>
-                                <div class="row mb-2">
-                                    <div class="col-4"><b>{% trans 'Total' %}</b></div>
-                                    <div class="col-1"></div>
-                                    <div class="col-7 total-area">
-                                        <div class="card card-sm">
-                                            <span class="card-body mask-money" data-init-money="0" id="purchase-order-product-total"></span>
-                                        </div>
-                                        <input
-                                            id="purchase-order-product-total-raw"
-                                            type="text"
-                                            class="form-control"
-                                            value="0"
-                                            hidden
-                                        >
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -398,10 +400,10 @@
 
 
         <div class="modal fade mt-5" id="purchaseRequestModalCenter" tabindex="-1" role="dialog" aria-labelledby="purchaseRequestModalCenter" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-xlg-custom" role="document">
+            <div class="modal-dialog modal-dialog-centered modal-fullscreen modal-fullscreen-custom ml-5 mt-5" role="document">
                 <div class="modal-content">
                     <div class="modal-body">
-                        <div class="row mb-2"><h6>{% trans 'Select items from purchase request' %}</h6></div>
+                        <div class="row ml-2"><h6>{% trans 'Select items from purchase request' %}</h6></div>
                         <div class="row mb-1">
                             <div class="col-4"></div>
                             <div class="col-8">
@@ -416,7 +418,7 @@
                         </div>
                         <div class="row">
                             <div class="col-4">
-                                <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-450p position-relative overflow-y-scroll">
+                                <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-700p position-relative overflow-y-scroll">
                                     <table
                                         id="datable-purchase-request"
                                         class="table nowrap w-100"
@@ -437,7 +439,7 @@
                                 </div>
                             </div>
                             <div class="col-8">
-                                <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-450p position-relative overflow-y-scroll" id="sroll-datable-purchase-request-product">
+                                <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-700p position-relative overflow-y-scroll" id="sroll-datable-purchase-request-product">
                                     <div id="table-purchase-request-product-area">
                                         <table
                                             id="datable-purchase-request-product"
@@ -447,14 +449,14 @@
                                         >
                                             <thead>
                                             <tr>
-                                                <th class="w-5">STT</th>
-                                                <th class="w-5"></th>
-                                                <th>{% trans 'Product' %}</th>
-                                                <th>{% trans 'PR Code' %}</th>
-                                                <th>{% trans 'Unit Of Measure' %}</th>
-                                                <th class="w-5">{% trans 'Quantity' %}</th>
-                                                <th class="w-5">{% trans 'Remain (PO)' %}</th>
-                                                <th class="w-5">{% trans 'Quantity order' %}</th>
+                                                <th class="w-10">STT</th>
+                                                <th class="w-10"></th>
+                                                <th class="w-20">{% trans 'Product' %}</th>
+                                                <th class="w-10">{% trans 'PR Code' %}</th>
+                                                <th class="w-10">{% trans 'Unit Of Measure' %}</th>
+                                                <th class="w-10">{% trans 'Quantity' %}</th>
+                                                <th class="w-10">{% trans 'Remain (PO)' %}</th>
+                                                <th class="w-20">{% trans 'Quantity order' %}</th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -471,14 +473,14 @@
                                         >
                                             <thead>
                                             <tr>
-                                                <th class="w-5">STT</th>
-                                                <th class="w-5"></th>
-                                                <th>{% trans 'Product' %}</th>
-                                                <th>{% trans 'PR Code' %}</th>
-                                                <th>{% trans 'Unit Of Measure' %}</th>
-                                                <th class="w-5">{% trans 'Quantity' %}</th>
-                                                <th class="w-5">{% trans 'Remain (PO)' %}</th>
-                                                <th class="w-5">{% trans 'Quantity order' %}</th>
+                                                <th class="w-10">STT</th>
+                                                <th class="w-10"></th>
+                                                <th class="w-20">{% trans 'Product' %}</th>
+                                                <th class="w-10">{% trans 'PR Code' %}</th>
+                                                <th class="w-10">{% trans 'Unit Of Measure' %}</th>
+                                                <th class="w-10">{% trans 'Quantity' %}</th>
+                                                <th class="w-10">{% trans 'Remain (PO)' %}</th>
+                                                <th class="w-20">{% trans 'Quantity order' %}</th>
                                             </tr>
                                             </thead>
                                             <tbody>

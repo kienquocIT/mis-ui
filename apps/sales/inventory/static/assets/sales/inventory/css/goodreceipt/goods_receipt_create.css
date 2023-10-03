@@ -69,30 +69,18 @@
 }
 
 .modal-xlg-custom {
-    max-width: 1680px;
-    margin-left: 100px;
+    max-width: 100%;
+    height: 100%;
+    margin-left: 70px;
+}
+
+.modal-fullscreen.modal-fullscreen-custom {
+    width: 97vw;
+    height: 90%;
 }
 
 .inline-elements {
     display: inline-block;
-}
-
-.total-area .card {
-    margin-top: unset;
-    margin-bottom: unset;
-}
-
-.total-area .card.card-sm .card-body {
-    padding: 0.8rem;
-}
-
-.subtotal-area .card {
-    margin-top: unset;
-    margin-bottom: unset;
-}
-
-.subtotal-area .card.card-sm .card-body {
-    padding: 0.5rem;
 }
 
 

@@ -41,7 +41,7 @@ $(function () {
                         render: (data, type, row) => {
                             let status_data = {
                                 "For purchase order": "badge badge-soft-warning",
-                                "For inventory adjustment": "badge badge-soft-primary",
+                                "For inventory adjustment": "badge badge-soft-success",
                                 "For production": "badge badge-soft-info",
                             }
                             return `<span class="${status_data[row?.['goods_receipt_type']]}">${row?.['goods_receipt_type']}</span>`;
@@ -50,9 +50,16 @@ $(function () {
                     {
                         targets: 3,
                         render: (data, type, row) => {
-                            let ele = `<p></p>`;
-                            if (Object.keys(row?.['purchase_order']).length !== 0) {
-                                ele = `<p>${row?.['purchase_order']?.['title']}</p>`;
+                            let status_data = {
+                                "For purchase order": "badge badge-soft-warning",
+                                "For inventory adjustment": "badge badge-soft-success",
+                                "For production": "badge badge-soft-info",
+                            }
+                            let ele = `<span></span>`;
+                            if (row?.['goods_receipt_type'] === 'For purchase order') {
+                                ele = `<span class="${status_data[row?.['goods_receipt_type']]}">${row?.['purchase_order']?.['code']}</span>`;
+                            } else if (row?.['goods_receipt_type'] === 'For inventory adjustment') {
+                                ele = `<span class="${status_data[row?.['goods_receipt_type']]}">${row?.['inventory_adjustment']?.['code']}</span>`;
                             }
                             return ele;
                         }

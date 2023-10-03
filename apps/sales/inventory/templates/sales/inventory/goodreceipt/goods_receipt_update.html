@@ -18,7 +18,7 @@
 
 {% block pageContent %}
     <form
-            data-url="{% url 'GoodsReceiptDetailAPI' data.data.doc_id %}"
+            data-url="{% url 'GoodsReceiptDetailAPI' pk=pk %}"
             data-url-redirect="{% url 'GoodsReceiptList' %}"
             data-method="PUT"
             id="frm_good_receipt_create"
@@ -27,18 +27,10 @@
         {% csrf_token %}
         <div class="container-fluid">
             <div class="collapse multi-collapse show" id="collapseExample">
-                <div class="row mb-2">
-                    <div class="col-6"></div>
-                    <div class="col-6">
-                        <div class="row">
-                            <div class="col-8"></div>
-                            <div class="col-2">
-                                <h5 class="text-primary" id="goods-receipt-code"></h5>
-                            </div>
-                            <div class="col-2" id="goods-receipt-status">
-                                <span class="badge badge-soft-light">Draft</span>
-                            </div>
-                        </div>
+                <div class="row">
+                    <div class="d-flex justify-content-end">
+                        <h5 class="text-primary mr-3" id="goods-receipt-code"></h5>
+                        <span class="badge badge-soft-light" id="goods-receipt-status"></span>
                     </div>
                 </div>
                 <div class="row" id="common-information-area">
@@ -48,7 +40,7 @@
                             <div class="input-group">
                                 <span class="input-affix-wrapper">
                                     <span class="input-prefix">
-                                        <i class="fas fa-clipboard-check text-brown"></i>
+                                        <i class="fas fa-file-import text-orange"></i>
                                     </span>
                                     <select
                                         class="form-select"
@@ -130,7 +122,6 @@
                                             data-link-detail="{% url "PurchaseOrderDetail" 1 %}"
                                             name="purchase_order"
                                             data-keyResp="purchase_order_sale_list"
-                                            required
                                     ></select>
                                 </span>
                             </div>
@@ -160,7 +151,6 @@
                                             data-link-detail="{% url "AccountDetail" 1 %}"
                                             name="supplier"
                                             data-keyResp="account_sale_list"
-                                            required
                                     ></select>
                                 </span>
                             </div>
@@ -181,15 +171,15 @@
                 <div class="row custom-area" id="custom-area-2" hidden>
                     <div class="col-6">
                         <div class="form-group">
-                            <label class="form-label" for="box-good-receipt-ia-number">{% trans 'IA number' %}</label>
+                            <label class="form-label" for="box-good-receipt-inventory-adjustment">{% trans 'IA number' %}<span class="required"></span></label>
                             <select
                                     class="form-select"
-                                    id="box-good-receipt-ia-number"
-                                    data-url="{% url 'InventoryAdjustmentListAPI' %}"
+                                    id="box-good-receipt-inventory-adjustment"
+                                    data-url="{% url 'InventoryAdjustmentOtherListAPI' %}"
                                     data-method="GET"
                                     data-link-detail=""
-                                    name="ia_number"
-                                    data-keyResp="inventory_adjustment_list"
+                                    name="inventory_adjustment"
+                                    data-keyResp="inventory_adjustment_other_list"
                             >
                             </select>
                         </div>
@@ -209,7 +199,6 @@
                                     data-link-detail=""
                                     name="product_order"
                                     data-keyResp=""
-{#                                    required#}
                             >
                             </select>
                         </div>
@@ -276,105 +265,109 @@
 
                 <div class="tab-content" id="tab-content-quotation-product">
                     <div class="tab-pane fade show active" id="tab_line_detail">
-                        <div class="row">
-                            <table
-                                id="datable-good-receipt-line-detail"
-                                class="table nowrap w-100 mb-5"
-                                data-url=""
-                                data-method="get"
-                            >
-                                <thead>
-                                <tr>
-                                    <th class="w-5">#</th>
-                                    <th>{% trans 'Product' %}<span class="required"></span></th>
-                                    <th class="w-10">{% trans 'Description' %}</th>
-                                    <th>UoM<span class="required"></span></th>
-                                    <th>{% trans 'Quantity' %}<span class="required"></span></th>
-                                    <th class="w-20">{% trans 'Unit Price' %}<span class="required"></span></th>
-                                    <th>{% trans 'Tax' %}</th>
-                                    <th class="w-20">{% trans 'Subtotal Price' %}</th>
-                                    <th class="w-5">{% trans 'Actions' %}</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                            </table>
+                        <div class="row custom-line-detail" id="custom-line-detail-1">
                             <div class="row">
-                                <div class="col-2">
-                                    <button
-                                        type="button"
-                                        class="btn btn-link btn-animated"
-                                        id="btn-edit-product-good-receipt"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#productModalCenter"
-                                    >
-                                        <span><span class="icon"><span class="feather-icon"><i class="far fa-edit"></i></span></span><span>{% trans 'Edit' %} {% trans 'Product' %}</span></span>
-                                    </button>
-
-                                    <button type="button" class="btn btn-link btn-animated" id="btn-add-product-good-receipt" hidden>
-                                        <span><span class="icon"><span class="feather-icon"><i class="fa-regular fa-square-plus"></i></span></span><span>{% trans 'Add Product' %}</span></span>
-                                    </button>
-                                </div>
-                                <div class="col-10"></div>
+                                <table
+                                    id="datable-good-receipt-line-detail-po"
+                                    class="table nowrap w-100 mb-5"
+                                    data-url=""
+                                    data-method="get"
+                                >
+                                    <thead>
+                                    <tr>
+                                        <th class="w-5">#</th>
+                                        <th class="w-15">{% trans 'Product' %}<span class="required"></span></th>
+                                        <th class="w-20">{% trans 'Description' %}</th>
+                                        <th class="w-5">UoM<span class="required"></span></th>
+                                        <th class="w-5">{% trans 'Quantity' %}<span class="required"></span></th>
+                                        <th class="w-20">{% trans 'Unit Price' %}<span class="required"></span></th>
+                                        <th class="w-5">{% trans 'Tax' %}</th>
+                                        <th class="w-20">{% trans 'Subtotal Price' %}</th>
+                                        <th class="w-5">{% trans 'Actions' %}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                    <tfoot>
+                                    <tr>
+                                        <th colspan="2" class="align-text-top">
+                                            <div class="row">
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-link btn-animated"
+                                                    id="btn-edit-product-good-receipt"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#productModalCenter"
+                                                >
+                                                    <span><span class="icon"><span class="feather-icon"><i class="far fa-edit"></i></span></span><span>{% trans 'Edit' %} {% trans 'Product' %}</span></span>
+                                                </button>
+                                            </div>
+                                        </th>
+                                        <th colspan="2"></th>
+                                        <th colspan="5">
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <h6 class="mb-3" style="text-align: right">{% trans 'Pretax Amount' %}:</h6>
+                                                </div>
+                                                <div class="col-1"></div>
+                                                <div class="col-5">
+                                                    <h6 class="mb-3"><span class="mask-money" data-init-money="0" id="good-receipt-product-pretax-amount"></span></h6>
+                                                    <input id="good-receipt-product-pretax-amount-raw" type="text" class="form-control" value="0" hidden>
+                                                    <input type="hidden" id="good-receipt-final-revenue-before-tax">
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <h6 class="mb-3" style="text-align: right">{% trans 'Taxes' %}:</h6>
+                                                </div>
+                                                <div class="col-1"></div>
+                                                <div class="col-5">
+                                                    <h6 class="mb-3"><span class="mask-money" data-init-money="0" id="good-receipt-product-taxes"></span></h6>
+                                                    <input id="good-receipt-product-taxes-raw" type="text" class="form-control" value="0" hidden>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <h6 class="mb-3" style="text-align: right">{% trans 'Total' %}:</h6>
+                                                </div>
+                                                <div class="col-1"></div>
+                                                <div class="col-5">
+                                                    <h6 class="mb-3"><span class="mask-money" data-init-money="0" id="good-receipt-product-total"></span></h6>
+                                                    <input id="good-receipt-product-total-raw" type="text" class="form-control" value="0" hidden>
+                                                </div>
+                                            </div>
+                                        </th>
+                                    </tr>
+                                    </tfoot>
+                                </table>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-6"></div>
-                            <div class="col-6" id="quotation-tab-product-totals">
-                                <div class="row mb-2">
-                                    <div class="col-4"><p>{% trans 'Pretax Amount' %}</p></div>
-                                    <div class="col-1"></div>
-                                    <div class="col-7 total-area">
-                                        <div class="card card-sm">
-                                            <span class="card-body mask-money" data-init-money="0" id="good-receipt-product-pretax-amount"></span>
-                                        </div>
-                                        <input
-                                            id="good-receipt-product-pretax-amount-raw"
-                                            type="text"
-                                            class="form-control"
-                                            value="0"
-                                            hidden
-                                        >
-                                        <input
-                                            type="hidden"
-                                            id="good-receipt-final-revenue-before-tax"
-                                        >
-                                    </div>
-                                </div>
-                                <div class="row mb-2">
-                                    <div class="col-4"><p>{% trans 'Taxes' %}</p></div>
-                                    <div class="col-1"></div>
-                                    <div class="col-7 total-area">
-                                        <div class="card card-sm">
-                                            <span class="card-body mask-money" data-init-money="0" id="good-receipt-product-taxes"></span>
-                                        </div>
-                                        <input
-                                            id="good-receipt-product-taxes-raw"
-                                            type="text"
-                                            class="form-control"
-                                            value="0"
-                                            hidden
-                                        >
-                                    </div>
-                                </div>
-                                <div class="row mb-2">
-                                    <div class="col-4"><b>{% trans 'Total' %}</b></div>
-                                    <div class="col-1"></div>
-                                    <div class="col-7 total-area">
-                                        <div class="card card-sm">
-                                            <span class="card-body mask-money" data-init-money="0" id="good-receipt-product-total"></span>
-                                        </div>
-                                        <input
-                                            id="good-receipt-product-total-raw"
-                                            type="text"
-                                            class="form-control"
-                                            value="0"
-                                            hidden
-                                        >
-                                    </div>
-                                </div>
+                        <div class="row custom-line-detail" id="custom-line-detail-2" hidden>
+                            <div class="row">
+                                <table
+                                    id="datable-good-receipt-line-detail-ia"
+                                    class="table nowrap w-100 mb-5"
+                                    data-url=""
+                                    data-method="get"
+                                >
+                                    <thead>
+                                    <tr>
+                                        <th class="w-5">#</th>
+                                        <th>{% trans 'Product' %}</th>
+                                        <th class="w-10">{% trans 'Description' %}</th>
+                                        <th>UoM</th>
+                                        <th>{% trans 'Quantity' %}</th>
+                                        <th>{% trans 'Warehouse' %}</th>
+                                        <th class="w-20">{% trans 'Unit Cost' %}</th>
+                                        <th class="w-20">{% trans 'Subtotal Price' %}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
+                        <div class="row custom-line-detail" id="custom-line-detail-3" hidden></div>
                     </div>
                     <div class="tab-pane fade" id="tab_attachment">
                         <div class="form-group">
@@ -402,8 +395,8 @@
             id="app-trans-factory"
             data-view-detail-info="{% trans 'View detail' %}"
             data-more-information="{% trans 'More information' %}"
-            data-validate-import="{% trans 'Quantity must be purchase order quantity' %}"
-            data-validate-manage-lot="{% trans 'Must check one warehouse' %}"
+            data-validate-import="{% trans 'Quantity import must be less than purchase order quantity' %}"
+            data-validate-no-warehouse="{% trans 'Must select one warehouse' %}"
         >
         <input
             type="hidden"
@@ -439,14 +432,14 @@
 
 
         <div class="modal fade mt-5" id="productModalCenter" tabindex="-1" role="dialog" aria-labelledby="productModalCenter" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-xlg-custom" role="document">
+            <div class="modal-dialog modal-dialog-centered modal-fullscreen modal-fullscreen-custom ml-5 mt-5" role="document">
                 <div class="modal-content">
                     <div class="modal-body">
-                        <div class="row mb-2"><h6>{% trans 'Product list' %}</h6></div>
+                        <div class="row ml-2"><h6>{% trans 'Product list' %}</h6></div>
                         <div class="row">
                             <div class="col-6">
                                 <div class="row mb-2">
-                                    <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-250p position-relative overflow-y-scroll">
+                                    <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-350p position-relative overflow-y-scroll">
                                         <table
                                             id="datable-good-receipt-po-product"
                                             class="table nowrap w-100"
@@ -470,7 +463,7 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-250p position-relative overflow-y-scroll" id="scroll-table-pr" hidden>
+                                    <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-350p position-relative overflow-y-scroll" id="scroll-table-pr" hidden>
                                         <table
                                             id="datable-good-receipt-purchase-request"
                                             class="table nowrap w-100"
@@ -496,7 +489,7 @@
                             </div>
                             <div class="col-6">
                                 <div class="row mb-2">
-                                    <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-250p position-relative overflow-y-scroll">
+                                    <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-350p position-relative overflow-y-scroll">
                                         <table
                                             id="datable-good-receipt-warehouse"
                                             class="table nowrap w-100"
@@ -544,7 +537,7 @@
                                             </button>
                                         </div>
                                     </div>
-                                    <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-250p position-relative overflow-y-scroll" id="scroll-table-lot-serial" hidden>
+                                    <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-350p position-relative overflow-y-scroll" id="scroll-table-lot-serial" hidden>
                                         <button
                                             type="button"
                                             class="btn btn-success bg-green-light-5 w-40"
@@ -564,8 +557,8 @@
                                             >
                                                 <thead>
                                                 <tr>
-                                                    <th>{% trans 'Lot number' %}</th>
-                                                    <th>{% trans 'Quantity' %}</th>
+                                                    <th>{% trans 'Lot number' %}<span class="required"></span></th>
+                                                    <th>{% trans 'Quantity' %}<span class="required"></span></th>
                                                     <th>{% trans 'Expiration date' %}</th>
                                                     <th>{% trans 'Manufacturing date' %}</th>
                                                 </tr>
@@ -588,8 +581,8 @@
                                             >
                                                 <thead>
                                                 <tr>
-                                                    <th>{% trans 'Venedor serial no.' %}</th>
-                                                    <th>{% trans 'Serial no.' %}</th>
+                                                    <th>{% trans 'Venedor serial no.' %}<span class="required"></span></th>
+                                                    <th>{% trans 'Serial no.' %}<span class="required"></span></th>
                                                     <th>{% trans 'Expiration date' %}</th>
                                                     <th>{% trans 'Mfr date' %}</th>
                                                     <th>{% trans 'Warranty start' %}</th>
@@ -599,6 +592,10 @@
                                                 <tbody>
                                                 </tbody>
                                             </table>
+
+                                            <button type="button" class="btn btn-link btn-animated" id="btn-add-manage-serial">
+                                                <span><span class="icon"><span class="feather-icon"><i class="fa-regular fa-square-plus"></i></span></span><span>{% trans 'Add new' %}</span></span>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>

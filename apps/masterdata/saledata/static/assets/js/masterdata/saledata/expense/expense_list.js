@@ -45,15 +45,6 @@ $(document).ready(function () {
                             )
                         }
                     },
-                    {
-                        data: 'expense_type',
-                        className: 'wrap-text',
-                        render: (data, type, row, meta) => {
-                            return `<span>{0}</span></a>`.format_by_idx(
-                                row.expense_type.title,
-                            )
-                        }
-                    }
                 ],
             });
         }

@@ -14,19 +14,16 @@ $(function () {
                 advance_payment: {
                     required: true,
                 },
-                sale_code: {
-                    required: true,
-                },
                 method: {
                     required: true,
                 },
                 date_created: {
                     required: true,
                 },
-                creator: {
+                employee_created: {
                     required: true,
                 },
-                beneficiary: {
+                employee_inherit: {
                     required: true,
                 }
             },

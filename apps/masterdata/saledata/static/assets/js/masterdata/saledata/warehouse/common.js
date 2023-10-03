@@ -35,10 +35,8 @@ class WarehouseLoadPage {
     static loadAgency(data) {
         agencyEle.initSelect2({
             data: data,
-            callbackDataResp(resp, keyResp) {
-                return resp.data[keyResp].filter(function (item) {
-                    return item.account_type.includes('Partner');
-                });
+            dataParams: {
+                'account_types_mapped__account_type_order': 2
             }
         })
     }

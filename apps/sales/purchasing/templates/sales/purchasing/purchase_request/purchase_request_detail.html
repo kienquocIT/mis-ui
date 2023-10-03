@@ -73,11 +73,12 @@
                     <select
                             class="form-control select2"
                             id="box-select-supplier"
+                            name="supplier"
                             data-method="GET"
-                            data-url="{% url "AccountListAPI" %}"
-                            data-keyResp="account_list"
+                            data-url="{% url "AccountForSaleListAPI" %}"
+                            data-keyResp="account_sale_list"
                             data-keyText="name"
-                            disabled
+                            required
                     >
                     </select>
                 </span>

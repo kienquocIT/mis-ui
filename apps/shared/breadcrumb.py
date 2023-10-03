@@ -58,9 +58,6 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
 
     # TENANT_INFORMATION_PAGE = BreadcrumbChildren('Tenant Information', 'TenantInformation')
 
-    # components
-    COMPONENTS_PAGE = BreadcrumbChildren(_('Component'), 'ComponentCollections')
-
     # Workflow
     WORKFLOW_LIST_PAGE = BreadcrumbChildren(_('Workflow'), 'WorkflowList')
     WORKFLOW_CREATE_PAGE = BreadcrumbChildren(_('Workflow create'), 'WorkflowCreate')
@@ -239,11 +236,16 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     # Goods transfer
     GOODS_TRANSFER_LIST_PAGE = BreadcrumbChildren(_('Goods Transfer'), 'GoodsTransferList')
 
+    #Goods issue
+    GOODS_ISSUE_LIST_PAGE = BreadcrumbChildren(_('Goods Issue'), 'GoodsIssueList')
+
     # E-Office
-    # Leave
+    #  Leave
     LEAVE_CONFIG = BreadcrumbChildren(
         _('Leave Config'), 'LeaveConfigDetail'
     )
+    # Working calendar
+    WORKING_CALENDAR_CONFIG = BreadcrumbChildren(_('Working calendar'), 'WorkingCalendarConfig')
 
 
 class BreadcrumbView:
@@ -641,7 +643,12 @@ class BreadcrumbView:
 
     # e-office Leave
     LEAVE_CONFIG_PAGE = [
+        BreadcrumbItem.HOME_PAGE,
         BreadcrumbItem.LEAVE_CONFIG
+    ]
+    WORKING_CALENDAR_CONFIG = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.WORKING_CALENDAR_CONFIG
     ]
 
     # Purchase request config
@@ -657,4 +664,9 @@ class BreadcrumbView:
     GOODS_TRANSFER_LIST_PAGE = [BreadcrumbItem.GOODS_TRANSFER_LIST_PAGE]
     GOODS_TRANSFER_CREATE_PAGE = GOODS_TRANSFER_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
     GOODS_TRANSFER_DETAIL_PAGE = GOODS_TRANSFER_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+
+    # Goods issue
+    GOODS_ISSUE_LIST_PAGE = [BreadcrumbItem.GOODS_ISSUE_LIST_PAGE]
+    GOODS_ISSUE_CREATE_PAGE = GOODS_ISSUE_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+    GOODS_ISSUE_DETAIL_PAGE = GOODS_ISSUE_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
 

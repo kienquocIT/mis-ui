@@ -2185,7 +2185,7 @@ msgstr "Hậu cần"
 
 #
 msgid "Cost"
-msgstr "Giá trị"
+msgstr "Giá vốn"
 
 #
 msgid "Expense"

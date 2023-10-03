@@ -10,4 +10,19 @@ DELIVERY_DATA_MAP = {
     'remarks': FieldMapCommon(
         name_mapping=['remarks'],
     ).data,
+    'employee_inherit': FieldMapCommon(
+        name_mapping=['employee_inherit'],
+    ).data,
+    'attachments': FieldMapCommon(
+        name_mapping=['attachments'],
+    ).data,
+    'shipping_address': FieldMapCommon(
+        name_mapping=['shipping_address'],
+    ).data,
+    'billing_address': FieldMapCommon(
+        name_mapping=['billing_address'],
+    ).data,
+    'ready_quantity': FieldMapCommon(
+        name_mapping=['ready_quantity'],
+    ).data,
 }

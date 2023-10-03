@@ -296,7 +296,7 @@
                         <div class="row">
                             <div class="col-5 border">
                                 <table id="datatable-sale-order" class="table nowrap w-100 mb-5"
-                                       data-url="{% url "SaleOrderListAPI" %}"
+                                       data-url="{% url "SaleOrderPurchasingStaffListAPI" %}"
                                        data-method="GET">
                                     <thead>
                                     <th class="w-5">#</th>
@@ -432,6 +432,7 @@
 
 {% endblock %}
 {% block dataHiddenGroup %}
+    <input id="employee_current_id" value="{{ request.user.employee_current_data.id }}"/>
     <input id="trans-factory"
            data-trans-more-info="{% trans 'More Information' %}"
            data-trans-more="{% trans 'More' %}"
@@ -439,9 +440,11 @@
            data-trans-code="{% trans 'Code' %}"
            data-trans-view-detail="{% trans 'View Detail' %}"
            data-trans-request-greater-remain="{% trans "Num of product request can not greater than num of product remain" %}"
+           data-trans-enter-request="{% trans 'Request number can not blank' %}"
     />
 
     <input type="text" id="url-factory"
+           data-url-config="{% url 'PurchaseRequestConfigAPI' %}"
            data-url-product-detail="{% url 'ProductDetail' pk=0 %}"
            data-url-account-detail="{% url 'AccountDetail' pk=0 %}"
            data-url-contact-detail="{% url 'ContactDetail' pk=0 %}"
@@ -449,7 +452,7 @@
            data-url-uom-group="{% url 'UnitOfMeasureGroupListAPI' %}"
            data-url-this-page="{% url 'PurchaseRequestCreate' %}"
            data-url-uom="{% url 'UnitOfMeasureListAPI' %}"
-    >
+    />
 {% endblock %}
 
 {% block jsFooter %}

@@ -60,16 +60,16 @@ $(function () {
                 date_created: {
                     required: true,
                 },
-                employee_created: {
+                employee_created_id: {
                     required: true,
                 },
-                employee_inherit: {
+                employee_inherit_id: {
                     required: true,
                 }
             },
             submitHandler: function (form) {
                 let frm = new SetupFormSubmit($(form));
-                frm.dataForm['employee_created'] = $('[name="employee_created"]').attr('data-id');
+                frm.dataForm['employee_created_id'] = $('[name="employee_created_id"]').attr('data-id');
                 frm.dataForm['status'] = 0;
                 frm.dataForm['money_received'] = !!$('#money-received').is(':checked');
                 let tbProduct = $('#dtbProduct');
@@ -87,7 +87,7 @@ $(function () {
                 frm.dataForm['return_total'] = $('#total-value').attr('data-init-money');
 
                 frm.dataForm['advance_payment'] = $('#chooseAdvancePayment').val();
-                frm.dataForm['employee_inherit'] = $('#chooseBeneficiary').val();
+                frm.dataForm['employee_inherit_id'] = $('#chooseBeneficiary').val();
 
                 $.fn.callAjax2({
                     'url': frm.dataUrl,

@@ -146,7 +146,6 @@ $(document).ready(async function () {
 
     // even in tab product
     $('#btn-add-select-product').on('click', function () {
-        // OpportunityLoadDetail.getDataProduct();
         OpportunityLoadDetail.addRowSelectProduct();
     })
 
@@ -217,8 +216,6 @@ $(document).ready(async function () {
             tax_ele,
             product?.['sale_information'].tax_code,
         )
-
-
     })
 
     $(document).on('change', '.input-unit-price', function () {
@@ -371,41 +368,39 @@ $(document).ready(async function () {
     })
 
     // submit form edit
-    SetupFormSubmit.validate(
-        frmDetail,
-        {
-            submitHandler: function (form) {
-                let frm = new SetupFormSubmit($(form));
-                autoLoadStage(
-                    true,
-                    false,
-                    list_stage_condition,
-                    list_stage,
-                    condition_sale_oder_approved,
-                    condition_is_quotation_confirm,
-                    condition_sale_oder_delivery_status,
-                    config_is_input_rate,
-                    dict_stage
-                );
-                frm.dataForm = OpportunityLoadDetail.getDataForm(frm.dataForm);
-                $.fn.callAjax2({
-                    url: frm.dataUrl.format_url_with_uuid(pk),
-                    method: frm.dataMethod,
-                    data: frm.dataForm,
-                }).then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
-                            $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
-                        }
-                    },
-                    (errs) => {
-                        $.fn.notifyB({description: errs.data.errors}, 'failure');
+    new SetupFormSubmit(frmDetail).validate({
+        submitHandler: function (form) {
+            let frm = new SetupFormSubmit($(form));
+            autoLoadStage(
+                true,
+                false,
+                list_stage_condition,
+                list_stage,
+                condition_sale_oder_approved,
+                condition_is_quotation_confirm,
+                condition_sale_oder_delivery_status,
+                config_is_input_rate,
+                dict_stage
+            );
+            frm.dataForm = OpportunityLoadDetail.getDataForm(frm.dataForm);
+            $.fn.callAjax2({
+                url: frm.dataUrl.format_url_with_uuid(pk),
+                method: frm.dataMethod,
+                data: frm.dataForm,
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
+                        $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
                     }
-                )
-            }
-        })
+                },
+                (errs) => {
+                    $.fn.notifyB({description: errs.data.errors}, 'failure');
+                }
+            )
+        }
+    })
 
     $(document).on('click', '.btn-del-item', function () {
         OpportunityLoadDetail.delRowTable($(this));
@@ -613,8 +608,7 @@ $(document).ready(async function () {
         let tr_current = $(this).closest('tr');
         if (OpportunityLoadDetail.checkAllPermissionChecked(tr_current)) {
             tr_current.find('.check-all').prop('checked', true);
-        }
-        else{
+        } else {
             tr_current.find('.check-all').prop('checked', false);
         }
     })

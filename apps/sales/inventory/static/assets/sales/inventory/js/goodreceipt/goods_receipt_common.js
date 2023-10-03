@@ -1199,7 +1199,7 @@ class GRDataTableHandle {
                     targets: 2,
                     render: (data, type, row) => {
                         return `<div class="row">
-                                    <input type="text" class="form-control table-row-description" value="${row.product_description}">
+                                    <p><span class="table-row-description">${row?.['product']?.['description'] ? row?.['product']?.['description'] : ''}</span></p>
                                 </div>`;
                     }
                 },
@@ -1376,7 +1376,7 @@ class GRDataTableHandle {
                     targets: 2,
                     render: (data, type, row) => {
                         return `<div class="row">
-                                    <input type="text" class="form-control table-row-description" value="${row?.['product_description'] ? row?.['product_description'] : ''}" disabled>
+                                    <p><span class="table-row-description">${row?.['product']?.['description'] ? row?.['product']?.['description'] : ''}</span></p>
                                 </div>`;
                     }
                 },
@@ -1747,7 +1747,7 @@ class GRSubmitHandle {
                             order++;
                             let dataRow = JSON.parse(dataRowRaw);
                             dataRow['purchase_order_product'] = dataRow?.['id'];
-                            dataRow['product_description'] = dataRow?.['product_description'] ? dataRow?.['product_description'] : '';
+                            dataRow['product_description'] = dataRow?.['product']?.['description'] ? dataRow?.['product']?.['description'] : '';
                             dataRow['uom'] = dataRow?.['uom_order_actual'];
                             dataRow['quantity_import'] = quantityImport;
                             dataRow['order'] = order;
@@ -1877,7 +1877,7 @@ class GRSubmitHandle {
                     }
                     let eleDescription = row.querySelector('.table-row-description');
                     if (eleDescription) {
-                        rowData['product_description'] = eleDescription.value;
+                        rowData['product_description'] = eleDescription.innerHTML;
                     }
                     let eleUOM = row.querySelector('.table-row-uom');
                     if ($(eleUOM).val()) {

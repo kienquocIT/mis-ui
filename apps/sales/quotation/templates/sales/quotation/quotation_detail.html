@@ -49,6 +49,7 @@
                             <div class="d-flex justify-content-end">
                                 <h5 class="text-primary mr-3" id="quotation-create-code"></h5>
                                 <span class="badge badge-soft-light" id="quotation-create-status"></span>
+                                <button type="button" class="btn btn-soft-primary ml-3" id="printButton"><span><span class="icon"><span class="feather-icon"><i class="fas fa-print"></i></span></span><span>{% trans 'Print' %}</span></span></button>
                             </div>
                         </div>
                         <div class="row">
@@ -702,6 +703,9 @@
                                 type="hidden"
                                 id="quotation-copy-discount-on-total"
                         >
+                        <div class="hidden">
+                            <textarea id="quotation-tinymce">...</textarea>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -771,9 +775,12 @@
     <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
 
+    <script src="{% static 'vendors/tinymce/tinymce.min.js' %}"></script>
+
     <script src="{% static 'assets/sales/quotation/js/quotation_promote_shipping.js' %}"></script>
     <script src="{% static 'assets/sales/quotation/js/quotation_common.js' %}"></script>
     <script src="{% static 'assets/sales/quotation/js/quotation_create.js' %}"></script>
     <script src="{% static 'assets/sales/quotation/js/quotation_detail.js' %}"></script>
     <script src="{% static 'assets/sales/quotation/js/quotation_indicator.js' %}"></script>
+    <script src="{% static 'assets/sales/quotation/js/quotation_print.js' %}"></script>
 {% endblock %}

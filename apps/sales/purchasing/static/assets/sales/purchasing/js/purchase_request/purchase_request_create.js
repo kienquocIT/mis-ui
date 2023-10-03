@@ -1,4 +1,4 @@
-$(document).ready(function () {
+$(document).ready(async function () {
 
     const searchParams = new URLSearchParams(window.location.search);
     const param = searchParams.get("type");
@@ -18,7 +18,7 @@ $(document).ready(function () {
             ele_request_for.attr('data-id', 0);
             ele_sale_order.closest('.form-group').removeClass('hidden');
             btn_add_product.addClass('hidden');
-            PurchaseRequestAction.loadSaleOrder();
+            await PurchaseRequestAction.loadSaleOrder();
             PurchaseRequestAction.loadDtbSOProduct([]);
             break;
         case 'stock':
@@ -68,8 +68,12 @@ $(document).ready(function () {
         let ele_url = urlEle;
         let table_pr_product = $('#datatable-pr-product').DataTable();
         table_pr_product.clear().draw();
+        let is_input_request = true;
         $('.inp-check-so-product:checked').each(function () {
             let num_request = $(this).closest('tr').find('.inp-request-so-product').val();
+            if (num_request === '') {
+                is_input_request = false;
+            }
             let product = dict_so_product[$(this).data('id')];
             let data_temp = {
                 'id': product.id,
@@ -87,25 +91,30 @@ $(document).ready(function () {
             ele_new_product.find('.span-product-code').text(product.product.code);
             ele_new_product.find('.span-product-uom').text(product.product.uom.title);
             ele_new_product.find('.span-product-uom-group').text(product.product.uom_group);
-
             PurchaseRequestLoadPage.loadTax(ele_new_product.find('.box-select-tax'), product.product.tax_code);
         })
-
         let ele_so_selected = $('.inp-check-so:checked');
         let ele_so = $('[name="sale_order"]');
         ele_so.val(ele_so_selected.closest('tr').find('.p-so-code').text());
         ele_so.attr('data-id', ele_so_selected.data('id'));
-
-        $('#modal-select-sale-order').modal('hide');
+        if (is_input_request) {
+            $('#modal-select-sale-order').modal('hide');
+        }
+        else{
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: transEle.data('trans-enter-request'),
+            })
+        }
     })
 
     $(document).on('change', '.inp-request-so-product', function () {
-        let ele_trans = $('#trans-factory');
         if (parseInt($(this).val()) > parseInt($(this).closest('tr').find('.p-so-product-remain').text())) {
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
-                text: ele_trans.data('trans-request-greater-remain'),
+                text: transEle.data('trans-request-greater-remain'),
             })
             $(this).val(0);
             $(this).closest('tr').find('.inp-check-so-product').prop('checked', false)
@@ -171,14 +180,14 @@ $(document).ready(function () {
         PurchaseRequestAction.delOptionProductSelected($(this));
     })
 
-    $(document).on('click', '#btn-select-type-sale-order', function () {
+    $(document).on('click', '#btn-select-type-sale-order', async function () {
         PurchaseRequestAction.updateURLParameter('sale-order');
         ele_request_for.val('Sale Order');
         ele_request_for.attr('data-id', 0);
         ele_sale_order.closest('.form-group').removeClass('hidden');
         btn_add_product.addClass('hidden');
         btn_change_pr_product.removeClass('hidden');
-        PurchaseRequestAction.loadSaleOrder();
+        await PurchaseRequestAction.loadSaleOrder();
         PurchaseRequestAction.loadDtbSOProduct([]);
         PurchaseRequestAction.deleteDtbPRProduct();
         $(this).closest('.modal').modal('hide');

@@ -4,6 +4,7 @@ $(function () {
         const account_list = JSON.parse($('#account_list').text());
         const contact_list = JSON.parse($('#contact_list').text());
         const opportunity_list = JSON.parse($('#opportunity_list').text());
+        let EMAIL_LIST = []
 
         $('#email-to-select-box').select2({
             dropdownParent: $("#send-email"),
@@ -153,6 +154,7 @@ $(function () {
                         dataSrc: function (resp) {
                             let data = $.fn.switcherResp(resp);
                             if (data && resp.data.hasOwnProperty('email_list')) {
+                                EMAIL_LIST = resp.data['email_list']
                                 return resp.data['email_list'] ? resp.data['email_list'] : [];
                             }
                             throw Error('Call data raise errors.')
@@ -214,7 +216,7 @@ $(function () {
 
         $(document).on('click', '#table_opportunity_email_list .detail-email-button', function () {
             let email_id = $(this).attr('data-id');
-            let email_obj = JSON.parse($('#email_list').text()).filter(function(item) {
+            let email_obj = EMAIL_LIST.filter(function(item) {
                 return item.id === email_id;
             })[0]
             $('#detail-email-subject-input').val(email_obj.subject);

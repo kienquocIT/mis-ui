@@ -19,7 +19,7 @@
 
 {% block pageContent %}
     <form
-            data-url="{% url 'PurchaseOrderDetailAPI' data.data.doc_id %}"
+            data-url="{% url 'PurchaseOrderDetailAPI' pk=pk %}"
             data-url-redirect="{% url 'PurchaseOrderList' %}"
             data-method="PUT"
             id="frm_purchase_order_create"
@@ -215,16 +215,16 @@
                                     <thead>
                                     <tr>
                                         <th class="w-5">#</th>
-                                        <th class="w-20">{% trans 'Product' %}</th>
-    {#                                    <th>{% trans 'Description' %}</th>#}
+                                        <th class="w-5">{% trans 'Product' %}</th>
+                                        <th class="w-15">{% trans 'Description' %}</th>
                                         <th class="w-5">UoM (PR)</th>
                                         <th class="w-5">{% trans 'Quantity' %} (PR)</th>
                                         <th class="w-5">{% trans 'Stock' %}</th>
                                         <th class="w-5">UoM (PO)<span class="required"></span></th>
                                         <th class="w-5">{% trans 'Quantity' %} (PO)<span class="required"></span></th>
-                                        <th class="w-20">{% trans 'Unit Price' %}<span class="required"></span></th>
+                                        <th class="w-25">{% trans 'Unit Price' %}<span class="required"></span></th>
                                         <th class="w-5">{% trans 'Tax' %}</th>
-                                        <th class="w-25">{% trans 'Subtotal Price' %}</th>
+                                        <th class="w-20">{% trans 'Subtotal Price' %}</th>
                                     </tr>
                                     </thead>
                                     <tbody>

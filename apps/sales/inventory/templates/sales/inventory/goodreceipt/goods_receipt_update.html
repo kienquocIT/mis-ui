@@ -18,7 +18,7 @@
 
 {% block pageContent %}
     <form
-            data-url="{% url 'GoodsReceiptDetailAPI' data.data.doc_id %}"
+            data-url="{% url 'GoodsReceiptDetailAPI' pk=pk %}"
             data-url-redirect="{% url 'GoodsReceiptList' %}"
             data-method="PUT"
             id="frm_good_receipt_create"

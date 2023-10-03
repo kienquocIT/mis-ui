@@ -790,7 +790,9 @@ class QuotationLoadDataHandle {
             if (!['Added', 'Finish'].includes(data?.['system_status'])) {
                 let btnCopy = document.getElementById('btn-copy-quotation');
                 let eleTooltipBtnCopy = document.getElementById('tooltip-btn-copy');
-                btnCopy.setAttribute('disabled', 'true');
+                if (btnCopy) {
+                    btnCopy.setAttribute('disabled', 'true');
+                }
                 if (eleTooltipBtnCopy) {
                     eleTooltipBtnCopy.removeAttribute('data-bs-original-title');
                     eleTooltipBtnCopy.setAttribute('data-bs-placement', 'top');

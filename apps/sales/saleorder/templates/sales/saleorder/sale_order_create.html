@@ -53,7 +53,7 @@
                         <div class="row">
                             <div class="col-6">
                                 <div class="form-group">
-                                    <label class="form-label" for="quotation-create-title">{% trans 'Title' %}<span class="required"></span></label>
+                                    <label class="form-label required" for="quotation-create-title">{% trans 'Title' %}</label>
                                     <input
                                             type="text" class="form-control"
                                             name="title"
@@ -64,20 +64,18 @@
                                 <div class="form-group">
                                     <label class="form-label" for="select-box-quotation-create-opportunity">{% trans 'Select Opportunity' %}</label>
                                     <div class="input-group">
-                                        <span class="input-affix-wrapper">
-                                            <span class="input-prefix">
-                                                <div class="btn-group dropstart">
-                                                    <i
-                                                            class="fas fa-info-circle text-blue"
-                                                            data-bs-toggle="dropdown"
-                                                            data-dropdown-animation
-                                                            aria-haspopup="true"
-                                                            aria-expanded="false"
-                                                            disabled
-                                                    ></i>
-                                                    <div class="dropdown-menu w-210p mt-4"></div>
-                                                </div>
-                                            </span>
+                                        <div class="input-affix-wrapper">
+                                            <div class="dropstart input-prefix">
+                                                <i
+                                                        class="fas fa-info-circle text-blue"
+                                                        data-bs-toggle="dropdown"
+                                                        data-dropdown-animation
+                                                        aria-haspopup="true"
+                                                        aria-expanded="false"
+                                                        disabled
+                                                ></i>
+                                                <div class="dropdown-menu w-210p mt-4"></div>
+                                            </div>
                                             <select
                                                 class="form-select" id="select-box-quotation-create-opportunity"
                                                 data-url="{% url "OpportunityForSaleListAPI" %}"
@@ -86,26 +84,24 @@
                                                 name="opportunity"
                                                 data-keyResp="opportunity_sale_list"
                                             ></select>
-                                        </span>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label" for="select-box-quotation-create-customer">{% trans 'Select Customer' %}<span class="required"></span></label>
+                                    <label class="form-label required" for="select-box-quotation-create-customer">{% trans 'Select Customer' %}</label>
                                     <div class="input-group">
-                                        <span class="input-affix-wrapper">
-                                            <span class="input-prefix">
-                                                <div class="btn-group dropstart">
-                                                    <i
-                                                            class="fas fa-info-circle text-blue"
-                                                            data-bs-toggle="dropdown"
-                                                            data-dropdown-animation
-                                                            aria-haspopup="true"
-                                                            aria-expanded="false"
-                                                            disabled
-                                                    ></i>
-                                                    <div class="dropdown-menu w-210p mt-4"></div>
-                                                </div>
-                                            </span>
+                                        <div class="input-affix-wrapper">
+                                            <div class="dropstart input-prefix">
+                                                <i
+                                                        class="fas fa-info-circle text-blue"
+                                                        data-bs-toggle="dropdown"
+                                                        data-dropdown-animation
+                                                        aria-haspopup="true"
+                                                        aria-expanded="false"
+                                                        disabled
+                                                ></i>
+                                                <div class="dropdown-menu w-210p mt-4"></div>
+                                            </div>
                                             <select
                                                     class="form-select"
                                                     id="select-box-quotation-create-customer"
@@ -116,26 +112,24 @@
                                                     data-keyResp="account_sale_list"
                                                     required
                                             ></select>
-                                        </span>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label" for="select-box-quotation-create-contact">{% trans 'Select Contact' %}<span class="required"></span></label>
+                                    <label class="form-label required" for="select-box-quotation-create-contact">{% trans 'Select Contact' %}</label>
                                     <div class="input-group">
-                                        <span class="input-affix-wrapper">
-                                            <span class="input-prefix">
-                                                <div class="btn-group dropstart">
-                                                    <i
-                                                            class="fas fa-info-circle text-blue"
-                                                            data-bs-toggle="dropdown"
-                                                            data-dropdown-animation
-                                                            aria-haspopup="true"
-                                                            aria-expanded="false"
-                                                            disabled
-                                                    ></i>
-                                                    <div class="dropdown-menu w-210p mt-4"></div>
-                                                </div>
-                                            </span>
+                                        <div class="input-affix-wrapper">
+                                            <div class="dropstart input-prefix">
+                                                <i
+                                                        class="fas fa-info-circle text-blue"
+                                                        data-bs-toggle="dropdown"
+                                                        data-dropdown-animation
+                                                        aria-haspopup="true"
+                                                        aria-expanded="false"
+                                                        disabled
+                                                ></i>
+                                                <div class="dropdown-menu w-210p mt-4"></div>
+                                            </div>
                                             <select
                                                 class="form-select"
                                                 id="select-box-quotation-create-contact"
@@ -146,15 +140,15 @@
                                                 data-keyResp="contact_list"
                                                 required
                                             ></select>
-                                        </span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="form-group">
-                                    <label class="form-label" for="quotation-create-date-created">{% trans 'Date Created' %}<span class="required"></span></label>
+                                    <label class="form-label required" for="quotation-create-date-created">{% trans 'Date Created' %}</label>
                                     <div class="input-group">
-                                        <span class="input-affix-wrapper">
+                                        <div class="input-affix-wrapper">
                                             <input
                                                 type="text" class="form-control disabled-custom-show"
                                                 placeholder="dd/mm/yyyy"
@@ -163,26 +157,24 @@
                                                 disabled
                                                 required
                                             >
-                                        </span>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label" for="select-box-quotation-create-sale-person">{% trans 'Select Sale Person' %}<span class="required"></span></label>
+                                    <label class="form-label required" for="select-box-quotation-create-sale-person">{% trans 'Select Sale Person' %}</label>
                                     <div class="input-group">
-                                        <span class="input-affix-wrapper">
-                                            <span class="input-prefix">
-                                                <div class="btn-group dropstart">
-                                                    <i
-                                                            class="fas fa-info-circle text-blue"
-                                                            data-bs-toggle="dropdown"
-                                                            data-dropdown-animation
-                                                            aria-haspopup="true"
-                                                            aria-expanded="false"
-                                                            disabled
-                                                    ></i>
-                                                    <div class="dropdown-menu w-210p mt-4"></div>
-                                                </div>
-                                            </span>
+                                        <div class="input-affix-wrapper">
+                                            <div class="dropstart input-prefix">
+                                                <i
+                                                        class="fas fa-info-circle text-blue"
+                                                        data-bs-toggle="dropdown"
+                                                        data-dropdown-animation
+                                                        aria-haspopup="true"
+                                                        aria-expanded="false"
+                                                        disabled
+                                                ></i>
+                                                <div class="dropdown-menu w-210p mt-4"></div>
+                                            </div>
                                             <select
                                                 class="form-select"
                                                 id="select-box-quotation-create-sale-person"
@@ -193,26 +185,24 @@
                                                 data-keyResp="employee_list"
                                                 required
                                             ></select>
-                                        </span>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label" for="select-box-quotation-create-payment-term">{% trans 'Select Payment Terms' %}<span class="required"></span></label>
+                                    <label class="form-label required" for="select-box-quotation-create-payment-term">{% trans 'Select Payment Terms' %}</label>
                                     <div class="input-group">
-                                        <span class="input-affix-wrapper">
-                                            <span class="input-prefix">
-                                                <div class="btn-group dropstart">
-                                                    <i
-                                                            class="fas fa-info-circle text-blue"
-                                                            data-bs-toggle="dropdown"
-                                                            data-dropdown-animation
-                                                            aria-haspopup="true"
-                                                            aria-expanded="false"
-                                                            disabled
-                                                    ></i>
-                                                    <div class="dropdown-menu w-210p mt-4"></div>
-                                                </div>
-                                            </span>
+                                        <div class="input-affix-wrapper">
+                                            <div class="dropstart input-prefix">
+                                                <i
+                                                        class="fas fa-info-circle text-blue"
+                                                        data-bs-toggle="dropdown"
+                                                        data-dropdown-animation
+                                                        aria-haspopup="true"
+                                                        aria-expanded="false"
+                                                        disabled
+                                                ></i>
+                                                <div class="dropdown-menu w-210p mt-4"></div>
+                                            </div>
                                             <select
                                                     class="form-select"
                                                     id="select-box-quotation-create-payment-term"
@@ -223,26 +213,24 @@
                                                     data-keyResp="payment_terms_list"
                                                     required
                                             ></select>
-                                        </span>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label" for="select-box-quotation">{% trans 'Select Quotation' %}</label>
                                     <div class="input-group">
-                                        <span class="input-affix-wrapper">
-                                            <span class="input-prefix">
-                                                <div class="btn-group dropstart">
-                                                    <i
-                                                            class="fas fa-info-circle text-blue"
-                                                            data-bs-toggle="dropdown"
-                                                            data-dropdown-animation
-                                                            aria-haspopup="true"
-                                                            aria-expanded="false"
-                                                            disabled
-                                                    ></i>
-                                                    <div class="dropdown-menu w-210p mt-4"></div>
-                                                </div>
-                                            </span>
+                                        <div class="input-affix-wrapper">
+                                            <div class="dropstart input-prefix">
+                                                <i
+                                                        class="fas fa-info-circle text-blue"
+                                                        data-bs-toggle="dropdown"
+                                                        data-dropdown-animation
+                                                        aria-haspopup="true"
+                                                        aria-expanded="false"
+                                                        disabled
+                                                ></i>
+                                                <div class="dropdown-menu w-210p mt-4"></div>
+                                            </div>
                                             <select
                                                 class="form-select disabled-custom-show"
                                                 id="select-box-quotation"
@@ -252,7 +240,7 @@
                                                 name="quotation"
                                                 disabled
                                             ></select>
-                                        </span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -382,11 +370,11 @@
                                         <thead>
                                         <tr>
                                             <th>STT</th>
-                                            <th>{% trans 'Product' %}<span class="required"></span></th>
+                                            <th class="required">{% trans 'Product' %}</th>
                                             <th>{% trans 'Description' %}</th>
-                                            <th>{% trans 'Unit Of Measure' %}<span class="required"></span></th>
-                                            <th>{% trans 'Quantity' %}<span class="required"></span></th>
-                                            <th>{% trans 'Unit Price' %}<span class="required"></span></th>
+                                            <th class="required">{% trans 'Unit Of Measure' %}</th>
+                                            <th class="required">{% trans 'Quantity' %}</th>
+                                            <th class="required">{% trans 'Unit Price' %}</th>
                                             <th>{% trans 'Discount' %}</th>
                                             <th>{% trans 'Tax' %}</th>
                                             <th>{% trans 'Subtotal Price' %}</th>
@@ -660,7 +648,7 @@
                                             <th class="w-25">{% trans 'Product' %}</th>
                                             <th class="w-5">{% trans 'Unit Of Measure' %}</th>
                                             <th class="w-10">{% trans 'Quantity' %}</th>
-                                            <th class="w-20">{% trans 'Cost Price' %}<span class="required"></span></th>
+                                            <th class="w-20 required">{% trans 'Cost Price' %}</th>
                                             <th class="w-10">{% trans 'Tax' %}</th>
                                             <th class="w-20">{% trans 'Subtotal Price' %}</th>
                                             <th class="w-5">{% trans 'Actions' %}</th>
@@ -717,11 +705,11 @@
                                         <thead>
                                         <tr>
                                             <th class="w-5">STT</th>
-                                            <th class="w-15">{% trans 'Expense name' %}<span class="required"></span></th>
-                                            <th class="w-10">{% trans 'Expense items' %}<span class="required"></span></th>
-                                            <th class="w-10">{% trans 'Unit Of Measure' %}<span class="required"></span></th>
-                                            <th class="w-5">{% trans 'Quantity' %}<span class="required"></span></th>
-                                            <th class="w-20">{% trans 'Expense Price' %}<span class="required"></span></th>
+                                            <th class="w-15 required">{% trans 'Expense name' %}</th>
+                                            <th class="w-10 required">{% trans 'Expense items' %}</th>
+                                            <th class="w-10 required">{% trans 'Unit Of Measure' %}</th>
+                                            <th class="w-5 required">{% trans 'Quantity' %}</th>
+                                            <th class="w-20 required">{% trans 'Expense Price' %}</th>
                                             <th class="w-10">{% trans 'Tax' %}</th>
                                             <th class="w-20">{% trans 'Subtotal Price' %}</th>
                                             <th class="w-5">{% trans 'Actions' %}</th>

@@ -731,6 +731,27 @@ class QuotationLoadDataHandle {
         }
     };
 
+    static loadRowDisabled(row) {
+        if (row.querySelector('.table-row-item')) {
+            row.querySelector('.table-row-item').setAttribute('disabled', 'true');
+        }
+        if (row.querySelector('.table-row-uom')) {
+            row.querySelector('.table-row-uom').setAttribute('disabled', 'true');
+        }
+        if (row.querySelector('.table-row-quantity')) {
+            row.querySelector('.table-row-quantity').setAttribute('disabled', 'true');
+        }
+        if (row.querySelector('.table-row-price')) {
+            row.querySelector('.table-row-price').setAttribute('disabled', 'true');
+        }
+        if (row.querySelector('.table-row-discount')) {
+            row.querySelector('.table-row-discount').setAttribute('disabled', 'true');
+        }
+        if (row.querySelector('.table-row-tax')) {
+            row.querySelector('.table-row-tax').setAttribute('disabled', 'true');
+        }
+    };
+
     // Load detail
     static loadDetailQuotation(data, is_copy = false) {
         if (data?.['title'] && is_copy === false) {
@@ -919,15 +940,15 @@ class QuotationLoadDataHandle {
                 let dataRow = JSON.parse(row.querySelector('.table-row-order')?.getAttribute('data-row'));
                 if (is_expense === false) { // PRODUCT
                     $(row.querySelector('.table-row-item')).empty();
-                    QuotationLoadDataHandle.loadBoxQuotationProduct($(row.querySelector('.table-row-item')), dataRow.product);
+                    QuotationLoadDataHandle.loadBoxQuotationProduct($(row.querySelector('.table-row-item')), dataRow?.['product']);
                 } else { // EXPENSE
                     $(row.querySelector('.table-row-item')).empty();
-                    QuotationLoadDataHandle.loadBoxQuotationExpenseItem($(row.querySelector('.table-row-item')), dataRow.expense_item);
+                    QuotationLoadDataHandle.loadBoxQuotationExpenseItem($(row.querySelector('.table-row-item')), dataRow?.['expense_item']);
                 }
                 $(row.querySelector('.table-row-uom')).empty();
-                QuotationLoadDataHandle.loadBoxQuotationUOM($(row.querySelector('.table-row-uom')), dataRow.unit_of_measure);
+                QuotationLoadDataHandle.loadBoxQuotationUOM($(row.querySelector('.table-row-uom')), dataRow?.['unit_of_measure']);
                 $(row.querySelector('.table-row-tax')).empty();
-                QuotationLoadDataHandle.loadBoxQuotationTax($(row.querySelector('.table-row-tax')), dataRow.tax);
+                QuotationLoadDataHandle.loadBoxQuotationTax($(row.querySelector('.table-row-tax')), dataRow?.['tax']);
             }
         }
         return true;
@@ -938,9 +959,6 @@ class QuotationLoadDataHandle {
             ele.setAttribute('disabled', 'true');
         }
         for (let ele of table[0].querySelectorAll('.table-row-expense-title')) {
-            ele.setAttribute('disabled', 'true');
-        }
-        for (let ele of table[0].querySelectorAll('.table-row-description')) {
             ele.setAttribute('disabled', 'true');
         }
         for (let ele of table[0].querySelectorAll('.table-row-uom')) {
@@ -1020,7 +1038,7 @@ class QuotationDataTableHandle {
                     "targets": 4,
                 },
                 {
-                    "width": "20%",
+                    "width": "25%",
                     "targets": 5,
                 },
                 {
@@ -1032,7 +1050,7 @@ class QuotationDataTableHandle {
                     "targets": 7,
                 },
                 {
-                    "width": "20%",
+                    "width": "15%",
                     "targets": 8,
                 },
                 {
@@ -1055,21 +1073,19 @@ class QuotationDataTableHandle {
                             let selectProductID = 'quotation-create-product-box-product-' + String(row?.['order']);
                             return `<div class="row">
                                 <div class="input-group">
-                                    <span class="input-affix-wrapper">
-                                        <span class="input-prefix">
-                                            <div class="btn-group dropstart">
-                                                <i
-                                                    class="fas fa-info-circle text-blue"
-                                                    data-bs-toggle="dropdown"
-                                                    data-dropdown-animation
-                                                    aria-haspopup="true"
-                                                    aria-expanded="false"
-                                                    disabled
-                                                >
-                                                </i>
-                                                <div class="dropdown-menu w-210p mt-4"></div>
-                                            </div>
-                                        </span>
+                                    <div class="input-affix-wrapper">
+                                        <div class="dropstart input-prefix">
+                                            <i
+                                                class="fas fa-info-circle text-blue"
+                                                data-bs-toggle="dropdown"
+                                                data-dropdown-animation
+                                                aria-haspopup="true"
+                                                aria-expanded="false"
+                                                disabled
+                                            >
+                                            </i>
+                                            <div class="dropdown-menu w-210p mt-4"></div>
+                                        </div>
                                         <select 
                                         class="form-select table-row-item" 
                                         id="${selectProductID}"
@@ -1079,14 +1095,14 @@ class QuotationDataTableHandle {
                                         data-keyResp="product_sale_list"
                                         required>
                                         </select>
-                                    </span>
+                                    </div>
                                 </div>
                             </div>`;
                         } else if (row?.['is_promotion'] === true && row?.['is_shipping'] === false) { // PROMOTION
                             let link = "";
                             let linkDetail = $('#data-init-quotation-create-promotion').data('link-detail');
                             if (linkDetail) {
-                                link = linkDetail.format_url_with_uuid(row.promotion.id);
+                                link = linkDetail.format_url_with_uuid(row?.['promotion']?.['id']);
                             }
                             return `<div class="row">
                                     <div class="input-group">
@@ -1100,16 +1116,13 @@ class QuotationDataTableHandle {
                                     </span>
                                 </div>
                                 </div>`;
-                        } else if (row.is_promotion === false && row.is_shipping === true) { // SHIPPING
+                        } else if (row?.['is_promotion'] === false && row?.['is_shipping'] === true) { // SHIPPING
                             let link = "";
                             let linkDetail = $('#data-init-quotation-create-shipping').data('link-detail');
                             if (linkDetail) {
-                                link = linkDetail.format_url_with_uuid(row.shipping.id);
+                                link = linkDetail.format_url_with_uuid(row?.['shipping']?.['id']);
                             }
-                            let price_margin = "0";
-                            if (row.shipping.hasOwnProperty('shipping_price_margin')) {
-                                price_margin = row.shipping.shipping_price_margin;
-                            }
+                            let price_margin = row?.['shipping']?.['shipping_price_margin'] ? row?.['shipping']?.['shipping_price_margin'] : "0";
                             return `<div class="row">
                                     <div class="input-group">
                                     <span class="input-affix-wrapper">
@@ -1136,8 +1149,8 @@ class QuotationDataTableHandle {
                 {
                     targets: 3,
                     render: (data, type, row) => {
+                        let selectUOMID = 'quotation-create-product-box-uom-' + String(row?.['order']);
                         if (row?.['is_promotion'] === false && row?.['is_shipping'] === false) {
-                            let selectUOMID = 'quotation-create-product-box-uom-' + String(row?.['order']);
                             return `<div class="row">
                                         <select 
                                             class="form-select table-row-uom"
@@ -1151,119 +1164,74 @@ class QuotationDataTableHandle {
                                     </div>`;
                         } else {
                             return `<div class="row">
-                                        <select class="form-select table-row-uom disabled-custom-show" required disabled>
-                                            <option value="${row?.['unit_of_measure']?.['id']}">${row?.['product_uom_title']}</option>
+                                        <select 
+                                            class="form-select table-row-uom"
+                                            id="${selectUOMID}"
+                                            data-url="${QuotationDataTableHandle.uomInitEle.attr('data-url')}"
+                                            data-method="${QuotationDataTableHandle.uomInitEle.attr('data-method')}"
+                                            data-keyResp="unit_of_measure"
+                                            required
+                                            disabled
+                                         >
                                         </select>
                                     </div>`;
                         }
-
                     },
                 },
                 {
                     targets: 4,
                     render: (data, type, row) => {
-                        if (row?.['is_promotion'] === false && row?.['is_shipping'] === false) {
-                            return `<div class="row">
-                                <input type="text" class="form-control table-row-quantity validated-number" value="${row?.['product_quantity']}" required>
-                            </div>`;
-                        } else {
-                            return `<div class="row">
-                                <input type="text" class="form-control table-row-quantity validated-number disabled-custom-show" value="${row?.['product_quantity']}" disabled>
-                            </div>`;
-                        }
+                        return `<div class="row">
+                                    <input type="text" class="form-control table-row-quantity validated-number" value="${row?.['product_quantity']}" required>
+                                </div>`;
                     }
                 },
                 {
                     targets: 5,
                     render: (data, type, row) => {
-                        if (row?.['is_promotion'] === false && row?.['is_shipping'] === false) { // PRODUCT
-                            return `<div class="row">
-                                <div class="dropdown">
-                                    <div class="input-group dropdown-action input-group-price" aria-expanded="false" data-bs-toggle="dropdown">
-                                    <span class="input-affix-wrapper">
-                                        <input 
-                                            type="text" 
-                                            class="form-control mask-money table-row-price" 
-                                            value="${row?.['product_unit_price']}"
-                                            data-return-type="number"
-                                        >
-                                        <span class="input-suffix table-row-btn-dropdown-price-list"><i class="fas fa-angle-down"></i></span>
-                                    </span>
+                        return `<div class="row">
+                                    <div class="dropdown">
+                                        <div class="input-group dropdown-action input-group-price" aria-expanded="false" data-bs-toggle="dropdown">
+                                        <div class="input-affix-wrapper">
+                                            <input 
+                                                type="text" 
+                                                class="form-control mask-money table-row-price" 
+                                                value="${row?.['product_unit_price']}"
+                                                data-return-type="number"
+                                            >
+                                            <div class="input-suffix table-row-btn-dropdown-price-list"><i class="fas fa-angle-down"></i></div>
+                                        </div>
+                                        </div>
+                                        <div role="menu" class="dropdown-menu table-row-price-list w-460p">
+                                        <a class="dropdown-item" data-value=""></a>
+                                        </div>
                                     </div>
-                                    <div role="menu" class="dropdown-menu table-row-price-list w-460p">
-                                    <a class="dropdown-item" data-value=""></a>
-                                    </div>
-                                </div>
-                            </div>`;
-                        } else { // PROMOTION or SHIPPING
-                            return `<div class="row">
-                                <div class="dropdown">
-                                    <div class="input-group input-group-price" aria-expanded="false" data-bs-toggle="dropdown" disabled>
-                                    <span class="input-affix-wrapper">
-                                        <input 
-                                            type="text" 
-                                            class="form-control mask-money table-row-price disabled-custom-show" 
-                                            value="${row?.['product_unit_price']}"
-                                            data-return-type="number"
-                                            disabled
-                                        >
-                                        <span class="input-suffix"><i class="fas fa-angle-down"></i></span>
-                                    </span>
-                                    </div>
-                                    <div role="menu" class="dropdown-menu table-row-price-list w-460p">
-                                    <a class="dropdown-item" data-value=""></a>
-                                    </div>
-                                </div>
-                            </div>`;
-                        }
+                                </div>`;
                     }
                 },
                 {
                     targets: 6,
                     render: (data, type, row) => {
-                        if (row?.['is_promotion'] === false && row?.['is_shipping'] === false) {
-                            return `<div class="row">
-                                <div class="input-group">
-                                    <span class="input-affix-wrapper">
-                                        <input type="text" class="form-control table-row-discount validated-number" value="${row.product_discount_value}">
-                                        <span class="input-suffix">%</span>
-                                    </span>
-                                </div>
-                                <input
-                                    type="text"
-                                    class="form-control mask-money table-row-discount-amount"
-                                    data-return-type="number"
-                                    hidden
-                                >
-                                <input
-                                    type="text"
-                                    class="form-control table-row-discount-amount-raw"
-                                    value="0"
-                                    hidden
-                                >
-                            </div>`;
-                        } else {
-                            return `<div class="row">
-                                <div class="input-group">
-                                    <span class="input-affix-wrapper">
-                                        <input type="text" class="form-control table-row-discount validated-number disabled-custom-show" value="${row.product_discount_value}" disabled>
-                                        <span class="input-suffix">%</span>
-                                    </span>
-                                </div>
-                                <input
-                                    type="text"
-                                    class="form-control mask-money table-row-discount-amount"
-                                    data-return-type="number"
-                                    hidden
-                                >
-                                <input
-                                    type="text"
-                                    class="form-control table-row-discount-amount-raw"
-                                    value="0"
-                                    hidden
-                                >
-                            </div>`;
-                        }
+                        return `<div class="row">
+                                    <div class="input-group">
+                                        <div class="input-affix-wrapper">
+                                            <input type="text" class="form-control table-row-discount validated-number" value="${row?.['product_discount_value']}">
+                                            <div class="input-suffix">%</div>
+                                        </div>
+                                    </div>
+                                    <input
+                                        type="text"
+                                        class="form-control mask-money table-row-discount-amount"
+                                        data-return-type="number"
+                                        hidden
+                                    >
+                                    <input
+                                        type="text"
+                                        class="form-control table-row-discount-amount-raw"
+                                        value="0"
+                                        hidden
+                                    >
+                                </div>`;
                     }
                 },
                 {

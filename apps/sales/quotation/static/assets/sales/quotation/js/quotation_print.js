@@ -44,7 +44,7 @@ class QuotationPrintHandle {
 <td style="width: 48.9665%; height: 17px; text-align: right;"><strong>Quotation No.: </strong>${data?.['code']}</td>
 </tr>
 <tr style="height: 19px; border-style: hidden;">
-<td style="width: 48.9665%; height: 19px;"><strong>Billing address: </strong>T&ograve;a nh&agrave; FPT T&acirc;n Thuận , L&ocirc;L29B-31B-33B, đường số 8, KCX T&acirc;n Thuận, phường T&acirc;n Thuận Đ&ocirc;ng, quận 7, Th&agrave;nh phố Hồ Ch&iacute; Minh, Việt Nam</td>
+<td style="width: 48.9665%; height: 19px;"><strong>Billing address: </strong>${data?.['quotation_logistic_data']?.['shipping_address']}</td>
 <td style="width: 48.9665%; height: 19px; border-style: hidden; text-align: right;"><strong>Date: </strong>29/09/2023</td>
 </tr>
 <tr style="height: 19px; border-style: hidden;">
@@ -112,7 +112,7 @@ ${htmlTableProduct}
 </ol>
 <p>Payment:</p>
 <ol>
-<li>Credit term: thanh to&aacute;n 100% trước khi giao h&agrave;ng</li>
+<li>Credit term: ${data?.['payment_term']?.['title']}</li>
 <li>Bank account:</li>
 </ol>
 <ul>

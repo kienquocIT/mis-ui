@@ -101,19 +101,9 @@ class OpportunityLoadDropdown {
     static loadUoM(ele, data, product) {
         ele.initSelect2({
             data: data,
-            callbackDataResp(resp, keyResp) {
-                let list_result = []
-                if (product !== undefined) {
-                    resp.data[keyResp].map(function (item) {
-                        if (product?.['general_information'].uom_group.id === item.group.id) {
-                            list_result.push(item)
-                        }
-                    })
-                } else {
-                    list_result = resp.data[keyResp]
-                }
-                return list_result
-            }
+            dataParams:{
+                'group': product?.['general_information'].uom_group.id
+            },
         })
     }
 

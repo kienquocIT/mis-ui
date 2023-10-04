@@ -54,7 +54,7 @@
                             <label class="label-field form-label">{% trans "Website" %}</label>
                             <input type="text" class="form-control" id="inp-account-website">
                         </div>
-                    </div>
+                    </div>m
                     <div class="row">
                         <div class="form-group col-12">
                             <label class="label-field form-label required">{% trans "Account Type" %}</label>
@@ -98,19 +98,22 @@
             </div>
             <div class="col-9 scroll-div">
                 <div class="col-12 mb-20" style="padding-left: 2%">
-                    <ul class="nav nav-light nav-tabs">
+                    <ul class="nav nav-tabs nav-icon nav-light">
                         <li class="nav-item">
                             <a class="nav-link active" data-bs-toggle="tab" href="#tab_detail">
+                                <span class="nav-icon-wrap"><span class="feather-icon"><i class="fas fa-list-ol"></i></span></span>
                                 <span class="nav-link-text">{% trans 'Detail' %}</span>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" data-bs-toggle="tab" href="#tab_contacts">
+                                <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-journal-bookmark-fill"></i></span></span>
                                 <span class="nav-link-text">{% trans 'Contacts' %}</span>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" data-bs-toggle="tab" href="#tab_payment_terms">
+                                <span class="nav-icon-wrap"><span class="feather-icon"><i class="far fa-handshake"></i></span></span>
                                 <span class="nav-link-text">{% trans 'Payment Terms' %}</span>
                             </a>
                         </li>
@@ -299,10 +302,8 @@
                                 <div class="col-5 text-left">
                                     <button class="btn btn-soft-primary w-50" id="add-contact-btn-detail" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasExample" type="button">
                                         <span>
-                                            <span>{% trans 'Add Contact' %}</span>
-                                            <span class="icon">
-                                                <i class="fas fa-plus-circle"></i>
-                                            </span>
+                                            <span>{% trans 'Select' %}</span>
+                                            <span class="icon"><i class="bi bi-check-circle-fill"></i></span>
                                         </span>
                                     </button>
                                 </div>
@@ -718,13 +719,13 @@
                     aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
-            <button type="button" class="btn btn-soft-primary" id="new_contact_shortcut"
+            <button type="button" class="btn btn-outline-primary mb-3" id="new_contact_shortcut"
                     data-bs-toggle="modal" data-bs-target="#modal-add-new-contact"
                     aria-label="Close">{% trans "New Contact Shortcut" %}&nbsp;
                 <i class="bi bi-journal-bookmark-fill"></i>
             </button>
-            <div id="table-offcanvas">
-                <table id="datatable-add-contact" class="table nowrap w-100 mb-5"
+            <div id="table-offcanvas" style="overflow: auto; height: 70vh">
+                <table id="datatable-add-contact" class="table nowrap w-100"
                        data-url="{% url "ContactListNotMapAccountAPI" %}"
                        data-method="GET">
                     <thead>
@@ -743,9 +744,9 @@
                     </thead>
                 </table>
             </div>
-            <div class="row">
+            <div class="row mt-3">
                 <div class="text-right col-12">
-                    <button type="button" class="btn btn-soft-primary w-15" id="btn-add-contact"
+                    <button type="button" class="btn btn-outline-primary w-15" id="btn-add-contact"
                             data-bs-dismiss="offcanvas">{% trans "Select" %}&nbsp;
                         <i class="bi bi-arrow-right"></i>
                     </button>

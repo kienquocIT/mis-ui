@@ -343,7 +343,8 @@ function loadProductList(row_id, data) {
         keyText: 'title',
     }).on('change', function () {
         let obj_selected = JSON.parse($('#' + $(this).attr('data-idx-data-loaded')).text())[$(this).val()];
-        $(this).closest('tr').find('.product-description').text(obj_selected.description)
+        $(this).closest('tr').find('.product-description').text(obj_selected.description);
+        loadProductUomList($(this).closest('tr').attr('id'), null, obj_selected?.['general_uom_group']['id']);
     })
 }
 
@@ -452,7 +453,9 @@ function LoadDetailPQR() {
                                 data: 'description',
                                 className: 'wrap-text w-15',
                                 render: (data, type, row) => {
-                                    return `<span class="product-description">${row.product.description}</span>`;
+                                    return `<div data-simplebar class="h-100p bg-gray-light-4 border rounded-5 text-primary">
+                                                <span class="product-description">${row.product.description}</span>
+                                            </div>`;
                                 }
                             },
                             {
@@ -535,7 +538,9 @@ function LoadDetailPQR() {
                                 data: 'description',
                                 className: 'wrap-text w-15',
                                 render: (data, type, row) => {
-                                    return `<span class="product-description">${row.product.description}</span>`;
+                                    return `<div data-simplebar class="h-100p bg-gray-light-4 border rounded-5 text-primary">
+                                                <span class="product-description">${row.product.description}</span>
+                                            </div>`;
                                 }
                             },
                             {
@@ -700,7 +705,7 @@ $(document).on("click", '#btn_create_new_purchase_quotation_request', function (
                 data: 'product_des',
                 className: 'wrap-text w-15',
                 render: (data, type, row) => {
-                    return `<span class="product-description">${row.product_des}</span>`;
+                    return `<div data-simplebar class="h-100p bg-gray-light-4 border rounded-5 text-primary"><span class="product-description">${row.product_des}</span></div>`;
                 }
             },
             {
@@ -767,7 +772,7 @@ $(document).on("click", '#new-product-btn', function () {
     table_body.append(`<tr id="" class="row-number">
             <td class="number text-center wrap-text w-5"></td>
             <td class="wrap-text w-15"><select class="form-select select2 product-select-box" data-method="GET"></td>
-            <td class="wrap-text w-10"><span class="product-description"></span></div></td>
+            <td class="wrap-text w-10"><div data-simplebar class="h-100p bg-gray-light-4 border rounded-5 text-primary"><span class="product-description"></span></div></td>
             <td class="wrap-text w-10"><select class="form-select product-uom-select-box" data-method="GET"></td>
             <td class="wrap-text w-10"><input type="number" min="1" onchange="this.value=checkInputQuantity(this.value)" class="form-control product-quantity" value="1"></td>
             <td class="wrap-text w-15"><input type="text" data-return-type="number" class="form-control pr-unit-price-input mask-money" style="color: black; background: none"></td>
@@ -784,28 +789,11 @@ $(document).on("click", '#new-product-btn', function () {
             }
         </script>`);
     $.fn.initMaskMoney2();
-    let row_count = count_row(table_body, 1);
-
+    count_row(table_body, 1);
     $('.btn-del-line-detail').on('click', function () {
         $(this).closest('tr').remove();
         count_row(table_body, 2);
         calculate_price($('#table-purchase-quotation-request-products-selected tbody tr'));
-    })
-    $('#row-' + row_count + ' .product-select-box').on('change', function () {
-        let parent_tr = $(this).closest('tr');
-
-        $('#' + parent_tr.attr('id') + ' .product-unit-price-select-box').attr('value', '');
-        $('#' + parent_tr.attr('id') + ' .product-quantity').val(1);
-        $('#' + parent_tr.attr('id') + ' .product-subtotal-price').attr('value', '');
-        $('#' + parent_tr.attr('id') + ' .product-subtotal-price-after-tax').attr('value', '');
-        calculate_price($('#table-purchase-quotation-request-products-selected tbody tr'));
-
-        if ($(this).val() !== '') {
-            let obj_selected = JSON.parse($('#' + $(this).attr('data-idx-data-loaded')).text())[$(this).val()];
-            loadProductUomList(parent_tr.attr('id'), null, obj_selected?.['general_uom_group']['id']);
-        } else {
-            loadProductUomList(parent_tr.attr('id'), null, null);
-        }
     })
 });
 

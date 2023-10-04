@@ -91,10 +91,10 @@ class GoodsReceiptUpdate(View):
         perm_check=PermCheck(url=ApiURL.GOODS_RECEIPT_DETAIL_PK, method='PUT', fill_key=['pk']),
     )
     def get(self, request, pk, *args, **kwargs):
-        # input_mapping_properties = InputMappingProperties.PURCHASING_PURCHASE_ORDER
+        input_mapping_properties = InputMappingProperties.INVENTORY_GOODS_RECEIPT
         return {
                    'data': {'doc_id': pk},
-                   # 'input_mapping_properties': input_mapping_properties, 'form_id': 'frm_purchase_order_create'
+                   'input_mapping_properties': input_mapping_properties, 'form_id': 'frm_good_receipt_create'
                }, status.HTTP_200_OK
 
 

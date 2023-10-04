@@ -123,7 +123,7 @@
                 <div class="form-group">
                     <label for="inputRemarks" class="form-label">{% trans 'Employee inherit' %}</label>
                     <select class="form-select" name="employee_inherit"
-                            id="selectEmployeeInherit" {% if is_lead is False %}disabled{% endif %}>
+                            id="selectEmployeeInherit" {% if data.is_lead == False %}disabled{% endif %}>
                         <option value=""></option>
                         {% if data.lead %}
                             <option value="{{ data.lead.id }}">{{ data.lead.full_name }}</option>

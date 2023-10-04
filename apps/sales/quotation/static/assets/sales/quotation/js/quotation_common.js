@@ -123,6 +123,7 @@ class QuotationLoadDataHandle {
         ele.initSelect2({
             data: dataOpp,
             'dataParams': data_filter,
+            'allowClear': true,
             disabled: !(ele.attr('data-url')),
         });
         QuotationLoadDataHandle.loadInformationSelectBox(ele);

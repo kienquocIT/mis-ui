@@ -1,14 +1,15 @@
-function loadDataTableProduct(data) {
-    let result = ``;
-    for (let data_product of data) {
-        let title = data_product?.['product']?.['title'];
-        if (data_product?.['is_shipping'] === true) {
-            title = data_product?.['shipping']?.['title'];
-        }
-        if (data_product?.['is_promotion'] === true) {
-            title = data_product?.['promotion']?.['title'];
-        }
-        result += `<tr>
+class QuotationPrintHandle {
+    static loadDataTableProduct(data) {
+        let result = ``;
+        for (let data_product of data) {
+            let title = data_product?.['product']?.['title'];
+            if (data_product?.['is_shipping'] === true) {
+                title = data_product?.['shipping']?.['title'];
+            }
+            if (data_product?.['is_promotion'] === true) {
+                title = data_product?.['promotion']?.['title'];
+            }
+            result += `<tr>
                         <td>${title}</td>
                         <td>${data_product?.['unit_of_measure']?.['title'] ? data_product?.['unit_of_measure']?.['title'] : ''}</td>
                         <td>${data_product?.['product_quantity']}</td>
@@ -17,14 +18,13 @@ function loadDataTableProduct(data) {
                         <td>${data_product?.['tax']?.['title'] ? data_product?.['tax']?.['title'] : ''}</td>
                         <td>${data_product?.['product_subtotal_price']} VND</td>
                     </tr>`;
+        }
+        return result;
     }
-    return result;
-}
 
-
-function loadTemplatePrint(data) {
-    let htmlTableProduct = loadDataTableProduct(data?.['quotation_products_data']);
-    return `<table style="border-collapse: collapse; width: 100%; height: 19px;" border="1">
+    static loadTemplatePrint(data) {
+        let htmlTableProduct = QuotationPrintHandle.loadDataTableProduct(data?.['quotation_products_data']);
+        return `<table style="border-collapse: collapse; width: 100%; height: 19px;" border="1">
 <tbody>
 <tr style="height: 19px;">
 <td style="width: 48.9665%; height: 19px; border-style: hidden;"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/FTEL_Logo.svg/470px-FTEL_Logo.svg.png" alt="My alt text" width="354" height="116" /></td>
@@ -142,48 +142,49 @@ ${htmlTableProduct}
 </tr>
 </tbody>
 </table>`;
-}
+    }
 
-function loadTinymce(data) {
-    tinymce.init({
-        selector: 'textarea#quotation-tinymce',
-        setup: function (editor) {
-            editor.on('init', function () {
-                // Set the default content here
-                editor.setContent(loadTemplatePrint(data));
-            });
-        },
-        plugins: 'print preview paste importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars emoticons',
-        imagetools_cors_hosts: ['picsum.photos'],
-        menubar: 'file edit view insert format tools table help',
-        toolbar: 'undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen  preview save print | insertfile image media template link anchor codesample | ltr rtl',
-        toolbar_sticky: true,
-        autosave_ask_before_unload: true,
-        autosave_interval: '30s',
-        autosave_prefix: '{path}{query}-{id}-',
-        autosave_restore_when_empty: false,
-        autosave_retention: '2m',
-        image_advtab: true,
-        importcss_append: true,
-        template_cdate_format: '[Date Created (CDATE): %m/%d/%Y : %H:%M:%S]',
-        template_mdate_format: '[Date Modified (MDATE): %m/%d/%Y : %H:%M:%S]',
-        height: 400,
-        image_caption: true,
-        quickbars_selection_toolbar: 'bold italic | quicklink h2 h3 blockquote quickimage quicktable',
-        noneditable_noneditable_class: 'mceNonEditable',
-        toolbar_mode: 'sliding',
-        contextmenu: 'link image imagetools table',
-        content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
-    });
-}
+    static loadTinymce(data) {
+        tinymce.init({
+            selector: 'textarea#quotation-tinymce',
+            setup: function (editor) {
+                editor.on('init', function () {
+                    // Set the default content here
+                    editor.setContent(QuotationPrintHandle.loadTemplatePrint(data));
+                });
+            },
+            plugins: 'print preview paste importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars emoticons',
+            imagetools_cors_hosts: ['picsum.photos'],
+            menubar: 'file edit view insert format tools table help',
+            toolbar: 'undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen  preview save print | insertfile image media template link anchor codesample | ltr rtl',
+            toolbar_sticky: true,
+            autosave_ask_before_unload: true,
+            autosave_interval: '30s',
+            autosave_prefix: '{path}{query}-{id}-',
+            autosave_restore_when_empty: false,
+            autosave_retention: '2m',
+            image_advtab: true,
+            importcss_append: true,
+            template_cdate_format: '[Date Created (CDATE): %m/%d/%Y : %H:%M:%S]',
+            template_mdate_format: '[Date Modified (MDATE): %m/%d/%Y : %H:%M:%S]',
+            height: 400,
+            image_caption: true,
+            quickbars_selection_toolbar: 'bold italic | quicklink h2 h3 blockquote quickimage quicktable',
+            noneditable_noneditable_class: 'mceNonEditable',
+            toolbar_mode: 'sliding',
+            contextmenu: 'link image imagetools table',
+            content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+        });
+    }
 
-function loadAddEventPrint() {
-    let editor = tinymce.get('quotation-tinymce');
-    document.getElementById('printButton').addEventListener('click', function () {
-        if (editor) {
-            editor.execCommand('mcePrint');
-        }
-    });
+    static loadAddEventPrint() {
+        let editor = tinymce.get('quotation-tinymce');
+        document.getElementById('printButton').addEventListener('click', function () {
+            if (editor) {
+                editor.execCommand('mcePrint');
+            }
+        });
+    }
 }
 
 
@@ -203,8 +204,8 @@ $(function () {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     eleDataDetail.val(JSON.stringify(data));
-                    loadTinymce(data);
-                    loadAddEventPrint();
+                    QuotationPrintHandle.loadTinymce(data);
+                    QuotationPrintHandle.loadAddEventPrint();
                 }
             }
         )

@@ -39,9 +39,9 @@
                 <div class="row" id="common-information-area">
                     <div class="col-6">
                         <div class="form-group">
-                            <label class="form-label" for="purchase-order-title">{% trans 'Title' %}<span class="required"></span></label>
+                            <label class="form-label required" for="purchase-order-title">{% trans 'Title' %}</label>
                             <div class="input-group">
-                                <span class="input-affix-wrapper">
+                                <div class="input-affix-wrapper">
                                     <input
                                         type="text" class="form-control"
                                         name="title"
@@ -49,16 +49,16 @@
                                         required
                                         disabled
                                     >
-                                </span>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="form-label">{% trans 'Purchase Request' %}</label>
                             <div class="input-group">
-                                <span class="input-affix-wrapper">
+                                <div class="input-affix-wrapper">
                                     <div class="form-control div-input" id="purchase-order-purchase-request" data-link-detail="{% url "PurchaseRequestDetail" 1 %}"></div>
                                     <input type="hidden" id="purchase_requests_data">
-                                    <span class="input-suffix">
+                                    <div class="input-suffix">
                                         <button
                                             type="button"
                                             class="btn btn-link"
@@ -66,17 +66,17 @@
                                             data-bs-toggle="modal"
                                             data-bs-target="#purchaseRequestModalCenter"
                                         ><i class="fas fa-ellipsis-h"></i></button>
-                                    </span>
-                                </span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="form-label">{% trans 'Purchase quotation' %}</label>
                             <div class="input-group">
-                                <span class="input-affix-wrapper">
+                                <div class="input-affix-wrapper">
                                     <div class="form-control div-input" id="purchase-order-purchase-quotation" data-link-detail="{% url "PurchaseQuotationDetail" 1 %}"></div>
                                     <input type="hidden" id="purchase_quotations_data">
-                                    <span class="input-suffix">
+                                    <div class="input-suffix">
                                         <button
                                             type="button"
                                             class="btn btn-link"
@@ -84,27 +84,25 @@
                                             data-bs-toggle="modal"
                                             data-bs-target="#purchaseQuotationModalCenter"
                                         ><i class="fas fa-ellipsis-h"></i></button>
-                                    </span>
-                                </span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="form-label" for="box-purchase-order-supplier">{% trans 'Supplier' %}</label>
                             <div class="input-group more-information-group">
-                                <span class="input-affix-wrapper">
-                                    <span class="input-prefix">
-                                        <div class="btn-group dropstart">
-                                            <i
-                                                    class="fas fa-info-circle more-information"
-                                                    data-bs-toggle="dropdown"
-                                                    data-dropdown-animation
-                                                    aria-haspopup="true"
-                                                    aria-expanded="false"
-                                                    disabled
-                                            ></i>
-                                            <div class="dropdown-menu w-210p mt-4"></div>
-                                        </div>
-                                    </span>
+                                <div class="input-affix-wrapper">
+                                    <div class="dropstart input-prefix">
+                                        <i
+                                                class="fas fa-info-circle more-information"
+                                                data-bs-toggle="dropdown"
+                                                data-dropdown-animation
+                                                aria-haspopup="true"
+                                                aria-expanded="false"
+                                                disabled
+                                        ></i>
+                                        <div class="dropdown-menu w-210p mt-4"></div>
+                                    </div>
                                     <select
                                             class="form-select"
                                             id="box-purchase-order-supplier"
@@ -116,7 +114,7 @@
                                             required
                                             disabled
                                     ></select>
-                                </span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -127,15 +125,15 @@
                             <div class="input-affix-wrapper">
                                 <input type="text" name="delivered-date" id="purchase-order-date-delivered"
                                        class="form-control date-picker" autocomplete="off" disabled>
-                                <span class="input-suffix">
+                                <div class="input-suffix">
                                     <i class="bi bi-calendar-week"></i>
-                                </span>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="form-label" for="purchase-order-status-delivered">{% trans 'Delivered status' %}</label>
                             <div class="input-group">
-                                <span class="input-affix-wrapper">
+                                <div class="input-affix-wrapper">
                                     <input
                                         type="text" class="form-control"
                                         name="status-delivered"
@@ -144,26 +142,24 @@
                                         data-value="0"
                                         disabled
                                     >
-                                </span>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="form-label" for="box-purchase-order-contact">{% trans 'Select Contact' %}</label>
                             <div class="input-group more-information-group">
-                                <span class="input-affix-wrapper">
-                                    <span class="input-prefix">
-                                        <div class="btn-group dropstart">
-                                            <i
-                                                    class="fas fa-info-circle more-information"
-                                                    data-bs-toggle="dropdown"
-                                                    data-dropdown-animation
-                                                    aria-haspopup="true"
-                                                    aria-expanded="false"
-                                                    disabled
-                                            ></i>
-                                            <div class="dropdown-menu w-210p mt-4 more-information-dropdown"></div>
-                                        </div>
-                                    </span>
+                                <div class="input-affix-wrapper">
+                                    <div class="dropstart input-prefix">
+                                        <i
+                                                class="fas fa-info-circle more-information"
+                                                data-bs-toggle="dropdown"
+                                                data-dropdown-animation
+                                                aria-haspopup="true"
+                                                aria-expanded="false"
+                                                disabled
+                                        ></i>
+                                        <div class="dropdown-menu w-210p mt-4 more-information-dropdown"></div>
+                                    </div>
                                     <select
                                             class="form-select"
                                             id="box-purchase-order-contact"
@@ -175,7 +171,7 @@
                                             required
                                             disabled
                                     ></select>
-                                </span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -226,9 +222,9 @@
                                         <th class="w-5">UoM (PR)</th>
                                         <th class="w-5">{% trans 'Quantity' %} (PR)</th>
                                         <th class="w-5">{% trans 'Stock' %}</th>
-                                        <th class="w-5">UoM (PO)<span class="required"></span></th>
-                                        <th class="w-5">{% trans 'Quantity' %} (PO)<span class="required"></span></th>
-                                        <th class="w-25">{% trans 'Unit Price' %}<span class="required"></span></th>
+                                        <th class="w-5 required">UoM (PO)</th>
+                                        <th class="w-5 required">{% trans 'Quantity' %} (PO)</th>
+                                        <th class="w-25 required">{% trans 'Unit Price' %}</th>
                                         <th class="w-5">{% trans 'Tax' %}</th>
                                         <th class="w-20">{% trans 'Subtotal Price' %}</th>
                                     </tr>
@@ -286,11 +282,11 @@
                                     <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>{% trans 'Product' %}<span class="required"></span></th>
+                                        <th class="required">{% trans 'Product' %}</th>
                                         <th>{% trans 'Description' %}</th>
-                                        <th>UoM<span class="required"></span></th>
-                                        <th>{% trans 'Quantity' %}<span class="required"></span></th>
-                                        <th>{% trans 'Unit Price' %}<span class="required"></span></th>
+                                        <th class="required">UoM</th>
+                                        <th class="required">{% trans 'Quantity' %}</th>
+                                        <th class="required">{% trans 'Unit Price' %}</th>
                                         <th>{% trans 'Tax' %}</th>
                                         <th class="w-20">{% trans 'Subtotal Price' %}</th>
                                         <th>{% trans 'Actions' %}</th>

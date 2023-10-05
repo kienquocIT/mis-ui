@@ -4,7 +4,7 @@ $(document).ready(function () {
     let pk = $.fn.getPkDetail();
     $('#frm_inventory_adjustment_detail').submit(function (event) {
         event.preventDefault();
-        let combinesData = new InventoryAdjustmentHandle().combinesData($(this), true);
+        let combinesData = new InventoryAdjustmentHandle().combinesDataUpdate($(this));
         console.log(combinesData)
         if (combinesData) {
             WindowControl.showLoading();

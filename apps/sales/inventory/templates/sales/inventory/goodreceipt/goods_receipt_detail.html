@@ -38,12 +38,12 @@
                 <div class="row" id="common-information-area">
                     <div class="col-6">
                         <div class="form-group">
-                            <label class="form-label" for="box-good-receipt-type">{% trans 'Goods receipt type' %}<span class="required"></span></label>
+                            <label class="form-label required" for="box-good-receipt-type">{% trans 'Goods receipt type' %}</label>
                             <div class="input-group">
-                                <span class="input-affix-wrapper">
-                                    <span class="input-prefix">
+                                <div class="input-affix-wrapper">
+                                    <div class="input-prefix">
                                         <i class="fas fa-file-import text-orange"></i>
-                                    </span>
+                                    </div>
                                     <select
                                         class="form-select"
                                         id="box-good-receipt-type"
@@ -56,13 +56,13 @@
                                         disabled
                                     >
                                     </select>
-                                </span>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="form-label" for="good-receipt-title">{% trans 'Title' %}<span class="required"></span></label>
+                            <label class="form-label required" for="good-receipt-title">{% trans 'Title' %}</label>
                             <div class="input-group">
-                                <span class="input-affix-wrapper">
+                                <div class="input-affix-wrapper">
                                     <input
                                         type="text" class="form-control"
                                         name="title"
@@ -70,7 +70,7 @@
                                         required
                                         disabled
                                     >
-                                </span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -80,22 +80,22 @@
                             <div class="input-affix-wrapper">
                                 <input type="text" name="date_received" id="good-receipt-date-received"
                                        class="form-control date-picker" autocomplete="off" disabled>
-                                <span class="input-suffix">
+                                <div class="input-suffix">
                                     <i class="bi bi-calendar-week"></i>
-                                </span>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="form-label" for="good-receipt-note">{% trans 'Note' %}</label>
                             <div class="input-group">
-                                <span class="input-affix-wrapper">
+                                <div class="input-affix-wrapper">
                                     <input
                                         type="text" class="form-control"
                                         name="remarks"
                                         id="good-receipt-note"
                                         disabled
                                     >
-                                </span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -103,22 +103,20 @@
                 <div class="row custom-area" id="custom-area-1">
                     <div class="col-6">
                         <div class="form-group">
-                            <label class="form-label">{% trans 'Purchase order' %}<span class="required"></span></label>
+                            <label class="form-label required">{% trans 'Purchase order' %}</label>
                             <div class="input-group more-information-group">
-                                <span class="input-affix-wrapper">
-                                    <span class="input-prefix">
-                                        <div class="btn-group dropstart">
-                                            <i
-                                                    class="fas fa-info-circle more-information"
-                                                    data-bs-toggle="dropdown"
-                                                    data-dropdown-animation
-                                                    aria-haspopup="true"
-                                                    aria-expanded="false"
-                                                    disabled
-                                            ></i>
-                                            <div class="dropdown-menu w-210p mt-4"></div>
-                                        </div>
-                                    </span>
+                                <div class="input-affix-wrapper">
+                                    <div class="dropstart input-prefix">
+                                        <i
+                                                class="fas fa-info-circle more-information"
+                                                data-bs-toggle="dropdown"
+                                                data-dropdown-animation
+                                                aria-haspopup="true"
+                                                aria-expanded="false"
+                                                disabled
+                                        ></i>
+                                        <div class="dropdown-menu w-210p mt-4"></div>
+                                    </div>
                                     <select
                                             class="form-select"
                                             id="box-good-receipt-purchase-order"
@@ -130,26 +128,24 @@
                                             required
                                             disabled
                                     ></select>
-                                </span>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="form-label" for="box-good-receipt-supplier">{% trans 'Supplier' %}<span class="required"></span></label>
+                            <label class="form-label required" for="box-good-receipt-supplier">{% trans 'Supplier' %}</label>
                             <div class="input-group more-information-group">
-                                <span class="input-affix-wrapper">
-                                    <span class="input-prefix">
-                                        <div class="btn-group dropstart">
-                                            <i
-                                                    class="fas fa-info-circle more-information"
-                                                    data-bs-toggle="dropdown"
-                                                    data-dropdown-animation
-                                                    aria-haspopup="true"
-                                                    aria-expanded="false"
-                                                    disabled
-                                            ></i>
-                                            <div class="dropdown-menu w-210p mt-4"></div>
-                                        </div>
-                                    </span>
+                                <div class="input-affix-wrapper">
+                                    <div class="dropstart input-prefix">
+                                        <i
+                                                class="fas fa-info-circle more-information"
+                                                data-bs-toggle="dropdown"
+                                                data-dropdown-animation
+                                                aria-haspopup="true"
+                                                aria-expanded="false"
+                                                disabled
+                                        ></i>
+                                        <div class="dropdown-menu w-210p mt-4"></div>
+                                    </div>
                                     <select
                                             class="form-select"
                                             id="box-good-receipt-supplier"
@@ -161,16 +157,16 @@
                                             required
                                             disabled
                                     ></select>
-                                </span>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="form-label">{% trans 'Purchase Request' %}</label>
                             <div class="input-group">
-                                <span class="input-affix-wrapper">
+                                <div class="input-affix-wrapper">
                                     <div class="form-control div-input" id="good-receipt-purchase-request" data-link-detail="{% url "PurchaseRequestDetail" 1 %}"></div>
                                     <input type="hidden" id="purchase_requests_data">
-                                </span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -180,7 +176,7 @@
                 <div class="row custom-area" id="custom-area-2" hidden>
                     <div class="col-6">
                         <div class="form-group">
-                            <label class="form-label" for="box-good-receipt-inventory-adjustment">{% trans 'IA number' %}<span class="required"></span></label>
+                            <label class="form-label required" for="box-good-receipt-inventory-adjustment">{% trans 'IA number' %}</label>
                             <select
                                     class="form-select"
                                     id="box-good-receipt-inventory-adjustment"
@@ -218,20 +214,18 @@
                         <div class="form-group">
                             <label class="form-label">{% trans 'Production report' %}</label>
                             <div class="input-group more-information-group">
-                                <span class="input-affix-wrapper">
-                                    <span class="input-prefix">
-                                        <div class="btn-group dropstart">
-                                            <i
-                                                    class="fas fa-info-circle more-information"
-                                                    data-bs-toggle="dropdown"
-                                                    data-dropdown-animation
-                                                    aria-haspopup="true"
-                                                    aria-expanded="false"
-                                                    disabled
-                                            ></i>
-                                            <div class="dropdown-menu w-210p mt-4"></div>
-                                        </div>
-                                    </span>
+                                <div class="input-affix-wrapper">
+                                    <div class="dropstart input-prefix">
+                                        <i
+                                                class="fas fa-info-circle more-information"
+                                                data-bs-toggle="dropdown"
+                                                data-dropdown-animation
+                                                aria-haspopup="true"
+                                                aria-expanded="false"
+                                                disabled
+                                        ></i>
+                                        <div class="dropdown-menu w-210p mt-4"></div>
+                                    </div>
                                     <select
                                             class="form-select"
                                             id=""
@@ -243,7 +237,7 @@
                                             required
                                             disabled
                                     ></select>
-                                </span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -290,11 +284,11 @@
                                     <thead>
                                     <tr>
                                         <th class="w-5">#</th>
-                                        <th class="w-15">{% trans 'Product' %}<span class="required"></span></th>
+                                        <th class="w-15 required">{% trans 'Product' %}</th>
                                         <th class="w-20">{% trans 'Description' %}</th>
-                                        <th class="w-5">UoM<span class="required"></span></th>
-                                        <th class="w-5">{% trans 'Quantity' %}<span class="required"></span></th>
-                                        <th class="w-20">{% trans 'Unit Price' %}<span class="required"></span></th>
+                                        <th class="w-5 required">UoM</th>
+                                        <th class="w-5 required">{% trans 'Quantity' %}</th>
+                                        <th class="w-20 required">{% trans 'Unit Price' %}</th>
                                         <th class="w-5">{% trans 'Tax' %}</th>
                                         <th class="w-20">{% trans 'Subtotal Price' %}</th>
                                         <th class="w-5">{% trans 'Actions' %}</th>
@@ -558,8 +552,8 @@
                                             >
                                                 <thead>
                                                 <tr>
-                                                    <th>{% trans 'Lot number' %}<span class="required"></span></th>
-                                                    <th>{% trans 'Quantity' %}<span class="required"></span></th>
+                                                    <th class="required">{% trans 'Lot number' %}</th>
+                                                    <th class="required">{% trans 'Quantity' %}</th>
                                                     <th>{% trans 'Expiration date' %}</th>
                                                     <th>{% trans 'Manufacturing date' %}</th>
                                                 </tr>
@@ -578,8 +572,8 @@
                                             >
                                                 <thead>
                                                 <tr>
-                                                    <th>{% trans 'Venedor serial no.' %}<span class="required"></span></th>
-                                                    <th>{% trans 'Serial no.' %}<span class="required"></span></th>
+                                                    <th class="required">{% trans 'Venedor serial no.' %}</th>
+                                                    <th class="required">{% trans 'Serial no.' %}</th>
                                                     <th>{% trans 'Expiration date' %}</th>
                                                     <th>{% trans 'Mfr date' %}</th>
                                                     <th>{% trans 'Warranty start' %}</th>

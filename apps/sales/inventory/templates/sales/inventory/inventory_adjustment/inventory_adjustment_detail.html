@@ -21,6 +21,7 @@
           data-url-list="{% url 'InventoryAdjustmentListAPI' %}"
           data-url-detail="{% url 'InventoryAdjustmentDetailAPI' pk=0 %}"
           data-url="{% url "InventoryAdjustmentDetailAPI" pk=0 %}"
+          data-url-goods-receipt="{% url "GoodReceiptCreate" %}"
           id="frm_inventory_adjustment_detail">
         {% csrf_token %}
         <div class="row mr-3">
@@ -78,9 +79,9 @@
                         {% trans 'Actions' %}
                     </button>
                     <div class="dropdown-menu dropdown-bordered">
-                        <a class="dropdown-item" href="#"><i class="bi bi-arrow-up"></i><span>&nbsp;&nbsp;{% trans 'Get Increase Items' %}</span></a>
+                        <a class="dropdown-item" id="get-increase-items-btn" href="#"><i class="bi bi-arrow-up"></i><span>&nbsp;&nbsp;{% trans 'Get Increase Items' %}</span></a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#"><i class="bi bi-arrow-down"></i></i><span>&nbsp;&nbsp;{% trans 'Get Decrease Items' %}</span></a>
+                        <a class="dropdown-item" id="get-decrease-items-btn" href="#"><i class="bi bi-arrow-down"></i></i><span>&nbsp;&nbsp;{% trans 'Get Decrease Items' %}</span></a>
                     </div>
                 </div>
             </div>
@@ -112,7 +113,7 @@
                         <th>{% trans 'Warehouse' %}</th>
                         <th>{% trans 'Unit of measure' %}</th>
                         <th>{% trans 'Book quantity' %}</th>
-                        <th>{% trans 'Count' %}</th>
+                        <th class="required">{% trans 'Count' %}</th>
                         <th>{% trans 'Difference' %}</th>
                         <th>{% trans 'Select for actions' %}</th>
                         <th>{% trans 'Action type' %}</th>

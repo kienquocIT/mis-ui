@@ -60,21 +60,6 @@
             </div>
         </div>
         <div class="row mt-4">
-            <div class="col-11"></div>
-            <div class="col-1">
-                <div class="btn-group dropdown w-100">
-                    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        {% trans 'Actions' %}
-                    </button>
-                    <div class="dropdown-menu dropdown-bordered">
-                        <a class="dropdown-item" href="#"><i class="bi bi-arrow-up"></i><span>&nbsp;&nbsp;{% trans 'Get Increase Items' %}</span></a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#"><i class="bi bi-arrow-down"></i></i><span>&nbsp;&nbsp;{% trans 'Get Decrease Items' %}</span></a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
             <ul class="nav nav-tabs nav-icon nav-light">
                 <li class="nav-item">
                     <a class="nav-link active" data-bs-toggle="tab" href="#tab_block_line_detail">
@@ -112,7 +97,7 @@
                         <th>{% trans 'Warehouse' %}</th>
                         <th>{% trans 'Unit of measure' %}</th>
                         <th>{% trans 'Book quantity' %}</th>
-                        <th>{% trans 'Count' %}</th>
+                        <th class="required">{% trans 'Count' %}</th>
                         <th>{% trans 'Difference' %}</th>
                         <th>{% trans 'Select for actions' %}</th>
                         <th>{% trans 'Action type' %}</th>

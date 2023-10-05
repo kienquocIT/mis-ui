@@ -29,134 +29,134 @@
           data-url-redirect="{% url "AccountDetail" pk=0 %}">
         {% csrf_token %}
         <div class="row mb-7">
-                <div class="col-6">
-                    <div class="row form-group">
-                        <div class="col-12">
-                            <label class="form-label required">{% trans "Name" %}</label>
-                            <input id="inp-account-name" class="form-control" required placeholder="">
-                        </div>
-                    </div>
-                    <div class="row form-group">
-                        <div class="col-6">
-                            <label class="form-label required">{% trans "Account Code" %}</label>
-                            <input id="inp-account-code" class="form-control" placeholder="" required
-                                    oninput="this.value=this.value.toUpperCase()">
-                        </div>
-                        <div class="col-6">
-                            <label class="form-label">{% trans "Website" %}</label>
-                            <input class="form-control" id="inp-account-website" placeholder="">
-                        </div>
-                    </div>
-                    <div class="row form-group">
-                        <div class="col-6">
-                                        <label class="form-label">{% trans "Phone Number" %}</label>
-                                        <input type="text" class="form-control" placeholder="" id="inp-phone">
-                                    </div>
-                        <div class="col-6">
-                            <label class="form-label">{% trans "Email" %}</label>
-                            <input type="text" class="form-control" placeholder="" id="inp-email">
-                        </div>
-                    </div>
-                    <div class="row form-group">
-                        <div class="col-6">
-                                        <label class="form-label required">{% trans "Industry" %}</label>
-                                        <select id="select-box-industry"
-                                                class="form-control select2"
-                                                data-method="GET" required
-                                                data-url="{% url "IndustryListAPI" %}">
-                                        </select>
-                                    </div>
-                        <div class="col-6">
-                                        <label class="form-label" id="tax-code-label">{% trans "Tax Code" %}</label>
-                                        <input type="text" class="form-control" id="inp-tax-code">
-                                    </div>
-                    </div>
-                    <div class="row form-group">
-                        <div class="col-6">
-                            <label class="form-label">{% trans "Annual Revenue" %}</label>
-                            <select id="select-box-annual-revenue" class="form-select">
-                                <option value=""></option>
-                                {% for item in data.customer_revenue %}
-                                    <option value="{{ item.value }}">{{ item.name }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="col-6">
-                            <label
-                                    class="form-label"
-                                    id="total_employees_label"
-                            >{% trans "Total Employees" %}</label>
-                            <select id="select-box-total-emp"
-                                    class="form-select">
-                                <option value=""></option>
-                                {% for item in data.company_size %}
-                                    <option value="{{ item.value }}">{{ item.name }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
+            <div class="col-6">
+                <div class="row form-group">
+                    <div class="col-12">
+                        <label class="form-label required">{% trans "Name" %}</label>
+                        <input id="inp-account-name" class="form-control" required placeholder="">
                     </div>
                 </div>
-                <div class="col-6">
-                    <div class="row form-group">
-                        <div class="col-12">
-                            <label class="form-label required">{% trans "Account Group" %}</label>
-                            <select id="select-box-account-group" class="form-control select2"
-                                    data-method="GET" required
-                                    data-url="{% url "AccountGroupListAPI" %}">
-                            </select>
-                        </div>
+                <div class="row form-group">
+                    <div class="col-6">
+                        <label class="form-label required">{% trans "Account Code" %}</label>
+                        <input id="inp-account-code" class="form-control" placeholder="" required
+                                oninput="this.value=this.value.toUpperCase()">
                     </div>
-                    <div class="row form-group">
-                        <div class="col-12">
-                            <label class="form-label required">{% trans "Account Manager" %}</label>
-                            <select id="select-box-acc-manager"
-                                    class="form-control select2 select2-multiple select2-required"
-                                    multiple required
-                                    data-method="GET"
-                                    data-url="{% url "EmployeeListAPI" %}">
-                            </select>
-                        </div>
+                    <div class="col-6">
+                        <label class="form-label">{% trans "Website" %}</label>
+                        <input class="form-control" id="inp-account-website" placeholder="">
                     </div>
-                    <div class="row form-group">
-                        <div class="col-6">
-                            <label class="form-label required">{% trans "Account Type" %}</label>
-                            <select id="select-box-acc-type"
-                                    class="form-select select2 select2-multiple select2-required"
-                                    multiple required
-                                    data-method="GET"
-                                    data-url="{% url "AccountTypeListAPI" %}">
-                            </select>
-                        </div>
-                        <div class="col-6 mt-6">
-                            <div class="row radio-btn">
-                                <div class="col-6">
-                                    <input class="form-check-input ml-1" type="radio" name="flexRadioDefault"
-                                            id="inp-individual" checked>
-                                    <label class="form-check-label ml-4" for="inp-individual">
-                                        {% trans "individual" %}
-                                    </label>
+                </div>
+                <div class="row form-group">
+                    <div class="col-6">
+                                    <label class="form-label">{% trans "Phone Number" %}</label>
+                                    <input type="text" class="form-control" placeholder="" id="inp-phone">
                                 </div>
-                                <div class="col-6">
-                                    <input class="form-check-input" type="radio" name="flexRadioDefault"
-                                            id="inp-organization">
-                                    <label class="form-check-label" for="inp-organization">
-                                        {% trans "organization" %}
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="col-6">
+                        <label class="form-label">{% trans "Email" %}</label>
+                        <input type="text" class="form-control" placeholder="" id="inp-email">
                     </div>
-                    <div class="row form-group">
-                        <div class="col-12">
-                            <label class="form-label">{% trans "Parent Account" %}</label>
-                            <select id="select-box-parent-account" class="form-control select2"
-                                    data-method="GET"
-                                    data-url="{% url "AccountListAPI" %}" disabled>
-                            </select>
-                        </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-6">
+                                    <label class="form-label required">{% trans "Industry" %}</label>
+                                    <select id="select-box-industry"
+                                            class="form-control select2"
+                                            data-method="GET" required
+                                            data-url="{% url "IndustryListAPI" %}">
+                                    </select>
+                                </div>
+                    <div class="col-6">
+                                    <label class="form-label" id="tax-code-label">{% trans "Tax Code" %}</label>
+                                    <input type="text" class="form-control" id="inp-tax-code">
+                                </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-6">
+                        <label class="form-label">{% trans "Annual Revenue" %}</label>
+                        <select id="select-box-annual-revenue" class="form-select">
+                            <option value=""></option>
+                            {% for item in data.customer_revenue %}
+                                <option value="{{ item.value }}">{{ item.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-6">
+                        <label
+                                class="form-label"
+                                id="total_employees_label"
+                        >{% trans "Total Employees" %}</label>
+                        <select id="select-box-total-emp"
+                                class="form-select">
+                            <option value=""></option>
+                            {% for item in data.company_size %}
+                                <option value="{{ item.value }}">{{ item.name }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
                 </div>
             </div>
+            <div class="col-6">
+                <div class="row form-group">
+                    <div class="col-12">
+                        <label class="form-label required">{% trans "Account Group" %}</label>
+                        <select id="select-box-account-group" class="form-control select2"
+                                data-method="GET" required
+                                data-url="{% url "AccountGroupListAPI" %}">
+                        </select>
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-12">
+                        <label class="form-label required">{% trans "Account Manager" %}</label>
+                        <select id="select-box-acc-manager"
+                                class="form-control select2 select2-multiple select2-required"
+                                multiple required
+                                data-method="GET"
+                                data-url="{% url "EmployeeListAPI" %}">
+                        </select>
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-6">
+                        <label class="form-label required">{% trans "Account Type" %}</label>
+                        <select id="select-box-acc-type"
+                                class="form-select select2 select2-multiple select2-required"
+                                multiple required
+                                data-method="GET"
+                                data-url="{% url "AccountTypeListAPI" %}">
+                        </select>
+                    </div>
+                    <div class="col-6 mt-6">
+                        <div class="row radio-btn">
+                            <div class="col-6">
+                                <input class="form-check-input ml-1" type="radio" name="flexRadioDefault"
+                                        id="inp-individual" checked>
+                                <label class="form-check-label ml-4" for="inp-individual">
+                                    {% trans "individual" %}
+                                </label>
+                            </div>
+                            <div class="col-6">
+                                <input class="form-check-input" type="radio" name="flexRadioDefault"
+                                        id="inp-organization">
+                                <label class="form-check-label" for="inp-organization">
+                                    {% trans "organization" %}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-12">
+                        <label class="form-label">{% trans "Parent Account" %}</label>
+                        <select id="select-box-parent-account" class="form-control select2"
+                                data-method="GET"
+                                data-url="{% url "AccountListAPI" %}" disabled>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <ul class="nav nav-icon nav-tabs nav-justified nav-segmented-tabs nav-light">
             <li class="nav-item">
@@ -435,13 +435,13 @@
                     aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
-            <button type="button" class="btn btn-soft-primary" id="new_contact_shortcut"
+            <button type="button" class="btn btn-outline-primary mb-3" id="new_contact_shortcut"
                     data-bs-toggle="modal" data-bs-target="#modal-add-new-contact"
                     aria-label="Close">{% trans "New Contact Shortcut" %}&nbsp;
                 <i class="bi bi-journal-bookmark-fill"></i>
             </button>
-            <div id="table-offcanvas">
-                <table id="datatable-add-contact" class="table nowrap w-100 mb-5"
+            <div id="table-offcanvas" style="overflow: auto; height: 70vh">
+                <table id="datatable-add-contact" class="table nowrap w-100"
                        data-url="{% url "ContactListNotMapAccountAPI" %}"
                        data-method="GET">
                     <thead>
@@ -460,9 +460,9 @@
                     </thead>
                 </table>
             </div>
-            <div class="row">
+            <div class="row mt-3">
                 <div class="text-right col-12">
-                    <button type="button" class="btn btn-soft-primary w-15" id="btn-add-contact"
+                    <button type="button" class="btn btn-outline-primary w-15" id="btn-add-contact"
                             data-bs-dismiss="offcanvas">{% trans "Select" %}&nbsp;
                         <i class="bi bi-arrow-right"></i>
                     </button>
@@ -537,7 +537,6 @@
                         </div>
                     </form>
                 </div>
-
                 <div class="modal-footer">
                     <button class="btn btn-outline-primary" type="submit" form="frm-create-new-contact">
                         <span>

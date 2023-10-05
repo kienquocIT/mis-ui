@@ -11,15 +11,6 @@
     <link href="{% static 'vendors/monthpicker/monthpicker.css' %}" rel="stylesheet">
 {% endblock %}
 {% block jsHeader %}
-    <script>
-        window.addEventListener("load", function () {
-            let screenHeight = window.screen.height * 0.7;
-            $('.scroll-div').css({
-                'overflow': 'auto',
-                'height': screenHeight.toString() + 'px',
-            })
-        });
-    </script>
 {% endblock %}
 {% block pageAction %}
     <a href="{% url 'AccountUpdate' pk=pk %}">
@@ -107,19 +98,22 @@
             </div>
             <div class="col-9 scroll-div">
                 <div class="col-12 mb-20" style="padding-left: 2%">
-                    <ul class="nav nav-light nav-tabs">
+                    <ul class="nav nav-tabs nav-icon nav-light">
                         <li class="nav-item">
                             <a class="nav-link active" data-bs-toggle="tab" href="#tab_detail">
+                                <span class="nav-icon-wrap"><span class="feather-icon"><i class="fas fa-list-ol"></i></span></span>
                                 <span class="nav-link-text">{% trans 'Detail' %}</span>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" data-bs-toggle="tab" href="#tab_contacts">
+                                <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-journal-bookmark-fill"></i></span></span>
                                 <span class="nav-link-text">{% trans 'Contacts' %}</span>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" data-bs-toggle="tab" href="#tab_payment_terms">
+                                <span class="nav-icon-wrap"><span class="feather-icon"><i class="far fa-handshake"></i></span></span>
                                 <span class="nav-link-text">{% trans 'Payment Terms' %}</span>
                             </a>
                         </li>

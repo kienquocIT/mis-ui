@@ -335,7 +335,7 @@ $(async function () {
                         e.stopPropagation()
                         _this.contentModalHandle(index, delivery_config, data)
                     })
-                    $(`input.services_input`, row).off().on('blur', function () {
+                    $(`input.services_input`, row).off().on('change', function () {
                         if (parseFloat(this.value) > data.remaining_quantity){
                             $.fn.notifyB({
                                     description: $trans.attr('data-error-picked-quantity')
@@ -556,7 +556,8 @@ $(async function () {
                             $.fn.notifyB({description: data.detail}, 'success')
                             $.fn.redirectUrl($($form).attr('data-url-redirect'), 3000);
                         }
-                    }
+                    },
+                    (errs) => $.fn.notifyB({description: errs.data.errors?.detail}, 'failure')
                 )
                 .catch((err) => console.log(err))
         })

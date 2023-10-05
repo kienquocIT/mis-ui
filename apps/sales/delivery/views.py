@@ -75,12 +75,6 @@ class OrderPickingList(View):
 
 
 class OrderPickingListAPI(APIView):
-    @classmethod
-    def picking_custom(cls, data):
-        list_sub = []
-        for item in data:
-            list_sub.extend(item.get('sub_list', []))
-        return {'picking_list': list_sub}
 
     @mask_view(
         auth_require=True,
@@ -89,7 +83,7 @@ class OrderPickingListAPI(APIView):
     def get(self, request, *args, **kwargs):
         params = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_PICKING_LIST).get(params)
-        return resp.auto_return(callback_success=self.picking_custom)
+        return resp.auto_return(key_success='picking_list')
 
 
 class OrderPickingDetail(View):
@@ -162,12 +156,6 @@ class OrderDeliveryList(View):
 
 
 class OrderDeliveryListAPI(APIView):
-    @classmethod
-    def custom_reps(cls, req):
-        list_sub = []
-        for item in req:
-            list_sub.extend(item.get('sub_list', []))
-        return {'delivery_list': list_sub}
 
     @mask_view(
         login_require=True,
@@ -177,7 +165,7 @@ class OrderDeliveryListAPI(APIView):
     def get(self, request, *args, **kwargs):
         params = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_LIST).get(params)
-        return resp.auto_return(callback_success=self.custom_reps)
+        return resp.auto_return(key_success='delivery_list')
 
     @mask_view(
         login_require=True,

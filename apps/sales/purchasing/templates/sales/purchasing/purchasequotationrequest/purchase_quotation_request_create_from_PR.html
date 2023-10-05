@@ -93,9 +93,10 @@
         </div>
         <div class="row">
             <div class="col-12">
-                <ul class="nav nav-light nav-tabs">
+                <ul class="nav nav-tabs nav-icon nav-light">
                     <li class="nav-item">
                         <a class="nav-link active" data-bs-toggle="pill" href="#tab_line_detail">
+                            <span class="nav-icon-wrap"><span class="feather-icon"><i class="fas fa-list"></i></span></span>
                             <span class="nav-link-text">{% trans 'Line Detail' %}</span>
                         </a>
                     </li>
@@ -194,7 +195,7 @@
                     <div class="row" id="table-select-purchase-request-div"
                     data-url="{% url 'PurchaseRequestListAPI' %}"
                     data-method="GET">
-                        <div class="col-5" style="overflow: auto; height: 55vh; border: solid 1px rgba(91, 91, 91, 0.35); border-radius: 5px">
+                        <div class="col-5 pr-2" style="overflow: auto; height: 55vh; border: solid 1px rgba(91, 91, 91, 0.35); border-radius: 5px">
                             <table id="table-select-purchase-request"
                                    class="table nowrap w-100" data-method="GET"
                                    data-url="{% url 'PurchaseRequestListForPQRAPI' %}">

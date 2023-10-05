@@ -211,8 +211,7 @@ function loadDetail(id, frmDetail) {
             $('[name="date_created"]').val(return_advance_detail.date_created.split(" ")[0]);
             $('[name="method"]').val(return_advance_detail.method);
             loadCostTable(return_advance_detail.cost);
-            let total_value = return_advance_detail.cost.map(obj => obj?.['return_price']).reduce((a, b) => a + b, 0)
-            $('#total-value').attr('data-init-money', total_value);
+            $('#total-value').attr('data-init-money', return_advance_detail.return_total);
             if (return_advance_detail.money_received) {
                 let money_received_ele = $('#money-received')
                 money_received_ele.prop('checked', true);

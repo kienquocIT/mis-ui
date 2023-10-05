@@ -60,7 +60,7 @@ function loadContact(data, contact_mapped) {
 }
 
 function loadPQR(data) {
-    if (data) {
+    if (data && data.is_param) {
         PQRSelectBox.attr('disabled', true);
         let pqr_selected = data.id;
         let url_loaded = FormCreatePQ.attr('data-url-pqr-detail').replace(0, pqr_selected);
@@ -370,8 +370,8 @@ function LoadDetailPQ() {
             $('#pqr-select-box').select2();
             let data_detail = data?.['purchase_quotation_detail'];
             console.log(data_detail)
+            $x.fn.renderCodeBreadcrumb(data_detail);
 
-            $('#code-span').text(data_detail.code);
             $('#title').val(data_detail.title);
             loadSupplier(data_detail.supplier_mapped)
             loadContact(data_detail.contact_mapped)

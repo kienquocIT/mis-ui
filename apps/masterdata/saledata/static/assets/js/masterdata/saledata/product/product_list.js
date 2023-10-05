@@ -24,12 +24,13 @@ $(document).ready(function () {
             }, {
                 'data': 'code',
                 render: (data, type, row) => {
-                    return `<span class="text-secondary">${row.code}</span>`
+                    const link = url_detail.replace(0, row.id);
+                    return `<a href="${link}" class="badge badge-soft-primary w-70">${row.code}</a> ${$x.fn.buttonLinkBlank(link)}`
                 }
             }, {
                 'data': 'title',
                 render: (data, type, row) => {
-                    return `<a href="${url_detail.replace(0, row.id)}"><span><b>${row.title}</b></span></a>`
+                    return `<span><b>${row.title}</b></span>`
                 }
             }, {
                 'className': 'text-center',

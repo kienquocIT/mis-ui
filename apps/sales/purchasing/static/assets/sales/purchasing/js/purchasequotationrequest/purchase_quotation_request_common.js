@@ -415,12 +415,11 @@ function LoadDetailPQR() {
                 WFRTControl.setWFRuntimeID(data['purchase_quotation_request_detail']?.['workflow_runtime_id']);
                 let data_detail = data['purchase_quotation_request_detail'];
                 $.fn.compareStatusShowPageAction(data_detail);
+                $x.fn.renderCodeBreadcrumb(data_detail);
                 console.log(data_detail)
 
                 if (data_detail.purchase_quotation_request_type) {
                     $('#pr-div').prop('hidden', true);
-
-                    $('#code-span').text(data_detail.code);
                     $('#title').val(data_detail.title);
                     deliveryDateInput.val(data_detail.delivered_date.split(' ')[0]);
                     $('#note').val(data_detail.note);
@@ -501,7 +500,6 @@ function LoadDetailPQR() {
                     })
                 }
                 else {
-                    $('#code-span').text(data_detail.code);
                     $('#title').val(data_detail.title);
                     deliveryDateInput.val(data_detail.delivered_date.split(' ')[0]);
                     $('#note').val(data_detail.note);

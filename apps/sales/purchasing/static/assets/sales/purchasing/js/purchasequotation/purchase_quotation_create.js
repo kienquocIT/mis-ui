@@ -7,6 +7,7 @@ $(document).ready(function () {
         param_PQR = {
             'id': pqr_id,
             'title': pqr_title,
+            'is_param': true
         }
     }
 

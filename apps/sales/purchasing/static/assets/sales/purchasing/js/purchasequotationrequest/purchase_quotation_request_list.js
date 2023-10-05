@@ -13,6 +13,7 @@ $(function () {
                 let dtb = $('#datatable_pqr_list');
                 let frm = new SetupFormSubmit(dtb);
                 dtb.DataTableDefault({
+                    rowIdx: true,
                     reloadCurrency: true,
                     ajax: {
                         url: frm.dataUrl,
@@ -28,17 +29,24 @@ $(function () {
                     },
                     columns: [
                         {
+                            targets: 0,
+                            render: () => {
+                                return ``
+                            }
+                        },
+                        {
                             data: 'code',
                             className: 'wrap-text w-15',
                             render: (data, type, row) => {
-                                return `<span class="text-secondary">` + row.code + `</span>`
+                                const link = dtb.attr('data-url-detail').replace('0', row.id);
+                                return `<a href="${link}" class="badge badge-soft-primary w-70">${row.code}</a> ${$x.fn.buttonLinkBlank(link)}`;
                             }
                         },
                         {
                             data: 'title',
                             className: 'wrap-text w-25',
                             render: (data, type, row) => {
-                                return `<a class="link-primary underline_hover" target="_blank" href="` + $('#datatable_pqr_list').attr('data-url-detail').replace('0', row.id) + `"><span><b>` + row.title + `</b></span></a>`
+                                return `<span><b>` + row.title + `</b></span>`
                             }
                         },
                         {

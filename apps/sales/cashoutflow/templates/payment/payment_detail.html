@@ -34,11 +34,6 @@
           data-url-detail="{% url "PaymentDetailAPI" '0' %}"
     >
         {% csrf_token %}
-        <div class="row mr-3">
-            <div class="col-8 pr-5 mb-1 text-right">
-                <h4><span id="payment-code" class="badge badge-soft-primary badge-outline text-primary"></span></h4>
-            </div>
-        </div>
         <div class="row mt-1 ml-1 mr-1 collapse multi-collapse show" id="collapse-area">
             <div class="row">
                 <div class="col-8 pr-5">

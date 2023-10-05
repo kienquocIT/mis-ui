@@ -72,6 +72,14 @@ class PurchaseRequestDetailAPI(APIView):
         resp = ServerAPI(request=request, user=request.user, url=ApiURL.PURCHASE_REQUEST_DETAIL.fill_key(pk=pk)).get()
         return resp.auto_return(key_success='purchase_request')
 
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, pk, *arg, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.PURCHASE_REQUEST_DETAIL.fill_key(pk=pk)).put(request.data)
+        return resp.auto_return()
+
 
 class PurchaseRequestProductListAPI(APIView):
     @mask_view(
@@ -124,3 +132,15 @@ class PurchaseRequestConfigAPI(APIView):
     def put(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.PURCHASE_REQUEST_CONFIG).put(request.data)
         return resp.auto_return()
+
+
+class PurchaseRequestUpdate(View):
+    @mask_view(
+        auth_require=True,
+        template='sales/purchasing/purchase_request/purchase_request_update.html',
+        menu_active='menu_purchase_request_list',
+        breadcrumb='PURCHASE_REQUEST_UPDATE_PAGE',
+        perm_check=PermCheck(url=ApiURL.PURCHASE_REQUEST_DETAIL, method='PUT', fill_key=['pk']),
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK

@@ -77,9 +77,7 @@ $(document).ready(function () {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
-                        setTimeout(function () {
-                            location.reload()
-                        }, 1000);
+                        $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
                     }
                 },
                 (errs) => {
@@ -120,9 +118,7 @@ $(document).ready(function () {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
-                        setTimeout(function () {
-                            location.reload()
-                        }, 1000);
+                        $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
                     }
                 },
                 (errs) => {
@@ -147,9 +143,7 @@ $(document).ready(function () {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
-                        setTimeout(function () {
-                            location.reload()
-                        }, 1000);
+                        $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
                     }
                 },
                 (errs) => {

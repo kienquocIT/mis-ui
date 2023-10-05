@@ -1,5 +1,5 @@
 function loadDetailBeneficiary(id) {
-    let ele = $('[name="employee_created"]');
+    let ele = $('[name="employee_created_id"]');
     let frm = new SetupFormSubmit(ele);
     $.fn.callAjax2({
         'url': frm.getUrlDetail(id),
@@ -22,7 +22,7 @@ function loadDetailBeneficiary(id) {
 }
 
 function loadCreator(id) {
-    let ele = $('[name="employee_created"]');
+    let ele = $('[name="employee_created_id"]');
     let frm = new SetupFormSubmit(ele);
     if (id === null) {
         id = ele.attr('data-id')
@@ -56,7 +56,7 @@ function loadCostTable(data) {
 }
 
 function loadDetailAdvancePayment(id, type = 'create') {
-    let url = $('#url-factory').data('url-detail-ap').format_url_with_uuid(id)
+    let url = $('#url-factory').data('url-detail-ap').format_url_with_uuid(id);
     $.fn.callAjax2({
         'url': url,
         'method': "GET"

@@ -618,6 +618,9 @@ class BreadcrumbView:
     PURCHASE_REQUEST_DETAIL_PAGE = PURCHASE_REQUEST_LIST_PAGE + [
         BreadcrumbItem.BASTION_DETAIL
     ]
+    PURCHASE_REQUEST_UPDATE_PAGE = PURCHASE_REQUEST_LIST_PAGE + [
+        BreadcrumbItem.BASTION_UPDATE
+    ]
 
     # process
     SALE_PROCESS_PAGE = [

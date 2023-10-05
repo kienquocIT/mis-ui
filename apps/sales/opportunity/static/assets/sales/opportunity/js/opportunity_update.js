@@ -175,7 +175,7 @@ $(document).ready(async function () {
         })
     });
 
-    OpportunityLoadDropdown.productCategorySelectEle.on('select2:select', function (e) {
+    OpportunityLoadDropdown.productCategorySelectEle.on('select2:select', function () {
         let table = $('#table-products');
         table.find('.select-box-product').each(function () {
             let optionSelected = $(this).find('option:selected');

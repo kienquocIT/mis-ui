@@ -7,7 +7,7 @@
 {% endblock %}
 {% block pageAction %}
     <a href="{% url 'GoodsReceiptUpdate' pk=pk %}">
-        <button class="btn btn-outline-primary">
+        <button class="btn btn-outline-primary" id="btn-enable-edit">
             <span>
                 <span>{% trans 'Edit' %}</span>
                 <span class="icon">

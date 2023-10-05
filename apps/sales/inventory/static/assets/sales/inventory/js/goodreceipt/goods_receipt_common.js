@@ -730,8 +730,14 @@ class GRLoadDataHandle {
             "Finish": "badge badge-soft-success",
             "Cancel": "badge badge-soft-danger",
         }
-        eleStatus[0].className = status_data[data?.['system_status']];
-        eleStatus[0].innerHTML = data?.['system_status'];
+        // eleStatus[0].className = status_data[data?.['system_status']];
+        // eleStatus[0].innerHTML = data?.['system_status'];
+        if (['Added', 'Finish'].includes(data?.['system_status'])) {
+            let $btn = $('#btn-enable-edit');
+            if ($btn.length) {
+                $btn[0].setAttribute('hidden', 'true');
+            }
+        }
         let type_data = {
             '1': 'For purchase order',
             '2': 'For inventory adjustment',

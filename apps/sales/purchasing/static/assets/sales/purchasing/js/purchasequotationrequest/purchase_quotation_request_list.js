@@ -77,10 +77,12 @@ $(function () {
                             data: '',
                             className: 'wrap-text w-5',
                             render: (data, type, row) => {
+                                let href = $('#datatable_pqr_list').attr('data-url-purchase-quotation');
+                                let param = {'id': row.id, 'title': row.title}
                                 return `<div class="dropdown">
                                             <a type="button" data-bs-toggle="dropdown"><i class="bi bi-three-dots-vertical"></i></a>
                                             <div class="dropdown-menu">
-                                                 <a href="` + $('#datatable_pqr_list').attr('data-url-purchase-quotation') + `?purchase-quotation-request=` + row.id + `" class="dropdown-item" href="{1}">Purchase Quotation</a>
+                                                 <a href="${href}?pqr_id=${row.id}&pqr_title=${row.title}" class="dropdown-item">Purchase Quotation</a>
                                             </div>
                                         </div>`;
                             }

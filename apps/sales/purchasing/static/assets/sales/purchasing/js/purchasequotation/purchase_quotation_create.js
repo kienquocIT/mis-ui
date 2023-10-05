@@ -1,5 +1,16 @@
 $(document).ready(function () {
-    new PQHandle().load();
+    const urlParams = new URLSearchParams(window.location.search);
+    const pqr_id = urlParams.get('pqr_id');
+    const pqr_title = urlParams.get('pqr_title');
+    let param_PQR = null;
+    if (pqr_id !== null && pqr_title !== null) {
+        param_PQR = {
+            'id': pqr_id,
+            'title': pqr_title,
+        }
+    }
+
+    new PQHandle().load(param_PQR);
 
     $('#form-create-purchase-quotation').submit(function (event) {
         event.preventDefault();

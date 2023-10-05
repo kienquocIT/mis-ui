@@ -2517,6 +2517,22 @@ class DTBControl {
         return [opts, domDTL];
     }
 
+    static cleanBaseKeyOfDataAjax(d){
+        if (typeof d === "object" && Object.keys(d).length > 0){
+            let keyHasRemove = ['columns', 'draw', 'length', 'order', 'ordering', 'search', 'start', 'page', 'pageSize']
+            let result = {};
+            Object.keys(d).map(
+                (key)=>{
+                    if (keyHasRemove.indexOf(key) === -1){
+                        result[key] = d[key];
+                    }
+                }
+            )
+            return result
+        }
+        return {};
+    }
+
     static cleanParamBeforeCall(params, keyKeepEmpty = []) {
         let result = {}
         if (params && typeof params === 'object') {
@@ -2572,6 +2588,7 @@ class DTBControl {
         // config server side processing
         if (this.opts['useDataServer']) {
             // server side v
+            let ajaxDataCallback = this.opts['ajax']['data'];
             let setupServerSide = {
                 processing: true,
                 serverSide: true,
@@ -2579,75 +2596,81 @@ class DTBControl {
                 // ordering: true,
                 searchDelay: 1000,
                 order: [],
-                ajax: $.extend(this.opts['ajax'], {
-                    data: function (d) {
-                        let wrapperEle = clsThis.dtb$.closest('.dataTables_wrapper');
+                ajax: $.extend(
+                    this.opts['ajax'],
+                    {
+                        data: function (d) {
+                            let dataCallbackFromConfig = {}
+                            if (ajaxDataCallback instanceof Function) dataCallbackFromConfig = ajaxDataCallback(Object.assign({}, d));
+                            let wrapperEle = clsThis.dtb$.closest('.dataTables_wrapper');
 
-                        let sortKey = wrapperEle.find('.custom-order-dtb').val();
-                        let sortASC = wrapperEle.find('.custom-order-asc-dtb i').hasClass('fa-arrow-down-z-a');   // DESC
-                        let orderTxt = sortKey ? `${sortASC ? '-' : ''}${sortKey}` : '';
+                            let sortKey = wrapperEle.find('.custom-order-dtb').val();
+                            let sortASC = wrapperEle.find('.custom-order-asc-dtb i').hasClass('fa-arrow-down-z-a');   // DESC
+                            let orderTxt = sortKey ? `${sortASC ? '-' : ''}${sortKey}` : '';
 
-                        let keyKeepEmpty = [];
-                        let customFilter = {};
+                            let keyKeepEmpty = [];
+                            let customFilter = {};
 
-                        $(`div.row-custom-filter[data-dtb-id="#` + clsThis.dtb$.attr('id') + `"]`).find('select').each(
-                            function () {
-                                let val = $(this).val();
-                                if (val) {
-                                    if ((typeof val === "string" && val) || (Array.isArray(val) && val.length > 0)) {
-                                        customFilter[$(this).attr('data-keyParam')] = (!Array.isArray(val) ? [val] : val).join(",");
-                                    }
-                                } else {
-                                    if ($(this).attr('data-keepIdNullHasText') === 'true') {
-                                        customFilter[$(this).attr('data-keyParam')] = "";
-                                        keyKeepEmpty.push($(this).attr('data-keyParam'))
+                            $(`div.row-custom-filter[data-dtb-id="#` + clsThis.dtb$.attr('id') + `"]`).find('select').each(
+                                function () {
+                                    let val = $(this).val();
+                                    if (val) {
+                                        if ((typeof val === "string" && val) || (Array.isArray(val) && val.length > 0)) {
+                                            customFilter[$(this).attr('data-keyParam')] = (!Array.isArray(val) ? [val] : val).join(",");
+                                        }
+                                    } else {
+                                        if ($(this).attr('data-keepIdNullHasText') === 'true') {
+                                            customFilter[$(this).attr('data-keyParam')] = "";
+                                            keyKeepEmpty.push($(this).attr('data-keyParam'))
+                                        }
                                     }
                                 }
-                            }
-                        );
+                            );
 
-                        let customFilterData = {};
-                        let filterManualEle = wrapperEle.find('select.custom-filter-manual-dtb');
-                        if (filterManualEle.length > 0) {
-                            filterManualEle.each(function () {
-                                customFilterData[$(this).attr('data-keyparam')] = $(this).val();
-                            })
-                        } else {
-                            (clsThis.opts.cusFilter || []).map(
-                                (item) => {
-                                    if (item.data && Array.isArray(item.data)) {
-                                        let valParam = [];
-                                        item.data.map(
-                                            (item2) => {
-                                                if (item2.selected === true) {
-                                                    valParam.push(item2.id);
+                            let customFilterData = {};
+                            let filterManualEle = wrapperEle.find('select.custom-filter-manual-dtb');
+                            if (filterManualEle.length > 0) {
+                                filterManualEle.each(function () {
+                                    customFilterData[$(this).attr('data-keyparam')] = $(this).val();
+                                })
+                            } else {
+                                (clsThis.opts.cusFilter || []).map(
+                                    (item) => {
+                                        if (item.data && Array.isArray(item.data)) {
+                                            let valParam = [];
+                                            item.data.map(
+                                                (item2) => {
+                                                    if (item2.selected === true) {
+                                                        valParam.push(item2.id);
+                                                    }
                                                 }
-                                            }
-                                        )
-                                        customFilterData[item.keyParam] = valParam.join(",");
+                                            )
+                                            customFilterData[item.keyParam] = valParam.join(",");
+                                        }
+
                                     }
+                                )
+                            }
 
-                                }
-                            )
-                        }
-
-                        return DTBControl.cleanParamBeforeCall({
-                            'page': Math.ceil(d.start / d.length) + 1,
-                            'pageSize': d.length,
-                            'search': d?.search?.value ? d.search.value : '',
-                            'ordering': orderTxt, ...customFilter, ...customFilterData,
-                        }, keyKeepEmpty);
-                    },
-                    dataFilter: function (data) {
-                        let json = JSON.parse(data);
-                        json.recordsTotal = json?.data?.['page_count']
-                        json.recordsFiltered = json?.data?.['page_count']
-                        return JSON.stringify(json);
-                    },
-                    headers: {
-                        "ENABLEXCACHECONTROL": !!(this.opts?.['ajax']?.['cache']) ? 'true' : 'false',
-                    },
-                })
+                            return DTBControl.cleanParamBeforeCall({
+                                ...DTBControl.cleanBaseKeyOfDataAjax(dataCallbackFromConfig),
+                                'page': Math.ceil(d.start / d.length) + 1,
+                                'pageSize': d.length,
+                                'search': d?.search?.value ? d.search.value : '',
+                                'ordering': orderTxt, ...customFilter, ...customFilterData,
+                            }, keyKeepEmpty);
+                        },
+                        dataFilter: function (data) {
+                            let json = JSON.parse(data);
+                            json.recordsTotal = json?.data?.['page_count']
+                            json.recordsFiltered = json?.data?.['page_count']
+                            return JSON.stringify(json);
+                        },
+                        headers: {
+                            "ENABLEXCACHECONTROL": !!(this.opts?.['ajax']?.['cache']) ? 'true' : 'false',
+                        },
+                    }
+                )
             }
             this.opts = $.extend(this.opts, setupServerSide)
         }

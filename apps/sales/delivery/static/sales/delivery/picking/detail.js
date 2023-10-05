@@ -42,7 +42,7 @@ class pickupUtil {
         let value = parseInt(val);
         let currentList = this.getProdList
         // Cập nhật giá trị của input
-        if (value && value <= currentList[idx]['remaining_quantity']) {
+        if (0 <= value <= currentList[idx]['remaining_quantity']) {
             currentList[idx]['picked_quantity'] = value
             this.setProdList = currentList
         }
@@ -321,7 +321,7 @@ $(async function () {
                     getStockByProdID(data, $(this))
                 })
 
-                $(`#prod_row-${index}`, row).off().on('blur', async function (e) {
+                $(`#prod_row-${index}`, row).off().on('change', async function (e) {
                     if (this.value) {
                         // format số âm, nhiều số 0. Ex. 0001, số thập phân.
                         let value = this.value.replace("-", "").replace(/^0+(?=\d)/, '').replace(/\.\d+$/, '');
@@ -364,7 +364,6 @@ $(async function () {
     $form.on('submit', function (e) {
         e.preventDefault();
         let _form = new SetupFormSubmit($form);
-        let csr = $("[name=csrfmiddlewaretoken]").val();
         const $transElm = $('#trans-factory')
 
         if (!_form.dataForm?.warehouse_id) {

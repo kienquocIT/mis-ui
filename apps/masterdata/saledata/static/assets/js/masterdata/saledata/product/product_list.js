@@ -3,6 +3,7 @@ $(document).ready(function () {
     let url_detail = tbl.attr('data-url-detail');
     tbl.DataTableDefault({
         useDataServer: true,
+        reloadCurrency: true,
         rowIdx: true,
         ajax: {
             url: tbl.attr('data-url'),
@@ -44,6 +45,11 @@ $(document).ready(function () {
                 'data': 'general_product_category',
                 render: (data, type, row) => {
                     return `<span class="badge-status"><span class="badge badge-secondary badge-indicator"></span>&nbsp;<span class="text-secondary span-product-category">${row.general_product_category.title}</span></span>`
+                }
+            }, {
+                'data': 'general_price',
+                render: (data, type, row) => {
+                    return `<span class="mask-money text-primary" data-init-money="${row.general_price}"></span>`
                 }
             }, {
                 'className': 'text-center',

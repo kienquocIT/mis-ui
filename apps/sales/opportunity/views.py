@@ -87,16 +87,8 @@ class OpportunityUpdate(View):
         perm_check=PermCheck(url=ApiURL.OPPORTUNITY_DETAIL, method='PUT', fill_key=['pk']),
     )
     def get(self, request, *args, **kwargs):
-        resp1 = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_LIST).get()
-        resp2 = ServerAPI(user=request.user, url=ApiURL.CONTACT_LIST).get()
-        resp3 = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_LIST).get()
-        resp4 = ServerAPI(user=request.user, url=ApiURL.EMPLOYEE_LIST).get()
         result = {
             'employee_current_id': request.user.employee_current_data.get('id', None),
-            'account_list': resp1.result,
-            'contact_list': resp2.result,
-            'opportunity_list': resp3.result,
-            'employee_list': resp4.result,
             'type_customer': TYPE_CUSTOMER,
             'role_customer': ROLE_CUSTOMER,
         }

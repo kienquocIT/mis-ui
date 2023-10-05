@@ -93,15 +93,15 @@ function loadPQR(data) {
             table_body.html(``);
             for (let i = 0; i < product_list_get.length; i++) {
                 table_body.append(`<tr id="row-${i}" class="row-number">
-                        <td class="number text-center">${i+1}</td>
-                        <td><select class="form-select product-select-box" disabled data-method="GET"></select></td>
-                        <td><textarea class="form-control product-description" style="height: 38px">${product_list_get[i].description}</textarea></td>
-                        <td><select class="form-select product-uom-select-box" data-method="GET"></select></td>
-                        <td><input type="number" min="1" onchange="this.value=checkInputQuantity(this.value)" class="form-control product-quantity" value="${product_list_get[i].quantity}"></td>
-                        <td><input type="text" data-return-type="number" class="form-control pr-unit-price-input mask-money" style="color: black; background: none" value="${product_list_get[i].unit_price}"></td>
-                        <td><select class="form-select product-tax-select-box" data-method="GET"></select></td>
-                        <td><span class="pr-subtotal-price-input mask-money text-primary" data-init-money="${product_list_get[i].subtotal_price}"></span></td>
-                        <td><button class="disabled btn-del-line-detail btn text-danger btn-link btn-animated" title="Delete row"><span class="icon"><i class="bi bi-dash-circle"></i></span></button></td>
+                        <td class="number text-center wrap-text w-5">${i+1}</td>
+                        <td class="wrap-text w-15"><select class="form-select product-select-box" disabled data-method="GET"></select></td>
+                        <td class="wrap-text w-10"><div data-simplebar class="h-100p bg-gray-light-4 border rounded-5 text-primary"><span class="product-description">${product_list_get[i].product.description}</span></div></td>
+                        <td class="wrap-text w-10"><select class="form-select product-uom-select-box" data-method="GET"></select></td>
+                        <td class="wrap-text w-10"><input type="number" min="1" onchange="this.value=checkInputQuantity(this.value)" class="form-control product-quantity" value="${product_list_get[i].quantity}"></td>
+                        <td class="wrap-text w-15"><input type="text" data-return-type="number" class="form-control pr-unit-price-input mask-money" style="color: black; background: none" value="${product_list_get[i].unit_price}"></td>
+                        <td class="wrap-text w-15"><select class="form-select product-tax-select-box" data-method="GET"></select></td>
+                        <td class="wrap-text w-15"><span class="pr-subtotal-price-input mask-money text-primary" data-init-money="${product_list_get[i].subtotal_price}"></span></td>
+                        <td class="wrap-text w-5"><button class="disabled btn-del-line-detail btn text-danger btn-link btn-animated" title="Delete row"><span class="icon"><i class="bi bi-dash-circle"></i></span></button></td>
                     </tr>
                     <script>
                         function checkInputQuantity(value) {
@@ -149,16 +149,33 @@ function count_row(table_body, option) {
 }
 
 function loadProductList(row_id, data) {
+    let selected_product = [];
+    $('#table-purchase-quotation-products-selected tbody tr').each(function () {
+        selected_product.push($(this).find('.product-select-box').val());
+    })
     let ele = $('#' + row_id + ' .product-select-box');
     ele.initSelect2({
         ajax: {
             url: FormCreatePQ.attr('data-url-product'),
             method: 'GET',
         },
+        callbackDataResp: function (resp, keyResp) {
+            let result = [];
+            for (let i = 0; i < resp.data[keyResp].length; i++) {
+                if (!selected_product.includes(resp.data[keyResp][i].id)) {
+                    result.push(resp.data[keyResp][i])
+                }
+            }
+            return result;
+        },
         data: (data ? data : null),
         keyResp: 'product_list',
         keyId: 'id',
         keyText: 'title',
+    }).on('change', function () {
+        let obj_selected = JSON.parse($('#' + $(this).attr('data-idx-data-loaded')).text())[$(this).val()];
+        $(this).closest('tr').find('.product-description').text(obj_selected.description)
+        loadProductUomList($(this).closest('tr').attr('id'), null, obj_selected?.['general_uom_group']['id']);
     })
 }
 
@@ -224,15 +241,15 @@ function calculate_price(table_tr) {
 $(document).on("click", '#new-product-btn', function () {
     let table_body = $('#table-purchase-quotation-products-selected tbody');
     table_body.append(`<tr id="" class="row-number">
-            <td class="number text-center"></td>
-            <td><select class="form-select product-select-box" data-method="GET"><option selected></option></select></td>
-            <td><textarea class="form-control product-description" style="height: 38px"></textarea></td>
-            <td><select class="form-select product-uom-select-box" data-method="GET"><option selected></option></select></td>
-            <td><input type="number" min="1" onchange="this.value=checkInputQuantity(this.value)" class="form-control product-quantity" value="1"></td>
-            <td><input type="text" data-return-type="number" class="form-control pr-unit-price-input mask-money" style="color: black; background: none"></td>
-            <td><select class="form-select product-tax-select-box" data-method="GET"><option selected></option></select></td>
-            <td><span class="pr-subtotal-price-input mask-money text-primary" data-init-money=""></span></td>
-            <td><button class="btn-del-line-detail btn text-danger btn-link btn-animated" title="Delete row"><span class="icon"><i class="bi bi-dash-circle"></i></span></button></td>
+            <td class="number text-center wrap-text w-5"></td>
+            <td class="wrap-text w-15"><select class="form-select product-select-box" data-method="GET"></select></td>
+            <td class="wrap-text w-10"><div data-simplebar class="h-100p bg-gray-light-4 border rounded-5 text-primary"><span class="product-description"></span></div></td>
+            <td class="wrap-text w-10"><select class="form-select product-uom-select-box" data-method="GET"><option selected></option></select></td>
+            <td class="wrap-text w-10"><input type="number" min="1" onchange="this.value=checkInputQuantity(this.value)" class="form-control product-quantity" value="1"></td>
+            <td class="wrap-text w-15"><input type="text" data-return-type="number" class="form-control pr-unit-price-input mask-money" style="color: black; background: none"></td>
+            <td class="wrap-text w-15"><select class="form-select product-tax-select-box" data-method="GET"><option selected></option></select></td>
+            <td class="wrap-text w-15"><span class="pr-subtotal-price-input mask-money text-primary" data-init-money=""></span></td>
+            <td class="wrap-text w-5"><button class="btn-del-line-detail btn text-danger btn-link btn-animated" title="Delete row"><span class="icon"><i class="bi bi-dash-circle"></i></span></button></td>
         </tr>
         <script>
             function checkInputQuantity(value) {
@@ -243,48 +260,12 @@ $(document).on("click", '#new-product-btn', function () {
             }
         </script>`);
     $.fn.initMaskMoney2();
-    let row_count = count_row(table_body, 1);
+    count_row(table_body, 1);
     $('.btn-del-line-detail').on('click', function () {
         $(this).closest('tr').remove();
         count_row(table_body, 2);
         calculate_price($('#table-purchase-quotation-products-selected tbody tr'));
         $.fn.initMaskMoney2();
-    })
-    $('#row-' + row_count + ' .product-select-box').on('change', function () {
-        let current_value = $(this).val();
-        let current_row = $(this).closest('tr').find('.number').text();
-        let flag = true;
-        $('#table-purchase-quotation-products-selected tbody tr').each(function () {
-            let temp_value = $(this).find('.product-select-box option:selected').attr('value');
-            let temp_row = $(this).closest('tr').find('.number').text();
-            if (temp_value === current_value && temp_row !== current_row) {
-                $.fn.notifyB({description: "Can not select selected item"}, 'failure');
-                flag = false;
-                return false;
-            }
-        })
-
-        if (flag) {
-            let parent_tr = $(this).closest('tr');
-            parent_tr.find('.product-tax-select-box').val($(this).find('option:selected').attr('data-tax-id'));
-
-            $('#' + parent_tr.attr('id') + ' .product-unit-price-select-box').attr('value', '');
-            $('#' + parent_tr.attr('id') + ' .product-quantity').val(1);
-            $('#' + parent_tr.attr('id') + ' .product-subtotal-price').attr('value', '');
-            $('#' + parent_tr.attr('id') + ' .product-subtotal-price-after-tax').attr('value', '');
-            calculate_price($('#table-purchase-quotation-products-selected tbody tr'));
-
-            if ($(this).val() !== '') {
-                let obj_selected = JSON.parse($('#' + $(this).attr('data-idx-data-loaded')).text())[$(this).val()];
-                loadProductUomList(parent_tr.attr('id'), null, obj_selected?.['general_uom_group']['id']);
-            } else {
-                loadProductUomList(parent_tr.attr('id'), null, null);
-            }
-        }
-        else {
-            loadProductList('row-' + row_count.toString());
-            loadProductTaxList('row-' + row_count.toString());
-        }
     })
 });
 
@@ -372,7 +353,7 @@ function LoadDetailPQ() {
                         data: 'description',
                         className: 'wrap-text w-10',
                         render: (data, type, row, meta) => {
-                            return `<textarea readonly class="product-description form-control" style="height: 38px">${row.description}</textarea>`;
+                            return `<div data-simplebar class="h-100p bg-gray-light-4 border rounded-5 text-primary"><span class="product-description">${row.product.description}</span></div>`;
                         }
                     },
                     {
@@ -400,7 +381,10 @@ function LoadDetailPQ() {
                         data: 'tax',
                         className: 'wrap-text w-15',
                         render: (data, type, row) => {
-                            let html = `<option selected data-rate="${row.product.tax.rate}" value="${row.product.tax.id}">${row.product.tax.title} (${row.product.tax.rate}%)</option>`;
+                            let html = '';
+                            if (Object.keys(row.product.tax).length !== 0) {
+                                html = `<option selected data-rate="${row.product.tax.rate}" value="${row.product.tax.id}">${row.product.tax.title} (${row.product.tax.rate}%)</option>`;
+                            }
                             return `<select style="color: #6f6f6f" disabled class="form-select product-tax-select-box" data-method="GET">${html}</select>`;
                         }
                     },

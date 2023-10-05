@@ -1,5 +1,20 @@
 let urlEle = $('#url-factory');
+let transEle = $('#trans-factory')
+function callData(url, method) {
+    return $.fn.callAjax2({
+        url: url,
+        method: method,
+    }).then((resp) => {
+        return $.fn.switcherResp(resp);
+    });
+}
 
+async function loadConfig() {
+    let url = urlEle.data('url-config');
+    let method = 'GET';
+    let result = await callData(url, method);
+    return result?.['config'];
+}
 class PurchaseRequestLoadPage {
     static supplierSelectEle = $('#box-select-supplier')
     static contactSelectEle = $('#box-select-contact')
@@ -253,7 +268,6 @@ class PurchaseRequestAction {
     }
 
     getHtmlProductTitle(row, product) {
-        let ele_trans = $('#trans-factory');
         return `<span class="input-affix-wrapper">
                 <span class="input-prefix" id="dropdownBeneficiary">
                     <i class="fas fa-info-circle text-primary" aria-expanded="false"
@@ -261,20 +275,20 @@ class PurchaseRequestAction {
                     <span role="menu" class="dropdown-menu ml-4 pl-3 pr-3 pt-3 pb-3"
                           style="width: 25rem;">
                         <div class="row">
-                            <span class="col-7">${ele_trans.data('trans-more-info')}</span>
+                            <span class="col-7">${transEle.data('trans-more-info')}</span>
                             <a class="col-5 text-right" target="_blank"
                                href="${urlEle.data('url-product-detail')}">
-                                <span class="badge btn-outline-primary">${ele_trans.data('trans-more')}&nbsp;<i
+                                <span class="badge btn-outline-primary">${transEle.data('trans-more')}&nbsp;<i
                                     class="bi bi-arrow-right"></i></span>
                             </a>
                         </div>
                         <div class="dropdown-divider"></div>
                         <div class="row">
-                            <span class="col-5">${ele_trans.data('trans-product-name')}</span>
+                            <span class="col-5">${transEle.data('trans-product-name')}</span>
                             <span class="col-7 text-primary span-product-name"></span>
                         </div>
                         <div class="row">
-                            <span class="col-5">${ele_trans.data('trans-code')}</span>
+                            <span class="col-5">${transEle.data('trans-code')}</span>
                             <span class="col-7 text-primary span-product-code"></span>
                         </div>
                         <div class="row">
@@ -291,10 +305,17 @@ class PurchaseRequestAction {
             </span>`
     }
 
-    static loadSaleOrder() {
+    static async loadSaleOrder() {
         if (!$.fn.DataTable.isDataTable('#datatable-sale-order')) {
             let $table = $('#datatable-sale-order')
             let frm = new SetupFormSubmit($table);
+            let config = await loadConfig();
+            let list_emp_reference = config.employee_reference.map(obj=>obj.employee.id);
+            let emp_current_id = $('#employee_current_id').val();
+            let url = frm.dataUrl;
+            if(!list_emp_reference.includes(emp_current_id)){
+                url = `{0}?employee_inherit={1}`.format_by_idx(frm.dataUrl, emp_current_id)
+            }
             $table.DataTableDefault({
                 useDataServer: true,
                 rowIdx: true,
@@ -302,7 +323,7 @@ class PurchaseRequestAction {
                 scrollY: '200px',
                 autoWidth: false,
                 ajax: {
-                    url: frm.dataUrl,
+                    url: url,
                     type: frm.dataMethod,
                     dataSrc: function (resp) {
                         let data = $.fn.switcherResp(resp);
@@ -324,7 +345,7 @@ class PurchaseRequestAction {
                         targets: 1,
                         className: 'wrap-text',
                         render: (data, type, row) => {
-                            return `<span class="form-check"><input type="checkbox" class="form-check-input inp-check-so" data-id="${row.id}"/></span>`
+                            return `<span class="form-check"><input type="radio" name="radioSaleOrder" class="form-check-input inp-check-so" data-id="${row.id}"/></span>`
                         }
                     },
                     {

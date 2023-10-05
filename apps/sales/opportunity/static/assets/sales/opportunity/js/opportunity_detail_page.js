@@ -5,7 +5,6 @@ $(document).ready(function () {
     let transEle = $('#trans-factory');
     $('#btn-opp-edit').attr('href', dataUrlEle.data('url-edit').format_url_with_uuid(pk));
 
-
     loadDtbContactRolePageDetail([]);
 
     $('#rangeInput').on('mousedown', function () {
@@ -15,8 +14,7 @@ $(document).ready(function () {
     // config input date
     OpportunityLoadDetail.configDateTimeEle()
 
-
-     function loadDetail() {
+    function loadDetail() {
         let url = frmDetail.data('url').format_url_with_uuid(pk);
         $.fn.callAjax2({
             url: url,
@@ -64,9 +62,7 @@ $(document).ready(function () {
 
     loadDetail();
 
-
     toggleShowActivity();
-
 
     $('#date-input').daterangepicker({
         singleDatePicker: true,
@@ -553,8 +549,11 @@ $(document).ready(function () {
         })
     }, jQuery)
 
-
     // TIMELINE
+    let CALL_LOG_LIST = [];
+    let EMAIL_LIST = [];
+    let MEETING_LIST = [];
+
     function tabSubtask(taskID) {
         if (!taskID) return false
         const $wrap = $('.wrap-subtask')
@@ -788,6 +787,7 @@ $(document).ready(function () {
                                     'date': item.date_created.split(' ')[0],
                                 })
                             } else if (Object.keys(item.call_log).length > 0) {
+                                CALL_LOG_LIST.push(item.call_log)
                                 activity_logs_list.push({
                                     'id': item.call_log.id,
                                     'type': item.call_log.activity_type,
@@ -796,6 +796,7 @@ $(document).ready(function () {
                                     'date': item.date_created.split(' ')[0],
                                 })
                             } else if (Object.keys(item.email).length > 0) {
+                                EMAIL_LIST.push(item.email)
                                 activity_logs_list.push({
                                     'id': item.email.id,
                                     'type': item.email.activity_type,
@@ -804,6 +805,7 @@ $(document).ready(function () {
                                     'date': item.date_created.split(' ')[0],
                                 })
                             } else if (Object.keys(item.meeting).length > 0) {
+                                MEETING_LIST.push(item.meeting)
                                 activity_logs_list.push({
                                     'id': item.meeting.id,
                                     'type': item.meeting.activity_type,
@@ -829,10 +831,10 @@ $(document).ready(function () {
 
     callAjaxtoLoadTimeLineList();
 
-
     $(document).on('click', '#table-timeline .detail-call-log-button', function () {
+        console.log(CALL_LOG_LIST)
         let call_log_id = $(this).attr('data-id');
-        let call_log_obj = JSON.parse($('#opportunity_call_log_list').text()).filter(function (item) {
+        let call_log_obj = CALL_LOG_LIST.filter(function (item) {
             return item.id === call_log_id;
         })[0]
         $('#detail-subject-input').val(call_log_obj.subject);
@@ -872,7 +874,7 @@ $(document).ready(function () {
 
     $(document).on('click', '#table-timeline .detail-email-button', function () {
         let email_id = $(this).attr('data-id');
-        let email_obj = JSON.parse($('#opportunity_email_list').text()).filter(function (item) {
+        let email_obj = EMAIL_LIST.filter(function (item) {
             return item.id === email_id;
         })[0]
         $('#detail-email-subject-input').val(email_obj.subject);
@@ -895,7 +897,7 @@ $(document).ready(function () {
 
     $(document).on('click', '#table-timeline .detail-meeting-button', function () {
         let meeting_id = $(this).attr('data-id');
-        let meeting_obj = JSON.parse($('#opportunity_meeting_list').text()).filter(function (item) {
+        let meeting_obj = MEETING_LIST.filter(function (item) {
             return item.id === meeting_id;
         })[0]
         $('#detail-meeting-subject-input').val(meeting_obj.subject);

@@ -891,8 +891,7 @@ function LoadDetailAP(option) {
                 data = data['advance_payment_detail'];
                 console.log(data)
                 $.fn.compareStatusShowPageAction(data);
-
-                $('#ap-code').text(data.code);
+                $x.fn.renderCodeBreadcrumb(data);
 
                 $('#title').val(data.title);
 

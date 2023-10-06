@@ -85,8 +85,8 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     # Product
     PRODUCT_LIST_PAGE = BreadcrumbChildren(_('Product'), 'ProductList')
     PRODUCT_CREATE_PAGE = BreadcrumbChildren(_('Product create'), 'ProductCreate')
-    PRODUCT_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
-    PRODUCT_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
+    PRODUCT_DETAIL_PAGE = BreadcrumbChildren(_('Product Detail'))
+    PRODUCT_UPDATE_PAGE = BreadcrumbChildren(_('Product Update'))
 
     # Advance
     ADVANCE_PAYMENT_LIST_PAGE = BreadcrumbChildren(_('Advance Payment'), 'AdvancePaymentList')
@@ -326,9 +326,7 @@ class BreadcrumbView:
         BreadcrumbItem.HOME_PAGE,
         BreadcrumbItem.EMPLOYEE_LIST_PAGE,
     ]
-
     EMPLOYEE_CREATE_PAGE = EMPLOYEE_LIST_PAGE + [BreadcrumbItem.EMPLOYEE_CREATE_PAGE]
-
     EMPLOYEE_UPDATE_PAGE = EMPLOYEE_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
     EMPLOYEE_DETAIL_PAGE = EMPLOYEE_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
 
@@ -336,11 +334,8 @@ class BreadcrumbView:
         BreadcrumbItem.HOME_PAGE,
         BreadcrumbItem.USER_LIST_PAGE,
     ]
-
     USER_CREATE_PAGE = USER_LIST_PAGE + [BreadcrumbItem.USER_CREATE_PAGE]
-
     USER_DETAIL_PAGE = USER_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
-
     USER_EDIT_PAGE = USER_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
     GROUP_LEVEL_LIST_PAGE = [
@@ -348,7 +343,6 @@ class BreadcrumbView:
         BreadcrumbItem.GROUP_LIST_PAGE,
         BreadcrumbItem.GROUP_LEVEL_LIST_PAGE,
     ]
-
     GROUP_LIST_PAGE = [
         BreadcrumbItem.HOME_PAGE,
         BreadcrumbItem.GROUP_LIST_PAGE,
@@ -363,18 +357,15 @@ class BreadcrumbView:
     ]
     COMPANY_DETAIL_PAGE = COMPANY_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     COMPANY_UPDATE_PAGE = COMPANY_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
-
     COMPANY_DIAGRAM = [
         BreadcrumbItem.HOME_PAGE,
         BreadcrumbItem.COMPANY_DIAGRAM,
     ]
-
     COMPANY_OVERVIEW_PAGE = [
         BreadcrumbItem.HOME_PAGE,
         BreadcrumbItem.COMPANY_PAGE,
         BreadcrumbItem.COMPANY_OVERVIEW_PAGE,
     ]
-
     COMPANY_OVERVIEW_DETAIL_PAGE = [
         BreadcrumbItem.HOME_PAGE,
         BreadcrumbItem.COMPANY_PAGE,
@@ -386,7 +377,6 @@ class BreadcrumbView:
         BreadcrumbItem.HOME_PAGE,
         BreadcrumbItem.ROLE_LIST_PAGE,
     ]
-
     ROLE_CREATE_PAGE = ROLE_LIST_PAGE + [BreadcrumbItem.ROLE_CREATE_PAGE]
     ROLE_DETAIL_PAGE = ROLE_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     ROLE_UPDATE_PAGE = ROLE_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
@@ -395,7 +385,6 @@ class BreadcrumbView:
     WORKFLOW_LIST_PAGE = [
         BreadcrumbItem.WORKFLOW_LIST_PAGE
     ]
-
     WORKFLOW_CREATE_PAGE = WORKFLOW_LIST_PAGE + [BreadcrumbItem.WORKFLOW_CREATE_PAGE]
     WORKFLOW_DETAIL_PAGE = WORKFLOW_LIST_PAGE + [BreadcrumbItem.WORKFLOW_DETAIL_PAGE]
 
@@ -431,20 +420,21 @@ class BreadcrumbView:
         BreadcrumbItem.PRODUCT_LIST_PAGE
     ]
     PRODUCT_CREATE_PAGE = PRODUCT_LIST_PAGE + [BreadcrumbItem.PRODUCT_CREATE_PAGE]
-    PRODUCT_DETAIL_PAGE = PRODUCT_LIST_PAGE + [BreadcrumbItem.PRODUCT_DETAIL_PAGE]
-    PRODUCT_UPDATE_PAGE = PRODUCT_LIST_PAGE + [BreadcrumbItem.PRODUCT_UPDATE_PAGE]
+    PRODUCT_DETAIL_PAGE = PRODUCT_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    PRODUCT_UPDATE_PAGE = PRODUCT_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
     ADVANCE_PAYMENT_LIST_PAGE = [
         BreadcrumbItem.ADVANCE_PAYMENT_LIST_PAGE
     ]
     ADVANCE_PAYMENT_CREATE_PAGE = ADVANCE_PAYMENT_LIST_PAGE + [BreadcrumbItem.ADVANCE_PAYMENT_CREATE_PAGE]
-    ADVANCE_PAYMENT_DETAIL_PAGE = ADVANCE_PAYMENT_LIST_PAGE + [BreadcrumbItem.ADVANCE_PAYMENT_DETAIL_PAGE]
+    ADVANCE_PAYMENT_DETAIL_PAGE = ADVANCE_PAYMENT_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
 
     PAYMENT_LIST_PAGE = [
         BreadcrumbItem.PAYMENT_LIST_PAGE
     ]
     PAYMENT_CREATE_PAGE = PAYMENT_LIST_PAGE + [BreadcrumbItem.PAYMENT_CREATE_PAGE]
-    PAYMENT_DETAIL_PAGE = PAYMENT_LIST_PAGE + [BreadcrumbItem.PAYMENT_DETAIL_PAGE]
+    PAYMENT_DETAIL_PAGE = PAYMENT_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    PAYMENT_CONFIG_PAGE = [BreadcrumbItem.PAYMENT_CONFIG_PAGE]
 
     PRICE_LIST_PAGE = [
         BreadcrumbItem.PRICE_LIST_PAGE
@@ -460,7 +450,6 @@ class BreadcrumbView:
     PROMOTION_LIST_PAGE = [
         BreadcrumbItem.PROMOTION_LIST_PAGE
     ]
-
     PROMOTION_CREATE_PAGE = PROMOTION_LIST_PAGE + [BreadcrumbItem.PROMOTION_CREATE_PAGE]
     PROMOTION_DETAIL_PAGE = PROMOTION_LIST_PAGE + [BreadcrumbItem.PROMOTION_DETAIL_PAGE]
     PROMOTION_EDIT_PAGE = PROMOTION_LIST_PAGE + [BreadcrumbItem.PROMOTION_EDIT_PAGE]
@@ -469,6 +458,9 @@ class BreadcrumbView:
     OPPORTUNITY_LIST_PAGE = [
         BreadcrumbItem.OPPORTUNITY_LIST_PAGE
     ]
+    OPPORTUNITY_DETAIL_PAGE = OPPORTUNITY_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    OPPORTUNITY_UPDATE_PAGE = OPPORTUNITY_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+    OPPORTUNITY_CONFIG_PAGE = [BreadcrumbItem.OPPORTUNITY_CONFIG_PAGE]
 
     # Quotation
     QUOTATION_LIST_PAGE = [
@@ -549,14 +541,6 @@ class BreadcrumbView:
         BreadcrumbItem.SALE_ORDER_CONFIG_PAGE
     ]
 
-    # Opportunity detail
-    OPPORTUNITY_DETAIL_PAGE = OPPORTUNITY_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
-    OPPORTUNITY_UPDATE_PAGE = OPPORTUNITY_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
-
-    # Opportunity Config
-    OPPORTUNITY_CONFIG_PAGE = [BreadcrumbItem.OPPORTUNITY_CONFIG_PAGE]
-    PAYMENT_CONFIG_PAGE = [BreadcrumbItem.PAYMENT_CONFIG_PAGE]
-
     # Task
     OPPORTUNITY_TASK_CONFIG_PAGE = [BreadcrumbItem.OPPORTUNITY_TASK_CONFIG_PAGE]
     OPPORTUNITY_TASK_LIST_PAGE = [BreadcrumbItem.OPPORTUNITY_TASK_LIST_PAGE]
@@ -575,15 +559,8 @@ class BreadcrumbView:
     OPPORTUNITY_DOCUMENT_LIST_PAGE = [
         BreadcrumbItem.OPPORTUNITY_DOCUMENT_LIST_PAGE
     ]
-
     OPPORTUNITY_DOCUMENT_CREATE_PAGE = OPPORTUNITY_DOCUMENT_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
     OPPORTUNITY_DOCUMENT_DETAIL_PAGE = OPPORTUNITY_DOCUMENT_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
-
-    # Purchase
-    # PURCHASE_REQUEST_LIST_PAGE = [
-    #     BreadcrumbItem.PURCHASE_REQUEST_LIST_PAGE
-    # ]
-    # PURCHASE_REQUEST_CREATE_PAGE = PURCHASE_REQUEST_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
 
     PURCHASE_QUOTATION_REQUEST_LIST_PAGE = [
         BreadcrumbItem.PURCHASE_QUOTATION_REQUEST
@@ -595,7 +572,7 @@ class BreadcrumbView:
         BreadcrumbItem.PURCHASE_QUOTATION_REQUEST_CREATE_MANUAL
     ]
     PURCHASE_QUOTATION_REQUEST_DETAIL_PAGE = PURCHASE_QUOTATION_REQUEST_LIST_PAGE + [
-        BreadcrumbItem.PURCHASE_QUOTATION_REQUEST_DETAIL
+        BreadcrumbItem.BASTION_DETAIL
     ]
 
     PURCHASE_QUOTATION_LIST_PAGE = [
@@ -605,13 +582,12 @@ class BreadcrumbView:
         BreadcrumbItem.PURCHASE_QUOTATION_CREATE
     ]
     PURCHASE_QUOTATION_DETAIL_PAGE = PURCHASE_QUOTATION_LIST_PAGE + [
-        BreadcrumbItem.PURCHASE_QUOTATION_DETAIL
+        BreadcrumbItem.BASTION_DETAIL
     ]
 
     PURCHASE_REQUEST_LIST_PAGE = [
         BreadcrumbItem.PURCHASE_REQUEST_LIST
     ]
-
     PURCHASE_REQUEST_CREATE_PAGE = PURCHASE_REQUEST_LIST_PAGE + [
         BreadcrumbItem.BASTION_CREATE
     ]

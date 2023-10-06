@@ -1297,14 +1297,18 @@ class NodeSubmitHandle {
                             let dataInForm = {};
                             let IFArea = modalCollab.querySelector('.collab-in-form-area');
                             dataInForm['app_property'] = $(IFArea?.querySelector('.box-in-form-property')).val();
-                            dataInForm['zone'] = JSON.parse($(IFArea?.querySelector('.node-zone-submit')).val());
+                            if ($(IFArea?.querySelector('.node-zone-submit')).val()) {
+                                dataInForm['zone'] = JSON.parse($(IFArea?.querySelector('.node-zone-submit')).val());
+                            }
                             dataRow['collab_in_form'] = dataInForm;
                         } else if ($(boxListSource).val() === '2') {
                             dataRow['option_collaborator'] = 1;
                             let dataOutForm = {};
                             let OFArea = modalCollab.querySelector('.collab-out-form-area');
                             dataOutForm['employee_list'] = JSON.parse($(OFArea?.querySelector('.node-out-form-employee-submit')).val());
-                            dataOutForm['zone'] = JSON.parse($(OFArea?.querySelector('.node-zone-submit')).val());
+                            if ($(OFArea?.querySelector('.node-zone-submit')).val()) {
+                                dataOutForm['zone'] = JSON.parse($(OFArea?.querySelector('.node-zone-submit')).val());
+                            }
                             dataRow['collab_out_form'] = dataOutForm;
                             if (is_flowchart === true) {
                                 total_collab = dataOutForm?.['employee_list'].length;

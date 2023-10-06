@@ -73,100 +73,16 @@ $(function () {
         });
 
         GRDataTableHandle.tablePR.on('click', '.table-row-checkbox', function () {
-            let is_checked = false;
-            if (this.checked === true) {
-                is_checked = true;
-            }
-            for (let eleCheck of GRDataTableHandle.tablePR[0].querySelectorAll('.table-row-checkbox')) {
-                eleCheck.checked = false;
-                let row = eleCheck.closest('tr');
-                $(row).css('background-color', '');
-            }
-            //
-            GRStoreDataHandle.storeDataAll();
-            let row = this.closest('tr');
-            GRDataTableHandle.tableLot.DataTable().clear().draw();
-            GRDataTableHandle.tableSerial.DataTable().clear().draw();
-            $('#scroll-table-lot-serial')[0].setAttribute('hidden', 'true');
-            GRDataTableHandle.tableWH.DataTable().clear().draw();
-            if (is_checked === true) {
-                this.checked = true;
-                GRLoadDataHandle.loadModalWareHouse(JSON.parse(this.getAttribute('data-row')), true);
-                $(row).css('background-color', '#ebfcf5');
-            } else {
-                $(row).css('background-color', '');
-            }
+            GRLoadDataHandle.loadCheckPR(this);
         });
 
         GRDataTableHandle.tableWH.on('click', '.table-row-checkbox', function () {
-            let is_checked = false;
-            if (this.checked === true) {
-                is_checked = true;
-            }
-            for (let eleCheck of GRDataTableHandle.tableWH[0].querySelectorAll('.table-row-checkbox')) {
-                eleCheck.checked = false;
-                let row = eleCheck.closest('tr');
-                $(row).css('background-color', '');
-            }
-            GRStoreDataHandle.storeDataAll();
-            let row = this.closest('tr');
-            GRDataTableHandle.tableLot.DataTable().clear().draw();
-            GRDataTableHandle.tableSerial.DataTable().clear().draw();
-            if (is_checked === true) {
-                this.checked = true;
-                GRLoadDataHandle.loadNewRowsLotOrNewRowsSerial();
-                $(row).css('background-color', '#ebfcf5');
-            } else {
-                $(row).css('background-color', '');
-            }
+            GRLoadDataHandle.loadCheckWH(this);
         });
 
         GRDataTableHandle.tableWH.on('change', '.table-row-import', function () {
             GRLoadDataHandle.loadQuantityImport();
         });
-
-        // btnLot.on('click', function () {
-        //     if (GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked')) {
-        //         GRLoadDataHandle.loadAreaLotSerial(true, false);
-        //     } else {
-        //         $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-validate-no-warehouse')}, 'failure');
-        //         return false
-        //     }
-        // });
-
-        // btnSerial.on('click', function () {
-        //     if (GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked')) {
-        //         GRLoadDataHandle.loadAreaLotSerial(false, true);
-        //     } else {
-        //         $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-validate-no-warehouse')}, 'failure');
-        //         return false
-        //     }
-        // });
-
-        // btnNoLotSerial.on('click', function () {
-        //     for (let eleImport of GRDataTableHandle.tableWH[0].querySelectorAll('.table-row-import')) {
-        //         eleImport.value = '0';
-        //         eleImport.removeAttribute('disabled');
-        //     }
-        //     GRDataTableHandle.tableLot.DataTable().clear().draw();
-        //     GRDataTableHandle.tableSerial.DataTable().clear().draw();
-        //     for (let i = 0; i < GRDataTableHandle.tableWH[0].tBodies[0].rows.length; i++) {
-        //         let row = GRDataTableHandle.tableWH[0].tBodies[0].rows[i];
-        //         let dataWHCheckedRaw = row.querySelector('.table-row-checkbox').getAttribute('data-row');
-        //         if (dataWHCheckedRaw) {
-        //             let dataWHChecked = JSON.parse(dataWHCheckedRaw);
-        //             let keyToDelete = ['lot_data', 'serial_data'];
-        //             for (let key in dataWHChecked) {
-        //                 if (dataWHChecked.hasOwnProperty(key) && keyToDelete.includes(key)) {
-        //                     delete dataWHChecked[key];
-        //                 }
-        //             }
-        //             row.querySelector('.table-row-checkbox').setAttribute('data-row', JSON.stringify(dataWHChecked));
-        //         }
-        //     }
-        //     $('#scroll-table-lot-serial')[0].setAttribute('hidden', 'true');
-        //     $('#btn-lot-serial-area')[0].removeAttribute('hidden');
-        // });
 
         btnAddLot.on('click', function () {
             if (GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked')) {

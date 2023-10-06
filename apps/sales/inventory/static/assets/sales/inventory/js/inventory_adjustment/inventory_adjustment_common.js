@@ -359,9 +359,9 @@ function LoadDetailIA(option) {
                 WFRTControl.setWFRuntimeID(data['inventory_adjustment_detail']?.['workflow_runtime_id']);
                 data = data['inventory_adjustment_detail'];
                 $.fn.compareStatusShowPageAction(data);
+                $x.fn.renderCodeBreadcrumb(data);
 
                 console.log(data)
-                $('#ia-code').text(data.code);
                 titleInput.val(data.title);
                 dateInput.val(data.date_created.split(' ')[0]);
                 LoadStatus();

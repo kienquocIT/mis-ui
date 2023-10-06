@@ -60,6 +60,64 @@ function loadContact(data, contact_mapped) {
 }
 
 function loadPQR(data) {
+    if (data && data.is_param) {
+        PQRSelectBox.attr('disabled', true);
+        let pqr_selected = data.id;
+        let url_loaded = FormCreatePQ.attr('data-url-pqr-detail').replace(0, pqr_selected);
+        let call_pqr_detail = $.fn.callAjax(url_loaded, 'GET').then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('purchase_quotation_request_detail')) {
+                    return data?.['purchase_quotation_request_detail'];
+                }
+                return [];
+            }
+        })
+        Promise.all([call_pqr_detail]).then((results) => {
+            let product_list_get = results[0]?.['products_mapped']
+            let table_body = tableLineDetail.find('tbody');
+            table_body.html(``);
+            for (let i = 0; i < product_list_get.length; i++) {
+                table_body.append(`<tr id="row-${i}" class="row-number">
+                        <td class="number text-center wrap-text w-5">${i+1}</td>
+                        <td class="wrap-text w-15"><select class="form-select product-select-box" disabled data-method="GET"></select></td>
+                        <td class="wrap-text w-10"><div data-simplebar class="h-100p bg-gray-light-4 border rounded-5 text-primary"><span class="product-description">${product_list_get[i].product.description}</span></div></td>
+                        <td class="wrap-text w-10"><select class="form-select product-uom-select-box" data-method="GET"></select></td>
+                        <td class="wrap-text w-10"><input type="number" min="1" onchange="this.value=checkInputQuantity(this.value)" class="form-control product-quantity" value="${product_list_get[i].quantity}"></td>
+                        <td class="wrap-text w-15"><input type="text" data-return-type="number" class="form-control pr-unit-price-input mask-money" style="color: black; background: none" value="${product_list_get[i].unit_price}"></td>
+                        <td class="wrap-text w-15"><select class="form-select product-tax-select-box" data-method="GET"></select></td>
+                        <td class="wrap-text w-15"><span class="pr-subtotal-price-input mask-money text-primary" data-init-money="${product_list_get[i].subtotal_price}"></span></td>
+                        <td class="wrap-text w-5"><button class="disabled btn-del-line-detail btn text-danger btn-link btn-animated" title="Delete row"><span class="icon"><i class="bi bi-dash-circle"></i></span></button></td>
+                    </tr>
+                    <script>
+                        function checkInputQuantity(value) {
+                            if (parseInt(value) < 0) {
+                                return value*(-1);
+                            }
+                            return value;
+                        }
+                    </script>`);
+                $('.btn-del-line-detail').on('click', function () {
+                    $(this).closest('tr').remove();
+                    count_row(table_body, 2);
+                    calculate_price($('#table-purchase-quotation-products-selected tbody tr'));
+                    $.fn.initMaskMoney2();
+                })
+                loadProductList('row-'+i, product_list_get[i]?.['product'])
+                loadProductUomList('row-'+i, product_list_get[i]?.['product']['uom'], product_list_get[i]?.['product']['uom_group']['id']);
+                loadProductTaxList('row-'+i, product_list_get[i]?.['product']['tax']);
+            }
+            let quantity = $(this).closest('tr').find('.product-quantity').val();
+            let pr_unit_price = $(this).closest('tr').find('.pr-unit-price-input').attr('value');
+            let new_sub_total_price = parseFloat(pr_unit_price) * parseFloat(quantity);
+            $(this).closest('tr').find('.pr-subtotal-price-input').attr('data-init-money', new_sub_total_price)
+            calculate_price($('#table-purchase-quotation-products-selected tbody tr'));
+            $.fn.initMaskMoney2();
+        }).catch((error) => {
+            console.log(error)
+            $.fn.notifyB({description: "Load Sale Code Failed!"}, 'failure');
+        });
+    }
     PQRSelectBox.initSelect2({
         ajax: {
             url: FormCreatePQ.attr('data-url-pqr'),
@@ -74,8 +132,6 @@ function loadPQR(data) {
         keyId: 'id',
         keyText: 'title',
     }).on('change', function () {
-        $('#btn-add-product').prop('hidden', true);
-
         let pqr_selected = PQRSelectBox.val();
         let url_loaded = FormCreatePQ.attr('data-url-pqr-detail').replace(0, pqr_selected);
         let call_pqr_detail = $.fn.callAjax(url_loaded, 'GET').then((resp) => {
@@ -314,8 +370,8 @@ function LoadDetailPQ() {
             $('#pqr-select-box').select2();
             let data_detail = data?.['purchase_quotation_detail'];
             console.log(data_detail)
+            $x.fn.renderCodeBreadcrumb(data_detail);
 
-            $('#code-span').text(data_detail.code);
             $('#title').val(data_detail.title);
             loadSupplier(data_detail.supplier_mapped)
             loadContact(data_detail.contact_mapped)
@@ -409,9 +465,9 @@ function LoadDetailPQ() {
 }
 
 class PQHandle {
-    load() {
+    load(param_PQR) {
         loadSupplier();
-        loadPQR();
+        loadPQR(param_PQR);
     }
     combinesData(frmEle) {
         let frm = new SetupFormSubmit($(frmEle));

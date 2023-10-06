@@ -1,5 +1,5 @@
 function loadDetailBeneficiary(id) {
-    let ele = $('[name="employee_created"]');
+    let ele = $('[name="employee_created_id"]');
     let frm = new SetupFormSubmit(ele);
     $.fn.callAjax2({
         'url': frm.getUrlDetail(id),
@@ -22,7 +22,7 @@ function loadDetailBeneficiary(id) {
 }
 
 function loadCreator(id) {
-    let ele = $('[name="employee_created"]');
+    let ele = $('[name="employee_created_id"]');
     let frm = new SetupFormSubmit(ele);
     if (id === null) {
         id = ele.attr('data-id')
@@ -56,7 +56,7 @@ function loadCostTable(data) {
 }
 
 function loadDetailAdvancePayment(id, type = 'create') {
-    let url = $('#url-factory').data('url-detail-ap').format_url_with_uuid(id)
+    let url = $('#url-factory').data('url-detail-ap').format_url_with_uuid(id);
     $.fn.callAjax2({
         'url': url,
         'method': "GET"
@@ -211,8 +211,7 @@ function loadDetail(id, frmDetail) {
             $('[name="date_created"]').val(return_advance_detail.date_created.split(" ")[0]);
             $('[name="method"]').val(return_advance_detail.method);
             loadCostTable(return_advance_detail.cost);
-            let total_value = return_advance_detail.cost.map(obj => obj?.['return_price']).reduce((a, b) => a + b, 0)
-            $('#total-value').attr('data-init-money', total_value);
+            $('#total-value').attr('data-init-money', return_advance_detail.return_total);
             if (return_advance_detail.money_received) {
                 let money_received_ele = $('#money-received')
                 money_received_ele.prop('checked', true);

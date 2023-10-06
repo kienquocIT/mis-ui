@@ -1429,6 +1429,7 @@ function LoadDetailPayment() {
                 WFRTControl.setWFRuntimeID(data['payment_detail']?.['workflow_runtime_id']);
                 data = data['payment_detail'];
                 $.fn.compareStatusShowPageAction(data);
+                $x.fn.renderCodeBreadcrumb(data);
                 console.log(data)
 
                 $('#payment-code').text(data.code);

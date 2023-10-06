@@ -1,13 +1,10 @@
 $(document).ready(function () {
     new GoodsIssueLoadPage().load();
+    let pk = $.fn.getPkDetail();
+    let frmUpdate = $('#frmUpdate');
 
-    let iaSelectEle = $('#box-select-ia');
-
-    GoodsIssueLoadPage.loadInventoryAdjustment(iaSelectEle);
-    GoodsIssueLoadPage.loadDtbProductForIA([]);
-
-    let frmCreate = $('#frmCreate');
-    new SetupFormSubmit(frmCreate).validate({
+    GoodsIssueLoadPage.loadGoodsIssueDetail(frmUpdate, pk, 1);
+    new SetupFormSubmit(frmUpdate).validate({
         rules: {
             title: {
                 required: true,
@@ -27,8 +24,9 @@ $(document).ready(function () {
             } else {
                 frm_data = GoodsIssueLoadPage.getDataProductForLiquidation(frm_data);
             }
+
             $.fn.callAjax2({
-                url: frm.dataUrl,
+                url: frm.dataUrl.format_url_with_uuid(pk),
                 method: frm.dataMethod,
                 data: frm_data
             }).then(
@@ -44,5 +42,4 @@ $(document).ready(function () {
             )
         }
     })
-
 })

@@ -1126,6 +1126,8 @@ class NodeDataTableHandle {
     static dataTableCollabOutFormEmployee($table, data) {
         $table.DataTableDefault({
             data: data ? data : [],
+            paginate: false,
+            info: false,
             columns: [
                 {
                     targets: 0,

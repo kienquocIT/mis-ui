@@ -666,9 +666,9 @@ function LoadDetailProduct(option) {
                  WFRTControl.setWFRuntimeID(data['product']?.['workflow_runtime_id']);
                  let product_detail = data['product'];
                  $.fn.compareStatusShowPageAction(data);
+                 $x.fn.renderCodeBreadcrumb(product_detail);
                  console.log(product_detail)
 
-                 $('#product-code').text(product_detail['code']);
                  $('#title').val(product_detail['title']);
                  $('#description').val(product_detail['description']);
 

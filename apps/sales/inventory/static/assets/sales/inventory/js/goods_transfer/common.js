@@ -34,7 +34,6 @@ class GoodsTransferLoadPage {
                 let list_result = [];
                 resp.data[keyResp].map(function (item) {
                     if (!list_selected.includes(item.id)) {
-                        console.log(item)
                         list_result.push(item)
                     }
                 })

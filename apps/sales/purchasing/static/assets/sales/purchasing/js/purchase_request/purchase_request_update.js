@@ -8,7 +8,8 @@ $(document).ready(function () {
 
     $('#btn-select-type-sale-order').on('click', async function () {
         $('#modal-select-sale-order').modal('show');
-        await PurchaseRequestAction.changeType(0);
+        let so_id_current = JSON.parse($('#data-detail-backup').text()).sale_order.id;
+        await PurchaseRequestAction.changeType(0, so_id_current);
         PurchaseRequestAction.deleteDtbPRProduct();
         $(this).closest('.modal').modal('hide');
     })

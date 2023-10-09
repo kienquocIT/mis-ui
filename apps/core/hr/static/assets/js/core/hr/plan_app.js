@@ -38,12 +38,30 @@ class HandlePlanApp {
 
     constructor(opts) {
         this.dtb = dtb;
+        this.resetBtn = $('#btnResetApp');
         this.isEdit = dtb.attr('data-is-edit') === 'true';
         this.eleUserSelected = $('#select-box-user');
     }
 
     getFullData() {
         return this.dtb.DataTable().rows().data().toArray();
+    }
+
+    static resetPlanApp() {
+        let clsThis = new HandlePlanApp();
+        let fullDataPlanApp = clsThis.dtb.DataTable().rows().data().toArray().map(
+                (item) => {
+                    item['checked'] = false;
+                    (item['plan']['application'] || []).map(
+                        (item2) => {
+                            item2['checked'] = false;
+                            return item2;
+                        }
+                    )
+                    return item;
+                }
+            )
+            clsThis.dtb.DataTable().clear().rows.add(fullDataPlanApp).draw();
     }
 
     // load step 1
@@ -139,8 +157,6 @@ class HandlePlanApp {
                 })
 
                 $(row).on('change', '.app-my-checkbox', function () {
-                    console.log($(this));
-
                     $(row).find('.show-depend-on').popover('hide');
                     let checkEle$ = $(this);
                     let isChecked = checkEle$.prop('checked');
@@ -152,8 +168,7 @@ class HandlePlanApp {
                                 if (eleTmp.prop('checked') === false) eleTmp.prop('checked', true).trigger('change');
                             }
                         );
-                    }
-                    else if (!HandlePlanApp.checkDependIsOn(checkEle$.data('id'))) {
+                    } else if (!HandlePlanApp.checkDependIsOn(checkEle$.data('id'))) {
                         $(this).prop('checked', true);
                         return false;
                     }
@@ -192,6 +207,9 @@ class HandlePlanApp {
                 });
             }
         });
+
+        HandlePlanApp.resetPlanApp();
+        HandlePermissions.resetPermit();
     }
 
     static getDependOnTitle(app_id_arr) {
@@ -233,9 +251,9 @@ class HandlePlanApp {
             item['hasCheckInit'] = false;
             let planData = item?.['plan'];
             if (planData) {
+                let baseAppData = planData?.['application'];
                 let mappedData = planByID[planData.id];
                 if (mappedData) {
-                    let baseAppData = planData?.['application']
                     let appData = mappedData['application_by_id'];
                     if (baseAppData && Array.isArray(baseAppData) && appData && typeof appData === 'object') {
                         baseAppData.map((item2) => {
@@ -246,6 +264,12 @@ class HandlePlanApp {
                             } else {
                                 item2['checked'] = false
                             }
+                        })
+                    }
+                } else {
+                    if (baseAppData && Array.isArray(baseAppData)) {
+                        baseAppData.map((item2) => {
+                            item2['checked'] = false;
                         })
                     }
                 }

@@ -465,7 +465,8 @@ class PurchaseRequestAction {
                     dataSrc: function (resp) {
                         let data = $.fn.switcherResp(resp);
                         if (data && resp.data.hasOwnProperty('sale_order_list')) {
-                            return resp.data['sale_order_list'] ? resp.data['sale_order_list'] : []
+                            let sale_order_list = resp.data['sale_order_list'] ? resp.data['sale_order_list'] : []
+                            return sale_order_list.filter(obj => obj?.['is_create_purchase_request'] === true)
                         }
                         throw Error('Call data raise errors.')
                     },
@@ -486,7 +487,7 @@ class PurchaseRequestAction {
                     data: 'title',
                     targets: 2,
                     className: 'wrap-text',
-                    render: (data) => {
+                    render: (data, type, row) => {
                         return `<p>${data}</p>`
                     }
                 }, {

@@ -1,4 +1,13 @@
-$(document).ready(async function () {
+$(document).ready(function () {
+    let eleFrmPermit = $('#permit-member');
+    $(document).on('click', '#btnOpenPermit', function () {
+        console.log('btnOpenPermit is clicked!');
+        eleFrmPermit.removeClass('hidden');
+        document.getElementById('permit-member').scrollIntoView({
+            behavior: 'smooth'
+        });
+    });
+
     const urlFactory = $('#url-factory');
     const pk = $.fn.getPkDetail();
     const frmDetail = $('#frm-detail');
@@ -101,10 +110,14 @@ $(document).ready(async function () {
         }
     )
 
-    let prm_detail = $.fn.callAjax2({url: frmDetail.data('url'), method: 'GET'}).then(
+    let prm_detail = $.fn.callAjax2({
+        url: frmDetail.data('url'),
+        method: 'GET'
+    }).then(
         (resp) => {
             let data = $.fn.switcherResp(resp);
             if (data && typeof data === 'object' && data.hasOwnProperty('opportunity')) {
+                loadPermitEmpty();
                 return data?.['opportunity'];
             }
             return {};
@@ -112,7 +125,6 @@ $(document).ready(async function () {
         (errs) => {
         }
     )
-
     $x.fn.showLoadingPage()
     Promise.all([prm_acc, prm_contact, prm_opp, prm_employee, prm_detail, prm_config]).then(
         (results) => {
@@ -204,7 +216,7 @@ $(document).ready(async function () {
                 OpportunityLoadDropdown.loadFactor($('#box-select-factor'), opportunity_detail.customer_decision_factor);
 
                 // load sale team
-                OpportunityLoadDetail.loadSaleTeam(opportunity_detail.opportunity_sale_team_datas);
+                OpportunityLoadDetail.loadSaleTeam(opportunity_detail.members);
 
                 if ($.fn.hasOwnProperties(opportunity_detail, ['sale_order'])) {
                     let so_id = opportunity_detail.sale_order.id;
@@ -705,27 +717,34 @@ $(document).ready(async function () {
                 frm_add_member,
                 {
                     submitHandler: function (form) {
+                        $x.fn.showLoadingPage();
                         let frm = new SetupFormSubmit($(form));
-                        let data = {
-                            'members': OpportunityLoadDetail.getDataMember(),
-                            'employee_current': $('#emp-current-id').val(),
-                            'opportunity': pk,
-                        }
                         $.fn.callAjax2({
-                            url: frm.dataUrl.format_url_with_uuid(pk),
+                            url: frm.dataUrl.replaceAll('__pk_opp__', pk),
                             method: frm.dataMethod,
-                            data: data,
+                            data: {
+                                'members': OpportunityLoadDetail.getDataMember().map(
+                                    (item) => {return item.id;}
+                                ),
+                            },
                         }).then(
                             (resp) => {
                                 let data = $.fn.switcherResp(resp);
                                 if (data) {
                                     $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
-                                    OpportunityLoadDetail.reloadMemberList(pk);
-                                    $('#modalAddMember').modal('hide');
+                                    setTimeout(
+                                        ()=> {window.location.reload();},
+                                        1000
+                                    )
+
+                                    // OpportunityLoadDetail.reloadMemberList(pk);
+                                    // $('#modalAddMember').modal('hide');
                                 }
+                                $x.fn.hideLoadingPage();
                             },
                             (errs) => {
                                 $.fn.notifyB({description: errs.data.errors}, 'failure');
+                                $x.fn.hideLoadingPage();
                             }
                         )
                     }

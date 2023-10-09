@@ -60,7 +60,7 @@ class HandlePermissions {
                 'delete': isDelete,
             });
             let rangeCode = $(clsThat).find('[name="permission-range"]').val();
-            if (!rangeAllowed.includes(rangeCode)){
+            if (!rangeAllowed.includes(rangeCode)) {
                 rangeCode = rangeAllowed.length > 0 ? rangeAllowed[0] : null;
             }
 
@@ -114,6 +114,7 @@ class HandlePermissions {
 
     constructor() {
         this.tbl = tbl;
+        this.resetBtn = $('#btnResetPermit');
         this.initDataStorage = $('#tblPermissionInitData');
         this.initDataByKeyStorage = $('#tblPermissionInitDataByKey');
         this.enableChange = $.fn.parseBoolean(this.tbl.attr('data-change-enable'), true);
@@ -157,7 +158,12 @@ class HandlePermissions {
         ]
     }
 
-    static loadAppNewRow(planAppData,) {
+    static resetPermit(){
+        let clsThis = new HandlePermissions();
+        clsThis.tbl.DataTable().clear().draw();
+    }
+
+    static loadAppNewRow(planAppData, reinit=false) {
         let dataAppPlan = [];
         if (planAppData) {
             planAppData.map((item) => {
@@ -175,6 +181,10 @@ class HandlePermissions {
                         })
                 }
             })
+        }
+        if (reinit === true && eleNewApp.hasClass("select2-hidden-accessible")) {
+            eleNewApp.select2('destroy');
+            eleNewApp.find('option').remove();
         }
         eleNewApp.initSelect2({
             data: dataAppPlan.sort(
@@ -231,7 +241,10 @@ class HandlePermissions {
 
     static getClassNameWarningOfRow(row, data, key) {
         if (row['id']) {
-            if (HandlePermissions.getInitDataByKey(row['id'])[key] !== row[key]) return 'border-warning';
+            let initData = HandlePermissions.getInitDataByKey(row['id']);
+            if (initData) {
+                if (HandlePermissions.getInitDataByKey(row['id'])[key] !== row[key]) return 'border-warning';
+            }
         } else {
             if (row[key] === true || key === 'range') return 'border-warning';
         }
@@ -253,8 +266,8 @@ class HandlePermissions {
         )
     }
 
-    loadData(planAppData, permData = []) {
-        HandlePermissions.loadAppNewRow(planAppData);
+    loadData(planAppData, permData = [], toolbar_enabled = {}, reinit = false) {
+        HandlePermissions.loadAppNewRow(planAppData, reinit);
 
         let clsThis = this;
         permData = HandlePermissions.makeSurePermHasIdx(permData);
@@ -263,27 +276,32 @@ class HandlePermissions {
             acc[item.id.toString()] = item;
             return acc;
         }, {})))
-        dtbEle = clsThis.tbl.DataTableDefault({
-            rowIdx: true,
-            data: permData,
-            autoWidth: false,
-            columns: [
-                {
-                    width: "5%",
-                    className: "row-data-counter",
-                    data: "rowIdx",
-                    render: (data, type, row) => {
-                        // if (data !== undefined && Number.isInteger(data)) return data + 1;
-                        return '';
-                    }
-                },
-                {
-                    width: "20%",
-                    className: "wrap-text",
-                    render: (data, type, row) => {
-                        let app_data = row['app_data'];
-                        let plan_data = row['plan_data'];
-                        return `
+
+        if (reinit === true && $.fn.DataTable.isDataTable('#permissions_list')) {
+            clsThis.tbl.DataTable().clear().rows.add(permData).draw();
+        } else {
+            dtbEle = clsThis.tbl.DataTableDefault({
+                ...toolbar_enabled,
+                rowIdx: true,
+                data: permData,
+                autoWidth: false,
+                columns: [
+                    {
+                        width: "5%",
+                        className: "row-data-counter",
+                        data: "rowIdx",
+                        render: (data, type, row) => {
+                            // if (data !== undefined && Number.isInteger(data)) return data + 1;
+                            return '';
+                        }
+                    },
+                    {
+                        width: "20%",
+                        className: "wrap-text",
+                        render: (data, type, row) => {
+                            let app_data = row['app_data'];
+                            let plan_data = row['plan_data'];
+                            return `
                             <span class="badge badge-${DocumentControl.classOfPlan(plan_data.code)}">${plan_data.title} - ${app_data.title}</span>
                             <input 
                                 type="text" 
@@ -295,16 +313,16 @@ class HandlePermissions {
                                 ${clsThis.textEnabled}
                             >
                         `;
-                    }
-                },
-                {
-                    width: "10%",
-                    render: (data, type, row) => {
-                        let checkAll = "";
-                        if (row['create'] === true && row['view'] === true && row['edit'] === true && row['delete'] === true) {
-                            checkAll = true;
                         }
-                        return `<div class="form-check form-switch">
+                    },
+                    {
+                        width: "10%",
+                        render: (data, type, row) => {
+                            let checkAll = "";
+                            if (row['create'] === true && row['view'] === true && row['edit'] === true && row['delete'] === true) {
+                                checkAll = true;
+                            }
+                            return `<div class="form-check form-switch">
                             <input 
                                 type="checkbox" 
                                 class="form-check-input row-e-all row-style-all" 
@@ -312,13 +330,13 @@ class HandlePermissions {
                                 ${clsThis.textEnabled}
                             >
                         </div>`;
-                    }
-                },
-                {
-                    width: "10%",
-                    data: "create",
-                    render: (data, type, row) => {
-                        return `<div class="form-check form-switch">
+                        }
+                    },
+                    {
+                        width: "10%",
+                        data: "create",
+                        render: (data, type, row) => {
+                            return `<div class="form-check form-switch">
                             <input 
                                 type="checkbox" 
                                 class="form-check-input row-e-child row-style-child row-e-child-create ${HandlePermissions.getClassNameWarningOfRow(row, data, 'create')}" 
@@ -328,13 +346,13 @@ class HandlePermissions {
                                 ${clsThis.textEnabled}
                             />
                         </div>`;
-                    }
-                },
-                {
-                    width: "10%",
-                    data: "view",
-                    render: (data, type, row) => {
-                        return `<div class="form-check form-switch">
+                        }
+                    },
+                    {
+                        width: "10%",
+                        data: "view",
+                        render: (data, type, row) => {
+                            let html = `<div class="form-check form-switch">
                             <input 
                                 type="checkbox" 
                                 class="form-check-input row-e-child row-style-child row-e-child-view ${HandlePermissions.getClassNameWarningOfRow(row, data, 'view')}" 
@@ -343,13 +361,14 @@ class HandlePermissions {
                                 ${clsThis.textEnabled}
                             />
                         </div>`;
-                    }
-                },
-                {
-                    width: "10%",
-                    data: "edit",
-                    render: (data, type, row) => {
-                        return `<div class="form-check form-switch">
+                            return html;
+                        }
+                    },
+                    {
+                        width: "10%",
+                        data: "edit",
+                        render: (data, type, row) => {
+                            return `<div class="form-check form-switch">
                             <input 
                                 type="checkbox" 
                                 class="form-check-input row-e-child row-style-child row-e-child-edit ${HandlePermissions.getClassNameWarningOfRow(row, data, 'edit')}" 
@@ -358,13 +377,13 @@ class HandlePermissions {
                                 ${clsThis.textEnabled}
                             />
                         </div>`;
-                    }
-                },
-                {
-                    width: "10%",
-                    data: "delete",
-                    render: (data, type, row) => {
-                        return `<div class="form-check form-switch">
+                        }
+                    },
+                    {
+                        width: "10%",
+                        data: "delete",
+                        render: (data, type, row) => {
+                            return `<div class="form-check form-switch">
                             <input 
                                 type="checkbox" 
                                 class="form-check-input row-e-child row-style-child row-e-child-delete ${HandlePermissions.getClassNameWarningOfRow(row, data, 'delete')}" 
@@ -373,16 +392,16 @@ class HandlePermissions {
                                 ${clsThis.textEnabled}
                             />
                         </div>`;
-                    }
-                },
-                {
-                    width: "15%",
-                    data: "range",
-                    render: (data, type, row) => {
-                        let wasChanged = row?.['was_changed'] || false;
-                        let arrValueAllowed = wasChanged === true ? PermitBastionRule._rangeAllowedByRowAdded(row) : Array.from(new Set(PermitBastionRule._rangeAllowedByRowAdded(row) + [row['range']]));
-                        if (clsThis.enableChange === true) {
-                            let ele = $(`
+                        }
+                    },
+                    {
+                        width: "15%",
+                        data: "range",
+                        render: (data, type, row) => {
+                            let wasChanged = row?.['was_changed'] || false;
+                            let arrValueAllowed = wasChanged === true ? PermitBastionRule._rangeAllowedByRowAdded(row) : Array.from(new Set(PermitBastionRule._rangeAllowedByRowAdded(row) + [row['range']]));
+                            if (clsThis.enableChange === true) {
+                                let ele = $(`
                                 <select 
                                     class="form-control row-perm-range ${HandlePermissions.getClassNameWarningOfRow(row, data, 'range')}"
                                     name="permission-range" 
@@ -391,29 +410,29 @@ class HandlePermissions {
                                     ${$('#newRowRange').html()}
                                 </select>
                             `);
-                            let rowRange = row['range'] !== undefined || row['range'] !== null ? row['range'] : null;
-                            ele.find('option').each(function () {
-                                $(this).attr('selected', false);
-                                if (arrValueAllowed.includes($(this).attr('value'))) PermitBastionRule.__enabledEle($(this));
-                                else PermitBastionRule.__disabledEle($(this));
-                            });
+                                let rowRange = row['range'] !== undefined || row['range'] !== null ? row['range'] : null;
+                                ele.find('option').each(function () {
+                                    $(this).attr('selected', false);
+                                    if (arrValueAllowed.includes($(this).attr('value'))) PermitBastionRule.__enabledEle($(this));
+                                    else PermitBastionRule.__disabledEle($(this));
+                                });
 
-                            if (rowRange === null) ele.val("");
-                            else if (arrValueAllowed.includes(rowRange)) ele.find('option[value="' + rowRange + '"]').attr('selected', true);
-                            else ele.val("");
-                            return ele.prop('outerHTML');
-                        } else {
-                            let textShow = $('#newRowRange').find('option[value="' + data + '"]').text();
-                            return `<span class="badge badge-soft-light">${textShow ? textShow : "_"}</span>`
+                                if (rowRange === null) ele.val("");
+                                else if (arrValueAllowed.includes(rowRange)) ele.find('option[value="' + rowRange + '"]').attr('selected', true);
+                                else ele.val("");
+                                return ele.prop('outerHTML');
+                            } else {
+                                let textShow = $('#newRowRange').find('option[value="' + data + '"]').text();
+                                return `<span class="badge badge-soft-light">${textShow ? textShow : "_"}</span>`
+                            }
                         }
-                    }
-                },
-                {
-                    width: "10%",
-                    className: "wrap-text",
-                    render: (data, type, row) => {
-                        if (clsThis.enableChange === true) {
-                            let destroyHTML = `
+                    },
+                    {
+                        width: "10%",
+                        className: "wrap-text",
+                        render: (data, type, row) => {
+                            if (clsThis.enableChange === true) {
+                                let destroyHTML = `
                                 <button 
                                     class="btnRemoveRow btn btn-icon btn-rounded bg-dark-hover mr-1" 
                                     type="button"
@@ -424,11 +443,11 @@ class HandlePermissions {
                                     <span class="icon"><i class="fa-solid fa-xmark"></i></span>
                                 </button>
                             `;
-                            let toggleHTML = ``;
-                            if (
-                                (row?.['sub'] || []).length > 0
-                            ) {
-                                toggleHTML = `
+                                let toggleHTML = ``;
+                                if (
+                                    (row?.['sub'] || []).length > 0
+                                ) {
+                                    toggleHTML = `
                                     <button 
                                         class="btnCollapseSub btn btn-icon btn-rounded bg-dark-hover mr-1" 
                                         type="button"
@@ -438,41 +457,43 @@ class HandlePermissions {
                                         </span>
                                     </button>
                                 `;
+                                }
+                                return `<div class="d-flex align-items-center justify-content-end">${toggleHTML}${destroyHTML}</div>`;
                             }
-                            return `<div class="d-flex align-items-center justify-content-end">${toggleHTML}${destroyHTML}</div>`;
+                            return '';
                         }
-                        return '';
+                    },
+                ],
+                rowCallback(row, data, displayNum, displayIndex, dataIndex) {
+                    let stateFalse = !data['view'] && !data['edit'] && !data['create'] && !data['delete'];
+                    if (stateFalse === true) {
+                        $(row).attr('data-bs-toggle', 'tooltip').attr('data-bs-placement', 'bottom').attr('title', msgPerm.attr('data-msg-need-drop'));
+                        $(row).addClass(clsYellow);
+                    } else {
+                        $(row).removeClass(clsYellow);
+                        $(row).removeAttr('data-bs-toggle').removeAttr('data-bs-placement').removeAttr('title');
                     }
+
+                    PermitBastionRule.resolveChangeRowOfAdded(row, data);
+                    PermitBastionRule._renderSubForAdded(row, data);
                 },
-            ],
-            rowCallback(row, data, displayNum, displayIndex, dataIndex) {
-                let stateFalse = !data['view'] && !data['edit'] && !data['create'] && !data['delete'];
-                if (stateFalse === true) {
-                    $(row).attr('data-bs-toggle', 'tooltip').attr('data-bs-placement', 'bottom').attr('title', msgPerm.attr('data-msg-need-drop'));
-                    $(row).addClass(clsYellow);
+                initComplete: function (settings, json) {
+
+                },
+            });
+            dtbEle.on('click', '.btnCollapseSub', function () {
+                $(this).find('.icon .fa-solid').toggleClass('fa-caret-left').toggleClass('fa-caret-down');
+                let tr = $(this).closest('tr');
+                let row = dtbEle.row(tr);
+                if (row.child.isShown()) {
+                    row.child.hide();
                 } else {
-                    $(row).removeClass(clsYellow);
-                    $(row).removeAttr('data-bs-toggle').removeAttr('data-bs-placement').removeAttr('title');
+                    row.child.show();
                 }
+            })
+            dtbEle.column(-1).visible(clsThis.enableChange);
 
-                PermitBastionRule.resolveChangeRowOfAdded(row, data);
-                PermitBastionRule._renderSubForAdded(row, data);
-            },
-            initComplete: function (settings, json) {
-
-            },
-        });
-        dtbEle.on('click', '.btnCollapseSub', function () {
-            $(this).find('.icon .fa-solid').toggleClass('fa-caret-left').toggleClass('fa-caret-down');
-            let tr = $(this).closest('tr');
-            let row = dtbEle.row(tr);
-            if (row.child.isShown()) {
-                row.child.hide();
-            } else {
-                row.child.show();
-            }
-        })
-        dtbEle.column(-1).visible(clsThis.enableChange);
+        }
     }
 
     combinesData() {

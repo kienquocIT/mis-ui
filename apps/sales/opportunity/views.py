@@ -2,9 +2,11 @@ from django.views import View
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
+
+from apps.shared.apis import RespData
 from apps.shared.constant import TYPE_CUSTOMER, ROLE_CUSTOMER
 
-from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg, PermCheck
+from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg, PermCheck, TypeCheck
 
 
 def create_update_opportunity(request, url, msg):
@@ -111,6 +113,46 @@ class OpportunityDetailAPI(APIView):
     def put(self, request, pk, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_DETAIL.fill_key(pk=pk)).put(request.data)
         return resp.auto_return(key_success='opportunity')
+
+
+class MemberOfOpportunityDetailAddAPI(APIView):
+    @mask_view(is_api=True, auth_require=True)
+    def post(self, request, *args, pk_opp, **kwargs):
+        if TypeCheck.check_uuid(pk_opp):
+            resp = ServerAPI(user=request.user, url=ApiURL.MEMBER_OF_OPPORTUNITY_ADD.fill_key(pk_opp=pk_opp)).post(
+                data=request.data
+            )
+            return resp.auto_return(key_success='member')
+        return RespData.resp_404()
+
+
+class MemberOfOpportunityDetail(APIView):
+    @mask_view(is_api=True, auth_require=True)
+    def get(self, request, *args, pk_opp, pk_member, **kwargs):
+        if TypeCheck.check_uuid(pk_opp) and TypeCheck.check_uuid(pk_member):
+            resp = ServerAPI(
+                user=request.user, url=ApiURL.MEMBER_OF_OPPORTUNITY_DETAIL.fill_key(pk_opp=pk_opp, pk_member=pk_member)
+            ).get()
+            return resp.auto_return(key_success='member')
+        return RespData.resp_404()
+
+    @mask_view(is_api=True, auth_require=True)
+    def put(self, request, *args, pk_opp, pk_member, **kwargs):
+        if TypeCheck.check_uuid(pk_opp) and TypeCheck.check_uuid(pk_member):
+            resp = ServerAPI(
+                user=request.user, url=ApiURL.MEMBER_OF_OPPORTUNITY_DETAIL.fill_key(pk_opp=pk_opp, pk_member=pk_member)
+            ).put(data=request.data)
+            return resp.auto_return(key_success='member')
+        return RespData.resp_404()
+
+    @mask_view(is_api=True, auth_require=True)
+    def delete(self, request, *args, pk_opp, pk_member, **kwargs):
+        if TypeCheck.check_uuid(pk_opp) and TypeCheck.check_uuid(pk_member):
+            resp = ServerAPI(
+                user=request.user, url=ApiURL.MEMBER_OF_OPPORTUNITY_DETAIL.fill_key(pk_opp=pk_opp, pk_member=pk_member)
+            ).delete()
+            return resp.auto_return(key_success='member')
+        return RespData.resp_404()
 
 
 class OpportunityCustomerDecisionFactorListAPI(APIView):

@@ -37,6 +37,9 @@ class SetupFormSubmit {
             if (dataMethodDefault) {
                 this.dataMethod = dataMethodDefault
             } else {
+                if ($.fn.isDebug()){
+                    console.log(this.formSelected)
+                }
                 throw ('Data Method do not support! It is ' + this.dataMethod);
             }
         }
@@ -1184,21 +1187,42 @@ class ListeningEventController {
         });
     }
 
+    static tabHashUrl__parent_active(currentEle){
+        $(currentEle).closest('.nav-tabs a[data-bs-toggle="tab"]').each(function (){
+            if ($(this).length > 0){
+                let drawerEle = $(this).closest('.ntt-drawer');
+                if (drawerEle.length > 0) {
+                    $('.ntt-drawer-toggle-link[data-drawer-target="#' + drawerEle.attr('id') + '"]').each(function () {
+                        $(this).trigger('click');
+                    });
+                }
+                $(this).tab('show');
+                ListeningEventController.tabHashUrl__parent_active($(this).parent());
+            }
+        })
+    }
+
     tabHashUrl() {
         $('.nav-tabs a[data-bs-toggle="tab"]').filter(function () {
             return this.hash === location.hash;
         }).each(function () {
-            let drawerEle = $(this).closest('.ntt-drawer');
-            if (drawerEle.length > 0) {
-                $('.ntt-drawer-toggle-link[data-drawer-target="#' + drawerEle.attr('id') + '"]').each(function () {
-                    $(this).trigger('click');
-                });
+            if ($(this).length > 0){
+                console.log('currentEle start: ', $(this));
+                let drawerEle = $(this).closest('.ntt-drawer');
+                if (drawerEle.length > 0) {
+                    $('.ntt-drawer-toggle-link[data-drawer-target="#' + drawerEle.attr('id') + '"]').each(function () {
+                        $(this).trigger('click');
+                    });
+                }
+                $(this).tab('show');
+                ListeningEventController.tabHashUrl__parent_active($(this).parent());
             }
-            $(this).tab('show');
         });
 
         $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
-            window.history.pushState(null, null, $(e.target).attr("href"));
+            if ($(this).data('not-push-tab') === null || $(this).data('not-push-tab') === undefined){
+                window.history.pushState(null, null, $(e.target).attr("href"));
+            }
         });
     }
 
@@ -1794,6 +1818,10 @@ class UtilControl {
         max = Math.ceil(max);
         return Math.ceil(Math.random() * (max - min) + min);
 
+    }
+
+    static getRandomInArray(array){
+        return array[Math.floor(Math.random() * array.length)];
     }
 }
 
@@ -2882,6 +2910,7 @@ class DTBControl {
                     }
                 });
             }
+            $(window).trigger("resize");
         });
         tbl.on('draw.dt', function (event, settings) {
             // init row has checkbox selection
@@ -2927,7 +2956,18 @@ class WindowControl {
         }
     }
 
-    static showLoading() {
+    static showLoading(opts) {
+        let didOpenStartSetup = opts?.['didOpenStart'] || null;
+        if (didOpenStartSetup) delete opts['didOpenStart'];
+
+        let didOpenEndSetup = opts?.['didOpenEnd'] || null;
+        if (didOpenEndSetup) delete opts['didOpenEnd']
+
+        let didDestroyStartSetup = opts?.['didDestroyStart'] || null;
+        if (didDestroyStartSetup) delete opts['didDestroyStart'];
+
+        let didDestroyEndSetup = opts?.['didDestroyEnd'] || null;
+        if (didDestroyEndSetup) delete opts['didDestroyEnd'];
         Swal.fire({
             icon: 'info',
             title: `${$.fn.transEle.attr('data-loading')}`,
@@ -2936,11 +2976,16 @@ class WindowControl {
             showConfirmButton: false,
             timerProgressBar: true,
             didOpen: () => {
+                if (didOpenStartSetup  instanceof Function) didOpenStartSetup();
                 Swal.showLoading();
+                if (didOpenEndSetup  instanceof Function) didOpenEndSetup();
             },
             didDestroy: () => {
+                if (didDestroyStartSetup  instanceof Function) didDestroyStartSetup();
                 Swal.hideLoading();
+                if (didDestroyEndSetup  instanceof Function) didDestroyEndSetup();
             },
+            ...opts,
         });
     }
 
@@ -3359,6 +3404,22 @@ class DocumentControl {
             >${iconHtml}</button>
         </a>`;
     }
+
+    static closeCard(eleCard, destroyParentClosest = null, isPurge = false){
+        let ele = $(eleCard).closest('.card');
+        if (destroyParentClosest !== null) ele = ele.closest(destroyParentClosest);
+        if (isPurge === true) {
+            ele.remove();
+        } else {
+            ele.addClass('d-none');
+        }
+    }
+
+    static openCard(eleCard, openParentClosest = null){
+        let ele = $(eleCard).closest('.card');
+        if (openParentClosest !== null) ele = ele.closest(openParentClosest);
+        ele.removeClass('d-none');
+    }
 }
 
 let $x = {
@@ -3397,6 +3458,8 @@ let $x = {
 
         renderCodeBreadcrumb: DocumentControl.renderCodeBreadcrumb,
         buttonLinkBlank: DocumentControl.buttonLinkBlank,
+        closeCard: DocumentControl.closeCard,
+        openCard: DocumentControl.openCard,
 
         getFeatureCode: BastionFieldControl.getFeatureCode,
 
@@ -3410,6 +3473,7 @@ let $x = {
 
         removeEmptyValuesFromObj: UtilControl.removeEmptyValuesFromObj,
         getRandomArbitrary: UtilControl.getRandomArbitrary,
+        getRandomInArray: UtilControl.getRandomInArray,
     },
 }
 

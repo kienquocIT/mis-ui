@@ -1,5 +1,6 @@
 """register filter custom"""
 import random
+import string
 
 from django import template
 
@@ -27,6 +28,31 @@ def shorten_name(value, upper=False):
 @register.simple_tag
 def random_int(to_number: int) -> int:
     return random.randint(1, to_number)
+
+
+@register.simple_tag
+def random_str(length: int = 32):
+    return "".join(
+        [
+            random.choice(string.digits + string.ascii_letters) for _x in range(0, length)
+        ]
+    )
+
+
+@register.simple_tag
+def random_full_name():
+    return random.choice(
+        ['Nguyễn Văn An', 'Nguyễn Văn Bình', 'Nguyễn Văn Cao', 'Nguyễn Văn Dũng', 'Nguyễn Văn Đức', 'Nguyễn Văn Huy',
+         'Nguyễn Văn Hùng', 'Nguyễn Văn Khanh', 'Nguyễn Văn Long', 'Nguyễn Văn Nam', 'Nguyễn Văn Nhật',
+         'Nguyễn Văn Quân',
+         'Nguyễn Văn Sơn', 'Nguyễn Văn Tài', 'Nguyễn Văn Tuấn', 'Nguyễn Văn Vinh', 'Nguyễn Văn Vương',
+         'Nguyễn Văn Tuấn',
+         'Nguyễn Văn Việt', 'Nguyễn Thị Anh', 'Nguyễn Thị An', 'Nguyễn Thị Châu', 'Nguyễn Thị Chi', 'Nguyễn Thị Diệp',
+         'Nguyễn Thị Hoa', 'Nguyễn Thị Hằng', 'Nguyễn Thị Hương', 'Nguyễn Thị Mai', 'Nguyễn Thị Mỹ', 'Nguyễn Thị Ngọc',
+         'Nguyễn Thị Phương', 'Nguyễn Thị Quỳnh', 'Nguyễn Thị Trang', 'Nguyễn Thị Vân', 'Nguyễn Thị Vy',
+         'Nguyễn Thị Xuyến',
+         'Nguyễn Thị Yến']
+    )
 
 
 @register.simple_tag

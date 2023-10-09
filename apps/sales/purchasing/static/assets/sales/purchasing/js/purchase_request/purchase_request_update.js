@@ -1,50 +1,19 @@
-$(document).ready(async function () {
-    const searchParams = new URLSearchParams(window.location.search);
-    const param = searchParams.get("type");
+$(document).ready(function () {
+    const frmDetail = $('#frmUpdate');
+    const pk = $.fn.getPkDetail();
 
-    switch (param) {
-        case 'sale-order':
-            $('#modal-select-sale-order').modal('show');
-            await PurchaseRequestAction.changeType(0);
-            break;
-        case 'stock':
-            ele_request_for.val('Stock');
-            ele_request_for.attr('data-id', 1);
-            await PurchaseRequestAction.changeType(1)
-            break;
-        case 'other':
-            ele_request_for.val('Other');
-            ele_request_for.attr('data-id', 2);
-            await PurchaseRequestAction.changeType(2)
-            break;
-    }
+    PurchaseRequestLoadPage.loadDetail(frmDetail, pk, 1);
 
-    $('[name="delivered_date"]').daterangepicker({
-        singleDatePicker: true,
-        timePicker: true,
-        showDropdowns: true,
-        drops: 'down',
-        minYear: 2000,
-        locale: {
-            format: 'YYYY-MM-DD'
-        },
-        "cancelClass": "btn-secondary",
-        maxYear: parseInt(moment().format('YYYY-MM-DD'), 10) + 100
-    }).val('');
-
-    PurchaseRequestLoadPage.loadSupplier()
     new PurchaseRequestEvent().load();
 
     $('#btn-select-type-sale-order').on('click', async function () {
         $('#modal-select-sale-order').modal('show');
-        PurchaseRequestAction.updateURLParameter(urlEle.data('url-this-page'), 'sale-order');
         await PurchaseRequestAction.changeType(0);
         PurchaseRequestAction.deleteDtbPRProduct();
         $(this).closest('.modal').modal('hide');
     })
 
     $('#btn-select-type-stock').on('click', async function () {
-        PurchaseRequestAction.updateURLParameter(urlEle.data('url-this-page'), 'stock');
         ele_request_for.val('Stock');
         ele_request_for.attr('data-id', 1);
         await PurchaseRequestAction.changeType(1);
@@ -53,7 +22,6 @@ $(document).ready(async function () {
     })
 
     $('#btn-select-type-other').on('click', async function () {
-        PurchaseRequestAction.updateURLParameter(urlEle.data('url-this-page'), 'other');
         ele_request_for.val('Other');
         ele_request_for.attr('data-id', 2);
         await PurchaseRequestAction.changeType(2);
@@ -61,8 +29,7 @@ $(document).ready(async function () {
         $(this).closest('.modal').modal('hide');
     })
 
-    const frm_create = $('#form-create-pr');
-    new SetupFormSubmit(frm_create).validate({
+    new SetupFormSubmit(frmDetail).validate({
         rules: {
             title: {
                 required: true,
@@ -89,7 +56,7 @@ $(document).ready(async function () {
             let frm = new SetupFormSubmit($(form));
             let frm_data = PurchaseRequestAction.getDataForm(frm.dataForm, ele_request_for, ele_sale_order);
             $.fn.callAjax2({
-                url: frm.dataUrl,
+                url: frm.dataUrl.format_url_with_uuid(pk),
                 method: frm.dataMethod,
                 data: frm_data
             }).then(

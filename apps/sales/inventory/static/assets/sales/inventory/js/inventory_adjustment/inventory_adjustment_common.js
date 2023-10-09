@@ -9,6 +9,8 @@ let addRowLineDetailBtn = $('#btn-add-row-line-detail')
 let fileInput = $('#input-file-now')
 let selectProductBtn = $('#btn-select-product')
 let selectAllProductBtn = $('#selected_all_product')
+let get_increase_items_btn = $('#get-increase-items-btn')
+let get_decrease_items_btn = $('#get-decrease-items-btn')
 let LIST_WAREHOUSE_PRODUCT = []
 
 addRowLineDetailBtn.on('click', async function () {
@@ -226,7 +228,7 @@ function LoadTableSelectProduct(warehouse_list) {
     });
 }
 
-function getDataForm() {
+function getDataFormCreate() {
     let data = {}
 
     data['title'] = titleInput.val();
@@ -254,23 +256,11 @@ function getDataForm() {
     let product_dict = JSON.parse($('#data-product-warehouse').text());
     tableLineDetailTbody.find('tr').each(function () {
         let product_obj = product_dict[$(this).find('.product_id_td').attr('data-id')];
-        // let product_mapped_id = $(this).find('.product_id_td').attr('data-id');
-        // let warehouse_mapped_id = $(this).find('.warehouse_id_td').attr('data-id');
-        // let uom_mapped_id = $(this).find('.uom_id_td').attr('data-id');
-        // let book_quantity = $(this).find('.quantity-td').text();
+        let book_quantity = product_obj.available_amount;
         let count = $(this).find('.count-input').val();
         let select_for_action = $(this).find('.selected_for_actions').is(':checked');
         let action_status = 0;
-        let action_type = 0;
-        if (count > product_obj.available_amount){
-            action_type = 2;
-        }
-        else if(count < product_obj.available_amount){
-            action_type = 1;
-        }
-        else{
-            action_type = 0;
-        }
+        let action_type = (count > book_quantity) ? 2 : (count < book_quantity) ? 1 : 0;
         ia_items_data_list.push({
             'product_warehouse_id': product_obj.product_warehouse_id,
             'product_mapped_id': product_obj.product_id,
@@ -289,6 +279,33 @@ function getDataForm() {
     return data
 }
 
+function getDataFormUpdate() {
+    let data = {}
+
+    let ia_items_data_list = [];
+    tableLineDetailTbody.find('tr').each(function () {
+        let book_quantity = $(this).find('.quantity-td').text();
+        let count = $(this).find('.count-input').val();
+        let action_status = 0;
+        let action_type = (count > book_quantity) ? 2 : (count < book_quantity) ? 1 : 0;
+        ia_items_data_list.push({
+            'product_warehouse_id': $(this).find('.product_id_td').attr('data-product-warehouse-id'),
+            'product_mapped_id': $(this).find('.product_id_td').attr('data-id'),
+            'warehouse_mapped_id': $(this).find('.warehouse_id_td').attr('data-id'),
+            'uom_mapped_id': $(this).find('.uom_id_td').attr('data-id'),
+            'book_quantity': book_quantity,
+            'count': count,
+            'action_type': action_type,
+            'select_for_action': $(this).find('.selected_for_actions').is(':checked'),
+            'action_status': action_status
+        })
+    });
+
+    data['ia_items_data'] = ia_items_data_list;
+
+    return data
+}
+
 class InventoryAdjustmentHandle {
     load() {
         LoadCreatedDate();
@@ -296,19 +313,26 @@ class InventoryAdjustmentHandle {
         LoadWarehouseSelectBox();
         LoadInChargeSelectBox();
     }
-    combinesData(frmEle, for_update=false) {
-        let dataForm = getDataForm();
+    combinesDataCreate(frmEle) {
+        let dataForm = getDataFormCreate();
         if (dataForm) {
             let frm = new SetupFormSubmit($(frmEle));
-
-            let url_return = frm.dataUrl;
-            if (for_update === true) {
-                let pk = $.fn.getPkDetail()
-                url_return = frm.dataUrl.format_url_with_uuid(pk);
-            }
-
             return {
-                url: url_return,
+                url: frm.dataUrl,
+                method: frm.dataMethod,
+                data: dataForm,
+                urlRedirect: frm?.['urlRedirect'],
+            };
+        }
+        return false;
+    }
+    combinesDataUpdate(frmEle) {
+        let dataForm = getDataFormUpdate();
+        if (dataForm) {
+            let frm = new SetupFormSubmit($(frmEle));
+            let pk = $.fn.getPkDetail()
+            return {
+                url: frm.dataUrl.format_url_with_uuid(pk),
                 method: frm.dataMethod,
                 data: dataForm,
                 urlRedirect: frm?.['urlRedirect'],
@@ -335,9 +359,9 @@ function LoadDetailIA(option) {
                 WFRTControl.setWFRuntimeID(data['inventory_adjustment_detail']?.['workflow_runtime_id']);
                 data = data['inventory_adjustment_detail'];
                 $.fn.compareStatusShowPageAction(data);
+                $x.fn.renderCodeBreadcrumb(data);
 
                 console.log(data)
-                $('#ia-code').text(data.code);
                 titleInput.val(data.title);
                 dateInput.val(data.date_created.split(' ')[0]);
                 LoadStatus();
@@ -349,8 +373,10 @@ function LoadDetailIA(option) {
                 for (let i = 0; i < data?.['inventory_adjustment_item_mapped'].length; i++) {
                     let data_row = data?.['inventory_adjustment_item_mapped'][i];
                     let checked = '';
+                    let class_ctn = '';
                     if (data_row?.['select_for_action']) {
                         checked = 'checked';
+                        class_ctn = 'bg-primary bg-opacity-10';
                     }
                     let done = '';
                     if (data_row?.['action_status']) {
@@ -366,8 +392,8 @@ function LoadDetailIA(option) {
                         action_type = '<span class="text-primary">Increasing <i class="bi bi-arrow-up"></i></span>';
                     }
                     tableLineDetailTbody.append(`
-                        <tr>
-                            <td data-id="${data_row?.['product_mapped'].id}" class="text-primary product_id_td">${data_row?.['product_mapped'].title}</td>
+                        <tr class="${class_ctn}">
+                            <td data-product-warehouse-id="${data_row?.['product_warehouse_mapped'].id}" data-id="${data_row?.['product_mapped'].id}" class="text-primary product_id_td">${data_row?.['product_mapped'].title}</td>
                             <td data-id="${data_row?.['warehouse_mapped'].id}" class="warehouse_id_td"><i class="fas fa-warehouse"></i> ${data_row?.['warehouse_mapped'].title}</td>
                             <td data-id="${data_row?.['uom_mapped'].id}" class="uom_id_td">${data_row?.['uom_mapped'].title}</td>
                             <td class="quantity-td">${data_row?.['book_quantity']}</td>
@@ -389,3 +415,77 @@ function LoadDetailIA(option) {
             }
         })
 }
+
+get_increase_items_btn.on('click', function () {
+    let increase_items = [];
+    tableLineDetailTbody.find('tr').each(function () {
+        let book_quantity = $(this).find('.quantity-td').text();
+        let count = $(this).find('.count-input').val();
+        let select_for_action = $(this).find('.selected_for_actions').is(':checked');
+        if (count > book_quantity && select_for_action) {
+            let action_status = 0;
+            let action_type = 2;
+            increase_items.push({
+                'product_warehouse_id': $(this).find('.product_id_td').attr('data-product-warehouse-id'),
+                'product_mapped_id': $(this).find('.product_id_td').attr('data-id'),
+                'warehouse_mapped_id': $(this).find('.warehouse_id_td').attr('data-id'),
+                'uom_mapped_id': $(this).find('.uom_id_td').attr('data-id'),
+                'book_quantity': book_quantity,
+                'count': count,
+                'action_type': action_type,
+                'select_for_action': select_for_action,
+                'action_status': action_status
+            })
+        }
+    });
+    let pk = $.fn.getPkDetail();
+    let data_redirect = {
+        'ia_id': pk,
+        'ia_items': increase_items
+    }
+    if (increase_items.length > 0) {
+        $.fn.notifyB({description: "Getting increase items to Goods Receipt."}, 'success')
+        setTimeout(() => {
+            window.location.replace($('#frm_inventory_adjustment_detail').attr('data-url-goods-receipt') + '?data_ia=' + JSON.stringify(data_redirect))
+        }, 1000);
+    }
+})
+
+get_decrease_items_btn.on('click', function () {
+    let decrease_items = [];
+    tableLineDetailTbody.find('tr').each(function () {
+        let book_quantity = $(this).find('.quantity-td').text();
+        let count = $(this).find('.count-input').val();
+        let select_for_action = $(this).find('.selected_for_actions').is(':checked');
+        if (count < book_quantity && select_for_action) {
+            let action_status = 0;
+            let action_type = 1;
+            decrease_items.push({
+                'product_warehouse_id': $(this).find('.product_id_td').attr('data-product-warehouse-id'),
+                'product_mapped_id': $(this).find('.product_id_td').attr('data-id'),
+                'warehouse_mapped_id': $(this).find('.warehouse_id_td').attr('data-id'),
+                'uom_mapped_id': $(this).find('.uom_id_td').attr('data-id'),
+                'book_quantity': book_quantity,
+                'count': count,
+                'action_type': action_type,
+                'select_for_action': select_for_action,
+                'action_status': action_status
+            })
+        }
+    });
+    let pk = $.fn.getPkDetail();
+    let data_redirect = {
+        'ia_id': pk,
+        'ia_items': decrease_items
+    }
+    if (decrease_items.length > 0) {
+        $.fn.notifyB({description: "Getting decrease items to Goods Receipt."}, 'success')
+        setTimeout(() => {
+            window.location.replace($('#frm_inventory_adjustment_detail').attr('data-url-goods-receipt') + '?data_ia=' + JSON.stringify(data_redirect))
+        }, 1000);
+    }
+})
+
+$(document).on('input', '.selected_for_actions', function () {
+    $(this).closest('tr').toggleClass('bg-primary bg-opacity-10', $(this).is(':checked'));
+})

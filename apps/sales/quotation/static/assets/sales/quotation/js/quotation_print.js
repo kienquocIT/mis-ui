@@ -3,11 +3,8 @@ class QuotationPrintHandle {
         let result = ``;
         for (let data_product of data) {
             let title = data_product?.['product']?.['title'];
-            if (data_product?.['is_shipping'] === true) {
-                title = data_product?.['shipping']?.['title'];
-            }
-            if (data_product?.['is_promotion'] === true) {
-                title = data_product?.['promotion']?.['title'];
+            if (data_product?.['is_promotion'] === true || data_product?.['is_shipping'] === true) {
+                title = data_product?.['product_title'];
             }
             result += `<tr>
                         <td>${title}</td>
@@ -24,20 +21,20 @@ class QuotationPrintHandle {
 
     static loadTemplatePrint(data) {
         let htmlTableProduct = QuotationPrintHandle.loadDataTableProduct(data?.['quotation_products_data']);
-        return `<table style="border-collapse: collapse; width: 100%; height: 19px;" border="1">
+        return `<table style="border-collapse: collapse; width: 100%; height: 19px;">
 <tbody>
 <tr style="height: 19px;">
-<td style="width: 48.9665%; height: 19px; border-style: hidden;"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/FTEL_Logo.svg/470px-FTEL_Logo.svg.png" alt="My alt text" width="354" height="116" /></td>
-<td style="width: 48.9665%; height: 19px; border-style: hidden;">
+<td style="width: 50%; height: 19px; border-style: hidden;"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/FTEL_Logo.svg/470px-FTEL_Logo.svg.png" alt="My alt text" width="354" height="116" /></td>
+<td style="width: 50%; height: 19px; border-style: hidden;">
 <p>${data?.['customer']?.['title']}</p>
-<p>T&ograve;a nh&agrave; FPT T&acirc;n Thuận , L&ocirc;L29B-31B-33B, đường số 8, KCX T&acirc;n Thuận, phường T&acirc;n Thuận Đ&ocirc;ng, quận 7, Th&agrave;nh phố Hồ Ch&iacute; Minh, Việt Nam</p>
+<p>${data?.['quotation_logistic_data']?.['shipping_address']}</p>
 </td>
 </tr>
 </tbody>
 </table>
 <hr />
 <h1 style="text-align: center;"><strong>QUOTATION</strong></h1>
-<table style="border-collapse: collapse; width: 100%; height: 74px; border-style: hidden;" border="1">
+<table style="border-collapse: collapse; width: 100%; height: 74px; border-style: hidden;">
 <tbody>
 <tr style="height: 17px; border-style: hidden;">
 <td style="width: 48.9665%; height: 17px; border-style: hidden;"><strong>To: </strong>${data?.['customer']?.['title']}</td>
@@ -45,7 +42,7 @@ class QuotationPrintHandle {
 </tr>
 <tr style="height: 19px; border-style: hidden;">
 <td style="width: 48.9665%; height: 19px;"><strong>Billing address: </strong>${data?.['quotation_logistic_data']?.['shipping_address']}</td>
-<td style="width: 48.9665%; height: 19px; border-style: hidden; text-align: right;"><strong>Date: </strong>29/09/2023</td>
+<td style="width: 48.9665%; height: 19px; border-style: hidden; text-align: right;"><strong>Date: </strong>${moment(data?.['date_created']).format('DD/MM/YYYY')}</td>
 </tr>
 <tr style="height: 19px; border-style: hidden;">
 <td style="width: 48.9665%; height: 19px; border-style: hidden;"><strong>Tax code: </strong>0101248141</td>
@@ -58,7 +55,7 @@ class QuotationPrintHandle {
 </tbody>
 </table>
 <p>&nbsp;</p>
-<table class="mb-2" style="border-collapse: collapse; width: 100%; height: 76px;" border="1">
+<table class="mb-2" style="border-collapse: collapse; width: 100%; height: 76px;">
 <thead>
 <tr>
 <td class="w-20">Description</td>
@@ -75,7 +72,7 @@ ${htmlTableProduct}
 </tbody>
 </table>
 <br>
-<table style="border-collapse: collapse; width: 60%; float: right; height: 76px;" border="1">
+<table style="border-collapse: collapse; width: 60%; float: right; height: 76px;">
 <tbody>
 <tr style="height: 19px;">
 <td style="width: 32.3144%; height: 19px; background-color: #ecf0f1;"><strong>Total discount</strong></td>
@@ -122,7 +119,7 @@ ${htmlTableProduct}
 </ul>
 <p>&nbsp;</p>
 <p>&nbsp;</p>
-<table style="border-collapse: collapse; width: 100%; height: 76px; border-style: hidden;" border="1">
+<table style="border-collapse: collapse; width: 100%; height: 76px; border-style: hidden;">
 <tbody>
 <tr style="height: 19px;">
 <td style="width: 48.9665%; height: 19px; border-style: hidden;"><strong>Sale Account Contact</strong></td>

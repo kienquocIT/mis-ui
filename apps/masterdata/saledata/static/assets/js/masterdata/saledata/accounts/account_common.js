@@ -164,6 +164,7 @@ function loadTableSelectContact(selected_contact_list=[], selected_contact_list_
         scrollY: true,
         paging: false,
         useDataServer: true,
+        dom: "",
         rowIdx: true,
         ajax: {
             url: tbl.attr('data-url'),

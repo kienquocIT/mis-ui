@@ -63,7 +63,10 @@ class InventoryAdjustmentDetail(View):
         menu_active='menu_inventory_activities',
     )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        resp1 = ServerAPI(user=request.user, url=ApiURL.WAREHOUSE_PRODUCT_LIST).get()
+        return {
+                   'warehouses_products_list': resp1.result
+               }, status.HTTP_200_OK
 
 
 class InventoryAdjustmentDetailAPI(APIView):

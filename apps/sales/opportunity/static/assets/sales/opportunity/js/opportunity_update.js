@@ -274,20 +274,20 @@ $(document).ready(function () {
                 })
             });
 
-            OpportunityLoadDropdown.productCategorySelectEle.on('select2:select', function (e) {
-                let table = $('#table-products');
-                table.find('.select-box-product').each(function () {
-                    let optionSelected = $(this).find('option:selected');
-                    OpportunityLoadDropdown.loadProduct(
-                        $(this),
-                        {
-                            'id': optionSelected.val(),
-                            'title': optionSelected.text()
-                        },
-                        OpportunityLoadDropdown.productCategorySelectEle.val()
-                    );
-                })
-            });
+    OpportunityLoadDropdown.productCategorySelectEle.on('select2:select', function () {
+        let table = $('#table-products');
+        table.find('.select-box-product').each(function () {
+            let optionSelected = $(this).find('option:selected');
+            OpportunityLoadDropdown.loadProduct(
+                $(this),
+                {
+                    'id': optionSelected.val(),
+                    'title': optionSelected.text()
+                },
+                OpportunityLoadDropdown.productCategorySelectEle.val()
+            );
+        })
+    });
 
             $(document).on('change', '.select-box-product', function () {
                 let ele_tr = $(this).closest('tr');

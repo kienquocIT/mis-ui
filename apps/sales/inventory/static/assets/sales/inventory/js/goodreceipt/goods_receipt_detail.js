@@ -24,8 +24,7 @@ $(function () {
                     $.fn.compareStatusShowPageAction(data);
                     $('#data-detail-page').val(JSON.stringify(data));
                     GRLoadDataHandle.loadDetailPage(data);
-
-                    // WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
+                    WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
                 }
             }
         )

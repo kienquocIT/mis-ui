@@ -3362,9 +3362,9 @@ class DocumentControl {
         if (tenant_code_active) $('#menu-tenant').children('option[value=' + tenant_code_active + ']').attr('selected', 'selected');
     }
 
-    static renderCodeBreadcrumb(detailData, keyCode = 'code', keyActive = 'is_active') {
+    static renderCodeBreadcrumb(detailData, keyCode = 'code', keyActive = 'is_active', keyStatus = 'system_status') {
         if (typeof detailData === 'object') {
-            let [code, is_active] = [detailData?.[keyCode], detailData?.[keyActive]];
+            let [code, is_active, system_status] = [detailData?.[keyCode], detailData?.[keyActive], detailData?.[keyStatus]];
             if (code) {
                 let clsState = 'hidden';
                 if (is_active === true) {
@@ -3377,6 +3377,18 @@ class DocumentControl {
                     <span class="${clsState}"></span>
                     <span class="badge badge-primary">${code}</span>
                 `
+                ).removeClass('hidden');
+            }
+            if (system_status) {
+                let status_class = {
+                    "Draft": "badge badge-soft-light",
+                    "Created": "badge badge-soft-primary",
+                    "Added": "badge badge-soft-info",
+                    "Finish": "badge badge-soft-success",
+                    "Cancel": "badge badge-soft-danger",
+                }
+                $('#idx-breadcrumb-current-code').append(
+                    `<span class="${status_class[system_status]}">${system_status}</span>`
                 ).removeClass('hidden');
             }
         }

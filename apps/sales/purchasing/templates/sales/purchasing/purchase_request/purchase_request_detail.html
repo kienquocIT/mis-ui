@@ -5,14 +5,14 @@
     <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}"/>
 {% endblock %}
 {% block pageAction %}
-    <a href="#">
+    <a href="{% url 'PurchaseRequestUpdate' pk=0 %}" id="btn-edit">
         <button class="btn btn-outline-primary">
-        <span>
-            <span>{% trans 'Edit' %}</span>
-            <span class="icon">
-                <i class="fa-regular fa-pen-to-square"></i>
+            <span>
+                <span>{% trans 'Edit' %}</span>
+                <span class="icon">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                </span>
             </span>
-        </span>
         </button>
     </a>
 {% endblock %}
@@ -60,25 +60,17 @@
                                 <span class="col-5">{% trans "Code" %}</span>
                                 <span class="col-7 text-primary span-supplier-code"></span>
                             </div>
-                            <div class="row">
-                                <span class="col-5">{% trans "Owner Name" %}</span>
-                                <span class="col-7 text-primary span-supplier-owner"></span>
-                            </div>
-                            <div class="row">
-                                <span class="col-5">{% trans "Industry" %}</span>
-                                <span class="col-7 text-primary span-supplier-industry"></span>
-                            </div>
                         </span>
                     </span>
                     <select
-                            class="form-control select2"
+                            class="form-select"
                             id="box-select-supplier"
                             name="supplier"
                             data-method="GET"
                             data-url="{% url "AccountForSaleListAPI" %}"
                             data-keyResp="account_sale_list"
                             data-keyText="name"
-                            required
+                            disabled
                     >
                     </select>
                 </span>
@@ -128,14 +120,10 @@
                                 <span class="col-5">{% trans "Email" %}</span>
                                 <span class="col-7 text-primary span-contact-email"></span>
                             </div>
-                            <div class="row">
-                                <span class="col-5">{% trans "Report to" %}</span>
-                                <span class="col-7 text-primary span-contact-report-to"></span>
-                            </div>
                         </span>
                     </span>
                     <select
-                            class="form-control select2"
+                            class="form-select"
                             id="box-select-contact"
                             data-method="GET"
                             data-url="{% url "ContactListAPI" %}"

@@ -135,7 +135,7 @@
                                     </span>
                                 </span>
                                 <input data-url-detail="{% url 'EmployeeDetailAPI' '0' %}" data-method="GET"
-                                       data-id="{{ data.employee_current_id }}" class="form-control" type="text" name="employee_created"
+                                       data-id="{{ data.employee_current_id }}" class="form-control" type="text" name="employee_created_id"
                                        readonly>
                             </span>
                         </div>
@@ -176,7 +176,7 @@
                                         </div>
                                     </span>
                                 </span>
-                                <select class="form-select" name="employee_inherit" id="chooseBeneficiary" style="color: black"
+                                <select class="form-select" name="employee_inherit_id" id="chooseBeneficiary" style="color: black"
                                         data-method="GET" data-url="{% url 'EmployeeListAPI' %}" disabled
                                 >
                                 </select>

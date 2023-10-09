@@ -387,6 +387,7 @@ async function getPaymentSaleCode(sale_code_mapped_param, type_param) {
             saleCodeEle.prop('disabled', false);
         }
         sale_code_loading_span.attr('hidden', true);
+        $('#btn-add-row-line-detail').attr('hidden', false);
     }).catch((error) => {
         console.log(error)
         $.fn.notifyB({description: "Load Sale Code Failed!"}, 'failure');
@@ -1428,6 +1429,7 @@ function LoadDetailPayment() {
                 WFRTControl.setWFRuntimeID(data['payment_detail']?.['workflow_runtime_id']);
                 data = data['payment_detail'];
                 $.fn.compareStatusShowPageAction(data);
+                $x.fn.renderCodeBreadcrumb(data);
                 console.log(data)
 
                 $('#payment-code').text(data.code);

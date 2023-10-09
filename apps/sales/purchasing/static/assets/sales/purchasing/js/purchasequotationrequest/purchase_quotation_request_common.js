@@ -166,7 +166,7 @@ function LoadPurchaseRequestProductsTable() {
                 data: '',
                 className: 'wrap-text w-10',
                 render: (data, type, row) => {
-                    return `<input id="${row.id}" data-title="${row.title}" data-uom-group-id="${row.uom_group.id}" data-uom-id="${row.uom.id}" data-uom-title="${row.uom.title}" data-quantity="${row.quantity}" data-pr-unit-price="${row.product_unit_price}" data-tax-id="${row.tax.id}" data-tax-value="${row.tax.value}" data-tax-code="${row.tax.code}" data-pr-code="${row?.['purchase_request_code']}" type="checkbox" class="form-check-purchase-request-products">`;
+                    return `<input id="${row.id}" data-des="${row.description}" data-title="${row.title}" data-uom-group-id="${row.uom_group.id}" data-uom-id="${row.uom.id}" data-uom-title="${row.uom.title}" data-quantity="${row.quantity}" data-pr-unit-price="${row.product_unit_price}" data-tax-id="${row.tax.id}" data-tax-value="${row.tax.value}" data-tax-code="${row.tax.code}" data-pr-code="${row?.['purchase_request_code']}" type="checkbox" class="form-check-purchase-request-products">`;
                 }
             },
             {
@@ -246,6 +246,7 @@ function LoadPurchaseRequestProductsTableForMerge(product_id_list) {
             {
                 "id": temp[0].id,
                 "title": temp[0].title,
+                "description": temp[0].description,
                 "uom": Object.keys(smallestRatioElement.uom).length > 0 ? smallestRatioElement.uom : {},
                 "uom_group": temp[0].uom_group,
                 "quantity": sum_converted_item,
@@ -266,7 +267,7 @@ function LoadPurchaseRequestProductsTableForMerge(product_id_list) {
                 data: '',
                 className: 'wrap-text w-10',
                 render: (data, type, row) => {
-                    return `<input checked id="${row.id}" data-title="${row.title}" data-uom-group-id="${row.uom_group.id}" data-uom-id="${row.uom.id}" data-uom-title="${row.uom.title}" data-quantity="${row.quantity}" data-pr-unit-price="${row.product_unit_price}" data-tax-id="${row.tax.id}" data-tax-value="${row.tax.value}" data-tax-code="${row.tax.code}" type="checkbox" class="form-check-purchase-request-products-for-merge">`;
+                    return `<input checked id="${row.id}" data-des="${row.description}" data-title="${row.title}" data-uom-group-id="${row.uom_group.id}" data-uom-id="${row.uom.id}" data-uom-title="${row.uom.title}" data-quantity="${row.quantity}" data-pr-unit-price="${row.product_unit_price}" data-tax-id="${row.tax.id}" data-tax-value="${row.tax.value}" data-tax-code="${row.tax.code}" type="checkbox" class="form-check-purchase-request-products-for-merge">`;
                 }
             },
             {
@@ -340,6 +341,10 @@ function loadProductList(row_id, data) {
         keyResp: 'product_list',
         keyId: 'id',
         keyText: 'title',
+    }).on('change', function () {
+        let obj_selected = JSON.parse($('#' + $(this).attr('data-idx-data-loaded')).text())[$(this).val()];
+        $(this).closest('tr').find('.product-description').text(obj_selected.description);
+        loadProductUomList($(this).closest('tr').attr('id'), null, obj_selected?.['general_uom_group']['id']);
     })
 }
 
@@ -366,6 +371,9 @@ function loadProductUomList(row_id, data, uom_group_id) {
                 if (resp.data[keyResp][i]?.['group']['id'] === uom_group_id) {
                     result.push(resp.data[keyResp][i])
                 }
+            }
+            if (result.length > 0) {
+                $('.select2-results__message').prop('hidden', true);
             }
             return result;
         },
@@ -407,12 +415,11 @@ function LoadDetailPQR() {
                 WFRTControl.setWFRuntimeID(data['purchase_quotation_request_detail']?.['workflow_runtime_id']);
                 let data_detail = data['purchase_quotation_request_detail'];
                 $.fn.compareStatusShowPageAction(data_detail);
+                $x.fn.renderCodeBreadcrumb(data_detail);
                 console.log(data_detail)
 
                 if (data_detail.purchase_quotation_request_type) {
                     $('#pr-div').prop('hidden', true);
-
-                    $('#code-span').text(data_detail.code);
                     $('#title').val(data_detail.title);
                     deliveryDateInput.val(data_detail.delivered_date.split(' ')[0]);
                     $('#note').val(data_detail.note);
@@ -445,7 +452,9 @@ function LoadDetailPQR() {
                                 data: 'description',
                                 className: 'wrap-text w-15',
                                 render: (data, type, row) => {
-                                    return `<textarea readonly class="product-description form-control" style="height: 38px">${row.description}</textarea>`;
+                                    return `<div data-simplebar class="h-100p bg-gray-light-4 border rounded-5 text-primary">
+                                                <span class="product-description">${row.product.description}</span>
+                                            </div>`;
                                 }
                             },
                             {
@@ -473,7 +482,10 @@ function LoadDetailPQR() {
                                 data: 'tax',
                                 className: 'wrap-text w-15',
                                 render: (data, type, row) => {
-                                    let html = `<option selected data-rate="${row.product.tax.rate}" value="${row.product.tax.id}">${row.product.tax.title} (${row.product.tax.rate}%)</option>`;
+                                    let html = ``;
+                                    if (Object.keys(row.product.tax).length !== 0) {
+                                        html = `<option selected data-rate="${row.product.tax.rate}" value="${row.product.tax.id}">${row.product.tax.title} (${row.product.tax.rate}%)</option>`;
+                                    }
                                     return `<select style="color: #6f6f6f" disabled class="form-select product-tax-select-box" data-method="GET">${html}</select>`;
                                 }
                             },
@@ -488,7 +500,6 @@ function LoadDetailPQR() {
                     })
                 }
                 else {
-                    $('#code-span').text(data_detail.code);
                     $('#title').val(data_detail.title);
                     deliveryDateInput.val(data_detail.delivered_date.split(' ')[0]);
                     $('#note').val(data_detail.note);
@@ -525,7 +536,9 @@ function LoadDetailPQR() {
                                 data: 'description',
                                 className: 'wrap-text w-15',
                                 render: (data, type, row) => {
-                                    return `<textarea readonly class="product-description form-control" style="height: 38px">${row.description}</textarea>`;
+                                    return `<div data-simplebar class="h-100p bg-gray-light-4 border rounded-5 text-primary">
+                                                <span class="product-description">${row.product.description}</span>
+                                            </div>`;
                                 }
                             },
                             {
@@ -648,6 +661,7 @@ $(document).on("click", '#btn_create_new_purchase_quotation_request', function (
             'index': row_index,
             'product_id': $(this).attr('id'),
             'product_title': $(this).attr('data-title'),
+            'product_des': $(this).attr('data-des'),
             'uom_id': $(this).attr('data-uom-id'),
             'uom_title': $(this).attr('data-uom-title'),
             'uom_group_id': $(this).attr('data-uom-group-id'),
@@ -679,25 +693,24 @@ $(document).on("click", '#btn_create_new_purchase_quotation_request', function (
                 }
             },
             {
-                data: 'title',
+                data: 'product_title',
                 className: 'wrap-text w-15',
                 render: (data, type, row) => {
                     return `<span class="product-title" data-product-id="${row.product_id}">${row.product_title}</span>`;
                 }
             },
             {
-                data: 'description',
+                data: 'product_des',
                 className: 'wrap-text w-15',
-                render: () => {
-                    return `<textarea class="product-description form-control" style="height: 38px"></textarea>`;
+                render: (data, type, row) => {
+                    return `<div data-simplebar class="h-100p bg-gray-light-4 border rounded-5 text-primary"><span class="product-description">${row.product_des}</span></div>`;
                 }
             },
             {
-                data: 'uom',
+                data: 'uom_title',
                 className: 'wrap-text w-10',
                 render: (data, type, row) => {
                     let html = ``;
-                    html += `<option value=""></option>`;
                     for (let i = 0; i < UOM_LIST.length; i++) {
                         if (UOM_LIST[i].group.id === row.uom_group_id) {
                             if (UOM_LIST[i].id === row.uom_id) {
@@ -707,7 +720,7 @@ $(document).on("click", '#btn_create_new_purchase_quotation_request', function (
                             }
                         }
                     }
-                    return `<select class="form-select product-uom-select-box" data-method="GET">` + html + `</select>`;
+                    return `<select class="form-select product-uom-select-box" data-method="GET">${html}</select>`;
                 }
             },
             {
@@ -755,15 +768,15 @@ $(document).on("click", '#btn_create_new_purchase_quotation_request', function (
 $(document).on("click", '#new-product-btn', function () {
     let table_body = $('#table-purchase-quotation-request-products-selected tbody');
     table_body.append(`<tr id="" class="row-number">
-            <td class="number text-center"></td>
-            <td><select class="form-select select2 product-select-box" data-method="GET"><option selected></option></select></td>
-            <td><textarea class="form-control product-description" style="height: 38px"></textarea></td>
-            <td><select class="form-select product-uom-select-box" data-method="GET"><option selected></option></select></td>
-            <td><input type="number" min="1" onchange="this.value=checkInputQuantity(this.value)" class="form-control product-quantity" value="1"></td>
-            <td><input type="text" data-return-type="number" class="form-control pr-unit-price-input mask-money" style="color: black; background: none"></td>
-            <td><select class="form-select product-tax-select-box" data-method="GET"></select></td>
-            <td><span class="pr-subtotal-price-input mask-money text-primary" data-init-money=""></span></td>
-            <td><button class="btn-del-line-detail btn text-danger btn-link btn-animated" title="Delete row"><span class="icon"><i class="bi bi-dash-circle"></i></span></button></td>
+            <td class="number text-center wrap-text w-5"></td>
+            <td class="wrap-text w-15"><select class="form-select select2 product-select-box" data-method="GET"></td>
+            <td class="wrap-text w-10"><div data-simplebar class="h-100p bg-gray-light-4 border rounded-5 text-primary"><span class="product-description"></span></div></td>
+            <td class="wrap-text w-10"><select class="form-select product-uom-select-box" data-method="GET"></td>
+            <td class="wrap-text w-10"><input type="number" min="1" onchange="this.value=checkInputQuantity(this.value)" class="form-control product-quantity" value="1"></td>
+            <td class="wrap-text w-15"><input type="text" data-return-type="number" class="form-control pr-unit-price-input mask-money" style="color: black; background: none"></td>
+            <td class="wrap-text w-15"><select class="form-select product-tax-select-box" data-method="GET"></select></td>
+            <td class="wrap-text w-15"><span class="pr-subtotal-price-input mask-money text-primary" data-init-money=""></span></td>
+            <td class="wrap-text w-5"><button class="btn-del-line-detail btn text-danger btn-link btn-animated" title="Delete row"><span class="icon"><i class="bi bi-dash-circle"></i></span></button></td>
         </tr>
         <script>
             function checkInputQuantity(value) {
@@ -774,28 +787,11 @@ $(document).on("click", '#new-product-btn', function () {
             }
         </script>`);
     $.fn.initMaskMoney2();
-    let row_count = count_row(table_body, 1);
-
+    count_row(table_body, 1);
     $('.btn-del-line-detail').on('click', function () {
         $(this).closest('tr').remove();
         count_row(table_body, 2);
         calculate_price($('#table-purchase-quotation-request-products-selected tbody tr'));
-    })
-    $('#row-' + row_count + ' .product-select-box').on('change', function () {
-        let parent_tr = $(this).closest('tr');
-
-        $('#' + parent_tr.attr('id') + ' .product-unit-price-select-box').attr('value', '');
-        $('#' + parent_tr.attr('id') + ' .product-quantity').val(1);
-        $('#' + parent_tr.attr('id') + ' .product-subtotal-price').attr('value', '');
-        $('#' + parent_tr.attr('id') + ' .product-subtotal-price-after-tax').attr('value', '');
-        calculate_price($('#table-purchase-quotation-request-products-selected tbody tr'));
-
-        if ($(this).val() !== '') {
-            let obj_selected = JSON.parse($('#' + $(this).attr('data-idx-data-loaded')).text())[$(this).val()];
-            loadProductUomList(parent_tr.attr('id'), null, obj_selected?.['general_uom_group']['id']);
-        } else {
-            loadProductUomList(parent_tr.attr('id'), null, null);
-        }
     })
 });
 
@@ -850,12 +846,11 @@ class PQRHandle {
                 frm.dataForm['products_selected'].push(
                     {
                         'product_id': product_id,
-                        'product_description': $(this).find('.product-description').val(),
-                        'product_uom_id': product_uom_id,
-                        'product_quantity': product_quantity,
-                        'product_unit_price': product_unit_price,
-                        'product_taxes': $(this).find('.product-tax-select-box option:selected').attr('value'),
-                        'product_subtotal_price': product_subtotal_price,
+                        'uom_id': product_uom_id,
+                        'quantity': product_quantity,
+                        'unit_price': product_unit_price,
+                        'tax_id': $(this).find('.product-tax-select-box option:selected').attr('value'),
+                        'subtotal_price': product_subtotal_price,
                     }
                 )
             }
@@ -896,12 +891,11 @@ class PQRHandle {
                 frm.dataForm['products_selected'].push(
                     {
                         'product_id': product_id,
-                        'product_description': $(this).find('.product-description').val(),
-                        'product_uom_id': product_uom_id,
-                        'product_quantity': product_quantity,
-                        'product_unit_price': product_unit_price,
-                        'product_taxes': $(this).find('.product-tax-select-box').val(),
-                        'product_subtotal_price': product_subtotal_price,
+                        'uom_id': product_uom_id,
+                        'quantity': product_quantity,
+                        'unit_price': product_unit_price,
+                        'tax_id': $(this).find('.product-tax-select-box').val(),
+                        'subtotal_price': product_subtotal_price,
                     }
                 )
             }

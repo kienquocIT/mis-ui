@@ -3,6 +3,7 @@ $(document).ready(function () {
     let url_detail = tbl.attr('data-url-detail');
     tbl.DataTableDefault({
         useDataServer: true,
+        reloadCurrency: true,
         rowIdx: true,
         ajax: {
             url: tbl.attr('data-url'),
@@ -23,12 +24,13 @@ $(document).ready(function () {
             }, {
                 'data': 'code',
                 render: (data, type, row) => {
-                    return `<span class="text-secondary">${row.code}</span>`
+                    const link = url_detail.replace(0, row.id);
+                    return `<a href="${link}" class="badge badge-soft-primary w-70">${row.code}</a> ${$x.fn.buttonLinkBlank(link)}`
                 }
             }, {
                 'data': 'title',
                 render: (data, type, row) => {
-                    return `<a href="${url_detail.replace(0, row.id)}"><span><b>${row.title}</b></span></a>`
+                    return `<span><b>${row.title}</b></span>`
                 }
             }, {
                 'className': 'text-center',
@@ -44,6 +46,11 @@ $(document).ready(function () {
                 'data': 'general_product_category',
                 render: (data, type, row) => {
                     return `<span class="badge-status"><span class="badge badge-secondary badge-indicator"></span>&nbsp;<span class="text-secondary span-product-category">${row.general_product_category.title}</span></span>`
+                }
+            }, {
+                'data': 'general_price',
+                render: (data, type, row) => {
+                    return `<span class="mask-money text-primary" data-init-money="${row.general_price}"></span>`
                 }
             }, {
                 'className': 'text-center',

@@ -13,6 +13,7 @@ $(function () {
                 let dtb = $('#datatable_pqr_list');
                 let frm = new SetupFormSubmit(dtb);
                 dtb.DataTableDefault({
+                    rowIdx: true,
                     reloadCurrency: true,
                     ajax: {
                         url: frm.dataUrl,
@@ -28,17 +29,24 @@ $(function () {
                     },
                     columns: [
                         {
+                            targets: 0,
+                            render: () => {
+                                return ``
+                            }
+                        },
+                        {
                             data: 'code',
                             className: 'wrap-text w-15',
                             render: (data, type, row) => {
-                                return `<span class="text-secondary">` + row.code + `</span>`
+                                const link = dtb.attr('data-url-detail').replace('0', row.id);
+                                return `<a href="${link}" class="badge badge-soft-primary w-70">${row.code}</a> ${$x.fn.buttonLinkBlank(link)}`;
                             }
                         },
                         {
                             data: 'title',
                             className: 'wrap-text w-25',
                             render: (data, type, row) => {
-                                return `<a class="link-primary underline_hover" target="_blank" href="` + $('#datatable_pqr_list').attr('data-url-detail').replace('0', row.id) + `"><span><b>` + row.title + `</b></span></a>`
+                                return `<span><b>` + row.title + `</b></span>`
                             }
                         },
                         {
@@ -77,10 +85,12 @@ $(function () {
                             data: '',
                             className: 'wrap-text w-5',
                             render: (data, type, row) => {
+                                let href = $('#datatable_pqr_list').attr('data-url-purchase-quotation');
+                                let param = {'id': row.id, 'title': row.title}
                                 return `<div class="dropdown">
                                             <a type="button" data-bs-toggle="dropdown"><i class="bi bi-three-dots-vertical"></i></a>
                                             <div class="dropdown-menu">
-                                                 <a href="` + $('#datatable_pqr_list').attr('data-url-purchase-quotation') + `?purchase-quotation-request=` + row.id + `" class="dropdown-item" href="{1}">Purchase Quotation</a>
+                                                 <a href="${href}?pqr_id=${row.id}&pqr_title=${row.title}" class="dropdown-item">Purchase Quotation</a>
                                             </div>
                                         </div>`;
                             }

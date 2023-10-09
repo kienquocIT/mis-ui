@@ -356,6 +356,10 @@ class GRLoadDataHandle {
         }
         //
         GRStoreDataHandle.storeDataAll();
+        GRDataTableHandle.tableLot.DataTable().clear().draw();
+        GRDataTableHandle.tableSerial.DataTable().clear().draw();
+        $('#scroll-table-lot-serial')[0].setAttribute('hidden', 'true');
+        GRDataTableHandle.tableWH.DataTable().clear().draw();
         GRDataTableHandle.tablePR.DataTable().clear().draw();
         if (is_checked === true) {
             ele.checked = true;
@@ -368,6 +372,55 @@ class GRLoadDataHandle {
             $(row).css('background-color', '#ebfcf5');
         } else {
             $(row).css('background-color', '#fff');
+        }
+    };
+
+    static loadCheckPR(ele) {
+        let row = ele.closest('tr');
+        let is_checked = false;
+        if (ele.checked === true) {
+            is_checked = true;
+        }
+        for (let eleCheck of GRDataTableHandle.tablePR[0].querySelectorAll('.table-row-checkbox')) {
+            eleCheck.checked = false;
+            let row = eleCheck.closest('tr');
+            $(row).css('background-color', '');
+        }
+        //
+        GRStoreDataHandle.storeDataAll();
+        GRDataTableHandle.tableLot.DataTable().clear().draw();
+        GRDataTableHandle.tableSerial.DataTable().clear().draw();
+        $('#scroll-table-lot-serial')[0].setAttribute('hidden', 'true');
+        GRDataTableHandle.tableWH.DataTable().clear().draw();
+        if (is_checked === true) {
+            ele.checked = true;
+            GRLoadDataHandle.loadModalWareHouse(JSON.parse(ele.getAttribute('data-row')), true);
+            $(row).css('background-color', '#ebfcf5');
+        } else {
+            $(row).css('background-color', '');
+        }
+    };
+
+    static loadCheckWH(ele) {
+        let row = ele.closest('tr');
+        let is_checked = false;
+        if (ele.checked === true) {
+            is_checked = true;
+        }
+        for (let eleCheck of GRDataTableHandle.tableWH[0].querySelectorAll('.table-row-checkbox')) {
+            eleCheck.checked = false;
+            let row = eleCheck.closest('tr');
+            $(row).css('background-color', '');
+        }
+        GRStoreDataHandle.storeDataAll();
+        GRDataTableHandle.tableLot.DataTable().clear().draw();
+        GRDataTableHandle.tableSerial.DataTable().clear().draw();
+        if (is_checked === true) {
+            ele.checked = true;
+            GRLoadDataHandle.loadNewRowsLotOrNewRowsSerial();
+            $(row).css('background-color', '#ebfcf5');
+        } else {
+            $(row).css('background-color', '');
         }
     };
 
@@ -730,8 +783,14 @@ class GRLoadDataHandle {
             "Finish": "badge badge-soft-success",
             "Cancel": "badge badge-soft-danger",
         }
-        eleStatus[0].className = status_data[data?.['system_status']];
-        eleStatus[0].innerHTML = data?.['system_status'];
+        // eleStatus[0].className = status_data[data?.['system_status']];
+        // eleStatus[0].innerHTML = data?.['system_status'];
+        if (['Added', 'Finish'].includes(data?.['system_status'])) {
+            let $btn = $('#btn-enable-edit');
+            if ($btn.length) {
+                $btn[0].setAttribute('hidden', 'true');
+            }
+        }
         let type_data = {
             '1': 'For purchase order',
             '2': 'For inventory adjustment',

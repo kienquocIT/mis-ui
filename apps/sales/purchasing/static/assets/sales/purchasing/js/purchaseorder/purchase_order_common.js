@@ -828,8 +828,14 @@ class POLoadDataHandle {
             "Finish": "badge badge-soft-success",
             "Cancel": "badge badge-soft-danger",
         }
-        eleStatus[0].className = status_data[data?.['system_status']];
-        eleStatus[0].innerHTML = data?.['system_status'];
+        // eleStatus[0].className = status_data[data?.['system_status']];
+        // eleStatus[0].innerHTML = data?.['system_status'];
+        if (['Added', 'Finish'].includes(data?.['system_status'])) {
+            let $btn = $('#btn-enable-edit');
+            if ($btn.length) {
+                $btn[0].setAttribute('hidden', 'true');
+            }
+        }
         $('#purchase-order-date-delivered').val(moment(data?.['date_created']).format('DD/MM/YYYY hh:mm A'));
         POLoadDataHandle.loadDataShowPRPQ(data);
         PODataTableHandle.dataTablePurchaseRequest();

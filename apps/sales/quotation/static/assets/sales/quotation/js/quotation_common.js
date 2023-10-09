@@ -811,8 +811,14 @@ class QuotationLoadDataHandle {
                 "Finish": "badge badge-soft-success",
                 "Cancel": "badge badge-soft-danger",
             }
-            eleStatus[0].className = status_data[data?.['system_status']];
-            eleStatus[0].innerHTML = data?.['system_status'];
+            // eleStatus[0].className = status_data[data?.['system_status']];
+            // eleStatus[0].innerHTML = data?.['system_status'];
+            if (['Added', 'Finish'].includes(data?.['system_status'])) {
+                let $btn = $('#btn-enable-edit');
+                if ($btn.length) {
+                    $btn[0].setAttribute('hidden', 'true');
+                }
+            }
             // check if is not finish then disable btn copy
             if (!['Added', 'Finish'].includes(data?.['system_status'])) {
                 let btnCopy = document.getElementById('btn-copy-quotation');

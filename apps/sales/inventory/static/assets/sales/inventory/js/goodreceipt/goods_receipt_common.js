@@ -571,8 +571,8 @@ class GRLoadDataHandle {
     };
 
     static loadQuantityImport() {
-        let valuePROrder = parseFloat(GRDataTableHandle.tablePR[0]?.querySelector('.table-row-checkbox:checked')?.closest('tr')?.querySelector('.table-row-quantity').innerHTML);
-        let valuePOOrder = parseFloat(GRDataTableHandle.tablePOProduct[0]?.querySelector('.table-row-checkbox:checked')?.closest('tr')?.querySelector('.table-row-quantity').innerHTML);
+        let valuePROrderRemain = parseFloat(GRDataTableHandle.tablePR[0]?.querySelector('.table-row-checkbox:checked')?.closest('tr')?.querySelector('.table-row-gr-remain').innerHTML);
+        let valuePOOrderRemain = parseFloat(GRDataTableHandle.tablePOProduct[0]?.querySelector('.table-row-checkbox:checked')?.closest('tr')?.querySelector('.table-row-gr-remain').innerHTML);
         if (!GRDataTableHandle.tableLot[0].querySelector('.dataTables_empty')) {
             let valueWHNew = 0;
             for (let eleImport of GRDataTableHandle.tableLot[0].querySelectorAll('.table-row-import')) {
@@ -593,8 +593,8 @@ class GRLoadDataHandle {
         for (let eleImport of GRDataTableHandle.tableWH[0].querySelectorAll('.table-row-import')) {
             valuePRNew += parseFloat(eleImport.value);
         }
-        if (valuePROrder) {
-            if (valuePRNew <= valuePROrder) {
+        if (valuePROrderRemain) {
+            if (valuePRNew <= valuePROrderRemain) {
                 GRDataTableHandle.tablePR[0].querySelector('.table-row-checkbox:checked').closest('tr').querySelector('.table-row-import').innerHTML = String(valuePRNew);
             } else {
                 $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-validate-import')}, 'failure');
@@ -602,7 +602,7 @@ class GRLoadDataHandle {
             }
         }
         let valuePONew = 0;
-        if (valuePROrder) {
+        if (valuePROrderRemain) {
             for (let eleImport of GRDataTableHandle.tablePR[0].querySelectorAll('.table-row-import')) {
                 valuePONew += parseFloat(eleImport.innerHTML);
             }
@@ -611,14 +611,15 @@ class GRLoadDataHandle {
                 valuePONew += parseFloat(eleImport.value);
             }
         }
-        if (valuePOOrder) {
-            if (valuePONew <= valuePOOrder) {
+        if (valuePOOrderRemain) {
+            if (valuePONew <= valuePOOrderRemain) {
                 GRDataTableHandle.tablePOProduct[0].querySelector('.table-row-checkbox:checked').closest('tr').querySelector('.table-row-import').innerHTML = String(valuePONew);
             } else {
                 $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-validate-import')}, 'failure');
                 return false
             }
         }
+        return true;
     };
 
     static loadDataShowPR(data) {
@@ -919,19 +920,19 @@ class GRDataTableHandle {
                 {
                     targets: 3,
                     render: (data, type, row) => {
-                        return `<span class="table-row-quantity">${row?.['product_quantity_order_actual']}</span>`;
+                        return `<span class="table-row-quantity">${row?.['product_quantity_order_actual'] ? row?.['product_quantity_order_actual'] : 0}</span>`;
                     }
                 },
                 {
                     targets: 4,
                     render: (data, type, row) => {
-                        return `<span class="table-row-received">${row?.['quantity_received'] ? row?.['quantity_received'] : 0}</span>`;
+                        return `<span class="table-row-gr-completed">${row?.['goods_receipt_info']?.['gr_completed_quantity'] ? row?.['goods_receipt_info']?.['gr_completed_quantity'] : 0}</span>`;
                     }
                 },
                 {
                     targets: 5,
                     render: (data, type, row) => {
-                        return `<span class="table-row-remain">${row?.['quantity_remain'] ? row?.['quantity_remain'] : 0}</span>`;
+                        return `<span class="table-row-gr-remain">${row?.['goods_receipt_info']?.['gr_remain_quantity'] ? row?.['goods_receipt_info']?.['gr_remain_quantity'] : 0}</span>`;
                     }
                 },
                 {
@@ -988,13 +989,13 @@ class GRDataTableHandle {
                 {
                     targets: 4,
                     render: (data, type, row) => {
-                        return `<span class="table-row-received">${row?.['quantity_received'] ? row?.['quantity_received'] : 0}</span>`;
+                        return `<span class="table-row-gr-completed">${row?.['goods_receipt_info']?.['gr_completed_quantity'] ? row?.['goods_receipt_info']?.['gr_completed_quantity'] : 0}</span>`;
                     }
                 },
                 {
                     targets: 5,
                     render: (data, type, row) => {
-                        return `<span class="table-row-remain">${row?.['quantity_remain'] ? row?.['quantity_remain'] : 0}</span>`;
+                        return `<span class="table-row-gr-remain">${row?.['goods_receipt_info']?.['gr_remain_quantity'] ? row?.['goods_receipt_info']?.['gr_remain_quantity'] : 0}</span>`;
                     }
                 },
                 {

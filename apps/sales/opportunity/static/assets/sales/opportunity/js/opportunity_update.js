@@ -965,7 +965,6 @@ $(document).ready(function () {
                 Promise.all([email_detail]).then(
                     (results) => {
                         let email_obj = results[0];
-                        console.log(email_obj)
                         let detail_email_Opp_slb = $('#detail-email-sale-code-select-box')
                         let detail_email_to_slb = $('#detail-email-to-select-box')
                         let detail_email_cc_slb = $('#detail-email-cc-select-box')

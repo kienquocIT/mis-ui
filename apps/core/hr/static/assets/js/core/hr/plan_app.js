@@ -14,7 +14,7 @@ function callAppList() {
 
 function renderAppList(data) {
     if (data && data.hasOwnProperty('tenant_plan_list') && Array.isArray(data.tenant_plan_list)) {
-        new HandlePlanApp().loadData(data.tenant_plan_list);
+        new HandlePlanApp().loadData(data.tenant_plan_list, false);
     }
 }
 
@@ -65,7 +65,7 @@ class HandlePlanApp {
     }
 
     // load step 1
-    loadData(tenant_plan_list) {
+    loadData(tenant_plan_list, reset_permit=false) {
         let clsThis = this;
         this.dtb.DataTableDefault({
             stateDefaultPageControl: false,
@@ -209,7 +209,7 @@ class HandlePlanApp {
         });
 
         HandlePlanApp.resetPlanApp();
-        HandlePermissions.resetPermit();
+        if (reset_permit === true) HandlePermissions.resetPermit();
     }
 
     static getDependOnTitle(app_id_arr) {

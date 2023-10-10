@@ -1207,7 +1207,6 @@ class ListeningEventController {
             return this.hash === location.hash;
         }).each(function () {
             if ($(this).length > 0){
-                console.log('currentEle start: ', $(this));
                 let drawerEle = $(this).closest('.ntt-drawer');
                 if (drawerEle.length > 0) {
                     $('.ntt-drawer-toggle-link[data-drawer-target="#' + drawerEle.attr('id') + '"]').each(function () {

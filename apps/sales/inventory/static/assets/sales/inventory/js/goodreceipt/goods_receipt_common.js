@@ -593,7 +593,7 @@ class GRLoadDataHandle {
         for (let eleImport of GRDataTableHandle.tableWH[0].querySelectorAll('.table-row-import')) {
             valuePRNew += parseFloat(eleImport.value);
         }
-        if (valuePROrderRemain) {
+        if (valuePROrderRemain >= 0) {
             if (valuePRNew <= valuePROrderRemain) {
                 GRDataTableHandle.tablePR[0].querySelector('.table-row-checkbox:checked').closest('tr').querySelector('.table-row-import').innerHTML = String(valuePRNew);
             } else {
@@ -611,7 +611,7 @@ class GRLoadDataHandle {
                 valuePONew += parseFloat(eleImport.value);
             }
         }
-        if (valuePOOrderRemain) {
+        if (valuePOOrderRemain >= 0) {
             if (valuePONew <= valuePOOrderRemain) {
                 GRDataTableHandle.tablePOProduct[0].querySelector('.table-row-checkbox:checked').closest('tr').querySelector('.table-row-import').innerHTML = String(valuePONew);
             } else {

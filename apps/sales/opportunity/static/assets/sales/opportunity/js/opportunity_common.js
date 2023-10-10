@@ -1061,7 +1061,7 @@ function loadDtbOpportunityList() {
                         if (row?.['open_date'] !== null) {
                             open_date = row?.['open_date'].split(" ")[0]
                         }
-                        return `<p>${open_date}</p>`
+                        return `<p>${open_date !== null && open_date !== undefined ? open_date: '_'}</p>`
                     }
                 },
                 {
@@ -1071,7 +1071,7 @@ function loadDtbOpportunityList() {
                         if (row?.['close_date'] !== null) {
                             close_date = row?.['close_date'].split(" ")[0]
                         }
-                        return `<p>${close_date}</p>`
+                        return `<p>${close_date !== null && close_date !== undefined ? close_date : '_'}</p>`
                     }
                 },
                 {
@@ -1081,7 +1081,7 @@ function loadDtbOpportunityList() {
                         stage_current = row.stage.find(function (obj) {
                             return obj.is_current === true;
                         });
-                        return `<p>${stage_current.indicator}</p>`
+                        return `<span class="badge badge-light">${stage_current.indicator}</span>`
                     }
                 },
                 {

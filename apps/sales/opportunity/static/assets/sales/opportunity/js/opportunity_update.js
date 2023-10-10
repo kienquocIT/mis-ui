@@ -241,7 +241,7 @@ $(document).ready(function () {
                 $.fn.initMaskMoney2();
             }
 
-            loadDetail(opportunity_detail_data);
+            loadDetail(opportunity_detail_data).then();
 
             // even in tab product
             $('#btn-add-select-product').on('click', function () {
@@ -274,20 +274,20 @@ $(document).ready(function () {
                 })
             });
 
-    OpportunityLoadDropdown.productCategorySelectEle.on('select2:select', function () {
-        let table = $('#table-products');
-        table.find('.select-box-product').each(function () {
-            let optionSelected = $(this).find('option:selected');
-            OpportunityLoadDropdown.loadProduct(
-                $(this),
-                {
-                    'id': optionSelected.val(),
-                    'title': optionSelected.text()
-                },
-                OpportunityLoadDropdown.productCategorySelectEle.val()
-            );
-        })
-    });
+            OpportunityLoadDropdown.productCategorySelectEle.on('select2:select', function () {
+                let table = $('#table-products');
+                table.find('.select-box-product').each(function () {
+                    let optionSelected = $(this).find('option:selected');
+                    OpportunityLoadDropdown.loadProduct(
+                        $(this),
+                        {
+                            'id': optionSelected.val(),
+                            'title': optionSelected.text()
+                        },
+                        OpportunityLoadDropdown.productCategorySelectEle.val()
+                    );
+                })
+            });
 
             $(document).on('change', '.select-box-product', function () {
                 let ele_tr = $(this).closest('tr');
@@ -511,51 +511,6 @@ $(document).ready(function () {
                 OpportunityLoadDetail.loadMemberForDtb().then();
             })
 
-            $(document).on('click', '#dtbMember .input-select-member', function () {
-                if ($(this).is(':checked')) {
-                    $(this).closest('tr').addClass('tr-added selected');
-                } else {
-                    $(this).prop('checked', true);
-                }
-            })
-
-            $(document).on('click', '.btn-remove-card', function (event) {
-                event.preventDefault();
-                let card = $(this).closest('.card');
-                let base_tran_ele = $('#base-trans-factory')
-                Swal.fire({
-                    title: base_tran_ele.data('sure-delete'),
-                    showCancelButton: true,
-                    confirmButtonText: base_tran_ele.data('confirm'),
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.fn.callAjax2({
-                            url: urlEle.data('url-delete-member').format_url_with_uuid(card.data('id')),
-                            method: 'PUT',
-                            data: {
-                                'employee_delete': $('#emp-current-id').val(),
-                                'opportunity': pk,
-                            },
-                        }).then(
-                            (resp) => {
-                                let data = $.fn.switcherResp(resp);
-                                if (data) {
-                                    Swal.fire(base_tran_ele.data('success'), '', 'success');
-                                    OpportunityLoadDetail.reloadMemberList(pk);
-                                }
-                            },
-                            (errs) => {
-                                if ($.fn.hasOwnProperties(errs.data.errors, ['employee_current'])) {
-                                    OpportunityLoadDetail.renderAlert(errs.data.errors.employee_current);
-                                } else if ($.fn.hasOwnProperties(errs.data.errors, ['member'])) {
-                                    OpportunityLoadDetail.renderAlert(errs.data.errors.member);
-                                }
-                            }
-                        )
-                    }
-                })
-            })
-
             $(document).on('change', '.mask-money', function () {
                 if ($(this).valCurrency() < 0) {
                     $.fn.notifyB({description: transEle.data('trans-limit-money')}, 'failure');
@@ -724,7 +679,9 @@ $(document).ready(function () {
                             method: frm.dataMethod,
                             data: {
                                 'members': OpportunityLoadDetail.getDataMember().map(
-                                    (item) => {return item.id;}
+                                    (item) => {
+                                        return item.id;
+                                    }
                                 ),
                             },
                         }).then(
@@ -733,7 +690,9 @@ $(document).ready(function () {
                                 if (data) {
                                     $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
                                     setTimeout(
-                                        ()=> {window.location.reload();},
+                                        () => {
+                                            window.location.reload();
+                                        },
                                         1000
                                     )
 
@@ -751,35 +710,8 @@ $(document).ready(function () {
                 }
             )
 
-            const frm_set_permission = $('#frm-set-perm-member');
-            SetupFormSubmit.validate(
-                frm_set_permission,
-                {
-                    submitHandler: function (form) {
-                        let frm = new SetupFormSubmit($(form));
-                        let id = $('#id-member').val();
-                        let data = OpportunityLoadDetail.getFormDataMemberPermission();
-                        $.fn.callAjax2({
-                            url: frm.dataUrl.format_url_with_uuid(id),
-                            method: frm.dataMethod,
-                            data: data,
-                        }).then(
-                            (resp) => {
-                                let data = $.fn.switcherResp(resp);
-                                if (data) {
-                                    $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
-                                    $('#modal-set-perm').modal('hide');
-                                }
-                            },
-                            (errs) => {
-                                $.fn.notifyB({description: errs.data.errors}, 'failure');
-                            }
-                        )
-                    }
-                }
-            )
 
-            // toggle action and activity
+            // // toggle action and activity
             toggleShowActivity()
 
 
@@ -1309,7 +1241,6 @@ $(document).ready(function () {
                 }
 
                 static init() {
-
                     $.fn.callAjax2({
                         'url': $('#task_url_sub').attr('data-task-config'),
                         'method': 'get'

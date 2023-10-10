@@ -1105,8 +1105,11 @@ function callData(url, method) {
         url: url,
         method: method,
     }).then((resp) => {
-        return $.fn.switcherResp(resp);
-    });
+            return $.fn.switcherResp(resp);
+        },
+        (errs) => {
+            console.log(errs)
+        });
 }
 
 async function loadConfig() {
@@ -1195,7 +1198,7 @@ async function loadMemberSaleTeam() {
                 {
                     className: 'wrap-text',
                     render: (data, type, row) => {
-                        if ($('.member-item .card[data-id="' + row.id + '"]').length > 0){
+                        if ($('.member-item .card[data-id="' + row.id + '"]').length > 0) {
                             return `<span class="form-check"><input data-id="{0}" type="checkbox" class="form-check-input input-select-member" checked readonly disabled /></span>`.format_by_idx(row.id)
                         }
                         return `<span class="form-check"><input data-id="{0}" type="checkbox" class="form-check-input input-select-member" /></span>`.format_by_idx(row.id)

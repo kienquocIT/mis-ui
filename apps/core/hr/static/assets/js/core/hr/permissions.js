@@ -156,6 +156,8 @@ class HandlePermissions {
                 "range": "4",
             },
         ]
+
+        console.log('$.fn.DataTable.isDataTable(\'#permissions_list\'): ', $.fn.DataTable.isDataTable('#permissions_list'));
     }
 
     static resetPermit(){
@@ -283,6 +285,7 @@ class HandlePermissions {
             dtbEle = clsThis.tbl.DataTableDefault({
                 ...toolbar_enabled,
                 rowIdx: true,
+                debug: true,
                 data: permData,
                 autoWidth: false,
                 columns: [
@@ -304,7 +307,7 @@ class HandlePermissions {
                             return `
                             <span class="badge badge-${DocumentControl.classOfPlan(plan_data.code)}">${plan_data.title} - ${app_data.title}</span>
                             <input 
-                                type="text" 
+                                type="text" ;
                                 name="permission-app" 
                                 class="hidden" 
                                 data-plan-id="${plan_data.id}" 

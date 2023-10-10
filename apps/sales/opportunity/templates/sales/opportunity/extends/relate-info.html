@@ -290,28 +290,28 @@
             </div>
         </div>
     </div>
-    <div class="mt-2 w-100 hidden div-activity">
-        <div class="row">
+    <div class="mt-2 mb-5 w-100 hidden div-activity bg-gray-light-5 border-2 border rounded shadow-primary">
+        <div class="row mt-2 mb-2">
             <div class="col-12">
-                <table
-                        class="table nowrap w-100" id="table-timeline"
-                        data-url-logs_list="{% url 'OpportunityActivityLogListAPI' %}"
-                        data-method="GET"
-                >
+                <table class="table nowrap w-100" id="table-timeline"
+                       data-url-logs_list="{% url 'OpportunityActivityLogListAPI' %}"
+                       data-url-delete-call-log="{% url 'OpportunityCallLogDeleteAPI' '0' %}"
+                       data-url-delete-email="{% url 'OpportunityEmailDeleteAPI' '0' %}"
+                       data-url-delete-meeting="{% url 'OpportunityMeetingDeleteAPI' '0' %}"
+                       data-method="GET">
                     <thead>
                     <tr>
                         <th>{% trans "Activity" %}</th>
                         <th class="text-center">{% trans "Type" %}</th>
                         <th>{% trans 'Subject' %}
-                            <i
-                                    class="fas fa-info-circle icon-info"
-                                    data-bs-toggle="tooltip"
-                                    data-bs-placement="bottom"
-                                    title="{% trans 'Press row here to see detail.' %}"
-                            >
+                            <i class="fas fa-info-circle icon-info"
+                               data-bs-toggle="tooltip"
+                               data-bs-placement="bottom"
+                               title="{% trans 'Press row here to see detail.' %}">
                             </i>
                         </th>
                         <th>{% trans "Date" %}</th>
+                        <th></th>
                     </tr>
                     </thead>
                     <tbody>

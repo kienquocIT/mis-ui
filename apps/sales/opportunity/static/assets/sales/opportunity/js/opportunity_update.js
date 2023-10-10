@@ -720,6 +720,7 @@ $(document).ready(function () {
                         $x.fn.showLoadingPage();
                         let frm = new SetupFormSubmit($(form));
                         $.fn.callAjax2({
+                            sweetAlertOpts: {'allowOutsideClick': true},
                             url: frm.dataUrl.replaceAll('__pk_opp__', pk),
                             method: frm.dataMethod,
                             data: {
@@ -743,7 +744,6 @@ $(document).ready(function () {
                                 $x.fn.hideLoadingPage();
                             },
                             (errs) => {
-                                $.fn.notifyB({description: errs.data.errors}, 'failure');
                                 $x.fn.hideLoadingPage();
                             }
                         )

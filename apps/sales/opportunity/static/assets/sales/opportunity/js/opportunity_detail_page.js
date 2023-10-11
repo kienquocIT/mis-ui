@@ -52,7 +52,7 @@ $(document).ready(function () {
                     table_contact_role.DataTable().row.add(item).draw();
                     loadDetailContactRole(item, table_contact_role, transEle)
                 })
-                OpportunityLoadDetail.loadSaleTeam(opportunity_detail.opportunity_sale_team_datas);
+                OpportunityLoadDetail.loadSaleTeam(opportunity_detail.members, false);
 
                 OpportunityLoadDropdown.loadFactor($('#box-select-factor'), opportunity_detail.customer_decision_factor);
                 $.fn.initMaskMoney2();

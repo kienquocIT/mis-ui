@@ -1,4 +1,4 @@
-{% load i18n %}
+{% load i18n string_utils %}
 <span
         id="idBlockRangeMasterElement"
         class="hidden"
@@ -115,10 +115,27 @@
                 <td>
                     <label for="newRowRange" class="hidden"></label>
                     <select class="form-control" id="newRowRange" name="permission-range">
-                        <option value="1">{% trans "Themselves" %}</option>
-                        <option value="2">{% trans "Their staff" %}</option>
-                        <option value="3">{% trans "Member in their group" %}</option>
-                        <option value="4">{% trans "All users" %}</option>
+                        {# For general #}
+                        {% if range_allowed|val_in_arr:"1" == '1' %}
+                            <option value="1">{% trans "Themselves" %}</option>
+                        {% endif %}
+                        {% if range_allowed|val_in_arr:"2" == '1' %}
+                            <option value="2">{% trans "Their staff" %}</option>
+                        {% endif %}
+                        {% if range_allowed|val_in_arr:"3" == '1' %}
+                            <option value="3">{% trans "Member in their group" %}</option>
+                        {% endif %}
+                        {% if range_allowed|val_in_arr:"4" == '1' %}
+                            <option value="4">{% trans "All users" %}</option>
+                        {% endif %}
+
+                        {# For Opp|Prj #}
+                        {% if range_allowed|val_in_arr:"5" == '1' %}
+                            <option value="1">{% trans "Themselves" %}</option>
+                        {% endif %}
+                        {% if range_allowed|val_in_arr:"6" == '1' %}
+                            <option value="4">{% trans "All" %}</option>
+                        {% endif %}
                     </select>
                 </td>
                 <td>
@@ -156,10 +173,18 @@
             <div class="hidden">
                 <label for="newRowRange" class="hidden"></label>
                 <select class="form-control" id="newRowRange">
-                    <option value="1">{% trans "Themselves" %}</option>
-                    <option value="2">{% trans "Their staff" %}</option>
-                    <option value="3">{% trans "Member in their group" %}</option>
-                    <option value="4">{% trans "All users" %}</option>
+                    {% if range_allowed|val_in_arr:"1" == True %}
+                        <option value="1">{% trans "Themselves" %}</option>
+                    {% endif %}
+                    {% if range_allowed|val_in_arr:"2" == True %}
+                        <option value="2">{% trans "Their staff" %}</option>
+                    {% endif %}
+                    {% if range_allowed|val_in_arr:"3" == True %}
+                        <option value="3">{% trans "Member in their group" %}</option>
+                    {% endif %}
+                    {% if range_allowed|val_in_arr:"4" == True %}
+                        <option value="4">{% trans "All users" %}</option>
+                    {% endif %}
                 </select>
             </div>
         {% endif %}

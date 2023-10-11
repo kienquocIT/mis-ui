@@ -60,7 +60,7 @@
     {% endif %}
     {% if permit_enabled == True %}
         <div class="tab-pane fade" id="tab-permissions">
-            {% include 'core/hr/extends/permissions.html' with add_new_enabled=add_new_enabled %}
+            {% include 'core/hr/extends/permissions.html' with add_new_enabled=add_new_enabled range_allowed=range_allowed %}
         </div>
     {% endif %}
     {% if summary_enabled == True %}

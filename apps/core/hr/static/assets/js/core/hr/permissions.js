@@ -156,8 +156,6 @@ class HandlePermissions {
                 "range": "4",
             },
         ]
-
-        console.log('$.fn.DataTable.isDataTable(\'#permissions_list\'): ', $.fn.DataTable.isDataTable('#permissions_list'));
     }
 
     static resetPermit(){

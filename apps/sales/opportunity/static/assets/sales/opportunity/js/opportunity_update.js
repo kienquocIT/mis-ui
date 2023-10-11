@@ -62,6 +62,8 @@ $(document).ready(function () {
         (errs) => {
         }
     )
+    let list_stage_condition = []
+    let config_is_input_rate = null;
     $x.fn.showLoadingPage()
     Promise.all([prm_detail, prm_config]).then(
         (results) => {
@@ -70,7 +72,7 @@ $(document).ready(function () {
             const config = results[1];
             const config_is_select_stage = config.is_select_stage;
             const config_is_AM_create = config.is_account_manager_create;
-            const config_is_input_rate = config.is_input_win_rate;
+            config_is_input_rate = config.is_input_win_rate;
             if (config_is_select_stage) {
                 $('#btn-auto-update-stage').hide();
             }
@@ -206,19 +208,19 @@ $(document).ready(function () {
             });
 
             OpportunityLoadDropdown.productCategorySelectEle.on('select2:select', function () {
-        let table = $('#table-products');
-        table.find('.select-box-product').each(function () {
-            let optionSelected = $(this).find('option:selected');
-            OpportunityLoadDropdown.loadProduct(
-                $(this),
-                {
-                    'id': optionSelected.val(),
-                    'title': optionSelected.text()
-                },
-                OpportunityLoadDropdown.productCategorySelectEle.val()
-            );
-        })
-    });
+                let table = $('#table-products');
+                table.find('.select-box-product').each(function () {
+                    let optionSelected = $(this).find('option:selected');
+                    OpportunityLoadDropdown.loadProduct(
+                        $(this),
+                        {
+                            'id': optionSelected.val(),
+                            'title': optionSelected.text()
+                        },
+                        OpportunityLoadDropdown.productCategorySelectEle.val()
+                    );
+                })
+            });
 
             $(document).on('change', '.select-box-product', function () {
                 let ele_tr = $(this).closest('tr');
@@ -398,42 +400,6 @@ $(document).ready(function () {
                 }
             })
 
-            // submit form edit
-
-            new SetupFormSubmit(frmDetail).validate({
-                submitHandler: function (form) {
-                    let frm = new SetupFormSubmit($(form));
-                    autoLoadStage(
-                        true,
-                        false,
-                        list_stage_condition,
-                        list_stage,
-                        condition_sale_oder_approved,
-                        condition_is_quotation_confirm,
-                        condition_sale_oder_delivery_status,
-                        config_is_input_rate,
-                        dict_stage
-                    );
-                    frm.dataForm = OpportunityLoadDetail.getDataForm(frm.dataForm);
-                    $.fn.callAjax2({
-                        url: frm.dataUrl.format_url_with_uuid(pk),
-                        method: frm.dataMethod,
-                        data: frm.dataForm,
-                    }).then(
-                        (resp) => {
-                            let data = $.fn.switcherResp(resp);
-                            if (data) {
-                                $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
-                                $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
-                            }
-                        },
-                        (errs) => {
-                            $.fn.notifyB({description: errs.data.errors}, 'failure');
-                        }
-                    )
-                }
-            })
-
             $(document).on('click', '.btn-del-item', function () {
                 OpportunityLoadDetail.delRowTable($(this));
             })
@@ -565,7 +531,6 @@ $(document).ready(function () {
                 }
             })
 
-            let list_stage_condition = []
 
             $(document).on('click', '#btn-auto-update-stage', function () {
                 autoLoadStage(
@@ -659,7 +624,51 @@ $(document).ready(function () {
                             'opportunity': pk,
                         }
                         $.fn.callAjax2({
-                            url: frm.dataUrl.format_url_with_uuid(pk),
+                            sweetAlertOpts: {'allowOutsideClick': true},
+                            url: frm.dataUrl.replaceAll('__pk_opp__', pk),
+                            method: frm.dataMethod,
+                            data: {
+                                'members': OpportunityLoadDetail.getDataMember().map(
+                                    (item) => {
+                                        return item.id;
+                                    }
+                                ),
+                            },
+                        }).then(
+                            (resp) => {
+                                let data = $.fn.switcherResp(resp);
+                                if (data) {
+                                    $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
+                                    setTimeout(
+                                        () => {
+                                            window.location.reload();
+                                        },
+                                        1000
+                                    )
+
+                                    // OpportunityLoadDetail.reloadMemberList(pk);
+                                    // $('#modalAddMember').modal('hide');
+                                }
+                                $x.fn.hideLoadingPage();
+                            },
+                            (errs) => {
+                                $x.fn.hideLoadingPage();
+                            }
+                        )
+                    }
+                }
+            )
+
+            const frm_set_permission = $('#frm-set-perm-member');
+            SetupFormSubmit.validate(
+                frm_set_permission,
+                {
+                    submitHandler: function (form) {
+                        let frm = new SetupFormSubmit($(form));
+                        let id = $('#id-member').val();
+                        let data = OpportunityLoadDetail.getFormDataMemberPermission();
+                        $.fn.callAjax2({
+                            url: frm.dataUrl.format_url_with_uuid(id),
                             method: frm.dataMethod,
                             data: data,
                         }).then(
@@ -2029,4 +2038,39 @@ $(document).ready(function () {
             })
         }
     )
+
+    // submit form edit
+    new SetupFormSubmit(frmDetail).validate({
+        submitHandler: function (form) {
+            let frm = new SetupFormSubmit($(form));
+            autoLoadStage(
+                true,
+                false,
+                list_stage_condition,
+                list_stage,
+                condition_sale_oder_approved,
+                condition_is_quotation_confirm,
+                condition_sale_oder_delivery_status,
+                config_is_input_rate,
+                dict_stage
+            );
+            frm.dataForm = OpportunityLoadDetail.getDataForm(frm.dataForm);
+            $.fn.callAjax2({
+                url: frm.dataUrl,
+                method: frm.dataMethod,
+                data: frm.dataForm,
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
+                        $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
+                    }
+                },
+                (errs) => {
+                    $.fn.notifyB({description: errs.data.errors}, 'failure');
+                }
+            )
+        }
+    })
 })

@@ -509,7 +509,7 @@ class OpportunityLoadDetail {
         )
     }
 
-    static loadSaleTeam(data) {
+    static loadSaleTeam(data, isEdit=true) {
         callAppList().then(
             (result) => {
                 renderAppList(result);
@@ -528,7 +528,7 @@ class OpportunityLoadDetail {
                         <p>__full_name__</p>
                         <p><small><a href="mailto:__email__">__email__</a></small></p> 
                     </div>
-                     <div class="card-action-wrap">
+                     <div class="card-action-wrap __is_edit__">
                         <button
                            class="btn btn-xs btn-icon btn-rounded btn-flush-dark flush-soft-hover card-action-edit"
                            type="button"
@@ -579,6 +579,9 @@ class OpportunityLoadDetail {
             ).replaceAll(
                 "__permit_data__",
                 JSON.stringify(item?.['permit_app'] || [])
+            ).replaceAll(
+                "__is_edit__",
+                isEdit ? "" : "hidden"
             );
             memberItemListEle.prepend(itemHTML);
             dataMember.push(item)

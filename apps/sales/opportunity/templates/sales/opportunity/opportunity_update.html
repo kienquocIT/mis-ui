@@ -41,6 +41,14 @@
             </span>
         </span>
     </button>
+    <button class="btn btn-outline-primary" type="submit" form="frm-test">
+        <span>
+            <span>{% trans 'frm-test' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
+            </span>
+        </span>
+    </button>
 {% endblock %}
 {% block pageContent %}
     <div id="json-data">
@@ -870,9 +878,7 @@
     <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/dropify/dist/js/dropify.min.js' %}"></script>
-    <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>
     <script src="{% static 'vendors/ckeditor/ckeditor.js' %}"></script>
-    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
 
     <script src="{% static 'assets/js/core/hr/permissions.js' %}"></script>
     <script src="{% static 'assets/js/core/hr/plan_app.js' %}"></script>

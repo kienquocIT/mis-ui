@@ -1880,10 +1880,18 @@ class GRSubmitHandle {
                     'manufacture_date',
                 ]
                 filterFieldList(field_list, lot);
-                lot['expire_date'] = moment(lot?.['expire_date'],
-                    'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
-                lot['manufacture_date'] = moment(lot?.['manufacture_date'],
-                    'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
+                if (lot?.['expire_date']) {
+                  lot['expire_date'] = moment(lot?.['expire_date'],
+                    'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss');
+                } else {
+                    lot['expire_date'] = null;
+                }
+                if (lot?.['manufacture_date']) {
+                    lot['manufacture_date'] = moment(lot?.['manufacture_date'],
+                    'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss');
+                } else {
+                    lot['manufacture_date'] = null;
+                }
             }
             for (let serial of warehouse?.['serial_data'] ? warehouse?.['serial_data'] : []) {
                 let field_list = [
@@ -1895,14 +1903,30 @@ class GRSubmitHandle {
                     'warranty_end',
                 ]
                 filterFieldList(field_list, serial);
-                serial['expire_date'] = moment(serial?.['expire_date'],
-                    'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
-                serial['manufacture_date'] = moment(serial?.['manufacture_date'],
-                    'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
-                serial['warranty_start'] = moment(serial?.['warranty_start'],
-                    'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
-                serial['warranty_end'] = moment(serial?.['warranty_end'],
-                    'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
+                if (serial?.['expire_date']) {
+                    serial['expire_date'] = moment(serial?.['expire_date'],
+                    'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss');
+                } else {
+                    serial['expire_date'] = null;
+                }
+                if (serial?.['manufacture_date']) {
+                    serial['manufacture_date'] = moment(serial?.['manufacture_date'],
+                    'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss');
+                } else {
+                    serial['manufacture_date'] = null;
+                }
+                if (serial?.['warranty_start']) {
+                    serial['warranty_start'] = moment(serial?.['warranty_start'],
+                    'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss');
+                } else {
+                    serial['warranty_start'] = null;
+                }
+                if (serial?.['warranty_end']) {
+                    serial['warranty_end'] = moment(serial?.['warranty_end'],
+                    'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss');
+                } else {
+                    serial['warranty_end'] = null;
+                }
             }
         }
     };

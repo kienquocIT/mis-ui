@@ -124,6 +124,8 @@ $(document).ready(function () {
         (errs) => {
         }
     )
+    let list_stage_condition = []
+    let config_is_input_rate = null;
     $x.fn.showLoadingPage()
     Promise.all([prm_acc, prm_contact, prm_opp, prm_employee, prm_detail, prm_config]).then(
         (results) => {
@@ -137,7 +139,7 @@ $(document).ready(function () {
             let config = results[5];
             const config_is_select_stage = config.is_select_stage;
             const config_is_AM_create = config.is_account_manager_create;
-            const config_is_input_rate = config.is_input_win_rate;
+            config_is_input_rate = config.is_input_win_rate;
 
             if (config_is_select_stage) {
                 $('#btn-auto-update-stage').hide();
@@ -176,7 +178,7 @@ $(document).ready(function () {
 
                 $('#input-budget').attr('value', opportunity_detail.budget_value);
                 if (opportunity_detail?.['open_date'] !== null)
-                    $('#input-open-date').val(opportunity_detail?.['open_date'].split(' ')[0]);
+                    $('#input-open-date').val(opportunity_detail?.['='].split(' ')[0]);
                 if (opportunity_detail?.['open_date'] !== null)
                     $('#input-close-date').val(opportunity_detail?.['open_date'].split(' ')[0]);
                 else {
@@ -465,41 +467,6 @@ $(document).ready(function () {
                 }
             })
 
-            // submit form edit
-            new SetupFormSubmit(frmDetail).validate({
-                submitHandler: function (form) {
-                    let frm = new SetupFormSubmit($(form));
-                    autoLoadStage(
-                        true,
-                        false,
-                        list_stage_condition,
-                        list_stage,
-                        condition_sale_oder_approved,
-                        condition_is_quotation_confirm,
-                        condition_sale_oder_delivery_status,
-                        config_is_input_rate,
-                        dict_stage
-                    );
-                    frm.dataForm = OpportunityLoadDetail.getDataForm(frm.dataForm);
-                    $.fn.callAjax2({
-                        url: frm.dataUrl,
-                        method: frm.dataMethod,
-                        data: frm.dataForm,
-                    }).then(
-                        (resp) => {
-                            let data = $.fn.switcherResp(resp);
-                            if (data) {
-                                $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
-                                $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
-                            }
-                        },
-                        (errs) => {
-                            $.fn.notifyB({description: errs.data.errors}, 'failure');
-                        }
-                    )
-                }
-            })
-
             $(document).on('click', '.btn-del-item', function () {
                 OpportunityLoadDetail.delRowTable($(this));
             })
@@ -586,7 +553,6 @@ $(document).ready(function () {
                 }
             })
 
-            let list_stage_condition = []
             $(document).on('click', '#btn-auto-update-stage', function () {
                 autoLoadStage(
                     true,
@@ -2036,4 +2002,39 @@ $(document).ready(function () {
             })
         }
     )
+
+    // submit form edit
+    new SetupFormSubmit(frmDetail).validate({
+        submitHandler: function (form) {
+            let frm = new SetupFormSubmit($(form));
+            autoLoadStage(
+                true,
+                false,
+                list_stage_condition,
+                list_stage,
+                condition_sale_oder_approved,
+                condition_is_quotation_confirm,
+                condition_sale_oder_delivery_status,
+                config_is_input_rate,
+                dict_stage
+            );
+            frm.dataForm = OpportunityLoadDetail.getDataForm(frm.dataForm);
+            $.fn.callAjax2({
+                url: frm.dataUrl,
+                method: frm.dataMethod,
+                data: frm.dataForm,
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
+                        $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
+                    }
+                },
+                (errs) => {
+                    $.fn.notifyB({description: errs.data.errors}, 'failure');
+                }
+            )
+        }
+    })
 })

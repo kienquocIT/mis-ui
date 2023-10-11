@@ -419,6 +419,14 @@
                                         </div>
                                     </div>
                                     <div class="tab-pane fade mb-25" id="tab_team">
+                                        <div class="row mb-3">
+                                            <div class="col-12 shadow shadow-bottom shadow-left border rounded p-5">
+                                                <div class="row" id="member-item-list"></div>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-2 hidden">
+                                            {% include 'core/hr/extends/permission_group_tabs.html' with plan_app_enabled=True permit_enabled=True actions_enabled=True add_new_enabled="true" warning_enabled="true" extend_action="sales/opportunity/extends/ext_actions.html" range_allowed="5,6" %}
+                                        </div>
                                         <div class="card-member-hidden hidden">
                                             <div class="card col-6 col-xl-4">
                                                 <div class="card-header card-header-action">
@@ -766,6 +774,10 @@
     <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>
     <script src="{% static 'vendors/ckeditor/ckeditor.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+
+    <script src="{% static 'assets/js/core/hr/permissions.js' %}"></script>
+    <script src="{% static 'assets/js/core/hr/plan_app.js' %}"></script>
+    <script src="{% static 'assets/js/core/hr/permission_group_tabs.js' %}"></script>
 
     <script src="{% static 'assets/sales/opportunity/js/opportunity_common.js' %}"></script>
     <script src="{% static 'assets/sales/opportunity/js/opportunity_detail_page.js' %}"></script>

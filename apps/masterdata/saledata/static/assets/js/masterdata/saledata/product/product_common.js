@@ -723,17 +723,10 @@ function LoadDetailProduct(option) {
 
                      loadWareHouseListDetail(product_detail['product_warehouse_detail'], warehouse_list);
                      let data_overview = [];
-                     let sum_stock = 0;
-                     let sum_wait_for_delivery = 0;
-                     let sum_wait_for_receipt = 0;
-                     let sum_available_value = 0;
-                     for (let i = 0; i < product_detail['product_warehouse_detail'].length; i++) {
-                         let temp = product_detail['product_warehouse_detail'][i];
-                         sum_stock += temp.stock_amount;
-                         sum_wait_for_delivery += temp?.['wait_for_delivery_amount'];
-                         sum_wait_for_receipt += temp?.['wait_for_receipt_amount'];
-                         sum_available_value += temp.stock_amount - temp?.['wait_for_delivery_amount'] + temp?.['wait_for_receipt_amount'];
-                     }
+                     let sum_stock = product_detail?.['stock_amount'] ? product_detail?.['stock_amount'] : 0;
+                     let sum_wait_for_delivery = product_detail?.['wait_delivery_amount'] ? product_detail?.['wait_delivery_amount'] : 0;
+                     let sum_wait_for_receipt = product_detail?.['wait_receipt_amount'] ? product_detail?.['wait_receipt_amount'] : 0;
+                     let sum_available_value = product_detail?.['available_amount'] ? product_detail?.['available_amount'] : 0;
                      data_overview.push({
                          'sum_stock': sum_stock,
                          'sum_wait_for_delivery': sum_wait_for_delivery,

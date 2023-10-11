@@ -38,8 +38,9 @@
     cursor: pointer;
 }
 
-.card {
-    margin-top: 30px;
+/* HK WRAPPER */
+.hk-pg-wrapper-z-index-1040 {
+    z-index: 1040;
 }
 
 /* Hidden secondary slider */
@@ -270,13 +271,13 @@ div.inline {
     }
 
     .btnAddFilter .dtb-text-btn-filter {
-        margin-left: 0!important;
+        margin-left: 0 !important;
         visibility: hidden;
         width: 0;
     }
 
     .btnAddFilter .dtb-icon-btn-filter {
-        margin-right: 0!important;
+        margin-right: 0 !important;
     }
 }
 
@@ -326,7 +327,7 @@ div.inline {
     align-items: center;
 }
 
-.custom-visible-dtb .tit_visible_tb-head{
+.custom-visible-dtb .tit_visible_tb-head {
     display: none;
 }
 
@@ -339,13 +340,15 @@ div.inline {
 }
 
 /* save group css */
-.save-btn-group .dropdown-toggle:after{
-    width:8px;
+.save-btn-group .dropdown-toggle:after {
+    width: 8px;
 }
-.save-btn-group .btn-outline-primary.dropdown-toggle.show:focus{
+
+.save-btn-group .btn-outline-primary.dropdown-toggle.show:focus {
     box-shadow: unset;
 }
-.save-btn-group .btn-outline-primary.dropdown-toggle.show{
+
+.save-btn-group .btn-outline-primary.dropdown-toggle.show {
     background-color: #007D88;
     border-color: #007D88;
 }

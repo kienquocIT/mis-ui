@@ -101,7 +101,7 @@ class OpportunityLoadDropdown {
     static loadUoM(ele, data, product) {
         ele.initSelect2({
             data: data,
-            dataParams:{
+            dataParams: {
                 'group': product?.['general_information'].uom_group.id
             },
         })
@@ -337,7 +337,7 @@ class OpportunityLoadDetail {
         let table = $('#dtbMember');
         await new Promise(resolve => setTimeout(resolve, 500));
         table.find('tbody tr').removeClass('selected');
-        table.find('tbody tr .input-select-member').prop('checked', false);
+        table.find('tbody tr .input-select-member:not(:disabled)').prop('checked', false);
         card_member.map(function () {
             table.find(`.input-select-member[data-id="${$(this).attr('data-member-id')}"]`).prop('checked', true);
             table.find(`.input-select-member[data-id="${$(this).attr('data-member-id')}"]`).closest('tr').addClass('selected');
@@ -475,17 +475,182 @@ class OpportunityLoadDetail {
         }
     }
 
+    static clickEditMember(memberIdx, memberEditEle, boxEditPermitEle, eleViewOppMember, eleAddOppMember, change_member_selected = true) {
+        boxEditPermitEle.removeClass('hidden');
+        $x.fn.showLoadingPage({
+            'didDestroyEnd': function () {
+                document.getElementById('box-edit-permit').scrollIntoView({behavior: 'smooth'});
+            }
+        });
+        memberEditEle.val(memberIdx);
+        if (change_member_selected === true) memberEditEle.trigger('change');
+        boxEditPermitEle.attr('data-id', memberIdx);
+        let urlTmp = boxEditPermitEle.data('url').replaceAll('__pk_member__', memberIdx);
+        $.fn.callAjax2({
+            url: urlTmp,
+            type: 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && typeof data === 'object' && data.hasOwnProperty('member')) {
+                    let memData = data['member'];
+
+                    eleViewOppMember.prop('checked', memData.permit_view_this_opp);
+                    eleAddOppMember.prop('checked', memData.permit_add_member);
+
+                    new HandlePermissions().loadData(memData.plan_app, memData.permission_by_configured || [], {}, true);
+                    new HandlePlanApp().appendPlanAppOfEmployee(memData.plan_app);
+                }
+                $x.fn.hideLoadingPage();
+                return {};
+            },
+            (errs) => {
+            }
+        )
+    }
+
     static loadSaleTeam(data) {
-        let card_member = $('#card-member');
-        card_member.empty();
-        data.map(function (item) {
-            card_member.append($('.card-member-hidden').html());
-            let card = card_member.find('.card').last();
-            card.find('.btn-detail-member').attr('href', urlEle.data('url-emp-detail').format_url_with_uuid(item.member.id));
-            card.find('.card-title').text(item.member.name);
-            card.find('.card-text').text(item.member.email);
-            card.attr('data-id', item.id);
-            card.attr('data-member-id', item.member.id);
+        callAppList().then(
+            (result) => {
+                renderAppList(result);
+            }
+        )
+
+        let html = `
+            <div class="member-item col-md-12 col-lg-6 col-xl-4">
+               <div
+                  class="card" data-manual-hide="false" data-footer-show="always"
+                  data-id="__idx__"
+                  >
+                  <div class="card-header card-header-action">
+                     <div class="hidden-md">__avatar__</div>
+                     <div class="ml-1 card-main-title">
+                        <p>__full_name__</p>
+                        <p><small><a href="mailto:__email__">__email__</a></small></p> 
+                    </div>
+                     <div class="card-action-wrap">
+                        <button
+                           class="btn btn-xs btn-icon btn-rounded btn-flush-dark flush-soft-hover card-action-edit"
+                           type="button"
+                        >
+                            <span class="icon">
+                                <span class="feather-icon">
+                                    <i data-feather="edit-2"></i>
+                                </span>
+                            </span>
+                        </button>
+                        <a class="btn btn-xs btn-icon btn-rounded btn-flush-dark flush-soft-hover card-action card-action-close">
+                            <span class="icon">
+                                <span class="feather-icon">
+                                    <i data-feather="x"></i>
+                                </span>
+                            </span>
+                        </a>
+                     </div>
+                  </div>
+                  <script type="application/json" class="card-permit-data">__permit_data__</script>
+               </div>
+            </div>
+        `;
+
+        let memberItemListEle = $('#member-item-list');
+        let memberEditEle = $('#member-current-edit');
+        let dataMember = [];
+        let boxEditPermitEle = $('#box-edit-permit');
+        let eleViewOppMember = $('#enable-view-opp-member');
+        let eleAddOppMember = $('#enable-add-opp-member');
+
+        memberItemListEle.children().each(function () {
+            if ($(this).find('#btn-show-modal-add-member').length <= 0) $(this).remove();
+        });
+        data.reverse().map(function (item) {
+            let itemHTML = html.replaceAll(
+                "__idx__",
+                item.id
+            ).replaceAll(
+                "__full_name__",
+                item.full_name,
+            ).replaceAll(
+                "__email__",
+                item.email,
+            ).replaceAll(
+                "__avatar__",
+                $x.fn.renderAvatar(item),
+            ).replaceAll(
+                "__permit_data__",
+                JSON.stringify(item?.['permit_app'] || [])
+            );
+            memberItemListEle.prepend(itemHTML);
+            dataMember.push(item)
+        });
+        memberEditEle.initSelect2({
+            data: dataMember,
+            keyText: 'full_name',
+        }).on('change', function () {
+            OpportunityLoadDetail.clickEditMember($(this).val(), memberEditEle, boxEditPermitEle, eleViewOppMember, eleAddOppMember, false)
+        })
+        memberItemListEle.on('click', '.card-action-edit', function () {
+            let eleCard = $(this).closest('.card');
+            OpportunityLoadDetail.clickEditMember(eleCard.data('id'), memberEditEle, boxEditPermitEle, eleViewOppMember, eleAddOppMember)
+        });
+
+        $('#btnSavePermitMember').on('click', function () {
+            $x.fn.showLoadingPage();
+            let bodyData = {
+                'permit_view_this_opp': eleViewOppMember.prop('checked'),
+                'permit_add_member': eleAddOppMember.prop('checked'),
+                'plan_app': new HandlePlanApp().combinesData(),
+                'permission_by_configured': new HandlePermissions().combinesData()['data'],
+            };
+            let urlData = boxEditPermitEle.data('url').replaceAll('__pk_member__', boxEditPermitEle.data('id'));
+            $.fn.callAjax2({
+                url: urlData,
+                method: 'PUT',
+                data: bodyData,
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && data.hasOwnProperty('member')) {
+                        $.fn.notifyB({
+                            'description': $.fn.transEle.attr('data-success'),
+                        }, 'success')
+                        OpportunityLoadDetail.clickEditMember(boxEditPermitEle.data('id'), memberEditEle, boxEditPermitEle, eleViewOppMember, eleAddOppMember);
+                    } else {
+                        $.fn.notifyB({
+                            'description': $.fn.transEle.attr('data-fail'),
+                        }, 'failure')
+                    }
+                    $x.fn.hideLoadingPage();
+                },
+                (errs) => {
+
+                }
+            )
+        });
+
+        $('.member-item').find('.card').on('card.action.close.confirm', function () {
+            console.log('call destroy member! confirm', '-------', this,);
+            $x.fn.showLoadingPage();
+            let eleCard = $(this).closest('.card');
+            $.fn.callAjax2({
+                url: boxEditPermitEle.data('url').replaceAll('__pk_member__', eleCard.data('id')),
+                method: 'DELETE',
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    $.fn.notifyB({
+                        'description': $.fn.transEle.data('success'),
+                    }, 'success');
+                    $(this).trigger('card.action.close.purge');
+                },
+                (errs) => {
+                    $.fn.notifyB({
+                        'description': $.fn.transEle.data('fail'),
+                    }, 'failure');
+                    $(this).trigger('card.action.close.show');
+                }
+            )
+            $x.fn.hideLoadingPage();
         })
     }
 
@@ -677,8 +842,8 @@ class OpportunityLoadDetail {
     }
 
     static loadDtbApplication() {
-        if (!$.fn.DataTable.isDataTable('#table-applications')) {
-            let $table = $('#table-applications')
+        let $table = $('#table-applications')
+        if ($table.length > 0 && !$.fn.DataTable.isDataTable('#table-applications')) {
             let frm = new SetupFormSubmit($table);
             $table.DataTableDefault({
                 useDataServer: true,
@@ -896,7 +1061,7 @@ function loadDtbOpportunityList() {
                         if (row?.['open_date'] !== null) {
                             open_date = row?.['open_date'].split(" ")[0]
                         }
-                        return `<p>${open_date}</p>`
+                        return `<p>${open_date !== null && open_date !== undefined ? open_date: '_'}</p>`
                     }
                 },
                 {
@@ -906,7 +1071,7 @@ function loadDtbOpportunityList() {
                         if (row?.['close_date'] !== null) {
                             close_date = row?.['close_date'].split(" ")[0]
                         }
-                        return `<p>${close_date}</p>`
+                        return `<p>${close_date !== null && close_date !== undefined ? close_date : '_'}</p>`
                     }
                 },
                 {
@@ -916,7 +1081,7 @@ function loadDtbOpportunityList() {
                         stage_current = row.stage.find(function (obj) {
                             return obj.is_current === true;
                         });
-                        return `<p>${stage_current.indicator}</p>`
+                        return `<span class="badge badge-light">${stage_current.indicator}</span>`
                     }
                 },
                 {
@@ -1030,6 +1195,9 @@ async function loadMemberSaleTeam() {
                 {
                     className: 'wrap-text',
                     render: (data, type, row) => {
+                        if ($('.member-item .card[data-id="' + row.id + '"]').length > 0){
+                            return `<span class="form-check"><input data-id="{0}" type="checkbox" class="form-check-input input-select-member" checked readonly disabled /></span>`.format_by_idx(row.id)
+                        }
                         return `<span class="form-check"><input data-id="{0}" type="checkbox" class="form-check-input input-select-member" /></span>`.format_by_idx(row.id)
                     }
                 },

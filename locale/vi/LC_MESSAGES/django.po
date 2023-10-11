@@ -449,6 +449,10 @@ msgid "Permission"
 msgstr "Quyền hạn"
 
 #
+msgid "permission"
+msgstr "quyền hạn"
+
+#
 msgid "Set Permission"
 msgstr "Thiết lập quyền hạn"
 
@@ -463,6 +467,10 @@ msgstr "Ứng dụng"
 #
 msgid "All"
 msgstr "Tất cả"
+
+#
+msgid "all"
+msgstr "tất cả"
 
 #
 msgid "Create"
@@ -3151,6 +3159,10 @@ msgid "Successful"
 msgstr "Thành công"
 
 #
+msgid "Failure"
+msgstr "Thất bại"
+
+#
 msgid "No data available"
 msgstr "Không có dữ liệu nào để hiển thị"
 
@@ -4231,6 +4243,10 @@ msgid "Empty"
 msgstr "Không có dữ liệu"
 
 #
+msgid "Make empty"
+msgstr "Làm trống"
+
+#
 msgid "Leave"
 msgstr "Nghỉ phép"
 
@@ -4404,3 +4420,27 @@ msgstr "Số lượng nhập kho phải nhỏ hơn số lượng đặt mua"
 #
 msgid "Goods receipt"
 msgstr "Nhập kho"
+
+#
+msgid "Search"
+msgstr "Tìm kiếm"
+
+#
+msgid "search"
+msgstr "tìm kiếm"
+
+#
+msgid "Enter text"
+msgstr "Nhập văn bản"
+
+#
+msgid "enter text"
+msgstr "nhập văn bản"
+
+#
+msgid "Allow view member"
+msgstr "Cho phép xem thành viên"
+
+#
+msgid "Allow add member"
+msgstr "Cho phép thêm thành viên"

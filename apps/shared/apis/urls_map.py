@@ -292,6 +292,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     DELIVERY_SUB_LIST = StringUrl('delivery/sub')
     # Opportunity detail
     OPPORTUNITY_DETAIL = StringUrl('opportunity/{pk}')
+    MEMBER_OF_OPPORTUNITY_DETAIL = StringUrl('opportunity/{pk_opp}/member/{pk_member}')
+    MEMBER_OF_OPPORTUNITY_ADD = StringUrl('opportunity/{pk_opp}/member/add')
 
     # Opportunity config
     OPPORTUNITY_CONFIG = StringUrl('opportunity/config')

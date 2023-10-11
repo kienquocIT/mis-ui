@@ -9,7 +9,7 @@ $(function () {
         $.fn.callAjax2({
             url: $form.data('url'),
             method: 'GET',
-            isLoading: true,
+            // isLoading: true,
         }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);

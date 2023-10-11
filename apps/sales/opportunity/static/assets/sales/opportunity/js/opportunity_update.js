@@ -1881,21 +1881,14 @@ $(document).ready(function () {
                 }
                 dtb.DataTableDefault({
                     pageLength: 5,
-                    dom: "<'row miner-group'<'col-sm-2 mt-3'f><'col-sm-10'p>>" + "<'row mt-3'<'col-sm-12'tr>>" + "<'row mt-3'<'col-sm-12 col-md-6'i>>",
+                    dom: "<'row miner-group'<'col-sm-2 mt-3'f><'col-sm-10'p>>",
                     data: data_timeline_list,
                     columns: [
                         {
                             data: 'activity',
                             className: 'wrap-text w-25',
                             render: (data, type, row, meta) => {
-                                return row.title;
-                            }
-                        },
-                        {
-                            data: 'type',
-                            className: 'wrap-text w-10 text-center',
-                            render: (data, type, row, meta) => {
-                                let txt = ''
+                                let txt = '';
                                 if (row.type === 'task') {
                                     txt = `<i class="fa-solid fa-list-check"></i>`
                                 } else if (row.type === 'call') {
@@ -1907,7 +1900,7 @@ $(document).ready(function () {
                                 } else if (row.type === 'document') {
                                     txt = `<i class="bi bi-file-earmark-fill"></i>`
                                 }
-                                return txt
+                                return `<span>${txt}&nbsp;&nbsp;${row.title}</span>`;
                             }
                         },
                         {

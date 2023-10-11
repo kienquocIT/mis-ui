@@ -1,6 +1,7 @@
 """register filter custom"""
 import random
 import string
+from typing import Union
 
 from django import template
 
@@ -116,3 +117,12 @@ def str_first_upper(data):
         else:
             arr.append(item.lower())
     return " ".join(arr)
+
+
+@register.filter(name='val_in_arr')
+def val_in_arr(value, key) -> Union['0', '1']:
+    if "*" in value:
+        return '1'
+    elif not value:
+        return '1'
+    return '1' if key in [str(ite).strip() for ite in value.split(",")] else '0'

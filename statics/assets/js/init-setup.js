@@ -2988,8 +2988,10 @@ class WindowControl {
         });
     }
 
-    static hideLoading() {
-        swal.close();
+    static hideLoading(checkIsLoading= true) {
+        if (checkIsLoading === false || (checkIsLoading === true && Swal.isLoading())){
+            swal.close();
+        }
     }
 
     static showLoadingButton(ele$, opts) {

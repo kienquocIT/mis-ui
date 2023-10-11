@@ -27,7 +27,6 @@ $(document).ready(function () {
 
     // load input date time
     OpportunityLoadDetail.configDateTimeEle()
-    OpportunityLoadDetail.loadDtbApplication();
 
     // Promise.all
     let prm_acc = $.fn.callAjax2({
@@ -483,7 +482,7 @@ $(document).ready(function () {
                     );
                     frm.dataForm = OpportunityLoadDetail.getDataForm(frm.dataForm);
                     $.fn.callAjax2({
-                        url: frm.dataUrl.format_url_with_uuid(pk),
+                        url: frm.dataUrl,
                         method: frm.dataMethod,
                         data: frm.dataForm,
                     }).then(
@@ -679,10 +678,8 @@ $(document).ready(function () {
                 }
             )
 
-
             // // toggle action and activity
             toggleShowActivity()
-
 
             // for call log
 

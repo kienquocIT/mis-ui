@@ -659,34 +659,34 @@ $(document).ready(function () {
                 }
             )
 
-            const frm_set_permission = $('#frm-set-perm-member');
-            SetupFormSubmit.validate(
-                frm_set_permission,
-                {
-                    submitHandler: function (form) {
-                        let frm = new SetupFormSubmit($(form));
-                        let id = $('#id-member').val();
-                        let data = OpportunityLoadDetail.getFormDataMemberPermission();
-                        $.fn.callAjax2({
-                            url: frm.dataUrl.format_url_with_uuid(id),
-                            method: frm.dataMethod,
-                            data: data,
-                        }).then(
-                            (resp) => {
-                                let data = $.fn.switcherResp(resp);
-                                if (data) {
-                                    $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
-                                    OpportunityLoadDetail.reloadMemberList(pk);
-                                    $('#modalAddMember').modal('hide');
-                                }
-                            },
-                            (errs) => {
-                                $.fn.notifyB({description: errs.data.errors}, 'failure');
-                            }
-                        )
-                    }
-                }
-            )
+            // const frm_set_permission = $('#frm-set-perm-member');
+            // SetupFormSubmit.validate(
+            //     frm_set_permission,
+            //     {
+            //         submitHandler: function (form) {
+            //             let frm = new SetupFormSubmit($(form));
+            //             let id = $('#id-member').val();
+            //             let data = OpportunityLoadDetail.getFormDataMemberPermission();
+            //             $.fn.callAjax2({
+            //                 url: frm.dataUrl.format_url_with_uuid(id),
+            //                 method: frm.dataMethod,
+            //                 data: data,
+            //             }).then(
+            //                 (resp) => {
+            //                     let data = $.fn.switcherResp(resp);
+            //                     if (data) {
+            //                         $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
+            //                         OpportunityLoadDetail.reloadMemberList(pk);
+            //                         $('#modalAddMember').modal('hide');
+            //                     }
+            //                 },
+            //                 (errs) => {
+            //                     $.fn.notifyB({description: errs.data.errors}, 'failure');
+            //                 }
+            //             )
+            //         }
+            //     }
+            // )
 
             // toggle action and activity
 

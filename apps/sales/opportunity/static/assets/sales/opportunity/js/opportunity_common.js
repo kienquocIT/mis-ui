@@ -1213,6 +1213,7 @@ function loadDtbProductDetailPageDetail(data) {
     if (!$.fn.DataTable.isDataTable('#table-products')) {
         let dtb = OpportunityLoadDetail.productTableEle;
         dtb.DataTableDefault({
+            dom: "<'row miner-group'<'col-sm-2 mt-3'f><'col-sm-10'p>>",
             rowIdx: true,
             reloadCurrency: true,
             data: data,
@@ -1294,6 +1295,7 @@ function loadDtbCompetitorPageDetail(data) {
     if (!$.fn.DataTable.isDataTable('#table-competitors')) {
         let dtb = OpportunityLoadDetail.competitorTableEle;
         dtb.DataTableDefault({
+            dom: "<'row miner-group'<'col-sm-2 mt-3'f><'col-sm-10'p>>",
             data: data,
             columns: [
 
@@ -1344,6 +1346,7 @@ function loadDtbContactRolePageDetail(data) {
     if (!$.fn.DataTable.isDataTable('#table-contact-role')) {
         let dtb = OpportunityLoadDetail.contactRoleTableEle;
         dtb.DataTableDefault({
+            dom: "<'row miner-group'<'col-sm-2 mt-3'f><'col-sm-10'p>>",
             data: data,
             columns: [
                 {
@@ -1407,9 +1410,9 @@ function loadDtbProduct(data) {
     if (!$.fn.DataTable.isDataTable('#table-products')) {
         let dtb = OpportunityLoadDetail.productTableEle;
         dtb.DataTableDefault({
+            dom: "<'row miner-group'<'col-sm-2 mt-3'f><'col-sm-10'p>>",
             rowIdx: true,
             reloadCurrency: true,
-            paging: false,
             data: data,
             columns: [
                 {
@@ -1488,8 +1491,8 @@ function loadDtbCompetitor(data) {
     if (!$.fn.DataTable.isDataTable('#table-competitors')) {
         let dtb = OpportunityLoadDetail.competitorTableEle;
         dtb.DataTableDefault({
+            dom: "<'row miner-group'<'col-sm-2 mt-3'f><'col-sm-10'p>>",
             data: data,
-            paging: false,
             columns: [
                 {
                     className: 'wrap-text',
@@ -1542,8 +1545,8 @@ function loadDtbContactRole(data) {
     if (!$.fn.DataTable.isDataTable('#table-contact-role')) {
         let dtb = OpportunityLoadDetail.contactRoleTableEle;
         dtb.DataTableDefault({
+            dom: "<'row miner-group'<'col-sm-2 mt-3'f><'col-sm-10'p>>",
             data: data,
-            paging: false,
             columns: [
                 {
                     className: 'wrap-text',
@@ -1586,7 +1589,6 @@ function loadDtbContactRole(data) {
         });
     }
 }
-
 
 function objectsMatch(objA, objB) {
     return objA.property === objB.property && objA.comparison_operator === objB.comparison_operator && objA.compare_data === objB.compare_data;

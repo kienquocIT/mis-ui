@@ -127,6 +127,7 @@ class GRLoadDataHandle {
         let ele = GRLoadDataHandle.IASelectEle;
         ele.initSelect2({
             data: dataIA,
+            'dataParams': {'goods_receipt_ia__isnull': true},
             disabled: !(ele.attr('data-url')),
         });
     };
@@ -1976,7 +1977,9 @@ class GRSubmitHandle {
                     }
                     let elePrice = row.querySelector('.table-row-price');
                     if (elePrice) {
-                        rowData['product_unit_price'] = $(elePrice).valCurrency();
+                        if ($(elePrice).valCurrency() > 0) {
+                            rowData['product_unit_price'] = $(elePrice).valCurrency();
+                        }
                     }
                     let eleTax = row.querySelector('.table-row-tax');
                     if ($(eleTax).val()) {

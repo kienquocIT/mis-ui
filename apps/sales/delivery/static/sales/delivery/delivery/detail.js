@@ -149,6 +149,8 @@ $(async function () {
                                 if (this.value > data?.['product_amount']) {
                                     $.fn.notifyB({description: $trans.attr('data-valid-delivery-amount')}, 'failure');
                                     this.value = 0;
+                                    data.picked = this.value;
+                                    table.DataTable().row(index).data(data).draw();
                                     return false
                                 }
                                 data.picked = this.value

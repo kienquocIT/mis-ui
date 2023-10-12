@@ -69,7 +69,7 @@ class OpportunityDetail(View):
 
     @mask_view(
         auth_require=True,
-        template='sales/opportunity/opportunity_detail_page.html',
+        template='sales/opportunity/opportunity_detail.html',
         menu_active='',
         breadcrumb='OPPORTUNITY_DETAIL_PAGE',
         perm_check=PermCheck(url=ApiURL.OPPORTUNITY_DETAIL, method='GET', fill_key=['pk']),

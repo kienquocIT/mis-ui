@@ -574,6 +574,16 @@ class GRLoadDataHandle {
     static loadQuantityImport() {
         let valuePROrderRemain = parseFloat(GRDataTableHandle.tablePR[0]?.querySelector('.table-row-checkbox:checked')?.closest('tr')?.querySelector('.table-row-gr-remain').innerHTML);
         let valuePOOrderRemain = parseFloat(GRDataTableHandle.tablePOProduct[0]?.querySelector('.table-row-checkbox:checked')?.closest('tr')?.querySelector('.table-row-gr-remain').innerHTML);
+        let dataRowPORaw = GRDataTableHandle.tablePOProduct[0]?.querySelector('.table-row-checkbox:checked')?.closest('tr')?.querySelector('.table-row-checkbox')?.getAttribute('data-row');
+        let ratioUOMFinal = 1;
+        if (dataRowPORaw) {
+            let dataRowPO = JSON.parse(dataRowPORaw);
+                let ratioUOMOrder = dataRowPO?.['uom_order_actual']?.['ratio'];
+                let ratioUOMRequest = dataRowPO?.['uom_order_request']?.['ratio'];
+                if (ratioUOMOrder && ratioUOMRequest) {
+                    ratioUOMFinal = ratioUOMOrder / ratioUOMRequest
+                }
+        }
         if (!GRDataTableHandle.tableLot[0].querySelector('.dataTables_empty')) {
             let valueWHNew = 0;
             for (let eleImport of GRDataTableHandle.tableLot[0].querySelectorAll('.table-row-import')) {
@@ -613,6 +623,7 @@ class GRLoadDataHandle {
             }
         }
         if (valuePOOrderRemain >= 0) {
+            valuePONew = valuePONew / ratioUOMFinal;
             if (valuePONew <= valuePOOrderRemain) {
                 GRDataTableHandle.tablePOProduct[0].querySelector('.table-row-checkbox:checked').closest('tr').querySelector('.table-row-import').innerHTML = String(valuePONew);
             } else {
@@ -1813,6 +1824,8 @@ class GRSubmitHandle {
                             dataRow['quantity_import'] = quantityImport;
                             dataRow['order'] = order;
                             let data_id = dataRow?.['id'];
+                            let ratioUOMOrder = dataRow?.['uom_order_actual']?.['ratio'];
+                            let ratioUOMRequest = dataRow?.['uom_order_request']?.['ratio'];
                             if (is_submit === true) {
                                 let field_list = [
                                     'purchase_order_product',
@@ -1870,6 +1883,11 @@ class GRSubmitHandle {
                                 if (dataRow['product_unit_price'] <= 0) {
                                     delete dataRow['product_unit_price'];
                                 }
+                                let ratioUOMFinal = 1;
+                                if (ratioUOMOrder && ratioUOMRequest) {
+                                    ratioUOMFinal = ratioUOMOrder / ratioUOMRequest
+                                }
+                                dataRow['quantity_import'] = dataRow?.['quantity_import'] * ratioUOMFinal;
                                 // If PO have PR
                                 let pr_product_submit_list = [];
                                 for (let pr_product of dataRow?.['purchase_request_products_data'] ? dataRow?.['purchase_request_products_data'] : []) {

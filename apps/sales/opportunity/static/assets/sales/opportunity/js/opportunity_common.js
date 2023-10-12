@@ -510,7 +510,7 @@ class OpportunityLoadDetail {
         )
     }
 
-    static loadSaleTeam(data, isEdit=true) {
+    static loadSaleTeam(data, isEdit = true) {
         callAppList().then(
             (result) => {
                 renderAppList(result);
@@ -716,6 +716,9 @@ class OpportunityLoadDetail {
                     'product_unit_price': $(this).find('.input-unit-price').attr('value'),
                     'product_subtotal_price': $(this).find('.input-subtotal').attr('value'),
                 }
+                if (!$(this).find('.box-select-tax').val()) {
+                    delete data['tax']
+                }
                 list_product_data.push(data);
             })
         }
@@ -905,7 +908,7 @@ function loadDtbOpportunityList() {
                         if (row?.['open_date'] !== null) {
                             open_date = row?.['open_date'].split(" ")[0]
                         }
-                        return `<p>${open_date !== null && open_date !== undefined ? open_date: '_'}</p>`
+                        return `<p>${open_date !== null && open_date !== undefined ? open_date : '_'}</p>`
                     }
                 },
                 {
@@ -1116,7 +1119,7 @@ function loadDtbProductDetailPageDetail(data) {
                     className: 'wrap-text',
                     render: (data) => {
                         return `<span>{0}</span>`.format_by_idx(
-                            data.title
+                            data ? data.title : '-'
                         )
                     }
                 },

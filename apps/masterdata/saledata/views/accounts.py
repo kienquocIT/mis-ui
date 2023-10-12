@@ -27,7 +27,8 @@ class SalutationListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(request=request, user=request.user, url=ApiURL.SALUTATION_LIST).get()
+        params = request.query_params.dict()
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.SALUTATION_LIST).get(params)
         return resp.auto_return(key_success='salutation_list')
 
 
@@ -73,7 +74,8 @@ class InterestListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(request=request, user=request.user, url=ApiURL.INTERESTS_LIST).get()
+        params = request.query_params.dict()
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.INTERESTS_LIST).get(params)
         return resp.auto_return(key_success='interests_list')
 
 
@@ -242,7 +244,8 @@ class AccountTypeListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_TYPE_LIST).get()
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_TYPE_LIST).get(params)
         return resp.auto_return(key_success='account_type_list')
 
 
@@ -286,7 +289,8 @@ class AccountGroupListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_GROUP_LIST).get()
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_GROUP_LIST).get(params)
         return resp.auto_return(key_success='account_group_list')
 
 
@@ -330,7 +334,8 @@ class IndustryListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.INDUSTRY_LIST).get()
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.INDUSTRY_LIST).get(params)
         return resp.auto_return(key_success='industry_list')
 
 

@@ -2,6 +2,79 @@ let urlEle = $('#url-factory');
 let transEle = $('#trans-factory');
 
 class GoodsIssueLoadPage {
+    load() {
+        $('[name="date_issue"]').daterangepicker({
+            singleDatePicker: true,
+            timePicker: true,
+            showDropdowns: true,
+            drops: 'down',
+            minYear: 2000,
+            locale: {
+                format: 'YYYY-MM-DD'
+            },
+            "cancelClass": "btn-secondary",
+            maxYear: parseInt(moment().format('YYYY-MM-DD'), 10) + 100
+        })
+
+        $('#inlineRadio2').on('change', function () {
+            if ($(this).is(':checked')) {
+                $('#row-for-liquidation').removeClass('hidden');
+                $('#row-for-ia').addClass('hidden');
+                GoodsIssueLoadPage.loadDtbProductForLiquidation([]);
+                $('#dtbProductIA').DataTable().clear().draw();
+                let iaSelectEle = $('#box-select-ia');
+                iaSelectEle.empty();
+                iaSelectEle.closest('.form-group').addClass('hidden');
+            }
+        })
+        $('#inlineRadio1').on('change', function () {
+            if ($(this).is(':checked')) {
+                $('#row-for-liquidation').addClass('hidden');
+                $('#row-for-ia').removeClass('hidden');
+                $('#dtbProductLiquidation').DataTable().clear().draw();
+                $('#box-select-ia').closest('.form-group').removeClass('hidden');
+            }
+        })
+
+        $('#btnAddProduct').on('click', function () {
+            GoodsIssueLoadPage.generateRowProductLiquidation()
+        })
+
+        // onchange select box warehouse in table for liquidation
+        $(document).on('change', '.box-select-wh', function () {
+            let tr_current = $(this).closest('tr');
+            let productSelectEle = tr_current.find('.box-select-product');
+            let list_selected = GoodsIssueLoadPage.getListPrProductSelected(productSelectEle);
+            GoodsIssueLoadPage.loadProduct(productSelectEle, {}, $(this).val(), list_selected);
+        })
+
+        // onchange select box product in table for liquidation
+        $(document).on('change', '.box-select-product', function () {
+            let product_data = SelectDDControl.get_data_from_idx($(this), $(this).val());
+            let tr_current = $(this).closest('tr');
+            tr_current.find('.col-uom').text(product_data?.['uom_data'].title);
+        })
+
+        // onchange quantity in table for liquidation
+        $(document).on('change', '.col-quantity', function () {
+            let tr_current = $(this).closest('tr');
+            let product = SelectDDControl.get_data_from_idx(tr_current.find('.box-select-product'), tr_current.find('.box-select-product').val());
+            if ($(this).val() <= product?.['stock_amount'] - product?.['sold_amount']) {
+                GoodsIssueLoadPage.generateSubtotal($(this));
+            } else {
+                $(this).val(0);
+                tr_current.find('.col-subtotal').attr('value', 0)
+                $.fn.notifyB({description: transEle.data('trans-fail-quantity').format_by_idx(product?.['stock_amount'] - product?.['sold_amount'])}, 'warning');
+                $.fn.initMaskMoney2();
+            }
+        })
+
+        // onchange in table for liquidation
+        $(document).on('change', '.col-unit-cost', function () {
+            GoodsIssueLoadPage.generateSubtotal($(this));
+        })
+    }
+
     static loadInventoryAdjustment(ele, data) {
         ele.initSelect2({
             data: data,
@@ -11,6 +84,8 @@ class GoodsIssueLoadPage {
         }).on('change', function () {
             let url = urlEle.data('url-ia-product').format_url_with_uuid($(this).val());
             let tableEle = $('#dtbProductIA');
+            let dataProductEle = $('#data-ia-product');
+            let data_dict = JSON.parse(dataProductEle.text());
             tableEle.DataTable().clear().draw();
             $.fn.callAjax(url, 'GET').then(
                 (resp) => {
@@ -19,10 +94,16 @@ class GoodsIssueLoadPage {
                         let product_list = data?.['ia_product_list'].filter(function (obj) {
                             return (obj.book_quantity - obj.count) > 0;
                         });
-                        let data_dict = {};
                         product_list.map(function (item) {
+                            if (data_dict[item.id]) {
+                                item['action_status'] = false
+                            }
+
                             if (!item.action_status) {
                                 data_dict[item.id] = item;
+                                item['description'] = '';
+                                item['subtotal'] = '';
+                                item['unit_cost'] = '';
                                 tableEle.DataTable().row.add(item).draw();
                             }
                         })
@@ -62,6 +143,15 @@ class GoodsIssueLoadPage {
             callbackTextDisplay: function (item) {
                 return item?.['product_data']?.['title'] || '';
             },
+        }).on('change', function (){
+            let product = SelectDDControl.get_data_from_idx($(this), $(this).val());
+            let trCurrent = $(this).closest('tr');
+            trCurrent.find('.col-uom').attr('data-id', product.uom);
+            trCurrent.find('.col-remarks').val('');
+            trCurrent.find('.col-quantity').val('');
+            trCurrent.find('.col-unit-cost').attr('value', '');
+            trCurrent.find('.col-subtotal').attr('value', '');
+            $.fn.initMaskMoney2();
         })
     }
 
@@ -78,8 +168,9 @@ class GoodsIssueLoadPage {
                             return `<span class="col-product" data-id="${row.id}">${data.title}</span>`
                         },
                     }, {
+                        data: 'description',
                         render: (data, type, row) => {
-                            return `<input type="text" class="form-control col-remarks">`
+                            return `<input type="text" class="form-control col-remarks" value="${data}">`
                         },
                     }, {
                         data: 'uom_mapped',
@@ -96,13 +187,14 @@ class GoodsIssueLoadPage {
                             return `<span class="col-warehouse">${data.title}</span>`
                         },
                     }, {
+                        data: 'unit_cost',
                         render: (data, type, row) => {
-                            return `<input class="form-control mask-money col-unit-cost"/>`;
+                            return `<input class="form-control mask-money col-unit-cost" value="${data}"/>`;
                         },
                     }, {
                         data: 'subtotal',
                         render: (data, type, row) => {
-                            return `<input class="form-control mask-money col-subtotal" readonly/>`;
+                            return `<input class="form-control mask-money col-subtotal" value="${data}" readonly/>`;
                         },
                     },
                 ],
@@ -127,13 +219,14 @@ class GoodsIssueLoadPage {
                             return `<select class="box-select-product form-select" data-method="GET" data-url="${urlEle.data('url-warehouse-product')}" data-keyResp="warehouse_products_list"></select>`
                         },
                     }, {
+                        data: 'description',
                         render: (data, type, row) => {
-                            return `<input type="text" class="form-control col-remarks">`
+                            return `<input type="text" class="form-control col-remarks" value="${data}">`
                         },
                     }, {
                         data: 'uom',
                         render: (data, type, row) => {
-                            return `<span class="col-uom">${data.title}</span>`;
+                            return `<span class="col-uom" data-id="${data.id}">${data.title}</span>`;
                         },
                     }, {
                         data: 'quantity',
@@ -173,6 +266,7 @@ class GoodsIssueLoadPage {
             'quantity': '',
             'subtotal': '',
             'unit_cost': '',
+            'description': '',
         }
         table.DataTable().row.add(data).draw();
         let tr_current = table.find('tbody tr').last();
@@ -211,8 +305,8 @@ class GoodsIssueLoadPage {
             let data = {
                 'inventory_adjustment_item': null,
                 'product_warehouse': obj.id,
-                'warehouse': obj?.['warehouse'],
-                'uom': obj?.['uom'],
+                'warehouse': $(this).find('.box-select-wh').val(),
+                'uom': $(this).find('.col-uom').data('id'),
                 'description': $(this).find('.col-remarks').val(),
                 'quantity': $(this).find('.col-quantity').val(),
                 'unit_cost': $(this).find('.col-unit-cost').valCurrency(),
@@ -224,7 +318,7 @@ class GoodsIssueLoadPage {
         return dataForm
     }
 
-    static loadGoodsIssueDetail(frmDetail, pk) {
+    static loadGoodsIssueDetail(frmDetail, pk, page_type = 0) {
         let url = frmDetail.data('url').format_url_with_uuid(pk);
         let iaSelectEle = $('#box-select-ia');
         $.fn.callAjax2({
@@ -246,9 +340,54 @@ class GoodsIssueLoadPage {
                     $('#inlineRadio2').prop('checked', true);
                     iaSelectEle.closest('.form-group').addClass('hidden');
                 }
-                GoodsIssueLoadPage.loadDtbProductPageDetail(detail?.['goods_issue_datas']);
+                if (page_type === 0) {
+                    GoodsIssueLoadPage.loadDtbProductPageDetail(detail?.['goods_issue_datas']);
+                } else {
+                    if (detail?.['goods_issue_type'] === 0) {
+                        let product_list = GoodsIssueLoadPage.backupDataProductsDetail(detail?.['goods_issue_datas'])
+                        GoodsIssueLoadPage.loadDtbProductForIA(product_list)
+                    } else {
+                        $('#row-for-liquidation').removeClass('hidden');
+                        $('#row-for-ia').addClass('hidden');
+                        GoodsIssueLoadPage.loadDtbProductForLiquidation([]);
+                        $('#box-select-ia').closest('.form-group').addClass('hidden');
+                        let table = $('#dtbProductLiquidation');
+                        let list_selected = []
+                        detail?.['goods_issue_datas'].map(function (item){
+                            list_selected.push(item.product_warehouse.id);
+                            table.DataTable().row.add(item).draw();
+                            let trCurrent = table.find('tbody tr');
+                            GoodsIssueLoadPage.loadWarehouse(trCurrent.find('.box-select-wh'), item.warehouse);
+                            GoodsIssueLoadPage.loadProduct(trCurrent.find('.box-select-product'), item.product_warehouse, item.warehouse.id, list_selected);
+                        })
+                    }
+                }
             }
         })
+    }
+
+    static backupDataProductsDetail(data) {
+        let dataEle = $('#data-ia-product');
+        let data_dict = JSON.parse(dataEle.text());
+        let list_result = []
+        data.map(function (item) {
+            let data_temp = {
+                'id': item.inventory_adjustment_item,
+                'product_warehouse': item.product_warehouse.id,
+                'warehouse_mapped': item.warehouse,
+                'description': item.description,
+                'uom_mapped': item.uom,
+                'book_quantity': item.quantity,
+                'count': 0,
+                'product_mapped': item.product_warehouse?.['product_data'],
+                'unit_cost': item.unit_cost,
+                'subtotal': item.subtotal,
+            }
+            data_dict[item.inventory_adjustment_item] = data_temp
+            list_result.push(data_temp)
+        })
+        dataEle.text(JSON.stringify(data_dict));
+        return list_result
     }
 
     static loadDtbProductPageDetail(data) {

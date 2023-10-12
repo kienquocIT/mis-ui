@@ -6,7 +6,7 @@ from apps.sales.inventory.views import (
     InventoryAdjustmentList, InventoryAdjustmentCreate, InventoryAdjustmentListAPI,
     InventoryAdjustmentListAPI, InventoryAdjustmentDetailAPI, InventoryAdjustmentDetail,
     InventoryAdjustmentOtherListAPI, GoodsIssueList, GoodsIssueCreate, GoodsIssueDetail, GoodsIssueListAPI,
-    GoodsIssueDetailAPI, InventoryAdjustmentProductListAPI
+    GoodsIssueDetailAPI, InventoryAdjustmentProductListAPI, GoodsIssueUpdate
 )
 from apps.sales.inventory.views.goods_transfer import GoodsTransferList, GoodsTransferDetail, GoodsTransferCreate, \
     GoodsTransferListAPI, GoodsTransferDetailAPI
@@ -56,4 +56,5 @@ urlpatterns += [
     path('goods-issue/detail/<str:pk>', GoodsIssueDetail.as_view(), name='GoodsIssueDetail'),
     path('goods-issue/list/api', GoodsIssueListAPI.as_view(), name='GoodsIssueListAPI'),
     path('goods-issue/detail/api/<str:pk>', GoodsIssueDetailAPI.as_view(), name='GoodsIssueDetailAPI'),
+    path('goods-issue/update/<str:pk>', GoodsIssueUpdate.as_view(), name='GoodsIssueUpdate'),
 ]

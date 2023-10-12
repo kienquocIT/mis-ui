@@ -358,6 +358,7 @@ class OpportunityLoadDetail {
             "cancelClass": "btn-secondary",
             maxYear: parseInt(moment().format('YYYY-MM-DD'), 10) + 100
         });
+
         $('input[name="close_date"]').daterangepicker({
             singleDatePicker: true,
             timePicker: true,
@@ -509,7 +510,7 @@ class OpportunityLoadDetail {
         )
     }
 
-    static loadSaleTeam(data, isEdit=true) {
+    static loadSaleTeam(data, isEdit = true) {
         callAppList().then(
             (result) => {
                 renderAppList(result);
@@ -715,6 +716,9 @@ class OpportunityLoadDetail {
                     'product_unit_price': $(this).find('.input-unit-price').attr('value'),
                     'product_subtotal_price': $(this).find('.input-subtotal').attr('value'),
                 }
+                if (!$(this).find('.box-select-tax').val()) {
+                    delete data['tax']
+                }
                 list_product_data.push(data);
             })
         }
@@ -843,166 +847,6 @@ class OpportunityLoadDetail {
             text: text,
         })
     }
-
-    static loadDtbApplication() {
-        let $table = $('#table-applications')
-        if ($table.length > 0 && !$.fn.DataTable.isDataTable('#table-applications')) {
-            let frm = new SetupFormSubmit($table);
-            $table.DataTableDefault({
-                useDataServer: true,
-                paging: false,
-                scrollY: '200px',
-                autoWidth: false,
-                ajax: {
-                    url: frm.dataUrl,
-                    type: frm.dataMethod,
-                    dataSrc: function (resp) {
-                        let data = $.fn.switcherResp(resp);
-                        if (data && resp.data.hasOwnProperty('applications')) {
-                            return resp.data['applications'] ? resp.data['applications'] : [];
-                        }
-                        throw Error('Call data raise errors.')
-                    },
-                },
-                columns: [
-                    {
-                        data: 'title',
-                        targets: 0,
-                        render: (data, type, row, meta) => {
-                            return `<span class="application_name" data-id="${row.id}">${data}</span>`
-                        }
-                    },
-                    {
-                        targets: 1,
-                        render: (data, type, row, meta) => {
-                            return `<div class="form-check form-switch"><input type="checkbox" class="form-check-input check-all" /></div>`
-                        }
-                    },
-                    {
-                        targets: 2,
-                        render: (data, type, row, meta) => {
-                            return `<div class="form-check form-switch"><input type="checkbox" class="form-check-input check-create" /></div>`
-                        }
-                    },
-                    {
-                        targets: 3,
-                        render: (data, type, row, meta) => {
-                            return `<div class="form-check form-switch"><input type="checkbox" class="form-check-input check-view" /></div>`
-                        }
-                    },
-                    {
-                        targets: 4,
-                        render: (data, type, row, meta) => {
-                            return `<div class="form-check form-switch"><input type="checkbox" class="form-check-input check-edit" /></div>`
-                        }
-                    },
-                    {
-                        targets: 5,
-                        render: (data, type, row, meta) => {
-                            return `<div class="form-check form-switch"><input type="checkbox" class="form-check-input check-delete" /></div>`
-                        }
-                    },
-                    {
-                        targets: 6,
-                        render: (data, type, row, meta) => {
-                            return `<select class="form-select box-select-belong-to">`
-                        }
-                    },
-
-                ],
-            })
-        }
-    }
-
-    static loadBelongTo(ele) {
-        let data = [
-            {
-                'id': 0,
-                'title': 'User'
-            },
-            {
-                'id': 1,
-                'title': 'Opp member'
-            },
-        ]
-        ele.initSelect2({
-            data: data
-        })
-    }
-
-    static loadMemberPermission(url, method) {
-        $.fn.callAjax2({
-            url: url,
-            method: method,
-        }).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                let member_detail = data?.['member'];
-                $('#checkViewThisOpp').prop('checked', member_detail?.['permit_view_this_opp']);
-                $('#checkCanAddMember').prop('checked', member_detail?.['permit_add_member']);
-                let permit_app = member_detail?.['permit_app']
-                for (let key in permit_app) {
-                    if (permit_app.hasOwnProperty(key)) {
-                        let tr_current = $(`#table-applications .application_name[data-id=${key}]`).closest('tr');
-                        tr_current.find('input[type="checkbox"]').prop('checked', false);
-                        tr_current.find('.check-all').prop('checked', permit_app[key].is_all);
-                        tr_current.find('.check-create').prop('checked', permit_app[key].is_create);
-                        tr_current.find('.check-view').prop('checked', permit_app[key]?.['is_view']);
-                        tr_current.find('.check-edit').prop('checked', permit_app[key].is_edit);
-                        tr_current.find('.check-delete').prop('checked', permit_app[key]?.['is_delete']);
-                        tr_current.find('.box-select-belong-to').empty();
-                        OpportunityLoadDetail.loadBelongTo(tr_current.find('.box-select-belong-to'));
-                        tr_current.find(`.box-select-belong-to`).val(permit_app[key]?.['belong_to']).trigger('change');
-                        tr_current.removeClass('tr-updated')
-                    }
-                }
-            }
-        })
-    }
-
-    static getFormDataMemberPermission() {
-        let data = {}
-        data['employee_current'] = $('#emp-current-id').val();
-        data['permit_view_this_opp'] = $('#checkViewThisOpp').is(':checked');
-        data['permit_add_member'] = $('#checkCanAddMember').is(':checked');
-        let table = document.getElementById('table-applications');
-        let updated_tr_ele = table.getElementsByClassName('tr-updated');
-        let list_app = []
-        for (let i = 0; i < updated_tr_ele.length; i++) {
-            let currentElement = updated_tr_ele[i];
-            let data = {
-                'app': currentElement.querySelector('.application_name').getAttribute('data-id'),
-                'is_all': currentElement.querySelector('.check-all').checked,
-                'is_create': currentElement.querySelector('.check-create').checked,
-                'is_edit': currentElement.querySelector('.check-edit').checked,
-                'is_view': currentElement.querySelector('.check-view').checked,
-                'is_delete': currentElement.querySelector('.check-delete').checked,
-                'belong_to': parseInt(currentElement.querySelector('.box-select-belong-to').value),
-            }
-            list_app.push(data);
-        }
-        data['app_permit'] = list_app
-        return data
-    }
-
-    static checkAllPermissionChecked(ele) {
-        let elements = ele.find('.check-create, .check-view, .check-delete, .check-edit');
-        return elements.filter(":not(:checked)").length === 0;
-    }
-
-    static reloadMemberList(pk) {
-        let url = urlEle.data('url-member-list').format_url_with_uuid(pk);
-        $.fn.callAjax2({
-            'url': url,
-            'method': 'get'
-        }).then(
-            (resp) => {
-                const data = $.fn.switcherResp(resp);
-                let data_member = data?.['opportunity_member']?.['sale_team'];
-                OpportunityLoadDetail.loadSaleTeam(data_member);
-            }
-        )
-    }
 }
 
 // function in page list
@@ -1064,7 +908,7 @@ function loadDtbOpportunityList() {
                         if (row?.['open_date'] !== null) {
                             open_date = row?.['open_date'].split(" ")[0]
                         }
-                        return `<p>${open_date !== null && open_date !== undefined ? open_date: '_'}</p>`
+                        return `<p>${open_date !== null && open_date !== undefined ? open_date : '_'}</p>`
                     }
                 },
                 {
@@ -1108,8 +952,11 @@ function callData(url, method) {
         url: url,
         method: method,
     }).then((resp) => {
-        return $.fn.switcherResp(resp);
-    });
+            return $.fn.switcherResp(resp);
+        },
+        (errs) => {
+            console.log(errs)
+        });
 }
 
 async function loadConfig() {
@@ -1198,7 +1045,7 @@ async function loadMemberSaleTeam() {
                 {
                     className: 'wrap-text',
                     render: (data, type, row) => {
-                        if ($('.member-item .card[data-id="' + row.id + '"]').length > 0){
+                        if ($('.member-item .card[data-id="' + row.id + '"]').length > 0) {
                             return `<span class="form-check"><input data-id="{0}" type="checkbox" class="form-check-input input-select-member" checked readonly disabled /></span>`.format_by_idx(row.id)
                         }
                         return `<span class="form-check"><input data-id="{0}" type="checkbox" class="form-check-input input-select-member" /></span>`.format_by_idx(row.id)
@@ -1272,7 +1119,7 @@ function loadDtbProductDetailPageDetail(data) {
                     className: 'wrap-text',
                     render: (data) => {
                         return `<span>{0}</span>`.format_by_idx(
-                            data.title
+                            data ? data.title : '-'
                         )
                     }
                 },

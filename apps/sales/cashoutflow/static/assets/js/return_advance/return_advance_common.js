@@ -1,3 +1,6 @@
+let transEle = $('#trans-factory');
+let urlEle = $('#url-factory');
+
 function loadDetailBeneficiary(id) {
     let ele = $('[name="employee_created_id"]');
     let frm = new SetupFormSubmit(ele);
@@ -50,13 +53,18 @@ function loadCreator(id) {
 
 function loadCostTable(data) {
     let table = $('#dtbProduct').DataTable();
+    table.clear().draw();
+    let dict_cost = JSON.parse($('#data-costs').text());
     data.map(function (item) {
-        table.row.add(item).draw().node();
+        if (dict_cost[item.id]) {
+            item['remain_total'] += dict_cost[item.id].return_value;
+        }
+        table.row.add(item).draw();
     })
 }
 
 function loadDetailAdvancePayment(id, type = 'create') {
-    let url = $('#url-factory').data('url-detail-ap').format_url_with_uuid(id);
+    let url = urlEle.data('url-detail-ap').format_url_with_uuid(id);
     $.fn.callAjax2({
         'url': url,
         'method': "GET"
@@ -67,10 +75,9 @@ function loadDetailAdvancePayment(id, type = 'create') {
                 let ele_beneficiary = $('#chooseBeneficiary');
                 ele_beneficiary.empty();
                 let sale_code_ele = $('[name="sale_code"]');
-                if (data?.['advance_payment_detail']?.['sale_code_relate']?.['opportunity_linked'].hasOwnProperty('code')){
+                if (data?.['advance_payment_detail']?.['sale_code_relate']?.['opportunity_linked'].hasOwnProperty('code')) {
                     sale_code_ele.val(data?.['advance_payment_detail']?.['sale_code_relate']?.['opportunity_linked'].code);
-                }
-                else {
+                } else {
                     sale_code_ele.val('');
                 }
                 ReturnAdvanceLoadPage.loadBeneficiary(ele_beneficiary, data?.['advance_payment_detail'].beneficiary)
@@ -128,13 +135,11 @@ function loadDataTableCost(data, is_detail = false) {
                 {
                     data: 'return_value',
                     targets: 4,
-                    className: 'wrap-text',
                     render: (data, type, row) => {
                         let value = data !== undefined ? data : '';
                         if (is_detail) {
                             return `<input class="mask-money form-control return-price" type="text" data-return-type="number" value="${value}" disabled>`
-                        }
-                        else{
+                        } else {
                             return `<input class="mask-money form-control return-price" type="text" data-return-type="number" value="${value}">`
                         }
                     }
@@ -145,6 +150,32 @@ function loadDataTableCost(data, is_detail = false) {
 }
 
 class ReturnAdvanceLoadPage {
+    load() {
+        $('input[name="date_created"]').daterangepicker({
+            singleDatePicker: true,
+            timePicker: true,
+            showDropdowns: false,
+            minYear: 1901,
+            "cancelClass": "btn-secondary",
+            maxYear: parseInt(moment().format('YYYY'), 10)
+        });
+        $('.daterangepicker').remove();
+
+        $(document).on('change', '.return-price', function () {
+            let total = 0;
+            let ele = $(this).closest('tr').find('span.mask-money');
+            if ($(this).valCurrency() > ele.attr('data-init-money')) {
+                $.fn.notifyB({description: $('#trans-factory').data('trans-greater-remain')}, 'failure');
+                $(this).attr('value', '');
+            }
+            $('.return-price').each(function () {
+                total += $(this).valCurrency();
+            })
+            $('#total-value').attr('data-init-money', total);
+            $.fn.initMaskMoney2();
+        })
+    }
+
     static saleCodeEle = $('#inp-sale-code');
     static methodPaymentEle = $('#box-method-payment')
 
@@ -184,9 +215,19 @@ class ReturnAdvanceLoadPage {
         })
     }
 
-    static loadMethodPayment(data = {}) {
+    static loadMethodPayment() {
+        let data = [
+            {
+                'id': 0,
+                'title': transEle.data('trans-cash'),
+            },
+            {
+                'id': 1,
+                'title': transEle.data('trans-bank-transfer'),
+            }
+        ]
         ReturnAdvanceLoadPage.methodPaymentEle.initSelect2({
-            data: data
+            data: data,
         })
     }
 }
@@ -209,8 +250,16 @@ function loadDetail(id, frmDetail) {
             loadDetailAdvancePayment(return_advance_detail.advance_payment.id, 'detail');
             loadCreator(return_advance_detail.employee_created);
             $('[name="date_created"]').val(return_advance_detail.date_created.split(" ")[0]);
-            $('[name="method"]').val(return_advance_detail.method);
+            ReturnAdvanceLoadPage.methodPaymentEle.val(return_advance_detail.method).trigger('change');
+
+            let script_costs = $('#data-costs');
+            let dict_cost = JSON.parse(script_costs.text());
+
             loadCostTable(return_advance_detail.cost);
+            return_advance_detail.cost.map(function (item) {
+                dict_cost[item?.['id']] = item;
+            })
+            script_costs.text(JSON.stringify(dict_cost));
             $('#total-value').attr('data-init-money', return_advance_detail.return_total);
             if (return_advance_detail.money_received) {
                 let money_received_ele = $('#money-received')

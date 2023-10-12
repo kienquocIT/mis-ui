@@ -60,6 +60,7 @@ class ExpenseItemLoadPage {
             let frm = new SetupFormSubmit(dtb);
             dtb.DataTableDefault({
                 useDataServer: true,
+                paginate: false,
                 ajax: {
                     url: frm.dataUrl,
                     type: frm.dataMethod,

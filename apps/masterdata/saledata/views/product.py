@@ -26,7 +26,8 @@ class ProductTypeListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_TYPE_LIST).get()
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_TYPE_LIST).get(params)
         return resp.auto_return(key_success='product_type_list')
 
     @mask_view(
@@ -64,7 +65,8 @@ class ProductCategoryListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_CATEGORY_LIST).get()
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_CATEGORY_LIST).get(params)
         return resp.auto_return(key_success='product_category_list')
 
     @mask_view(
@@ -141,7 +143,8 @@ class UnitOfMeasureGroupListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE_GROUP).get()
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE_GROUP).get(params)
         return resp.auto_return(key_success='unit_of_measure_group')
 
     @mask_view(
@@ -319,5 +322,6 @@ class UnitOfMeasureOfGroupLaborListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.UOM_OF_GROUP_LABOR_LIST).get()
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.UOM_OF_GROUP_LABOR_LIST).get(params)
         return resp.auto_return(key_success='uom_of_group_labor')

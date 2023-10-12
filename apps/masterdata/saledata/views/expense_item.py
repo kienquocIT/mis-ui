@@ -22,7 +22,8 @@ class ExpenseItemListAPI(APIView):
         auth_require=True
     )
     def get(self, request, *arg, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.EXPENSE_ITEM_LIST).get()
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.EXPENSE_ITEM_LIST).get(params)
         return resp.auto_return(key_success='expense_item_list')
 
     @mask_view(

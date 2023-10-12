@@ -161,7 +161,8 @@ class OpportunityCustomerDecisionFactorListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CUSTOMER_DECISION_FACTOR).get()
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CUSTOMER_DECISION_FACTOR).get(params)
         return resp.auto_return(key_success='opportunity_decision_factor')
 
     @mask_view(
@@ -224,7 +225,8 @@ class OpportunityConfigStageListAPI(APIView):
         login_require=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CONFIG_STAGE).get()
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CONFIG_STAGE).get(params)
         return resp.auto_return(key_success='opportunity_config_stage')
 
     @mask_view(
@@ -307,7 +309,8 @@ class OpportunityCallLogListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CALL_LOG_LIST).get()
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CALL_LOG_LIST).get(params)
         return resp.auto_return(key_success='call_log_list')
 
     @mask_view(
@@ -355,7 +358,8 @@ class OpportunityEmailListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_EMAIL_LIST).get()
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_EMAIL_LIST).get(params)
         return resp.auto_return(key_success='email_list')
 
     @mask_view(
@@ -405,7 +409,8 @@ class OpportunityMeetingListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_MEETING_LIST).get()
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_MEETING_LIST).get(params)
         return resp.auto_return(key_success='meeting_list')
 
     @mask_view(
@@ -481,7 +486,8 @@ class OpportunityDocumentListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_DOCUMENT_LIST).get()
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_DOCUMENT_LIST).get(params)
         return resp.auto_return(key_success='document_list')
 
     @mask_view(

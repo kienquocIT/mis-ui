@@ -25,7 +25,7 @@ $(document).ready(function () {
                 'data': 'code',
                 render: (data, type, row) => {
                     const link = url_detail.replace(0, row.id);
-                    return `<a href="${link}" class="badge badge-soft-primary w-70">${row.code}</a> ${$x.fn.buttonLinkBlank(link)}`
+                    return `<a href="${link}" class="badge badge-soft-primary">${row?.['code']}</a> ${$x.fn.buttonLinkBlank(link)}`
                 }
             }, {
                 'data': 'title',
@@ -50,7 +50,7 @@ $(document).ready(function () {
             }, {
                 'data': 'general_price',
                 render: (data, type, row) => {
-                    return `<span class="mask-money text-primary" data-init-money="${row.general_price}"></span>`
+                    return `<span class="mask-money text-primary" data-init-money="${row?.['general_price']}"></span>`
                 }
             }, {
                 'className': 'text-center',

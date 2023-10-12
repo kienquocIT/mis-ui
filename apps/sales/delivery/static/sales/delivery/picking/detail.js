@@ -234,7 +234,7 @@ $(async function () {
             let prodName = ''
             let WHInfo = datas.filter((item)=> item.id === warehouseID)[0]
 
-            prodTotal = WHInfo['original_info'].stock_amount - WHInfo['original_info'].sold_amount
+            prodTotal = WHInfo['original_info']?.['stock_amount']
             prodName = WHInfo.title
             htmlContent += `<div class="mb-1"><h6><i>${$elmTrans.attr('data-warehouse')}</i></h6><p>${prodName}</p></div>`;
             htmlContent += `<div class="mb-1 d-flex justify-content-between">` +

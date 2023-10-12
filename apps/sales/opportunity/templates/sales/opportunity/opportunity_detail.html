@@ -166,46 +166,6 @@
                                     <div class="row div-activity hidden">
                                         <div class="col-11 d-flex">
                                             <h4 class="text-primary">{% trans "Activity logs" %}</h4><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                                            <div class="dropdown">
-                                                <button type="button" class="btn btn-soft-primary btn-xs dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <i class="bi bi-ui-checks-grid"></i> {% trans 'New Log' %}
-                                                </button>
-                                                <div class="dropdown-menu">
-                                                    <a data-bs-toggle="modal" data-bs-target="#create-new-call-log" class="dropdown-item create-new-call-log-button" href="#">
-                                                        {% trans 'Log a call' %}
-                                                    </a>
-                                                    <a data-bs-toggle="modal" data-bs-target="#send-email" class="dropdown-item send-email-button" href="#">
-                                                        {% trans 'Email' %}
-                                                    </a>
-                                                    <a data-bs-toggle="modal" data-bs-target="#create-meeting" class="dropdown-item new-meeting-button" href="#">
-                                                        {% trans 'Meeting' %}
-                                                    </a>
-                                                    <a data-drawer-target="#drawer_task_create" data-drawer-active="false" class="dropdown-item ntt-drawer-toggle-link current-create-task" href="#">
-                                                        {% trans 'Task' %}
-                                                    </a>
-                                                </div>
-                                            </div>
-                                            <div class="dropdown">
-                                                <button type="button" class="btn btn-soft-primary btn-xs dropdown-toggle ml-2" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-bs-toggle="dropdown">
-                                                    <i class="fa-solid fa-arrows-spin"></i> {% trans 'Create Related Feature' %}
-                                                </button>
-                                                <div class="dropdown-menu">
-                                                    <a class="dropdown-item btn-create-related-feature" data-url="{% url 'QuotationCreate' %}" href="#">{% trans 'Quotation' %}</a>
-                                                    <a class="dropdown-item btn-create-related-feature" data-url="{% url 'SaleOrderCreate' %}" href="#">{% trans 'Sale Order' %}</a>
-                                                    <a class="dropdown-item btn-create-related-feature" data-url="{% url 'AdvancePaymentCreate' %}" href="#">{% trans 'Advance Payment' %}</a>
-                                                    <a class="dropdown-item btn-create-related-feature" data-url="{% url 'PaymentCreate' %}" href="#">{% trans 'Payment' %}</a>
-                                                    <a class="dropdown-item btn-create-related-feature" data-url="{% url 'ReturnAdvanceCreate' %}" href="#">{% trans 'Return advance' %}</a>
-                                                </div>
-                                            </div>
-                                            <div class="dropdown">
-                                                <button type="button" class="btn btn-soft-primary btn-xs dropdown-toggle ml-2" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-bs-toggle="dropdown">
-                                                    <i class="bi bi-box-arrow-up-right"></i> {% trans 'View Related Feature' %}
-                                                </button>
-                                                <div class="dropdown-menu">
-                                                    <a class="dropdown-item item-detail-related-feature" id="item-related-quotation" href="#" target="_blank">{% trans 'Quotation' %}</a>
-                                                    <a class="dropdown-item item-detail-related-feature" id="item-related-sale-order" href="#" target="_blank">{% trans 'Sale Order' %}</a>
-                                                </div>
-                                            </div>
                                         </div>
                                         <div class="col-1 text-right">
                                             <a href="#" id="btn-show-action">

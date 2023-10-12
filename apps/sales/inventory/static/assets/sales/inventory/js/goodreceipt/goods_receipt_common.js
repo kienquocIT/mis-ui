@@ -1812,6 +1812,7 @@ class GRSubmitHandle {
                             dataRow['uom'] = dataRow?.['uom_order_actual'];
                             dataRow['quantity_import'] = quantityImport;
                             dataRow['order'] = order;
+                            let data_id = dataRow?.['id'];
                             if (is_submit === true) {
                                 let field_list = [
                                     'purchase_order_product',
@@ -1834,6 +1835,41 @@ class GRSubmitHandle {
                                 dataRow['product'] = dataRow?.['product']?.['id']
                                 dataRow['uom'] = dataRow?.['uom']?.['id']
                                 dataRow['tax'] = dataRow?.['tax']?.['id']
+                                let tableLineDetailPO = GRDataTableHandle.tableLineDetailPO;
+                                for (let i = 0; i < tableLineDetailPO[0].tBodies[0].rows.length; i++) {
+                                    let row = tableLineDetailPO[0].tBodies[0].rows[i];
+                                    if (row.querySelector('.table-row-order').id === data_id) {
+                                        let elePrice = row.querySelector('.table-row-price');
+                                        if (elePrice) {
+                                            dataRow['product_unit_price'] = $(elePrice).valCurrency();
+                                        }
+                                        let eleSubtotal = row.querySelector('.table-row-subtotal-raw');
+                                        if (eleSubtotal) {
+                                            dataRow['product_subtotal_price'] = parseFloat(eleSubtotal.value);
+                                        }
+                                        let eleTax = row.querySelector('.table-row-tax');
+                                        if ($(eleTax).val()) {
+                                            let dataInfo = SelectDDControl.get_data_from_idx($(eleTax), $(eleTax).val());
+                                            if (dataInfo) {
+                                                dataRow['tax'] = dataInfo.id;
+                                                dataRow['product_tax_title'] = dataInfo.title;
+                                                dataRow['product_tax_value'] = dataInfo.rate;
+                                            } else {
+                                                dataRow['product_tax_value'] = 0;
+                                            }
+                                        }
+                                        let eleTaxAmount = row.querySelector('.table-row-tax-amount-raw');
+                                        if (eleTaxAmount) {
+                                            dataRow['product_tax_amount'] = parseFloat(eleTaxAmount.value);
+                                        }
+                                        if (dataRow.hasOwnProperty('product_subtotal_price') && dataRow.hasOwnProperty('product_tax_amount')) {
+                                            dataRow['product_subtotal_price_after_tax'] = dataRow['product_subtotal_price'] + dataRow['product_tax_amount'];
+                                        }
+                                    }
+                                }
+                                if (dataRow['product_unit_price'] <= 0) {
+                                    delete dataRow['product_unit_price'];
+                                }
                                 // If PO have PR
                                 let pr_product_submit_list = [];
                                 for (let pr_product of dataRow?.['purchase_request_products_data'] ? dataRow?.['purchase_request_products_data'] : []) {

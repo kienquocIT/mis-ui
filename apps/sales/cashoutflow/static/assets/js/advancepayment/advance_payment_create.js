@@ -1,5 +1,8 @@
 $(document).ready(function () {
-    new AdvancePaymentHandle().load();
+    const urlParams = new URLSearchParams(window.location.search);
+    const opportunity_mapped = JSON.parse(decodeURIComponent(urlParams.get('opportunity')));
+
+    new AdvancePaymentHandle().load(opportunity_mapped);
 
     // SUBMIT FORM CREATE ADVANCE PAYMENT
     $('#form-create-advance').submit(function (event) {

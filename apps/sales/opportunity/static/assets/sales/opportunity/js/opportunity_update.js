@@ -85,6 +85,7 @@ $(document).ready(function () {
                     'id': opportunity_detail.id,
                     'code': opportunity_detail.code,
                     'title': opportunity_detail.title,
+                    'sale_person': opportunity_detail.sale_person,
                 }
                 let stage_obj = await OpportunityLoadDetail.loadDetailCommon(opportunity_detail);
                 list_stage = stage_obj.list;

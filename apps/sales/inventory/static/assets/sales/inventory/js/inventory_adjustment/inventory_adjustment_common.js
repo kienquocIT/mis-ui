@@ -45,7 +45,7 @@ selectProductBtn.on('click', async function () {
                 <td class="difference_td">0</td>
                 <td>
                     <span class="form-check">
-                        <input type="checkbox" class="form-check-input selected_for_actions">
+                        <input type="checkbox" disabled class="form-check-input selected_for_actions">
                         <label class="form-check-label"></label>
                     </span>
                 </td>
@@ -64,12 +64,20 @@ $(document).on('input', '.count-input', function () {
     let quantity = $(this).closest('tr').find('.quantity-td').text();
     let difference = parseFloat(count) - parseFloat(quantity);
     let action_type = '';
-    if (difference < 0) {
+    if (difference === 0) {
+        $(this).closest('tr').removeClass('bg-primary bg-opacity-10');
+        $(this).closest('tr').find('.selected_for_actions').prop('checked', false);
+        $(this).closest('tr').find('.selected_for_actions').attr('disabled', true);
+    }
+    else {
+        $(this).closest('tr').find('.selected_for_actions').attr('disabled', false);
+        if (difference < 0) {
         difference = '(' + difference * -1 + ')';
         action_type = '<span class="text-danger">Decreasing <i class="bi bi-arrow-down"></i></span>';
     }
-    if (difference > 0) {
-        action_type = '<span class="text-primary">Increasing <i class="bi bi-arrow-up"></i></span>';
+        if (difference > 0) {
+            action_type = '<span class="text-primary">Increasing <i class="bi bi-arrow-up"></i></span>';
+        }
     }
     $(this).val(parseFloat($(this).val() ? $(this).val() : 0));
     $(this).closest('tr').find('.difference_td').html(difference);
@@ -148,6 +156,7 @@ function LoadInChargeSelectBox(data) {
 function LoadTableSelectProduct(warehouse_list) {
     tableSelectProduct.DataTable().clear().destroy();
     tableSelectProduct.DataTableDefault({
+        dom: "<'row miner-group'<'col-sm-12 mt-3'f><'col-sm-10'p>>",
         scrollY: true,
         paging: false,
         useDataServer: true,
@@ -158,7 +167,6 @@ function LoadTableSelectProduct(warehouse_list) {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         if (resp.data['warehouses_products_list']) {
-                            console.log(resp.data['warehouses_products_list'])
                             let data_list = [];
                             let data_dict = {};
                             for (let i = 0; i < resp.data['warehouses_products_list'].length; i++) {
@@ -384,12 +392,18 @@ function LoadDetailIA(option) {
                     }
                     let difference = parseFloat(data_row?.['count']) - parseFloat(data_row?.['book_quantity']);
                     let action_type = '';
-                    if (difference < 0) {
-                        difference = '(' + difference * -1 + ')';
-                        action_type = '<span class="text-danger">Decreasing <i class="bi bi-arrow-down"></i></span>';
+                    let disabled_select = '';
+                    if (difference === 0) {
+                        disabled_select = 'disabled';
                     }
-                    if (difference > 0) {
+                    else {
+                        if (difference < 0) {
+                            difference = '(' + difference * -1 + ')';
+                            action_type = '<span class="text-danger">Decreasing <i class="bi bi-arrow-down"></i></span>';
+                        }
+                        if (difference > 0) {
                         action_type = '<span class="text-primary">Increasing <i class="bi bi-arrow-up"></i></span>';
+                    }
                     }
                     tableLineDetailTbody.append(`
                         <tr class="${class_ctn}">
@@ -401,7 +415,7 @@ function LoadDetailIA(option) {
                             <td class="difference_td">${difference}</td>
                             <td>
                                 <span class="form-check">
-                                    <input type="checkbox" class="form-check-input selected_for_actions" ${checked}>
+                                    <input ${disabled_select} type="checkbox" class="form-check-input selected_for_actions" ${checked}>
                                     <label class="form-check-label"></label>
                                 </span>
                             </td>

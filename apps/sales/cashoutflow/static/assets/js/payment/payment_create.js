@@ -1,7 +1,12 @@
 $(document).ready(function () {
     const urlParams = new URLSearchParams(window.location.search);
-    const sale_code_mapped = JSON.parse(decodeURIComponent(urlParams.get('sale_code_mapped')));
-    const type = JSON.parse(decodeURIComponent(urlParams.get('type')));
+    let sale_code_mapped = JSON.parse(decodeURIComponent(urlParams.get('sale_code_mapped')));
+    let type = JSON.parse(decodeURIComponent(urlParams.get('type')));
+    const opportunity_mapped = JSON.parse(decodeURIComponent(urlParams.get('opportunity')));
+    if (opportunity_mapped !== null) {
+        sale_code_mapped = opportunity_mapped.id;
+        type = 2;
+    }
 
     new PaymentHandle().load(sale_code_mapped, type);
 

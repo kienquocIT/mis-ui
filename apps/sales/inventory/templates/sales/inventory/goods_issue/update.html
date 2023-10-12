@@ -1,37 +1,35 @@
 {% extends 'base.html' %}
 {% load static i18n %}
-{% block title %}{% trans 'Goods Issue Detail' %}{% endblock %}
+{% block title %}{% trans 'Goods Issue Update' %}{% endblock %}
 {% block cssHeader %}
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
 
 {% block pageAction %}
-    <a href="{% url 'GoodsIssueUpdate' pk=0 %}" id="btn-edit">
-        <button class="btn btn-outline-primary">
-            <span>
-                <span>{% trans 'Edit' %}</span>
-                <span class="icon">
-                    <i class="fa-regular fa-pen-to-square"></i>
-                </span>
+    <button class="btn btn-outline-primary" type="submit" form="frmUpdate">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
             </span>
-        </button>
-    </a>
+        </span>
+    </button>
 {% endblock %}
 
 {% block pageContent %}
-    <form id="frmDetail" data-method="POST" data-url="{% url 'GoodsIssueDetailAPI' pk=0 %}"
+    <form id="frmUpdate" data-method="PUT" data-url="{% url 'GoodsIssueDetailAPI' pk=0 %}"
           data-url-redirect="{% url 'GoodsIssueList' %}">
         <div class="row">
             <div class="col-6">
                 <div class="form-check form-check-inline mt-5">
                     <input class="form-check-input mt-1" type="radio" name="goods_issue_type" id="inlineRadio1"
-                           value="0" disabled>
+                           value="0" checked>
                     <label class="form-check-label" for="inlineRadio1">{% trans 'For Inventory adjustment' %}</label>
                 </div>
                 <div class="form-check form-check-inline mt-5">
                     <input class="form-check-input mt-1" type="radio" name="goods_issue_type" id="inlineRadio2"
-                           value="1" disabled>
+                           value="1">
                     <label class="form-check-label" for="inlineRadio2">{% trans 'Liquidation' %}</label>
                 </div>
                 <div class="form-check form-check-inline mt-5">
@@ -45,7 +43,7 @@
                     <div class="form-group">
                         <label class="form-label required">{% trans 'Date' %}</label>
                         <div class="input-affix-wrapper">
-                            <input name="date_issue" class="form-control" disabled>
+                            <input name="date_issue" class="form-control">
                             <span class="input-suffix">
                                     <i class="bi bi-calendar-week"></i>
                                 </span>
@@ -57,11 +55,11 @@
         <div class="row">
             <div class="form-group col-6">
                 <label class="form-label required">{% trans 'Name' %}</label>
-                <input type="text" class="form-control" name="title" disabled>
+                <input type="text" class="form-control" name="title" required>
             </div>
             <div class="form-group col-6">
                 <label class="form-label">{% trans 'Status' %}</label>
-                <input type="text" class="form-control" name="system_status" disabled>
+                <input type="text" class="form-control" name="system_status">
             </div>
         </div>
         <div class="row">
@@ -75,13 +73,12 @@
                             data-method="GET"
                             data-url="{% url 'InventoryAdjustmentListAPI' %}"
                             data-keyResp="inventory_adjustment_list"
-                            disabled
                     ></select>
                 </div>
             </div>
             <div class="form-group col-6">
                 <label class="form-label">{% trans 'Note' %}</label>
-                <input type="text" class="form-control" name="note" disabled>
+                <input type="text" class="form-control" name="note">
             </div>
         </div>
 
@@ -101,28 +98,59 @@
         </div>
         <div class="tab-content mt-3">
             <div class="tab-pane fade show active" id="tab-line-detail">
-                <table
-                        id="dtbProduct"
-                        class="table nowrap w-100"
-                        data-url="{% url 'WarehouseGetProductsListAPI' %}"
-                        data-method="GET">
-                    <thead>
-                    <tr>
-                        <th>{% trans 'Warehouse' %}</th>
-                        <th>{% trans 'Product' %}</th>
-                        <th>{% trans 'Description' %}</th>
-                        <th>{% trans 'UoM' %}</th>
-                        <th>{% trans 'Quantity' %}</th>
-                        <th>{% trans 'Unit cost' %}</th>
-                        <th>{% trans 'Subtotal cost' %}</th>
-                    </tr>
-                    </thead>
-                </table>
+                <div id="row-for-ia" class="">
+                    <table
+                            id="dtbProductIA"
+                            class="table nowrap w-100"
+                            data-url="{% url 'WarehouseGetProductsListAPI' %}"
+                            data-method="GET">
+                        <thead>
+                        <tr>
+                            <th>{% trans 'Product' %}</th>
+                            <th>{% trans 'Description' %}</th>
+                            <th>{% trans 'UoM' %}</th>
+                            <th>{% trans 'Quantity' %}</th>
+                            <th>{% trans 'Warehouse' %}</th>
+                            <th>{% trans 'Unit cost' %}</th>
+                            <th>{% trans 'Subtotal cost' %}</th>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+                <div id="row-for-liquidation" class="hidden">
+                    <table
+                            id="dtbProductLiquidation"
+                            class="table nowrap w-100"
+                            data-url="{% url 'WarehouseGetProductsListAPI' %}"
+                            data-method="GET">
+                        <thead>
+                        <tr>
+                            <th>{% trans 'Warehouse' %}</th>
+                            <th>{% trans 'Product' %}</th>
+                            <th>{% trans 'Description' %}</th>
+                            <th>{% trans 'UoM' %}</th>
+                            <th>{% trans 'Quantity' %}</th>
+                            <th>{% trans 'Unit cost' %}</th>
+                            <th>{% trans 'Subtotal cost' %}</th>
+                        </tr>
+                        </thead>
+                    </table>
+                    <button
+                            type="button"
+                            class="btn btn-link btn-animated"
+                            id="btnAddProduct"
+                    >
+                    <span><span class="icon"><span class="feather-icon"><i
+                            class="far fa-plus"></i></span></span><span>{% trans 'Add Product' %}</span></span>
+                    </button>
+                </div>
             </div>
             <div class="tab-pane fade" id="tab-attachment">
             </div>
         </div>
     </form>
+
+    <script type="application/json" id="data-ia-product">{}</script>
 {% endblock %}
 {% block dataHiddenGroup %}
     <input id="url-factory"
@@ -141,5 +169,5 @@
     <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
 
     <script src="{% static 'assets/sales/inventory/js/goods_issue/common.js' %}"></script>
-    <script src="{% static 'assets/sales/inventory/js/goods_issue/detail.js' %}"></script>
+    <script src="{% static 'assets/sales/inventory/js/goods_issue/update.js' %}"></script>
 {% endblock %}

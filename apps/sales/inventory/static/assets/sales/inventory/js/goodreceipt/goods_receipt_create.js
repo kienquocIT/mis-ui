@@ -81,7 +81,14 @@ $(function () {
         });
 
         GRDataTableHandle.tableWH.on('change', '.table-row-import', function () {
-            GRLoadDataHandle.loadQuantityImport();
+            if (this.closest('tr').querySelector('.table-row-checkbox').checked === false) {
+                $(this.closest('tr').querySelector('.table-row-checkbox')).click();
+            }
+            let importResult = GRLoadDataHandle.loadQuantityImport();
+            if (importResult === false) {
+                this.value =  '0';
+                GRLoadDataHandle.loadQuantityImport();
+            }
         });
 
         btnAddLot.on('click', function () {
@@ -94,7 +101,11 @@ $(function () {
         });
 
         GRDataTableHandle.tableLot.on('change', '.table-row-import', function () {
-            GRLoadDataHandle.loadQuantityImport();
+            let importResult = GRLoadDataHandle.loadQuantityImport();
+            if (importResult === false) {
+                this.value = '0';
+                GRLoadDataHandle.loadQuantityImport();
+            }
         });
 
         btnAddSerial.on('click', function () {
@@ -107,7 +118,15 @@ $(function () {
         });
 
         GRDataTableHandle.tableSerial.on('change', '.table-row-serial-number', function () {
-            GRLoadDataHandle.loadQuantityImport();
+            let importResult = GRLoadDataHandle.loadQuantityImport();
+            if (importResult === false) {
+                // Get the index of the current row within the DataTable
+                let rowIndex = GRDataTableHandle.tableSerial.DataTable().row(this.closest('tr')).index();
+                let row = GRDataTableHandle.tableSerial.DataTable().row(rowIndex);
+                // Delete current row
+                row.remove().draw();
+                GRLoadDataHandle.loadQuantityImport();
+            }
         });
 
         GRDataTableHandle.tableLineDetailPO.on('change', '.table-row-price, .table-row-tax', function () {

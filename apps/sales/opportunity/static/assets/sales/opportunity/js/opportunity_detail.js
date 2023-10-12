@@ -31,7 +31,6 @@ $(document).ready(function () {
                 } else
                     $('#check-lost-reason').prop('checked', false);
 
-
                 OpportunityLoadDropdown.loadCustomer(opportunity_detail.customer);
                 OpportunityLoadDropdown.loadProductCategory(opportunity_detail.product_category);
                 OpportunityLoadDropdown.loadSalePersonPageDetail(opportunity_detail?.['sale_person']);

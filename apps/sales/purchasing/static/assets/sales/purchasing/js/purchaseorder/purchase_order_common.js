@@ -1896,24 +1896,6 @@ class POValidateHandle {
                     eleStock.innerHTML = String(parseFloat(quantity_order) - parseFloat(quantity_request));
                 }
             } else { // IF DIFFERENT UOM
-                // let uomRequestExchangeRate = 1;
-                // let uomOrderExchangeRate = 1;
-                // if (uomRequestData?.['is_referenced_unit'] === false) {
-                //     uomRequestExchangeRate = uomRequestData?.['ratio'];
-                // }
-                // if (uomOrderData?.['group']?.['is_referenced_unit'] === false) {
-                //     uomOrderExchangeRate = uomOrderData?.['ratio'];
-                // }
-                // let differenceExchangeValue = ((parseFloat(quantity_order) * uomOrderExchangeRate) - (parseFloat(quantity_request) * uomRequestExchangeRate));
-                // if ((parseFloat(quantity_order) * uomOrderExchangeRate) < (parseFloat(quantity_request) * uomRequestExchangeRate)) {
-                //     eleQuantityOrder.value = '0';
-                //     eleStock.innerHTML = '0';
-                //     $.fn.notifyB({description: POLoadDataHandle.transEle.attr('data-validate-order-actual')}, 'failure');
-                //     return false
-                // } else {
-                //    eleStock.innerHTML = String(differenceExchangeValue / uomRequestExchangeRate);
-                // }
-
                 let finalRatio = (parseFloat(uomOrderData?.['ratio']) / parseFloat(uomRequestData?.['ratio']));
                 if ((parseFloat(quantity_order) * finalRatio) < (parseFloat(quantity_request))) {
                     eleQuantityOrder.value = '0';
@@ -2052,12 +2034,6 @@ class POSubmitHandle {
     };
 
     static setupDataSubmit(_form) {
-        if (_form.dataForm?.['supplier'] === "") {
-            _form.dataForm['supplier'] = null;
-        }
-        if (_form.dataForm?.['contact'] === "") {
-            _form.dataForm['contact'] = null;
-        }
         if (POLoadDataHandle.PRDataEle.val()) {
             _form.dataForm['purchase_requests_data'] = JSON.parse(POLoadDataHandle.PRDataEle.val());
         }

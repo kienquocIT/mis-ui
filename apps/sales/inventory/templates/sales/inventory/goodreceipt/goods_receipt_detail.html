@@ -36,213 +36,222 @@
                     </div>
                 </div>
                 <div class="row" id="common-information-area">
-                    <div class="col-6">
-                        <div class="form-group">
-                            <label class="form-label required" for="box-good-receipt-type">{% trans 'Goods receipt type' %}</label>
-                            <div class="input-group">
-                                <div class="input-affix-wrapper">
-                                    <div class="input-prefix">
-                                        <i class="fas fa-file-import text-orange"></i>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label required" for="box-good-receipt-type">{% trans 'Goods receipt type' %}</label>
+                                <div class="input-group">
+                                    <div class="input-affix-wrapper">
+                                        <div class="input-prefix">
+                                            <i class="fas fa-file-import text-orange"></i>
+                                        </div>
+                                        <select
+                                            class="form-select"
+                                            id="box-good-receipt-type"
+                                            data-url=""
+                                            data-method="GET"
+                                            data-link-detail=""
+                                            name="good_receipt_type"
+                                            data-keyResp=""
+                                            disabled
+                                        >
+                                        </select>
                                     </div>
-                                    <select
-                                        class="form-select"
-                                        id="box-good-receipt-type"
-                                        data-url=""
-                                        data-method="GET"
-                                        data-link-detail=""
-                                        name="good_receipt_type"
-                                        data-keyResp=""
-                                        required
-                                        disabled
-                                    >
-                                    </select>
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="form-label required" for="good-receipt-title">{% trans 'Title' %}</label>
-                            <div class="input-group">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label" for="good-receipt-date-received">{% trans 'Date' %}</label>
                                 <div class="input-affix-wrapper">
-                                    <input
-                                        type="text" class="form-control"
-                                        name="title"
-                                        id="good-receipt-title"
-                                        required
-                                        disabled
-                                    >
+                                    <input type="text" name="date_received" id="good-receipt-date-received"
+                                           class="form-control date-picker" autocomplete="off" disabled>
+                                    <div class="input-suffix">
+                                        <i class="bi bi-calendar-week"></i>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-6">
-                        <div class="form-group">
-                            <label class="form-label" for="good-receipt-date-received">{% trans 'Date' %}</label>
-                            <div class="input-affix-wrapper">
-                                <input type="text" name="date_received" id="good-receipt-date-received"
-                                       class="form-control date-picker" autocomplete="off" disabled>
-                                <div class="input-suffix">
-                                    <i class="bi bi-calendar-week"></i>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label required" for="good-receipt-title">{% trans 'Title' %}</label>
+                                <div class="input-group">
+                                    <div class="input-affix-wrapper">
+                                        <input
+                                            type="text" class="form-control"
+                                            name="title"
+                                            id="good-receipt-title"
+                                            disabled
+                                        >
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="form-label" for="good-receipt-note">{% trans 'Note' %}</label>
-                            <div class="input-group">
-                                <div class="input-affix-wrapper">
-                                    <input
-                                        type="text" class="form-control"
-                                        name="remarks"
-                                        id="good-receipt-note"
-                                        disabled
-                                    >
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label" for="good-receipt-note">{% trans 'Note' %}</label>
+                                <div class="input-group">
+                                    <div class="input-affix-wrapper">
+                                        <input
+                                            type="text" class="form-control"
+                                            name="remarks"
+                                            id="good-receipt-note"
+                                            disabled
+                                        >
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="row custom-area" id="custom-area-1">
-                    <div class="col-6">
-                        <div class="form-group">
-                            <label class="form-label required">{% trans 'Purchase order' %}</label>
-                            <div class="input-group more-information-group">
-                                <div class="input-affix-wrapper">
-                                    <div class="dropstart input-prefix">
-                                        <i
-                                                class="fas fa-info-circle more-information"
-                                                data-bs-toggle="dropdown"
-                                                data-dropdown-animation
-                                                aria-haspopup="true"
-                                                aria-expanded="false"
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label required">{% trans 'Purchase order' %}</label>
+                                <div class="input-group more-information-group">
+                                    <div class="input-affix-wrapper">
+                                        <div class="dropstart input-prefix">
+                                            <i
+                                                    class="fas fa-info-circle more-information"
+                                                    data-bs-toggle="dropdown"
+                                                    data-dropdown-animation
+                                                    aria-haspopup="true"
+                                                    aria-expanded="false"
+                                                    disabled
+                                            ></i>
+                                            <div class="dropdown-menu w-210p mt-4"></div>
+                                        </div>
+                                        <select
+                                                class="form-select"
+                                                id="box-good-receipt-purchase-order"
+                                                data-url="{% url "PurchaseOrderSaleListAPI" %}"
+                                                data-method="GET"
+                                                data-link-detail="{% url "PurchaseOrderDetail" 1 %}"
+                                                name="purchase_order"
+                                                data-keyResp="purchase_order_sale_list"
                                                 disabled
-                                        ></i>
-                                        <div class="dropdown-menu w-210p mt-4"></div>
+                                        ></select>
                                     </div>
-                                    <select
-                                            class="form-select"
-                                            id="box-good-receipt-purchase-order"
-                                            data-url="{% url "PurchaseOrderSaleListAPI" %}"
-                                            data-method="GET"
-                                            data-link-detail="{% url "PurchaseOrderDetail" 1 %}"
-                                            name="purchase_order"
-                                            data-keyResp="purchase_order_sale_list"
-                                            required
-                                            disabled
-                                    ></select>
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="form-label required" for="box-good-receipt-supplier">{% trans 'Supplier' %}</label>
-                            <div class="input-group more-information-group">
-                                <div class="input-affix-wrapper">
-                                    <div class="dropstart input-prefix">
-                                        <i
-                                                class="fas fa-info-circle more-information"
-                                                data-bs-toggle="dropdown"
-                                                data-dropdown-animation
-                                                aria-haspopup="true"
-                                                aria-expanded="false"
-                                                disabled
-                                        ></i>
-                                        <div class="dropdown-menu w-210p mt-4"></div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">{% trans 'Purchase Request' %}</label>
+                                <div class="input-group">
+                                    <div class="input-affix-wrapper">
+                                        <div class="form-control div-input" id="good-receipt-purchase-request" data-link-detail="{% url "PurchaseRequestDetail" 1 %}"></div>
+                                        <input type="hidden" id="purchase_requests_data">
                                     </div>
-                                    <select
-                                            class="form-select"
-                                            id="box-good-receipt-supplier"
-                                            data-url="{% url "AccountForSaleListAPI" %}"
-                                            data-method="GET"
-                                            data-link-detail="{% url "AccountDetail" 1 %}"
-                                            name="supplier"
-                                            data-keyResp="account_sale_list"
-                                            required
-                                            disabled
-                                    ></select>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-6">
-                        <div class="form-group">
-                            <label class="form-label">{% trans 'Purchase Request' %}</label>
-                            <div class="input-group">
-                                <div class="input-affix-wrapper">
-                                    <div class="form-control div-input" id="good-receipt-purchase-request" data-link-detail="{% url "PurchaseRequestDetail" 1 %}"></div>
-                                    <input type="hidden" id="purchase_requests_data">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label required" for="box-good-receipt-supplier">{% trans 'Supplier' %}</label>
+                                <div class="input-group more-information-group">
+                                    <div class="input-affix-wrapper">
+                                        <div class="dropstart input-prefix">
+                                            <i
+                                                    class="fas fa-info-circle more-information"
+                                                    data-bs-toggle="dropdown"
+                                                    data-dropdown-animation
+                                                    aria-haspopup="true"
+                                                    aria-expanded="false"
+                                                    disabled
+                                            ></i>
+                                            <div class="dropdown-menu w-210p mt-4"></div>
+                                        </div>
+                                        <select
+                                                class="form-select"
+                                                id="box-good-receipt-supplier"
+                                                data-url="{% url "AccountForSaleListAPI" %}"
+                                                data-method="GET"
+                                                data-link-detail="{% url "AccountDetail" 1 %}"
+                                                name="supplier"
+                                                data-keyResp="account_sale_list"
+                                                disabled
+                                        ></select>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
                 <div class="row custom-area" id="custom-area-2" hidden>
-                    <div class="col-6">
-                        <div class="form-group">
-                            <label class="form-label required" for="box-good-receipt-inventory-adjustment">{% trans 'IA number' %}</label>
-                            <select
-                                    class="form-select"
-                                    id="box-good-receipt-inventory-adjustment"
-                                    data-url="{% url 'InventoryAdjustmentOtherListAPI' %}"
-                                    data-method="GET"
-                                    data-link-detail=""
-                                    name="inventory_adjustment"
-                                    data-keyResp="inventory_adjustment_other_list"
-                                    required
-                                    disabled
-                            >
-                            </select>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label required" for="box-good-receipt-inventory-adjustment">{% trans 'IA number' %}</label>
+                                <select
+                                        class="form-select"
+                                        id="box-good-receipt-inventory-adjustment"
+                                        data-url="{% url 'InventoryAdjustmentOtherListAPI' %}"
+                                        data-method="GET"
+                                        data-link-detail=""
+                                        name="inventory_adjustment"
+                                        data-keyResp="inventory_adjustment_other_list"
+                                        disabled
+                                >
+                                </select>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-6"></div>
                 </div>
-
                 <div class="row custom-area" id="custom-area-3" hidden>
-                    <div class="col-6">
-                        <div class="form-group">
-                            <label class="form-label" for="box-good-receipt-product-order">{% trans 'Product order' %}</label>
-                            <select
-                                    class="form-select"
-                                    id="box-good-receipt-product-order"
-                                    data-url=""
-                                    data-method="GET"
-                                    data-link-detail=""
-                                    name="product_order"
-                                    data-keyResp=""
-                                    required
-                                    disabled
-                            >
-                            </select>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label" for="box-good-receipt-product-order">{% trans 'Product order' %}</label>
+                                <select
+                                        class="form-select"
+                                        id="box-good-receipt-product-order"
+                                        data-url=""
+                                        data-method="GET"
+                                        data-link-detail=""
+                                        name="product_order"
+                                        data-keyResp=""
+                                        disabled
+                                >
+                                </select>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label class="form-label">{% trans 'Production report' %}</label>
-                            <div class="input-group more-information-group">
-                                <div class="input-affix-wrapper">
-                                    <div class="dropstart input-prefix">
-                                        <i
-                                                class="fas fa-info-circle more-information"
-                                                data-bs-toggle="dropdown"
-                                                data-dropdown-animation
-                                                aria-haspopup="true"
-                                                aria-expanded="false"
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">{% trans 'Production report' %}</label>
+                                <div class="input-group more-information-group">
+                                    <div class="input-affix-wrapper">
+                                        <div class="dropstart input-prefix">
+                                            <i
+                                                    class="fas fa-info-circle more-information"
+                                                    data-bs-toggle="dropdown"
+                                                    data-dropdown-animation
+                                                    aria-haspopup="true"
+                                                    aria-expanded="false"
+                                                    disabled
+                                            ></i>
+                                            <div class="dropdown-menu w-210p mt-4"></div>
+                                        </div>
+                                        <select
+                                                class="form-select"
+                                                id=""
+                                                data-url="{% url "ProductForSaleListAPI" %}"
+                                                data-method="GET"
+                                                data-link-detail="{% url "ProductDetail" 1 %}"
+                                                name="production_report"
+                                                data-keyResp=""
                                                 disabled
-                                        ></i>
-                                        <div class="dropdown-menu w-210p mt-4"></div>
+                                        ></select>
                                     </div>
-                                    <select
-                                            class="form-select"
-                                            id=""
-                                            data-url="{% url "ProductForSaleListAPI" %}"
-                                            data-method="GET"
-                                            data-link-detail="{% url "ProductDetail" 1 %}"
-                                            name="production_report"
-                                            data-keyResp=""
-                                            required
-                                            disabled
-                                    ></select>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-6"></div>
                 </div>
             </div>
             <div class="row collapse-arrow mt-2 mb-2">

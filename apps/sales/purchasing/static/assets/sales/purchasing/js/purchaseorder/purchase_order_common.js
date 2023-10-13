@@ -2026,7 +2026,9 @@ class POSubmitHandle {
                 }
                 let elePrice = row.querySelector('.table-row-price');
                 if (elePrice) {
-                    rowData['product_unit_price'] = $(elePrice).valCurrency();
+                    if ($(elePrice).valCurrency() > 0) {
+                        rowData['product_unit_price'] = $(elePrice).valCurrency();
+                    }
                 }
                 let eleSubtotal = row.querySelector('.table-row-subtotal-raw');
                 if (eleSubtotal) {
@@ -2050,6 +2052,12 @@ class POSubmitHandle {
     };
 
     static setupDataSubmit(_form) {
+        if (_form.dataForm?.['supplier'] === "") {
+            _form.dataForm['supplier'] = null;
+        }
+        if (_form.dataForm?.['contact'] === "") {
+            _form.dataForm['contact'] = null;
+        }
         if (POLoadDataHandle.PRDataEle.val()) {
             _form.dataForm['purchase_requests_data'] = JSON.parse(POLoadDataHandle.PRDataEle.val());
         }

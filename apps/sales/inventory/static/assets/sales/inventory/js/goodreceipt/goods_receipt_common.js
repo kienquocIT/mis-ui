@@ -262,15 +262,6 @@ class GRLoadDataHandle {
             } else { // If PO doesn't have PR
                 GRLoadDataHandle.loadModalWareHouse(JSON.parse(ele.getAttribute('data-row')));
             }
-            if (dataRow?.['stock'] > 0) { // If PO have Stock
-                let dataStock = {
-                    'purchase_request_product': {
-                        'uom': dataRow?.['uom_order_request']
-                    },
-                    'quantity_order': dataRow?.['stock'],
-                }
-                GRDataTableHandle.tablePR.DataTable().row.add(dataStock).draw().node();
-            }
             $(row).css('background-color', '#ebfcf5');
         } else {
             $(row).css('background-color', '#fff');
@@ -342,7 +333,11 @@ class GRLoadDataHandle {
                         for (let item of data.warehouse_list) {
                             if (is_has_pr === true) {
                                 item['purchase_request_product_id'] = dataStore?.['id'];
-                                item['uom'] = dataStore?.['purchase_request_product']?.['uom'];
+                                if (dataStore?.['is_stock'] === false) {
+                                    item['uom'] = dataStore?.['purchase_request_product']?.['uom'];
+                                } else {
+                                    item['uom'] = dataStore?.['uom_stock'];
+                                }
                             } else {
                                 item['purchase_order_product_id'] = dataStore?.['id'];
                             }
@@ -895,7 +890,7 @@ class GRDataTableHandle {
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        return `<span class="table-row-uom">${row?.['purchase_request_product']?.['uom']?.['title'] ? row?.['purchase_request_product']?.['uom']?.['title'] : ''}</span>`;
+                        return `<span class="table-row-uom">${row?.['purchase_request_product']?.['uom']?.['title'] ? row?.['purchase_request_product']?.['uom']?.['title'] : row?.['uom_stock']?.['title']}</span>`;
                     }
                 },
                 {

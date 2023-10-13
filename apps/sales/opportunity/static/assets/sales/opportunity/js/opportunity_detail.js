@@ -549,9 +549,6 @@ $(document).ready(function () {
     }, jQuery)
 
     // TIMELINE
-    let CALL_LOG_LIST = [];
-    let EMAIL_LIST = [];
-    let MEETING_LIST = [];
 
     function tabSubtask(taskID) {
         if (!taskID) return false
@@ -850,7 +847,7 @@ $(document).ready(function () {
                 $('#detail-sale-code-select-box').append(`<option selected>(${call_log_obj.opportunity.code})&nbsp;&nbsp;&nbsp;${call_log_obj.opportunity.title}</option>`);
 
                 $('#detail-account-select-box option').remove();
-                $('#detail-account-select-box').append(`<option selected>${call_log_obj.customer.title}</option>`);
+                $('#detail-account-select-box').append(`<option selected>${call_log_obj.opportunity.customer.title}</option>`);
 
                 $('#detail-contact-select-box option').remove();
                 $('#detail-contact-select-box').append(`<option selected>${call_log_obj.contact.fullname}</option>`);

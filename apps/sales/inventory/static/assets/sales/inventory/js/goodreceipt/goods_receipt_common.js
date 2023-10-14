@@ -1807,6 +1807,7 @@ class GRSubmitHandle {
                                         'purchase_request_product',
                                         'quantity_import',
                                         'warehouse_data',
+                                        'is_stock',
                                     ]
                                     filterFieldList(field_list, pr_product);
                                     if (pr_product?.['quantity_import'] > 0) {
@@ -1815,7 +1816,7 @@ class GRSubmitHandle {
                                 }
                                 dataRow['purchase_request_products_data'] = pr_product_submit_list;
                                 for (let pr_product of dataRow?.['purchase_request_products_data'] ? dataRow?.['purchase_request_products_data'] : []) {
-                                    pr_product['purchase_request_product'] = pr_product?.['purchase_request_product']?.['id']
+                                    pr_product['purchase_request_product'] = pr_product?.['purchase_request_product']?.['id'] ? pr_product?.['purchase_request_product']?.['id'] : null;
                                     GRSubmitHandle.setupDataWHLotSerial(pr_product);
                                 }
                                 // If PO doesn't have PR

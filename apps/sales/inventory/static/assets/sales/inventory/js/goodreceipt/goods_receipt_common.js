@@ -1573,6 +1573,7 @@ class GRStoreDataHandle {
                         let dataRow = JSON.parse(dataRowRaw);
                         dataRow['quantity_import'] = quantityImport;
                         POProductID = dataRow?.['purchase_order_product_id'];
+                        dataRow['purchase_order_request_product'] = dataRow?.['id'];
                         new_data.push(dataRow);
                     // }
                 }
@@ -1804,6 +1805,7 @@ class GRSubmitHandle {
                                 let pr_product_submit_list = [];
                                 for (let pr_product of dataRow?.['purchase_request_products_data'] ? dataRow?.['purchase_request_products_data'] : []) {
                                     let field_list = [
+                                        'purchase_order_request_product',
                                         'purchase_request_product',
                                         'quantity_import',
                                         'warehouse_data',

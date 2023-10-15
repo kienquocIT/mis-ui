@@ -69,7 +69,7 @@ class OpportunityDetail(View):
 
     @mask_view(
         auth_require=True,
-        template='sales/opportunity/opportunity_detail_page.html',
+        template='sales/opportunity/opportunity_detail.html',
         menu_active='',
         breadcrumb='OPPORTUNITY_DETAIL_PAGE',
         perm_check=PermCheck(url=ApiURL.OPPORTUNITY_DETAIL, method='GET', fill_key=['pk']),
@@ -572,3 +572,34 @@ class OpportunityMemberListAPI(APIView):
     def get(self, request, pk, *arg, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_MEMBER_LIST.fill_key(pk=pk)).get()
         return resp.auto_return(key_success='opportunity_member')
+
+
+class OpportunityCallLogDetailAPI(APIView):
+    @mask_view(
+        is_api=True,
+        auth_require=True
+    )
+    def get(self, request, pk, *arg, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CALL_LOG_DETAIL.fill_key(pk=pk)).get()
+        return resp.auto_return(key_success='opportunity_call_log_detail')
+
+
+class OpportunityEmailDetailAPI(APIView):
+    @mask_view(
+        is_api=True,
+        auth_require=True
+    )
+    def get(self, request, pk, *arg, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_EMAIL_DETAIL.fill_key(pk=pk)).get()
+        return resp.auto_return(key_success='opportunity_email_detail')
+
+
+class OpportunityMeetingDetailAPI(APIView):
+    @mask_view(
+        is_api=True,
+        auth_require=True
+    )
+    def get(self, request, pk, *arg, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_MEETING_DETAIL.fill_key(pk=pk)).get()
+        return resp.auto_return(key_success='opportunity_meeting_detail')
+

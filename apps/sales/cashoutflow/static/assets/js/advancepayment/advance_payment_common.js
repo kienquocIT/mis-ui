@@ -12,6 +12,33 @@ let sale_code_loading_span = $('#sale-code-loading-span')
 let OPP_LIST = [];
 let QUO_LIST = [];
 let SO_LIST = [];
+let call_opp_list = $.fn.callAjax(saleCodeEle.attr('data-url-opp'), 'GET').then((resp) => {
+    let data = $.fn.switcherResp(resp);
+    if (data) {
+        if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('opportunity_list')) {
+            return data?.['opportunity_list'];
+        }
+        return [];
+    }
+})
+let call_quo_list = $.fn.callAjax(saleCodeEle.attr('data-url-quotation'), 'GET').then((resp) => {
+    let data = $.fn.switcherResp(resp);
+    if (data) {
+        if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('quotation_list')) {
+            return data?.['quotation_list'];
+        }
+        return [];
+    }
+})
+let call_so_list = $.fn.callAjax(saleCodeEle.attr('data-url-sale-order'), 'GET').then((resp) => {
+    let data = $.fn.switcherResp(resp);
+    if (data) {
+        if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('sale_order_list')) {
+            return data?.['sale_order_list'];
+        }
+        return [];
+    }
+})
 
 $('#input-file-now').dropify({
     messages: {
@@ -97,33 +124,6 @@ function APLoadBeneficiary(data) {
 }
 
 function getSaleCode() {
-    let call_opp_list = $.fn.callAjax(saleCodeEle.attr('data-url-opp'), 'GET').then((resp) => {
-        let data = $.fn.switcherResp(resp);
-        if (data) {
-            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('opportunity_list')) {
-                return data?.['opportunity_list'];
-            }
-            return [];
-        }
-    })
-    let call_quo_list = $.fn.callAjax(saleCodeEle.attr('data-url-quotation'), 'GET').then((resp) => {
-        let data = $.fn.switcherResp(resp);
-        if (data) {
-            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('quotation_list')) {
-                return data?.['quotation_list'];
-            }
-            return [];
-        }
-    })
-    let call_so_list = $.fn.callAjax(saleCodeEle.attr('data-url-sale-order'), 'GET').then((resp) => {
-        let data = $.fn.switcherResp(resp);
-        if (data) {
-            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('sale_order_list')) {
-                return data?.['sale_order_list'];
-            }
-            return [];
-        }
-    })
     Promise.all([call_opp_list, call_quo_list, call_so_list]).then((results) => {
         OPP_LIST = results[0];
         QUO_LIST = results[1];
@@ -214,8 +214,7 @@ function APLoadSaleCode(sale_code) {
         let sale_code_selected_id = saleCodeEle.val();
         if (sale_code_selected_id !== '') {
             let obj_sale_code = JSON.parse($('#' + saleCodeEle.attr('data-idx-data-loaded')).text())[sale_code_selected_id];
-            APLoadBeneficiary(obj_sale_code.sale_person)
-
+            APLoadBeneficiary(obj_sale_code?.['sale_person'])
             let call_ap_list = $.fn.callAjax($('#form-create-advance').attr('data-url'), 'GET').then((resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
@@ -1043,11 +1042,149 @@ function LoadDetailAP(option) {
 }
 
 class AdvancePaymentHandle {
-    load() {
+    load(opp_obj) {
+        if (opp_obj !== null) {
+            saleCodeEle.append(`<option value="${opp_obj.id}" selected>${opp_obj.title}</option>`);
+            saleCodeTypeEle.attr('disabled', true);
+            $('#radio-sale').attr('checked', true);
+            btn_sale_code_type.text('Sale');
+            $('#sale-code-label-id').addClass('required');
+            APLoadBeneficiary(opp_obj?.['sale_person'])
+
+            Promise.all([call_opp_list, call_quo_list, call_so_list]).then((results) => {
+                OPP_LIST = results[0];
+                QUO_LIST = results[1];
+                SO_LIST = results[2];
+
+                let opp_obj_mapped = OPP_LIST.filter(function (ele) {
+                    return ele.id === opp_obj.id;
+                })
+                let quo_obj_mapped = QUO_LIST.filter(function (ele) {
+                    return ele.opportunity.id === opp_obj.id;
+                })
+                let so_obj_mapped = SO_LIST.filter(function (ele) {
+                    return ele.opportunity.id === opp_obj.id;
+                })
+
+                let sale_code_list = [so_obj_mapped, quo_obj_mapped, opp_obj_mapped];
+                let sale_code_mapped = null;
+                for (let i = 0; i < sale_code_list.length; i++) {
+                    if (sale_code_list[i].length > 0) {
+                        sale_code_mapped = sale_code_list[i][0];
+                        break;
+                    }
+                }
+
+                if (sale_code_mapped !== null) {
+                    let sale_code_selected_id = sale_code_mapped.id;
+                    $('#tab_plan_datatable tbody').html('')
+                    let call_ap_list = $.fn.callAjax($('#form-create-advance').attr('data-url'), 'GET').then((resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('advance_payment_list')) {
+                                return data?.['advance_payment_list'];
+                            }
+                            return [];
+                        }
+                    })
+                    Promise.all([call_ap_list]).then((results) => {
+                        let ap_selected = null;
+                        for (let i = 0; i < results[0].length; i++) {
+                            let ap_opp_mapped = results[0][i]?.['opportunity_mapped'];
+                            let ap_quo_mapped = results[0][i]?.['quotation_mapped'];
+                            let ap_so_mapped = results[0][i]?.['sale_order_mapped'];
+                            if (Object.keys(ap_opp_mapped).length !== 0) {
+                                if (sale_code_selected_id === ap_opp_mapped.id) {
+                                    ap_selected = results[0][i].id;
+                                    break;
+                                }
+                            }
+                            if (Object.keys(ap_quo_mapped).length !== 0) {
+                                if (sale_code_selected_id === ap_quo_mapped.id) {
+                                    ap_selected = results[0][i].id;
+                                    break;
+                                }
+                            }
+                            if (Object.keys(ap_so_mapped).length !== 0) {
+                                if (sale_code_selected_id === ap_so_mapped.id) {
+                                    ap_selected = results[0][i].id;
+                                    break;
+                                }
+                            }
+                        }
+                        if (ap_selected !== null) {
+                            let url_loaded = $('#form-create-advance').attr('data-url-detail').replace(0, ap_selected);
+                            $.fn.callAjax(url_loaded, 'GET').then(
+                                (resp) => {
+                                    let data = $.fn.switcherResp(resp);
+                                    if (data) {
+                                        data = data['advance_payment_detail'];
+                                        let sale_code_selected_id_list = {};
+
+                                        if (Object.keys(data?.['sale_code_relate']).includes('opportunity_linked')) {
+                                            sale_code_selected_id_list['opportunity_linked_id'] = data?.['sale_code_relate']['opportunity_linked'].id;
+                                        }
+                                        if (Object.keys(data?.['sale_code_relate']).includes('quotation_linked')) {
+                                            sale_code_selected_id_list['quotation_linked_id'] = data?.['sale_code_relate']['quotation_linked'].id;
+                                        }
+                                        if (Object.keys(data?.['sale_code_relate']).includes('sale_order_linked')) {
+                                            sale_code_selected_id_list['sale_order_linked_id'] = data?.['sale_code_relate']['sale_order_linked'].id;
+                                        }
+
+                                        let all_expense_items = [];
+                                        for (let i = 0; i < results[0].length; i++) {
+                                            let item = results[0][i];
+                                            let so_mapped_id = item?.['sale_order_mapped']['id'];
+                                            let quo_mapped_id = item?.['quotation_mapped']['id'];
+                                            let opp_mapped_id = item?.['opportunity_mapped']['id'];
+
+                                            if ((sale_code_selected_id_list['sale_order_linked_id'] === so_mapped_id && so_mapped_id !== undefined) ||
+                                                (sale_code_selected_id_list['quotation_linked_id'] === quo_mapped_id && quo_mapped_id !== undefined) ||
+                                                (sale_code_selected_id_list['opportunity_linked_id'] === opp_mapped_id && opp_mapped_id !== undefined)) {
+                                                all_expense_items = all_expense_items.concat(item?.['expense_items']);
+                                            }
+                                        }
+                                        if (sale_code_selected_id_list['sale_order_linked_id']) {
+                                            loadSaleOrderExpensesPlan(sale_code_selected_id_list['sale_order_linked_id'], all_expense_items, data?.['payment_value_list'], data?.['returned_value_list']);
+                                        }
+                                        else if (sale_code_selected_id_list['quotation_linked_id']) {
+                                            loadQuotationExpensesPlan(sale_code_selected_id_list['quotation_linked_id'], all_expense_items, data?.['payment_value_list'], data?.['returned_value_list']);
+                                        }
+
+                                        $.fn.initMaskMoney2();
+                                    }
+                                })
+                        }
+                        else {
+                            let check_is_so = SO_LIST.filter(function (element) {
+                                return element.id === sale_code_selected_id;
+                            })
+                            let check_is_quo = QUO_LIST.filter(function (element) {
+                                return element.id === sale_code_selected_id;
+                            })
+                            if (check_is_so.length > 0) {
+                                loadSaleOrderExpensesPlan(sale_code_selected_id)
+                            }
+                            if (check_is_quo.length > 0) {
+                                loadQuotationExpensesPlan(sale_code_selected_id)
+                            }
+                        }
+                    }).catch((error) => {
+                        console.log(error)
+                        $.fn.notifyB({description: "Load Sale Code Failed!"}, 'failure');
+                    });
+                }
+            }).catch((error) => {
+                console.log(error)
+                $.fn.notifyB({description: "Load Sale Code Failed!"}, 'failure');
+            });
+        }
+        else {
+            APLoadBeneficiary(initEmployee);
+        }
         APLoadCreatedDate();
         APLoadReturnDate();
         APLoadCreator(initEmployee);
-        APLoadBeneficiary(initEmployee);
         APLoadSupplier();
     }
     combinesData(frmEle, for_update=false) {

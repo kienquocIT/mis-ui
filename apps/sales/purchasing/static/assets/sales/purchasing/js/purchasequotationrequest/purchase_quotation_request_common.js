@@ -60,10 +60,19 @@ function Group(data) {
 }
 
 function GetSmallestRatioElement(data) {
-    return data.reduce(function (minElement, currentElement) {
+    let minEle = data.reduce(function (minElement, currentElement) {
         if (currentElement.uom.ratio < minElement.uom.ratio) {return currentElement;}
         else {return minElement;}
     }, data[0]);
+    let minTax = data.reduce(function (minElement, currentElement) {
+        if (currentElement.tax.value < minElement.tax.value) {return currentElement;}
+        else {return minElement;}
+    }, data[0]);
+    let minUnitPrice = data.reduce(function (minElement, currentElement) {
+        if (currentElement.product_unit_price < minElement.product_unit_price) {return currentElement;}
+        else {return minElement;}
+    }, data[0]);
+    return [minEle, minTax.tax, minUnitPrice.product_unit_price]
 }
 
 function LoadPurchaseRequestSelectBox(purchase_request_list_selected) {
@@ -94,7 +103,7 @@ function LoadPurchaseRequestTable() {
     PRTable.DataTable().clear().destroy();
     PRTable.DataTableDefault({
         paging: false,
-        dom: "<'row mt-3 miner-group'>" + "<'row mt-3'<'col-sm-12'tr>>",
+        dom: "",
         ajax: {
             url: PRTable.attr('data-url'),
             type: PRTable.attr('data-method'),
@@ -159,7 +168,7 @@ function LoadPurchaseRequestProductsTable() {
     PRProductsTable.DataTable().clear().destroy();
     PRProductsTable.DataTableDefault({
         paging: false,
-        dom: "<'row mt-3 miner-group'>" + "<'row mt-3'<'col-sm-12'tr>>",
+        dom: "",
         data: purchase_request_products_data,
         columns: [
             {
@@ -205,7 +214,7 @@ function LoadPurchaseRequestProductsTable() {
     })
 }
 
-function LoadPurchaseRequestProductsTableForMerge(product_id_list) {
+function LoadPurchaseRequestProductsTableForMerge(product_id_list=[]) {
     let pr_products_data = [];
     $('.form-check-purchase-request:checked').each(function () {
         let purchase_request_get = $(this).attr('id');
@@ -231,7 +240,7 @@ function LoadPurchaseRequestProductsTableForMerge(product_id_list) {
     let pr_products_merge_data = [];
     for (let i = 0; i < pre_merge_data_group_by_product_id.length; i++) {
         let temp = pre_merge_data_group_by_product_id[i];
-        let smallestRatioElement = GetSmallestRatioElement(temp);
+        let [smallestRatioElement, smallestTax, smallestUnitPrice] = GetSmallestRatioElement(temp);
 
         let sum_converted_item = 0;
         for (let j = 0; j < temp.length; j++) {
@@ -251,8 +260,8 @@ function LoadPurchaseRequestProductsTableForMerge(product_id_list) {
                 "uom_group": temp[0].uom_group,
                 "quantity": sum_converted_item,
                 "purchase_request_code_list": pr_code_list,
-                "product_unit_price": smallestRatioElement.product_unit_price,
-                "tax": Object.keys(smallestRatioElement.tax).length > 0 ? smallestRatioElement.tax : {}
+                "product_unit_price": smallestUnitPrice,
+                "tax": Object.keys(smallestTax).length > 0 ? smallestTax : {}
             }
         )
     }
@@ -260,7 +269,7 @@ function LoadPurchaseRequestProductsTableForMerge(product_id_list) {
     PRProductsForMergeTable.DataTable().clear().destroy();
     PRProductsForMergeTable.DataTableDefault({
         paging: false,
-        dom: "<'row mt-3 miner-group'>" + "<'row mt-3'<'col-sm-12'tr>>",
+        dom: "",
         data: pr_products_merge_data,
         columns: [
             {
@@ -797,6 +806,8 @@ $(document).on("click", '#new-product-btn', function () {
 
 $(document).on("click", '#btn-show-modal', function () {
     LoadPurchaseRequestTable()
+    LoadPurchaseRequestProductsTable()
+    LoadPurchaseRequestProductsTableForMerge()
 })
 
 $(document).on("change", '.pr-unit-price-input', function () {

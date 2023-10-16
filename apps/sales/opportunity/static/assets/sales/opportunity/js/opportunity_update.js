@@ -523,27 +523,23 @@ $(document).ready(function () {
                 }
             })
 
+            function getDataMemberAddNew(){
+                return $('#dtbMember').DataTable().data().filter((item) => item.is_checked_new === true).map((item)=> item.id).toArray();
+            }
+
             const frm_add_member = $('#frm-add-member');
             SetupFormSubmit.validate(
                 frm_add_member,
                 {
                     submitHandler: function (form) {
                         let frm = new SetupFormSubmit($(form));
-                        let data = {
-                            'members': OpportunityLoadDetail.getDataMember(),
-                            'employee_current': $('#emp-current-id').val(),
-                            'opportunity': pk,
-                        }
+                        let memberIds = getDataMemberAddNew();
                         $.fn.callAjax2({
                             sweetAlertOpts: {'allowOutsideClick': true},
                             url: frm.dataUrl.replaceAll('__pk_opp__', pk),
                             method: frm.dataMethod,
                             data: {
-                                'members': OpportunityLoadDetail.getDataMember().map(
-                                    (item) => {
-                                        return item.id;
-                                    }
-                                ),
+                                'members': memberIds,
                             },
                         }).then(
                             (resp) => {
@@ -563,6 +559,7 @@ $(document).ready(function () {
                                 $x.fn.hideLoadingPage();
                             },
                             (errs) => {
+                                $.fn.switcherResp(errs);
                                 $x.fn.hideLoadingPage();
                             }
                         )

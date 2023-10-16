@@ -113,15 +113,15 @@
                                         <div class="{{ clsNameBastionField }}">
                                             <div class="form-group">
                                                 <label
-                                                        for="opportunity"
+                                                        for="opportunity_id"
                                                         class="form-label {% if opp_required == True %} required {% endif %}"
                                                 >
                                                     {{ opp_title }}
                                                 </label>
                                                 <div class="input-group">
                                                     <select
-                                                            name="opportunity"
-                                                            id="opportunity"
+                                                            name="opportunity_id"
+                                                            id="opportunity_id"
                                                             class="form-select {% if opp_hidden == True %} d-none {% endif %}"
                                                             data-url="{% url 'OpportunityListAPI' %}"
                                                             data-method="GET"
@@ -147,14 +147,14 @@
                                         <div class="{{ clsNameBastionField }}">
                                             <div class="form-group">
                                                 <label
-                                                        for="project"
+                                                        for="project_id"
                                                         class="form-label {% if prj_required == True %} required {% endif %}"
                                                 >
                                                     {{ prj_title }}
                                                 </label>
                                                 <select
-                                                        name="project"
-                                                        id="project"
+                                                        name="project_id"
+                                                        id="project_id"
                                                         class="form-select {% if prj_hidden %} d-none {% endif %}"
                                                         data-params='{"list_from_app": "{{ data.list_from_app }}"}'
                                                         {% if prj_required == True %} required {% endif %}

@@ -207,8 +207,8 @@ class BastionFieldControl {
     }
 
     mainDiv = $('#bastionFieldTheDocument');
-    oppEle = $('#opportunity')
-    prjEle = $('#project');
+    oppEle = $('#opportunity_id')
+    prjEle = $('#project_id');
     empInheritEle = $('#employee_inherit_id');
 
     constructor(opts) {

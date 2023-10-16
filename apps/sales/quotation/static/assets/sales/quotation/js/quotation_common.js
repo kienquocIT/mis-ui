@@ -757,7 +757,7 @@ class QuotationLoadDataHandle {
             new $x.cls.bastionField({
                 has_opp: true,
                 has_inherit: true,
-                opp_call_trigger_change: true,
+                // opp_call_trigger_change: true,
                 data_inherit: [{
                     "id": data?.['sale_person']?.['id'],
                     "full_name": data?.['sale_person']?.['full_name'],

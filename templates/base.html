@@ -538,6 +538,20 @@
                 }
             });
         })
+
+        function onLoadDropdownInfo(eleInfo, eleInfoData, selectedData){
+            eleInfoData.find('.emp-info-detail-first-name').val(selectedData['first_name']);
+            eleInfoData.find('.emp-info-detail-last-name').val(selectedData['last_name']);
+            eleInfoData.find('.emp-info-detail-email').val(selectedData['email']);
+            eleInfoData.find('.emp-info-detail-is-active').val(selectedData['is_active']);
+            return eleInfo;
+        }
+
+        function onLoadDropdownInfoOpp(eleInfo, eleInfoData, selectedData){
+            eleInfoData.find('.opp-info-detail-title').val(selectedData['title']);
+            eleInfoData.find('.opp-info-detail-code').val(selectedData['code']);
+            return eleInfo;
+        }
     </script>
 
     <!-- Customize JS -->

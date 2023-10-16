@@ -1225,6 +1225,36 @@ class ListeningEventController {
         });
     }
 
+    setValidatorDefaults(){
+        $.validator.setDefaults({
+            focusInvalid: true,
+            validClass: "is-valid",
+            errorClass: "is-invalid",
+            errorElement: "small",
+            errorPlacement: function (error, element) {
+                element.closest('.form-group').append(error);
+                // error.insertAfter(element);
+                error.css({
+                    'color': "red",
+                })
+            }
+        });
+    }
+
+    dropdownInAccordion(){
+        $('body').on('show.bs.dropdown', '.info-btn-more', function (){
+            let accorItemEle = $(this).closest('.accordion-item');
+            if (accorItemEle.length > 0){
+                accorItemEle.addClass('overflow-unset');
+            }
+        }).on('hidden.bs.dropdown',  '.info-btn-more', function (){
+            let accorItemEle = $(this).closest('.accordion-item');
+            if (accorItemEle.length > 0 && accorItemEle.find('.info-btn-more.show').length === 0){
+                accorItemEle.removeClass('overflow-unset');
+            }
+        })
+    }
+
     // main
     active() {
         this.switchCompany();
@@ -1241,6 +1271,8 @@ class ListeningEventController {
         this.activeFileUpload();
         this.avatarUpload();
         this.tabHashUrl();  // keep it run after nttDrawer and log
+        this.setValidatorDefaults();
+        this.dropdownInAccordion();
     }
 }
 
@@ -1747,6 +1779,18 @@ class UtilControl {
             if (data.hasOwnProperty(key)) {
                 let tmp = data[key];
                 delete data[key];
+                if (compareTypeWithDefault === true) {
+                    if (typeof tmp === typeof defaultData) return tmp;
+                } else return tmp;
+            }
+        }
+        return defaultData;
+    }
+
+    static getKey(data, key, defaultData = null, compareTypeWithDefault = false){
+        if (typeof data === 'object') {
+            if (data.hasOwnProperty(key)) {
+                let tmp = data[key];
                 if (compareTypeWithDefault === true) {
                     if (typeof tmp === typeof defaultData) return tmp;
                 } else return tmp;
@@ -3475,6 +3519,9 @@ let $x = {
         removeEmptyValuesFromObj: UtilControl.removeEmptyValuesFromObj,
         getRandomArbitrary: UtilControl.getRandomArbitrary,
         getRandomInArray: UtilControl.getRandomInArray,
+
+        popKey: UtilControl.popKey,
+        getKey: UtilControl.getKey,
     },
 }
 

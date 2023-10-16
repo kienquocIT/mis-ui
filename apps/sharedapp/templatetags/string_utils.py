@@ -1,9 +1,11 @@
 """register filter custom"""
+import json
 import random
 import string
 from typing import Union
 
 from django import template
+from django.contrib.auth.models import AnonymousUser
 
 register = template.Library()
 
@@ -126,3 +128,74 @@ def val_in_arr(value, key) -> Union['0', '1']:
     elif not value:
         return '1'
     return '1' if key in [str(ite).strip() for ite in value.split(",")] else '0'
+
+
+@register.filter
+def parse_0_or_1(data):
+    if data in ['True', True, 1, '1']:
+        return '1'
+    return '0'
+
+
+@register.simple_tag(name='priority_app')
+def priority_app(value):
+    default_value = ['opp', 'prj', 'inherit']
+    if value:
+        try:
+            default_value = []
+            arr = value.split("-")
+            for item in arr:
+                item = item.lower()
+                if item in ['opp', 'prj', 'inherit']:
+                    default_value.append(item)
+            return default_value
+        except Exception as err:
+            print('[TemplateTag][priority_app] ', str(err))
+        return []
+    return default_value
+
+
+@register.simple_tag(takes_context=True, name='data_onload_current_employee')
+def data_onload_current_employee(context):
+    result = []
+    user_obj = context.request.user
+    if user_obj and not isinstance(user_obj, AnonymousUser):
+        employee_data = context.request.user.employee_current_data
+        if (
+                employee_data
+                and 'id' in employee_data
+                and 'first_name' in employee_data
+                and 'last_name' in employee_data
+                and 'full_name' in employee_data
+                and 'email' in employee_data
+        ):
+            result = [{
+                'id': employee_data['id'],
+                'first_name': employee_data['first_name'],
+                'last_name': employee_data['last_name'],
+                'full_name': employee_data['full_name'],
+                'email': employee_data['email'],
+                'selected': True,
+            }]
+    return json.dumps(result)
+
+
+@register.simple_tag(name='parse_data_or_default')
+def parse_data_or_default(context, default_value=None, append_or_override='override'):
+    if not context:
+        return default_value
+    if append_or_override == 'override':
+        return context
+    elif append_or_override == 'append':
+        return f'{context} {default_value}'
+
+    return context
+
+
+@register.simple_tag(name='attr_and_value_else_blank')
+def attr_and_value_else_blank(attr_name, attr_value, default_value=None, else_return=""):
+    if attr_name:
+        result = default_value if default_value else attr_value if attr_value else None
+        if result:
+            return f'{attr_name}={result}'
+    return else_return

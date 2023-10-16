@@ -52,6 +52,11 @@
                                 <button type="button" class="btn btn-soft-primary ml-3" id="printButton"><span><span class="icon"><span class="feather-icon"><i class="fas fa-print"></i></span></span><span>{% trans 'Print' %}</span></span></button>
                             </div>
                         </div>
+
+                        <div class="row">
+                            {% trans 'Select Sale Person' as inherit_title %}
+                            {% include 'extends/the-documents/bastion.html' with has_opp=True has_inherit=True opp_disabled=True inherit_disabled=True opp_readonly=True inherit_readonly=True is_open=True inherit_title=inherit_title inherit_required=True %}
+                        </div>
                         <div class="row">
                             <div class="col-6">
                                 <div class="form-group">

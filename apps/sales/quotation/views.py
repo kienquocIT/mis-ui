@@ -47,10 +47,14 @@ class QuotationCreate(View):
     )
     def get(self, request, *args, **kwargs):
         opportunity = request.GET.get('opportunity', "")
-        return {'data': {
-            'employee_current': json.dumps(request.user.employee_current_data),
-            'opportunity': opportunity,
-        }}, status.HTTP_200_OK
+        ctx = {
+            'data': {
+                'employee_current': json.dumps(request.user.employee_current_data),
+                'opportunity': opportunity,
+            },
+            'list_from_app': 'quotation.quotation.view',
+        }
+        return ctx, status.HTTP_200_OK
 
 
 class QuotationListAPI(APIView):

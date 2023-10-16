@@ -11,7 +11,7 @@ $(function () {
         let boxCustomer = $('#select-box-quotation-create-customer');
         let boxContact = $('#select-box-quotation-create-contact');
         let boxPayment = $('#select-box-quotation-create-payment-term');
-        let boxSalePerson = $('#select-box-quotation-create-sale-person');
+        let boxSalePerson = $('#employee_inherit_id');
         let boxPriceList = $('#select-box-quotation-create-price-list');
         let boxQuotation = $('#select-box-quotation');
         let tabPrice = $('#tab_terms');
@@ -120,7 +120,7 @@ $(function () {
                         document.getElementById('customer-price-list').value = dataSelected?.['price_list_mapped'].id;
                     }
                     // Load again dropdown sale_person only valueSelected
-                    QuotationLoadDataHandle.loadBoxQuotationSalePerson($('#select-box-quotation-create-sale-person').val());
+                    QuotationLoadDataHandle.loadBoxQuotationSalePerson($('#employee_inherit_id').val());
                 }
             } else { // No Value => load again dropdowns
                 boxOpportunity.empty();
@@ -131,7 +131,7 @@ $(function () {
                 QuotationLoadDataHandle.loadBoxQuotationPaymentTerm();
                 document.getElementById('customer-price-list').value = "";
                 if (!$('#select-box-quotation-create-opportunity').val()) {
-                    QuotationLoadDataHandle.loadBoxQuotationSalePerson($('#select-box-quotation-create-sale-person').val());
+                    QuotationLoadDataHandle.loadBoxQuotationSalePerson($('#employee_inherit_id').val());
                 }
             }
             QuotationLoadDataHandle.loadInformationSelectBox(boxCustomer);

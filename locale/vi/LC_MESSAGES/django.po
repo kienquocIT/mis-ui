@@ -3737,6 +3737,10 @@ msgid "Delivery before"
 msgstr "Đã giao"
 
 #
+msgid "Information"
+msgstr "Thông tin"
+
+#
 msgid "General Information"
 msgstr "Thông tin chung"
 
@@ -4444,3 +4448,15 @@ msgstr "Cho phép xem thành viên"
 #
 msgid "Allow add member"
 msgstr "Cho phép thêm thành viên"
+
+#
+msgid "The picklists in this section will be affected by each other when the value of an item changes."
+msgstr "Các danh sách chọn trong phần này sẽ bị ảnh hưởng lẫn nhau khi giá trị của một mục thay đổi."
+
+#
+msgid "Go to the user manual page"
+msgstr "Đi tới trang hướng dẫn sử dụng"
+
+#
+msgid "Go to detail"
+msgstr "Xem chi tiết"

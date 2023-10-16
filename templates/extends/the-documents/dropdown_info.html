@@ -1,0 +1,32 @@
+{% load string_utils i18n %}
+
+{% parse_data_or_default width_cls_dd "w-280p mt-2" as width_cls_dd %}
+{% parse_data_or_default width_cls_dd_content "" as width_cls_dd_content %}
+{% parse_data_or_default idx "" as idx %}
+{% parse_data_or_default detail_url "#" as detail_url %}
+
+<div class="dropdown-menu info-btn-more-detail border border-1 {{ width_cls_dd }}" {% attr_and_value_else_blank "id" idx %}>
+    <div class="mb-1">
+        <h6 class="text-indigo">{% trans 'Information' %}</h6>
+    </div>
+    <div class="dropdown-divider"></div>
+    <div class="mb-1 info-btn-more-detail-data {{ width_cls_dd_content }}">
+        {% if display_data_template %}
+            {% include display_data_template %}
+        {% elif display_data_html %}
+            {{ display_data_html|safe }}
+        {% endif %}
+{#        <div><h6>title data 1</h6> text data 1</div><div><h6>title data 2</h6> text data 2</div>#}
+    </div>
+    <div class="group-by-link-detail-more {% if detail_url == "#" or not detail_url %} hidden {% endif %}">
+        <div class="dropdown-divider"></div>
+        <div class="text-right">
+            <a href="#" data-base-href="{{detail_url}}" target="_blank" class="link-detail-more link-primary underline_hover">
+                <span>{% trans 'Go to detail' %}</span>
+                <span class="icon ml-1">
+                <i class="bi bi-arrow-right-circle-fill"></i>
+            </span>
+            </a>
+        </div>
+    </div>
+</div>

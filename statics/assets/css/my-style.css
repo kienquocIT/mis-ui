@@ -352,3 +352,47 @@ div.inline {
     background-color: #007D88;
     border-color: #007D88;
 }
+
+/* Select2 customize css */
+/* Select2 ReadOnly Start*/
+
+select[readonly].select2-hidden-accessible + .select2-container {
+    pointer-events: none;
+    touch-action: none;
+}
+
+select[readonly].select2-hidden-accessible + .select2-container .select2-selection {
+    background: #eee;
+    box-shadow: none;
+}
+
+select[readonly].select2-hidden-accessible + .select2-container .select2-selection__arrow, select[readonly].select2-hidden-accessible + .select2-container .select2-selection__clear {
+    display: none;
+}
+
+/* -- Select2 ReadOnly End*/
+
+/**/
+.input-group > .select2-container--bootstrap4 {
+    width: auto !important;
+    flex: 1 1 auto !important;
+}
+
+.input-group > .select2-container--bootstrap4 .select2-selection--single {
+    height: 100% !important;
+    line-height: inherit !important;
+}
+/**/
+
+/* -- Select2 customize css */
+
+.overflow-unset {
+    overflow: unset !important;
+}
+
+.select2-hidden-accessible.is-valid + * + .info-btn-more {
+    border-color: #28a745;
+}
+.select2-hidden-accessible.is-invalid + * + .info-btn-more {
+    border-color: #dc3545;
+}

@@ -8,7 +8,7 @@ class QuotationLoadDataHandle {
     static customerSelectEle = $('#select-box-quotation-create-customer');
     static contactSelectEle = $('#select-box-quotation-create-contact');
     static paymentSelectEle = $('#select-box-quotation-create-payment-term');
-    static salePersonSelectEle = $('#select-box-quotation-create-sale-person');
+    static salePersonSelectEle = $('#employee_inherit_id');
     static transEle = $('#app-trans-factory');
 
     static loadInformationSelectBox(ele, is_expense = false) {
@@ -126,7 +126,7 @@ class QuotationLoadDataHandle {
             'allowClear': true,
             disabled: !(ele.attr('data-url')),
         });
-        QuotationLoadDataHandle.loadInformationSelectBox(ele);
+        // QuotationLoadDataHandle.loadInformationSelectBox(ele);
         if (Object.keys(dataOpp).length !== 0) {
             if (!form[0].classList.contains('sale-order') && form.attr('data-method') === 'GET') {
                 if (dataOpp.is_close_lost === true || dataOpp.is_deal_close === true || dataOpp.sale_order_id !== null) {
@@ -206,15 +206,15 @@ class QuotationLoadDataHandle {
     }
 
     static loadBoxQuotationSalePerson(dataSalePerson = {}) {
-        let ele = QuotationLoadDataHandle.salePersonSelectEle;
-        ele.initSelect2({
-            data: dataSalePerson,
-            disabled: !(ele.attr('data-url')),
-            callbackTextDisplay: function (item) {
-                return item?.['full_name'] || '';
-            },
-        });
-        QuotationLoadDataHandle.loadInformationSelectBox(ele);
+        // let ele = QuotationLoadDataHandle.salePersonSelectEle;
+        // ele.initSelect2({
+        //     data: dataSalePerson,
+        //     disabled: !(ele.attr('data-url')),
+        //     callbackTextDisplay: function (item) {
+        //         return item?.['full_name'] || '';
+        //     },
+        // });
+        // QuotationLoadDataHandle.loadInformationSelectBox(ele);
     };
 
     static loadBoxQuotationPrice() {

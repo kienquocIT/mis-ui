@@ -331,7 +331,7 @@ $.fn.extend({
                     let ctx = {
                         ...opts,
                         success: function (rest, textStatus, jqXHR) {
-                            if (isLoading) $x.fn.hideLoadingPage(0);
+                            if (isLoading) $x.fn.hideLoadingPage();
                             if (successCallback) successCallback(rest, textStatus, jqXHR);
                             if (onlySuccessCallback === false) {
                                 let data = $.fn.switcherResp(rest, isNotify, sweetAlertOpts);
@@ -412,6 +412,18 @@ $.fn.extend({
     },
     initSelect2: function (opts) {
         return new SelectDDControl($(this), opts).init();
+    },
+    destroySelect2: function (addEmpty=false) {
+        let state = false;
+        if (this instanceof jQuery) {
+            if (this.hasClass("select2-hidden-accessible")) {
+                state = true;
+                this.val("").select2('destroy');
+            }
+            $(this).find('option').remove();
+            $(this).append(`<option value="" selected></option>`);
+        }
+        return state;
     },
     compareStatusShowPageAction: function (resultDetail) {
         WFRTControl.compareStatusShowPageAction(resultDetail);

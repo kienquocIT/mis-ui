@@ -651,22 +651,45 @@ class SelectDDControl {
 
     init() {
         // call this for init select with options
-        let clsThis = this;
+        if (this.ele.length > 0){
+            let clsThis = this;
 
-        if (!this._config) this._config = this.config();
-        this.renderDataOnload(this._config);
+            if (!this._config) this._config = this.config();
+            this.renderDataOnload(this._config);
 
-        this.ele.parent('.input-affix-wrapper').find('.dropdown').on('show.bs.dropdown', function () {
-            clsThis.callbackRenderInfoDetail($(this));
-        });
-        return this.ele.select2(this._config).on('change', function (e) {
-            if ($(this).closest('form').length > 0){
-                if ($(this).valid()) {
-                    $(this).closest(".form-group").removeClass("has-error");
-                } else {
-                    $(this).closest(".form-group").addClass("has-error");
+            this.ele.parent('.input-affix-wrapper').find('.dropdown').on('show.bs.dropdown', function () {
+                clsThis.callbackRenderInfoDetail($(this));
+            });
+
+            return this.ele.select2(this._config).on('change', function (e) {
+                if ($(this).closest('form').length > 0){
+                    if ($(this).valid()) $(this).closest(".form-group").removeClass("has-error");
+                    else $(this).closest(".form-group").addClass("has-error");
                 }
-            }
-        });
+
+                let selectVal = $(this).val();
+                let urlInfoDetail = $(this).attr('data-url-info-detail').replaceAll('__pk__', selectVal);
+
+                let nextHasInfoBtnMore = $(this).siblings('.info-btn-more');
+                let nextHasInfoBtnMore__Detail = $(this).siblings('.info-btn-more-detail');
+                if (nextHasInfoBtnMore.length > 0 && nextHasInfoBtnMore__Detail.length > 0) {
+                    nextHasInfoBtnMore.prop('disabled', !selectVal);
+                    let groupLinkEle = nextHasInfoBtnMore__Detail.find('.group-by-link-detail-more');
+                    let linkEle = nextHasInfoBtnMore__Detail.find('.link-detail-more');
+                    if (linkEle.length > 0){
+                        linkEle.attr('href', urlInfoDetail);
+                        groupLinkEle.removeClass('hidden');
+                    }
+
+                    let func_onload = window[$(this).data('on-load-info')];
+                    func_onload(
+                        nextHasInfoBtnMore__Detail,
+                        nextHasInfoBtnMore__Detail.find('.info-btn-more-detail-data'),
+                        SelectDDControl.get_data_from_idx($(this), selectVal),
+                    );
+
+                }
+            });
+        }
     }
 }

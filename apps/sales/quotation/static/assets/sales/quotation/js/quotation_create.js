@@ -64,24 +64,24 @@ $(function () {
 
 // Action on change dropdown opportunity
         QuotationLoadDataHandle.opportunitySelectEle.on('change', function () {
-            if ($(this).val()) {
-                let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.opportunitySelectEle, $(this).val());
-                if (dataSelected) {
-                    QuotationLoadDataHandle.customerSelectEle.empty();
-                    QuotationLoadDataHandle.loadBoxQuotationCustomer(dataSelected.customer);
-                    QuotationLoadDataHandle.customerSelectEle.change();
-                }
-            } else { // No Value => load again dropdowns
-                QuotationLoadDataHandle.customerSelectEle.empty();
-                QuotationLoadDataHandle.loadBoxQuotationCustomer();
-                QuotationLoadDataHandle.customerSelectEle.change();
-            }
-            // Delete all promotion rows
-            deletePromotionRows(tableProduct, true, false);
-            // Delete all shipping rows
-            deletePromotionRows(tableProduct, false, true);
-            // ReCheck Config when change Opportunity
-            QuotationCheckConfigHandle.checkConfig(true);
+            // if ($(this).val()) {
+            //     let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.opportunitySelectEle, $(this).val());
+            //     if (dataSelected) {
+            //         QuotationLoadDataHandle.customerSelectEle.empty();
+            //         QuotationLoadDataHandle.loadBoxQuotationCustomer(dataSelected.customer);
+            //         QuotationLoadDataHandle.customerSelectEle.change();
+            //     }
+            // } else { // No Value => load again dropdowns
+            //     QuotationLoadDataHandle.customerSelectEle.empty();
+            //     QuotationLoadDataHandle.loadBoxQuotationCustomer();
+            //     QuotationLoadDataHandle.customerSelectEle.change();
+            // }
+            // // Delete all promotion rows
+            // deletePromotionRows(tableProduct, true, false);
+            // // Delete all shipping rows
+            // deletePromotionRows(tableProduct, false, true);
+            // // ReCheck Config when change Opportunity
+            // QuotationCheckConfigHandle.checkConfig(true);
         });
 
 // Action on change dropdown customer
@@ -139,22 +139,22 @@ $(function () {
 
 // Action on change dropdown sale person
         QuotationLoadDataHandle.salePersonSelectEle.on('change', function () {
-            // clear Customer box & Opportunity box & Contact box & PaymentTerm box & PriceListVal
-            QuotationLoadDataHandle.opportunitySelectEle.empty();
-            QuotationLoadDataHandle.customerSelectEle.empty();
-            QuotationLoadDataHandle.contactSelectEle.empty();
-            QuotationLoadDataHandle.paymentSelectEle.empty();
-            QuotationLoadDataHandle.loadBoxQuotationOpportunity({}, $(this).val());
-            QuotationLoadDataHandle.loadBoxQuotationCustomer({}, $(this).val());
-            document.getElementById('customer-price-list').value = "";
-            // Delete all promotion rows
-            deletePromotionRows(tableProduct, true, false);
-            // Delete all shipping rows
-            deletePromotionRows(tableProduct, false, true);
-            // load again price of product by customer price list then Re Calculate
-            QuotationLoadDataHandle.loadDataProductAll();
-            // ReCheck Config when change Opportunity
-            QuotationCheckConfigHandle.checkConfig(true);
+            // // clear Customer box & Opportunity box & Contact box & PaymentTerm box & PriceListVal
+            // QuotationLoadDataHandle.opportunitySelectEle.empty();
+            // QuotationLoadDataHandle.customerSelectEle.empty();
+            // QuotationLoadDataHandle.contactSelectEle.empty();
+            // QuotationLoadDataHandle.paymentSelectEle.empty();
+            // // QuotationLoadDataHandle.loadBoxQuotationOpportunity({}, $(this).val());
+            // QuotationLoadDataHandle.loadBoxQuotationCustomer({}, $(this).val());
+            // document.getElementById('customer-price-list').value = "";
+            // // Delete all promotion rows
+            // deletePromotionRows(tableProduct, true, false);
+            // // Delete all shipping rows
+            // deletePromotionRows(tableProduct, false, true);
+            // // load again price of product by customer price list then Re Calculate
+            // QuotationLoadDataHandle.loadDataProductAll();
+            // // ReCheck Config when change Opportunity
+            // QuotationCheckConfigHandle.checkConfig(true);
         });
 
 // Action on click dropdown price list

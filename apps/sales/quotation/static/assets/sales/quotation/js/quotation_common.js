@@ -104,7 +104,6 @@ class QuotationLoadDataHandle {
     };
 
     static loadBoxQuotationOpportunity(dataOpp = {}, sale_person_id = null) {
-        let ele = QuotationLoadDataHandle.opportunitySelectEle;
         let form = $('#frm_quotation_create');
         let data_filter = {
             'is_close_lost': false,
@@ -120,11 +119,11 @@ class QuotationLoadDataHandle {
         } else {
             data_filter['quotation__isnull'] = true;
         }
-        ele.initSelect2({
+        QuotationLoadDataHandle.opportunitySelectEle.initSelect2({
             data: dataOpp,
             'dataParams': data_filter,
             'allowClear': true,
-            disabled: !(ele.attr('data-url')),
+            disabled: !(QuotationLoadDataHandle.opportunitySelectEle.attr('data-url')),
         });
         if (Object.keys(dataOpp).length !== 0) {
             if (!form[0].classList.contains('sale-order') && form.attr('data-method') === 'GET') {

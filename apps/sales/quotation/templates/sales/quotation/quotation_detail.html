@@ -19,18 +19,25 @@
 
 {% block pageContent %}
     <div class="row">
-        <ul class="nav nav-line nav-tabs nav-light justify-content-center quotation-tabs">
-            <li class="nav-item quotation-tab-item">
-                <a class="nav-link active" data-bs-toggle="tab" href="#tab_block_1">
-                    <span class="nav-link-text"><i class="far fa-file-alt"></i></span>
-                </a>
-            </li>
-            <li class="nav-item quotation-tab-item" id="tab-indicator">
-                <a class="nav-link" data-bs-toggle="tab" href="#tab_block_2">
-                    <span class="nav-link-text"><i class="fa-regular fa-chart-bar"></i></span>
-                </a>
-            </li>
-        </ul>
+        <div class="col-12 col-md-6 col-lg-6">
+            <ul class="nav nav-line nav-tabs nav-light justify-content-start quotation-tabs">
+                <li class="nav-item quotation-tab-item">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#tab_block_1">
+                        <span class="nav-link-text"><i class="far fa-file-alt"></i></span>
+                    </a>
+                </li>
+                <li class="nav-item quotation-tab-item" id="tab-indicator">
+                    <a class="nav-link" data-bs-toggle="tab" href="#tab_block_2">
+                        <span class="nav-link-text"><i class="fa-regular fa-chart-bar"></i></span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="col-12 col-md-6 col-lg-6">
+            <div class="d-flex justify-content-end">
+                <button type="button" class="btn btn-soft-primary ml-3" id="printButton"><span><span class="icon"><span class="feather-icon"><i class="fas fa-print"></i></span></span><span>{% trans 'Print' %}</span></span></button>
+            </div>
+        </div>
     </div>
 
     <form
@@ -45,14 +52,6 @@
             <div class="tab-pane fade show active" id="tab_block_1">
                 <div class="container-fluid">
                     <div class="collapse multi-collapse show" id="collapseExample">
-                        <div class="row">
-                            <div class="d-flex justify-content-end">
-                                <h5 class="text-primary mr-3" id="quotation-create-code"></h5>
-                                <span class="badge badge-soft-light" id="quotation-create-status"></span>
-                                <button type="button" class="btn btn-soft-primary ml-3" id="printButton"><span><span class="icon"><span class="feather-icon"><i class="fas fa-print"></i></span></span><span>{% trans 'Print' %}</span></span></button>
-                            </div>
-                        </div>
-
                         <div class="row">
                             {% trans 'Select Sale Person' as inherit_title %}
                             {% include 'extends/the-documents/bastion.html' with has_opp=True has_inherit=True opp_disabled=True inherit_disabled=True opp_readonly=True inherit_readonly=True is_open=True inherit_title=inherit_title inherit_required=True %}

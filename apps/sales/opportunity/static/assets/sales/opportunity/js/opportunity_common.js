@@ -1011,7 +1011,9 @@ async function loadMemberSaleTeam() {
             },
             columns: [
                 {
-                    render: () => {
+                    data: 'idx',
+                    render: (data, type, row) => {
+                        if (data) return data;
                         return '';
                     }
                 },
@@ -1043,15 +1045,29 @@ async function loadMemberSaleTeam() {
                     }
                 },
                 {
+                    data: 'is_checked_new',
                     className: 'wrap-text',
                     render: (data, type, row) => {
                         if ($('.member-item .card[data-id="' + row.id + '"]').length > 0) {
-                            return `<span class="form-check"><input data-id="{0}" type="checkbox" class="form-check-input input-select-member" checked readonly disabled /></span>`.format_by_idx(row.id)
+                            return `<span class="form-check"><input data-id="${row.id}" type="checkbox" class="form-check-input input-select-member" checked readonly disabled /></span>`
                         }
-                        return `<span class="form-check"><input data-id="{0}" type="checkbox" class="form-check-input input-select-member" /></span>`.format_by_idx(row.id)
+                        return `<span class="form-check"><input data-id="${row.id}" type="checkbox" class="form-check-input input-select-member" ${data === true ? "checked" : ""}/></span>`
                     }
                 },
             ],
+            rowCallback: function (row, data) {
+                $(row).find('.input-select-member').on('change', function (){
+                    let is_checked = $(this).prop('checked');
+                    $x.fn.updateDataRow(this, function (clsThat, rowIdx, rowData) {
+                        rowData['is_checked_new'] = is_checked
+                        return {
+                            ...rowData,
+                            is_checked_new: is_checked,
+                            idx: rowIdx + 1,
+                        }
+                    }, false);
+                })
+            },
         });
     }
 }

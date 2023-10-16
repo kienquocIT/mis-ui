@@ -3033,7 +3033,16 @@ class WindowControl {
     }
 
     static hideLoading(checkIsLoading= true) {
-        if (checkIsLoading === false || (checkIsLoading === true && Swal.isLoading())){
+        if (checkIsLoading === true){
+            try {
+                if(Swal.isLoading()){
+                    checkIsLoading = false;
+                }
+            } catch (e){
+                checkIsLoading = false;
+            }
+        }
+        if (checkIsLoading === false){
             swal.close();
         }
     }

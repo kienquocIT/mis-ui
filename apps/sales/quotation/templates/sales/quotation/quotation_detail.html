@@ -58,65 +58,33 @@
                             {% include 'extends/the-documents/bastion.html' with has_opp=True has_inherit=True opp_disabled=True inherit_disabled=True opp_readonly=True inherit_readonly=True is_open=True inherit_title=inherit_title inherit_required=True %}
                         </div>
                         <div class="row">
-                            <div class="col-6">
+                            <div class="col-12 col-md-6 col-lg-6">
                                 <div class="form-group">
-                                    <label class="form-label" for="quotation-create-title">{% trans 'Title' %}<span class="required"></span></label>
+                                    <label class="form-label required" for="quotation-create-title">{% trans 'Title' %}</label>
                                     <input
-                                            type="text"
-                                            class="form-control disabled-custom-show"
+                                            type="text" class="form-control"
                                             name="title"
                                             id="quotation-create-title"
-                                            required
                                             disabled
                                     >
                                 </div>
+                            </div>
+                            <div class="col-12  col-md-6 col-lg-6">
                                 <div class="form-group">
-                                    <label class="form-label" for="select-box-quotation-create-opportunity">{% trans 'Select Opportunity' %}</label>
+                                    <label class="form-label required" for="select-box-quotation-create-customer">{% trans 'Select Customer' %}</label>
                                     <div class="input-group">
-                                        <span class="input-affix-wrapper">
-                                            <span class="input-prefix">
-                                                <div class="btn-group dropstart">
-                                                    <i
-                                                            class="fas fa-info-circle text-blue"
-                                                            data-bs-toggle="dropdown"
-                                                            data-dropdown-animation
-                                                            aria-haspopup="true"
-                                                            aria-expanded="false"
-                                                            disabled
-                                                    ></i>
-                                                    <div class="dropdown-menu w-210p mt-4"></div>
-                                                </div>
-                                            </span>
-                                            <select
-                                                class="form-select"
-                                                id="select-box-quotation-create-opportunity"
-                                                data-url="{% url "OpportunityForSaleListAPI" %}"
-                                                data-method="GET"
-                                                data-link-detail="{% url "OpportunityDetail" 1 %}"
-                                                name="opportunity"
-                                                data-keyResp="opportunity_sale_list"
-                                                disabled
-                                            ></select>
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label" for="select-box-quotation-create-customer">{% trans 'Select Customer' %}<span class="required"></span></label>
-                                    <div class="input-group">
-                                        <span class="input-affix-wrapper">
-                                            <span class="input-prefix">
-                                                <div class="btn-group dropstart">
-                                                    <i
-                                                            class="fas fa-info-circle text-blue"
-                                                            data-bs-toggle="dropdown"
-                                                            data-dropdown-animation
-                                                            aria-haspopup="true"
-                                                            aria-expanded="false"
-                                                            disabled
-                                                    ></i>
-                                                    <div class="dropdown-menu w-210p mt-4"></div>
-                                                </div>
-                                            </span>
+                                        <div class="input-affix-wrapper">
+                                            <div class="dropstart input-prefix">
+                                                <i
+                                                        class="fas fa-info-circle text-blue"
+                                                        data-bs-toggle="dropdown"
+                                                        data-dropdown-animation
+                                                        aria-haspopup="true"
+                                                        aria-expanded="false"
+                                                        disabled
+                                                ></i>
+                                                <div class="dropdown-menu w-210p mt-4"></div>
+                                            </div>
                                             <select
                                                     class="form-select"
                                                     id="select-box-quotation-create-customer"
@@ -125,29 +93,28 @@
                                                     data-link-detail="{% url "AccountDetail" 1 %}"
                                                     name="customer"
                                                     data-keyResp="account_sale_list"
-                                                    required
                                                     disabled
                                             ></select>
-                                        </span>
+                                        </div>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="col-12  col-md-6 col-lg-6">
                                 <div class="form-group">
-                                    <label class="form-label" for="select-box-quotation-create-contact">{% trans 'Select Contact' %}<span class="required"></span></label>
+                                    <label class="form-label required" for="select-box-quotation-create-contact">{% trans 'Select Contact' %}</label>
                                     <div class="input-group">
-                                        <span class="input-affix-wrapper">
-                                            <span class="input-prefix">
-                                                <div class="btn-group dropstart">
-                                                    <i
-                                                            class="fas fa-info-circle text-blue"
-                                                            data-bs-toggle="dropdown"
-                                                            data-dropdown-animation
-                                                            aria-haspopup="true"
-                                                            aria-expanded="false"
-                                                            disabled
-                                                    ></i>
-                                                    <div class="dropdown-menu w-210p mt-4"></div>
-                                                </div>
-                                            </span>
+                                        <div class="input-affix-wrapper">
+                                            <div class="dropstart input-prefix">
+                                                <i
+                                                        class="fas fa-info-circle text-blue"
+                                                        data-bs-toggle="dropdown"
+                                                        data-dropdown-animation
+                                                        aria-haspopup="true"
+                                                        aria-expanded="false"
+                                                        disabled
+                                                ></i>
+                                                <div class="dropdown-menu w-210p mt-4"></div>
+                                            </div>
                                             <select
                                                 class="form-select"
                                                 id="select-box-quotation-create-contact"
@@ -156,77 +123,44 @@
                                                 data-link-detail="{% url 'ContactDetail' 1 %}"
                                                 name="contact"
                                                 data-keyResp="contact_list"
-                                                required
                                                 disabled
                                             ></select>
-                                        </span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-6">
+                            <div class="col-12  col-md-6 col-lg-6">
                                 <div class="form-group">
-                                    <label class="form-label" for="quotation-create-date-created">{% trans 'Date Created' %}<span class="required"></span></label>
+                                    <label class="form-label required" for="quotation-create-date-created">{% trans 'Date Created' %}</label>
                                     <div class="input-group">
-                                        <span class="input-affix-wrapper">
+                                        <div class="input-affix-wrapper">
                                             <input
                                                 type="text" class="form-control disabled-custom-show"
                                                 placeholder="dd/mm/yyyy"
                                                 name="date_created"
                                                 id="quotation-create-date-created"
                                                 disabled
-                                                required
                                             >
-                                        </span>
+                                        </div>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="col-12  col-md-6 col-lg-6">
                                 <div class="form-group">
-                                    <label class="form-label" for="select-box-quotation-create-sale-person">{% trans 'Select Sale Person' %}<span class="required"></span></label>
+                                    <label class="form-label required" for="select-box-quotation-create-payment-term">{% trans 'Select Payment Terms' %}</label>
                                     <div class="input-group">
-                                        <span class="input-affix-wrapper">
-                                            <span class="input-prefix">
-                                                <div class="btn-group dropstart">
-                                                    <i
-                                                            class="fas fa-info-circle text-blue"
-                                                            data-bs-toggle="dropdown"
-                                                            data-dropdown-animation
-                                                            aria-haspopup="true"
-                                                            aria-expanded="false"
-                                                            disabled
-                                                    ></i>
-                                                    <div class="dropdown-menu w-210p mt-4"></div>
-                                                </div>
-                                            </span>
-                                            <select
-                                                class="form-select"
-                                                id="select-box-quotation-create-sale-person"
-                                                data-url="{% url "EmployeeListAPI" %}"
-                                                data-method="GET"
-                                                data-link-detail="{% url 'EmployeeDetail' 1 %}"
-                                                name="employee_inherit_id"
-                                                data-keyResp="employee_list"
-                                                required
-                                                disabled
-                                            ></select>
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label" for="select-box-quotation-create-payment-term">{% trans 'Select Payment Terms' %}<span class="required"></span></label>
-                                    <div class="input-group">
-                                        <span class="input-affix-wrapper">
-                                            <span class="input-prefix">
-                                                <div class="btn-group dropstart">
-                                                    <i
-                                                            class="fas fa-info-circle text-blue"
-                                                            data-bs-toggle="dropdown"
-                                                            data-dropdown-animation
-                                                            aria-haspopup="true"
-                                                            aria-expanded="false"
-                                                            disabled
-                                                    ></i>
-                                                    <div class="dropdown-menu w-210p mt-4"></div>
-                                                </div>
-                                            </span>
+                                        <div class="input-affix-wrapper">
+                                            <div class="dropstart input-prefix">
+                                                <i
+                                                        class="fas fa-info-circle text-blue"
+                                                        data-bs-toggle="dropdown"
+                                                        data-dropdown-animation
+                                                        aria-haspopup="true"
+                                                        aria-expanded="false"
+                                                        disabled
+                                                ></i>
+                                                <div class="dropdown-menu w-210p mt-4"></div>
+                                            </div>
                                             <select
                                                     class="form-select"
                                                     id="select-box-quotation-create-payment-term"
@@ -235,10 +169,9 @@
                                                     data-method="GET"
                                                     name="payment_term"
                                                     data-keyResp="payment_terms_list"
-                                                    required
                                                     disabled
                                             ></select>
-                                        </span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

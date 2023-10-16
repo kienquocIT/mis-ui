@@ -4,7 +4,7 @@ let finalRevenueBeforeTax = document.getElementById('quotation-final-revenue-bef
 
 // Load data
 class QuotationLoadDataHandle {
-    static opportunitySelectEle = $('#select-box-quotation-create-opportunity');
+    static opportunitySelectEle = $('#opportunity');
     static customerSelectEle = $('#select-box-quotation-create-customer');
     static contactSelectEle = $('#select-box-quotation-create-contact');
     static paymentSelectEle = $('#select-box-quotation-create-payment-term');
@@ -126,7 +126,6 @@ class QuotationLoadDataHandle {
             'allowClear': true,
             disabled: !(ele.attr('data-url')),
         });
-        // QuotationLoadDataHandle.loadInformationSelectBox(ele);
         if (Object.keys(dataOpp).length !== 0) {
             if (!form[0].classList.contains('sale-order') && form.attr('data-method') === 'GET') {
                 if (dataOpp.is_close_lost === true || dataOpp.is_deal_close === true || dataOpp.sale_order_id !== null) {
@@ -206,15 +205,14 @@ class QuotationLoadDataHandle {
     }
 
     static loadBoxQuotationSalePerson(dataSalePerson = {}) {
-        // let ele = QuotationLoadDataHandle.salePersonSelectEle;
-        // ele.initSelect2({
-        //     data: dataSalePerson,
-        //     disabled: !(ele.attr('data-url')),
-        //     callbackTextDisplay: function (item) {
-        //         return item?.['full_name'] || '';
-        //     },
-        // });
-        // QuotationLoadDataHandle.loadInformationSelectBox(ele);
+        let ele = QuotationLoadDataHandle.salePersonSelectEle;
+        ele.initSelect2({
+            data: dataSalePerson,
+            disabled: !(ele.attr('data-url')),
+            callbackTextDisplay: function (item) {
+                return item?.['full_name'] || '';
+            },
+        });
     };
 
     static loadBoxQuotationPrice() {
@@ -757,11 +755,6 @@ class QuotationLoadDataHandle {
         if (data?.['title'] && is_copy === false) {
             document.getElementById('quotation-create-title').value = data.title;
         }
-        // if (data?.['code'] && is_copy === false) {
-        //     if ($('#quotation-create-code').length) {
-        //         document.getElementById('quotation-create-code').innerHTML = data.code;
-        //     }
-        // }
         if (data?.['opportunity']) {
             if (is_copy === true) {
                 data.opportunity['is_copy'] = true;

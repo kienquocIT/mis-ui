@@ -7,11 +7,6 @@ $(function () {
         let shippingClass = new shippingHandle();
         // Elements
         let formSubmit = $('#frm_quotation_create');
-        let boxOpportunity = $('#select-box-quotation-create-opportunity');
-        let boxCustomer = $('#select-box-quotation-create-customer');
-        let boxContact = $('#select-box-quotation-create-contact');
-        let boxPayment = $('#select-box-quotation-create-payment-term');
-        let boxSalePerson = $('#employee_inherit_id');
         let boxPriceList = $('#select-box-quotation-create-price-list');
         let boxQuotation = $('#select-box-quotation');
         let tabPrice = $('#tab_terms');
@@ -68,20 +63,19 @@ $(function () {
         $('.daterangepicker').remove();
 
 // Action on change dropdown opportunity
-        boxOpportunity.on('change', function () {
+        QuotationLoadDataHandle.opportunitySelectEle.on('change', function () {
             if ($(this).val()) {
-                let dataSelected = SelectDDControl.get_data_from_idx(boxOpportunity, $(this).val());
+                let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.opportunitySelectEle, $(this).val());
                 if (dataSelected) {
-                    boxCustomer.empty();
+                    QuotationLoadDataHandle.customerSelectEle.empty();
                     QuotationLoadDataHandle.loadBoxQuotationCustomer(dataSelected.customer);
-                    boxCustomer.change();
+                    QuotationLoadDataHandle.customerSelectEle.change();
                 }
             } else { // No Value => load again dropdowns
-                boxCustomer.empty();
+                QuotationLoadDataHandle.customerSelectEle.empty();
                 QuotationLoadDataHandle.loadBoxQuotationCustomer();
-                boxCustomer.change();
+                QuotationLoadDataHandle.customerSelectEle.change();
             }
-            QuotationLoadDataHandle.loadInformationSelectBox(boxOpportunity);
             // Delete all promotion rows
             deletePromotionRows(tableProduct, true, false);
             // Delete all shipping rows
@@ -91,16 +85,16 @@ $(function () {
         });
 
 // Action on change dropdown customer
-        boxCustomer.on('change', function () {
+        QuotationLoadDataHandle.customerSelectEle.on('change', function () {
             if ($(this).val()) {
-                let dataSelected = SelectDDControl.get_data_from_idx(boxCustomer, $(this).val());
+                let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.customerSelectEle, $(this).val());
                 if (dataSelected) {
-                    if (boxOpportunity.val()) {
-                        let dataOppSelected = SelectDDControl.get_data_from_idx(boxOpportunity, boxOpportunity.val());
+                    if (QuotationLoadDataHandle.opportunitySelectEle.val()) {
+                        let dataOppSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.opportunitySelectEle, QuotationLoadDataHandle.opportunitySelectEle.val());
                         if (dataOppSelected) {
                             if (Object.keys(dataOppSelected.customer).length !== 0) {
                                 if (dataOppSelected.customer.id !== $(this).val()) {
-                                    boxOpportunity.empty();
+                                    QuotationLoadDataHandle.opportunitySelectEle.empty();
                                     QuotationLoadDataHandle.loadBoxQuotationOpportunity();
                                 }
                             }
@@ -110,10 +104,10 @@ $(function () {
                     QuotationLoadDataHandle.loadShippingBillingCustomer();
                     QuotationLoadDataHandle.loadShippingBillingCustomer(dataSelected);
                     // load Contact by Customer
-                    boxContact.empty();
+                    QuotationLoadDataHandle.contactSelectEle.empty();
                     QuotationLoadDataHandle.loadBoxQuotationContact(dataSelected.owner, dataSelected.id);
                     // load Payment Term by Customer
-                    boxPayment.empty();
+                    QuotationLoadDataHandle.paymentSelectEle.empty();
                     QuotationLoadDataHandle.loadBoxQuotationPaymentTerm(dataSelected?.['payment_term_customer_mapped']);
                     // Store Account Price List
                     if (Object.keys(dataSelected?.['price_list_mapped']).length !== 0) {
@@ -123,18 +117,18 @@ $(function () {
                     QuotationLoadDataHandle.loadBoxQuotationSalePerson($('#employee_inherit_id').val());
                 }
             } else { // No Value => load again dropdowns
-                boxOpportunity.empty();
-                boxContact.empty();
-                boxPayment.empty();
+                QuotationLoadDataHandle.opportunitySelectEle.empty();
+                QuotationLoadDataHandle.contactSelectEle.empty();
+                QuotationLoadDataHandle.paymentSelectEle.empty();
                 QuotationLoadDataHandle.loadBoxQuotationOpportunity();
                 QuotationLoadDataHandle.loadBoxQuotationContact();
                 QuotationLoadDataHandle.loadBoxQuotationPaymentTerm();
                 document.getElementById('customer-price-list').value = "";
-                if (!$('#select-box-quotation-create-opportunity').val()) {
+                if (!QuotationLoadDataHandle.opportunitySelectEle.val()) {
                     QuotationLoadDataHandle.loadBoxQuotationSalePerson($('#employee_inherit_id').val());
                 }
             }
-            QuotationLoadDataHandle.loadInformationSelectBox(boxCustomer);
+            QuotationLoadDataHandle.loadInformationSelectBox(QuotationLoadDataHandle.customerSelectEle);
             // Delete all promotion rows
             deletePromotionRows(tableProduct, true, false);
             // Delete all shipping rows
@@ -144,12 +138,12 @@ $(function () {
         });
 
 // Action on change dropdown sale person
-        boxSalePerson.on('change', function () {
+        QuotationLoadDataHandle.salePersonSelectEle.on('change', function () {
             // clear Customer box & Opportunity box & Contact box & PaymentTerm box & PriceListVal
-            boxOpportunity.empty();
-            boxCustomer.empty();
-            boxContact.empty();
-            boxPayment.empty();
+            QuotationLoadDataHandle.opportunitySelectEle.empty();
+            QuotationLoadDataHandle.customerSelectEle.empty();
+            QuotationLoadDataHandle.contactSelectEle.empty();
+            QuotationLoadDataHandle.paymentSelectEle.empty();
             QuotationLoadDataHandle.loadBoxQuotationOpportunity({}, $(this).val());
             QuotationLoadDataHandle.loadBoxQuotationCustomer({}, $(this).val());
             document.getElementById('customer-price-list').value = "";
@@ -171,7 +165,7 @@ $(function () {
         });
 
 // Action on click dropdown payment term
-        boxPayment.on('click', function() {
+        QuotationLoadDataHandle.paymentSelectEle.on('click', function() {
             QuotationLoadDataHandle.loadBoxQuotationPaymentTerm();
         });
 
@@ -180,11 +174,11 @@ $(function () {
             if (!$(this)[0].innerHTML) {
                 let opp_id = null;
                 let sale_person_id = null;
-                if (boxOpportunity.val()) {
-                    opp_id = boxOpportunity.val()
+                if (QuotationLoadDataHandle.opportunitySelectEle.val()) {
+                    opp_id = QuotationLoadDataHandle.opportunitySelectEle.val()
                 }
-                if (boxSalePerson.val()) {
-                    sale_person_id = boxSalePerson.val()
+                if (QuotationLoadDataHandle.salePersonSelectEle.val()) {
+                    sale_person_id = QuotationLoadDataHandle.salePersonSelectEle.val()
                 }
                 QuotationLoadDataHandle.loadBoxSaleOrderQuotation('select-box-quotation', null, opp_id, sale_person_id);
             }
@@ -659,11 +653,11 @@ $(function () {
                 // load table quotation list for copy
                 let opp_id = null;
                 let sale_person_id = null;
-                if (boxOpportunity.val()) {
-                    opp_id = boxOpportunity.val()
+                if (QuotationLoadDataHandle.opportunitySelectEle.val()) {
+                    opp_id = QuotationLoadDataHandle.opportunitySelectEle.val()
                 }
-                if (boxSalePerson.val()) {
-                    sale_person_id = boxSalePerson.val()
+                if (QuotationLoadDataHandle.salePersonSelectEle.val()) {
+                    sale_person_id = QuotationLoadDataHandle.salePersonSelectEle.val()
                 }
                 QuotationLoadDataHandle.loadTableCopyQuotation(opp_id, sale_person_id);
             } else if (type === 'copy-to') {
@@ -830,9 +824,9 @@ $(function () {
 // PROMOTION
 // Action on click button Check Available Promotion (show list promotions)
         $('#btn-check-promotion').on('click', function() {
-            if (boxCustomer.val()) {
+            if (QuotationLoadDataHandle.customerSelectEle.val()) {
                 // destroy dataTable then call API load-check again
-                QuotationDataTableHandle.loadTableQuotationPromotion('data-init-quotation-create-promotion', boxCustomer.val())
+                QuotationDataTableHandle.loadTableQuotationPromotion('data-init-quotation-create-promotion', QuotationLoadDataHandle.customerSelectEle.val())
             } else {
                 $('#datable-quotation-create-promotion').DataTable().destroy();
                 QuotationDataTableHandle.dataTablePromotion();
@@ -1034,7 +1028,7 @@ $(function () {
         formSubmit.submit(function (e) {
             e.preventDefault();
             if (tableProduct[0].querySelector('.table-row-promotion') && $(this).attr('data-method') === "POST") { // HAS PROMOTION => Check condition again
-                promotionClass.checkPromotionIfSubmit('data-init-quotation-create-promotion', boxCustomer.val());
+                promotionClass.checkPromotionIfSubmit('data-init-quotation-create-promotion', QuotationLoadDataHandle.customerSelectEle.val());
                 // Check promotion then Submit Form
                 submitCheckPromotion();
             } else { // NO PROMOTION => submit normal

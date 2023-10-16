@@ -50,44 +50,22 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-6">
+                            {% trans 'Select Sale Person' as inherit_title %}
+                            {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True show_warning=True priority_app='opp-prj-inherit' opp_title=opp_title has_opp=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True %}
+                        </div>
+                        <div class="row">
+                            <div class="col-12 col-md-6 col-lg-6">
                                 <div class="form-group">
                                     <label class="form-label required" for="quotation-create-title">{% trans 'Title' %}</label>
                                     <input
-                                            type="text"
-                                            class="form-control"
+                                            type="text" class="form-control"
                                             name="title"
                                             id="quotation-create-title"
                                             required
                                     >
                                 </div>
-                                <div class="form-group">
-                                    <label class="form-label" for="select-box-quotation-create-opportunity">{% trans 'Select Opportunity' %}</label>
-                                    <div class="input-group">
-                                        <div class="input-affix-wrapper">
-                                            <div class="dropstart input-prefix">
-                                                <i
-                                                        class="fas fa-info-circle text-blue"
-                                                        data-bs-toggle="dropdown"
-                                                        data-dropdown-animation
-                                                        aria-haspopup="true"
-                                                        aria-expanded="false"
-                                                        disabled
-                                                ></i>
-                                                <div class="dropdown-menu w-210p mt-4"></div>
-                                            </div>
-                                            <select
-                                                class="form-select"
-                                                id="select-box-quotation-create-opportunity"
-                                                data-url="{% url "OpportunityForSaleListAPI" %}"
-                                                data-method="GET"
-                                                data-link-detail="{% url "OpportunityDetail" 1 %}"
-                                                name="opportunity"
-                                                data-keyResp="opportunity_sale_list"
-                                            ></select>
-                                        </div>
-                                    </div>
-                                </div>
+                            </div>
+                            <div class="col-12  col-md-6 col-lg-6">
                                 <div class="form-group">
                                     <label class="form-label required" for="select-box-quotation-create-customer">{% trans 'Select Customer' %}</label>
                                     <div class="input-group">
@@ -116,6 +94,8 @@
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="col-12  col-md-6 col-lg-6">
                                 <div class="form-group">
                                     <label class="form-label required" for="select-box-quotation-create-contact">{% trans 'Select Contact' %}</label>
                                     <div class="input-group">
@@ -145,7 +125,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-6">
+                            <div class="col-12  col-md-6 col-lg-6">
                                 <div class="form-group">
                                     <label class="form-label required" for="quotation-create-date-created">{% trans 'Date Created' %}</label>
                                     <div class="input-group">
@@ -161,34 +141,8 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <label class="form-label required" for="select-box-quotation-create-sale-person">{% trans 'Select Sale Person' %}</label>
-                                    <div class="input-group">
-                                        <div class="input-affix-wrapper">
-                                            <div class="dropstart input-prefix">
-                                                <i
-                                                        class="fas fa-info-circle text-blue"
-                                                        data-bs-toggle="dropdown"
-                                                        data-dropdown-animation
-                                                        aria-haspopup="true"
-                                                        aria-expanded="false"
-                                                        disabled
-                                                ></i>
-                                                <div class="dropdown-menu w-210p mt-4"></div>
-                                            </div>
-                                            <select
-                                                class="form-select"
-                                                id="select-box-quotation-create-sale-person"
-                                                data-url="{% url "EmployeeListAPI" %}"
-                                                data-method="GET"
-                                                data-link-detail="{% url 'EmployeeDetail' 1 %}"
-                                                name="employee_inherit_id"
-                                                data-keyResp="employee_list"
-                                                required
-                                            ></select>
-                                        </div>
-                                    </div>
-                                </div>
+                            </div>
+                            <div class="col-12  col-md-6 col-lg-6">
                                 <div class="form-group">
                                     <label class="form-label required" for="select-box-quotation-create-payment-term">{% trans 'Select Payment Terms' %}</label>
                                     <div class="input-group">

@@ -667,18 +667,21 @@ class SelectDDControl {
                     else $(this).closest(".form-group").addClass("has-error");
                 }
 
-                let selectVal = $(this).val();
-                let urlInfoDetail = $(this).attr('data-url-info-detail').replaceAll('__pk__', selectVal);
-
                 let nextHasInfoBtnMore = $(this).siblings('.info-btn-more');
                 let nextHasInfoBtnMore__Detail = $(this).siblings('.info-btn-more-detail');
                 if (nextHasInfoBtnMore.length > 0 && nextHasInfoBtnMore__Detail.length > 0) {
-                    nextHasInfoBtnMore.prop('disabled', !selectVal);
-                    let groupLinkEle = nextHasInfoBtnMore__Detail.find('.group-by-link-detail-more');
-                    let linkEle = nextHasInfoBtnMore__Detail.find('.link-detail-more');
-                    if (linkEle.length > 0){
-                        linkEle.attr('href', urlInfoDetail);
-                        groupLinkEle.removeClass('hidden');
+                    let selectVal = $(this).val();
+                    let urlInfoDetail = $(this).attr('data-url-info-detail');
+                    if (urlInfoDetail){
+                        urlInfoDetail = urlInfoDetail.replaceAll('__pk__', selectVal);
+                        nextHasInfoBtnMore.prop('disabled', !selectVal);
+                        let groupLinkEle = nextHasInfoBtnMore__Detail.find('.group-by-link-detail-more');
+                        let linkEle = nextHasInfoBtnMore__Detail.find('.link-detail-more');
+                        if (linkEle.length > 0){
+                            linkEle.attr('href', urlInfoDetail);
+                            groupLinkEle.removeClass('hidden');
+                        }
+
                     }
 
                     let func_onload = window[$(this).data('on-load-info')];

@@ -18,11 +18,8 @@ $(function () {
             let employee_current = $('#data-init-quotation-create-request-employee').val();
             if (employee_current) {
                 let employee_current_data = JSON.parse(employee_current);
-                QuotationLoadDataHandle.loadBoxQuotationSalePerson(employee_current_data);
-                QuotationLoadDataHandle.loadBoxQuotationOpportunity({}, employee_current_data.id);
                 QuotationLoadDataHandle.loadBoxQuotationCustomer({}, employee_current_data.id);
             } else {
-                QuotationLoadDataHandle.loadBoxQuotationOpportunity();
                 QuotationLoadDataHandle.loadBoxQuotationCustomer();
             }
         }
@@ -1066,7 +1063,7 @@ $(function () {
             QuotationSubmitHandle.setupDataSubmit(_form, is_sale_order);
             let submitFields = [
                 'title',
-                'opportunity',
+                'opportunity_id',
                 'customer',
                 'contact',
                 'employee_inherit_id',
@@ -1103,7 +1100,7 @@ $(function () {
             if (is_sale_order === true) {
                 submitFields = [
                     'title',
-                    'opportunity',
+                    'opportunity_id',
                     'customer',
                     'contact',
                     'employee_inherit_id',

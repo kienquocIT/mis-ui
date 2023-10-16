@@ -4,7 +4,7 @@ let finalRevenueBeforeTax = document.getElementById('quotation-final-revenue-bef
 
 // Load data
 class QuotationLoadDataHandle {
-    static opportunitySelectEle = $('#opportunity');
+    static opportunitySelectEle = $('#opportunity_id');
     static customerSelectEle = $('#select-box-quotation-create-customer');
     static contactSelectEle = $('#select-box-quotation-create-contact');
     static paymentSelectEle = $('#select-box-quotation-create-payment-term');
@@ -104,60 +104,59 @@ class QuotationLoadDataHandle {
     };
 
     static loadBoxQuotationOpportunity(dataOpp = {}, sale_person_id = null) {
-        let form = $('#frm_quotation_create');
-        let data_filter = {
-            'is_close_lost': false,
-            'is_deal_close': false,
-        };
-        if (sale_person_id) {
-            data_filter['employee_inherit'] = sale_person_id;
-        } else {
-            data_filter['employee_inherit'] = QuotationLoadDataHandle.salePersonSelectEle.val();
-        }
-        if (form[0].classList.contains('sale-order')) {
-            data_filter['sale_order__isnull'] = true;
-        } else {
-            data_filter['quotation__isnull'] = true;
-        }
-        QuotationLoadDataHandle.opportunitySelectEle.initSelect2({
-            data: dataOpp,
-            'dataParams': data_filter,
-            'allowClear': true,
-            disabled: !(QuotationLoadDataHandle.opportunitySelectEle.attr('data-url')),
-        });
-        if (Object.keys(dataOpp).length !== 0) {
-            if (!form[0].classList.contains('sale-order') && form.attr('data-method') === 'GET') {
-                if (dataOpp.is_close_lost === true || dataOpp.is_deal_close === true || dataOpp.sale_order_id !== null) {
-                    let btnCopy = document.getElementById('btn-copy-quotation');
-                    let eleTooltipBtnCopy = document.getElementById('tooltip-btn-copy');
-                    btnCopy.setAttribute('disabled', 'true');
-                    if (eleTooltipBtnCopy) {
-                        eleTooltipBtnCopy.removeAttribute('data-bs-original-title');
-                        eleTooltipBtnCopy.setAttribute('data-bs-placement', 'top');
-                        let titleText = '';
-                        if (dataOpp.is_close_lost === true || dataOpp.is_deal_close === true) {
-                            titleText += QuotationLoadDataHandle.transEle.attr('data-opp-closed');
-                            titleText += ',';
-                        }
-                        if (dataOpp.sale_order_id !== null) {
-                            titleText += QuotationLoadDataHandle.transEle.attr('data-opp-had-sale-order');
-                            titleText += ',';
-                        }
-                        eleTooltipBtnCopy.setAttribute('title', titleText);
-                    }
-                }
-            }
-        }
-        // ReCheck Config when change Opportunity
-        if (!dataOpp?.['is_copy']) {
-            QuotationCheckConfigHandle.checkConfig(true);
-        } else {
-            QuotationCheckConfigHandle.checkConfig(true, null, false, false, true);
-        }
+        // let form = $('#frm_quotation_create');
+        // let data_filter = {
+        //     'is_close_lost': false,
+        //     'is_deal_close': false,
+        // };
+        // if (sale_person_id) {
+        //     data_filter['employee_inherit'] = sale_person_id;
+        // } else {
+        //     data_filter['employee_inherit'] = QuotationLoadDataHandle.salePersonSelectEle.val();
+        // }
+        // if (form[0].classList.contains('sale-order')) {
+        //     data_filter['sale_order__isnull'] = true;
+        // } else {
+        //     data_filter['quotation__isnull'] = true;
+        // }
+        // QuotationLoadDataHandle.opportunitySelectEle.initSelect2({
+        //     data: dataOpp,
+        //     'dataParams': data_filter,
+        //     'allowClear': true,
+        //     disabled: !(QuotationLoadDataHandle.opportunitySelectEle.attr('data-url')),
+        // });
+        // if (Object.keys(dataOpp).length !== 0) {
+        //     if (!form[0].classList.contains('sale-order') && form.attr('data-method') === 'GET') {
+        //         if (dataOpp.is_close_lost === true || dataOpp.is_deal_close === true || dataOpp.sale_order_id !== null) {
+        //             let btnCopy = document.getElementById('btn-copy-quotation');
+        //             let eleTooltipBtnCopy = document.getElementById('tooltip-btn-copy');
+        //             btnCopy.setAttribute('disabled', 'true');
+        //             if (eleTooltipBtnCopy) {
+        //                 eleTooltipBtnCopy.removeAttribute('data-bs-original-title');
+        //                 eleTooltipBtnCopy.setAttribute('data-bs-placement', 'top');
+        //                 let titleText = '';
+        //                 if (dataOpp.is_close_lost === true || dataOpp.is_deal_close === true) {
+        //                     titleText += QuotationLoadDataHandle.transEle.attr('data-opp-closed');
+        //                     titleText += ',';
+        //                 }
+        //                 if (dataOpp.sale_order_id !== null) {
+        //                     titleText += QuotationLoadDataHandle.transEle.attr('data-opp-had-sale-order');
+        //                     titleText += ',';
+        //                 }
+        //                 eleTooltipBtnCopy.setAttribute('title', titleText);
+        //             }
+        //         }
+        //     }
+        // }
+        // // ReCheck Config when change Opportunity
+        // if (!dataOpp?.['is_copy']) {
+        //     QuotationCheckConfigHandle.checkConfig(true);
+        // } else {
+        //     QuotationCheckConfigHandle.checkConfig(true, null, false, false, true);
+        // }
     };
 
     static loadBoxQuotationCustomer(dataCustomer = {}, sale_person_id = null) {
-        let ele = QuotationLoadDataHandle.customerSelectEle;
         let form = $('#frm_quotation_create');
         let data_filter = {};
         if (sale_person_id) {
@@ -165,15 +164,15 @@ class QuotationLoadDataHandle {
         } else {
             data_filter['employee__id'] = QuotationLoadDataHandle.salePersonSelectEle.val();
         }
-        ele.initSelect2({
+        QuotationLoadDataHandle.customerSelectEle.initSelect2({
             data: dataCustomer,
             'dataParams': data_filter,
-            disabled: !(ele.attr('data-url')),
+            disabled: !(QuotationLoadDataHandle.customerSelectEle.attr('data-url')),
             callbackTextDisplay: function (item) {
                 return item?.['name'] || '';
             },
         });
-        QuotationLoadDataHandle.loadInformationSelectBox(ele);
+        QuotationLoadDataHandle.loadInformationSelectBox(QuotationLoadDataHandle.customerSelectEle);
         if (form.attr('data-method') !== 'GET') {
             if (!dataCustomer?.['is_copy']) {
                 QuotationLoadDataHandle.loadDataProductAll();
@@ -204,14 +203,14 @@ class QuotationLoadDataHandle {
     }
 
     static loadBoxQuotationSalePerson(dataSalePerson = {}) {
-        let ele = QuotationLoadDataHandle.salePersonSelectEle;
-        ele.initSelect2({
-            data: dataSalePerson,
-            disabled: !(ele.attr('data-url')),
-            callbackTextDisplay: function (item) {
-                return item?.['full_name'] || '';
-            },
-        });
+        // let ele = QuotationLoadDataHandle.salePersonSelectEle;
+        // ele.initSelect2({
+        //     data: dataSalePerson,
+        //     disabled: !(ele.attr('data-url')),
+        //     callbackTextDisplay: function (item) {
+        //         return item?.['full_name'] || '';
+        //     },
+        // });
     };
 
     static loadBoxQuotationPrice() {
@@ -755,14 +754,11 @@ class QuotationLoadDataHandle {
             document.getElementById('quotation-create-title').value = data.title;
         }
         if (data?.['opportunity']) {
-            if (is_copy === true) {
-                data.opportunity['is_copy'] = true;
-            }
-            if (data?.['sale_person']) {
-                QuotationLoadDataHandle.loadBoxQuotationOpportunity(data.opportunity, data?.['sale_person']?.['id']);
-            } else {
-                QuotationLoadDataHandle.loadBoxQuotationOpportunity(data.opportunity, null);
-            }
+            QuotationLoadDataHandle.opportunitySelectEle.initSelect2({
+                data: data?.['opportunity'],
+                'allowClear': true,
+                disabled: !(QuotationLoadDataHandle.opportunitySelectEle.attr('data-url')),
+            });
         }
         if (data?.['customer']) {
             data.customer['name'] = data.customer.title;
@@ -780,7 +776,13 @@ class QuotationLoadDataHandle {
             QuotationLoadDataHandle.loadBoxQuotationContact(data.contact, data.customer.id)
         }
         if (data?.['sale_person']) {
-            QuotationLoadDataHandle.loadBoxQuotationSalePerson(data?.['sale_person'])
+            QuotationLoadDataHandle.salePersonSelectEle.initSelect2({
+            data: data?.['sale_person'],
+            disabled: !(QuotationLoadDataHandle.salePersonSelectEle.attr('data-url')),
+            callbackTextDisplay: function (item) {
+                return item?.['full_name'] || '';
+            },
+        });
         }
         if (data?.['payment_term']) {
             QuotationLoadDataHandle.loadBoxQuotationPaymentTerm(data?.['payment_term'])
@@ -795,16 +797,6 @@ class QuotationLoadDataHandle {
             $('#quotation-customer-confirm')[0].checked = data.is_customer_confirm;
         }
         if (data.system_status && is_copy === false) {
-            let eleStatus = $('#quotation-create-status');
-            let status_data = {
-                "Draft": "badge badge-soft-light",
-                "Created": "badge badge-soft-primary",
-                "Added": "badge badge-soft-info",
-                "Finish": "badge badge-soft-success",
-                "Cancel": "badge badge-soft-danger",
-            }
-            // eleStatus[0].className = status_data[data?.['system_status']];
-            // eleStatus[0].innerHTML = data?.['system_status'];
             if (['Added', 'Finish'].includes(data?.['system_status'])) {
                 let $btn = $('#btn-enable-edit');
                 if ($btn.length) {

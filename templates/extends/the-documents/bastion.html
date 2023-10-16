@@ -188,14 +188,14 @@
                                                             data-on-load-info="onLoadDropdownInfo"
 
                                                             {% if auto_select_current_employee == True %}
-                                                            data-onload="{% data_onload_current_employee %}"
+                                                                data-onload="{% data_onload_current_employee %}"
                                                             {% endif %}
                                                             {% if inherit_required == True %} required {% endif %}
                                                             {% if inherit_disabled == True %} disabled {% endif %}
                                                             {% if inherit_readonly == True %} readonly="" {% endif %}
                                                     ></select>
                                                     {% include 'extends/the-documents/button_info.html' %}
-                                                    {% include 'extends/the-documents/dropdown_info.html' with idx="12345677777" display_data_template="extends/the-documents/dropdown_info__employee.html" %}
+                                                    {% include 'extends/the-documents/dropdown_info.html' with display_data_template="extends/the-documents/dropdown_info__employee.html" %}
                                                 </div>
                                             </div>
                                         </div>

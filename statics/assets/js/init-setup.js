@@ -1243,11 +1243,19 @@ class ListeningEventController {
 
     dropdownInAccordion(){
         $('body').on('show.bs.dropdown', '.info-btn-more', function (){
+            // add class for accordion show dropdown
             let accorItemEle = $(this).closest('.accordion-item');
             if (accorItemEle.length > 0){
                 accorItemEle.addClass('overflow-unset');
             }
+            // check ID to link detail - Yes: show link | No: hide link
+            let linkEle = $(this).parent().find('.link-detail-more');
+            if (linkEle.length > 0){
+                if ($(this).data('id')) linkEle.removeClass('hidden');
+                else linkEle.addClass('hidden');
+            }
         }).on('hidden.bs.dropdown',  '.info-btn-more', function (){
+            // rollback to original for accordion
             let accorItemEle = $(this).closest('.accordion-item');
             if (accorItemEle.length > 0 && accorItemEle.find('.info-btn-more.show').length === 0){
                 accorItemEle.removeClass('overflow-unset');

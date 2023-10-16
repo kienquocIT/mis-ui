@@ -225,9 +225,10 @@ div.inline {
     .dataTables_paginate {
         justify-content: right !important;
     }
-
-    .dataTables_info:before {
+    .dataTables_length + .dataTables_info:before {
         content: "|";
+    }
+    .dataTables_info:before {
         margin-right: 10px;
         margin-left: 10px;
     }

@@ -31,7 +31,6 @@ $(document).ready(function () {
                 } else
                     $('#check-lost-reason').prop('checked', false);
 
-
                 OpportunityLoadDropdown.loadCustomer(opportunity_detail.customer);
                 OpportunityLoadDropdown.loadProductCategory(opportunity_detail.product_category);
                 OpportunityLoadDropdown.loadSalePersonPageDetail(opportunity_detail?.['sale_person']);
@@ -543,16 +542,13 @@ $(document).ready(function () {
                         }
                         if ($('.current-create-task').length) $('.cancel-task').trigger('click')
 
-                        callAjaxtoLoadTimeLineList();
+                        callAjaxToLoadTimeLineList();
                     }
                 })
         })
     }, jQuery)
 
     // TIMELINE
-    let CALL_LOG_LIST = [];
-    let EMAIL_LIST = [];
-    let MEETING_LIST = [];
 
     function tabSubtask(taskID) {
         if (!taskID) return false
@@ -701,7 +697,7 @@ $(document).ready(function () {
         }
         dtb.DataTableDefault({
             pageLength: 5,
-            dom: "<'row miner-group'<'col-sm-3 mt-3'f><'col-sm-9'p>>" + "<'row mt-3'<'col-sm-12'tr>>" + "<'row mt-3'<'col-sm-12 col-md-6'i>>",
+            dom: "<'row miner-group'<'col-sm-2 mt-3'f><'col-sm-10'p>>" + "<'row mt-3'<'col-sm-12'tr>>" + "<'row mt-3'<'col-sm-12 col-md-6'i>>",
             data: data_timeline_list,
             columns: [
                 {
@@ -770,164 +766,186 @@ $(document).ready(function () {
         });
     }
 
-    function callAjaxtoLoadTimeLineList() {
-        $.fn.callAjax($('#table-timeline').attr('data-url-logs_list'), 'GET', {'opportunity': pk})
-            .then((resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    let activity_logs_list = [];
-                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('activity_logs_list')) {
-                        data.activity_logs_list.map(function (item) {
-                            if (Object.keys(item.task).length > 0) {
-                                activity_logs_list.push({
-                                    'id': item.task.id,
-                                    'type': item.task.activity_type,
-                                    'title': item.task.activity_name,
-                                    'subject': item.task.subject,
-                                    'date': item.date_created.split(' ')[0],
-                                })
-                            } else if (Object.keys(item.call_log).length > 0) {
-                                CALL_LOG_LIST.push(item.call_log)
-                                activity_logs_list.push({
-                                    'id': item.call_log.id,
-                                    'type': item.call_log.activity_type,
-                                    'title': item.call_log.activity_name,
-                                    'subject': item.call_log.subject,
-                                    'date': item.date_created.split(' ')[0],
-                                })
-                            } else if (Object.keys(item.email).length > 0) {
-                                EMAIL_LIST.push(item.email)
-                                activity_logs_list.push({
-                                    'id': item.email.id,
-                                    'type': item.email.activity_type,
-                                    'title': item.email.activity_name,
-                                    'subject': item.email.subject,
-                                    'date': item.date_created.split(' ')[0],
-                                })
-                            } else if (Object.keys(item.meeting).length > 0) {
-                                MEETING_LIST.push(item.meeting)
-                                activity_logs_list.push({
-                                    'id': item.meeting.id,
-                                    'type': item.meeting.activity_type,
-                                    'title': item.meeting.activity_name,
-                                    'subject': item.meeting.subject,
-                                    'date': item.date_created.split(' ')[0],
-                                })
-                            } else if (Object.keys(item.document).length > 0) {
-                                activity_logs_list.push({
-                                    'id': item.document.id,
-                                    'type': item.document.activity_type,
-                                    'title': item.document.activity_name,
-                                    'subject': item.document.subject,
-                                    'date': item.date_created.split(' ')[0],
-                                })
+    function callAjaxToLoadTimeLineList() {
+                $.fn.callAjax($('#table-timeline').attr('data-url-logs_list'), 'GET', {'opportunity': pk})
+                    .then((resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            let activity_logs_list = [];
+                            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('activity_logs_list')) {
+                                data?.['activity_logs_list'].map(function (item) {
+                                    if (Object.keys(item?.['task']).length > 0) {
+                                        activity_logs_list.push({
+                                            'id': item?.['task']?.['id'],
+                                            'type': item?.['task']?.['activity_type'],
+                                            'title': item?.['task']?.['activity_name'],
+                                            'subject': item?.['task']?.['subject'],
+                                            'date': item?.['date_created'].split(' ')[0],
+                                        })
+                                    } else if (Object.keys(item?.['call_log']).length > 0) {
+                                        activity_logs_list.push({
+                                            'id': item?.['call_log']?.['id'],
+                                            'type': item?.['call_log']?.['activity_type'],
+                                            'title': item?.['call_log']?.['activity_name'],
+                                            'subject': item?.['call_log']?.['subject'],
+                                            'date': item?.['date_created'].split(' ')[0],
+                                        })
+                                    } else if (Object.keys(item?.['email']).length > 0) {
+                                        activity_logs_list.push({
+                                            'id': item?.['email']?.['id'],
+                                            'type': item?.['email']?.['activity_type'],
+                                            'title': item?.['email']?.['activity_name'],
+                                            'subject': item?.['email']?.['subject'],
+                                            'date': item?.['date_created'].split(' ')[0],
+                                        })
+                                    } else if (Object.keys(item?.['meeting']).length > 0) {
+                                        activity_logs_list.push({
+                                            'id': item?.['meeting']?.['id'],
+                                            'type': item?.['meeting']?.['activity_type'],
+                                            'title': item?.['meeting']?.['activity_name'],
+                                            'subject': item?.['meeting']?.['subject'],
+                                            'date': item?.['date_created'].split(' ')[0],
+                                        })
+                                    } else if (Object.keys(item?.['document']).length > 0) {
+                                        activity_logs_list.push({
+                                            'id': item?.['document']?.['id'],
+                                            'type': item?.['document']?.['activity_type'],
+                                            'title': item?.['document']?.['activity_name'],
+                                            'subject': item?.['document']?.['subject'],
+                                            'date': item?.['date_created'].split(' ')[0],
+                                        })
+                                    }
+                                });
                             }
-                        });
-                    }
-                    loadTimelineList(activity_logs_list)
-                }
-            })
-    }
+                            loadTimelineList(activity_logs_list)
+                        }
+                    })
+            }
 
-    callAjaxtoLoadTimeLineList();
+    callAjaxToLoadTimeLineList();
 
     $(document).on('click', '#table-timeline .detail-call-log-button', function () {
-        console.log(CALL_LOG_LIST)
         let call_log_id = $(this).attr('data-id');
-        let call_log_obj = CALL_LOG_LIST.filter(function (item) {
-            return item.id === call_log_id;
-        })[0]
-        $('#detail-subject-input').val(call_log_obj.subject);
-
-        $('#detail-sale-code-select-box option').remove();
-        $('#detail-sale-code-select-box').append(`<option selected>(${call_log_obj.opportunity.code})&nbsp;&nbsp;&nbsp;${call_log_obj.opportunity.title}</option>`);
-
-        $('#detail-account-select-box option').remove();
-        $('#detail-account-select-box').append(`<option selected>${call_log_obj.customer.title}</option>`);
-
-        $('#detail-contact-select-box option').remove();
-        $('#detail-contact-select-box').append(`<option selected>${call_log_obj.contact.fullname}</option>`);
-
-        let contact_get = contact_list.filter(function (item) {
-            return item.id === call_log_obj.contact.id;
-        })
-        if (contact_get.length > 0) {
-            contact_get = contact_get[0];
-            $('#detail-call-log-contact-name').text(contact_get.fullname);
-            $('#detail-call-log-contact-job-title').text(contact_get.job_title);
-            $('#detail-call-log-contact-mobile').text(contact_get.mobile);
-            $('#detail-call-log-contact-email').text(contact_get.email);
-            let report_to = null;
-            if (Object.keys(contact_get.report_to).length !== 0) {
-                report_to = contact_get.report_to.name;
+        let call_log_detail = $.fn.callAjax2({url: $('#detail-call-log').attr('data-url').replace(0, call_log_id), method: 'GET'}).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && typeof data === 'object' && data.hasOwnProperty('opportunity_call_log_detail')) {
+                    return data?.['opportunity_call_log_detail'];
+                }
+                return {};
+            },
+            (errs) => {
+                console.log(errs);
             }
-            $('#detail-call-log-contact-report-to').text(report_to);
-            let url = $('#detail-btn-detail-call-log-contact-tab').attr('data-url').replace('0', contact_get.id);
-            $('#detail-btn-detail-call-log-contact-tab').attr('href', url);
-            $('#detail-call-log-contact-detail-span').prop('hidden', false);
-        }
+        )
+        Promise.all([call_log_detail]).then(
+            (results) => {
+                let call_log_obj = results[0];
+                $('#detail-subject-input').val(call_log_obj.subject);
 
-        $('#detail-date-input').val(call_log_obj.call_date.split(' ')[0]);
-        $('#detail-repeat-activity').prop('checked', call_log_obj.repeat);
-        $('#detail-result-text-area').val(call_log_obj.input_result);
+                $('#detail-sale-code-select-box option').remove();
+                $('#detail-sale-code-select-box').append(`<option selected>(${call_log_obj.opportunity.code})&nbsp;&nbsp;&nbsp;${call_log_obj.opportunity.title}</option>`);
+
+                $('#detail-account-select-box option').remove();
+                $('#detail-account-select-box').append(`<option selected>${call_log_obj.opportunity.customer.title}</option>`);
+
+                $('#detail-contact-select-box option').remove();
+                $('#detail-contact-select-box').append(`<option selected>${call_log_obj.contact.fullname}</option>`);
+
+                $('#detail-date-input').val(call_log_obj.call_date.split(' ')[0]);
+                $('#detail-repeat-activity').prop('checked', call_log_obj.repeat);
+                $('#detail-result-text-area').val(call_log_obj.input_result);
+            })
     })
 
     $(document).on('click', '#table-timeline .detail-email-button', function () {
         let email_id = $(this).attr('data-id');
-        let email_obj = EMAIL_LIST.filter(function (item) {
-            return item.id === email_id;
-        })[0]
-        $('#detail-email-subject-input').val(email_obj.subject);
+        let email_detail = $.fn.callAjax2({url: $('#detail-send-email').attr('data-url').replace(0, email_id), method: 'GET'}).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && typeof data === 'object' && data.hasOwnProperty('opportunity_email_detail')) {
+                    return data?.['opportunity_email_detail'];
+                }
+                return {};
+            },
+            (errs) => {
+                console.log(errs);
+            }
+        )
+        Promise.all([email_detail]).then(
+            (results) => {
+                let email_obj = results[0];
+                let detail_email_Opp_slb = $('#detail-email-sale-code-select-box')
+                let detail_email_to_slb = $('#detail-email-to-select-box')
+                let detail_email_cc_slb = $('#detail-email-cc-select-box')
 
-        $('#detail-email-sale-code-select-box option').remove();
-        $('#detail-email-sale-code-select-box').append(`<option selected>(${email_obj.opportunity.code})&nbsp;&nbsp;&nbsp;${email_obj.opportunity.title}</option>`);
+                $('#detail-email-subject-input').val(email_obj.subject);
 
-        $('#detail-email-to-select-box option').remove();
-        for (let i = 0; i < email_obj.email_to_list.length; i++) {
-            $('#detail-email-to-select-box').append(`<option selected>${email_obj.email_to_list[i]}</option>`);
-        }
+                detail_email_Opp_slb.html('');
+                detail_email_Opp_slb.append(`<option selected>(${email_obj.opportunity.code})&nbsp;&nbsp;&nbsp;${email_obj.opportunity.title}</option>`);
 
-        $('#detail-email-cc-select-box option').remove();
-        for (let i = 0; i < email_obj.email_cc_list.length; i++) {
-            $('#detail-email-cc-select-box').append(`<option selected>${email_obj.email_cc_list[i]}</option>`);
-        }
+                detail_email_to_slb.html('');
+                for (let i = 0; i < email_obj.email_to_list.length; i++) {
+                    detail_email_to_slb.append(`<option selected>${email_obj.email_to_list[i]}</option>`);
+                }
 
-        $('#detail-email-content-area').val(email_obj.content);
+                detail_email_cc_slb.html('');
+                for (let i = 0; i < email_obj.email_cc_list.length; i++) {
+                    detail_email_cc_slb.append(`<option selected>${email_obj.email_cc_list[i]}</option>`);
+                }
+
+                $('#detail-email-content-area').html(email_obj.content)
+            })
     })
 
     $(document).on('click', '#table-timeline .detail-meeting-button', function () {
         let meeting_id = $(this).attr('data-id');
-        let meeting_obj = MEETING_LIST.filter(function (item) {
-            return item.id === meeting_id;
-        })[0]
-        $('#detail-meeting-subject-input').val(meeting_obj.subject);
+        let meeting_detail = $.fn.callAjax2({url: $('#detail-meeting').attr('data-url').replace(0, meeting_id), method: 'GET'}).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && typeof data === 'object' && data.hasOwnProperty('opportunity_meeting_detail')) {
+                    return data?.['opportunity_meeting_detail'];
+                }
+                return {};
+            },
+            (errs) => {
+                console.log(errs);
+            }
+        )
+        Promise.all([meeting_detail]).then(
+            (results) => {
+                let meeting_obj = results[0];
+                $('#detail-meeting-subject-input').val(meeting_obj.subject);
 
-        $('#detail-meeting-sale-code-select-box option').remove();
-        $('#detail-meeting-sale-code-select-box').append(`<option selected>(${meeting_obj.opportunity.code})&nbsp;&nbsp;&nbsp;${meeting_obj.opportunity.title}</option>`);
+                $('#detail-meeting-sale-code-select-box option').remove();
+                $('#detail-meeting-sale-code-select-box').append(`<option selected>(${meeting_obj.opportunity.code})&nbsp;&nbsp;&nbsp;${meeting_obj.opportunity.title}</option>`);
 
-        $('#detail-meeting-address-select-box option').remove();
-        $('#detail-meeting-address-select-box').append(`<option selected>${meeting_obj.meeting_address}</option>`);
+                $('#detail-meeting-address-select-box option').remove();
+                $('#detail-meeting-address-select-box').append(`<option selected>${meeting_obj.meeting_address}</option>`);
 
-        $('#detail-meeting-room-location-input').val(meeting_obj.room_location);
+                $('#detail-meeting-room-location-input').val(meeting_obj.room_location);
 
-        $('#detail-meeting-employee-attended-select-box option').remove();
-        for (let i = 0; i < meeting_obj.employee_attended_list.length; i++) {
-            let employee_attended_item = meeting_obj.employee_attended_list[i];
-            $('#detail-meeting-employee-attended-select-box').append(`<option selected>${employee_attended_item.fullname}</option>`);
-        }
-        $('#detail-meeting-employee-attended-select-box').prop('disabled', true);
+                let detail_meeting_employee_attended_slb = $('#detail-meeting-employee-attended-select-box');
+                $('#detail-meeting-employee-attended-select-box option').remove();
+                for (let i = 0; i < meeting_obj.employee_attended_list.length; i++) {
+                    let employee_attended_item = meeting_obj.employee_attended_list[i];
+                    detail_meeting_employee_attended_slb.append(`<option selected>${employee_attended_item.fullname}</option>`);
+                }
+                detail_meeting_employee_attended_slb.prop('disabled', true);
 
-        $('#detail-meeting-customer-member-select-box option').remove();
-        for (let i = 0; i < meeting_obj.customer_member_list.length; i++) {
-            let customer_member_item = meeting_obj.customer_member_list[i];
-            $('#detail-meeting-customer-member-select-box').append(`<option selected>${customer_member_item.fullname}</option>`);
-        }
-        $('#detail-meeting-customer-member-select-box').prop('disabled', true);
+                let detail_meeting_customer_member_slb = $('#detail-meeting-customer-member-select-box');
+                $('#detail-meeting-customer-member-select-box option').remove();
+                for (let i = 0; i < meeting_obj.customer_member_list.length; i++) {
+                    let customer_member_item = meeting_obj.customer_member_list[i];
+                    detail_meeting_customer_member_slb.append(`<option selected>${customer_member_item.fullname}</option>`);
+                }
+                detail_meeting_customer_member_slb.prop('disabled', true);
 
-        $('#detail-meeting-date-input').val(meeting_obj.meeting_date.split(' ')[0]);
+                $('#detail-meeting-date-input').val(meeting_obj.meeting_date.split(' ')[0]);
 
-        $('#detail-repeat-activity-2').prop('checked', meeting_obj.repeat);
+                $('#detail-repeat-activity').prop('checked', meeting_obj.repeat);
 
-        $('#detail-meeting-result-text-area').val(meeting_obj.input_result);
+                $('#detail-meeting-result-text-area').val(meeting_obj.input_result);
+            })
     })
 })

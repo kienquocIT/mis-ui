@@ -1896,24 +1896,6 @@ class POValidateHandle {
                     eleStock.innerHTML = String(parseFloat(quantity_order) - parseFloat(quantity_request));
                 }
             } else { // IF DIFFERENT UOM
-                // let uomRequestExchangeRate = 1;
-                // let uomOrderExchangeRate = 1;
-                // if (uomRequestData?.['is_referenced_unit'] === false) {
-                //     uomRequestExchangeRate = uomRequestData?.['ratio'];
-                // }
-                // if (uomOrderData?.['group']?.['is_referenced_unit'] === false) {
-                //     uomOrderExchangeRate = uomOrderData?.['ratio'];
-                // }
-                // let differenceExchangeValue = ((parseFloat(quantity_order) * uomOrderExchangeRate) - (parseFloat(quantity_request) * uomRequestExchangeRate));
-                // if ((parseFloat(quantity_order) * uomOrderExchangeRate) < (parseFloat(quantity_request) * uomRequestExchangeRate)) {
-                //     eleQuantityOrder.value = '0';
-                //     eleStock.innerHTML = '0';
-                //     $.fn.notifyB({description: POLoadDataHandle.transEle.attr('data-validate-order-actual')}, 'failure');
-                //     return false
-                // } else {
-                //    eleStock.innerHTML = String(differenceExchangeValue / uomRequestExchangeRate);
-                // }
-
                 let finalRatio = (parseFloat(uomOrderData?.['ratio']) / parseFloat(uomRequestData?.['ratio']));
                 if ((parseFloat(quantity_order) * finalRatio) < (parseFloat(quantity_request))) {
                     eleQuantityOrder.value = '0';
@@ -1950,7 +1932,6 @@ class POSubmitHandle {
                     'purchase_request_product': dataRow?.['id'],
                     'sale_order_product': sale_order_id,
                     'quantity_order': quantity_order,
-                    // 'quantity_remain': parseFloat(dataRow?.['remain_for_purchase_order']),
                 })
             }
         }
@@ -2026,7 +2007,9 @@ class POSubmitHandle {
                 }
                 let elePrice = row.querySelector('.table-row-price');
                 if (elePrice) {
-                    rowData['product_unit_price'] = $(elePrice).valCurrency();
+                    if ($(elePrice).valCurrency() > 0) {
+                        rowData['product_unit_price'] = $(elePrice).valCurrency();
+                    }
                 }
                 let eleSubtotal = row.querySelector('.table-row-subtotal-raw');
                 if (eleSubtotal) {
@@ -2041,6 +2024,14 @@ class POSubmitHandle {
                     if (eleOrder.getAttribute('data-row')) {
                         let dataRow = JSON.parse(eleOrder.getAttribute('data-row'));
                         rowData['purchase_request_products_data'] = dataRow?.['purchase_request_products_data'];
+                        // Check if stock > 0
+                        if (rowData['stock'] > 0) {
+                            rowData['purchase_request_products_data'].push({
+                                'quantity_order': rowData['stock'],
+                                'uom_stock': rowData['uom_order_request'],
+                                'is_stock': true,
+                            })
+                        }
                     }
                 }
             }
@@ -2056,10 +2047,10 @@ class POSubmitHandle {
         if (POLoadDataHandle.PQDataEle.val()) {
            _form.dataForm['purchase_quotations_data'] = JSON.parse(POLoadDataHandle.PQDataEle.val());
         }
-        let pr_products_data_setup = POSubmitHandle.setupDataPRProduct();
-        if (pr_products_data_setup.length > 0) {
-            _form.dataForm['purchase_request_products_data'] = pr_products_data_setup;
-        }
+        // let pr_products_data_setup = POSubmitHandle.setupDataPRProduct();
+        // if (pr_products_data_setup.length > 0) {
+        //     _form.dataForm['purchase_request_products_data'] = pr_products_data_setup;
+        // }
         let dateDeliveredVal = $('#purchase-order-date-delivered').val();
         if (dateDeliveredVal) {
             _form.dataForm['delivered_date'] = moment(dateDeliveredVal,

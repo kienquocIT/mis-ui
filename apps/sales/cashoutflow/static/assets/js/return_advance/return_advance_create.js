@@ -20,30 +20,7 @@ $(function () {
             ReturnAdvanceLoadPage.loadAdvancePayment(choose_AP_ele, {}, {});
         }
 
-
-        $('input[name="date_created"]').daterangepicker({
-            singleDatePicker: true,
-            timePicker: true,
-            showDropdowns: false,
-            minYear: 1901,
-            "cancelClass": "btn-secondary",
-            maxYear: parseInt(moment().format('YYYY'), 10)
-        });
-        $('.daterangepicker').remove();
-
-        $(document).on('change', '.return-price', function () {
-            let total = 0;
-            let ele = $(this).closest('tr').find('span.mask-money');
-            if ($(this).valCurrency() > ele.attr('data-init-money')) {
-                $.fn.notifyB({description: $('#trans-factory').data('trans-greater-remain')}, 'failure');
-                $(this).attr('value', '');
-            }
-            $('.return-price').each(function () {
-                total += $(this).valCurrency();
-            })
-            $('#total-value').attr('data-init-money', total);
-            $.fn.initMaskMoney2();
-        })
+        new ReturnAdvanceLoadPage().load();
 
         const frmCreate = $('#frmCreate');
         new SetupFormSubmit(frmCreate).validate({
@@ -70,7 +47,7 @@ $(function () {
             submitHandler: function (form) {
                 let frm = new SetupFormSubmit($(form));
                 frm.dataForm['employee_created_id'] = $('[name="employee_created_id"]').attr('data-id');
-                frm.dataForm['status'] = 0;
+                frm.dataForm['status'] = 1;
                 frm.dataForm['money_received'] = !!$('#money-received').is(':checked');
                 let tbProduct = $('#dtbProduct');
                 let cost_list = []

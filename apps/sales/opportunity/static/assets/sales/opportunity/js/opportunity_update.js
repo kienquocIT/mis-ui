@@ -27,76 +27,12 @@ $(document).ready(function () {
 
     // load input date time
     OpportunityLoadDetail.configDateTimeEle()
-    OpportunityLoadDetail.loadDtbApplication();
 
     // Promise.all
-    let prm_acc = $.fn.callAjax2({
-        url: urlFactory.data('url-account-list'),
-        type: 'GET'
-    }).then(
-        (resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data && typeof data === 'object' && data.hasOwnProperty('account_list')) {
-                return data['account_list'];
-            }
-            return [];
-        },
-        (errs) => {
-
-        }
-    )
-
-    let prm_contact = $.fn.callAjax2({
-        url: urlFactory.data('url-contact-list'),
-        type: 'GET'
-    }).then(
-        (resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data && typeof data === 'object' && data.hasOwnProperty('contact_list')) {
-                return data['contact_list'];
-            }
-            return [];
-        },
-        (errs) => {
-
-        }
-    )
-
-    let prm_opp = $.fn.callAjax2({
-        url: urlFactory.data('url-opp-list'),
-        type: 'GET'
-    }).then(
-        (resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data && typeof data === 'object' && data.hasOwnProperty('opportunity_list')) {
-                return data['opportunity_list'];
-            }
-            return [];
-        },
-        (errs) => {
-
-        }
-    )
-
-    let prm_employee = $.fn.callAjax2({
-        url: urlFactory.data('url-employee-list'),
-        type: 'GET'
-    }).then(
-        (resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data && typeof data === 'object' && data.hasOwnProperty('employee_list')) {
-                return data['employee_list'];
-            }
-            return [];
-        },
-        (errs) => {
-
-        }
-    )
 
     let prm_config = $.fn.callAjax2({
         url: urlFactory.data('url-config'),
-        type: 'GET'
+        method: 'GET'
     }).then(
         (resp) => {
             let data = $.fn.switcherResp(resp);
@@ -128,24 +64,17 @@ $(document).ready(function () {
     let list_stage_condition = []
     let config_is_input_rate = null;
     $x.fn.showLoadingPage()
-    Promise.all([prm_acc, prm_contact, prm_opp, prm_employee, prm_detail, prm_config]).then(
+    Promise.all([prm_detail, prm_config]).then(
         (results) => {
             $x.fn.hideLoadingPage();
-            const account_list = results[0];
-            const contact_list = results[1];
-            const opportunity_list = results[2];
-            const employee_list = results[3];
-            const opportunity_detail_data = results[4]
-
-            let config = results[5];
+            const opportunity_detail_data = results[0];
+            const config = results[1];
             const config_is_select_stage = config.is_select_stage;
             const config_is_AM_create = config.is_account_manager_create;
             config_is_input_rate = config.is_input_win_rate;
-
             if (config_is_select_stage) {
                 $('#btn-auto-update-stage').hide();
             }
-
             let paramString = {}
 
             async function loadDetail(opportunity_detail) {
@@ -155,6 +84,7 @@ $(document).ready(function () {
                     'id': opportunity_detail.id,
                     'code': opportunity_detail.code,
                     'title': opportunity_detail.title,
+                    'sale_person': opportunity_detail.sale_person,
                 }
                 let stage_obj = await OpportunityLoadDetail.loadDetailCommon(opportunity_detail);
                 list_stage = stage_obj.list;
@@ -178,18 +108,6 @@ $(document).ready(function () {
                     $('#check-lost-reason').prop('checked', false);
 
                 $('#input-budget').attr('value', opportunity_detail.budget_value);
-                if (opportunity_detail?.['open_date'] !== null)
-                    $('#input-open-date').val(opportunity_detail?.['open_date'].split(' ')[0]);
-                if (opportunity_detail?.['open_date'] !== null)
-                    $('#input-close-date').val(opportunity_detail?.['open_date'].split(' ')[0]);
-                else {
-                    $('#input-close-date').val('');
-                }
-                if (opportunity_detail.decision_maker !== null) {
-                    let ele_decision_maker = $('#input-decision-maker');
-                    ele_decision_maker.val(opportunity_detail.decision_maker.name);
-                    ele_decision_maker.attr('data-id', opportunity_detail.decision_maker.id);
-                }
 
                 OpportunityLoadDropdown.loadCustomer(opportunity_detail.customer, config_is_AM_create, opportunity_detail?.['sale_person'].id);
                 OpportunityLoadDropdown.loadProductCategory(opportunity_detail.product_category);
@@ -218,7 +136,7 @@ $(document).ready(function () {
                 OpportunityLoadDropdown.loadFactor($('#box-select-factor'), opportunity_detail.customer_decision_factor);
 
                 // load sale team
-                OpportunityLoadDetail.loadSaleTeam(opportunity_detail.members);
+                OpportunityLoadDetail.loadSaleTeam(opportunity_detail.members, true);
 
                 if ($.fn.hasOwnProperties(opportunity_detail, ['sale_order'])) {
                     let so_id = opportunity_detail.sale_order.id;
@@ -243,9 +161,10 @@ $(document).ready(function () {
                 $.fn.initMaskMoney2();
             }
 
-            loadDetail(opportunity_detail_data);
+            loadDetail(opportunity_detail_data).then();
 
             // even in tab product
+
             $('#btn-add-select-product').on('click', function () {
                 OpportunityLoadDetail.addRowSelectProduct();
             })
@@ -353,6 +272,7 @@ $(document).ready(function () {
             })
 
             // event in tab competitor
+
             $('#btn-add-competitor').on('click', function () {
                 OpportunityLoadDetail.addRowCompetitor()
             })
@@ -374,6 +294,7 @@ $(document).ready(function () {
             })
 
             // event in tab contact role
+
             $('#btn-add-contact').on('click', function () {
                 OpportunityLoadDetail.addRowContactRole();
             })
@@ -422,6 +343,7 @@ $(document).ready(function () {
             })
 
             // event general
+
             $(document).on('change', 'select, input', function () {
                 $(this).addClass('tag-change');
                 $(this).closest('tr').addClass('tag-change');
@@ -444,7 +366,6 @@ $(document).ready(function () {
                 ele_end_customer.addClass('tag-change');
             })
 
-
             checkInputRateEle.on('change', function () {
                 if ($(this).is(':checked')) {
                     inputRateEle.prop('readonly', false);
@@ -456,7 +377,6 @@ $(document).ready(function () {
             rangeInputEle.on('mousedown', function () {
                 return false;
             });
-
 
             inputRateEle.on('change', function () {
                 let value = $(this).val();
@@ -476,51 +396,6 @@ $(document).ready(function () {
 
             $(document).on('click', '#btn-show-modal-add-member', function () {
                 OpportunityLoadDetail.loadMemberForDtb().then();
-            })
-
-            $(document).on('click', '#dtbMember .input-select-member', function () {
-                if ($(this).is(':checked')) {
-                    $(this).closest('tr').addClass('tr-added selected');
-                } else {
-                    $(this).prop('checked', true);
-                }
-            })
-
-            $(document).on('click', '.btn-remove-card', function (event) {
-                event.preventDefault();
-                let card = $(this).closest('.card');
-                let base_tran_ele = $('#base-trans-factory')
-                Swal.fire({
-                    title: base_tran_ele.data('sure-delete'),
-                    showCancelButton: true,
-                    confirmButtonText: base_tran_ele.data('confirm'),
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.fn.callAjax2({
-                            url: urlEle.data('url-delete-member').format_url_with_uuid(card.data('id')),
-                            method: 'PUT',
-                            data: {
-                                'employee_delete': $('#emp-current-id').val(),
-                                'opportunity': pk,
-                            },
-                        }).then(
-                            (resp) => {
-                                let data = $.fn.switcherResp(resp);
-                                if (data) {
-                                    Swal.fire(base_tran_ele.data('success'), '', 'success');
-                                    OpportunityLoadDetail.reloadMemberList(pk);
-                                }
-                            },
-                            (errs) => {
-                                if ($.fn.hasOwnProperties(errs.data.errors, ['employee_current'])) {
-                                    OpportunityLoadDetail.renderAlert(errs.data.errors.employee_current);
-                                } else if ($.fn.hasOwnProperties(errs.data.errors, ['member'])) {
-                                    OpportunityLoadDetail.renderAlert(errs.data.errors.member);
-                                }
-                            }
-                        )
-                    }
-                })
             })
 
             $(document).on('change', '.mask-money', function () {
@@ -599,6 +474,7 @@ $(document).ready(function () {
                 }
             })
 
+
             $(document).on('click', '#btn-auto-update-stage', function () {
                 autoLoadStage(
                     true,
@@ -647,44 +523,17 @@ $(document).ready(function () {
                 }
             })
 
-            // event permission for member
-            $(document).on('click', '.btn-set-perm-member', function () {
-                let id = $(this).closest('.card').data('id');
-                $('#id-member').val(id);
-                let method = 'GET';
-                let url = urlEle.data('url-member-detail').format_url_with_uuid(id);
-                OpportunityLoadDetail.loadMemberPermission(url, method);
-            })
-
-            $(document).on('change', '#table-applications input, #table-applications select', function () {
-                $(this).closest('tr').addClass('tr-updated')
-            })
-
-            $(document).on('change', '.check-all', function () {
-                let tr_current = $(this).closest('tr');
-                if ($(this).is(':checked')) {
-                    tr_current.find('input').prop('checked', true);
-                } else {
-                    tr_current.find('input').prop('checked', false);
-                }
-            })
-
-            $(document).on('change', '.check-create, .check-view, .check-delete, .check-edit', function () {
-                let tr_current = $(this).closest('tr');
-                if (OpportunityLoadDetail.checkAllPermissionChecked(tr_current)) {
-                    tr_current.find('.check-all').prop('checked', true);
-                } else {
-                    tr_current.find('.check-all').prop('checked', false);
-                }
-            })
-
             const frm_add_member = $('#frm-add-member');
             SetupFormSubmit.validate(
                 frm_add_member,
                 {
                     submitHandler: function (form) {
-                        $x.fn.showLoadingPage();
                         let frm = new SetupFormSubmit($(form));
+                        let data = {
+                            'members': OpportunityLoadDetail.getDataMember(),
+                            'employee_current': $('#emp-current-id').val(),
+                            'opportunity': pk,
+                        }
                         $.fn.callAjax2({
                             sweetAlertOpts: {'allowOutsideClick': true},
                             url: frm.dataUrl.replaceAll('__pk_opp__', pk),
@@ -721,106 +570,54 @@ $(document).ready(function () {
                 }
             )
 
-            const frm_set_permission = $('#frm-set-perm-member');
-            SetupFormSubmit.validate(
-                frm_set_permission,
-                {
-                    submitHandler: function (form) {
-                        let frm = new SetupFormSubmit($(form));
-                        let id = $('#id-member').val();
-                        let data = OpportunityLoadDetail.getFormDataMemberPermission();
-                        $.fn.callAjax2({
-                            url: frm.dataUrl.format_url_with_uuid(id),
-                            method: frm.dataMethod,
-                            data: data,
-                        }).then(
-                            (resp) => {
-                                let data = $.fn.switcherResp(resp);
-                                if (data) {
-                                    $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
-                                    $('#modal-set-perm').modal('hide');
-                                }
-                            },
-                            (errs) => {
-                                $.fn.notifyB({description: errs.data.errors}, 'failure');
-                            }
-                        )
-                    }
-                }
-            )
+            // // toggle action and activity
 
-            // toggle action and activity
             toggleShowActivity()
-
 
             // for call log
 
-            function LoadSaleCodeListCallLog(default_sale_code_id) {
-                let $sale_code_sb = $('#sale-code-select-box');
-                $sale_code_sb.html(``);
-                opportunity_list.map(function (item) {
-                    if (default_sale_code_id === item.id) {
-                        $sale_code_sb.append(`<option selected value="${item.id}">(${item.code})&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${item.title}</option>`);
-                    }
-                })
-                $sale_code_sb.select2();
+            let table_timeline = $('#table-timeline');
+
+            let call_log_Opp_slb = $('#sale-code-select-box');
+            let date_input = $('#date-input');
+            let customer_slb = $('#account-select-box');
+            let contact_slb = $('#contact-select-box');
+
+            function loadSaleCodeListCallLog() {
+                call_log_Opp_slb.prop('disabled', true);
+                call_log_Opp_slb.html(``);
+                call_log_Opp_slb.append(`<option selected value="${opportunity_detail_data.id}">(${opportunity_detail_data.code})&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${opportunity_detail_data.title}</option>`);
+                call_log_Opp_slb.initSelect2();
             }
 
-            function LoadCustomerList(default_customer_id) {
-                let $account_sb = $('#account-select-box');
-                $account_sb.html(``);
-                $account_sb.append(`<option></option>`)
-                account_list.map(function (item) {
-                    if (default_customer_id === item.id) {
-                        $account_sb.append(`<option selected value="${item.id}">${item.name}</option>`);
-                    } else {
-                        $account_sb.append(`<option value="${item.id}">${item.name}</option>`);
-                    }
-                })
-                $account_sb.select2();
+            function loadCustomerList() {
+                customer_slb.prop('disabled', true);
+                customer_slb.html(``);
+                customer_slb.append(`<option selected value="${opportunity_detail_data.customer.id}">${opportunity_detail_data.customer.name}</option>`);
+                customer_slb.initSelect2();
             }
 
-            function LoadContactList(contact_list_id) {
-                $('#call-log-contact-name').text('');
-                $('#call-log-contact-job-title').text('');
-                $('#call-log-contact-mobile').text('');
-                $('#call-log-contact-email').text('');
-                $('#call-log-contact-report-to').text('');
-                $('#btn-detail-call-log-contact-tab').attr('href', '');
-                $('#call-log-contact-detail-span').prop('hidden', true);
-
-                let $contact_sb = $('#contact-select-box');
-                $contact_sb.html(``);
-                $contact_sb.append(`<option></option>`)
-                contact_list.map(function (item) {
-                    if (contact_list_id.includes(item.id)) {
-                        let report_to = null
-                        if (Object.keys(item.report_to).length !== 0) {
-                            report_to = item.report_to.name;
-                        }
-                        $contact_sb.append(`<option data-name="${item.fullname}" data-job-title="${item.job_title}" data-mobile="${item.mobile}" data-email="${item.email}" data-report-to="` + report_to + `" value="${item.id}">${item.fullname}</option>`);
-                    }
-                })
-                $contact_sb.select2({dropdownParent: $("#create-new-call-log")});
+            function loadContactList() {
+                let contact_list = opportunity_detail_data.customer.contact_mapped;
+                contact_slb.html(``);
+                contact_slb.append(`<option></option>`)
+                for (let i = 0; i < contact_list.length; i++) {
+                    contact_slb.append(`<option value="${contact_list[i].id}">${contact_list[i].fullname}</option>`)
+                }
+                contact_slb.initSelect2();
             }
 
             $('.create-new-call-log-button').on('click', function () {
                 $('#subject-input').val('');
-                $('#date-input').val('');
+                date_input.val('');
                 $('#result-text-area').val('');
-                $('#call-log-repeat-activity').attr('checked', false);
-                $('#sale-code-select-box').prop('disabled', true);
-                $('#account-select-box').prop('disabled', true);
 
-                let contact_list_id = account_list.filter(function (item) {
-                    return item.id === $('#select-box-customer option:selected').attr('value');
-                })[0].contact_mapped;
-                LoadContactList(contact_list_id);
-                LoadSaleCodeListCallLog(pk);
-                LoadCustomerList($('#select-box-customer option:selected').attr('value'));
+                loadSaleCodeListCallLog();
+                loadCustomerList();
+                loadContactList();
             })
 
-            $('#date-input').daterangepicker({
+            date_input.daterangepicker({
                 singleDatePicker: true,
                 timePicker: true,
                 showDropdowns: true,
@@ -833,161 +630,103 @@ $(document).ready(function () {
                 maxYear: parseInt(moment().format('YYYY'), 10) + 100
             });
 
-            $('#contact-select-box').on('change', function () {
-                if ($('#contact-select-box option:selected').attr('value')) {
-                    $('#call-log-contact-name').text($('#contact-select-box option:selected').attr('data-name'));
-                    $('#call-log-contact-job-title').text($('#contact-select-box option:selected').attr('data-job-title'));
-                    $('#call-log-contact-mobile').text($('#contact-select-box option:selected').attr('data-mobile'));
-                    $('#call-log-contact-email').text($('#contact-select-box option:selected').attr('data-email'));
-                    $('#call-log-contact-report-to').text($('#contact-select-box option:selected').attr('data-report-to'));
-                    let url = $('#btn-detail-call-log-contact-tab').attr('data-url').replace('0', $('#contact-select-box option:selected').attr('value'));
-                    $('#btn-detail-call-log-contact-tab').attr('href', url);
-                    $('#call-log-contact-detail-span').prop('hidden', false);
-                } else {
-                    $('#call-log-contact-name').text('');
-                    $('#call-log-contact-job-title').text('');
-                    $('#call-log-contact-mobile').text('');
-                    $('#call-log-contact-email').text('');
-                    $('#call-log-contact-report-to').text('');
-                    $('#btn-detail-call-log-contact-tab').attr('href', '');
-                    $('#call-log-contact-detail-span').prop('hidden', true);
-                }
-            })
-
-            $('#form-create-new-call-log').submit(function (event) {
-                event.preventDefault();
-                let frm = new SetupFormSubmit($(this));
+            function combinesData_CallLog(frmEle) {
+                let frm = new SetupFormSubmit($(frmEle));
 
                 frm.dataForm['subject'] = $('#subject-input').val();
-                frm.dataForm['opportunity'] = $('#sale-code-select-box').val();
-                frm.dataForm['customer'] = $('#account-select-box').val();
-                frm.dataForm['contact'] = $('#contact-select-box').val();
-                frm.dataForm['call_date'] = $('#date-input').val();
+                frm.dataForm['opportunity'] = call_log_Opp_slb.val();
+                frm.dataForm['customer'] = customer_slb.val();
+                frm.dataForm['contact'] = contact_slb.val();
+                frm.dataForm['call_date'] = date_input.val();
                 frm.dataForm['input_result'] = $('#result-text-area').val();
-                if ($('#call-log-repeat-activity').is(':checked')) {
+                if ($('#repeat-activity').is(':checked')) {
                     frm.dataForm['repeat'] = 1;
-                } else {
+                }
+                else {
                     frm.dataForm['repeat'] = 0;
                 }
 
-
-                $.fn.callAjax2({
+                return {
                     url: frm.dataUrl,
                     method: frm.dataMethod,
-                    data: frm.dataForm
-                }).then((resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        $.fn.notifyB({description: "Successfully"}, 'success')
-                        $('#create-new-call-log').hide();
-
-                        callAjaxtoLoadTimeLineList();
-                    }
-                })
-            })
-
-
-            // for send email
-
-            $('#email-to-select-box').select2({
-                dropdownParent: $("#send-email"),
-                tags: true,
-                tokenSeparators: [',', ' ']
-            });
-
-            $('#email-cc-select-box').select2({
-                dropdownParent: $("#send-email"),
-                tags: true,
-                tokenSeparators: [',', ' '],
-            });
-
-            $('#detail-email-to-select-box').select2({
-                dropdownParent: $("#detail-send-email"),
-                tags: true,
-                tokenSeparators: [',', ' ']
-            });
-
-            $('#detail-email-cc-select-box').select2({
-                dropdownParent: $("#detail-send-email"),
-                tags: true,
-                tokenSeparators: [',', ' '],
-            });
-
-            function LoadEmailToList(contact_id_list) {
-                let $to_sb = $('#email-to-select-box');
-                $to_sb.html(``);
-                contact_list.map(function (item) {
-                    if (contact_id_list.includes(item.id)) {
-                        if (item.email === null) {
-                            $to_sb.append(`<option disabled>${item.fullname}</option>`);
-                        } else {
-                            $to_sb.append(`<option value="${item.email}" data-bs-toggle="tooltip" data-bs-placement="top" title="${item.fullname}">${item.email}</option>`);
-                        }
-                    }
-                });
+                    data: frm.dataForm,
+                    urlRedirect: frm.dataUrlRedirect,
+                };
             }
 
-            function LoadEmailCcList(contact_id_list) {
-                let $cc_sb = $('#email-cc-select-box');
-                $cc_sb.html(``);
-                contact_list.map(function (item) {
-                    if (contact_id_list.includes(item.id)) {
-                        if (item.email === null) {
-                            $cc_sb.append(`<option disabled>${item.fullname}</option>`);
-                        } else {
-                            $cc_sb.append(`<option value="${item.email}" data-bs-toggle="tooltip" data-bs-placement="top" title="${item.fullname}">${item.email}</option>`);
-                        }
-                    }
-                });
-            }
-
-            $('.send-email-button').on('click', function () {
-                $('#email-subject-input').val('');
-                $('#email-content-area').val('');
-
-                $('#email-to-select-box').prop('hidden', false);
-                $('#email-to-select-box').next(1).prop('hidden', false);
-                $('#inputEmailTo').prop('hidden', true);
-                $('#email-to-select-btn').prop('hidden', true);
-                $('#email-to-input-btn').prop('hidden', false);
-
-                $('#email-cc-input-btn').prop('hidden', false);
-                $('#inputEmailCc').prop('hidden', true);
-                $('#email-cc-add').prop('hidden', true);
-                $('#email-cc-remove').prop('hidden', true);
-
-                let contact_list_id = account_list.filter(function (item) {
-                    return item.id === $('#select-box-customer option:selected').attr('value');
-                })[0].contact_mapped;
-                LoadEmailToList(contact_list_id);
-                LoadEmailCcList(contact_list_id);
-            })
-
-            $('#form-new-email').submit(function (event) {
+            $('#form-create-new-call-log').submit(function (event) {
                 event.preventDefault();
-                let csr = $("input[name=csrfmiddlewaretoken]").val();
-                let frm = new SetupFormSubmit($(this));
+                let combinesData = new combinesData_CallLog($(this));
+                if (combinesData) {
+                    WindowControl.showLoading();
+                    $.fn.callAjax2(combinesData)
+                        .then(
+                            (resp) => {
+                                let data = $.fn.switcherResp(resp);
+                                if (data) {
+                                    $.fn.notifyB({description: "Successfully"}, 'success')
+                                    setTimeout(() => {
+                                        $('#create-new-call-log').hide();
+                                        callAjaxToLoadTimeLineList();
+                                        WindowControl.hideLoading();
+                                    }, 1000);
+                                }
+                            },
+                            (errs) => {
+                                setTimeout(
+                                    () => {
+                                        WindowControl.hideLoading();
+                                    },
+                                    1000
+                                )
+                                $.fn.notifyB({description: errs.data.errors}, 'failure');
+                            }
+                        )
+                }
+            })
 
-                frm.dataForm['opportunity'] = pk;
-                frm.dataForm['subject'] = $('#email-subject-input').val();
-                frm.dataForm['email_to_list'] = $('#email-to-select-box').val();
-                frm.dataForm['email_cc_list'] = $('#email-cc-select-box').val();
-                frm.dataForm['content'] = $('#email-content-area').val();
+            $(document).on('click', '#table-timeline .detail-call-log-button', function () {
+                let call_log_id = $(this).attr('data-id');
+                let call_log_detail = $.fn.callAjax2({url: $('#detail-call-log').attr('data-url').replace(0, call_log_id), method: 'GET'}).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data && typeof data === 'object' && data.hasOwnProperty('opportunity_call_log_detail')) {
+                            return data?.['opportunity_call_log_detail'];
+                        }
+                        return {};
+                    },
+                    (errs) => {
+                        console.log(errs);
+                    }
+                )
+                Promise.all([call_log_detail]).then(
+                    (results) => {
+                        let call_log_obj = results[0];
+                        $('#detail-subject-input').val(call_log_obj.subject);
 
-                // console.log(frm.dataForm)
+                        $('#detail-sale-code-select-box option').remove();
+                        $('#detail-sale-code-select-box').append(`<option selected>(${call_log_obj.opportunity.code})&nbsp;&nbsp;&nbsp;${call_log_obj.opportunity.title}</option>`);
 
-                $.fn.callAjax2({
-                    url: frm.dataUrl,
-                    method: frm.dataMethod,
-                    data: frm.dataForm
-                }).then(
+                        $('#detail-account-select-box option').remove();
+                        $('#detail-account-select-box').append(`<option selected>${call_log_obj.opportunity.customer.title}</option>`);
+
+                        $('#detail-contact-select-box option').remove();
+                        $('#detail-contact-select-box').append(`<option selected>${call_log_obj.contact.fullname}</option>`);
+
+                        $('#detail-date-input').val(call_log_obj.call_date.split(' ')[0]);
+                        $('#detail-repeat-activity').prop('checked', call_log_obj.repeat);
+                        $('#detail-result-text-area').val(call_log_obj.input_result);
+                    })
+            })
+
+            $(document).on('click', '#table-timeline .delete-call-log-button', function () {
+                let call_log_id = $(this).attr('data-id');
+                $.fn.callAjax2({url: table_timeline.attr('data-url-delete-call-log').replace(0, call_log_id), method: 'DELETE'}).then(
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             $.fn.notifyB({description: "Successfully"}, 'success')
-                            $('#send-email').hide();
-
-                            callAjaxtoLoadTimeLineList();
+                            callAjaxToLoadTimeLineList();
                         }
                     },
                     (errs) => {
@@ -996,61 +735,218 @@ $(document).ready(function () {
                 )
             })
 
+            // for send email.
+
+            let email_Opp_slb = $('#email-sale-code-select-box');
+            let email_to_slb = $('#email-to-select-box');
+            let email_cc_slb = $('#email-cc-select-box');
+
+            function loadSaleCodeListEmail() {
+                email_Opp_slb.prop('disabled', true);
+                email_Opp_slb.html(``);
+                email_Opp_slb.append(`<option selected value="${opportunity_detail_data.id}">(${opportunity_detail_data.code})&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${opportunity_detail_data.title}</option>`);
+                email_Opp_slb.initSelect2();
+            }
+
+            function loadEmailToList(contact_list) {
+                email_to_slb.html(``);
+                for (let i = 0; i < contact_list.length; i++) {
+                    let item = contact_list[i];
+                    if (item.email !== null) {
+                        email_to_slb.append(`<option value="${item.email}" data-bs-toggle="tooltip" data-bs-placement="top" title="${item.fullname}">${item.email}</option>`);
+                    }
+                }
+                email_to_slb.select2({
+                    dropdownParent: $("#send-email"),
+                    tags: true,
+                    tokenSeparators: [',', ' ']
+                });
+            }
+
+            function loadEmailCcList(contact_list) {
+                email_cc_slb.html(``);
+                for (let i = 0; i < contact_list.length; i++) {
+                    let item = contact_list[i];
+                    if (item.email !== null) {
+                        email_cc_slb.append(`<option value="${item.email}" data-bs-toggle="tooltip" data-bs-placement="top" title="${item.fullname}">${item.email}</option>`);
+                    }
+                }
+                email_cc_slb.select2({
+                    dropdownParent: $("#send-email"),
+                    tags: true,
+                    tokenSeparators: [',', ' ']
+                });
+            }
+
+            ClassicEditor
+                .create(document.querySelector('#email-content-area'))
+                .catch(error => {console.error(error);})
+
+            $('.send-email-button').on('click', function () {
+                $('#email-subject-input').val('');
+                $('#email-content-area').val('');
+
+                loadSaleCodeListEmail();
+                loadEmailToList(opportunity_detail_data.customer.contact_mapped);
+                loadEmailCcList(opportunity_detail_data.customer.contact_mapped);
+            })
+
+            function combinesData_Email(frmEle) {
+                let frm = new SetupFormSubmit($(frmEle));
+
+                frm.dataForm['subject'] = $('#email-subject-input').val();
+                frm.dataForm['opportunity'] = $('#email-sale-code-select-box option:selected').val();
+                frm.dataForm['email_to_list'] = email_to_slb.val();
+                frm.dataForm['email_cc_list'] = email_cc_slb.val();
+                frm.dataForm['content'] = $('#form-new-email .ck-content').html();
+
+                return {
+                    url: frm.dataUrl,
+                    method: frm.dataMethod,
+                    data: frm.dataForm,
+                    urlRedirect: frm.dataUrlRedirect,
+                };
+            }
+
+            $('#form-new-email').submit(function (event) {
+                event.preventDefault();
+                let combinesData = new combinesData_Email($(this));
+                if (combinesData) {
+                    WindowControl.showLoading();
+                    $.fn.callAjax2(combinesData)
+                        .then(
+                            (resp) => {
+                                let data = $.fn.switcherResp(resp);
+                                if (data) {
+                                    $.fn.notifyB({description: "Successfully"}, 'success')
+                                    setTimeout(() => {
+                                        $('#send-email').hide();
+                                        callAjaxToLoadTimeLineList();
+                                        WindowControl.hideLoading();
+                                    }, 1000);
+                                }
+                            },
+                            (errs) => {
+                                setTimeout(
+                                    () => {
+                                        WindowControl.hideLoading();
+                                    },
+                                    1000
+                                )
+                                $.fn.notifyB({description: errs.data.errors}, 'failure');
+                            }
+                        )
+                }
+            })
+
+            $(document).on('click', '#table-timeline .detail-email-button', function () {
+                let email_id = $(this).attr('data-id');
+                let email_detail = $.fn.callAjax2({url: $('#detail-send-email').attr('data-url').replace(0, email_id), method: 'GET'}).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data && typeof data === 'object' && data.hasOwnProperty('opportunity_email_detail')) {
+                            return data?.['opportunity_email_detail'];
+                        }
+                        return {};
+                    },
+                    (errs) => {
+                        console.log(errs);
+                    }
+                )
+                Promise.all([email_detail]).then(
+                    (results) => {
+                        let email_obj = results[0];
+                        let detail_email_Opp_slb = $('#detail-email-sale-code-select-box')
+                        let detail_email_to_slb = $('#detail-email-to-select-box')
+                        let detail_email_cc_slb = $('#detail-email-cc-select-box')
+
+                        $('#detail-email-subject-input').val(email_obj.subject);
+
+                        detail_email_Opp_slb.html('');
+                        detail_email_Opp_slb.append(`<option selected>(${email_obj.opportunity.code})&nbsp;&nbsp;&nbsp;${email_obj.opportunity.title}</option>`);
+
+                        detail_email_to_slb.html('');
+                        for (let i = 0; i < email_obj.email_to_list.length; i++) {
+                            detail_email_to_slb.append(`<option selected>${email_obj.email_to_list[i]}</option>`);
+                        }
+
+                        detail_email_cc_slb.html('');
+                        for (let i = 0; i < email_obj.email_cc_list.length; i++) {
+                            detail_email_cc_slb.append(`<option selected>${email_obj.email_cc_list[i]}</option>`);
+                        }
+
+                        $('#detail-email-content-area').html(email_obj.content)
+                    })
+            })
+
+            $(document).on('click', '#table-timeline .delete-email-button', function () {
+                let email_id = $(this).attr('data-id');
+                $.fn.callAjax2({url: table_timeline.attr('data-url-delete-email').replace(0, email_id), method:'DELETE'}).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            $.fn.notifyB({description: "Successfully"}, 'success')
+                            callAjaxToLoadTimeLineList();
+                        }
+                    },
+                    (errs) => {
+                        $.fn.notifyB({description: errs.data.errors}, 'failure');
+                    }
+                )
+            })
 
             // for meeting
 
-            function LoadMeetingSaleCodeList(default_sale_code_id) {
-                let $sc_sb = $('#meeting-sale-code-select-box');
-                $sc_sb.html(``);
-                opportunity_list.map(function (item) {
-                    if (item.id === default_sale_code_id) {
-                        $sc_sb.append(`<option selected data-customer-id="${item.customer.id}" value="${item.id}">(${item.code})&nbsp;&nbsp;&nbsp;${item.title}</option>`);
-                    }
-                })
-                $sc_sb.select2({dropdownParent: $("#create-meeting")});
+            let meeting_Opp_slb = $('#meeting-sale-code-select-box');
+            let meeting_address_slb = $('#meeting-address-select-box');
+            let meeting_customer_member_slb = $('#meeting-customer-member-select-box');
+            let meeting_employee_attended_slb = $('#meeting-employee-attended-select-box');
+            let meeting_date_input = $('#meeting-date-input');
+
+            function loadMeetingSaleCodeList() {
+                meeting_Opp_slb.prop('disabled', true);
+                meeting_Opp_slb.html(``);
+                meeting_Opp_slb.append(`<option selected value="${opportunity_detail_data.id}">(${opportunity_detail_data.code})&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${opportunity_detail_data.title}</option>`);
+                meeting_Opp_slb.initSelect2();
             }
 
-            function LoadCustomerMember(customer_id) {
-                let contact_mapped_list = null;
-                account_list.map(function (item) {
-                    if (customer_id === item.id) {
-                        contact_mapped_list = item.contact_mapped;
-                    }
-                })
-                let $customer_member_sb = $('#meeting-customer-member-select-box');
-                $customer_member_sb.html(``);
-                $customer_member_sb.append(`<option></option>`);
-                contact_list.map(function (item) {
-                    if (contact_mapped_list.includes(item.id)) {
-                        $customer_member_sb.append(`<option value="${item.id}">${item.fullname}</option>`);
-                    }
-                })
-                $customer_member_sb.select2({dropdownParent: $("#create-meeting")});
-            }
-
-            function LoadEmployeeAttended() {
-                let $employee_attended_sb = $('#meeting-employee-attended-select-box');
-                $employee_attended_sb.html(``);
-                $employee_attended_sb.append(`<option></option>`);
-                employee_list.map(function (item) {
-                    $employee_attended_sb.append(`<option data-code="${item.code}" value="${item.id}">${item.full_name}</option>`);
-                })
-                $employee_attended_sb.select2({dropdownParent: $("#create-meeting")});
-            }
-
-            function LoadMeetingAddress(customer_id) {
-                let opportunity_obj = JSON.parse($('#opportunity_list').text()).filter(function (item) {
-                    return item.customer.id === customer_id;
-                })
-                let shipping_address_list = opportunity_obj[0].customer.shipping_address;
+            function loadMeetingAddress(shipping_address_list) {
+                meeting_address_slb.attr('disabled', false);
                 $('#meeting-address-select-box option').remove();
-                $('#meeting-address-select-box').append(`<option></option>`);
+                meeting_address_slb.initSelect2();
                 for (let i = 0; i < shipping_address_list.length; i++) {
-                    $('#meeting-address-select-box').append(`<option>` + shipping_address_list[i] + `</option>`);
+                    if (shipping_address_list[i].is_default) {
+                        meeting_address_slb.append(`<option selected>${shipping_address_list[i].full_address}</option>`);
+                    }
+                    else {
+                        meeting_address_slb.append(`<option>${shipping_address_list[i].full_address}</option>`);
+                    }
                 }
             }
 
-            $('#meeting-date-input').daterangepicker({
+            function loadCustomerMember(contact_list) {
+                meeting_customer_member_slb.attr('disabled', false);
+                $('#meeting-customer-member-select-box option').remove();
+                meeting_customer_member_slb.initSelect2();
+                for (let i = 0; i < contact_list.length; i++) {
+                    meeting_customer_member_slb.append(`<option value="${contact_list[i].id}">${contact_list[i].fullname}</option>`)
+                }
+            }
+
+            function loadEmployeeAttended(data) {
+                meeting_employee_attended_slb.initSelect2({
+                    ajax: {
+                        url: meeting_employee_attended_slb.attr('data-url'),
+                        method: 'GET',
+                    },
+                    data: (data ? data : null),
+                    keyResp: 'employee_list',
+                    keyId: 'id',
+                    keyText: 'full_name',
+                })
+            }
+
+            meeting_date_input.daterangepicker({
                 singleDatePicker: true,
                 timePicker: true,
                 showDropdowns: true,
@@ -1062,66 +958,54 @@ $(document).ready(function () {
                 "cancelClass": "btn-secondary",
                 maxYear: parseInt(moment().format('YYYY'), 10) + 100
             });
-            $('#meeting-date-input').val('');
+            meeting_date_input.val('');
+
+            $('#meeting-address-input-btn').on('click', function () {
+                $('#meeting-address-select-div').prop('hidden', true);
+                $('#meeting-address-input-div').prop('hidden', false);
+            })
+
+            $('#meeting-address-select-btn').on('click', function () {
+                $('#meeting-address-select-div').prop('hidden', false);
+                $('#meeting-address-input-div').prop('hidden', true);
+            })
 
             $('.new-meeting-button').on('click', function () {
                 $('#meeting-subject-input').val('');
-                $('#meeting-date-input').val('');
+                meeting_date_input.val('');
                 $('#meeting-room-location-input').val('');
                 $('#meeting-address-input').val('');
                 $('#meeting-result-text-area').val('');
                 $('#meeting-repeat-activity').attr('checked', false);
-                $('#meeting-address-select-box').prop('hidden', false);
-                $('#meeting-address-input-btn').prop('hidden', false);
-                $('#meeting-address-input').prop('hidden', true);
-                $('#meeting-address-select-btn').prop('hidden', true);
+                $('#meeting-address-select-div').prop('hidden', false);
+                $('#meeting-address-input-div').prop('hidden', true);
+                $('#meeting-employee-attended-select-box option').remove();
 
-                $('#meeting-sale-code-select-box').prop('disabled', true);
-                LoadEmployeeAttended();
-                LoadMeetingSaleCodeList(pk);
-                let customer_id = $('#meeting-sale-code-select-box option:selected').attr('data-customer-id');
-                LoadMeetingAddress(customer_id);
-                LoadCustomerMember(customer_id);
+                loadMeetingSaleCodeList();
+                loadMeetingAddress(opportunity_detail_data.customer.shipping_address);
+                loadCustomerMember(opportunity_detail_data.customer.contact_mapped);
+                loadEmployeeAttended();
             })
 
-            $('#meeting-address-input-btn').on('click', function () {
-                $('#meeting-address-select-box').prop('hidden', true);
-                $('#meeting-address-input-btn').prop('hidden', true);
-                $('#meeting-address-input').prop('hidden', false);
-                $('#meeting-address-select-btn').prop('hidden', false);
-            })
-
-            $('#meeting-address-select-btn').on('click', function () {
-                $('#meeting-address-select-box').prop('hidden', false);
-                $('#meeting-address-input-btn').prop('hidden', false);
-                $('#meeting-address-input').prop('hidden', true);
-                $('#meeting-address-select-btn').prop('hidden', true);
-            })
-
-            $('#form-new-meeting').submit(function (event) {
-                event.preventDefault();
-                let csr = $("input[name=csrfmiddlewaretoken]").val();
-                let frm = new SetupFormSubmit($(this));
+            function combinesData_Meeting(frmEle) {
+                let frm = new SetupFormSubmit($(frmEle));
 
                 frm.dataForm['subject'] = $('#meeting-subject-input').val();
                 frm.dataForm['opportunity'] = $('#meeting-sale-code-select-box option:selected').val();
-                frm.dataForm['meeting_date'] = $('#meeting-date-input').val();
-                if ($('#meeting-address-select-box').is(':hidden')) {
+                frm.dataForm['meeting_date'] = meeting_date_input.val();
+                if ($('#meeting-address-select-div').is(':hidden')) {
                     frm.dataForm['meeting_address'] = $('#meeting-address-input').val();
-                } else {
+                }
+                else {
                     frm.dataForm['meeting_address'] = $('#meeting-address-select-box option:selected').val();
                 }
                 frm.dataForm['room_location'] = $('#meeting-room-location-input').val();
                 frm.dataForm['input_result'] = $('#meeting-result-text-area').val();
 
-                if ($('#meeting-repeat-activity').is(':checked')) {
-                    frm.dataForm['repeat'] = 1;
-                } else {
-                    frm.dataForm['repeat'] = 0;
-                }
+                frm.dataForm['repeat'] = $('#repeat-activity').is(':checked') ? 1 : 0;
 
                 let employee_attended_list = [];
-                $('#meeting-employee-attended-select-box option:selected').each(function (index, element) {
+                $('#meeting-employee-attended-select-box option:selected').each(function () {
                     employee_attended_list.push(
                         {
                             'id': $(this).attr('value'),
@@ -1132,7 +1016,7 @@ $(document).ready(function () {
                 })
 
                 let customer_member_list = [];
-                $('#meeting-customer-member-select-box option:selected').each(function (index, element) {
+                $('#meeting-customer-member-select-box option:selected').each(function () {
                     customer_member_list.push(
                         {
                             'id': $(this).attr('value'),
@@ -1144,25 +1028,111 @@ $(document).ready(function () {
                 frm.dataForm['employee_attended_list'] = employee_attended_list;
                 frm.dataForm['customer_member_list'] = customer_member_list;
 
-                // console.log(frm.dataForm)
+                return {
+                    url: frm.dataUrl,
+                    method: frm.dataMethod,
+                    data: frm.dataForm,
+                    urlRedirect: frm.dataUrlRedirect,
+                };
+            }
 
-                $.fn.callAjax(frm.dataUrl, frm.dataMethod, frm.dataForm, csr)
-                    .then(
-                        (resp) => {
-                            let data = $.fn.switcherResp(resp);
-                            if (data) {
-                                $.fn.notifyB({description: "Successfully"}, 'success')
-                                $('#create-meeting').hide();
-
-                                callAjaxtoLoadTimeLineList();
+            $('#form-new-meeting').submit(function (event) {
+                event.preventDefault();
+                let combinesData = new combinesData_Meeting($(this));
+                if (combinesData) {
+                    WindowControl.showLoading();
+                    $.fn.callAjax2(combinesData)
+                        .then(
+                            (resp) => {
+                                let data = $.fn.switcherResp(resp);
+                                if (data) {
+                                    $.fn.notifyB({description: "Successfully"}, 'success')
+                                    setTimeout(() => {
+                                        $('#create-meeting').hide();
+                                        callAjaxToLoadTimeLineList();
+                                        WindowControl.hideLoading();
+                                    }, 1000);
+                                }
+                            },
+                            (errs) => {
+                                setTimeout(
+                                    () => {
+                                        WindowControl.hideLoading();
+                                    },
+                                    1000
+                                )
+                                $.fn.notifyB({description: errs.data.errors}, 'failure');
                             }
-                        },
-                        (errs) => {
-                            // $.fn.notifyB({description: errs.data.errors}, 'failure');
-                        }
-                    )
+                        )
+                }
             })
 
+            $(document).on('click', '#table-timeline .detail-meeting-button', function () {
+                let meeting_id = $(this).attr('data-id');
+                let meeting_detail = $.fn.callAjax2({url: $('#detail-meeting').attr('data-url').replace(0, meeting_id), method: 'GET'}).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data && typeof data === 'object' && data.hasOwnProperty('opportunity_meeting_detail')) {
+                            return data?.['opportunity_meeting_detail'];
+                        }
+                        return {};
+                    },
+                    (errs) => {
+                        console.log(errs);
+                    }
+                )
+                Promise.all([meeting_detail]).then(
+                    (results) => {
+                        let meeting_obj = results[0];
+                        $('#detail-meeting-subject-input').val(meeting_obj.subject);
+
+                        $('#detail-meeting-sale-code-select-box option').remove();
+                        $('#detail-meeting-sale-code-select-box').append(`<option selected>(${meeting_obj.opportunity.code})&nbsp;&nbsp;&nbsp;${meeting_obj.opportunity.title}</option>`);
+
+                        $('#detail-meeting-address-select-box option').remove();
+                        $('#detail-meeting-address-select-box').append(`<option selected>${meeting_obj.meeting_address}</option>`);
+
+                        $('#detail-meeting-room-location-input').val(meeting_obj.room_location);
+
+                        let detail_meeting_employee_attended_slb = $('#detail-meeting-employee-attended-select-box');
+                        $('#detail-meeting-employee-attended-select-box option').remove();
+                        for (let i = 0; i < meeting_obj.employee_attended_list.length; i++) {
+                            let employee_attended_item = meeting_obj.employee_attended_list[i];
+                            detail_meeting_employee_attended_slb.append(`<option selected>${employee_attended_item.fullname}</option>`);
+                        }
+                        detail_meeting_employee_attended_slb.prop('disabled', true);
+
+                        let detail_meeting_customer_member_slb = $('#detail-meeting-customer-member-select-box');
+                        $('#detail-meeting-customer-member-select-box option').remove();
+                        for (let i = 0; i < meeting_obj.customer_member_list.length; i++) {
+                            let customer_member_item = meeting_obj.customer_member_list[i];
+                            detail_meeting_customer_member_slb.append(`<option selected>${customer_member_item.fullname}</option>`);
+                        }
+                        detail_meeting_customer_member_slb.prop('disabled', true);
+
+                        $('#detail-meeting-date-input').val(meeting_obj.meeting_date.split(' ')[0]);
+
+                        $('#detail-repeat-activity').prop('checked', meeting_obj.repeat);
+
+                        $('#detail-meeting-result-text-area').val(meeting_obj.input_result);
+                    })
+            })
+
+            $(document).on('click', '#table-timeline .delete-meeting-button', function () {
+                let meeting_id = $(this).attr('data-id');
+                $.fn.callAjax2({url: table_timeline.attr('data-url-delete-meeting').replace(0, meeting_id), method: 'DELETE'}).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            $.fn.notifyB({description: "Successfully"}, 'success')
+                            callAjaxToLoadTimeLineList();
+                        }
+                    },
+                    (errs) => {
+                        $.fn.notifyB({description: errs.data.errors}, 'failure');
+                    }
+                )
+            })
 
             // for task
 
@@ -1279,7 +1249,6 @@ $(document).ready(function () {
                 }
 
                 static init() {
-
                     $.fn.callAjax2({
                         'url': $('#task_url_sub').attr('data-task-config'),
                         'method': 'get'
@@ -1642,8 +1611,7 @@ $(document).ready(function () {
                                     $('body').append(elm)
                                 }
                                 if ($('.current-create-task').length) $('.cancel-task').trigger('click')
-
-                                callAjaxtoLoadTimeLineList();
+                                callAjaxToLoadTimeLineList();
                             }
                         },
                         (error) => {
@@ -1653,8 +1621,8 @@ $(document).ready(function () {
                 })
             }, jQuery)
 
-
             // TIMELINE
+
             function tabSubtask(taskID) {
                 if (!taskID) return false
                 const $wrap = $('.wrap-subtask')
@@ -1803,21 +1771,14 @@ $(document).ready(function () {
                 }
                 dtb.DataTableDefault({
                     pageLength: 5,
-                    dom: "<'row miner-group'<'col-sm-3 mt-3'f><'col-sm-9'p>>" + "<'row mt-3'<'col-sm-12'tr>>" + "<'row mt-3'<'col-sm-12 col-md-6'i>>",
+                    dom: "<'row miner-group'<'col-sm-2 mt-3'f><'col-sm-10'p>>",
                     data: data_timeline_list,
                     columns: [
                         {
                             data: 'activity',
                             className: 'wrap-text w-25',
                             render: (data, type, row, meta) => {
-                                return row.title;
-                            }
-                        },
-                        {
-                            data: 'type',
-                            className: 'wrap-text w-10 text-center',
-                            render: (data, type, row, meta) => {
-                                let txt = ''
+                                let txt = '';
                                 if (row.type === 'task') {
                                     txt = `<i class="fa-solid fa-list-check"></i>`
                                 } else if (row.type === 'call') {
@@ -1829,12 +1790,12 @@ $(document).ready(function () {
                                 } else if (row.type === 'document') {
                                     txt = `<i class="bi bi-file-earmark-fill"></i>`
                                 }
-                                return txt
+                                return `<span>${txt}&nbsp;&nbsp;${row.title}</span>`;
                             }
                         },
                         {
                             data: 'subject',
-                            className: 'wrap-text w-50',
+                            className: 'wrap-text w-40',
                             render: (data, type, row, meta) => {
                                 let modal_detail_target = '';
                                 let modal_detail_class = '';
@@ -1849,7 +1810,7 @@ $(document).ready(function () {
                                     modal_detail_class = 'detail-meeting-button';
                                 }
                                 return `<a data-type="${row.type}" class="${modal_detail_class} text-primary link-primary underline_hover"
-                                   href="" data-bs-toggle="modal" data-id="${row.id}"data-bs-target="${modal_detail_target}">
+                                   href="" data-bs-toggle="modal" data-id="${row.id}" data-bs-target="${modal_detail_target}">
                                     <span><b>${row.subject}</b></span>
                                 </a>`
                             }
@@ -1859,6 +1820,21 @@ $(document).ready(function () {
                             className: 'wrap-text w-15',
                             render: (data, type, row, meta) => {
                                 return row.date
+                            }
+                        },
+                        {
+                            data: 'action',
+                            className: 'wrap-text w-10',
+                            render: (data, type, row, meta) => {
+                                let delete_btn_class = '';
+                                if (row.type === 'call') {
+                                    delete_btn_class = 'delete-call-log-button';
+                                } else if (row.type === 'email') {
+                                    delete_btn_class = 'delete-email-button';
+                                } else if (row.type === 'meeting') {
+                                    delete_btn_class = 'delete-meeting-button';
+                                }
+                                return `<button type="button" data-id="${row.id}" class="btn btn-icon btn-rounded btn-flush-danger btn-xs flush-soft-hover ${delete_btn_class}"><span class="icon"><i class="bi bi-trash"></i></span></button>`;
                             }
                         },
                     ],
@@ -1872,111 +1848,53 @@ $(document).ready(function () {
                 });
             }
 
-            function callAjaxtoLoadTimeLineList() {
-                // let call_1 = $.fn.callAjax($('#table-timeline').attr('data-url-call-log'), $('#table-timeline').attr('data-method')).then((resp) => {
-                //     let data = $.fn.switcherResp(resp);
-                //     if (data) {
-                //         let call_1_result = [];
-                //         if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('call_log_list')) {
-                //             data.call_log_list.map(function (item) {
-                //                 if (item.opportunity.id === pk) {
-                //                     call_1_result.push({
-                //                         'id': item.id,
-                //                         'type': 0,
-                //                         'subject': item.subject,
-                //                         'date': item.call_date.split(' ')[0],
-                //                     })
-                //                 }
-                //             })
-                //         }
-                //         return call_1_result;
-                //     }
-                // })
-                // let call_2 = $.fn.callAjax($('#table-timeline').attr('data-url-email'), $('#table-timeline').attr('data-method')).then((resp) => {
-                //     let data = $.fn.switcherResp(resp);
-                //     if (data) {
-                //         let call_2_result = [];
-                //         if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('email_list')) {
-                //             data.email_list.map(function (item) {
-                //                 if (item.opportunity.id === pk) {
-                //                     call_2_result.push({
-                //                         'id': item.id,
-                //                         'type': 1,
-                //                         'subject': item.subject,
-                //                         'date': item.date_created.split(' ')[0],
-                //                     })
-                //                 }
-                //             })
-                //         }
-                //         return call_2_result;
-                //     }
-                // })
-                // let call_3 = $.fn.callAjax($('#table-timeline').attr('data-url-meeting'), $('#table-timeline').attr('data-method')).then((resp) => {
-                //     let data = $.fn.switcherResp(resp);
-                //     if (data) {
-                //         let call_3_result = [];
-                //         if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('meeting_list')) {
-                //             data.meeting_list.map(function (item) {
-                //                 if (item.opportunity.id === pk) {
-                //                     call_3_result.push({
-                //                         'id': item.id,
-                //                         'type': 2,
-                //                         'subject': item.subject,
-                //                         'date': item.meeting_date.split(' ')[0],
-                //                     })
-                //                 }
-                //             })
-                //         }
-                //         return call_3_result;
-                //     }
-                // })
-                //
+            function callAjaxToLoadTimeLineList() {
                 $.fn.callAjax($('#table-timeline').attr('data-url-logs_list'), 'GET', {'opportunity': pk})
                     .then((resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             let activity_logs_list = [];
                             if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('activity_logs_list')) {
-                                data.activity_logs_list.map(function (item) {
-                                    if (Object.keys(item.task).length > 0) {
+                                data?.['activity_logs_list'].map(function (item) {
+                                    if (Object.keys(item?.['task']).length > 0) {
                                         activity_logs_list.push({
-                                            'id': item.task.id,
-                                            'type': item.task.activity_type,
-                                            'title': item.task.activity_name,
-                                            'subject': item.task.subject,
-                                            'date': item.date_created.split(' ')[0],
+                                            'id': item?.['task']?.['id'],
+                                            'type': item?.['task']?.['activity_type'],
+                                            'title': item?.['task']?.['activity_name'],
+                                            'subject': item?.['task']?.['subject'],
+                                            'date': item?.['date_created'].split(' ')[0],
                                         })
-                                    } else if (Object.keys(item.call_log).length > 0) {
+                                    } else if (Object.keys(item?.['call_log']).length > 0) {
                                         activity_logs_list.push({
-                                            'id': item.call_log.id,
-                                            'type': item.call_log.activity_type,
-                                            'title': item.call_log.activity_name,
-                                            'subject': item.call_log.subject,
-                                            'date': item.date_created.split(' ')[0],
+                                            'id': item?.['call_log']?.['id'],
+                                            'type': item?.['call_log']?.['activity_type'],
+                                            'title': item?.['call_log']?.['activity_name'],
+                                            'subject': item?.['call_log']?.['subject'],
+                                            'date': item?.['date_created'].split(' ')[0],
                                         })
-                                    } else if (Object.keys(item.email).length > 0) {
+                                    } else if (Object.keys(item?.['email']).length > 0) {
                                         activity_logs_list.push({
-                                            'id': item.email.id,
-                                            'type': item.email.activity_type,
-                                            'title': item.email.activity_name,
-                                            'subject': item.email.subject,
-                                            'date': item.date_created.split(' ')[0],
+                                            'id': item?.['email']?.['id'],
+                                            'type': item?.['email']?.['activity_type'],
+                                            'title': item?.['email']?.['activity_name'],
+                                            'subject': item?.['email']?.['subject'],
+                                            'date': item?.['date_created'].split(' ')[0],
                                         })
-                                    } else if (Object.keys(item.meeting).length > 0) {
+                                    } else if (Object.keys(item?.['meeting']).length > 0) {
                                         activity_logs_list.push({
-                                            'id': item.meeting.id,
-                                            'type': item.meeting.activity_type,
-                                            'title': item.meeting.activity_name,
-                                            'subject': item.meeting.subject,
-                                            'date': item.date_created.split(' ')[0],
+                                            'id': item?.['meeting']?.['id'],
+                                            'type': item?.['meeting']?.['activity_type'],
+                                            'title': item?.['meeting']?.['activity_name'],
+                                            'subject': item?.['meeting']?.['subject'],
+                                            'date': item?.['date_created'].split(' ')[0],
                                         })
-                                    } else if (Object.keys(item.document).length > 0) {
+                                    } else if (Object.keys(item?.['document']).length > 0) {
                                         activity_logs_list.push({
-                                            'id': item.document.id,
-                                            'type': item.document.activity_type,
-                                            'title': item.document.activity_name,
-                                            'subject': item.document.subject,
-                                            'date': item.date_created.split(' ')[0],
+                                            'id': item?.['document']?.['id'],
+                                            'type': item?.['document']?.['activity_type'],
+                                            'title': item?.['document']?.['activity_name'],
+                                            'subject': item?.['document']?.['subject'],
+                                            'date': item?.['date_created'].split(' ')[0],
                                         })
                                     }
                                 });
@@ -1984,116 +1902,9 @@ $(document).ready(function () {
                             loadTimelineList(activity_logs_list)
                         }
                     })
-                // Promise.all([call_1, call_2, call_3, call_4]).then((results) => {
-                //     let sorted = results.flat().sort(function (a, b) {
-                //         return new Date(b.date) - new Date(a.date);
-                //     })
-                //     loadTimelineList(sorted);
-                // }).catch((error) => {
-                //     console.log(error);
-                // });
             }
 
-            callAjaxtoLoadTimeLineList();
-
-            $(document).on('click', '#table-timeline .detail-call-log-button', function () {
-                let call_log_id = $(this).attr('data-id');
-                let call_log_obj = JSON.parse($('#opportunity_call_log_list').text()).filter(function (item) {
-                    return item.id === call_log_id;
-                })[0]
-                $('#detail-subject-input').val(call_log_obj.subject);
-
-                $('#detail-sale-code-select-box option').remove();
-                $('#detail-sale-code-select-box').append(`<option selected>(${call_log_obj.opportunity.code})&nbsp;&nbsp;&nbsp;${call_log_obj.opportunity.title}</option>`);
-
-                $('#detail-account-select-box option').remove();
-                $('#detail-account-select-box').append(`<option selected>${call_log_obj.customer.title}</option>`);
-
-                $('#detail-contact-select-box option').remove();
-                $('#detail-contact-select-box').append(`<option selected>${call_log_obj.contact.fullname}</option>`);
-
-                let contact_get = contact_list.filter(function (item) {
-                    return item.id === call_log_obj.contact.id;
-                })
-                if (contact_get.length > 0) {
-                    contact_get = contact_get[0];
-                    $('#detail-call-log-contact-name').text(contact_get.fullname);
-                    $('#detail-call-log-contact-job-title').text(contact_get.job_title);
-                    $('#detail-call-log-contact-mobile').text(contact_get.mobile);
-                    $('#detail-call-log-contact-email').text(contact_get.email);
-                    let report_to = null;
-                    if (Object.keys(contact_get.report_to).length !== 0) {
-                        report_to = contact_get.report_to.name;
-                    }
-                    $('#detail-call-log-contact-report-to').text(report_to);
-                    let url = $('#detail-btn-detail-call-log-contact-tab').attr('data-url').replace('0', contact_get.id);
-                    $('#detail-btn-detail-call-log-contact-tab').attr('href', url);
-                    $('#detail-call-log-contact-detail-span').prop('hidden', false);
-                }
-
-                $('#detail-date-input').val(call_log_obj.call_date.split(' ')[0]);
-                $('#detail-repeat-activity').prop('checked', call_log_obj.repeat);
-                $('#detail-result-text-area').val(call_log_obj.input_result);
-            })
-
-            $(document).on('click', '#table-timeline .detail-email-button', function () {
-                let email_id = $(this).attr('data-id');
-                let email_obj = JSON.parse($('#opportunity_email_list').text()).filter(function (item) {
-                    return item.id === email_id;
-                })[0]
-                $('#detail-email-subject-input').val(email_obj.subject);
-
-                $('#detail-email-sale-code-select-box option').remove();
-                $('#detail-email-sale-code-select-box').append(`<option selected>(${email_obj.opportunity.code})&nbsp;&nbsp;&nbsp;${email_obj.opportunity.title}</option>`);
-
-                $('#detail-email-to-select-box option').remove();
-                for (let i = 0; i < email_obj.email_to_list.length; i++) {
-                    $('#detail-email-to-select-box').append(`<option selected>${email_obj.email_to_list[i]}</option>`);
-                }
-
-                $('#detail-email-cc-select-box option').remove();
-                for (let i = 0; i < email_obj.email_cc_list.length; i++) {
-                    $('#detail-email-cc-select-box').append(`<option selected>${email_obj.email_cc_list[i]}</option>`);
-                }
-
-                $('#detail-email-content-area').val(email_obj.content);
-            })
-
-            $(document).on('click', '#table-timeline .detail-meeting-button', function () {
-                let meeting_id = $(this).attr('data-id');
-                let meeting_obj = JSON.parse($('#opportunity_meeting_list').text()).filter(function (item) {
-                    return item.id === meeting_id;
-                })[0]
-                $('#detail-meeting-subject-input').val(meeting_obj.subject);
-
-                $('#detail-meeting-sale-code-select-box option').remove();
-                $('#detail-meeting-sale-code-select-box').append(`<option selected>(${meeting_obj.opportunity.code})&nbsp;&nbsp;&nbsp;${meeting_obj.opportunity.title}</option>`);
-
-                $('#detail-meeting-address-select-box option').remove();
-                $('#detail-meeting-address-select-box').append(`<option selected>${meeting_obj.meeting_address}</option>`);
-
-                $('#detail-meeting-room-location-input').val(meeting_obj.room_location);
-
-                $('#detail-meeting-employee-attended-select-box option').remove();
-                for (let i = 0; i < meeting_obj.employee_attended_list.length; i++) {
-                    let employee_attended_item = meeting_obj.employee_attended_list[i];
-                    $('#detail-meeting-employee-attended-select-box').append(`<option selected>${employee_attended_item.fullname}</option>`);
-                }
-                $('#detail-meeting-employee-attended-select-box').prop('disabled', true);
-
-                $('#detail-meeting-customer-member-select-box option').remove();
-                for (let i = 0; i < meeting_obj.customer_member_list.length; i++) {
-                    let customer_member_item = meeting_obj.customer_member_list[i];
-                    $('#detail-meeting-customer-member-select-box').append(`<option selected>${customer_member_item.fullname}</option>`);
-                }
-                $('#detail-meeting-customer-member-select-box').prop('disabled', true);
-
-                $('#detail-meeting-date-input').val(meeting_obj.meeting_date.split(' ')[0]);
-
-                $('#detail-repeat-activity-2').prop('checked', meeting_obj.repeat);
-
-                $('#detail-meeting-result-text-area').val(meeting_obj.input_result);
-            })
+            callAjaxToLoadTimeLineList();
 
             // event create related features
 
@@ -2101,7 +1912,6 @@ $(document).ready(function () {
                 let url = $(this).data('url') + "?opportunity={0}".format_by_idx(encodeURIComponent(JSON.stringify(paramString)));
                 window.open(url, '_blank');
             })
-
 
             $(document).on('click', '.btn-add-document', function () {
                 let url = $(this).data('url') + "?opportunity={0}".format_by_idx(encodeURIComponent(JSON.stringify(paramString)));

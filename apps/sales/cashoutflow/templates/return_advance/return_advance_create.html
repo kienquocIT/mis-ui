@@ -54,9 +54,6 @@
                         <label class="col-3 col-form-label required">{% trans "Method" %}</label>
                         <div class="col-9">
                             <select id="box-method-payment" class="form-select" name="method">
-                                <option selected></option>
-                                <option value="0">{% trans "Cash" %}</option>
-                                <option value="1">{% trans "Bank transfer" %}</option>
                             </select>
                         </div>
                     </div>
@@ -101,7 +98,8 @@
                             </span>
                         </span>
                         <input data-url-detail="{% url 'EmployeeDetailAPI' '0' %}" data-method="GET"
-                               data-id="{{ data.employee_current_id }}" class="form-control" type="text" name="employee_created_id"
+                               data-id="{{ data.employee_current_id }}" class="form-control" type="text"
+                               name="employee_created_id"
                                readonly>
                     </span>
                         </div>
@@ -228,13 +226,16 @@
             </div>
         </div>
     </form>
+    <script type="application/json" id="data-costs">{}</script>
 {% endblock %}
 {% block dataHiddenGroup %}
     <input type="text" id="url-factory"
            data-url-detail-ap="{% url 'AdvancePaymentDetailAPI' pk=0 %}"
     >
     <input type="text" id="trans-factory"
-        data-trans-greater-remain="{% trans 'Return value not greater than remain value' %}"
+           data-trans-greater-remain="{% trans 'Return value not greater than remain value' %}"
+           data-trans-cash="{% trans 'Cash' %}"
+           data-trans-bank-transfer="{% trans 'Bank transfer' %}"
     >
 {% endblock %}
 {% block jsFooter %}

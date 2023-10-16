@@ -98,6 +98,7 @@ class PurchaseRequestLoadPage {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 let detail = data?.['purchase_request'];
+                $('#data-detail-backup').text(JSON.stringify(detail));
                 $x.fn.renderCodeBreadcrumb(detail);
                 $('[name="title"]').val(detail.title);
 
@@ -121,7 +122,7 @@ class PurchaseRequestLoadPage {
 
                 let dict_self_so_product = {}
                 if (page_type === 1) { // load table product for page update
-                    await PurchaseRequestAction.changeType(detail?.['request_for'])
+                    await PurchaseRequestAction.changeType(detail?.['request_for'], detail.sale_order ? detail.sale_order.id : null)
                     if (detail?.['request_for'] === 0) { // table for sale order
                         detail.purchase_request_product_datas.map(function (item) {
                             dict_self_so_product[item.sale_order_product] = item;
@@ -442,7 +443,7 @@ class PurchaseRequestAction {
             </span>`
     }
 
-    static async loadSaleOrder() {
+    static async loadSaleOrder(sale_order_id) {
         if (!$.fn.DataTable.isDataTable('#datatable-sale-order')) {
             let $table = $('#datatable-sale-order')
             let frm = new SetupFormSubmit($table);
@@ -465,7 +466,14 @@ class PurchaseRequestAction {
                     dataSrc: function (resp) {
                         let data = $.fn.switcherResp(resp);
                         if (data && resp.data.hasOwnProperty('sale_order_list')) {
-                            return resp.data['sale_order_list'] ? resp.data['sale_order_list'] : []
+                            let sale_order_list = [];
+                            console.log(sale_order_id)
+                            resp.data['sale_order_list'].map(function (item) {
+                                if (item?.['is_create_purchase_request'] || item.id === sale_order_id) {
+                                    sale_order_list.push(item);
+                                }
+                            })
+                            return sale_order_list;
                         }
                         throw Error('Call data raise errors.')
                     },
@@ -486,7 +494,7 @@ class PurchaseRequestAction {
                     data: 'title',
                     targets: 2,
                     className: 'wrap-text',
-                    render: (data) => {
+                    render: (data, type, row) => {
                         return `<p>${data}</p>`
                     }
                 }, {
@@ -726,7 +734,7 @@ class PurchaseRequestAction {
         })
     }
 
-    static async changeType(type) {
+    static async changeType(type, sale_order_id = null) {
         switch (type) {
             case 0:
                 ele_request_for.val('Sale Order');
@@ -737,7 +745,7 @@ class PurchaseRequestAction {
                 tableProductForSO.removeClass('hidden');
                 tableProductForOther.DataTable().clear().destroy();
                 tableProductForOther.addClass('hidden');
-                await PurchaseRequestAction.loadSaleOrder();
+                await PurchaseRequestAction.loadSaleOrder(sale_order_id);
                 PurchaseRequestAction.loadDtbSOProduct([]);
                 PurchaseRequestAction.loadDtbPRProductForSO();
                 break;

@@ -127,6 +127,7 @@ class GRLoadDataHandle {
         let ele = GRLoadDataHandle.IASelectEle;
         ele.initSelect2({
             data: dataIA,
+            'dataParams': {'goods_receipt_ia__isnull': true},
             disabled: !(ele.attr('data-url')),
         });
     };
@@ -137,114 +138,6 @@ class GRLoadDataHandle {
             disabled: !(ele.attr('data-url')),
         });
     };
-
-    // static loadDataProductSelect(ele, is_change_item = true) {
-    //     if (ele.val()) {
-    //         let data = SelectDDControl.get_data_from_idx(ele, ele.val());
-    //         if (data) {
-    //             data['unit_of_measure'] = data?.['sale_information']?.['default_uom'];
-    //             data['uom_group'] = data?.['general_information']?.['uom_group'];
-    //             data['tax'] = data?.['sale_information']?.['tax_code'];
-    //             let uom = ele[0].closest('tr').querySelector('.table-row-uom-order-actual');
-    //             let price = ele[0].closest('tr').querySelector('.table-row-price');
-    //             let priceList = ele[0].closest('tr').querySelector('.table-row-price-list');
-    //             let tax = ele[0].closest('tr').querySelector('.table-row-tax');
-    //             // load UOM
-    //             if (uom && Object.keys(data.unit_of_measure).length !== 0 && Object.keys(data.uom_group).length !== 0) {
-    //                 GRLoadDataHandle.loadBoxUOM($(uom), data.unit_of_measure, data.uom_group.id);
-    //             } else {
-    //                 GRLoadDataHandle.loadBoxUOM($(uom));
-    //             }
-    //             // load PRICE
-    //             if (price && priceList) {
-    //                 GRLoadDataHandle.loadPriceProduct(ele[0], is_change_item);
-    //             }
-    //             // load TAX
-    //             if (tax && data.tax) {
-    //                 GRLoadDataHandle.loadBoxTax($(tax), data.tax);
-    //             } else {
-    //                 GRLoadDataHandle.loadBoxTax($(tax));
-    //             }
-    //             // load modal more information
-    //             GRLoadDataHandle.loadMoreInformation(ele);
-    //         }
-    //         $.fn.initMaskMoney2();
-    //     }
-    // };
-
-    // static loadPriceProduct(eleProduct, is_change_item = true) {
-    //     let data = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
-    //     let is_change_price = false;
-    //     if (data) {
-    //         let price = eleProduct.closest('tr').querySelector('.table-row-price');
-    //         let priceList = eleProduct.closest('tr').querySelector('.table-row-price-list');
-    //         // load PRICE
-    //         if (price && priceList) {
-    //             let account_price_id = document.getElementById('customer-price-list')?.value;
-    //             let general_price_id = null;
-    //             let general_price = 0;
-    //             let customer_price = null;
-    //             let current_price_checked = price.getAttribute('value');
-    //             $(priceList).empty();
-    //             if (Array.isArray(data.price_list) && data.price_list.length > 0) {
-    //                 for (let i = 0; i < data.price_list.length; i++) {
-    //                     if (data.price_list[i]?.['price_type'] === 1) { // PRICE TYPE IS PRODUCT (PURCHASE)
-    //                         if (data.price_list[i].is_default === true) { // check & append GENERAL_PRICE_LIST
-    //                             general_price_id = data.price_list[i].id;
-    //                             general_price = parseFloat(data.price_list[i].value);
-    //                             $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option" data-value="${parseFloat(data.price_list[i].value)}">
-    //                                                 <div class="row">
-    //                                                     <div class="col-5"><span>${data.price_list[i].title}</span></div>
-    //                                                     <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
-    //                                                     <div class="col-2"><span class="valid-price">${data.price_list[i]?.['price_status']}</span></div>
-    //                                                 </div>
-    //                                             </button>`);
-    //                         }
-    //                         if (data.price_list[i].id === account_price_id && general_price_id !== account_price_id) { // check & append CUSTOMER_PRICE_LIST
-    //                             if (!["Expired", "Invalid"].includes(data.price_list[i]?.['price_status'])) { // Customer price valid
-    //                                 customer_price = parseFloat(data.price_list[i].value);
-    //                                 $(priceList).empty();
-    //                                 $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option option-btn-checked" data-value="${parseFloat(data.price_list[i].value)}">
-    //                                                     <div class="row">
-    //                                                         <div class="col-5"><span>${data.price_list[i].title}</span></div>
-    //                                                         <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
-    //                                                         <div class="col-2"><span class="valid-price">${data.price_list[i]?.['price_status']}</span></div>
-    //                                                     </div>
-    //                                                 </button>`);
-    //                             } else { // Customer price invalid, expired
-    //                                 $(priceList).append(`<button type="button" class="btn btn-white dropdown-item table-row-price-option option-btn-checked" data-value="${parseFloat(data.price_list[i].value)}" disabled>
-    //                                                     <div class="row">
-    //                                                         <div class="col-5"><span>${data.price_list[i].title}</span></div>
-    //                                                         <div class="col-5"><span class="mask-money" data-init-money="${parseFloat(data.price_list[i].value)}"></span></div>
-    //                                                         <div class="col-2"><span class="expired-price">${data.price_list[i]?.['price_status']}</span></div>
-    //                                                     </div>
-    //                                                 </button>`);
-    //                             }
-    //                         }
-    //                     }
-    //                 }
-    //             }
-    //             // get Price to display
-    //             if (is_change_item === true) {
-    //                 if (customer_price) {
-    //                     $(price).attr('value', String(customer_price));
-    //                 } else {
-    //                     $(price).attr('value', String(general_price));
-    //                 }
-    //             }
-    //             if (current_price_checked !== price.getAttribute('value')) {
-    //                 is_change_price = true;
-    //             }
-    //         }
-    //     }
-    //     $.fn.initMaskMoney2();
-    //     // If change price then remove promotion & shipping
-    //     if (is_change_price === true) {
-    //         let tableProduct = document.getElementById('datable-quotation-create-product');
-    //         deletePromotionRows($(tableProduct), true, false);
-    //         deletePromotionRows($(tableProduct), false, true);
-    //     }
-    // };
 
     static loadBoxUOM(ele, dataUOM = {}, uom_group_id = null) {
         ele.initSelect2({
@@ -440,6 +333,11 @@ class GRLoadDataHandle {
                         for (let item of data.warehouse_list) {
                             if (is_has_pr === true) {
                                 item['purchase_request_product_id'] = dataStore?.['id'];
+                                if (dataStore?.['is_stock'] === false) {
+                                    item['uom'] = dataStore?.['purchase_request_product']?.['uom'];
+                                } else {
+                                    item['uom'] = dataStore?.['uom_stock'];
+                                }
                             } else {
                                 item['purchase_order_product_id'] = dataStore?.['id'];
                             }
@@ -533,6 +431,7 @@ class GRLoadDataHandle {
                 'quantity_import': '',
                 'expire_date': '',
                 'manufacture_date': '',
+                'uom': eleWHData?.['uom'],
             }
             let newRow = $table.DataTable().row.add(data).draw().node();
             GRLoadDataHandle.loadLotSerialDatePicker(newRow);
@@ -564,6 +463,7 @@ class GRLoadDataHandle {
                 'manufacture_date': '',
                 'warranty_start': '',
                 'warranty_end': '',
+                'uom': eleWHData?.['uom'],
             }
             let newRow = $table.DataTable().row.add(data).draw().node();
             GRLoadDataHandle.loadLotSerialDatePicker(newRow);
@@ -571,12 +471,24 @@ class GRLoadDataHandle {
     };
 
     static loadQuantityImport() {
-        let valuePROrder = parseFloat(GRDataTableHandle.tablePR[0]?.querySelector('.table-row-checkbox:checked')?.closest('tr')?.querySelector('.table-row-quantity').innerHTML);
-        let valuePOOrder = parseFloat(GRDataTableHandle.tablePOProduct[0]?.querySelector('.table-row-checkbox:checked')?.closest('tr')?.querySelector('.table-row-quantity').innerHTML);
+        let valuePROrderRemain = parseFloat(GRDataTableHandle.tablePR[0]?.querySelector('.table-row-checkbox:checked')?.closest('tr')?.querySelector('.table-row-gr-remain').innerHTML);
+        let valuePOOrderRemain = parseFloat(GRDataTableHandle.tablePOProduct[0]?.querySelector('.table-row-checkbox:checked')?.closest('tr')?.querySelector('.table-row-gr-remain').innerHTML);
+        let dataRowPORaw = GRDataTableHandle.tablePOProduct[0]?.querySelector('.table-row-checkbox:checked')?.closest('tr')?.querySelector('.table-row-checkbox')?.getAttribute('data-row');
+        let ratioUOMFinal = 1;
+        if (dataRowPORaw) {
+            let dataRowPO = JSON.parse(dataRowPORaw);
+                let ratioUOMOrder = dataRowPO?.['uom_order_actual']?.['ratio'];
+                let ratioUOMRequest = dataRowPO?.['uom_order_request']?.['ratio'];
+                if (ratioUOMOrder && ratioUOMRequest) {
+                    ratioUOMFinal = ratioUOMOrder / ratioUOMRequest
+                }
+        }
         if (!GRDataTableHandle.tableLot[0].querySelector('.dataTables_empty')) {
             let valueWHNew = 0;
             for (let eleImport of GRDataTableHandle.tableLot[0].querySelectorAll('.table-row-import')) {
-                valueWHNew += parseFloat(eleImport.value);
+                if (eleImport.value) {
+                    valueWHNew += parseFloat(eleImport.value);
+                }
             }
             GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked').closest('tr').querySelector('.table-row-import').value = String(valueWHNew);
         }
@@ -593,8 +505,8 @@ class GRLoadDataHandle {
         for (let eleImport of GRDataTableHandle.tableWH[0].querySelectorAll('.table-row-import')) {
             valuePRNew += parseFloat(eleImport.value);
         }
-        if (valuePROrder) {
-            if (valuePRNew <= valuePROrder) {
+        if (valuePROrderRemain >= 0) {
+            if (valuePRNew <= valuePROrderRemain) {
                 GRDataTableHandle.tablePR[0].querySelector('.table-row-checkbox:checked').closest('tr').querySelector('.table-row-import').innerHTML = String(valuePRNew);
             } else {
                 $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-validate-import')}, 'failure');
@@ -602,7 +514,7 @@ class GRLoadDataHandle {
             }
         }
         let valuePONew = 0;
-        if (valuePROrder) {
+        if (valuePROrderRemain) {
             for (let eleImport of GRDataTableHandle.tablePR[0].querySelectorAll('.table-row-import')) {
                 valuePONew += parseFloat(eleImport.innerHTML);
             }
@@ -611,14 +523,16 @@ class GRLoadDataHandle {
                 valuePONew += parseFloat(eleImport.value);
             }
         }
-        if (valuePOOrder) {
-            if (valuePONew <= valuePOOrder) {
+        if (valuePOOrderRemain >= 0) {
+            valuePONew = valuePONew / ratioUOMFinal;
+            if (valuePONew <= valuePOOrderRemain) {
                 GRDataTableHandle.tablePOProduct[0].querySelector('.table-row-checkbox:checked').closest('tr').querySelector('.table-row-import').innerHTML = String(valuePONew);
             } else {
                 $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-validate-import')}, 'failure');
                 return false
             }
         }
+        return true;
     };
 
     static loadDataShowPR(data) {
@@ -919,19 +833,19 @@ class GRDataTableHandle {
                 {
                     targets: 3,
                     render: (data, type, row) => {
-                        return `<span class="table-row-quantity">${row?.['product_quantity_order_actual']}</span>`;
+                        return `<span class="table-row-quantity">${row?.['product_quantity_order_actual'] ? row?.['product_quantity_order_actual'] : 0}</span>`;
                     }
                 },
                 {
                     targets: 4,
                     render: (data, type, row) => {
-                        return `<span class="table-row-received">${row?.['quantity_received'] ? row?.['quantity_received'] : 0}</span>`;
+                        return `<span class="table-row-gr-completed">${row?.['goods_receipt_info']?.['gr_completed_quantity'] ? row?.['goods_receipt_info']?.['gr_completed_quantity'] : 0}</span>`;
                     }
                 },
                 {
                     targets: 5,
                     render: (data, type, row) => {
-                        return `<span class="table-row-remain">${row?.['quantity_remain'] ? row?.['quantity_remain'] : 0}</span>`;
+                        return `<span class="table-row-gr-remain">${row?.['goods_receipt_info']?.['gr_remain_quantity'] ? row?.['goods_receipt_info']?.['gr_remain_quantity'] : 0}</span>`;
                     }
                 },
                 {
@@ -970,13 +884,13 @@ class GRDataTableHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        return `<span class="table-row-item">${row?.['purchase_request_product']?.['purchase_request']?.['code']}</span>`;
+                        return `<span class="table-row-item">${row?.['purchase_request_product']?.['purchase_request']?.['code'] ? row?.['purchase_request_product']?.['purchase_request']?.['code'] : 'Stock'}</span>`;
                     }
                 },
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        return `<span class="table-row-uom">${row?.['purchase_request_product']?.['uom']?.['title']}</span>`;
+                        return `<span class="table-row-uom">${row?.['purchase_request_product']?.['uom']?.['title'] ? row?.['purchase_request_product']?.['uom']?.['title'] : row?.['uom_stock']?.['title']}</span>`;
                     }
                 },
                 {
@@ -988,13 +902,13 @@ class GRDataTableHandle {
                 {
                     targets: 4,
                     render: (data, type, row) => {
-                        return `<span class="table-row-received">${row?.['quantity_received'] ? row?.['quantity_received'] : 0}</span>`;
+                        return `<span class="table-row-gr-completed">${row?.['goods_receipt_info']?.['gr_completed_quantity'] ? row?.['goods_receipt_info']?.['gr_completed_quantity'] : 0}</span>`;
                     }
                 },
                 {
                     targets: 5,
                     render: (data, type, row) => {
-                        return `<span class="table-row-remain">${row?.['quantity_remain'] ? row?.['quantity_remain'] : 0}</span>`;
+                        return `<span class="table-row-gr-remain">${row?.['goods_receipt_info']?.['gr_remain_quantity'] ? row?.['goods_receipt_info']?.['gr_remain_quantity'] : 0}</span>`;
                     }
                 },
                 {
@@ -1056,6 +970,12 @@ class GRDataTableHandle {
                                 </div>`;
                     }
                 },
+                {
+                    targets: 5,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-uom">${row?.['uom']?.['title'] ? row?.['uom']?.['title'] : ''}</span>`;
+                    }
+                },
             ],
             drawCallback: function () {
             },
@@ -1089,13 +1009,19 @@ class GRDataTableHandle {
                 {
                     targets: 2,
                     render: (data, type, row) => {
+                        return `<span class="table-row-uom">${row?.['uom']?.['title'] ? row?.['uom']?.['title'] : ''}</span>`;
+                    }
+                },
+                {
+                    targets: 3,
+                    render: (data, type, row) => {
                         return `<div class="row">
                                     <input type="text" class="form-control table-row-expire-date" value="${row?.['expire_date']}">
                                 </div>`;
                     }
                 },
                 {
-                    targets: 3,
+                    targets: 4,
                     render: (data, type, row) => {
                         return `<div class="row">
                                     <input type="text" class="form-control table-row-manufacture-date" value="${row?.['manufacture_date']}">
@@ -1135,16 +1061,14 @@ class GRDataTableHandle {
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        return `<div class="row">
-                                    <input type="text" class="form-control table-row-expire-date" value="${row?.['expire_date']}">
-                                </div>`;
+                        return `<span class="table-row-uom">${row?.['uom']?.['title'] ? row?.['uom']?.['title'] : ''}</span>`;
                     }
                 },
                 {
                     targets: 3,
                     render: (data, type, row) => {
                         return `<div class="row">
-                                    <input type="text" class="form-control table-row-manufacture-date" value="${row?.['manufacture_date']}">
+                                    <input type="text" class="form-control table-row-expire-date" value="${row?.['expire_date']}">
                                 </div>`;
                     }
                 },
@@ -1152,12 +1076,20 @@ class GRDataTableHandle {
                     targets: 4,
                     render: (data, type, row) => {
                         return `<div class="row">
-                                    <input type="text" class="form-control table-row-warranty-start" value="${row?.['warranty_start']}">
+                                    <input type="text" class="form-control table-row-manufacture-date" value="${row?.['manufacture_date']}">
                                 </div>`;
                     }
                 },
                 {
                     targets: 5,
+                    render: (data, type, row) => {
+                        return `<div class="row">
+                                    <input type="text" class="form-control table-row-warranty-start" value="${row?.['warranty_start']}">
+                                </div>`;
+                    }
+                },
+                {
+                    targets: 6,
                     render: (data, type, row) => {
                         return `<div class="row">
                                     <input type="text" class="form-control table-row-warranty-end" value="${row?.['warranty_end']}">
@@ -1641,6 +1573,7 @@ class GRStoreDataHandle {
                         let dataRow = JSON.parse(dataRowRaw);
                         dataRow['quantity_import'] = quantityImport;
                         POProductID = dataRow?.['purchase_order_product_id'];
+                        dataRow['purchase_order_request_product'] = dataRow?.['id'];
                         new_data.push(dataRow);
                     // }
                 }
@@ -1810,6 +1743,7 @@ class GRSubmitHandle {
                             dataRow['uom'] = dataRow?.['uom_order_actual'];
                             dataRow['quantity_import'] = quantityImport;
                             dataRow['order'] = order;
+                            let data_id = dataRow?.['id'];
                             if (is_submit === true) {
                                 let field_list = [
                                     'purchase_order_product',
@@ -1832,13 +1766,50 @@ class GRSubmitHandle {
                                 dataRow['product'] = dataRow?.['product']?.['id']
                                 dataRow['uom'] = dataRow?.['uom']?.['id']
                                 dataRow['tax'] = dataRow?.['tax']?.['id']
+                                let tableLineDetailPO = GRDataTableHandle.tableLineDetailPO;
+                                for (let i = 0; i < tableLineDetailPO[0].tBodies[0].rows.length; i++) {
+                                    let row = tableLineDetailPO[0].tBodies[0].rows[i];
+                                    if (row.querySelector('.table-row-order').id === data_id) {
+                                        let elePrice = row.querySelector('.table-row-price');
+                                        if (elePrice) {
+                                            dataRow['product_unit_price'] = $(elePrice).valCurrency();
+                                        }
+                                        let eleSubtotal = row.querySelector('.table-row-subtotal-raw');
+                                        if (eleSubtotal) {
+                                            dataRow['product_subtotal_price'] = parseFloat(eleSubtotal.value);
+                                        }
+                                        let eleTax = row.querySelector('.table-row-tax');
+                                        if ($(eleTax).val()) {
+                                            let dataInfo = SelectDDControl.get_data_from_idx($(eleTax), $(eleTax).val());
+                                            if (dataInfo) {
+                                                dataRow['tax'] = dataInfo.id;
+                                                dataRow['product_tax_title'] = dataInfo.title;
+                                                dataRow['product_tax_value'] = dataInfo.rate;
+                                            } else {
+                                                dataRow['product_tax_value'] = 0;
+                                            }
+                                        }
+                                        let eleTaxAmount = row.querySelector('.table-row-tax-amount-raw');
+                                        if (eleTaxAmount) {
+                                            dataRow['product_tax_amount'] = parseFloat(eleTaxAmount.value);
+                                        }
+                                        if (dataRow.hasOwnProperty('product_subtotal_price') && dataRow.hasOwnProperty('product_tax_amount')) {
+                                            dataRow['product_subtotal_price_after_tax'] = dataRow['product_subtotal_price'] + dataRow['product_tax_amount'];
+                                        }
+                                    }
+                                }
+                                if (dataRow['product_unit_price'] <= 0) {
+                                    delete dataRow['product_unit_price'];
+                                }
                                 // If PO have PR
                                 let pr_product_submit_list = [];
                                 for (let pr_product of dataRow?.['purchase_request_products_data'] ? dataRow?.['purchase_request_products_data'] : []) {
                                     let field_list = [
+                                        'purchase_order_request_product',
                                         'purchase_request_product',
                                         'quantity_import',
                                         'warehouse_data',
+                                        'is_stock',
                                     ]
                                     filterFieldList(field_list, pr_product);
                                     if (pr_product?.['quantity_import'] > 0) {
@@ -1847,7 +1818,7 @@ class GRSubmitHandle {
                                 }
                                 dataRow['purchase_request_products_data'] = pr_product_submit_list;
                                 for (let pr_product of dataRow?.['purchase_request_products_data'] ? dataRow?.['purchase_request_products_data'] : []) {
-                                    pr_product['purchase_request_product'] = pr_product?.['purchase_request_product']?.['id']
+                                    pr_product['purchase_request_product'] = pr_product?.['purchase_request_product']?.['id'] ? pr_product?.['purchase_request_product']?.['id'] : null;
                                     GRSubmitHandle.setupDataWHLotSerial(pr_product);
                                 }
                                 // If PO doesn't have PR
@@ -1879,10 +1850,18 @@ class GRSubmitHandle {
                     'manufacture_date',
                 ]
                 filterFieldList(field_list, lot);
-                lot['expire_date'] = moment(lot?.['expire_date'],
-                    'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
-                lot['manufacture_date'] = moment(lot?.['manufacture_date'],
-                    'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
+                if (lot?.['expire_date']) {
+                  lot['expire_date'] = moment(lot?.['expire_date'],
+                    'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss');
+                } else {
+                    lot['expire_date'] = null;
+                }
+                if (lot?.['manufacture_date']) {
+                    lot['manufacture_date'] = moment(lot?.['manufacture_date'],
+                    'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss');
+                } else {
+                    lot['manufacture_date'] = null;
+                }
             }
             for (let serial of warehouse?.['serial_data'] ? warehouse?.['serial_data'] : []) {
                 let field_list = [
@@ -1894,14 +1873,30 @@ class GRSubmitHandle {
                     'warranty_end',
                 ]
                 filterFieldList(field_list, serial);
-                serial['expire_date'] = moment(serial?.['expire_date'],
-                    'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
-                serial['manufacture_date'] = moment(serial?.['manufacture_date'],
-                    'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
-                serial['warranty_start'] = moment(serial?.['warranty_start'],
-                    'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
-                serial['warranty_end'] = moment(serial?.['warranty_end'],
-                    'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss')
+                if (serial?.['expire_date']) {
+                    serial['expire_date'] = moment(serial?.['expire_date'],
+                    'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss');
+                } else {
+                    serial['expire_date'] = null;
+                }
+                if (serial?.['manufacture_date']) {
+                    serial['manufacture_date'] = moment(serial?.['manufacture_date'],
+                    'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss');
+                } else {
+                    serial['manufacture_date'] = null;
+                }
+                if (serial?.['warranty_start']) {
+                    serial['warranty_start'] = moment(serial?.['warranty_start'],
+                    'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss');
+                } else {
+                    serial['warranty_start'] = null;
+                }
+                if (serial?.['warranty_end']) {
+                    serial['warranty_end'] = moment(serial?.['warranty_end'],
+                    'DD/MM/YYYY hh:mm A').format('YYYY-MM-DD hh:mm:ss');
+                } else {
+                    serial['warranty_end'] = null;
+                }
             }
         }
     };
@@ -1951,7 +1946,9 @@ class GRSubmitHandle {
                     }
                     let elePrice = row.querySelector('.table-row-price');
                     if (elePrice) {
-                        rowData['product_unit_price'] = $(elePrice).valCurrency();
+                        if ($(elePrice).valCurrency() > 0) {
+                            rowData['product_unit_price'] = $(elePrice).valCurrency();
+                        }
                     }
                     let eleTax = row.querySelector('.table-row-tax');
                     if ($(eleTax).val()) {

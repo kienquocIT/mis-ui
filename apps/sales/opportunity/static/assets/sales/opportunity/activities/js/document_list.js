@@ -1,4 +1,5 @@
-$(document).ready(function (){
+$(document).ready(function () {
+    let urlEle = $('#url-factory')
     function loadDocument() {
         if (!$.fn.DataTable.isDataTable('#datatable-opportunity-document')) {
             let $table = $('#datatable-opportunity-document')
@@ -18,39 +19,36 @@ $(document).ready(function (){
                 },
                 columns: [
                     {
+                        data: 'title',
                         targets: 0,
-                        className: 'wrap-text',
                         render: (data, type, row) => {
-                             return `<p>${row.to_contact}</p>`
+                            let urlDetail = urlEle.data('url-detail').format_url_with_uuid(row.id);
+                            return `<a href="${urlDetail}"><span class="badge badge-primary">${data}</span></a>` + $x.fn.buttonLinkBlank(urlDetail);
                         }
                     },
                     {
+                        data: 'opportunity',
                         targets: 1,
-                        className: 'wrap-text',
                         render: (data, type, row) => {
-                             return `<p>${row.subject}</p>`
+                            return `<p>${data.code}</p>`
                         }
                     },
                     {
+                        data: 'person_in_charge',
                         targets: 2,
-                        className: 'wrap-text',
                         render: (data, type, row) => {
-                             return `<p>${row.opportunity.code}</p>`
+                            let html = ``;
+                            data.map(function (item) {
+                                html += `<span class="col-4 badge badge-soft-primary">${item.full_name}</span>`
+                            })
+                            return `<div class="row">${html}</div>`
                         }
                     },
                     {
+                        data: 'request_completed_date',
                         targets: 3,
-                        className: 'wrap-text',
                         render: (data, type, row) => {
-                             return `<p>${row.request_completed_date.split(' ')[0]}</p>`
-                        }
-                    },
-
-                    {
-                        targets: 4,
-                        className: 'wrap-text',
-                        render: (data, type, row) => {
-                             return `<a class="btn-primary btn" href="${$('#inp-url').data('url-detail').format_url_with_uuid(row.id)}">Detail</a>`
+                            return `<p>${data.split(' ')[0]}</p>`
                         }
                     },
                 ],

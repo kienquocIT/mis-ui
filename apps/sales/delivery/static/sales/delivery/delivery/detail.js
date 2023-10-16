@@ -69,12 +69,12 @@ $(async function () {
                     }
                     else if ((config.is_picking && !config.is_partial_ship) && delivery) {
                         // config 3
-                        item.product_amount = 0
+                        // item.product_amount = 0
                         for (const val of delivery) {
                             if (val.warehouse === item.id
                                 && val.uom === prod_data.uom_data.id
                             ) {
-                                item.product_amount += val.stock
+                                // item.product_amount += val.stock
                                 item.picked += val.stock
                             }
                         }
@@ -88,7 +88,7 @@ $(async function () {
                                 if (val.warehouse === item.id
                                     && val.uom === prod_data.uom_data.id
                                 ) {
-                                    item.product_amount = prod_data.ready_quantity
+                                    // item.product_amount = prod_data.ready_quantity
                                     item.picked = prod_data.ready_quantity
                                     if (prod_data.picked_quantity) item.picked = prod_data.picked_quantity
                                 }
@@ -138,7 +138,7 @@ $(async function () {
                                 if (config.is_picking && !config.is_partial_ship ||
                                     (config.is_picking && config.is_partial_ship && data.picked_ready === 0)
                                 ) disabled = 'disabled'
-                                return `<input class="form-control" type="number" id="warehouse_stock-${meta.row}" value="${row}" ${disabled}>`;
+                                return `<input class="form-control table-row-picked" type="number" id="warehouse_stock-${meta.row}" value="${row}" ${disabled}>`;
                             }
                         },
                     ],
@@ -146,6 +146,13 @@ $(async function () {
                         $(`input.form-control`, row).on('blur', function (e) {
                             e.preventDefault();
                             if (this.value > 0) {
+                                if (this.value > data?.['product_amount']) {
+                                    $.fn.notifyB({description: $trans.attr('data-valid-delivery-amount')}, 'failure');
+                                    this.value = 0;
+                                    data.picked = this.value;
+                                    table.DataTable().row(index).data(data).draw();
+                                    return false
+                                }
                                 data.picked = this.value
                                 table.DataTable().row(index).data(data).draw();
                             }

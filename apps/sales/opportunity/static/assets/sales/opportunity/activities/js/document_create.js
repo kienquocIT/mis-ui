@@ -36,10 +36,7 @@ $(document).ready(function () {
             opportunity: {
                 required: true,
             },
-            subject: {
-                required: true,
-            },
-            kind_of_product: {
+            title: {
                 required: true,
             },
             request_completed_date: {

@@ -50,7 +50,8 @@ class TaxCategoryListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.TAX_CATEGORY_LIST).get()
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.TAX_CATEGORY_LIST).get(params)
         return resp.auto_return(key_success='tax_category_list')
 
     @mask_view(
@@ -70,7 +71,8 @@ class TaxListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.TAX_LIST).get()
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.TAX_LIST).get(params)
         return resp.auto_return(key_success='tax_list')
 
     @mask_view(
@@ -261,7 +263,8 @@ class PriceListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.PRICE_LIST).get()
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.PRICE_LIST).get(params)
         return resp.auto_return(key_success='price_list')
 
     @mask_view(

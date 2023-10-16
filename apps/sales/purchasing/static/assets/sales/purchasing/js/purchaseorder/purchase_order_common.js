@@ -1932,7 +1932,6 @@ class POSubmitHandle {
                     'purchase_request_product': dataRow?.['id'],
                     'sale_order_product': sale_order_id,
                     'quantity_order': quantity_order,
-                    // 'quantity_remain': parseFloat(dataRow?.['remain_for_purchase_order']),
                 })
             }
         }
@@ -2025,6 +2024,14 @@ class POSubmitHandle {
                     if (eleOrder.getAttribute('data-row')) {
                         let dataRow = JSON.parse(eleOrder.getAttribute('data-row'));
                         rowData['purchase_request_products_data'] = dataRow?.['purchase_request_products_data'];
+                        // Check if stock > 0
+                        if (rowData['stock'] > 0) {
+                            rowData['purchase_request_products_data'].push({
+                                'quantity_order': rowData['stock'],
+                                'uom_stock': rowData['uom_order_request'],
+                                'is_stock': true,
+                            })
+                        }
                     }
                 }
             }
@@ -2040,10 +2047,10 @@ class POSubmitHandle {
         if (POLoadDataHandle.PQDataEle.val()) {
            _form.dataForm['purchase_quotations_data'] = JSON.parse(POLoadDataHandle.PQDataEle.val());
         }
-        let pr_products_data_setup = POSubmitHandle.setupDataPRProduct();
-        if (pr_products_data_setup.length > 0) {
-            _form.dataForm['purchase_request_products_data'] = pr_products_data_setup;
-        }
+        // let pr_products_data_setup = POSubmitHandle.setupDataPRProduct();
+        // if (pr_products_data_setup.length > 0) {
+        //     _form.dataForm['purchase_request_products_data'] = pr_products_data_setup;
+        // }
         let dateDeliveredVal = $('#purchase-order-date-delivered').val();
         if (dateDeliveredVal) {
             _form.dataForm['delivered_date'] = moment(dateDeliveredVal,

@@ -262,15 +262,6 @@ class GRLoadDataHandle {
             } else { // If PO doesn't have PR
                 GRLoadDataHandle.loadModalWareHouse(JSON.parse(ele.getAttribute('data-row')));
             }
-            if (dataRow?.['stock'] > 0) { // If PO have Stock
-                let dataStock = {
-                    'purchase_request_product': {
-                        'uom': dataRow?.['uom_order_request']
-                    },
-                    'quantity_order': dataRow?.['stock'],
-                }
-                GRDataTableHandle.tablePR.DataTable().row.add(dataStock).draw().node();
-            }
             $(row).css('background-color', '#ebfcf5');
         } else {
             $(row).css('background-color', '#fff');
@@ -342,7 +333,11 @@ class GRLoadDataHandle {
                         for (let item of data.warehouse_list) {
                             if (is_has_pr === true) {
                                 item['purchase_request_product_id'] = dataStore?.['id'];
-                                item['uom'] = dataStore?.['purchase_request_product']?.['uom'];
+                                if (dataStore?.['is_stock'] === false) {
+                                    item['uom'] = dataStore?.['purchase_request_product']?.['uom'];
+                                } else {
+                                    item['uom'] = dataStore?.['uom_stock'];
+                                }
                             } else {
                                 item['purchase_order_product_id'] = dataStore?.['id'];
                             }
@@ -895,7 +890,7 @@ class GRDataTableHandle {
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        return `<span class="table-row-uom">${row?.['purchase_request_product']?.['uom']?.['title'] ? row?.['purchase_request_product']?.['uom']?.['title'] : ''}</span>`;
+                        return `<span class="table-row-uom">${row?.['purchase_request_product']?.['uom']?.['title'] ? row?.['purchase_request_product']?.['uom']?.['title'] : row?.['uom_stock']?.['title']}</span>`;
                     }
                 },
                 {
@@ -1578,6 +1573,7 @@ class GRStoreDataHandle {
                         let dataRow = JSON.parse(dataRowRaw);
                         dataRow['quantity_import'] = quantityImport;
                         POProductID = dataRow?.['purchase_order_product_id'];
+                        dataRow['purchase_order_request_product'] = dataRow?.['id'];
                         new_data.push(dataRow);
                     // }
                 }
@@ -1809,9 +1805,11 @@ class GRSubmitHandle {
                                 let pr_product_submit_list = [];
                                 for (let pr_product of dataRow?.['purchase_request_products_data'] ? dataRow?.['purchase_request_products_data'] : []) {
                                     let field_list = [
+                                        'purchase_order_request_product',
                                         'purchase_request_product',
                                         'quantity_import',
                                         'warehouse_data',
+                                        'is_stock',
                                     ]
                                     filterFieldList(field_list, pr_product);
                                     if (pr_product?.['quantity_import'] > 0) {
@@ -1820,7 +1818,7 @@ class GRSubmitHandle {
                                 }
                                 dataRow['purchase_request_products_data'] = pr_product_submit_list;
                                 for (let pr_product of dataRow?.['purchase_request_products_data'] ? dataRow?.['purchase_request_products_data'] : []) {
-                                    pr_product['purchase_request_product'] = pr_product?.['purchase_request_product']?.['id']
+                                    pr_product['purchase_request_product'] = pr_product?.['purchase_request_product']?.['id'] ? pr_product?.['purchase_request_product']?.['id'] : null;
                                     GRSubmitHandle.setupDataWHLotSerial(pr_product);
                                 }
                                 // If PO doesn't have PR

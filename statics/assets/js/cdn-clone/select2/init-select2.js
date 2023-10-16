@@ -674,7 +674,7 @@ class SelectDDControl {
                     let urlInfoDetail = $(this).attr('data-url-info-detail');
                     if (urlInfoDetail){
                         urlInfoDetail = urlInfoDetail.replaceAll('__pk__', selectVal);
-                        nextHasInfoBtnMore.prop('disabled', !selectVal);
+                        nextHasInfoBtnMore.prop('disabled', !selectVal).attr('data-id', selectVal);
                         let groupLinkEle = nextHasInfoBtnMore__Detail.find('.group-by-link-detail-more');
                         let linkEle = nextHasInfoBtnMore__Detail.find('.link-detail-more');
                         if (linkEle.length > 0){

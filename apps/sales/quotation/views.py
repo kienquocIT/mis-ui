@@ -52,7 +52,7 @@ class QuotationCreate(View):
                 'employee_current': json.dumps(request.user.employee_current_data),
                 'opportunity': opportunity,
             },
-            'list_from_app': 'quotation.quotation.view',
+            'list_from_app': 'quotation.quotation.create',
         }
         return ctx, status.HTTP_200_OK
 

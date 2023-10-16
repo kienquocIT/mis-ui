@@ -63,8 +63,7 @@ class BastionFieldControl {
                 cache: true,
             }
             if (dataOnload !== undefined && dataOnload !== null && dataOnload.length > 0) {
-                this.oppEle.attr('data-has-onload', true);
-                this.oppEle.attr('data-onload', JSON.stringify(dataOnload));
+                config['data'] = dataOnload;
             }
 
             this.oppEle.initSelect2(config).on('change', function () {
@@ -170,8 +169,7 @@ class BastionFieldControl {
                 dataParams: paramData
             };
             if (dataOnload !== undefined && dataOnload !== null && dataOnload.length > 0) {
-                config['dataOnload'] = dataOnload;
-                // this.empInheritEle.attr('data-onload', JSON.stringify(dataOnload))
+                config['data'] = dataOnload;
             }
 
             this.empInheritEle.initSelect2(config).on('change', function () {});

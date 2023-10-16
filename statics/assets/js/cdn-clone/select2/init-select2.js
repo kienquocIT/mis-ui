@@ -183,7 +183,6 @@ class SelectDDControl {
     _ele_collect_selected(hasAjax) {
         // Get option:selected in currently
         // Push data to script id random
-
         let optionTextFind = 'option';
         if (hasAjax === true) optionTextFind += ':selected';
 
@@ -656,7 +655,7 @@ class SelectDDControl {
 
             if (!this._config) this._config = this.config();
             this.renderDataOnload(this._config);
-
+            console.log(this.ele, this._config)
             this.ele.parent('.input-affix-wrapper').find('.dropdown').on('show.bs.dropdown', function () {
                 clsThis.callbackRenderInfoDetail($(this));
             });

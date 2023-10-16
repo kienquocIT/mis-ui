@@ -757,6 +757,7 @@ class QuotationLoadDataHandle {
             new $x.cls.bastionField({
                 has_opp: true,
                 has_inherit: true,
+                opp_call_trigger_change: true,
                 data_inherit: [{
                     "id": data?.['sale_person']?.['id'],
                     "full_name": data?.['sale_person']?.['full_name'],
@@ -768,13 +769,6 @@ class QuotationLoadDataHandle {
                     "selected": true,
                 }]
             }).init();
-
-
-            // QuotationLoadDataHandle.opportunitySelectEle.initSelect2({
-            //     data: data?.['opportunity'],
-            //     'allowClear': true,
-            //     disabled: !(QuotationLoadDataHandle.opportunitySelectEle.attr('data-url')),
-            // });
         }
         if (data?.['customer']) {
             data.customer['name'] = data.customer.title;
@@ -790,15 +784,6 @@ class QuotationLoadDataHandle {
         if (data.contact) {
             data.contact['fullname'] = data.contact.title;
             QuotationLoadDataHandle.loadBoxQuotationContact(data.contact, data.customer.id)
-        }
-        if (data?.['sale_person']) {
-            // QuotationLoadDataHandle.salePersonSelectEle.initSelect2({
-            //     data: data?.['sale_person'],
-            //     disabled: !(QuotationLoadDataHandle.salePersonSelectEle.attr('data-url')),
-            //     callbackTextDisplay: function (item) {
-            //         return item?.['full_name'] || '';
-            //     },
-            // });
         }
         if (data?.['payment_term']) {
             QuotationLoadDataHandle.loadBoxQuotationPaymentTerm(data?.['payment_term'])

@@ -169,7 +169,8 @@ class BastionFieldControl {
                 dataParams: paramData
             };
             if (dataOnload !== undefined && dataOnload !== null && dataOnload.length > 0) {
-                config['data'] = dataOnload;
+                this.empInheritEle.attr('data-onload', JSON.stringify(dataOnload));
+                // config['data'] = dataOnload;
             }
 
             this.empInheritEle.initSelect2(config).on('change', function () {});

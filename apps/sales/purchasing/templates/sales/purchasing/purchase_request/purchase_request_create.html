@@ -19,22 +19,21 @@
     <form id="form-create-pr" data-url="{% url "PurchaseRequestListAPI" %}" data-method="POST"
           data-url-redirect="{% url "PurchaseRequestList" %}">
         <div class="row">
-            <div class="col-6">
+            <div class="col-12 col-md-6 col-lg-6">
                 <div class="form-group">
                     <label class="form-label required">{% trans 'Name' %}</label>
                     <input class="form-control" placeholder="Input Name" name="title" required/>
                 </div>
             </div>
-            <div class="col-6">
+            <div class="col-12 col-md-6 col-lg-6">
                 <div class="form-group">
                     <label class="form-label required">{% trans 'Delivered Date' %}</label>
                     <input class="form-control" name="delivered_date" required/>
                 </div>
             </div>
         </div>
-
         <div class="row">
-            <div class="col-6">
+            <div class="col-12 col-md-6 col-lg-6">
                 <div class="form-group">
                     <label class="form-label required">{% trans 'Supplier' %}</label>
                     <span class="input-affix-wrapper">
@@ -76,7 +75,7 @@
                 </span>
                 </div>
             </div>
-            <div class="col-6">
+            <div class="col-12 col-md-6 col-lg-6">
                 <div class="form-group">
                     <label class="form-label">{% trans 'Status' %}</label>
                     <input class="form-control" name="system_status" value="{% trans 'Draft' %}" readonly
@@ -84,9 +83,8 @@
                 </div>
             </div>
         </div>
-
         <div class="row">
-            <div class="col-6">
+            <div class="col-12 col-md-6 col-lg-6">
                 <div class="form-group">
                     <label class="form-label required">{% trans 'Contact' %}</label>
                     <span class="input-affix-wrapper">
@@ -136,16 +134,15 @@
                 </span>
                 </div>
             </div>
-            <div class="col-6">
+            <div class="col-12 col-md-6 col-lg-6">
                 <div class="form-group">
                     <label class="form-label">{% trans 'Purchase Status' %}</label>
                     <input class="form-control" name="purchase_status" value="Wait" data-value="0" readonly required/>
                 </div>
             </div>
         </div>
-
         <div class="row">
-            <div class="col-6">
+            <div class="col-12 col-md-6 col-lg-6">
                 <div class="form-group">
                     <label class="form-label required">{% trans 'Request For' %}</label>
                     <span class="input-affix-wrapper">
@@ -158,23 +155,21 @@
                     </span>
                 </div>
             </div>
-            <div class="col-6">
+            <div class="col-12 col-md-6 col-lg-6">
                 <div class="form-group">
                     <label class="form-label">{% trans 'Note' %}</label>
                     <input class="form-control" name="note"/>
                 </div>
             </div>
         </div>
-
         <div class="row">
-            <div class="col-6">
+            <div class="col-12 col-md-6 col-lg-6">
                 <div class="form-group">
                     <label class="form-label required">{% trans 'Order Code' %}</label>
                     <input class="form-control" name="sale_order" readonly/>
                 </div>
             </div>
         </div>
-
         <div class="row mt-3">
             <ul class="nav nav-light nav-tabs" id="purchase-request-tabs">
                 <li class="nav-item">
@@ -189,7 +184,6 @@
                 </li>
             </ul>
         </div>
-
         <div class="tab-content" id="tab-content-purchase-request-product">
             <div class="tab-pane fade show active" id="tab_line_detail">
                 <table id="datatable-pr-product-so" class="table nowrap w-100 mb-5">

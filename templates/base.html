@@ -539,11 +539,11 @@
             });
         })
 
-        function onLoadDropdownInfo(eleInfo, eleInfoData, selectedData){
+        function onLoadDropdownInfoInherit(eleInfo, eleInfoData, selectedData){
             eleInfoData.find('.emp-info-detail-first-name').val(selectedData['first_name']);
             eleInfoData.find('.emp-info-detail-last-name').val(selectedData['last_name']);
             eleInfoData.find('.emp-info-detail-email').val(selectedData['email']);
-            eleInfoData.find('.emp-info-detail-is-active').val(selectedData['is_active']);
+            eleInfoData.find('.emp-info-detail-is-active').prop('checked', !!selectedData['is_active']);
             return eleInfo;
         }
 

@@ -757,15 +757,18 @@ class QuotationLoadDataHandle {
             new $x.cls.bastionField({
                 has_opp: true,
                 has_inherit: true,
-                // opp_call_trigger_change: true,
                 data_inherit: [{
                     "id": data?.['sale_person']?.['id'],
-                    "full_name": data?.['sale_person']?.['full_name'],
+                    "first_name": data?.['sale_person']?.['first_name'] || '',
+                    "last_name": data?.['sale_person']?.['last_name'] || '',
+                    "email": data?.['sale_person']?.['email'] || '',
+                    "is_active": data?.['sale_person']?.['is_active'] || false,
                     "selected": true,
                 }],
                 data_opp: [{
-                    "id": data?.['opportunity']?.['id'],
-                    "title": data?.['opportunity']?.['title'],
+                    "id": data?.['opportunity']?.['id'] || '',
+                    "title": data?.['opportunity']?.['title'] || '',
+                    "code": data?.['opportunity']?.['code'] || '',
                     "selected": true,
                 }]
             }).init();

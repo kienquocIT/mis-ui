@@ -1,35 +1,5 @@
 {% load i18n string_utils %}
 
-{#<div class="d-flex justify-content-between wrap-text mb-1">#}
-{#    <span>{% trans 'First Name' %}</span>#}
-{#    <span class="emp-info-detail-first-name"></span>#}
-{#</div>#}
-{#<div class="d-flex justify-content-between wrap-text mb-1">#}
-{#    <span>{% trans 'Last Name' %}</span>#}
-{#    <span class="emp-info-detail-last-name"></span>#}
-{#</div>#}
-{#<div class="d-flex justify-content-between wrap-text mb-1">#}
-{#    <span>{% trans 'Email' %}</span>#}
-{#    <span class="emp-info-detail-email"></span>#}
-{#</div>#}
-
-{#<table class="table table-bordered  mb-0">#}
-{#    <tbody>#}
-{#        <tr>#}
-{#            <td>{% trans 'First Name' %}</td>#}
-{#            <td class="emp-info-detail-first-name"></td>#}
-{#        </tr>#}
-{#        <tr>#}
-{#            <td>{% trans 'Last Name' %}</td>#}
-{#            <td class="emp-info-detail-last-name"></td>#}
-{#        </tr>#}
-{#        <tr>#}
-{#            <td>{% trans 'Email' %}</td>#}
-{#            <td class="emp-info-detail-email"></td>#}
-{#        </tr>#}
-{#    <tbody>#}
-{#</table>#}
-
 <div class="form-group">
     {% random_str as idx_fn %}
     <label for="{{idx_fn}}" class="form-label">{% trans 'First Name' %}</label>
@@ -44,4 +14,9 @@
     {% random_str as idx_email %}
     <label for="{{idx_email}}" class="form-label">{% trans 'Email' %}</label>
     <input id="{{idx_email}}" type="email" class="form-control emp-info-detail-email" disabled readonly>
+</div>
+<div class="form-check form-switch">
+    {% random_str as idx_is_active %}
+	<input type="checkbox" class="form-check-input emp-info-detail-is-active" id="{{idx_is_active}}" disabled readonly>
+	<label class="form-check-label" for="{{idx_is_active}}">{% trans 'Active' %}</label>
 </div>

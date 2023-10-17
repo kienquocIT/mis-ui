@@ -1,7 +1,32 @@
 class BastionFieldControl {
+    constructor(opts) {
+        this.has_opp = $x.fn.popKey(opts, 'has_opp', false, true);
+        this.has_prj = $x.fn.popKey(opts, 'has_prj', false, true);
+        this.has_inherit = $x.fn.popKey(opts, 'has_inherit', false, true);
+        this.data_opp = $x.fn.popKey(opts, 'data_opp', [], true);
+        this.data_prj = $x.fn.popKey(opts, 'data_prj', [], true);
+        this.data_inherit = $x.fn.popKey(opts, 'data_inherit', [], true);
+        this.not_change_opp = $x.fn.popKey(opts, 'not_change_opp', false, true);
+
+        this.opp_call_trigger_change = $x.fn.popKey(opts, 'opp_call_trigger_change', false, true);
+        this.prj_call_trigger_change = $x.fn.popKey(opts, 'prj_call_trigger_change', false, true);
+        this.inherit_call_trigger_change = $x.fn.popKey(opts, 'inherit_call_trigger_change', false, true);
+        // data_*: [{"id": "XXXX", "title": "XXXXX", "selected": true}]
+
+        this.realOppData = Array.isArray(this.data_opp) ? this.data_opp : [];
+        this.realPrjData = Array.isArray(this.data_prj) ? this.data_prj : [];
+
+        this.paramsInheritor = {'data-onload': Array.isArray(this.data_inherit) ? this.data_inherit : []};
+    }
+
     static getFeatureCode() {
         return new BastionFieldControl().mainDiv.data('current-feature');
     }
+
+    mainDiv = $('#bastionFieldTheDocument');
+    oppEle = $('#opportunity_id')
+    prjEle = $('#project_id');
+    empInheritEle = $('#employee_inherit_id');
 
     getOppFlag(key = null) {
         let data = {
@@ -65,7 +90,7 @@ class BastionFieldControl {
             if (dataOnload !== undefined && dataOnload !== null && dataOnload.length > 0) {
                 config['data'] = dataOnload;
             }
-
+            console.log(this.oppEle, config);
             this.oppEle.initSelect2(config).on('change', function () {
                 let hasVal = !!$(this).val();
 
@@ -115,7 +140,8 @@ class BastionFieldControl {
                 cache: true,
             }
             if (dataOnload !== undefined && dataOnload !== null && dataOnload.length > 0) {
-                this.prjEle.attr('data-onload', JSON.stringify(dataOnload));
+                // this.prjEle.attr('data-onload', JSON.stringify(dataOnload));
+                config['data'] = dataOnload;
             }
             this.prjEle.initSelect2(config).on('change', function () {
                 let hasVal = !!$(this).val();
@@ -169,8 +195,7 @@ class BastionFieldControl {
                 dataParams: paramData
             };
             if (dataOnload !== undefined && dataOnload !== null && dataOnload.length > 0) {
-                this.empInheritEle.attr('data-onload', JSON.stringify(dataOnload));
-                // config['data'] = dataOnload;
+                config['data'] = dataOnload;
             }
 
             this.empInheritEle.initSelect2(config).on('change', function () {});
@@ -205,24 +230,28 @@ class BastionFieldControl {
         });
     }
 
-    mainDiv = $('#bastionFieldTheDocument');
-    oppEle = $('#opportunity_id')
-    prjEle = $('#project_id');
-    empInheritEle = $('#employee_inherit_id');
-
-    constructor(opts) {
-        this.has_opp = $x.fn.popKey(opts, 'has_opp', false, true);
-        this.has_prj = $x.fn.popKey(opts, 'has_prj', false, true);
-        this.has_inherit = $x.fn.popKey(opts, 'has_inherit', false, true);
-        this.data_opp = $x.fn.popKey(opts, 'data_opp', [], true);
-        this.data_prj = $x.fn.popKey(opts, 'data_prj', [], true);
-        this.data_inherit = $x.fn.popKey(opts, 'data_inherit', [], true);
-        this.not_change_opp = $x.fn.popKey(opts, 'not_change_opp', false, true);
-
-        this.opp_call_trigger_change = $x.fn.popKey(opts, 'opp_call_trigger_change', false, true);
-        this.prj_call_trigger_change = $x.fn.popKey(opts, 'prj_call_trigger_change', false, true);
-        this.inherit_call_trigger_change = $x.fn.popKey(opts, 'inherit_call_trigger_change', false, true);
-        // data_*: [{"id": "XXXX", "title": "XXXXX", "selected": true}]
+    getParamsInitOfInheritor() {
+        let params = {};
+        if (this.realOppData.length > 0) {
+            let oppSelectedIdx = null;
+            for (let idx in this.realOppData) {
+                if (this.realOppData[idx].selected === true && $x.fn.checkUUID4(this.realOppData[idx].id)) {
+                    oppSelectedIdx = this.realOppData[idx].id;
+                    break;
+                }
+            }
+            if (oppSelectedIdx) params['list_from_opp'] = oppSelectedIdx;
+        } else if (this.realPrjData.length > 0) {
+            let prjSelectedIdx = null;
+            for (let idx in this.realPrjData) {
+                if (this.realPrjData[idx].selected === true && $x.fn.checkUUID4(this.realPrjData[idx].id)) {
+                    prjSelectedIdx = this.realPrjData[idx].id;
+                }
+            }
+            if (prjSelectedIdx) params['list_from_prj'] = prjSelectedIdx;
+        }
+        this.paramsInheritor['data-params'] = params;
+        return this.paramsInheritor;
     }
 
     init() {
@@ -230,13 +259,13 @@ class BastionFieldControl {
         if (this.mainDiv instanceof jQuery && this.mainDiv.length === 1) {
             this.mainDiv.trigger('bastionField.preInit');
 
-            if (this.has_inherit === true) this.initInheritSelect({'data-onload': Array.isArray(this.data_inherit) ? this.data_inherit : []});
+            if (this.has_inherit === true) this.initInheritSelect(this.getParamsInitOfInheritor());
             else this.empInheritEle.prop('disabled', true).attr('readonly', 'readonly');
 
-            if (this.has_opp === true) this.initOppSelect({'data-onload': Array.isArray(this.data_opp) ? this.data_opp : []});
+            if (this.has_opp === true) this.initOppSelect({'data-onload': this.realOppData});
             else this.oppEle.prop('disabled', true).attr('readonly', 'readonly');
 
-            if (this.has_prj === true) this.initPrjSelect({'data-onload': Array.isArray(this.data_prj) ? this.data_prj : []});
+            if (this.has_prj === true) this.initPrjSelect({'data-onload': this.realPrjData});
             else this.prjEle.prop('disabled', true).attr('readonly', 'readonly');
 
             this.mainDiv.trigger('bastionField.init');

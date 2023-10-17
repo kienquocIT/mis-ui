@@ -111,11 +111,13 @@ class QuotationUpdate(View):
         menu_active='menu_quotation_list',
     )
     def get(self, request, pk, *args, **kwargs):
-        input_mapping_properties = InputMappingProperties.QUOTATION_QUOTATION
-        return {
-                   'data': {'doc_id': pk},
-                   'input_mapping_properties': input_mapping_properties, 'form_id': 'frm_quotation_create'
-               }, status.HTTP_200_OK
+        ctx = {
+            'data': {'doc_id': pk},
+            'input_mapping_properties': InputMappingProperties.QUOTATION_QUOTATION,
+            'form_id': 'frm_quotation_create',
+            'list_from_app': 'quotation.quotation.edit',
+        }
+        return ctx, status.HTTP_200_OK
 
 
 class QuotationDetailAPI(APIView):

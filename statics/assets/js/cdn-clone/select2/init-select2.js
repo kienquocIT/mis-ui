@@ -597,6 +597,8 @@ class SelectDDControl {
         //      - collect_selected
         //      - this.initData: value was set at this.data
         // ** Will be applied templateSelection in the future
+        let clsThis = this;
+
         let hasAjax = !!(config?.['ajax']);
         let dataSelected = this._ele_collect_selected(hasAjax);
         let dataOnload = this.initData;
@@ -614,7 +616,17 @@ class SelectDDControl {
                     }
                 );
             }
+
+            let selectLoaded = false;
             let optHTML = sumData.map((item) => {
+                if (selectLoaded === false && item.selected === true){
+                    selectLoaded = true;
+                    clsThis.loadInfoMore(
+                        $(this.ele),
+                        item?.['data'] ? item?.['data'] : item,
+                    )
+                }
+
                 let idn = item?.['id'];
                 let textShow = item?.['text'];
                 if (idn || (!idn && this.keepIdNullHasText)) {
@@ -648,6 +660,34 @@ class SelectDDControl {
         }
     }
 
+    loadInfoMore(eleThis, detailData = null){
+        let nextHasInfoBtnMore = $(eleThis).siblings('.info-btn-more');
+        let nextHasInfoBtnMore__Detail = $(eleThis).siblings('.info-btn-more-detail');
+        if (nextHasInfoBtnMore.length > 0 && nextHasInfoBtnMore__Detail.length > 0) {
+            let selectVal = $(eleThis).val();
+            let urlInfoDetail = $(eleThis).attr('data-url-info-detail');
+            if (urlInfoDetail) {
+                urlInfoDetail = urlInfoDetail.replaceAll('__pk__', selectVal);
+                nextHasInfoBtnMore.attr('data-id', selectVal);
+                let groupLinkEle = nextHasInfoBtnMore__Detail.find('.group-by-link-detail-more');
+                let linkEle = nextHasInfoBtnMore__Detail.find('.link-detail-more');
+                if (linkEle.length > 0) {
+                    linkEle.attr('href', urlInfoDetail);
+                    groupLinkEle.removeClass('hidden');
+                }
+
+            }
+
+            let func_onload = window[$(eleThis).data('on-load-info')];
+            func_onload(
+                nextHasInfoBtnMore__Detail,
+                nextHasInfoBtnMore__Detail.find('.info-btn-more-detail-data'),
+                detailData ? detailData : SelectDDControl.get_data_from_idx($(eleThis), selectVal),
+            );
+
+        }
+    }
+
     init() {
         // call this for init select with options
         if (this.ele.length > 0){
@@ -658,38 +698,13 @@ class SelectDDControl {
             this.ele.parent('.input-affix-wrapper').find('.dropdown').on('show.bs.dropdown', function () {
                 clsThis.callbackRenderInfoDetail($(this));
             });
-
             return this.ele.select2(this._config).on('change', function (e) {
                 if ($(this).closest('form').length > 0){
                     if ($(this).valid()) $(this).closest(".form-group").removeClass("has-error");
                     else $(this).closest(".form-group").addClass("has-error");
                 }
 
-                let nextHasInfoBtnMore = $(this).siblings('.info-btn-more');
-                let nextHasInfoBtnMore__Detail = $(this).siblings('.info-btn-more-detail');
-                if (nextHasInfoBtnMore.length > 0 && nextHasInfoBtnMore__Detail.length > 0) {
-                    let selectVal = $(this).val();
-                    let urlInfoDetail = $(this).attr('data-url-info-detail');
-                    if (urlInfoDetail){
-                        urlInfoDetail = urlInfoDetail.replaceAll('__pk__', selectVal);
-                        nextHasInfoBtnMore.prop('disabled', !selectVal).attr('data-id', selectVal);
-                        let groupLinkEle = nextHasInfoBtnMore__Detail.find('.group-by-link-detail-more');
-                        let linkEle = nextHasInfoBtnMore__Detail.find('.link-detail-more');
-                        if (linkEle.length > 0){
-                            linkEle.attr('href', urlInfoDetail);
-                            groupLinkEle.removeClass('hidden');
-                        }
-
-                    }
-
-                    let func_onload = window[$(this).data('on-load-info')];
-                    func_onload(
-                        nextHasInfoBtnMore__Detail,
-                        nextHasInfoBtnMore__Detail.find('.info-btn-more-detail-data'),
-                        SelectDDControl.get_data_from_idx($(this), selectVal),
-                    );
-
-                }
+                clsThis.loadInfoMore($(this));
             });
         }
     }

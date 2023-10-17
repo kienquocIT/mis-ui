@@ -1250,10 +1250,7 @@ class ListeningEventController {
             }
             // check ID to link detail - Yes: show link | No: hide link
             let linkEle = $(this).parent().find('.link-detail-more');
-            if (linkEle.length > 0){
-                if ($(this).data('id')) linkEle.removeClass('hidden');
-                else linkEle.addClass('hidden');
-            }
+            if (linkEle.length > 0) $(this).attr('data-id') ? linkEle.removeClass('hidden') : linkEle.addClass('hidden');
         }).on('hidden.bs.dropdown',  '.info-btn-more', function (){
             // rollback to original for accordion
             let accorItemEle = $(this).closest('.accordion-item');

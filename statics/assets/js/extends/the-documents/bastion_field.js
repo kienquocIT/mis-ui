@@ -90,7 +90,6 @@ class BastionFieldControl {
             if (dataOnload !== undefined && dataOnload !== null && dataOnload.length > 0) {
                 config['data'] = dataOnload;
             }
-            console.log(this.oppEle, config);
             this.oppEle.initSelect2(config).on('change', function () {
                 let hasVal = !!$(this).val();
 

@@ -759,6 +759,7 @@ class QuotationLoadDataHandle {
                 has_inherit: true,
                 data_inherit: [{
                     "id": data?.['sale_person']?.['id'],
+                    "full_name": data?.['sale_person']?.['full_name'] || '',
                     "first_name": data?.['sale_person']?.['first_name'] || '',
                     "last_name": data?.['sale_person']?.['last_name'] || '',
                     "email": data?.['sale_person']?.['email'] || '',

@@ -623,6 +623,7 @@ class SelectDDControl {
                     selectLoaded = true;
                     clsThis.loadInfoMore(
                         $(this.ele),
+                        this.callbackValueId(item, this._data_keyId),
                         item?.['data'] ? item?.['data'] : item,
                     )
                 }
@@ -660,29 +661,28 @@ class SelectDDControl {
         }
     }
 
-    loadInfoMore(eleThis, detailData = null){
+    loadInfoMore(eleThis, detailIdx = null, detailData = null){
         let nextHasInfoBtnMore = $(eleThis).siblings('.info-btn-more');
         let nextHasInfoBtnMore__Detail = $(eleThis).siblings('.info-btn-more-detail');
         if (nextHasInfoBtnMore.length > 0 && nextHasInfoBtnMore__Detail.length > 0) {
-            let selectVal = $(eleThis).val();
+            let selectVal = detailIdx && detailData ? detailIdx : $(eleThis).val();
             let urlInfoDetail = $(eleThis).attr('data-url-info-detail');
             if (urlInfoDetail) {
-                urlInfoDetail = urlInfoDetail.replaceAll('__pk__', selectVal);
-                nextHasInfoBtnMore.attr('data-id', selectVal);
-                let groupLinkEle = nextHasInfoBtnMore__Detail.find('.group-by-link-detail-more');
-                let linkEle = nextHasInfoBtnMore__Detail.find('.link-detail-more');
-                if (linkEle.length > 0) {
-                    linkEle.attr('href', urlInfoDetail);
-                    groupLinkEle.removeClass('hidden');
+                if (selectVal){
+                    urlInfoDetail = urlInfoDetail.replaceAll('__pk__', selectVal);
+                    nextHasInfoBtnMore.attr('data-id', selectVal);
+                    nextHasInfoBtnMore__Detail.find('.link-detail-more').attr('href', urlInfoDetail);
+                } else {
+                    nextHasInfoBtnMore.removeAttr('data-id');
+                    nextHasInfoBtnMore__Detail.find('.link-detail-more').attr('href', '#');
                 }
-
             }
 
             let func_onload = window[$(eleThis).data('on-load-info')];
             func_onload(
                 nextHasInfoBtnMore__Detail,
                 nextHasInfoBtnMore__Detail.find('.info-btn-more-detail-data'),
-                detailData ? detailData : SelectDDControl.get_data_from_idx($(eleThis), selectVal),
+                detailIdx && detailData ? detailData : SelectDDControl.get_data_from_idx($(eleThis), selectVal),
             );
 
         }

@@ -91,8 +91,8 @@ $(function () {
                         if (dataOppSelected) {
                             if (Object.keys(dataOppSelected.customer).length !== 0) {
                                 if (dataOppSelected.customer.id !== $(this).val()) {
-                                    QuotationLoadDataHandle.opportunitySelectEle.empty();
-                                    QuotationLoadDataHandle.loadBoxQuotationOpportunity();
+                                    // QuotationLoadDataHandle.opportunitySelectEle.empty();
+                                    // QuotationLoadDataHandle.loadBoxQuotationOpportunity();
                                 }
                             }
                         }
@@ -111,21 +111,21 @@ $(function () {
                         document.getElementById('customer-price-list').value = dataSelected?.['price_list_mapped'].id;
                     }
                     // Load again dropdown sale_person only valueSelected
-                    QuotationLoadDataHandle.loadBoxQuotationSalePerson($('#employee_inherit_id').val());
+                    // QuotationLoadDataHandle.loadBoxQuotationSalePerson($('#employee_inherit_id').val());
                 }
             } else { // No Value => load again dropdowns
-                QuotationLoadDataHandle.opportunitySelectEle.empty();
+                // QuotationLoadDataHandle.opportunitySelectEle.empty();
                 QuotationLoadDataHandle.contactSelectEle.empty();
                 QuotationLoadDataHandle.paymentSelectEle.empty();
-                QuotationLoadDataHandle.loadBoxQuotationOpportunity();
+                // QuotationLoadDataHandle.loadBoxQuotationOpportunity();
                 QuotationLoadDataHandle.loadBoxQuotationContact();
                 QuotationLoadDataHandle.loadBoxQuotationPaymentTerm();
                 document.getElementById('customer-price-list').value = "";
                 if (!QuotationLoadDataHandle.opportunitySelectEle.val()) {
-                    QuotationLoadDataHandle.loadBoxQuotationSalePerson($('#employee_inherit_id').val());
+                    // QuotationLoadDataHandle.loadBoxQuotationSalePerson($('#employee_inherit_id').val());
                 }
             }
-            QuotationLoadDataHandle.loadInformationSelectBox(QuotationLoadDataHandle.customerSelectEle);
+            // QuotationLoadDataHandle.loadInformationSelectBox(QuotationLoadDataHandle.customerSelectEle);
             // Delete all promotion rows
             deletePromotionRows(tableProduct, true, false);
             // Delete all shipping rows

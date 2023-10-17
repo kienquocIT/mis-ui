@@ -12,17 +12,9 @@ $(function () {
         let tabPrice = $('#tab_terms');
 
         // Load inits
+        QuotationLoadDataHandle.loadBoxQuotationCustomer();
         QuotationLoadDataHandle.loadBoxQuotationContact();
         QuotationLoadDataHandle.loadBoxQuotationPaymentTerm();
-        if (formSubmit.attr('data-method') === 'POST') {
-            let employee_current = $('#data-init-quotation-create-request-employee').val();
-            if (employee_current) {
-                let employee_current_data = JSON.parse(employee_current);
-                QuotationLoadDataHandle.loadBoxQuotationCustomer({}, employee_current_data.id);
-            } else {
-                QuotationLoadDataHandle.loadBoxQuotationCustomer();
-            }
-        }
         QuotationLoadDataHandle.loadInitQuotationProduct();
         // init config
         QuotationLoadDataHandle.loadInitQuotationConfig('quotation-config-data', formSubmit.attr('data-method'));
@@ -61,97 +53,17 @@ $(function () {
 
 // Action on change dropdown opportunity
         QuotationLoadDataHandle.opportunitySelectEle.on('change', function () {
-            // if ($(this).val()) {
-            //     let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.opportunitySelectEle, $(this).val());
-            //     if (dataSelected) {
-            //         QuotationLoadDataHandle.customerSelectEle.empty();
-            //         QuotationLoadDataHandle.loadBoxQuotationCustomer(dataSelected.customer);
-            //         QuotationLoadDataHandle.customerSelectEle.change();
-            //     }
-            // } else { // No Value => load again dropdowns
-            //     QuotationLoadDataHandle.customerSelectEle.empty();
-            //     QuotationLoadDataHandle.loadBoxQuotationCustomer();
-            //     QuotationLoadDataHandle.customerSelectEle.change();
-            // }
-            // // Delete all promotion rows
-            // deletePromotionRows(tableProduct, true, false);
-            // // Delete all shipping rows
-            // deletePromotionRows(tableProduct, false, true);
-            // // ReCheck Config when change Opportunity
-            // QuotationCheckConfigHandle.checkConfig(true);
+            QuotationLoadDataHandle.loadDataByOpportunity(this);
         });
 
 // Action on change dropdown customer
         QuotationLoadDataHandle.customerSelectEle.on('change', function () {
-            if ($(this).val()) {
-                let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.customerSelectEle, $(this).val());
-                if (dataSelected) {
-                    if (QuotationLoadDataHandle.opportunitySelectEle.val()) {
-                        let dataOppSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.opportunitySelectEle, QuotationLoadDataHandle.opportunitySelectEle.val());
-                        if (dataOppSelected) {
-                            if (Object.keys(dataOppSelected.customer).length !== 0) {
-                                if (dataOppSelected.customer.id !== $(this).val()) {
-                                    // QuotationLoadDataHandle.opportunitySelectEle.empty();
-                                    // QuotationLoadDataHandle.loadBoxQuotationOpportunity();
-                                }
-                            }
-                        }
-                    }
-                    // load Shipping & Billing by Customer
-                    QuotationLoadDataHandle.loadShippingBillingCustomer();
-                    QuotationLoadDataHandle.loadShippingBillingCustomer(dataSelected);
-                    // load Contact by Customer
-                    QuotationLoadDataHandle.contactSelectEle.empty();
-                    QuotationLoadDataHandle.loadBoxQuotationContact(dataSelected.owner, dataSelected.id);
-                    // load Payment Term by Customer
-                    QuotationLoadDataHandle.paymentSelectEle.empty();
-                    QuotationLoadDataHandle.loadBoxQuotationPaymentTerm(dataSelected?.['payment_term_customer_mapped']);
-                    // Store Account Price List
-                    if (Object.keys(dataSelected?.['price_list_mapped']).length !== 0) {
-                        document.getElementById('customer-price-list').value = dataSelected?.['price_list_mapped'].id;
-                    }
-                    // Load again dropdown sale_person only valueSelected
-                    // QuotationLoadDataHandle.loadBoxQuotationSalePerson($('#employee_inherit_id').val());
-                }
-            } else { // No Value => load again dropdowns
-                // QuotationLoadDataHandle.opportunitySelectEle.empty();
-                QuotationLoadDataHandle.contactSelectEle.empty();
-                QuotationLoadDataHandle.paymentSelectEle.empty();
-                // QuotationLoadDataHandle.loadBoxQuotationOpportunity();
-                QuotationLoadDataHandle.loadBoxQuotationContact();
-                QuotationLoadDataHandle.loadBoxQuotationPaymentTerm();
-                document.getElementById('customer-price-list').value = "";
-                if (!QuotationLoadDataHandle.opportunitySelectEle.val()) {
-                    // QuotationLoadDataHandle.loadBoxQuotationSalePerson($('#employee_inherit_id').val());
-                }
-            }
-            // QuotationLoadDataHandle.loadInformationSelectBox(QuotationLoadDataHandle.customerSelectEle);
-            // Delete all promotion rows
-            deletePromotionRows(tableProduct, true, false);
-            // Delete all shipping rows
-            deletePromotionRows(tableProduct, false, true);
-            // load again price of product by customer price list then Re Calculate
-            QuotationLoadDataHandle.loadDataProductAll();
+            QuotationLoadDataHandle.loadDataByCustomer();
         });
 
 // Action on change dropdown sale person
         QuotationLoadDataHandle.salePersonSelectEle.on('change', function () {
-            // // clear Customer box & Opportunity box & Contact box & PaymentTerm box & PriceListVal
-            // QuotationLoadDataHandle.opportunitySelectEle.empty();
-            // QuotationLoadDataHandle.customerSelectEle.empty();
-            // QuotationLoadDataHandle.contactSelectEle.empty();
-            // QuotationLoadDataHandle.paymentSelectEle.empty();
-            // // QuotationLoadDataHandle.loadBoxQuotationOpportunity({}, $(this).val());
-            // QuotationLoadDataHandle.loadBoxQuotationCustomer({}, $(this).val());
-            // document.getElementById('customer-price-list').value = "";
-            // // Delete all promotion rows
-            // deletePromotionRows(tableProduct, true, false);
-            // // Delete all shipping rows
-            // deletePromotionRows(tableProduct, false, true);
-            // // load again price of product by customer price list then Re Calculate
-            // QuotationLoadDataHandle.loadDataProductAll();
-            // // ReCheck Config when change Opportunity
-            // QuotationCheckConfigHandle.checkConfig(true);
+            QuotationLoadDataHandle.loadDataBySalePerson();
         });
 
 // Action on click dropdown price list

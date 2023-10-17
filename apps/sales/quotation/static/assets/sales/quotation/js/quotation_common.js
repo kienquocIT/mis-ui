@@ -156,22 +156,68 @@ class QuotationLoadDataHandle {
         // }
     };
 
-    static loadBoxQuotationCustomer(dataCustomer = {}, sale_person_id = null) {
+    static loadDataByOpportunity() {
+        let tableProduct = $('#datable-quotation-create-product');
+        QuotationLoadDataHandle.loadBoxQuotationCustomer();
+        QuotationLoadDataHandle.loadBoxQuotationContact();
+        QuotationLoadDataHandle.loadBoxQuotationPaymentTerm();
+        // Delete all promotion rows
+        deletePromotionRows(tableProduct, true, false);
+        // Delete all shipping rows
+        deletePromotionRows(tableProduct, false, true);
+        // ReCheck Config when change Opportunity
+        QuotationCheckConfigHandle.checkConfig(true);
+    };
+
+    static loadBoxQuotationCustomer(dataCustomer = {}) {
+        QuotationLoadDataHandle.customerSelectEle.empty();
         let form = $('#frm_quotation_create');
         let data_filter = {};
-        if (sale_person_id) {
+        if ($(QuotationLoadDataHandle.opportunitySelectEle).val()) { // Has Opportunity
+            let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.opportunitySelectEle, $(QuotationLoadDataHandle.opportunitySelectEle).val());
+            if (dataSelected) {
+                if (dataSelected?.['customer']) {
+                    dataSelected['customer']['name'] = dataSelected['customer']['title'];
+                    dataCustomer = dataSelected?.['customer'];
+                }
+                QuotationLoadDataHandle.customerSelectEle.initSelect2({
+                    data: dataCustomer,
+                    disabled: !(QuotationLoadDataHandle.customerSelectEle.attr('data-url')),
+                    callbackTextDisplay: function (item) {
+                        return item?.['name'] || '';
+                    },
+                });
+            }
+        } else { // No Opportunity
+            let sale_person_id = null;
+            let employee_current = $('#data-init-quotation-create-request-employee').val();
+            if (employee_current) {
+                let employee_current_data = JSON.parse(employee_current);
+                sale_person_id = employee_current_data?.['id'];
+            }
+            if (QuotationLoadDataHandle.salePersonSelectEle.val()) {
+                sale_person_id = QuotationLoadDataHandle.salePersonSelectEle.val();
+            }
             data_filter['employee__id'] = sale_person_id;
-        } else {
-            data_filter['employee__id'] = QuotationLoadDataHandle.salePersonSelectEle.val();
+            if (sale_person_id) { // Has SalePerson
+                QuotationLoadDataHandle.customerSelectEle.initSelect2({
+                    data: dataCustomer,
+                    'dataParams': data_filter,
+                    disabled: !(QuotationLoadDataHandle.customerSelectEle.attr('data-url')),
+                    callbackTextDisplay: function (item) {
+                        return item?.['name'] || '';
+                    },
+                });
+            } else { // No SalePerson
+                QuotationLoadDataHandle.customerSelectEle.initSelect2({
+                    data: dataCustomer,
+                    disabled: !(QuotationLoadDataHandle.customerSelectEle.attr('data-url')),
+                    callbackTextDisplay: function (item) {
+                        return item?.['name'] || '';
+                    },
+                });
+            }
         }
-        QuotationLoadDataHandle.customerSelectEle.initSelect2({
-            data: dataCustomer,
-            'dataParams': data_filter,
-            disabled: !(QuotationLoadDataHandle.customerSelectEle.attr('data-url')),
-            callbackTextDisplay: function (item) {
-                return item?.['name'] || '';
-            },
-        });
         QuotationLoadDataHandle.loadInformationSelectBox(QuotationLoadDataHandle.customerSelectEle);
         if (form.attr('data-method') !== 'GET') {
             if (!dataCustomer?.['is_copy']) {
@@ -180,37 +226,80 @@ class QuotationLoadDataHandle {
         }
     };
 
+    static loadDataByCustomer() {
+        let tableProduct = $('#datable-quotation-create-product');
+        QuotationLoadDataHandle.loadBoxQuotationContact();
+        QuotationLoadDataHandle.loadBoxQuotationPaymentTerm();
+        if ($(QuotationLoadDataHandle.customerSelectEle).val()) {
+            let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.customerSelectEle, $(QuotationLoadDataHandle.customerSelectEle).val());
+            if (dataSelected) {
+                // load Shipping & Billing by Customer
+                QuotationLoadDataHandle.loadShippingBillingCustomer();
+                QuotationLoadDataHandle.loadShippingBillingCustomer(dataSelected);
+                // Store Account Price List
+                    if (Object.keys(dataSelected?.['price_list_mapped']).length !== 0) {
+                        document.getElementById('customer-price-list').value = dataSelected?.['price_list_mapped']?.['id'];
+                    }
+            }
+        } else {
+            document.getElementById('customer-price-list').value = "";
+        }
+        // Delete all promotion rows
+            deletePromotionRows(tableProduct, true, false);
+            // Delete all shipping rows
+            deletePromotionRows(tableProduct, false, true);
+            // load again price of product by customer price list then Re Calculate
+            QuotationLoadDataHandle.loadDataProductAll();
+    }
+
     static loadBoxQuotationContact(dataContact = {}, customerID = null) {
-        let ele = QuotationLoadDataHandle.contactSelectEle;
-        ele.initSelect2({
+        QuotationLoadDataHandle.contactSelectEle.empty();
+        if ($(QuotationLoadDataHandle.customerSelectEle).val()) {
+            let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.customerSelectEle, $(QuotationLoadDataHandle.customerSelectEle).val());
+            if (dataSelected) {
+                if (dataSelected?.['contact_mapped']) {
+                    dataContact = dataSelected?.['contact_mapped'];
+                }
+                if (dataSelected?.['owner']) {
+                    dataContact = dataSelected?.['owner'];
+                }
+                customerID = dataSelected?.['id'];
+            }
+        }
+        QuotationLoadDataHandle.contactSelectEle.initSelect2({
             data: dataContact,
             'dataParams': {'account_name_id': customerID},
-            disabled: !(ele.attr('data-url')),
+            disabled: !(QuotationLoadDataHandle.contactSelectEle.attr('data-url')),
             callbackTextDisplay: function (item) {
                 return item?.['fullname'] || '';
             },
         });
-        QuotationLoadDataHandle.loadInformationSelectBox(ele);
+        QuotationLoadDataHandle.loadInformationSelectBox(QuotationLoadDataHandle.contactSelectEle);
     };
 
     static loadBoxQuotationPaymentTerm(dataPayment = {}) {
-        let ele = QuotationLoadDataHandle.paymentSelectEle;
-        ele.initSelect2({
+        QuotationLoadDataHandle.paymentSelectEle.empty();
+        if ($(QuotationLoadDataHandle.customerSelectEle).val()) {
+            let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.customerSelectEle, $(QuotationLoadDataHandle.customerSelectEle).val());
+            if (dataSelected) {
+                if (dataSelected?.['payment_term_customer_mapped']) {
+                    dataPayment = dataSelected?.['payment_term_customer_mapped'];
+                }
+            }
+        }
+        QuotationLoadDataHandle.paymentSelectEle.initSelect2({
             data: dataPayment,
-            disabled: !(ele.attr('data-url')),
+            disabled: !(QuotationLoadDataHandle.paymentSelectEle.attr('data-url')),
         });
-        QuotationLoadDataHandle.loadInformationSelectBox(ele);
+        QuotationLoadDataHandle.loadInformationSelectBox(QuotationLoadDataHandle.paymentSelectEle);
     }
 
-    static loadBoxQuotationSalePerson(dataSalePerson = {}) {
-        // let ele = QuotationLoadDataHandle.salePersonSelectEle;
-        // ele.initSelect2({
-        //     data: dataSalePerson,
-        //     disabled: !(ele.attr('data-url')),
-        //     callbackTextDisplay: function (item) {
-        //         return item?.['full_name'] || '';
-        //     },
-        // });
+    static loadDataBySalePerson() {
+        if (!QuotationLoadDataHandle.opportunitySelectEle.val()) {
+            QuotationLoadDataHandle.loadBoxQuotationCustomer();
+            QuotationLoadDataHandle.loadBoxQuotationContact();
+            QuotationLoadDataHandle.loadBoxQuotationPaymentTerm();
+        }
     };
 
     static loadBoxQuotationPrice() {
@@ -751,7 +840,7 @@ class QuotationLoadDataHandle {
     // Load detail
     static loadDetailQuotation(data, is_copy = false) {
         if (data?.['title'] && is_copy === false) {
-            document.getElementById('quotation-create-title').value = data.title;
+            document.getElementById('quotation-create-title').value = data?.['title'];
         }
         if (data?.['opportunity'] && data?.['sale_person']) {
             new $x.cls.bastionField({
@@ -775,33 +864,29 @@ class QuotationLoadDataHandle {
             }).init();
         }
         if (data?.['customer']) {
-            data.customer['name'] = data.customer.title;
+            data['customer']['name'] = data['customer']['title'];
             if (is_copy === true) {
-                data.customer['is_copy'] = true;
+                data['customer']['is_copy'] = true;
             }
-            if (data?.['sale_person']) {
-                QuotationLoadDataHandle.loadBoxQuotationCustomer(data.customer, data?.['sale_person']?.['id']);
-            } else {
-                QuotationLoadDataHandle.loadBoxQuotationCustomer(data.customer);
-            }
+            QuotationLoadDataHandle.loadBoxQuotationCustomer(data?.['customer']);
         }
-        if (data.contact) {
-            data.contact['fullname'] = data.contact.title;
-            QuotationLoadDataHandle.loadBoxQuotationContact(data.contact, data.customer.id)
+        if (data?.['contact']) {
+            data['contact']['fullname'] = data['contact']['title'];
+            QuotationLoadDataHandle.loadBoxQuotationContact(data?.['contact']);
         }
         if (data?.['payment_term']) {
             QuotationLoadDataHandle.loadBoxQuotationPaymentTerm(data?.['payment_term'])
         }
-        if (data.quotation && data?.['sale_person']) {
-            QuotationLoadDataHandle.loadBoxSaleOrderQuotation('select-box-quotation', data.quotation.id, null, data?.['sale_person']?.['id'])
+        if (data?.['quotation'] && data?.['sale_person']) {
+            QuotationLoadDataHandle.loadBoxSaleOrderQuotation('select-box-quotation', data?.['quotation']?.['id'], null, data?.['sale_person']?.['id'])
         }
-        if (data.date_created) {
-            $('#quotation-create-date-created').val(moment(data.date_created).format('MM/DD/YYYY'));
+        if (data?.['date_created']) {
+            $('#quotation-create-date-created').val(moment(data?.['date_created']).format('MM/DD/YYYY'));
         }
-        if (data.is_customer_confirm && is_copy === false) {
-            $('#quotation-customer-confirm')[0].checked = data.is_customer_confirm;
+        if (data?.['is_customer_confirm'] && is_copy === false) {
+            $('#quotation-customer-confirm')[0].checked = data?.['is_customer_confirm'];
         }
-        if (data.system_status && is_copy === false) {
+        if (data?.['system_status'] && is_copy === false) {
             if (['Added', 'Finish'].includes(data?.['system_status'])) {
                 let $btn = $('#btn-enable-edit');
                 if ($btn.length) {
@@ -835,12 +920,12 @@ class QuotationLoadDataHandle {
                                 </option>`)
             QuotationLoadDataHandle.loadInformationSelectBox(boxQuotation);
         }
-        if (data.quotation_logistic_data) {
-            document.getElementById('quotation-create-shipping-address').value = data.quotation_logistic_data.shipping_address;
-            document.getElementById('quotation-create-billing-address').value = data.quotation_logistic_data.billing_address;
+        if (data?.['quotation_logistic_data']) {
+            document.getElementById('quotation-create-shipping-address').value = data?.['quotation_logistic_data']?.['shipping_address'];
+            document.getElementById('quotation-create-billing-address').value = data?.['quotation_logistic_data']?.['billing_address'];
         } else if (data?.['sale_order_logistic_data']) {
-            document.getElementById('quotation-create-shipping-address').value = data?.['sale_order_logistic_data'].shipping_address;
-            document.getElementById('quotation-create-billing-address').value = data?.['sale_order_logistic_data'].billing_address;
+            document.getElementById('quotation-create-shipping-address').value = data?.['sale_order_logistic_data']?.['shipping_address'];
+            document.getElementById('quotation-create-billing-address').value = data?.['sale_order_logistic_data']?.['billing_address'];
         }
         $('#quotation-create-customer-shipping').val(data?.['customer_shipping_id']);
         $('#quotation-create-customer-billing').val(data?.['customer_billing_id']);
@@ -1065,7 +1150,6 @@ class QuotationDataTableHandle {
                     targets: 1,
                     render: (data, type, row) => {
                         if (row?.['is_promotion'] === false && row?.['is_shipping'] === false) { // PRODUCT
-                            let selectProductID = 'quotation-create-product-box-product-' + String(row?.['order']);
                             return `<div class="row">
                                 <div class="input-group">
                                     <div class="input-affix-wrapper">
@@ -1083,7 +1167,6 @@ class QuotationDataTableHandle {
                                         </div>
                                         <select 
                                         class="form-select table-row-item" 
-                                        id="${selectProductID}"
                                         data-url="${QuotationDataTableHandle.productInitEle.attr('data-url')}"
                                         data-link-detail="${QuotationDataTableHandle.productInitEle.attr('data-link-detail')}"
                                         data-method="${QuotationDataTableHandle.productInitEle.attr('data-method')}"
@@ -1144,12 +1227,10 @@ class QuotationDataTableHandle {
                 {
                     targets: 3,
                     render: (data, type, row) => {
-                        let selectUOMID = 'quotation-create-product-box-uom-' + String(row?.['order']);
                         if (row?.['is_promotion'] === false && row?.['is_shipping'] === false) {
                             return `<div class="row">
                                         <select 
                                             class="form-select table-row-uom"
-                                            id="${selectUOMID}"
                                             data-url="${QuotationDataTableHandle.uomInitEle.attr('data-url')}"
                                             data-method="${QuotationDataTableHandle.uomInitEle.attr('data-method')}"
                                             data-keyResp="unit_of_measure"
@@ -1161,7 +1242,6 @@ class QuotationDataTableHandle {
                             return `<div class="row">
                                         <select 
                                             class="form-select table-row-uom"
-                                            id="${selectUOMID}"
                                             data-url="${QuotationDataTableHandle.uomInitEle.attr('data-url')}"
                                             data-method="${QuotationDataTableHandle.uomInitEle.attr('data-method')}"
                                             data-keyResp="unit_of_measure"
@@ -1232,7 +1312,6 @@ class QuotationDataTableHandle {
                 {
                     targets: 7,
                     render: (data, type, row) => {
-                        let selectTaxID = 'quotation-create-product-box-tax-' + String(row?.['order']);
                         let taxID = "";
                         let taxRate = "0";
                         if (row?.['tax']) {
@@ -1243,7 +1322,6 @@ class QuotationDataTableHandle {
                             return `<div class="row">
                                 <select 
                                     class="form-select table-row-tax"
-                                    id="${selectTaxID}"
                                     data-url="${QuotationDataTableHandle.taxInitEle.attr('data-url')}"
                                     data-method="${QuotationDataTableHandle.taxInitEle.attr('data-method')}"
                                     data-keyResp="tax_list"
@@ -1265,7 +1343,7 @@ class QuotationDataTableHandle {
                             </div>`;
                         } else {
                             return `<div class="row">
-                                <select class="form-select table-row-tax disabled-custom-show" id="${selectTaxID}" disabled>
+                                <select class="form-select table-row-tax disabled-custom-show" disabled>
                                     <option value="${taxID}" data-value="${taxRate}">${taxRate} %</option>
                                 </select>
                                 <input
@@ -1331,7 +1409,6 @@ class QuotationDataTableHandle {
                     width: "25%",
                     render: (data, type, row) => {
                         if (row.is_shipping === false) {
-                            let selectProductID = 'quotation-create-cost-box-product-' + String(row.order);
                             return `<div class="row">
                                 <div class="input-group">
                                     <span class="input-affix-wrapper">
@@ -1351,7 +1428,6 @@ class QuotationDataTableHandle {
                                         </span>
                                         <select
                                             class="form-select table-row-item disabled-custom-show"
-                                            id="${selectProductID}" 
                                             data-url="${QuotationDataTableHandle.productInitEle.attr('data-url')}"
                                             data-link-detail="${QuotationDataTableHandle.productInitEle.attr('data-link-detail')}"
                                             data-method="${QuotationDataTableHandle.productInitEle.attr('data-method')}"
@@ -1386,12 +1462,10 @@ class QuotationDataTableHandle {
                 {
                     targets: 2,
                     width: "5%",
-                    render: (data, type, row) => {
-                        let selectUOMID = 'quotation-create-cost-box-uom-' + String(row.order);
+                    render: () => {
                         return `<div class="row">
                                 <select 
                                     class="form-select table-row-uom disabled-custom-show"
-                                    id="${selectUOMID}"
                                     data-url="${QuotationDataTableHandle.uomInitEle.attr('data-url')}"
                                     data-method="${QuotationDataTableHandle.uomInitEle.attr('data-method')}"
                                     data-keyResp="unit_of_measure"
@@ -1442,12 +1516,10 @@ class QuotationDataTableHandle {
                     targets: 5,
                     width: "10%",
                     render: (data, type, row) => {
-                        let selectTaxID = 'quotation-create-cost-box-tax-' + String(row.order);
                         if (row.is_shipping === false) {
                             return `<div class="row">
                                 <select 
                                     class="form-select table-row-tax"
-                                    id="${selectTaxID}"
                                     data-url="${QuotationDataTableHandle.taxInitEle.attr('data-url')}"
                                     data-method="${QuotationDataTableHandle.taxInitEle.attr('data-method')}"
                                     data-keyResp="tax_list"
@@ -1471,7 +1543,6 @@ class QuotationDataTableHandle {
                             return `<div class="row">
                                 <select 
                                     class="form-select table-row-tax disabled-custom-show"
-                                    id="${selectTaxID}"
                                     data-url="${QuotationDataTableHandle.taxInitEle.attr('data-url')}"
                                     data-method="${QuotationDataTableHandle.taxInitEle.attr('data-method')}"
                                     data-keyResp="tax_list"
@@ -1582,12 +1653,10 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 3,
-                    render: (data, type, row) => {
-                        let selectUOMID = 'quotation-create-expense-box-uom-' + String(row.order);
+                    render: () => {
                         return `<div class="row">
                                 <select 
                                     class="form-select table-row-uom"
-                                    id="${selectUOMID}"
                                     data-url="${QuotationDataTableHandle.uomInitEle.attr('data-url')}"
                                     data-method="${QuotationDataTableHandle.uomInitEle.attr('data-method')}"
                                     data-keyResp="unit_of_measure"
@@ -1631,11 +1700,9 @@ class QuotationDataTableHandle {
                 {
                     targets: 6,
                     render: (data, type, row) => {
-                        let selectTaxID = 'quotation-create-expense-box-tax-' + String(row.order);
                         return `<div class="row">
                                 <select 
                                     class="form-select table-row-tax"
-                                    id="${selectTaxID}"
                                     data-url="${QuotationDataTableHandle.taxInitEle.attr('data-url')}"
                                     data-method="${QuotationDataTableHandle.taxInitEle.attr('data-method')}"
                                     data-keyResp="tax_list"

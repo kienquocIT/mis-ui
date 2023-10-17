@@ -46,12 +46,6 @@
                 <div class="container-fluid">
                     <div class="collapse multi-collapse show" id="collapseExample">
                         <div class="row">
-                            <div class="d-flex justify-content-end">
-                                <h5 class="text-primary mr-3" id="quotation-create-code"></h5>
-                                <span class="badge badge-soft-light" id="quotation-create-status"></span>
-                            </div>
-                        </div>
-                        <div class="row">
                             {% trans 'Select Sale Person' as inherit_title %}
                             {% include 'extends/the-documents/bastion.html' with show_warning=True opp_title=opp_title has_opp=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True %}
                         </div>

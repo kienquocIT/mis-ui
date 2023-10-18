@@ -4418,8 +4418,8 @@ msgid "Must select one warehouse"
 msgstr "Phải chọn một kho"
 
 #
-msgid "Quantity import must be less than purchase order quantity"
-msgstr "Số lượng nhập kho phải nhỏ hơn số lượng đặt mua"
+msgid "Quantity import must be less than equal remain quantity"
+msgstr "Số lượng nhập kho phải nhỏ hơn hoặc bằng số lượng chưa nhập"
 
 #
 msgid "Goods receipt"

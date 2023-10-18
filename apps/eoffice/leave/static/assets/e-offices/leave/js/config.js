@@ -19,16 +19,16 @@ $(document).ready(function(){
         }
         let _form = new SetupFormSubmit($form);
         let formData = _form.dataForm
-        if (formData.code !== 'AN') formData.no_of_paid = formData.no_of_paid_normal
         if (!formData.is_check_expiration){
             formData.is_check_expiration = false
             formData.data_expired = 0
         }
+        if (formData.no_of_paid) formData.no_of_paid = parseInt(formData.no_of_paid)
+        else delete formData.no_of_paid
 
         const clone = $.extend({}, formData); // clone for update to table when user update purpose
         delete formData.is_lt_system
         delete formData.is_lt_edit
-        delete formData.no_of_paid_normal
 
         if (formData.code === 'AN'){
             const temp = {
@@ -92,15 +92,13 @@ $(document).ready(function(){
             $('#inputExpired').removeClass('hidden')
         if (data.is_check_expiration){
             $('#inputExpired').prop('checked', data.is_check_expiration).closest('.form-check').removeClass('hidden')
-            $('#inputDataExpired').val(data.data_expired).closest('.form-group').removeClass('hidden')
+
         }
         else{
             $('#inputExpired').closest('.form-check').addClass('hidden')
-            $('#inputDataExpired').closest('.form-group').addClass('hidden')
         }
         $('[name="is_lt_system"]').val(data.is_lt_system)
         $('[name="is_lt_edit"]').val(data.is_lt_edit)
-        $('#inputSubNoD').val(data.no_of_paid)
         $('[name="type_idx"]').val(data.idx)
         $('#type_id').val(data.id)
         $('#inputCode').val(data.code)
@@ -225,23 +223,16 @@ $(document).ready(function(){
             $('#inputExpired').closest('.form-check').removeClass('hidden')
         else $('#inputExpired').closest('.form-check').addClass('hidden')
     })
-
-    $('#inputExpired').on('change', function(){
-        if ($(this).prop('checked'))
-            $('#inputDataExpired').closest('.form-group').removeClass('hidden')
-        else $('#inputDataExpired').closest('.form-group').addClass('hidden')
-    })
-
     // valid AN number
     $('#inputNoP').on('blur', function(){
-        const value = parseInt(this.value)
-        if (value < 12 || !$.isNumeric(value) || value % 1 !== 0){
+        let value = parseInt(this.value.replace('-', ''))
+        if (!$.isNumeric(value) || value % 1 < 0){
             $(this).closest('.an-type').find('p').remove()
             $(this).closest('.an-type').append(`<p class="text-danger"><em>${$trans.attr('data-valid-an')}</em></p>`)
         }
         else $(this).closest('.an-type').find('p').remove()
+        this.value = value
     })
-    $('#inputNoM').initSelect2()
     $('#selectPaidBy').initSelect2()
     $('.date-picker').daterangepicker({
         minYear: 1901,

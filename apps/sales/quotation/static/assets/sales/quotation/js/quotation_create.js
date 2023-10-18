@@ -1054,7 +1054,7 @@ $(function () {
             // validate none & blank
             let check_blank_list = ['', "", "undefined"];
             let check_field_list = [
-                'opportunity',
+                'opportunity_id',
                 'customer',
                 'contact',
                 'employee_inherit_id',

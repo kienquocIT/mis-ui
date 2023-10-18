@@ -106,6 +106,7 @@ class GRLoadDataHandle {
         let ele = GRLoadDataHandle.POSelectEle;
         ele.initSelect2({
             data: dataPO,
+            'dataParams': {'is_all_receipted': false, 'system_status': 3},
             disabled: !(ele.attr('data-url')),
         });
         GRLoadDataHandle.loadMoreInformation(ele);
@@ -839,13 +840,13 @@ class GRDataTableHandle {
                 {
                     targets: 4,
                     render: (data, type, row) => {
-                        return `<span class="table-row-gr-completed">${row?.['goods_receipt_info']?.['gr_completed_quantity'] ? row?.['goods_receipt_info']?.['gr_completed_quantity'] : 0}</span>`;
+                        return `<span class="table-row-gr-completed">${row?.['gr_completed_quantity'] ? row?.['gr_completed_quantity'] : 0}</span>`;
                     }
                 },
                 {
                     targets: 5,
                     render: (data, type, row) => {
-                        return `<span class="table-row-gr-remain">${row?.['goods_receipt_info']?.['gr_remain_quantity'] ? row?.['goods_receipt_info']?.['gr_remain_quantity'] : 0}</span>`;
+                        return `<span class="table-row-gr-remain">${row?.['gr_remain_quantity'] ? row?.['gr_remain_quantity'] : 0}</span>`;
                     }
                 },
                 {
@@ -902,13 +903,13 @@ class GRDataTableHandle {
                 {
                     targets: 4,
                     render: (data, type, row) => {
-                        return `<span class="table-row-gr-completed">${row?.['goods_receipt_info']?.['gr_completed_quantity'] ? row?.['goods_receipt_info']?.['gr_completed_quantity'] : 0}</span>`;
+                        return `<span class="table-row-gr-completed">${row?.['gr_completed_quantity'] ? row?.['gr_completed_quantity'] : 0}</span>`;
                     }
                 },
                 {
                     targets: 5,
                     render: (data, type, row) => {
-                        return `<span class="table-row-gr-remain">${row?.['goods_receipt_info']?.['gr_remain_quantity'] ? row?.['goods_receipt_info']?.['gr_remain_quantity'] : 0}</span>`;
+                        return `<span class="table-row-gr-remain">${row?.['gr_remain_quantity'] ? row?.['gr_remain_quantity'] : 0}</span>`;
                     }
                 },
                 {

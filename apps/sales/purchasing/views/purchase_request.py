@@ -2,7 +2,7 @@ from django.views import View
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from apps.shared import mask_view, ServerAPI, ApiURL, PermCheck
+from apps.shared import mask_view, ServerAPI, ApiURL, PermCheck, InputMappingProperties
 from apps.shared.msg.purchasing import PurchasingMsg
 
 
@@ -144,4 +144,7 @@ class PurchaseRequestUpdate(View):
         perm_check=PermCheck(url=ApiURL.PURCHASE_REQUEST_DETAIL, method='PUT', fill_key=['pk']),
     )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        input_mapping_properties = InputMappingProperties.PURCHASING_PURCHASE_REQUEST
+        return {
+                   'input_mapping_properties': input_mapping_properties, 'form_id': 'form-create-pr'
+               }, status.HTTP_200_OK

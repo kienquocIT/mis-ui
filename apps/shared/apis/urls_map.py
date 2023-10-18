@@ -377,11 +377,18 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     LEAVE_CONFIG = StringUrl('leave/config')
     LEAVE_CREATE = StringUrl('leave/leave-type/create')
     LEAVE_DETAIL = StringUrl('leave/leave-type/detail/{pk}')
+    LEAVE_REQUEST = StringUrl('leave/request')
+    LEAVE_REQUEST_DETAIL = StringUrl('leave/request/detail/{pk}')
 
     #  Working calendar config
     WORKING_CALENDAR_CONFIG = StringUrl('leave/working-calendar/config')
     WORKING_CALENDAR_YEAR = StringUrl('leave/working-calendar/year')
     WORKING_CALENDAR_HOLIDAY = StringUrl('leave/working-calendar/holiday')
+
+    # leave available
+    LEAVE_AVAILABLE = StringUrl('leave/available/list/{pk}')
+    LEAVE_AVAILABLE_UPDATE = StringUrl('leave/available/edit/{pk}')
+    LEAVE_AVAILABLE_HISTORY = StringUrl('leave/available/history/{pk}')
 
     #  Goods transfer
     GOODS_TRANSFER_LIST = StringUrl('inventory/goods-transfer/list')

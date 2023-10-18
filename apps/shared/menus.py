@@ -345,6 +345,22 @@ class MenusPurchase:
     )
 
 
+class MenuEOffice:
+    LEAVE = MenuCommon(
+        name='Leave', code='menu_leave', icon='<i class="fa-solid fa-arrow-right-from-bracket"></i>',
+        child=[
+            MenuCommon(
+                name='Leave request', code='menu_leave_request', view_name='LeaveRequestList',
+                icon='<i class="fa-solid fa-arrow-right-from-bracket"></i>'
+            ),
+            MenuCommon(
+                name='Available list', code='menu_leave_available', view_name='LeaveAvailableList',
+                icon='<i class="fa-regular fa-calendar-check"></i>',
+            )
+        ]
+    )
+
+
 # Space Setup
 class SpaceCommon:
     name: str  # 'Sale'
@@ -424,7 +440,9 @@ class SpaceItem:
             'E-office',
             'e-office',
             icon='<i class="fa-solid fa-laptop-file"></i>',
-            menus=[],
+            menus=[
+                MenuEOffice.LEAVE,
+            ],
         ),
         'company-system': SpaceCommon(
             'Company',
@@ -485,6 +503,7 @@ class SpaceGroup:
             cls.SPACE.data,
             cls.CORE_SETTINGS.data,
         ]
+
 
 # 1. GET space group all
 # SpaceGroup.get_space_all()

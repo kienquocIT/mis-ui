@@ -236,7 +236,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     # Goods transfer
     GOODS_TRANSFER_LIST_PAGE = BreadcrumbChildren(_('Goods Transfer'), 'GoodsTransferList')
 
-    #Goods issue
+    # Goods issue
     GOODS_ISSUE_LIST_PAGE = BreadcrumbChildren(_('Goods Issue'), 'GoodsIssueList')
 
     # E-Office
@@ -244,6 +244,17 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     LEAVE_CONFIG = BreadcrumbChildren(
         _('Leave Config'), 'LeaveConfigDetail'
     )
+    LEAVE_REQUEST = BreadcrumbChildren(
+        _('Leave request list'), 'LeaveRequestList'
+    )
+    LEAVE_AVAILABLE = BreadcrumbChildren(
+        _('Leave available list'), 'LeaveAvailableList'
+    )
+    LEAVE_REQUEST_CREATE = BreadcrumbChildren(
+        _('Create'), 'LeaveRequestCreate'
+    )
+    LEAVE_REQUEST_DETAIL = BreadcrumbChildren(_('Detail'))
+    LEAVE_REQUEST_EDIT = BreadcrumbChildren(_('Edit'))
     # Working calendar
     WORKING_CALENDAR_CONFIG = BreadcrumbChildren(_('Working calendar'), 'WorkingCalendarConfig')
 
@@ -629,6 +640,11 @@ class BreadcrumbView:
         BreadcrumbItem.HOME_PAGE,
         BreadcrumbItem.WORKING_CALENDAR_CONFIG
     ]
+    LEAVE_REQUEST = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.LEAVE_REQUEST]
+    LEAVE_REQUEST_CREATE = LEAVE_REQUEST + [BreadcrumbItem.LEAVE_REQUEST_CREATE]
+    LEAVE_REQUEST_DETAIL = LEAVE_REQUEST + [BreadcrumbItem.LEAVE_REQUEST_DETAIL]
+    LEAVE_REQUEST_EDIT = LEAVE_REQUEST + [BreadcrumbItem.LEAVE_REQUEST_EDIT]
+    LEAVE_AVAILABLE = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.LEAVE_AVAILABLE]
 
     # Purchase request config
     PURCHASE_REQUEST_CONFIG_PAGE = [BreadcrumbItem.PURCHASE_REQUEST_CONFIG_PAGE]

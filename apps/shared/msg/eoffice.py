@@ -14,3 +14,7 @@ class LeaveMsg:
     WORKING_HOLIDAY_CREATE = _("The holiday create successfully")
     WORKING_HOLIDAY_UPDATE = _("The holiday has been updated successfully")
     WORKING_HOLIDAY_DELETE = _("The holiday deleted")
+    LEAVE_REQUEST_CREATE = _("Leave request create successfully")
+    LEAVE_AVAILABLE_UPDATE = _("Leave available update successfully")
+    LEAVE_ACTION_INS = _("Increase")
+    LEAVE_ACTION_DES = _("Decrease")

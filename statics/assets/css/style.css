@@ -74331,7 +74331,7 @@ body.theme-dark .form-select {
   left: 0;
 }
 .input-affix-wrapper .input-suffix {
-  right: 0;
+  right: 0;top:5px;
 }
 .input-affix-wrapper .form-control:not(:first-child), .input-affix-wrapper .form-select:not(:first-child), .input-affix-wrapper .wizard > .content > .body input:not(:first-child), .wizard > .content > .body .input-affix-wrapper input:not(:first-child), .input-affix-wrapper .dd-handle:not(:first-child),
 .input-affix-wrapper .form-select:not(:first-child) {

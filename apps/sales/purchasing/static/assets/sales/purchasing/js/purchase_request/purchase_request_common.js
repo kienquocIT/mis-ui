@@ -141,6 +141,7 @@ class PurchaseRequestLoadPage {
                                     },
                                     'description': item.tax.title,
                                 },
+                                'uom': item?.['uom'],
                                 'quantity': item.quantity,
                                 'unit_price': item.unit_price,
                                 'sub_total_price': item.sub_total_price,
@@ -221,10 +222,10 @@ class PurchaseRequestAction {
                         return `<span class="inp-description"></span>`
                     }
                 }, {
-                    data: 'product',
+                    data: 'uom',
                     targets: 3,
                     render: (data, type, row) => {
-                        return `<p class="inp-uom" data-id="${data.uom.id}">${data.uom.title}</p>`
+                        return `<p class="inp-uom" data-id="${data?.['id']}">${data?.['title']}</p>`
                     }
                 }, {
                     data: 'quantity',
@@ -815,6 +816,7 @@ class PurchaseRequestEvent {
                         'uom': product.product.uom,
                         'description': product.product.description,
                     },
+                    'uom': product?.['uom'],
                     'quantity': num_request,
                     'unit_price': '',
                     'sub_total_price': '',

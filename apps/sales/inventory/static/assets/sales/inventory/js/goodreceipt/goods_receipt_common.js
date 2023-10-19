@@ -475,15 +475,6 @@ class GRLoadDataHandle {
         let valuePROrderRemain = parseFloat(GRDataTableHandle.tablePR[0]?.querySelector('.table-row-checkbox:checked')?.closest('tr')?.querySelector('.table-row-gr-remain').innerHTML);
         let valuePOOrderRemain = parseFloat(GRDataTableHandle.tablePOProduct[0]?.querySelector('.table-row-checkbox:checked')?.closest('tr')?.querySelector('.table-row-gr-remain').innerHTML);
         let dataRowPORaw = GRDataTableHandle.tablePOProduct[0]?.querySelector('.table-row-checkbox:checked')?.closest('tr')?.querySelector('.table-row-checkbox')?.getAttribute('data-row');
-        let ratioUOMFinal = 1;
-        if (dataRowPORaw) {
-            let dataRowPO = JSON.parse(dataRowPORaw);
-                let ratioUOMOrder = dataRowPO?.['uom_order_actual']?.['ratio'];
-                let ratioUOMRequest = dataRowPO?.['uom_order_request']?.['ratio'];
-                if (ratioUOMOrder && ratioUOMRequest) {
-                    ratioUOMFinal = ratioUOMOrder / ratioUOMRequest
-                }
-        }
         if (!GRDataTableHandle.tableLot[0].querySelector('.dataTables_empty')) {
             let valueWHNew = 0;
             for (let eleImport of GRDataTableHandle.tableLot[0].querySelectorAll('.table-row-import')) {
@@ -517,7 +508,35 @@ class GRLoadDataHandle {
         let valuePONew = 0;
         if (valuePROrderRemain) {
             for (let eleImport of GRDataTableHandle.tablePR[0].querySelectorAll('.table-row-import')) {
-                valuePONew += parseFloat(eleImport.innerHTML);
+                let prProductCheckedID = null;
+                let ratioUOMFinal = 1;
+                let dataRowPRRaw = eleImport?.closest('tr')?.querySelector('.table-row-checkbox')?.getAttribute('data-row');
+                if (dataRowPRRaw) {
+                    let dataRowPR = JSON.parse(dataRowPRRaw);
+                    prProductCheckedID = dataRowPR?.['purchase_request_product']?.['id'];
+                }
+                if (dataRowPORaw) {
+                    let dataRowPO = JSON.parse(dataRowPORaw);
+                    let ratioUOMOrder = dataRowPO?.['uom_order_actual']?.['ratio'];
+                    let ratioUOMRequest = dataRowPO?.['uom_order_request']?.['ratio'];
+                    if (dataRowPO?.['purchase_request_products_data']) {
+                        for (let PRProduct of dataRowPO?.['purchase_request_products_data']) {
+                            if (PRProduct?.['is_stock'] === false) {
+                                if (PRProduct?.['purchase_request_product']?.['id'] === prProductCheckedID) {
+                                    ratioUOMRequest = PRProduct?.['purchase_request_product']?.['uom']?.['ratio'];
+                                    break;
+                                }
+                            } else {
+                                ratioUOMRequest = PRProduct?.['uom_stock']?.['ratio'];
+                                break;
+                            }
+                        }
+                    }
+                    if (ratioUOMOrder && ratioUOMRequest) {
+                        ratioUOMFinal = ratioUOMOrder / ratioUOMRequest
+                    }
+                }
+                valuePONew += parseFloat(eleImport.innerHTML) / ratioUOMFinal;
             }
         } else {
             for (let eleImport of GRDataTableHandle.tableWH[0].querySelectorAll('.table-row-import')) {
@@ -525,7 +544,6 @@ class GRLoadDataHandle {
             }
         }
         if (valuePOOrderRemain >= 0) {
-            valuePONew = valuePONew / ratioUOMFinal;
             if (valuePONew <= valuePOOrderRemain) {
                 GRDataTableHandle.tablePOProduct[0].querySelector('.table-row-checkbox:checked').closest('tr').querySelector('.table-row-import').innerHTML = String(valuePONew);
             } else {

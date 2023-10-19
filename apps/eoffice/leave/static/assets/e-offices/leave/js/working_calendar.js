@@ -1,5 +1,6 @@
 $(document).ready(function () {
     // declare element
+    const $transElm = $('#trans-factory')
     const $formYear = $('#formYear')
     const $urlElm = $('#url-factory')
     const $formHld = $('#formHoliday')
@@ -46,6 +47,14 @@ $(document).ready(function () {
                         $('.btn-remove-row', row).off().on('click', () => HolidayHandle.delete(data.id, index))
                     },
                 }
+    let dataRangeConfig = {
+        singleDatePicker: true,
+        timePicker: false,
+        showDropdowns: true,
+        locale: {
+            format: 'DD/MM/YYYY'
+        }
+    }
 
     function deleteYear(elm=undefined){
         let $elm = elm ? elm : $('.wrap_years ul li button')
@@ -59,6 +68,7 @@ $(document).ready(function () {
                     .then((resp) => {
                             if (resp.status === 200){
                                 $.fn.notifyB({description: resp.data.message}, 'success')
+                                $(`${$(this).prev('a').attr('href')}`, $('.wrap_holidays')).remove()
                                 $(this).closest('li.year-item').remove()
                             }
                         },
@@ -106,12 +116,16 @@ $(document).ready(function () {
         }
 
         static create() {
-            $formHld.off().on('submit', function(e){
+            $formHld.on('submit', function(e){
                 e.preventDefault();
                 let _form = new SetupFormSubmit($formHld);
                 let dataBody = _form.dataForm
                 dataBody.year = $('.wrap_holidays .tab-pane.active').attr('data-year-id')
                 dataBody.holiday_date_to = moment(dataBody.holiday_date_to, 'DD/MM/YYYY').format('YYYY-MM-DD')
+                if (parseInt($('.wrap_years .year-item a.active span').text()) !== moment(dataBody.holiday_date_to).year()){
+                    $.fn.notifyB({description: $transElm.attr('data-holidays-error')}, 'failure')
+                    return false
+                }
                 $.fn.callAjax2({
                     'url': dataBody?.id ? $urlElm.attr('data-holiday-detail').format_url_with_uuid(
                         dataBody.id) : $urlElm.attr('data-holiday'),
@@ -150,7 +164,7 @@ $(document).ready(function () {
     // run delete year
     deleteYear()
     // handle event click btn add year
-    $formYear.off().on('submit', function (e) {
+    $formYear.on('submit', function (e) {
         e.preventDefault();
         let _form = new SetupFormSubmit($formYear);
         let dataBody = _form.dataForm
@@ -184,33 +198,33 @@ $(document).ready(function () {
                     }
                 },
                 (errs) => {
-                    $.fn.notifyB({description: errs.data.errors.detail}, 'failure')
+                    $.fn.notifyB({description: errs.data.errors}, 'failure')
                 }
             )
     });
-
-    // init daterange picker
-    $('.date-picker').daterangepicker({
-        minYear: 1901,
-        singleDatePicker: true,
-        timePicker: false,
-        showDropdowns: true,
-        locale: {
-            format: 'DD/MM/YYYY'
-        }
-    }).val(null).trigger('change');
 
     // init holidays all table
     let holidays = new HolidayHandle()
     holidays.init()
 
-    // reset form modal when form close
+    // reset form add year
     $('#modal_years').on('hidden.bs.modal', () => $('#inputConfigYear').val(''))
-    $modalH.on('hidden.bs.modal', function (){
+
+    // limit year when create holidays
+
+    $modalH.on('show.bs.modal', ()=>{
+        let crt_year = $('.wrap_years .year-item a.active span').text()
+        $('.date-picker').daterangepicker({
+            ...dataRangeConfig,
+            startDate: moment(crt_year, 'YYYY').startOf('year'),
+            endDate: moment(crt_year, 'YYYY').endOf('year')
+        }).val(null).trigger('change');
+    })
+        .on('hidden.bs.modal', function (){
+        $('.date-picker').daterangepicker('destroy')
         $('#formHoliday')[0].reset()
         $('[name="id"], [name="idx"]', $formHld).remove()
     })
-
 
     // click tab hidden btn
     $('a[href="#holidays"]').on('shown.bs.tab', () => $('button[form="working_calendar"]').hide())

@@ -43,7 +43,7 @@ $(document).ready(function(){
                 prev_year: parseInt(formData.prev_year)
             }
             formData = temp
-        }
+        }else formData.prev_year = 0
         $.fn.callAjax2({
             'url': url,
             'method': method,

@@ -341,6 +341,7 @@ class GRLoadDataHandle {
                                 }
                             } else {
                                 item['purchase_order_product_id'] = dataStore?.['id'];
+                                item['uom'] = dataStore?.['uom_order_actual'];
                             }
                             if (dataStore?.['warehouse_data']) {
                                 for (let dataPRWH of dataStore?.['warehouse_data']) {

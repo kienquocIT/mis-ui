@@ -70,6 +70,7 @@ $(document).ready(function () {
                         targets: 5,
                         width: "10%",
                         className: 'wrap-text',
+                        orderable: true,
                         render: (data) => {
                             return `<p>${data.split(' ')[0]}</p>`
                         }

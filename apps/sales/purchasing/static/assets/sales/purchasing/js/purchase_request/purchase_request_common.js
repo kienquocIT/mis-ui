@@ -471,7 +471,6 @@ class PurchaseRequestAction {
                         let data = $.fn.switcherResp(resp);
                         if (data && resp.data.hasOwnProperty('sale_order_list')) {
                             let sale_order_list = [];
-                            console.log(sale_order_id)
                             resp.data['sale_order_list'].map(function (item) {
                                 if (item?.['is_create_purchase_request'] || item.id === sale_order_id) {
                                     sale_order_list.push(item);
@@ -784,7 +783,7 @@ class PurchaseRequestAction {
 }
 
 class PurchaseRequestEvent {
-    load() {
+    load(param) {
         // event in model select product from sale order
         $(document).on('change', '.inp-check-so', function () {
             let table_so_product = $('#datatable-product-of-so').DataTable();
@@ -898,7 +897,11 @@ class PurchaseRequestEvent {
             let productSelectEle = last_row.find('.box-select-product');
             let taxSelectEle = last_row.find('.box-select-tax');
 
-            let list_selected = PurchaseRequestAction.getListPrProductSelected(productSelectEle);
+
+            let list_selected = [];
+            if (param !== 'stock') {
+                list_selected = PurchaseRequestAction.getListPrProductSelected(productSelectEle);
+            }
             PurchaseRequestLoadPage.loadProduct(productSelectEle, {}, list_selected);
             PurchaseRequestLoadPage.loadTax(taxSelectEle);
         })
@@ -916,7 +919,10 @@ class PurchaseRequestEvent {
             PurchaseRequestLoadPage.loadTax(ele_tax, product?.['purchase_information'].tax);
             PurchaseRequestLoadPage.loadUoM(ele_uom, product?.['purchase_information']?.['uom'], {'group': product?.['general_information'].uom_group.id});
             PurchaseRequestAction.loadProductDetail(ele_tr_current, product)
-            PurchaseRequestAction.delOptionProductSelected($(this));
+
+            if (param !== 'stock') {
+                PurchaseRequestAction.delOptionProductSelected($(this));
+            }
         })
     }
 }

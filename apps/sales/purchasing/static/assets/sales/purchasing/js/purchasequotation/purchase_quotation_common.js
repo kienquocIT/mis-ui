@@ -27,6 +27,15 @@ function loadSupplier(data) {
             url: FormCreatePQ.attr('data-url-account'),
             method: 'GET',
         },
+        callbackDataResp: function (resp, keyResp) {
+            let result = [];
+            for (let i = 0; i < resp.data[keyResp].length; i++) {
+                if (resp.data[keyResp][i].account_type.includes('Supplier')) {
+                    result.push(resp.data[keyResp][i]);
+                }
+            }
+            return result;
+        },
         data: (data ? data : null),
         keyResp: 'account_list',
         keyId: 'id',
@@ -62,9 +71,8 @@ function loadContact(data, contact_mapped) {
 function loadPQR(data) {
     if (data && data.is_param) {
         PQRSelectBox.attr('disabled', true);
-        let pqr_selected = data.id;
-        let url_loaded = FormCreatePQ.attr('data-url-pqr-detail').replace(0, pqr_selected);
-        let call_pqr_detail = $.fn.callAjax(url_loaded, 'GET').then((resp) => {
+        let url_loaded = FormCreatePQ.attr('data-url-pqr-detail').replace(0, data.id);
+        let call_pqr_detail_with_param = $.fn.callAjax(url_loaded, 'GET').then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('purchase_quotation_request_detail')) {
@@ -73,7 +81,7 @@ function loadPQR(data) {
                 return [];
             }
         })
-        Promise.all([call_pqr_detail]).then((results) => {
+        Promise.all([call_pqr_detail_with_param]).then((results) => {
             let product_list_get = results[0]?.['products_mapped']
             let table_body = tableLineDetail.find('tbody');
             table_body.html(``);
@@ -132,8 +140,7 @@ function loadPQR(data) {
         keyId: 'id',
         keyText: 'title',
     }).on('change', function () {
-        let pqr_selected = PQRSelectBox.val();
-        let url_loaded = FormCreatePQ.attr('data-url-pqr-detail').replace(0, pqr_selected);
+        let url_loaded = FormCreatePQ.attr('data-url-pqr-detail').replace(0, PQRSelectBox.val());
         let call_pqr_detail = $.fn.callAjax(url_loaded, 'GET').then((resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
@@ -375,7 +382,7 @@ function LoadDetailPQ() {
             $('#title').val(data_detail.title);
             loadSupplier(data_detail.supplier_mapped)
             loadContact(data_detail.contact_mapped)
-            if (Object.keys(data_detail.purchase_quotation_request_mapped).length != 0) {
+            if (Object.keys(data_detail.purchase_quotation_request_mapped).length !== 0) {
                 loadPQR(data_detail.purchase_quotation_request_mapped);
             }
             $('#expiration_date').val(data_detail.expiration_date.split(' ')[0]);
@@ -394,42 +401,42 @@ function LoadDetailPQ() {
                     {
                         data: 'index',
                         className: 'wrap-text text-center w-5',
-                        render: (data, type, row, meta) => {
+                        render: (data, type, row) => {
                             return row.index;
                         }
                     },
                     {
                         data: 'title',
                         className: 'wrap-text w-15',
-                        render: (data, type, row, meta) => {
+                        render: (data, type, row) => {
                             return `<span class="product-title" data-product-id="${row.product.id}">${row.product.title}</span>`;
                         }
                     },
                     {
                         data: 'description',
                         className: 'wrap-text w-10',
-                        render: (data, type, row, meta) => {
+                        render: (data, type, row) => {
                             return `<div data-simplebar class="h-100p bg-gray-light-4 border rounded-5 text-primary"><span class="product-description">${row.product.description}</span></div>`;
                         }
                     },
                     {
                         data: 'uom',
                         className: 'wrap-text w-15 text-center',
-                        render: (data, type, row, meta) => {
+                        render: (data, type, row) => {
                             return `<span class="product-uom" data-product-uom-id="${row.product.uom.id}">${row.product.uom.title}</span>`;
                         }
                     },
                     {
                         data: 'quantity',
                         className: 'wrap-text w-10 text-center',
-                        render: (data, type, row, meta) => {
+                        render: (data, type, row) => {
                             return `<span class="product-quantity">${row.quantity}</span>`;
                         }
                     },
                     {
                         data: 'pr_unit_price',
                         className: 'wrap-text w-15',
-                        render: (data, type, row, meta) => {
+                        render: (data, type, row) => {
                             return `<input readonly type="text" class="pr-unit-price-input form-control mask-money" data-return-type="number" value="${row.unit_price}">`;
                         }
                     },
@@ -447,7 +454,7 @@ function LoadDetailPQ() {
                     {
                         data: 'pr_subtotal_price',
                         className: 'wrap-text w-15 text-center',
-                        render: (data, type, row, meta) => {
+                        render: (data, type, row) => {
                             return `<span class="pr-subtotal-price-input mask-money text-primary" data-init-money="${row.subtotal_price}"></span>`;
                         }
                     },
@@ -480,6 +487,12 @@ class PQHandle {
         frm.dataForm['lead_time_from'] = $('#lead-time-from').val();
         frm.dataForm['lead_time_to'] = $('#lead-time-to').val();
         frm.dataForm['lead_time_type'] = $('#lead-time-type option:selected').val();
+
+        if (parseFloat(frm.dataForm['lead_time_from']) > parseFloat(frm.dataForm['lead_time_to'])) {
+            $.fn.notifyB({description: "Lead Time From can not greater than Lead Time To."}, 'failure');
+            return false;
+        }
+
         frm.dataForm['note'] = $('#note').val();
 
         frm.dataForm['products_selected'] = []

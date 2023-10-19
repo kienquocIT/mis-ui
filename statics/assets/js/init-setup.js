@@ -2515,7 +2515,7 @@ class DTBControl {
         //     "<'row mt-3'<'col-sm-12 col-md-6'i>>";
 
         // style 1
-        let domDTL = `<'d-flex dtb-header-toolbar ${headerToolbarClsName}'<'btnAddFilter'><'textFilter overflow-hidden'>f<'util-btn'>><'row manualFilter hidden'>` + 'rt' + `<'row' <'col-lg-6 col-md-12 d-flex cus-page-info'li><'col-lg-6 col-md-12'p>>`;
+        let domDTL = `<'d-flex dtb-header-toolbar ${headerToolbarClsName}'<'btnAddFilter'><'textFilter overflow-hidden'>f<'util-btn'>><'row manualFilter hidden'>` + 'rt' + `<'row tbl-footer-toolbar' <'col-lg-6 col-md-12 d-flex cus-page-info'li><'col-lg-6 col-md-12'p>>`;
 
         let utilsDom = {
             // "l": Đại diện cho thanh điều hướng (paging) của DataTable.

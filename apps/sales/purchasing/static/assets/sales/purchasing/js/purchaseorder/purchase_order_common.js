@@ -1067,6 +1067,7 @@ class PODataTableHandle {
             ajax: {
                 url: frm.dataUrl,
                 type: frm.dataMethod,
+                data: {'is_all_ordered': false, 'system_status': 3},
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
                     if (data && resp.data.hasOwnProperty('purchase_request_list')) {

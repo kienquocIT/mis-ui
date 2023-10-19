@@ -81,7 +81,7 @@ $(document).ready(function () {
                 const harshData = $(this).find('script').text().replaceAll("'", '"')
                 const data = JSON.parse(harshData) || []
                 const $table = $(this).find('table')
-                $table.DataTableDefault({..._table_config, ...{'data':data}})
+                $table.DataTableDefault({..._tableConfig, ...{'data':data}})
             })
         }
 
@@ -211,7 +211,12 @@ $(document).ready(function () {
         $('[name="id"], [name="idx"]', $formHld).remove()
     })
 
-    $('#working_calendar').off().on('submit', function(e){
+
+    // click tab hidden btn
+    $('a[href="#holidays"]').on('shown.bs.tab', () => $('button[form="working_calendar"]').hide())
+        .on('hidden.bs.tab', ()=> $('button[form="working_calendar"]').show())
+
+    $('#working_calendar').on('submit', function(e){
         e.preventDefault()
         let _form = new SetupFormSubmit($(this));
         let harshDataBody = _form.dataForm;

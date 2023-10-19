@@ -87,23 +87,23 @@ class pickupUtil {
         const warehouseID = $('#inputWareHouse').val();
         let currentWHList = this.getWarehouseList
         let checkResult = 0
-        if (dataProd && dataProd?.product_data?.id && dataProd?.uom_data?.id){
-            let prodKey = `${dataProd.product_data.id}.${dataProd.uom_data.id}`
+        if (dataProd && dataProd?.['product_data']?.['id'] && dataProd?.['uom_data']?.['id']){
+            let prodKey = `${dataProd?.['product_data']?.['id']}.${dataProd?.['uom_data']?.['id']}`
             if (currentWHList?.[prodKey] && currentWHList?.[prodKey]?.[warehouseID])
                 checkResult = currentWHList[prodKey][warehouseID]
             else{
                 let callData = await $.fn.callAjax(
                     $('#url-factory').attr('data-warehouse-stock'),
                     'GET',
-                    {'product_id': dataProd.product_data.id, 'uom_id': dataProd.uom_data.id}
+                    {'product_id': dataProd?.['product_data']?.['id'], 'uom_id': dataProd?.['uom_data']?.['id']}
                 )
                 if(callData.status === 200) {
                     let res = $.fn.switcherResp(callData);
-                    res = res.warehouse_stock;
+                    res = res?.['warehouse_stock'];
                     if (res.length){
                         let dataFormated = {}
                         for (const warehouse of res){
-                            const avai_stock = warehouse.product_amount - warehouse.picked_ready
+                            const avai_stock = warehouse?.['product_amount'] - warehouse?.['picked_ready']
                             dataFormated[warehouse.id] = avai_stock
                             if (warehouse.id === warehouseID) checkResult = avai_stock
                         }
@@ -152,11 +152,11 @@ $(async function () {
     ).then((resp) => {
             let data = $.fn.switcherResp(resp);
             // load sale order
-            pickupInit.setPicking = data.picking_detail
-            data = data.picking_detail
+            pickupInit.setPicking = data?.['picking_detail']
+            data = data?.['picking_detail']
             $x.fn.renderCodeBreadcrumb(data);
-            $('#inputSaleOrder').val(data?.sale_order_data?.code);
-            $('.title-code').text(data.code)
+            $('#inputSaleOrder').val(data?.['sale_order_data']?.['code']);
+            $('.title-code').text(data?.['code'])
             // state
             let state = data?.state;
             if (state !== undefined && Number.isInteger(state)) {
@@ -225,10 +225,10 @@ $(async function () {
         $.fn.callAjax(
             $('#url-factory').attr('data-warehouse-stock'),
             'GET',
-            {'product_id': prod.product_data.id, 'uom_id':prod.uom_data.id}
+            {'product_id': prod?.['product_data']?.['id'], 'uom_id':prod?.['uom_data']?.['id']}
         ).then((resp) => {
             let data = $.fn.switcherResp(resp);
-            const datas = data.warehouse_stock
+            const datas = data?.['warehouse_stock']
 
             let prodTotal = 0
             let prodName = ''
@@ -239,11 +239,11 @@ $(async function () {
             htmlContent += `<div class="mb-1"><h6><i>${$elmTrans.attr('data-warehouse')}</i></h6><p>${prodName}</p></div>`;
             htmlContent += `<div class="mb-1 d-flex justify-content-between">` +
                             `<div><h6>${$elmTrans.attr('data-stock')}</h6>${prodTotal}</div>` +
-                            `<div><h6>${$elmTrans.attr('data-store')}</h6>${prodTotal - WHInfo['original_info'].picked_ready}</div>` +
-                            `<div><h6>${$elmTrans.attr('data-picking-area')}</h6>${WHInfo['original_info'].picked_ready}</div>` +
+                            `<div><h6>${$elmTrans.attr('data-store')}</h6>${prodTotal - WHInfo['original_info']?.['picked_ready']}</div>` +
+                            `<div><h6>${$elmTrans.attr('data-picking-area')}</h6>${WHInfo['original_info']?.['picked_ready']}</div>` +
                 `</div>`;
-            htmlContent += `<div class="mb-1"><h6><i>UoM</i></h6><p>${WHInfo?.warehouse_uom?.title || '--'}</p></div>`;
-            const link = $('#url-factory').attr('data-product-detail').format_url_with_uuid(prod.product_data.id);
+            htmlContent += `<div class="mb-1"><h6><i>UoM</i></h6><p>${WHInfo?.['warehouse_uom']?.['title'] || '--'}</p></div>`;
+            const link = $('#url-factory').attr('data-product-detail').format_url_with_uuid(prod?.['product_data']?.['id']);
             htmlContent += `<div class="dropdown-divider"></div><div class="text-right">
                             <a href="${link}" target="_blank" class="link-primary underline_hover">
                                 <span>${$elmTrans.attr('data-view-detail')}</span>
@@ -266,40 +266,40 @@ $(async function () {
             data: pickupInit.getProdList,
             columns: [
                 {
-                    render: (data, type, row, meta) => {
+                    render: () => {
                         return ``;
                     }
                 },
                 {
-                    render: (data, type, row, meta) => {
+                    render: (data, type, row) => {
                         return `<div class="dropdown d-inline-block mr-2 text-cursor">
                                 <i class="fas fa-info-circle text-blue"
                                    data-bs-toggle="dropdown"
                                    data-dropdown-animation
                                    aria-haspopup="true"
-                                   aria-expanded="false" data-product-id="${row?.product_data?.id}"
+                                   aria-expanded="false" data-product-id="${row?.['product_data']?.['id']}"
                                    ></i>
                                 <div class="dropdown-menu w-280p mt-2"></div>
                             </div> ${row?.['product_data']?.['title']}`
                     }
                 },
                 {
-                    render: (data, type, row, meta) => {
+                    render: (data, type, row) => {
                         return row?.['uom_data']?.['title'];
                     }
                 },
                 {
-                    render: (data, type, row, meta) => {
+                    render: (data, type, row) => {
                         return row?.['pickup_quantity'];
                     }
                 },
                 {
-                    render: (data, type, row, meta) => {
+                    render: (data, type, row) => {
                         return row?.['picked_quantity_before'];
                     }
                 },
                 {
-                    render: (data, type, row, meta) => {
+                    render: (data, type, row) => {
                         return row?.['remaining_quantity'];
                     }
                 },
@@ -391,11 +391,11 @@ $(async function () {
         for (prod of pickupInit.getProdList) {
             if (prod.picked_quantity > 0)
                 prodSub.push({
-                    'product_id': prod.product_data.id,
+                    'product_id': prod?.['product_data']?.['id'],
                     'done': prod.picked_quantity,
                     'delivery_data': [{
                         'warehouse': _form.dataForm['warehouse_id'],
-                        'uom': prod.uom_data.id,
+                        'uom': prod?.['uom_data']?.['id'],
                         'stock': prod.picked_quantity,
                     }],
                     'order': prod.order,

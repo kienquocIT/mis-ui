@@ -98,6 +98,10 @@ class PurchaseRequestLoadPage {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 let detail = data?.['purchase_request'];
+                $x.fn.renderCodeBreadcrumb(detail);
+                $.fn.compareStatusShowPageAction(detail);
+                WFRTControl.setWFRuntimeID(detail?.['workflow_runtime_id']);
+
                 $('#data-detail-backup').text(JSON.stringify(detail));
                 $x.fn.renderCodeBreadcrumb(detail);
                 $('[name="title"]').val(detail.title);
@@ -622,7 +626,7 @@ class PurchaseRequestAction {
         } else {
             dataForm['sale_order'] = null;
         }
-        dataForm['system_status'] = 0;
+        dataForm['system_status'] = 1;
         dataForm['purchase_status'] = 0;
 
         if (dataForm['request_for'] !== 0) {

@@ -70,10 +70,10 @@ $(function () {
                         targets: 5,
                         render: (data, type, row) => {
                             let status_data = {
+                                "None": "badge badge-soft-light",
                                 "Wait": "badge badge-soft-light",
-                                "Partially received": "badge badge-soft-info",
+                                "Partially received": "badge badge-soft-warning",
                                 "Received": "badge badge-soft-success",
-                                "None": "badge badge-soft-danger",
                             }
                             return `<span class="${status_data[row?.['receipt_status']]}">${row?.['receipt_status']}</span>`;
                         }

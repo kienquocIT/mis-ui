@@ -33,7 +33,7 @@ $(document).ready(function () {
                     {
                         data: 'title',
                         targets: 1,
-                        width: "20%",
+                        width: "15%",
                         render: (data) => {
                             return `<p>${data}</p>`
                         }
@@ -50,21 +50,16 @@ $(document).ready(function () {
                     {
                         data: 'sale_order',
                         targets: 3,
-                        width: "10%",
+                        width: "15%",
                         className: 'wrap-text',
                         render: (data) => {
-                            if (data !== null) {
-                                return `<p>${data.title}</p>`
-                            }
-                            else{
-                                return `<p>${data}</p>`
-                            }
+                            return `<p>${data?.['title'] ? data?.['title'] : ''}</p>`;
                         }
                     },
                     {
                         data: 'supplier',
                         targets: 4,
-                        width: "10%",
+                        width: "20%",
                         className: 'wrap-text',
                         render: (data) => {
                             return `<p>${data.title}</p>`
@@ -75,6 +70,7 @@ $(document).ready(function () {
                         targets: 5,
                         width: "10%",
                         className: 'wrap-text',
+                        orderable: true,
                         render: (data) => {
                             return `<p>${data.split(' ')[0]}</p>`
                         }
@@ -82,19 +78,31 @@ $(document).ready(function () {
                     {
                         data: 'system_status',
                         targets: 6,
-                        width: "10%",
+                        width: "5%",
                         className: 'wrap-text',
                         render: (data) => {
-                            return `<p>${data}</p>`
+                            let status_data = {
+                                "Draft": "badge badge-soft-light",
+                                "Created": "badge badge-soft-primary",
+                                "Added": "badge badge-soft-info",
+                                "Finish": "badge badge-soft-success",
+                                "Cancel": "badge badge-soft-danger",
+                            }
+                            return `<span class="${status_data[data]}">${data}</span>`;
                         }
                     },
                     {
                         data: 'purchase_status',
                         targets: 7,
-                        width: "10%",
+                        width: "5%",
                         className: 'wrap-text',
                         render: (data) => {
-                            return `<p>${data}</p>`
+                            let status_data = {
+                                "Wait": "badge badge-soft-light",
+                                "Partially ordered": "badge badge-soft-warning",
+                                "Ordered": "badge badge-soft-success",
+                            }
+                            return `<span class="${status_data[data]}">${data}</span>`;
                         }
                     },
                     {

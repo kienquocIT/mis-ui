@@ -12,6 +12,7 @@ __all__ = [
     'TYPE_CUSTOMER',
     'ROLE_CUSTOMER',
     'PAID_BY',
+    'SYSTEM_STATUS'
 ]
 
 CUSTOMER_REVENUE = [
@@ -78,4 +79,9 @@ PAID_BY = {
     1: LeaveMsg.PAID_BY_ONE,
     2: LeaveMsg.PAID_BY_TWO,
     3: LeaveMsg.PAID_BY_THREE,
+}
+
+LEAVE_ACTION = {
+    1: LeaveMsg.LEAVE_ACTION_INS,
+    2: LeaveMsg.LEAVE_ACTION_DES,
 }

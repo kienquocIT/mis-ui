@@ -1,11 +1,9 @@
 import json
 
-from django.shortcuts import render
 from django.views import View
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from django.utils.translation import gettext_lazy as _
 
 from apps.shared import mask_view, ServerAPI, ApiURL, ConditionFormset, SaleMsg, InputMappingProperties
 
@@ -53,7 +51,8 @@ class SaleOrderCreate(View):
                 'employee_current': json.dumps(request.user.employee_current_data),
                 'data_copy_to': data_copy_to,
                 'opportunity': opportunity,
-            }
+            },
+            'list_from_app': 'saleorder.saleorder.create',
         }
         return result, status.HTTP_200_OK
 
@@ -135,7 +134,9 @@ class SaleOrderUpdate(View):
         input_mapping_properties = InputMappingProperties.SALE_ORDER_SALE_ORDER
         return {
                    'data': {'doc_id': pk},
-                   'input_mapping_properties': input_mapping_properties, 'form_id': 'frm_quotation_create'
+                   'input_mapping_properties': input_mapping_properties,
+                   'form_id': 'frm_quotation_create',
+                   'list_from_app': 'saleorder.saleorder.edit',
                }, status.HTTP_200_OK
 
 

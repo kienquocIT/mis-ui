@@ -624,7 +624,7 @@ class POLoadDataHandle {
                 }
             }
         }
-        if (PQIDList.length > 0) {
+        if (PQIDList.length > 0) { // Has PQ
             $.fn.callAjax2({
                     'url': eleQuotationProduct.attr('data-url'),
                     'method': eleQuotationProduct.attr('data-method'),
@@ -643,12 +643,14 @@ class POLoadDataHandle {
                                 if (!dataProduct.hasOwnProperty(result?.['product_id'])) {
                                     dataProduct[result?.['product_id']] = [{
                                         'purchase_quotation': result?.['purchase_quotation'],
-                                        'unit_price': result?.['unit_price']
+                                        'unit_price': result?.['unit_price'],
+                                        'uom': result?.['uom'],
                                     }]
                                 } else {
                                     dataProduct[result?.['product_id']].push({
                                         'purchase_quotation': result?.['purchase_quotation'],
-                                        'unit_price': result?.['unit_price']
+                                        'unit_price': result?.['unit_price'],
+                                        'uom': result?.['uom'],
                                     })
                                 }
                                 // setup data to load again product by check PQ
@@ -662,6 +664,7 @@ class POLoadDataHandle {
                             let $table = $('#datable-purchase-order-product-request');
                             $table.DataTable().rows().every(function () {
                                 let row = this.node();
+                                let eleUOM = row.querySelector('.table-row-uom-order-actual');
                                 let priceListData = dataProduct[row.querySelector('.table-row-item').getAttribute('data-product-id')];
                                 let elePrice = row.querySelector('.table-row-price');
                                 let elePriceList = row.querySelector('.table-row-price-list');
@@ -679,7 +682,7 @@ class POLoadDataHandle {
                                                                         ></span></div>
                                                                     </div>
                                                                 </div>`
-                                            if (price?.['purchase_quotation']?.['id'] === checked_id) {
+                                            if (price?.['purchase_quotation']?.['id'] === checked_id) { // If check PQ
                                                 priceAppend = `<div class="dropdown-item disabled text-black border border-grey mb-1 bg-light" id="${price?.['purchase_quotation']?.['id']}" data-value="${parseFloat(price?.['unit_price'])}">
                                                                     <div class="row">
                                                                         <div class="col-7"><span>${price?.['purchase_quotation']?.['title']}</span></div>
@@ -688,8 +691,12 @@ class POLoadDataHandle {
                                                                         ></span></div>
                                                                     </div>
                                                                 </div>`;
+                                                // Price && UOM must follow PQ checked
                                                 $(elePrice).attr('value', String(parseFloat(price?.['unit_price'])));
-
+                                                $(eleUOM).empty();
+                                                POLoadDataHandle.loadBoxUOM($(eleUOM), price?.['uom'], price?.['uom']?.['uom_group']?.['id']);
+                                                $(eleUOM).change();
+                                                $(eleUOM).attr('disabled', 'true');
                                             }
                                             $(elePriceList).append(priceAppend);
                                         }
@@ -704,6 +711,15 @@ class POLoadDataHandle {
                     }
                 }
             )
+        } else { // No PQ
+            let $table = $('#datable-purchase-order-product-request');
+            $table.DataTable().rows().every(function () {
+                let row = this.node();
+                let elePrice = row.querySelector('.table-row-price');
+                let elePriceList = row.querySelector('.table-row-price-list');
+                elePrice.removeAttribute('disabled');
+                $(elePriceList).empty();
+            });
         }
         return true
     };

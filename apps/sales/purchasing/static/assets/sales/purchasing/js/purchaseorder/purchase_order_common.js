@@ -640,22 +640,22 @@ class POLoadDataHandle {
                             let dataPQMapProducts = {};
                             for (let result of data.purchase_quotation_product_list) {
                                 // setup data to load price list
-                                if (!dataProduct.hasOwnProperty(result.product_id)) {
-                                    dataProduct[result.product_id] = [{
-                                        'purchase_quotation': result.purchase_quotation,
-                                        'unit_price': result.unit_price
+                                if (!dataProduct.hasOwnProperty(result?.['product_id'])) {
+                                    dataProduct[result?.['product_id']] = [{
+                                        'purchase_quotation': result?.['purchase_quotation'],
+                                        'unit_price': result?.['unit_price']
                                     }]
                                 } else {
-                                    dataProduct[result.product_id].push({
-                                        'purchase_quotation': result.purchase_quotation,
-                                        'unit_price': result.unit_price
+                                    dataProduct[result?.['product_id']].push({
+                                        'purchase_quotation': result?.['purchase_quotation'],
+                                        'unit_price': result?.['unit_price']
                                     })
                                 }
                                 // setup data to load again product by check PQ
-                                if (!dataPQMapProducts.hasOwnProperty(result.purchase_quotation.id)) {
-                                    dataPQMapProducts[result.purchase_quotation.id] = [result.product_id];
+                                if (!dataPQMapProducts.hasOwnProperty(result?.['purchase_quotation']?.['id'])) {
+                                    dataPQMapProducts[result?.['purchase_quotation']?.['id']] = [result?.['product_id']];
                                 } else {
-                                    dataPQMapProducts[result.purchase_quotation.id].push(result.product_id);
+                                    dataPQMapProducts[result?.['purchase_quotation']?.['id']].push(result?.['product_id']);
                                 }
                             }
                             eleQuotationProduct.val(JSON.stringify(dataPQMapProducts));
@@ -671,24 +671,24 @@ class POLoadDataHandle {
                                     if (elePriceList) {
                                         $(elePriceList).empty();
                                         for (let price of priceListData) {
-                                            let priceAppend = `<div class="dropdown-item disabled text-black border border-grey mb-1" id="${price.purchase_quotation.id}" data-value="${parseFloat(price.unit_price)}">
+                                            let priceAppend = `<div class="dropdown-item disabled text-black border border-grey mb-1" id="${price?.['purchase_quotation']?.['id']}" data-value="${parseFloat(price?.['unit_price'])}">
                                                                     <div class="row">
-                                                                        <div class="col-7"><span>${price.purchase_quotation.title}</span></div>
+                                                                        <div class="col-7"><span>${price?.['purchase_quotation']?.['title']}</span></div>
                                                                         <div class="col-5"><span
-                                                                            class="mask-money" data-init-money="${parseFloat(price.unit_price)}"
+                                                                            class="mask-money" data-init-money="${parseFloat(price?.['unit_price'])}"
                                                                         ></span></div>
                                                                     </div>
                                                                 </div>`
-                                            if (price.purchase_quotation.id === checked_id) {
-                                                priceAppend = `<div class="dropdown-item disabled text-black border border-grey mb-1 bg-light" id="${price.purchase_quotation.id}" data-value="${parseFloat(price.unit_price)}">
+                                            if (price?.['purchase_quotation']?.['id'] === checked_id) {
+                                                priceAppend = `<div class="dropdown-item disabled text-black border border-grey mb-1 bg-light" id="${price?.['purchase_quotation']?.['id']}" data-value="${parseFloat(price?.['unit_price'])}">
                                                                     <div class="row">
-                                                                        <div class="col-7"><span>${price.purchase_quotation.title}</span></div>
+                                                                        <div class="col-7"><span>${price?.['purchase_quotation']?.['title']}</span></div>
                                                                         <div class="col-5"><span
-                                                                            class="mask-money" data-init-money="${parseFloat(price.unit_price)}"
+                                                                            class="mask-money" data-init-money="${parseFloat(price?.['unit_price'])}"
                                                                         ></span></div>
                                                                     </div>
                                                                 </div>`;
-                                                $(elePrice).attr('value', String(parseFloat(price.unit_price)));
+                                                $(elePrice).attr('value', String(parseFloat(price?.['unit_price'])));
 
                                             }
                                             $(elePriceList).append(priceAppend);

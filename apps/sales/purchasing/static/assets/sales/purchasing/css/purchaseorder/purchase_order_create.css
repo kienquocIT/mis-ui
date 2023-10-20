@@ -1,29 +1,29 @@
-.inline-elements-badge {
-    display: inline-block;
-    background-color: #ebfcf5;
-    border-radius: 0.5rem;
-    border: 1px solid #00D67F;
-    padding: 6px;
-    font-size: 90%;
-    min-width: 25px;
-    text-align: center;
-    text-transform: capitalize;
+.div-input {
+    min-height: 38px;
+    margin-top: -0.4px
 }
 
-.inline-elements-badge input {
-    display: inline-block;
-    margin-left: unset;
+.input-group-wth-btn .input-affix-wrapper .input-suffix {
+    top: unset;
 }
 
-.custom-btn-remove {
-    padding: unset;
-    font-size: 13px;
-    color: #EB5757CC;
+.chip input {
+    position: unset;
+    height: 15px;
+    width: 15px;
+    left: unset;
+    top: unset;
+    opacity: unset;
+    cursor: unset;
 }
 
-.custom-checkbox {
-    margin-top: 5px;
+.chip .form-check {
+    display: unset;
+    min-height: unset;
+    margin-bottom: unset;
 }
+
+
 
 .modal-body-warning-add-product {
     text-align: center;

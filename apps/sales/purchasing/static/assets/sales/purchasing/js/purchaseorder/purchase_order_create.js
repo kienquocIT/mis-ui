@@ -140,9 +140,6 @@ $(function () {
                     }
                 }
             }
-            if (!elePurchaseQuotation[0].innerHTML) {
-
-            }
         });
 
         // Action on click button collapse

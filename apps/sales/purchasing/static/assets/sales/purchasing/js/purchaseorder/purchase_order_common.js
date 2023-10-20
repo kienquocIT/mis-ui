@@ -676,19 +676,25 @@ class POLoadDataHandle {
                                         for (let price of priceListData) {
                                             let priceAppend = `<div class="dropdown-item disabled text-black border border-grey mb-1" id="${price?.['purchase_quotation']?.['id']}" data-value="${parseFloat(price?.['unit_price'])}">
                                                                     <div class="row">
-                                                                        <div class="col-7"><span>${price?.['purchase_quotation']?.['title']}</span></div>
-                                                                        <div class="col-5"><span
-                                                                            class="mask-money" data-init-money="${parseFloat(price?.['unit_price'])}"
-                                                                        ></span></div>
+                                                                        <div class="col-12 col-md-4 col-lg-4"><span>${price?.['purchase_quotation']?.['title']}</span></div>
+                                                                        <div class="col-12 col-md-4 col-lg-4">
+                                                                            <span
+                                                                                class="mask-money" data-init-money="${parseFloat(price?.['unit_price'])}"
+                                                                            ></span>
+                                                                        </div>
+                                                                        <div class="col-12 col-md-4 col-lg-4"><span>${price?.['uom']?.['title']}</span></div>
                                                                     </div>
                                                                 </div>`
                                             if (price?.['purchase_quotation']?.['id'] === checked_id) { // If check PQ
                                                 priceAppend = `<div class="dropdown-item disabled text-black border border-grey mb-1 bg-light" id="${price?.['purchase_quotation']?.['id']}" data-value="${parseFloat(price?.['unit_price'])}">
                                                                     <div class="row">
-                                                                        <div class="col-7"><span>${price?.['purchase_quotation']?.['title']}</span></div>
-                                                                        <div class="col-5"><span
-                                                                            class="mask-money" data-init-money="${parseFloat(price?.['unit_price'])}"
-                                                                        ></span></div>
+                                                                        <div class="col-12 col-md-4 col-lg-4"><span>${price?.['purchase_quotation']?.['title']}</span></div>
+                                                                        <div class="col-12 col-md-4 col-lg-4">
+                                                                            <span
+                                                                                class="mask-money" data-init-money="${parseFloat(price?.['unit_price'])}"
+                                                                            ></span>
+                                                                        </div>
+                                                                        <div class="col-12 col-md-4 col-lg-4"><span>${price?.['uom']?.['title']}</span></div>
                                                                     </div>
                                                                 </div>`;
                                                 // Price && UOM must follow PQ checked
@@ -1511,7 +1517,7 @@ class PODataTableHandle {
                                                 value="${row?.['product_unit_price']}"
                                                 data-return-type="number"
                                             >
-                                            <span class="input-suffix table-row-btn-dropdown-price-list"><i class="fas fa-angle-down"></i></span>
+                                            <span class="input-suffix table-row-btn-dropdown-price-list p-0"><i class="fas fa-angle-down"></i></span>
                                         </span>
                                         </div>
                                         <div role="menu" class="dropdown-menu table-row-price-list w-460p">

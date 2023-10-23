@@ -25,72 +25,78 @@
     </button>
 {% endblock %}
 {% block pageContent %}
+    <script id="data-url-script"
+            data-pqr-type="0"
+            data-url-product="{% url 'ProductListAPI' %}"
+            data-url-tax="{% url 'TaxListAPI' %}"
+            data-url-uom="{% url 'UnitOfMeasureListAPI' %}"></script>
     <form id="form-create-purchase-quotation-request"
           data-url="{% url 'PurchaseQuotationRequestListAPI' %}"
           data-method="POST"
           data-url-redirect="{% url "PurchaseQuotationRequestList" %}">
         {% csrf_token %}
-        <div class="row mt-1 ml-1 mr-1 collapse multi-collapse show" id="collapse-area">
+        <div class="collapse multi-collapse show" id="collapse-area">
             <div class="row">
-                <div class="col-7 pr-5">
-                    <div class="row form-group">
-                        <label class="col-3 col-form-label required">{% trans "Name" %}</label>
-                        <div class="col-9">
-                            <input class="form-control" id="title">
-                        </div>
+                <div class="col-12 col-md-6 col-lg-6">
+                    <div class="form-group">
+                        <label class="form-label required">{% trans "Name" %}</label>
+                        <input class="form-control" id="title">
                     </div>
-                    <div class="row form-group">
-                        <label class="col-3 col-form-label required">{% trans "Purchase request" %}</label>
-                        <div class="col-9">
-                            <span class="input-affix-wrapper">
-                                <span class="input-prefix" id="dropdownCreator">
-                                    <a href="#" data-bs-toggle="modal" id="btn-show-modal" data-bs-target="#create_purchase_quotation_request_modal">
-                                        <i class="fa-solid fa-ellipsis text-primary"></i>
-                                    </a>
-                                </span>
-                                <select class="form-select select2 select-multiple"
-                                        multiple
-                                        type="button"
-                                        data-placeholder="Select Purchase request"
-                                        id="purchase-request-select-box">
-                                </select>
+                    <div class="form-group">
+                        <label class="form-label required">{% trans "Purchase request" %}</label>
+                        <span class="input-affix-wrapper">
+                            <span class="input-prefix" id="dropdownCreator">
+                                <a href="#" data-bs-toggle="modal" id="btn-show-modal" data-bs-target="#create_purchase_quotation_request_modal">
+                                    <i class="fa-solid fa-ellipsis text-primary"></i>
+                                </a>
                             </span>
-                        </div>
-                    </div>
-                    <div class="row form-group">
-                        <label class="col-3 col-form-label required">{% trans "Delivery date" %}</label>
-                        <div class="col-9">
-                            <input class="form-control" id="delivery_date">
-                        </div>
+                            <select class="form-select select2 select-multiple"
+                                    multiple
+                                    type="button"
+                                    data-placeholder="Select Purchase request"
+                                    id="purchase-request-select-box">
+                            </select>
+                        </span>
                     </div>
                 </div>
-                <div class="col-5">
-                    <div class="row form-group">
-                        <label class="col-4 col-form-label required">{% trans "Status" %}</label>
-                        <div class="col-8">
-                            <span class="badge badge-success w-30" id="status">{% trans 'Open' %}</span>
+
+                <div class="col-12 col-md-6 col-lg-6">
+                    <div class="row">
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label required">{% trans "Status" %}</label>
+                                <input readonly class="form-control" id="status" value="Open">
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label required">{% trans "Response status" %}</label>
+                                <input readonly class="form-control" id="response_status" value="Wait">
+                            </div>
                         </div>
                     </div>
-                    <div class="row form-group">
-                        <label class="col-4 col-form-label required">{% trans "Response status" %}</label>
-                        <div class="col-8">
-                            <span class="badge badge-primary w-30" id="response_status">{% trans 'Wait' %}</span>
+                    <div class="row">
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label required">{% trans "Delivery date" %}</label>
+                                <input class="form-control" id="delivery_date">
+                            </div>
                         </div>
-                    </div>
-                    <div class="row form-group">
-                        <label class="col-4 col-form-label">{% trans "Note" %}</label>
-                        <div class="col-8">
-                            <textarea style="height: 38px" class="form-control" id="note"></textarea>
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label">{% trans "Note" %}</label>
+                                <textarea style="height: 38px" class="form-control" id="note"></textarea>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="row mb-3">
-            <a class="btn btn-flush-secondary flush-soft-hover" data-bs-toggle="collapse" data-bs-target="#collapse-area" aria-expanded="false" aria-controls="collapse-area">
-                <i class="bi bi-chevron-bar-expand text-secondary"></i>
-            </a>
-        </div>
+        <button type="button" data-bs-toggle="collapse" data-bs-target="#collapse-area" aria-expanded="false" aria-controls="collapse-area" class="w-100 btn btn-animated btn-icon btn-xs">
+            <span class="icon">
+                <i class="fas fa-angle-double-up text-primary"></i>
+            </span>
+        </button>
         <div class="row">
             <div class="col-12">
                 <ul class="nav nav-tabs nav-icon nav-light">
@@ -107,8 +113,6 @@
                             <div class="tab-pane fade show active" id="tab_line_detail">
                                 <table class="table nowrap w-100"
                                        id="table-purchase-quotation-request-products-selected"
-                                       data-url-tax="{% url 'TaxListAPI' %}"
-                                       data-url-uom="{% url 'UnitOfMeasureListAPI' %}"
                                 >
                                     <thead>
                                     <th></th>
@@ -132,35 +136,32 @@
                                     </th>
                                     <th class="required">{% trans "Subtotal Price" %}</th>
                                     </thead>
+                                    <tbody></tbody>
                                 </table>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-8"></div>
-                        <div class="col-4">
-                            <div class="row">
-                                <div class="col-12">
-                                    <div class="card card-refresh">
-                                        <div class="refresh-container">
-                                            <div class="loader-pendulums"></div>
+                        <div class="col-12 col-md-6 col-lg-8"></div>
+                        <div class="col-12 col-md-6 col-lg-4">
+                            <div class="card card-refresh">
+                                <div class="refresh-container">
+                                    <div class="loader-pendulums"></div>
+                                </div>
+                                <div id="content-card" class="collapse show">
+                                    <div class="card-body text-primary">
+                                        <div class="row mb-3">
+                                            <div class="col-4">{% trans "Pretax price" %}</div>
+                                            <span class="col-8 text-right mask-money" id="pretax-value">0</span>
                                         </div>
-                                        <div id="content-card" class="collapse show">
-                                            <div class="card-body text-primary">
-                                                <div class="row mb-3">
-                                                    <div class="col-4">{% trans "Pretax price" %}</div>
-                                                    <span class="col-8 text-right mask-money" id="pretax-value">0</span>
-                                                </div>
-                                                <div class="row mb-3">
-                                                    <div class="col-4">{% trans "Taxes" %}</div>
-                                                    <span class="col-8 text-right mask-money" id="taxes-value">0</span>
-                                                </div>
-                                                <div class="dropdown-divider mb-3"></div>
-                                                <div class="row mb-3" style="font-weight: bold">
-                                                    <div class="col-4">{% trans "Total" %}</div>
-                                                    <span class="col-8 text-right mask-money" id="total-value">0</span>
-                                                </div>
-                                            </div>
+                                        <div class="row mb-3">
+                                            <div class="col-4">{% trans "Taxes" %}</div>
+                                            <span class="col-8 text-right mask-money" id="taxes-value">0</span>
+                                        </div>
+                                        <div class="dropdown-divider mb-3"></div>
+                                        <div class="row mb-3" style="font-weight: bold">
+                                            <div class="col-4">{% trans "Total" %}</div>
+                                            <span class="col-8 text-right mask-money" id="total-value">0</span>
                                         </div>
                                     </div>
                                 </div>

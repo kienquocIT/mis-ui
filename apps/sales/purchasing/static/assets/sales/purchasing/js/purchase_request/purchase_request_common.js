@@ -15,32 +15,26 @@ $(document).on('click', '.del-row', function () {
     table.row(row_index_delete).remove().draw();
 })
 
-function deleteSameRow(product_id, product_uom_id, row_index) {
-    tableProductForOther.find('tbody tr').each(function () {
-        let row = $(this);
-        let row_number = row.find('td:first-child').text();
-        let this_product_id = row.find('.box-select-product').val();
-        let this_product_uom_id = row.find('.box-select-uom').val();
-        if (this_product_id === product_id && this_product_uom_id === product_uom_id && row_number !== row_index) {
-            let table = tableProductForOther.DataTable();
-            table.row(parseInt(row_number) - 1).remove().draw();
-        }
-    })
+function deleteSameRow(table, row) {
+    table = tableProductForOther.DataTable();
+    table.row(parseInt(row.find('td:first-child').text()) - 1).remove().draw();
 }
 
-function checkMergeRow(row_index, product_id, product_uom_id, old_quantity) {
-    $('#tab-content-purchase-request-product').find('table tbody tr').each(function () {
-        let row = $(this);
-        let this_row_index = row.find('td:first-child').text();
-        let this_product_id = row.find('.box-select-product').val();
-        let this_product_uom_id = row.find('.box-select-uom').val();
-        let this_product_quantity = row.find('.inp-quantity').val();
-        if (this_product_id === product_id && this_product_uom_id === product_uom_id && this_row_index !== row_index && this_product_quantity !== '') {
-            if (row.find('.inp-quantity').val() !== '' && old_quantity !== '') {
-                row.find('.inp-quantity').val(parseFloat(row.find('.inp-quantity').val()) + parseFloat(old_quantity));
+function checkMergeRow(row) {
+    let this_product_id = row.find('.box-select-product').val();
+    let this_product_uom_id = row.find('.box-select-uom').val();
+    let this_product_quantity = row.find('.inp-quantity').val();
+    tableProductForOther.find('tr').each(function () {
+        let product_id = $(this).find('.box-select-product').val();
+        let product_uom_id = $(this).find('.box-select-uom').val();
+
+        if ($(this).find('td:first-child').text() !== row.find('td:first-child').text() && this_product_id === product_id && this_product_uom_id === product_uom_id && this_product_quantity !== '') {
+            if ($(this).find('.inp-quantity').val() !== '') {
+                row.find('.inp-quantity').val(parseFloat($(this).find('.inp-quantity').val()) + parseFloat(this_product_quantity));
                 row.find('.inp-unit-price').attr('value', 0);
                 row.find('.box-select-tax option').remove();
-                deleteSameRow(this_product_id, this_product_uom_id, this_row_index);
+                row.find('.pr-subtotal-price-input').attr('data-init-money', '0');
+                deleteSameRow(tableProductForOther, $(this));
                 if (row.find('.inp-unit-price').val() !== '') {
                     PurchaseRequestAction.loadPriceSubProduct(row);
                     PurchaseRequestAction.loadFinalPrice($(this).closest('table'));
@@ -908,12 +902,7 @@ class PurchaseRequestEvent {
         $(document).on('change', '.inp-quantity', function () {
             let ele_tr_current = $(this).closest('tr');
 
-            checkMergeRow(
-                ele_tr_current.find('td:first-child').text(),
-                ele_tr_current.find('.box-select-product').val(),
-                ele_tr_current.find('.box-select-uom').val(),
-                ele_tr_current.find('.inp-quantity').val()
-            )
+            checkMergeRow(ele_tr_current)
 
             if (ele_tr_current.find('.inp-unit-price').val() !== '') {
                 PurchaseRequestAction.loadPriceSubProduct(ele_tr_current);
@@ -957,12 +946,7 @@ class PurchaseRequestEvent {
 
         $(document).on('change', '.box-select-uom', function () {
             let ele_tr_current = $(this).closest('tr');
-            checkMergeRow(
-                ele_tr_current.find('td:first-child').text(),
-                ele_tr_current.find('.box-select-product').val(),
-                ele_tr_current.find('.box-select-uom').val(),
-                ele_tr_current.find('.inp-quantity').val()
-            )
+            checkMergeRow(ele_tr_current)
         })
 
         $(document).on('change', '.box-select-product', function () {
@@ -971,12 +955,7 @@ class PurchaseRequestEvent {
             let ele_uom = ele_tr_current.find('.box-select-uom');
             let ele_tax = ele_tr_current.find('.box-select-tax');
 
-            checkMergeRow(
-                ele_tr_current.find('td:first-child').text(),
-                ele_tr_current.find('.box-select-product').val(),
-                ele_tr_current.find('.box-select-uom').val(),
-                ele_tr_current.find('.inp-quantity').val()
-            )
+            checkMergeRow(ele_tr_current)
 
             ele_uom.empty();
             ele_tax.empty();

@@ -115,6 +115,29 @@ class OpportunityDetailAPI(APIView):
         return resp.auto_return(key_success='opportunity')
 
 
+class OpportunityDetailGetByCreateFromOppAPI(APIView):
+    @classmethod
+    def callback_success(cls, result):
+        if result and isinstance(result, dict) and 'id'in result:
+            return {
+                'opportunity_list': [
+                    {
+                        **result,
+                        'selected': True,
+                    }
+                ]
+            }
+        return {'opportunity_list': {}}
+
+    @mask_view(
+        is_api=True,
+        auth_require=True
+    )
+    def get(self, request, pk, *arg, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_DETAIL_GET_CREATE_FROM_OPP.fill_key(pk=pk)).get()
+        return resp.auto_return(key_success='opportunity', callback_success=self.callback_success)
+
+
 class MemberOfOpportunityDetailAddAPI(APIView):
     @mask_view(is_api=True, auth_require=True)
     def post(self, request, *args, pk_opp, **kwargs):

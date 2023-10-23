@@ -341,6 +341,7 @@ class GRLoadDataHandle {
                                 }
                             } else {
                                 item['purchase_order_product_id'] = dataStore?.['id'];
+                                item['uom'] = dataStore?.['uom_order_actual'];
                             }
                             if (dataStore?.['warehouse_data']) {
                                 for (let dataPRWH of dataStore?.['warehouse_data']) {
@@ -566,8 +567,10 @@ class GRLoadDataHandle {
             let link = "";
             let linkDetail = elePR.attr('data-link-detail');
             link = linkDetail.format_url_with_uuid(prID);
-            eleAppend += `<div class="inline-elements-badge mr-2 mb-1">
-                                <a href="${link}" target="_blank" class="link-primary underline_hover"><span>${prCode}</span></a>
+            eleAppend += `<div class="chip chip-outline-primary bg-green-light-5 mr-1 mb-1">
+                                <span>
+                                    <a href="${link}" target="_blank" class="link-primary underline_hover"><span class="chip-text">${prCode}</span></a>
+                                </span>
                             </div>`;
             purchase_requests_data.push(prID);
         }
@@ -708,16 +711,6 @@ class GRLoadDataHandle {
         if (formSubmit.attr('data-method') === 'PUT') {
             $('#good-receipt-date-received').val(moment(data?.['date_received']).format('DD/MM/YYYY hh:mm A'));
         }
-        let eleStatus = $('#goods-receipt-status');
-        let status_data = {
-            "Draft": "badge badge-soft-light",
-            "Created": "badge badge-soft-primary",
-            "Added": "badge badge-soft-info",
-            "Finish": "badge badge-soft-success",
-            "Cancel": "badge badge-soft-danger",
-        }
-        // eleStatus[0].className = status_data[data?.['system_status']];
-        // eleStatus[0].innerHTML = data?.['system_status'];
         if (['Added', 'Finish'].includes(data?.['system_status'])) {
             let $btn = $('#btn-enable-edit');
             if ($btn.length) {

@@ -75,92 +75,92 @@
                         </tr>
                         <tr>
                             <td><input type="checkbox" class="form-check-input position-static" name="mon_work"
-                                       {% if data.wc_cfg.working_days.mon.work %}checked{% endif %}></td>
+                                       {% if data.wc_cfg.working_days.1.work %}checked{% endif %}></td>
                             <td><input type="checkbox" class="form-check-input position-static" name="tue_work"
-                                       {% if data.wc_cfg.working_days.tue.work %}checked{% endif %}></td>
+                                       {% if data.wc_cfg.working_days.2.work %}checked{% endif %}></td>
                             <td><input type="checkbox" class="form-check-input position-static" name="wed_work"
-                                       {% if data.wc_cfg.working_days.wed.work %}checked{% endif %}></td>
+                                       {% if data.wc_cfg.working_days.3.work %}checked{% endif %}></td>
                             <td><input type="checkbox" class="form-check-input position-static" name="thu_work"
-                                       {% if data.wc_cfg.working_days.thu.work %}checked{% endif %}></td>
+                                       {% if data.wc_cfg.working_days.4.work %}checked{% endif %}></td>
                             <td><input type="checkbox" class="form-check-input position-static" name="fri_work"
-                                       {% if data.wc_cfg.working_days.fri.work %}checked{% endif %}></td>
+                                       {% if data.wc_cfg.working_days.5.work %}checked{% endif %}></td>
                             <td><input type="checkbox" class="form-check-input position-static" name="sat_work"
-                                       {% if data.wc_cfg.working_days.sat.work %}checked{% endif %}></td>
+                                       {% if data.wc_cfg.working_days.6.work %}checked{% endif %}></td>
                             <td><input type="checkbox" class="form-check-input position-static" name="sun_work"
-                                       {% if data.wc_cfg.working_days.sun.work %}checked{% endif %}></td>
+                                       {% if data.wc_cfg.working_days.0.work %}checked{% endif %}></td>
                         </tr>
                         <tr>
                             <td rowspan="2">{% trans 'Morning' %}</td>
                             <td>
                                 <div class="mon mor from input-timepicker-ui">
-                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='mon_mor_from' select_val=data.wc_cfg.working_days.mon.mor.from %}
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='mon_mor_from' select_val=data.wc_cfg.working_days.1.mor.from %}
                                 </div>
                             </td>
                             <td>
                                 <div class="tue mor from input-timepicker-ui">
-                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='tue_mor_from' select_val=data.wc_cfg.working_days.tue.mor.from %}
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='tue_mor_from' select_val=data.wc_cfg.working_days.2.mor.from %}
                                 </div>
                             </td>
                             <td>
                                 <div class="wed mor from input-timepicker-ui">
-                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='wed_mor_from' select_val=data.wc_cfg.working_days.wed.mor.from %}
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='wed_mor_from' select_val=data.wc_cfg.working_days.3.mor.from %}
                                 </div>
                             </td>
                             <td>
                                 <div class="thu mor from input-timepicker-ui">
-                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='thu_mor_from' select_val=data.wc_cfg.working_days.thu.mor.from %}
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='thu_mor_from' select_val=data.wc_cfg.working_days.4.mor.from %}
                                 </div>
                             </td>
                             <td>
                                 <div class="fri mor from input-timepicker-ui">
-                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='fri_mor_from' select_val=data.wc_cfg.working_days.fri.mor.from %}
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='fri_mor_from' select_val=data.wc_cfg.working_days.5.mor.from %}
                                 </div>
                             </td>
                             <td>
                                 <div class="sat mor from input-timepicker-ui">
-                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='sat_mor_from' select_val=data.wc_cfg.working_days.sat.mor.from %}
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='sat_mor_from' select_val=data.wc_cfg.working_days.6.mor.from %}
                                 </div>
                             </td>
                             <td>
                                 <div class="sun mor from input-timepicker-ui">
-                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='sun_mor_from' select_val=data.wc_cfg.working_days.sun.mor.from %}
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='sun_mor_from' select_val=data.wc_cfg.working_days.0.mor.from %}
                                 </div>
                             </td>
                         </tr>
                         <tr>
                             <td>
                                 <div class="mon mor to input-timepicker-ui">
-                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='mon_mor_to' select_val=data.wc_cfg.working_days.mon.mor.to %}
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='mon_mor_to' select_val=data.wc_cfg.working_days.1.mor.to %}
                                 </div>
                             </td>
                             <td>
                                 <div class="tue mor to input-timepicker-ui">
-                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='tue_mor_to' select_val=data.wc_cfg.working_days.tue.mor.to %}
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='tue_mor_to' select_val=data.wc_cfg.working_days.2.mor.to %}
                                 </div>
                             </td>
                             <td>
                                 <div class="wed mor to input-timepicker-ui">
-                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='wed_mor_to' select_val=data.wc_cfg.working_days.wed.mor.to %}
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='wed_mor_to' select_val=data.wc_cfg.working_days.3.mor.to %}
                                 </div>
                             </td>
                             <td>
                                 <div class="thu mor to input-timepicker-ui">
-                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='thu_mor_to' select_val=data.wc_cfg.working_days.thu.mor.to %}
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='thu_mor_to' select_val=data.wc_cfg.working_days.4.mor.to %}
                                 </div>
                             </td>
                             <td>
                                 <div class="fri mor to input-timepicker-ui">
-                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='fri_mor_to' select_val=data.wc_cfg.working_days.fri.mor.to %}
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='fri_mor_to' select_val=data.wc_cfg.working_days.5.mor.to %}
                                 </div>
                             </td>
                             <td>
                                 <div class="sat mor to input-timepicker-ui">
-                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='sat_mor_to' select_val=data.wc_cfg.working_days.sat.mor.to %}
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='sat_mor_to' select_val=data.wc_cfg.working_days.6.mor.to %}
                                 </div>
                             </td>
                             <td>
                                 <div class="sun mor to input-timepicker-ui">
-                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='sun_mor_to' select_val=data.wc_cfg.working_days.sun.mor.to %}
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='sun_mor_to' select_val=data.wc_cfg.working_days.0.mor.to %}
                                 </div>
                             </td>
                         </tr>
@@ -168,74 +168,74 @@
                             <td rowspan="2">{% trans 'Afternoon' %}</td>
                             <td>
                                 <div class="mon aft from input-timepicker-ui">
-                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='mon_aft_from' select_val=data.wc_cfg.working_days.mon.aft.from %}
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='mon_aft_from' select_val=data.wc_cfg.working_days.1.aft.from %}
                                 </div>
                             </td>
                             <td>
                                 <div class="tue aft from input-timepicker-ui">
-                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='tue_aft_from' select_val=data.wc_cfg.working_days.tue.aft.from %}
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='tue_aft_from' select_val=data.wc_cfg.working_days.2.aft.from %}
                                 </div>
                             </td>
                             <td>
                                 <div class="wed aft from input-timepicker-ui">
-                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='wed_aft_from' select_val=data.wc_cfg.working_days.wed.aft.from %}
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='wed_aft_from' select_val=data.wc_cfg.working_days.3.aft.from %}
                                 </div>
                             </td>
                             <td>
                                 <div class="thu aft from input-timepicker-ui">
-                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='thu_aft_from' select_val=data.wc_cfg.working_days.thu.aft.from %}
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='thu_aft_from' select_val=data.wc_cfg.working_days.4.aft.from %}
                                 </div>
                             </td>
                             <td>
                                 <div class="fri aft from input-timepicker-ui">
-                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='fri_aft_from' select_val=data.wc_cfg.working_days.fri.aft.from %}
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='fri_aft_from' select_val=data.wc_cfg.working_days.5.aft.from %}
                                 </div>
                             </td>
                             <td>
                                 <div class="sat aft from input-timepicker-ui">
-                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='sat_aft_from' select_val=data.wc_cfg.working_days.sat.aft.from %}
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='sat_aft_from' select_val=data.wc_cfg.working_days.6.aft.from %}
                                 </div>
                             </td>
                             <td>
                                 <div class="sun aft from input-timepicker-ui">
-                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='sun_aft_from' select_val=data.wc_cfg.working_days.sun.aft.from %}
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='sun_aft_from' select_val=data.wc_cfg.working_days.0.aft.from %}
                                 </div>
                             </td>
                         </tr>
                         <tr>
                             <td>
                                 <div class="mon aft to input-timepicker-ui">
-                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='mon_aft_to' select_val=data.wc_cfg.working_days.mon.aft.to %}
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='mon_aft_to' select_val=data.wc_cfg.working_days.1.aft.to %}
                                 </div>
                             </td>
                             <td>
                                 <div class="tue aft to input-timepicker-ui">
-                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='tue_aft_to' select_val=data.wc_cfg.working_days.tue.aft.to %}
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='tue_aft_to' select_val=data.wc_cfg.working_days.2.aft.to %}
                                 </div>
                             </td>
                             <td>
                                 <div class="wed aft to input-timepicker-ui">
-                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='wed_aft_to' select_val=data.wc_cfg.working_days.wed.aft.to %}
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='wed_aft_to' select_val=data.wc_cfg.working_days.3.aft.to %}
                                 </div>
                             </td>
                             <td>
                                 <div class="thu aft to input-timepicker-ui">
-                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='thu_aft_to' select_val=data.wc_cfg.working_days.thu.aft.to %}
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='thu_aft_to' select_val=data.wc_cfg.working_days.4.aft.to %}
                                 </div>
                             </td>
                             <td>
                                 <div class="fri aft to input-timepicker-ui">
-                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='fri_aft_to' select_val=data.wc_cfg.working_days.fri.aft.to %}
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='fri_aft_to' select_val=data.wc_cfg.working_days.5.aft.to %}
                                 </div>
                             </td>
                             <td>
                                 <div class="sat aft to input-timepicker-ui">
-                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='sat_aft_to' select_val=data.wc_cfg.working_days.sat.aft.to %}
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='sat_aft_to' select_val=data.wc_cfg.working_days.6.aft.to %}
                                 </div>
                             </td>
                             <td>
                                 <div class="sun aft to input-timepicker-ui">
-                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='sun_aft_to' select_val=data.wc_cfg.working_days.sun.aft.to %}
+                                    {% include 'eoffice/leave/extends/select_choice_time.html' with class_name='sun_aft_to' select_val=data.wc_cfg.working_days.0.aft.to %}
                                 </div>
                             </td>
                         </tr>
@@ -244,7 +244,7 @@
                 </form>
                 </div>
                 <div class="tab-pane fade" id="holidays">
-                    <div class="row vh-100 mt-4 border">
+                    <div class="row mt-4 border">
                         <div class="col-xs-12 col-md-2 border-right">
                             <div class="row">
                                 <h6 class="h6 bg-blue-light-5 pt-2 pb-2">{% trans 'Year' %}</h6>
@@ -279,7 +279,7 @@
                                 </button>
                             </a>
                         </div>
-                        <div class="col-xs-12 col-md-10">
+                        <div class="col-xs-12 col-md-10 mb-5">
                             <div class="row">
                                 <h6 class="h6 bg-blue-light-5 pt-2 pb-2">{% trans 'Holidays' %}</h6>
                             </div>
@@ -406,8 +406,8 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="inputRemark" class="form-label">{% trans 'Description' %}</label>
-                            <textarea name="remark" id="inputRemark" class="form-control" cols="3"></textarea>
+                            <label for="inputRemark" class="form-label required">{% trans 'Description' %}</label>
+                            <textarea name="remark" id="inputRemark" class="form-control" cols="3" required></textarea>
                         </div>
                     </form>
                 </div>

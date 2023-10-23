@@ -40,7 +40,7 @@ $(document).ready(function () {
                             idx.val(index)
                             $modalH.find('form').append(id).append(idx)
                             $('#inputHolidayDate', $modalH).val(moment(data.holiday_date_to, 'YYYY-MM-DD')
-                                .format('DD/MM/YYYY'))
+                                .format('DD/MM/YYYY')).trigger('change')
                             $('#inputRemark', $modalH).val(data.remark)
                             $modalH.modal('show')
                         })
@@ -211,24 +211,18 @@ $(document).ready(function () {
     $('#modal_years').on('hidden.bs.modal', () => $('#inputConfigYear').val(''))
 
     // limit year when create holidays
-
-    $modalH.on('show.bs.modal', ()=>{
-        let crt_year = $('.wrap_years .year-item a.active span').text()
-        $('.date-picker').daterangepicker({
-            ...dataRangeConfig,
-            startDate: moment(crt_year, 'YYYY').startOf('year'),
-            endDate: moment(crt_year, 'YYYY').endOf('year')
-        }).val(null).trigger('change');
-    })
-        .on('hidden.bs.modal', function (){
-        $('.date-picker').daterangepicker('destroy')
+    let $dateElm = $('.date-picker')
+    $dateElm.daterangepicker(dataRangeConfig).val('').trigger('change')
+    $modalH.on('hidden.bs.modal', function (){
+        $('.date-picker').val('').trigger('change')
         $('#formHoliday')[0].reset()
         $('[name="id"], [name="idx"]', $formHld).remove()
     })
 
     // click tab hidden btn
-    $('a[href="#holidays"]').on('shown.bs.tab', () => $('button[form="working_calendar"]').hide())
-        .on('hidden.bs.tab', ()=> $('button[form="working_calendar"]').show())
+    const $btnSH = $('button[form="working_calendar"]')
+    $('a[href="#holidays"]').on('shown.bs.tab', () => $btnSH.hide())
+        .on('hidden.bs.tab', ()=> $btnSH.show())
 
     $('#working_calendar').on('submit', function(e){
         e.preventDefault()
@@ -236,40 +230,40 @@ $(document).ready(function () {
         let harshDataBody = _form.dataForm;
         let dataBody = {
             working_days:{
-                "mon": {
+                0: {
+                    "work": harshDataBody.sun_work,
+                    "mor": {"from": harshDataBody.sun_mor_from, "to": harshDataBody.sun_mor_to},
+                    "aft": {"from": harshDataBody.sun_aft_from, "to": harshDataBody.sun_aft_to}
+                },
+                1: {
                     "work": harshDataBody.mon_work,
                     "mor": {"from": harshDataBody.mon_mor_from, "to": harshDataBody.mon_mor_to},
                     "aft": {"from": harshDataBody.mon_aft_from, "to": harshDataBody.mon_aft_to}
                 },
-                "tue": {
+                2: {
                     "work": harshDataBody.tue_work,
                     "mor": {"from": harshDataBody.tue_mor_from, "to": harshDataBody.tue_mor_to},
                     "aft": {"from": harshDataBody.tue_aft_from, "to": harshDataBody.tue_aft_to}
                 },
-                "wed": {
+                3: {
                     "work": harshDataBody.wed_work,
                     "mor": {"from": harshDataBody.wed_mor_from, "to": harshDataBody.wed_mor_to},
                     "aft": {"from": harshDataBody.wed_aft_from, "to": harshDataBody.wed_aft_to}
                 },
-                "thu": {
+                4: {
                     "work": harshDataBody.thu_work,
                     "mor": {"from": harshDataBody.thu_mor_from, "to": harshDataBody.thu_mor_to},
                     "aft": {"from": harshDataBody.thu_aft_from, "to": harshDataBody.thu_aft_to}
                 },
-                "fri": {
+                5: {
                     "work": harshDataBody.fri_work,
                     "mor": {"from": harshDataBody.fri_mor_from, "to": harshDataBody.fri_mor_to},
                     "aft": {"from": harshDataBody.fri_aft_from, "to": harshDataBody.fri_aft_to}
                 },
-                "sat": {
+                6: {
                     "work": harshDataBody.sat_work,
                     "mor": {"from": harshDataBody.sat_mor_from, "to": harshDataBody.sat_mor_to},
                     "aft": {"from": harshDataBody.sat_aft_from, "to": harshDataBody.sat_aft_to}
-                },
-                "sun": {
-                    "work": harshDataBody.sun_work,
-                    "mor": {"from": harshDataBody.sun_mor_from, "to": harshDataBody.sun_mor_to},
-                    "aft": {"from": harshDataBody.sun_aft_from, "to": harshDataBody.sun_aft_to}
                 },
             }
         }

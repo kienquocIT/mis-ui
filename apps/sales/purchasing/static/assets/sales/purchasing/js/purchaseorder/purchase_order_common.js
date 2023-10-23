@@ -843,17 +843,6 @@ class POLoadDataHandle {
     static loadDetailPage(data) {
         $('#data-detail-page').val(JSON.stringify(data));
         $('#purchase-order-title').val(data?.['title']);
-        // document.getElementById('purchase-order-code').innerHTML = data?.['code'];
-        let eleStatus = $('#purchase-order-status');
-        let status_data = {
-            "Draft": "badge badge-soft-light",
-            "Created": "badge badge-soft-primary",
-            "Added": "badge badge-soft-info",
-            "Finish": "badge badge-soft-success",
-            "Cancel": "badge badge-soft-danger",
-        }
-        // eleStatus[0].className = status_data[data?.['system_status']];
-        // eleStatus[0].innerHTML = data?.['system_status'];
         if (['Added', 'Finish'].includes(data?.['system_status'])) {
             let $btn = $('#btn-enable-edit');
             if ($btn.length) {

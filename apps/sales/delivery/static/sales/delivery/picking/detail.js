@@ -91,24 +91,36 @@ class pickupUtil {
             let prodKey = `${dataProd?.['product_data']?.['id']}.${dataProd?.['uom_data']?.['id']}`
             if (currentWHList?.[prodKey] && currentWHList?.[prodKey]?.[warehouseID])
                 checkResult = currentWHList[prodKey][warehouseID]
-            else{
-                let callData = await $.fn.callAjax(
-                    $('#url-factory').attr('data-warehouse-stock'),
-                    'GET',
-                    {'product_id': dataProd?.['product_data']?.['id'], 'uom_id': dataProd?.['uom_data']?.['id']}
+            else {
+                let callData = await $.fn.callAjax2(
+                    {
+                        'url': $('#url-factory').attr('data-product-warehouse'),
+                        'method': 'GET',
+                        'data': {
+                            'product_id': dataProd?.['product_data']?.['id'],
+                            'warehouse_id': warehouseID,
+                        },
+                        'isDropdown': true,
+                    }
                 )
                 if(callData.status === 200) {
                     let res = $.fn.switcherResp(callData);
-                    res = res?.['warehouse_stock'];
+                    res = res?.['warehouse_products_list'];
                     if (res.length){
-                        let dataFormated = {}
-                        for (const warehouse of res){
-                            const avai_stock = warehouse?.['product_amount'] - warehouse?.['picked_ready']
-                            dataFormated[warehouse.id] = avai_stock
-                            if (warehouse.id === warehouseID) checkResult = avai_stock
+                        let dataFormatted = {}
+                        for (let productWarehouse of res){
+                            let finalRatio = 1;
+                            let uomSORatio = dataProd?.['uom_data']?.['ratio'];
+                            let uomWHRatio = productWarehouse?.['uom']?.['ratio'];
+                            if (uomSORatio && uomWHRatio) {
+                                finalRatio = uomWHRatio / uomSORatio;
+                            }
+                            let available_stock = productWarehouse?.['stock_amount'] * finalRatio;
+                            dataFormatted[productWarehouse?.['warehouse']?.['id']] = available_stock
+                            if (productWarehouse?.['warehouse']?.['id'] === warehouseID) checkResult = available_stock
                         }
-                        currentWHList[prodKey] = dataFormated
-                        _this.setWarehouseList = currentWHList
+                        currentWHList[prodKey] = dataFormatted;
+                        _this.setWarehouseList = currentWHList;
                     }
                 }
             }
@@ -217,41 +229,40 @@ $(async function () {
         let htmlContent = `<h6 class="dropdown-header header-wth-bg">${
             $('#base-trans-factory').attr('data-more-info')}</h6>`;
         const warehouseID = $('#inputWareHouse').val();
-
         if(!warehouseID.valid_uuid4()){
             $.fn.notifyB({description: $elmTrans.attr('data-error-warehouse')}, 'failure')
             return false
         }
-        $.fn.callAjax(
-            $('#url-factory').attr('data-warehouse-stock'),
-            'GET',
-            {'product_id': prod?.['product_data']?.['id'], 'uom_id':prod?.['uom_data']?.['id']}
+        $.fn.callAjax2(
+            {
+                'url': $('#url-factory').attr('data-product-warehouse'),
+                'method': 'GET',
+                'data': {
+                    'product_id': prod?.['product_data']?.['id'],
+                    'warehouse_id': warehouseID,
+                },
+                'isDropdown': true,
+            }
         ).then((resp) => {
             let data = $.fn.switcherResp(resp);
-            const datas = data?.['warehouse_stock']
-
-            let prodTotal = 0
-            let prodName = ''
-            let WHInfo = datas.filter((item)=> item.id === warehouseID)[0]
-
-            prodTotal = WHInfo['original_info']?.['stock_amount']
-            prodName = WHInfo.title
-            htmlContent += `<div class="mb-1"><h6><i>${$elmTrans.attr('data-warehouse')}</i></h6><p>${prodName}</p></div>`;
-            htmlContent += `<div class="mb-1 d-flex justify-content-between">` +
-                            `<div><h6>${$elmTrans.attr('data-stock')}</h6>${prodTotal}</div>` +
-                            `<div><h6>${$elmTrans.attr('data-store')}</h6>${prodTotal - WHInfo['original_info']?.['picked_ready']}</div>` +
-                            `<div><h6>${$elmTrans.attr('data-picking-area')}</h6>${WHInfo['original_info']?.['picked_ready']}</div>` +
-                `</div>`;
-            htmlContent += `<div class="mb-1"><h6><i>UoM</i></h6><p>${WHInfo?.['warehouse_uom']?.['title'] || '--'}</p></div>`;
-            const link = $('#url-factory').attr('data-product-detail').format_url_with_uuid(prod?.['product_data']?.['id']);
-            htmlContent += `<div class="dropdown-divider"></div><div class="text-right">
+            for (let productWH of data?.['warehouse_products_list']) {
+                htmlContent += `<div class="mb-1"><h6><i>${$elmTrans.attr('data-warehouse')}</i></h6><p>${productWH?.['warehouse']?.['title']}</p></div>`;
+                htmlContent += `<div class="mb-1 d-flex justify-content-between">` +
+                    `<div><h6>${$elmTrans.attr('data-stock')}</h6>${productWH?.['stock_amount']}</div>` +
+                    `<div><h6>${$elmTrans.attr('data-store')}</h6>${productWH?.['stock_amount']}</div>` +
+                    `<div><h6>${$elmTrans.attr('data-picking-area')}</h6>${0}</div>` +
+                    `</div>`;
+                htmlContent += `<div class="mb-1"><h6><i>UoM</i></h6><p>${productWH?.['uom']?.['title'] || '--'}</p></div>`;
+                let link = $('#url-factory').attr('data-product-detail').format_url_with_uuid(productWH?.['product']?.['id']);
+                htmlContent += `<div class="dropdown-divider"></div><div class="text-right">
                             <a href="${link}" target="_blank" class="link-primary underline_hover">
                                 <span>${$elmTrans.attr('data-view-detail')}</span>
                                 <span class="icon ml-1">
                                     <i class="bi bi-arrow-right-circle-fill"></i>
                                 </span>
                             </a></div>`;
-            $('.dropdown-menu', dropdownElm.parent('.dropdown')).html(htmlContent)
+                $('.dropdown-menu', dropdownElm.parent('.dropdown')).html(htmlContent)
+            }
         });
     }
 

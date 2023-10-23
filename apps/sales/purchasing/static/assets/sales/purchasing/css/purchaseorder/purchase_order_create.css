@@ -23,6 +23,14 @@
     margin-bottom: unset;
 }
 
+.modal-fullscreen.modal-fullscreen-custom {
+    width: 97vw;
+    height: 90%;
+}
+
+
+
+
 
 
 .modal-body-warning-add-product {
@@ -62,11 +70,6 @@
 .modal-xlg-custom {
     max-width: 1680px;
     margin-left: 100px;
-}
-
-.modal-fullscreen.modal-fullscreen-custom {
-    width: 97vw;
-    height: 90%;
 }
 
 .inline-elements {

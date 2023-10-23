@@ -115,7 +115,7 @@ class pickupUtil {
                             if (uomSORatio && uomWHRatio) {
                                 finalRatio = uomWHRatio / uomSORatio;
                             }
-                            let available_stock = productWarehouse?.['stock_amount'] * finalRatio;
+                            let available_stock = (productWarehouse?.['stock_amount'] - productWarehouse?.['picked_ready']) * finalRatio;
                             dataFormatted[productWarehouse?.['warehouse']?.['id']] = available_stock
                             if (productWarehouse?.['warehouse']?.['id'] === warehouseID) checkResult = available_stock
                         }
@@ -250,8 +250,8 @@ $(async function () {
                         htmlContent += `<div class="mb-1"><h6><i>${$elmTrans.attr('data-warehouse')}</i></h6><p>${productWH?.['warehouse']?.['title']}</p></div>`;
                         htmlContent += `<div class="mb-1 d-flex justify-content-between">` +
                             `<div><h6>${$elmTrans.attr('data-stock')}</h6>${productWH?.['stock_amount']}</div>` +
-                            `<div><h6>${$elmTrans.attr('data-store')}</h6>${productWH?.['stock_amount']}</div>` +
-                            `<div><h6>${$elmTrans.attr('data-picking-area')}</h6>${0}</div>` +
+                            `<div><h6>${$elmTrans.attr('data-store')}</h6>${productWH?.['stock_amount'] - productWH?.['picked_ready']}</div>` +
+                            `<div><h6>${$elmTrans.attr('data-picking-area')}</h6>${productWH?.['picked_ready']}</div>` +
                             `</div>`;
                         htmlContent += `<div class="mb-1"><h6><i>UoM</i></h6><p>${productWH?.['uom']?.['title'] || '--'}</p></div>`;
                         let link = $('#url-factory').attr('data-product-detail').format_url_with_uuid(productWH?.['product']?.['id']);

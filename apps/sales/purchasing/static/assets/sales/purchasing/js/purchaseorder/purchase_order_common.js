@@ -354,11 +354,11 @@ class POLoadDataHandle {
                 let link = "";
                 let linkDetail = elePurchaseRequest.attr('data-link-detail');
                 link = linkDetail.format_url_with_uuid(prID);
-                eleAppend += `<div class="inline-elements-badge mr-2 mb-1">
-                                    <a href="${link}" target="_blank" class="link-primary underline_hover"><span>${prCode}</span></a>
-                                    <button type="button" class="btn btn-link btn-sm custom-btn-remove" data-id="${prID}" aria-label="Close">
-                                        <span aria-hidden="true"><i class="fas fa-times"></i></span>
-                                    </button>
+                eleAppend += `<div class="chip chip-outline-primary chip-dismissable bg-green-light-5 mr-1 mb-1">
+                                    <span>
+                                        <a href="${link}" target="_blank" class="link-primary underline_hover"><span class="chip-text">${prCode}</span></a>
+                                        <button type="button" class="btn-close custom-btn-remove" data-id="${prID}"></button>
+                                    </span>
                                 </div>`;
                 purchase_requests_data.push(prID);
             }
@@ -459,13 +459,15 @@ class POLoadDataHandle {
             let link = "";
             let linkDetail = elePurchaseQuotation.attr('data-link-detail');
             link = linkDetail.format_url_with_uuid(pqID);
-            eleAppend += `<div class="inline-elements-badge mr-2 mb-1">
-                                    <input class="form-check-input checkbox-circle checkbox-quotation" type="checkbox" data-id="${pqID}" data-code="${pqCode}" data-supplier="${pqSupplierStr}" value="option1">
-                                    <a href="${link}" target="_blank" class="link-primary underline_hover ml-3"><span>${pqCode}</span></a>
-                                    <button type="button" class="btn btn-link btn-sm custom-btn-remove" data-id="${pqID}" aria-label="Close">
-                                        <span aria-hidden="true"><i class="fas fa-times"></i></span>
-                                    </button>
-                                </div>`;
+            eleAppend += `<div class="chip chip-outline-primary chip-dismissable bg-green-light-5 mr-1 mb-1">
+                                <span>
+                                    <div class="form-check">
+                                        <input class="form-check-input checkbox-circle checkbox-quotation" type="checkbox" data-id="${pqID}" data-code="${pqCode}" data-supplier="${pqSupplierStr}" value="option1">
+                                        <label class="form-check-label"><a href="${link}" target="_blank" class="link-primary underline_hover"><span class="chip-text">${pqCode}</span></a></label>
+                                    </div>
+                                    <button type="button" class="btn-close custom-btn-remove" data-id="${pqID}"></button>
+                                </span>
+                            </div>`;
             purchase_quotations_data.push({
                 'purchase_quotation': pqID,
                 'is_use': false
@@ -624,7 +626,7 @@ class POLoadDataHandle {
                 }
             }
         }
-        if (PQIDList.length > 0) {
+        if (PQIDList.length > 0) { // Has PQ
             $.fn.callAjax2({
                     'url': eleQuotationProduct.attr('data-url'),
                     'method': eleQuotationProduct.attr('data-method'),
@@ -640,28 +642,31 @@ class POLoadDataHandle {
                             let dataPQMapProducts = {};
                             for (let result of data.purchase_quotation_product_list) {
                                 // setup data to load price list
-                                if (!dataProduct.hasOwnProperty(result.product_id)) {
-                                    dataProduct[result.product_id] = [{
-                                        'purchase_quotation': result.purchase_quotation,
-                                        'unit_price': result.unit_price
+                                if (!dataProduct.hasOwnProperty(result?.['product_id'])) {
+                                    dataProduct[result?.['product_id']] = [{
+                                        'purchase_quotation': result?.['purchase_quotation'],
+                                        'unit_price': result?.['unit_price'],
+                                        'uom': result?.['uom'],
                                     }]
                                 } else {
-                                    dataProduct[result.product_id].push({
-                                        'purchase_quotation': result.purchase_quotation,
-                                        'unit_price': result.unit_price
+                                    dataProduct[result?.['product_id']].push({
+                                        'purchase_quotation': result?.['purchase_quotation'],
+                                        'unit_price': result?.['unit_price'],
+                                        'uom': result?.['uom'],
                                     })
                                 }
                                 // setup data to load again product by check PQ
-                                if (!dataPQMapProducts.hasOwnProperty(result.purchase_quotation.id)) {
-                                    dataPQMapProducts[result.purchase_quotation.id] = [result.product_id];
+                                if (!dataPQMapProducts.hasOwnProperty(result?.['purchase_quotation']?.['id'])) {
+                                    dataPQMapProducts[result?.['purchase_quotation']?.['id']] = [result?.['product_id']];
                                 } else {
-                                    dataPQMapProducts[result.purchase_quotation.id].push(result.product_id);
+                                    dataPQMapProducts[result?.['purchase_quotation']?.['id']].push(result?.['product_id']);
                                 }
                             }
                             eleQuotationProduct.val(JSON.stringify(dataPQMapProducts));
                             let $table = $('#datable-purchase-order-product-request');
                             $table.DataTable().rows().every(function () {
                                 let row = this.node();
+                                let eleUOM = row.querySelector('.table-row-uom-order-actual');
                                 let priceListData = dataProduct[row.querySelector('.table-row-item').getAttribute('data-product-id')];
                                 let elePrice = row.querySelector('.table-row-price');
                                 let elePriceList = row.querySelector('.table-row-price-list');
@@ -671,25 +676,35 @@ class POLoadDataHandle {
                                     if (elePriceList) {
                                         $(elePriceList).empty();
                                         for (let price of priceListData) {
-                                            let priceAppend = `<div class="dropdown-item disabled text-black border border-grey mb-1" id="${price.purchase_quotation.id}" data-value="${parseFloat(price.unit_price)}">
+                                            let priceAppend = `<div class="dropdown-item disabled text-black border border-grey mb-1" id="${price?.['purchase_quotation']?.['id']}" data-value="${parseFloat(price?.['unit_price'])}">
                                                                     <div class="row">
-                                                                        <div class="col-7"><span>${price.purchase_quotation.title}</span></div>
-                                                                        <div class="col-5"><span
-                                                                            class="mask-money" data-init-money="${parseFloat(price.unit_price)}"
-                                                                        ></span></div>
+                                                                        <div class="col-12 col-md-4 col-lg-4"><span>${price?.['purchase_quotation']?.['title']}</span></div>
+                                                                        <div class="col-12 col-md-4 col-lg-4">
+                                                                            <span
+                                                                                class="mask-money" data-init-money="${parseFloat(price?.['unit_price'])}"
+                                                                            ></span>
+                                                                        </div>
+                                                                        <div class="col-12 col-md-4 col-lg-4"><span>${price?.['uom']?.['title']}</span></div>
                                                                     </div>
                                                                 </div>`
-                                            if (price.purchase_quotation.id === checked_id) {
-                                                priceAppend = `<div class="dropdown-item disabled text-black border border-grey mb-1 bg-light" id="${price.purchase_quotation.id}" data-value="${parseFloat(price.unit_price)}">
+                                            if (price?.['purchase_quotation']?.['id'] === checked_id) { // If check PQ
+                                                priceAppend = `<div class="dropdown-item disabled text-black border border-grey mb-1 bg-light" id="${price?.['purchase_quotation']?.['id']}" data-value="${parseFloat(price?.['unit_price'])}">
                                                                     <div class="row">
-                                                                        <div class="col-7"><span>${price.purchase_quotation.title}</span></div>
-                                                                        <div class="col-5"><span
-                                                                            class="mask-money" data-init-money="${parseFloat(price.unit_price)}"
-                                                                        ></span></div>
+                                                                        <div class="col-12 col-md-4 col-lg-4"><span>${price?.['purchase_quotation']?.['title']}</span></div>
+                                                                        <div class="col-12 col-md-4 col-lg-4">
+                                                                            <span
+                                                                                class="mask-money" data-init-money="${parseFloat(price?.['unit_price'])}"
+                                                                            ></span>
+                                                                        </div>
+                                                                        <div class="col-12 col-md-4 col-lg-4"><span>${price?.['uom']?.['title']}</span></div>
                                                                     </div>
                                                                 </div>`;
-                                                $(elePrice).attr('value', String(parseFloat(price.unit_price)));
-
+                                                // Price && UOM must follow PQ checked
+                                                $(elePrice).attr('value', String(parseFloat(price?.['unit_price'])));
+                                                $(eleUOM).empty();
+                                                POLoadDataHandle.loadBoxUOM($(eleUOM), price?.['uom'], price?.['uom']?.['uom_group']?.['id']);
+                                                $(eleUOM).change();
+                                                $(eleUOM).attr('disabled', 'true');
                                             }
                                             $(elePriceList).append(priceAppend);
                                         }
@@ -704,6 +719,15 @@ class POLoadDataHandle {
                     }
                 }
             )
+        } else { // No PQ
+            let $table = $('#datable-purchase-order-product-request');
+            $table.DataTable().rows().every(function () {
+                let row = this.node();
+                let elePrice = row.querySelector('.table-row-price');
+                let elePriceList = row.querySelector('.table-row-price-list');
+                elePrice.removeAttribute('disabled');
+                $(elePriceList).empty();
+            });
         }
         return true
     };
@@ -863,18 +887,30 @@ class POLoadDataHandle {
             let linkDetail = elePurchaseRequest.attr('data-link-detail');
             link = linkDetail.format_url_with_uuid(prID);
             if (from.attr('data-method') === 'GET') {
-                elePRAppend += `<div class="inline-elements-badge mr-2 mb-1">
-                                    <a href="${link}" target="_blank" class="link-primary underline_hover"><span>${prCode}</span></a>
-                                    <button type="button" class="btn btn-link btn-sm custom-btn-remove" data-id="${prID}" aria-label="Close" disabled>
-                                        <span aria-hidden="true"><i class="fas fa-times"></i></span>
-                                    </button>
+                // elePRAppend += `<div class="inline-elements-badge mr-2 mb-1">
+                //                     <a href="${link}" target="_blank" class="link-primary underline_hover"><span>${prCode}</span></a>
+                //                     <button type="button" class="btn btn-link btn-sm custom-btn-remove" data-id="${prID}" aria-label="Close" disabled>
+                //                         <span aria-hidden="true"><i class="fas fa-times"></i></span>
+                //                     </button>
+                //                 </div>`;
+                elePRAppend += `<div class="chip chip-outline-primary chip-dismissable bg-green-light-5 mr-1 mb-1">
+                                    <span>
+                                        <a href="${link}" target="_blank" class="link-primary underline_hover"><span class="chip-text">${prCode}</span></a>
+                                        <button type="button" class="btn-close custom-btn-remove" data-id="${prID}" disabled></button>
+                                    </span>
                                 </div>`;
             } else {
-                elePRAppend += `<div class="inline-elements-badge mr-2 mb-1">
-                                    <a href="${link}" target="_blank" class="link-primary underline_hover"><span>${prCode}</span></a>
-                                    <button type="button" class="btn btn-link btn-sm custom-btn-remove" data-id="${prID}" aria-label="Close">
-                                        <span aria-hidden="true"><i class="fas fa-times"></i></span>
-                                    </button>
+                // elePRAppend += `<div class="inline-elements-badge mr-2 mb-1">
+                //                     <a href="${link}" target="_blank" class="link-primary underline_hover"><span>${prCode}</span></a>
+                //                     <button type="button" class="btn btn-link btn-sm custom-btn-remove" data-id="${prID}" aria-label="Close">
+                //                         <span aria-hidden="true"><i class="fas fa-times"></i></span>
+                //                     </button>
+                //                 </div>`;
+                elePRAppend += `<div class="chip chip-outline-primary chip-dismissable bg-green-light-5 mr-1 mb-1">
+                                    <span>
+                                        <a href="${link}" target="_blank" class="link-primary underline_hover"><span class="chip-text">${prCode}</span></a>
+                                        <button type="button" class="btn-close custom-btn-remove" data-id="${prID}"></button>
+                                    </span>
                                 </div>`;
             }
             purchase_requests_data.push(prID);
@@ -892,39 +928,47 @@ class POLoadDataHandle {
             link = linkDetail.format_url_with_uuid(pqID);
             if (from.attr('data-method') === 'GET') {
                 if (dataPQ?.['is_use'] === false) {
-                    elePQAppend += `<div class="inline-elements-badge mr-2 mb-1">
-                                    <input class="form-check-input checkbox-circle checkbox-quotation" type="checkbox" data-id="${pqID}" data-code="${pqCode}" data-supplier="${pqSupplierStr}" value="option1" disabled>
-                                    <a href="${link}" target="_blank" class="link-primary underline_hover ml-3"><span>${pqCode}</span></a>
-                                    <button type="button" class="btn btn-link btn-sm custom-btn-remove" data-id="${pqID}" aria-label="Close" disabled>
-                                        <span aria-hidden="true"><i class="fas fa-times"></i></span>
-                                    </button>
-                                </div>`;
+                    elePQAppend += `<div class="chip chip-outline-primary chip-dismissable bg-green-light-5 mr-1 mb-1">
+                                        <span>
+                                            <div class="form-check">
+                                                <input class="form-check-input checkbox-circle checkbox-quotation" type="checkbox" data-id="${pqID}" data-code="${pqCode}" data-supplier="${pqSupplierStr}" value="option1" disabled>
+                                                <label class="form-check-label"><a href="${link}" target="_blank" class="link-primary underline_hover"><span class="chip-text">${pqCode}</span></a></label>
+                                            </div>
+                                            <button type="button" class="btn-close custom-btn-remove" data-id="${pqID}" disabled></button>
+                                        </span>
+                                    </div>`;
                 } else {
-                    elePQAppend += `<div class="inline-elements-badge mr-2 mb-1">
-                                    <input class="form-check-input checkbox-circle checkbox-quotation" type="checkbox" data-id="${pqID}" data-code="${pqCode}" data-supplier="${pqSupplierStr}" value="option1" checked disabled>
-                                    <a href="${link}" target="_blank" class="link-primary underline_hover ml-3"><span>${pqCode}</span></a>
-                                    <button type="button" class="btn btn-link btn-sm custom-btn-remove" data-id="${pqID}" aria-label="Close" disabled>
-                                        <span aria-hidden="true"><i class="fas fa-times"></i></span>
-                                    </button>
-                                </div>`;
+                    elePQAppend += `<div class="chip chip-outline-primary chip-dismissable bg-green-light-5 mr-1 mb-1">
+                                        <span>
+                                            <div class="form-check">
+                                                <input class="form-check-input checkbox-circle checkbox-quotation" type="checkbox" data-id="${pqID}" data-code="${pqCode}" data-supplier="${pqSupplierStr}" value="option1" checked disabled>
+                                                <label class="form-check-label"><a href="${link}" target="_blank" class="link-primary underline_hover"><span class="chip-text">${pqCode}</span></a></label>
+                                            </div>
+                                            <button type="button" class="btn-close custom-btn-remove" data-id="${pqID}" disabled></button>
+                                        </span>
+                                    </div>`;
                 }
             } else {
                 if (dataPQ?.['is_use'] === false) {
-                    elePQAppend += `<div class="inline-elements-badge mr-2 mb-1">
-                                    <input class="form-check-input checkbox-circle checkbox-quotation" type="checkbox" data-id="${pqID}" data-code="${pqCode}" data-supplier="${pqSupplierStr}" value="option1">
-                                    <a href="${link}" target="_blank" class="link-primary underline_hover ml-3"><span>${pqCode}</span></a>
-                                    <button type="button" class="btn btn-link btn-sm custom-btn-remove" data-id="${pqID}" aria-label="Close">
-                                        <span aria-hidden="true"><i class="fas fa-times"></i></span>
-                                    </button>
-                                </div>`;
+                    elePQAppend += `<div class="chip chip-outline-primary chip-dismissable bg-green-light-5 mr-1 mb-1">
+                                        <span>
+                                            <div class="form-check">
+                                                <input class="form-check-input checkbox-circle checkbox-quotation" type="checkbox" data-id="${pqID}" data-code="${pqCode}" data-supplier="${pqSupplierStr}" value="option1">
+                                                <label class="form-check-label"><a href="${link}" target="_blank" class="link-primary underline_hover"><span class="chip-text">${pqCode}</span></a></label>
+                                            </div>
+                                            <button type="button" class="btn-close custom-btn-remove" data-id="${pqID}"></button>
+                                        </span>
+                                    </div>`;
                 } else {
-                    elePQAppend += `<div class="inline-elements-badge mr-2 mb-1">
-                                    <input class="form-check-input checkbox-circle checkbox-quotation" type="checkbox" data-id="${pqID}" data-code="${pqCode}" data-supplier="${pqSupplierStr}" value="option1" checked>
-                                    <a href="${link}" target="_blank" class="link-primary underline_hover ml-3"><span>${pqCode}</span></a>
-                                    <button type="button" class="btn btn-link btn-sm custom-btn-remove" data-id="${pqID}" aria-label="Close">
-                                        <span aria-hidden="true"><i class="fas fa-times"></i></span>
-                                    </button>
-                                </div>`;
+                    elePQAppend += `<div class="chip chip-outline-primary chip-dismissable bg-green-light-5 mr-1 mb-1">
+                                        <span>
+                                            <div class="form-check">
+                                                <input class="form-check-input checkbox-circle checkbox-quotation" type="checkbox" data-id="${pqID}" data-code="${pqCode}" data-supplier="${pqSupplierStr}" value="option1" checked>
+                                                <label class="form-check-label"><a href="${link}" target="_blank" class="link-primary underline_hover"><span class="chip-text">${pqCode}</span></a></label>
+                                            </div>
+                                            <button type="button" class="btn-close custom-btn-remove" data-id="${pqID}"></button>
+                                        </span>
+                                    </div>`;
                 }
             }
             purchase_quotations_data.push({
@@ -1495,7 +1539,7 @@ class PODataTableHandle {
                                                 value="${row?.['product_unit_price']}"
                                                 data-return-type="number"
                                             >
-                                            <span class="input-suffix table-row-btn-dropdown-price-list"><i class="fas fa-angle-down"></i></span>
+                                            <span class="input-suffix table-row-btn-dropdown-price-list p-0"><i class="fas fa-angle-down"></i></span>
                                         </span>
                                         </div>
                                         <div role="menu" class="dropdown-menu table-row-price-list w-460p">

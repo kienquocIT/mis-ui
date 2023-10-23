@@ -195,7 +195,14 @@ class LeaveRequestCreate(View):
         breadcrumb='LEAVE_REQUEST_CREATE',
     )
     def get(self, request, *args, **kwargs):
-        return {'employee': request.user.employee_current_data}, status.HTTP_200_OK
+        res_ws = []
+        resp = ServerAPI(user=request.user, url=ApiURL.WORKING_CALENDAR_CONFIG).get()
+        if resp.state:
+            res_ws = resp.result
+        return {
+                   'working_shift': res_ws,
+                   'employee': request.user.employee_current_data
+               }, status.HTTP_200_OK
 
 
 class LeaveRequestCreateAPI(APIView):
@@ -296,7 +303,9 @@ class LeaveAvailableListAPI(APIView):
     )
     def get(self, request, *args, **kwargs):
         params = request.query_params.dict()
-        resp = ServerAPI(user=request.user, url=ApiURL.LEAVE_AVAILABLE.fill_key(pk=params['employee'])).get()
+        params['employee_inherit_id'] = params['employee']
+        del params['employee']
+        resp = ServerAPI(user=request.user, url=ApiURL.LEAVE_AVAILABLE).get(params)
         return resp.auto_return(key_success='leave_available')
 
     @mask_view(

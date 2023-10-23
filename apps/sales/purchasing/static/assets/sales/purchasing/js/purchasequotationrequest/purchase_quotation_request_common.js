@@ -685,7 +685,6 @@ $(document).on("change", '.product-quantity', function () {
 
 class PQRHandle {
     combinesDataFromPR(frmEle, for_update=false) {
-        alert(1)
         let frm = new SetupFormSubmit($(frmEle));
         let flag = true;
 

@@ -226,8 +226,7 @@ $(async function () {
 
     function getStockByProdID(prod, dropdownElm) {
         const $elmTrans = $('#trans-factory')
-        let htmlContent = `<h6 class="dropdown-header header-wth-bg">${
-            $('#base-trans-factory').attr('data-more-info')}</h6>`;
+        let htmlContent = `<h6 class="dropdown-header header-wth-bg">${$('#base-trans-factory').attr('data-more-info')}</h6>`;
         const warehouseID = $('#inputWareHouse').val();
         if(!warehouseID.valid_uuid4()){
             $.fn.notifyB({description: $elmTrans.attr('data-error-warehouse')}, 'failure')
@@ -245,23 +244,31 @@ $(async function () {
             }
         ).then((resp) => {
             let data = $.fn.switcherResp(resp);
-            for (let productWH of data?.['warehouse_products_list']) {
-                htmlContent += `<div class="mb-1"><h6><i>${$elmTrans.attr('data-warehouse')}</i></h6><p>${productWH?.['warehouse']?.['title']}</p></div>`;
-                htmlContent += `<div class="mb-1 d-flex justify-content-between">` +
-                    `<div><h6>${$elmTrans.attr('data-stock')}</h6>${productWH?.['stock_amount']}</div>` +
-                    `<div><h6>${$elmTrans.attr('data-store')}</h6>${productWH?.['stock_amount']}</div>` +
-                    `<div><h6>${$elmTrans.attr('data-picking-area')}</h6>${0}</div>` +
-                    `</div>`;
-                htmlContent += `<div class="mb-1"><h6><i>UoM</i></h6><p>${productWH?.['uom']?.['title'] || '--'}</p></div>`;
-                let link = $('#url-factory').attr('data-product-detail').format_url_with_uuid(productWH?.['product']?.['id']);
-                htmlContent += `<div class="dropdown-divider"></div><div class="text-right">
+            if (data.hasOwnProperty('warehouse_products_list') && Array.isArray(data.warehouse_products_list)) {
+                if (data?.['warehouse_products_list'].length > 0) {
+                    for (let productWH of data?.['warehouse_products_list']) {
+                        htmlContent += `<div class="mb-1"><h6><i>${$elmTrans.attr('data-warehouse')}</i></h6><p>${productWH?.['warehouse']?.['title']}</p></div>`;
+                        htmlContent += `<div class="mb-1 d-flex justify-content-between">` +
+                            `<div><h6>${$elmTrans.attr('data-stock')}</h6>${productWH?.['stock_amount']}</div>` +
+                            `<div><h6>${$elmTrans.attr('data-store')}</h6>${productWH?.['stock_amount']}</div>` +
+                            `<div><h6>${$elmTrans.attr('data-picking-area')}</h6>${0}</div>` +
+                            `</div>`;
+                        htmlContent += `<div class="mb-1"><h6><i>UoM</i></h6><p>${productWH?.['uom']?.['title'] || '--'}</p></div>`;
+                        let link = $('#url-factory').attr('data-product-detail').format_url_with_uuid(productWH?.['product']?.['id']);
+                        htmlContent += `<div class="dropdown-divider"></div><div class="text-right">
                             <a href="${link}" target="_blank" class="link-primary underline_hover">
                                 <span>${$elmTrans.attr('data-view-detail')}</span>
                                 <span class="icon ml-1">
                                     <i class="bi bi-arrow-right-circle-fill"></i>
                                 </span>
                             </a></div>`;
-                $('.dropdown-menu', dropdownElm.parent('.dropdown')).html(htmlContent)
+                        $('.dropdown-menu', dropdownElm.parent('.dropdown')).html(htmlContent);
+                    }
+                } else {
+                    $('.dropdown-menu', dropdownElm.parent('.dropdown')).html(htmlContent);
+                    $.fn.notifyB({description: 'Warehouse does not contain this product'}, 'failure')
+                    return false
+                }
             }
         });
     }

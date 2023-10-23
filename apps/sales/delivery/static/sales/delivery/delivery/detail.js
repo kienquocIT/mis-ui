@@ -33,22 +33,20 @@ $(async function () {
 
         contentModalHandle(idx, config, prod_data) {
             const _this = this
-            let url = $url.attr('data-warehouse-prod')
+            let url = $url.attr('data-product-warehouse')
 
             $.fn.callAjax2({
                 'url': url,
                 'method': 'get',
                 'data': {
                     'product_id': prod_data?.product_data?.id,
-                    'uom_id': prod_data?.uom_data?.id
                 }
-
             }).then((req) => {
                 const isKey = `${prod_data?.product_data?.id}.${prod_data?.uom_data?.id}`
                 let temp = _this.getWarehouseList
                 const res = $.fn.switcherResp(req);
                 const table = $('#productStockDetail')
-                let isData = res.warehouse_stock
+                let isData = res.warehouse_products_list
                 temp[isKey] = isData
                 _this.setWarehouseList = temp
                 // nếu có hoạt động picking kiểm tra có thông tin delivery_data ko.
@@ -95,7 +93,8 @@ $(async function () {
                             }
                         }
                     }
-                    newData.push(item)
+                    // newData.push(item)
+                    newData = res.warehouse_products_list;
                 }
                 table.not('.dataTable').DataTableDefault({
                     data: newData,
@@ -107,23 +106,23 @@ $(async function () {
                         {
                             targets: 0,
                             class: 'w-15 text-center',
-                            data: 'code',
+                            data: 'warehouse',
                             render: (row, type, data) => {
-                                return `<p>${row}</p>`;
+                                return `<p>${row?.['code']}</p>`;
                             }
                         },
                         {
                             targets: 1,
                             class: 'w-45 text-center',
-                            data: 'title',
+                            data: 'warehouse',
                             render: (row, type, data) => {
-                                return `<p>${row}</p>`;
+                                return `<p>${row?.['title']}</p>`;
                             }
                         },
                         {
                             targets: 2,
                             class: 'w-25 text-center',
-                            data: 'product_amount',
+                            data: 'stock_amount',
                             render: (row, type, data) => {
                                 return `<p>${row}</p>`;
                             }

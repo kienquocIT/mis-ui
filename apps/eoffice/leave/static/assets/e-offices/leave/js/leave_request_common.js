@@ -325,6 +325,7 @@ class TabAvailable {
                 dataSrc: 'data.leave_available',
                 data: function (a) {
                     a.employee = $('#selectEmployeeInherit').val()
+                    a.check_balance = true
                     return a
                 }
             },

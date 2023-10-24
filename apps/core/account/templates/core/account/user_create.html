@@ -27,7 +27,7 @@
                         <label class="form-label required">{% trans 'First Name' %}</label>
                         <input
                                 type="text" class="form-control" placeholder="A" name="first_name"
-                                id="inp-firstname" required minlength="3"
+                                id="inp-firstname" required minlength="2"
                         >
                         <span class="form-text text-muted">{% trans 'Name of Person' %}</span>
                     </div>
@@ -148,7 +148,7 @@
             id="trans-factory"
             data-trans-confirm-password="{% trans 'Passwords does not match' %}"
             data-msg-password-not-match="{% trans 'Re-Password not match Password' %}"
-    >
+    ></span>
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'assets/js/core/account/user_create.js' %}"></script>

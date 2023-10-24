@@ -28,6 +28,16 @@ class TenantApplicationListAPI(APIView):
         return resp.auto_return(key_success='tenant_application_list')
 
 
+class ApplicationDetailAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(request=request, url=ApiURL.APPLICATION_DETAIL.fill_key(pk=pk), user=request.user).get()
+        return resp.auto_return(key_success='application_detail')
+
+
 # Application properties list
 class ApplicationPropertyListAPI(APIView):
     @mask_view(

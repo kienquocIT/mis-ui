@@ -3750,7 +3750,7 @@ msgstr "Gói - Ứng dụng"
 
 #
 msgid "Jurisdiction"
-msgstr "Phạm vi quyền hạn"
+msgstr "Phạm vi quyền"
 
 #
 msgid "Setup permission pre-commitment"
@@ -4460,3 +4460,27 @@ msgstr "Đi tới trang hướng dẫn sử dụng"
 #
 msgid "Go to detail"
 msgstr "Xem chi tiết"
+
+#
+msgid "This application has been disabled for you or cannot be found!"
+msgstr "Ứng dụng này đã bị vô hiệu hóa đối với bạn hoặc không thể tìm thấy!"
+
+#
+msgid "Space general"
+msgstr "Space tổng quát"
+
+#
+msgid "Space all"
+msgstr "Tất cả space"
+
+#
+msgid "The permission scope will not include the person for whom the permission is configured, except for the scope Themselves."
+msgstr "Phạm vi được phép sẽ không bao gồm người được đặt cấu hình quyền, ngoại trừ phạm vi Bản thân họ."
+
+#
+msgid "This employee is not currently associated with the user."
+msgstr "Nhân viên này hiện không được liên kết với người dùng."
+
+#
+msgid "Yes, update it!"
+msgstr "Đồng ý, cập nhật nó!"

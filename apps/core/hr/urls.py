@@ -5,6 +5,7 @@ from apps.core.hr.views import (
     GroupLevelListAPI, GroupList, GroupListAPI, GroupCreate, GroupUpdate, GroupDetail,
     EmployeeDetailAPI, EmployeeDetail, EmployeeUpdate, EmployeeCompanyListAPI, EmployeeUploadAvatarAPI,
     GroupLevelDetailAPI, RoleUpdateView, RoleUpdateAPI,
+    PlanAppGetAppListAPI,
 )
 from apps.core.hr.views import (
     RoleList, RoleListAPI, RoleCreate, RoleDetail, RoleDetailAPI,
@@ -15,9 +16,10 @@ urlpatterns = [
     path('employee/api', EmployeeListAPI.as_view(), name='EmployeeListAPI'),
     path('employee/upload-avatar/api', EmployeeUploadAvatarAPI.as_view(), name='EmployeeUploadAvatarAPI'),
     path('employee/create', EmployeeCreate.as_view(), name='EmployeeCreate'),
-    path('employee/<str:pk>', EmployeeDetailAPI.as_view(), name='EmployeeDetailAPI'),
     path('employee/detail/<str:pk>', EmployeeDetail.as_view(), name='EmployeeDetail'),
+    path('employee/detail/<str:pk>/app/all', PlanAppGetAppListAPI.as_view(), name='PlanAppGetAppListAPI'),
     path('employee/update/<str:pk>', EmployeeUpdate.as_view(), name='EmployeeUpdate'),
+    path('employee/<str:pk>', EmployeeDetailAPI.as_view(), name='EmployeeDetailAPI'),
     # path('employee/company/<str:company_id>', EmployeeCompanyListAPI.as_view(), name='EmployeeCompanyListAPI'),
     path('employee-company', EmployeeCompanyListAPI.as_view(), name='EmployeeCompanyListAPI'),
 

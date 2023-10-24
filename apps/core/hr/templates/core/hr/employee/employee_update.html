@@ -3,6 +3,25 @@
 {% block cssHeader %}
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" href="{% static 'assets/css/core/hr/employee/employee_update.css' %}">
+    <style>
+        .row-error-disabled {
+            position: relative;
+        }
+
+        .row-error-disabled::after {
+            content: "{% trans 'This application has been disabled for you or cannot be found!' %}";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 14px;
+            color: #fff;
+        }
+    </style>
 {% endblock %}
 {% block pageAction %}
     <button class="btn btn-outline-primary" type="submit" form="frm_employee_update">
@@ -16,229 +35,26 @@
 {% endblock %}
 
 {% block pageContent %}
-    <ul class="nav nav-line nav-light nav-tabs">
-        <li class="nav-item">
-            <a class="nav-link active" data-bs-toggle="tab" href="#tab-info">
-                <span class="nav-link-text">{% trans 'General Information' %}</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="tab" href="#tab-app">
-                <span class="nav-link-text">{% trans 'Plan-Application' %}</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="tab" href="#tab-permissions">
-                <span class="nav-link-text">{% trans 'Permissions' %}</span>
-            </a>
-        </li>
-    </ul>
-
     <form
             id="frm_employee_update" class="needs-validation" data-url="{% url 'EmployeeDetailAPI' pk=pk %}"
             data-method="PUT"
             data-url-redirect="{% url 'EmployeeList' %}"
             novalidate
             data-doc-id="{{ data.data.doc_id }}"
+            data-msg-user-no-value="{% trans 'This employee is not currently associated with the user.' %}"
     >
         {% csrf_token %}
-        <div class="tab-content">
-            <div class="tab-pane fade show active" id="tab-info">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-8">
-                            <div class="row">
-                                <div class="form-group">
-                                    <label class="form-label">{% trans 'Select User' %}</label>
-                                    <div class="input-affix-wrapper">
-                                        <div class="dropdown input-prefix">
-                                            <i
-                                                    class="fas fa-info-circle text-blue"
-                                                    data-bs-toggle="dropdown"
-                                                    data-dropdown-animation
-                                                    aria-haspopup="true"
-                                                    aria-expanded="false"
-                                                    disabled
-                                            ></i>
-                                            <div class="dropdown-menu w-210p mt-2"></div>
-                                        </div>
-                                        <select
-                                                class="form-select" id="select-box-user"
-                                                data-url="{% url 'CompanyUserNotMapEmployeeListAPI' %}"
-                                                data-method="GET"
-                                                name="user"
-                                                data-keyResp="company_user_list"
-                                                data-template-format="[{'name':'Name', 'value': 'full_name'},{'name':'Code', 'value': 'code'}]"
-                                        ></select>
-                                    </div>
-                                    <span class="form-text text-muted">{% trans 'User link to the employee' %}</span>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-6">
-                                    <div class="form-group">
-                                        <label class="form-label required">{% trans 'First Name' %}</label>
-                                        <input
-                                                type="text" class="form-control"
-                                                placeholder="A"
-                                                name="first_name"
-                                                id="employee-first-name"
-                                                required
-                                        >
-                                        <span class="form-text text-muted">{% trans 'Name of Person' %}</span>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="form-group">
-                                        <label class="form-label required">{% trans 'Last Name' %}</label>
-                                        <input
-                                                type="text" placeholder="Nguyen Van"
-                                                class="form-control"
-                                                name="last_name"
-                                                id="employee-last-name"
-                                                required
-                                        >
-                                        <span class="form-text text-muted">{% trans 'Surname and Middle Names' %}</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                        <div class="col-4">
-                            <div class="form-group">
-                                <label class="form-label">{% trans 'Avatar' %}</label>
-                                <span class="form-text text-muted">{% trans 'Avatar of emloyee' %}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-4">
-                            <div class="form-group">
-                                <label class="form-label required">{% trans 'Email' %}</label>
-                                <input
-                                        type="email" class="form-control"
-                                        placeholder="customer@mtsolution.com.vn"
-                                        name="email"
-                                        id="employee-email"
-                                        required
-                                >
-                                <span class="form-text text-muted">{% trans 'Contact to email address' %}</span>
-                            </div>
-                        </div>
-                        <div class="col-4">
-
-                            <div class="form-group">
-                                <label class="form-label required">{% trans 'Phone' %}</label>
-                                <input
-                                        type="text" placeholder="(+84) 987-654-321"
-                                        class="form-control"
-                                        name="phone"
-                                        id="employee-phone"
-                                        required
-                                >
-                                <span class="form-text text-muted">{% trans 'Contact to phone number' %}</span>
-                            </div>
-                        </div>
-                        <div class="col-4">
-                            <div class="form-group">
-                                <label class="form-label">{% trans 'Department' %}
-                                </label>
-                                <select
-                                        class="form-select"
-                                        name="group"
-                                        id="select-box-group-employee"
-                                        data-url="{% url 'GroupListAPI' %}"
-                                        data-keyResp="group_list"
-                                >
-                                </select>
-                                <span class="form-text text-muted">{% trans 'Department of the employee' %}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-4">
-                            <div class="form-group">
-                                <label class="form-label">{% trans 'Date of Birthday' %}</label>
-                                <input
-                                        class="form-control"
-                                        type="text"
-                                        name="dob"
-                                        id="employee-dob"
-                                />
-                            </div>
-                        </div>
-                        <div class="col-4">
-                            <div class="form-group">
-                                <label class="form-label">{% trans 'Date Joined' %}</label>
-                                <input
-                                        class="form-control"
-                                        type="text"
-                                        name="date_joined"
-                                        id="employee-date-joined"
-                                />
-                            </div>
-                        </div>
-                        <div class="col-4">
-                            <div class="form-group">
-                                <label class="form-label">{% trans 'Role' %}</label>
-                                <select
-                                        class="form-control"
-                                        multiple
-                                        data-placeholder="{% trans 'Choose' %}"
-                                        name="role"
-                                        id="select-box-role-employee"
-                                        data-url="{% url 'RoleListAPI' %}"
-                                        data-method="GET"
-                                        data-keyResp="role_list"
-                                >
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="form-group">
-                                <div class="form-check form-switch">
-                                    <input
-                                            type="checkbox"
-                                            class="form-check-input"
-                                            name="is_admin_company"
-                                            id="idx_is_admin_company"
-                                    >
-                                    <label class="form-check-label required" for="idx_is_admin_company">
-                                        {% trans 'Is admin' %}
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group">
-                            <div class="form-check form-switch">
-                                <input
-                                        type="checkbox"
-                                        class="form-check-input"
-                                        name="is_active"
-                                        checked
-                                >
-                                <label class="form-label required">
-                                    {% trans 'Active the employee after created' %}
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="tab-pane fade" id="tab-app">
-                {% include 'core/hr/extends/plan_apps.html' with add_new_enabled="true" warning_enabled="true" %}
-            </div>
-            <div class="tab-pane fade" id="tab-permissions">
-                {% include 'core/hr/extends/permissions.html' with add_new_enabled="true" range_allowed="1,2,3,4" %}
-            </div>
+        <div
+                id="employee-detail-page" class="needs-validation"
+                data-url="{% url 'EmployeeDetailAPI' pk=pk %}"
+                data-method="GET"
+                data-url-redirect="{% url 'EmployeeList' %}"
+                data-doc-id="{{ data.data.doc_id }}"
+        >
+            {% csrf_token %}
+            {% include 'core/hr/extends_new/permission_group_tabs_has_change_app.html' with get_from='employee' actions_enabled=True plan_app_enabled=True permit_enabled=True li_head='core/hr/employee/extends/tab-info.html' li_content_head='core/hr/employee/extends/tab-info-content.html' li_content_head_disabled=False %}
         </div>
     </form>
-
-
 {% endblock %}
 
 
@@ -247,7 +63,6 @@
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
 
     <script src="{% static 'assets/js/core/hr/employee/employee_pk.js' %}"></script>
-    <script src="{% static 'assets/js/core/hr/permissions.js' %}"></script>
-    <script src="{% static 'assets/js/core/hr/plan_app.js' %}"></script>
     <script src="{% static 'assets/js/core/hr/employee/employee_update.js' %}"></script>
+    <script src="{% static 'assets/js/core/hr/extends_new/plan_app_permissions.js' %}"></script>
 {% endblock %}

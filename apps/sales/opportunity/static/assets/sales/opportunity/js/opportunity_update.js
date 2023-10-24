@@ -1,7 +1,6 @@
 $(document).ready(function () {
     let eleFrmPermit = $('#permit-member');
     $(document).on('click', '#btnOpenPermit', function () {
-        console.log('btnOpenPermit is clicked!');
         eleFrmPermit.removeClass('hidden');
         document.getElementById('permit-member').scrollIntoView({
             behavior: 'smooth'

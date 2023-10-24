@@ -400,3 +400,36 @@ select[readonly].select2-hidden-accessible + .select2-container .select2-selecti
     border-color: #dc3545;
 }
 /* -- Group input has button info */
+
+/* color by PO */
+.bg-x-primary {
+    background-color: #38C9A5;
+}
+.text-x-primary {
+    color: #38C9A5;
+}
+.bg-x-success {
+    background-color: #38C9A5;
+}
+.text-x-success {
+    color: #38C9A5;
+}
+.bg-x-warning {
+    background-color: #E4D02E;
+}
+.text-x-warning {
+    color: #E4D02E;
+}
+.bg-x-danger {
+    background-color: #C9425B;
+}
+.text-x-danger {
+    color: #C9425B;
+}
+.bg-x-info {
+    background-color: #31A8E0;
+}
+.text-x-info {
+    color: #31A8E0;
+}
+/* -- color by PO */

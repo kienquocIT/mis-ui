@@ -123,3 +123,25 @@ class WareHouseUpdate(View):
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
+
+
+class WarehouseGetProductsListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.WAREHOUSE_PRODUCT_LIST).get(params)
+        return resp.auto_return(key_success='warehouse_products_list')
+
+
+class WarehouseLotListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.WAREHOUSE_LOT_LIST).get(data)
+        return resp.auto_return(key_success='warehouse_lot_list')

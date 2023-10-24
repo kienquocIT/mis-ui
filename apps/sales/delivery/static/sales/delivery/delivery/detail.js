@@ -46,7 +46,7 @@ $(async function () {
                 let temp = _this.getWarehouseList
                 const res = $.fn.switcherResp(req);
                 const table = $('#productStockDetail')
-                let isData = res.warehouse_products_list
+                let isData = res?.['warehouse_products_list'];
                 temp[isKey] = isData
                 _this.setWarehouseList = temp
                 // nếu có hoạt động picking kiểm tra có thông tin delivery_data ko.
@@ -73,7 +73,7 @@ $(async function () {
                                 && val.uom === prod_data.uom_data.id
                             ) {
                                 // item.product_amount += val.stock
-                                item.picked += val.stock
+                                // item.picked += val.stock
                             }
                         }
                     }
@@ -83,18 +83,17 @@ $(async function () {
                         // lấy delivery
                         if (prod_data.ready_quantity > 0) {
                             for (const val of delivery) {
-                                if (val.warehouse === item.id
+                                if (val.warehouse === item?.['warehouse']?.['id']
                                     && val.uom === prod_data.uom_data.id
                                 ) {
-                                    // item.product_amount = prod_data.ready_quantity
-                                    item.picked = prod_data.ready_quantity
-                                    if (prod_data.picked_quantity) item.picked = prod_data.picked_quantity
+                                    item.stock_amount = prod_data.ready_quantity
+                                    // item.picked = prod_data.ready_quantity
+                                    // if (prod_data.picked_quantity) item.picked = prod_data.picked_quantity
                                 }
                             }
                         }
                     }
-                    // newData.push(item)
-                    newData = res.warehouse_products_list;
+                    newData.push(item)
                 }
                 table.not('.dataTable').DataTableDefault({
                     data: newData,
@@ -105,6 +104,20 @@ $(async function () {
                     columns: [
                         {
                             targets: 0,
+                            render: (data, type, row) => {
+                                let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
+                                return `<div class="form-check">
+                                            <input
+                                                type="checkbox"
+                                                class="form-check-input table-row-checkbox"
+                                                data-id="${row?.['id']}"
+                                                data-row="${dataRow}"
+                                            >
+                                        </div>`
+                            }
+                        },
+                        {
+                            targets: 1,
                             class: 'w-15 text-center',
                             data: 'warehouse',
                             render: (row, type, data) => {
@@ -112,7 +125,7 @@ $(async function () {
                             }
                         },
                         {
-                            targets: 1,
+                            targets: 2,
                             class: 'w-45 text-center',
                             data: 'warehouse',
                             render: (row, type, data) => {
@@ -120,15 +133,15 @@ $(async function () {
                             }
                         },
                         {
-                            targets: 2,
+                            targets: 3,
                             class: 'w-25 text-center',
                             data: 'stock_amount',
                             render: (row, type, data) => {
-                                return `<p>${row}</p>`;
+                                return `<p class="table-row-stock">${row}</p>`;
                             }
                         },
                         {
-                            targets: 3,
+                            targets: 4,
                             class: 'w-15 text-center',
                             data: 'picked',
                             render: (row, type, data, meta) => {
@@ -136,7 +149,10 @@ $(async function () {
                                 // condition 1 for config 3, condition 2 for config 4
                                 if (config.is_picking && !config.is_partial_ship ||
                                     (config.is_picking && config.is_partial_ship && data.picked_ready === 0)
-                                ) disabled = 'disabled'
+                                ) disabled = 'disabled';
+                                if ([1, 2].includes(prod_data?.['product_data']?.['general_traceability_method'])) {
+                                    disabled = 'disabled';
+                                }
                                 return `<input class="form-control table-row-picked" type="number" id="warehouse_stock-${meta.row}" value="${row}" ${disabled}>`;
                             }
                         },
@@ -156,6 +172,32 @@ $(async function () {
                                 table.DataTable().row(index).data(data).draw();
                             }
                         })
+                        // Check if Product has Lot or Serial then load table
+                        $(`input.form-check-input`, row).on('click', function (e) {
+                            e.preventDefault();
+                            if (this.checked === true) {
+                                let productWHID = this.getAttribute('data-id');
+                                let tableLot = $('#datable-delivery-wh-lot');
+                                $.fn.callAjax2({
+                                        'url': tableLot.attr('data-url'),
+                                        'method': tableLot.attr('data-method'),
+                                        'data': {'product_warehouse_id': productWHID},
+                                        'isDropdown': true,
+                                    }
+                                ).then(
+                                    (resp) => {
+                                        let data = $.fn.switcherResp(resp);
+                                        if (data) {
+                                            if (data.hasOwnProperty('warehouse_lot_list') && Array.isArray(data.warehouse_lot_list)) {
+                                                prodTable.dataTableTableLot(data.warehouse_lot_list);
+                                                this.checked = true;
+                                                $(row).css('background-color', '#ebfcf5');
+                                            }
+                                        }
+                                    }
+                                )
+                            }
+                        })
                     },
                     footerCallback: function (row, data, start, end, display) {
                         var api = this.api();
@@ -167,7 +209,7 @@ $(async function () {
 
                         // Total over this page
                         const allStock = api
-                            .column(2, {page: 'current'})
+                            .column(3, {page: 'current'})
                             .data()
                             .reduce(function (a, b) {
                                 return intVal(a) + intVal(b);
@@ -175,20 +217,28 @@ $(async function () {
 
 
                         const GetStock = api
-                            .column(3, {page: 'current'})
+                            .column(4, {page: 'current'})
                             .data()
                             .reduce(function (a, b) {
                                 return intVal(a) + intVal(b);
                             }, 0);
                         // Update footer
-                        $(api.column(2).footer()).html(`<b><i>${allStock}</i></b>`);
-                        $(api.column(3).footer()).html(`<b><i>${GetStock}</i></b>`);
+                        $(api.column(3).footer()).html(`<b><i>${allStock}</i></b>`);
+                        $(api.column(4).footer()).html(`<b><i>${GetStock}</i></b>`);
                     },
                 })
                 if (table.hasClass('dataTable')) {
                     table.DataTable().clear().draw();
                     table.DataTable().rows.add(newData).draw();
                 }
+                if ([1, 2].includes(prod_data?.['product_data']?.['general_traceability_method'])) {
+                    if (prod_data?.['product_data']?.['general_traceability_method'] === 1) {
+                        $('#scroll-table-lot')[0].removeAttribute('hidden');
+                        prodTable.dataTableTableLot();
+                    }
+
+                }
+
                 $('#warehouseStockModal').modal('show');
                 $('#save-stock').off().on('click', function (e) {
                     let isSelected = table.DataTable().data().toArray()
@@ -354,6 +404,100 @@ $(async function () {
                     })
                 }
             });
+        }
+
+        dataTableTableLot(data) {
+            let tableLot = $('#datable-delivery-wh-lot');
+            tableLot.not('.dataTable').DataTableDefault({
+                data: data ? data : [],
+                ordering: false,
+                paginate: false,
+                info: false,
+                columns: [
+                    {
+                        targets: 0,
+                        class: 'text-center',
+                        data: 'lot_number',
+                        render: (row, type, data) => {
+                            return `<p>${row}</p>`;
+                        }
+                    },
+                    {
+                        targets: 1,
+                        class: 'text-center',
+                        data: 'quantity_import',
+                        render: (row, type, data) => {
+                            return `<p>${row}</p>`;
+                        }
+                    },
+                    {
+                        targets: 2,
+                        class: 'text-center',
+                        data: 'expire_date',
+                        render: (row, type, data) => {
+                            return `<p>${row}</p>`;
+                        }
+                    },
+                    {
+                        targets: 2,
+                        class: 'text-center',
+                        data: 'manufacture_date',
+                        render: (row, type, data) => {
+                            return `<p>${row}</p>`;
+                        }
+                    },
+                    {
+                        targets: 3,
+                        class: 'text-center',
+                        data: 'quantity_delivery',
+                        render: (row, type, data, meta) => {
+                            return `<input class="form-control table-row-quantity-delivery" type="number" value="${row ? row : 0}">`;
+                        }
+                    },
+                ],
+                rowCallback(row, data, index) {
+                    $(`input.form-control`, row).on('change', function (e) {
+                        prodTable.loadQuantityDelivery(this);
+                    });
+                },
+                footerCallback: function (row, data, start, end, display) {
+                },
+            });
+            if (tableLot.hasClass('dataTable')) {
+                tableLot.DataTable().clear().draw();
+                tableLot.DataTable().rows.add(data ? data : []).draw();
+            }
+        };
+
+        loadQuantityDelivery(ele) {
+            let tableWH = $('#productStockDetail');
+            let rowChecked = tableWH[0]?.querySelector('.table-row-checkbox:checked')?.closest('tr');
+            if (rowChecked) {
+                let newQuantity = 0;
+                let valueWHStock = rowChecked?.querySelector('.table-row-stock')?.innerHTML;
+                let eleWHInput = rowChecked?.querySelector('.table-row-picked');
+                if (valueWHStock && eleWHInput) {
+                    $('#datable-delivery-wh-lot').DataTable().rows().every(function () {
+                        let row = this.node();
+                        let rowLotData = this.data();
+                        let valueLotInput = row?.querySelector('.table-row-quantity-delivery')?.value;
+                        newQuantity += parseFloat(valueLotInput);
+                    });
+                    if (newQuantity <= parseFloat(valueWHStock)) {
+                        eleWHInput.value = newQuantity;
+                        let rowIndex = tableWH.DataTable().row(rowChecked).index();
+                        let $row = tableWH.DataTable().row(rowIndex);
+                        let rowData = $row.data();
+                        rowData.picked = newQuantity;
+                    } else {
+                        $.fn.notifyB({description: 'must less than equal quantity picked'}, 'failure');
+                        ele.value = '0';
+                        prodTable.loadQuantityDelivery(ele);
+                        return false
+                    }
+                }
+            }
+            return true;
         }
 
         static modalLogistics(customerID) {

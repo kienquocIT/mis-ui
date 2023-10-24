@@ -876,12 +876,6 @@ class POLoadDataHandle {
             let linkDetail = elePurchaseRequest.attr('data-link-detail');
             link = linkDetail.format_url_with_uuid(prID);
             if (from.attr('data-method') === 'GET') {
-                // elePRAppend += `<div class="inline-elements-badge mr-2 mb-1">
-                //                     <a href="${link}" target="_blank" class="link-primary underline_hover"><span>${prCode}</span></a>
-                //                     <button type="button" class="btn btn-link btn-sm custom-btn-remove" data-id="${prID}" aria-label="Close" disabled>
-                //                         <span aria-hidden="true"><i class="fas fa-times"></i></span>
-                //                     </button>
-                //                 </div>`;
                 elePRAppend += `<div class="chip chip-outline-primary chip-dismissable bg-green-light-5 mr-1 mb-1">
                                     <span>
                                         <a href="${link}" target="_blank" class="link-primary underline_hover"><span class="chip-text">${prCode}</span></a>
@@ -889,12 +883,6 @@ class POLoadDataHandle {
                                     </span>
                                 </div>`;
             } else {
-                // elePRAppend += `<div class="inline-elements-badge mr-2 mb-1">
-                //                     <a href="${link}" target="_blank" class="link-primary underline_hover"><span>${prCode}</span></a>
-                //                     <button type="button" class="btn btn-link btn-sm custom-btn-remove" data-id="${prID}" aria-label="Close">
-                //                         <span aria-hidden="true"><i class="fas fa-times"></i></span>
-                //                     </button>
-                //                 </div>`;
                 elePRAppend += `<div class="chip chip-outline-primary chip-dismissable bg-green-light-5 mr-1 mb-1">
                                     <span>
                                         <a href="${link}" target="_blank" class="link-primary underline_hover"><span class="chip-text">${prCode}</span></a>

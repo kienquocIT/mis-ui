@@ -19,7 +19,7 @@ from apps.masterdata.saledata.views.product import (
     ProductMasterDataList, ProductTypeListAPI, ProductCategoryListAPI, UnitOfMeasureListAPI,
     UnitOfMeasureGroupListAPI, UnitOfMeasureDetailAPI, ProductTypeDetailAPI, ProductCategoryDetailAPI,
     UnitOfMeasureGroupDetailAPI, ProductList, ProductCreate, ProductListAPI, ProductDetailAPI, ProductDetail,
-    ProductForSaleListAPI, ProductUpdate, UnitOfMeasureOfGroupLaborListAPI, WarehouseGetProductsListAPI
+    ProductForSaleListAPI, ProductUpdate, UnitOfMeasureOfGroupLaborListAPI
 )
 from apps.masterdata.saledata.views.price import (
     PriceMasterDataList, TaxCategoryListAPI, TaxListAPI, TaxDetailAPI, TaxCategoryDetailAPI, CurrencyListAPI,
@@ -31,7 +31,7 @@ from apps.masterdata.saledata.views.shipping import ShippingList, ShippingCreate
     ShippingDetailAPI, ShippingCheckListAPI, ShippingUpdate
 from apps.masterdata.saledata.views.warehouse import (
     WareHouseList, WareHouseListAPI, WareHouseDetailAPI, WarehouseProductAPI, WareHouseListForInventoryAdjustmentAPI,
-    WareHouseCreate, WareHouseDetail, WareHouseUpdate,
+    WareHouseCreate, WareHouseDetail, WareHouseUpdate, WarehouseGetProductsListAPI, WarehouseLotListAPI,
 )
 
 urlpatterns = [
@@ -127,7 +127,6 @@ urlpatterns = [
     path('products', ProductList.as_view(), name='ProductList'),
     path('product/create', ProductCreate.as_view(), name='ProductCreate'),
     path('products/api', ProductListAPI.as_view(), name='ProductListAPI'),
-    path('warehouse-get-products/api', WarehouseGetProductsListAPI.as_view(), name='WarehouseGetProductsListAPI'),
     path('product/update/<str:pk>', ProductUpdate.as_view(), name='ProductUpdate'),
     path('product/detail/<str:pk>', ProductDetail.as_view(), name='ProductDetail'),
     path('product/api/<str:pk>', ProductDetailAPI.as_view(), name='ProductDetailAPI'),
@@ -215,6 +214,8 @@ urlpatterns += [
     ),
     path('warehouse/api/<str:pk>', WareHouseDetailAPI.as_view(), name='WareHouseDetailAPI'),
     path('warehouse/product/api', WarehouseProductAPI.as_view(), name='WarehouseProductAPI'),
+    path('warehouse-get-products/api', WarehouseGetProductsListAPI.as_view(), name='WarehouseGetProductsListAPI'),
+    path('warehouse-lots/api', WarehouseLotListAPI.as_view(), name='WarehouseLotListAPI'),
 ]
 # // WareHouse
 # Good receipt

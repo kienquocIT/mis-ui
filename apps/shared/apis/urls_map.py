@@ -270,6 +270,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     WAREHOUSE_DETAIL = StringUrl('saledata/warehouse/{pk}')
     WAREHOUSE_PRODUCT_LIST = StringUrl('saledata/warehouses-products')
     WAREHOUSE_LOT_LIST = StringUrl('saledata/warehouses-lots')
+    WAREHOUSE_SERIAL_LIST = StringUrl('saledata/warehouses-serials')
     WAREHOUSE_STOCK_PRODUCT = StringUrl('saledata/warehouses/check/{product_id}/{uom_id}')
 
     # shipping unit

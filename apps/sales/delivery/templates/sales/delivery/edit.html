@@ -3,6 +3,7 @@
 {% load static %}
 {% block title %}{% trans 'Delivery Edit' %}{% endblock %}
 {% block cssHeader %}
+    <link href="{% static 'sales/delivery/delivery/css/delivery.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
     <style>
@@ -253,21 +254,15 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="warehouseStockModal" tabindex="-1" role="dialog"
-         aria-labelledby="warehouseStockModal" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+    <div class="modal fade mt-5" id="warehouseStockModal" tabindex="-1" role="dialog" aria-labelledby="warehouseStockModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-fullscreen modal-fullscreen-custom ml-5 mt-5" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">{% trans 'Get Product' %}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
-            </div>
             <div class="modal-body">
+                <div class="row ml-2"><h5>{% trans 'Get Product' %}</h5></div>
                 <p><a class="text-primary text-decoration-underline title_prod" href="#"></a></p>
                 <div class="row">
-                    <div class="col-12">
-                        <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-350p position-relative overflow-y-scroll" id="scroll-table-wh">
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-750p position-relative overflow-y-scroll" id="scroll-table-wh">
                             <table id="productStockDetail" class="table w-100">
                                 <thead>
                                 <tr>
@@ -289,10 +284,8 @@
                             </table>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-12">
-                        <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-350p position-relative overflow-y-scroll" id="scroll-table-lot" hidden>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-750p position-relative overflow-y-scroll" id="scroll-table-lot" hidden>
                             <table
                                 id="datable-delivery-wh-lot"
                                 class="table nowrap w-100"
@@ -312,10 +305,30 @@
                                 </tbody>
                             </table>
                         </div>
+                        <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-750p position-relative overflow-y-scroll" id="scroll-table-serial" hidden>
+                            <table
+                                id="datable-delivery-wh-serial"
+                                class="table nowrap w-100"
+                                data-url="{% url "WarehouseSerialListAPI" %}"
+                                data-method="GET"
+                            >
+                                <thead>
+                                <tr>
+                                    <th class="w-10"></th>
+                                    <th class="w-25">{% trans 'Vendor serial no.' %}</th>
+                                    <th class="w-25">{% trans 'Serial no.' %}</th>
+                                    <th class="w-20">{% trans 'Warranty start' %}</th>
+                                    <th class="w-20">{% trans 'Warranty end' %}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="modal-footer justify-content-between ">
+            <div class="modal-footer">
 				<button type="button" class="btn btn-primary" id="save-stock">{% trans 'Get' %}</button>
 				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
 			</div>

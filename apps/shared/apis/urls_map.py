@@ -391,7 +391,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     WORKING_CALENDAR_HOLIDAY = StringUrl('leave/working-calendar/holiday')
 
     # leave available
-    LEAVE_AVAILABLE = StringUrl('leave/available/list/{pk}')
+    LEAVE_AVAILABLE = StringUrl('leave/available/list')
     LEAVE_AVAILABLE_UPDATE = StringUrl('leave/available/edit/{pk}')
     LEAVE_AVAILABLE_HISTORY = StringUrl('leave/available/history/{pk}')
 

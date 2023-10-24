@@ -7,6 +7,9 @@ $(document).ready(function(){
     const $trans = $('#trans-factory')
     const $urlElm = $('#url-factory')
     const $modal = $('#modal_leave_type')
+    const $balanceCtrl = $('#inputBalanceControl')
+    const $NumOP = $('#inputNoP')
+    const $PaidByElm = $('#selectPaidBy')
 
     // form submit
     function leaveTypeSubmit(data={}){
@@ -25,25 +28,21 @@ $(document).ready(function(){
         }
         if (formData.no_of_paid) formData.no_of_paid = parseInt(formData.no_of_paid)
         else delete formData.no_of_paid
+        if (!formData?.balance_control) formData.balance_control = false
+        if (!formData?.is_check_expiration) formData.is_check_expiration = false
 
         const clone = $.extend({}, formData); // clone for update to table when user update purpose
         delete formData.is_lt_system
         delete formData.is_lt_edit
 
-        if (formData.code === 'AN'){
-            const temp = {
-                leave_config: formData.leave_config,
-                no_of_paid: parseInt(formData.no_of_paid)
-            }
-            formData = temp
+        if (formData.code === 'AN') formData = {
+            leave_config: formData.leave_config, no_of_paid: parseInt(formData.no_of_paid)
         }
-        else if (formData.code === 'ANPY'){
-            const temp = {
-                leave_config: formData.leave_config,
-                prev_year: parseInt(formData.prev_year)
-            }
-            formData = temp
-        }else formData.prev_year = 0
+        else if (formData.code === 'ANPY') formData = {
+            leave_config: formData.leave_config,
+            prev_year: parseInt(formData.prev_year)
+        }
+        else formData.prev_year = 0
         $.fn.callAjax2({
             'url': url,
             'method': method,
@@ -63,7 +62,7 @@ $(document).ready(function(){
                     delete clone.csrfmiddlewaretoken
                     clone.is_lt_edit = JSON.parse(clone.is_lt_edit)
                     clone.is_lt_system = JSON.parse(clone.is_lt_system)
-                    clone.paid_by = parseInt(clone.paid_by)
+                    clone.paid_by = Number(clone.paid_by)
                     $tbELm.DataTable().row(parseInt(clone.type_idx)).data(clone).draw()
                 }
             },
@@ -77,7 +76,7 @@ $(document).ready(function(){
         $('.an-type, .prev-type, .create-or-edit').addClass('hidden')
         if (data.code === 'AN'){
             $modal.find('.an-type').removeClass('hidden')
-            $('#inputNoP').val(data.no_of_paid)
+            $NumOP.val(data.no_of_paid)
         }
         else if (data.code === 'ANPY'){
             $modal.find('.prev-type').removeClass('hidden')
@@ -85,9 +84,9 @@ $(document).ready(function(){
         }
         else $modal.find('.create-or-edit').removeClass('hidden')
 
-        $('#selectPaidBy').val(data.paid_by).trigger('change')
+        $PaidByElm.val(data.paid_by).trigger('change')
         $('#txtAreaRemark').val(data.remark)
-        $('#inputBalanceControl').prop('checked', data.balance_control)
+        $balanceCtrl.prop('checked', data.balance_control)
         if (data.balance_control)
             $('#inputExpired').removeClass('hidden')
         if (data.is_check_expiration){
@@ -123,19 +122,19 @@ $(document).ready(function(){
             },
             {
                 data: 'code',
-                render: (row, type, data) => {
+                render: (row) => {
                     return `<span>${row || '--'}</span>`
                 }
             },
             {
                 data: 'title',
-                render: (row, type, data) => {
+                render: (row) => {
                     return `<span>${row || '--'}</span>`
                 }
             },
             {
                 data: 'paid_by',
-                render: (row, type, data) => {
+                render: (row) => {
                     let txt = '--'
                     if (row > 0) txt = PAID_BY[row]
                     return `<span>${txt}</span>`
@@ -143,13 +142,13 @@ $(document).ready(function(){
             },
             {
                 data: 'balance_control',
-                render: (row, type, data) =>{
+                render: (row) =>{
                     return `<span>${row ? $trans.attr('data-control-yes') : $trans.attr('data-control-no')}</span>`
                 }
             },
             {
                 targets: 5,
-                render: (row, type, data, meta) =>{
+                render: (row, type, data) =>{
                     const is_sys = data?.is_lt_system || false
                     const is_edit = data?.is_lt_edit || false
                     let temp = $(`${$('.group-btn-tb').html()}`)
@@ -160,12 +159,12 @@ $(document).ready(function(){
             }
         ],
         rowCallback: (row, data, index)=>{
-            $('.btn-edit-row:not([disabled])', row).off().on('click', function(e){
+            $('.btn-edit-row:not([disabled])', row).off().on('click', function(){
                 $modal.modal('show')
                 data.idx = index
                 appendDataToForm(data)
             })
-            $('.btn-remove-row:not([disabled])', row).off().on('click', function(e){
+            $('.btn-remove-row:not([disabled])', row).off().on('click', function(){
                 deleteLeaveType(row, data)
             })
         },
@@ -184,19 +183,19 @@ $(document).ready(function(){
             },
             {
                 data: 'from_range',
-                render: (row, type, data) => {
+                render: (row) => {
                     return `<span>${row || '--'}</span>`
                 }
             },
             {
                 data: 'to_range',
-                render: (row, type, data) => {
+                render: (row) => {
                     return `<span>${row || '--'}</span>`
                 }
             },
             {
                 data: 'added',
-                render: (row, type, data) => {
+                render: (row) => {
                     return `<span>${row || '--'}</span>`
                 }
             },
@@ -208,23 +207,24 @@ $(document).ready(function(){
         e.preventDefault();
         $('.an-type, .prev-type').addClass('hidden')
          $('.create-or-edit').removeClass('hidden')
+        $('#type_id').val(null)
         $modal.modal('show')
     })
 
     // save modal btn
     $('#save-type').off().on('click', function(){
         const typeID = $('#type_id').val()
-        if (type_id) leaveTypeSubmit({'type_id': typeID})
+        if (typeID) leaveTypeSubmit({'type_id': typeID})
         else leaveTypeSubmit()
     })
 
-    $('#inputBalanceControl').on('change', function(){
+    $balanceCtrl.on('change', function(){
         if ($(this).prop('checked'))
             $('#inputExpired').closest('.form-check').removeClass('hidden')
         else $('#inputExpired').closest('.form-check').addClass('hidden')
     })
     // valid AN number
-    $('#inputNoP').on('blur', function(){
+    $NumOP.on('blur', function(){
         let value = parseInt(this.value.replace('-', ''))
         if (!$.isNumeric(value) || value % 1 < 0){
             $(this).closest('.an-type').find('p').remove()
@@ -233,8 +233,8 @@ $(document).ready(function(){
         else $(this).closest('.an-type').find('p').remove()
         this.value = value
     })
-    $('#selectPaidBy').initSelect2()
-    $('.date-picker').daterangepicker({
+    const $datePickerElm = $('.date-picker')
+    $datePickerElm.daterangepicker({
         minYear: 1901,
         singleDatePicker: true,
         timePicker: false,
@@ -243,7 +243,7 @@ $(document).ready(function(){
             format: 'DD/MM/YYYY'
         }
     });
-    $('.date-picker').val(null).trigger('change');
+    $datePickerElm.val(null).trigger('change');
 
 
     $('.nav-item a').on('click', function(){
@@ -253,7 +253,7 @@ $(document).ready(function(){
         else $btn.removeClass('hidden')
     })
 
-    $('#modal_leave_type').on('hidden.bs.modal', function(e){
+    $modal.on('hidden.bs.modal', function(){
         $(this).find('form')[0].reset()
     })
 });

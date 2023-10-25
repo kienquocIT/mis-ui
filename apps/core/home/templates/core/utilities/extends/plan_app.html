@@ -1,0 +1,83 @@
+{% load string_utils %}
+<div>
+    <table class="table table-bordered nowrap w-100">
+        <thead>
+        <tr>
+            <td width="15%">
+                <b>Gói - Ứng dụng</b>
+            </td>
+            <td width="25%" class="wrap-text">
+                <p><b>Ứng xử khi là "quyền phụ thuộc"</b></p>
+                <small>
+                    <i class="fa-solid fa-check text-success"></i>: Thêm vào nhóm theo ID chủ thể
+                </small>
+                <br>
+                <small>
+                    <i class="fa-solid fa-xmark text-danger"></i>: Thêm vào nhóm general
+                </small>
+            </td>
+            <td width="25%" class="wrap-text">
+                <p><b>Ứng xử khi sử dụng thụ hưởng employee_inherit_id trên chức năng</b></p>
+                <small>
+                    <i class="fa-solid fa-check text-success"></i>: Thêm bộ lọc loại bỏ employee_inherit_id=me khi thành
+                    lập câu truy vấn
+                </small>
+                <br>
+                <small>
+                    <i class="fa-solid fa-xmark text-danger"></i>: Không thêm bộ lọc loại bỏ thụ hưởng
+                </small>
+            </td>
+            <td width="35%">
+                <b>Quyền - Phạm Vi - Phụ thuộc</b>
+            </td>
+        </tr>
+        </thead>
+        <tbody>
+        {% for item in data.plan_app %}
+            {% for app in item.application %}
+                <tr>
+                    <td>{{ item.title }} - {{ app.title }}</td>
+                    <td class="wrap-text">
+                        {% if app.depend_follow_main %}
+                            <i class="fa-solid fa-check text-success"></i>
+                        {% else %}
+                            <i class="fa-solid fa-xmark text-danger"></i>
+                        {% endif %}
+                    </td>
+                    <td class="wrap-text">
+                        {% if app.filtering_inheritor %}
+                            <i class="fa-solid fa-check text-success"></i>
+                        {% else %}
+                            <i class="fa-solid fa-xmark text-danger"></i>
+                        {% endif %}
+                    </td>
+                    <td class="wrap-text">
+                        {% for perm_code, perm_config in app.permit_mapping.items %}
+                            <div>
+                                <span class="badge badge-soft-light mr-3 mb-1">
+                                    {{ perm_code }} : {{ perm_config.range }}
+                                </span>
+                                <button class="btn btn-outline-light btn-xs expand-app-config">
+                                    <span class="expand-app-config-icon">
+                                        <span class="icon">
+                                            <i class="fa-solid fa-up-right-and-down-left-from-center"></i>
+                                        </span>
+                                    </span>
+                                    <span class="expand-app-config-icon d-none">
+                                        <span class="icon">
+                                            <i class="fa-solid fa-down-left-and-up-right-to-center"></i>
+                                        </span>
+                                    </span>
+                                </button>
+                                <pre class="app-config-data d-none">{{ perm_config|pretty_json:"range" }}</pre>
+                            </div>
+                        {% endfor %}
+                        <br>
+
+                    </td>
+                </tr>
+            {% endfor %}
+        {% endfor %}
+        </tbody>
+    </table>
+</div>

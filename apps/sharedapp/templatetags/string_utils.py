@@ -199,3 +199,15 @@ def attr_and_value_else_blank(attr_name, attr_value, default_value=None, else_re
         if result:
             return f'{attr_name}={result}'
     return else_return
+
+
+@register.filter
+def pretty_json(value, exclude_key=""):
+    try:
+        for key in exclude_key.split(","):
+            if key in value:
+                del value[key]
+        return json.dumps(value, indent=4)
+    except Exception as err:
+        print(err)
+    return ''

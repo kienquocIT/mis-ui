@@ -61,8 +61,12 @@ $(async function () {
                             for (const val of delivery) {
                                 if (val.warehouse === item?.['warehouse']?.['id']
                                     && val.uom === prod_data.uom_data.id
-                                )
-                                    item.picked = val.stock
+                                ) {
+                                    item.picked = val.stock;
+                                    if (prod_data?.['uom_data']) {
+                                        item['uom_so'] = prod_data?.['uom_data'];
+                                    }
+                                }
                             }
                     }
                     else if ((config.is_picking && !config.is_partial_ship) && delivery) {
@@ -74,6 +78,9 @@ $(async function () {
                             ) {
                                 // item.product_amount += val.stock
                                 // item.picked += val.stock
+                                if (prod_data?.['uom_data']) {
+                                    item['uom_so'] = prod_data?.['uom_data'];
+                                }
                             }
                         }
                     }
@@ -89,6 +96,9 @@ $(async function () {
                                     item.stock_amount = prod_data.ready_quantity
                                     // item.picked = prod_data.ready_quantity
                                     if (prod_data.picked_quantity) item.picked = prod_data.picked_quantity
+                                    if (prod_data?.['uom_data']) {
+                                        item['uom_so'] = prod_data?.['uom_data'];
+                                    }
                                     if (val?.['lot_data']) {
                                         item['lot_data'] = val?.['lot_data'];
                                     }
@@ -101,6 +111,10 @@ $(async function () {
                                 }
                             }
                         }
+                    }
+                    if (!table.hasClass('dataTable')) {
+                        item['lot_data'] = [];
+                        item['serial_data'] = [];
                     }
                     newData.push(item)
                 }
@@ -198,9 +212,9 @@ $(async function () {
                             if (this.checked === true) {
                                 prodTable.loadUnCheckWH();
                                 this.checked = true;
-                                if ([1, 2].includes(prod_data?.['product_data']?.['general_traceability_method'])) {
+                                if ([1, 2].includes(data?.['product']?.['general_traceability_method'])) {
                                     let productWHID = this.getAttribute('data-id');
-                                    if (prod_data?.['product_data']?.['general_traceability_method'] === 1) {
+                                    if (data?.['product']?.['general_traceability_method'] === 1) {
                                         let tableLot = $('#datable-delivery-wh-lot');
                                         $.fn.callAjax2({
                                                 'url': tableLot.attr('data-url'),
@@ -216,7 +230,7 @@ $(async function () {
                                                         for (let lot of dataLot.warehouse_lot_list) {
                                                             // exchange uom ratio
                                                             let finalUOMRate = 1;
-                                                            let uomDeliveryRatio = prod_data?.['uom_data']?.['ratio'];
+                                                            let uomDeliveryRatio = data?.['uom_so']?.['ratio'];
                                                             let uomWHRatio = lot?.['product_warehouse']?.['uom']?.['ratio'];
                                                             if (uomDeliveryRatio && uomWHRatio) {
                                                                 finalUOMRate = uomWHRatio / uomDeliveryRatio
@@ -241,7 +255,7 @@ $(async function () {
                                             }
                                         )
                                     }
-                                    if (prod_data?.['product_data']?.['general_traceability_method'] === 2) {
+                                    if (data?.['product']?.['general_traceability_method'] === 2) {
                                         let tableSerial = $('#datable-delivery-wh-serial');
                                         $.fn.callAjax2({
                                                 'url': tableSerial.attr('data-url'),

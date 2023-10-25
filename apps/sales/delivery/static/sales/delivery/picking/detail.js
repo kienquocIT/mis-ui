@@ -265,6 +265,21 @@ $(async function () {
                         $('.dropdown-menu', dropdownElm.parent('.dropdown')).html(htmlContent);
                     }
                 } else {
+                    htmlContent += `<div class="mb-1"><h6><i>${$elmTrans.attr('data-warehouse')}</i></h6><p>${'KPC'}</p></div>`;
+                        htmlContent += `<div class="mb-1 d-flex justify-content-between">` +
+                            `<div><h6>${$elmTrans.attr('data-stock')}</h6>${0}</div>` +
+                            `<div><h6>${$elmTrans.attr('data-store')}</h6>${0}</div>` +
+                            `<div><h6>${$elmTrans.attr('data-picking-area')}</h6>${0}</div>` +
+                            `</div>`;
+                        htmlContent += `<div class="mb-1"><h6><i>UoM</i></h6><p>${prod?.['product_data']?.['uom_inventory']?.['title'] || '--'}</p></div>`;
+                        let link = $('#url-factory').attr('data-product-detail').format_url_with_uuid(prod?.['product_data']?.['id']);
+                        htmlContent += `<div class="dropdown-divider"></div><div class="text-right">
+                            <a href="${link}" target="_blank" class="link-primary underline_hover">
+                                <span>${$elmTrans.attr('data-view-detail')}</span>
+                                <span class="icon ml-1">
+                                    <i class="bi bi-arrow-right-circle-fill"></i>
+                                </span>
+                            </a></div>`;
                     $('.dropdown-menu', dropdownElm.parent('.dropdown')).html(htmlContent);
                     $.fn.notifyB({description: 'Warehouse does not contain this product'}, 'failure')
                     return false

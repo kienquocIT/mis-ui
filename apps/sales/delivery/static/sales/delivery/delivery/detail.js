@@ -206,6 +206,16 @@ $(async function () {
                                                 if (dataLot) {
                                                     if (dataLot.hasOwnProperty('warehouse_lot_list') && Array.isArray(dataLot.warehouse_lot_list)) {
                                                         for (let lot of dataLot.warehouse_lot_list) {
+                                                            // exchange uom ratio
+                                                            let finalUOMRate = 1;
+                                                            let uomSORatio = data?.['uom']?.['ratio'];
+                                                            let uomWHRatio = lot?.['product_warehouse']?.['uom']?.['ratio'];
+                                                            if (uomSORatio && uomWHRatio) {
+                                                                finalUOMRate = uomWHRatio / uomSORatio
+                                                            }
+                                                            if (lot?.['quantity_import']) {
+                                                                lot['quantity_import'] = lot?.['quantity_import'] * finalUOMRate;
+                                                            }
                                                             if (data?.['lot_data']) {
                                                                 for (let delivery_lot of data?.['lot_data']) {
                                                                     if (delivery_lot?.['product_warehouse_lot'] === lot?.['id']) {

@@ -160,11 +160,12 @@ class DefaultDataView(View):
         template='core/utilities/default_data.html',
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(request=request, user=request.user, url='private-system/default-data').get()
+        resp_default_data = ServerAPI(request=request, user=request.user, url='private-system/default-data').get()
         resp_plan_app = ServerAPI(request=request, user=request.user, url='private-system/plan-app').get()
         return {
-            'default_data': self.default_data(resp.result),
-            'plan_app': resp_plan_app.result,
+            'default_data': self.default_data(resp_default_data.result),
+            'plan_app': resp_plan_app.result['plan_app'],
+            'app_by_id': resp_plan_app.result['app_by_id']
         }
 
 

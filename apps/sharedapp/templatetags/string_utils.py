@@ -202,12 +202,31 @@ def attr_and_value_else_blank(attr_name, attr_value, default_value=None, else_re
 
 
 @register.filter
-def pretty_json(value, exclude_key=""):
+def pretty_json(value):
     try:
-        for key in exclude_key.split(","):
-            if key in value:
-                del value[key]
         return json.dumps(value, indent=4)
     except Exception as err:
         print(err)
     return ''
+
+
+@register.simple_tag(name='permit_mapping_pretty_json')
+def permit_mapping_pretty_json(value, app_by_id, exclude_key="", indent=4):
+    try:
+        for key in exclude_key.split(","):
+            if key in value:
+                del value[key]
+
+        if 'app_depends_on' in value:
+            result = {}
+            for app_id, app_config in value['app_depends_on'].items():
+                key = app_id
+                app_data = app_by_id.get(app_id, {})
+                if app_data:
+                    key = f"{app_data['title']} - {app_data['code']}"
+                result[key] = app_config
+            value['app_depends_on'] = result
+        return json.dumps(value, indent=indent)
+    except Exception as err:
+        print(err)
+    return '{}'

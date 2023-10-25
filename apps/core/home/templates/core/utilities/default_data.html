@@ -2,12 +2,14 @@
 {% load static i18n %}
 
 {% block cssHeader %}
+    <link href="{% static 'assets/plugins/json-viewer/jquery.json-viewer.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 
 {% block pageAction %}
 {% endblock %}
 
 {% block pageContent %}
+    <pre id="json-viewer"></pre>
     <ul class="nav nav-line nav-tabs nav-light">
         <li class="nav-item">
             <a class="nav-link active" data-bs-toggle="tab" href="#tab_default_data">
@@ -31,10 +33,17 @@
 {% endblock %}
 
 {% block jsFooter %}
+    <script src="{% static 'assets/plugins/json-viewer/jquery.json-viewer.js' %}"></script>
     <script>
-        $('.expand-app-config').on('click', function (){
-            $(this).find('.expand-app-config-icon').toggleClass('d-none');
-            $(this).parent().find('.app-config-data').toggleClass('d-none');
-        })
+        $('pre.app-config-data').each(function () {
+            let jsonTxt = $(this).text();
+            $(this).jsonViewer(
+                JSON.parse(jsonTxt),
+                {
+                    collapsed: true,
+                    rootCollapsable: true,
+                }
+            );
+        });
     </script>
 {% endblock %}

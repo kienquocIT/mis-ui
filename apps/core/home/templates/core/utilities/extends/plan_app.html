@@ -1,5 +1,6 @@
 {% load string_utils %}
 <div>
+    {{ data.app_by_id|json_script:"app_by_id" }}
     <table class="table table-bordered nowrap w-100">
         <thead>
         <tr>
@@ -53,27 +54,24 @@
                     </td>
                     <td class="wrap-text">
                         {% for perm_code, perm_config in app.permit_mapping.items %}
-                            <div>
-                                <span class="badge badge-soft-light mr-3 mb-1">
-                                    {{ perm_code }} : {{ perm_config.range }}
+                            <div class="d-flex mb-1">
+                                <span class="badge badge-soft-light w-75p">
+                                    {% if perm_code == 'view' %}
+                                        <span class="text-success mb-2">{{ perm_code }}</span>
+                                    {% elif perm_code == 'create' %}
+                                        <span class="text-warning mb-2">{{ perm_code }}</span>
+                                    {% elif perm_code == 'edit' %}
+                                        <span class="text-info mb-2">{{ perm_code }}</span>
+                                    {% elif perm_code == 'delete' %}
+                                        <span class="text-danger mb-2">{{ perm_code }}</span>
+                                    {% else %}
+                                        <span class="text-secondary mb-2">{{ perm_code }}</span>
+                                    {% endif %}
+                                    <span>{{perm_config.range|join:"-"}}</span>
                                 </span>
-                                <button class="btn btn-outline-light btn-xs expand-app-config">
-                                    <span class="expand-app-config-icon">
-                                        <span class="icon">
-                                            <i class="fa-solid fa-up-right-and-down-left-from-center"></i>
-                                        </span>
-                                    </span>
-                                    <span class="expand-app-config-icon d-none">
-                                        <span class="icon">
-                                            <i class="fa-solid fa-down-left-and-up-right-to-center"></i>
-                                        </span>
-                                    </span>
-                                </button>
-                                <pre class="app-config-data d-none">{{ perm_config|pretty_json:"range" }}</pre>
+                                <pre class="app-config-data">{% permit_mapping_pretty_json perm_config data.app_by_id "range" 0 %}</pre>
                             </div>
                         {% endfor %}
-                        <br>
-
                     </td>
                 </tr>
             {% endfor %}

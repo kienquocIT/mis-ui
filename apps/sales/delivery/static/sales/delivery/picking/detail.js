@@ -232,6 +232,17 @@ $(async function () {
             $.fn.notifyB({description: $elmTrans.attr('data-error-warehouse')}, 'failure')
             return false
         }
+        let warehouseTitle = '';
+        if (warehouseID) {
+            let dataWHSelected = SelectDDControl.get_data_from_idx($('#inputWareHouse'), warehouseID);
+            if (dataWHSelected) {
+                if (dataWHSelected?.['title']) {
+                    warehouseTitle = dataWHSelected?.['title'];
+                } else {
+                    warehouseTitle = dataWHSelected?.['text'];
+                }
+            }
+        }
         $.fn.callAjax2(
             {
                 'url': $('#url-factory').attr('data-product-warehouse'),
@@ -265,7 +276,7 @@ $(async function () {
                         $('.dropdown-menu', dropdownElm.parent('.dropdown')).html(htmlContent);
                     }
                 } else {
-                    htmlContent += `<div class="mb-1"><h6><i>${$elmTrans.attr('data-warehouse')}</i></h6><p>${'KPC'}</p></div>`;
+                    htmlContent += `<div class="mb-1"><h6><i>${$elmTrans.attr('data-warehouse')}</i></h6><p>${warehouseTitle}</p></div>`;
                         htmlContent += `<div class="mb-1 d-flex justify-content-between">` +
                             `<div><h6>${$elmTrans.attr('data-stock')}</h6>${0}</div>` +
                             `<div><h6>${$elmTrans.attr('data-store')}</h6>${0}</div>` +
@@ -281,8 +292,8 @@ $(async function () {
                                 </span>
                             </a></div>`;
                     $('.dropdown-menu', dropdownElm.parent('.dropdown')).html(htmlContent);
-                    $.fn.notifyB({description: 'Warehouse does not contain this product'}, 'failure')
-                    return false
+                    // $.fn.notifyB({description: 'Warehouse does not contain this product'}, 'failure')
+                    // return false
                 }
             }
         });

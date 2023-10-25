@@ -59,7 +59,7 @@ $(async function () {
                         // config 1, 2
                         if (delivery)
                             for (const val of delivery) {
-                                if (val.warehouse === item.id
+                                if (val.warehouse === item?.['warehouse']?.['id']
                                     && val.uom === prod_data.uom_data.id
                                 )
                                     item.picked = val.stock
@@ -69,7 +69,7 @@ $(async function () {
                         // config 3
                         // item.product_amount = 0
                         for (const val of delivery) {
-                            if (val.warehouse === item.id
+                            if (val.warehouse === item?.['warehouse']?.['id']
                                 && val.uom === prod_data.uom_data.id
                             ) {
                                 // item.product_amount += val.stock
@@ -92,6 +92,12 @@ $(async function () {
                                     if (val?.['lot_data']) {
                                         item['lot_data'] = val?.['lot_data'];
                                     }
+                                    if (val?.['serial_data']) {
+                                        item['serial_data'] = val?.['serial_data'];
+                                    }
+                                } else {
+                                    item.stock_amount = 0;
+                                    item.picked = 0;
                                 }
                             }
                         }
@@ -208,17 +214,17 @@ $(async function () {
                                                         for (let lot of dataLot.warehouse_lot_list) {
                                                             // exchange uom ratio
                                                             let finalUOMRate = 1;
-                                                            let uomSORatio = data?.['uom']?.['ratio'];
+                                                            let uomDeliveryRatio = prod_data?.['uom_data']?.['ratio'];
                                                             let uomWHRatio = lot?.['product_warehouse']?.['uom']?.['ratio'];
-                                                            if (uomSORatio && uomWHRatio) {
-                                                                finalUOMRate = uomWHRatio / uomSORatio
+                                                            if (uomDeliveryRatio && uomWHRatio) {
+                                                                finalUOMRate = uomWHRatio / uomDeliveryRatio
                                                             }
                                                             if (lot?.['quantity_import']) {
                                                                 lot['quantity_import'] = lot?.['quantity_import'] * finalUOMRate;
                                                             }
                                                             if (data?.['lot_data']) {
                                                                 for (let delivery_lot of data?.['lot_data']) {
-                                                                    if (delivery_lot?.['product_warehouse_lot'] === lot?.['id']) {
+                                                                    if (delivery_lot?.['product_warehouse_lot_id'] === lot?.['id']) {
                                                                         lot['quantity_delivery'] = delivery_lot?.['quantity_delivery'];
                                                                         break;
                                                                     }
@@ -238,7 +244,7 @@ $(async function () {
                                         $.fn.callAjax2({
                                                 'url': tableSerial.attr('data-url'),
                                                 'method': tableSerial.attr('data-method'),
-                                                'data': {'product_warehouse_id': productWHID},
+                                                'data': {'product_warehouse_id': productWHID, 'is_delete': false},
                                                 'isDropdown': true,
                                             }
                                         ).then(
@@ -248,8 +254,8 @@ $(async function () {
                                                     if (dataSerial.hasOwnProperty('warehouse_serial_list') && Array.isArray(dataSerial.warehouse_serial_list)) {
                                                         for (let serial of dataSerial.warehouse_serial_list) {
                                                             if (data?.['serial_data']) {
-                                                                for (let delivery_lot of data?.['serial_data']) {
-                                                                    if (delivery_lot?.['product_warehouse_lot'] === serial?.['id']) {
+                                                                for (let delivery_serial of data?.['serial_data']) {
+                                                                    if (delivery_serial?.['product_warehouse_serial_id'] === serial?.['id']) {
                                                                         serial['is_checked'] = true;
                                                                         break;
                                                                     }
@@ -329,6 +335,7 @@ $(async function () {
                                 'uom': prod_data.uom_data.id,
                                 'stock': picked,
                                 'lot_data': item?.['lot_data'] ? item?.['lot_data'] : [],
+                                'serial_data': item?.['serial_data'] ? item?.['serial_data'] : [],
                             })
                             temp_picked += picked
                         }
@@ -536,10 +543,8 @@ $(async function () {
                 rowCallback(row, data, index) {
                     $(`input.form-control`, row).on('change', function (e) {
                         prodTable.validateQuantity(this);
-                        prodTable.loadQuantityDelivery(this);
+                        prodTable.loadQuantityDeliveryByLot(this);
                     });
-                },
-                footerCallback: function (row, data, start, end, display) {
                 },
             });
             if (tableLot.hasClass('dataTable')) {
@@ -615,12 +620,9 @@ $(async function () {
                     },
                 ],
                 rowCallback(row, data, index) {
-                    $(`input.form-control`, row).on('change', function (e) {
-                        prodTable.validateQuantity(this);
-                        prodTable.loadQuantityDelivery(this);
+                    $(`input.form-check-input`, row).on('click', function (e) {
+                        prodTable.loadQuantityDeliveryBySerial(this);
                     });
-                },
-                footerCallback: function (row, data, start, end, display) {
                 },
             });
             if (tableLot.hasClass('dataTable')) {
@@ -629,7 +631,7 @@ $(async function () {
             }
         };
 
-        loadQuantityDelivery(ele) {
+        loadQuantityDeliveryByLot(ele) {
             let tableWH = $('#productStockDetail');
             let rowChecked = tableWH[0]?.querySelector('.table-row-checkbox:checked')?.closest('tr');
             if (rowChecked) {
@@ -644,11 +646,13 @@ $(async function () {
                         let valueLotInitial= row?.querySelector('.table-row-quantity-initial')?.innerHTML;
                         let valueLotInput = row?.querySelector('.table-row-quantity-delivery')?.value;
                         newQuantity += parseFloat(valueLotInput);
-                        lotData.push({
-                            'product_warehouse_lot_id': rowLotData?.['id'],
-                            'quantity_initial': parseFloat(valueLotInitial),
-                            'quantity_delivery': parseFloat(valueLotInput),
-                        })
+                        if (parseFloat(valueLotInput) > 0) {
+                            lotData.push({
+                                'product_warehouse_lot_id': rowLotData?.['id'],
+                                'quantity_initial': parseFloat(valueLotInitial),
+                                'quantity_delivery': parseFloat(valueLotInput),
+                            })
+                        }
                     });
                     if (newQuantity <= parseFloat(valueWHStock)) {
                         eleWHInput.value = newQuantity;
@@ -662,13 +666,55 @@ $(async function () {
                     } else {
                         $.fn.notifyB({description: 'must less than equal quantity picked'}, 'failure');
                         ele.value = '0';
-                        prodTable.loadQuantityDelivery(ele);
+                        prodTable.loadQuantityDeliveryByLot(ele);
                         return false
                     }
                 }
             }
             return true;
-        }
+        };
+
+        loadQuantityDeliveryBySerial(ele) {
+            let tableWH = $('#productStockDetail');
+            let rowChecked = tableWH[0]?.querySelector('.table-row-checkbox:checked')?.closest('tr');
+            if (rowChecked) {
+                let newQuantity = 0;
+                let valueWHStock = rowChecked?.querySelector('.table-row-stock')?.innerHTML;
+                let eleWHInput = rowChecked?.querySelector('.table-row-picked');
+                let serialData = [];
+                if (valueWHStock && eleWHInput) {
+                    $('#datable-delivery-wh-serial').DataTable().rows().every(function () {
+                        let row = this.node();
+                        let rowSerialData = this.data();
+                        let eleCheck = row?.querySelector('.table-row-checkbox');
+                        if (eleCheck) {
+                            if (eleCheck.checked === true) {
+                                newQuantity++;
+                                serialData.push({
+                                    'product_warehouse_serial_id': rowSerialData?.['id'],
+                                })
+                            }
+                        }
+                    });
+                    if (newQuantity <= parseFloat(valueWHStock)) {
+                        eleWHInput.value = newQuantity;
+                        let rowIndex = tableWH.DataTable().row(rowChecked).index();
+                        let $row = tableWH.DataTable().row(rowIndex);
+                        let rowData = $row.data();
+                        rowData.picked = newQuantity;
+                        rowData['serial_data'] = serialData;
+                        rowData['is_checked'] = true;
+                        tableWH.DataTable().row(rowIndex).data(rowData).draw();
+                    } else {
+                        $.fn.notifyB({description: 'must less than equal quantity picked'}, 'failure');
+                        ele.checked = false;
+                        prodTable.loadQuantityDeliveryBySerial(ele);
+                        return false
+                    }
+                }
+            }
+            return true;
+        };
 
         validateQuantity(ele) {
             let value = ele.value;

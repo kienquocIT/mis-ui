@@ -396,7 +396,7 @@ function load_bank_accounts_mapped(data) {
             checked = 'checked';
         }
         $('#list-bank-account-information').append(
-            `<div class="card ${default_card_color} close-over col-5 mr-5">
+            `<div class="card ${default_card_color} close-over col-12 col-md-5 col-lg-5 mr-5">
                 <div class="card-body">
                     <button type="button" class="card-close btn-close">
                         <span aria-hidden="true">&times;</span>
@@ -444,7 +444,7 @@ function load_credit_cards_mapped(data) {
             checked = 'checked';
         }
         $('#list-credit-card-information').append(
-            `<div class="card ${default_card_color} close-over col-5 mr-5">
+            `<div class="card ${default_card_color} close-over col-12 col-md-5 col-lg-5 mr-5">
                 <div class="card-body">
                     <button type="button" class="card-close btn-close">
                         <span aria-hidden="true">&times;</span>
@@ -1127,7 +1127,7 @@ $(document).on('click', '#save-changes-modal-bank-account', function () {
             default_card_color = 'bg-primary text-dark bg-opacity-10';
         }
         $('#list-bank-account-information').append(
-            `<div class="card ${default_card_color} close-over col-5 mr-5">
+            `<div class="card ${default_card_color} close-over col-12 col-md-5 col-lg-5 mr-5">
                 <div class="card-body">
                     <button type="button" class="card-close btn-close">
                         <span aria-hidden="true">&times;</span>
@@ -1182,7 +1182,7 @@ $(document).on('click', '#save-changes-modal-credit-card', function () {
             default_card_color = 'bg-primary text-dark bg-opacity-10';
         }
         $('#list-credit-card-information').append(
-            `<div class="card ${default_card_color} close-over col-5 mr-5">
+            `<div class="card ${default_card_color} close-over col-12 col-md-5 col-lg-5 mr-5">
                 <div class="card-body">
                     <button type="button" class="card-close btn-close">
                         <span aria-hidden="true">&times;</span>

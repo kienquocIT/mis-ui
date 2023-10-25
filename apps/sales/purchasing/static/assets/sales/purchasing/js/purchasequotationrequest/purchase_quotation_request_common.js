@@ -23,6 +23,18 @@ deliveryDateInput.dateRangePickerDefault({
 
 deliveryDateInput.val('');
 
+$('#input-file-now').dropify({
+    messages: {
+        'default': 'Drag and drop your file here.',
+    },
+    tpl: {
+        message: '<div class="dropify-message">' +
+            '<span class="file-icon"></span>' +
+            '<h5>{{ default }}</h5>' +
+            '</div>',
+    }
+});
+
 function deleteSameRow(table, row) {
     console.log(row)
     row.remove();
@@ -474,6 +486,7 @@ function LoadDetailPQR(for_update=false) {
                     }
                 }
                 else {
+                    $('#new-product-btn').prop('hidden', true)
                     $('#title').val(data_detail.title);
                     deliveryDateInput.val(data_detail.delivered_date.split(' ')[0]);
                     $('#note').val(data_detail.note);

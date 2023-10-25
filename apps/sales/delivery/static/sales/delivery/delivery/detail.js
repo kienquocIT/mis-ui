@@ -112,6 +112,10 @@ $(async function () {
                             }
                         }
                     }
+                    if (!table.hasClass('dataTable')) {
+                        item['lot_data'] = [];
+                        item['serial_data'] = [];
+                    }
                     newData.push(item)
                 }
                 table.not('.dataTable').DataTableDefault({

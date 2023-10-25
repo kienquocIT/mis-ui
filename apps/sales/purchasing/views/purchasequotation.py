@@ -53,21 +53,6 @@ class PurchaseQuotationCreate(View):
         return {}, status.HTTP_200_OK
 
 
-class PurchaseQuotationCreateAPI(APIView):
-    permission_classes = [IsAuthenticated]  # noqa
-
-    @mask_view(
-        auth_require=True,
-        is_api=True,
-    )
-    def post(self, request, *arg, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.PURCHASE_QUOTATION_LIST).post(request.data)
-        if resp.state:
-            resp.result['message'] = SaleMsg.PURCHASE_QUOTATION
-            return resp.result, status.HTTP_201_CREATED
-        return resp.auto_return()
-
-
 class PurchaseQuotationDetail(View):
     permission_classes = [IsAuthenticated]
 
@@ -92,6 +77,26 @@ class PurchaseQuotationDetailAPI(APIView):
     def get(self, request, pk, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.PURCHASE_QUOTATION_DETAIL.fill_key(pk=pk)).get()
         return resp.auto_return(key_success='purchase_quotation_detail')
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, pk, *arg, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.PURCHASE_QUOTATION_DETAIL.fill_key(pk=pk)).put(request.data)
+        return resp.auto_return()
+
+
+class PurchaseQuotationUpdate(View):
+    @mask_view(
+        auth_require=True,
+        template='sales/purchasing/purchasequotation/purchase_quotation_update.html',
+        menu_active='',
+        breadcrumb='PURCHASE_QUOTATION_UPDATE_PAGE',
+        perm_check=PermCheck(url=ApiURL.PURCHASE_QUOTATION_DETAIL, method='PUT', fill_key=['pk']),
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
 
 
 class PurchaseQuotationProductListAPI(APIView):

@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 {% load i18n static %}
-{% block title %}{% trans 'Purchase Quotation Create' %}{% endblock %}
+{% block title %}{% trans 'Purchase Quotation Update' %}{% endblock %}
 {% block cssHeader %}
     <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}"/>
     <style>
         .select2-container--default.select2-container--disabled .select2-selection--multiple {
-            background-color: white;
+            background-color: #f7f7f7;
         }
         .select2-container--default .select2-selection--multiple .select2-selection__choice {
             border: 1px solid black;
@@ -15,7 +15,7 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-outline-primary" type="submit" form="form-create-purchase-quotation">
+    <button class="btn btn-outline-primary" type="submit" form="form-detail-purchase-quotation">
         <span>
             <span>{% trans 'Save' %}</span>
             <span class="icon">
@@ -33,9 +33,10 @@
             data-url-account="{% url "AccountListAPI" %}"
             data-url-pqr="{% url "PurchaseQuotationRequestListAPI" %}"
             data-url-pqr-detail="{% url "PurchaseQuotationRequestDetailAPI" pk=0 %}"></script>
-    <form id="form-create-purchase-quotation" data-method="POST"
-          data-url="{% url 'PurchaseQuotationListAPI' %}"
-          data-url-redirect="{% url "PurchaseQuotationList" %}">
+    <form id="form-detail-purchase-quotation" data-method="PUT"
+          data-url-redirect="{% url "PurchaseQuotationDetail" '0' %}"
+          data-url="{% url 'PurchaseQuotationDetailAPI' '0' %}">
+        {% csrf_token %}
         <div class="collapse multi-collapse show" id="collapse-area">
             <div class="row">
                 <div class="col-12 col-md-6 col-lg-6">
@@ -189,5 +190,5 @@
     <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>
 
     <script src="{% static 'assets/sales/purchasing/js/purchasequotation/purchase_quotation_common.js' %}"></script>
-    <script src="{% static 'assets/sales/purchasing/js/purchasequotation/purchase_quotation_create.js' %}"></script>
+    <script src="{% static 'assets/sales/purchasing/js/purchasequotation/purchase_quotation_update.js' %}"></script>
 {% endblock %}

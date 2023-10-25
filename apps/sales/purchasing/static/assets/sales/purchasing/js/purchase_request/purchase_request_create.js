@@ -33,7 +33,7 @@ $(document).ready(async function () {
     }).val('');
 
     PurchaseRequestLoadPage.loadSupplier()
-    new PurchaseRequestEvent().load();
+    new PurchaseRequestEvent().load(param);
 
     $('#btn-select-type-sale-order').on('click', async function () {
         $('#modal-select-sale-order').modal('show');

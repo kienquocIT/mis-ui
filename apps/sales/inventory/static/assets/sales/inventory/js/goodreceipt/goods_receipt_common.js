@@ -509,29 +509,24 @@ class GRLoadDataHandle {
         let valuePONew = 0;
         if (valuePROrderRemain) {
             for (let eleImport of GRDataTableHandle.tablePR[0].querySelectorAll('.table-row-import')) {
-                let prProductCheckedID = null;
+                let prProductCurrentID = null;
+                let prUOMCurrent = null;
                 let ratioUOMFinal = 1;
                 let dataRowPRRaw = eleImport?.closest('tr')?.querySelector('.table-row-checkbox')?.getAttribute('data-row');
                 if (dataRowPRRaw) {
                     let dataRowPR = JSON.parse(dataRowPRRaw);
-                    prProductCheckedID = dataRowPR?.['purchase_request_product']?.['id'];
+                    prProductCurrentID = dataRowPR?.['purchase_request_product']?.['id'];
+                    prUOMCurrent = dataRowPR?.['purchase_request_product']?.['uom'];
+                    if (dataRowPR?.['is_stock'] === true) {
+                        prUOMCurrent = dataRowPR?.['uom_stock'];
+                    }
                 }
                 if (dataRowPORaw) {
                     let dataRowPO = JSON.parse(dataRowPORaw);
                     let ratioUOMOrder = dataRowPO?.['uom_order_actual']?.['ratio'];
                     let ratioUOMRequest = dataRowPO?.['uom_order_request']?.['ratio'];
-                    if (dataRowPO?.['purchase_request_products_data']) {
-                        for (let PRProduct of dataRowPO?.['purchase_request_products_data']) {
-                            if (PRProduct?.['is_stock'] === false) {
-                                if (PRProduct?.['purchase_request_product']?.['id'] === prProductCheckedID) {
-                                    ratioUOMRequest = PRProduct?.['purchase_request_product']?.['uom']?.['ratio'];
-                                    break;
-                                }
-                            } else {
-                                ratioUOMRequest = PRProduct?.['uom_stock']?.['ratio'];
-                                break;
-                            }
-                        }
+                    if (prUOMCurrent) {
+                        ratioUOMRequest = prUOMCurrent?.['ratio'];
                     }
                     if (ratioUOMOrder && ratioUOMRequest) {
                         ratioUOMFinal = ratioUOMOrder / ratioUOMRequest

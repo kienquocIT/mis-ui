@@ -1,5 +1,6 @@
 $(document).ready(function () {
     // declare element
+    const $transElm = $('#trans-factory')
     const $formYear = $('#formYear')
     const $urlElm = $('#url-factory')
     const $formHld = $('#formHoliday')
@@ -39,13 +40,21 @@ $(document).ready(function () {
                             idx.val(index)
                             $modalH.find('form').append(id).append(idx)
                             $('#inputHolidayDate', $modalH).val(moment(data.holiday_date_to, 'YYYY-MM-DD')
-                                .format('DD/MM/YYYY'))
+                                .format('DD/MM/YYYY')).trigger('change')
                             $('#inputRemark', $modalH).val(data.remark)
                             $modalH.modal('show')
                         })
                         $('.btn-remove-row', row).off().on('click', () => HolidayHandle.delete(data.id, index))
                     },
                 }
+    let dataRangeConfig = {
+        singleDatePicker: true,
+        timePicker: false,
+        showDropdowns: true,
+        locale: {
+            format: 'DD/MM/YYYY'
+        }
+    }
 
     function deleteYear(elm=undefined){
         let $elm = elm ? elm : $('.wrap_years ul li button')
@@ -59,6 +68,7 @@ $(document).ready(function () {
                     .then((resp) => {
                             if (resp.status === 200){
                                 $.fn.notifyB({description: resp.data.message}, 'success')
+                                $(`${$(this).prev('a').attr('href')}`, $('.wrap_holidays')).remove()
                                 $(this).closest('li.year-item').remove()
                             }
                         },
@@ -81,7 +91,7 @@ $(document).ready(function () {
                 const harshData = $(this).find('script').text().replaceAll("'", '"')
                 const data = JSON.parse(harshData) || []
                 const $table = $(this).find('table')
-                $table.DataTableDefault({..._table_config, ...{'data':data}})
+                $table.DataTableDefault({..._tableConfig, ...{'data':data}})
             })
         }
 
@@ -106,12 +116,16 @@ $(document).ready(function () {
         }
 
         static create() {
-            $formHld.off().on('submit', function(e){
+            $formHld.on('submit', function(e){
                 e.preventDefault();
                 let _form = new SetupFormSubmit($formHld);
                 let dataBody = _form.dataForm
                 dataBody.year = $('.wrap_holidays .tab-pane.active').attr('data-year-id')
                 dataBody.holiday_date_to = moment(dataBody.holiday_date_to, 'DD/MM/YYYY').format('YYYY-MM-DD')
+                if (parseInt($('.wrap_years .year-item a.active span').text()) !== moment(dataBody.holiday_date_to).year()){
+                    $.fn.notifyB({description: $transElm.attr('data-holidays-error')}, 'failure')
+                    return false
+                }
                 $.fn.callAjax2({
                     'url': dataBody?.id ? $urlElm.attr('data-holiday-detail').format_url_with_uuid(
                         dataBody.id) : $urlElm.attr('data-holiday'),
@@ -150,7 +164,7 @@ $(document).ready(function () {
     // run delete year
     deleteYear()
     // handle event click btn add year
-    $formYear.off().on('submit', function (e) {
+    $formYear.on('submit', function (e) {
         e.preventDefault();
         let _form = new SetupFormSubmit($formYear);
         let dataBody = _form.dataForm
@@ -184,73 +198,72 @@ $(document).ready(function () {
                     }
                 },
                 (errs) => {
-                    $.fn.notifyB({description: errs.data.errors.detail}, 'failure')
+                    $.fn.notifyB({description: errs.data.errors}, 'failure')
                 }
             )
     });
-
-    // init daterange picker
-    $('.date-picker').daterangepicker({
-        minYear: 1901,
-        singleDatePicker: true,
-        timePicker: false,
-        showDropdowns: true,
-        locale: {
-            format: 'DD/MM/YYYY'
-        }
-    }).val(null).trigger('change');
 
     // init holidays all table
     let holidays = new HolidayHandle()
     holidays.init()
 
-    // reset form modal when form close
+    // reset form add year
     $('#modal_years').on('hidden.bs.modal', () => $('#inputConfigYear').val(''))
+
+    // limit year when create holidays
+    let $dateElm = $('.date-picker')
+    $dateElm.daterangepicker(dataRangeConfig).val('').trigger('change')
     $modalH.on('hidden.bs.modal', function (){
+        $('.date-picker').val('').trigger('change')
         $('#formHoliday')[0].reset()
         $('[name="id"], [name="idx"]', $formHld).remove()
     })
 
-    $('#working_calendar').off().on('submit', function(e){
+    // click tab hidden btn
+    const $btnSH = $('button[form="working_calendar"]')
+    $('a[href="#holidays"]').on('shown.bs.tab', () => $btnSH.hide())
+        .on('hidden.bs.tab', ()=> $btnSH.show())
+
+    $('#working_calendar').on('submit', function(e){
         e.preventDefault()
         let _form = new SetupFormSubmit($(this));
         let harshDataBody = _form.dataForm;
         let dataBody = {
             working_days:{
-                "mon": {
+                0: {
+                    "work": harshDataBody.sun_work,
+                    "mor": {"from": harshDataBody.sun_mor_from, "to": harshDataBody.sun_mor_to},
+                    "aft": {"from": harshDataBody.sun_aft_from, "to": harshDataBody.sun_aft_to}
+                },
+                1: {
                     "work": harshDataBody.mon_work,
                     "mor": {"from": harshDataBody.mon_mor_from, "to": harshDataBody.mon_mor_to},
                     "aft": {"from": harshDataBody.mon_aft_from, "to": harshDataBody.mon_aft_to}
                 },
-                "tue": {
+                2: {
                     "work": harshDataBody.tue_work,
                     "mor": {"from": harshDataBody.tue_mor_from, "to": harshDataBody.tue_mor_to},
                     "aft": {"from": harshDataBody.tue_aft_from, "to": harshDataBody.tue_aft_to}
                 },
-                "wed": {
+                3: {
                     "work": harshDataBody.wed_work,
                     "mor": {"from": harshDataBody.wed_mor_from, "to": harshDataBody.wed_mor_to},
                     "aft": {"from": harshDataBody.wed_aft_from, "to": harshDataBody.wed_aft_to}
                 },
-                "thu": {
+                4: {
                     "work": harshDataBody.thu_work,
                     "mor": {"from": harshDataBody.thu_mor_from, "to": harshDataBody.thu_mor_to},
                     "aft": {"from": harshDataBody.thu_aft_from, "to": harshDataBody.thu_aft_to}
                 },
-                "fri": {
+                5: {
                     "work": harshDataBody.fri_work,
                     "mor": {"from": harshDataBody.fri_mor_from, "to": harshDataBody.fri_mor_to},
                     "aft": {"from": harshDataBody.fri_aft_from, "to": harshDataBody.fri_aft_to}
                 },
-                "sat": {
+                6: {
                     "work": harshDataBody.sat_work,
                     "mor": {"from": harshDataBody.sat_mor_from, "to": harshDataBody.sat_mor_to},
                     "aft": {"from": harshDataBody.sat_aft_from, "to": harshDataBody.sat_aft_to}
-                },
-                "sun": {
-                    "work": harshDataBody.sun_work,
-                    "mor": {"from": harshDataBody.sun_mor_from, "to": harshDataBody.sun_mor_to},
-                    "aft": {"from": harshDataBody.sun_aft_from, "to": harshDataBody.sun_aft_to}
                 },
             }
         }

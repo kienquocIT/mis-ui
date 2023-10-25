@@ -27,6 +27,20 @@
                 margin-top: 10px;
             }
         }
+        .sl_temp_cont > b {
+            text-align: center;
+            width: 45px;
+        }
+        .sl_temp_cont > *:last-child {
+            text-align: center;
+            width: 30px;
+        }
+        .one-row-txt{
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: calc(100% - 75px);
+            white-space: nowrap;
+        }
     </style>
 {% endblock %}
 {% block pageAction %}
@@ -64,7 +78,7 @@
                         data-url="{% url 'EmployeeListAPI' %}"
                         data-keyResp="employee_list"
                         data-keyText="full_name"
-                        data-keyId="id" disabled>
+                        data-keyId="id">
                 </select>
             </div>
             <div class="col-md-4 col-xs-12">
@@ -148,13 +162,16 @@
 {% endblock %}
 {% block dataHiddenGroup %}
     {{ data.employee|json_script:'employee_current' }}
+    {{ data.working_shift|json_script:'ws_data' }}
     <input type="text" id="url-factory"
            data-leave-create="{% url 'LeaveRequestCreateAPI' %}"
            data-leave-available="{% url 'LeaveAvailableListAPI' %}"
            data-leave-detail="{% url 'LeaveRequestDetail' pk=0 %}"
     >
     <input type="text" id="trans-factory"
+           data-detail-tab="{% trans 'Total day off is 0 please verify again' %}"
            data-err-date="{% trans 'Date To need large then Date From' %}"
+           data-dayoff-error="{% trans 'Please choose an available day off' %}"
     >
     <div class="wrap-template">
         <div class="delete_btn">
@@ -167,13 +184,11 @@
         <div class="date_from">
             <div class="date_from_wrap">
                 <div class="form-check form-check-sm form-check-inline">
-                    <input type="radio" id="example01" name="customRadio" class="form-check-input f_mor"
-                           checked>
+                    <input type="radio" id="example01" name="customRadio" class="form-check-input f_mor" value="true">
                     <label class="form-check-label" for="example01">{% trans 'Morning' %}</label>
                 </div>
                 <div class="form-check form-check-sm form-check-inline">
-                    <input type="radio" id="example02" name="customRadio" class="form-check-input f_aft"
-                    >
+                    <input type="radio" id="example02" name="customRadio" class="form-check-input f_aft" value="false">
                     <label class="form-check-label" for="example02">{% trans 'Afternoon' %}</label>
                 </div>
                 <div class="form-group spec-date-layout">
@@ -191,5 +206,6 @@
 {% block jsFooter %}
     <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'assets/e-offices/leave/js/leave_request_common.js' %}"></script>
     <script src="{% static 'assets/e-offices/leave/js/leave_request_create.js' %}"></script>
 {% endblock %}

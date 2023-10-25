@@ -1,0 +1,138 @@
+{% load i18n %}
+
+<div class="table-responsive">
+    <table
+            id="permissions_list_new" class="table nowrap w-100"
+            data-change-enable="{% if add_new_enabled == "true" %}true{% else %}false{% endif %}"
+            data-msg-general="{% trans 'Space general' %}"
+            data-msg-all="{% trans 'Space all' %}"
+            data-msg-of-me="{% trans "Themselves" %}"
+            data-msg-staff="{% trans "Their staff" %}"
+            data-msg-same-group="{% trans "Member in their group" %}"
+            data-msg-all-employee="{% trans "All users" %}"
+
+            data-url-app-detail="{% url 'ApplicationDetailAPI' pk='__pk__' %}"
+    >
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>{% trans 'Application' %}</th>
+            <th>{% trans 'All' %}</th>
+            <th id="headingPermitView">{% trans 'View' %}</th>
+            <th id="headingPermitCreate">{% trans 'Create' %}</th>
+            <th id="headingPermitEdit">{% trans 'Edit' %}</th>
+            <th id="headingPermitDelete">{% trans 'Delete' %}</th>
+            <th>
+                {% trans 'Jurisdiction' %}
+                <i
+                        class="fa-solid fa-circle-info"
+                        data-bs-toggle="tooltip" data-bs-placement="bottom"
+                        title="{% trans 'The permission scope will not include the person for whom the permission is configured, except for the scope Themselves.' %}"
+                ></i>
+            </th>
+            <th>{% trans 'Space' %}</th>
+            <th>
+                <div class="d-flex align-items-center justify-content-end">
+                    <span class="mr-1">{% trans 'Actions' %}</span>
+                </div>
+            </th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+        <tfoot>
+        <tr id="idx-new-row-add">
+            <td></td>
+            <td>
+                {# get_from: employee, role, opportunity, project #}
+                <select
+                        id="new-row-app"
+                        class="form-select"
+                        data-base-url="{% url 'PlanAppGetAppListAPI' pk=pk %}?get_from={{get_from}}"
+                        data-url="{% url 'PlanAppGetAppListAPI' pk=pk %}?get_from={{get_from}}"
+                        data-keyResp="app_list"
+                >
+                </select>
+                <label for="new-row-app" class="d-none"></label>
+            </td>
+            <td>
+                <div class="form-check form-switch mb-1">
+                    <input
+                            type="checkbox"
+                            class="form-check-input"
+                            id="new-row-all"
+                            disabled
+                    >
+                    <label for="new-row-all" class="d-none"></label>
+                </div>
+            </td>
+            <td>
+                <div class="form-check form-switch mb-1">
+                    <input
+                            type="checkbox"
+                            class="form-check-input"
+                            id="new-row-view"
+                            disabled
+                    >
+                    <label for="new-row-view" class="d-none"></label>
+                </div>
+            </td>
+            <td>
+                <div class="form-check form-switch mb-1">
+                    <input
+                            type="checkbox"
+                            class="form-check-input"
+                            id="new-row-create"
+                            disabled
+                    >
+                    <label for="new-row-create" class="d-none"></label>
+                </div>
+            </td>
+            <td>
+                <div class="form-check form-switch mb-1">
+                    <input
+                            type="checkbox"
+                            class="form-check-input"
+                            id="new-row-edit"
+                            disabled
+                    >
+                    <label for="new-row-edit" class="d-none"></label>
+                </div>
+            </td>
+            <td>
+                <div class="form-check form-switch mb-1">
+                    <input
+                            type="checkbox"
+                            class="form-check-input"
+                            id="new-row-delete"
+                            disabled
+                    >
+                    <label for="new-row-delete" class="d-none"></label>
+                </div>
+            </td>
+            <td>
+                <select class="form-select" id="new-row-range" disabled>
+                    <option value="" selected></option>
+                    <option value="1" disabled>{% trans "Themselves" %}</option>
+                    <option value="2" disabled>{% trans "Their staff" %}</option>
+                    <option value="3" disabled>{% trans "Member in their group" %}</option>
+                    <option value="4" disabled>{% trans "All users" %}</option>
+                </select>
+                <label for="new-row-range" class="d-none"></label>
+            </td>
+            <td>
+                <select class="form-select" id="new-row-space" disabled>
+                    <option value="" selected></option>
+                    <option value="0">{% trans 'Space general' %}</option>
+                    <option value="1">{% trans 'Space all' %}</option>
+                </select>
+                <label for="new-row-space" class="d-none"></label>
+            </td>
+            <td>
+                <div class="d-flex justify-content-end">
+                    <button class="btn btn-primary" id="new-row-add" type="button" disabled>{% trans 'Add' %}</button>
+                </div>
+            </td>
+        </tr>
+        </tfoot>
+    </table>
+</div>

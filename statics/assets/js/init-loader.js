@@ -287,7 +287,7 @@ $.fn.extend({
         }
     },
     callAjax2: function (opts = {}) {
-        if (isDenied && !globeUrlNotDeny.includes(url)){
+        if (isDenied && !globeUrlNotDeny.includes(opts?.['url'])){
             return new Promise(function (resolve, reject) {});
         } else {
             let isDropdown = UtilControl.popKey(opts, 'isDropdown', false, true);
@@ -321,6 +321,8 @@ $.fn.extend({
                     if (method.toLowerCase() !== 'get' && contentType === "application/json") {
                         data = JSON.stringify(data);
                     }
+
+                    if (opts?.['cache'] === true) headers["ENABLEXCACHECONTROL"] = true;
 
                     let successCallback = opts?.['success'] || null;
                     let onlySuccessCallback = UtilControl.popKey(opts, 'successOnly', false);

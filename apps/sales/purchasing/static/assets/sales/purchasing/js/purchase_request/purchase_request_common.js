@@ -9,6 +9,42 @@ let tableProductForOther = $('#datatable-pr-product-other');
 let supplierSelectEle = $('#box-select-supplier')
 let contactSelectEle = $('#box-select-contact')
 
+$(document).on('click', '.del-row', function () {
+    let table = tableProductForOther.DataTable();
+    let row_index_delete = parseInt($(this).closest('tr').find('td:first-child').text()) - 1;
+    table.row(row_index_delete).remove().draw();
+})
+
+function deleteSameRow(table, row) {
+    table = tableProductForOther.DataTable();
+    table.row(parseInt(row.find('td:first-child').text()) - 1).remove().draw();
+}
+
+function checkMergeRow(row) {
+    let this_product_id = row.find('.box-select-product').val();
+    let this_product_uom_id = row.find('.box-select-uom').val();
+    let this_product_quantity = row.find('.inp-quantity').val();
+    tableProductForOther.find('tr').each(function () {
+        let product_id = $(this).find('.box-select-product').val();
+        let product_uom_id = $(this).find('.box-select-uom').val();
+
+        if ($(this).find('td:first-child').text() !== row.find('td:first-child').text() && this_product_id === product_id && this_product_uom_id === product_uom_id && this_product_quantity !== '') {
+            if ($(this).find('.inp-quantity').val() !== '') {
+                row.find('.inp-quantity').val(parseFloat($(this).find('.inp-quantity').val()) + parseFloat(this_product_quantity));
+                row.find('.inp-unit-price').attr('value', 0);
+                row.find('.box-select-tax option').remove();
+                row.find('.pr-subtotal-price-input').attr('data-init-money', '0');
+                deleteSameRow(tableProductForOther, $(this));
+                if (row.find('.inp-unit-price').val() !== '') {
+                    PurchaseRequestAction.loadPriceSubProduct(row);
+                    PurchaseRequestAction.loadFinalPrice($(this).closest('table'));
+                    $.fn.initMaskMoney2();
+                }
+            }
+        }
+    })
+}
+
 function callData(url, method) {
     return $.fn.callAjax2({
         url: url,
@@ -315,7 +351,7 @@ class PurchaseRequestAction {
                 }, {
                     targets: 8,
                     render: () => {
-                        return `<button type="button" class="btn btn-icon btn-rounded flush-soft-hover del-row"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`;
+                        return `<button type="button" class="btn btn-xs btn-soft-danger btn-icon btn-rounded flush-soft-hover del-row"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`;
                     }
                 },],
             });
@@ -472,7 +508,6 @@ class PurchaseRequestAction {
                         let data = $.fn.switcherResp(resp);
                         if (data && resp.data.hasOwnProperty('sale_order_list')) {
                             let sale_order_list = [];
-                            console.log(sale_order_id)
                             resp.data['sale_order_list'].map(function (item) {
                                 if (item?.['is_create_purchase_request'] || item.id === sale_order_id) {
                                     sale_order_list.push(item);
@@ -785,7 +820,7 @@ class PurchaseRequestAction {
 }
 
 class PurchaseRequestEvent {
-    load() {
+    load(param) {
         // event in model select product from sale order
         $(document).on('change', '.inp-check-so', function () {
             let table_so_product = $('#datatable-product-of-so').DataTable();
@@ -867,10 +902,12 @@ class PurchaseRequestEvent {
         })
 
         $(document).on('change', '.inp-quantity', function () {
-            let tr_current = $(this).closest('tr');
-            if (tr_current.find('.inp-unit-price').val() !== '') {
-                PurchaseRequestAction.loadPriceSubProduct(tr_current);
-                PurchaseRequestAction.loadPriceSubProduct(tr_current);
+            let ele_tr_current = $(this).closest('tr');
+
+            checkMergeRow(ele_tr_current)
+
+            if (ele_tr_current.find('.inp-unit-price').val() !== '') {
+                PurchaseRequestAction.loadPriceSubProduct(ele_tr_current);
                 PurchaseRequestAction.loadFinalPrice($(this).closest('table'));
                 $.fn.initMaskMoney2();
             }
@@ -900,9 +937,18 @@ class PurchaseRequestEvent {
             let productSelectEle = last_row.find('.box-select-product');
             let taxSelectEle = last_row.find('.box-select-tax');
 
-            let list_selected = PurchaseRequestAction.getListPrProductSelected(productSelectEle);
+
+            let list_selected = [];
+            if (param !== 'stock' && param !== 'other') {
+                list_selected = PurchaseRequestAction.getListPrProductSelected(productSelectEle);
+            }
             PurchaseRequestLoadPage.loadProduct(productSelectEle, {}, list_selected);
             PurchaseRequestLoadPage.loadTax(taxSelectEle);
+        })
+
+        $(document).on('change', '.box-select-uom', function () {
+            let ele_tr_current = $(this).closest('tr');
+            checkMergeRow(ele_tr_current)
         })
 
         $(document).on('change', '.box-select-product', function () {
@@ -911,6 +957,8 @@ class PurchaseRequestEvent {
             let ele_uom = ele_tr_current.find('.box-select-uom');
             let ele_tax = ele_tr_current.find('.box-select-tax');
 
+            checkMergeRow(ele_tr_current)
+
             ele_uom.empty();
             ele_tax.empty();
 
@@ -918,7 +966,10 @@ class PurchaseRequestEvent {
             PurchaseRequestLoadPage.loadTax(ele_tax, product?.['purchase_information'].tax);
             PurchaseRequestLoadPage.loadUoM(ele_uom, product?.['purchase_information']?.['uom'], {'group': product?.['general_information'].uom_group.id});
             PurchaseRequestAction.loadProductDetail(ele_tr_current, product)
-            PurchaseRequestAction.delOptionProductSelected($(this));
+
+            if (param !== 'stock' && param !== 'other') {
+                PurchaseRequestAction.delOptionProductSelected($(this));
+            }
         })
     }
 }

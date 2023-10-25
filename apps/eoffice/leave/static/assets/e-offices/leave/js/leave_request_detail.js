@@ -14,18 +14,19 @@ $(document).ready(function () {
                 columns: [
                     {
                         data: 'leave_type',
-                        width: '30%',
+                        width: '35%',
                         class: 'child-mt',
                         render: (row, type, data, meta) => {
                             let html = $(`<select>`).addClass('form-select row_leave-type').attr('name',
                                 `leave_type_${meta.row}`).attr('disabled', true)
-                            html.append($(`<option>`).val(row.id).text(row.text).attr('selected', true))
+                            html.append($(`<option>`).val(row.leave_type.id).text(row.leave_type.title
+                            ).attr('selected', true))
                             return html.prop('outerHTML')
                         }
                     },
                     {
                         data: 'date_from',
-                        width: '15%',
+                        width: '20%',
                         render: (row, type, data, meta) => {
                             let html = $(`${$('.date_from').html()}`)
                             html.find('.f_mor').attr('id', `f_mor_${meta.row}`).attr('name', `morning_shift_f_${
@@ -40,7 +41,7 @@ $(document).ready(function () {
                     },
                     {
                         data: 'date_to',
-                        width: '15%',
+                        width: '20%',
                         render: (row, type, data, meta) => {
                             let html = $(`${$('.date_from').html()}`)
                             let _date_row = moment(row, 'YYYY-MM-DD').format('DD/MM/YYYY')
@@ -65,7 +66,7 @@ $(document).ready(function () {
                     },
                     {
                         data: 'remark',
-                        width: '20%',
+                        width: '15%',
                         class: 'child-mt',
                         render: (row, type, data, meta) => {
                             return `<input class="form-control" name="remark_${meta.row}" value="${row}" readonly>`

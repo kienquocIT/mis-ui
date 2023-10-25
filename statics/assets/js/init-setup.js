@@ -1665,7 +1665,7 @@ class UtilControl {
         }
     }
 
-    static generateRandomString(length) {
+    static generateRandomString(length=32) {
         let result = '';
         let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
         let charactersLength = characters.length;
@@ -1870,6 +1870,34 @@ class UtilControl {
 
     static getRandomInArray(array){
         return array[Math.floor(Math.random() * array.length)];
+    }
+
+    static keepExistInOther(arr_main, arr_check_remove){
+        // arr_main:    ["1", "2", "3"]
+        // arr_check:   ["1", "3", "4"]
+        // => ["1", "3"]
+        if (Array.isArray(arr_main) && Array.isArray(arr_check_remove)){
+            return arr_main.filter(
+                (item) => {
+                    return arr_check_remove.indexOf(item) !== -1;
+                }
+            )
+        }
+        return [];
+    }
+
+    static removeExistInOther(arr_main, arr_check_remove){
+        // arr_main:    ["1", "2", "3"]
+        // arr_check:   ["1", "3", "4"]
+        // => ["2"]
+        if (Array.isArray(arr_main) && Array.isArray(arr_check_remove)){
+            return arr_main.filter(
+                (item) => {
+                    return arr_check_remove.indexOf(item) === -1;
+                }
+            )
+        }
+        return [];
     }
 }
 
@@ -2501,7 +2529,7 @@ class DTBControl {
     }
 
     static parseDomDtl(opts) {
-        // header Toolbar classs name
+        // header Toolbar class name
         let headerToolbarClsName = opts['headerToolbarClsName'] || 'my-2';
 
         // stateDefaultPageControl: disable all toolbar
@@ -3533,6 +3561,8 @@ let $x = {
         removeEmptyValuesFromObj: UtilControl.removeEmptyValuesFromObj,
         getRandomArbitrary: UtilControl.getRandomArbitrary,
         getRandomInArray: UtilControl.getRandomInArray,
+        keepExistInOther: UtilControl.keepExistInOther,
+        removeExistInOther: UtilControl.removeExistInOther,
 
         popKey: UtilControl.popKey,
         getKey: UtilControl.getKey,

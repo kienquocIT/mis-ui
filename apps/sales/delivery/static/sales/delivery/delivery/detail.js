@@ -196,6 +196,8 @@ $(async function () {
                         $(`input.form-check-input`, row).on('click', function (e) {
                             e.preventDefault();
                             if (this.checked === true) {
+                                prodTable.loadUnCheckWH();
+                                this.checked = true;
                                 if ([1, 2].includes(prod_data?.['product_data']?.['general_traceability_method'])) {
                                     let productWHID = this.getAttribute('data-id');
                                     if (prod_data?.['product_data']?.['general_traceability_method'] === 1) {
@@ -272,7 +274,7 @@ $(async function () {
                                     }
                                 }
                             } else {
-                                $(row).css('background-color', '');
+                                prodTable.loadUnCheckWH();
                                 prodTable.dataTableTableLot();
                                 prodTable.dataTableTableSerial();
                                 data['is_checked'] = false;
@@ -628,6 +630,13 @@ $(async function () {
             if (tableLot.hasClass('dataTable')) {
                 tableLot.DataTable().clear().draw();
                 tableLot.DataTable().rows.add(data ? data : []).draw();
+            }
+        };
+
+        loadUnCheckWH() {
+            for (let eleCheck of $('#productStockDetail')[0].querySelectorAll('.table-row-checkbox')) {
+                eleCheck.checked = false;
+                $(eleCheck.closest('tr')).css('background-color', '');
             }
         };
 

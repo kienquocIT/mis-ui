@@ -93,10 +93,14 @@ $(function () {
         });
 
         // Action on change quantity order of tablePurchaseRequestProduct
-        tablePurchaseRequestProduct.on('change', '.table-row-quantity-order', function() {
+        tablePurchaseRequestProduct.on('change', '.table-row-quantity-order', function () {
             POValidateHandle.validateNumber(this);
             let remain = parseFloat(this.closest('tr').querySelector('.table-row-remain').innerHTML);
-            POValidateHandle.validateQuantityOrderRequest(this, remain);
+            let valid_quantity = POValidateHandle.validateQuantityOrderRequest(this, remain);
+            let eleCheck = this?.closest('tr')?.querySelector('.table-row-checkbox');
+            if (eleCheck) {
+                eleCheck.checked = valid_quantity;
+            }
         });
 
         // Purchase quotation modal

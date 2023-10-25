@@ -1893,7 +1893,9 @@ class POValidateHandle {
         if (parseFloat(ele.value) > remain) {
             ele.value = '0';
             $.fn.notifyB({description: POLoadDataHandle.transEle.attr('data-validate-order-request')}, 'failure');
+            return false;
         }
+        return true;
     };
 
     static validateQuantityOrderActualAndUpdateStock(row) {

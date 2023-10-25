@@ -105,6 +105,18 @@ class PurchaseQuotationRequestDetail(View):
         return {}, status.HTTP_200_OK
 
 
+class PurchaseQuotationRequestUpdate(View):
+    @mask_view(
+        auth_require=True,
+        template='sales/purchasing/purchasequotationrequest/purchase_quotation_request_update.html',
+        menu_active='',
+        breadcrumb='PURCHASE_QUOTATION_REQUEST_UPDATE_PAGE',
+        perm_check=PermCheck(url=ApiURL.PURCHASE_QUOTATION_REQUEST_DETAIL, method='GET', fill_key=['pk']),
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
 class PurchaseQuotationRequestDetailAPI(APIView):
     @mask_view(
         auth_require=True,
@@ -113,3 +125,11 @@ class PurchaseQuotationRequestDetailAPI(APIView):
     def get(self, request, pk, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.PURCHASE_QUOTATION_REQUEST_DETAIL.fill_key(pk=pk)).get()
         return resp.auto_return(key_success='purchase_quotation_request_detail')
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, pk, *arg, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.PURCHASE_QUOTATION_REQUEST_DETAIL.fill_key(pk=pk)).put(request.data)
+        return resp.auto_return()

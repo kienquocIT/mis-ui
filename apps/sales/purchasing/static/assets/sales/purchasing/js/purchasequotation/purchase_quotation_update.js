@@ -1,7 +1,13 @@
 $(document).ready(function () {
-    $('#form-create-purchase-quotation-request').submit(function (event) {
+    LoadDetailPQ(true);
+
+    new PQHandle().load();
+
+    // SUBMIT FORM UPDATE
+    let pk = $.fn.getPkDetail();
+    $('#form-detail-purchase-quotation').submit(function (event) {
         event.preventDefault();
-        let combinesData = new PQRHandle().combinesDataManual($(this));
+        let combinesData = new PQHandle().combinesData($(this), true);
         console.log(combinesData)
         if (combinesData) {
             WindowControl.showLoading();
@@ -12,7 +18,7 @@ $(document).ready(function () {
                         if (data) {
                             $.fn.notifyB({description: "Successfully"}, 'success')
                             setTimeout(() => {
-                                window.location.replace($(this).attr('data-url-redirect'));
+                                window.location.replace($(this).attr('data-url-redirect').format_url_with_uuid(pk));
                                 location.reload.bind(location);
                             }, 1000);
                         }

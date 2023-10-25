@@ -1,7 +1,4 @@
-$(document).ready(async function () {
-    await LoadTaxList();
-    await LoadUoMList();
-
+$(document).ready(function () {
     $('#form-create-purchase-quotation-request').submit(function (event) {
         event.preventDefault();
         let combinesData = new PQRHandle().combinesDataFromPR($(this));

@@ -217,20 +217,12 @@
                         <button type="button"
                                 class="btn btn-primary btn-change-pr-product"
                                 data-bs-toggle="modal"
-                                data-bs-target="#modal-select-sale-order"
-                        >{% trans 'Change' %}</button>
+                                data-bs-target="#modal-select-sale-order">{% trans 'Change' %}</button>
 
                         <div class="dropdown">
-                            <button
-                                    type="button" data-bs-toggle="dropdown"
-                                    class="btn btn-primary btn-add-product dropdown-toggle"
-                            >{% trans 'Add' %}</button>
-                            <div role="menu" class="dropdown-menu dropdown-select-uom-group">
-                                <a class="dropdown-item " id="btn-add-pr-product" href="#">{% trans "New Product" %}</a>
-                                <div class="dropdown-divider"></div>
-                            </div>
+                            <button type="button" data-bs-toggle="dropdown" id="btn-add-pr-product"
+                                    class="btn btn-primary btn-add-product">{% trans "New Product" %}</button>
                         </div>
-
                     </div>
                     <div class="col-7 mt-5">
                         <div class="row mb-2">

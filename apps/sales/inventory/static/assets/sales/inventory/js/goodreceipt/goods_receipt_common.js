@@ -9,6 +9,7 @@ class GRLoadDataHandle {
     // static submitDataPRWHEle = $('#data-submit-pr-warehouse');
     static finalRevenueBeforeTax = document.getElementById('good-receipt-final-revenue-before-tax');
     static transEle = $('#app-trans-factory');
+    static urlEle = $('#url-factory');
 
     static loadMoreInformation(ele, is_span = false) {
         let optionSelected;
@@ -108,6 +109,10 @@ class GRLoadDataHandle {
             data: dataPO,
             'dataParams': {'is_all_receipted': false, 'system_status': 3},
             disabled: !(ele.attr('data-url')),
+            templateResult: function (state) {
+                let codeHTML = `<span class="badge badge-soft-primary">${state?.['data']?.['code'] ? state?.['data']?.['code'] : "_"}</span>`
+                return $(`<span>${state.text} ${codeHTML}</span>`);
+            },
         });
         GRLoadDataHandle.loadMoreInformation(ele);
     };
@@ -160,6 +165,48 @@ class GRLoadDataHandle {
             data: dataWH,
             disabled: !(ele.attr('data-url')),
         });
+    };
+
+    static loadDDLot(ele, dataLot = {}) {
+        let productID = null;
+        let warehouseID = null;
+        let dataPOProductCheckedRaw = GRDataTableHandle.tablePOProduct[0].querySelector('.table-row-checkbox:checked')?.getAttribute('data-row');
+        if (dataPOProductCheckedRaw) {
+            let dataPOProductChecked = JSON.parse(dataPOProductCheckedRaw);
+            productID = dataPOProductChecked?.['product']?.['id'];
+        }
+        let dataWHCheckedRaw = GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked')?.getAttribute('data-row');
+        if (dataWHCheckedRaw) {
+            let dataWHChecked = JSON.parse(dataWHCheckedRaw);
+            warehouseID = dataWHChecked?.['id'];
+        }
+        $.fn.callAjax2({
+                'url': $('#url-factory').attr('data-product-warehouse-lot'),
+                'method': 'GET',
+                'data': {
+                    'product_warehouse__product_id': productID,
+                    'product_warehouse__warehouse_id': warehouseID
+                },
+                'isDropdown': true,
+            }
+        ).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (data.hasOwnProperty('warehouse_lot_list') && Array.isArray(data.warehouse_lot_list)) {
+                        for (let lot of data.warehouse_lot_list) {
+                            let dataLot = JSON.stringify(lot).replace(/"/g, "&quot;");
+                            $(ele).append(`<a class="dropdown-item dropdown-item-lot" data-lot="${dataLot}" href="#">
+                                                <div class="d-flex">
+                                                    <span class="mr-2">${lot?.['lot_number']}</span>
+                                                    <span class="badge badge-soft-success">${lot?.['quantity_import']}</span>
+                                                </div>
+                                            </a>`);
+                        }
+                    }
+                }
+            }
+        )
     };
 
     static loadChangePO($ele) {
@@ -437,6 +484,7 @@ class GRLoadDataHandle {
             }
             let newRow = $table.DataTable().row.add(data).draw().node();
             GRLoadDataHandle.loadLotSerialDatePicker(newRow);
+            GRLoadDataHandle.loadDDLot(newRow.querySelector('.dropdown-menu-lot'));
         }
     };
 
@@ -1001,8 +1049,13 @@ class GRDataTableHandle {
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         return `<div class="row">
-                                    <input type="text" class="form-control table-row-lot-number" data-row="${dataRow}" value="${row?.['lot_number'] ? row?.['lot_number'] : ''}">
+                                    <div class="input-group">
+                                        <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">${GRLoadDataHandle.transEle.attr('data-select')}</button>
+                                        <ul class="dropdown-menu dropdown-bordered dropdown-menu-lot"></ul>
+                                        <input type="text" class="form-control table-row-lot-number" data-row="${dataRow}" value="${row?.['lot_number'] ? row?.['lot_number'] : ''}">
+                                    </div>
                                 </div>`;
+
                     }
                 },
                 {

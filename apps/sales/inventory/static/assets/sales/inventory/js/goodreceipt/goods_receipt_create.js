@@ -100,7 +100,42 @@ $(function () {
             }
         });
 
+        GRDataTableHandle.tableLot.on('click', '.dropdown-item-lot', function () {
+            let row = this.closest('tr');
+            for (let ddItem of row.querySelectorAll('.dropdown-item-lot')) {
+                ddItem.setAttribute('data-checked', 'false');
+                $(ddItem).css('background-color', '');
+            }
+            this.setAttribute('data-checked', 'true');
+            $(this).css('background-color', '#ebfcf5');
+            let dataLotRaw = this.getAttribute('data-lot');
+            if (dataLotRaw) {
+                let dataLot = JSON.parse(dataLotRaw);
+                let eleLotNumber = row.querySelector('.table-row-lot-number');
+                let eleImport = row.querySelector('.table-row-import');
+                let eleExpire = row.querySelector('.table-row-expire-date');
+                let eleManufacture = row.querySelector('.table-row-manufacture-date');
+                if (eleLotNumber) {
+                    eleLotNumber.value = dataLot?.['lot_number'];
+                }
+                if (eleImport) {
+                    eleImport.value = '0';
+                }
+                if (eleExpire) {
+                    eleExpire.value = moment(dataLot?.['expire_date']).format('DD/MM/YYYY hh:mm A');
+                }
+                if (eleManufacture) {
+                    eleManufacture.value = moment(dataLot?.['manufacture_date']).format('DD/MM/YYYY hh:mm A');
+                }
+            }
+        });
+
         GRDataTableHandle.tableLot.on('change', '.table-row-lot-number', function () {
+            let row = this.closest('tr');
+            for (let ddItem of row.querySelectorAll('.dropdown-item-lot')) {
+                ddItem.setAttribute('data-checked', 'false');
+                $(ddItem).css('background-color', '');
+            }
             GRValidateHandle.validateLotNumber(this);
         });
 

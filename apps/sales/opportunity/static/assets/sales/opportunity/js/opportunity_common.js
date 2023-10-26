@@ -314,7 +314,6 @@ class OpportunityLoadDetail {
         }
     }
 
-
     static getDataMember() {
         let ele_tr = $('#dtbMember').find('tr.selected');
         let list_result = []
@@ -987,27 +986,6 @@ async function loadMemberSaleTeam() {
             rowIdx: true,
             paging: false,
             scrollY: '200px',
-            autoWidth: false,
-            columnDefs: [
-                {
-                    "width": "10%",
-                    "targets": 0
-                }, {
-                    "width": "30%",
-                    "targets": 1
-                }, {
-                    "width": "50%",
-                    "targets": 2
-                },
-                {
-                    "width": "0%",
-                    "targers": 3
-                },
-                {
-                    "width": "10%",
-                    "targets": 4
-                }
-            ],
             useDataServer: true,
             ajax: {
                 url: frm.dataUrl,
@@ -1023,6 +1001,7 @@ async function loadMemberSaleTeam() {
             columns: [
                 {
                     data: 'idx',
+                    className: 'wrap-text w-10',
                     render: (data, type, row) => {
                         if (data) return data;
                         return '';
@@ -1030,7 +1009,7 @@ async function loadMemberSaleTeam() {
                 },
                 {
                     data: 'code',
-                    className: 'wrap-text',
+                    className: 'wrap-text w-20',
                     render: (data) => {
                         return `<span class="span-emp-code">{0}</span>`.format_by_idx(
                             data
@@ -1039,7 +1018,7 @@ async function loadMemberSaleTeam() {
                 },
                 {
                     data: 'full_name',
-                    className: 'wrap-text',
+                    className: 'wrap-text w-30',
                     render: (data) => {
                         return `<span class="span-emp-name">{0}</span>`.format_by_idx(
                             data
@@ -1047,17 +1026,17 @@ async function loadMemberSaleTeam() {
                     }
                 },
                 {
-                    data: 'email',
-                    className: 'wrap-text hidden',
+                    data: 'group',
+                    className: 'wrap-text w-30',
                     render: (data) => {
                         return `<span class="span-emp-email">{0}</span>`.format_by_idx(
-                            data
+                            data.title
                         )
                     }
                 },
                 {
                     data: 'is_checked_new',
-                    className: 'wrap-text',
+                    className: 'wrap-text w-10',
                     render: (data, type, row) => {
                         if ($('.member-item .card[data-id="' + row.id + '"]').length > 0) {
                             return `<span class="form-check"><input data-id="${row.id}" type="checkbox" class="form-check-input input-select-member" checked readonly disabled /></span>`
@@ -1772,6 +1751,8 @@ function toggleShowActivity() {
         $('.div-activity').addClass('hidden');
         $('.div-action').removeClass('hidden');
     })
+
+    $('#btn-show-activity').click();
 }
 
 function sortStage(list_stage) {

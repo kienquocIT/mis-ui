@@ -2,63 +2,48 @@
 {% load static i18n %}
 
 {% block cssHeader %}
+    <link href="{% static 'assets/plugins/json-viewer/jquery.json-viewer.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 
 {% block pageAction %}
 {% endblock %}
 
 {% block pageContent %}
-    <div>
-        <ul class="nav nav-justified nav-light nav-tabs nav-segmented-tabs segmented-tabs-filled">
-            {% for data in data.default_data %}
-                <li class="nav-item">
-                    {% if forloop.first %}
-                        <a
-                                class="nav-link active"
-                                data-bs-toggle="tab"
-                                href="#{{ data.plan|slugify }}_{{ data.feature|slugify }}"
-                        >
-                            <span class="nav-link-text">{{ data.plan|upper }} - {{ data.feature }}</span>
-                        </a>
-                    {% else %}
-                        <a
-                                class="nav-link"
-                                data-bs-toggle="tab"
-                                href="#{{ data.plan|slugify }}_{{ data.feature|slugify }}"
-                        >
-                            <span class="nav-link-text">{{ data.plan|upper }} - {{ data.feature }}</span>
-                        </a>
-                    {% endif %}
-                </li>
-            {% endfor %}
-        </ul>
-        <div class="tab-content">
-            {% for data in data.default_data %}
-                <div
-                        class="tab-pane fade {% if forloop.first %}show active{% endif %}"
-                        id="{{ data.plan|slugify }}_{{ data.feature|slugify }}"
-                >
-                    <table class="table nowrap w-100 mb-5">
-                        <tr>
-                            <th>#</th>
-                            {% for f_name in data.rows %}
-                                <th>{{ f_name }}</th>
-                            {% endfor %}
-                        </tr>
-                        {% for item in data.data %}
-                            <tr>
-                                <td>{{ forloop.counter }}</td>
-                                {% for data_child in item %}
-                                    <td>{{ data_child }}</td>
-                                {% endfor %}
-                            </tr>
-                        {% endfor %}
-                    </table>
-                </div>
-            {% endfor %}
+    <pre id="json-viewer"></pre>
+    <ul class="nav nav-line nav-tabs nav-light">
+        <li class="nav-item">
+            <a class="nav-link active" data-bs-toggle="tab" href="#tab_default_data">
+                <span class="nav-link-text">Default Data</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#tab_plan_app">
+                <span class="nav-link-text">Plan - App</span>
+            </a>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane fade show active" id="tab_default_data">
+            {% include 'core/utilities/extends/default_data.html' %}
+        </div>
+        <div class="tab-pane fade" id="tab_plan_app">
+            {% include 'core/utilities/extends/plan_app.html' %}
         </div>
     </div>
 {% endblock %}
 
 {% block jsFooter %}
+    <script src="{% static 'assets/plugins/json-viewer/jquery.json-viewer.js' %}"></script>
+    <script>
+        $('pre.app-config-data').each(function () {
+            let jsonTxt = $(this).text();
+            $(this).jsonViewer(
+                JSON.parse(jsonTxt),
+                {
+                    collapsed: true,
+                    rootCollapsable: true,
+                }
+            );
+        });
+    </script>
 {% endblock %}

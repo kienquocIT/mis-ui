@@ -77,6 +77,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     EMPLOYEE_LIST = StringUrl('hr/employees')
     EMPLOYEE_DETAIL = StringUrl('hr/employee')
     EMPLOYEE_DETAIL_PK = StringUrl('hr/employee/{pk}')
+    EMPLOYEE_DETAIL_APP_LIST = StringUrl('hr/employee/{pk}/app')
+    EMPLOYEE_APPLICATION_ALL_LIST = StringUrl('hr/employee/{pk}/app/all')
     EMPLOYEE_COMPANY = StringUrl('hr/employee/company')
     EMPLOYEE_COMPANY_NEW = StringUrl('hr/employee/company/{company_id}')
     EMPLOYEE_TENANT = StringUrl('hr/employee/tenant')
@@ -103,10 +105,12 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     ROLE_LIST = StringUrl('hr/roles')
     ROLE_DETAIL = StringUrl('hr/role')
     ROLE_DETAIL_PK = StringUrl('hr/role/{pk}')
+    ROLE_DETAIL_APP_LIST = StringUrl('hr/role/{pk}/app')
 
     # base
     PLAN_LIST = StringUrl('base/plans')
     TENANT_APPLICATION_LIST = StringUrl('base/tenant-applications')
+    APPLICATION_DETAIL = StringUrl('base/application/{pk}')
     APPLICATION_PROPERTY_LIST = StringUrl('base/tenant-applications-property')
     APPLICATION_PROPERTY_EMPLOYEE_LIST = StringUrl('base/applications-property-employee')
     APPLICATION_PERMISSION = StringUrl('base/permissions')
@@ -269,6 +273,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     WAREHOUSE_LIST_FOR_INVENTORY_ADJUSTMENT = StringUrl('saledata/warehouses-for-inventory-adjustment')
     WAREHOUSE_DETAIL = StringUrl('saledata/warehouse/{pk}')
     WAREHOUSE_PRODUCT_LIST = StringUrl('saledata/warehouses-products')
+    WAREHOUSE_LOT_LIST = StringUrl('saledata/warehouses-lots')
+    WAREHOUSE_SERIAL_LIST = StringUrl('saledata/warehouses-serials')
     WAREHOUSE_STOCK_PRODUCT = StringUrl('saledata/warehouses/check/{product_id}/{uom_id}')
 
     # shipping unit

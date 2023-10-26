@@ -1,7 +1,6 @@
 $(document).ready(function(){
     // declare variable scope
     const $urlElm = $('#url-factory')
-    const $transElm = $('#trans-factory')
     const $EmplTable = $('#employee_tbl')
     const $AvlList = $('#employee_available_detail_tbl')
     const $AvlHistoryList = $('#employee_adjust_history_tb')
@@ -116,6 +115,11 @@ $(document).ready(function(){
                             $('#inputAdjustedTotal').val(data.total)
                             $('input[name="employee_inherit"]').val(
                                 $EmplTable.DataTable().rows('.selected').data().toArray()[0]['id'])
+                            if (data.expiration_date !== null){
+                                const exprElm = $('#inputExpirationDate')
+                                if(data.leave_type.code !== 'AN' && data.leave_type.code !== 'ANPY') exprElm.prop('disabled', false)
+                                exprElm.val(moment(data.expiration_date).format('DD/MM/YYYY')).trigger('change')
+                            }
                         })
                     }
                 })
@@ -193,7 +197,7 @@ $(document).ready(function(){
                 $.fn.callAjax2({
                     'url': $urlElm.attr('data-available-list'),
                     'method': 'GET',
-                    'data': {'employee': Employee_ID}
+                    'data': {'employee': Employee_ID, 'check_balance': true}
                 }).then((resp) => {
                         let data = $.fn.switcherResp(resp).leave_available;
                         EmployeeHandle.LoadAvailableTable(data)
@@ -204,9 +208,22 @@ $(document).ready(function(){
         }
     }
 
+    // date-picker load init modal popup
+    const $dateElm = $('#inputExpirationDate')
+    $dateElm.daterangepicker({
+        singleDatePicker: true,
+        timepicker: false,
+        showDropdowns: false,
+        minYear: 2023,
+        locale: {
+            format: 'DD/MM/YYYY'
+        },
+    })
+
     // first time load table employee list
     EmployeeHandle.LoadList()
 
+    // modal on change action,qunatity form field
     function commonTwoAction(){
         const expression = $('#selectAction option:selected').val()
         let isValue = $('#inputQuantity').val()
@@ -216,6 +233,12 @@ $(document).ready(function(){
     }
     $('#inputQuantity').on('blur', commonTwoAction)
     $('#selectAction').on('change', commonTwoAction)
+
+    // on close modal
+    $('#edit-available').on('hidden.bs.modal', ()=>{
+        $dateElm.prop('disabled', true).val(null).trigger('change')
+    })
+
     // handle form edit submit
     SetupFormSubmit.validate($editForm, {
         rules: {
@@ -236,6 +259,7 @@ $(document).ready(function(){
         submitHandler: function () {
             const frm = new SetupFormSubmit($editForm);
             let frmData = frm.dataForm;
+            if (!frmData?.expiration_date) frmData.expiration_date = null
             $.fn.callAjax2({
                 "url": $urlElm.attr('data-available-list'),
                 "method": 'PUT',

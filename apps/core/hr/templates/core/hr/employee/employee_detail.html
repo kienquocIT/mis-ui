@@ -2,6 +2,24 @@
 {% load static i18n %}
 {% block cssHeader %}
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
+    <style>
+        .row-error-disabled {
+            position: relative;
+        }
+        .row-error-disabled::after {
+            content: "{% trans 'This application has been disabled for you or cannot be found!' %}";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 14px;
+            color: #fff;
+        }
+    </style>
 {% endblock %}
 {% block pageAction %}
     <a href="{% url 'EmployeeUpdate' pk=pk %}">
@@ -17,28 +35,6 @@
 {% endblock %}
 
 {% block pageContent %}
-    <ul class="nav nav-line nav-light nav-tabs" id="myTabs">
-        <li class="nav-item">
-            <a class="nav-link active" data-bs-toggle="tab" href="#tab-info">
-                <span class="nav-link-text">{% trans 'General Information' %}</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="tab" href="#tab-app">
-                <span class="nav-link-text">{% trans 'Plan-Application' %}</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="tab" href="#tab-permissions">
-                <span class="nav-link-text">{% trans 'Permissions' %}</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="tab" href="#tab-summary-permissions">
-                <span class="nav-link-text">{% trans 'Summary of permissions' %}</span>
-            </a>
-        </li>
-    </ul>
     <div
             id="employee-detail-page" class="needs-validation"
             data-url="{% url 'EmployeeDetailAPI' pk=pk %}"
@@ -47,205 +43,7 @@
             data-doc-id="{{ data.data.doc_id }}"
     >
         {% csrf_token %}
-        <div class="tab-content">
-            <div class="tab-pane fade show active" id="tab-info">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="row">
-                                <div class="col-8">
-                                    <div class="row">
-                                        <div class="form-group">
-                                            <label class="form-label">{% trans 'User' %}</label>
-                                            <div class="input-affix-wrapper">
-                                                <div class="dropdown input-prefix">
-                                                    <i class="fas fa-info-circle text-blue"
-                                                       data-bs-toggle="dropdown"
-                                                       data-dropdown-animation
-                                                       aria-haspopup="true"
-                                                       aria-expanded="false"
-                                                       disabled></i>
-                                                    <div class="dropdown-menu w-210p mt-2"></div>
-                                                </div>
-                                                <select class="form-select"
-                                                        name="title" id="select-box-user"
-                                                        readonly disabled
-                                                ></select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <div class="form-group">
-                                                <label class="form-label">
-                                                    {% trans 'First Name' %}
-                                                </label>
-                                                <input
-                                                        type="text" class="form-control"
-                                                        name="first_name"
-                                                        id="employee-first-name"
-                                                        readonly
-                                                        disabled
-                                                >
-                                            </div>
-                                        </div>
-                                        <div class="col-6">
-                                            <div class="form-group">
-                                                <label class="form-label">
-                                                    {% trans 'Last Name' %}
-                                                </label>
-                                                <input
-                                                        type="text" placeholder=""
-                                                        class="form-control"
-                                                        name="last_name"
-                                                        id="employee-last-name"
-                                                        readonly
-                                                        disabled
-                                                >
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <div class="form-group">
-                                        <label class="form-label">{% trans 'Avatar' %}</label>
-                                        <span class="form-text text-muted">{% trans 'Avatar of emloyee' %}</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-4">
-                                    <div class="form-group">
-                                        <label class="form-label">{% trans 'Email' %}</label>
-                                        <input
-                                                type="email"
-                                                class="form-select"
-                                                name="email"
-                                                id="employee-email"
-                                                readonly
-                                                disabled
-                                        />
-                                    </div>
-                                </div>
-                                <div class="col-4">
-
-                                    <div class="form-group">
-                                        <label class="form-label">{% trans 'Phone' %}</label>
-                                        <input
-                                                type="text"
-                                                class="form-control"
-                                                name="phone"
-                                                id="employee-phone"
-                                                readonly
-                                                disabled
-                                        >
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <div class="form-group">
-                                        <label class="form-label">{% trans 'Department' %}
-                                        </label>
-                                        <select
-                                                class="form-select"
-                                                name="group"
-                                                id="select-box-group-employee"
-                                                readonly
-                                                disabled
-                                        ></select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-4">
-                                    <div class="form-group">
-                                        <label class="form-label">{% trans 'Date of Birthday' %}</label>
-                                        <input
-                                                class="form-control"
-                                                type="text"
-                                                id="employee-dob"
-                                                readonly
-                                                disabled
-                                        />
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <div class="form-group">
-                                        <label class="form-label">{% trans 'Date Joined' %}</label>
-                                        <input
-                                                class="form-control"
-                                                type="text"
-                                                id="employee-date-joined"
-                                                readonly
-                                                disabled
-                                        />
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <div class="form-group">
-                                        <label class="form-label">{% trans 'Role' %}</label>
-                                        <select
-                                                class="form-select"
-                                                name="role"
-                                                id="select-box-role-employee"
-                                                readonly
-                                                disabled
-                                                multiple
-                                        ></select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="form-group">
-                                <div class="form-check form-switch">
-                                    <input
-                                            type="checkbox"
-                                            class="form-check-input"
-                                            name="is_admin_company"
-                                            id="idx_is_admin_company"
-                                            disabled
-                                            readonly
-                                    >
-                                    <label class="form-check-label" for="idx_is_admin_company">
-                                        {% trans 'Is admin' %}
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="form-group">
-                                <div class="form-check form-switch">
-                                    <input
-                                            type="checkbox"
-                                            class="form-check-input"
-                                            name="is_active"
-                                            id="is_active"
-                                            disabled
-                                            readonly
-                                    >
-                                    <label class="form-check-label" for="is_active">
-                                        {% trans 'Active' %}
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="tab-pane fade" id="tab-app">
-                {% include 'core/hr/extends/plan_apps.html' with add_new_enabled="false" %}
-            </div>
-            <div class="tab-pane fade" id="tab-permissions">
-                {% include 'core/hr/extends/permissions.html' with add_new_enabled="false" %}
-            </div>
-            <div class="tab-pane fade" id="tab-summary-permissions">
-                {% include 'core/hr/extends/summary_permits.html' %}
-            </div>
-        </div>
+        {% include 'core/hr/extends_new/permission_group_tabs_has_change_app.html' with get_from='employee' actions_enabled=False summary_enabled=True plan_app_enabled=True permit_enabled=True li_head='core/hr/employee/extends/tab-info.html' li_content_head='core/hr/employee/extends/tab-info-content.html'  li_content_head_disabled=True %}
     </div>
     <template class="template-factory hidden">
         <div class="belong-to">
@@ -281,8 +79,6 @@
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
 
     <script src="{% static 'assets/js/core/hr/employee/employee_pk.js' %}"></script>
-    <script src="{% static 'assets/js/core/hr/permissions.js' %}"></script>
-    <script src="{% static 'assets/js/core/hr/plan_app.js' %}"></script>
     <script src="{% static 'assets/js/core/hr/employee/employee_detail.js' %}"></script>
-    <script src="{% static 'assets/js/core/hr/summary.js' %}"></script>
+    <script src="{% static 'assets/js/core/hr/extends_new/plan_app_permissions.js' %}"></script>
 {% endblock %}

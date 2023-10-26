@@ -3,22 +3,37 @@ $(document).ready(function () {
         url: urlDetail,
         method: 'GET',
     }).then(
-        (resp)=>{
+        (resp) => {
             let data = $.fn.switcherResp(resp);
             return data['role'] || {};
         }
     );
 
-    Promise.all([
-        callAppList(), detailApi
-    ]).then(
-        (results)=>{
-            renderAppList(results[0]);
+    $x.fn.showLoadingPage();
+    HandlePlanAppNew.editEnabled = true;
+    Promise.all(
+        [
+            getAllAppOfTenant(),
+            detailApi,
+        ]
+    ).then(
+        (results) => {
+            HandlePlanAppNew.setPlanApp(results[1]?.plan_app || [])
+            HandlePlanAppNew.setPermissionByConfigured(results[1]?.permission_by_configured || [])
+
+            let clsNew = new HandlePlanAppNew();
+            clsNew.renderTenantApp(results[0]);
+            clsNew.renderPermissionSelected()
             return results;
         }
     ).then(
-        (results)=>{
-            RoleForm.loadDetail(results[1]);
+        (results) => {
+            RoleForm.loadDetail(results[1], {'disabled': true});
+            return results;
+        }
+    ).then(
+        () => {
+            $x.fn.hideLoadingPage();
         }
     );
 
@@ -27,7 +42,34 @@ $(document).ready(function () {
         frm,
         {
             submitHandler: function (form) {
-                return new RoleForm({'form': $(form)}).combinesForm(true);
+                let ajaxConfig = new RoleForm({'form': $(form)}).combinesForm();
+                ajaxConfig['data']['permission_by_configured'] = new HandlePlanAppNew().combinesPermissions();
+                ajaxConfig['data']['plan_app'] = new HandlePlanAppNew().combinesPlanApp();
+                return $.fn.callAjax2({...ajaxConfig, isLoading: true}).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            $.fn.notifyB({description: $.fn.transEle.attr('data-success')}, 'success');
+                            if ($(frm).attr('data-url-redirect')) {
+                                $.fn.redirectUrl($(frm).attr('data-url-redirect'), 1000);
+                            } else {
+                                setTimeout(
+                                    () => {
+                                        window.location.reload()
+                                    },
+                                    1000
+                                )
+                            }
+                        }
+                        $x.fn.hideLoadingPage();
+                    },
+                    (errs) => {
+                        $.fn.switcherResp(errs);
+                        $x.fn.hideLoadingPage();
+                    }
+                )
+
             }
-        });
+        }
+    );
 });

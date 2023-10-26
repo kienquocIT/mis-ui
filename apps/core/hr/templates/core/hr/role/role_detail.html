@@ -1,6 +1,25 @@
 {% extends 'base.html' %}
 {% load static i18n %}
-
+{% block cssHeader %}
+    <style>
+        .row-error-disabled {
+            position: relative;
+        }
+        .row-error-disabled::after {
+            content: "{% trans 'This application has been disabled for you or cannot be found!' %}";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 14px;
+            color: #fff;
+        }
+    </style>
+{% endblock %}
 {% block pageAction %}
     <a href="{% url 'RoleUpdateView' pk=pk %}">
         <button class="btn btn-outline-primary">
@@ -37,38 +56,38 @@
             ></select>
         </div>
     </div>
-    <div class="row">
-            <div class="col-12">
-                <ul class="nav nav-light nav-tabs">
-                    <li class="nav-item">
-                        <a class="nav-link active" data-bs-toggle="tab" href="#plan-app">
-                            <span class="nav-link-text">{% trans 'Plan-Application' %}</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" data-bs-toggle="tab" href="#permissions">
-                            <span class="nav-link-text">{% trans 'Permission' %}</span>
-                        </a>
-                    </li>
-                </ul>
-                <div class="tab-content">
-                    <div class="tab-pane show active" id="plan-app">
-                        {% include 'core/hr/extends/plan_apps.html' with add_new_enabled="false" %}
-                    </div>
-                    <div class="tab-pane fade" id="permissions">
-                        {% include 'core/hr/extends/permissions.html' with add_new_enabled="false" %}
-                    </div>
-                </div>
-            </div>
-        </div>
+    {% include 'core/hr/extends_new/permission_group_tabs_has_change_app.html' with get_from='role' active_tab='tab-app' actions_enabled=False plan_app_enabled=True permit_enabled=True %}
+{#    <div class="row">#}
+{#            <div class="col-12">#}
+{#                <ul class="nav nav-light nav-tabs">#}
+{#                    <li class="nav-item">#}
+{#                        <a class="nav-link active" data-bs-toggle="tab" href="#plan-app">#}
+{#                            <span class="nav-link-text">{% trans 'Plan-Application' %}</span>#}
+{#                        </a>#}
+{#                    </li>#}
+{#                    <li class="nav-item">#}
+{#                        <a class="nav-link" data-bs-toggle="tab" href="#permissions">#}
+{#                            <span class="nav-link-text">{% trans 'Permission' %}</span>#}
+{#                        </a>#}
+{#                    </li>#}
+{#                </ul>#}
+{#                <div class="tab-content">#}
+{#                    <div class="tab-pane show active" id="plan-app">#}
+{#                        {% include 'core/hr/extends/plan_apps.html' with add_new_enabled="false" %}#}
+{#                    </div>#}
+{#                    <div class="tab-pane fade" id="permissions">#}
+{#                        {% include 'core/hr/extends/permissions.html' with add_new_enabled="false" %}#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
 {% endblock %}
 
 {% block jsFooter %}
     <script>
         let urlDetail = "{% url 'RoleDetailAPI' pk=pk %}";
     </script>
-    <script src="{% static 'assets/js/core/hr/permissions.js' %}"></script>
-    <script src="{% static 'assets/js/core/hr/role/role_detail.js' %}"></script>
-    <script src="{% static 'assets/js/core/hr/plan_app.js' %}"></script>
     <script src="{% static 'assets/js/core/hr/role/roles_common.js' %}"></script>
+    <script src="{% static 'assets/js/core/hr/role/role_detail.js' %}"></script>
+    <script src="{% static 'assets/js/core/hr/extends_new/plan_app_permissions.js' %}"></script>
 {% endblock %}

@@ -3,22 +3,37 @@ $(document).ready(function () {
         url: urlDetail,
         method: 'GET',
     }).then(
-        (resp)=>{
+        (resp) => {
             let data = $.fn.switcherResp(resp);
             return data['role'] || {};
         }
     );
 
-    Promise.all([
-        callAppList(), detailApi
-    ]).then(
-        (results)=>{
-            renderAppList(results[0]);
+    $x.fn.showLoadingPage();
+    HandlePlanAppNew.editEnabled = false;
+    Promise.all(
+        [
+            getAllAppOfTenant(),
+            detailApi,
+        ]
+    ).then(
+        (results) => {
+            HandlePlanAppNew.setPlanApp(results[1]?.plan_app || [])
+            HandlePlanAppNew.setPermissionByConfigured(results[1]?.permission_by_configured || [])
+
+            let clsNew = new HandlePlanAppNew();
+            clsNew.renderTenantApp(results[0]);
+            clsNew.renderPermissionSelected()
             return results;
         }
     ).then(
-        (results)=>{
+        (results) => {
             RoleForm.loadDetail(results[1], {'disabled': true});
+            return results;
+        }
+    ).then(
+        () => {
+            $x.fn.hideLoadingPage();
         }
     );
 });

@@ -486,6 +486,7 @@ class OpportunityLoadDetail {
         memberEditEle.val(memberIdx);
         if (change_member_selected === true) memberEditEle.trigger('change');
         boxEditPermitEle.attr('data-id', memberIdx);
+
         let urlTmp = boxEditPermitEle.data('url').replaceAll('__pk_member__', memberIdx);
         $.fn.callAjax2({
             url: urlTmp,
@@ -495,12 +496,23 @@ class OpportunityLoadDetail {
                 let data = $.fn.switcherResp(resp);
                 if (data && typeof data === 'object' && data.hasOwnProperty('member')) {
                     let memData = data['member'];
-
                     eleViewOppMember.prop('checked', memData.permit_view_this_opp);
                     eleAddOppMember.prop('checked', memData.permit_add_member);
 
-                    new HandlePermissions().loadData(memData.plan_app, memData.permission_by_configured || [], {}, true);
-                    new HandlePlanApp().appendPlanAppOfEmployee(memData.plan_app);
+                    HandlePlanAppNew.editEnabled = true;
+                    HandlePlanAppNew.hasSpaceChoice = false;
+                    HandlePlanAppNew.rangeAllowOfApp = ["1", "4"];
+                    HandlePlanAppNew.manual_app_list_and_not_plan_app = true;
+
+                    HandlePlanAppNew.setPlanApp([], true) // opp not using plan_app -> get from storage
+                    HandlePlanAppNew.setPermissionByConfigured(memData.permission_by_configured || [])
+
+                    let clsNew = new HandlePlanAppNew();
+                    clsNew.renderPermissionSelected(
+                        memberIdx, {
+                            'get_from': 'opportunity',
+                            'opportunity': $.fn.getPkDetail(),
+                        })
                 }
                 $x.fn.hideLoadingPage();
                 return {};
@@ -603,8 +615,7 @@ class OpportunityLoadDetail {
             let bodyData = {
                 'permit_view_this_opp': eleViewOppMember.prop('checked'),
                 'permit_add_member': eleAddOppMember.prop('checked'),
-                'plan_app': new HandlePlanApp().combinesData(),
-                'permission_by_configured': new HandlePermissions().combinesData()['data'],
+                'permission_by_configured': new HandlePlanAppNew().combinesPermissions(),
             };
             let urlData = boxEditPermitEle.data('url').replaceAll('__pk_member__', boxEditPermitEle.data('id'));
             $.fn.callAjax2({

@@ -15,6 +15,25 @@
                 }
             }
     </style>
+    <style>
+        .row-error-disabled {
+            position: relative;
+        }
+
+        .row-error-disabled::after {
+            content: "{% trans 'This application has been disabled for you or cannot be found!' %}";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 14px;
+            color: #fff;
+        }
+    </style>
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
@@ -632,4 +651,5 @@
     <script src="{% static 'assets/sales/opportunity/js/opportunity_common.js' %}"></script>
     <script src="{% static 'assets/sales/opportunity/js/opportunity_update.js' %}"></script>
 
+    <script src="{% static 'assets/js/core/hr/extends_new/plan_app_permissions.js' %}"></script>
 {% endblock %}

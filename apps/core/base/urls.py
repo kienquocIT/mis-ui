@@ -5,6 +5,7 @@ from apps.core.base.views import (
     ApplicationPropertyEmployeeListAPI, ApplicationPermissionAPI,
     CountryListAPI, CityListAPI, DistrictListAPI, DistrictAllListAPI, WardListAPI, WardAllListAPI,
     BaseCurrencyListAPI, BaseItemUnitListAPI, IndicatorParamListAPI, ApplicationForOpportunityPermitListAPI,
+    ApplicationDetailAPI,
 )
 
 urlpatterns = [
@@ -18,6 +19,7 @@ urlpatterns = [
 
     path('plan/api', PlanListAPI.as_view(), name='PlanListAPI'),
     path('tenant-application/api', TenantApplicationListAPI.as_view(), name='TenantApplicationListAPI'),
+    path('application/<str:pk>', ApplicationDetailAPI.as_view(), name='ApplicationDetailAPI'),
     path('application-property/api', ApplicationPropertyListAPI.as_view(), name='ApplicationPropertyListAPI'),
     path(
         'application-property-employee/api',

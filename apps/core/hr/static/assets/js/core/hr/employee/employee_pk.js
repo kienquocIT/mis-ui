@@ -3,7 +3,11 @@ function callDetailData(url, method) {
         url: url,
         method: method,
     }).then((resp) => {
-        return $.fn.switcherResp(resp);
+        let data = $.fn.switcherResp(resp);
+        if (data && data.hasOwnProperty('employee')) {
+            return data.employee;
+        }
+        return {};
     });
 }
 
@@ -86,21 +90,16 @@ class EmployeeLoadPage {
 
     static combinesForm(frmIdx, hasPermit = true) {
         let frm = new SetupFormSubmit($(frmIdx));
-        if (hasPermit === true) frm.dataForm['permission_by_configured'] = new HandlePermissions().combinesData()['data'];
+        // if (hasPermit === true) frm.dataForm['permission_by_configured'] = new HandlePermissions().combinesData()['data'];
         frm.dataForm['is_active'] = frm.dataForm['is_active'] === 'on';
         frm.dataForm['is_admin_company'] = frm.dataForm['is_admin_company'] === 'on';
-        frm.dataForm['plan_app'] = new HandlePlanApp().combinesData();
+        // frm.dataForm['plan_app'] = new HandlePlanApp().combinesData();
         frm.dataForm['date_joined'] = frm.dataForm['date_joined'] ? moment(frm.dataForm['date_joined']).format('YYYY-MM-DD HH:mm:ss') : null;
         frm.dataForm['dob'] = frm.dataForm['dob'] ? moment(frm.dataForm['dob']).format('YYYY-MM-DD') : null;
         frm.dataForm['role'] = EmployeeLoadPage.roleSelectEle.val()
 
         if (!frm.dataForm['user']) frm.dataForm['user'] = null;
         if (!frm.dataForm['group']) frm.dataForm['group'] = null;
-
-        if (frm.dataForm['user'] && !frm.dataForm['plan_app']) {
-            $.fn.notifyB({description: 'Employee map user must choose applications'}, 'failure');
-            return false;
-        }
 
         return {
             url: frm.dataUrl,

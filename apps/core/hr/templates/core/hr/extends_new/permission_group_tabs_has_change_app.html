@@ -1,0 +1,85 @@
+{% load i18n %}
+
+<ul class="nav nav-line nav-tabs nav-light">
+    {% if li_head %}
+        {% include li_head %}
+    {% endif %}
+    {% if plan_app_enabled == True %}
+        <li class="nav-item">
+            <a class="nav-link {% if active_tab == 'tab-app' %}active{% endif %}" data-bs-toggle="tab" href="#tab-app">
+                <span class="nav-link-text">{% trans 'Plan-Application' %}</span>
+            </a>
+        </li>
+    {% endif %}
+    {% if permit_enabled == True %}
+        <li class="nav-item">
+            <a class="nav-link {% if active_tab == 'tab-permissions' %}active{% endif %}" data-bs-toggle="tab" href="#tab-permissions">
+                <span class="nav-link-text">{% trans 'Permissions' %}</span>
+            </a>
+        </li>
+    {% endif %}
+    {% if summary_enabled == True %}
+        <li class="nav-item">
+            <a class="nav-link {% if active_tab == 'tab-summary-permissions' %}active{% endif %}" data-bs-toggle="tab" href="#tab-summary-permissions">
+                <span class="nav-link-text">{% trans 'Summary of permissions' %}</span>
+            </a>
+        </li>
+    {% endif %}
+    {% if actions_enabled == True %}
+        <li class="nav-item">
+            <a
+                    class="nav-link dropdown-toggle"
+                    data-bs-toggle="dropdown"
+                    href="#" role="button" aria-haspopup="true"
+                    aria-expanded="false"
+            >
+                {% trans 'Action' %}
+            </a>
+            <div class="dropdown-menu">
+                <a
+                        class="dropdown-item" href="#" id="btnResetApp"
+                >
+                    {% trans 'Make empty' %} {% trans 'Application' %}
+                </a>
+                <a
+                        class="dropdown-item" href="#" id="btnResetPermit"
+                >
+                    {% trans 'Make empty' %} {% trans 'Permission' %}
+                </a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#" id="btnResetAll">{% trans 'Make empty' %} {% trans 'all' %}</a>
+                {% include extend_action|default:'extends/utility/empty.html' %}
+            </div>
+        </li>
+    {% endif %}
+</ul>
+<div class="tab-content">
+    {% if li_content_head %}
+        {% include li_content_head %}
+    {% endif %}
+    {% if plan_app_enabled == True %}
+        <div class="tab-pane {% if active_tab == 'tab-app' %}show active{% else %}fade{% endif %}" id="tab-app">
+            {% include 'core/hr/extends_new/plan_apps.html' with add_new_enabled=add_new_enabled warning_enabled=warning_enabled %}
+        </div>
+    {% endif %}
+    {% if permit_enabled == True %}
+        <div class="tab-pane {% if active_tab == 'tab-permissions' %}show active{% else %}fade{% endif %}" id="tab-permissions">
+            {% include 'core/hr/extends_new/permissions.html' with add_new_enabled=add_new_enabled range_allowed=range_allowed get_from=get_from %}
+        </div>
+    {% endif %}
+    {% if summary_enabled == True %}
+        <div class="tab-pane {% if active_tab == 'tab-summary-permissions' %}show active{% else %}fade{% endif %}" id="tab-summary-permissions">
+            {% include 'core/hr/extends/summary_permits.html' %}
+        </div>
+    {% endif %}
+</div>
+
+<span
+        id="plan_app_permission_msg"
+        class="hidden"
+        data-msg-are-u-sure="{% trans 'Are you sure?' %}"
+        data-msg-not-revert="{% trans "You won't be able to revert this!" %}"
+        data-msg-yes-delete-it="{% trans 'Yes, delete it!' %}"
+        data-msg-cancel="{% trans 'Cancel' %}"
+        data-msg-delete="{% trans 'Delete' %}"
+></span>

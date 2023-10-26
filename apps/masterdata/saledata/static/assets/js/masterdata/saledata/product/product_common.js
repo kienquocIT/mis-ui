@@ -44,13 +44,13 @@ async function loadWareHouseListAjax() {
 
 productImageEle.dropify({
     messages: {
-        'default': 'Upload an image',
-        'replace': 'Drag and drop or click to replace',
-        'remove':  'Remove',
-        'error':   'Oops, something wrong happened.'
+        'default': 'Drag and drop your file here.',
     },
     tpl: {
-        message:' {{ default }}',
+        message: '<div class="dropify-message">' +
+            '<span class="file-icon"></span>' +
+            '<h5>{{ default }}</h5>' +
+            '</div>',
     }
 });
 

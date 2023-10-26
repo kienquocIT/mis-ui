@@ -102,41 +102,25 @@ $(function () {
 
         GRDataTableHandle.tableLot.on('click', '.dropdown-item-lot', function () {
             let row = this.closest('tr');
-            for (let ddItem of row.querySelectorAll('.dropdown-item-lot')) {
-                ddItem.setAttribute('data-checked', 'false');
-                $(ddItem).css('background-color', '');
-            }
-            this.setAttribute('data-checked', 'true');
-            $(this).css('background-color', '#ebfcf5');
-            let dataLotRaw = this.getAttribute('data-lot');
-            if (dataLotRaw) {
-                let dataLot = JSON.parse(dataLotRaw);
-                let eleLotNumber = row.querySelector('.table-row-lot-number');
-                let eleImport = row.querySelector('.table-row-import');
-                let eleExpire = row.querySelector('.table-row-expire-date');
-                let eleManufacture = row.querySelector('.table-row-manufacture-date');
-                if (eleLotNumber) {
-                    eleLotNumber.value = dataLot?.['lot_number'];
-                }
-                if (eleImport) {
-                    eleImport.value = '0';
-                }
-                if (eleExpire) {
-                    eleExpire.value = moment(dataLot?.['expire_date']).format('DD/MM/YYYY hh:mm A');
-                }
-                if (eleManufacture) {
-                    eleManufacture.value = moment(dataLot?.['manufacture_date']).format('DD/MM/YYYY hh:mm A');
-                }
-            }
+            GRLoadDataHandle.loadUnCheckLotDDItem(row);
+            GRLoadDataHandle.loadCheckLotDDItem(this, row);
         });
 
         GRDataTableHandle.tableLot.on('change', '.table-row-lot-number', function () {
             let row = this.closest('tr');
-            for (let ddItem of row.querySelectorAll('.dropdown-item-lot')) {
-                ddItem.setAttribute('data-checked', 'false');
-                $(ddItem).css('background-color', '');
-            }
+            // validate lot exist
             GRValidateHandle.validateLotNumber(this);
+            GRValidateHandle.validateLotNumberExistRow(this);
+            //
+            let is_checked = GRLoadDataHandle.loadUnCheckLotDDItem(row);
+            if (this.value === '') {
+                row.querySelector('.table-row-import').value = '0';
+                GRLoadDataHandle.loadQuantityImport();
+            }
+            if (is_checked === true) {
+                row.querySelector('.table-row-expire-date').value = '';
+                row.querySelector('.table-row-manufacture-date').value = '';
+            }
         });
 
         GRDataTableHandle.tableLot.on('change', '.table-row-import', function () {
@@ -159,16 +143,7 @@ $(function () {
         GRDataTableHandle.tableSerial.on('change', '.table-row-serial-number', function () {
             // validate serial exist
             GRValidateHandle.validateSerialNumber(this);
-            // // update quantity import by serial
-            // let importResult = GRLoadDataHandle.loadQuantityImport();
-            // if (importResult === false) {
-            //     // Get the index of the current row within the DataTable
-            //     let rowIndex = GRDataTableHandle.tableSerial.DataTable().row(this.closest('tr')).index();
-            //     let row = GRDataTableHandle.tableSerial.DataTable().row(rowIndex);
-            //     // Delete current row
-            //     row.remove().draw();
-            //     GRLoadDataHandle.loadQuantityImport();
-            // }
+            GRValidateHandle.validateSerialNumberExistRow(this);
         });
 
         GRDataTableHandle.tableLineDetailPO.on('change', '.table-row-price, .table-row-tax', function () {

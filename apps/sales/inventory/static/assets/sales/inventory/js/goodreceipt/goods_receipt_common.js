@@ -1727,6 +1727,93 @@ class GRStoreDataHandle {
     }
 }
 
+// Validate
+class GRValidateHandle {
+
+    static validateLotNumber(ele) {
+        let lot_number = ele.value;
+        let dataPOProductCheckedRaw = GRDataTableHandle.tablePOProduct[0].querySelector('.table-row-checkbox:checked')?.getAttribute('data-row');
+        if (dataPOProductCheckedRaw) {
+            let dataPOProductChecked = JSON.parse(dataPOProductCheckedRaw);
+            $.fn.callAjax2({
+                    'url': $('#url-factory').attr('data-product-warehouse-lot'),
+                    'method': 'GET',
+                    'data': {
+                        'product_warehouse__product_id': dataPOProductChecked?.['product']?.['id'],
+                        'lot_number': lot_number
+                    },
+                    'isDropdown': true,
+                }
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('warehouse_lot_list') && Array.isArray(data.warehouse_lot_list)) {
+                            if (data.warehouse_lot_list.length > 0) {
+                                ele.value = '';
+                                let eleImport = ele?.closest('tr')?.querySelector('.table-row-import');
+                                if (eleImport) {
+                                    eleImport.value = '0';
+                                }
+                                GRLoadDataHandle.loadQuantityImport();
+                                $.fn.notifyB({description: 'Lot number is exist'}, 'failure');
+                                return false
+                            }
+                        }
+                    }
+                }
+            )
+        }
+        return true
+    };
+
+    static validateSerialNumber(ele) {
+        let serial_number = ele.value;
+        let dataPOProductCheckedRaw = GRDataTableHandle.tablePOProduct[0].querySelector('.table-row-checkbox:checked')?.getAttribute('data-row');
+        if (dataPOProductCheckedRaw) {
+            let dataPOProductChecked = JSON.parse(dataPOProductCheckedRaw);
+            $.fn.callAjax2({
+                    'url': $('#url-factory').attr('data-product-warehouse-serial'),
+                    'method': 'GET',
+                    'data': {
+                        'product_warehouse__product_id': dataPOProductChecked?.['product']?.['id'],
+                        'serial_number': serial_number
+                    },
+                    'isDropdown': true,
+                }
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('warehouse_serial_list') && Array.isArray(data.warehouse_serial_list)) {
+                            if (data.warehouse_serial_list.length > 0) {
+                                ele.value = '';
+                                // update quantity import by serial
+                                GRLoadDataHandle.loadQuantityImport();
+                                $.fn.notifyB({description: 'Serial number is exist'}, 'failure');
+                                return false
+                            } else {
+                                // update quantity import by serial
+                                let importResult = GRLoadDataHandle.loadQuantityImport();
+                                if (importResult === false) {
+                                    // Get the index of the current row within the DataTable
+                                    let rowIndex = GRDataTableHandle.tableSerial.DataTable().row(ele.closest('tr')).index();
+                                    let row = GRDataTableHandle.tableSerial.DataTable().row(rowIndex);
+                                    // Delete current row
+                                    row.remove().draw();
+                                    GRLoadDataHandle.loadQuantityImport();
+                                }
+                            }
+                        }
+                    }
+                }
+            )
+        }
+        return true
+    };
+
+}
+
 // Submit Form
 class GRSubmitHandle {
 

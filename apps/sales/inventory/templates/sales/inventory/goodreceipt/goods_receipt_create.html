@@ -446,6 +446,10 @@
             type="hidden"
             id="data-submit-pr-warehouse"
         >
+        <input type="hidden" id="url-factory"
+           data-product-warehouse-lot="{% url 'WarehouseLotListAPI' %}"
+           data-product-warehouse-serial="{% url 'WarehouseSerialListAPI' %}"
+        >
 
 
         <div class="modal fade mt-5" id="productModalCenter" tabindex="-1" role="dialog" aria-labelledby="productModalCenter" aria-hidden="true">

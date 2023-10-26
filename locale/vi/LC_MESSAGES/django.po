@@ -272,6 +272,10 @@ msgstr "Hủy bỏ"
 msgid "Language"
 msgstr "Ngôn ngữ"
 
+#
+msgid "Change language to"
+msgstr "Thay đổi ngôn ngữ thành"
+
 #: .\apps\core\company\templates\core\company\company_list.html:249
 msgid "Currency Primary"
 msgstr "Đồng tiền mặc định"

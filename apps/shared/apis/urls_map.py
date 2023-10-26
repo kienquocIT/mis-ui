@@ -39,6 +39,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     user_list = StringUrl('account/users')
     user_detail = StringUrl('account/user')
     USER_RESET_PASSWORD = StringUrl('account/user/reset-password/{pk}')
+    LANGUAGE_CHANGE = 'auth/language'
 
     # attachment
     MEDIA_ACCESS_TOKEN = StringUrl('hr/employee/media-token')

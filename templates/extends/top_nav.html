@@ -327,6 +327,20 @@
                                     <a class="dropdown-item" href="/">{% trans 'Profile' %}</a>
                                 {% endif %}
                             {% endif %}
+
+                            <a
+                                    id="link-language" class="dropdown-item" href="#"
+                                    data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                    title="{% trans 'Language' %}"
+                                    data-url="{% url 'MyLanguageAPI' %}"
+                                    data-value="{{base.language}}"
+                            >
+                                <span class="dropdown-icon feather-icon">
+                                    <i data-feather="globe"></i>
+                                </span>
+                                <span>{{ base.language|language_full_name }}</span>
+                            </a>
+
                             <a id="link-logout" class="dropdown-item" href="{% url 'AuthLogout' %}">
                                 <span class="dropdown-icon feather-icon">
                                     <i data-feather="log-out"></i>

@@ -688,6 +688,7 @@ function LoadDetailProduct(option) {
                          volumeEle.val(general_information['product_size']['volume']['value']);
                          weightEle.val(general_information['product_size']['weight']['value']);
                      }
+                     loadBaseItemUnit();
                  }
 
                  if (Object.keys(product_detail['sale_information']).length !== 0) {

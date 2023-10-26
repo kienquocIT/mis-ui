@@ -41,3 +41,13 @@ def render_avatar_tag(person_data):  # using `x|render_avatar_tag|safe` after us
             class="avatar-img"
         >"""
     return f'<span class="initial-wrap">{short_name}</span>'
+
+
+@register.filter(name='language_full_name')
+def revert_language_to_full_name(value):
+    if value:
+        if value == 'vi':
+            return 'Tiếng Việt'
+        if value == 'en':
+            return 'English'
+    return ''

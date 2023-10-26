@@ -161,3 +161,21 @@ class SpaceChangeView(APIView):
             request.user.save(update_fields=['ui_space_selected'])
             return {}, status.HTTP_200_OK
         return {'space_code': 'Space Code is required'}
+
+
+class MyLanguageAPI(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def put(self, request, *args, **kwargs):
+        user_obj = request.user
+        if user_obj and not isinstance(user_obj, AnonymousUser) and hasattr(user_obj, 'id'):
+            language = request.data.get('language', None)
+            if language in dict(settings.LANGUAGE_CHOICE):
+                resp = ServerAPI(request=request, user=request.user, url=ApiURL.LANGUAGE_CHANGE).put(
+                    data={'language': language}
+                )
+                if resp.state:
+                    user_obj.language = language
+                    user_obj.save()
+                return {}, status.HTTP_200_OK
+            return {'language': 'Language not support!'}, status.HTTP_400_BAD_REQUEST
+        return {}, status.HTTP_403_FORBIDDEN

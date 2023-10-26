@@ -238,12 +238,10 @@ class ProductDetail(View):
     )
     def get(self, request, *args, **kwargs):
         resp0 = ServerAPI(url=ApiURL.ITEM_UNIT_LIST, user=request.user).get()
-        resp1 = ServerAPI(user=request.user, url=ApiURL.WAREHOUSE_LIST).get()
-        resp2 = ServerAPI(url=ApiURL.CURRENCY_LIST, user=request.user).get()
+        resp1 = ServerAPI(url=ApiURL.CURRENCY_LIST, user=request.user).get()
         result = {
             'unit': resp0.result,
-            'warehouse_list': resp1.result,
-            'currency_list': resp2.result,
+            'currency_list': resp1.result,
         }
         return result, status.HTTP_200_OK
 
@@ -259,14 +257,10 @@ class ProductUpdate(View):
     )
     def get(self, request, *args, **kwargs):
         resp0 = ServerAPI(url=ApiURL.ITEM_UNIT_LIST, user=request.user).get()
-        resp1 = ServerAPI(user=request.user, url=ApiURL.WAREHOUSE_PRODUCT_LIST).get()
-        resp2 = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE).get()
-        resp3 = ServerAPI(url=ApiURL.CURRENCY_LIST, user=request.user).get()
+        resp1 = ServerAPI(url=ApiURL.CURRENCY_LIST, user=request.user).get()
         result = {
             'unit': resp0.result,
-            'warehouse_product_list': resp1.result,
-            'unit_of_measure': resp2.result,
-            'currency_list': resp3.result,
+            'currency_list': resp1.result,
         }
         return result, status.HTTP_200_OK
 

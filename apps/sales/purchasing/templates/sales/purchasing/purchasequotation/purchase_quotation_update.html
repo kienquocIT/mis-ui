@@ -3,6 +3,7 @@
 {% block title %}{% trans 'Purchase Quotation Update' %}{% endblock %}
 {% block cssHeader %}
     <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}"/>
+    <link href="{% static 'vendors/dropify/dist/css/dropify.css' %}" rel="stylesheet" type="text/css"/>
     <style>
         .select2-container--default.select2-container--disabled .select2-selection--multiple {
             background-color: #f7f7f7;
@@ -103,16 +104,20 @@
             <div class="col-12">
                 <ul class="nav nav-tabs nav-icon nav-light">
                     <li class="nav-item">
-                        <a class="nav-link active" data-bs-toggle="pill" href="#tab_line_detail">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#tab_line_detail">
                             <span class="nav-icon-wrap"><span class="feather-icon"><i class="fas fa-list"></i></span></span>
                             <span class="nav-link-text">{% trans 'Line Detail' %}</span>
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#tab_block_attachment">
+                            <span class="nav-icon-wrap"><span class="feather-icon"><i data-feather="file-text"></i></span></span>
+                            <span class="nav-link-text">{% trans 'Attachment' %}</span>
+                        </a>
+                    </li>
                 </ul>
                 <div class="tab-content">
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="tab-pane fade show active" id="tab_line_detail">
+                    <div class="tab-pane fade show active" id="tab_line_detail">
                                 <table class="table nowrap w-100" id="table-purchase-quotation-products-selected">
                                     <thead>
                                     <th class="w-5"></th>
@@ -139,41 +144,46 @@
                                     </thead>
                                     <tbody></tbody>
                                 </table>
-                            </div>
-                        </div>
-                    </div>
-                    <button id="new-product-btn" class="btn btn-soft-primary mb-3" type="button">
-                        <span>
-                            <span>{% trans "New product" %}</span>
-                            <span class="icon">
-                                <i class="fas fa-plus-circle"></i>
-                            </span>
-                        </span>
-                    </button>
-                    <div class="row">
-                        <div class="col-12 col-md-6 col-lg-8"></div>
-                        <div class="col-12 col-md-6 col-lg-4">
-                            <div class="card card-refresh">
-                                <div class="refresh-container">
-                                    <div class="loader-pendulums"></div>
-                                </div>
-                                <div id="content-card" class="collapse show">
-                                    <div class="card-body text-primary">
-                                        <div class="row mb-3">
-                                            <div class="col-4">{% trans "Pretax price" %}</div>
-                                            <span class="col-8 text-right mask-money" id="pretax-value">0</span>
-                                        </div>
-                                        <div class="row mb-3">
-                                            <div class="col-4">{% trans "Taxes" %}</div>
-                                            <span class="col-8 text-right mask-money" id="taxes-value">0</span>
-                                        </div>
-                                        <div class="dropdown-divider mb-3"></div>
-                                        <div class="row mb-3" style="font-weight: bold">
-                                            <div class="col-4">{% trans "Total" %}</div>
-                                            <span class="col-8 text-right mask-money" id="total-value">0</span>
+                                <button id="new-product-btn" class="btn btn-soft-primary mb-3" type="button">
+                                    <span>
+                                        <span>{% trans "New product" %}</span>
+                                        <span class="icon">
+                                            <i class="fas fa-plus-circle"></i>
+                                        </span>
+                                    </span>
+                                </button>
+                                <div class="row">
+                                    <div class="col-12 col-md-6 col-lg-8"></div>
+                                    <div class="col-12 col-md-6 col-lg-4">
+                                        <div class="card card-refresh">
+                                            <div class="refresh-container">
+                                                <div class="loader-pendulums"></div>
+                                            </div>
+                                            <div id="content-card" class="collapse show">
+                                                <div class="card-body text-primary">
+                                                    <div class="row mb-3">
+                                                        <div class="col-4">{% trans "Pretax price" %}</div>
+                                                        <span class="col-8 text-right mask-money" id="pretax-value">0</span>
+                                                    </div>
+                                                    <div class="row mb-3">
+                                                        <div class="col-4">{% trans "Taxes" %}</div>
+                                                        <span class="col-8 text-right mask-money" id="taxes-value">0</span>
+                                                    </div>
+                                                    <div class="dropdown-divider mb-3"></div>
+                                                    <div class="row mb-3" style="font-weight: bold">
+                                                        <div class="col-4">{% trans "Total" %}</div>
+                                                        <span class="col-8 text-right mask-money" id="total-value">0</span>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                    <div class="tab-pane fade" id="tab_block_attachment">
+                        <div class="row">
+                            <div class="col-12">
+                                <input type="file" id="input-file-now" class="dropify">
                             </div>
                         </div>
                     </div>

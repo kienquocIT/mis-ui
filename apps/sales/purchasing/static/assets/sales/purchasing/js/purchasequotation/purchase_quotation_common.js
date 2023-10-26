@@ -21,6 +21,18 @@ EXPDate.dateRangePickerDefault({
 
 EXPDate.val('');
 
+$('#input-file-now').dropify({
+    messages: {
+        'default': 'Drag and drop your file here.',
+    },
+    tpl: {
+        message: '<div class="dropify-message">' +
+            '<span class="file-icon"></span>' +
+            '<h5>{{ default }}</h5>' +
+            '</div>',
+    }
+});
+
 function deleteSameRow(table, row) {
     console.log(row)
     row.remove();
@@ -448,12 +460,11 @@ class PQHandle {
                     frm.dataForm['products_selected'].push(
                         {
                             'product_id': product_id,
-                            'product_description': $(this).find('.product-description').val(),
-                            'product_uom_id': product_uom_id,
-                            'product_quantity': product_quantity,
-                            'product_unit_price': product_unit_price,
-                            'product_taxes': $(this).find('.product-tax-select-box').val(),
-                            'product_subtotal_price': product_subtotal_price,
+                            'uom_id': product_uom_id,
+                            'quantity': product_quantity,
+                            'unit_price': product_unit_price,
+                            'tax_id': $(this).find('.product-tax-select-box').val(),
+                            'subtotal_price': product_subtotal_price,
                         }
                     )
                 }

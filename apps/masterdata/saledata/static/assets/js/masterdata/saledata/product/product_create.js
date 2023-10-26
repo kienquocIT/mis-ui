@@ -1,4 +1,6 @@
 $(document).ready(async function () {
+    await loadWareHouseListAjax();
+    loadWareHouseList();
     await new ProductHandle().load();
 
     $('#form-create-product').submit(function (event) {

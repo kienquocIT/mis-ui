@@ -7,16 +7,15 @@ let generalProductCateEle = $('#general-select-box-product-category');
 let saleDefaultUomEle = $('#sale-select-box-default-uom');
 let purchaseDefaultUomEle = $('#purchase-select-box-default-uom');
 let inventoryDefaultUomEle = $('#inventory-select-box-uom-name');
-let inventoryDefaultUomCodeEle = $('#inventory-uom-code');
 let saleProductTaxEle = $('#sale-select-box-tax-code');
 let purchaseProductTaxEle = $('#purchase-select-box-tax-code');
+let table_warehouse_list = $('#datatable-warehouse-list');
 let lengthEle = $('#length');
 let widthEle = $('#width');
 let heightEle = $('#height');
 let volumeEle = $('#volume');
 let weightEle = $('#weight');
 let productImageEle = $('#product-image');
-let warehouseListEle = $('#warehouse_list');
 const currency_list = JSON.parse($('#currency_list').text());
 let currency_primary = null;
 for (let i = 0; i < currency_list.length; i++) {
@@ -29,10 +28,19 @@ const item_unit_dict = JSON.parse($('#id-unit-list').text()).reduce((obj, item) 
     return obj;
 }, {});
 let warehouse_list = [];
-if (warehouseListEle.text() !== '') {
-    warehouse_list = JSON.parse(warehouseListEle.text());
+
+async function loadWareHouseListAjax() {
+    await $.fn.callAjax(table_warehouse_list.attr('data-url'), table_warehouse_list.attr('data-method')).then((resp) => {
+        let data = $.fn.switcherResp(resp);
+        if (data) {
+            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('warehouse_list')) {
+                warehouse_list = resp.data['warehouse_list'];
+            }
+        }
+    }, (errs) => {
+        console.log(errs)
+    },)
 }
-console.log(warehouse_list)
 
 productImageEle.dropify({
     messages: {
@@ -49,6 +57,12 @@ productImageEle.dropify({
 check_tab_inventory.change(function () {
     disabledTab(this.checked, '#link-tab-inventory', '#tab_inventory');
     $('#tab_inventory input, #tab_inventory select').val('');
+    if (check_tab_inventory.is(':checked')) {
+        $('#label-dimension').addClass('required');
+    }
+    else {
+        $('#label-dimension').removeClass('required');
+    }
 });
 
 check_tab_sale.change(function () {
@@ -253,12 +267,6 @@ function loadInventoryDefaultUom(uom_list, url) {
         keyResp: 'uom_group',
         keyId: 'uom_id',
         keyText: 'uom_title',
-    }).on('change', function () {
-        let uom_selected = inventoryDefaultUomEle.val();
-        if (uom_selected !== '') {
-            let obj_uom_selected = JSON.parse($('#' + inventoryDefaultUomEle.attr('data-idx-data-loaded')).text())[uom_selected];
-            inventoryDefaultUomCodeEle.text(obj_uom_selected?.['uom_code']);
-        }
     })
 }
 
@@ -292,12 +300,10 @@ function loadPurchaseTaxCode(tax_list) {
 }
 
 function loadBaseItemUnit() {
-    let eleVolume = $('#divVolume');
-    let eleWeight = $('#divWeight');
-    eleVolume.find('.input-suffix').text(item_unit_dict['volume'].measure)
-    eleVolume.find('input').attr('data-id', item_unit_dict['volume'].id)
-    eleWeight.find('.input-suffix').text(item_unit_dict['weight'].measure)
-    eleWeight.find('input').attr('data-id', item_unit_dict['weight'].id)
+    $('#VolumeSpan').text(item_unit_dict['volume'].measure)
+    volumeEle.attr('data-id', item_unit_dict['volume'].id)
+    $('#WeightSpan').text(item_unit_dict['weight'].measure)
+    weightEle.attr('data-id', item_unit_dict['weight'].id)
 }
 
 function loadPriceForChild(element_id, element_value) {
@@ -312,48 +318,73 @@ function loadPriceForChild(element_id, element_value) {
 }
 
 function loadWareHouseList() {
-    if (!$.fn.DataTable.isDataTable('#datatable-warehouse-list')) {
-        let dtb = $('#datatable-warehouse-list');
-        let frm = new SetupFormSubmit(dtb);
-        dtb.DataTableDefault({
-            dom: '',
-            paging: false,
-            ajax: {
-                url: frm.dataUrl,
-                type: frm.dataMethod,
-                dataSrc: function (resp) {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        return resp.data['warehouse_list'] ? resp.data['warehouse_list'] : [];
-                    }
-                    return [];
-                },
+    table_warehouse_list.DataTableDefault({
+        dom: '',
+        paging: false,
+        data: warehouse_list,
+        columns: [
+            {
+                data: 'code',
+                className: 'wrap-text w-25',
+                render: (data, type, row) => {
+                    return `<span class="text-secondary">` + row.code + `</span>`
+                }
             },
-            columns: [
-                {
-                    data: 'code',
-                    className: 'wrap-text w-25',
-                    render: (data, type, row) => {
-                        return `<span class="text-secondary">` + row.code + `</span>`
+            {
+                data: 'title',
+                className: 'wrap-text text-center w-50',
+                render: (data, type, row) => {
+                    return `<span class="text-secondary"><b>` + row.title + `</b></span>`
+                }
+            },
+            {
+                data: 'stock_value',
+                className: 'wrap-text text-center w-25',
+                render: () => {
+                    return `<span>0</span>`
+                }
+            },
+        ],
+    });
+}
+
+function loadWareHouseListDetail(product_warehouse_detail) {
+    table_warehouse_list.DataTableDefault({
+        dom: '',
+        paging: false,
+        data: warehouse_list,
+        columns: [
+            {
+                data: 'code',
+                className: 'wrap-text w-15',
+                render: (data, type, row) => {
+                    return `<span class="text-secondary" data-id="${row.id}">${row.code}</span>`;
+                }
+            },
+            {
+                data: 'title',
+                className: 'wrap-text text-center w-25',
+                render: (data, type, row) => {
+                    return `<span class="text-secondary"><b>${row.title}</b></span>`
+                }
+            },
+            {
+                data: '',
+                className: 'wrap-text text-center w-15',
+                render: (data, type, row) => {
+                    let warehouse_data = product_warehouse_detail.filter(function (element) {
+                        return element.warehouse.id === row.id;
+                    })
+                    if (warehouse_data.length > 0) {
+                        return `<span>${warehouse_data[0]?.['stock_amount']}</span>`;
                     }
-                },
-                {
-                    data: 'title',
-                    className: 'wrap-text text-center w-50',
-                    render: (data, type, row) => {
-                        return `<span class="text-secondary"><b>` + row.title + `</b></span>`
+                    else {
+                        return `<span>0</span>`;
                     }
-                },
-                {
-                    data: 'stock_value',
-                    className: 'wrap-text text-center w-25',
-                    render: () => {
-                        return `<span>0</span>`
-                    }
-                },
-            ],
-        });
-    }
+                }
+            },
+        ],
+    });
 }
 
 function loadWareHouseOverView() {
@@ -395,47 +426,6 @@ function loadWareHouseOverView() {
             ],
         });
     }
-}
-
-function loadWareHouseListDetail(product_warehouse_detail, warehouse_list) {
-    let dtb = $('#datatable-warehouse-list');
-    dtb.DataTable().clear().destroy();
-    dtb.DataTableDefault({
-        dom: '',
-        paging: false,
-        data: warehouse_list,
-        columns: [
-            {
-                data: 'code',
-                className: 'wrap-text w-15',
-                render: (data, type, row) => {
-                    return `<span class="text-secondary" data-id="${row.id}">${row.code}</span>`;
-                }
-            },
-            {
-                data: 'title',
-                className: 'wrap-text text-center w-25',
-                render: (data, type, row) => {
-                    return `<span class="text-secondary"><b>${row.title}</b></span>`
-                }
-            },
-            {
-                data: '',
-                className: 'wrap-text text-center w-15',
-                render: (data, type, row) => {
-                    let warehouse_data = product_warehouse_detail.filter(function (element) {
-                        return element.warehouse.id === row.id;
-                    })
-                    if (warehouse_data.length > 0) {
-                        return `<span>${warehouse_data[0].stock_amount}</span>`;
-                    }
-                    else {
-                        return `<span>0</span>`;
-                    }
-                }
-            },
-        ],
-    });
 }
 
 function loadWareHouseOverViewDetail(data_overview) {
@@ -630,7 +620,6 @@ class ProductHandle {
         loadInventoryDefaultUom(null, generalUomGroupEle.attr('data-url-detail').replace(0, generalUomGroupEle.val()));
         loadPurchaseDefaultUom(null, generalUomGroupEle.attr('data-url-detail').replace(0, generalUomGroupEle.val()));
         loadBaseItemUnit();
-        loadWareHouseList();
         loadWareHouseOverView();
         await loadPriceList();
     }
@@ -662,7 +651,6 @@ function LoadDetailProduct(option) {
          async (resp) => {
              let data = $.fn.switcherResp(resp);
              if (data) {
-                 await loadPriceList();
                  WFRTControl.setWFRuntimeID(data['product']?.['workflow_runtime_id']);
                  let product_detail = data['product'];
                  $.fn.compareStatusShowPageAction(data);
@@ -717,11 +705,10 @@ function LoadDetailProduct(option) {
                  if (Object.keys(product_detail['inventory_information']).length !== 0) {
                      let inventory_information = product_detail['inventory_information'];
                      loadInventoryDefaultUom(inventory_information['uom'], generalUomGroupEle.attr('data-url-detail').replace(0, generalUomGroupEle.val()));
-                     inventoryDefaultUomCodeEle.text(inventory_information['uom']['uom_code']);
                      $('#inventory-level-min').val(inventory_information['inventory_level_min']);
                      $('#inventory-level-max').val(inventory_information['inventory_level_max']);
 
-                     loadWareHouseListDetail(product_detail['product_warehouse_detail'], warehouse_list);
+                     loadWareHouseListDetail(product_detail['product_warehouse_detail']);
                      let data_overview = [];
                      let sum_stock = product_detail?.['stock_amount'] ? product_detail?.['stock_amount'] : 0;
                      let sum_wait_for_delivery = product_detail?.['wait_delivery_amount'] ? product_detail?.['wait_delivery_amount'] : 0;

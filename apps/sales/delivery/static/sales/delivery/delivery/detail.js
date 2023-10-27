@@ -68,6 +68,7 @@ $(async function () {
                                     }
                                 }
                             }
+                        newData.push(item);
                     }
                     else if ((config.is_picking && !config.is_partial_ship) && delivery) {
                         // config 3
@@ -75,12 +76,14 @@ $(async function () {
                         for (const val of delivery) {
                             if (val.warehouse === item?.['warehouse']?.['id']
                                 && val.uom === prod_data.uom_data.id
-                            ) {
+                            ) // Check if warehouse of product warehouse in list warehouse have picked
+                            {
                                 // item.product_amount += val.stock
                                 // item.picked += val.stock
                                 if (prod_data?.['uom_data']) {
                                     item['uom_so'] = prod_data?.['uom_data'];
                                 }
+                                newData.push(item);
                             }
                         }
                     }
@@ -92,7 +95,8 @@ $(async function () {
                             for (const val of delivery) {
                                 if (val.warehouse === item?.['warehouse']?.['id']
                                     && val.uom === prod_data.uom_data.id
-                                ) {
+                                ) // Check if warehouse of product warehouse in list warehouse have picked
+                                {
                                     item.stock_amount = prod_data.ready_quantity
                                     // item.picked = prod_data.ready_quantity
                                     if (prod_data.picked_quantity) item.picked = prod_data.picked_quantity
@@ -105,6 +109,7 @@ $(async function () {
                                     if (val?.['serial_data']) {
                                         item['serial_data'] = val?.['serial_data'];
                                     }
+                                    newData.push(item);
                                 } else {
                                     item.stock_amount = 0;
                                     item.picked = 0;
@@ -116,7 +121,7 @@ $(async function () {
                         item['lot_data'] = [];
                         item['serial_data'] = [];
                     }
-                    newData.push(item)
+                    // newData.push(item)
                 }
                 table.not('.dataTable').DataTableDefault({
                     data: newData,
@@ -713,7 +718,7 @@ $(async function () {
                         rowData['is_checked'] = true;
                         tableWH.DataTable().row(rowIndex).data(rowData).draw();
                     } else {
-                        $.fn.notifyB({description: 'must less than equal quantity picked'}, 'failure');
+                        $.fn.notifyB({description: $trans.attr('data-valid-delivery-picked')}, 'failure');
                         ele.value = '0';
                         prodTable.loadQuantityDeliveryByLot(ele);
                         return false
@@ -755,7 +760,7 @@ $(async function () {
                         rowData['is_checked'] = true;
                         tableWH.DataTable().row(rowIndex).data(rowData).draw();
                     } else {
-                        $.fn.notifyB({description: 'must less than equal quantity picked'}, 'failure');
+                        $.fn.notifyB({description: $trans.attr('data-valid-delivery-picked')}, 'failure');
                         ele.checked = false;
                         prodTable.loadQuantityDeliveryBySerial(ele);
                         return false

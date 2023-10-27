@@ -130,7 +130,7 @@ class UtilitiesView(View):
 
 class DefaultDataView(View):
     @classmethod
-    def callback_success(cls, result):
+    def default_data(cls, result):
         rs = []
         for plan, plan_data in result.items():
             for feature, feature_data in plan_data.items():
@@ -153,15 +153,20 @@ class DefaultDataView(View):
                         'data': data_tmp,
                     }
                 )
-        return {'default_data': rs}
+        return rs
 
     @mask_view(
         auth_require=True,
         template='core/utilities/default_data.html',
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(request=request, user=request.user, url='private-system/default-data').get()
-        return resp.auto_return(callback_success=self.callback_success)
+        resp_default_data = ServerAPI(request=request, user=request.user, url='private-system/default-data').get()
+        resp_plan_app = ServerAPI(request=request, user=request.user, url='private-system/plan-app').get()
+        return {
+            'default_data': self.default_data(resp_default_data.result),
+            'plan_app': resp_plan_app.result['plan_app'],
+            'app_by_id': resp_plan_app.result['app_by_id']
+        }
 
 
 class TermsAndConditionsView(View):

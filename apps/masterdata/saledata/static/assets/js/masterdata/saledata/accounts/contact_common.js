@@ -22,6 +22,14 @@ let [empEle, salEle, accEle, repEle, intEle] = [$('#select-box-emp'), $('#select
 function loadEmployee(empData) {
     empEle.initSelect2({
         data: (empData ? empData : null),
+        templateResult: function(data) {
+            let ele = $('<div class="row col-12"></div>');
+            ele.append('<div class="col-8">' + data.data?.['full_name'] + '</div>');
+            if (data.data?.['group']['title'] !== undefined) {
+                ele.append('<div class="col-4">(' + data.data?.['group']['title'] + ')</div>');
+            }
+            return ele;
+        },
         keyResp: 'employee_list',
         keyText: 'full_name',
     });

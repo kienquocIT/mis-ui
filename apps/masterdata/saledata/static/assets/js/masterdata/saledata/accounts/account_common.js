@@ -70,6 +70,14 @@ function loadAccountManager(accountManagerData) {
             url: accountManagerEle.attr('data-url'),
             method: 'GET',
         },
+        templateResult: function(data) {
+            let ele = $('<div class="row col-12"></div>');
+            ele.append('<div class="col-8">' + data.data?.['full_name'] + '</div>');
+            if (data.data?.['group']['title'] !== undefined) {
+                ele.append('<div class="col-4">(' + data.data?.['group']['title'] + ')</div>');
+            }
+            return ele;
+        },
         data: (accountManagerData ? accountManagerData : null),
         keyResp: 'employee_list',
         keyId: 'id',
@@ -396,7 +404,7 @@ function load_bank_accounts_mapped(data) {
             checked = 'checked';
         }
         $('#list-bank-account-information').append(
-            `<div class="card ${default_card_color} close-over col-5 mr-5">
+            `<div class="card ${default_card_color} close-over col-12 col-md-5 col-lg-5 mr-5">
                 <div class="card-body">
                     <button type="button" class="card-close btn-close">
                         <span aria-hidden="true">&times;</span>
@@ -444,7 +452,7 @@ function load_credit_cards_mapped(data) {
             checked = 'checked';
         }
         $('#list-credit-card-information').append(
-            `<div class="card ${default_card_color} close-over col-5 mr-5">
+            `<div class="card ${default_card_color} close-over col-12 col-md-5 col-lg-5 mr-5">
                 <div class="card-body">
                     <button type="button" class="card-close btn-close">
                         <span aria-hidden="true">&times;</span>
@@ -1092,6 +1100,15 @@ function loadPriceListForCustomer(priceListCustomerData) {
             method: 'GET',
         },
         data: (priceListCustomerData ? priceListCustomerData : null),
+        callbackDataResp: function (resp, keyResp) {
+            let result = [];
+            for (let i = 0; i < resp.data[keyResp].length; i++) {
+                if (resp.data[keyResp][i].status === 'Valid') {
+                    result.push(resp.data[keyResp][i]);
+                }
+            }
+            return result;
+        },
         keyResp: 'price_list',
         keyId: 'id',
         keyText: 'title',
@@ -1127,7 +1144,7 @@ $(document).on('click', '#save-changes-modal-bank-account', function () {
             default_card_color = 'bg-primary text-dark bg-opacity-10';
         }
         $('#list-bank-account-information').append(
-            `<div class="card ${default_card_color} close-over col-5 mr-5">
+            `<div class="card ${default_card_color} close-over col-12 col-md-5 col-lg-5 mr-5">
                 <div class="card-body">
                     <button type="button" class="card-close btn-close">
                         <span aria-hidden="true">&times;</span>
@@ -1182,7 +1199,7 @@ $(document).on('click', '#save-changes-modal-credit-card', function () {
             default_card_color = 'bg-primary text-dark bg-opacity-10';
         }
         $('#list-credit-card-information').append(
-            `<div class="card ${default_card_color} close-over col-5 mr-5">
+            `<div class="card ${default_card_color} close-over col-12 col-md-5 col-lg-5 mr-5">
                 <div class="card-body">
                     <button type="button" class="card-close btn-close">
                         <span aria-hidden="true">&times;</span>

@@ -39,6 +39,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     user_list = StringUrl('account/users')
     user_detail = StringUrl('account/user')
     USER_RESET_PASSWORD = StringUrl('account/user/reset-password/{pk}')
+    LANGUAGE_CHANGE = 'auth/language'
 
     # attachment
     MEDIA_ACCESS_TOKEN = StringUrl('hr/employee/media-token')
@@ -79,6 +80,9 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     EMPLOYEE_DETAIL_PK = StringUrl('hr/employee/{pk}')
     EMPLOYEE_DETAIL_APP_LIST = StringUrl('hr/employee/{pk}/app')
     EMPLOYEE_APPLICATION_ALL_LIST = StringUrl('hr/employee/{pk}/app/all')
+    EMPLOYEE_APPLICATION_SUMMARY_LIST = StringUrl('hr/employee/{pk}/app/summary')
+    EMPLOYEE_PERMISSION_SUMMARY_LIST = StringUrl('hr/employee/{pk}/permissions/summary')
+    EMPLOYEE_PLAN_SUMMARY_LIST = StringUrl('hr/employee/{pk}/plan/summary')
     EMPLOYEE_COMPANY = StringUrl('hr/employee/company')
     EMPLOYEE_COMPANY_NEW = StringUrl('hr/employee/company/{company_id}')
     EMPLOYEE_TENANT = StringUrl('hr/employee/tenant')

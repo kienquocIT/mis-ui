@@ -272,6 +272,10 @@ msgstr "Hủy bỏ"
 msgid "Language"
 msgstr "Ngôn ngữ"
 
+#
+msgid "Change language to"
+msgstr "Thay đổi ngôn ngữ thành"
+
 #: .\apps\core\company\templates\core\company\company_list.html:249
 msgid "Currency Primary"
 msgstr "Đồng tiền mặc định"
@@ -434,7 +438,7 @@ msgstr "Kích hoạt nhân viên sau khi tạo"
 
 #
 msgid "Summary of permissions"
-msgstr "Tóm tắt quyền"
+msgstr "Tóm tắt"
 
 #
 msgid "Same range of main"
@@ -3743,6 +3747,38 @@ msgstr "Thông tin"
 #
 msgid "General Information"
 msgstr "Thông tin chung"
+
+#
+msgid "Maintaining State"
+msgstr "Đang duy trì"
+
+#
+msgid "Broken State"
+msgstr "Đã hỏng"
+
+#
+msgid "All roles"
+msgstr "Tất cả các roles"
+
+#
+msgid "The roles to which the employee belongs"
+msgstr "Các vai trò mà nhân viên thuộc về"
+
+#
+msgid "Date active"
+msgstr "Ngày kích hoạt"
+
+#
+msgid "Date expires"
+msgstr "Ngày hết hạn"
+
+#
+msgid "Used / Quantity"
+msgstr "Đã sử dụng / Tổng"
+
+#
+msgid "Subscription"
+msgstr "Gói thuê bao"
 
 #
 msgid "Plan-Application"

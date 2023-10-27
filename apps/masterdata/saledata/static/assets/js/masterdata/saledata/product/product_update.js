@@ -1,4 +1,7 @@
 $(document).ready(async function () {
+    await loadPriceList();
+    await loadWareHouseListAjax();
+
     await new ProductHandle().load();
 
     LoadDetailProduct('update');

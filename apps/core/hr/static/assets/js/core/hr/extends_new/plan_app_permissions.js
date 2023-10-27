@@ -1035,7 +1035,27 @@ class HandlePlanAppNew {
                 initCompleteFunc();
             } else {
                 dtb.DataTableDefault({
-                    data: HandlePlanAppNew.permission_by_configured,
+                    data: HandlePlanAppNew.permission_by_configured.map(
+                        (item) => {
+                            let appID = item?.['app_id'] || null;
+                            let appData =  appID ? HandlePlanAppNew.getAppDetail(appID) : {};
+                            return {
+                                ...item,
+                                'app_data': appData,
+                            }
+                        }
+                    ).sort(
+                        (a, b) => {
+                            let aAppDataTitle = a?.['app_data']?.['title'] || null;
+                            let bAppDataTitle = b?.['app_data']?.['title'] || null;
+                            if (aAppDataTitle && bAppDataTitle && typeof aAppDataTitle === 'string' && typeof bAppDataTitle === 'string'){
+                                return aAppDataTitle.localeCompare(bAppDataTitle);
+                            }
+                            else if (aAppDataTitle) return true;
+                            else if (bAppDataTitle) return false;
+                            return true;
+                        }
+                    ),
                     rowIdx: true,
                     autoWidth: false,
                     columns: [

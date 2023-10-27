@@ -160,7 +160,7 @@ $(async function () {
                         },
                         {
                             targets: 2,
-                            class: 'w-35 text-center',
+                            class: 'w-30 text-center',
                             data: 'warehouse',
                             render: (row, type, data) => {
                                 return `<p>${row?.['title']}</p>`;
@@ -176,7 +176,7 @@ $(async function () {
                         },
                         {
                             targets: 4,
-                            class: 'w-25 text-center',
+                            class: 'w-20 text-center',
                             data: 'picked',
                             render: (row, type, data, meta) => {
                                 let disabled = data.product_amount <= 0 ? 'disabled' : '';
@@ -188,6 +188,14 @@ $(async function () {
                                     disabled = 'disabled';
                                 }
                                 return `<input class="form-control table-row-picked" type="number" id="warehouse_stock-${meta.row}" value="${row}" ${disabled}>`;
+                            }
+                        },
+                        {
+                            targets: 5,
+                            class: 'w-10 text-center',
+                            data: 'uom_so',
+                            render: (row, type, data) => {
+                                return `<span class="table-row-uom">${row?.['title'] ? row?.['title'] : ''}</span>`;
                             }
                         },
                     ],
@@ -246,6 +254,7 @@ $(async function () {
                                                                     }
                                                                 }
                                                             }
+                                                            lot['uom_so'] = data?.['uom_so'];
                                                         }
                                                         prodTable.dataTableTableLot(dataLot.warehouse_lot_list);
                                                         this.checked = true;
@@ -277,6 +286,7 @@ $(async function () {
                                                                     }
                                                                 }
                                                             }
+                                                            serial['uom_so'] = data?.['uom_so'];
                                                         }
                                                         prodTable.dataTableTableSerial(dataSerial.warehouse_serial_list);
                                                         this.checked = true;
@@ -534,13 +544,21 @@ $(async function () {
                     {
                         targets: 2,
                         class: 'text-center',
+                        data: 'uom_so',
+                        render: (row, type, data) => {
+                            return `<span class="table-row-uom">${row?.['title'] ? row?.['title'] : ''}</span>`;
+                        }
+                    },
+                    {
+                        targets: 3,
+                        class: 'text-center',
                         data: 'expire_date',
                         render: (row, type, data) => {
                             return `<p>${moment(row, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')}</p>`;
                         }
                     },
                     {
-                        targets: 2,
+                        targets: 4,
                         class: 'text-center',
                         data: 'manufacture_date',
                         render: (row, type, data) => {
@@ -548,7 +566,7 @@ $(async function () {
                         }
                     },
                     {
-                        targets: 3,
+                        targets: 5,
                         class: 'text-center',
                         data: 'quantity_delivery',
                         render: (row, type, data, meta) => {
@@ -621,13 +639,21 @@ $(async function () {
                     {
                         targets: 3,
                         class: 'text-center',
+                        data: 'uom_so',
+                        render: (row, type, data) => {
+                            return `<span class="table-row-uom">${row?.['title'] ? row?.['title'] : ''}</span>`;
+                        }
+                    },
+                    {
+                        targets: 4,
+                        class: 'text-center',
                         data: 'warranty_start',
                         render: (row, type, data) => {
                             return `<p>${moment(row, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')}</p>`;
                         }
                     },
                     {
-                        targets: 4,
+                        targets: 5,
                         class: 'text-center',
                         data: 'warranty_end',
                         render: (row, type, data) => {

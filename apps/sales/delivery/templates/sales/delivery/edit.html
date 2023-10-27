@@ -271,6 +271,7 @@
                                     <th>{% trans 'Warehouse Name' %}</th>
                                     <th><p>{% trans 'Stock' %}</p></th>
                                     <th>{% trans 'Get' %}</th>
+                                    <th>{% trans 'UOM' %}</th>
                                 </tr>
                                 </thead>
                                 <tbody></tbody>
@@ -279,6 +280,7 @@
                                         <th colspan="3"><p style="text-align:right">{% trans 'Total' %}:</p></th>
                                         <th><b><i>0</i></b></th>
                                         <th><b><i>0</i></b></th>
+                                        <th></th>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -295,7 +297,8 @@
                                 <thead>
                                 <tr>
                                     <th class="w-20">{% trans 'Lot number' %}</th>
-                                    <th class="w-20">{% trans 'Quantity' %}</th>
+                                    <th class="w-10">{% trans 'Quantity' %}</th>
+                                    <th class="w-10">{% trans 'UOM' %}</th>
                                     <th class="w-20">{% trans 'Expiration date' %}</th>
                                     <th class="w-20">{% trans 'Manufacturing date' %}</th>
                                     <th class="w-20">{% trans 'Get' %}</th>
@@ -315,8 +318,9 @@
                                 <thead>
                                 <tr>
                                     <th class="w-10"></th>
-                                    <th class="w-25">{% trans 'Vendor serial no.' %}</th>
-                                    <th class="w-25">{% trans 'Serial no.' %}</th>
+                                    <th class="w-20">{% trans 'Vendor serial no.' %}</th>
+                                    <th class="w-20">{% trans 'Serial no.' %}</th>
+                                    <th class="w-10">{% trans 'UOM' %}</th>
                                     <th class="w-20">{% trans 'Warranty start' %}</th>
                                     <th class="w-20">{% trans 'Warranty end' %}</th>
                                 </tr>

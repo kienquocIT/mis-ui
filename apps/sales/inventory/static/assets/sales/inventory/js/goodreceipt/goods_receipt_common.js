@@ -196,6 +196,7 @@ class GRLoadDataHandle {
                     if (data.hasOwnProperty('warehouse_lot_list') && Array.isArray(data.warehouse_lot_list)) {
                         for (let lot of data.warehouse_lot_list) {
                             let dataLot = JSON.stringify(lot).replace(/"/g, "&quot;");
+                            let uom = lot?.['product_warehouse']?.['product']?.['uom_inventory']?.['title'] ? lot?.['product_warehouse']?.['product']?.['uom_inventory']?.['title'] : '';
                             let isChecked = 'false';
                             if (lot?.['id'] === checkedID) {
                                 isChecked = 'true';
@@ -203,7 +204,7 @@ class GRLoadDataHandle {
                             $(ele).append(`<a class="dropdown-item dropdown-item-lot" data-id="${lot?.['id']}" data-lot="${dataLot}" data-checked="${isChecked}" href="#">
                                                 <div class="d-flex">
                                                     <span class="mr-2">${lot?.['lot_number']}</span>
-                                                    <span class="text-red">${lot?.['quantity_import']}</span>
+                                                    <span class="text-red">${lot?.['quantity_import']} ${uom}</span>
                                                 </div>
                                             </a>`);
                         }

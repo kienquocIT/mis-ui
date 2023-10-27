@@ -47,7 +47,7 @@ $(function () {
             submitHandler: function (form) {
                 let frm = new SetupFormSubmit($(form));
                 frm.dataForm['employee_created_id'] = $('[name="employee_created_id"]').attr('data-id');
-                frm.dataForm['status'] = 1;
+                frm.dataForm['status'] = 0;
                 frm.dataForm['money_received'] = !!$('#money-received').is(':checked');
                 let tbProduct = $('#dtbProduct');
                 let cost_list = []

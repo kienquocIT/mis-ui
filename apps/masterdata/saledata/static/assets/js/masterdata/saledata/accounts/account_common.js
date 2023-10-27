@@ -70,6 +70,14 @@ function loadAccountManager(accountManagerData) {
             url: accountManagerEle.attr('data-url'),
             method: 'GET',
         },
+        templateResult: function(data) {
+            let ele = $('<div class="row col-12"></div>');
+            ele.append('<div class="col-8">' + data.data?.['full_name'] + '</div>');
+            if (data.data?.['group']['title'] !== undefined) {
+                ele.append('<div class="col-4">(' + data.data?.['group']['title'] + ')</div>');
+            }
+            return ele;
+        },
         data: (accountManagerData ? accountManagerData : null),
         keyResp: 'employee_list',
         keyId: 'id',
@@ -1092,6 +1100,15 @@ function loadPriceListForCustomer(priceListCustomerData) {
             method: 'GET',
         },
         data: (priceListCustomerData ? priceListCustomerData : null),
+        callbackDataResp: function (resp, keyResp) {
+            let result = [];
+            for (let i = 0; i < resp.data[keyResp].length; i++) {
+                if (resp.data[keyResp][i].status === 'Valid') {
+                    result.push(resp.data[keyResp][i]);
+                }
+            }
+            return result;
+        },
         keyResp: 'price_list',
         keyId: 'id',
         keyText: 'title',

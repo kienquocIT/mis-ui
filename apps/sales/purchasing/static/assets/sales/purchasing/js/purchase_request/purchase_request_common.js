@@ -178,6 +178,7 @@ class PurchaseRequestLoadPage {
                                     'description': item.tax.title,
                                 },
                                 'uom': item?.['uom'],
+                                'tax': item?.['tax'],
                                 'quantity': item.quantity,
                                 'unit_price': item.unit_price,
                                 'sub_total_price': item.sub_total_price,
@@ -584,17 +585,15 @@ class PurchaseRequestAction {
                             so_product_datas.map(function (item) {
                                 dict_so_product[item.id] = item;
                                 $('#data-sale-order-product').text(JSON.stringify(dict_so_product));
-                                if (item.product.product_choice.includes(2)) {
-                                    let self_product = dict_self_product[item.id];
-                                    let remain = self_product ? item?.['remain_for_purchase_request'] + self_product.quantity : item?.['remain_for_purchase_request']
-                                    let data_temp = {
-                                        'id': item.id,
-                                        'title': item.product.title,
-                                        'quantity': item.product_quantity,
-                                        'remain': remain,
-                                    }
-                                    table.row.add(data_temp).draw().node();
+                                let self_product = dict_self_product[item.id];
+                                let remain = self_product ? item?.['remain_for_purchase_request'] + self_product.quantity : item?.['remain_for_purchase_request']
+                                let data_temp = {
+                                    'id': item.id,
+                                    'title': item.product.title,
+                                    'quantity': item.product_quantity,
+                                    'remain': remain,
                                 }
+                                table.row.add(data_temp).draw().node();
                             })
                         }
                     }
@@ -852,6 +851,7 @@ class PurchaseRequestEvent {
                         'description': product.product.description,
                     },
                     'uom': product?.['uom'],
+                    'tax': product?.['tax'],
                     'quantity': num_request,
                     'unit_price': '',
                     'sub_total_price': '',
@@ -863,7 +863,7 @@ class PurchaseRequestEvent {
                 ele_new_product.find('.span-product-code').text(product.product.code);
                 ele_new_product.find('.span-product-uom').text(product.product.uom.title);
                 ele_new_product.find('.span-product-uom-group').text(product.product.uom_group);
-                PurchaseRequestLoadPage.loadTax(ele_new_product.find('.box-select-tax'), product.product.tax_code);
+                PurchaseRequestLoadPage.loadTax(ele_new_product.find('.box-select-tax'), product.tax);
             })
             let ele_so_selected = $('.inp-check-so:checked');
             let ele_so = $('[name="sale_order"]');

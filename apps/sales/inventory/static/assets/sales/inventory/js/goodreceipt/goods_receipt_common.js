@@ -1948,7 +1948,7 @@ class GRValidateHandle {
     static validateSerialNumberExistRow(ele) {
         if (ele.value !== '') {
             let checkNum = 0;
-            for (let eleSerialNumber of GRDataTableHandle.tableLot[0].querySelectorAll(".table-row-serial-number")) {
+            for (let eleSerialNumber of GRDataTableHandle.tableSerial[0].querySelectorAll(".table-row-serial-number")) {
                 if (ele.value === eleSerialNumber.value) {
                     checkNum++;
                 }

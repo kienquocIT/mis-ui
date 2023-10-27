@@ -1,6 +1,6 @@
 {% load i18n %}
 
-<ul class="nav nav-line nav-tabs nav-light">
+<ul class="nav nav-line nav-tabs nav-light" id="group-tab-app-permit">
     {% if li_head %}
         {% include li_head %}
     {% endif %}
@@ -69,7 +69,7 @@
     {% endif %}
     {% if summary_enabled == True %}
         <div class="tab-pane {% if active_tab == 'tab-summary-permissions' %}show active{% else %}fade{% endif %}" id="tab-summary-permissions">
-            {% include 'core/hr/extends/summary_permits.html' %}
+            {% include 'core/hr/extends_new/summary_permits.html' %}
         </div>
     {% endif %}
 </div>

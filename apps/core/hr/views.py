@@ -156,6 +156,33 @@ class PlanAppGetAppListAPI(APIView):
         return RespData.resp_200(data=[])
 
 
+class PlanSummaryListAPI(APIView):
+    @mask_view(auth_require=True, is_api=True)
+    def get(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(
+            request=request, user=request.user, url=ApiURL.EMPLOYEE_PLAN_SUMMARY_LIST.fill_key(pk=pk)
+        ).get()
+        return resp.auto_return(key_success='plan_list')
+
+
+class ApplicationSummaryListAPI(APIView):
+    @mask_view(auth_require=True, is_api=True)
+    def get(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(
+            request=request, user=request.user, url=ApiURL.EMPLOYEE_APPLICATION_SUMMARY_LIST.fill_key(pk=pk)
+        ).get()
+        return resp.auto_return(key_success='app_list')
+
+
+class PermissionSummaryListAPI(APIView):
+    @mask_view(auth_require=True, is_api=True)
+    def get(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(
+            request=request, user=request.user, url=ApiURL.EMPLOYEE_PERMISSION_SUMMARY_LIST.fill_key(pk=pk)
+        ).get()
+        return resp.auto_return(key_success='permissions_list')
+
+
 class EmployeeUpdate(View):
     @mask_view(
         auth_require=True,

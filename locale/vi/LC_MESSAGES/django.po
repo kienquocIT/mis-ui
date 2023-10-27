@@ -4520,3 +4520,19 @@ msgstr "Nhân viên này hiện không được liên kết với người dùng
 #
 msgid "Yes, update it!"
 msgstr "Đồng ý, cập nhật nó!"
+
+#
+msgid "Lot number is exist"
+msgstr "Số lô đã tồn tại"
+
+#
+msgid "Serial number is exist"
+msgstr "Số seri đã tồn tại"
+
+#
+msgid "Lot number must be different"
+msgstr "Số lô phải khác nhau"
+
+#
+msgid "Serial number must be different"
+msgstr "Số seri phải khác nhau"

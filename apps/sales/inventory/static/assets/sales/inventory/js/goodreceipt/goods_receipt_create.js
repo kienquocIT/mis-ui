@@ -131,6 +131,19 @@ $(function () {
             }
         });
 
+        GRDataTableHandle.tableLot.on('change', '.table-row-expire-date, .table-row-manufacture-date', function () {
+            let row = this.closest('tr');
+            let is_checked = GRLoadDataHandle.loadUnCheckLotDDItem(row);
+            if (is_checked === true) {
+                row.querySelector('.table-row-lot-number').value = '';
+                if ($(this).hasClass('table-row-expire-date')) {
+                    row.querySelector('.table-row-manufacture-date').value = '';
+                } else {
+                    row.querySelector('.table-row-expire-date').value = '';
+                }
+            }
+        });
+
         btnAddSerial.on('click', function () {
             if (GRDataTableHandle.tableWH[0].querySelector('.table-row-checkbox:checked')) {
                 GRLoadDataHandle.loadAddRowSerial();

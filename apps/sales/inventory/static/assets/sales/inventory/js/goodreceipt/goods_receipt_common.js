@@ -167,7 +167,7 @@ class GRLoadDataHandle {
         });
     };
 
-    static loadDDLot(ele, dataLot = {}) {
+    static loadDDLot(ele, checkedID = null) {
         let productID = null;
         let warehouseID = null;
         let dataPOProductCheckedRaw = GRDataTableHandle.tablePOProduct[0].querySelector('.table-row-checkbox:checked')?.getAttribute('data-row');
@@ -181,7 +181,7 @@ class GRLoadDataHandle {
             warehouseID = dataWHChecked?.['id'];
         }
         $.fn.callAjax2({
-                'url': $('#url-factory').attr('data-product-warehouse-lot'),
+                'url': GRLoadDataHandle.urlEle.attr('data-product-warehouse-lot'),
                 'method': 'GET',
                 'data': {
                     'product_warehouse__product_id': productID,
@@ -196,12 +196,19 @@ class GRLoadDataHandle {
                     if (data.hasOwnProperty('warehouse_lot_list') && Array.isArray(data.warehouse_lot_list)) {
                         for (let lot of data.warehouse_lot_list) {
                             let dataLot = JSON.stringify(lot).replace(/"/g, "&quot;");
-                            $(ele).append(`<a class="dropdown-item dropdown-item-lot" data-id="${lot?.['id']}" data-lot="${dataLot}" href="#">
+                            let isChecked = 'false';
+                            if (lot?.['id'] === checkedID) {
+                                isChecked = 'true';
+                            }
+                            $(ele).append(`<a class="dropdown-item dropdown-item-lot" data-id="${lot?.['id']}" data-lot="${dataLot}" data-checked="${isChecked}" href="#">
                                                 <div class="d-flex">
                                                     <span class="mr-2">${lot?.['lot_number']}</span>
                                                     <span class="text-red">${lot?.['quantity_import']}</span>
                                                 </div>
                                             </a>`);
+                        }
+                        if (ele.querySelector(".dropdown-item-lot[data-checked='true']")) {
+                            $(ele.querySelector(".dropdown-item-lot[data-checked='true']")).css('background-color', '#ebfcf5');
                         }
                     }
                 }
@@ -274,7 +281,6 @@ class GRLoadDataHandle {
                             GRLoadDataHandle.initPOProductEle.val(JSON.stringify(data.purchase_order_product_list));
                             GRDataTableHandle.tablePOProduct.DataTable().clear().draw();
                             GRDataTableHandle.tablePOProduct.DataTable().rows.add(data.purchase_order_product_list).draw();
-
                         }
                     }
                 }
@@ -464,7 +470,11 @@ class GRLoadDataHandle {
         if (eleWHDataRaw) {
             let eleWHData = JSON.parse(eleWHDataRaw);
             if (eleWHData?.['lot_data']) {
-                GRDataTableHandle.tableLot.DataTable().rows.add(eleWHData?.['lot_data']).draw();
+                // GRDataTableHandle.tableLot.DataTable().rows.add(eleWHData?.['lot_data']).draw();
+                for (let lot_data of eleWHData?.['lot_data']) {
+                    let newRow = GRDataTableHandle.tableLot.DataTable().row.add(lot_data).draw().node();
+                    GRLoadDataHandle.loadDDLot(newRow.querySelector('.dropdown-menu-lot'), lot_data?.['lot']);
+                }
             }
         }
     };
@@ -847,6 +857,7 @@ class GRLoadDataHandle {
             dataLot['warehouse_id'] = dataWarehouse?.['warehouse']?.['id'];
             dataLot['expire_date'] = moment(dataLot?.['expire_date']).format('DD/MM/YYYY hh:mm A');
             dataLot['manufacture_date'] = moment(dataLot?.['manufacture_date']).format('DD/MM/YYYY hh:mm A');
+            dataLot['lot'] = dataLot?.['lot_id'];
         }
         for (let dataSerial of dataWarehouse?.['serial_data']) {
             dataSerial['warehouse_id'] = dataWarehouse?.['warehouse']?.['id'];
@@ -1840,7 +1851,7 @@ class GRValidateHandle {
             if (dataPOProductCheckedRaw) {
                 let dataPOProductChecked = JSON.parse(dataPOProductCheckedRaw);
                 $.fn.callAjax2({
-                        'url': $('#url-factory').attr('data-product-warehouse-lot'),
+                        'url': GRLoadDataHandle.urlEle.attr('data-product-warehouse-lot'),
                         'method': 'GET',
                         'data': {
                             'product_warehouse__product_id': dataPOProductChecked?.['product']?.['id'],
@@ -1860,7 +1871,7 @@ class GRValidateHandle {
                                         eleImport.value = '0';
                                     }
                                     GRLoadDataHandle.loadQuantityImport();
-                                    $.fn.notifyB({description: 'Lot number is exist'}, 'failure');
+                                    $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-lot-exist')}, 'failure');
                                     return false
                                 }
                             }
@@ -1878,7 +1889,7 @@ class GRValidateHandle {
         if (dataPOProductCheckedRaw) {
             let dataPOProductChecked = JSON.parse(dataPOProductCheckedRaw);
             $.fn.callAjax2({
-                    'url': $('#url-factory').attr('data-product-warehouse-serial'),
+                    'url': GRLoadDataHandle.urlEle.attr('data-product-warehouse-serial'),
                     'method': 'GET',
                     'data': {
                         'product_warehouse__product_id': dataPOProductChecked?.['product']?.['id'],
@@ -1895,7 +1906,7 @@ class GRValidateHandle {
                                 ele.value = '';
                                 // update quantity import by serial
                                 GRLoadDataHandle.loadQuantityImport();
-                                $.fn.notifyB({description: 'Serial number is exist'}, 'failure');
+                                $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-serial-exist')}, 'failure');
                                 return false
                             } else {
                                 // update quantity import by serial
@@ -1927,7 +1938,7 @@ class GRValidateHandle {
             }
             if (checkNum > 1) {
                 ele.value = '';
-                $.fn.notifyB({description: 'Lot number must be different'}, 'failure');
+                $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-lot-different')}, 'failure');
                 return false
             }
         }
@@ -1944,7 +1955,7 @@ class GRValidateHandle {
             }
             if (checkNum > 1) {
                 ele.value = '';
-                $.fn.notifyB({description: 'Serial number must be different'}, 'failure');
+                $.fn.notifyB({description: GRLoadDataHandle.transEle.attr('data-serial-different')}, 'failure');
                 return false
             }
         }
@@ -2077,6 +2088,7 @@ class GRSubmitHandle {
             filterFieldList(field_list, warehouse);
             for (let lot of warehouse?.['lot_data'] ? warehouse?.['lot_data'] : []) {
                 let field_list = [
+                    'lot',
                     'lot_number',
                     'quantity_import',
                     'expire_date',

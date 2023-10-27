@@ -412,6 +412,7 @@
             data-more-information="{% trans 'More information' %}"
             data-validate-import="{% trans 'Quantity import must be less than equal remain quantity' %}"
             data-validate-no-warehouse="{% trans 'Must select one warehouse' %}"
+            data-select="{% trans 'Select' %}"
         >
         <input
             type="hidden"
@@ -443,6 +444,10 @@
         <input
             type="hidden"
             id="data-detail-page"
+        >
+        <input type="hidden" id="url-factory"
+           data-product-warehouse-lot="{% url 'WarehouseLotListAPI' %}"
+           data-product-warehouse-serial="{% url 'WarehouseSerialListAPI' %}"
         >
 
 

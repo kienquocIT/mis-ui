@@ -1,0 +1,231 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block cssHeader %}
+    <style>
+        #offcanvasRight {
+            width: 50%;
+        }
+    </style>
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <button class="btn btn-outline-primary" type="submit" form="form-edit-company">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
+            </span>
+        </span>
+    </button>
+{% endblock %}
+{% block pageContent %}
+    <form id="frm-add-company"
+          data-url="{% url "CompanyListAPI" %}"
+          data-url-redirect="/"
+          data-method="POST">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-12 col-md-4 col-lg-4">
+                <div class="form-group">
+                    <label class="form-label" for="code_id">
+                        {% trans 'Code' %}
+                        <span class="required"></span>
+                    </label>
+                    <input
+                            type="text" class="form-control"
+                            id="code_id" name="code"
+                            oninput="this.value=this.value.toUpperCase()"
+                            placeholder="MIS001"
+                            required
+                    />
+                    <span class="form-text text-muted">{% trans 'Code new company' %}</span>
+                </div>
+            </div>
+            <div class="col-12 col-md-4 col-lg-4">
+                <div class="form-group">
+                    <label class="form-label" for="company_name_id">
+                        {% trans 'Company Name' %}
+                        <span class="required"></span>
+                    </label>
+                    <input
+                            type="text" class="form-control"
+                            id="company_name_id" name="title"
+                            placeholder="MT Solution"
+                            required
+                    />
+                    <span class="form-text text-muted">{% trans 'Name of new company' %}</span>
+                </div>
+            </div>
+            <div class="col-12 col-md-4 col-lg-4">
+                <div class="form-group">
+                    <label class="form-label" for="parent_company_id">
+                        {% trans 'Parent Company' %}
+                    </label>
+                    <select
+                            class="form-control form-select" id="parent_company_id"
+                            name="parent_company"
+                            disabled
+                            required
+                    >
+                        <option value="" selected>{% trans 'No selected' %}</option>
+                        <option value="1">One</option>
+                        <option value="2">Two</option>
+                        <option value="3">Three</option>
+                    </select>
+                    <span class="form-text text-muted">{% trans 'The new is subsidiary company or not' %}</span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-md-12 col-lg-12">
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-6">
+                            <label class="form-label" for="address_id">
+                                {% trans 'Address' %}
+                                <span class="required"></span>
+                            </label>
+                        </div>
+                        <div class="col-6 text-right text-primary">
+                            <span class="icon" data-bs-toggle="modal" data-bs-target="#modal-shipping-address">
+                                {% trans 'Add new address' %} &nbsp;
+                                <i class="fas fa-plus-circle"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                    <textarea
+                            type="text" class="form-control"
+                            id="address_id" name="address"
+                            placeholder="{% trans 'No.20, 22 Street, Him Lam Quarter, Binh Hung Ward, Binh Chanh District, HCM city, VN country' %}"
+                            required
+                    ></textarea>
+                    <span class="form-text text-muted">{% trans 'Address new company' %}</span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-md-4 col-lg-4">
+                <div class="form-group">
+                    <label class="form-label" for="representative_fullname_id">
+                        {% trans 'Representative' %}
+                        <span class="required"></span>
+                    </label>
+                    <input
+                            type="text" class="form-control"
+                            id="representative_fullname_id" name="representative_fullname"
+                            placeholder="Nguyen Van A" required
+                    />
+                    <span class="form-text text-muted">{% trans 'Full name of Representative' %}</span>
+                </div>
+            </div>
+            <div class="col-12 col-md-4 col-lg-4">
+                <div class="form-group">
+                    <label class="form-label" for="email_id">
+                        {% trans 'Email' %}
+                        <span class="required"></span>
+                    </label>
+                    <input
+                            type="text" class="form-control"
+                            id="email_id" name="email"
+                            placeholder="anv@mtsolution.com.vn"
+                            required
+                    />
+                    <span class="form-text text-muted">{% trans 'Email of Representative' %}</span>
+                </div>
+            </div>
+            <div class="col-12 col-md-4 col-lg-4">
+                <div class="form-group">
+                    <label class="form-label" for="phone_id">
+                        {% trans 'Phone Number' %}
+                        <span class="required"></span>
+                    </label>
+                    <input
+                            type="number" class="form-control"
+                            id="phone_id" name="phone"
+                            placeholder="+84987654321"
+                            required
+                    />
+                    <span class="form-text text-muted">{% trans 'Phone number of Representative' %}</span>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div class="modal fade" id="modal-shipping-address" tabindex="-1" role="dialog"
+             aria-labelledby="exampleModalCenter" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{% trans "Add Shipping Address" %}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="form-group">
+                                    <label class="label-field form-label required">{% trans "Address" %}</label>
+                                    <input
+                                            class="form-control" type="text" id="detail-modal-shipping-address"
+                                            placeholder="Number 20, 22 street, Him Lam residential area"
+                                    >
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group">
+                                    <label class="label-field form-label required">{% trans "Province/City" %}</label>
+                                    <select
+                                            class="form-select" id="shipping-city" data-country-id
+                                            data-url="{% url "CityListAPI" %}" data-method="GET"
+                                    ></select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group">
+                                    <label class="label-field form-label required">{% trans "District" %}</label>
+                                    <select
+                                            class="form-select" id="shipping-district"
+                                            data-url="{% url "DistrictAllListAPI" %}" data-method="GET"
+                                    >
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group">
+                                    <label class="label-field form-label">{% trans "Ward" %}</label>
+                                    <select
+                                            class="form-select" id="shipping-ward"
+                                            data-url="{% url "WardAllListAPI" %}" data-method="GET"
+                                    >
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-check ml-3">
+                                    <input
+                                            class="form-check-input" type="checkbox" value=""
+                                            id="make-default-shipping-address"
+                                    >
+                                    <label class="form-check-label" for="make-default-shipping-address">
+                                        {% trans "Make default address" %}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" id="save-changes-modal-shipping-address">
+                                Save
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'core/company/js/company_create.js' %}"></script>
+{% endblock %}

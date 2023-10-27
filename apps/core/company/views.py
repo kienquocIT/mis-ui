@@ -28,6 +28,21 @@ class CompanyListAPI(APIView):
         return resp.auto_return()
 
 
+class CompanyCreate(View):
+    @classmethod
+    def callback_success(cls, result):
+        return {'company': result, 'icon': result["title"][0]}
+
+    @mask_view(
+        auth_require=True,
+        template='core/company/company_create.html',
+        breadcrumb='COMPANY_CREATE_PAGE',
+        menu_active='menu_company_list'
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
 class CompanyDetail(View):
     @classmethod
     def callback_success(cls, result):

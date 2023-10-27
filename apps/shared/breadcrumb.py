@@ -366,6 +366,7 @@ class BreadcrumbView:
         BreadcrumbItem.HOME_PAGE,
         BreadcrumbItem.COMPANY_PAGE,
     ]
+    COMPANY_CREATE_PAGE = COMPANY_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
     COMPANY_DETAIL_PAGE = COMPANY_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     COMPANY_UPDATE_PAGE = COMPANY_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
     COMPANY_DIAGRAM = [

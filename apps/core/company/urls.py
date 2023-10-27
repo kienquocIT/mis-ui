@@ -5,12 +5,13 @@ from apps.core.company.views import (
     CompanyList, CompanyListAPI, CompanyListOverviewList, CompanyListOverviewListAPI,
     EmployeeUserByCompanyListOverviewDetailAPI, EmployeeOfTenantListAPI,
     CompanyDetail, CompanyUpdateAPI, CompanyDeleteAPI,
-    CompanyConfigDetailAPI,
+    CompanyConfigDetailAPI, CompanyCreate
 )
 
 urlpatterns = [
     path('config', CompanyConfigDetailAPI.as_view(), name='CompanyConfigDetailAPI'),
     path('list', CompanyList.as_view(), name='CompanyList'),
+    path('create', CompanyCreate.as_view(), name='CompanyCreate'),
     path('list/api', CompanyListAPI.as_view(), name='CompanyListAPI'),
     path('detail/<str:pk>', CompanyDetail.as_view(), name='CompanyDetail'),
     path('update/<str:pk>', CompanyUpdateAPI.as_view(), name='CompanyUpdateAPI'),

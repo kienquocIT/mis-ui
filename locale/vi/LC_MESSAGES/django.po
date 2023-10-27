@@ -3778,7 +3778,7 @@ msgstr "Đã sử dụng / Tổng"
 
 #
 msgid "Subscription"
-msgstr "Gói thêu bao"
+msgstr "Gói thuê bao"
 
 #
 msgid "Plan-Application"

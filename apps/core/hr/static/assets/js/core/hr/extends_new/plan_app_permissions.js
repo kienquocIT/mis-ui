@@ -379,11 +379,13 @@ class SummaryPlanAppNew {
                     `;
                 } else {
                     expiredHtml = `
+                        <div class="heart-beat-container">
                         <i 
-                            class="fa-solid fa-heart text-success"
+                            class="fa-solid fa-heart text-success heart-beat-icon"
                             data-bs-toggle="tooltip" data-bs-placement="top" 
                             title="${groupSummaryPlan.attr('data-msg-state-maintaining')}"
                         ></i>
+                        </div>
                     `;
                 }
 

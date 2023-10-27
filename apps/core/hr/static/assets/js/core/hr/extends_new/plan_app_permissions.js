@@ -108,7 +108,18 @@ let elePermit = {
                 'edit': clsThis.newRowEditEle.prop('checked'),
                 'delete': clsThis.newRowDeleteEle.prop('checked'),
             }
-            clsThis.tblPermission.DataTable().row.add(data).draw(false);
+            let dtb_tmp = clsThis.tblPermission.DataTable();
+            dtb_tmp.row.add(data).draw(false);
+
+            // switch to end page.
+            let totalPages = dtb_tmp.page.info().pages;
+            let currentPages = dtb_tmp.page.info().page;
+            if (totalPages - 1 > currentPages) {
+                $.fn.notifyB({
+                    'description': globeGoToEndPage,
+                }, 'info')
+            }
+            dtb_tmp.page(totalPages - 1).draw('page');
         });
         // -- Add new row
         //

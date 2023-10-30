@@ -75,7 +75,9 @@ $(function () {
             {
                 data: 'date_joined',
                 'render': (data, type, row, meta) => {
-                    return $x.fn.displayRelativeTime(data);
+                    return $x.fn.displayRelativeTime(data, {
+                        'outputFormat': 'DD-MM-YYYY',
+                    });
                 }
             },
             {

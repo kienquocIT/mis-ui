@@ -228,12 +228,8 @@ function calculateIndicator(indicator_list) {
         }
     }
     //
-    tableIndicator.DataTable().destroy();
-    if (!tableIndicator.hasClass('sale-order')) {
-        dataTableQuotationIndicator(result_list);
-    } else {
-        dataTableSaleOrderIndicator(result_list)
-    }
+    tableIndicator.DataTable().clear().draw();
+    tableIndicator.DataTable().rows.add(result_list).draw();
 }
 
 function evaluateFormula(formulaText) {

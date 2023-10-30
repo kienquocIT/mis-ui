@@ -402,6 +402,7 @@
             data-more-information="{% trans 'More information' %}"
             data-validate-import="{% trans 'Quantity import must be less than equal remain quantity' %}"
             data-validate-no-warehouse="{% trans 'Must select one warehouse' %}"
+            data-select="{% trans 'Select' %}"
         >
         <input
             type="hidden"
@@ -433,6 +434,10 @@
         <input
             type="hidden"
             id="data-detail-page"
+        >
+        <input type="hidden" id="url-factory"
+           data-product-warehouse-lot="{% url 'WarehouseLotListAPI' %}"
+           data-product-warehouse-serial="{% url 'WarehouseSerialListAPI' %}"
         >
 
 
@@ -563,11 +568,11 @@
                                             >
                                                 <thead>
                                                 <tr>
-                                                    <th class="required">{% trans 'Lot number' %}</th>
-                                                    <th class="required">{% trans 'Quantity' %}</th>
-                                                    <th>{% trans 'UOM' %}</th>
-                                                    <th>{% trans 'Expiration date' %}</th>
-                                                    <th>{% trans 'Manufacturing date' %}</th>
+                                                    <th class="required w-40">{% trans 'Lot number' %}</th>
+                                                    <th class="required w-10">{% trans 'Quantity' %}</th>
+                                                    <th class="w-10">{% trans 'UOM' %}</th>
+                                                    <th class="w-20">{% trans 'Expiration date' %}</th>
+                                                    <th class="w-20">{% trans 'Manufacturing date' %}</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
@@ -584,7 +589,7 @@
                                             >
                                                 <thead>
                                                 <tr>
-                                                    <th class="required">{% trans 'Venedor serial no.' %}</th>
+                                                    <th class="required">{% trans 'Vendor serial no.' %}</th>
                                                     <th class="required">{% trans 'Serial no.' %}</th>
                                                     <th>{% trans 'UOM' %}</th>
                                                     <th>{% trans 'Expiration date' %}</th>

@@ -97,20 +97,16 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            <div class="table-responsive">
+                            <div class="table-responsive" style="max-height: 400px">
                                 <table class="table nowrap w-100" id="dtbMember" data-method="GET"
                                        data-url="{% url 'EmployeeListAPI' %}">
                                     <thead>
                                     <tr>
-                                        <th></th>
-                                        <th>{% trans "Employee Code" %}</th>
-                                        <th>{% trans "Employee Name" %}</th>
-                                        <th>{% trans "Group" %}</th>
-                                        <th>
-                                        <span class="form-check">
-                                            <input type="checkbox" class="form-check-input check-select-all">
-                                        </span>
-                                        </th>
+                                        <th class="w-10"></th>
+                                        <th class="w-20">{% trans "Employee Code" %}</th>
+                                        <th class="w-30">{% trans "Employee Name" %}</th>
+                                        <th class="w-30">{% trans "Group" %}</th>
+                                        <th class="w-10"></th>
                                     </tr>
                                     </thead>
                                 </table>

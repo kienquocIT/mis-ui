@@ -438,7 +438,7 @@ msgstr "Kích hoạt nhân viên sau khi tạo"
 
 #
 msgid "Summary of permissions"
-msgstr "Tóm tắt quyền"
+msgstr "Tóm tắt"
 
 #
 msgid "Same range of main"
@@ -3749,6 +3749,38 @@ msgid "General Information"
 msgstr "Thông tin chung"
 
 #
+msgid "Maintaining State"
+msgstr "Đang duy trì"
+
+#
+msgid "Broken State"
+msgstr "Đã hỏng"
+
+#
+msgid "All roles"
+msgstr "Tất cả các roles"
+
+#
+msgid "The roles to which the employee belongs"
+msgstr "Các vai trò mà nhân viên thuộc về"
+
+#
+msgid "Date active"
+msgstr "Ngày kích hoạt"
+
+#
+msgid "Date expires"
+msgstr "Ngày hết hạn"
+
+#
+msgid "Used / Quantity"
+msgstr "Đã sử dụng / Tổng"
+
+#
+msgid "Subscription"
+msgstr "Gói thuê bao"
+
+#
 msgid "Plan-Application"
 msgstr "Gói - Ứng dụng"
 
@@ -4482,9 +4514,34 @@ msgid "The permission scope will not include the person for whom the permission 
 msgstr "Phạm vi được phép sẽ không bao gồm người được đặt cấu hình quyền, ngoại trừ phạm vi Bản thân họ."
 
 #
+msgid "Allow the action to access data in both the general space and another space."
+msgstr "Cho phép hành động truy cập dữ liệu ở cả không gian chung và không gian khác."
+
+#
 msgid "This employee is not currently associated with the user."
 msgstr "Nhân viên này hiện không được liên kết với người dùng."
 
 #
 msgid "Yes, update it!"
 msgstr "Đồng ý, cập nhật nó!"
+
+#
+msgid "Lot number is exist"
+msgstr "Số lô đã tồn tại"
+
+#
+msgid "Serial number is exist"
+msgstr "Số seri đã tồn tại"
+
+#
+msgid "Lot number must be different"
+msgstr "Số lô phải khác nhau"
+
+#
+msgid "Serial number must be different"
+msgstr "Số seri phải khác nhau"
+
+#
+msgid "Quantity delivery must less than equal quantity picked"
+msgstr "Số lượng giao hàng không vượt quá số lượng lấy hàng"
+

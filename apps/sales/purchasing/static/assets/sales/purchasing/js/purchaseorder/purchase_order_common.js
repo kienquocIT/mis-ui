@@ -1917,7 +1917,7 @@ class POValidateHandle {
                     $.fn.notifyB({description: POLoadDataHandle.transEle.attr('data-validate-order-actual')}, 'failure');
                     return false
                 } else {
-                    eleStock.innerHTML = String(parseFloat(quantity_order) - parseFloat(quantity_request));
+                    eleStock.innerHTML = String((parseFloat(quantity_order) - parseFloat(quantity_request)).toFixed(2));
                 }
             } else { // IF DIFFERENT UOM
                 let finalRatio = (parseFloat(uomOrderData?.['ratio']) / parseFloat(uomRequestData?.['ratio']));
@@ -1927,7 +1927,7 @@ class POValidateHandle {
                     $.fn.notifyB({description: POLoadDataHandle.transEle.attr('data-validate-order-actual')}, 'failure');
                     return false
                 } else {
-                   eleStock.innerHTML = String((parseFloat(quantity_order) * finalRatio) - parseFloat(quantity_request));
+                   eleStock.innerHTML = String(((parseFloat(quantity_order) * finalRatio) - parseFloat(quantity_request)).toFixed(2));
                 }
             }
         }

@@ -22,6 +22,7 @@ function getAllAppOfTenant() {
 }
 
 let elePermit = {
+    tabsGroupAppPermit: $('#group-tab-app-permit'),
     tblPlanApp: $('#dtb-plan-app-new'),
     tblPermission: $('#permissions_list_new'),
     newRowAppEle: $('#new-row-app'),
@@ -37,6 +38,7 @@ let elePermit = {
     btnResetApp: $('#btnResetApp'),
     btnResetPermit: $('#btnResetPermit'),
     inputSearchApp: $('#searching-highlight-plan-app'),
+    tabSummaryInfo: $("#tab-summary-info"),
 
     resetNewRow: function (resetApp = false) {
         this.btnAddNewPermit.prop('disabled', true);
@@ -46,7 +48,7 @@ let elePermit = {
         this.newRowEditEle.prop('checked', false).prop('disabled', true);
         this.newRowDeleteEle.prop('checked', false).prop('disabled', true);
         this.newRowRangeEle.val("").prop('disabled', true).find('option').prop('disabled', true);
-        this.newRowSpaceEle.val("0").prop('disabled', true);
+        this.newRowSpaceEle.val("").prop('disabled', true).find('option').prop('disabled', true);
         if (resetApp === true) this.newRowAppEle.val("").prop('disabled', true);
     },
 
@@ -69,7 +71,22 @@ let elePermit = {
     },
 
     setButtonAdd: function () {
-        let state = this.newRowAppEle.val() && $x.fn.checkUUID4(this.newRowAppEle.val()) && ((this.newRowViewEle.attr('data-allow') === 'true' ? this.newRowViewEle.prop('checked') : false) || (this.newRowCreateEle.attr('data-allow') === 'true' ? this.newRowCreateEle.prop('checked') : false) || (this.newRowEditEle.attr('data-allow') === 'true' ? this.newRowEditEle.prop('checked') : false) || (this.newRowDeleteEle.attr('data-allow') === 'true' ? this.newRowDeleteEle.prop('checked') : false)) && this.newRowRangeEle.val() && this.newRowRangeEle.val() !== "" && this.newRowSpaceEle.val() && this.newRowSpaceEle.val() !== "";
+        let state = (
+            this.newRowAppEle.val() && $x.fn.checkUUID4(this.newRowAppEle.val())
+            && (
+                (this.newRowViewEle.attr('data-allow') === 'true' ? this.newRowViewEle.prop('checked') : false)
+                || (this.newRowCreateEle.attr('data-allow') === 'true' ? this.newRowCreateEle.prop('checked') : false)
+                || (this.newRowEditEle.attr('data-allow') === 'true' ? this.newRowEditEle.prop('checked') : false)
+                || (this.newRowDeleteEle.attr('data-allow') === 'true' ? this.newRowDeleteEle.prop('checked') : false)
+            )
+            && this.newRowRangeEle.val() && this.newRowRangeEle.val() !== ""
+            && (
+                !HandlePlanAppNew.hasSpaceChoice
+                || (
+                    HandlePlanAppNew.hasSpaceChoice && this.newRowSpaceEle.val() && this.newRowSpaceEle.val() !== ""
+                )
+            )
+        );
 
         this.btnAddNewPermit.prop('disabled', !state);
     },
@@ -106,7 +123,18 @@ let elePermit = {
                 'edit': clsThis.newRowEditEle.prop('checked'),
                 'delete': clsThis.newRowDeleteEle.prop('checked'),
             }
-            clsThis.tblPermission.DataTable().row.add(data).draw(false);
+            let dtb_tmp = clsThis.tblPermission.DataTable();
+            dtb_tmp.row.add(data).draw(false);
+
+            // switch to end page.
+            let totalPages = dtb_tmp.page.info().pages;
+            let currentPages = dtb_tmp.page.info().page;
+            if (totalPages - 1 > currentPages) {
+                $.fn.notifyB({
+                    'description': globeGoToEndPage,
+                }, 'info')
+            }
+            dtb_tmp.page(totalPages - 1).draw('page');
         });
         // -- Add new row
         //
@@ -119,7 +147,11 @@ let elePermit = {
 
             let appData = HandlePlanAppNew.getAppDetail($(this).val());
             if (appData && typeof appData === 'object') {
-                clsThis.newRowSpaceEle.prop('disabled', false).val("0");
+                clsThis.newRowSpaceEle.prop('disabled', false).find('option[value=""]').prop('disabled', false);
+                let spacing_allow = $x.fn.hasOwnProperties(appData, ['spacing_allow']) ? appData['spacing_allow'] : [];
+                clsThis.newRowSpaceEle.find('option').each(function (){
+                    $(this).prop('disabled', (spacing_allow.indexOf($(this).val()) === -1));
+                });
 
                 let [isView, viewRange] = HandlePlanAppNew.isAppAllowPermit(appData, 'view');
                 clsThis.newRowViewEle
@@ -209,10 +241,10 @@ let elePermit = {
         //
 
         // Utility
-        this.inputSearchApp.on('input', function (){
-            if ($(this).val()){
+        this.inputSearchApp.on('input', function () {
+            if ($(this).val()) {
                 let searchRg = new RegExp(`(.*)${$(this).val().trim().toLowerCase()}(.*)`);
-                clsThis.tblPlanApp.find('label.form-check-label').each(function (){
+                clsThis.tblPlanApp.find('label.form-check-label').each(function () {
                     let resultRg = $(this).text().trim().toLowerCase().match(searchRg) || [];
                     resultRg.length > 0 ? $(this).addClass('bg-warning') : $(this).removeClass('bg-warning');
                 })
@@ -222,10 +254,436 @@ let elePermit = {
         })
         // -- Utility
 
+        // tab summary
+        this.tabsGroupAppPermit.on('shown.bs.tab', function (event) {
+            let target = event.target;
+            if ($(target).attr('href') === '#tab-summary-permissions' && !$(target).attr('data-loaded')) {
+                $(target).attr('data-loaded', true);
+
+                let urlApp = clsThis.tabSummaryInfo.attr('data-url-app');
+                let appAPI = $.fn.callAjax2({
+                    url: urlApp,
+                    method: 'GET'
+                }).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data && typeof data === 'object' && data.hasOwnProperty('app_list')) {
+                            return data.app_list
+                        }
+                        return {};
+                    }
+                );
+
+                let urlPlan = clsThis.tabSummaryInfo.attr('data-url-plan');
+                let planAPI = $.fn.callAjax2({
+                    url: urlPlan,
+                    method: 'GET'
+                }).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data && typeof data === 'object' && data.hasOwnProperty('plan_list')) {
+                            return data.plan_list
+                        }
+                        return {}
+                    }
+                );
+
+                let urlPermit = clsThis.tabSummaryInfo.attr('data-url-permission');
+                let permitAPI = $.fn.callAjax2({
+                    url: urlPermit,
+                    method: 'GET'
+                }).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data && typeof data === 'object' && data.hasOwnProperty('permissions_list')) {
+                            return data.permissions_list;
+                        }
+                        return {}
+                    }
+                )
+
+                $x.fn.showLoadingPage();
+                Promise.all([planAPI, appAPI, permitAPI]).then(
+                    (results) => {
+                        SummaryPlanAppNew.planData = results[0];
+                        new SummaryPlanAppNew().renderPlan();
+                        return results;
+                    }
+                ).then(
+                    (results) => {
+                        SummaryPlanAppNew.appData = results[1];
+                        new SummaryPlanAppNew().renderApp();
+                        return results;
+                    }
+                ).then(
+                    (results) => {
+                        SummaryPlanAppNew.permitData = results[2];
+                        new SummaryPlanAppNew().renderPermission();
+                        return results;
+                    }
+                ).then(
+                    (results) => {
+                        new SummaryPlanAppNew().renderRoleTable();
+                        $x.fn.hideLoadingPage();
+                    }
+                )
+            }
+        });
     },
 }
 
 elePermit.listener();
+
+
+class SummaryPlanAppNew {
+    static appData = {};
+    static planData = {};
+    static permitData = {};
+
+    itemAppHTML(data) {
+        return data && typeof data === 'object' ? `<span class="badge badge-soft-primary badge-outline badge-pill mr-1 mb-1">${data?.['title'] || ''}</span>` : '';
+    }
+
+    itemPlanHTML(data) {
+        if (data && typeof data === 'object') {
+            let clsExtend = 'badge-primary';
+            if (data.code === 'base') clsExtend = 'badge-indigo';
+            if (data.code === 'sale') clsExtend = 'badge-danger';
+            if (data.code === 'e-office') clsExtend = 'badge-warning';
+            return data && typeof data === 'object' ? `<span class="badge ${clsExtend} mr-1 mb-1">${data?.['title'] || ''}</span>` : '';
+        }
+        return '';
+    }
+
+    renderApp() {
+        let data = SummaryPlanAppNew.appData;
+        let groupSummaryApp = $('#idx-summary-app');
+        groupSummaryApp.html("");
+        let summaryApp = data?.['summary'];
+        (summaryApp && Array.isArray(summaryApp) ? summaryApp : []).map(
+            (item) => groupSummaryApp.append(this.itemAppHTML(item))
+        )
+
+        let groupEmployeeApp = $('#idx-employee-app-group');
+        groupEmployeeApp.html("");
+        let employeeApp = data?.['employee'];
+        (employeeApp && Array.isArray(employeeApp) ? employeeApp : []).map(
+            (item) => {
+                groupEmployeeApp.append(
+                    this.itemAppHTML(item)
+                )
+            }
+        )
+    }
+
+    renderPlan() {
+        let data = SummaryPlanAppNew.planData;
+        let groupSummaryPlan = $('#idx-summary-plan');
+        groupSummaryPlan.html("");
+        let summaryPlan = data?.['summary'];
+        (summaryPlan && Array.isArray(summaryPlan) ? summaryPlan : []).map(
+            (item) => {
+                let tenantPlanData = item['tenant_plan'] || {};
+
+                let quantityUsed = tenantPlanData?.['license_used'] || '';
+
+                let quantityLimit = '';
+                if (typeof tenantPlanData?.['is_limited'] === 'boolean') {
+                    if (tenantPlanData?.['is_limited'] === true) {
+                        quantityLimit = tenantPlanData?.['license_quantity'] || '_';
+                    } else if (tenantPlanData?.['is_limited'] === false) {
+                        quantityLimit = '<i class="fa-solid fa-infinity"></i>';
+                    }
+                } else {
+                    quantityLimit = '_';
+                }
+
+                let expiredHtml = '';
+                if (tenantPlanData?.['is_expired'] === true) {
+                    expiredHtml = `
+                        <i 
+                            class="fa-solid fa-heart-crack text-danger"
+                            data-bs-toggle="tooltip" data-bs-placement="top" 
+                            title="${groupSummaryPlan.attr('data-msg-state-broken')}"
+                        ></i>
+                    `;
+                } else {
+                    expiredHtml = `
+                        <div class="heart-beat-container">
+                        <i 
+                            class="fa-solid fa-heart text-success heart-beat-icon"
+                            data-bs-toggle="tooltip" data-bs-placement="top" 
+                            title="${groupSummaryPlan.attr('data-msg-state-maintaining')}"
+                        ></i>
+                        </div>
+                    `;
+                }
+
+                let html = `
+                    <tr>
+                        <td>${this.itemPlanHTML(item['plan'])}</td>
+                        <td>${tenantPlanData?.['date_active'] || '_'}</td>
+                        <td>${tenantPlanData?.['date_end'] || '_'}</td>
+                        <td>${quantityUsed + " / " + quantityLimit}</td>
+                        <td>${expiredHtml}</td>
+                    </tr>
+                `;
+                groupSummaryPlan.append(html);
+            }
+        )
+
+        let groupEmployeePlan = $('#idx-employee-plan-group');
+        groupEmployeePlan.html("");
+        let employeePlan = data?.['employee'];
+        (employeePlan && Array.isArray(employeePlan) ? employeePlan : []).map(
+            (item) => {
+                groupEmployeePlan.append(
+                    this.itemPlanHTML(item)
+                )
+            }
+        )
+    }
+
+    renderRoleTable() {
+        let clsThis = this;
+        let result = {};
+        let planOfRole = SummaryPlanAppNew.planData['roles'];
+        if (planOfRole && Array.isArray(planOfRole)) {
+            planOfRole.map(
+                (item) => {
+                    if (!result.hasOwnProperty(item.id)) {
+                        result[item.id] = {
+                            'id': item.id,
+                            'title': item.title,
+                            'code': item.code,
+                            'plan': [],
+                            'application': []
+                        }
+                    }
+                    result[item.id]['plan'] = result[item.id]['plan'].concat(item['plan'] || []);
+                }
+            )
+        }
+        let appOfRole = SummaryPlanAppNew.appData['roles'];
+        if (appOfRole && Array.isArray(appOfRole)) {
+            appOfRole.map(
+                (item) => {
+                    if (!result.hasOwnProperty(item.id)) {
+                        result[item.id] = {
+                            'id': item.id,
+                            'title': item.title,
+                            'code': item.code,
+                            'plan': [],
+                            'application': []
+                        }
+                    }
+                    result[item.id]['application'] = result[item.id]['application'].concat(item['application'] || []);
+                }
+            )
+        }
+
+        let newResult = Object.keys(result).map(
+            (key) => {
+                return result[key];
+            }
+        )
+        $('#dtb-plan-app-group-of-employee').DataTableDefault({
+            data: newResult,
+            rowIdx: true,
+            columns: [
+                {
+                    render: (data, type, row) => {
+                        return '';
+                    },
+                },
+                {
+                    render: (data, type, row) => {
+                        return row.title;
+                    },
+                },
+                {
+                    render: (data, type, row) => {
+                        return row.plan.map(
+                            (item) => {
+                                return clsThis.itemPlanHTML(item)
+                            }
+                        ).join("")
+                    },
+                },
+                {
+                    render: (data, type, row) => {
+                        return row.application.map(
+                            (item) => {
+                                return clsThis.itemAppHTML(item)
+                            }
+                        ).join("");
+                    },
+                },
+            ]
+        })
+    }
+
+    renderPermission() {
+        let clsThis = this;
+
+        // application by id (fast find detail app);
+        let appByID = {};
+        let appSummary = SummaryPlanAppNew.appData['summary'];
+        if (appSummary && Array.isArray(appSummary)) {
+            appSummary.map(
+                (item) => {
+                    appByID[item.id] = item;
+                }
+            )
+        }
+
+        //
+        let result = [];
+        let data = SummaryPlanAppNew.permitData;
+        let permitEmployee = data?.['employee'];
+        if (permitEmployee && Array.isArray(permitEmployee)) {
+            result = permitEmployee.map(
+                (item) => {
+                    return {
+                        ...item,
+                        'app_data': appByID[item.app_id] || {},
+                    }
+                }
+            );
+        }
+        let roleAllData = [];
+        let permitRoles = data?.['roles'];
+        (permitRoles && Array.isArray(permitRoles) ? permitRoles : []).map(
+            (item) => {
+                let role_data = {
+                    'id': item.id,
+                    'title': item.title,
+                    'code': item.code,
+                }
+                roleAllData.push(role_data);
+                let permission_by_configured = item?.['permission_by_configured'] || [];
+                if (permission_by_configured && Array.isArray(permission_by_configured)) {
+                    permission_by_configured.map(
+                        (item2) => {
+                            result.push({
+                                'role_data': role_data,
+                                ...item2,
+                                'app_data': appByID[item2.app_id] || {},
+                            })
+                        }
+                    )
+                }
+            }
+        )
+        let tblSummaryPermission = $('#tbl-summary-permissions');
+        tblSummaryPermission.DataTableDefault({
+            rowIdx: true,
+            data: result.sort(
+                function (a, b) {
+                    let aTitle = a?.['app_data']?.['title'];
+                    let bTitle = b?.['app_data']?.['title'];
+
+                    if (aTitle && bTitle && typeof aTitle === 'string' && typeof bTitle === 'string') {
+                        return aTitle.localeCompare(bTitle);
+                    }
+                    return !!aTitle;
+                }
+            ),
+            columns: [
+                {
+                    render: (data, type, row) => {
+                        return '';
+                    }
+                },
+                {
+                    data: 'role_data',
+                    render: (data, type, row) => {
+                        if (data && typeof data === 'object') {
+                            if (data.hasOwnProperty('title')) return data['title'];
+                            return '_';
+                        }
+                        return '';
+                    }
+                },
+                {
+                    data: "app_data",
+                    render: (data, type, row) => {
+                        if (data) return clsThis.itemAppHTML(data);
+                        return '_';
+                    }
+                },
+                {
+                    data: "view",
+                    render: (data, type, row) => {
+                        if (data && typeof data === 'boolean') {
+                            return `<i class="fa-solid fa-check text-success"></i>`
+                        }
+                        return `<i class="fa-solid fa-xmark text-danger"></i>`;
+                    }
+                },
+                {
+                    data: "create",
+                    render: (data, type, row) => {
+                        if (data && typeof data === 'boolean') {
+                            return `<i class="fa-solid fa-check text-success"></i>`
+                        }
+                        return `<i class="fa-solid fa-xmark text-danger"></i>`;
+                    }
+                },
+                {
+                    data: "edit",
+                    render: (data, type, row) => {
+                        if (data && typeof data === 'boolean') {
+                            return `<i class="fa-solid fa-check text-success"></i>`
+                        }
+                        return `<i class="fa-solid fa-xmark text-danger"></i>`;
+                    }
+                },
+                {
+                    data: "delete",
+                    render: (data, type, row) => {
+                        if (data && typeof data === 'boolean') {
+                            return `<i class="fa-solid fa-check text-success"></i>`
+                        }
+                        return `<i class="fa-solid fa-xmark text-danger"></i>`;
+                    }
+                },
+                {
+                    data: "range",
+                    render: (data, type, row) => {
+                        return HandlePlanAppNew.getHtmlRange(null, data, "*", true);
+                    }
+                },
+            ],
+            initComplete: function (settings, json) {
+                let optHTML = roleAllData.map(
+                    (item) => {
+                        return `<option value="${item.id}">${item.title}</option>`
+                    }
+                ).join("");
+
+                let roleSelect = $(`
+                        <select class="form-select form-select-sm w-200p">
+                            <option value="all" selected>${tblSummaryPermission.attr('data-msg-all-roles')}</option>
+                            ${optHTML}
+                        </select> 
+                `);
+
+                $(tblSummaryPermission).closest('.dataTables_wrapper ').find('.dtb-header-toolbar').prepend(roleSelect);
+                roleSelect.on('change', function () {
+                    let dtb_tmp = tblSummaryPermission.DataTable();
+                    if ($(this).val() === 'all'){
+                        dtb_tmp.search("").draw();
+                    } else {
+                        dtb_tmp.search(
+                            roleSelect.find('option[value="' + $(this).val() + '"]').text(),
+                        ).draw();
+                    }
+                })
+            },
+        })
+    }
+}
 
 class HandlePlanAppNew {
     static editEnabled = true; // flag enable edit
@@ -287,11 +745,11 @@ class HandlePlanAppNew {
         })
     }
 
-    static setPlanAppByAppList(app_list, render_opt_app = false){
+    static setPlanAppByAppList(app_list, render_opt_app = false) {
         if (render_opt_app === true) {
             elePermit.newRowAppEle.find('option').remove();
         }
-        if (app_list && Array.isArray(app_list)){
+        if (app_list && Array.isArray(app_list)) {
             app_list.map(
                 (item) => {
                     HandlePlanAppNew.pushPlanApp(null, item, true);
@@ -317,9 +775,24 @@ class HandlePlanAppNew {
         return !(elePermit.tblPermission.length === 0);
     }
 
-    static getHtmlRange(app_id, data, allow_range) {
+    static getHtmlRange(app_id, data, allow_range, simplyDisplay = false) {
         if (!allow_range || allow_range === '*') allow_range = ['1', '2', '3', '4'];
         allow_range = $x.fn.keepExistInOther(allow_range, HandlePlanAppNew.rangeAllowOfApp);
+
+        if (simplyDisplay === true) {
+            if (data === "1") {
+                return `<span class="badge badge-soft-light">${HandlePlanAppNew.rangeText["1"]}</span>`
+            }
+            if (data === "2") {
+                return `<span class="badge badge-soft-warning">${HandlePlanAppNew.rangeText["2"]}</span>`
+            }
+            if (data === "3") {
+                return `<span class="badge badge-soft-danger">${HandlePlanAppNew.rangeText["3"]}</span>`
+            }
+            if (data === "4") {
+                return `<span class="badge badge-soft-indigo">${HandlePlanAppNew.rangeText["4"]}</span>`
+            }
+        }
 
         let opt_of_1 = HandlePlanAppNew.rangeAllowOfApp.indexOf("1") === -1 ? "" : `<option value="1" ${data === "1" ? "selected" : ""} ${allow_range.indexOf("1") === -1 ? "disabled" : ""}>${HandlePlanAppNew.rangeText["1"]}</option>`;
         let opt_of_2 = HandlePlanAppNew.rangeAllowOfApp.indexOf("2") === -1 ? "" : `<option value="2" ${data === "2" ? "selected" : ""} ${allow_range.indexOf("2") === -1 ? "disabled" : ""}>${HandlePlanAppNew.rangeText["2"]}</option>`;
@@ -367,7 +840,7 @@ class HandlePlanAppNew {
                     typeof app_data === 'object'
                     && Object.keys(app_data).length === 0
                 )
-            ){
+            ) {
                 app_data = SelectDDControl.get_data_from_idx(elePermit.newRowAppEle, app_id);
             }
             return app_data;
@@ -511,7 +984,7 @@ class HandlePlanAppNew {
         }
     }
 
-    renderPermissionSelected(instance_id = null, app_list_params={}) {
+    renderPermissionSelected(instance_id = null, app_list_params = {}) {
         let clsThis = this;
         if (instance_id) {
             if (elePermit.newRowAppEle.hasClass("select2-hidden-accessible")) {
@@ -581,23 +1054,44 @@ class HandlePlanAppNew {
                 initCompleteFunc();
             } else {
                 dtb.DataTableDefault({
-                    data: HandlePlanAppNew.permission_by_configured,
+                    data: HandlePlanAppNew.permission_by_configured.map(
+                        (item) => {
+                            let appID = item?.['app_id'] || null;
+                            let appData =  appID ? HandlePlanAppNew.getAppDetail(appID) : {};
+                            return {
+                                ...item,
+                                'appData': appData,
+                            }
+                        }
+                    ).sort(
+                        (a, b) => {
+                            let aAppDataTitle = a?.['appData']?.['title'] || null;
+                            let bAppDataTitle = b?.['appData']?.['title'] || null;
+                            if (aAppDataTitle && bAppDataTitle && typeof aAppDataTitle === 'string' && typeof bAppDataTitle === 'string'){
+                                return aAppDataTitle.localeCompare(bAppDataTitle);
+                            }
+                            else if (aAppDataTitle) return true;
+                            else if (bAppDataTitle) return false;
+                            return true;
+                        }
+                    ),
                     rowIdx: true,
                     autoWidth: false,
                     columns: [
                         {
                             width: "5%",
                             render: (data, type, row) => {
+                                if (!row.hasOwnProperty('appData')){
+                                    row.appData = (row.app_id ? HandlePlanAppNew.getAppDetail(row.app_id) : {}) || {};
+                                }
                                 return ``;
                             },
                         }, {
                             width: (HandlePlanAppNew.editEnabled === true ? "15%" : "20%"),
-                            data: "app_id",
+                            data: "appData",
                             render: (data, type, row) => {
-                                let appData = HandlePlanAppNew.getAppDetail(data);
-                                row.appData = appData || {};
-                                if (appData && typeof appData === 'object' && appData.hasOwnProperty('title')) {
-                                    return `<span class="badge badge-primary">${appData.title}</span>`;
+                                if (data && typeof data === 'object' && data.hasOwnProperty('title')) {
+                                    return `<span class="badge badge-primary">${data.title}</span>`;
                                 } else row.app_data_not_found = true;
                                 return `<span class="badge badge-secondary app-title">_</span>`;
                             },
@@ -721,7 +1215,10 @@ class HandlePlanAppNew {
                             width: (HandlePlanAppNew.hasSpaceChoice === true ? "12%" : "0%"),
                             data: "space",
                             render: (data, type, row) => {
-                                return HandlePlanAppNew.getHtmlSpace(row['app_id'], data);
+                                if ($x.fn.hasOwnProperties(row.appData, ['spacing_allow'])){
+                                    return HandlePlanAppNew.getHtmlSpace(row['app_id'], data, row.appData['spacing_allow']);
+                                }
+                                return HandlePlanAppNew.getHtmlSpace(row['app_id'], data, [data]);
                             },
                         }, {
                             width: (HandlePlanAppNew.editEnabled === true ? "5%" : "0%"),

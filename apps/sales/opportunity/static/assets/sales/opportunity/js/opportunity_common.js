@@ -477,11 +477,6 @@ class OpportunityLoadDetail {
 
     static clickEditMember(memberIdx, memberEditEle, boxEditPermitEle, eleViewOppMember, eleAddOppMember, change_member_selected = true) {
         boxEditPermitEle.removeClass('hidden');
-        $x.fn.showLoadingPage({
-            'didDestroyEnd': function () {
-                document.getElementById('box-edit-permit').scrollIntoView({behavior: 'smooth'});
-            }
-        });
         memberEditEle.val(memberIdx);
         if (change_member_selected === true) memberEditEle.trigger('change');
         boxEditPermitEle.attr('data-id', memberIdx);
@@ -513,7 +508,6 @@ class OpportunityLoadDetail {
                             'opportunity': $.fn.getPkDetail(),
                         })
                 }
-                $x.fn.hideLoadingPage();
                 return {};
             },
             (errs) => {
@@ -610,7 +604,6 @@ class OpportunityLoadDetail {
         });
 
         $('#btnSavePermitMember').on('click', function () {
-            $x.fn.showLoadingPage();
             let bodyData = {
                 'permit_view_this_opp': eleViewOppMember.prop('checked'),
                 'permit_add_member': eleAddOppMember.prop('checked'),
@@ -634,7 +627,6 @@ class OpportunityLoadDetail {
                             'description': $.fn.transEle.attr('data-fail'),
                         }, 'failure')
                     }
-                    $x.fn.hideLoadingPage();
                 },
                 (errs) => {
 
@@ -643,15 +635,13 @@ class OpportunityLoadDetail {
         });
 
         $('.member-item').find('.card').on('card.action.close.confirm', function () {
-            console.log('call destroy member! confirm', '-------', this,);
-            $x.fn.showLoadingPage();
             let eleCard = $(this).closest('.card');
             $.fn.callAjax2({
                 url: boxEditPermitEle.data('url').replaceAll('__pk_member__', eleCard.data('id')),
                 method: 'DELETE',
             }).then(
                 (resp) => {
-                    let data = $.fn.switcherResp(resp);
+                    $.fn.switcherResp(resp);
                     $.fn.notifyB({
                         'description': $.fn.transEle.data('success'),
                     }, 'success');
@@ -659,12 +649,11 @@ class OpportunityLoadDetail {
                 },
                 (errs) => {
                     $.fn.notifyB({
-                        'description': $.fn.transEle.data('fail'),
+                        'description': $.fn.transEle.data('fail') + ": This is Sale Person, can not remove!",
                     }, 'failure');
                     $(this).trigger('card.action.close.show');
                 }
             )
-            $x.fn.hideLoadingPage();
         })
     }
 
@@ -977,7 +966,6 @@ async function loadConfig() {
 }
 
 // page detail
-
 async function loadMemberSaleTeam() {
     if (!$.fn.DataTable.isDataTable('#dtbMember')) {
         let dtb = $('#dtbMember');
@@ -985,8 +973,6 @@ async function loadMemberSaleTeam() {
         dtb.DataTableDefault({
             rowIdx: true,
             paging: false,
-            scrollY: '200px',
-            useDataServer: true,
             ajax: {
                 url: frm.dataUrl,
                 type: frm.dataMethod,
@@ -1000,10 +986,7 @@ async function loadMemberSaleTeam() {
             },
             columns: [
                 {
-                    data: 'idx',
-                    className: 'wrap-text w-10',
                     render: (data, type, row) => {
-                        if (data) return data;
                         return '';
                     }
                 },

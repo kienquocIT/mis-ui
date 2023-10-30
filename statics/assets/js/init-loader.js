@@ -34,7 +34,7 @@ $.fn.extend({
         return globePK;
     },
     hasOwnProperties: function (objData, keys) {
-        if (typeof objData === 'object' && Array.isArray(keys)) {
+        if (objData && typeof objData === 'object' && Array.isArray(keys)) {
             for (let i = 0; i < keys.length; i++) {
                 if (!objData.hasOwnProperty(keys[i])) {
                     return false;

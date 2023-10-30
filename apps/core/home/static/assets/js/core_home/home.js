@@ -190,7 +190,7 @@ function loadTabTodo() {
                 {
                     data: 'doc_title',
                     className: 'wrap-text',
-                    width: "25%",
+                    width: "20%",
                     render: (data, type, row) => {
                         let stage__runtime = row['stage__runtime'];
                         let urlData = UrlGatewayReverse.get_url(
@@ -202,14 +202,14 @@ function loadTabTodo() {
                     }
                 }, {
                     className: 'wrap-text',
-                    width: "15%",
+                    width: "10%",
                     data: 'app_code',
                     render: (data, type, row) => {
                         return data ? `<span class="badge badge-light">${data}</span>` : '';
                     }
                 }, {
                     className: 'wrap-text',
-                    width: "20%",
+                    width: "10%",
                     data: 'stage',
                     render: (data, type, row) => {
                         return data ? `<span class="badge badge-warning">${data['title']}</span>` : '';
@@ -223,7 +223,14 @@ function loadTabTodo() {
                     }
                 }, {
                     className: 'wrap-text',
-                    width: "15%",
+                    with: "25%",
+                    data: "date_created",
+                    render: (data, type, row)=>{
+                        return $x.fn.displayRelativeTime(data);
+                    }
+                }, {
+                    className: 'wrap-text',
+                    width: "10%",
                     data: 'stage__runtime',
                     render: (data, type, row) => {
                         return renderActions(data?.['doc_pined_id'], data?.['id'], data?.['doc_id']);
@@ -298,7 +305,7 @@ function loadTabFollowing() {
                     data: 'date_created',
                     width: "15%",
                     render: (data, type, row) => {
-                        return data ? `<span class="ml-1">${UtilControl.parseDateTime(data)}</span>`: '';
+                        return $x.fn.displayRelativeTime(data);
                     }
                 },
                 {
@@ -391,7 +398,7 @@ function loadTabPined() {
                     width: "15%",
                     data: 'date_created',
                     render: (data, type, row) => {
-                        return UtilControl.parseDateTime(data);
+                        return $x.fn.displayRelativeTime(data);
                     }
                 }, {
                     className: 'wrap-text',

@@ -1915,7 +1915,7 @@ class UtilControl {
     static displayRelativeTime(dataStr, opts = {}) {
         if (dataStr) {
             let format = opts?.['format'] || "YYYY-MM-DD HH:mm:ss";
-            let outputFormat = opts?.['outputFormat'] || "YYYY-MM-DD HH:mm:ss";
+            let outputFormat = opts?.['outputFormat'] || "DD-MM-YYYY HH:mm:ss";
             let callback = opts?.['callback'] || function (data) {
                 return `<p>${data.relate}</p><small>${data.output}</small>`;
             }

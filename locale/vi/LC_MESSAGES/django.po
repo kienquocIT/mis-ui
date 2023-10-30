@@ -4552,3 +4552,7 @@ msgstr "Chỉ khả dụng với quyền xem"
 #
 msgid "This is Sale Person, can not remove!"
 msgstr "Đây là người bán hàng chính, không thể xoá!"
+
+#
+msgid "Date receive"
+msgstr "Ngày nhận"

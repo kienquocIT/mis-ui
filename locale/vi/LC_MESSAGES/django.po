@@ -4514,6 +4514,10 @@ msgid "The permission scope will not include the person for whom the permission 
 msgstr "Phạm vi được phép sẽ không bao gồm người được đặt cấu hình quyền, ngoại trừ phạm vi Bản thân họ."
 
 #
+msgid "Allow the action to access data in both the general space and another space."
+msgstr "Cho phép hành động truy cập dữ liệu ở cả không gian chung và không gian khác."
+
+#
 msgid "This employee is not currently associated with the user."
 msgstr "Nhân viên này hiện không được liên kết với người dùng."
 
@@ -4540,3 +4544,7 @@ msgstr "Số seri phải khác nhau"
 #
 msgid "Quantity delivery must less than equal quantity picked"
 msgstr "Số lượng giao hàng không vượt quá số lượng lấy hàng"
+
+#
+ msgid "Only for view"
+ msgstr "Chỉ khả dụng với quyền xem"

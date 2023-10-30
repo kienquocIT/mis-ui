@@ -201,10 +201,10 @@ class MenusCRM:
                 name='WareHouse', code='menu_warehouse_list', view_name='WareHouseList',
                 icon='<i class="fas fa-warehouse"></i>',
             ),
-            MenuCommon(
-                name='Good receipt', code='menu_good_receipt_list', view_name='GoodReceiptList',
-                icon='<i class="bi bi-receipt"></i>',
-            ),
+            # MenuCommon(
+            #     name='Good receipt', code='menu_good_receipt_list', view_name='GoodReceiptList',
+            #     icon='<i class="bi bi-receipt"></i>',
+            # ),
             MenuCommon(
                 name='Picking', code='menu_order_picking_list', view_name='OrderPickingList',
                 icon='<i class="fas fa-box"></i>',

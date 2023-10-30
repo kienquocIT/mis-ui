@@ -515,7 +515,8 @@ class OpportunityLoadDetail {
         )
     }
 
-    static loadSaleTeam(data, isEdit = true) {
+    static loadSaleTeam(data, isEdit = true, employee_inherit = {}) {
+        let employee_inherit_id = employee_inherit?.['id'] || null;
         callAppList().then(
             (result) => {
                 renderAppList(result);
@@ -545,7 +546,7 @@ class OpportunityLoadDetail {
                                 </span>
                             </span>
                         </button>
-                        <a class="btn btn-xs btn-icon btn-rounded btn-flush-dark flush-soft-hover card-action card-action-close">
+                        <a class="btn btn-xs btn-icon btn-rounded btn-flush-dark flush-soft-hover card-action card-action-close __is_delete__">
                             <span class="icon">
                                 <span class="feather-icon">
                                     <i data-feather="x"></i>
@@ -588,6 +589,9 @@ class OpportunityLoadDetail {
             ).replaceAll(
                 "__is_edit__",
                 isEdit ? "" : "hidden"
+            ).replaceAll(
+                '__is_delete__',
+                !!(employee_inherit_id && item.id === employee_inherit_id) ? "hidden" : ""
             );
             memberItemListEle.prepend(itemHTML);
             dataMember.push(item)
@@ -639,6 +643,9 @@ class OpportunityLoadDetail {
             $.fn.callAjax2({
                 url: boxEditPermitEle.data('url').replaceAll('__pk_member__', eleCard.data('id')),
                 method: 'DELETE',
+                'sweetAlertOpts': {
+                    'allowOutsideClick': true
+                }
             }).then(
                 (resp) => {
                     $.fn.switcherResp(resp);
@@ -649,7 +656,7 @@ class OpportunityLoadDetail {
                 },
                 (errs) => {
                     $.fn.notifyB({
-                        'description': $.fn.transEle.data('fail') + ": This is Sale Person, can not remove!",
+                        'description': $.fn.transEle.data('fail') + ": " + $('#trans-factory').attr('data-msg-deny-delete-member-owner'),
                     }, 'failure');
                     $(this).trigger('card.action.close.show');
                 }

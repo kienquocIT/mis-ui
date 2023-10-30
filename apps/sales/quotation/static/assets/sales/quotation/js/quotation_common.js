@@ -161,6 +161,11 @@ class QuotationLoadDataHandle {
         QuotationLoadDataHandle.loadBoxQuotationCustomer();
         QuotationLoadDataHandle.loadBoxQuotationContact();
         QuotationLoadDataHandle.loadBoxQuotationPaymentTerm();
+        // clear shipping + billing text area
+        $('#quotation-create-shipping-address')[0].value = '';
+        $('#quotation-create-customer-shipping').val('');
+        $('#quotation-create-billing-address')[0].value = '';
+        $('#quotation-create-customer-billing').val('');
         // Delete all promotion rows
         deletePromotionRows(tableProduct, true, false);
         // Delete all shipping rows
@@ -236,6 +241,11 @@ class QuotationLoadDataHandle {
                 // load Shipping & Billing by Customer
                 QuotationLoadDataHandle.loadShippingBillingCustomer();
                 QuotationLoadDataHandle.loadShippingBillingCustomer(dataSelected);
+                // clear shipping + billing text area
+                $('#quotation-create-shipping-address')[0].value = '';
+                $('#quotation-create-customer-shipping').val('');
+                $('#quotation-create-billing-address')[0].value = '';
+                $('#quotation-create-customer-billing').val('');
                 // Store Account Price List
                     if (Object.keys(dataSelected?.['price_list_mapped']).length !== 0) {
                         document.getElementById('customer-price-list').value = dataSelected?.['price_list_mapped']?.['id'];

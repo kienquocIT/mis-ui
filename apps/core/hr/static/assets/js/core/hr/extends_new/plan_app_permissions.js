@@ -48,7 +48,7 @@ let elePermit = {
         this.newRowEditEle.prop('checked', false).prop('disabled', true);
         this.newRowDeleteEle.prop('checked', false).prop('disabled', true);
         this.newRowRangeEle.val("").prop('disabled', true).find('option').prop('disabled', true);
-        this.newRowSpaceEle.val("0").prop('disabled', true);
+        this.newRowSpaceEle.val("").prop('disabled', true).find('option').prop('disabled', true);
         if (resetApp === true) this.newRowAppEle.val("").prop('disabled', true);
     },
 
@@ -71,7 +71,22 @@ let elePermit = {
     },
 
     setButtonAdd: function () {
-        let state = this.newRowAppEle.val() && $x.fn.checkUUID4(this.newRowAppEle.val()) && ((this.newRowViewEle.attr('data-allow') === 'true' ? this.newRowViewEle.prop('checked') : false) || (this.newRowCreateEle.attr('data-allow') === 'true' ? this.newRowCreateEle.prop('checked') : false) || (this.newRowEditEle.attr('data-allow') === 'true' ? this.newRowEditEle.prop('checked') : false) || (this.newRowDeleteEle.attr('data-allow') === 'true' ? this.newRowDeleteEle.prop('checked') : false)) && this.newRowRangeEle.val() && this.newRowRangeEle.val() !== "" && this.newRowSpaceEle.val() && this.newRowSpaceEle.val() !== "";
+        let state = (
+            this.newRowAppEle.val() && $x.fn.checkUUID4(this.newRowAppEle.val())
+            && (
+                (this.newRowViewEle.attr('data-allow') === 'true' ? this.newRowViewEle.prop('checked') : false)
+                || (this.newRowCreateEle.attr('data-allow') === 'true' ? this.newRowCreateEle.prop('checked') : false)
+                || (this.newRowEditEle.attr('data-allow') === 'true' ? this.newRowEditEle.prop('checked') : false)
+                || (this.newRowDeleteEle.attr('data-allow') === 'true' ? this.newRowDeleteEle.prop('checked') : false)
+            )
+            && this.newRowRangeEle.val() && this.newRowRangeEle.val() !== ""
+            && (
+                !HandlePlanAppNew.hasSpaceChoice
+                || (
+                    HandlePlanAppNew.hasSpaceChoice && this.newRowSpaceEle.val() && this.newRowSpaceEle.val() !== ""
+                )
+            )
+        );
 
         this.btnAddNewPermit.prop('disabled', !state);
     },
@@ -132,7 +147,11 @@ let elePermit = {
 
             let appData = HandlePlanAppNew.getAppDetail($(this).val());
             if (appData && typeof appData === 'object') {
-                clsThis.newRowSpaceEle.prop('disabled', false).val("0");
+                clsThis.newRowSpaceEle.prop('disabled', false).find('option[value=""]').prop('disabled', false);
+                let spacing_allow = $x.fn.hasOwnProperties(appData, ['spacing_allow']) ? appData['spacing_allow'] : [];
+                clsThis.newRowSpaceEle.find('option').each(function (){
+                    $(this).prop('disabled', (spacing_allow.indexOf($(this).val()) === -1));
+                });
 
                 let [isView, viewRange] = HandlePlanAppNew.isAppAllowPermit(appData, 'view');
                 clsThis.newRowViewEle
@@ -1041,13 +1060,13 @@ class HandlePlanAppNew {
                             let appData =  appID ? HandlePlanAppNew.getAppDetail(appID) : {};
                             return {
                                 ...item,
-                                'app_data': appData,
+                                'appData': appData,
                             }
                         }
                     ).sort(
                         (a, b) => {
-                            let aAppDataTitle = a?.['app_data']?.['title'] || null;
-                            let bAppDataTitle = b?.['app_data']?.['title'] || null;
+                            let aAppDataTitle = a?.['appData']?.['title'] || null;
+                            let bAppDataTitle = b?.['appData']?.['title'] || null;
                             if (aAppDataTitle && bAppDataTitle && typeof aAppDataTitle === 'string' && typeof bAppDataTitle === 'string'){
                                 return aAppDataTitle.localeCompare(bAppDataTitle);
                             }
@@ -1062,16 +1081,17 @@ class HandlePlanAppNew {
                         {
                             width: "5%",
                             render: (data, type, row) => {
+                                if (!row.hasOwnProperty('appData')){
+                                    row.appData = (row.app_id ? HandlePlanAppNew.getAppDetail(row.app_id) : {}) || {};
+                                }
                                 return ``;
                             },
                         }, {
                             width: (HandlePlanAppNew.editEnabled === true ? "15%" : "20%"),
-                            data: "app_id",
+                            data: "appData",
                             render: (data, type, row) => {
-                                let appData = HandlePlanAppNew.getAppDetail(data);
-                                row.appData = appData || {};
-                                if (appData && typeof appData === 'object' && appData.hasOwnProperty('title')) {
-                                    return `<span class="badge badge-primary">${appData.title}</span>`;
+                                if (data && typeof data === 'object' && data.hasOwnProperty('title')) {
+                                    return `<span class="badge badge-primary">${data.title}</span>`;
                                 } else row.app_data_not_found = true;
                                 return `<span class="badge badge-secondary app-title">_</span>`;
                             },
@@ -1195,7 +1215,10 @@ class HandlePlanAppNew {
                             width: (HandlePlanAppNew.hasSpaceChoice === true ? "12%" : "0%"),
                             data: "space",
                             render: (data, type, row) => {
-                                return HandlePlanAppNew.getHtmlSpace(row['app_id'], data);
+                                if ($x.fn.hasOwnProperties(row.appData, ['spacing_allow'])){
+                                    return HandlePlanAppNew.getHtmlSpace(row['app_id'], data, row.appData['spacing_allow']);
+                                }
+                                return HandlePlanAppNew.getHtmlSpace(row['app_id'], data, [data]);
                             },
                         }, {
                             width: (HandlePlanAppNew.editEnabled === true ? "5%" : "0%"),

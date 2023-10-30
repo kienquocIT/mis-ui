@@ -1899,6 +1899,18 @@ class UtilControl {
         }
         return [];
     }
+
+    static hasOwnProperties(objData, keys) {
+        if (objData && typeof objData === 'object' && Array.isArray(keys)) {
+            for (let i = 0; i < keys.length; i++) {
+                if (!objData.hasOwnProperty(keys[i])) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
 }
 
 class DTBControl {
@@ -3566,6 +3578,8 @@ let $x = {
 
         popKey: UtilControl.popKey,
         getKey: UtilControl.getKey,
+
+        hasOwnProperties: UtilControl.hasOwnProperties,
     },
 }
 

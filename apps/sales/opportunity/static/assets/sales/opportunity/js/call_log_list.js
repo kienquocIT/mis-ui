@@ -42,7 +42,6 @@ function loadSaleCodeList(data) {
             keyText: 'title',
         }).on('change', function () {
         let obj_selected = JSON.parse($('#' + call_log_Opp_slb.attr('data-idx-data-loaded')).text())[call_log_Opp_slb.val()];
-        console.log(obj_selected)
         loadCustomerList(obj_selected.customer);
         loadContactList(obj_selected.customer.contact_mapped);
     })
@@ -129,7 +128,9 @@ function loadOpportunityCallLogList() {
                     data: 'call_date',
                     className: 'wrap-text w-15 text-center',
                     render: (data, type, row) => {
-                        return `<span>` + row.call_date.split(' ')[0] + `</span>`
+                        return $x.fn.displayRelativeTime(data, {
+                            'outputFormat': 'DD-MM-YYYY',
+                        });
                     }
                 },
                 {

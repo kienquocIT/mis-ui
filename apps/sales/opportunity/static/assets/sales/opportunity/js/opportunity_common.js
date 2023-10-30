@@ -909,22 +909,26 @@ function loadDtbOpportunityList() {
                 },
                 {
                     targets: 5,
+                    data: "open_date",
                     render: (data, type, row) => {
-                        let open_date = null;
-                        if (row?.['open_date'] !== null) {
-                            open_date = row?.['open_date'].split(" ")[0]
-                        }
-                        return `<p>${open_date !== null && open_date !== undefined ? open_date : '_'}</p>`
+                        return data !== null && data !== undefined ? $x.fn.displayRelativeTime(data, {
+                            'outputFormat': 'DD-MM-YYYY',
+                            callback: function (data) {
+                                return `<p>${data.relate}</p><small>${data.output}</small>`;
+                            }
+                        }) : "_";
                     }
                 },
                 {
                     targets: 6,
+                    data: "close_date",
                     render: (data, type, row) => {
-                        let close_date = null;
-                        if (row?.['close_date'] !== null) {
-                            close_date = row?.['close_date'].split(" ")[0]
-                        }
-                        return `<p>${close_date !== null && close_date !== undefined ? close_date : '_'}</p>`
+                        return data !== null && data !== undefined ? $x.fn.displayRelativeTime(data, {
+                            'outputFormat': 'DD-MM-YYYY',
+                            callback: function (data) {
+                                return `<p>${data.relate}</p><small>${data.output}</small>`;
+                            }
+                        }) : "_";
                     }
                 },
                 {

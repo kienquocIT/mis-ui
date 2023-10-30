@@ -55,14 +55,18 @@ $(document).ready(function () {
                         data: 'date_created',
                         className: 'wrap-text',
                         render: (data, type, row) => {
-                            return `<span>` + row.date_created.split(' ')[0] + `</span>`
+                            return $x.fn.displayRelativeTime(data, {
+                                'outputFormat': 'DD-MM-YYYY',
+                            });
                         }
                     },
                     {
                         data: 'return_date',
                         className: 'wrap-text',
                         render: (data, type, row) => {
-                            return `<span>` + row.return_date.split(' ')[0] + `</span>`
+                            return $x.fn.displayRelativeTime(data, {
+                                'outputFormat': 'DD-MM-YYYY',
+                            });
                         }
                     },
                     {

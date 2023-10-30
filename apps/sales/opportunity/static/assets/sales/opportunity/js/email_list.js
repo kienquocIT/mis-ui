@@ -141,7 +141,7 @@ function loadOpportunityEmailList() {
                     data: 'date_created',
                     className: 'wrap-text w-20 text-center',
                     render: (data, type, row) => {
-                        return row.date_created
+                        return $x.fn.displayRelativeTime(data);
                     }
                 },
                 {

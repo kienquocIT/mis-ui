@@ -37,7 +37,7 @@ class SetupFormSubmit {
             if (dataMethodDefault) {
                 this.dataMethod = dataMethodDefault
             } else {
-                if ($.fn.isDebug()){
+                if ($.fn.isDebug()) {
                     console.log(this.formSelected)
                 }
                 throw ('Data Method do not support! It is ' + this.dataMethod);
@@ -1187,9 +1187,9 @@ class ListeningEventController {
         });
     }
 
-    static tabHashUrl__parent_active(currentEle){
-        $(currentEle).closest('.nav-tabs a[data-bs-toggle="tab"]').each(function (){
-            if ($(this).length > 0){
+    static tabHashUrl__parent_active(currentEle) {
+        $(currentEle).closest('.nav-tabs a[data-bs-toggle="tab"]').each(function () {
+            if ($(this).length > 0) {
                 let drawerEle = $(this).closest('.ntt-drawer');
                 if (drawerEle.length > 0) {
                     $('.ntt-drawer-toggle-link[data-drawer-target="#' + drawerEle.attr('id') + '"]').each(function () {
@@ -1206,7 +1206,7 @@ class ListeningEventController {
         $('.nav-tabs a[data-bs-toggle="tab"]').filter(function () {
             return this.hash === location.hash;
         }).each(function () {
-            if ($(this).length > 0){
+            if ($(this).length > 0) {
                 let drawerEle = $(this).closest('.ntt-drawer');
                 if (drawerEle.length > 0) {
                     $('.ntt-drawer-toggle-link[data-drawer-target="#' + drawerEle.attr('id') + '"]').each(function () {
@@ -1219,13 +1219,13 @@ class ListeningEventController {
         });
 
         $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
-            if ($(this).data('not-push-tab') === null || $(this).data('not-push-tab') === undefined){
+            if ($(this).data('not-push-tab') === null || $(this).data('not-push-tab') === undefined) {
                 window.history.pushState(null, null, $(e.target).attr("href"));
             }
         });
     }
 
-    setValidatorDefaults(){
+    setValidatorDefaults() {
         $.validator.setDefaults({
             focusInvalid: true,
             validClass: "is-valid",
@@ -1241,20 +1241,20 @@ class ListeningEventController {
         });
     }
 
-    dropdownInAccordion(){
-        $('body').on('show.bs.dropdown', '.info-btn-more', function (){
+    dropdownInAccordion() {
+        $('body').on('show.bs.dropdown', '.info-btn-more', function () {
             // add class for accordion show dropdown
             let accorItemEle = $(this).closest('.accordion-item');
-            if (accorItemEle.length > 0){
+            if (accorItemEle.length > 0) {
                 accorItemEle.addClass('overflow-unset');
             }
             // check ID to link detail - Yes: show link | No: hide link
             let linkEle = $(this).parent().find('.link-detail-more');
             if (linkEle.length > 0) $(this).attr('data-id') ? linkEle.removeClass('hidden') : linkEle.addClass('hidden');
-        }).on('hidden.bs.dropdown',  '.info-btn-more', function (){
+        }).on('hidden.bs.dropdown', '.info-btn-more', function () {
             // rollback to original for accordion
             let accorItemEle = $(this).closest('.accordion-item');
-            if (accorItemEle.length > 0 && accorItemEle.find('.info-btn-more.show').length === 0){
+            if (accorItemEle.length > 0 && accorItemEle.find('.info-btn-more.show').length === 0) {
                 accorItemEle.removeClass('overflow-unset');
             }
         })
@@ -1665,7 +1665,7 @@ class UtilControl {
         }
     }
 
-    static generateRandomString(length=32) {
+    static generateRandomString(length = 32) {
         let result = '';
         let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
         let charactersLength = characters.length;
@@ -1792,7 +1792,7 @@ class UtilControl {
         return defaultData;
     }
 
-    static getKey(data, key, defaultData = null, compareTypeWithDefault = false){
+    static getKey(data, key, defaultData = null, compareTypeWithDefault = false) {
         if (typeof data === 'object') {
             if (data.hasOwnProperty(key)) {
                 let tmp = data[key];
@@ -1868,15 +1868,15 @@ class UtilControl {
 
     }
 
-    static getRandomInArray(array){
+    static getRandomInArray(array) {
         return array[Math.floor(Math.random() * array.length)];
     }
 
-    static keepExistInOther(arr_main, arr_check_remove){
+    static keepExistInOther(arr_main, arr_check_remove) {
         // arr_main:    ["1", "2", "3"]
         // arr_check:   ["1", "3", "4"]
         // => ["1", "3"]
-        if (Array.isArray(arr_main) && Array.isArray(arr_check_remove)){
+        if (Array.isArray(arr_main) && Array.isArray(arr_check_remove)) {
             return arr_main.filter(
                 (item) => {
                     return arr_check_remove.indexOf(item) !== -1;
@@ -1886,11 +1886,11 @@ class UtilControl {
         return [];
     }
 
-    static removeExistInOther(arr_main, arr_check_remove){
+    static removeExistInOther(arr_main, arr_check_remove) {
         // arr_main:    ["1", "2", "3"]
         // arr_check:   ["1", "3", "4"]
         // => ["2"]
-        if (Array.isArray(arr_main) && Array.isArray(arr_check_remove)){
+        if (Array.isArray(arr_main) && Array.isArray(arr_check_remove)) {
             return arr_main.filter(
                 (item) => {
                     return arr_check_remove.indexOf(item) === -1;
@@ -1910,6 +1910,24 @@ class UtilControl {
             return true;
         }
         return false;
+    }
+
+    static displayRelativeTime(dataStr, opts = {}) {
+        if (dataStr) {
+            let format = opts?.['format'] || "YYYY-MM-DD HH:mm:ss";
+            let outputFormat = opts?.['outputFormat'] || "YYYY-MM-DD HH:mm:ss";
+            let callback = opts?.['callback'] || function (data) {
+                return `<p>${data.relate}</p><small>${data.output}</small>`;
+            }
+
+            let relateTimeStr = moment(dataStr, format).fromNow();
+            let appendStrData = moment(dataStr, format).format(outputFormat);
+            return callback({
+                'relate': relateTimeStr,
+                'output': appendStrData,
+            });
+        }
+        return '_';
     }
 }
 
@@ -2633,13 +2651,13 @@ class DTBControl {
         return [opts, domDTL];
     }
 
-    static cleanBaseKeyOfDataAjax(d){
-        if (typeof d === "object" && Object.keys(d).length > 0){
+    static cleanBaseKeyOfDataAjax(d) {
+        if (typeof d === "object" && Object.keys(d).length > 0) {
             let keyHasRemove = ['columns', 'draw', 'length', 'order', 'ordering', 'search', 'start', 'page', 'pageSize']
             let result = {};
             Object.keys(d).map(
-                (key)=>{
-                    if (keyHasRemove.indexOf(key) === -1){
+                (key) => {
+                    if (keyHasRemove.indexOf(key) === -1) {
                         result[key] = d[key];
                     }
                 }
@@ -3064,30 +3082,30 @@ class WindowControl {
             showConfirmButton: false,
             timerProgressBar: true,
             didOpen: () => {
-                if (didOpenStartSetup  instanceof Function) didOpenStartSetup();
+                if (didOpenStartSetup instanceof Function) didOpenStartSetup();
                 Swal.showLoading();
-                if (didOpenEndSetup  instanceof Function) didOpenEndSetup();
+                if (didOpenEndSetup instanceof Function) didOpenEndSetup();
             },
             didDestroy: () => {
-                if (didDestroyStartSetup  instanceof Function) didDestroyStartSetup();
+                if (didDestroyStartSetup instanceof Function) didDestroyStartSetup();
                 Swal.hideLoading();
-                if (didDestroyEndSetup  instanceof Function) didDestroyEndSetup();
+                if (didDestroyEndSetup instanceof Function) didDestroyEndSetup();
             },
             ...opts,
         });
     }
 
-    static hideLoading(checkIsLoading= true) {
-        if (checkIsLoading === true){
+    static hideLoading(checkIsLoading = true) {
+        if (checkIsLoading === true) {
             try {
-                if(Swal.isLoading()){
+                if (Swal.isLoading()) {
                     checkIsLoading = false;
                 }
-            } catch (e){
+            } catch (e) {
                 checkIsLoading = false;
             }
         }
-        if (checkIsLoading === false){
+        if (checkIsLoading === false) {
             swal.close();
         }
     }
@@ -3504,7 +3522,7 @@ class DocumentControl {
         </a>`;
     }
 
-    static closeCard(eleCard, destroyParentClosest = null, isPurge = false){
+    static closeCard(eleCard, destroyParentClosest = null, isPurge = false) {
         let ele = $(eleCard).closest('.card');
         if (destroyParentClosest !== null) ele = ele.closest(destroyParentClosest);
         if (isPurge === true) {
@@ -3514,7 +3532,7 @@ class DocumentControl {
         }
     }
 
-    static openCard(eleCard, openParentClosest = null){
+    static openCard(eleCard, openParentClosest = null) {
         let ele = $(eleCard).closest('.card');
         if (openParentClosest !== null) ele = ele.closest(openParentClosest);
         ele.removeClass('d-none');
@@ -3580,6 +3598,8 @@ let $x = {
         getKey: UtilControl.getKey,
 
         hasOwnProperties: UtilControl.hasOwnProperties,
+
+        displayRelativeTime: UtilControl.displayRelativeTime,
     },
 }
 

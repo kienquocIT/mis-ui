@@ -338,10 +338,7 @@ $(document).ready(function () {
                             data: "date_created",
                             title: "Posting date",
                             render: (data, type, row) => {
-                                if (data) {
-                                    return data;
-                                }
-                                return 'Ngày tạo nè';
+                                return $x.fn.displayRelativeTime(data);
                             }
                         },
                         {

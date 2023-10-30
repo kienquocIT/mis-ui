@@ -1,5 +1,6 @@
 $(document).ready(function () {
     let urlEle = $('#url-factory')
+
     function loadDocument() {
         if (!$.fn.DataTable.isDataTable('#datatable-opportunity-document')) {
             let $table = $('#datatable-opportunity-document')
@@ -48,7 +49,9 @@ $(document).ready(function () {
                         data: 'request_completed_date',
                         targets: 3,
                         render: (data, type, row) => {
-                            return `<p>${data.split(' ')[0]}</p>`
+                            return $x.fn.displayRelativeTime(data, {
+                                'outputFormat': 'DD-MM-YYYY',
+                            });
                         }
                     },
                 ],

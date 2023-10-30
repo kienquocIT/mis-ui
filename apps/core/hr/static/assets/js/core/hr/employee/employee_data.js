@@ -75,10 +75,7 @@ $(function () {
             {
                 data: 'date_joined',
                 'render': (data, type, row, meta) => {
-                    if (row.hasOwnProperty('date_joined') && typeof row.date_joined === 'string') {
-                        return $x.fn.parseDate(row.date_joined);
-                    }
-                    return '_';
+                    return $x.fn.displayRelativeTime(data);
                 }
             },
             {

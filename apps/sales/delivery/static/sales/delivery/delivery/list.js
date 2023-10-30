@@ -37,23 +37,24 @@ $(document).ready(function () {
             }, {
                 data: 'date_created',
                 render: (data, type, row) => {
-                    data = moment(data, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
-                    return data;
+                    return $x.fn.displayRelativeTime(data, {
+                        'outputFormat': 'DD/MM/YYYY',
+                    })
                 },
             }, {
                 data: 'estimated_delivery_date',
                 render: (data, type, row) => {
-                    if (data)
-                        data = moment(data, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY hh:mm A')
-                    return data ? data : "--";
+                    return $x.fn.displayRelativeTime(data, {
+                        'outputFormat': 'DD/MM/YYYY hh:mm A',
+                    })
                 },
             },
             {
                 data: 'actual_delivery_date',
                 render: (data, type, row) => {
-                    if (data)
-                        data = moment(data, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY hh:mm A')
-                    return data ? data : "--";
+                    return $x.fn.displayRelativeTime(data, {
+                        'outputFormat': 'DD/MM/YYYY hh:mm A',
+                    });
                 },
             },
             {

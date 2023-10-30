@@ -403,7 +403,7 @@ function submitHandleFunc() {
     WindowControl.showLoading();
     const frm = new SetupFormSubmit($FormElm);
     let formData = frm.dataForm;
-    formData.employee_inherit = $EmpElm.val()
+    formData.employee_inherit_id = $EmpElm.val()
     formData.detail_data = detailTab.get_data()
     formData.total = 0
     $.map(formData.detail_data, (item) => {

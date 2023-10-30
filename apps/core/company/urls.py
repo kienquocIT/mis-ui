@@ -4,18 +4,19 @@ from apps.core.company.views import CompanyUserNotMapEmployeeListAPI
 from apps.core.company.views import (
     CompanyList, CompanyListAPI, CompanyListOverviewList, CompanyListOverviewListAPI,
     EmployeeUserByCompanyListOverviewDetailAPI, EmployeeOfTenantListAPI,
-    CompanyDetail, CompanyUpdateAPI, CompanyDeleteAPI,
-    CompanyConfigDetailAPI, CompanyCreate
+    CompanyDetail, CompanyDetailAPI, CompanyDeleteAPI,
+    CompanyConfigDetailAPI, CompanyCreate, CompanyUpdate
 )
 
 urlpatterns = [
     path('config', CompanyConfigDetailAPI.as_view(), name='CompanyConfigDetailAPI'),
     path('list', CompanyList.as_view(), name='CompanyList'),
     path('create', CompanyCreate.as_view(), name='CompanyCreate'),
-    path('list/api', CompanyListAPI.as_view(), name='CompanyListAPI'),
     path('detail/<str:pk>', CompanyDetail.as_view(), name='CompanyDetail'),
-    path('update/<str:pk>', CompanyUpdateAPI.as_view(), name='CompanyUpdateAPI'),
-    path('delete/<str:pk>', CompanyDeleteAPI.as_view(), name='CompanyDeleteAPI'),
+    path('update/<str:pk>', CompanyUpdate.as_view(), name='CompanyUpdate'),
+    path('list/api', CompanyListAPI.as_view(), name='CompanyListAPI'),
+    path('detail/api/<str:pk>', CompanyDetailAPI.as_view(), name='CompanyDetailAPI'),
+    path('delete/api/<str:pk>', CompanyDeleteAPI.as_view(), name='CompanyDeleteAPI'),
 
     # view from tenant overview
     path('list/overview', CompanyListOverviewList.as_view(), name='CompanyListOverviewList'),

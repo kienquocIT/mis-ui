@@ -16,6 +16,55 @@ class CompanyList(View):
         return {}, status.HTTP_200_OK
 
 
+class CompanyCreate(View):
+    @classmethod
+    def callback_success(cls, result):
+        return {'company': result, 'icon': result["title"][0]}
+
+    @mask_view(
+        auth_require=True,
+        template='core/company/company_create.html',
+        breadcrumb='COMPANY_CREATE_PAGE',
+        menu_active='menu_company_create'
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.CURRENCY_LIST).get()
+        vnd_currency = [item if item['is_default'] and item['abbreviation'] == 'VND' else {} for item in resp.result][0]
+        return {
+                   'data': {'VND_currency': vnd_currency}
+               }, status.HTTP_200_OK
+
+
+class CompanyDetail(View):
+    @classmethod
+    def callback_success(cls, result):
+        return {'company': result, 'icon': result["title"][0]}
+
+    @mask_view(
+        auth_require=True,
+        template='core/company/company_detail.html',
+        breadcrumb='COMPANY_DETAIL_PAGE',
+        menu_active='menu_company_detail'
+    )
+    def get(self, request, pk, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
+class CompanyUpdate(View):
+    @classmethod
+    def callback_success(cls, result):
+        return {'company': result, 'icon': result["title"][0]}
+
+    @mask_view(
+        auth_require=True,
+        template='core/company/company_update.html',
+        breadcrumb='COMPANY_DETAIL_PAGE',
+        menu_active='menu_company_update'
+    )
+    def get(self, request, pk, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
 class CompanyListAPI(APIView):
     @mask_view(auth_require=True, is_api=True)
     def get(self, request, *args, **kwargs):
@@ -28,51 +77,18 @@ class CompanyListAPI(APIView):
         return resp.auto_return()
 
 
-class CompanyCreate(View):
+class CompanyDetailAPI(APIView):
     @classmethod
     def callback_success(cls, result):
         return {'company': result, 'icon': result["title"][0]}
 
     @mask_view(
         auth_require=True,
-        template='core/company/company_create.html',
-        breadcrumb='COMPANY_CREATE_PAGE',
-        menu_active='menu_company_list'
-    )
-    def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
-
-
-class CompanyDetail(View):
-    @classmethod
-    def callback_success(cls, result):
-        return {'company': result, 'icon': result["title"][0]}
-
-    @mask_view(
-        auth_require=True,
-        template='core/company/company_detail.html',
-        breadcrumb='COMPANY_DETAIL_PAGE',
-        menu_active='menu_company_list'
+        is_api=True,
     )
     def get(self, request, pk, *args, **kwargs):
         resp = ServerAPI(request=request, user=request.user, url=ApiURL.COMPANY_DETAIL + '/' + pk).get()
-        return resp.auto_return(callback_success=self.callback_success)
-
-
-class CompanyUpdateAPI(APIView):
-    @classmethod
-    def callback_success(cls, result):
-        return {'company': result, 'icon': result["title"][0]}
-
-    @mask_view(
-        login_require=True,
-        template='core/company/company_update.html',
-        breadcrumb='COMPANY_UPDATE_PAGE',
-        menu_active='menu_company_list'
-    )
-    def get(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(request=request, user=request.user, url=ApiURL.COMPANY_DETAIL + '/' + pk).get()
-        return resp.auto_return(callback_success=self.callback_success)
+        return resp.auto_return(key_success='company_detail')
 
     @mask_view(auth_require=True, is_api=True)
     def put(self, request, pk, *args, **kwargs):

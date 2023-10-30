@@ -2,16 +2,11 @@
 {% load i18n %}
 {% load static %}
 {% block cssHeader %}
-    <style>
-        #offcanvasRight {
-            width: 50%;
-        }
-    </style>
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-outline-primary" type="submit" form="form-edit-company">
+    <button class="btn btn-outline-primary" type="submit" form="frm-add-company">
         <span>
             <span>{% trans 'Save' %}</span>
             <span class="icon">
@@ -21,211 +16,342 @@
     </button>
 {% endblock %}
 {% block pageContent %}
+    {{ data.data.VND_currency | json_script:"VND_currency" }}
     <form id="frm-add-company"
           data-url="{% url "CompanyListAPI" %}"
-          data-url-redirect="/"
+          data-url-redirect="{% url "CompanyList" %}"
           data-method="POST">
         {% csrf_token %}
-        <div class="row">
-            <div class="col-12 col-md-4 col-lg-4">
-                <div class="form-group">
-                    <label class="form-label" for="code_id">
-                        {% trans 'Code' %}
-                        <span class="required"></span>
-                    </label>
-                    <input
-                            type="text" class="form-control"
-                            id="code_id" name="code"
-                            oninput="this.value=this.value.toUpperCase()"
-                            placeholder="MIS001"
-                            required
-                    />
-                    <span class="form-text text-muted">{% trans 'Code new company' %}</span>
-                </div>
-            </div>
-            <div class="col-12 col-md-4 col-lg-4">
-                <div class="form-group">
-                    <label class="form-label" for="company_name_id">
-                        {% trans 'Company Name' %}
-                        <span class="required"></span>
-                    </label>
-                    <input
-                            type="text" class="form-control"
-                            id="company_name_id" name="title"
-                            placeholder="MT Solution"
-                            required
-                    />
-                    <span class="form-text text-muted">{% trans 'Name of new company' %}</span>
-                </div>
-            </div>
-            <div class="col-12 col-md-4 col-lg-4">
-                <div class="form-group">
-                    <label class="form-label" for="parent_company_id">
-                        {% trans 'Parent Company' %}
-                    </label>
-                    <select
-                            class="form-control form-select" id="parent_company_id"
-                            name="parent_company"
-                            disabled
-                            required
-                    >
-                        <option value="" selected>{% trans 'No selected' %}</option>
-                        <option value="1">One</option>
-                        <option value="2">Two</option>
-                        <option value="3">Three</option>
-                    </select>
-                    <span class="form-text text-muted">{% trans 'The new is subsidiary company or not' %}</span>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-12 col-md-12 col-lg-12">
-                <div class="form-group">
+        <div class="collapse multi-collapse show" id="collapse-area">
+            <div class="row">
+                <div class="col-12 col-md-6 col-lg-6">
                     <div class="row">
-                        <div class="col-6">
-                            <label class="form-label" for="address_id">
-                                {% trans 'Address' %}
-                                <span class="required"></span>
-                            </label>
+                        <div class="col-12 col-md-4 col-lg-4">
+                            <div class="form-group">
+                                <label class="form-label required" for="code">
+                                    {% trans 'Company code' %}
+                                </label>
+                                <input type="text" class="form-control"
+                                       id="code" oninput="this.value=this.value.toUpperCase()"
+                                       placeholder="MIS001" required/>
+                            </div>
                         </div>
-                        <div class="col-6 text-right text-primary">
-                            <span class="icon" data-bs-toggle="modal" data-bs-target="#modal-shipping-address">
-                                {% trans 'Add new address' %} &nbsp;
-                                <i class="fas fa-plus-circle"></i>
-                            </span>
+                        <div class="col-12 col-md-8 col-lg-8">
+                            <div class="form-group">
+                                <label class="form-label required" for="title">
+                                    {% trans 'Company name' %}
+                                </label>
+                                <input type="text" class="form-control"
+                                       id="title" placeholder="MT Solution" required/>
+                            </div>
                         </div>
                     </div>
-
-                    <textarea
-                            type="text" class="form-control"
-                            id="address_id" name="address"
-                            placeholder="{% trans 'No.20, 22 Street, Him Lam Quarter, Binh Hung Ward, Binh Chanh District, HCM city, VN country' %}"
-                            required
-                    ></textarea>
-                    <span class="form-text text-muted">{% trans 'Address new company' %}</span>
+                    <div class="form-group">
+                        <label class="form-label" for="fax">
+                            {% trans 'Company fax' %}
+                        </label>
+                        <input type="text" class="form-control"
+                               id="fax" placeholder="+84 (8) 1234 9876" required/>
+                    </div>
+                    <div hidden class="form-group">
+                        <label class="form-label" for="parent_company">
+                            {% trans 'Parent Company' %}
+                        </label>
+                        <select class="form-control form-select" id="parent_company"
+                                disabled required>
+                            <option value="" selected>{% trans 'No selected' %}</option>
+                            <option value="1">One</option>
+                            <option value="2">Two</option>
+                            <option value="3">Three</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label required" for="address">{% trans 'Company address' %}</label>
+                        <input data-bs-toggle="modal" data-bs-target="#modal-company-address"
+                               type="text" class="form-control" readonly id="address"
+                               placeholder="{% trans 'Click to add address' %}"
+                               required>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-6">
+                    <div class="form-group">
+                        <label class="form-label required" for="representative_fullname">
+                            {% trans 'Representator fullname' %}
+                        </label>
+                        <input type="text" class="form-control"
+                               id="representative_fullname"
+                               placeholder="Nguyen Van A" required/>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label required" for="email">
+                            {% trans 'Representator email' %}
+                        </label>
+                        <input type="text" class="form-control"
+                               id="email"
+                               placeholder="anv@mtsolution.com.vn"
+                               required/>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label required" for="phone">
+                            {% trans 'Representator phone number' %}
+                        </label>
+                        <input type="text" class="form-control"
+                               id="phone" placeholder="+84987654321" required/>
+                    </div>
                 </div>
             </div>
         </div>
+        <button type="button" data-bs-toggle="collapse" data-bs-target="#collapse-area" aria-expanded="false" aria-controls="collapse-area" class="w-100 btn btn-animated btn-icon btn-xs">
+            <span class="icon">
+                <i class="fas fa-angle-double-up text-primary"></i>
+            </span>
+        </button>
         <div class="row">
-            <div class="col-12 col-md-4 col-lg-4">
-                <div class="form-group">
-                    <label class="form-label" for="representative_fullname_id">
-                        {% trans 'Representative' %}
-                        <span class="required"></span>
-                    </label>
-                    <input
-                            type="text" class="form-control"
-                            id="representative_fullname_id" name="representative_fullname"
-                            placeholder="Nguyen Van A" required
-                    />
-                    <span class="form-text text-muted">{% trans 'Full name of Representative' %}</span>
-                </div>
+            <div class="col-12">
+                <ul class="nav nav-tabs nav-icon nav-light">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#tab_setting">
+                            <span class="nav-icon-wrap"><span class="feather-icon"><i class="fas fa-cogs"></i></span></span>
+                            <span class="nav-link-text">{% trans 'Company setting' %}</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#tab_function_number">
+                            <span class="nav-icon-wrap"><span class="feather-icon"><i class="fas fa-stopwatch-20"></i></span></span>
+                            <span class="nav-link-text">{% trans 'Function number' %}</span>
+                        </a>
+                    </li>
+                </ul>
             </div>
-            <div class="col-12 col-md-4 col-lg-4">
-                <div class="form-group">
-                    <label class="form-label" for="email_id">
-                        {% trans 'Email' %}
-                        <span class="required"></span>
-                    </label>
-                    <input
-                            type="text" class="form-control"
-                            id="email_id" name="email"
-                            placeholder="anv@mtsolution.com.vn"
-                            required
-                    />
-                    <span class="form-text text-muted">{% trans 'Email of Representative' %}</span>
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="tab_setting">
+                    <div class="row mt-3 mb-5">
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="row">
+                                <label class="col-12 col-md-4 col-lg-4 col-form-label required" for="primary-currency">
+                                        {% trans 'Primary currency' %}
+                                    </label>
+                                <div class="col-12 col-md-8 col-lg-8">
+                                    <select type="text" id="primary-currency" data-url="{% url 'CurrencyListAPI' %}" class="select2 form-select" required></select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-5">
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="row">
+                                <div class="col-12 col-md-4 col-lg-4">
+                                    <label class="form-label" for="definition-inventory-valuation">
+                                {% trans 'Definition of inventory valuation' %}:
+                            </label>
+                                </div>
+                                <div class="col-12 col-md-8 col-lg-8">
+                                    <div class="row">
+                                        <div class="col-12 col-md-6 col-lg-6">
+                                            <div class="form-check form-check-sm">
+                                                <input type="radio" id="perpetual-selection" name="definition-inventory-valuation" class="form-check-input" checked>
+                                                <label class="form-check-label" for="perpetual-selection">{% trans 'Perpetual inventory' %}</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-md-6 col-lg-6">
+                                            <div class="form-check form-check-sm">
+                                                <input type="radio" id="periodic-selection" name="definition-inventory-valuation" class="form-check-input">
+                                                <label class="form-check-label" for="periodic-selection">{% trans 'Periodic inventory' %}</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-5">
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="row">
+                                <label class="col-12 col-md-4 col-lg-4 col-form-label" for="default-inventory-value-method">
+                                    {% trans 'Default inventory value method' %}:
+                                </label>
+                                <div class="col-12 col-md-8 col-lg-8">
+                                    <select type="text" id="default-inventory-value-method" class="select2 form-select" required>
+                                        <option value="0" selected>{% trans 'FIFO' %}</option>
+                                        <option value="1">{% trans 'Cumulative weighted average' %}</option>
+                                        <option value="2">{% trans 'Weighted average' %}</option>
+                                        <option value="3">{% trans 'Specific identification method' %}</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-md-12 col-lg-12">
+                            <div class="form-check">
+                                <input type="checkbox" id="cost-per-warehouse" class="form-check-input">
+                                <label class="form-check-label" for="cost-per-warehouse">{% trans 'Cost per warehouse management' %}</label>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-12 col-lg-12">
+                            <div class="form-check">
+                                <input type="checkbox" id="cost-per-lot/batch" class="form-check-input">
+                                <label class="form-check-label" for="cost-per-lot/batch">{% trans 'Cost per lot/batch management' %}</label>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="col-12 col-md-4 col-lg-4">
-                <div class="form-group">
-                    <label class="form-label" for="phone_id">
-                        {% trans 'Phone Number' %}
-                        <span class="required"></span>
-                    </label>
-                    <input
-                            type="number" class="form-control"
-                            id="phone_id" name="phone"
-                            placeholder="+84987654321"
-                            required
-                    />
-                    <span class="form-text text-muted">{% trans 'Phone number of Representative' %}</span>
+                <div class="tab-pane fade" id="tab_function_number">
+                    <table class="table nowrap w-100" id="function_number_table">
+                        <thead>
+                        <th></th>
+                        <th>{% trans 'Function' %}</th>
+                        <th>{% trans 'Numbering by' %}</th>
+                        <th>{% trans 'Schema' %}</th>
+                        <th>{% trans 'Schema custom' %}</th>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </form>
 
-    <div class="modal fade" id="modal-shipping-address" tabindex="-1" role="dialog"
-             aria-labelledby="exampleModalCenter" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">{% trans "Add Shipping Address" %}</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="modal-body">
-                            <div class="row">
-                                <div class="form-group">
-                                    <label class="label-field form-label required">{% trans "Address" %}</label>
-                                    <input
-                                            class="form-control" type="text" id="detail-modal-shipping-address"
-                                            placeholder="Number 20, 22 street, Him Lam residential area"
-                                    >
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="form-group">
-                                    <label class="label-field form-label required">{% trans "Province/City" %}</label>
-                                    <select
-                                            class="form-select" id="shipping-city" data-country-id
-                                            data-url="{% url "CityListAPI" %}" data-method="GET"
-                                    ></select>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="form-group">
-                                    <label class="label-field form-label required">{% trans "District" %}</label>
-                                    <select
-                                            class="form-select" id="shipping-district"
-                                            data-url="{% url "DistrictAllListAPI" %}" data-method="GET"
-                                    >
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="form-group">
-                                    <label class="label-field form-label">{% trans "Ward" %}</label>
-                                    <select
-                                            class="form-select" id="shipping-ward"
-                                            data-url="{% url "WardAllListAPI" %}" data-method="GET"
-                                    >
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="form-check ml-3">
-                                    <input
-                                            class="form-check-input" type="checkbox" value=""
-                                            id="make-default-shipping-address"
-                                    >
-                                    <label class="form-check-label" for="make-default-shipping-address">
-                                        {% trans "Make default address" %}
-                                    </label>
-                                </div>
-                            </div>
+    <div class="modal fade" id="modal-company-address" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalCenter" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans "Add Company Address" %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="form-group">
+                            <label class="label-field form-label required" for="detail-company-address-modal">{% trans "Address" %}</label>
+                            <input class="form-control" type="text" id="detail-company-address-modal"
+                                   placeholder="Number 20, 22 street, Him Lam residential area">
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" id="save-changes-modal-shipping-address">
-                                Save
-                            </button>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <label class="label-field form-label required" for="company-address-city">{% trans "Province/City" %}</label>
+                            <select class="form-select" id="company-address-city" data-country-id
+                                    data-url="{% url "CityListAPI" %}" data-method="GET"></select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <label class="label-field form-label required" for="company-address-district">{% trans "District" %}</label>
+                            <select class="form-select" id="company-address-district"
+                                    data-url="{% url "DistrictAllListAPI" %}" data-method="GET">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <label class="label-field form-label" for="company-address-ward">{% trans "Ward" %}</label>
+                            <select class="form-select" id="company-address-ward"
+                                    data-url="{% url "WardAllListAPI" %}" data-method="GET">
+                            </select>
                         </div>
                     </div>
                 </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" aria-label="Close" id="save-changes-modal-company-address">
+                        {% trans 'Save' %}
+                    </button>
+                </div>
             </div>
         </div>
+    </div>
+
+    <div class="modal fade" id="modal-function-number" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalCenter" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans "Add Schema" %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-6 col-md-6 col-lg-6">
+                                    <label class="label-field form-label required" for="schema">{% trans "Schema" %}</label>
+                                </div>
+                                <div class="col-6 col-md-6 col-lg-6 text-right">
+                                    <div class="btn-group dropdown">
+                                        <button type="button" class="btn btn-xs btn-soft-primary dropdown-toggle schema" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            {% trans 'Add schema item' %}
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            <div style="max-height: 200px; overflow-y: auto;">
+                                                <a data-value="0" class="schema-item dropdown-item" href="#">Number</a>
+                                                <a data-value="1" class="schema-item dropdown-item" href="#">Short year (23)</a>
+                                                <a data-value="2" class="schema-item dropdown-item" href="#">Long year (2023)</a>
+                                                <a data-value="3" class="schema-item dropdown-item" href="#">Short month (Jan)</a>
+                                                <a data-value="4" class="schema-item dropdown-item" href="#">Long month (January)</a>
+                                                <a data-value="5" class="schema-item dropdown-item" href="#">Month of year (1-12)</a>
+                                                <a data-value="6" class="schema-item dropdown-item" href="#">Week of year (1-54)</a>
+                                                <a data-value="7" class="schema-item dropdown-item" href="#">Day of year (1-366)</a>
+                                                <a data-value="8" class="schema-item dropdown-item" href="#">Day of month (1-31)</a>
+                                                <a data-value="9" class="schema-item dropdown-item" href="#">Day of week (1-7)</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 col-md-12 col-lg-12">
+                                    <input id="schema-item-list" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="row">
+                                <div class="col-12 col-md-6 col-lg-6">
+                                    <div class="form-group">
+                                        <label class="label-field form-label required" for="first-number">{% trans "First number" %}</label>
+                                        <input type="number" class="form-control" id="first-number">
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6 col-lg-6">
+                                    <div class="form-group">
+                                        <label class="label-field form-label required" for="last-number">{% trans "Last number" %}</label>
+                                        <input type="number" class="form-control" id="last-number">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <label class="label-field form-label required" for="reset-frequency">{% trans "Reset frequency" %}</label>
+                            <select class="select2 form-select" id="reset-frequency">
+                                <option selected></option>
+                                <option value="0">Yearly</option>
+                                <option value="1">Monthly</option>
+                                <option value="2">Weekly</option>
+                                <option value="3">Daily</option>
+                                <option value="4">Never</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="save-changes-modal-function-number">
+                        {% trans 'Save' %}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 {% block jsFooter %}
+    <script src="{% static 'core/company/js/company_common.js' %}"></script>
     <script src="{% static 'core/company/js/company_create.js' %}"></script>
+    <script src="{% static 'vendors/jasny-bootstrap/dist/js/jasny-bootstrap.min.js' %}"></script>
 {% endblock %}

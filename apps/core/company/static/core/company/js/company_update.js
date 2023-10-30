@@ -1,9 +1,9 @@
 $(document).ready(function () {
     new CompanyHandle().load();
 
-    $("#frm-detail-company").submit(function (event) {
+    $("#form-update-company").submit(function (event) {
         event.preventDefault();
-        let combinesData = new CompanyHandle().combinesData($(this), true);
+        let combinesData = new CompanyHandle().combinesData($(this));
         console.log(combinesData)
         if (combinesData) {
             WindowControl.showLoading();

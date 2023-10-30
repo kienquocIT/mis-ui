@@ -309,3 +309,29 @@ class SaleOrderPurchasingStaffListAPI(APIView):
         params = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.SALE_ORDER_LIST_FOR_PURCHASING_STAFF).get(params)
         return resp.auto_return(key_success='sale_order_list')
+
+
+# REPORT
+class ReportRevenueList(View):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        template='sales/saleorder/report_revenue.html',
+        menu_active='',
+        breadcrumb='',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
+class ReportRevenueListAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.REPORT_REVENUE_LIST).get()
+        return resp.auto_return(key_success='report_revenue_list')

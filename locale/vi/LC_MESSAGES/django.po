@@ -4316,7 +4316,7 @@ msgstr "Số tháng số dư sẽ hết hạn"
 
 #
 msgid "Number of paid annual leave days"
-msgstr "Số ngày phép mặc định"
+msgstr "Số ngày nghỉ hàng năm được trả lương"
 
 #
 msgid "Leave type create successfully"

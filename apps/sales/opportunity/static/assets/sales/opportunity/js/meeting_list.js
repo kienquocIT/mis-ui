@@ -51,7 +51,9 @@ function loadOpportunityMeetingList() {
                     data: 'meeting_date',
                     className: 'wrap-text w-20 text-center',
                     render: (data, type, row) => {
-                        return `<span>` + row.meeting_date.split(' ')[0] + `</span>`
+                        return $x.fn.displayRelativeTime(data, {
+                            'outputFormat': 'DD-MM-YYYY',
+                        });
                     }
                 },
                 {

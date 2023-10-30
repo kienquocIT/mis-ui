@@ -86,9 +86,11 @@ $(function () {
                     },
                     {
                         targets: 4,
+                        data: "date_created",
                         render: (data, type, row) => {
-                            let date_created = moment(row?.['date_created']).format('YYYY-MM-DD');
-                            return `<p>${date_created}</p>`
+                            return $x.fn.displayRelativeTime(data, {
+                                'outputFormat': 'DD-MM-YYYY',
+                            });
                         }
                     },
                     {

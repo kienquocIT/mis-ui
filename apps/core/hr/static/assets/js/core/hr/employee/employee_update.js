@@ -74,7 +74,6 @@ $(function () {
         let ajaxConfig = EmployeeLoadPage.combinesForm('#frm_employee_update');
         ajaxConfig['data']['permission_by_configured'] = new HandlePlanAppNew().combinesPermissions();
         ajaxConfig['data']['plan_app'] = new HandlePlanAppNew().combinesPlanApp();
-
         // make sure confirm if user linked is null!
         if (!ajaxConfig['data']['user']) {
             Swal.fire({

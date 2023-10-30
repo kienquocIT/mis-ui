@@ -1215,6 +1215,10 @@ class HandlePlanAppNew {
                             width: (HandlePlanAppNew.hasSpaceChoice === true ? "12%" : "0%"),
                             data: "space",
                             render: (data, type, row) => {
+                                if (!data) {
+                                    row.space = "0"
+                                    data = "0";
+                                }
                                 if ($x.fn.hasOwnProperties(row.appData, ['spacing_allow'])){
                                     return HandlePlanAppNew.getHtmlSpace(row['app_id'], data, row.appData['spacing_allow']);
                                 }

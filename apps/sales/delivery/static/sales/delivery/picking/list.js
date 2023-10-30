@@ -41,18 +41,18 @@ $(document).ready(function () {
                 },
             }, {
                 data: 'date_created',
-                render: (row, type, data) => {
-                    let time = '--';
-                    if (row) time = moment(row).format('DD/MM/YYYY');
-                    return time
+                render: (data, type, row) => {
+                    return $x.fn.displayRelativeTime(data, {
+                        'outputFormat': 'DD/MM/YYYY',
+                    });
                 },
             },
             {
                 data: 'estimated_delivery_date',
-                render: (row, type, data) => {
-                    let time = '--';
-                    if (row) time = moment(row).format('DD/MM/YYYY');
-                    return time
+                render: (data, type, row) => {
+                    return $x.fn.displayRelativeTime(data, {
+                        'outputFormat': 'DD/MM/YYYY',
+                    });
                 },
             },
             {

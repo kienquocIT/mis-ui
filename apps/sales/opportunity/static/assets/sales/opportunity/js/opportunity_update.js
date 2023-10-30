@@ -135,7 +135,7 @@ $(document).ready(function () {
                 OpportunityLoadDropdown.loadFactor($('#box-select-factor'), opportunity_detail.customer_decision_factor);
 
                 // load sale team
-                OpportunityLoadDetail.loadSaleTeam(opportunity_detail.members, true);
+                OpportunityLoadDetail.loadSaleTeam(opportunity_detail.members, true, opportunity_detail?.['sale_person'] || {});
 
                 if ($.fn.hasOwnProperties(opportunity_detail, ['sale_order'])) {
                     let so_id = opportunity_detail.sale_order.id;

@@ -30,12 +30,6 @@
         {% csrf_token %}
         <div class="container-fluid">
             <div class="collapse multi-collapse show" id="collapseExample">
-                <div class="row">
-                    <div class="d-flex justify-content-end">
-                        <h5 class="text-primary mr-3" id="purchase-order-code"></h5>
-                        <span class="badge badge-soft-light" id="purchase-order-status"></span>
-                    </div>
-                </div>
                 <div class="row" id="common-information-area">
                     <div class="row">
                         <div class="col-12 col-md-6 col-lg-6">
@@ -130,38 +124,6 @@
                         </div>
                         <div class="col-12 col-md-6 col-lg-6">
                             <div class="form-group">
-                                <label class="form-label" for="box-purchase-order-supplier">{% trans 'Supplier' %}</label>
-                                <div class="input-group more-information-group">
-                                    <div class="input-affix-wrapper">
-                                        <div class="dropstart input-prefix">
-                                            <i
-                                                    class="fas fa-info-circle more-information"
-                                                    data-bs-toggle="dropdown"
-                                                    data-dropdown-animation
-                                                    aria-haspopup="true"
-                                                    aria-expanded="false"
-                                                    disabled
-                                            ></i>
-                                            <div class="dropdown-menu w-210p mt-4"></div>
-                                        </div>
-                                        <select
-                                                class="form-select"
-                                                id="box-purchase-order-supplier"
-                                                data-url="{% url "AccountForSaleListAPI" %}"
-                                                data-method="GET"
-                                                data-link-detail="{% url "AccountDetail" 1 %}"
-                                                name="supplier"
-                                                data-keyResp="account_sale_list"
-                                                disabled
-                                        ></select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 col-md-6 col-lg-6">
-                            <div class="form-group">
                                 <label class="form-label" for="box-purchase-order-contact">{% trans 'Select Contact' %}</label>
                                 <div class="input-group more-information-group">
                                     <div class="input-affix-wrapper">
@@ -184,6 +146,38 @@
                                                 data-link-detail="{% url 'ContactDetail' 1 %}"
                                                 name="contact"
                                                 data-keyResp="contact_list"
+                                                disabled
+                                        ></select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label" for="box-purchase-order-supplier">{% trans 'Supplier' %}</label>
+                                <div class="input-group more-information-group">
+                                    <div class="input-affix-wrapper">
+                                        <div class="dropstart input-prefix">
+                                            <i
+                                                    class="fas fa-info-circle more-information"
+                                                    data-bs-toggle="dropdown"
+                                                    data-dropdown-animation
+                                                    aria-haspopup="true"
+                                                    aria-expanded="false"
+                                                    disabled
+                                            ></i>
+                                            <div class="dropdown-menu w-210p mt-4"></div>
+                                        </div>
+                                        <select
+                                                class="form-select"
+                                                id="box-purchase-order-supplier"
+                                                data-url="{% url "AccountForSaleListAPI" %}"
+                                                data-method="GET"
+                                                data-link-detail="{% url "AccountDetail" 1 %}"
+                                                name="supplier"
+                                                data-keyResp="account_sale_list"
                                                 disabled
                                         ></select>
                                     </div>
@@ -582,7 +576,7 @@
 
 
 {% block jsFooter %}
-    <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
+
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>

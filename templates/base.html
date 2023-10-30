@@ -455,6 +455,14 @@
 
     </script>
 
+    <!-- Moment JS -->
+    <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
+    <script src="{% static 'vendors/moment/min/moment-with-locales.min.js' %}"></script>
+    <script>
+        moment.locale(globeLanguage.trim());
+    </script>
+    <!-- // Moment JS -->
+
     <script src="{% static 'assets/js/init.js' %}"></script>
     {% if base.language == 'vi' %}
         <script src="{% static 'assets/js/cdn-clone/select2/i18n/vi.js' %}"></script>

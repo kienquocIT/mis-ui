@@ -100,8 +100,27 @@ $(function () {
             }
         });
 
+        GRDataTableHandle.tableLot.on('click', '.dropdown-item-lot', function () {
+            let row = this.closest('tr');
+            GRLoadDataHandle.loadUnCheckLotDDItem(row);
+            GRLoadDataHandle.loadCheckLotDDItem(this, row);
+        });
+
         GRDataTableHandle.tableLot.on('change', '.table-row-lot-number', function () {
+            let row = this.closest('tr');
+            // validate lot exist
             GRValidateHandle.validateLotNumber(this);
+            GRValidateHandle.validateLotNumberExistRow(this);
+            //
+            let is_checked = GRLoadDataHandle.loadUnCheckLotDDItem(row);
+            if (this.value === '') {
+                row.querySelector('.table-row-import').value = '0';
+                GRLoadDataHandle.loadQuantityImport();
+            }
+            if (is_checked === true) {
+                row.querySelector('.table-row-expire-date').value = '';
+                row.querySelector('.table-row-manufacture-date').value = '';
+            }
         });
 
         GRDataTableHandle.tableLot.on('change', '.table-row-import', function () {
@@ -109,6 +128,19 @@ $(function () {
             if (importResult === false) {
                 this.value = '0';
                 GRLoadDataHandle.loadQuantityImport();
+            }
+        });
+
+        GRDataTableHandle.tableLot.on('change', '.table-row-expire-date, .table-row-manufacture-date', function () {
+            let row = this.closest('tr');
+            let is_checked = GRLoadDataHandle.loadUnCheckLotDDItem(row);
+            if (is_checked === true) {
+                row.querySelector('.table-row-lot-number').value = '';
+                if ($(this).hasClass('table-row-expire-date')) {
+                    row.querySelector('.table-row-manufacture-date').value = '';
+                } else {
+                    row.querySelector('.table-row-expire-date').value = '';
+                }
             }
         });
 
@@ -124,16 +156,7 @@ $(function () {
         GRDataTableHandle.tableSerial.on('change', '.table-row-serial-number', function () {
             // validate serial exist
             GRValidateHandle.validateSerialNumber(this);
-            // // update quantity import by serial
-            // let importResult = GRLoadDataHandle.loadQuantityImport();
-            // if (importResult === false) {
-            //     // Get the index of the current row within the DataTable
-            //     let rowIndex = GRDataTableHandle.tableSerial.DataTable().row(this.closest('tr')).index();
-            //     let row = GRDataTableHandle.tableSerial.DataTable().row(rowIndex);
-            //     // Delete current row
-            //     row.remove().draw();
-            //     GRLoadDataHandle.loadQuantityImport();
-            // }
+            GRValidateHandle.validateSerialNumberExistRow(this);
         });
 
         GRDataTableHandle.tableLineDetailPO.on('change', '.table-row-price, .table-row-tax', function () {

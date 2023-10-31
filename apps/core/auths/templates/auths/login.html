@@ -469,10 +469,10 @@
                 }
             })
 
-            function loadTenantList() {
-                tenantSelEle.closest('.form-group').removeClass('d-none');
+            function loadTenantList(is_show_group = true) {
+                if (is_show_group === true) tenantSelEle.closest('.form-group').removeClass('d-none');
                 if (tenantSelEle.attr('data-loaded') !== true) {
-                    $.fn.callAjaxLogin(tenantSelEle.attr('data-url'), tenantSelEle.attr('data-method')).then(
+                    return $.fn.callAjaxLogin(tenantSelEle.attr('data-url'), tenantSelEle.attr('data-method')).then(
                         (resp) => {
                             let beforeTenantCode = localStorage.getItem('tenant_code');
                             let code_list = [];
@@ -507,9 +507,20 @@
             let autoTenant = '{{allow_auto_tenant}}';
             if (autoTenant === 'True' && hostData.endsWith(mainDomain)) {
                 if (hostData.indexOf(mainDomain)) {
-                    let tenantCode = hostData.split(mainDomain)[0];
-                    if (tenantCode.endsWith(".")) tenantCode = tenantCode.split(".")[0];
-                    tenantSelEle.append(`<option value="${tenantCode}" selected></option>`).closest('.form-group').addClass('d-none');
+                    loadTenantList(false).then(
+                        () => {
+                            let tenantCode = hostData.split(mainDomain)[0];
+                            if (tenantCode.endsWith(".")) tenantCode = tenantCode.split(".")[0];
+
+                            let optOfCode = tenantSelEle.find(`option[value="${tenantCode}"]`);
+                            if (optOfCode.length > 0){
+                                tenantSelEle.val(tenantCode).trigger('change');
+                            } else {
+                                tenantSelEle.closest('.form-group').removeClass('d-none');
+                            }
+                        }
+                    )
+
                 } else {
                     loadTenantList();
                 }

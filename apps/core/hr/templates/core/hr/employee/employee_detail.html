@@ -7,6 +7,7 @@
         .row-error-disabled {
             position: relative;
         }
+
         .row-error-disabled::after {
             content: "{% trans 'This application has been disabled for you or cannot be found!' %}";
             position: absolute;
@@ -76,9 +77,22 @@
 
 
 {% block jsFooter %}
+    <script>
+        function onLoadDropdownUserDetail(eleInfo, eleInfoData, selectedData) {
+            let userData = selectedData?.['user'] || {};
+            if (typeof userData === 'object' && Object.keys(userData).length > 0){
+                eleInfoData.find('.user-info-detail-first-name').val(userData['first_name'] || '');
+                eleInfoData.find('.user-info-detail-last-name').val(userData['last_name'] || '');
+                eleInfoData.find('.user-info-detail-email').val(userData['email'] || '');
+            }
+            return eleInfo;
+        }
+    </script>
+
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
 
     <script src="{% static 'assets/js/core/hr/employee/employee_pk.js' %}"></script>
     <script src="{% static 'assets/js/core/hr/employee/employee_detail.js' %}"></script>
     <script src="{% static 'assets/js/core/hr/extends_new/plan_app_permissions.js' %}"></script>
+
 {% endblock %}

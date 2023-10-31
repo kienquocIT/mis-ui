@@ -9,26 +9,21 @@
                         <div class="row">
                             <div class="form-group">
                                 <label class="form-label">{% trans 'User' %}</label>
-                                <div class="input-affix-wrapper">
-                                    <div class="dropdown input-prefix">
-                                        <i
-                                                class="fas fa-info-circle text-blue"
-                                                data-bs-toggle="dropdown"
-                                                data-dropdown-animation
-                                                aria-haspopup="true"
-                                                aria-expanded="false"
-                                                {% if li_content_head_disabled == True %} disabled {% endif %}
-                                        ></i>
-                                        <div class="dropdown-menu w-210p mt-2"></div>
-                                    </div>
+                                <div class="input-group">
                                     <select
                                             class="form-select"
-                                            name="user" id="select-box-user"
+                                            name="user"
+                                            id="select-box-user"
                                             data-url="{% url 'CompanyUserNotMapEmployeeListAPI' %}"
                                             data-keyResp="company_user_list"
                                             data-template-format="[{'name':'Name', 'value': 'full_name'},{'name':'Code', 'value': 'code'}]"
                                             {% if li_content_head_disabled == True %} disabled {% endif %}
+
+                                            data-url-info-detail="{% url 'UserDetail' pk='__pk__' %}"
+                                            data-on-load-info="onLoadDropdownUserDetail"
                                     ></select>
+                                    {% include 'extends/the-documents/button_info.html' %}
+                                    {% include 'extends/the-documents/dropdown_info.html' with display_data_template="core/hr/employee/extends/user_detail_info.html" %}
                                 </div>
                             </div>
                         </div>

@@ -78,22 +78,31 @@ class QuotationLoadDataHandle {
             let dataInitOppRaw = $('#data-init-opportunity').val();
             if (dataInitOppRaw) {
                 let dataInitOpp = JSON.parse(dataInitOppRaw);
+                let list_from_app = 'quotation.quotation.create';
+                if (form[0].classList.contains('sale-order')) {
+                    list_from_app = 'saleorder.saleorder.create';
+                }
                 $.fn.callAjax2({
                         'url': QuotationLoadDataHandle.opportunitySelectEle.attr('data-url'),
                         'method': QuotationLoadDataHandle.opportunitySelectEle.attr('data-method'),
-                        'isDropdown': true,
+                        'data': {'list_from_app': list_from_app},
+                        // 'isDropdown': true,
                     }
                 ).then(
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            if (data.hasOwnProperty('opportunity_sale_list') && Array.isArray(data.opportunity_sale_list)) {
-                                for (let opp of data.opportunity_sale_list) {
+                            if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list)) {
+                                for (let opp of data.opportunity_list) {
                                     if (opp?.['id'] === dataInitOpp?.['id']) {
-                                        QuotationLoadDataHandle.loadBoxQuotationOpportunity(opp);
+                                        QuotationLoadDataHandle.opportunitySelectEle.initSelect2({
+                                            data: opp,
+                                            'allowClear': true,
+                                            disabled: !(QuotationLoadDataHandle.opportunitySelectEle.attr('data-url')),
+                                        });
                                         QuotationLoadDataHandle.opportunitySelectEle.change();
+                                        break;
                                     }
-                                    break;
                                 }
                             }
                         }
@@ -101,59 +110,6 @@ class QuotationLoadDataHandle {
                 )
             }
         }
-    };
-
-    static loadBoxQuotationOpportunity(dataOpp = {}, sale_person_id = null) {
-        // let form = $('#frm_quotation_create');
-        // let data_filter = {
-        //     'is_close_lost': false,
-        //     'is_deal_close': false,
-        // };
-        // if (sale_person_id) {
-        //     data_filter['employee_inherit'] = sale_person_id;
-        // } else {
-        //     data_filter['employee_inherit'] = QuotationLoadDataHandle.salePersonSelectEle.val();
-        // }
-        // if (form[0].classList.contains('sale-order')) {
-        //     data_filter['sale_order__isnull'] = true;
-        // } else {
-        //     data_filter['quotation__isnull'] = true;
-        // }
-        // QuotationLoadDataHandle.opportunitySelectEle.initSelect2({
-        //     data: dataOpp,
-        //     'dataParams': data_filter,
-        //     'allowClear': true,
-        //     disabled: !(QuotationLoadDataHandle.opportunitySelectEle.attr('data-url')),
-        // });
-        // if (Object.keys(dataOpp).length !== 0) {
-        //     if (!form[0].classList.contains('sale-order') && form.attr('data-method') === 'GET') {
-        //         if (dataOpp.is_close_lost === true || dataOpp.is_deal_close === true || dataOpp.sale_order_id !== null) {
-        //             let btnCopy = document.getElementById('btn-copy-quotation');
-        //             let eleTooltipBtnCopy = document.getElementById('tooltip-btn-copy');
-        //             btnCopy.setAttribute('disabled', 'true');
-        //             if (eleTooltipBtnCopy) {
-        //                 eleTooltipBtnCopy.removeAttribute('data-bs-original-title');
-        //                 eleTooltipBtnCopy.setAttribute('data-bs-placement', 'top');
-        //                 let titleText = '';
-        //                 if (dataOpp.is_close_lost === true || dataOpp.is_deal_close === true) {
-        //                     titleText += QuotationLoadDataHandle.transEle.attr('data-opp-closed');
-        //                     titleText += ',';
-        //                 }
-        //                 if (dataOpp.sale_order_id !== null) {
-        //                     titleText += QuotationLoadDataHandle.transEle.attr('data-opp-had-sale-order');
-        //                     titleText += ',';
-        //                 }
-        //                 eleTooltipBtnCopy.setAttribute('title', titleText);
-        //             }
-        //         }
-        //     }
-        // }
-        // // ReCheck Config when change Opportunity
-        // if (!dataOpp?.['is_copy']) {
-        //     QuotationCheckConfigHandle.checkConfig(true);
-        // } else {
-        //     QuotationCheckConfigHandle.checkConfig(true, null, false, false, true);
-        // }
     };
 
     static loadDataByOpportunity() {

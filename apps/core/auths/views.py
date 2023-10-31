@@ -86,7 +86,8 @@ class AuthLogin(APIView):
             request, 'auths/login.html', {
                 'is_notify_key': False,
                 'captcha_enabled': settings.GG_RECAPTCHA_ENABLED,
-                'secret_key_gg': settings.GG_RECAPTCHA_CLIENT_KEY if settings.GG_RECAPTCHA_ENABLED else None
+                'secret_key_gg': settings.GG_RECAPTCHA_CLIENT_KEY if settings.GG_RECAPTCHA_ENABLED else None,
+                'ui_domain': settings.UI_DOMAIN
             }
         )
 

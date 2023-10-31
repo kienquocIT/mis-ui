@@ -216,6 +216,11 @@ domain = f'{API_IP_OR_ADDR}{f":{API_PORT}" if API_PORT else ""}'
 prefix = f"{API_URL_PREFIX}/" if API_URL_PREFIX else ""
 API_DOMAIN = f'{protocol}://{domain}/{prefix}'
 
+# main UI domain
+UI_PROTOCOL = os.environ.get('UI_PROTOCOL') if os.environ.get('UI_PROTOCOL', None) else 'http'
+UI_DOMAIN = os.environ.get('UI_DOMAIN') if os.environ.get('UI_DOMAIN', None) else '127.0.0.1'
+UI_URL = os.environ.get('UI_URL') if os.environ.get('UI_URL', None) else f'{UI_PROTOCOL}://{UI_DOMAIN}'
+
 # Media key and data private
 MEDIA_KEY_FLAG = os.environ.get('MEDIA_KEY_FLAG', 'MEDIA-APIRequest')
 MEDIA_KEY_SECRET_TOKEN_UI = os.environ.get('MEDIA_KEY_SECRET_TOKEN_UI', 'UI-SECRET-KEY-APIRequest')

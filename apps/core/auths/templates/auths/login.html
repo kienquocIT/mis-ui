@@ -57,7 +57,7 @@
                                             <div class="card-body">
                                                 <h4 class="mb-4 text-center">{% trans 'Sign in to your account' %}</h4>
                                                 <div class="row gx-3">
-                                                    <div class="form-group col-lg-12">
+                                                    <div class="form-group col-lg-12 d-none">
                                                         <div class="form-label-group">
                                                             <label>Tenant</label>
                                                         </div>
@@ -467,41 +467,56 @@
                 }
             })
 
-            function loadTenantList() {
-                let tenant_element = $('#tenant-select');
-                if (tenant_element.attr('data-loaded') !== true) {
-                    $.fn.callAjaxLogin(tenant_element.attr('data-url'), tenant_element.attr('data-method')).then(
-                        (resp) => {
-                            let beforeTenantCode = localStorage.getItem('tenant_code');
-                            let code_list = [];
-                            tenant_element.attr('data-loaded', true);
-                            tenant_element.children().remove();
-                            resp.result.map((element) => {
-                                if (beforeTenantCode && element.code === beforeTenantCode) {
-                                    tenant_element.append(`<option value="` + element.code + `" selected="selected">` + String.format('{0} - {1}', element.code, element.title) + `</option>`);
-                                } else {
-                                    tenant_element.append(`<option value="` + element.code + `">` + String.format('{0} - {1}', element.code, element.title) + `</option>`);
-                                }
-                                code_list.push(element.code);
-                            });
+            let tenantSelEle = $('#tenant-select');
+            let mainDomain = '{{ui_domain}}';
+            let hostData = window.location.hostname;
+            if (hostData.endsWith(mainDomain)){
+                if (hostData.indexOf(mainDomain)) {
+                    let tenantCode = hostData.split(mainDomain)[0];
+                    if (tenantCode.endsWith(".")) tenantCode = tenantCode.split(".")[0];
+                    tenantSelEle.append(`<option value="${tenantCode}" selected></option>`).closest('.form-group').addClass('d-none');
+                } else {
+                    tenantSelEle.closest('.form-group').removeClass('d-none');
+                    function loadTenantList() {
+                        if (tenantSelEle.attr('data-loaded') !== true) {
+                            $.fn.callAjaxLogin(tenantSelEle.attr('data-url'), tenantSelEle.attr('data-method')).then(
+                                (resp) => {
+                                    let beforeTenantCode = localStorage.getItem('tenant_code');
+                                    let code_list = [];
+                                    tenantSelEle.attr('data-loaded', true);
+                                    tenantSelEle.children().remove();
+                                    resp.result.map((element) => {
+                                        if (beforeTenantCode && element.code === beforeTenantCode) {
+                                            tenant_element.append(`<option value="` + element.code + `" selected="selected">` + String.format('{0} - {1}', element.code, element.title) + `</option>`);
+                                        } else {
+                                            tenant_element.append(`<option value="` + element.code + `">` + String.format('{0} - {1}', element.code, element.title) + `</option>`);
+                                        }
+                                        code_list.push(element.code);
+                                    });
 
-                            let tenant_code = window.location.hostname.split(".");
-                            if (tenant_code) {
-                                let code_selected = tenant_code[0].toUpperCase();
-                                if (code_list.indexOf(code_selected) !== -1) {
-                                    tenant_element.find('option[value=' + code_selected + ']').attr('selected', 'selected');
+                                    let tenant_code = window.location.hostname.split(".");
+                                    if (tenant_code) {
+                                        let code_selected = tenant_code[0].toUpperCase();
+                                        if (code_list.indexOf(code_selected) !== -1) {
+                                            tenantSelEle.find('option[value=' + code_selected + ']').attr('selected', 'selected');
+                                        }
+                                    }
+                                    {#tenant_element.children().last().attr('selected', 'selected');#}
+                                },
+                                (err) => {
+                                    tenantSelEle.attr('data-loaded', false);
                                 }
-                            }
-                            {#tenant_element.children().last().attr('selected', 'selected');#}
-                        },
-                        (err) => {
-                            tenant_element.attr('data-loaded', false);
+                            )
                         }
-                    )
-                }
-            }
+                    }
 
-            loadTenantList();
+                    loadTenantList();
+                }
+            } else {
+                $.fn.notifyB({
+                    'description': 'The domain was not supported!'
+                })
+            }
         });
     </script>
 {% endcompress %}

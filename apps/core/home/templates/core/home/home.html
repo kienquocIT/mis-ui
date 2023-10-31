@@ -5,9 +5,42 @@
 {% endblock %}
 {% block cssHeader %}
     <link href="{% static 'assets/css/core_home/home.css' %}" rel="stylesheet" type="text/css">
+    <style>
+        #welcome-group {
+            position: relative;
+        }
+
+        #welcome-body {
+            position: relative;
+            z-index: 99999;
+        }
+
+        #welcome-canvas {
+            position: absolute;
+            z-index: 99998;
+            top: 0;
+            left: 0;
+            width: inherit;
+            height: inherit;
+        }
+    </style>
 {% endblock %}
 
 {% block pageContent %}
+    <div class="row d-none">
+        <div class="col-lg-12 col-0">
+            <div class="card" id="welcome-group">
+                <div class="card-body" id="welcome-body">
+                    <button type="button" class="card-close btn-close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h5 class="card-title">{% trans 'Welcome to' %} BFlow.</h5>
+                    <p id="idx-welcome-txt" class="card-text"></p>
+                </div>
+                <canvas id="welcome-canvas"></canvas>
+            </div>
+        </div>
+    </div>
     <div class="row">
         <div class="col-xxl-8 col-lg-12 mb-md-4 mb-3">
             <div class="card card-border mb-0 h-100">
@@ -430,4 +463,30 @@
         let employeeCurrentData = "{{ data.employee_current_data }}";
     </script>
     <script src="{% static 'assets/js/core_home/home.js' %}"></script>
+    <script>
+        $(function () {
+            let currentHours = new Date().getHours();
+            let welcomeEle = $('#idx-welcome-txt');
+            let welcomeTxt = ``;
+            if (currentHours >= 0 && currentHours < 12) {
+                welcomeTxt = `{% trans 'Good morning' %} {{ base.last_name }} {{ base.first_name }}! {% trans 'Have a wonderful day.' %}`;
+            } else if (currentHours >= 12 && currentHours < 18) {
+                welcomeTxt = `{% trans 'Good afternoon' %} {{ base.last_name }} {{ base.first_name }}! {% trans "Hope you're having a great day." %}`;
+            } else {
+                welcomeTxt = `{% trans 'Good evening' %} {{ base.last_name }} {{ base.first_name }}! {% trans 'Have a relaxing and enjoyable evening.' %}`
+            }
+            welcomeEle.text(welcomeTxt);
+
+            //
+            let welcomeGroup = document.getElementById('welcome-group');
+            let canvas = document.getElementById('welcome-canvas');
+            let context = canvas.getContext('2d');
+
+            canvas.width = welcomeGroup.offsetWidth;
+            canvas.height =  welcomeGroup.offsetHeight;
+
+            context.fillStyle = '#3498DB7F';
+            context.fillRect(0, 0, welcomeGroup.offsetWidth, welcomeGroup.offsetHeight);
+        })
+    </script>
 {% endblock %}

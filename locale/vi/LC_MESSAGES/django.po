@@ -4556,3 +4556,35 @@ msgstr "Đây là người bán hàng chính, không thể xoá!"
 #
 msgid "Date receive"
 msgstr "Ngày nhận"
+
+#
+msgid "Hello"
+msgstr "Xin chào"
+
+#
+msgid "Welcome to"
+msgstr "Chào mừng đến với"
+
+#
+msgid "Good morning"
+msgstr "Chào buổi sáng"
+
+#
+msgid "Have a wonderful day."
+msgstr "Chúc một ngày tốt lành."
+
+#
+msgid "Good afternoon"
+msgstr "Chào buổi chiều"
+
+#
+msgid "Hope you're having a great day."
+msgstr "Hy vọng bạn có một ngày tuyệt vời."
+
+#
+msgid "Good evening"
+msgstr "Buổi tối vui vẻ"
+
+#
+msgid "Have a relaxing and enjoyable evening."
+msgstr "Chúc bạn một buổi tối thư giãn và vui vẻ."

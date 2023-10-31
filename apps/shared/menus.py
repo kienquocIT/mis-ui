@@ -361,6 +361,23 @@ class MenuEOffice:
     )
 
 
+class MenusReport:
+    HOME = MenuCommon(
+        name='Home', code='id_menu_home_page', view_name='HomeView', icon='<i class="fas fa-home"></i>',
+    )
+    SALE_REPORT = MenuCommon(
+        name='Sale reports', code='menu_sale_reports', view_name='', icon='<i class="fas fa-chart-line"></i>',
+        child=[
+            MenuCommon(
+                name='Report Revenue',
+                code='menu_report_revenue_list',
+                view_name='ReportRevenueList',
+                icon='<i class="fas fa-file-invoice-dollar"></i>',
+            ),
+        ],
+    )
+
+
 # Space Setup
 class SpaceCommon:
     name: str  # 'Sale'
@@ -444,6 +461,15 @@ class SpaceItem:
                 MenuEOffice.LEAVE,
             ],
         ),
+        'report': SpaceCommon(
+            'Report',
+            'report',
+            icon='<i class="fas fa-chart-line"></i>',
+            menus=[
+                MenusReport.HOME,
+                MenusReport.SALE_REPORT,
+            ],
+        ),
         'company-system': SpaceCommon(
             'Company',
             'company-system',
@@ -488,6 +514,7 @@ class SpaceGroup:
             SpaceItem.mapping['purchase'],
             SpaceItem.mapping['hrm'],
             SpaceItem.mapping['e-office'],
+            SpaceItem.mapping['report'],
         ]
     )
     CORE_SETTINGS = SpaceCommon(

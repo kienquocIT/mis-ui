@@ -1,9 +1,11 @@
 $(document).ready(function () {
     new CompanyHandle().load();
+    LoadDetailCompany($('#frm-update-company'), 'update');
 
-    $("#form-update-company").submit(function (event) {
+    let pk = $.fn.getPkDetail();
+    $("#frm-update-company").submit(function (event) {
         event.preventDefault();
-        let combinesData = new CompanyHandle().combinesData($(this));
+        let combinesData = new CompanyHandle().combinesData($(this), true);
         console.log(combinesData)
         if (combinesData) {
             WindowControl.showLoading();
@@ -14,7 +16,7 @@ $(document).ready(function () {
                         if (data) {
                             $.fn.notifyB({description: "Successfully"}, 'success')
                             setTimeout(() => {
-                                window.location.replace($(this).attr('data-url-redirect'));
+                                window.location.replace($(this).attr('data-url-redirect').format_url_with_uuid(pk));
                                 location.reload.bind(location);
                             }, 1000);
                         }

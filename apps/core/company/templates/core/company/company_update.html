@@ -11,7 +11,7 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <button id="save-account" class="btn btn-outline-primary" type="submit" form="form-update-company">
+    <button id="save-account" class="btn btn-outline-primary" type="submit" form="frm-update-company">
         <span>
             <span>{% trans 'Save' %}</span>
             <span class="icon">
@@ -21,8 +21,9 @@
     </button>
 {% endblock %}
 {% block pageContent %}
-    <form id="form-update-company"
-          data-url-redirect="{% url "CompanyDetail" '0' %}"
+    <form id="frm-update-company"
+          data-url-detail="{% url "CompanyDetailAPI" pk=0 %}"
+          data-url-redirect="{% url "CompanyDetail" pk=0 %}"
           data-method="PUT">
         {% csrf_token %}
         <div class="collapse multi-collapse show" id="collapse-area">
@@ -54,7 +55,7 @@
                             {% trans 'Company fax' %}
                         </label>
                         <input type="text" class="form-control"
-                               id="fax" placeholder="+84 (8) 1234 9876" required/>
+                               id="fax" placeholder="+84 (8) 1234 9876"/>
                     </div>
                     <div hidden class="form-group">
                         <label class="form-label" for="parent_company">
@@ -135,7 +136,7 @@
                                         {% trans 'Primary currency' %}
                                     </label>
                                 <div class="col-12 col-md-8 col-lg-8">
-                                    <select type="text" id="primary-currency" data-url="{% url 'CurrencyListAPI' %}" class="select2 form-select" required></select>
+                                    <select type="text" id="primary-currency" data-url="{% url 'BaseCurrencyListAPI' %}" class="select2 form-select" required></select>
                                 </div>
                             </div>
                         </div>
@@ -174,8 +175,8 @@
                                     {% trans 'Default inventory value method' %}:
                                 </label>
                                 <div class="col-12 col-md-8 col-lg-8">
-                                    <select type="text" id="default-inventory-value-method" class="select2 form-select" required>
-                                        <option value="0" selected>{% trans 'FIFO' %}</option>
+                                    <select type="text" id="default-inventory-value-method" class="form-select" required>
+                                        <option value="0">{% trans 'FIFO' %}</option>
                                         <option value="1">{% trans 'Cumulative weighted average' %}</option>
                                         <option value="2">{% trans 'Weighted average' %}</option>
                                         <option value="3">{% trans 'Specific identification method' %}</option>
@@ -193,8 +194,8 @@
                         </div>
                         <div class="col-12 col-md-12 col-lg-12">
                             <div class="form-check">
-                                <input type="checkbox" id="cost-per-lot/batch" class="form-check-input">
-                                <label class="form-check-label" for="cost-per-lot/batch">{% trans 'Cost per lot/batch management' %}</label>
+                                <input type="checkbox" id="cost-per-lot-batch" class="form-check-input">
+                                <label class="form-check-label" for="cost-per-lot-batch">{% trans 'Cost per lot/batch management' %}</label>
                             </div>
                         </div>
                     </div>
@@ -306,11 +307,9 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-12 col-md-2 col-lg-2">
-                                    <input type="text" oninput="this.value=this.value.toUpperCase()" placeholder="Prefix" class="form-control" id="prefix">
-                                </div>
-                                <div class="col-12 col-md-10 col-lg-10">
+                                <div class="col-12 col-md-12 col-lg-12">
                                     <input id="schema-item-list" class="form-control">
+                                    <span class="form-text text-muted">{% trans 'Schema format must be separated by the "-"' %}</span>
                                 </div>
                             </div>
                         </div>
@@ -336,7 +335,7 @@
                     <div class="row">
                         <div class="form-group">
                             <label class="label-field form-label required" for="reset-frequency">{% trans "Reset frequency" %}</label>
-                            <select class="select2 form-select" id="reset-frequency">
+                            <select class="form-select" id="reset-frequency">
                                 <option selected></option>
                                 <option value="0">Yearly</option>
                                 <option value="1">Monthly</option>
@@ -348,7 +347,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" aria-label="Close" id="save-changes-modal-function-number">
+                    <button type="button" class="btn btn-primary" id="save-changes-modal-function-number">
                         {% trans 'Save' %}
                     </button>
                 </div>

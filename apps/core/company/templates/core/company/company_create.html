@@ -51,7 +51,7 @@
                             {% trans 'Company fax' %}
                         </label>
                         <input type="text" class="form-control"
-                               id="fax" placeholder="+84 (8) 1234 9876" required/>
+                               id="fax" placeholder="+84 (8) 1234 9876"/>
                     </div>
                     <div hidden class="form-group">
                         <label class="form-label" for="parent_company">
@@ -132,7 +132,7 @@
                                         {% trans 'Primary currency' %}
                                     </label>
                                 <div class="col-12 col-md-8 col-lg-8">
-                                    <select type="text" id="primary-currency" data-url="{% url 'CurrencyListAPI' %}" class="select2 form-select" required></select>
+                                    <select type="text" id="primary-currency" data-url="{% url 'BaseCurrencyListAPI' %}" class="select2 form-select" required></select>
                                 </div>
                             </div>
                         </div>
@@ -171,8 +171,8 @@
                                     {% trans 'Default inventory value method' %}:
                                 </label>
                                 <div class="col-12 col-md-8 col-lg-8">
-                                    <select type="text" id="default-inventory-value-method" class="select2 form-select" required>
-                                        <option value="0" selected>{% trans 'FIFO' %}</option>
+                                    <select type="text" id="default-inventory-value-method" class="form-select" required>
+                                        <option value="0">{% trans 'FIFO' %}</option>
                                         <option value="1">{% trans 'Cumulative weighted average' %}</option>
                                         <option value="2">{% trans 'Weighted average' %}</option>
                                         <option value="3">{% trans 'Specific identification method' %}</option>
@@ -190,8 +190,8 @@
                         </div>
                         <div class="col-12 col-md-12 col-lg-12">
                             <div class="form-check">
-                                <input type="checkbox" id="cost-per-lot/batch" class="form-check-input">
-                                <label class="form-check-label" for="cost-per-lot/batch">{% trans 'Cost per lot/batch management' %}</label>
+                                <input type="checkbox" id="cost-per-lot-batch" class="form-check-input">
+                                <label class="form-check-label" for="cost-per-lot-batch">{% trans 'Cost per lot/batch management' %}</label>
                             </div>
                         </div>
                     </div>
@@ -305,6 +305,7 @@
                             <div class="row">
                                 <div class="col-12 col-md-12 col-lg-12">
                                     <input id="schema-item-list" class="form-control">
+                                    <span class="form-text text-muted">{% trans 'Schema format must be separated by the "-"' %}</span>
                                 </div>
                             </div>
                         </div>
@@ -330,7 +331,7 @@
                     <div class="row">
                         <div class="form-group">
                             <label class="label-field form-label required" for="reset-frequency">{% trans "Reset frequency" %}</label>
-                            <select class="select2 form-select" id="reset-frequency">
+                            <select class="form-select" id="reset-frequency">
                                 <option selected></option>
                                 <option value="0">Yearly</option>
                                 <option value="1">Monthly</option>

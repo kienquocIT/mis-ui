@@ -3,8 +3,9 @@ let companyDistrictEle = $('#company-address-district')
 let companyWardEle = $('#company-address-ward')
 let primary_currency = $('#primary-currency')
 let VND_currency = {}
-if ($('#VND_currency').text() !== '') {
-    VND_currency = JSON.parse($('#VND_currency').text())
+const VND_currency_text = $('#VND_currency').text()
+if (VND_currency_text !== '') {
+    VND_currency = JSON.parse(VND_currency_text)
 }
 
 function loadCompanyCities(cityData) {
@@ -93,6 +94,19 @@ $('.schema-item').on('click', function () {
 
 $(document).on("click", '.schema-custom', function () {
     current_schema_row = $(this).closest('tr');
+    let schema_show_ele = current_schema_row.find('.schema-show');
+    if (schema_show_ele.text() !== '') {
+        schema_item_list.val(schema_show_ele.text());
+        $('#first-number').val(schema_show_ele.attr('data-first-number'));
+        $('#last-number').val(schema_show_ele.attr('data-last-number'));
+        $('#reset-frequency').val(schema_show_ele.attr('data-reset-frequency'));
+    }
+    else {
+        schema_item_list.val('');
+        $('#first-number').val('');
+        $('#last-number').val('');
+        $('#reset-frequency').val('');
+    }
 })
 
 $(document).on("click", '.numbering-by-selection', function () {
@@ -112,10 +126,15 @@ function formatInputSchema() {
         if (schema_item_value_list[i] !== '') {
             if (!schema_item_list_value.includes(schema_item_value_list[i])) {
                 if (schema_item_value_list[i].includes('{') || schema_item_value_list[i].includes('}')) {
+                    $.fn.notifyB({description: "Wrong schema format: " + schema_item_value_list[i]}, 'warning');
                     return false;
                 }
             }
         }
+    }
+    if (!schema_item_value_list.includes('{Number}')) {
+        $.fn.notifyB({description: "Schema must be included {Number}"}, 'failure');
+        return false;
     }
     return true;
 }
@@ -142,22 +161,16 @@ $('#save-changes-modal-function-number').on('click', function () {
         let last_number = $('#last-number').val();
         let reset_frequency = $('#reset-frequency').val();
         if (schema !== '' && first_number !== '' && last_number !== '' && reset_frequency !== '') {
-            let content_json = {
-                'schema': formatSubmitSchema(schema),
-                'first_number': first_number,
-                'last_number': last_number,
-                'reset_frequency': reset_frequency
-            }
             current_schema_row.find('.schema-show').text(schema);
-            current_schema_row.find('.schema-json').text(JSON.stringify(content_json));
+            current_schema_row.find('.schema-show').attr('data-schema', formatSubmitSchema(schema));
+            current_schema_row.find('.schema-show').attr('data-first-number', first_number);
+            current_schema_row.find('.schema-show').attr('data-last-number', last_number);
+            current_schema_row.find('.schema-show').attr('data-reset-frequency', reset_frequency);
             $('#modal-function-number').hide();
         }
         else {
             $.fn.notifyB({description: "Missing information!"}, 'failure');
         }
-    }
-    else {
-        $.fn.notifyB({description: "Wrong schema format!"}, 'warning');
     }
 })
 
@@ -170,57 +183,13 @@ function loadPrimaryCurrency(data) {
         templateResult: function(data) {
             let ele = $('<div class="row col-12"></div>');
             ele.append('<div class="col-10">' + data.data?.['title'] + '</div>');
-            ele.append('<div class="col-2">' + data.data?.['abbreviation'] + '</div>');
+            ele.append('<div class="col-2">' + data.data?.['code'] + '</div>');
             return ele;
         },
         data: (data ? data : null),
-        keyResp: 'currency_list',
+        keyResp: 'base_currencies',
         keyId: 'id',
         keyText: 'title'
-    })
-}
-
-function loadFunctionNumberTable(table_data=[]) {
-    $('#function_number_table').DataTableDefault({
-        dom: '',
-        rowIdx: true,
-        paging: false,
-        data: table_data,
-        columns: [
-            {
-                className: 'wrap-text w-5',
-                render: () => {
-                    return ``;
-                }
-            }, {
-                data: 'function',
-                className: 'wrap-text w-15',
-                render: (data, type, row) => {
-                    return `<span class="text-primary">${row.function}</span>`;
-                }
-            }, {
-                data: '',
-                className: 'wrap-text w-15',
-                render: () => {
-                    return `<select class="select2 form-select numbering-by-selection">
-                        <option value="0" selected>System</option>
-                        <option value="1">User defined</option>
-                    </select>`;
-                }
-            }, {
-                data: '',
-                className: 'wrap-text w-45',
-                render: () => {
-                    return `<script class="schema-json"></script><span class="schema-show text-primary"></span>`;
-                }
-            }, {
-                data: '',
-                className: 'wrap-text text-center w-10',
-                render: () => {
-                    return `<span class="text-primary schema-custom" hidden data-bs-toggle="modal" data-bs-target="#modal-function-number"><i class="far fa-edit"></i></span>`;
-                }
-            }
-        ],
     })
 }
 
@@ -257,13 +226,132 @@ const FunctionNumberTableData = [
     }
 ]
 
+function loadFunctionNumberTable(table_data=[]) {
+    $('#function_number_table').DataTableDefault({
+        dom: '',
+        rowIdx: true,
+        paging: false,
+        data: table_data,
+        columns: [
+            {
+                className: 'wrap-text w-5',
+                render: () => {
+                    return ``;
+                }
+            }, {
+                data: 'function',
+                className: 'wrap-text w-15',
+                render: (data, type, row) => {
+                    return `<span class="text-primary">${row.function}</span>`;
+                }
+            }, {
+                data: '',
+                className: 'wrap-text w-15',
+                render: () => {
+                    return `<select class="form-select numbering-by-selection">
+                        <option value="0" selected>System</option>
+                        <option value="1">User defined</option>
+                    </select>`;
+                }
+            }, {
+                data: '',
+                className: 'wrap-text w-45',
+                render: () => {
+                    return `<span class="schema-show text-primary"></span>`;
+                }
+            }, {
+                data: '',
+                className: 'wrap-text text-center w-10',
+                render: () => {
+                    return `<span class="text-primary schema-custom" hidden data-bs-toggle="modal" data-bs-target="#modal-function-number"><i class="far fa-edit"></i></span>`;
+                }
+            }
+        ],
+    })
+}
+
+function loadFunctionNumberTableDetail(option='detail', table_detail_data=[]) {
+    table_detail_data.sort(function(a, b) {
+        return a.function - b.function;
+    });
+    $('#function_number_table').DataTableDefault({
+        dom: '',
+        rowIdx: true,
+        paging: false,
+        data: table_detail_data,
+        columns: [
+            {
+                className: 'wrap-text w-5',
+                render: () => {
+                    return ``;
+                }
+            }, {
+                data: 'function',
+                className: 'wrap-text w-15',
+                render: (data, type, row) => {
+                    return `<span class="text-primary">${FunctionNumberTableData[row.function].function}</span>`;
+                }
+            }, {
+                data: '',
+                className: 'wrap-text w-15',
+                render: (data, type, row) => {
+                    let disabled = '';
+                    if (option === 'detail') {
+                        disabled = 'disabled';
+                    }
+                    if (row?.['numbering_by']) {
+                        return `<select ${disabled} class="form-select numbering-by-selection">
+                            <option value="0">System</option>
+                            <option value="1" selected>User defined</option>
+                        </select>`;
+                    }
+                    else {
+                        return `<select ${disabled} class="form-select numbering-by-selection">
+                            <option value="0" selected>System</option>
+                            <option value="1">User defined</option>
+                        </select>`;
+                    }
+                }
+            }, {
+                data: '',
+                className: 'wrap-text w-45',
+                render: (data, type, row) => {
+                    if (row.schema !== null) {
+                        return `<span data-schema="${row.schema}" data-first-number="${row.first_number}" data-last-number="${row.last_number}" data-reset-frequency="${row.reset_frequency}" class="schema-show text-primary">${row.schema_text}</span>`;
+                    }
+                    else {
+                        return `<span class="schema-show text-primary"></span>`;
+                    }
+                }
+            }, {
+                data: '',
+                className: 'wrap-text text-center w-10',
+                render: (data, type, row) => {
+                    if (option === 'detail') {
+                        if (row.schema !== null) {
+                            return `<span class="text-secondary schema-custom"><i class="far fa-edit"></i></span>`;
+                        } else {
+                            return `<span class="text-secondary schema-custom" hidden><i class="far fa-edit"></i></span>`;
+                        }
+                    }
+                    else {
+                        if (row.schema !== null) {
+                            return `<span class="text-primary schema-custom" data-bs-toggle="modal" data-bs-target="#modal-function-number"><i class="far fa-edit"></i></span>`;
+                        } else {
+                            return `<span class="text-primary schema-custom" hidden data-bs-toggle="modal" data-bs-target="#modal-function-number"><i class="far fa-edit"></i></span>`;
+                        }
+                    }
+                }
+            }
+        ],
+    })
+}
+
 class CompanyHandle {
     load() {
         loadCompanyCities();
         loadCompanyDistrict();
         loadCompanyWard();
-        loadPrimaryCurrency(VND_currency);
-        loadFunctionNumberTable(FunctionNumberTableData);
     }
     combinesData(frmEle, for_update=false) {
         let frm = new SetupFormSubmit($(frmEle));
@@ -275,6 +363,40 @@ class CompanyHandle {
         frm.dataForm['email'] = $('#email').val();
         frm.dataForm['phone'] = $('#phone').val();
         frm.dataForm['fax'] = $('#fax').val();
+
+        let definition_inventory_valuation = 1;
+        if ($('#perpetual-selection').is(':checked')) {
+            definition_inventory_valuation = 0;
+        }
+
+        frm.dataForm['company_setting_data'] = {
+            'primary_currency_id': primary_currency.val(),
+            'definition_inventory_valuation': definition_inventory_valuation,
+            'default_inventory_value_method': $('#default-inventory-value-method').val(),
+            'cost_per_warehouse': $('#cost-per-warehouse').is(':checked'),
+            'cost_per_lot_batch': $('#cost-per-lot-batch').is(':checked')
+        }
+
+        frm.dataForm['company_function_number_data'] = []
+        $('#function_number_table tbody tr').each(function (index) {
+            let schema_text = $(this).find('.schema-show').text()
+            let schema = $(this).find('.schema-show').attr('data-schema');
+            let first_number = $(this).find('.schema-show').attr('data-first-number');
+            let last_number = $(this).find('.schema-show').attr('data-last-number');
+            let reset_frequency = $(this).find('.schema-show').attr('data-reset-frequency');
+
+            if (schema_text !== '' && schema !== '' && first_number !== '' && last_number !== '' && reset_frequency !== '') {
+                frm.dataForm['company_function_number_data'].push({
+                    'function': index,
+                    'numbering_by': $(this).find('.numbering-by-selection').val(),
+                    'schema_text': schema_text,
+                    'schema': schema,
+                    'first_number': first_number,
+                    'last_number': last_number,
+                    'reset_frequency': reset_frequency
+                })
+            }
+        })
 
         if (for_update) {
             let pk = $.fn.getPkDetail();
@@ -306,9 +428,10 @@ function Disable(option) {
     }
 }
 
-function LoadDetailCompany(option) {
+function LoadDetailCompany(frm, option) {
     let pk = $.fn.getPkDetail()
-    let url_loaded = $('#frm-detail-company').attr('data-url-detail').replace(0, pk);
+    let url_loaded = frm.attr('data-url-detail').replace(0, pk);
+
     $.fn.callAjax(url_loaded, 'GET').then(
         (resp) => {
             let data = $.fn.switcherResp(resp);
@@ -326,6 +449,24 @@ function LoadDetailCompany(option) {
                 $('#email').val(data.email);
                 $('#phone').val(data.phone);
                 $('#fax').val(data.fax);
+                loadPrimaryCurrency(data?.['company_setting']?.['primary_currency'])
+                if (!data?.['company_setting']?.['definition_inventory_valuation']) {
+                    $('#perpetual-selection').prop('checked', true);
+                }
+                else {
+                    $('#periodic-selection').prop('checked', true);
+                }
+
+                $('#default-inventory-value-method').val(data?.['company_setting']?.['default_inventory_value_method']);
+
+                if (data?.['company_setting']?.['cost_per_warehouse']) {
+                    $('#cost-per-warehouse').prop('checked', true);
+                }
+                if (data?.['company_setting']?.['cost_per_lot_batch']) {
+                    $('#cost-per-lot-batch').prop('checked', true);
+                }
+
+                loadFunctionNumberTableDetail(option, data?.['company_function_number'])
 
                 $.fn.initMaskMoney2();
 

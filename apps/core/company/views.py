@@ -28,8 +28,11 @@ class CompanyCreate(View):
         menu_active='menu_company_create'
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(request=request, user=request.user, url=ApiURL.CURRENCY_LIST).get()
-        vnd_currency = [item if item['is_default'] and item['abbreviation'] == 'VND' else {} for item in resp.result][0]
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.BASE_CURRENCY).get()
+        vnd_currency = {}
+        for item in resp.result:
+            if item['code'] == 'VND':
+                vnd_currency = item
         return {
                    'data': {'VND_currency': vnd_currency}
                }, status.HTTP_200_OK
@@ -58,7 +61,7 @@ class CompanyUpdate(View):
     @mask_view(
         auth_require=True,
         template='core/company/company_update.html',
-        breadcrumb='COMPANY_DETAIL_PAGE',
+        breadcrumb='COMPANY_UPDATE_PAGE',
         menu_active='menu_company_update'
     )
     def get(self, request, pk, *args, **kwargs):
@@ -92,7 +95,7 @@ class CompanyDetailAPI(APIView):
 
     @mask_view(auth_require=True, is_api=True)
     def put(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(request=request, user=request.user, url=ApiURL.COMPANY_DETAIL + '/' + pk).put(request.data)
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.COMPANY_DETAIL.push_id(pk)).put(request.data)
         return resp.auto_return()
 
 

@@ -1,7 +1,9 @@
 $(document).ready(function () {
     new CompanyHandle().load();
+    loadPrimaryCurrency(VND_currency);
+    loadFunctionNumberTable(FunctionNumberTableData);
 
-    $("#frm-detail-company").submit(function (event) {
+    $("#frm-add-company").submit(function (event) {
         event.preventDefault();
         let combinesData = new CompanyHandle().combinesData($(this), true);
         console.log(combinesData)

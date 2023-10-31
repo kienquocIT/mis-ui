@@ -1,3 +1,3 @@
 $(document).ready(function () {
-    LoadDetailCompany('detail');
+    LoadDetailCompany($('#frm-detail-company'), 'detail');
 })

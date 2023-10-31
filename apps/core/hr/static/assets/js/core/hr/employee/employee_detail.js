@@ -13,7 +13,7 @@ $(function () {
             EmployeeLoadPage.loadGroupList(employeeData.group);
             EmployeeLoadPage.loadRoleList(employeeData.role);
             EmployeeLoadPage.loadDob(employeeData.dob);
-            EmployeeLoadPage.loadDateJoined(employeeData.date_joined);
+            EmployeeLoadPage.loadDateJoined(employeeData.date_joined, false);
         }
     }
 

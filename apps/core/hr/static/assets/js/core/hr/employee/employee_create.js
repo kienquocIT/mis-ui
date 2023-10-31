@@ -3,7 +3,7 @@ $(document).ready(function () {
     EmployeeLoadPage.loadGroupList();
     EmployeeLoadPage.loadRoleList();
     EmployeeLoadPage.loadDob();
-    EmployeeLoadPage.loadDateJoined();
+    EmployeeLoadPage.loadDateJoined(null, true);
 
     callAppList().then((result) => {
         renderAppList(result);

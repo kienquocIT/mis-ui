@@ -397,6 +397,8 @@
     <!-- Custom JS -->
     <script>
         $(document).ready(function () {
+            let tenantSelEle = $('#tenant-select');
+
             $('#form-login').submit(function (event) {
                 event.preventDefault();
 
@@ -467,55 +469,52 @@
                 }
             })
 
-            let tenantSelEle = $('#tenant-select');
+            function loadTenantList() {
+                tenantSelEle.closest('.form-group').removeClass('d-none');
+                if (tenantSelEle.attr('data-loaded') !== true) {
+                    $.fn.callAjaxLogin(tenantSelEle.attr('data-url'), tenantSelEle.attr('data-method')).then(
+                        (resp) => {
+                            let beforeTenantCode = localStorage.getItem('tenant_code');
+                            let code_list = [];
+                            tenantSelEle.attr('data-loaded', true);
+                            tenantSelEle.children().remove();
+                            resp.result.map((element) => {
+                                if (beforeTenantCode && element.code === beforeTenantCode) {
+                                    tenantSelEle.append(`<option value="` + element.code + `" selected="selected">` + String.format('{0} - {1}', element.code, element.title) + `</option>`);
+                                } else {
+                                    tenantSelEle.append(`<option value="` + element.code + `">` + String.format('{0} - {1}', element.code, element.title) + `</option>`);
+                                }
+                                code_list.push(element.code);
+                            });
+
+                            let tenant_code = window.location.hostname.split(".");
+                            if (tenant_code) {
+                                let code_selected = tenant_code[0].toUpperCase();
+                                if (code_list.indexOf(code_selected) !== -1) {
+                                    tenantSelEle.find('option[value=' + code_selected + ']').attr('selected', 'selected');
+                                }
+                            }
+                        },
+                        (err) => {
+                            tenantSelEle.attr('data-loaded', false);
+                        }
+                    )
+                }
+            }
+
             let mainDomain = '{{ui_domain}}';
             let hostData = window.location.hostname;
-            if (hostData.endsWith(mainDomain)){
+            let autoTenant = '{{allow_auto_tenant}}';
+            if (autoTenant === 'True' && hostData.endsWith(mainDomain)) {
                 if (hostData.indexOf(mainDomain)) {
                     let tenantCode = hostData.split(mainDomain)[0];
                     if (tenantCode.endsWith(".")) tenantCode = tenantCode.split(".")[0];
                     tenantSelEle.append(`<option value="${tenantCode}" selected></option>`).closest('.form-group').addClass('d-none');
                 } else {
-                    tenantSelEle.closest('.form-group').removeClass('d-none');
-                    function loadTenantList() {
-                        if (tenantSelEle.attr('data-loaded') !== true) {
-                            $.fn.callAjaxLogin(tenantSelEle.attr('data-url'), tenantSelEle.attr('data-method')).then(
-                                (resp) => {
-                                    let beforeTenantCode = localStorage.getItem('tenant_code');
-                                    let code_list = [];
-                                    tenantSelEle.attr('data-loaded', true);
-                                    tenantSelEle.children().remove();
-                                    resp.result.map((element) => {
-                                        if (beforeTenantCode && element.code === beforeTenantCode) {
-                                            tenant_element.append(`<option value="` + element.code + `" selected="selected">` + String.format('{0} - {1}', element.code, element.title) + `</option>`);
-                                        } else {
-                                            tenant_element.append(`<option value="` + element.code + `">` + String.format('{0} - {1}', element.code, element.title) + `</option>`);
-                                        }
-                                        code_list.push(element.code);
-                                    });
-
-                                    let tenant_code = window.location.hostname.split(".");
-                                    if (tenant_code) {
-                                        let code_selected = tenant_code[0].toUpperCase();
-                                        if (code_list.indexOf(code_selected) !== -1) {
-                                            tenantSelEle.find('option[value=' + code_selected + ']').attr('selected', 'selected');
-                                        }
-                                    }
-                                    {#tenant_element.children().last().attr('selected', 'selected');#}
-                                },
-                                (err) => {
-                                    tenantSelEle.attr('data-loaded', false);
-                                }
-                            )
-                        }
-                    }
-
                     loadTenantList();
                 }
             } else {
-                $.fn.notifyB({
-                    'description': 'The domain was not supported!'
-                })
+                loadTenantList();
             }
         });
     </script>

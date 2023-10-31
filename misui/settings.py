@@ -220,6 +220,7 @@ API_DOMAIN = f'{protocol}://{domain}/{prefix}'
 UI_PROTOCOL = os.environ.get('UI_PROTOCOL') if os.environ.get('UI_PROTOCOL', None) else 'http'
 UI_DOMAIN = os.environ.get('UI_DOMAIN') if os.environ.get('UI_DOMAIN', None) else '127.0.0.1'
 UI_URL = os.environ.get('UI_URL') if os.environ.get('UI_URL', None) else f'{UI_PROTOCOL}://{UI_DOMAIN}'
+UI_ALLOW_AUTO_TENANT = True if os.environ.get('UI_ALLOW_AUTO_TENANT', '0') in [1, '1'] else False
 
 # Media key and data private
 MEDIA_KEY_FLAG = os.environ.get('MEDIA_KEY_FLAG', 'MEDIA-APIRequest')

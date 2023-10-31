@@ -87,7 +87,8 @@ class AuthLogin(APIView):
                 'is_notify_key': False,
                 'captcha_enabled': settings.GG_RECAPTCHA_ENABLED,
                 'secret_key_gg': settings.GG_RECAPTCHA_CLIENT_KEY if settings.GG_RECAPTCHA_ENABLED else None,
-                'ui_domain': settings.UI_DOMAIN
+                'allow_auto_tenant': settings.UI_ALLOW_AUTO_TENANT,
+                'ui_domain': settings.UI_DOMAIN,
             }
         )
 

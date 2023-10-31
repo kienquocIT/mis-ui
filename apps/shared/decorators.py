@@ -140,6 +140,22 @@ def mask_view(**parent_kwargs):
 
         # pylint: disable=R0911
         def wrapper(self, request, *args, **kwargs):
+            url_skip_check = ['/404', '/503', '/introduce', '/terms', '/help-and-support']
+            if request.path not in url_skip_check:
+                meta_hosts = request.META['HTTP_HOST']
+                if meta_hosts and settings.UI_DOMAIN in meta_hosts:
+                    sub_code = meta_hosts.split(settings.UI_DOMAIN)[0]
+                    if sub_code.endswith("."):
+                        sub_code = sub_code[:-1]
+
+                    if "*" not in settings.UI_SUB_ALLOWED and sub_code not in settings.UI_SUB_ALLOWED:
+                        return redirect(reverse('NotFoundView'))
+
+                    if sub_code in settings.UI_SUB_DENIED:
+                        return redirect(reverse('NotFoundView'))
+                else:
+                    return redirect(reverse('NotFoundView'))
+
             ctx = {}
             pk = kwargs.get('pk', None)
 

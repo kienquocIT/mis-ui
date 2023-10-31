@@ -39,11 +39,9 @@
                     <div class="col-sm-10 position-relative mx-auto">
                         <div class="auth-content py-8">
                             <form
-                                    class="w-100"
-                                    id="form-login"
-                                    data-url="{% url 'AuthLogin' %}" data-url-redirect="" data-method="POST"
+                                    class="w-100" id="form-login" data-url="" data-url-redirect="" data-method="POST"
                                     autocomplete="off"
-                                    data-url-select-tenant="{% url 'AuthLoginSelectTenant' %}"
+                                    data-url-login="{% url 'AuthLogin' %}"
                             >
                                 <div class="row">
                                     <div class="col-lg-5 col-md-7 col-sm-10 mx-auto">
@@ -75,72 +73,12 @@
                                                             </option>
                                                         </select>
                                                     </div>
-                                                    <div class="form-group col-lg-12">
-                                                        <div class="form-label-group">
-                                                            <label>{% trans 'User Name' %}</label>
-                                                        </div>
-                                                        <input
-                                                                name="username"
-                                                                class="form-control"
-                                                                placeholder="Enter username or email ID" value=""
-                                                                type="text"
-                                                                tabindex="1"
-                                                                required
-                                                        >
-                                                    </div>
-                                                    <div class="form-group col-lg-12">
-                                                        <div class="form-label-group">
-                                                            <label>{% trans 'Password' %}</label>
-                                                            <a
-                                                                    href="#"
-                                                                    class="fs-7 fw-medium"
-                                                            >{% trans 'Forgot Password ?' %}</a>
-                                                        </div>
-                                                        <div class="input-group password-check">
-																<span class="input-affix-wrapper">
-																	<input
-                                                                            name="password"
-                                                                            class="form-control"
-                                                                            placeholder="Enter your password" value=""
-                                                                            type="password"
-                                                                            tabindex="2"
-                                                                            required
-                                                                    >
-																	<a href="#" class="input-suffix text-muted">
-																		<span class="feather-icon"><i
-                                                                                class="form-icon"
-                                                                                data-feather="eye"
-                                                                        ></i></span>
-																		<span class="feather-icon d-none"><i
-                                                                                class="form-icon"
-                                                                                data-feather="eye-off"
-                                                                        ></i></span>
-																	</a>
-																</span>
-                                                        </div>
-                                                    </div>
                                                 </div>
-                                                <div class="d-flex justify-content-center">
-                                                    <div class="form-check form-check-sm mb-3">
-                                                        <input
-                                                                name="remember"
-                                                                type="checkbox" class="form-check-input" id="logged_in"
-                                                                checked tabindex="3"
-                                                        >
-                                                        <label
-                                                                class="form-check-label text-muted fs-7"
-                                                                for="logged_in"
-                                                        >{% trans 'Keep me logged in' %}</label>
-                                                    </div>
-                                                </div>
-                                                <div id="recapcha" class="mt-1 mb-1"></div>
                                                 <input
-                                                        type="submit" class="btn btn-primary btn-uppercase btn-block"
-                                                        value="{% trans 'Login' %}" tabindex="4"
+                                                        type="button" class="btn btn-primary btn-uppercase btn-block"
+                                                        id="btn-confirm-tenant"
+                                                        value="{% trans 'Continue' %}" tabindex="4"
                                                 >
-                                                <p class="p-xs mt-2 text-center"><a
-                                                        href="#"
-                                                ><u>{% trans 'Creat new account to MIS' %}</u></a></p>
                                             </div>
                                         </div>
                                     </div>
@@ -291,6 +229,15 @@
         }
 
         $.fn.extend({
+            redirectUrlLoginWithAppendSub: function (subCode, redirectPath, timeout = 0, params = '') {
+                setTimeout(() => {
+                    if (params && (params !== '' && params !== undefined)) {
+                        window.location.href = redirectPath + '?' + params;
+                    } else {
+                        window.location.href = redirectPath;
+                    }
+                }, timeout);
+            },
             redirectUrlLogin: function (redirectPath, timeout = 0, params = '') {
                 setTimeout(() => {
                     if (params && (params !== '' && params !== undefined)) {
@@ -400,146 +347,55 @@
     <!-- Custom JS -->
     <script>
         $(document).ready(function () {
-            let hasAppendSubCode = false;
             let mainDomain = '{{ui_domain}}';
-            let hostData = window.location.hostname;
-            let autoTenant = '{{allow_auto_tenant}}';
             let tenantSelEle = $('#tenant-select');
-            let frmLoginEle = $('#form-login');
+            let btnConfirmEle = $('#btn-confirm-tenant');
 
-            frmLoginEle.submit(function (event) {
-                event.preventDefault();
+            btnConfirmEle.on('click', function (){
+                let code = tenantSelEle.val();
+                let url = `${code.toLowerCase()}.${mainDomain}`;
 
-                let state = false;
-                if (ggCaptChaEnabled === 'True') {
-                    let response = grecaptcha.getResponse();
-                    if (!response) {
-                        $.fn.notifyBLogin({
-                            'description': $('#errLoginIncorrect').attr('data-captcha-require')
-                        }, 'failure');
-                        return false;
-                    } else {
-                        state = true;
-                    }
-                } else {
-                    state = true;
-                }
+                let portSplit = location.host.split(":");
+                let portData = portSplit.length === 2 ? portSplit[1] : null;
 
-                if (state) {
-                    $.fn.showLoadingLogin();
-                    let frm = new SetupFormSubmitLogin($(this));
-                    if (frm.dataUrl && frm.dataMethod) {
-                        if (ggCaptChaEnabled === 'True' && !frm.dataForm['g-recaptcha-response']) {
-                            $.fn.notifyBLogin({
-                                'description': $('#errLoginIncorrect').attr('data-captcha-require')
-                            }, 'failure');
-                            setTimeout(
-                                () => {
-                                    $.fn.hideLoadingLogin();
-                                }, 2000
-                            )
-                            return false;
-                        }
-                        $.fn.callAjaxLogin(
-                            frm.dataUrl,
-                            frm.dataMethod,
-                            {
-                                ...frm.dataForm,
-                                'g_recaptcha_response': frm.dataForm?.['g-recaptcha-response'] || ''
-                            }
-                        ).then(
-                            (resp) => {
-                                let data = resp.data;
-                                if (data.status === 200) {
-                                    localStorage.setItem('tenant_code', frm.dataForm['tenant_code']);
-                                    $.fn.notifyBLogin({description: data.detail}, 'success');
-                                    let path_redirect = "/";
-                                    const params = Object.fromEntries(new URLSearchParams(location.search));
-                                    if (params.next) {
-                                        path_redirect = params.next;
-                                    }
-                                    $.fn.redirectUrlLogin(
-                                        path_redirect, 800
-                                    );
-                                }
-                                setTimeout(
-                                    () => {
-                                        $.fn.hideLoadingLogin();
-                                    }, 2000
-                                )
-                            },
-                            (err) => {
-                                $.fn.notifyBLogin({
-                                    'description': $('#errLoginIncorrect').attr('data-value')
-                                }, 'failure')
-                                $.fn.hideLoadingLogin();
-                            }
-                        )
-                    } else throw 'Setup call raise exception with URL or method is incorrect.!';
-                }
+                let hrefExt = $('#form-login').attr('data-url-login');
+                window.location.href = `${location.protocol}//${url}${portData ? ":" + portData : ""}/${hrefExt}`;
             })
 
             function loadTenantList(is_show_group = true) {
                 if (is_show_group === true) tenantSelEle.closest('.form-group').removeClass('d-none');
-                return $.fn.callAjaxLogin(tenantSelEle.attr('data-url'), tenantSelEle.attr('data-method')).then(
-                    (resp) => {
-                        let beforeTenantCode = localStorage.getItem('tenant_code');
-                        let code_list = [];
-                        tenantSelEle.attr('data-loaded', true);
-                        tenantSelEle.children().remove();
-                        resp.result.map((element) => {
-                            if (beforeTenantCode && element.code === beforeTenantCode) {
-                                tenantSelEle.append(`<option value="` + element.code + `" selected="selected">` + String.format('{0} - {1}', element.code, element.title) + `</option>`);
-                            } else {
-                                tenantSelEle.append(`<option value="` + element.code + `">` + String.format('{0} - {1}', element.code, element.title) + `</option>`);
+                if (tenantSelEle.attr('data-loaded') !== true) {
+                    return $.fn.callAjaxLogin(tenantSelEle.attr('data-url'), tenantSelEle.attr('data-method')).then(
+                        (resp) => {
+                            let beforeTenantCode = localStorage.getItem('tenant_code');
+                            let code_list = [];
+                            tenantSelEle.attr('data-loaded', true);
+                            tenantSelEle.children().remove();
+                            resp.result.map((element) => {
+                                if (beforeTenantCode && element.code === beforeTenantCode) {
+                                    tenantSelEle.append(`<option value="` + element.code + `" selected="selected">` + String.format('{0} - {1}', element.code, element.title) + `</option>`);
+                                } else {
+                                    tenantSelEle.append(`<option value="` + element.code + `">` + String.format('{0} - {1}', element.code, element.title) + `</option>`);
+                                }
+                                code_list.push(element.code);
+                            });
+
+                            let tenant_code = window.location.hostname.split(".");
+                            if (tenant_code) {
+                                let code_selected = tenant_code[0].toUpperCase();
+                                if (code_list.indexOf(code_selected) !== -1) {
+                                    tenantSelEle.find('option[value=' + code_selected + ']').attr('selected', 'selected');
+                                }
                             }
-                            code_list.push(element.code);
-                        });
-
-                        let tenant_code = window.location.hostname.split(".");
-                        if (tenant_code) {
-                            let code_selected = tenant_code[0].toUpperCase();
-                            if (code_list.indexOf(code_selected) !== -1) {
-                                tenantSelEle.find('option[value=' + code_selected + ']').attr('selected', 'selected');
-                            }
-                        }
-                    },
-                    (err) => {
-                        tenantSelEle.attr('data-loaded', false);
-                    }
-                )
-            }
-
-            function redirectToSelectTenant() {
-                window.location.href = frmLoginEle.attr('data-url-select-tenant');
-            }
-
-            if (autoTenant === 'True' && hostData.endsWith(mainDomain)) {
-                if (hostData.indexOf(mainDomain)) {
-                    loadTenantList(false).then(
-                        () => {
-                            let tenantCode = hostData.split(mainDomain)[0];
-                            if (tenantCode.endsWith(".")) tenantCode = tenantCode.split(".")[0];
-
-                            let optOfCode = tenantSelEle.find(`option[value="${tenantCode}"]`);
-                            if (optOfCode.length > 0) {
-                                hasAppendSubCode = false;
-                                tenantSelEle.val(tenantCode).trigger('change');
-                            } else {
-                                {#redirectToSelectTenant();#}
-                                $.fn.notifyBLogin({
-                                    'description': 'The tenant is not found or was disabled!',
-                                }, 'failure')
-                            }
+                        },
+                        (err) => {
+                            tenantSelEle.attr('data-loaded', false);
                         }
                     )
-
-                } else {
-                    redirectToSelectTenant();
                 }
-            } else {
-                redirectToSelectTenant();
             }
+
+            loadTenantList(true);
         });
     </script>
 {% endcompress %}

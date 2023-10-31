@@ -401,6 +401,7 @@
     <script>
         $(document).ready(function () {
             let hasAppendSubCode = false;
+            let allowAutoTenant = '{{allow_auto_tenant}}';
             let mainDomain = '{{ui_domain}}';
             let hostData = window.location.hostname;
             let autoTenant = '{{allow_auto_tenant}}';
@@ -511,7 +512,12 @@
             }
 
             function redirectToSelectTenant() {
-                window.location.href = frmLoginEle.attr('data-url-select-tenant');
+                if (allowAutoTenant !== 'True' && (window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost')) {
+                    let tenant_code = prompt('Tenant Code:');
+                    tenantSelEle.append(`<option value="${tenant_code}" selected></option>`);
+                } else {
+                    window.location.href = frmLoginEle.attr('data-url-select-tenant');
+                }
             }
 
             if (autoTenant === 'True' && hostData.endsWith(mainDomain)) {

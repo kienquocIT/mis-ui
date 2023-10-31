@@ -223,7 +223,7 @@ UI_URL = os.environ.get('UI_URL') if os.environ.get('UI_URL', None) else f'{UI_P
 UI_ALLOW_AUTO_TENANT = True if os.environ.get('UI_ALLOW_AUTO_TENANT', '0') in [1, '1'] else False
 UI_SUB_ALLOWED = json.loads(os.environ.get('UI_SUB_ALLOWED', '["*"]'))
 UI_SUB_DENIED = json.loads(os.environ.get('UI_SUB_DENIED', '[]'))
-UI_ALLOW_SHOW_SELECT_TENANT = True if os.environ.get('UI_ALLOW_SHOW_SELECT_TENANT', '0') in [1, '1'] else False
+UI_ALLOW_SHOW_SELECT_TENANT = True if os.environ.get('UI_ALLOW_SHOW_SELECT_TENANT', '1') in [1, '1'] else False
 
 # Media key and data private
 MEDIA_KEY_FLAG = os.environ.get('MEDIA_KEY_FLAG', 'MEDIA-APIRequest')

@@ -372,6 +372,7 @@
                             tenantSelEle.attr('data-loaded', true);
                             tenantSelEle.children().remove();
                             resp.result.map((element) => {
+                                console.log(element);
                                 if (beforeTenantCode && element.code === beforeTenantCode) {
                                     tenantSelEle.append(`<option value="` + element.code + `" selected="selected">` + String.format('{0} - {1}', element.code, element.title) + `</option>`);
                                 } else {

@@ -50,9 +50,9 @@ $(document).ready(function () {
                         data: 'date_created',
                         className: 'wrap-text',
                         render: (data, type, row, meta) => {
-                            return `<span>{0}</span>`.format_by_idx(
-                                data.split(" ")[0]
-                            )
+                            return $x.fn.displayRelativeTime(data, {
+                                'outputFormat': 'DD-MM-YYYY',
+                            });
                         }
                     },
                     {

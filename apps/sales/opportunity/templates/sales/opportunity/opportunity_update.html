@@ -611,11 +611,12 @@
             data-trans-opp-win-deal="{% trans 'Opp has been Win Deal' %}"
             data-assignee_empty="{% trans 'Assignee is required' %}"
             data-trans-not-created="{% trans 'has not been created for Opportunity' %}"
+            data-msg-deny-delete-member-owner="{% trans 'This is Sale Person, can not remove!' %}"
     ></script>
 {% endblock %}
 {% block jsFooter %}
 
-    <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
+
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/dropify/dist/js/dropify.min.js' %}"></script>
     <script src="{% static 'vendors/ckeditor/ckeditor.js' %}"></script>

@@ -94,8 +94,10 @@ class EmployeeLoadPage {
         frm.dataForm['is_active'] = frm.dataForm['is_active'] === 'on';
         frm.dataForm['is_admin_company'] = frm.dataForm['is_admin_company'] === 'on';
         // frm.dataForm['plan_app'] = new HandlePlanApp().combinesData();
-        frm.dataForm['date_joined'] = frm.dataForm['date_joined'] ? moment(frm.dataForm['date_joined']).format('YYYY-MM-DD HH:mm:ss') : null;
-        frm.dataForm['dob'] = frm.dataForm['dob'] ? moment(frm.dataForm['dob']).format('YYYY-MM-DD') : null;
+        let dateJoinedTxt = $('#employee-date-joined').val();
+        frm.dataForm['date_joined'] = dateJoinedTxt ? moment(dateJoinedTxt).format('YYYY-MM-DD HH:mm:ss') : null;
+        let dateOfBirthday = $('#employee-dob').val();
+        frm.dataForm['dob'] = dateOfBirthday ? moment(dateOfBirthday).format('YYYY-MM-DD') : null;
         frm.dataForm['role'] = EmployeeLoadPage.roleSelectEle.val()
 
         if (!frm.dataForm['user']) frm.dataForm['user'] = null;

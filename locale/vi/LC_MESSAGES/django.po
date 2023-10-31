@@ -4545,3 +4545,14 @@ msgstr "Số seri phải khác nhau"
 msgid "Quantity delivery must less than equal quantity picked"
 msgstr "Số lượng giao hàng không vượt quá số lượng lấy hàng"
 
+#
+msgid "Only for view"
+msgstr "Chỉ khả dụng với quyền xem"
+
+#
+msgid "This is Sale Person, can not remove!"
+msgstr "Đây là người bán hàng chính, không thể xoá!"
+
+#
+msgid "Date receive"
+msgstr "Ngày nhận"

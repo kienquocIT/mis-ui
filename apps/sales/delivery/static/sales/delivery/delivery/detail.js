@@ -55,22 +55,43 @@ $(async function () {
                 let newData = []
                 for (let [idx, item] of isData.entries()) {
                     item.picked = 0
-                    if (!config.is_picking && !config.is_partial_ship) {
+                    if (!config.is_picking && !config.is_partial_ship) { // TH: none_picking_one_delivery
                         // config 1, 2
-                        if (delivery)
+                        if (delivery.length > 0) {
                             for (const val of delivery) {
                                 if (val.warehouse === item?.['warehouse']?.['id']
                                     && val.uom === prod_data.uom_data.id
                                 ) {
                                     item.picked = val.stock;
-                                    if (prod_data?.['uom_data']) {
-                                        item['uom_so'] = prod_data?.['uom_data'];
-                                    }
                                 }
                             }
+                        }
+                        let finalUOMRate = 1;
+                        let uomInventoryRatio = item?.['uom']?.['ratio'];
+                        let uomDeliveryRatio = prod_data?.['uom_data']?.['ratio'];
+                        if (uomInventoryRatio && uomDeliveryRatio) {
+                            finalUOMRate = uomInventoryRatio / uomDeliveryRatio
+                        }
+                        item['stock_amount'] = item?.['stock_amount'] * finalUOMRate;
+                        if (prod_data?.['uom_data']) {
+                            item['uom_so'] = prod_data?.['uom_data'];
+                        }
                         newData.push(item);
                     }
-                    else if ((config.is_picking && !config.is_partial_ship) && delivery) {
+                    else if (!config.is_picking && config.is_partial_ship) { // TH: none_picking_many_delivery
+                        let finalUOMRate = 1;
+                        let uomInventoryRatio = item?.['uom']?.['ratio'];
+                        let uomDeliveryRatio = prod_data?.['uom_data']?.['ratio'];
+                        if (uomInventoryRatio && uomDeliveryRatio) {
+                            finalUOMRate = uomInventoryRatio / uomDeliveryRatio
+                        }
+                        item['stock_amount'] = item?.['stock_amount'] * finalUOMRate;
+                        if (prod_data?.['uom_data']) {
+                            item['uom_so'] = prod_data?.['uom_data'];
+                        }
+                        newData.push(item);
+                    }
+                    else if ((config.is_picking && !config.is_partial_ship) && delivery) { // TH: has_picking_one_delivery
                         // config 3
                         // item.product_amount = 0
                         for (const val of delivery) {
@@ -78,8 +99,7 @@ $(async function () {
                                 && val.uom === prod_data.uom_data.id
                             ) // Check if warehouse of product warehouse in list warehouse have picked
                             {
-                                // item.product_amount += val.stock
-                                // item.picked += val.stock
+                                item.stock_amount = prod_data.ready_quantity;
                                 if (prod_data?.['uom_data']) {
                                     item['uom_so'] = prod_data?.['uom_data'];
                                 }
@@ -87,7 +107,7 @@ $(async function () {
                             }
                         }
                     }
-                    else if ((config.is_picking && config.is_partial_ship) && delivery) {
+                    else if ((config.is_picking && config.is_partial_ship) && delivery) { // TH: has_picking_many_delivery
                         // config 4
                         // nếu ready quantity > 0 => có hàng để giao
                         // lấy delivery

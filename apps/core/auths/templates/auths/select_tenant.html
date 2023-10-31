@@ -359,7 +359,7 @@
                 let portData = portSplit.length === 2 ? portSplit[1] : null;
 
                 let hrefExt = $('#form-login').attr('data-url-login');
-                window.location.href = `${location.protocol}//${url}${portData ? ":" + portData : ""}/${hrefExt}`;
+                window.location.href = `${location.protocol}//${url}${portData ? ":" + portData : ""}${hrefExt}`;
             })
 
             function loadTenantList(is_show_group = true) {

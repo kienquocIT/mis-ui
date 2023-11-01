@@ -25,42 +25,42 @@ $(function () {
                         targets: 0,
                         class: 'w-5',
                         render: (data, type, row) => {
-                            return `<p>${row?.['employee_inherit']?.['code'] ? row?.['employee_inherit']?.['code'] : ''}</p>`;
+                            return `<p>${row?.['sale_order']?.['employee_inherit']?.['code'] ? row?.['sale_order']?.['employee_inherit']?.['code'] : ''}</p>`;
                         }
                     },
                     {
                         targets: 1,
                         class: 'w-10',
                         render: (data, type, row) => {
-                            return `<p>${row?.['employee_inherit']?.['full_name'] ? row?.['employee_inherit']?.['full_name'] : ''}</p>`;
+                            return `<p>${row?.['sale_order']?.['employee_inherit']?.['full_name'] ? row?.['sale_order']?.['employee_inherit']?.['full_name'] : ''}</p>`;
                         }
                     },
                     {
                         targets: 2,
                         class: 'w-5',
                         render: (data, type, row) => {
-                            return `<p>${row?.['code'] ? row?.['code'] : ''}</p>`;
+                            return `<p>${row?.['sale_order']?.['code'] ? row?.['sale_order']?.['code'] : ''}</p>`;
                         }
                     },
                     {
                         targets: 3,
                         class: 'w-10',
                         render: (data, type, row) => {
-                            return `<p>${moment(row?.['date_created'] ? row?.['date_created'] : '').format('DD/MM/YYYY')}</p>`;
+                            return `<p>${moment(row?.['date_approved'] ? row?.['date_approved'] : '').format('DD/MM/YYYY')}</p>`;
                         }
                     },
                     {
                         targets: 4,
                         class: 'w-5',
                         render: (data, type, row) => {
-                            return `<p>${row?.['title'] ? row?.['title'] : ''}</p>`;
+                            return `<p>${row?.['sale_order']?.['title'] ? row?.['sale_order']?.['title'] : ''}</p>`;
                         }
                     },
                     {
                         targets: 5,
                         class: 'w-20',
                         render: (data, type, row) => {
-                            return `<p>${row?.['customer']?.['title'] ? row?.['customer']?.['title'] : ''}</p>`;
+                            return `<p>${row?.['sale_order']?.['customer']?.['title'] ? row?.['sale_order']?.['customer']?.['title'] : ''}</p>`;
                         }
                     },
                     {
@@ -69,7 +69,7 @@ $(function () {
                         render: (data, type, row) => {
                             let value = '0';
                             for (let indicator of row?.['indicator']) {
-                                if (indicator?.['code'] === 'revenue') {
+                                if (indicator?.['code'] === 'IN0001') {
                                     value = indicator?.['indicator_value'];
                                 }
                             }
@@ -82,7 +82,7 @@ $(function () {
                         render: (data, type, row) => {
                             let value = '0';
                             for (let indicator of row?.['indicator']) {
-                                if (indicator?.['code'] === 'grossprofit') {
+                                if (indicator?.['code'] === 'IN0003') {
                                     value = indicator?.['indicator_value'];
                                 }
                             }
@@ -95,7 +95,7 @@ $(function () {
                         render: (data, type, row) => {
                             let value = '0';
                             for (let indicator of row?.['indicator']) {
-                                if (indicator?.['code'] === 'netincome') {
+                                if (indicator?.['code'] === 'IN0005') {
                                     value = indicator?.['indicator_value'];
                                 }
                             }

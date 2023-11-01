@@ -853,11 +853,16 @@ class QuotationLoadDataHandle {
             $('#quotation-customer-confirm')[0].checked = data?.['is_customer_confirm'];
         }
         if (data?.['system_status'] && is_copy === false) {
+            // check if finish then hidden btn edit page
             if (['Added', 'Finish'].includes(data?.['system_status'])) {
                 let $btn = $('#btn-enable-edit');
                 if ($btn.length) {
                     $btn[0].setAttribute('hidden', 'true');
                 }
+            }
+            // check if is not finish then hidden btn delivery
+            if (!['Added', 'Finish'].includes(data?.['system_status'])) {
+                $('#btnDeliverySaleOrder')[0].setAttribute('hidden', 'true');
             }
             // check if is not finish then disable btn copy
             if (!['Added', 'Finish'].includes(data?.['system_status'])) {

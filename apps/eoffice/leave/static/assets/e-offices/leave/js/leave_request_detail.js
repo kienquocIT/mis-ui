@@ -175,11 +175,13 @@ $(document).ready(function () {
     }).then(
         (resp) => {
             let data = $.fn.switcherResp(resp).leave_request_detail
+            WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id'])
+            $x.fn.renderCodeBreadcrumb(data);
             $('#inputTitle').val(data.title)
             $('#inputRequestDate').val(moment(data.request_date, 'YYYY-MM-DD').format('DD/MM/YYYY'))
             $EmpElm.append(
                 `<option selected value="${data.employee_inherit.id}">${
-                    data.employee_inherit.full_name}</option>`)
+                    data.employee_inherit.full_name || '--'}</option>`)
             $('#inputSystemStatus').val(JSON.parse($('#sys_stt').text())[data.system_status][1])
 
             // run table when page loaded

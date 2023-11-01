@@ -2,7 +2,7 @@ from django.views import View
 from rest_framework import status
 from rest_framework.views import APIView
 
-from apps.shared import mask_view, ServerAPI, ApiURL, PAID_BY
+from apps.shared import mask_view, ServerAPI, ApiURL, PAID_BY, InputMappingProperties
 
 from apps.shared.constant import SYSTEM_STATUS, LEAVE_ACTION
 
@@ -257,7 +257,10 @@ class LeaveRequestEdit(View):
         breadcrumb='LEAVE_REQUEST_EDIT',
     )
     def get(self, request, pk, *args, **kwargs):
+        input_mapping_properties = InputMappingProperties.LEAVE_DATA_MAP
         return {
+                   'input_mapping_properties': input_mapping_properties,
+                   'form_id': 'leave_edit',
                    'pk': pk,
                    'sys_status': SYSTEM_STATUS
                }, status.HTTP_200_OK

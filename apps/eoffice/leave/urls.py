@@ -24,7 +24,7 @@ urlpatterns = [
     path('requests/create-api', LeaveRequestCreateAPI.as_view(), name='LeaveRequestCreateAPI'),
     path('requests/detail/<str:pk>', LeaveRequestDetail.as_view(), name='LeaveRequestDetail'),
     path('requests/detail-api/<str:pk>', LeaveRequestDetailAPI.as_view(), name='LeaveRequestDetailAPI'),
-    path('requests/edit/<str:pk>', LeaveRequestEdit.as_view(), name='LeaveRequestEdit'),
+    path('requests/update/<str:pk>', LeaveRequestEdit.as_view(), name='LeaveRequestEdit'),
     path('requests/edit-api/<str:pk>', LeaveRequestEditAPI.as_view(), name='LeaveRequestEditAPI'),
     # leave available list
     path('requests/available-list', LeaveAvailableList.as_view(), name='LeaveAvailableList'),

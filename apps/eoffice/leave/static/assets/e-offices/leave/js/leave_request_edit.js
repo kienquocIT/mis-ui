@@ -9,6 +9,7 @@ $(document).ready(function () {
     }).then(
         (resp) => {
             let data = $.fn.switcherResp(resp).leave_request_detail
+            $x.fn.renderCodeBreadcrumb(data);
             $('#inputTitle').val(data.title)
             $('#inputSystemStatus').val(JSON.parse($('#sys_stt').text())[data.system_status][1])
 

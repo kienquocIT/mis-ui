@@ -12,7 +12,7 @@ function renderTemplateResult(state) {
         `<p class="d-flex justify-content-normal sl_temp_cont">`
         + `<b>${state?.data?.leave_type.code}</b>`
         + `<span class="one-row-txt" title="${state?.data?.leave_type.title}">&nbsp;|&nbsp;&nbsp;${state?.data?.leave_type.title}</span>`
-        + `<span class="text-blue">(${state?.data.available})</span></p>`
+        + `<span class="text-blue">${state?.data?.check_balance ? `(${state?.data.available})` : ''}</span></p>`
     );
     return $state
 }
@@ -246,7 +246,12 @@ class detailTab {
                                 else if (item.leave_type.code === 'ANPY') temp = item
                                 else list_result.push(item)
                             }
-                            list_result.push(temp)
+                            list_result.splice(1, 0, temp)
+                            list_result.sort((a, b) =>{
+                                let aT = a.leave_type.code;
+                                let bT = b.leave_type.code;
+                                return aT.localeCompare(bT);
+                            })
                             return list_result
                         },
                         'dataParams': {employee: $EmpElm.val()},

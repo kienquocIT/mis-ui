@@ -77,6 +77,7 @@ INSTALLED_APPS = \
         'apps.sales.task',
         'apps.sales.purchasing',
         'apps.sales.inventory',
+        'apps.sales.report',
     ] + [  # e-office Application
         'apps.eoffice.leave',
     ]

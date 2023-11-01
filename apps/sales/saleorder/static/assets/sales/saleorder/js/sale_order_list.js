@@ -115,7 +115,7 @@ $(function () {
                             const link = $('#sale-order-link').data('link-update').format_url_with_uuid(row?.['id'])
                             const $elmTrans = $('#trans-factory')
                             let isDelivery = ''
-                            if (!row.delivery_call)
+                            if (!row.delivery_call && ['Added', 'Finish'].includes(row?.['system_status']))
                                 isDelivery = '<div class="dropdown-divider"></div>' +
                                     `<a class="dropdown-item" href="#" id="create_delivery">${$elmTrans.attr('data-delivery')}</a>`
                             return `<div class="dropdown">

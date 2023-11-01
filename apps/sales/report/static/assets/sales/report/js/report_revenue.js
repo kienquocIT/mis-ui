@@ -150,6 +150,7 @@ $(function () {
                 });
             } else {
                 boxEmployee.initSelect2({
+                    'allowClear': true,
                     callbackTextDisplay: function (item) {
                         return item?.['full_name'] || '';
                     },
@@ -161,13 +162,13 @@ $(function () {
         // run datetimepicker
         $('input[type=text].date-picker').daterangepicker({
             minYear: 1901,
-            singleDatePicker: true,
             timePicker: true,
             showDropdowns: true,
             locale: {
-                format: 'DD/MM/YYYY hh:mm A'
+                format: 'DD/MM/YYYY'
             }
         });
+
         // mask money
         $.fn.initMaskMoney2();
 
@@ -175,6 +176,7 @@ $(function () {
         boxGroup.on('change', function() {
             boxEmployee.empty();
             loadBoxEmployee();
+            $table.DataTable().clear().draw();
         });
 
     });

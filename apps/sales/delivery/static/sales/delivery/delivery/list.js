@@ -113,7 +113,7 @@ $(document).ready(function () {
                 dataSrc: 'data.sale_order_list',
                 data: function (params) {
                     params['delivery_call'] = true;
-                    params['is_approved'] = true;
+                    params['system_status__in'] = [2, 3].join(',');
                 },
             },
             rowIdx: true,

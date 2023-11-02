@@ -4478,8 +4478,8 @@ msgid "enter text"
 msgstr "nhập văn bản"
 
 #
-msgid "Allow view member"
-msgstr "Cho phép xem thành viên"
+msgid "Allow view this opportunity"
+msgstr "Cho phép xem chi tiết Cơ Hội Kinh Doanh này"
 
 #
 msgid "Allow add member"

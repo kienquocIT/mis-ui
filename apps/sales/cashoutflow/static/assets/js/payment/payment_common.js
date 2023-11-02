@@ -18,15 +18,16 @@ opp_mapped_select.on('change', function () {
         sale_order_mapped_select.prop('disabled', true);
         quotation_mapped_select.prop('disabled', true);
 
-        // let url_loaded = quotation_mapped_select.attr('data-url-opp-detail').replace(0, opp_mapped_select.val());
-        // $.fn.callAjax(url_loaded, 'GET').then(
-        //     (resp) => {
-        //         let data = $.fn.switcherResp(resp);
-        //         if (data) {
-        //             WFRTControl.setWFRuntimeID(data['opportunity']?.['workflow_runtime_id']);
-        //             APLoadQuotation(data['opportunity']['quotation']);
-        //         }
-        //     })
+        let url_loaded = quotation_mapped_select.attr('data-url-opp-detail').replace(0, opp_mapped_select.val());
+        $.fn.callAjax(url_loaded, 'GET').then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    WFRTControl.setWFRuntimeID(data['opportunity']?.['workflow_runtime_id']);
+                    PaymentLoadQuotation(data['opportunity']['quotation']);
+                    PaymentLoadSaleOrder(data['opportunity']['sale_order']);
+                }
+            })
     }
     else {
         quotation_mapped_select.prop('disabled', false);
@@ -40,6 +41,18 @@ function PaymentLoadQuotation(data) {
         ajax: {
             url: quotation_mapped_select.attr('data-url'),
             method: 'GET',
+        },
+        callbackDataResp: function (resp, keyResp) {
+            let result = [];
+            for (let i = 0; i < resp.data[keyResp].length; i++) {
+                if (Object.keys(resp.data[keyResp][i]?.['opportunity']).length === 0) {
+                    result.push(resp.data[keyResp][i])
+                }
+            }
+            if (result.length > 0) {
+                $('.select2-results__message').prop('hidden', true);
+            }
+            return result;
         },
         data: (data ? data : null),
         keyResp: 'quotation_list',
@@ -66,6 +79,18 @@ function PaymentLoadSaleOrder(data) {
         ajax: {
             url: sale_order_mapped_select.attr('data-url'),
             method: 'GET',
+        },
+        callbackDataResp: function (resp, keyResp) {
+            let result = [];
+            for (let i = 0; i < resp.data[keyResp].length; i++) {
+                if (Object.keys(resp.data[keyResp][i]?.['opportunity']).length === 0) {
+                    result.push(resp.data[keyResp][i])
+                }
+            }
+            if (result.length > 0) {
+                $('.select2-results__message').prop('hidden', true);
+            }
+            return result;
         },
         data: (data ? data : null),
         keyResp: 'sale_order_list',

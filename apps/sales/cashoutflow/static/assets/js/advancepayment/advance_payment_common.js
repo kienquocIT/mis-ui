@@ -40,15 +40,16 @@ opp_mapped_select.on('change', function () {
         sale_order_mapped_select.prop('disabled', true);
         quotation_mapped_select.prop('disabled', true);
         
-        // let url_loaded = quotation_mapped_select.attr('data-url-opp-detail').replace(0, opp_mapped_select.val());
-        // $.fn.callAjax(url_loaded, 'GET').then(
-        //     (resp) => {
-        //         let data = $.fn.switcherResp(resp);
-        //         if (data) {
-        //             WFRTControl.setWFRuntimeID(data['opportunity']?.['workflow_runtime_id']);
-        //             APLoadQuotation(data['opportunity']['quotation']);
-        //         }
-        //     })
+        let url_loaded = quotation_mapped_select.attr('data-url-opp-detail').replace(0, opp_mapped_select.val());
+        $.fn.callAjax(url_loaded, 'GET').then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    WFRTControl.setWFRuntimeID(data['opportunity']?.['workflow_runtime_id']);
+                    APLoadQuotation(data['opportunity']['quotation']);
+                    APLoadSaleOrder(data['opportunity']['sale_order']);
+                }
+            })
     }
     else {
         quotation_mapped_select.prop('disabled', false);
@@ -62,6 +63,18 @@ function APLoadQuotation(data) {
         ajax: {
             url: quotation_mapped_select.attr('data-url'),
             method: 'GET',
+        },
+        callbackDataResp: function (resp, keyResp) {
+            let result = [];
+            for (let i = 0; i < resp.data[keyResp].length; i++) {
+                if (Object.keys(resp.data[keyResp][i]?.['opportunity']).length === 0) {
+                    result.push(resp.data[keyResp][i])
+                }
+            }
+            if (result.length > 0) {
+                $('.select2-results__message').prop('hidden', true);
+            }
+            return result;
         },
         data: (data ? data : null),
         keyResp: 'quotation_list',
@@ -87,6 +100,18 @@ function APLoadSaleOrder(data) {
         ajax: {
             url: sale_order_mapped_select.attr('data-url'),
             method: 'GET',
+        },
+        callbackDataResp: function (resp, keyResp) {
+            let result = [];
+            for (let i = 0; i < resp.data[keyResp].length; i++) {
+                if (Object.keys(resp.data[keyResp][i]?.['opportunity']).length === 0) {
+                    result.push(resp.data[keyResp][i])
+                }
+            }
+            if (result.length > 0) {
+                $('.select2-results__message').prop('hidden', true);
+            }
+            return result;
         },
         data: (data ? data : null),
         keyResp: 'sale_order_list',
@@ -853,6 +878,7 @@ class AdvancePaymentHandle {
             return false;
         }
 
+        frm.dataForm['sale_code_type'] = 0;
         let opportunity_mapped = opp_mapped_select.val();
         let quotation_mapped = quotation_mapped_select.val();
         let sale_order_mapped = sale_order_mapped_select.val();
@@ -865,12 +891,8 @@ class AdvancePaymentHandle {
         else if (sale_order_mapped !== null) {
             frm.dataForm['sale_order_mapped'] = sale_order_mapped_select.val();
         }
-
-        if (frm.dataForm['opportunity_mapped'] === null) {
-            frm.dataForm['sale_code_type'] = 2;
-        }
         else {
-            frm.dataForm['sale_code_type'] = 0;
+            frm.dataForm['sale_code_type'] = 2;
         }
 
         frm.dataForm['beneficiary'] = $('#employee_inherit_id').val();

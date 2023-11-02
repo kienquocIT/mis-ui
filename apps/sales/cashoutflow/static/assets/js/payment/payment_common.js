@@ -1230,7 +1230,6 @@ class PaymentHandle {
             return false;
         }
 
-
         frm.dataForm['sale_code_type'] = 0;
         if (frm.dataForm['sale_code_list'].length > 1) {
             frm.dataForm['sale_code_type'] = 3;

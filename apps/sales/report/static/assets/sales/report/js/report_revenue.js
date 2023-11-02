@@ -3,23 +3,15 @@ $(function () {
 
         let boxGroup = $('#box-report-revenue-group');
         let boxEmployee = $('#box-report-revenue-employee');
-        let $table = $('#table_report_revenue_list')
+        let btnView = $('#btn-view');
+        let eleRevenue = $('#report-revenue-revenue');
+        let eleGrossProfit = $('#report-revenue-gross-profit');
+        let eleNetIncome = $('#report-revenue-net-income');
+        let $table = $('#table_report_revenue_list');
 
-        function loadDbl() {
-            let frm = new SetupFormSubmit($table);
+        function loadDbl(data) {
             $table.DataTableDefault({
-                useDataServer: true,
-                ajax: {
-                    url: frm.dataUrl,
-                    type: frm.dataMethod,
-                    dataSrc: function (resp) {
-                        let data = $.fn.switcherResp(resp);
-                        if (data && resp.data.hasOwnProperty('report_revenue_list')) {
-                            return resp.data['report_revenue_list'] ? resp.data['report_revenue_list'] : []
-                        }
-                        throw Error('Call data raise errors.')
-                    },
-                },
+                data: data ? data : [],
                 columns: [
                     {
                         targets: 0,
@@ -104,29 +96,29 @@ $(function () {
                     },
                 ],
                 rowCallback: (row, data) => {
-                    let eleRevenue = $('#report-revenue-revenue');
-                    let currentRevenue = eleRevenue.attr('data-init-money');
-                    let rowRevenue = row?.querySelector('.table-row-revenue')?.getAttribute('data-init-money');
-                    if (currentRevenue && rowRevenue) {
-                        let newRevenue = parseFloat(currentRevenue) + parseFloat(rowRevenue);
-                    $(eleRevenue).attr('data-init-money', String(newRevenue));
-                    }
-                    //
-                    let eleGrossProfit = $('#report-revenue-gross-profit');
-                    let currentGrossProfit = eleGrossProfit.attr('data-init-money');
-                    let rowGrossProfit = row?.querySelector('.table-row-gross-profit')?.getAttribute('data-init-money');
-                    if (currentGrossProfit && rowGrossProfit) {
-                        let newGrossProfit = parseFloat(currentGrossProfit) + parseFloat(rowGrossProfit);
-                    $(eleGrossProfit).attr('data-init-money', String(newGrossProfit));
-                    }
-                    //
-                    let eleNetIncome = $('#report-revenue-net-income');
-                    let currentNetIncome = eleNetIncome.attr('data-init-money');
-                    let rowNetIncome = row?.querySelector('.table-row-net-income')?.getAttribute('data-init-money');
-                    if (currentNetIncome && rowNetIncome) {
-                        let newNetIncome = parseFloat(currentNetIncome) + parseFloat(rowNetIncome);
-                    $(eleNetIncome).attr('data-init-money', String(newNetIncome));
-                    }
+                    // let eleRevenue = $('#report-revenue-revenue');
+                    // let currentRevenue = eleRevenue.attr('data-init-money');
+                    // let rowRevenue = row?.querySelector('.table-row-revenue')?.getAttribute('data-init-money');
+                    // if (currentRevenue && rowRevenue) {
+                    //     let newRevenue = parseFloat(currentRevenue) + parseFloat(rowRevenue);
+                    // $(eleRevenue).attr('data-init-money', String(newRevenue));
+                    // }
+                    // //
+                    // let eleGrossProfit = $('#report-revenue-gross-profit');
+                    // let currentGrossProfit = eleGrossProfit.attr('data-init-money');
+                    // let rowGrossProfit = row?.querySelector('.table-row-gross-profit')?.getAttribute('data-init-money');
+                    // if (currentGrossProfit && rowGrossProfit) {
+                    //     let newGrossProfit = parseFloat(currentGrossProfit) + parseFloat(rowGrossProfit);
+                    // $(eleGrossProfit).attr('data-init-money', String(newGrossProfit));
+                    // }
+                    // //
+                    // let eleNetIncome = $('#report-revenue-net-income');
+                    // let currentNetIncome = eleNetIncome.attr('data-init-money');
+                    // let rowNetIncome = row?.querySelector('.table-row-net-income')?.getAttribute('data-init-money');
+                    // if (currentNetIncome && rowNetIncome) {
+                    //     let newNetIncome = parseFloat(currentNetIncome) + parseFloat(rowNetIncome);
+                    // $(eleNetIncome).attr('data-init-money', String(newNetIncome));
+                    // }
                 },
                 drawCallback: function () {
                     // mask money
@@ -134,11 +126,6 @@ $(function () {
                 },
             });
         }
-
-        loadDbl();
-
-        boxGroup.initSelect2({});
-        loadBoxEmployee();
 
         function loadBoxEmployee() {
             if (boxGroup.val()) {
@@ -158,6 +145,34 @@ $(function () {
             }
         }
 
+        function loadTotal() {
+            let newRevenue = 0;
+            let newGrossProfit = 0;
+            let newNetIncome = 0;
+            $table.DataTable().rows().every(function () {
+                let row = this.node();
+                let rowRevenue = row?.querySelector('.table-row-revenue')?.getAttribute('data-init-money');
+                let rowGrossProfit = row?.querySelector('.table-row-gross-profit')?.getAttribute('data-init-money');
+                let rowNetIncome = row?.querySelector('.table-row-net-income')?.getAttribute('data-init-money');
+                if (rowRevenue) {
+                    newRevenue += parseFloat(rowRevenue);
+                }
+                if (rowGrossProfit) {
+                    newGrossProfit += parseFloat(rowGrossProfit);
+                }
+                if (rowNetIncome) {
+                    newNetIncome += parseFloat(rowNetIncome);
+                }
+            });
+            eleRevenue.attr('data-init-money', String(newRevenue));
+            eleGrossProfit.attr('data-init-money', String(newGrossProfit));
+            eleNetIncome.attr('data-init-money', String(newNetIncome));
+        }
+
+        loadDbl();
+
+        boxGroup.initSelect2({'allowClear': true,});
+        loadBoxEmployee();
 
         // run datetimepicker
         $('input[type=text].date-picker').daterangepicker({
@@ -177,7 +192,46 @@ $(function () {
             boxEmployee.empty();
             loadBoxEmployee();
             $table.DataTable().clear().draw();
+            loadTotal();
         });
+
+        boxEmployee.on('change', function() {
+            $table.DataTable().clear().draw();
+            loadTotal();
+        });
+
+        btnView.on('click', function () {
+            let groupID = null;
+            let employeeID = null;
+            if (boxGroup.val()) {
+                groupID = boxGroup.val();
+            }
+            if (boxEmployee.val()) {
+                employeeID = boxEmployee.val()
+            }
+            $.fn.callAjax2({
+                    'url': $table.attr('data-url'),
+                    'method': $table.attr('data-method'),
+                    'data': {
+                        'group_inherit_id': groupID,
+                        'employee_inherit_id': employeeID
+                    },
+                    // 'isDropdown': true,
+                }
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('report_revenue_list') && Array.isArray(data.report_revenue_list)) {
+                            $table.DataTable().clear().draw();
+                            $table.DataTable().rows.add(data.report_revenue_list).draw();
+                            loadTotal();
+                        }
+                    }
+                }
+            )
+        });
+
 
     });
 });

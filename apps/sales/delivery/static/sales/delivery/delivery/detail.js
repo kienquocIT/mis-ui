@@ -34,6 +34,7 @@ $(async function () {
         contentModalHandle(idx, config, prod_data) {
             const _this = this
             let url = $url.attr('data-product-warehouse')
+            let $form = $('#delivery_form');
 
             $.fn.callAjax2({
                 'url': url,
@@ -204,15 +205,19 @@ $(async function () {
                             class: 'w-20 text-center',
                             data: 'picked',
                             render: (row, type, data, meta) => {
-                                let disabled = data.product_amount <= 0 ? 'disabled' : '';
-                                // condition 1 for config 3, condition 2 for config 4
-                                if (config.is_picking && !config.is_partial_ship ||
-                                    (config.is_picking && config.is_partial_ship && data.picked_ready === 0)
-                                ) disabled = 'disabled';
-                                if ([1, 2].includes(prod_data?.['product_data']?.['general_traceability_method'])) {
-                                    disabled = 'disabled';
+                                if ($form.attr('data-method') === 'PUT') {
+                                    let disabled = data.product_amount <= 0 ? 'disabled' : '';
+                                    // condition 1 for config 3, condition 2 for config 4
+                                    if (config.is_picking && !config.is_partial_ship ||
+                                        (config.is_picking && config.is_partial_ship && data.picked_ready === 0)
+                                    ) disabled = 'disabled';
+                                    if ([1, 2].includes(prod_data?.['product_data']?.['general_traceability_method'])) {
+                                        disabled = 'disabled';
+                                    }
+                                    return `<input class="form-control table-row-picked" type="number" id="warehouse_stock-${meta.row}" value="${row}" ${disabled}>`;
+                                } else {
+                                    return `<input class="form-control table-row-picked" type="number" id="warehouse_stock-${meta.row}" value="${row}" disabled>`;
                                 }
-                                return `<input class="form-control table-row-picked" type="number" id="warehouse_stock-${meta.row}" value="${row}" ${disabled}>`;
                             }
                         },
                         {
@@ -543,6 +548,7 @@ $(async function () {
         }
 
         dataTableTableLot(data) {
+            let $form = $('#delivery_form');
             let tableLot = $('#datable-delivery-wh-lot');
             tableLot.not('.dataTable').DataTableDefault({
                 data: data ? data : [],
@@ -595,7 +601,11 @@ $(async function () {
                         class: 'text-center',
                         data: 'quantity_delivery',
                         render: (row, type, data, meta) => {
-                            return `<input class="form-control table-row-quantity-delivery" type="number" value="${row ? row : 0}">`;
+                            if ($form.attr('data-method') === 'PUT') {
+                                return `<input class="form-control table-row-quantity-delivery" type="number" value="${row ? row : 0}">`;
+                            } else {
+                                return `<input class="form-control table-row-quantity-delivery" type="number" value="${row ? row : 0}" disabled>`;
+                            }
                         }
                     },
                 ],
@@ -613,6 +623,7 @@ $(async function () {
         };
 
         dataTableTableSerial(data) {
+            let $form = $('#delivery_form');
             let tableLot = $('#datable-delivery-wh-serial');
             tableLot.not('.dataTable').DataTableDefault({
                 data: data ? data : [],
@@ -624,8 +635,9 @@ $(async function () {
                         targets: 0,
                         render: (data, type, row) => {
                             let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
-                            if (row?.['is_checked'] === true) {
-                               return `<div class="form-check">
+                            if ($form.attr('data-method') === 'PUT') {
+                                if (row?.['is_checked'] === true) {
+                                    return `<div class="form-check">
                                         <input
                                             type="checkbox"
                                             class="form-check-input table-row-checkbox"
@@ -634,8 +646,8 @@ $(async function () {
                                             checked
                                         >
                                     </div>`;
-                            }
-                            return `<div class="form-check">
+                                }
+                                return `<div class="form-check">
                                         <input
                                             type="checkbox"
                                             class="form-check-input table-row-checkbox"
@@ -643,6 +655,29 @@ $(async function () {
                                             data-row="${dataRow}"
                                         >
                                     </div>`;
+                            } else {
+                                if (row?.['is_checked'] === true) {
+                                    return `<div class="form-check">
+                                        <input
+                                            type="checkbox"
+                                            class="form-check-input table-row-checkbox"
+                                            data-id="${row?.['id']}"
+                                            data-row="${dataRow}"
+                                            checked
+                                            disabled
+                                        >
+                                    </div>`;
+                                }
+                                return `<div class="form-check">
+                                        <input
+                                            type="checkbox"
+                                            class="form-check-input table-row-checkbox"
+                                            data-id="${row?.['id']}"
+                                            data-row="${dataRow}"
+                                            disabled
+                                        >
+                                    </div>`;
+                            }
                         }
                     },
                     {

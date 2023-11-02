@@ -95,31 +95,6 @@ $(function () {
                         }
                     },
                 ],
-                rowCallback: (row, data) => {
-                    // let eleRevenue = $('#report-revenue-revenue');
-                    // let currentRevenue = eleRevenue.attr('data-init-money');
-                    // let rowRevenue = row?.querySelector('.table-row-revenue')?.getAttribute('data-init-money');
-                    // if (currentRevenue && rowRevenue) {
-                    //     let newRevenue = parseFloat(currentRevenue) + parseFloat(rowRevenue);
-                    // $(eleRevenue).attr('data-init-money', String(newRevenue));
-                    // }
-                    // //
-                    // let eleGrossProfit = $('#report-revenue-gross-profit');
-                    // let currentGrossProfit = eleGrossProfit.attr('data-init-money');
-                    // let rowGrossProfit = row?.querySelector('.table-row-gross-profit')?.getAttribute('data-init-money');
-                    // if (currentGrossProfit && rowGrossProfit) {
-                    //     let newGrossProfit = parseFloat(currentGrossProfit) + parseFloat(rowGrossProfit);
-                    // $(eleGrossProfit).attr('data-init-money', String(newGrossProfit));
-                    // }
-                    // //
-                    // let eleNetIncome = $('#report-revenue-net-income');
-                    // let currentNetIncome = eleNetIncome.attr('data-init-money');
-                    // let rowNetIncome = row?.querySelector('.table-row-net-income')?.getAttribute('data-init-money');
-                    // if (currentNetIncome && rowNetIncome) {
-                    //     let newNetIncome = parseFloat(currentNetIncome) + parseFloat(rowNetIncome);
-                    // $(eleNetIncome).attr('data-init-money', String(newNetIncome));
-                    // }
-                },
                 drawCallback: function () {
                     // mask money
                     $.fn.initMaskMoney2();
@@ -130,7 +105,7 @@ $(function () {
         function loadBoxEmployee() {
             if (boxGroup.val()) {
                 boxEmployee.initSelect2({
-                    'dataParams': {'group__id': boxGroup.val()},
+                    'dataParams': {'group_id': boxGroup.val()},
                     callbackTextDisplay: function (item) {
                         return item?.['full_name'] || '';
                     },

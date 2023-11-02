@@ -74,12 +74,6 @@ function loadDetailAdvancePayment(id, type = 'create') {
             if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('advance_payment_detail')) {
                 let ele_beneficiary = $('#chooseBeneficiary');
                 ele_beneficiary.empty();
-                let sale_code_ele = $('[name="sale_code"]');
-                if (data?.['advance_payment_detail']?.['sale_code_relate']?.['opportunity_linked'].hasOwnProperty('code')) {
-                    sale_code_ele.val(data?.['advance_payment_detail']?.['sale_code_relate']?.['opportunity_linked'].code);
-                } else {
-                    sale_code_ele.val('');
-                }
                 ReturnAdvanceLoadPage.loadBeneficiary(ele_beneficiary, data?.['advance_payment_detail'].beneficiary)
                 loadDetailBeneficiary(data?.['advance_payment_detail'].beneficiary.id);
 
@@ -204,6 +198,22 @@ class ReturnAdvanceLoadPage {
                 return list_result
             }
         }).on('change', function () {
+            let obj_selected = JSON.parse($('#' + $(this).attr('data-idx-data-loaded')).text())[$(this).val()];
+            console.log(obj_selected)
+            let sale_code_mapped = null
+            if (Object.keys(obj_selected?.['opportunity_mapped']).length !== 0) {
+                sale_code_mapped = obj_selected?.['opportunity_mapped']
+            }
+            if (Object.keys(obj_selected?.['quotation_mapped']).length !== 0) {
+                sale_code_mapped = obj_selected?.['quotation_mapped']
+            }
+            if (Object.keys(obj_selected?.['sale_order_mapped']).length !== 0) {
+                sale_code_mapped = obj_selected?.['sale_order_mapped']
+            }
+            console.log(sale_code_mapped)
+            if (sale_code_mapped !== null) {
+                $('#inp-sale-code').val(sale_code_mapped.code)
+            }
             loadDetailAdvancePayment($(this).val())
         });
     }
@@ -247,6 +257,19 @@ function loadDetail(id, frmDetail) {
             $('.header-code').text(return_advance_detail.code);
             $('[name="title"]').val(return_advance_detail.title);
             ReturnAdvanceLoadPage.loadAdvancePayment(choose_AP_ele, return_advance_detail.advance_payment, {});
+            let sale_code_mapped =null;
+            if (Object.keys(return_advance_detail.advance_payment?.['opportunity_mapped']).length !== 0) {
+                sale_code_mapped = return_advance_detail.advance_payment?.['opportunity_mapped']
+            }
+            if (Object.keys(return_advance_detail.advance_payment?.['quotation_mapped']).length !== 0) {
+                sale_code_mapped = return_advance_detail.advance_payment?.['quotation_mapped']
+            }
+            if (Object.keys(return_advance_detail.advance_payment?.['sale_order_mapped']).length !== 0) {
+                sale_code_mapped = return_advance_detail.advance_payment?.['sale_order_mapped']
+            }
+            if (sale_code_mapped !== null) {
+                $('#inp-sale-code').val(sale_code_mapped.code)
+            }
             loadDetailAdvancePayment(return_advance_detail.advance_payment.id, 'detail');
             loadCreator(return_advance_detail.employee_created);
             $('[name="date_created"]').val(return_advance_detail.date_created.split(" ")[0]);

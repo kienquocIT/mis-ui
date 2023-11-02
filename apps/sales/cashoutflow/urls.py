@@ -10,7 +10,7 @@ urlpatterns = [
     path('advances-payments', AdvancePaymentList.as_view(), name='AdvancePaymentList'),
     path('advances-payments/api', AdvancePaymentListAPI.as_view(), name='AdvancePaymentListAPI'),
     path('advance-payment/create', AdvancePaymentCreate.as_view(), name='AdvancePaymentCreate'),
-    path('advance-payment/<str:pk>', AdvancePaymentDetail.as_view(), name='AdvancePaymentDetail'),
+    path('advance-payment/detail/<str:pk>', AdvancePaymentDetail.as_view(), name='AdvancePaymentDetail'),
     path('advance-payment/api/<str:pk>', AdvancePaymentDetailAPI.as_view(), name='AdvancePaymentDetailAPI')
 ] + [
     path('return-advances', ReturnAdvanceList.as_view(), name='ReturnAdvanceList'),
@@ -25,7 +25,7 @@ urlpatterns = [
     path('payments/api', PaymentListAPI.as_view(), name='PaymentListAPI'),
     path('payment-config/api', PaymentConfigListAPI.as_view(), name='PaymentConfigListAPI'),
     path('payment/create', PaymentCreate.as_view(), name='PaymentCreate'),
-    path('payment/<str:pk>', PaymentDetail.as_view(), name='PaymentDetail'),
+    path('payment/detail/<str:pk>', PaymentDetail.as_view(), name='PaymentDetail'),
     path('payment/api/<str:pk>', PaymentDetailAPI.as_view(), name='PaymentDetailAPI'),
     path('payment-cost-items-list', PaymentCostItemsListAPI.as_view(), name='PaymentCostItemsListAPI'),
 ]

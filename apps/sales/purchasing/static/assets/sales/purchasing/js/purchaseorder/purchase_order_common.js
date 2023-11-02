@@ -431,6 +431,7 @@ class POLoadDataHandle {
                     }
                 )
             } else {
+                tablePurchaseQuotation.DataTable().clear().draw();
                 POLoadDataHandle.loadDataShowPurchaseQuotation();
                 POLoadDataHandle.loadPriceListByPurchaseQuotation();
             }
@@ -511,20 +512,22 @@ class POLoadDataHandle {
     static loadDataWhenRemovePQ(ele) {
         let removeID = ele.getAttribute('data-id');
         let table = $('#datable-purchase-quotation');
-        let eleCheckbox = ele.closest('.inline-elements-badge').querySelector('.checkbox-quotation');
-        if (eleCheckbox.checked === true) {
-            eleCheckbox.checked = false;
-            POLoadDataHandle.loadUpdateDataPQ(eleCheckbox);
-            POLoadDataHandle.loadSupplierContactByCheckedQuotation(eleCheckbox);
-            POLoadDataHandle.loadCheckProductsByCheckedQuotation(eleCheckbox);
-        }
-        for (let eleChecked of table[0].querySelectorAll('.table-row-checkbox:checked')) {
-            if (eleChecked.getAttribute('data-id') === removeID) {
-                eleChecked.checked = false;
+        let eleCheckbox = ele?.closest('.chip')?.querySelector('.checkbox-quotation');
+        if (eleCheckbox) {
+            if (eleCheckbox.checked === true) {
+                eleCheckbox.checked = false;
+                POLoadDataHandle.loadUpdateDataPQ(eleCheckbox);
+                POLoadDataHandle.loadSupplierContactByCheckedQuotation(eleCheckbox);
+                POLoadDataHandle.loadCheckProductsByCheckedQuotation(eleCheckbox);
             }
+            for (let eleChecked of table[0].querySelectorAll('.table-row-checkbox:checked')) {
+                if (eleChecked.getAttribute('data-id') === removeID) {
+                    eleChecked.checked = false;
+                }
+            }
+            POLoadDataHandle.loadDataShowPurchaseQuotation();
+            POLoadDataHandle.loadPriceListByPurchaseQuotation();
         }
-        POLoadDataHandle.loadDataShowPurchaseQuotation();
-        POLoadDataHandle.loadPriceListByPurchaseQuotation();
     };
 
     static loadTableProductByPurchaseRequest() {

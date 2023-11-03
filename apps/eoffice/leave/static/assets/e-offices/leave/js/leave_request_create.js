@@ -11,7 +11,7 @@ $(document).ready(function () {
             format: 'DD/MM/YYYY'
         },
         maxYear: parseInt(moment().format('YYYY'), 10),
-    }).val('').trigger('change')
+    })
 
     // I. first of all load employee inherit dropdown, prepare for available list and detail tab list
     const dataEmp = JSON.parse($('#employee_current').text())

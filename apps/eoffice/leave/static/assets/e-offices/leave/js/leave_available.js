@@ -1,18 +1,22 @@
 $(document).ready(function () {
     // declare variable scope
     const $urlElm = $('#url-factory')
-    const $EmplTable = $('#employee_tbl')
+    const $EmTable = $('#employee_tbl')
     const $AvlList = $('#employee_available_detail_tbl')
     const $AvlHistoryList = $('#employee_adjust_history_tb')
     const $editForm = $('#edit_available_form')
 
     class EmployeeHandle {
         static LoadList() {
-            let tbl = $EmplTable.DataTableDefault({
+            let tbl = $EmTable.DataTableDefault({
                 ajax: {
                     url: $urlElm.attr('data-employee-list'),
                     type: "GET",
                     dataSrc: 'data.employee_list',
+                    data: function (a) {
+                        a.list_from_leave = 1
+                        return a
+                    },
                 },
                 responsive: true,
                 useDataServer: true,
@@ -21,20 +25,22 @@ $(document).ready(function () {
                 columns: [
                     {
                         data: 'code',
-                        render: (row, type, data) => {
+                        render: (row) => {
                             return row
                         }
                     },
                     {
                         data: 'full_name',
-                        render: (row, type, data) => {
+                        render: (row) => {
                             return `${row ? row : '--'}`
                         }
                     },
                     {
                         data: 'group',
-                        render: (row, type, data) => {
-                            return `${row ? row?.title : "--"}`
+                        render: (row) => {
+                            let txt = '--'
+                            if (row?.title) txt = row.title
+                            return `${txt}`
                         }
                     },
                 ],
@@ -66,56 +72,56 @@ $(document).ready(function () {
                     columns: [
                         {
                             data: 'leave_type',
-                            render: (row, type, data) => {
+                            render: (row) => {
                                 return row ? row?.title : '--'
                             }
                         },
                         {
                             data: 'open_year',
-                            render: (row, type, data) => {
+                            render: (row) => {
                                 return row ? row : '--'
                             }
                         },
                         {
                             data: 'total',
-                            render: (row, type, data) => {
+                            render: (row) => {
                                 return row
                             }
                         },
                         {
                             data: 'used',
-                            render: (row, type, data) => {
+                            render: (row) => {
                                 return row
                             }
                         },
                         {
                             data: 'available',
-                            render: (row, type, data) => {
+                            render: (row) => {
                                 return row
                             }
                         },
                         {
                             data: 'expiration_date',
-                            render: (row, type, data) => {
+                            render: (row) => {
                                 return row ? moment(row, 'YYYY-MM-DD').format('DD/MM/YYYY') : '--'
                             }
                         },
                         {
                             data: 'id',
-                            render: function (row, type, data) {
+                            render: () => {
                                 let html = $($('.adjust_btn').html())
                                 return html.prop('outerHTML')
                             }
                         }
                     ],
-                    rowCallback: (row, data, index) => {
+                    rowCallback: (row, data) => {
                         $('.btn-adjust-row', row).on('click', () => {
                             $editForm[0].reset()
                             $('input[name="id"]').val(data.id)
                             $('#inputTotal').val(data.total)
                             $('#inputAdjustedTotal').val(data.total)
                             $('input[name="employee_inherit"]').val(
-                                $EmplTable.DataTable().rows('.selected').data().toArray()[0]['id'])
+                                $EmTable.DataTable().rows('.selected').data().toArray()[0]['id'])
                             if (data.expiration_date !== null) {
                                 const exprElm = $('#inputExpirationDate')
                                 if (data.leave_type.code !== 'AN' && data.leave_type.code !== 'ANPY') exprElm.prop('disabled', false)
@@ -140,43 +146,56 @@ $(document).ready(function () {
                     columns: [
                         {
                             data: 'leave_available',
-                            render: (row, type, data) => {
+                            render: (row) => {
                                 return row ? row?.title : '--'
                             }
                         },
                         {
-                            data: 'open_year',
-                            render: (row, type, data) => {
+                            data: 'type_arises',
+                            render: (row) => {
                                 return row ? row : '--'
                             }
                         },
                         {
+                            data: 'open_year',
+                            render: (row) => {
+                                const list = [
+                                    'primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light', 'dark'
+                                ]
+                                const no = Math.floor(Math.random() * 8)
+                                return row ? `<span class="badge badge-${list[no]}">${row}</span>` : '--'
+                            }
+                        },
+                        {
                             data: 'total',
-                            render: (row, type, data) => {
+                            render: (row) => {
                                 return row
                             }
                         },
                         {
                             data: 'action',
-                            render: (row, type, data) => {
-                                return act_list[row]
+                            render: (row) => {
+                                let txt = `${act_list[row]} <i class="fa-solid fa-arrow-trend-up text-green"></i>`
+                                if (row === "2")
+                                    txt = `${act_list[row]} <i class="fa-solid fa-arrow-trend-down text-red"></i>`
+                                return txt
                             }
                         },
                         {
                             data: 'quantity',
-                            render: (row, type, data) => {
+                            render: (row) => {
                                 return row
                             }
                         },
                         {
                             data: 'date_modified',
-                            render: (row, type, data) => {
+                            render: (row) => {
                                 return row ? moment(row, 'YYYY-MM-DD').format('DD/MM/YYYY') : '--'
                             }
                         }
                     ]
                 })
-                $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
+                $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function () {
                     $AvlHistoryList.DataTable.tables({visible: true, api: true}).columns.adjust();
                 });
             }
@@ -227,16 +246,17 @@ $(document).ready(function () {
     // first time load table employee list
     EmployeeHandle.LoadList()
 
-    // modal on change action,qunatity form field
+    // modal on change action,quantity form field
+    const $inputQuantity = $('#inputQuantity')
     function commonTwoAction() {
         const expression = $('#selectAction option:selected').val()
-        let isValue = $('#inputQuantity').val()
+        let isValue = $inputQuantity.val()
         if (expression === '1')
             $('#inputAdjustedTotal').val(parseFloat($('#inputTotal').val()) + parseFloat(isValue))
         else $('#inputAdjustedTotal').val(parseFloat($('#inputTotal').val()) - parseFloat(isValue))
     }
 
-    $('#inputQuantity').on('blur', commonTwoAction)
+    $inputQuantity.on('blur', commonTwoAction)
     $('#selectAction').on('change', commonTwoAction)
 
     // on close modal

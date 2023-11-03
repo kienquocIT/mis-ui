@@ -4482,8 +4482,8 @@ msgid "Allow view this opportunity"
 msgstr "Cho phép xem chi tiết Cơ Hội Kinh Doanh này"
 
 #
-msgid "Allow add member"
-msgstr "Cho phép thêm thành viên"
+msgid "Allow add and change permission member"
+msgstr "Cho phép thêm và chỉnh sửa quyền cho thành viên"
 
 #
 msgid "The picklists in this section will be affected by each other when the value of an item changes."
@@ -4588,3 +4588,7 @@ msgstr "Buổi tối vui vẻ"
 #
 msgid "Have a relaxing and enjoyable evening."
 msgstr "Chúc bạn một buổi tối thư giãn và vui vẻ."
+
+#
+msgid "My Website"
+msgstr "Website của tôi"

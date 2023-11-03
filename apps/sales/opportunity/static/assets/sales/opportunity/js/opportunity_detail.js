@@ -1,4 +1,5 @@
 $(document).ready(function () {
+    let opportunity_detail_data = null;
     const pk = $.fn.getPkDetail()
     const frmDetail = $('#frm-detail');
     let dataUrlEle = $('#url-factory');
@@ -23,6 +24,8 @@ $(document).ready(function () {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 let opportunity_detail = data?.['opportunity'];
+                opportunity_detail_data = opportunity_detail;
+
                 $x.fn.renderCodeBreadcrumb(opportunity_detail);
                 await OpportunityLoadDetail.loadDetailCommon(opportunity_detail);
 
@@ -63,7 +66,50 @@ $(document).ready(function () {
 
     toggleShowActivity();
 
-    $('#date-input').daterangepicker({
+    // for call log
+
+    let table_timeline = $('#table-timeline');
+
+    let call_log_Opp_slb = $('#sale-code-select-box');
+    let date_input = $('#date-input');
+    let customer_slb = $('#account-select-box');
+    let contact_slb = $('#contact-select-box');
+
+    function loadSaleCodeListCallLog() {
+        call_log_Opp_slb.prop('disabled', true);
+        call_log_Opp_slb.html(``);
+        call_log_Opp_slb.append(`<option selected value="${opportunity_detail_data.id}">(${opportunity_detail_data.code})&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${opportunity_detail_data.title}</option>`);
+        call_log_Opp_slb.initSelect2();
+    }
+
+    function loadCustomerList() {
+        customer_slb.prop('disabled', true);
+        customer_slb.html(``);
+        customer_slb.append(`<option selected value="${opportunity_detail_data.customer.id}">${opportunity_detail_data.customer.name}</option>`);
+        customer_slb.initSelect2();
+    }
+
+    function loadContactList() {
+        let contact_list = opportunity_detail_data.customer.contact_mapped;
+        contact_slb.html(``);
+        contact_slb.append(`<option></option>`)
+        for (let i = 0; i < contact_list.length; i++) {
+            contact_slb.append(`<option value="${contact_list[i].id}">${contact_list[i].fullname}</option>`)
+        }
+        contact_slb.initSelect2();
+    }
+
+    $('.create-new-call-log-button').on('click', function () {
+        $('#subject-input').val('');
+        date_input.val('');
+        $('#result-text-area').val('');
+
+        loadSaleCodeListCallLog();
+        loadCustomerList();
+        loadContactList();
+    })
+
+    date_input.daterangepicker({
         singleDatePicker: true,
         timePicker: true,
         showDropdowns: true,
@@ -75,6 +121,481 @@ $(document).ready(function () {
         "cancelClass": "btn-secondary",
         maxYear: parseInt(moment().format('YYYY'), 10) + 100
     });
+
+    function combinesData_CallLog(frmEle) {
+        let frm = new SetupFormSubmit($(frmEle));
+
+        frm.dataForm['subject'] = $('#subject-input').val();
+        frm.dataForm['opportunity'] = call_log_Opp_slb.val();
+        frm.dataForm['customer'] = customer_slb.val();
+        frm.dataForm['contact'] = contact_slb.val();
+        frm.dataForm['call_date'] = date_input.val();
+        frm.dataForm['input_result'] = $('#result-text-area').val();
+        if ($('#repeat-activity').is(':checked')) {
+            frm.dataForm['repeat'] = 1;
+        }
+        else {
+            frm.dataForm['repeat'] = 0;
+        }
+
+        return {
+            url: frm.dataUrl,
+            method: frm.dataMethod,
+            data: frm.dataForm,
+            urlRedirect: frm.dataUrlRedirect,
+        };
+    }
+
+    $('#form-create-new-call-log').submit(function (event) {
+        event.preventDefault();
+        let combinesData = new combinesData_CallLog($(this));
+        if (combinesData) {
+            $.fn.callAjax2(combinesData)
+                .then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            $.fn.notifyB({description: "Successfully"}, 'success')
+                            $('#create-new-call-log').hide();
+                            callAjaxToLoadTimeLineList();
+                        }
+                    },
+                    (errs) => {
+                        $.fn.notifyB({description: errs.data.errors}, 'failure');
+                    }
+                )
+        }
+    })
+
+    $(document).on('click', '#table-timeline .detail-call-log-button', function () {
+        let call_log_id = $(this).attr('data-id');
+        let call_log_detail = $.fn.callAjax2({url: $('#detail-call-log').attr('data-url').replace(0, call_log_id), method: 'GET'}).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && typeof data === 'object' && data.hasOwnProperty('opportunity_call_log_detail')) {
+                    return data?.['opportunity_call_log_detail'];
+                }
+                return {};
+            },
+            (errs) => {
+                console.log(errs);
+            }
+        )
+        Promise.all([call_log_detail]).then(
+            (results) => {
+                let call_log_obj = results[0];
+                $('#detail-subject-input').val(call_log_obj.subject);
+
+                $('#detail-sale-code-select-box option').remove();
+                $('#detail-sale-code-select-box').append(`<option selected>(${call_log_obj.opportunity.code})&nbsp;&nbsp;&nbsp;${call_log_obj.opportunity.title}</option>`);
+
+                $('#detail-account-select-box option').remove();
+                $('#detail-account-select-box').append(`<option selected>${call_log_obj.opportunity.customer.title}</option>`);
+
+                $('#detail-contact-select-box option').remove();
+                $('#detail-contact-select-box').append(`<option selected>${call_log_obj.contact.fullname}</option>`);
+
+                $('#detail-date-input').val(call_log_obj.call_date.split(' ')[0]);
+                $('#detail-repeat-activity').prop('checked', call_log_obj.repeat);
+                $('#detail-result-text-area').val(call_log_obj.input_result);
+            })
+    })
+
+    $(document).on('click', '#table-timeline .delete-call-log-button', function () {
+        let call_log_id = $(this).attr('data-id');
+        $.fn.callAjax2({url: table_timeline.attr('data-url-delete-call-log').replace(0, call_log_id), method: 'DELETE'}).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    $.fn.notifyB({description: "Successfully"}, 'success')
+                    callAjaxToLoadTimeLineList();
+                }
+            },
+            (errs) => {
+                $.fn.notifyB({description: errs.data.errors}, 'failure');
+            }
+        )
+    })
+
+    // for send email.
+
+    let email_Opp_slb = $('#email-sale-code-select-box');
+    let email_to_slb = $('#email-to-select-box');
+    let email_cc_slb = $('#email-cc-select-box');
+
+    function loadSaleCodeListEmail() {
+        email_Opp_slb.prop('disabled', true);
+        email_Opp_slb.html(``);
+        email_Opp_slb.append(`<option selected value="${opportunity_detail_data.id}">(${opportunity_detail_data.code})&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${opportunity_detail_data.title}</option>`);
+        email_Opp_slb.initSelect2();
+    }
+
+    function loadEmailToList(contact_list) {
+        email_to_slb.html(``);
+        for (let i = 0; i < contact_list.length; i++) {
+            let item = contact_list[i];
+            if (item.email !== null) {
+                email_to_slb.append(`<option value="${item.email}" data-bs-toggle="tooltip" data-bs-placement="top" title="${item.fullname}">${item.email}</option>`);
+            }
+        }
+        email_to_slb.select2({
+            dropdownParent: $("#send-email"),
+            tags: true,
+            tokenSeparators: [',', ' ']
+        });
+    }
+
+    function loadEmailCcList(contact_list) {
+        email_cc_slb.html(``);
+        for (let i = 0; i < contact_list.length; i++) {
+            let item = contact_list[i];
+            if (item.email !== null) {
+                email_cc_slb.append(`<option value="${item.email}" data-bs-toggle="tooltip" data-bs-placement="top" title="${item.fullname}">${item.email}</option>`);
+            }
+        }
+        email_cc_slb.select2({
+            dropdownParent: $("#send-email"),
+            tags: true,
+            tokenSeparators: [',', ' ']
+        });
+    }
+
+    ClassicEditor
+        .create(document.querySelector('#email-content-area'))
+        .catch(error => {console.error(error);})
+
+    $('.send-email-button').on('click', function () {
+        $('#email-subject-input').val('');
+        $('#email-content-area').val('');
+
+        loadSaleCodeListEmail();
+        loadEmailToList(opportunity_detail_data.customer.contact_mapped);
+        loadEmailCcList(opportunity_detail_data.customer.contact_mapped);
+    })
+
+    function combinesData_Email(frmEle) {
+        let frm = new SetupFormSubmit($(frmEle));
+
+        frm.dataForm['subject'] = $('#email-subject-input').val();
+        frm.dataForm['opportunity'] = $('#email-sale-code-select-box option:selected').val();
+        frm.dataForm['email_to_list'] = email_to_slb.val();
+        frm.dataForm['email_cc_list'] = email_cc_slb.val();
+        frm.dataForm['content'] = $('#form-new-email .ck-content').html();
+
+        return {
+            url: frm.dataUrl,
+            method: frm.dataMethod,
+            data: frm.dataForm,
+            urlRedirect: frm.dataUrlRedirect,
+        };
+    }
+
+    $('#form-new-email').submit(function (event) {
+        event.preventDefault();
+        let combinesData = new combinesData_Email($(this));
+        if (combinesData) {
+            $.fn.callAjax2(combinesData)
+                .then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            $.fn.notifyB({description: "Successfully"}, 'success')
+                            $('#send-email').hide();
+                            callAjaxToLoadTimeLineList();
+                        }
+                    },
+                    (errs) => {
+                        $.fn.notifyB({description: errs.data.errors}, 'failure');
+                    }
+                )
+        }
+    })
+
+    $(document).on('click', '#table-timeline .detail-email-button', function () {
+        let email_id = $(this).attr('data-id');
+        let email_detail = $.fn.callAjax2({url: $('#detail-send-email').attr('data-url').replace(0, email_id), method: 'GET'}).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && typeof data === 'object' && data.hasOwnProperty('opportunity_email_detail')) {
+                    return data?.['opportunity_email_detail'];
+                }
+                return {};
+            },
+            (errs) => {
+                console.log(errs);
+            }
+        )
+        Promise.all([email_detail]).then(
+            (results) => {
+                let email_obj = results[0];
+                let detail_email_Opp_slb = $('#detail-email-sale-code-select-box')
+                let detail_email_to_slb = $('#detail-email-to-select-box')
+                let detail_email_cc_slb = $('#detail-email-cc-select-box')
+
+                $('#detail-email-subject-input').val(email_obj.subject);
+
+                detail_email_Opp_slb.html('');
+                detail_email_Opp_slb.append(`<option selected>(${email_obj.opportunity.code})&nbsp;&nbsp;&nbsp;${email_obj.opportunity.title}</option>`);
+
+                detail_email_to_slb.html('');
+                for (let i = 0; i < email_obj.email_to_list.length; i++) {
+                    detail_email_to_slb.append(`<option selected>${email_obj.email_to_list[i]}</option>`);
+                }
+
+                detail_email_cc_slb.html('');
+                for (let i = 0; i < email_obj.email_cc_list.length; i++) {
+                    detail_email_cc_slb.append(`<option selected>${email_obj.email_cc_list[i]}</option>`);
+                }
+
+                $('#detail-email-content-area').html(email_obj.content)
+            })
+    })
+
+    $(document).on('click', '#table-timeline .delete-email-button', function () {
+        let email_id = $(this).attr('data-id');
+        $.fn.callAjax2({url: table_timeline.attr('data-url-delete-email').replace(0, email_id), method:'DELETE'}).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    $.fn.notifyB({description: "Successfully"}, 'success')
+                    callAjaxToLoadTimeLineList();
+                }
+            },
+            (errs) => {
+                $.fn.notifyB({description: errs.data.errors}, 'failure');
+            }
+        )
+    })
+
+    // for meeting
+
+    let meeting_Opp_slb = $('#meeting-sale-code-select-box');
+    let meeting_address_slb = $('#meeting-address-select-box');
+    let meeting_customer_member_slb = $('#meeting-customer-member-select-box');
+    let meeting_employee_attended_slb = $('#meeting-employee-attended-select-box');
+    let meeting_date_input = $('#meeting-date-input');
+
+    function loadMeetingSaleCodeList() {
+        meeting_Opp_slb.prop('disabled', true);
+        meeting_Opp_slb.html(``);
+        meeting_Opp_slb.append(`<option selected value="${opportunity_detail_data.id}">(${opportunity_detail_data.code})&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${opportunity_detail_data.title}</option>`);
+        meeting_Opp_slb.initSelect2();
+    }
+
+    function loadMeetingAddress(shipping_address_list) {
+        meeting_address_slb.attr('disabled', false);
+        $('#meeting-address-select-box option').remove();
+        meeting_address_slb.initSelect2();
+        for (let i = 0; i < shipping_address_list.length; i++) {
+            if (shipping_address_list[i].is_default) {
+                meeting_address_slb.append(`<option selected>${shipping_address_list[i].full_address}</option>`);
+            }
+            else {
+                meeting_address_slb.append(`<option>${shipping_address_list[i].full_address}</option>`);
+            }
+        }
+    }
+
+    function loadCustomerMember(contact_list) {
+        meeting_customer_member_slb.attr('disabled', false);
+        $('#meeting-customer-member-select-box option').remove();
+        meeting_customer_member_slb.initSelect2();
+        for (let i = 0; i < contact_list.length; i++) {
+            meeting_customer_member_slb.append(`<option value="${contact_list[i].id}">${contact_list[i].fullname}</option>`)
+        }
+    }
+
+    function loadEmployeeAttended(data) {
+        meeting_employee_attended_slb.initSelect2({
+            ajax: {
+                url: meeting_employee_attended_slb.attr('data-url'),
+                method: 'GET',
+            },
+            data: (data ? data : null),
+            keyResp: 'employee_list',
+            keyId: 'id',
+            keyText: 'full_name',
+        })
+    }
+
+    meeting_date_input.daterangepicker({
+        singleDatePicker: true,
+        timePicker: true,
+        showDropdowns: true,
+        drops: 'down',
+        minYear: parseInt(moment().format('YYYY-MM-DD'), 10) - 1,
+        locale: {
+            format: 'YYYY-MM-DD'
+        },
+        "cancelClass": "btn-secondary",
+        maxYear: parseInt(moment().format('YYYY'), 10) + 100
+    });
+    meeting_date_input.val('');
+
+    $('#meeting-address-input-btn').on('click', function () {
+        $('#meeting-address-select-div').prop('hidden', true);
+        $('#meeting-address-input-div').prop('hidden', false);
+    })
+
+    $('#meeting-address-select-btn').on('click', function () {
+        $('#meeting-address-select-div').prop('hidden', false);
+        $('#meeting-address-input-div').prop('hidden', true);
+    })
+
+    $('.new-meeting-button').on('click', function () {
+        $('#meeting-subject-input').val('');
+        meeting_date_input.val('');
+        $('#meeting-room-location-input').val('');
+        $('#meeting-address-input').val('');
+        $('#meeting-result-text-area').val('');
+        $('#meeting-repeat-activity').attr('checked', false);
+        $('#meeting-address-select-div').prop('hidden', false);
+        $('#meeting-address-input-div').prop('hidden', true);
+        $('#meeting-employee-attended-select-box option').remove();
+
+        loadMeetingSaleCodeList();
+        loadMeetingAddress(opportunity_detail_data.customer.shipping_address);
+        loadCustomerMember(opportunity_detail_data.customer.contact_mapped);
+        loadEmployeeAttended();
+    })
+
+    function combinesData_Meeting(frmEle) {
+        let frm = new SetupFormSubmit($(frmEle));
+
+        frm.dataForm['subject'] = $('#meeting-subject-input').val();
+        frm.dataForm['opportunity'] = $('#meeting-sale-code-select-box option:selected').val();
+        frm.dataForm['meeting_date'] = meeting_date_input.val();
+        if ($('#meeting-address-select-div').is(':hidden')) {
+            frm.dataForm['meeting_address'] = $('#meeting-address-input').val();
+        }
+        else {
+            frm.dataForm['meeting_address'] = $('#meeting-address-select-box option:selected').val();
+        }
+        frm.dataForm['room_location'] = $('#meeting-room-location-input').val();
+        frm.dataForm['input_result'] = $('#meeting-result-text-area').val();
+
+        frm.dataForm['repeat'] = $('#repeat-activity').is(':checked') ? 1 : 0;
+
+        let employee_attended_list = [];
+        $('#meeting-employee-attended-select-box option:selected').each(function () {
+            employee_attended_list.push(
+                {
+                    'id': $(this).attr('value'),
+                    'code': $(this).attr('data-code'),
+                    'fullname': $(this).text()
+                }
+            )
+        })
+
+        let customer_member_list = [];
+        $('#meeting-customer-member-select-box option:selected').each(function () {
+            customer_member_list.push(
+                {
+                    'id': $(this).attr('value'),
+                    'fullname': $(this).text()
+                }
+            )
+        })
+
+        frm.dataForm['employee_attended_list'] = employee_attended_list;
+        frm.dataForm['customer_member_list'] = customer_member_list;
+
+        return {
+            url: frm.dataUrl,
+            method: frm.dataMethod,
+            data: frm.dataForm,
+            urlRedirect: frm.dataUrlRedirect,
+        };
+    }
+
+    $('#form-new-meeting').submit(function (event) {
+        event.preventDefault();
+        let combinesData = new combinesData_Meeting($(this));
+        if (combinesData) {
+            WindowControl.showLoading();
+            $.fn.callAjax2(combinesData)
+                .then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            $.fn.notifyB({description: "Successfully"}, 'success')
+                            $('#create-meeting').hide();
+                            callAjaxToLoadTimeLineList();
+                        }
+                    },
+                    (errs) => {
+                        $.fn.notifyB({description: errs.data.errors}, 'failure');
+                    }
+                )
+        }
+    })
+
+    $(document).on('click', '#table-timeline .detail-meeting-button', function () {
+        let meeting_id = $(this).attr('data-id');
+        let meeting_detail = $.fn.callAjax2({url: $('#detail-meeting').attr('data-url').replace(0, meeting_id), method: 'GET'}).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && typeof data === 'object' && data.hasOwnProperty('opportunity_meeting_detail')) {
+                    return data?.['opportunity_meeting_detail'];
+                }
+                return {};
+            },
+            (errs) => {
+                console.log(errs);
+            }
+        )
+        Promise.all([meeting_detail]).then(
+            (results) => {
+                let meeting_obj = results[0];
+                $('#detail-meeting-subject-input').val(meeting_obj.subject);
+
+                $('#detail-meeting-sale-code-select-box option').remove();
+                $('#detail-meeting-sale-code-select-box').append(`<option selected>(${meeting_obj.opportunity.code})&nbsp;&nbsp;&nbsp;${meeting_obj.opportunity.title}</option>`);
+
+                $('#detail-meeting-address-select-box option').remove();
+                $('#detail-meeting-address-select-box').append(`<option selected>${meeting_obj.meeting_address}</option>`);
+
+                $('#detail-meeting-room-location-input').val(meeting_obj.room_location);
+
+                let detail_meeting_employee_attended_slb = $('#detail-meeting-employee-attended-select-box');
+                $('#detail-meeting-employee-attended-select-box option').remove();
+                for (let i = 0; i < meeting_obj.employee_attended_list.length; i++) {
+                    let employee_attended_item = meeting_obj.employee_attended_list[i];
+                    detail_meeting_employee_attended_slb.append(`<option selected>${employee_attended_item.fullname}</option>`);
+                }
+                detail_meeting_employee_attended_slb.prop('disabled', true);
+
+                let detail_meeting_customer_member_slb = $('#detail-meeting-customer-member-select-box');
+                $('#detail-meeting-customer-member-select-box option').remove();
+                for (let i = 0; i < meeting_obj.customer_member_list.length; i++) {
+                    let customer_member_item = meeting_obj.customer_member_list[i];
+                    detail_meeting_customer_member_slb.append(`<option selected>${customer_member_item.fullname}</option>`);
+                }
+                detail_meeting_customer_member_slb.prop('disabled', true);
+
+                $('#detail-meeting-date-input').val(meeting_obj.meeting_date.split(' ')[0]);
+
+                $('#detail-repeat-activity').prop('checked', meeting_obj.repeat);
+
+                $('#detail-meeting-result-text-area').val(meeting_obj.input_result);
+            })
+    })
+
+    $(document).on('click', '#table-timeline .delete-meeting-button', function () {
+        let meeting_id = $(this).attr('data-id');
+        $.fn.callAjax2({url: table_timeline.attr('data-url-delete-meeting').replace(0, meeting_id), method: 'DELETE'}).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    $.fn.notifyB({description: "Successfully"}, 'success')
+                    callAjaxToLoadTimeLineList();
+                }
+            },
+            (errs) => {
+                $.fn.notifyB({description: errs.data.errors}, 'failure');
+            }
+        )
+    })
 
     // for task
 

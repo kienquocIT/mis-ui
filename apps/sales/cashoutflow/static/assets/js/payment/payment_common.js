@@ -18,16 +18,8 @@ opp_mapped_select.on('change', function () {
         sale_order_mapped_select.prop('disabled', true);
         quotation_mapped_select.prop('disabled', true);
 
-        let url_loaded = quotation_mapped_select.attr('data-url-opp-detail').replace(0, opp_mapped_select.val());
-        $.fn.callAjax(url_loaded, 'GET').then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    WFRTControl.setWFRuntimeID(data['opportunity']?.['workflow_runtime_id']);
-                    PaymentLoadQuotation(data['opportunity']['quotation']);
-                    PaymentLoadSaleOrder(data['opportunity']['sale_order']);
-                }
-            })
+        PaymentLoadQuotation(SelectDDControl.get_data_from_idx(opp_mapped_select, opp_mapped_select.val())['quotation']);
+        PaymentLoadSaleOrder(SelectDDControl.get_data_from_idx(opp_mapped_select, opp_mapped_select.val())['sale_order']);
     }
     else {
         quotation_mapped_select.prop('disabled', false);
@@ -359,7 +351,7 @@ function loadAPList() {
                     if (resp.data['advance_payment_list']) {
                         let result = [];
                         for (let i = 0; i < resp.data['advance_payment_list'].length; i++) {
-                            if (resp.data['advance_payment_list'][i]?.['remain_value'] > 0) {
+                            if (resp.data['advance_payment_list'][i]?.['remain_value'] > 0 && resp.data['advance_payment_list'][i]?.['beneficiary'] === initEmployee.id) {
                                 result.push(resp.data['advance_payment_list'][i])
                             }
                         }
@@ -1099,7 +1091,7 @@ function LoadDetailPayment() {
 
                 $('#created_date_id').val(data.date_created.split(' ')[0]);
 
-                PaymentLoadCreator(initEmployee)
+                PaymentLoadCreator(data.creator_name)
 
                 for (let i = 0; i < data?.['expense_items'].length; i++) {
                     let data_row = data?.['expense_items'][i];

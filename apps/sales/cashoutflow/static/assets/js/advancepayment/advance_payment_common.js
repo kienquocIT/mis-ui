@@ -40,16 +40,8 @@ opp_mapped_select.on('change', function () {
         sale_order_mapped_select.prop('disabled', true);
         quotation_mapped_select.prop('disabled', true);
         
-        let url_loaded = quotation_mapped_select.attr('data-url-opp-detail').replace(0, opp_mapped_select.val());
-        $.fn.callAjax(url_loaded, 'GET').then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    WFRTControl.setWFRuntimeID(data['opportunity']?.['workflow_runtime_id']);
-                    APLoadQuotation(data['opportunity']['quotation']);
-                    APLoadSaleOrder(data['opportunity']['sale_order']);
-                }
-            })
+        APLoadQuotation(SelectDDControl.get_data_from_idx(opp_mapped_select, opp_mapped_select.val())['quotation']);
+        APLoadSaleOrder(SelectDDControl.get_data_from_idx(opp_mapped_select, opp_mapped_select.val())['sale_order']);
     }
     else {
         quotation_mapped_select.prop('disabled', false);
@@ -771,7 +763,7 @@ function LoadDetailAP(option) {
 
                 $('#return_date_id').val(data.return_date.split(' ')[0])
 
-                APLoadCreator(initEmployee);
+                APLoadCreator(data.creator_name);
 
                 if (Object.keys(data?.['supplier']).length !== 0) {
                     APLoadSupplier(data?.['supplier'])

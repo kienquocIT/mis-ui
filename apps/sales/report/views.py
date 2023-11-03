@@ -28,5 +28,6 @@ class ReportRevenueListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.REPORT_REVENUE_LIST).get()
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.REPORT_REVENUE_LIST).get(data)
         return resp.auto_return(key_success='report_revenue_list')

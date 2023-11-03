@@ -805,6 +805,7 @@ class QuotationLoadDataHandle {
 
     // Load detail
     static loadDetailQuotation(data, is_copy = false) {
+        let form = document.getElementById('frm_quotation_create');
         if (data?.['title'] && is_copy === false) {
             document.getElementById('quotation-create-title').value = data?.['title'];
         }
@@ -860,9 +861,11 @@ class QuotationLoadDataHandle {
                     $btn[0].setAttribute('hidden', 'true');
                 }
             }
-            // check if is not finish then hidden btn delivery
+            // check if is not finish then hidden btn delivery (Sale Order)
             if (!['Added', 'Finish'].includes(data?.['system_status'])) {
-                $('#btnDeliverySaleOrder')[0].setAttribute('hidden', 'true');
+                if (form.classList.contains('sale-order')) {
+                    $('#btnDeliverySaleOrder')[0].setAttribute('hidden', 'true');
+                }
             }
             // check if is not finish then disable btn copy
             if (!['Added', 'Finish'].includes(data?.['system_status'])) {

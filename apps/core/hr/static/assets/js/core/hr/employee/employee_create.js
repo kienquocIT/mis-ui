@@ -14,6 +14,8 @@ $(document).ready(function () {
         {
             submitHandler: function (form, event) {
                 let ajaxConfig = EmployeeLoadPage.combinesForm($(form), false);
+                ajaxConfig['data']['permission_by_configured'] = new HandlePlanAppNew().combinesPermissions();
+                ajaxConfig['data']['plan_app'] = new HandlePlanAppNew().combinesPlanApp();
                 $.fn.callAjax2({
                     ...ajaxConfig,
                     isLoading: true,

@@ -384,7 +384,7 @@
                                         <div class="form-check form-switch">
                                             <input type="checkbox" class="form-check-input" id="enable-view-opp-member">
                                             <label class="form-check-label" for="enable-view-opp-member">
-                                                {% trans 'Allow view member' %}
+                                                {% trans 'Allow view this opportunity' %}
                                             </label>
                                         </div>
                                     </div>
@@ -403,11 +403,7 @@
                             <div class="separator separator-light m-0"></div>
                         </div>
                         <div class="row mb-2">
-                            {% include 'core/hr/extends_new/permission_group_tabs_has_change_app.html' with pk='__pk__' get_from='opportunity' active_tab='tab-permissions' actions_enabled=True permit_enabled=True %}
-                            <div class="separator separator-light m-0"></div>
-                            <div class="d-none">
-                                {% include 'core/hr/extends/permission_group_tabs.html' with range_allowed="1,4" plan_app_enabled=True permit_enabled=True actions_enabled=True add_new_enabled="true" warning_enabled="true" extend_action="sales/opportunity/extends/ext_actions.html" %}
-                            </div>
+                            {% include 'core/hr/extends_new/permission_group_tabs_has_change_app.html' with range_allowed="1,4" pk='__pk__' get_from='opportunity' active_tab='tab-permissions' actions_enabled=True permit_enabled=True %}
                         </div>
                     </div>
                 </div>

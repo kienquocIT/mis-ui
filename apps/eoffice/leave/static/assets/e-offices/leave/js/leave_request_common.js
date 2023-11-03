@@ -408,6 +408,7 @@ function submitHandleFunc() {
     WindowControl.showLoading();
     const frm = new SetupFormSubmit($FormElm);
     let formData = frm.dataForm;
+    if (frm.dataMethod.toLowerCase() === 'post') formData.system_status = 1
     formData.employee_inherit_id = $EmpElm.val()
     formData.detail_data = detailTab.get_data()
     formData.total = 0
@@ -428,7 +429,7 @@ function submitHandleFunc() {
     }).then(
         (resp) => {
             let data = $.fn.switcherResp(resp);
-            if (data && (data['status']  === 201 || data['status'] === 200)) {
+            if (data && (data['status'] === 201 || data['status'] === 200)) {
                 $.fn.notifyB({description: $('#base-trans-factory').attr('data-success')}, 'success');
                 setTimeout(() => {
                     window.location.replace($FormElm.attr('data-url-redirect'));

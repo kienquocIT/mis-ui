@@ -52,8 +52,8 @@ class EmployeeListAPI(APIView):
     @classmethod
     def params_custom(cls, request):
         params = request.query_params.dict()
-        if 'group__id' in params and not isinstance(
-                params['group__id'], uuid.UUID
+        if 'group__id' in params and not TypeCheck.check_uuid(
+                params['group__id']
         ) and request.user.employee_current_data.get('group', None):
             params['group__id'] = request.user.employee_current_data.get('group')
         return params

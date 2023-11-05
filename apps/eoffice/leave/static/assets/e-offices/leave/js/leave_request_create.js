@@ -11,7 +11,7 @@ $(document).ready(function () {
             format: 'DD/MM/YYYY'
         },
         maxYear: parseInt(moment().format('YYYY'), 10),
-    }).val('').trigger('change')
+    })
 
     // I. first of all load employee inherit dropdown, prepare for available list and detail tab list
     const dataEmp = JSON.parse($('#employee_current').text())
@@ -20,7 +20,9 @@ $(document).ready(function () {
         'full_name': dataEmp.full_name,
         'first_name': dataEmp.first_name,
         'last_name': dataEmp.last_name
-    })).initSelect2()
+    })).initSelect2().on('select2:select', function (e) {
+        $('#leave_detail_tbl').DataTable().clear().draw()
+    });
 
     // II. wait until dropdown employee inherit init loaded then trigger element
     // after trigger employee loaded common func will be run next function

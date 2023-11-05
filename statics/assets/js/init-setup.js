@@ -417,7 +417,7 @@ class NotifyController {
                                                 <small class="text-muted">${item?.['msg']}</small>
                                             </div>
                                             <div class="notifications-info">
-                                                 <span class="badge badge-soft-success">${item?.['doc_app']}</span>
+                                                 <span class="badge badge-soft-success noti-custom">${item?.['doc_app']}</span>
                                                  <div class="notifications-time">${item?.['date_created']}</div>
                                             </div>
                                         </div>
@@ -1928,6 +1928,10 @@ class UtilControl {
             });
         }
         return '_';
+    }
+
+    static checkNumber(dataStr){
+        return !isNaN(Number(dataStr))
     }
 }
 
@@ -3504,6 +3508,10 @@ class DocumentControl {
                     "Finish": "badge badge-soft-success",
                     "Cancel": "badge badge-soft-danger",
                 }
+                if ($x.fn.checkNumber(system_status)){
+                   const key = Object.keys(status_class);
+                   system_status = key[system_status]
+                }
                 $('#idx-breadcrumb-current-code').append(
                     `<span class="${status_class[system_status]}">${system_status}</span>`
                 ).removeClass('hidden');
@@ -3587,6 +3595,7 @@ let $x = {
 
         randomStr: UtilControl.generateRandomString,
         checkUUID4: UtilControl.checkUUID4,
+        checkNumber: UtilControl.checkNumber,
 
         removeEmptyValuesFromObj: UtilControl.removeEmptyValuesFromObj,
         getRandomArbitrary: UtilControl.getRandomArbitrary,

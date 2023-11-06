@@ -63,10 +63,8 @@
         <input id="url-member" value="{% url "EmployeeDetail" pk=0 %}">
     </diV>
     <div class="page-content">
-        <form
-                id="frm-detail" data-method="PUT" data-url="{% url 'OpportunityDetailAPI' pk=pk %}"
-                data-url-redirect="{% url "OpportunityList" %}"
-        >
+        <form id="frm-detail" data-method="PUT" data-url="{% url 'OpportunityDetailAPI' pk=pk %}"
+              data-url-redirect="{% url "OpportunityList" %}">
             {% csrf_token %}
             <div class="row">
                 <div class="col-md-12 col-lg-4 col-xl-3 border-right" id="group-general-info-opp">

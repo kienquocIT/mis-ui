@@ -105,3 +105,14 @@ class AdvancePaymentDetailAPI(APIView):
             resp.result['message'] = SaleMsg.ADVANCE_PAYMENT_UPDATE
             return resp.result, status.HTTP_200_OK
         return resp.auto_return()
+
+
+class AdvancePaymentCostListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.ADVANCE_PAYMENT_COST_LIST).get(data)
+        return resp.auto_return(key_success='advance_payment_cost_list')

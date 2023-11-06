@@ -22,6 +22,12 @@
     </button>
 {% endblock %}
 {% block pageContent %}
+    <script id="script-url"
+            data-url-ap-cost-list="{% url "AdvancePaymentCostListAPI" %}"
+            data-url-ap-mapped="{% url "AdvancePaymentListAPI" %}"
+            data-url-expense-quotation="{% url 'QuotationExpenseListAPI' %}"
+            data-url-expense-sale-order="{% url 'SaleOrderExpenseListAPI' %}">
+    </script>
     {{ data.data.employee_current | json_script:"employee_current" }}
     <form id="form-create-payment" data-method="POST"
           data-url-list="{% url 'AdvancePaymentListAPI' %}"
@@ -62,36 +68,36 @@
                     <div class="form-group">
                         <label class="form-label required" id="supplier-label">{% trans "Supplier name" %}</label>
                         <span class="input-affix-wrapper">
-                                <span class="input-prefix" id="supplier-detail-span" hidden>
-                                    <i class="fas fa-info-circle text-primary" aria-expanded="false" data-bs-toggle="dropdown"></i>
-                                    <span role="menu" class="dropdown-menu ml-4 pl-3 pr-3 pt-3 pb-3" style="width: 35rem">
-                                        <div class="row">
-                                            <span class="col-7" style="font-style: italic; font-weight: bold">{% trans "More information" %}</span>
-                                            <a id="btn-detail-supplier-tab" class="col-5 text-right" href="{% url 'AccountDetail' '0' %}" data-url="{% url 'AccountDetail' '0' %}" target="_blank">
-                                                <span class="badge btn-outline-primary">{% trans "More" %}&nbsp;<i class="bi bi-arrow-right"></i></span>
-                                            </a>
-                                        </div>
-                                        <div class="dropdown-divider"></div>
-                                        <div class="row">
-                                            <span class="col-3" style="font-style: italic">{% trans "Supplier" %}</span>
-                                            <span class="col-9 text-primary" id="supplier-name"></span>
-                                        </div>
-                                        <div class="row">
-                                            <span class="col-3" style="font-style: italic">{% trans "Code" %}</span>
-                                            <span class="col-9 text-primary" id="supplier-code"></span>
-                                        </div>
-                                        <div class="row">
-                                            <span class="col-3" style="font-style: italic">{% trans "Owner" %}</span>
-                                            <span class="col-9 text-primary" id="supplier-owner"></span>
-                                        </div>
-                                        <div class="row">
-                                            <span class="col-3" style="font-style: italic">{% trans "Industry" %}</span>
-                                            <span class="col-9 text-primary" id="supplier-industry"></span>
-                                        </div>
-                                    </span>
+                            <span class="input-prefix" id="supplier-detail-span" hidden>
+                                <i class="fas fa-info-circle text-primary" aria-expanded="false" data-bs-toggle="dropdown"></i>
+                                <span role="menu" class="dropdown-menu ml-4 pl-3 pr-3 pt-3 pb-3" style="width: 35rem">
+                                    <div class="row">
+                                        <span class="col-7" style="font-style: italic; font-weight: bold">{% trans "More information" %}</span>
+                                        <a id="btn-detail-supplier-tab" class="col-5 text-right" href="{% url 'AccountDetail' '0' %}" data-url="{% url 'AccountDetail' '0' %}" target="_blank">
+                                            <span class="badge btn-outline-primary">{% trans "More" %}&nbsp;<i class="bi bi-arrow-right"></i></span>
+                                        </a>
+                                    </div>
+                                    <div class="dropdown-divider"></div>
+                                    <div class="row">
+                                        <span class="col-3" style="font-style: italic">{% trans "Supplier" %}</span>
+                                        <span class="col-9 text-primary" id="supplier-name"></span>
+                                    </div>
+                                    <div class="row">
+                                        <span class="col-3" style="font-style: italic">{% trans "Code" %}</span>
+                                        <span class="col-9 text-primary" id="supplier-code"></span>
+                                    </div>
+                                    <div class="row">
+                                        <span class="col-3" style="font-style: italic">{% trans "Owner" %}</span>
+                                        <span class="col-9 text-primary" id="supplier-owner"></span>
+                                    </div>
+                                    <div class="row">
+                                        <span class="col-3" style="font-style: italic">{% trans "Industry" %}</span>
+                                        <span class="col-9 text-primary" id="supplier-industry"></span>
+                                    </div>
                                 </span>
-                                <select class="form-select" data-method="GET" id="supplier-select-box"
-                                        data-url="{% url 'AccountListAPI' %}"></select>
+                            </span>
+                            <select class="form-select" data-method="GET" id="supplier-select-box"
+                                    data-url="{% url 'AccountListAPI' %}"></select>
                             </span>
                     </div>
                 </div>
@@ -185,34 +191,35 @@
                 <div class="tab-content">
                     <div class="tab-pane fade show active" id="tab_line_detail">
                         <table id="tab_line_detail_datatable" class="table nowrap w-100"
-                                   data-url-expense-type-list="{% url 'ExpenseItemListAPI' %}"
-                                   data-url-tax-list="{% url 'TaxListAPI' %}">
-                                <thead>
-                                <tr>
-                                    <th class="text-center" style="width: 2%"></th>
-                                    <th class="required" style="width: 14%">{% trans 'Expense item' %}</th>
-                                    <th style="width: 14%">{% trans 'Description' %}</th>
-                                    <th class="required" style="width: 7%">{% trans 'UoM' %}</th>
-                                    <th class="required" style="width: 6%">{% trans 'Quantity' %}</th>
-                                    <th class="required" style="width: 13%">{% trans 'Unit price' %}</th>
-                                    <th style="width: 8%">{% trans 'Tax' %}</th>
-                                    <th class="required" style="width: 13%">{% trans 'Subtotal price' %}</th>
-                                    <th class="required" style="width: 13%">{% trans 'After tax subtotal' %}</th>
-                                    <th class="required" style="width: 9%">{% trans 'Document number' %}</th>
-                                    <th style="width: 1%"></th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                            </table>
-                        <button id="btn-add-row-line-detail" class="btn btn-soft-primary mb-3" type="button">
-                            <span>
-                                <span>{% trans "Add new row" %}</span>
-                                <span class="icon">
-                                    <i class="fas fa-plus-circle"></i>
-                                </span>
-                            </span>
-                        </button>
+                               data-url-expense-type-list="{% url 'ExpenseItemListAPI' %}"
+                               data-url-tax-list="{% url 'TaxListAPI' %}">
+                            <thead>
+                            <tr>
+                                <th class="text-center"></th>
+                                <th class="required">{% trans 'Expense item' %}</th>
+                                <th>{% trans 'Description' %}</th>
+                                <th class="required">{% trans 'UoM' %}</th>
+                                <th class="required">{% trans 'Quantity' %}</th>
+                                <th class="required">{% trans 'Unit price' %}</th>
+                                <th>{% trans 'Tax' %}</th>
+                                <th class="required">{% trans 'Subtotal price' %}</th>
+                                <th class="required">{% trans 'After tax subtotal' %}</th>
+                                <th class="required">{% trans 'Document number' %}</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                            <tfoot>
+                                <td colspan="1">
+                                    <button id="btn-add-row-line-detail" class="btn btn-animated" type="button"
+                                            data-bs-toggle="tooltip" data-bs-placement="bottom" title="Add new row">
+                                        <i class="text-primary fas fa-plus-circle"></i>
+                                    </button>
+                                </td>
+                                <td colspan="10"></td>
+                            </tfoot>
+                        </table>
                     </div>
                     <div class="tab-pane fade" id="tab_plan">
                         <div class="row">

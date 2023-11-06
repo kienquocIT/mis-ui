@@ -36,6 +36,12 @@
     </button>
 {% endblock %}
 {% block pageContent %}
+    <script id="script-url"
+            data-url-ap-cost-list="{% url "AdvancePaymentCostListAPI" %}"
+            data-url-ap-mapped="{% url "AdvancePaymentListAPI" %}"
+            data-url-expense-quotation="{% url 'QuotationExpenseListAPI' %}"
+            data-url-expense-sale-order="{% url 'SaleOrderExpenseListAPI' %}">
+    </script>
     {{ data.data.employee_current | json_script:"employee_current" }}
     <form id="form-create-advance" data-method="POST" data-url-redirect="{% url "AdvancePaymentList" %}"
           data-url-list="{% url 'AdvancePaymentListAPI' %}"
@@ -220,68 +226,60 @@
                 <div class="tab-content">
                     <div class="tab-pane fade show active" id="tab_line_detail">
                         <table id="tab_line_detail_datatable" class="table nowrap w-100"
-                                   data-url-expense-type-list="{% url 'ExpenseItemListAPI' %}"
-                                   data-url-tax-list="{% url 'TaxListAPI' %}">
-                                <thead>
+                               data-url-expense-type-list="{% url 'ExpenseItemListAPI' %}"
+                               data-url-tax-list="{% url 'TaxListAPI' %}">
+                            <thead>
+                            <tr>
+                                <th class="text-center" style="width: 2%"></th>
+                                <th class="required" style="width: 18%">{% trans 'Expense name' %}</th>
+                                <th class="required" style="width: 12%">{% trans 'Type' %}</th>
+                                <th class="required" style="width: 7%">{% trans 'UoM' %}</th>
+                                <th class="required" style="width: 6%">{% trans 'Quantity' %}</th>
+                                <th class="required" style="width: 14%">{% trans 'Unit price' %}</th>
+                                <th style="width: 10%">{% trans 'Tax' %}</th>
+                                <th class="required" style="width: 14%">{% trans 'Subtotal price' %}</th>
+                                <th class="required" style="width: 14%">{% trans 'After tax subtotal' %}</th>
+                                <th style="width: 1%"></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                            <tfoot>
                                 <tr>
-                                    <th class="text-center" style="width: 2%"></th>
-                                    <th class="required" style="width: 18%">{% trans 'Expense name' %}</th>
-                                    <th class="required" style="width: 12%">{% trans 'Type' %}</th>
-                                    <th class="required" style="width: 7%">{% trans 'UoM' %}</th>
-                                    <th class="required" style="width: 6%">{% trans 'Quantity' %}</th>
-                                    <th class="required" style="width: 14%">{% trans 'Unit price' %}</th>
-                                    <th style="width: 10%">{% trans 'Tax' %}</th>
-                                    <th class="required" style="width: 14%">{% trans 'Subtotal price' %}</th>
-                                    <th class="required" style="width: 14%">{% trans 'After tax subtotal' %}</th>
-                                    <th style="width: 1%"></th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                            </table>
-                        <button id="btn-add-row-line-detail" class="btn btn-soft-primary mb-3" type="button">
-                            <span>
-                                <span>{% trans "Add new row" %}</span>
-                                <span class="icon">
-                                    <i class="fas fa-plus-circle"></i>
-                                </span>
-                            </span>
-                        </button>
-                        <div class="row">
-                            <div class="col-12 col-md-6 col-lg-8"></div>
-                            <div class="col-12 col-md-6 col-lg-4">
-                                <div class="card card-refresh">
-                                        <div class="refresh-container">
-                                            <div class="loader-pendulums"></div>
+                                    <td colspan="1">
+                                        <button id="btn-add-row-line-detail" class="btn btn-animated" type="button"
+                                                data-bs-toggle="tooltip" data-bs-placement="bottom" title="Add new row">
+                                            <i class="text-primary fas fa-plus-circle"></i>
+                                        </button>
+                                    </td>
+                                    <td colspan="6"></td>
+                                    <td colspan="2" class="text-primary">
+                                        <div class="row mt-3">
+                                            <div class="col-4">{% trans "Pretax price" %}</div>
+                                            <span class="col-8 text-right mask-money" id="pretax-value">0</span>
                                         </div>
-                                        <div id="content-card" class="collapse show">
-                                            <div class="card-body text-primary">
-                                                <div class="row mb-3">
-                                                    <div class="col-4">{% trans "Pretax price" %}</div>
-                                                    <span class="col-8 text-right mask-money" id="pretax-value">0</span>
-                                                </div>
-                                                <div class="row mb-3">
-                                                    <div class="col-4">{% trans "Taxes" %}</div>
-                                                    <span class="col-8 text-right mask-money" id="taxes-value">0</span>
-                                                </div>
-                                                <div class="dropdown-divider mb-3"></div>
-                                                <div class="row mb-5" style="font-weight: bold">
-                                                    <div class="col-4">{% trans "Total" %}</div>
-                                                    <span class="col-8 text-right mask-money" id="total-value">0</span>
-                                                </div>
-                                                <div class="row mt-5">
-                                                    <div class="col-12">
-                                                        <div class="form-check mt-2">
-                                                            <input type="checkbox" class="form-check-input" id="money-gave">
-                                                            <label class="text-primary">{% trans "Money gave/transferred" %}</label>
-                                                        </div>
-                                                    </div>
+                                        <div class="row">
+                                            <div class="col-4">{% trans "Taxes" %}</div>
+                                            <span class="col-8 text-right mask-money" id="taxes-value">0</span>
+                                        </div>
+                                        <div class="dropdown-divider"></div>
+                                        <div class="row" style="font-weight: bold">
+                                            <div class="col-4">{% trans "Total" %}</div>
+                                            <span class="col-8 text-right mask-money" id="total-value">0</span>
+                                        </div>
+                                        <div class="row mt-3 mb-3">
+                                            <div class="col-12">
+                                                <div class="form-check">
+                                                    <input type="checkbox" class="form-check-input" id="money-gave" checked disabled>
+                                                    <label class="text-primary">{% trans "Money gave/transferred" %}</label>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                            </div>
-                        </div>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
+                        </table>
                     </div>
                     <div class="tab-pane fade" id="tab_plan">
                         <div class="row">
@@ -292,7 +290,7 @@
                                 <thead>
                                 <tr>
                                     <th></th>
-                                    <th>{% trans 'Product items' %}</th>
+                                    <th>{% trans 'Expense items' %}</th>
                                     <th><i class="fas fa-clipboard-list"></i>&nbsp;{% trans 'Plan After Tax' %}</th>
                                     <th><i class="fas fa-clipboard-check"></i>&nbsp;{% trans 'AP Approved' %}</th>
                                     <th><i class="fas fa-undo-alt"></i>&nbsp;{% trans 'Return' %}</th>

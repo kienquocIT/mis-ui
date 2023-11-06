@@ -58,7 +58,8 @@ class AdvancePaymentCreate(View):
             url=ApiURL.EMPLOYEE_DETAIL.push_id(request.user.employee_current_data.get('id', None))
         ).get()
         return {
-                   'data': {'employee_current': resp1.result}
+                   'data': {'employee_current': resp1.result},
+                   'list_from_app': 'cashoutflow.advancepayment.create',
                }, status.HTTP_200_OK
 
 

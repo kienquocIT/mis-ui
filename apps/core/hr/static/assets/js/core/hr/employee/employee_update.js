@@ -10,7 +10,7 @@ $(function () {
             EmployeeLoadPage.loadGroupList(employeeData.group);
             EmployeeLoadPage.loadRoleList(employeeData.role);
             EmployeeLoadPage.loadDob(employeeData.dob);
-            EmployeeLoadPage.loadDateJoined(employeeData.date_joined);
+            EmployeeLoadPage.loadDateJoined(employeeData.date_joined, false);
 
             EmployeeLoadPage.isAdminEle.prop('checked', employeeData.is_admin_company ? employeeData.is_admin_company : false);
         }

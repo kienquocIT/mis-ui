@@ -75,17 +75,19 @@ class EmployeeLoadPage {
         });
     }
 
-    static loadDateJoined(dateJoinedData) {
-        let txtDateJoinedData = dateJoinedData ? moment(dateJoinedData).format('MM/DD/YYYY') : moment().format('MM/DD/YYYY');
-        EmployeeLoadPage.dateJoinedEle.dateRangePickerDefault({
-            singleDatePicker: true,
-            timepicker: false,
-            showDropdowns: true,
-            minYear: 1901,
-            maxYear: parseInt(moment().format('YYYY'), 10)
-        }).val(txtDateJoinedData).on('hide.daterangepicker', function () {
-            $(this).val($(this).val().split(" ")[0])
-        });
+    static loadDateJoined(dateJoinedData, default_is_now = false) {
+        if (dateJoinedData || default_is_now === true){
+            let txtDateJoinedData = dateJoinedData ? moment(dateJoinedData).format('MM/DD/YYYY') : moment().format('MM/DD/YYYY');
+            EmployeeLoadPage.dateJoinedEle.dateRangePickerDefault({
+                singleDatePicker: true,
+                timepicker: false,
+                showDropdowns: true,
+                minYear: 1901,
+                maxYear: parseInt(moment().format('YYYY'), 10)
+            }).val(txtDateJoinedData).on('hide.daterangepicker', function () {
+                $(this).val($(this).val().split(" ")[0])
+            });
+        }
     }
 
     static combinesForm(frmIdx, hasPermit = true) {

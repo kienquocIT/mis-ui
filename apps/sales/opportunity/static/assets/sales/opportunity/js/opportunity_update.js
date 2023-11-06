@@ -654,27 +654,17 @@ $(document).ready(function () {
                 event.preventDefault();
                 let combinesData = new combinesData_CallLog($(this));
                 if (combinesData) {
-                    WindowControl.showLoading();
                     $.fn.callAjax2(combinesData)
                         .then(
                             (resp) => {
                                 let data = $.fn.switcherResp(resp);
                                 if (data) {
                                     $.fn.notifyB({description: "Successfully"}, 'success')
-                                    setTimeout(() => {
-                                        $('#create-new-call-log').hide();
-                                        callAjaxToLoadTimeLineList();
-                                        WindowControl.hideLoading();
-                                    }, 1000);
+                                    $('#create-new-call-log').hide();
+                                    callAjaxToLoadTimeLineList();
                                 }
                             },
                             (errs) => {
-                                setTimeout(
-                                    () => {
-                                        WindowControl.hideLoading();
-                                    },
-                                    1000
-                                )
                                 $.fn.notifyB({description: errs.data.errors}, 'failure');
                             }
                         )
@@ -774,7 +764,7 @@ $(document).ready(function () {
                 });
             }
 
-            ClassicEditor
+            ClassicEditor.reload(document.querySelector('#email-content-area'))
                 .create(document.querySelector('#email-content-area'))
                 .catch(error => {console.error(error);})
 
@@ -808,27 +798,17 @@ $(document).ready(function () {
                 event.preventDefault();
                 let combinesData = new combinesData_Email($(this));
                 if (combinesData) {
-                    WindowControl.showLoading();
                     $.fn.callAjax2(combinesData)
                         .then(
                             (resp) => {
                                 let data = $.fn.switcherResp(resp);
                                 if (data) {
                                     $.fn.notifyB({description: "Successfully"}, 'success')
-                                    setTimeout(() => {
-                                        $('#send-email').hide();
-                                        callAjaxToLoadTimeLineList();
-                                        WindowControl.hideLoading();
-                                    }, 1000);
+                                    $('#send-email').hide();
+                                    callAjaxToLoadTimeLineList();
                                 }
                             },
                             (errs) => {
-                                setTimeout(
-                                    () => {
-                                        WindowControl.hideLoading();
-                                    },
-                                    1000
-                                )
                                 $.fn.notifyB({description: errs.data.errors}, 'failure');
                             }
                         )
@@ -1043,20 +1023,11 @@ $(document).ready(function () {
                                 let data = $.fn.switcherResp(resp);
                                 if (data) {
                                     $.fn.notifyB({description: "Successfully"}, 'success')
-                                    setTimeout(() => {
-                                        $('#create-meeting').hide();
-                                        callAjaxToLoadTimeLineList();
-                                        WindowControl.hideLoading();
-                                    }, 1000);
+                                    $('#create-meeting').hide();
+                                    callAjaxToLoadTimeLineList();
                                 }
                             },
                             (errs) => {
-                                setTimeout(
-                                    () => {
-                                        WindowControl.hideLoading();
-                                    },
-                                    1000
-                                )
                                 $.fn.notifyB({description: errs.data.errors}, 'failure');
                             }
                         )

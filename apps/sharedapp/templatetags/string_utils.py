@@ -137,6 +137,32 @@ def parse_0_or_1(data):
     return '0'
 
 
+@register.simple_tag(name='parse_link')
+def parse_link(data):
+    if data:
+        return data
+    return '#'
+
+
+@register.simple_tag(name='parse_bool')
+def parse_bool(data):
+    if data in [True, 'True', 1, '1']:
+        return '1'
+    return '0'
+
+
+@register.simple_tag(name='parse_str')
+def parse_str(data, default_data=''):
+    if data and isinstance(data, str):
+        return data
+    return default_data
+
+
+@register.simple_tag(name='define_var')
+def define_var(data):
+    return data
+
+
 @register.simple_tag(name='priority_app')
 def priority_app(value):
     default_value = ['opp', 'prj', 'inherit']

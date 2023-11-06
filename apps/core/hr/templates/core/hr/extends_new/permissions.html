@@ -1,4 +1,4 @@
-{% load i18n %}
+{% load i18n string_utils %}
 
 <div class="table-responsive">
     <table
@@ -119,10 +119,18 @@
             <td>
                 <select class="form-select" id="new-row-range" disabled>
                     <option value="" selected></option>
-                    <option value="1" disabled>{% trans "Themselves" %}</option>
-                    <option value="2" disabled>{% trans "Their staff" %}</option>
-                    <option value="3" disabled>{% trans "Member in their group" %}</option>
-                    <option value="4" disabled>{% trans "All users" %}</option>
+                    {% if range_allowed|val_in_arr:"1" == '1' %}
+                        <option value="1">{% trans "Themselves" %}</option>
+                    {% endif %}
+                    {% if range_allowed|val_in_arr:"2" == '1' %}
+                        <option value="2">{% trans "Their staff" %}</option>
+                    {% endif %}
+                    {% if range_allowed|val_in_arr:"3" == '1' %}
+                        <option value="3">{% trans "Member in their group" %}</option>
+                    {% endif %}
+                    {% if range_allowed|val_in_arr:"4" == '1' %}
+                        <option value="4">{% trans "All users" %}</option>
+                    {% endif %}
                 </select>
                 <label for="new-row-range" class="d-none"></label>
             </td>

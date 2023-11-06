@@ -73,6 +73,7 @@
                             <thead>
                             <tr>
                                 <th>{% trans 'Name' %}</th>
+                                <th>{% trans 'Arises type' %}</th>
                                 <th>{% trans 'Opening year' %}</th>
                                 <th>{% trans 'Total' %}</th>
                                 <th>{% trans 'Adjust' %}</th>
@@ -168,12 +169,12 @@
 {% endblock %}
 
 {% block dataHiddenGroup %}
-    <input type="text" id="url-factory"
+    <input type="text" id="url-factory" aria-label="url-factory"
            data-employee-list="{% url 'EmployeeListAPI' %}"
            data-available-list="{% url 'LeaveAvailableListAPI' %}"
            data-available-history="{% url 'LeaveAvailableHistoryAPI' %}"
     >
-    <input type="text" id="trans-factory"
+    <input type="text" id="trans-factory" aria-label="trans-factory"
            data-err-date="{% trans 'Date To need large then Date From' %}"
     >
     <div class="wrap-template">

@@ -60,7 +60,7 @@
                 ></select>
             </div>
         </div>
-        {% include 'core/hr/extends_new/permission_group_tabs_has_change_app.html' with get_from='role' active_tab='tab-app' actions_enabled=True plan_app_enabled=True permit_enabled=True %}
+        {% include 'core/hr/extends_new/permission_group_tabs_has_change_app.html' with range_allowed="1,2,3,4" get_from='role' active_tab='tab-app' actions_enabled=True plan_app_enabled=True permit_enabled=True %}
     </form>
 {% endblock %}
 

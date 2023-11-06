@@ -12,7 +12,7 @@ function renderTemplateResult(state) {
         `<p class="d-flex justify-content-normal sl_temp_cont">`
         + `<b>${state?.data?.leave_type.code}</b>`
         + `<span class="one-row-txt" title="${state?.data?.leave_type.title}">&nbsp;|&nbsp;&nbsp;${state?.data?.leave_type.title}</span>`
-        + `<span class="text-blue">(${state?.data.available})</span></p>`
+        + `<span class="text-blue">${state?.data?.check_balance ? `(${state?.data.available})` : ''}</span></p>`
     );
     return $state
 }
@@ -246,7 +246,12 @@ class detailTab {
                                 else if (item.leave_type.code === 'ANPY') temp = item
                                 else list_result.push(item)
                             }
-                            list_result.push(temp)
+                            list_result.splice(1, 0, temp)
+                            list_result.sort((a, b) =>{
+                                let aT = a.leave_type.code;
+                                let bT = b.leave_type.code;
+                                return aT.localeCompare(bT);
+                            })
                             return list_result
                         },
                         'dataParams': {employee: $EmpElm.val()},
@@ -403,7 +408,8 @@ function submitHandleFunc() {
     WindowControl.showLoading();
     const frm = new SetupFormSubmit($FormElm);
     let formData = frm.dataForm;
-    formData.employee_inherit = $EmpElm.val()
+    if (frm.dataMethod.toLowerCase() === 'post') formData.system_status = 1
+    formData.employee_inherit_id = $EmpElm.val()
     formData.detail_data = detailTab.get_data()
     formData.total = 0
     $.map(formData.detail_data, (item) => {
@@ -423,7 +429,7 @@ function submitHandleFunc() {
     }).then(
         (resp) => {
             let data = $.fn.switcherResp(resp);
-            if (data && (data['status']  === 201 || data['status'] === 200)) {
+            if (data && (data['status'] === 201 || data['status'] === 200)) {
                 $.fn.notifyB({description: $('#base-trans-factory').attr('data-success')}, 'success');
                 setTimeout(() => {
                     window.location.replace($FormElm.attr('data-url-redirect'));

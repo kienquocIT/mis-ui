@@ -122,6 +122,10 @@ msgid "Save"
 msgstr "Lưu"
 
 #
+msgid "Save Draft"
+msgstr "Lưu nháp"
+
+#
 msgid "Reset password"
 msgstr "Đặt lại mật khẩu"
 
@@ -4316,7 +4320,7 @@ msgstr "Số tháng số dư sẽ hết hạn"
 
 #
 msgid "Number of paid annual leave days"
-msgstr "Số ngày phép mặc định"
+msgstr "Số ngày nghỉ hàng năm được trả lương"
 
 #
 msgid "Leave type create successfully"
@@ -4478,12 +4482,12 @@ msgid "enter text"
 msgstr "nhập văn bản"
 
 #
-msgid "Allow view member"
-msgstr "Cho phép xem thành viên"
+msgid "Allow view this opportunity"
+msgstr "Cho phép xem chi tiết Cơ Hội Kinh Doanh này"
 
 #
-msgid "Allow add member"
-msgstr "Cho phép thêm thành viên"
+msgid "Allow add and change permission member"
+msgstr "Cho phép thêm và chỉnh sửa quyền cho thành viên"
 
 #
 msgid "The picklists in this section will be affected by each other when the value of an item changes."
@@ -4556,3 +4560,39 @@ msgstr "Đây là người bán hàng chính, không thể xoá!"
 #
 msgid "Date receive"
 msgstr "Ngày nhận"
+
+#
+msgid "Hello"
+msgstr "Xin chào"
+
+#
+msgid "Welcome to"
+msgstr "Chào mừng đến với"
+
+#
+msgid "Good morning"
+msgstr "Chào buổi sáng"
+
+#
+msgid "Have a wonderful day."
+msgstr "Chúc một ngày tốt lành."
+
+#
+msgid "Good afternoon"
+msgstr "Chào buổi chiều"
+
+#
+msgid "Hope you're having a great day."
+msgstr "Hy vọng bạn có một ngày tuyệt vời."
+
+#
+msgid "Good evening"
+msgstr "Buổi tối vui vẻ"
+
+#
+msgid "Have a relaxing and enjoyable evening."
+msgstr "Chúc bạn một buổi tối thư giãn và vui vẻ."
+
+#
+msgid "My Website"
+msgstr "Website của tôi"

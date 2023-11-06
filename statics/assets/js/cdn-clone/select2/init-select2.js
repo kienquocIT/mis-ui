@@ -619,11 +619,17 @@ class SelectDDControl {
 
             let selectLoaded = false;
             let optHTML = sumData.map((item) => {
-                if (selectLoaded === false && item.selected === true){
+                if (
+                    selectLoaded === false
+                    && (
+                        item.selected === true || sumData.length === 1
+                    )
+                ){
                     selectLoaded = true;
+                    let dataIDx = this.callbackValueId(item, this._data_keyId);
                     clsThis.loadInfoMore(
                         $(this.ele),
-                        this.callbackValueId(item, this._data_keyId),
+                        dataIDx ? dataIDx : this.callbackValueId(item?.['data'] || {}, this._data_keyId),
                         item?.['data'] ? item?.['data'] : item,
                     )
                 }
@@ -679,11 +685,13 @@ class SelectDDControl {
             }
 
             let func_onload = window[$(eleThis).data('on-load-info')];
-            func_onload(
-                nextHasInfoBtnMore__Detail,
-                nextHasInfoBtnMore__Detail.find('.info-btn-more-detail-data'),
-                detailIdx && detailData ? detailData : SelectDDControl.get_data_from_idx($(eleThis), selectVal),
-            );
+            if (func_onload && typeof func_onload === 'function') {
+                func_onload(
+                    nextHasInfoBtnMore__Detail,
+                    nextHasInfoBtnMore__Detail.find('.info-btn-more-detail-data'),
+                    detailIdx && detailData ? detailData : SelectDDControl.get_data_from_idx($(eleThis), selectVal),
+                );
+            }
 
         }
     }

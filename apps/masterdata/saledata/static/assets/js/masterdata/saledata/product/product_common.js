@@ -180,9 +180,9 @@ function loadGeneralUoMGroup(unit_of_measure_group) {
         keyId: 'id',
         keyText: 'title',
     }).on('change', function () {
-        loadSaleDefaultUom(null, $(this).attr('data-url-detail').replace(0, $(this).val()));
-        loadInventoryDefaultUom(null, $(this).attr('data-url-detail').replace(0, $(this).val()));
-        loadPurchaseDefaultUom(null, $(this).attr('data-url-detail').replace(0, $(this).val()));
+        loadSaleDefaultUom();
+        loadInventoryDefaultUom();
+        loadPurchaseDefaultUom();
     })
 }
 
@@ -196,22 +196,6 @@ function loadSaleTaxCode(tax_list) {
         keyResp: 'tax_list',
         keyId: 'id',
         keyText: 'title',
-    })
-}
-
-function loadSaleDefaultUom(uom_list, url) {
-    saleDefaultUomEle.initSelect2({
-        ajax: {
-            url: url,
-            method: 'GET',
-        },
-        callbackDataResp: function (resp, keyResp) {
-            return resp.data[keyResp]?.['uom'];
-        },
-        data: (uom_list ? uom_list : null),
-        keyResp: 'uom_group',
-        keyId: 'uom_id',
-        keyText: 'uom_title',
     })
 }
 
@@ -254,35 +238,69 @@ async function loadPriceList() {
     },)
 }
 
-function loadInventoryDefaultUom(uom_list, url) {
-    inventoryDefaultUomEle.initSelect2({
+function loadSaleDefaultUom(data) {
+    saleDefaultUomEle.initSelect2({
         ajax: {
-            url: url,
+            url: saleDefaultUomEle.attr('data-url'),
             method: 'GET',
         },
         callbackDataResp: function (resp, keyResp) {
-            return resp.data[keyResp]?.['uom'];
+            let result = [];
+            for (let i = 0; i < resp.data[keyResp].length; i++) {
+                if (resp.data[keyResp][i].group.id === generalUomGroupEle.val()) {
+                    result.push(resp.data[keyResp][i])
+                }
+            }
+            return result;
         },
-        data: (uom_list ? uom_list : null),
-        keyResp: 'uom_group',
-        keyId: 'uom_id',
-        keyText: 'uom_title',
+        data: (data ? data : null),
+        keyResp: 'unit_of_measure',
+        keyId: 'id',
+        keyText: 'title',
     })
 }
 
-function loadPurchaseDefaultUom(uom_list, url) {
-    purchaseDefaultUomEle.initSelect2({
+function loadInventoryDefaultUom(data) {
+    inventoryDefaultUomEle.initSelect2({
         ajax: {
-            url: url,
+            url: inventoryDefaultUomEle.attr('data-url'),
             method: 'GET',
         },
         callbackDataResp: function (resp, keyResp) {
-            return resp.data[keyResp]?.['uom'];
+            let result = [];
+            for (let i = 0; i < resp.data[keyResp].length; i++) {
+                if (resp.data[keyResp][i].group.id === generalUomGroupEle.val()) {
+                    result.push(resp.data[keyResp][i])
+                }
+            }
+            return result;
         },
-        data: (uom_list ? uom_list : null),
-        keyResp: 'uom_group',
-        keyId: 'uom_id',
-        keyText: 'uom_title',
+        data: (data ? data : null),
+        keyResp: 'unit_of_measure',
+        keyId: 'id',
+        keyText: 'title',
+    })
+}
+
+function loadPurchaseDefaultUom(data) {
+    purchaseDefaultUomEle.initSelect2({
+        ajax: {
+            url: purchaseDefaultUomEle.attr('data-url'),
+            method: 'GET',
+        },
+        callbackDataResp: function (resp, keyResp) {
+            let result = [];
+            for (let i = 0; i < resp.data[keyResp].length; i++) {
+                if (resp.data[keyResp][i].group.id === generalUomGroupEle.val()) {
+                    result.push(resp.data[keyResp][i])
+                }
+            }
+            return result;
+        },
+        data: (data ? data : null),
+        keyResp: 'unit_of_measure',
+        keyId: 'id',
+        keyText: 'title',
     })
 }
 
@@ -616,9 +634,9 @@ class ProductHandle {
         loadGeneralUoMGroup();
         loadSaleTaxCode();
         loadPurchaseTaxCode();
-        loadSaleDefaultUom(null, generalUomGroupEle.attr('data-url-detail').replace(0, generalUomGroupEle.val()));
-        loadInventoryDefaultUom(null, generalUomGroupEle.attr('data-url-detail').replace(0, generalUomGroupEle.val()));
-        loadPurchaseDefaultUom(null, generalUomGroupEle.attr('data-url-detail').replace(0, generalUomGroupEle.val()));
+        loadSaleDefaultUom();
+        loadInventoryDefaultUom();
+        loadPurchaseDefaultUom();
         loadBaseItemUnit();
         loadWareHouseOverView();
         await loadPriceList();
@@ -693,7 +711,7 @@ function LoadDetailProduct(option) {
 
                  if (Object.keys(product_detail['sale_information']).length !== 0) {
                      let sale_information = product_detail['sale_information'];
-                     loadSaleDefaultUom(sale_information['default_uom'], generalUomGroupEle.attr('data-url-detail').replace(0, generalUomGroupEle.val()));
+                     loadSaleDefaultUom(sale_information['default_uom']);
                      loadSaleTaxCode(sale_information['tax']);
                      $('#sale-cost').attr('value', sale_information['sale_product_cost']);
                      for (let i = 0; i < sale_information['sale_product_price_list'].length; i++) {
@@ -705,7 +723,7 @@ function LoadDetailProduct(option) {
 
                  if (Object.keys(product_detail['inventory_information']).length !== 0) {
                      let inventory_information = product_detail['inventory_information'];
-                     loadInventoryDefaultUom(inventory_information['uom'], generalUomGroupEle.attr('data-url-detail').replace(0, generalUomGroupEle.val()));
+                     loadInventoryDefaultUom(inventory_information['uom']);
                      $('#inventory-level-min').val(inventory_information['inventory_level_min']);
                      $('#inventory-level-max').val(inventory_information['inventory_level_max']);
 
@@ -726,7 +744,7 @@ function LoadDetailProduct(option) {
 
                  if (Object.keys(product_detail['purchase_information']).length !== 0) {
                      let purchase_information = product_detail['purchase_information'];
-                     loadPurchaseDefaultUom(purchase_information['default_uom'], generalUomGroupEle.attr('data-url-detail').replace(0, generalUomGroupEle.val()));
+                     loadPurchaseDefaultUom(purchase_information['default_uom']);
                      loadPurchaseTaxCode(purchase_information['tax']);
                  }
 

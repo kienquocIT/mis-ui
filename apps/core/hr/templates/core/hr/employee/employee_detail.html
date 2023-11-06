@@ -45,7 +45,7 @@
             data-doc-id="{{ data.data.doc_id }}"
     >
         {% csrf_token %}
-        {% include 'core/hr/extends_new/permission_group_tabs_has_change_app.html' with get_from='employee' actions_enabled=False summary_enabled=True plan_app_enabled=True permit_enabled=True li_head='core/hr/employee/extends/tab-info.html' li_content_head='core/hr/employee/extends/tab-info-content.html'  li_content_head_disabled=True %}
+        {% include 'core/hr/extends_new/permission_group_tabs_has_change_app.html' with range_allowed="1,2,3,4" get_from='employee' actions_enabled=False summary_enabled=True plan_app_enabled=True permit_enabled=True li_head='core/hr/employee/extends/tab-info.html' li_content_head='core/hr/employee/extends/tab-info-content.html'  li_content_head_disabled=True %}
     </div>
     <template class="template-factory hidden">
         <div class="belong-to">

@@ -517,12 +517,6 @@ class OpportunityLoadDetail {
 
     static loadSaleTeam(data, isEdit = true, employee_inherit = {}) {
         let employee_inherit_id = employee_inherit?.['id'] || null;
-        callAppList().then(
-            (result) => {
-                renderAppList(result);
-            }
-        )
-
         let html = `
             <div class="member-item col-md-12 col-lg-6 col-xl-4">
                <div

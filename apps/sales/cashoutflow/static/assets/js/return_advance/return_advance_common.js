@@ -74,8 +74,8 @@ function loadDetailAdvancePayment(id, type = 'create') {
             if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('advance_payment_detail')) {
                 let ele_beneficiary = $('#chooseBeneficiary');
                 ele_beneficiary.empty();
-                ReturnAdvanceLoadPage.loadBeneficiary(ele_beneficiary, data?.['advance_payment_detail'].beneficiary)
-                loadDetailBeneficiary(data?.['advance_payment_detail'].beneficiary.id);
+                ReturnAdvanceLoadPage.loadBeneficiary(ele_beneficiary, data?.['advance_payment_detail'].employee_inherit)
+                loadDetailBeneficiary(data?.['advance_payment_detail'].employee_inherit.id);
 
                 if (type === 'create') {
                     loadCostTable(data?.['advance_payment_detail']?.['expense_items'])

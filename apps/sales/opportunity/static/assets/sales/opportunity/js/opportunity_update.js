@@ -764,7 +764,7 @@ $(document).ready(function () {
                 });
             }
 
-            ClassicEditor.reload(document.querySelector('#email-content-area'))
+            ClassicEditor
                 .create(document.querySelector('#email-content-area'))
                 .catch(error => {console.error(error);})
 

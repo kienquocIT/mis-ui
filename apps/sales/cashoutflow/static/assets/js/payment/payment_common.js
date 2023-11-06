@@ -65,7 +65,7 @@ function PaymentLoadQuotation(data) {
             opp_mapped_select.prop('disabled', true);
             sale_order_mapped_select.prop('disabled', true);
 
-            let dataParam = {'quotation_mapped_id': quotation_mapped_select.val()}
+            let dataParam = {'quotation_id': quotation_mapped_select.val()}
             let ap_mapped_item = $.fn.callAjax2({
                 url: sale_order_mapped_select.attr('data-url'),
                 data: dataParam,
@@ -614,7 +614,7 @@ function LoadPlanQuotationNoOPP(quotation_id) {
 
 function LoadPlanSaleOrderNoOPP(sale_order_id) {
     if (sale_order_id !== null && sale_order_id !== undefined) {
-        let dataParam1 = {'filter_sale_order': sale_order_id}
+        let dataParam1 = {'sale_order_id': sale_order_id}
         let expense_sale_order = $.fn.callAjax2({
             url: script_url.attr('data-url-expense-sale-order'),
             data: dataParam1,
@@ -1061,7 +1061,7 @@ function LoadDetailPayment() {
                     sale_code_CODE = data?.['quotation_mapped']?.['code'];
                     sale_code_ID = data?.['quotation_mapped']?.['id'];
 
-                    let dataParam = {'quotation_mapped_id': quotation_mapped_select.val()}
+                    let dataParam = {'quotation_id': quotation_mapped_select.val()}
                     let ap_mapped_item = $.fn.callAjax2({
                         url: sale_order_mapped_select.attr('data-url'),
                         data: dataParam,

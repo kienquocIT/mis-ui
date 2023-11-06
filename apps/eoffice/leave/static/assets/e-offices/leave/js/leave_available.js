@@ -15,6 +15,7 @@ $(document).ready(function () {
                     dataSrc: 'data.employee_list',
                     data: function (a) {
                         a.list_from_leave = 1
+                        a.list_from_app = 'leave.leaveavailable.view'
                         return a
                     },
                 },

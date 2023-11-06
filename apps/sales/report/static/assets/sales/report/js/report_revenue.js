@@ -176,21 +176,25 @@ $(function () {
         });
 
         btnView.on('click', function () {
-            let groupID = null;
-            let employeeID = null;
+            let dataParams = {};
             if (boxGroup.val()) {
-                groupID = boxGroup.val();
+                dataParams['group_inherit_id'] = boxGroup.val();
             }
             if (boxEmployee.val()) {
-                employeeID = boxEmployee.val()
+                dataParams['employee_inherit_id'] = boxEmployee.val();
+            }
+            let date = $('#report-revenue-date-approved').val();
+            if (date) {
+                let dateStrings = date.split(' - ');
+                let dateStart = dateStrings[0] + " 00:00:00";
+                let dateEnd = dateStrings[1] + " 23:59:59";
+                dataParams['date_approved__gte'] = moment(dateStart, 'DD/MM/YYYY hh:mm:ss').format('YYYY-MM-DD hh:mm:ss');
+                dataParams['date_approved__lte'] = moment(dateEnd, 'DD/MM/YYYY hh:mm:ss').format('YYYY-MM-DD hh:mm:ss');
             }
             $.fn.callAjax2({
                     'url': $table.attr('data-url'),
                     'method': $table.attr('data-method'),
-                    'data': {
-                        'group_inherit_id': groupID,
-                        'employee_inherit_id': employeeID
-                    },
+                    'data': dataParams,
                     // 'isDropdown': true,
                 }
             ).then(

@@ -903,6 +903,65 @@ class ListeningEventController {
                 $('#' + frm_id).submit();
             }
         });
+        // submit form from Page Actions
+        //      - push status input to form when form create
+        //      - update value of input status when submit
+        $('.btn-saving-form').each(function (event) {
+            let defaultStatus = ["0", "1"];
+            let frm_idx = $(this).attr('form');
+            let status_system = $(this).attr('data-status-submit');
+
+            let allowNextStep = !!(
+                $(this).attr('type') === 'submit'
+                && frm_idx && typeof frm_idx === 'string' && frm_idx.length > 0
+                && status_system && typeof status_system === "string" && status_system.length === 1
+                && defaultStatus.indexOf(status_system) !== -1
+            );
+            if (allowNextStep === true) {
+                let frmEle = $('#' + frm_idx);
+                if (frmEle.length > 0) {
+                    // setup input status
+                    let statusInputEle = $(
+                        `
+                            <input 
+                                name="system_status" 
+                                class="hidden" 
+                                type="text" 
+                                id="idx-system_status" 
+                                value=""
+                                ${frmEle.attr('data-method').toUpperCase() === 'PUT' ? "" : "required"} 
+                            />
+                        `
+                    );
+
+                    // append input status if not exist
+                    if (frmEle.find('input[name="system_status"]').length === 0) frmEle.append(statusInputEle);
+                    else statusInputEle = frmEle.find('input[name="system_status"]');
+
+                    // on submit push status to form
+                    $(frmEle).on('submit', function (event){
+                        let submitterEle = $(event.originalEvent.submitter);
+                        if (submitterEle && submitterEle.length > 0){
+                            let systemStatus = submitterEle.attr('data-status-submit');
+                            let statusCode = statusInputEle.val();
+                            if (statusCode === "" || statusCode === null || statusCode === undefined || statusCode === '0' || statusCode === 0){
+                                statusInputEle.val(Number.parseInt(systemStatus));
+                            } else if (
+                                (statusCode === '0' || statusCode === 0)
+                                && (systemStatus === '1' || systemStatus === 1)
+                            ){
+                                event.preventDefault();
+                                return false;
+                            }
+                        } else {
+                            // get submitter is undefined! => deny next step!
+                            event.preventDefault();
+                            return false;
+                        }
+                    });
+                }
+            }
+        })
     }
 
     formInputClickOpenEdit() {

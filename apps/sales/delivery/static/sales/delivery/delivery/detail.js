@@ -104,7 +104,23 @@ $(async function () {
                                 if (prod_data?.['uom_data']) {
                                     item['uom_so'] = prod_data?.['uom_data'];
                                 }
+                                if (val?.['lot_data']) {
+                                    item['lot_data'] = val?.['lot_data'];
+                                }
+                                if (val?.['serial_data']) {
+                                    item['serial_data'] = val?.['serial_data'];
+                                }
                                 newData.push(item);
+                            } else {
+                                item.stock_amount = 0;
+                                item.picked = 0;
+                            }
+                        }
+                        // change column name stock -> picked
+                        if (!table.hasClass('dataTable')) {
+                            let columnStock = table[0]?.querySelector('.stock-picked-exchange');
+                            if (columnStock) {
+                                columnStock.innerHTML = $trans.attr('data-picked-ready');
                             }
                         }
                     }
@@ -119,7 +135,6 @@ $(async function () {
                                 ) // Check if warehouse of product warehouse in list warehouse have picked
                                 {
                                     item.stock_amount = prod_data.ready_quantity
-                                    // item.picked = prod_data.ready_quantity
                                     if (prod_data.picked_quantity) item.picked = prod_data.picked_quantity
                                     if (prod_data?.['uom_data']) {
                                         item['uom_so'] = prod_data?.['uom_data'];
@@ -137,8 +152,16 @@ $(async function () {
                                 }
                             }
                         }
+                        // change column name stock -> picked
+                        if (!table.hasClass('dataTable')) {
+                            let columnStock = table[0]?.querySelector('.stock-picked-exchange');
+                            if (columnStock) {
+                                columnStock.innerHTML = $trans.attr('data-picked-ready');
+                            }
+                        }
                     }
-                    if (!table.hasClass('dataTable')) {
+                    // Check if table $('#productStockDetail') is not DataTable & page is update page => set lot_data, serial_data = []
+                    if (!table.hasClass('dataTable') && $form.attr('data-method') === 'PUT') {
                         item['lot_data'] = [];
                         item['serial_data'] = [];
                     }
@@ -970,6 +993,14 @@ $(async function () {
                     if ($('#config-three-all').length) $('#config-three-all').attr('disabled', false)
                 }
                 if (res.ready_quantity > 0 && res.state < 2) $('button[form="delivery_form"]').attr('disabled', false)
+
+                // check if state delivery is finish then hidden btn edit page
+                if (res?.['state'] === 2) {
+                    let $btn = $('#btn-enable-edit');
+                    if ($btn.length) {
+                        $btn[0].setAttribute('hidden', 'true');
+                    }
+                }
 
                 WFRTControl.setWFRuntimeID(res?.['workflow_runtime_id']);
 

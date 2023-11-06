@@ -864,7 +864,9 @@ class QuotationLoadDataHandle {
             // check if is not finish then hidden btn delivery (Sale Order)
             if (!['Added', 'Finish'].includes(data?.['system_status'])) {
                 if (form.classList.contains('sale-order')) {
-                    $('#btnDeliverySaleOrder')[0].setAttribute('hidden', 'true');
+                    if ($('#btnDeliverySaleOrder').length > 0){
+                        $('#btnDeliverySaleOrder')[0].setAttribute('hidden', 'true');
+                    }
                 }
             }
             // check if is not finish then disable btn copy
@@ -3025,10 +3027,14 @@ class QuotationSubmitHandle {
         if (quotation_indicators_data_setup.length > 0) {
             _form.dataForm[quotation_indicators_data] = quotation_indicators_data_setup
         }
+
+        // ****************************
+        // Auto fill data when form calling submit "$('.btn-saving-form')..."
+        // ****************************
         // system fields
-        if (_form.dataMethod === "POST") {
-            _form.dataForm['system_status'] = 1;
-        }
+        // if (_form.dataMethod === "POST") {
+        //     _form.dataForm['system_status'] = 1;
+        // }
     }
 }
 

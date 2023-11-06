@@ -27,6 +27,12 @@
 {% block pageAction %}
 {% endblock %}
 {% block pageContent %}
+    <script id="script-url"
+            data-url-ap-cost-list="{% url "AdvancePaymentCostListAPI" %}"
+            data-url-ap-mapped="{% url "AdvancePaymentListAPI" %}"
+            data-url-expense-quotation="{% url 'QuotationExpenseListAPI' %}"
+            data-url-expense-sale-order="{% url 'SaleOrderExpenseListAPI' %}">
+    </script>
     {{ data.data.employee_current | json_script:"employee_current" }}
     <form id="form-detail-payment" data-method="GET"
           data-url-redirect="{% url "PaymentList" %}"
@@ -189,34 +195,25 @@
                 <div class="tab-content">
                     <div class="tab-pane fade show active" id="tab_line_detail">
                         <table id="tab_line_detail_datatable" class="table nowrap w-100"
-                                   data-url-expense-type-list="{% url 'ExpenseItemListAPI' %}"
-                                   data-url-tax-list="{% url 'TaxListAPI' %}">
-                                <thead>
-                                <tr>
-                                    <th class="text-center" style="width: 2%"></th>
-                                    <th class="required" style="width: 14%">{% trans 'Expense item' %}</th>
-                                    <th style="width: 14%">{% trans 'Description' %}</th>
-                                    <th class="required" style="width: 7%">{% trans 'UoM' %}</th>
-                                    <th class="required" style="width: 6%">{% trans 'Quantity' %}</th>
-                                    <th class="required" style="width: 13%">{% trans 'Unit price' %}</th>
-                                    <th style="width: 8%">{% trans 'Tax' %}</th>
-                                    <th class="required" style="width: 13%">{% trans 'Subtotal price' %}</th>
-                                    <th class="required" style="width: 13%">{% trans 'After tax subtotal' %}</th>
-                                    <th class="required" style="width: 9%">{% trans 'Document number' %}</th>
-                                    <th style="width: 1%"></th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                            </table>
-                        <button id="btn-add-row-line-detail" class="btn btn-soft-primary mb-3" type="button">
-                            <span>
-                                <span>{% trans "Add new row" %}</span>
-                                <span class="icon">
-                                    <i class="fas fa-plus-circle"></i>
-                                </span>
-                            </span>
-                        </button>
+                               data-url-expense-type-list="{% url 'ExpenseItemListAPI' %}"
+                               data-url-tax-list="{% url 'TaxListAPI' %}">
+                            <thead>
+                            <tr>
+                                <th class="text-center" style="width: 2%"></th>
+                                <th class="required" style="width: 14%">{% trans 'Expense item' %}</th>
+                                <th style="width: 14%">{% trans 'Description' %}</th>
+                                <th class="required" style="width: 7%">{% trans 'UoM' %}</th>
+                                <th class="required" style="width: 6%">{% trans 'Quantity' %}</th>
+                                <th class="required" style="width: 13%">{% trans 'Unit price' %}</th>
+                                <th style="width: 8%">{% trans 'Tax' %}</th>
+                                <th class="required" style="width: 13%">{% trans 'Subtotal price' %}</th>
+                                <th class="required" style="width: 13%">{% trans 'After tax subtotal' %}</th>
+                                <th class="required" style="width: 9%">{% trans 'Document number' %}</th>
+                                <th style="width: 1%"></th>
+                            </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
                     </div>
                     <div class="tab-pane fade" id="tab_plan">
                         <div class="row">

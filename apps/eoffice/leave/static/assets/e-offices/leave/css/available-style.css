@@ -16,3 +16,7 @@
 .form-select.is-valid{
     padding-right: 1.7rem!important;
 }
+#employee_tbl tbody > tr:hover{
+    cursor: pointer;
+    background: rgba(0, 125, 136, 0.15);
+}

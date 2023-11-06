@@ -80,6 +80,8 @@ INSTALLED_APPS = \
         'apps.sales.report',
     ] + [  # e-office Application
         'apps.eoffice.leave',
+    ] + [  # external
+        'apps.web_builder',
     ]
 
 

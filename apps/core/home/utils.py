@@ -142,6 +142,15 @@ PLAN_APP_OF_SALE = {
     },
 }
 
+PLAN_APP_OF_E_OFFICE = {
+    'leave': {
+        'leaverequest': ReverseUrlCommon(
+            list_view_name='LeaveRequestList', detail_view_name='LeaveRequestDetail'
+        ).data,
+    },
+}
+
 PLAN_APP_MAP_VIEW = {
     **PLAN_APP_OF_SALE,
+    **PLAN_APP_OF_E_OFFICE,
 }

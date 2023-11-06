@@ -116,6 +116,13 @@ $(async function () {
                                 item.picked = 0;
                             }
                         }
+                        // change column name stock -> picked
+                        if (!table.hasClass('dataTable')) {
+                            let columnStock = table[0]?.querySelector('.stock-picked-exchange');
+                            if (columnStock) {
+                                columnStock.innerHTML = $trans.attr('data-picked-ready');
+                            }
+                        }
                     }
                     else if ((config.is_picking && config.is_partial_ship) && delivery) { // TH: has_picking_many_delivery
                         // config 4
@@ -143,6 +150,13 @@ $(async function () {
                                     item.stock_amount = 0;
                                     item.picked = 0;
                                 }
+                            }
+                        }
+                        // change column name stock -> picked
+                        if (!table.hasClass('dataTable')) {
+                            let columnStock = table[0]?.querySelector('.stock-picked-exchange');
+                            if (columnStock) {
+                                columnStock.innerHTML = $trans.attr('data-picked-ready');
                             }
                         }
                     }

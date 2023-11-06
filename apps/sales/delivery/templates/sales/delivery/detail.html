@@ -259,7 +259,7 @@
                                     <th></th>
                                     <th>{% trans 'Warehouse Code' %}</th>
                                     <th>{% trans 'Warehouse Name' %}</th>
-                                    <th><p>{% trans 'Stock' %}</p></th>
+                                    <th><p class="stock-picked-exchange">{% trans 'Stock' %}</p></th>
                                     <th>{% trans 'Get' %}</th>
                                     <th>{% trans 'UOM' %}</th>
                                 </tr>
@@ -363,6 +363,7 @@
            data-select_address="{% trans 'Select this address' %}"
            data-valid-delivery-amount="{% trans 'Delivery amount must less than equal stock' %}"
            data-valid-delivery-picked="{% trans 'Quantity delivery must less than equal quantity picked' %}"
+           data-picked-ready="{% trans 'Picked' %}"
     >
     <input type="hidden" id="url-factory"
            data-prod-detail="{% url 'ProductDetail' 1 %}"

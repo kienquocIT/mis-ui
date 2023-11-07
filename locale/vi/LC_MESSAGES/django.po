@@ -4596,3 +4596,155 @@ msgstr "Chúc bạn một buổi tối thư giãn và vui vẻ."
 #
 msgid "My Website"
 msgstr "Website của tôi"
+
+#
+msgid "Working calendar update successfully"
+msgstr "Lịch làm việc cập nhập thành công"
+
+#
+msgid "Working year create successfully"
+msgstr "Năm làm việc tạo thành công"
+
+#
+msgid "Working year delete successfully"
+msgstr "Năm làm việc xoá thành công"
+
+#
+msgid "The holiday create successfully"
+msgstr "Xoá ngày lễ thành công"
+
+#
+msgid "The holiday has been updated successfully"
+msgstr "Cập nhập ngày lễ thành công"
+
+#
+msgid "The holiday deleted"
+msgstr "Xoá ngày lễ thành công"
+
+#
+msgid "Leave request create successfully"
+msgstr "Yêu cầu nghỉ phép tạo thành công"
+
+#
+msgid "Leave available update successfully"
+msgstr "danh sách số dư cập nhập thành công"
+
+#
+msgid "Increase"
+msgstr "Tăng"
+
+#
+msgid "Decrease"
+msgstr "Giảm"
+
+#
+msgid "Working calendar"
+msgstr "Lịch làm việc"
+
+#
+msgid "Weekly working days"
+msgstr "Ngày làm việc trong tuần"
+
+#
+msgid "Holidays"
+msgstr "Ngày lễ"
+
+#
+msgid "Morning"
+msgstr "Sáng"
+
+#
+msgid "Afternoon"
+msgstr "Chiều"
+
+#
+msgid "Year"
+msgstr "Năm"
+
+#
+msgid "Years is empty"
+msgstr "Năm trống"
+
+#
+msgid "Add year"
+msgstr "Thêm mới"
+
+#
+msgid "Add holiday"
+msgstr "Thêm mới"
+
+#
+msgid "Data list is empty"
+msgstr "Danh sách trống"
+
+#
+msgid "Leave request"
+msgstr "Yêu cầu nghỉ phép"
+
+#
+msgid "Available list"
+msgstr "Danh sách số dư"
+
+#
+msgid "Leave request list"
+msgstr "Danh sách nghỉ phép"
+
+#
+msgid "Start day"
+msgstr "Ngày bắt đầu"
+
+#
+msgid "Days off number"
+msgstr "Số ngày nghỉ"
+
+#
+msgid "Date from"
+msgstr "Từ ngày"
+
+#
+msgid "Date to"
+msgstr "Đến ngày"
+
+#
+msgid "Sub total"
+msgstr "Tổng phụ"
+
+#
+msgid "Opening year"
+msgstr "Năm Phép"
+
+#
+msgid "Used"
+msgstr "Đã dùng"
+
+#
+msgid "Expiration date"
+msgstr "Ngày hết hạn"
+
+#
+msgid "Add date"
+msgstr "Thêm ngày"
+
+#
+msgid "Employee name"
+msgstr "Tên nhân viên"
+
+#
+msgid "Group name"
+msgstr "Tên nhóm"
+
+#
+msgid "Adjust history"
+msgstr "Lịch sử điều chỉnh"
+
+#
+msgid "Arises type"
+msgstr "Loại phát sinh"
+
+#
+msgid "Adjust"
+msgstr "Điều chỉnh"
+
+#
+msgid "Adjust date"
+msgstr "Ngày điều chỉnh"

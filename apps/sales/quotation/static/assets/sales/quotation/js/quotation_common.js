@@ -855,22 +855,23 @@ class QuotationLoadDataHandle {
         }
         if (data?.['system_status'] && is_copy === false) {
             // check if finish then hidden btn edit page
-            if (['Added', 'Finish'].includes(data?.['system_status'])) {
+            if ([2, 3].includes(data?.['system_status'])) {
                 let $btn = $('#btn-enable-edit');
                 if ($btn.length) {
                     $btn[0].setAttribute('hidden', 'true');
                 }
             }
             // check if is not finish then hidden btn delivery (Sale Order)
-            if (!['Added', 'Finish'].includes(data?.['system_status'])) {
+            if (![2, 3].includes(data?.['system_status'])) {
                 if (form.classList.contains('sale-order')) {
-                    if ($('#btnDeliverySaleOrder').length > 0){
-                        $('#btnDeliverySaleOrder')[0].setAttribute('hidden', 'true');
+                    let btnDelivery = $('#btnDeliverySaleOrder');
+                    if (btnDelivery.length > 0){
+                        btnDelivery[0].setAttribute('hidden', 'true');
                     }
                 }
             }
             // check if is not finish then disable btn copy
-            if (!['Added', 'Finish'].includes(data?.['system_status'])) {
+            if (![2, 3].includes(data?.['system_status'])) {
                 let btnCopy = document.getElementById('btn-copy-quotation');
                 let eleTooltipBtnCopy = document.getElementById('tooltip-btn-copy');
                 if (btnCopy) {

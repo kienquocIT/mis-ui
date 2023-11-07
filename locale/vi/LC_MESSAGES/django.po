@@ -4611,7 +4611,7 @@ msgstr "Năm làm việc xoá thành công"
 
 #
 msgid "The holiday create successfully"
-msgstr "Xoá ngày lễ thành công"
+msgstr "Tạo ngày lễ thành công"
 
 #
 msgid "The holiday has been updated successfully"

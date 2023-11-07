@@ -236,6 +236,9 @@ class detailTab {
                     .attr('data-keyText', "leave_type.title")
                     .attr('data-keyId', "leave_type.id")
                     .initSelect2({
+                        'dataParams': {employee: $EmpElm.val()},
+                        'templateResult': renderTemplateResult,
+                        'cache': true,
                         callbackDataResp(resp, keyResp) {
                             let list_result = []
                             let temp = {}
@@ -254,9 +257,6 @@ class detailTab {
                             })
                             return list_result
                         },
-                        'dataParams': {employee: $EmpElm.val()},
-                        'templateResult': renderTemplateResult,
-                        'cache': true
                     })
                     .on('select2:select', function (e) {
                         data.leave_type = e.params.data.data

@@ -286,6 +286,7 @@ $(document).ready(function () {
             const frm = new SetupFormSubmit($editForm);
             let frmData = frm.dataForm;
             if (!frmData?.expiration_date) frmData.expiration_date = null
+            frmData.type_arises = 1
             $.fn.callAjax2({
                 "url": $urlElm.attr('data-available-list'),
                 "method": 'PUT',

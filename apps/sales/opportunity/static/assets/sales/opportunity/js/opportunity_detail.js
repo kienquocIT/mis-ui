@@ -16,9 +16,9 @@ $(document).ready(function () {
     OpportunityLoadDetail.configDateTimeEle()
 
     function loadDetail() {
-        let url = frmDetail.data('url').format_url_with_uuid(pk);
+        // let url = frmDetail.data('url').format_url_with_uuid(pk);
         $.fn.callAjax2({
-            url: url,
+            url: frmDetail.data('url'),
             method: 'GET'
         }).then(async (resp) => {
             let data = $.fn.switcherResp(resp);

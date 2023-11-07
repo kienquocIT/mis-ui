@@ -322,7 +322,7 @@
                                     >
                                         <thead>
                                         <tr>
-                                            <th>STT</th>
+                                            <th>#</th>
                                             <th class="required">{% trans 'Product' %}</th>
                                             <th>{% trans 'Description' %}</th>
                                             <th class="required">{% trans 'Unit Of Measure' %}</th>
@@ -340,23 +340,23 @@
                                         <tr>
                                             <th colspan="2" class="align-text-top">
                                                 <div class="row mb-5">
-                                                    <button type="button" class="btn btn-link btn-animated" id="btn-add-product-quotation-create">
-                                                        <span><span class="icon"><span class="feather-icon"><i class="fa-regular fa-square-plus"></i></span></span><span>{% trans 'Add Product' %}</span></span>
+                                                    <button type="button" class="btn btn-outline-primary" id="btn-add-product-quotation-create">
+                                                        <span><span>{% trans 'Add Product' %}</span><span class="icon"><i class="fa-solid fa-plus"></i></span></span>
                                                     </button>
                                                 </div>
                                                 <div class="row">
                                                     <button
                                                         type="button"
-                                                        class="btn btn-success btn-animated bg-green-light-5"
+                                                        class="btn btn-primary"
                                                         data-bs-toggle="modal"
                                                         data-bs-target="#shippingFeeModalCenter"
                                                         id="btn-add-shipping"
                                                     >
-                                                        <span class="text-teal">
+                                                        <span>
+                                                            <span>{% trans 'Add Shipping Fee' %}</span>
                                                             <span class="icon">
                                                                 <i class="fas fa-shipping-fast"></i>
                                                             </span>
-                                                            <span>{% trans 'Add Shipping Fee' %}</span>
                                                         </span>
                                                     </button>
                                                     <div
@@ -382,9 +382,9 @@
                                                                     >
                                                                         <thead>
                                                                         <tr>
-                                                                            <th>STT</th>
-                                                                            <th>{% trans 'Title' %}</th>
-                                                                            <th>{% trans 'Actions' %}</th>
+                                                                            <th class="w-10">#</th>
+                                                                            <th class="w-60">{% trans 'Title' %}</th>
+                                                                            <th class="w-30">{% trans 'Actions' %}</th>
                                                                         </tr>
                                                                         </thead>
                                                                         <tbody>
@@ -453,20 +453,20 @@
                                                     </div>
                                                 </div>
                                                 <div class="row">
-                                                    <div class="col-6"></div>
-                                                    <div class="col-6">
+                                                    <div class="col-5"></div>
+                                                    <div class="col-7">
                                                         <button
                                                             type="button"
-                                                            class="btn btn-warning btn-animated bg-yellow-light-5"
+                                                            class="btn btn-primary"
                                                             data-bs-toggle="modal"
                                                             data-bs-target="#promotionModalCenter"
                                                             id="btn-check-promotion"
                                                         >
-                                                            <span class="text-brown">
+                                                            <span>
+                                                                <span>{% trans 'Check available promotion' %}</span>
                                                                 <span class="icon">
                                                                     <i class="fas fa-gift"></i>
                                                                 </span>
-                                                                <span>{% trans 'Check available promotion' %}</span>
                                                             </span>
                                                         </button>
                                                         <div
@@ -492,9 +492,9 @@
                                                                         >
                                                                             <thead>
                                                                             <tr>
-                                                                                <th>STT</th>
-                                                                                <th>{% trans 'Title' %}</th>
-                                                                                <th>{% trans 'Actions' %}</th>
+                                                                                <th class="w-10">#</th>
+                                                                                <th class="w-60">{% trans 'Title' %}</th>
+                                                                                <th class="w-30">{% trans 'Actions' %}</th>
                                                                             </tr>
                                                                             </thead>
                                                                             <tbody>
@@ -597,7 +597,7 @@
                                     >
                                         <thead>
                                         <tr>
-                                            <th class="w-5">STT</th>
+                                            <th class="w-5">#</th>
                                             <th class="w-25">{% trans 'Product' %}</th>
                                             <th class="w-5">{% trans 'Unit Of Measure' %}</th>
                                             <th class="w-10">{% trans 'Quantity' %}</th>
@@ -657,7 +657,7 @@
                                     >
                                         <thead>
                                         <tr>
-                                            <th class="w-5">STT</th>
+                                            <th class="w-5">#</th>
                                             <th class="w-15 required">{% trans 'Expense name' %}</th>
                                             <th class="w-10 required">{% trans 'Expense items' %}</th>
                                             <th class="w-10 required">{% trans 'Unit Of Measure' %}</th>

@@ -7,6 +7,9 @@ let current_value_converted_from_ap = '';
 let quotation_mapped_select = $('#quotation_mapped_select')
 let sale_order_mapped_select = $('#sale_order_mapped_select')
 let opp_mapped_select = $('#opportunity_id')
+let script_url = $('#script-url')
+let tab_plan_datatable = $('#tab_plan_datatable')
+let offcanvasRightLabel = $('#offcanvasRightLabel')
 $('#quo-so-row').prop('hidden', false);
 
 opp_mapped_select.on('change', function () {
@@ -18,16 +21,11 @@ opp_mapped_select.on('change', function () {
         sale_order_mapped_select.prop('disabled', true);
         quotation_mapped_select.prop('disabled', true);
 
-        let url_loaded = quotation_mapped_select.attr('data-url-opp-detail').replace(0, opp_mapped_select.val());
-        $.fn.callAjax(url_loaded, 'GET').then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    WFRTControl.setWFRuntimeID(data['opportunity']?.['workflow_runtime_id']);
-                    PaymentLoadQuotation(data['opportunity']['quotation']);
-                    PaymentLoadSaleOrder(data['opportunity']['sale_order']);
-                }
-            })
+        let quo_mapped_opp = SelectDDControl.get_data_from_idx(opp_mapped_select, opp_mapped_select.val())['quotation'];
+        let so_mapped_opp = SelectDDControl.get_data_from_idx(opp_mapped_select, opp_mapped_select.val())['sale_order'];
+        PaymentLoadQuotation(quo_mapped_opp)
+        LoadPlanQuotation(opp_mapped_select.val(), quo_mapped_opp?.['id'])
+        PaymentLoadSaleOrder(so_mapped_opp);
     }
     else {
         quotation_mapped_select.prop('disabled', false);
@@ -36,6 +34,7 @@ opp_mapped_select.on('change', function () {
 })
 
 function PaymentLoadQuotation(data) {
+    LoadPlanQuotation(opp_mapped_select.val(), data?.['id'])
     quotation_mapped_select.initSelect2({
         allowClear: true,
         ajax: {
@@ -65,6 +64,34 @@ function PaymentLoadQuotation(data) {
         if (quotation_mapped_select.val() !== null) {
             opp_mapped_select.prop('disabled', true);
             sale_order_mapped_select.prop('disabled', true);
+
+            let dataParam = {'quotation_id': quotation_mapped_select.val()}
+            let ap_mapped_item = $.fn.callAjax2({
+                url: sale_order_mapped_select.attr('data-url'),
+                data: dataParam,
+                method: 'GET'
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && typeof data === 'object' && data.hasOwnProperty('sale_order_list')) {
+                        return data?.['sale_order_list'];
+                    }
+                    return {};
+                },
+                (errs) => {
+                    console.log(errs);
+                }
+            )
+
+            Promise.all([ap_mapped_item]).then(
+                (results) => {
+                    let so_mapped_opp = results[0];
+                    if (so_mapped_opp.length > 0) {
+                        PaymentLoadSaleOrder(so_mapped_opp[0]);
+                    }
+                })
+
+            LoadPlanQuotationNoOPP($(this).val());
         }
         else {
             opp_mapped_select.prop('disabled', false);
@@ -103,6 +130,10 @@ function PaymentLoadSaleOrder(data) {
         if (sale_order_mapped_select.val() !== null) {
             opp_mapped_select.prop('disabled', true);
             quotation_mapped_select.prop('disabled', true);
+
+            let quo_mapped_opp = SelectDDControl.get_data_from_idx(sale_order_mapped_select, sale_order_mapped_select.val())['quotation'];
+            PaymentLoadQuotation(quo_mapped_opp)
+            LoadPlanSaleOrderNoOPP($(this).val());
         }
         else {
             opp_mapped_select.prop('disabled', false);
@@ -335,9 +366,12 @@ function get_ap_product_items() {
     let ap_expense_items = [];
     $('.product-tables').find('.product-selected').each(function () {
         if ($(this).is(':checked')) {
-            let value = parseFloat($(this).closest('tr').find('.converted-value-inp').attr('value'));
-            if ($(this).attr('data-id') && value > 0) {
-                ap_expense_items.push({'expense_converted_id': $(this).attr('data-id'), 'expense_value_converted': value});
+            let value_converted = parseFloat($(this).closest('tr').find('.converted-value-inp').attr('value'));
+            if ($(this).attr('data-id') && value_converted > 0) {
+                ap_expense_items.push({
+                    'ap_cost_converted_id': $(this).attr('data-id'),
+                    'value_converted': value_converted,
+                });
             }
         }
     })
@@ -359,7 +393,7 @@ function loadAPList() {
                     if (resp.data['advance_payment_list']) {
                         let result = [];
                         for (let i = 0; i < resp.data['advance_payment_list'].length; i++) {
-                            if (resp.data['advance_payment_list'][i]?.['remain_value'] > 0) {
+                            if (resp.data['advance_payment_list'][i]?.['remain_value'] > 0 && resp.data['advance_payment_list'][i]?.['employee_inherit_id'] === initEmployee.id) {
                                 result.push(resp.data['advance_payment_list'][i])
                             }
                         }
@@ -422,324 +456,260 @@ function loadAPList() {
     });
 }
 
-function loadSaleOrderExpensesPlan(filter_sale_order, ap_items_list=[], payment_value_list=[], returned_value_list=[]) {
-    let dtb = $('#tab_plan_datatable');
-    if (filter_sale_order !== '') {
-        dtb.prop('hidden', false);
-        $('#notify-none-sale-code').prop('hidden', true);
-    }
-    else {
-        dtb.prop('hidden', true);
-        $('#notify-none-sale-code').prop('hidden', false);
-    }
-    dtb.DataTable().clear().destroy();
-    let frm = new SetupFormSubmit(dtb);
-    frm.dataUrl = dtb.attr('data-url-sale-order');
-    dtb.DataTableDefault({
-        reloadCurrency: true,
-        rowIdx: true,
-        useDataServer: true,
-        dom: '',
-        ajax: {
-            url: frm.dataUrl + '?filter_sale_order=' + filter_sale_order,
-            type: frm.dataMethod,
-            dataSrc: function (resp) {
+function LoadPlanQuotation(opportunity_id, quotation_id) {
+    if (opportunity_id !== undefined && quotation_id !== undefined && opportunity_id !== null && quotation_id !== null) {
+        let dataParam1 = {'quotation_id': quotation_id}
+        let expense_quotation = $.fn.callAjax2({
+            url: script_url.attr('data-url-expense-quotation'),
+            data: dataParam1,
+            method: 'GET'
+        }).then(
+            (resp) => {
                 let data = $.fn.switcherResp(resp);
-                if (data) {
-                    let data_detail = data?.['sale_order_expense_list'];
-                    let result = []
-                    for (let i = 0; i < data_detail.length; i++) {
-                        let existed = result.filter(function (element) {
-                            return element.expense_item.id === data_detail[i].expense_item.id;
-                        });
-                        if (existed.length === 0) {
-                            result.push({
-                                'id': data_detail[i].id,
-                                'expense_title': data_detail[i].expense_title,
-                                'expense_item': data_detail[i].expense_item,
-                                'plan_after_tax': 0,
-                                'sum_AP_approved': 0,
-                                'returned': 0,
-                                'to_payment': 0,
-                                'others_payment': 0,
-                                'available': 0,
-                            })
-                        }
-                    }
-                    for (let i = 0; i < result.length; i++) {
-                        let sum_plan_after_tax = 0;
-                        let sum_AP_approved_value = 0;
-                        let sum_returned_value = 0;
-                        let sum_to_payment_value = 0;
-                        let sum_others_payment_value = 0;
-
-                        for (let j = 0; j < data_detail.length; j++) {
-                            if (data_detail[j].expense_item.id === result[i].expense_item.id) {
-                                sum_plan_after_tax = sum_plan_after_tax + data_detail[j].plan_after_tax;
-                            }
-                        }
-                        let sum_AP_approved_list = ap_items_list.filter(function (element) {
-                            return element.expense_type.id === result[i].expense_item.id;
-                        })
-                        for (let k = 0; k < sum_AP_approved_list.length; k++) {
-                            sum_AP_approved_value += sum_AP_approved_list[k]?.['expense_after_tax_price'];
-                        }
-                        for (let l = 0; l < payment_value_list.length; l++) {
-                            if (payment_value_list[l].expense_type_id === result[i].expense_item.id) {
-                                sum_to_payment_value += payment_value_list[l].converted_value;
-                                sum_others_payment_value += payment_value_list[l].real_value;
-                            }
-                        }
-                        for (let m = 0; m < returned_value_list.length; m++) {
-                            if (returned_value_list[m].expense_type_id === result[i].expense_item.id) {
-                                sum_returned_value += returned_value_list[m].returned_value;
-                            }
-                        }
-                        let sum_available_value = sum_plan_after_tax - sum_AP_approved_value - sum_others_payment_value + sum_returned_value;
-                        if (sum_available_value < 0) {
-                            sum_available_value = 0;
-                        }
-
-                        result[i].plan_after_tax = sum_plan_after_tax;
-                        result[i].sum_AP_approved = sum_AP_approved_value;
-                        result[i].returned = sum_returned_value;
-                        result[i].to_payment = sum_to_payment_value;
-                        result[i].others_payment = sum_others_payment_value;
-                        result[i].available = sum_available_value;
-                    }
-                    return result;
+                if (data && typeof data === 'object' && data.hasOwnProperty('quotation_expense_list')) {
+                    return data?.['quotation_expense_list'];
                 }
-                return [];
+                return {};
             },
-        },
-        columns: [
-            {
-                render: () => {
-                    return ``;
-                }
-            },
-            {
-                data: 'expense_item',
-                className: 'wrap-text',
-                render: (data, type, row) => {
-                    return `<a href="#"><span>` + row.expense_item.title + `</span></a>`
-                }
-            },
-            {
-                data: 'plan_after_tax',
-                className: 'wrap-text',
-                render: (data, type, row) => {
-                    return `<span class="mask-money text-primary" data-init-money="` + row.plan_after_tax + `"></span>`
-                }
-            },
-            {
-                data: 'sum_AP_approved',
-                className: 'wrap-text',
-                render: (data, type, row) => {
-                    return `<span class="mask-money text-primary" data-init-money="` + row.sum_AP_approved + `"></span>`
-                }
-            },
-            {
-                data: 'returned',
-                className: 'wrap-text',
-                render: (data, type, row) => {
-                    return `<span class="mask-money text-primary" data-init-money="` + row.returned + `"></span>`
-                }
-            },
-            {
-                data: 'to_payment',
-                className: 'wrap-text',
-                render: (data, type, row) => {
-                    return `<span class="mask-money text-primary" data-init-money="` + row.to_payment + `"></span>`
-                }
-            },
-            {
-                data: 'others_payment',
-                className: 'wrap-text',
-                render: (data, type, row) => {
-                    return `<span class="mask-money text-primary" data-init-money="` + row.others_payment + `"></span>`
-                }
-            },
-            {
-                data: 'available',
-                className: 'wrap-text',
-                render: (data, type, row) => {
-                    return `<span class="mask-money text-primary" data-init-money="` + row.available + `"></span>`
-                }
+            (errs) => {
+                console.log(errs);
             }
-        ],
-    });
+        )
+
+        let dataParam2 = {'opportunity_mapped_id': opportunity_id}
+        let ap_mapped_item = $.fn.callAjax2({
+            url: script_url.attr('data-url-ap-cost-list'),
+            data: dataParam2,
+            method: 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && typeof data === 'object' && data.hasOwnProperty('advance_payment_cost_list')) {
+                    return data?.['advance_payment_cost_list'];
+                }
+                return {};
+            },
+            (errs) => {
+                console.log(errs);
+            }
+        )
+
+        Promise.all([expense_quotation, ap_mapped_item]).then(
+            (results) => {
+                let data_expense = results[0];
+                let data_ap_mapped_item = results[1];
+
+                $('#notify-none-sale-code').prop('hidden', true);
+                tab_plan_datatable.prop('hidden', false);
+                tab_plan_datatable.find('tbody').html(``);
+                for (let i = 0; i < data_expense.length; i++) {
+                    let ap_approved_value = 0;
+                    let sum_return_value = 0;
+                    let sum_converted_value = 0;
+                    let sum_real_value = 0;
+                    for (let j = 0; j < data_ap_mapped_item.length; j++) {
+                        if (data_ap_mapped_item[j]?.['expense_type']?.['id'] === data_expense[i]?.['expense_item']?.['id']) {
+                            ap_approved_value += data_ap_mapped_item[j]?.['expense_after_tax_price'];
+                            sum_return_value += data_ap_mapped_item[j]?.['sum_return_value'];
+                            sum_converted_value += data_ap_mapped_item[j]?.['sum_converted_value'];
+                            sum_real_value += data_ap_mapped_item[j]?.['sum_real_value'];
+                        }
+                    }
+
+                    $('#tab_plan_datatable tbody').append(`
+                        <tr>
+                            <td>${i+1}</td>
+                            <td class="expense_item_title" data-id="${data_expense[i]?.['expense_item']?.['id']}">${data_expense[i]?.['expense_item']?.['title']}</td>
+                            <td><span class="plan_after_tax mask-money text-primary" data-init-money="${data_expense[i]?.['plan_after_tax']}"></span></td>
+                            <td><span class="ap_approved mask-money text-primary" data-init-money="${ap_approved_value}"></span></td>
+                            <td><span class="returned mask-money text-primary" data-init-money="${sum_return_value}"></span></td>
+                            <td><span class="to_payment mask-money text-primary" data-init-money="${sum_converted_value}"></span></td>
+                            <td><span class="other_payment mask-money text-primary" data-init-money="${sum_real_value}"></span></td>
+                            <td><span class="available mask-money text-primary" data-init-money="${data_expense[i]?.['plan_after_tax'] - sum_real_value - ap_approved_value + sum_return_value}"></span></td>
+                        </tr>
+                    `)
+                }
+                $.fn.initMaskMoney2();
+            })
+    }
 }
 
-function loadQuotationExpensesPlan(filter_quotation, ap_items_list=[], payment_value_list=[], returned_value_list=[]) {
-    let dtb = $('#tab_plan_datatable');
-    if (filter_quotation !== '') {
-        dtb.prop('hidden', false);
-        $('#notify-none-sale-code').prop('hidden', true);
-    }
-    else {
-        dtb.prop('hidden', true);
-        $('#notify-none-sale-code').prop('hidden', false);
-    }
-    dtb.DataTable().clear().destroy();
-    let frm = new SetupFormSubmit(dtb);
-    frm.dataUrl = dtb.attr('data-url-quotation');
-    dtb.DataTableDefault({
-        reloadCurrency: true,
-        rowIdx: true,
-        useDataServer: true,
-        dom: '',
-        ajax: {
-            url: frm.dataUrl + '?filter_quotation=' + filter_quotation,
-            type: frm.dataMethod,
-            dataSrc: function (resp) {
+function LoadPlanQuotationNoOPP(quotation_id) {
+    if (quotation_id !== null && quotation_id !== undefined) {
+        let dataParam1 = {'quotation_id': quotation_id}
+        let expense_quotation = $.fn.callAjax2({
+            url: script_url.attr('data-url-expense-quotation'),
+            data: dataParam1,
+            method: 'GET'
+        }).then(
+            (resp) => {
                 let data = $.fn.switcherResp(resp);
-                if (data) {
-                    let data_detail = data?.['quotation_expense_list'];
-                    let result = []
-                    for (let i = 0; i < data_detail.length; i++) {
-                        let existed = result.filter(function (element) {
-                            return element.expense_item.id === data_detail[i].expense_item.id;
-                        });
-                        if (existed.length === 0) {
-                            result.push({
-                                'id': data_detail[i].id,
-                                'expense_title': data_detail[i].expense_title,
-                                'expense_item': data_detail[i].expense_item,
-                                'plan_after_tax': 0,
-                                'sum_AP_approved': 0,
-                                'returned': 0,
-                                'to_payment': 0,
-                                'others_payment': 0,
-                                'available': 0,
-                            })
-                        }
-                    }
-                    for (let i = 0; i < result.length; i++) {
-                        let sum_plan_after_tax = 0;
-                        let sum_AP_approved_value = 0;
-                        let sum_returned_value = 0;
-                        let sum_to_payment_value = 0;
-                        let sum_others_payment_value = 0;
-
-                        for (let j = 0; j < data_detail.length; j++) {
-                            if (data_detail[j].expense_item.id === result[i].expense_item.id) {
-                                sum_plan_after_tax = sum_plan_after_tax + data_detail[j].plan_after_tax;
-                            }
-                        }
-                        let sum_AP_approved_list = ap_items_list.filter(function (element) {
-                            return element.expense_type.id === result[i].expense_item.id;
-                        })
-                        for (let k = 0; k < sum_AP_approved_list.length; k++) {
-                            sum_AP_approved_value += sum_AP_approved_list[k]?.['expense_after_tax_price'];
-                        }
-                        for (let l = 0; l < payment_value_list.length; l++) {
-                            if (payment_value_list[l].expense_type_id === result[i].expense_item.id) {
-                                sum_to_payment_value += payment_value_list[l].converted_value;
-                                sum_others_payment_value += payment_value_list[l].real_value;
-                            }
-                        }
-                        for (let m = 0; m < returned_value_list.length; m++) {
-                            if (returned_value_list[m].expense_type_id === result[i].expense_item.id) {
-                                sum_returned_value += returned_value_list[m].returned_value;
-                            }
-                        }
-                        let sum_available_value = sum_plan_after_tax - sum_AP_approved_value - sum_others_payment_value + sum_returned_value;
-                        if (sum_available_value < 0) {
-                            sum_available_value = 0;
-                        }
-
-                        result[i].plan_after_tax = sum_plan_after_tax;
-                        result[i].sum_AP_approved = sum_AP_approved_value;
-                        result[i].returned = sum_returned_value;
-                        result[i].to_payment = sum_to_payment_value;
-                        result[i].others_payment = sum_others_payment_value;
-                        result[i].available = sum_available_value;
-                    }
-                    return result;
+                if (data && typeof data === 'object' && data.hasOwnProperty('quotation_expense_list')) {
+                    return data?.['quotation_expense_list'];
                 }
-                return [];
+                return {};
             },
-        },
-        columns: [
-            {
-                render: () => {
-                    return ``;
-                }
-            },
-            {
-                data: 'expense_item',
-                className: 'wrap-text',
-                render: (data, type, row) => {
-                    return `<span data-id="${row?.['expense_item'].id}">${row?.['expense_item'].title}</span>`
-                }
-            },
-            {
-                data: 'plan_after_tax',
-                className: 'wrap-text',
-                render: (data, type, row) => {
-                    return `<span class="mask-money text-primary" data-init-money="${row?.['plan_after_tax']}"></span>`
-                }
-            },
-            {
-                data: 'sum_AP_approved',
-                className: 'wrap-text',
-                render: (data, type, row) => {
-                    return `<span class="mask-money text-primary" data-init-money="${row?.['sum_AP_approved']}"></span>`
-                }
-            },
-            {
-                data: 'returned',
-                className: 'wrap-text',
-                render: (data, type, row) => {
-                    return `<span class="mask-money text-primary" data-init-money="${row?.['returned']}"></span>`
-                }
-            },
-            {
-                data: 'to_payment',
-                className: 'wrap-text',
-                render: (data, type, row) => {
-                    return `<span class="mask-money text-primary" data-init-money="${row?.['to_payment']}"></span>`
-                }
-            },
-            {
-                data: 'others_payment',
-                className: 'wrap-text',
-                render: (data, type, row) => {
-                    return `<span class="mask-money text-primary" data-init-money="${row?.['others_payment']}"></span>`
-                }
-            },
-            {
-                data: 'available',
-                className: 'wrap-text',
-                render: (data, type, row) => {
-                    return `<span class="mask-money text-primary" data-init-money="${row?.['available']}"></span>`
-                }
+            (errs) => {
+                console.log(errs);
             }
-        ],
-    });
+        )
+
+        let dataParam2 = {'quotation_mapped_id': quotation_id}
+        let ap_mapped_item = $.fn.callAjax2({
+            url: script_url.attr('data-url-ap-cost-list'),
+            data: dataParam2,
+            method: 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && typeof data === 'object' && data.hasOwnProperty('advance_payment_cost_list')) {
+                    return data?.['advance_payment_cost_list'];
+                }
+                return {};
+            },
+            (errs) => {
+                console.log(errs);
+            }
+        )
+
+        Promise.all([expense_quotation, ap_mapped_item]).then(
+            (results) => {
+                let data_expense = results[0];
+                let data_ap_mapped_item = results[1];
+
+                $('#notify-none-sale-code').prop('hidden', true);
+                tab_plan_datatable.prop('hidden', false);
+                tab_plan_datatable.find('tbody').html(``);
+                for (let i = 0; i < data_expense.length; i++) {
+                    let ap_approved_value = 0;
+                    let sum_return_value = 0;
+                    let sum_converted_value = 0;
+                    let sum_real_value = 0;
+                    for (let j = 0; j < data_ap_mapped_item.length; j++) {
+                        if (data_ap_mapped_item[j]?.['expense_type']?.['id'] === data_expense[i]?.['expense_item']?.['id']) {
+                            ap_approved_value += data_ap_mapped_item[j]?.['expense_after_tax_price'];
+                            sum_return_value += data_ap_mapped_item[j]?.['sum_return_value'];
+                            sum_converted_value += data_ap_mapped_item[j]?.['sum_converted_value'];
+                            sum_real_value += data_ap_mapped_item[j]?.['sum_real_value'];
+                        }
+                    }
+
+                    $('#tab_plan_datatable tbody').append(`
+                        <tr>
+                            <td>${i+1}</td>
+                            <td class="expense_item_title" data-id="${data_expense[i]?.['expense_item']?.['id']}">${data_expense[i]?.['expense_item']?.['title']}</td>
+                            <td><span class="plan_after_tax mask-money text-primary" data-init-money="${data_expense[i]?.['plan_after_tax']}"></span></td>
+                            <td><span class="ap_approved mask-money text-primary" data-init-money="${ap_approved_value}"></span></td>
+                            <td><span class="returned mask-money text-primary" data-init-money="${sum_return_value}"></span></td>
+                            <td><span class="to_payment mask-money text-primary" data-init-money="${sum_converted_value}"></span></td>
+                            <td><span class="other_payment mask-money text-primary" data-init-money="${sum_real_value}"></span></td>
+                            <td><span class="available mask-money text-primary" data-init-money="${data_expense[i]?.['plan_after_tax'] - sum_real_value - ap_approved_value + sum_return_value}"></span></td>
+                        </tr>
+                    `)
+                }
+                $.fn.initMaskMoney2();
+            })
+    }
+}
+
+function LoadPlanSaleOrderNoOPP(sale_order_id) {
+    if (sale_order_id !== null && sale_order_id !== undefined) {
+        let dataParam1 = {'sale_order_id': sale_order_id}
+        let expense_sale_order = $.fn.callAjax2({
+            url: script_url.attr('data-url-expense-sale-order'),
+            data: dataParam1,
+            method: 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && typeof data === 'object' && data.hasOwnProperty('sale_order_expense_list')) {
+                    return data?.['sale_order_expense_list'];
+                }
+                return {};
+            },
+            (errs) => {
+                console.log(errs);
+            }
+        )
+
+        let dataParam2 = {'sale_order_mapped_id': sale_order_id}
+        let ap_mapped_item = $.fn.callAjax2({
+            url: script_url.attr('data-url-ap-cost-list'),
+            data: dataParam2,
+            method: 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && typeof data === 'object' && data.hasOwnProperty('advance_payment_cost_list')) {
+                    return data?.['advance_payment_cost_list'];
+                }
+                return {};
+            },
+            (errs) => {
+                console.log(errs);
+            }
+        )
+
+        Promise.all([expense_sale_order, ap_mapped_item]).then(
+            (results) => {
+                let data_expense = results[0];
+                let data_ap_mapped_item = results[1];
+
+                $('#notify-none-sale-code').prop('hidden', true);
+                tab_plan_datatable.prop('hidden', false);
+                tab_plan_datatable.find('tbody').html(``);
+                for (let i = 0; i < data_expense.length; i++) {
+                    let ap_approved_value = 0;
+                    let sum_return_value = 0;
+                    let sum_converted_value = 0;
+                    let sum_real_value = 0;
+                    for (let j = 0; j < data_ap_mapped_item.length; j++) {
+                        if (data_ap_mapped_item[j]?.['expense_type']?.['id'] === data_expense[i]?.['expense_item']?.['id']) {
+                            ap_approved_value += data_ap_mapped_item[j]?.['expense_after_tax_price'];
+                            sum_return_value += data_ap_mapped_item[j]?.['sum_return_value'];
+                            sum_converted_value += data_ap_mapped_item[j]?.['sum_converted_value'];
+                            sum_real_value += data_ap_mapped_item[j]?.['sum_real_value'];
+                        }
+                    }
+
+                    $('#tab_plan_datatable tbody').append(`
+                        <tr>
+                            <td>${i+1}</td>
+                            <td class="expense_item_title" data-id="${data_expense[i]?.['expense_item']?.['id']}">${data_expense[i]?.['expense_item']?.['title']}</td>
+                            <td><span class="plan_after_tax mask-money text-primary" data-init-money="${data_expense[i]?.['plan_after_tax']}"></span></td>
+                            <td><span class="ap_approved mask-money text-primary" data-init-money="${ap_approved_value}"></span></td>
+                            <td><span class="returned mask-money text-primary" data-init-money="${sum_return_value}"></span></td>
+                            <td><span class="to_payment mask-money text-primary" data-init-money="${sum_converted_value}"></span></td>
+                            <td><span class="other_payment mask-money text-primary" data-init-money="${sum_real_value}"></span></td>
+                            <td><span class="available mask-money text-primary" data-init-money="${data_expense[i]?.['plan_after_tax'] - sum_real_value - ap_approved_value + sum_return_value}"></span></td>
+                        </tr>
+                    `)
+                }
+                $.fn.initMaskMoney2();
+            })
+    }
 }
 
 $(document).on("click", '#btn-add-row-line-detail', function () {
-    let sale_code = null;
-    let sale_code_code = null;
+    let sale_code_ID = null;
+    let sale_code_CODE = null;
     if (opp_mapped_select.val() !== null) {
-        sale_code = opp_mapped_select.val();
+        sale_code_ID = opp_mapped_select.val();
         let obj_selected = JSON.parse($('#' + opp_mapped_select.attr('data-idx-data-loaded')).text())[opp_mapped_select.val()];
-        sale_code_code = obj_selected.code;
+        sale_code_CODE = obj_selected.code;
     }
     else if (quotation_mapped_select.val() !== null) {
-        sale_code =  quotation_mapped_select.val();
+        sale_code_ID =  quotation_mapped_select.val();
         let obj_selected = JSON.parse($('#' + quotation_mapped_select.attr('data-idx-data-loaded')).text())[quotation_mapped_select.val()];
-        sale_code_code = obj_selected.code;
+        sale_code_CODE = obj_selected.code;
     }
     else if (sale_order_mapped_select.val() !== null) {
-        sale_code = sale_order_mapped_select.val();
+        sale_code_ID = sale_order_mapped_select.val();
         let obj_selected = JSON.parse($('#' + sale_order_mapped_select.attr('data-idx-data-loaded')).text())[sale_order_mapped_select.val()];
-        sale_code_code = obj_selected.code;
+        sale_code_CODE = obj_selected.code;
     }
 
-    if (sale_code !== null && sale_code_code !== null) {
+    if (sale_code_ID !== null && sale_code_CODE !== null) {
         tableLineDetail.append(`<tr id="" class="row-number">
         <td class="number text-center"></td>
         <td><select class="form-select expense-type-select-box"></select></td>
@@ -777,7 +747,7 @@ $(document).on("click", '#btn-add-row-line-detail', function () {
         tableLineDetail.append(`<tr class="" hidden>
             <td colspan="1"></td>
             <td colspan="1">
-                <span class="sale_code_product_detail badge badge-outline badge-soft-primary" data-sale-code-id="` + sale_code + `"><b>` + sale_code_code + `</b></span>
+                <span class="sale_code_product_detail badge badge-outline badge-soft-primary" data-sale-code-id="${sale_code_ID}"><b>${sale_code_CODE}</b></span>
             </td>
             <td colspan="2">
                 <input data-return-type="number" placeholder="Enter payment value" class="value-inp form-control mask-money ">
@@ -800,8 +770,6 @@ $(document).on("click", '#btn-add-row-line-detail', function () {
             </td>
             <td colspan="1">
                 <span class="mask-money total-value-salecode-item text-primary" data-init-money="0"></span>
-            </td>
-            <td colspan="1">
                 <script type="application/json" class="detail-ap-items"></script>
             </td>
         </tr>`);
@@ -870,7 +838,7 @@ $(document).on("click", '.btn-add-payment-value', function() {
 
     loadAPList();
 
-    $('#offcanvasRightLabel').text($('#offcanvasRightLabel').attr('data-text-1'));
+    offcanvasRightLabel.text(offcanvasRightLabel.attr('data-text-1'));
     $('#step1').prop('hidden', false);
     $('#step2').prop('hidden', true);
     $('#next-btn').prop('hidden', false);
@@ -888,7 +856,7 @@ function calculate_sum_ap_product_items() {
 }
 
 $("#next-btn").on('click', function () {
-    $('#offcanvasRightLabel').text($('#offcanvasRightLabel').attr('data-text-2'));
+    offcanvasRightLabel.text(offcanvasRightLabel.attr('data-text-2'));
     $('#step1').prop('hidden', true);
     $('#step2').prop('hidden', false);
     $('#next-btn').prop('hidden', true);
@@ -939,7 +907,6 @@ $("#next-btn").on('click', function () {
                             let total_remain_value = 0;
                             for (let i = 0; i < ap_item_detail.expense_items.length; i++) {
                                 let expense_item = ap_item_detail.expense_items[i];
-                                console.log(expense_item)
                                 let tax_code = '';
                                 if (Object.keys(expense_item.expense_tax).length !== 0) {
                                     tax_code = expense_item.expense_tax.code
@@ -1018,7 +985,7 @@ $("#next-btn").on('click', function () {
     }
 })
 $("#previous-btn").on('click', function () {
-    $('#offcanvasRightLabel').text($('#offcanvasRightLabel').attr('data-text-1'));
+    offcanvasRightLabel.text(offcanvasRightLabel.attr('data-text-1'));
     $('#step1').prop('hidden', false);
     $('#step2').prop('hidden', true);
     $('#next-btn').prop('hidden', false);
@@ -1062,30 +1029,71 @@ function LoadDetailPayment() {
                 $.fn.compareStatusShowPageAction(data);
                 $x.fn.renderCodeBreadcrumb(data);
                 console.log(data)
+                let sale_code_CODE = null;
+                let sale_code_ID = null;
 
-                if (data?.['opportunity_mapped'] && data?.['beneficiary']) {
+                if (Object.keys(data?.['opportunity_mapped']).length !== 0 && Object.keys(data?.['employee_inherit']).length !== 0) {
+                    sale_code_CODE = data?.['opportunity_mapped']?.['code'];
+                    sale_code_ID = data?.['opportunity_mapped']?.['id'];
                     new $x.cls.bastionField({
                         has_opp: true,
                         has_inherit: true,
                         data_inherit: [{
-                            "id": data?.['beneficiary']?.['id'],
-                            "full_name": data?.['beneficiary']?.['full_name'] || '',
-                            "first_name": data?.['beneficiary']?.['first_name'] || '',
-                            "last_name": data?.['beneficiary']?.['last_name'] || '',
-                            "email": data?.['beneficiary']?.['email'] || '',
-                            "is_active": data?.['beneficiary']?.['is_active'] || false,
+                            "id": data?.['employee_inherit']?.['id'],
+                            "full_name": data?.['employee_inherit']?.['full_name'] || '',
+                            "first_name": data?.['employee_inherit']?.['first_name'] || '',
+                            "last_name": data?.['employee_inherit']?.['last_name'] || '',
+                            "email": data?.['employee_inherit']?.['email'] || '',
+                            "is_active": data?.['employee_inherit']?.['is_active'] || false,
                             "selected": true,
                         }],
                         data_opp: [{
-                            "id": data?.['opportunity_mapped'][0]?.['id'] || '',
-                            "title": data?.['opportunity_mapped'][0]?.['title'] || '',
-                            "code": data?.['opportunity_mapped'][0]?.['code'] || '',
+                            "id": data?.['opportunity_mapped']?.['id'] || '',
+                            "title": data?.['opportunity_mapped']?.['title'] || '',
+                            "code": data?.['opportunity_mapped']?.['code'] || '',
                             "selected": true,
                         }]
                     }).init();
+                    PaymentLoadQuotation(data?.['opportunity_mapped']?.['quotation_mapped'])
                 }
-                PaymentLoadQuotation(data?.['quotation_mapped'])
-                PaymentLoadSaleOrder(data?.['sale_order_mapped'])
+                else if (data?.['quotation_mapped']) {
+                    PaymentLoadQuotation(data?.['quotation_mapped'])
+                    sale_code_CODE = data?.['quotation_mapped']?.['code'];
+                    sale_code_ID = data?.['quotation_mapped']?.['id'];
+
+                    let dataParam = {'quotation_id': quotation_mapped_select.val()}
+                    let ap_mapped_item = $.fn.callAjax2({
+                        url: sale_order_mapped_select.attr('data-url'),
+                        data: dataParam,
+                        method: 'GET'
+                    }).then(
+                        (resp) => {
+                            let data = $.fn.switcherResp(resp);
+                            if (data && typeof data === 'object' && data.hasOwnProperty('sale_order_list')) {
+                                return data?.['sale_order_list'];
+                            }
+                            return {};
+                        },
+                        (errs) => {
+                            console.log(errs);
+                        }
+                    )
+
+                    Promise.all([ap_mapped_item]).then(
+                        (results) => {
+                            let so_mapped_opp = results[0];
+                            if (so_mapped_opp.length > 0) {
+                                PaymentLoadSaleOrder(so_mapped_opp[0]);
+                            }
+                        })
+                }
+                else if (data?.['sale_order_mapped']) {
+                    PaymentLoadSaleOrder(data?.['sale_order_mapped'])
+                    sale_code_CODE = data?.['sale_order_mapped']?.['code'];
+                    sale_code_ID = data?.['sale_order_mapped']?.['id'];
+
+                    PaymentLoadQuotation(data?.['sale_order_mapped']?.['quotation_mapped'])
+                }
 
                 $('#title').val(data.title);
 
@@ -1099,7 +1107,7 @@ function LoadDetailPayment() {
 
                 $('#created_date_id').val(data.date_created.split(' ')[0]);
 
-                PaymentLoadCreator(initEmployee)
+                PaymentLoadCreator(data.creator_name)
 
                 for (let i = 0; i < data?.['expense_items'].length; i++) {
                     let data_row = data?.['expense_items'][i];
@@ -1107,8 +1115,8 @@ function LoadDetailPayment() {
                     if (Object.keys(data_row?.['expense_tax']).length !== 0) {
                         tax_html = `<option selected>${data_row?.['expense_tax']['title']}</option>`;
                     }
-                    tableLineDetail.append(`<tr id="row-${parseInt(i+1)}" class="row-number">
-                        <td class="number text-center">${parseInt(i+1)}</td>
+                    tableLineDetail.append(`<tr id="row-${i+1}" class="row-number">
+                        <td class="number text-center">${i+1}</td>
                         <td><select class="form-select expense-type-select-box"><option selected>${data_row?.['expense_type']['title']}</option></select></td>
                         <td><input class="form-control expense-name-input" value="${data_row?.['expense_description']}"></td>
                         <td><input class="form-control expense-uom-input" value="${data_row?.['expense_uom_name']}"></td>
@@ -1140,25 +1148,25 @@ function LoadDetailPayment() {
                         </td>
                         <td colspan="1"></td>
                     </tr>`)
-                    for (let j = 0; j < data_row?.['expense_ap_detail_list'].length; j++) {
-                        let data_row_detail = data_row?.['expense_ap_detail_list'][j];
+                    for (let j = 0; j < data_row?.['ap_cost_converted_list'].length; j++) {
+                        let data_row_detail = data_row?.['ap_cost_converted_list'][j];
                         tableLineDetail.append(`<tr class="row-detail-product-1" hidden>
                             <td colspan="1"></td>
                             <td colspan="1">
-                                <span class="sale_code_product_detail badge badge-outline badge-soft-primary" data-sale-code-id="${data_row_detail?.['sale_code_mapped']}"><b>${data_row_detail?.['sale_code_mapped_code']}</b></span>
+                                <span class="sale_code_product_detail badge badge-outline badge-soft-primary" data-sale-code-id="${sale_code_ID}"><b>${sale_code_CODE}</b></span>
                             </td>
                             <td colspan="2">
-                                <input data-return-type="number" placeholder="Enter payment value" class="value-inp form-control mask-money" value="${data_row_detail?.['real_value']}">
+                                <input data-return-type="number" placeholder="Enter payment value" class="value-inp form-control mask-money" value="${data_row?.['real_value']}">
                             </td>
                             <td colspan="1">
                                 <i class="fas fa-plus text-primary"></i>
                             </td>
                             <td colspan="2">
                                 <div class="input-group">
-                                    <input data-return-type="number" placeholder="Click button to select payment value" class="value-converted-from-ap-inp form-control mask-money" value="${data_row_detail?.['converted_value']}" disabled>
+                                    <input data-return-type="number" placeholder="Click button to select payment value" class="value-converted-from-ap-inp form-control mask-money" value="${data_row?.['converted_value']}" disabled>
                                     <button style="border: 1px solid #ced4da" data-bs-toggle="offcanvas" 
-                                    data-bs-target="#offcanvasSelectDetailAP" aria-controls="offcanvasExample" 
-                                    class="disabled btn btn-icon btn-flush-primary flush-soft-hover btn-add-payment-value" type="button">
+                                            data-bs-target="#offcanvasSelectDetailAP" aria-controls="offcanvasExample" 
+                                            class="disabled btn btn-icon btn-flush-primary flush-soft-hover btn-add-payment-value" type="button">
                                         <span class="icon"><i class="bi bi-pencil-square text-primary"></i></span>
                                     </button>
                                 </div>
@@ -1167,10 +1175,8 @@ function LoadDetailPayment() {
                                 <i class="fas fa-equals text-primary"></i>
                             </td>
                             <td colspan="1">
-                                <span class="mask-money total-value-salecode-item text-primary" data-init-money="${data_row_detail?.['sum_value']}" ></span>
-                            </td>
-                            <td colspan="1">
-                                <script type="application/json" class="detail-ap-items"></script>
+                                <span class="mask-money total-value-salecode-item text-primary" data-init-money="${data_row?.['sum_value']}" ></span>
+                                <script type="application/json" class="detail-ap-items">${JSON.stringify(data_row_detail)}</script>
                             </td>
                         </tr>`);
                     }
@@ -1203,42 +1209,24 @@ class PaymentHandle {
             return false;
         }
 
-        frm.dataForm['sale_code_list'] = [];
         let opportunity_mapped = opp_mapped_select.val();
         let quotation_mapped = quotation_mapped_select.val();
         let sale_order_mapped = sale_order_mapped_select.val();
         if (opportunity_mapped !== null) {
-            frm.dataForm['sale_code_list'].push({
-                'sale_code_id': opportunity_mapped,
-                'sale_code_detail': 0
-            })
+            frm.dataForm['opportunity_mapped'] = opp_mapped_select.val();
         }
         else if (quotation_mapped !== null) {
-            frm.dataForm['sale_code_list'].push({
-                'sale_code_id': quotation_mapped,
-                'sale_code_detail': 1
-            })
+            frm.dataForm['quotation_mapped'] = quotation_mapped_select.val();
         }
         else if (sale_order_mapped !== null) {
-            frm.dataForm['sale_code_list'].push({
-                'sale_code_id': sale_order_mapped,
-                'sale_code_detail': 2
-            })
+            frm.dataForm['sale_order_mapped'] = sale_order_mapped_select.val();
         }
         else {
             $.fn.notifyB({description: 'Sale code must not be NULL.'}, 'failure');
             return false;
         }
 
-
         frm.dataForm['sale_code_type'] = 0;
-        if (frm.dataForm['sale_code_list'].length > 1) {
-            frm.dataForm['sale_code_type'] = 3;
-        }
-        if (![0, 3].includes(frm.dataForm['sale_code_type'])) {
-            $.fn.notifyB({description: 'Sale code type must be in [0, 3]'}, 'failure');
-            return false;
-        }
 
         frm.dataForm['supplier'] = supplierEle.val();
 
@@ -1254,9 +1242,9 @@ class PaymentHandle {
             return false;
         }
 
-        frm.dataForm['beneficiary'] = $('#employee_inherit_id').val();
-        if (frm.dataForm['beneficiary'] === '') {
-            $.fn.notifyB({description: 'Beneficiary name must not be NULL'}, 'failure');
+        frm.dataForm['employee_inherit'] = $('#employee_inherit_id').val();
+        if (frm.dataForm['employee_inherit'] === '') {
+            $.fn.notifyB({description: 'Employee Inherit name must not be NULL'}, 'failure');
             return false;
         }
 
@@ -1265,7 +1253,6 @@ class PaymentHandle {
             let row_count = tableLineDetail.find('.row-number').length;
             for (let i = 1; i <= row_count; i++) {
                 let expense_detail_value = 0;
-
                 let row_id = '#row-' + i.toString();
                 let expense_type = tableLineDetail.find(row_id + ' .expense-type-select-box').val();
                 let expense_name_input = tableLineDetail.find(row_id + ' .expense-name-input').val();
@@ -1282,9 +1269,7 @@ class PaymentHandle {
                 }
                 let document_number = tableLineDetail.find(row_id + ' .expense-document-number').val();
 
-                let expense_ap_detail_list = [];
-                let sale_code_len = 1;
-                let sale_code_item = tableLineDetail.find(row_id).nextAll().slice(1, sale_code_len + 1);
+                let sale_code_item = tableLineDetail.find(row_id).nextAll().slice(1, 2);
                 sale_code_item.each(function() {
                     let expense_items_detail_list = [];
                     if ($(this).find('.detail-ap-items').html()) {
@@ -1302,17 +1287,7 @@ class PaymentHandle {
                     if ($(this).find('.total-value-salecode-item').attr('data-init-money') !== '') {
                         sum_value = $(this).find('.total-value-salecode-item').attr('data-init-money');
                     }
-                    expense_ap_detail_list.push({
-                        'sale_code_mapped': $(this).find('.sale_code_product_detail').attr('data-sale-code-id'),
-                        'sale_code_mapped_code': $(this).find('.sale_code_product_detail').text(),
-                        'real_value': real_value,
-                        'converted_value': converted_value,
-                        'sum_value': sum_value,
-                        'expense_items_detail_list': expense_items_detail_list
-                    })
                     expense_detail_value = parseFloat(expense_detail_value) + parseFloat(sum_value);
-                });
-                if (!isNaN(expense_subtotal_price) && !isNaN(expense_after_tax_price)) {
                     payment_expense_valid_list.push({
                         'expense_type_id': expense_type,
                         'expense_description': expense_name_input,
@@ -1324,9 +1299,12 @@ class PaymentHandle {
                         'expense_subtotal_price': expense_subtotal_price,
                         'expense_after_tax_price': expense_after_tax_price,
                         'document_number': document_number,
-                        'expense_ap_detail_list': expense_ap_detail_list
+                        'real_value': real_value,
+                        'converted_value': converted_value,
+                        'sum_value': sum_value,
+                        'ap_cost_converted_list': expense_items_detail_list
                     })
-                }
+                })
 
                 if (expense_after_tax_price !== expense_detail_value) {
                     $.fn.notifyB({description: 'Detail tab - line ' + i.toString() + ': product value must be equal to sum Sale Code value.'}, 'failure');
@@ -1336,6 +1314,8 @@ class PaymentHandle {
         }
 
         frm.dataForm['payment_expense_valid_list'] = payment_expense_valid_list;
+
+        frm.dataForm['status'] = true;
 
         return {
             url: frm.dataUrl,

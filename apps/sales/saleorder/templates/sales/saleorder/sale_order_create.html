@@ -5,14 +5,7 @@
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-outline-primary" type="submit" form="frm_quotation_create">
-        <span>
-            <span>{% trans 'Save' %}</span>
-            <span class="icon">
-                <i class="fa-regular fa-floppy-disk"></i>
-            </span>
-        </span>
-    </button>
+    {% include 'extends/systems/page_actions.html' with is_save=True is_save_draft=True save_frm='frm_quotation_create' %}
 {% endblock %}
 
 {% block pageContent %}

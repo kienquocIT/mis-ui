@@ -59,39 +59,21 @@ $(function () {
                         targets: 6,
                         class: 'w-20',
                         render: (data, type, row) => {
-                            let value = '0';
-                            for (let indicator of row?.['indicator']) {
-                                if (indicator?.['code'] === 'IN0001') {
-                                    value = indicator?.['indicator_value'];
-                                }
-                            }
-                            return `<span class="mask-money table-row-revenue" data-init-money="${parseFloat(value)}"></span>`;
+                            return `<span class="mask-money table-row-revenue" data-init-money="${parseFloat(row?.['revenue'])}"></span>`;
                         }
                     },
                     {
                         targets: 7,
                         class: 'w-20',
                         render: (data, type, row) => {
-                            let value = '0';
-                            for (let indicator of row?.['indicator']) {
-                                if (indicator?.['code'] === 'IN0003') {
-                                    value = indicator?.['indicator_value'];
-                                }
-                            }
-                            return `<span class="mask-money table-row-gross-profit" data-init-money="${parseFloat(value)}"></span>`;
+                            return `<span class="mask-money table-row-gross-profit" data-init-money="${parseFloat(row?.['gross_profit'])}"></span>`;
                         }
                     },
                     {
                         targets: 8,
                         class: 'w-20',
                         render: (data, type, row) => {
-                            let value = '0';
-                            for (let indicator of row?.['indicator']) {
-                                if (indicator?.['code'] === 'IN0005') {
-                                    value = indicator?.['indicator_value'];
-                                }
-                            }
-                            return `<span class="mask-money table-row-net-income" data-init-money="${parseFloat(value)}"></span>`;
+                            return `<span class="mask-money table-row-net-income" data-init-money="${parseFloat(row?.['net_income'])}"></span>`;
                         }
                     },
                 ],

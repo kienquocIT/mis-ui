@@ -16,10 +16,6 @@
     </button>
 {% endblock %}
 {% block pageContent %}
-    {{ data.account_list | json_script:"account_list" }}
-    {{ data.contact_list | json_script:"contact_list" }}
-    {{ data.opportunity_list | json_script:"opportunity_list" }}
-
     <input type="hidden" id="employee_current_id" value="{{ data.employee_current_id }}">
     <table id="table_opportunity_call_log_list" class="table nowrap w-100 mb-5"
            data-url-contact-detail="{% url 'ContactDetail' '0' %}"
@@ -28,7 +24,7 @@
            data-url="{% url 'OpportunityCallLogListAPI' %}" data-method="GET">
         <thead>
         <tr>
-            <th>#</th>
+            <th></th>
             <th>{% trans 'To Contact' %}
                 <i class="fas fa-info-circle icon-info"
                    data-bs-toggle="tooltip"
@@ -45,14 +41,12 @@
             </th>
             <th class="text-center">{% trans 'Sale Code' %}</th>
             <th class="text-center">{% trans 'Date' %}</th>
-            <th class="text-center">{% trans 'Need repeat' %}</th>
-            <th class="text-center">{% trans 'Action' %}</th>
+            <th class="text-center"></th>
         </tr>
         </thead>
         <tbody>
         </tbody>
     </table>
-
     <div class="modal fade mt-10" id="create-new-call-log" tabindex="-1" role="dialog"
          aria-labelledby="createOpportunityCallLogModalForms" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
@@ -80,54 +74,20 @@
                             <label class="form-label required">
                                 {% trans 'Sale Code' %}
                             </label>
-                            <select id="sale-code-select-box" class="form-select" data-url="{% url 'OpportunityListAPI' %}" data-method="GET"></select>
+                            <select id="sale-code-select-box" class="select2 form-select" data-url="{% url 'OpportunityListAPI' %}" data-method="GET"></select>
                         </div>
                         <div class="mb-3">
                             <label class="form-label required">
                                 {% trans 'Customer' %}
                             </label>
-                            <select disabled id="account-select-box" class="form-select" data-url="{% url 'AccountListAPI' %}" data-method="GET"></select>
+                            <select disabled id="account-select-box" class="select2 form-select" data-url="{% url 'AccountListAPI' %}" data-method="GET"></select>
                         </div>
                         <div class="row mb-3">
                             <div class="col-6">
                                 <label class="form-label required">
                                     {% trans 'Contact' %}
                                 </label>
-                                <span class="input-affix-wrapper">
-                                    <span class="input-prefix" id="call-log-contact-detail-span" hidden>
-                                        <i class="fas fa-info-circle text-primary" aria-expanded="false" data-bs-toggle="dropdown"></i>
-                                        <span role="menu" class="dropdown-menu ml-4 pl-3 pr-3 pt-3 pb-3" style="width: 25rem;">
-                                            <div class="row">
-                                                <span class="col-7" style="font-style: italic; font-weight: bold">{% trans "More information" %}</span>
-                                                <a id="btn-detail-call-log-contact-tab" class="col-5 text-right" data-url="{% url 'ContactDetail' '0' %}" target="_blank">
-                                                    <span class="badge btn-outline-primary">{% trans "More" %}&nbsp;<i class="bi bi-arrow-right"></i></span>
-                                                </a>
-                                            </div>
-                                            <div class="dropdown-divider"></div>
-                                            <div class="row">
-                                                <span class="col-5" style="font-style: italic">{% trans "Contact name" %}</span>
-                                                <span class="col-7 text-primary" id="call-log-contact-name"></span>
-                                            </div>
-                                            <div class="row">
-                                                <span class="col-5" style="font-style: italic">{% trans "Job title" %}</span>
-                                                <span class="col-7 text-primary" id="call-log-contact-job-title"></span>
-                                            </div>
-                                            <div class="row">
-                                                <span class="col-5" style="font-style: italic">{% trans "Mobile" %}</span>
-                                                <span class="col-7 text-primary" id="call-log-contact-mobile"></span>
-                                            </div>
-                                            <div class="row">
-                                                <span class="col-5" style="font-style: italic">{% trans "Email" %}</span>
-                                                <span class="col-7 text-primary" id="call-log-contact-email"></span>
-                                            </div>
-                                            <div class="row">
-                                                <span class="col-5" style="font-style: italic">{% trans "Report to" %}</span>
-                                                <span class="col-7 text-primary" id="call-log-contact-report-to"></span>
-                                            </div>
-                                        </span>
-                                    </span>
-                                    <select id="contact-select-box" class="form-select" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
-                                </span>
+                                <select disabled id="contact-select-box" class="select2 form-select"></select>
                             </div>
                             <div class="col-6">
                                 <label class="form-label required">
@@ -142,7 +102,7 @@
                             </label>
                             <textarea id="result-text-area" class="form-control" style="min-height: 100px"></textarea>
                         </div>
-                        <div class="mb-3">
+                        <div class="mb-3" hidden>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="repeat-activity">
                                 <label class="form-check-label" for="repeat-activity">{% trans 'Need to repeat activity' %}</label>
@@ -157,7 +117,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal fade mt-10" id="detail-call-log" tabindex="-1" role="dialog"
          aria-labelledby="detailOpportunityCallLogModalForms" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
@@ -179,54 +138,20 @@
                         <label class="form-label required">
                             {% trans 'Sale Code' %}
                         </label>
-                        <select disabled style="color: #6f6f6f" id="detail-sale-code-select-box" class="form-select" data-url="{% url 'OpportunityListAPI' %}" data-method="GET"></select>
+                        <select disabled style="color: #6f6f6f" id="detail-sale-code-select-box" class="select2 form-select" data-url="{% url 'OpportunityListAPI' %}" data-method="GET"></select>
                     </div>
                     <div class="mb-3">
                         <label class="form-label required">
                             {% trans 'Customer' %}
                         </label>
-                        <select disabled style="color: #6f6f6f" id="detail-account-select-box" class="form-select" data-url="{% url 'AccountListAPI' %}" data-method="GET"></select>
+                        <select disabled style="color: #6f6f6f" id="detail-account-select-box" class="select2 form-select" data-url="{% url 'AccountListAPI' %}" data-method="GET"></select>
                     </div>
                     <div class="row mb-3">
                         <div class="col-6">
                             <label class="form-label required">
                                 {% trans 'Contact' %}
                             </label>
-                            <span class="input-affix-wrapper">
-                                <span class="input-prefix" id="detail-call-log-contact-detail-span">
-                                    <i class="fas fa-info-circle text-primary" aria-expanded="false" data-bs-toggle="dropdown"></i>
-                                    <span role="menu" class="dropdown-menu ml-4 pl-3 pr-3 pt-3 pb-3" style="width: 25rem;">
-                                        <div class="row">
-                                            <span class="col-7" style="font-style: italic; font-weight: bold">{% trans "More information" %}</span>
-                                            <a id="detail-btn-detail-call-log-contact-tab" class="col-5 text-right" data-url="{% url 'ContactDetail' '0' %}" target="_blank">
-                                                <span class="badge btn-outline-primary">{% trans "More" %}&nbsp;<i class="bi bi-arrow-right"></i></span>
-                                            </a>
-                                        </div>
-                                        <div class="dropdown-divider"></div>
-                                        <div class="row">
-                                            <span class="col-5" style="font-style: italic">{% trans "Contact name" %}</span>
-                                            <span class="col-7 text-primary" id="detail-call-log-contact-name"></span>
-                                        </div>
-                                        <div class="row">
-                                            <span class="col-5" style="font-style: italic">{% trans "Job title" %}</span>
-                                            <span class="col-7 text-primary" id="detail-call-log-contact-job-title"></span>
-                                        </div>
-                                        <div class="row">
-                                            <span class="col-5" style="font-style: italic">{% trans "Mobile" %}</span>
-                                            <span class="col-7 text-primary" id="detail-call-log-contact-mobile"></span>
-                                        </div>
-                                        <div class="row">
-                                            <span class="col-5" style="font-style: italic">{% trans "Email" %}</span>
-                                            <span class="col-7 text-primary" id="detail-call-log-contact-email"></span>
-                                        </div>
-                                        <div class="row">
-                                            <span class="col-5" style="font-style: italic">{% trans "Report to" %}</span>
-                                            <span class="col-7 text-primary" id="detail-call-log-contact-report-to"></span>
-                                        </div>
-                                    </span>
-                                </span>
-                                <select disabled style="color: #6f6f6f" id="detail-contact-select-box" class="form-select" data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
-                            </span>
+                            <select disabled id="detail-contact-select-box" class="select2 form-select"></select>
                         </div>
                         <div class="col-6">
                             <label class="form-label required">
@@ -241,7 +166,7 @@
                         </label>
                         <textarea readonly id="detail-result-text-area" class="form-control" style="min-height: 100px"></textarea>
                     </div>
-                    <div class="mb-3">
+                    <div class="mb-3" hidden>
                         <div class="form-check">
                             <input disabled class="form-check-input" type="checkbox" id="detail-repeat-activity">
                             <label for="repeat-activity">{% trans 'Need to repeat activity' %}</label>
@@ -253,7 +178,7 @@
     </div>
 {% endblock %}
 {% block jsFooter %}
-    <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
-    <script src="{% static 'assets/sales/opportunity/js/call_log_list.js' %}"></script>
+
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'assets/sales/opportunity/js/call_log_list.js' %}"></script>
 {% endblock %}

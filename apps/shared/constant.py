@@ -1,4 +1,6 @@
 from django.utils.translation import gettext_lazy as _
+
+from .msg import LeaveMsg
 from .msg.workflow import WorkflowMsg
 
 __all__ = [
@@ -8,7 +10,9 @@ __all__ = [
     'WORKFLOW_ACTION',
     'DELIVERY_STATE',
     'TYPE_CUSTOMER',
-    'ROLE_CUSTOMER'
+    'ROLE_CUSTOMER',
+    'PAID_BY',
+    'SYSTEM_STATUS'
 ]
 
 CUSTOMER_REVENUE = [
@@ -71,4 +75,13 @@ ROLE_CUSTOMER = [
     {"value": 2, "name": _('Contact Involved')},
 ]
 
+PAID_BY = {
+    1: LeaveMsg.PAID_BY_ONE,
+    2: LeaveMsg.PAID_BY_TWO,
+    3: LeaveMsg.PAID_BY_THREE,
+}
 
+LEAVE_ACTION = {
+    1: LeaveMsg.LEAVE_ACTION_INS,
+    2: LeaveMsg.LEAVE_ACTION_DES,
+}

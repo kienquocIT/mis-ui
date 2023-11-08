@@ -17,6 +17,7 @@ $(document).ready(function () {
                     return ''
                 },
             }, {
+                orderable: true,
                 render: (row, type, data) => {
                     return `<a href="{0}" class="text-link"><span>{1}</span></a>`.format_by_idx(
                         frm.getUrlDetail(data.id), UtilControl.getValueOrEmpty(data, 'code'),
@@ -24,6 +25,7 @@ $(document).ready(function () {
                 },
             }, {
                 data: 'sale_order_data',
+                orderable: true,
                 render: (data, type, row) => {
                     if (data && data.hasOwnProperty('id') && data.hasOwnProperty('code')) {
                         return `<a href="{0}"><span>{1}</span><span class="badge badge-soft-success">{2}</span></a>`.format_by_idx(
@@ -39,18 +41,18 @@ $(document).ready(function () {
                 },
             }, {
                 data: 'date_created',
-                render: (row, type, data) => {
-                    let time = '--';
-                    if (row) time = moment(row).format('DD/MM/YYYY');
-                    return time
+                render: (data, type, row) => {
+                    return $x.fn.displayRelativeTime(data, {
+                        'outputFormat': 'DD/MM/YYYY',
+                    });
                 },
             },
             {
                 data: 'estimated_delivery_date',
-                render: (row, type, data) => {
-                    let time = '--';
-                    if (row) time = moment(row).format('DD/MM/YYYY');
-                    return time
+                render: (data, type, row) => {
+                    return $x.fn.displayRelativeTime(data, {
+                        'outputFormat': 'DD/MM/YYYY',
+                    });
                 },
             },
             {
@@ -63,6 +65,7 @@ $(document).ready(function () {
             },
             {
                 data: 'state',
+                orderable: true,
                 render: (data, type, row, meta) => {
                     let templateEle = `<span class="badge badge-warning badge-outline">{0}</span>`;
                     switch (data) {

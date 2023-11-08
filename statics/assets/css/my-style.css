@@ -38,8 +38,9 @@
     cursor: pointer;
 }
 
-.card {
-    margin-top: 30px;
+/* HK WRAPPER */
+.hk-pg-wrapper-z-index-1040 {
+    z-index: 1040;
 }
 
 /* Hidden secondary slider */
@@ -151,10 +152,6 @@ div.inline {
     display: inline-block !important;
 }
 
-.dropdown-menu-end {
-    min-width: 280px;
-}
-
 .dataTables_paginate span {
     margin: 0 5px;
 }
@@ -181,7 +178,11 @@ div.inline {
 }
 
 .util-btn {
-    justify-content: flex-end;
+    margin-left: auto;
+}
+
+.dataTables_filter + .util-btn {
+    margin-left: unset;
 }
 
 .row-custom-filter {
@@ -225,8 +226,11 @@ div.inline {
         justify-content: right !important;
     }
 
-    .dataTables_info:before {
+    .dataTables_length + .dataTables_info:before {
         content: "|";
+    }
+
+    .dataTables_info:before {
         margin-right: 10px;
         margin-left: 10px;
     }
@@ -270,13 +274,13 @@ div.inline {
     }
 
     .btnAddFilter .dtb-text-btn-filter {
-        margin-left: 0!important;
+        margin-left: 0 !important;
         visibility: hidden;
         width: 0;
     }
 
     .btnAddFilter .dtb-icon-btn-filter {
-        margin-right: 0!important;
+        margin-right: 0 !important;
     }
 }
 
@@ -330,6 +334,138 @@ a.disabled{
     filter: grayscale(1);
 }
 
-.custom-visible-dtb .tit_visible_tb-head{
+.custom-visible-dtb .tit_visible_tb-head {
     display: none;
+}
+
+/* bastion field : opp - prj - inherit */
+#btnBastionField span:not(:last-child):after {
+    font-family: 'FontAwesome';
+    margin-right: 5px;
+    margin-left: 5px;
+    content: '\f068';
+}
+
+/* save group css */
+.save-btn-group .dropdown-toggle:after {
+    width: 8px;
+}
+
+.save-btn-group .btn-outline-primary.dropdown-toggle.show:focus {
+    box-shadow: unset;
+}
+
+.save-btn-group .btn-outline-primary.dropdown-toggle.show {
+    background-color: #007D88;
+    border-color: #007D88;
+}
+
+/* Select2 customize css */
+/* Select2 ReadOnly Start*/
+
+select[readonly].select2-hidden-accessible + .select2-container {
+    pointer-events: none;
+    touch-action: none;
+}
+
+select[readonly].select2-hidden-accessible + .select2-container .select2-selection {
+    background: #eee;
+    box-shadow: none;
+}
+
+select[readonly].select2-hidden-accessible + .select2-container .select2-selection__arrow, select[readonly].select2-hidden-accessible + .select2-container .select2-selection__clear {
+    display: none;
+}
+
+/* -- Select2 ReadOnly End*/
+
+.input-group > .select2-container--bootstrap4 {
+    width: auto !important;
+    flex: 1 1 auto !important;
+}
+
+.input-group > .select2-container--bootstrap4 .select2-selection--single {
+    height: 100% !important;
+    line-height: inherit !important;
+}
+
+/* -- Select2 customize css */
+
+/* Group input has button info */
+
+.overflow-unset {
+    overflow: unset !important;
+}
+
+.select2-hidden-accessible:not(.is-valid):not(.is-invalid) + * + .info-btn-more {
+    border-color: #d8d8d8;
+}
+
+.select2-hidden-accessible.is-valid + * + .info-btn-more {
+    border-color: #28a745;
+}
+
+.select2-hidden-accessible.is-invalid + * + .info-btn-more {
+    border-color: #dc3545;
+}
+
+/* -- Group input has button info */
+
+/* color by PO */
+.bg-x-primary {
+    background-color: #38C9A5;
+}
+
+.text-x-primary {
+    color: #38C9A5;
+}
+
+.bg-x-success {
+    background-color: #38C9A5;
+}
+
+.text-x-success {
+    color: #38C9A5;
+}
+
+.bg-x-warning {
+    background-color: #E4D02E;
+}
+
+.text-x-warning {
+    color: #E4D02E;
+}
+
+.bg-x-danger {
+    background-color: #C9425B;
+}
+
+.text-x-danger {
+    color: #C9425B;
+}
+
+.bg-x-info {
+    background-color: #31A8E0;
+}
+
+.text-x-info {
+    color: #31A8E0;
+}
+
+/* -- color by PO */
+
+/*badge notification */
+#idxNotifyShowData .notifications-info {
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: self-start!important;
+}
+.noti-custom {
+    border: solid 1px #def1e9;
+    box-shadow: 3px 3px 4px 3px #efefef;
+    -webkit-box-shadow: 3px 3px 4px 3px #efefef;
+}
+#idxNotifyShowData > a:hover .noti-custom{
+    box-shadow: 3px 3px 4px 3px #e7e7e7;
+    -webkit-box-shadow: 3px 3px 4px 3px #e7e7e7;
 }

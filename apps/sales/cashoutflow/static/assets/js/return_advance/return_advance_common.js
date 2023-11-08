@@ -1,5 +1,8 @@
+let transEle = $('#trans-factory');
+let urlEle = $('#url-factory');
+
 function loadDetailBeneficiary(id) {
-    let ele = $('[name="creator"]');
+    let ele = $('[name="employee_created_id"]');
     let frm = new SetupFormSubmit(ele);
     $.fn.callAjax2({
         'url': frm.getUrlDetail(id),
@@ -22,7 +25,7 @@ function loadDetailBeneficiary(id) {
 }
 
 function loadCreator(id) {
-    let ele = $('[name="creator"]');
+    let ele = $('[name="employee_created_id"]');
     let frm = new SetupFormSubmit(ele);
     if (id === null) {
         id = ele.attr('data-id')
@@ -50,13 +53,18 @@ function loadCreator(id) {
 
 function loadCostTable(data) {
     let table = $('#dtbProduct').DataTable();
+    table.clear().draw();
+    let dict_cost = JSON.parse($('#data-costs').text());
     data.map(function (item) {
-        table.row.add(item).draw().node();
+        if (dict_cost[item.id]) {
+            item['remain_total'] += dict_cost[item.id].return_value;
+        }
+        table.row.add(item).draw();
     })
 }
 
 function loadDetailAdvancePayment(id, type = 'create') {
-    let url = $('#url-factory').data('url-detail-ap').format_url_with_uuid(id)
+    let url = urlEle.data('url-detail-ap').format_url_with_uuid(id);
     $.fn.callAjax2({
         'url': url,
         'method': "GET"
@@ -66,20 +74,9 @@ function loadDetailAdvancePayment(id, type = 'create') {
             if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('advance_payment_detail')) {
                 let ele_beneficiary = $('#chooseBeneficiary');
                 ele_beneficiary.empty();
-                let sale_code_ele = $('[name="sale_code"]');
-                if (data?.['advance_payment_detail']?.['sale_order_mapped'].length > 0) {
-                    sale_code_ele.val(data?.['advance_payment_detail']?.['sale_order_mapped'][0].opportunity.code);
-                } else if (data?.['advance_payment_detail']?.['quotation_mapped'].length > 0) {
-                    sale_code_ele.val(data?.['advance_payment_detail']?.['quotation_mapped'][0].opportunity.code);
-                } else if (data?.['advance_payment_detail']?.['opportunity_mapped'].length > 0) {
-                    sale_code_ele.val(data?.['advance_payment_detail']?.['opportunity_mapped'][0].code);
-                } else {
-                    sale_code_ele.val('');
-                }
-                ReturnAdvanceLoadPage.loadBeneficiary(ele_beneficiary, data?.['advance_payment_detail'].beneficiary)
-                loadDetailBeneficiary(data?.['advance_payment_detail'].beneficiary.id);
+                ReturnAdvanceLoadPage.loadBeneficiary(ele_beneficiary, data?.['advance_payment_detail'].employee_inherit)
+                loadDetailBeneficiary(data?.['advance_payment_detail'].employee_inherit.id);
 
-                console.log(data?.['advance_payment_detail'])
                 if (type === 'create') {
                     loadCostTable(data?.['advance_payment_detail']?.['expense_items'])
                 }
@@ -132,13 +129,11 @@ function loadDataTableCost(data, is_detail = false) {
                 {
                     data: 'return_value',
                     targets: 4,
-                    className: 'wrap-text',
                     render: (data, type, row) => {
                         let value = data !== undefined ? data : '';
                         if (is_detail) {
                             return `<input class="mask-money form-control return-price" type="text" data-return-type="number" value="${value}" disabled>`
-                        }
-                        else{
+                        } else {
                             return `<input class="mask-money form-control return-price" type="text" data-return-type="number" value="${value}">`
                         }
                     }
@@ -148,62 +143,33 @@ function loadDataTableCost(data, is_detail = false) {
     }
 }
 
-function loadDataTableProductPageDetailloadDataTableProductPageDetail(data, type_page = 'create') {
-    if (!$.fn.DataTable.isDataTable('#dtbProduct')) {
-        let $table = $('#dtbProduct')
-        $table.DataTableDefault({
-            rowIdx: true,
-            reloadCurrency: true,
-            data: data,
-            columns: [
-                {
-                    targets: 0,
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
-                        return ``
-                    }
-                },
-                {
-                    targets: 1,
-                    data: 'product',
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
-                        return `<span class="text-primary">${data.title}</span>`
-                    }
-                },
-                {
-                    data: 'product_type',
-                    targets: 2,
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
-                        return `<span>${data}</span>`
-                    }
-                },
-                {
-                    data: 'remain_total',
-                    targets: 3,
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
-                        return `<span class="mask-money" data-init-money="${data}"></span>`
-                    }
-                },
-                {
-                    data: 'return_price',
-                    targets: 4,
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
-                        if (type_page === 'detail') {
-                            return `<input class="mask-money form-control return-price" type="text" data-return-type="number" value="${data}" disabled>`
-                        } else
-                            return `<input class="mask-money form-control return-price" type="text" data-return-type="number" value="${data}">`
-                    }
-                },
-            ],
-        });
-    }
-}
-
 class ReturnAdvanceLoadPage {
+    load() {
+        $('input[name="date_created"]').daterangepicker({
+            singleDatePicker: true,
+            timePicker: true,
+            showDropdowns: false,
+            minYear: 1901,
+            "cancelClass": "btn-secondary",
+            maxYear: parseInt(moment().format('YYYY'), 10)
+        });
+        $('.daterangepicker').remove();
+
+        $(document).on('change', '.return-price', function () {
+            let total = 0;
+            let ele = $(this).closest('tr').find('span.mask-money');
+            if ($(this).valCurrency() > ele.attr('data-init-money')) {
+                $.fn.notifyB({description: $('#trans-factory').data('trans-greater-remain')}, 'failure');
+                $(this).attr('value', '');
+            }
+            $('.return-price').each(function () {
+                total += $(this).valCurrency();
+            })
+            $('#total-value').attr('data-init-money', total);
+            $.fn.initMaskMoney2();
+        })
+    }
+
     static saleCodeEle = $('#inp-sale-code');
     static methodPaymentEle = $('#box-method-payment')
 
@@ -232,6 +198,22 @@ class ReturnAdvanceLoadPage {
                 return list_result
             }
         }).on('change', function () {
+            let obj_selected = JSON.parse($('#' + $(this).attr('data-idx-data-loaded')).text())[$(this).val()];
+            console.log(obj_selected)
+            let sale_code_mapped = null
+            if (Object.keys(obj_selected?.['opportunity_mapped']).length !== 0) {
+                sale_code_mapped = obj_selected?.['opportunity_mapped']
+            }
+            if (Object.keys(obj_selected?.['quotation_mapped']).length !== 0) {
+                sale_code_mapped = obj_selected?.['quotation_mapped']
+            }
+            if (Object.keys(obj_selected?.['sale_order_mapped']).length !== 0) {
+                sale_code_mapped = obj_selected?.['sale_order_mapped']
+            }
+            console.log(sale_code_mapped)
+            if (sale_code_mapped !== null) {
+                $('#inp-sale-code').val(sale_code_mapped.code)
+            }
             loadDetailAdvancePayment($(this).val())
         });
     }
@@ -243,9 +225,19 @@ class ReturnAdvanceLoadPage {
         })
     }
 
-    static loadMethodPayment(data = {}) {
+    static loadMethodPayment() {
+        let data = [
+            {
+                'id': 0,
+                'title': transEle.data('trans-cash'),
+            },
+            {
+                'id': 1,
+                'title': transEle.data('trans-bank-transfer'),
+            }
+        ]
         ReturnAdvanceLoadPage.methodPaymentEle.initSelect2({
-            data: data
+            data: data,
         })
     }
 }
@@ -265,13 +257,33 @@ function loadDetail(id, frmDetail) {
             $('.header-code').text(return_advance_detail.code);
             $('[name="title"]').val(return_advance_detail.title);
             ReturnAdvanceLoadPage.loadAdvancePayment(choose_AP_ele, return_advance_detail.advance_payment, {});
+            let sale_code_mapped =null;
+            if (Object.keys(return_advance_detail.advance_payment?.['opportunity_mapped']).length !== 0) {
+                sale_code_mapped = return_advance_detail.advance_payment?.['opportunity_mapped']
+            }
+            if (Object.keys(return_advance_detail.advance_payment?.['quotation_mapped']).length !== 0) {
+                sale_code_mapped = return_advance_detail.advance_payment?.['quotation_mapped']
+            }
+            if (Object.keys(return_advance_detail.advance_payment?.['sale_order_mapped']).length !== 0) {
+                sale_code_mapped = return_advance_detail.advance_payment?.['sale_order_mapped']
+            }
+            if (sale_code_mapped !== null) {
+                $('#inp-sale-code').val(sale_code_mapped.code)
+            }
             loadDetailAdvancePayment(return_advance_detail.advance_payment.id, 'detail');
-            loadCreator(return_advance_detail.creator);
+            loadCreator(return_advance_detail.employee_created);
             $('[name="date_created"]').val(return_advance_detail.date_created.split(" ")[0]);
-            $('[name="method"]').val(return_advance_detail.method);
+            ReturnAdvanceLoadPage.methodPaymentEle.val(return_advance_detail.method).trigger('change');
+
+            let script_costs = $('#data-costs');
+            let dict_cost = JSON.parse(script_costs.text());
+
             loadCostTable(return_advance_detail.cost);
-            let total_value = return_advance_detail.cost.map(obj => obj?.['return_price']).reduce((a, b) => a + b, 0)
-            $('#total-value').attr('data-init-money', total_value);
+            return_advance_detail.cost.map(function (item) {
+                dict_cost[item?.['id']] = item;
+            })
+            script_costs.text(JSON.stringify(dict_cost));
+            $('#total-value').attr('data-init-money', return_advance_detail.return_total);
             if (return_advance_detail.money_received) {
                 let money_received_ele = $('#money-received')
                 money_received_ele.prop('checked', true);

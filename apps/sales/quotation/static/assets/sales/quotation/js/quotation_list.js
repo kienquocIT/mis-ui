@@ -2,6 +2,8 @@
 $(function () {
     $(document).ready(function () {
 
+        let transEle = $('#app-trans-factory');
+
         function loadDbl() {
             let $table = $('#table_quotation_list')
             let frm = new SetupFormSubmit($table);
@@ -52,14 +54,14 @@ $(function () {
                         targets: 0,
                         render: (data, type, row) => {
                             const link = $('#quotation-link').data('link-update').format_url_with_uuid(row?.['id']);
-                            return `<a href="${link}" target="_blank" class="link-primary underline_hover"><span class="badge badge-soft-primary">${row?.['code']}</span></a>`
+                            return `<a href="${link}" class="link-primary underline_hover"><span class="badge badge-soft-primary">${row?.['code']}</span></a>`
                         }
                     },
                     {
                         targets: 1,
                         render: (data, type, row) => {
                             const link = $('#quotation-link').data('link-update').format_url_with_uuid(row?.['id'])
-                            return `<a href="${link}" target="_blank" class="link-primary underline_hover">${row?.['title']}</a>`
+                            return `<a href="${link}" class="link-primary underline_hover">${row?.['title']}</a>`
                         }
                     },
                     {
@@ -84,9 +86,11 @@ $(function () {
                     },
                     {
                         targets: 4,
+                        data: "date_created",
                         render: (data, type, row) => {
-                            let date_created = moment(row?.['date_created']).format('YYYY-MM-DD');
-                            return `<p>${date_created}</p>`
+                            return $x.fn.displayRelativeTime(data, {
+                                'outputFormat': 'DD-MM-YYYY',
+                            });
                         }
                     },
                     {
@@ -116,9 +120,9 @@ $(function () {
                             return `<div class="dropdown">
                                     <i class="far fa-window-maximize" aria-expanded="false" data-bs-toggle="dropdown"></i>
                                     <div role="menu" class="dropdown-menu">
-                                        <a class="dropdown-item" href="${link}">${$.fn.transEle.attr('data-change')}</a>
+                                        <a class="dropdown-item" href="${link}">${transEle.attr('data-change')}</a>
                                         <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" href="#">${$.fn.transEle.attr('data-cancel')}</a>
+                                        <a class="dropdown-item" href="#">${transEle.attr('data-cancel')}</a>
                                     </div>
                                 </div>`;
                         },

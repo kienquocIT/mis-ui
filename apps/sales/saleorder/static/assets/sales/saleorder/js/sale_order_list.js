@@ -52,14 +52,14 @@ $(function () {
                         targets: 0,
                         render: (data, type, row) => {
                             const link = $('#sale-order-link').data('link-update').format_url_with_uuid(row?.['id']);
-                            return `<a href="${link}" target="_blank" class="link-primary underline_hover"><span class="badge badge-soft-primary">${row?.['code']}</span></a>`
+                            return `<a href="${link}" class="link-primary underline_hover"><span class="badge badge-soft-primary">${row?.['code']}</span></a>`
                         }
                     },
                     {
                         targets: 1,
                         render: (data, type, row) => {
                             const link = $('#sale-order-link').data('link-update').format_url_with_uuid(row?.['id'])
-                            return `<a href="${link}" target="_blank" class="link-primary underline_hover">${row?.['title']}</a>`
+                            return `<a href="${link}" class="link-primary underline_hover">${row?.['title']}</a>`
                         }
                     },
                     {
@@ -84,9 +84,9 @@ $(function () {
                     },
                     {
                         targets: 4,
+                        data: "date_created",
                         render: (data, type, row) => {
-                            let date_created = moment(row?.['date_created']).format('YYYY-MM-DD');
-                            return `<p>${date_created}</p>`
+                            return $x.fn.displayRelativeTime(data);
                         }
                     },
                     {
@@ -115,7 +115,7 @@ $(function () {
                             const link = $('#sale-order-link').data('link-update').format_url_with_uuid(row?.['id'])
                             const $elmTrans = $('#trans-factory')
                             let isDelivery = ''
-                            if (!row.delivery_call)
+                            if (!row.delivery_call && ['Added', 'Finish'].includes(row?.['system_status']))
                                 isDelivery = '<div class="dropdown-divider"></div>' +
                                     `<a class="dropdown-item" href="#" id="create_delivery">${$elmTrans.attr('data-delivery')}</a>`
                             return `<div class="dropdown">

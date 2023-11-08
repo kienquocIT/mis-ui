@@ -34,113 +34,123 @@ $(document).ready(function () {
     })
 
 // submit form setting price list
-    SetupFormSubmit.validate(
-        frm,
-        {
-            submitHandler: function (form) {
-                let frm = new SetupFormSubmit($(form));
-                frm.dataForm['currency'] = currencySelectEle.val();
-                if (frm.dataForm['currency'].length === 0) {
-                }
-
-                if (!currencySelectEle.hasClass('tag-changed')) {
-                    delete frm.dataForm['currency']
-                }
-
-                if (!factorInputEle.hasClass('tag-changed')) {
-                    delete frm.dataForm['factor']
-                }
-
-                if (frm.dataForm['auto_update'] === undefined) {
-                    frm.dataForm['auto_update'] = false
-                }
-
-                if (frm.dataForm['can_delete'] === undefined) {
-                    frm.dataForm['can_delete'] = false
-                }
-
-                $.fn.callAjax2({
-                    url: frm.dataUrl.format_url_with_uuid(pk),
-                    method: frm.dataMethod,
-                    data: frm.dataForm
-                }).then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
-                            setTimeout(function () {
-                                location.reload()
-                            }, 1000);
-                        }
-                    },
-                    (errs) => {
-                        $.fn.notifyB({description: errs.data.errors}, 'failure');
-                    })
+    new SetupFormSubmit(frm).validate({
+        rules: {
+            currency: {
+                required: true,
+            },
+            factor: {
+                required: true,
+            },
+            price_list_type: {
+                required: true,
+            },
+        },
+        submitHandler: function (form) {
+            let frm = new SetupFormSubmit($(form));
+            frm.dataForm['currency'] = currencySelectEle.val();
+            if (frm.dataForm['currency'].length === 0) {
             }
-        })
+
+            if (!currencySelectEle.hasClass('tag-changed')) {
+                delete frm.dataForm['currency']
+            }
+
+            if (!factorInputEle.hasClass('tag-changed')) {
+                delete frm.dataForm['factor']
+            }
+
+            if (frm.dataForm['auto_update'] === undefined) {
+                frm.dataForm['auto_update'] = false
+            }
+
+            if (frm.dataForm['can_delete'] === undefined) {
+                frm.dataForm['can_delete'] = false
+            }
+
+            $.fn.callAjax2({
+                url: frm.dataUrl.format_url_with_uuid(pk),
+                method: frm.dataMethod,
+                data: frm.dataForm
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
+                        $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
+                    }
+                },
+                (errs) => {
+                    $.fn.notifyB({description: errs.data.errors}, 'failure');
+                })
+        }
+    })
 
     // form add new item
     let frm_create_product = $('#form-create-product')
-    SetupFormSubmit.validate(
-        frm_create_product,
-        {
-            submitHandler: function (form) {
-                let frm = new SetupFormSubmit(form);
+    new SetupFormSubmit(frm_create_product).validate({
+        rules: {
+            product: {
+                required: true,
+            },
+            uom_group: {
+                required: true,
+            },
+            uom: {
+                required: true,
+            },
+        },
+        submitHandler: function (form) {
+            let frm = new SetupFormSubmit(form);
 
-                frm.dataForm['product'] = {
-                    'id': itemSelectEle.val(),
-                    'uom': $('#select-box-uom').val(),
-                    'uom_group': $('#inp-uom-group').attr('data-id'),
-                };
+            frm.dataForm['product'] = {
+                'id': itemSelectEle.val(),
+                'uom': $('#select-box-uom').val(),
+                'uom_group': $('#inp-uom-group').attr('data-id'),
+            };
 
-                $.fn.callAjax2({
-                    url: frm.dataUrl.format_url_with_uuid(pk),
-                    method: frm.dataMethod,
-                    data: frm.dataForm
-                }).then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
-                            setTimeout(function () {
-                                location.reload()
-                            }, 1000);
-                        }
-                    },
-                    (errs) => {
-                        $.fn.notifyB({description: errs.data.errors}, 'failure');
+            $.fn.callAjax2({
+                url: frm.dataUrl.format_url_with_uuid(pk),
+                method: frm.dataMethod,
+                data: frm.dataForm
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
+                        $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
                     }
-                )
-            }
-        })
+                },
+                (errs) => {
+                    $.fn.notifyB({description: errs.data.errors}, 'failure');
+                }
+            )
+        }
+    })
 
 // form update item price
     let frm_update_item_price = $('#form-update-item-price')
-    SetupFormSubmit.validate(
-        frm_update_item_price,
-        {
-            submitHandler: function (form) {
-                let frm = new SetupFormSubmit($(form));
-                frm.dataForm['list_item'] = PriceListAction.getDataItemChangePrice()
-                $.fn.callAjax2({
-                    url: frm.dataUrl.format_url_with_uuid(pk),
-                    method: frm.dataMethod,
-                    data: frm.dataForm
-                }).then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
-                            setTimeout(function () {
-                                location.reload()
-                            }, 1000);
-                        }
-                    },
-                    (errs) => {
-                        $.fn.notifyB({description: errs.data.errors}, 'failure');
-                    })
-            }
-        })
+    new SetupFormSubmit(frm_update_item_price).validate({
+        submitHandler: function (form) {
+            let frm = new SetupFormSubmit($(form));
+            frm.dataForm['list_item'] = PriceListAction.getDataItemChangePrice()
+            $.fn.callAjax2({
+                url: frm.dataUrl.format_url_with_uuid(pk),
+                method: frm.dataMethod,
+                data: frm.dataForm
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
+                        $.fn.redirectUrl(frm.dataUrlRedirect, 1000);
+                    }
+                },
+                (errs) => {
+                    $.fn.notifyB({description: errs.data.errors}, 'failure');
+                })
+        }
+    })
 
     $('#btn-add-new-item').on('click', function () {
         let type = $('#select-box-type').val();

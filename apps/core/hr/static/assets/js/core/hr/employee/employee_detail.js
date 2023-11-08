@@ -1,13 +1,7 @@
 $(function () {
-    function renderDetailData(data) {
-        if (data && data.hasOwnProperty('employee')) {
-            let employeeData = data.employee;
+    function renderDetailData(employeeData) {
+        if (employeeData && typeof employeeData === 'object') {
             $x.fn.renderCodeBreadcrumb(employeeData);
-            new HandlePermissions().loadData(employeeData.plan_app, employeeData.permission_by_configured || []);
-            new HandlePlanApp().appendPlanAppOfEmployee(employeeData.plan_app);
-            let permitSummary = new PermitSummaryHandle(null, null, employeeData.permission_by_configured);
-            permitSummary.renderAppOfUser(employeeData.plan_app);
-            permitSummary.renderRoleAppTable(employeeData.role);
 
             EmployeeLoadPage.firstNameEle.val(employeeData.first_name);
             EmployeeLoadPage.lastNameEle.val(employeeData.last_name);
@@ -19,22 +13,35 @@ $(function () {
             EmployeeLoadPage.loadGroupList(employeeData.group);
             EmployeeLoadPage.loadRoleList(employeeData.role);
             EmployeeLoadPage.loadDob(employeeData.dob);
-            EmployeeLoadPage.loadDateJoined(employeeData.date_joined);
+            EmployeeLoadPage.loadDateJoined(employeeData.date_joined, false);
         }
     }
 
     $(document).ready(function () {
         $x.fn.showLoadingPage();
-        Promise.all([
-            callAppList(), callDetailData($('#employee-detail-page').attr('data-url'), 'GET')
-        ]).then((results) => {
-            renderAppList(results[0]);
-            return results;
-        }).then((results) => {
-            renderDetailData(results[1]);
-            return results;
-        }).then(
-            (results)=>{
+        HandlePlanAppNew.editEnabled = false;
+        Promise.all(
+            [
+                getAllAppOfTenant(),
+                callDetailData($('#employee-detail-page').attr('data-url'), 'GET'),
+            ]
+        ).then(
+            (results) => {
+                HandlePlanAppNew.setPlanApp(results[1]?.plan_app || [])
+                HandlePlanAppNew.setPermissionByConfigured(results[1]?.permission_by_configured || [])
+
+                let clsNew = new HandlePlanAppNew();
+                clsNew.renderTenantApp(results[0]);
+                clsNew.renderPermissionSelected()
+                return results;
+            }
+        ).then(
+            (results) => {
+                renderDetailData(results[1]);
+                return results;
+            }
+        ).then(
+            () => {
                 $x.fn.hideLoadingPage();
             }
         );

@@ -2,7 +2,6 @@
 {% load static i18n %}
 {% block title %}{% trans 'Inventory Adjustment Create' %}{% endblock %}
 {% block cssHeader %}
-    <link href="{% static 'assets/sales/inventory/css/goodreceipt/good_receipt_create.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'vendors/dropify/dist/css/dropify.css' %}" rel="stylesheet" type="text/css"/>
@@ -18,8 +17,8 @@
     </button>
 {% endblock %}
 {% block pageContent %}
-    <form data-url=""
-          data-url-redirect="{% url 'GoodReceiptList' %}"
+    <form data-url="{% url 'InventoryAdjustmentListAPI' %}"
+          data-url-redirect="{% url 'InventoryAdjustmentList' %}"
           data-method="POST"
           data-url-warehouse-product-list="{% url 'WareHouseListForInventoryAdjustmentAPI' %}"
           id="frm_inventory_adjustment_create">
@@ -61,21 +60,6 @@
             </div>
         </div>
         <div class="row mt-4">
-            <div class="col-11"></div>
-            <div class="col-1">
-                <div class="btn-group dropdown w-100">
-                    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        {% trans 'Actions' %}
-                    </button>
-                    <div class="dropdown-menu dropdown-bordered">
-                        <a class="dropdown-item" href="#"><i class="bi bi-arrow-up"></i><span>&nbsp;&nbsp;{% trans 'Get Increase Items' %}</span></a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#"><i class="bi bi-arrow-down"></i></i><span>&nbsp;&nbsp;{% trans 'Get Decrease Items' %}</span></a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
             <ul class="nav nav-tabs nav-icon nav-light">
                 <li class="nav-item">
                     <a class="nav-link active" data-bs-toggle="tab" href="#tab_block_line_detail">
@@ -103,18 +87,21 @@
                             </span>
                         </span>
                     </button>
-                    <table class="table nowrap w-100" id="table-line-detail">
+                    <table data-url="{% url "WareHouseListAPI" %}"
+                           data-warehouse-product-list="{% url 'WarehouseGetProductsListAPI' %}"
+                           data-uom-list="{% url 'UnitOfMeasureListAPI' %}"
+                           data-method="GET"
+                           class="table nowrap w-100" id="table-line-detail">
                         <thead>
-                        <th>{% trans 'Product' %}</th>
+                        <th>{% trans 'Product name' %}</th>
                         <th>{% trans 'Warehouse' %}</th>
                         <th>{% trans 'Unit of measure' %}</th>
                         <th>{% trans 'Book quantity' %}</th>
-                        <th>{% trans 'Count' %}</th>
+                        <th class="required">{% trans 'Count' %}</th>
                         <th>{% trans 'Difference' %}</th>
-                        <th>{% trans 'Select for action' %}</th>
+                        <th>{% trans 'Select for actions' %}</th>
                         <th>{% trans 'Action type' %}</th>
                         <th>{% trans 'Action status' %}</th>
-                        <th></th>
                         </thead>
                         <tbody></tbody>
                     </table>
@@ -136,7 +123,7 @@
                 <div class="col-1 text-right"><button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button></div>
             </div>
             <div class="offcanvas-body">
-                <div data-simplebar class="h-50 overflow-y-scroll">
+                <div style="overflow: auto; height: 70vh; overflow-x: hidden">
                     <table class="table nowrap w-100" id="table-select-products">
                         <thead>
                         <th class="w-10">
@@ -145,8 +132,8 @@
                                 <label class="form-check-label"></label>
                             </span>
                         </th>
-                        <th class="w-30">{% trans 'Warehouse' %}</th>
                         <th class="w-20">{% trans 'Code' %}</th>
+                        <th class="w-30">{% trans 'Warehouse' %}</th>
                         <th class="w-40">{% trans 'Product' %}</th>
                         </thead>
                         <tbody></tbody>
@@ -155,9 +142,10 @@
             </div>
         </div>
     </form>
+    <script type="application/json" id="data-product-warehouse"></script>
 {% endblock %}
 {% block jsFooter %}
-    <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
+
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>

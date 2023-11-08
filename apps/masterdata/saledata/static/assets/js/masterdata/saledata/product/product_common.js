@@ -7,17 +7,15 @@ let generalProductCateEle = $('#general-select-box-product-category');
 let saleDefaultUomEle = $('#sale-select-box-default-uom');
 let purchaseDefaultUomEle = $('#purchase-select-box-default-uom');
 let inventoryDefaultUomEle = $('#inventory-select-box-uom-name');
-let inventoryDefaultUomCodeEle = $('#inventory-uom-code');
 let saleProductTaxEle = $('#sale-select-box-tax-code');
 let purchaseProductTaxEle = $('#purchase-select-box-tax-code');
+let table_warehouse_list = $('#datatable-warehouse-list');
 let lengthEle = $('#length');
 let widthEle = $('#width');
 let heightEle = $('#height');
 let volumeEle = $('#volume');
 let weightEle = $('#weight');
 let productImageEle = $('#product-image');
-let warehouseProductListEle = $('#warehouse_product_list');
-let unitOfMeasureListEle = $('#unit_of_measure');
 const currency_list = JSON.parse($('#currency_list').text());
 let currency_primary = null;
 for (let i = 0; i < currency_list.length; i++) {
@@ -29,30 +27,42 @@ const item_unit_dict = JSON.parse($('#id-unit-list').text()).reduce((obj, item) 
     obj[item.title] = item;
     return obj;
 }, {});
-let warehouse_product_list = [];
-if (warehouseProductListEle.text() !== '') {
-    warehouse_product_list = JSON.parse(warehouseProductListEle.text());
-}
-let unit_of_measure_list = [];
-if (unitOfMeasureListEle.text() !== '') {
-    unit_of_measure_list = JSON.parse(unitOfMeasureListEle.text());
+let warehouse_list = [];
+
+async function loadWareHouseListAjax() {
+    await $.fn.callAjax(table_warehouse_list.attr('data-url'), table_warehouse_list.attr('data-method')).then((resp) => {
+        let data = $.fn.switcherResp(resp);
+        if (data) {
+            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('warehouse_list')) {
+                warehouse_list = resp.data['warehouse_list'];
+            }
+        }
+    }, (errs) => {
+        console.log(errs)
+    },)
 }
 
 productImageEle.dropify({
     messages: {
-        'default': 'Upload an image',
-        'replace': 'Drag and drop or click to replace',
-        'remove':  'Remove',
-        'error':   'Oops, something wrong happened.'
+        'default': 'Drag and drop your file here.',
     },
     tpl: {
-        message:' {{ default }}',
+        message: '<div class="dropify-message">' +
+            '<span class="file-icon"></span>' +
+            '<h5>{{ default }}</h5>' +
+            '</div>',
     }
 });
 
 check_tab_inventory.change(function () {
     disabledTab(this.checked, '#link-tab-inventory', '#tab_inventory');
     $('#tab_inventory input, #tab_inventory select').val('');
+    if (check_tab_inventory.is(':checked')) {
+        $('#label-dimension').addClass('required');
+    }
+    else {
+        $('#label-dimension').removeClass('required');
+    }
 });
 
 check_tab_sale.change(function () {
@@ -170,9 +180,9 @@ function loadGeneralUoMGroup(unit_of_measure_group) {
         keyId: 'id',
         keyText: 'title',
     }).on('change', function () {
-        loadSaleDefaultUom(null, $(this).attr('data-url-detail').replace(0, $(this).val()));
-        loadInventoryDefaultUom(null, $(this).attr('data-url-detail').replace(0, $(this).val()));
-        loadPurchaseDefaultUom(null, $(this).attr('data-url-detail').replace(0, $(this).val()));
+        loadSaleDefaultUom();
+        loadInventoryDefaultUom();
+        loadPurchaseDefaultUom();
     })
 }
 
@@ -187,39 +197,6 @@ function loadSaleTaxCode(tax_list) {
         keyId: 'id',
         keyText: 'title',
     })
-}
-
-function loadSaleDefaultUom(uom_list, url) {
-    if (uom_list === null) {
-        saleDefaultUomEle.initSelect2({
-            ajax: {
-                url: url,
-                method: 'GET',
-            },
-            callbackDataResp: function (resp, keyResp) {
-                return resp.data[keyResp]?.['uom'];
-            },
-            data: null,
-            keyResp: 'uom_group',
-            keyId: 'uom_id',
-            keyText: 'uom_title',
-        })
-    }
-    else {
-        saleDefaultUomEle.initSelect2({
-            ajax: {
-                url: url,
-                method: 'GET',
-            },
-            callbackDataResp: function (resp, keyResp) {
-                return resp.data[keyResp]?.['uom'];
-            },
-            data: uom_list,
-            keyResp: 'uom_group',
-            keyId: 'uom_id',
-            keyText: 'uom_title',
-        })
-    }
 }
 
 async function loadPriceList() {
@@ -261,82 +238,70 @@ async function loadPriceList() {
     },)
 }
 
-function loadInventoryDefaultUom(uom_list, url) {
-    if (uom_list === null) {
-        inventoryDefaultUomEle.initSelect2({
-            ajax: {
-                url: url,
-                method: 'GET',
-            },
-            callbackDataResp: function (resp, keyResp) {
-                return resp.data[keyResp]?.['uom'];
-            },
-            data: (uom_list ? uom_list : null),
-            keyResp: 'uom_group',
-            keyId: 'uom_id',
-            keyText: 'uom_title',
-        }).on('change', function () {
-            let uom_selected = inventoryDefaultUomEle.val();
-            if (uom_selected !== '') {
-                let obj_uom_selected = JSON.parse($('#' + inventoryDefaultUomEle.attr('data-idx-data-loaded')).text())[uom_selected];
-                inventoryDefaultUomCodeEle.val(obj_uom_selected?.['uom_code']);
+function loadSaleDefaultUom(data) {
+    saleDefaultUomEle.initSelect2({
+        ajax: {
+            url: saleDefaultUomEle.attr('data-url'),
+            method: 'GET',
+        },
+        callbackDataResp: function (resp, keyResp) {
+            let result = [];
+            for (let i = 0; i < resp.data[keyResp].length; i++) {
+                if (resp.data[keyResp][i].group.id === generalUomGroupEle.val()) {
+                    result.push(resp.data[keyResp][i])
+                }
             }
-        })
-    }
-    else {
-        inventoryDefaultUomEle.initSelect2({
-            ajax: {
-                url: url,
-                method: 'GET',
-            },
-            callbackDataResp: function (resp, keyResp) {
-                return resp.data[keyResp]?.['uom'];
-            },
-            data: uom_list,
-            keyResp: 'uom_group',
-            keyId: 'uom_id',
-            keyText: 'uom_title',
-        }).on('change', function () {
-            let uom_selected = inventoryDefaultUomEle.val();
-            if (uom_selected !== '') {
-                let obj_uom_selected = JSON.parse($('#' + inventoryDefaultUomEle.attr('data-idx-data-loaded')).text())[uom_selected];
-                inventoryDefaultUomCodeEle.val(obj_uom_selected?.['uom_code']);
-            }
-        })
-    }
+            return result;
+        },
+        data: (data ? data : null),
+        keyResp: 'unit_of_measure',
+        keyId: 'id',
+        keyText: 'title',
+    })
 }
 
-function loadPurchaseDefaultUom(uom_list, url) {
-    if (uom_list === null) {
-        purchaseDefaultUomEle.initSelect2({
-            ajax: {
-                url: url,
-                method: 'GET',
-            },
-            callbackDataResp: function (resp, keyResp) {
-                return resp.data[keyResp]?.['uom'];
-            },
-            data: (uom_list ? uom_list : null),
-            keyResp: 'uom_group',
-            keyId: 'uom_id',
-            keyText: 'uom_title',
-        })
-    }
-    else {
-        purchaseDefaultUomEle.initSelect2({
-            ajax: {
-                url: url,
-                method: 'GET',
-            },
-            callbackDataResp: function (resp, keyResp) {
-                return resp.data[keyResp]?.['uom'];
-            },
-            data: uom_list,
-            keyResp: 'uom_group',
-            keyId: 'uom_id',
-            keyText: 'uom_title',
-        })
-    }
+function loadInventoryDefaultUom(data) {
+    inventoryDefaultUomEle.initSelect2({
+        ajax: {
+            url: inventoryDefaultUomEle.attr('data-url'),
+            method: 'GET',
+        },
+        callbackDataResp: function (resp, keyResp) {
+            let result = [];
+            for (let i = 0; i < resp.data[keyResp].length; i++) {
+                if (resp.data[keyResp][i].group.id === generalUomGroupEle.val()) {
+                    result.push(resp.data[keyResp][i])
+                }
+            }
+            return result;
+        },
+        data: (data ? data : null),
+        keyResp: 'unit_of_measure',
+        keyId: 'id',
+        keyText: 'title',
+    })
+}
+
+function loadPurchaseDefaultUom(data) {
+    purchaseDefaultUomEle.initSelect2({
+        ajax: {
+            url: purchaseDefaultUomEle.attr('data-url'),
+            method: 'GET',
+        },
+        callbackDataResp: function (resp, keyResp) {
+            let result = [];
+            for (let i = 0; i < resp.data[keyResp].length; i++) {
+                if (resp.data[keyResp][i].group.id === generalUomGroupEle.val()) {
+                    result.push(resp.data[keyResp][i])
+                }
+            }
+            return result;
+        },
+        data: (data ? data : null),
+        keyResp: 'unit_of_measure',
+        keyId: 'id',
+        keyText: 'title',
+    })
 }
 
 function loadPurchaseTaxCode(tax_list) {
@@ -353,12 +318,10 @@ function loadPurchaseTaxCode(tax_list) {
 }
 
 function loadBaseItemUnit() {
-    let eleVolume = $('#divVolume');
-    let eleWeight = $('#divWeight');
-    eleVolume.find('.input-suffix').text(item_unit_dict['volume'].measure)
-    eleVolume.find('input').attr('data-id', item_unit_dict['volume'].id)
-    eleWeight.find('.input-suffix').text(item_unit_dict['weight'].measure)
-    eleWeight.find('input').attr('data-id', item_unit_dict['weight'].id)
+    $('#VolumeSpan').text(item_unit_dict['volume'].measure)
+    volumeEle.attr('data-id', item_unit_dict['volume'].id)
+    $('#WeightSpan').text(item_unit_dict['weight'].measure)
+    weightEle.attr('data-id', item_unit_dict['weight'].id)
 }
 
 function loadPriceForChild(element_id, element_value) {
@@ -373,48 +336,73 @@ function loadPriceForChild(element_id, element_value) {
 }
 
 function loadWareHouseList() {
-    if (!$.fn.DataTable.isDataTable('#datatable-warehouse-list')) {
-        let dtb = $('#datatable-warehouse-list');
-        let frm = new SetupFormSubmit(dtb);
-        dtb.DataTableDefault({
-            dom: '',
-            paging: false,
-            ajax: {
-                url: frm.dataUrl,
-                type: frm.dataMethod,
-                dataSrc: function (resp) {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        return resp.data['warehouse_list'] ? resp.data['warehouse_list'] : [];
-                    }
-                    return [];
-                },
+    table_warehouse_list.DataTableDefault({
+        dom: '',
+        paging: false,
+        data: warehouse_list,
+        columns: [
+            {
+                data: 'code',
+                className: 'wrap-text w-25',
+                render: (data, type, row) => {
+                    return `<span class="text-secondary">` + row.code + `</span>`
+                }
             },
-            columns: [
-                {
-                    data: 'code',
-                    className: 'wrap-text w-25',
-                    render: (data, type, row) => {
-                        return `<span class="text-secondary">` + row.code + `</span>`
+            {
+                data: 'title',
+                className: 'wrap-text text-center w-50',
+                render: (data, type, row) => {
+                    return `<span class="text-secondary"><b>` + row.title + `</b></span>`
+                }
+            },
+            {
+                data: 'stock_value',
+                className: 'wrap-text text-center w-25',
+                render: () => {
+                    return `<span>0</span>`
+                }
+            },
+        ],
+    });
+}
+
+function loadWareHouseListDetail(product_warehouse_detail) {
+    table_warehouse_list.DataTableDefault({
+        dom: '',
+        paging: false,
+        data: warehouse_list,
+        columns: [
+            {
+                data: 'code',
+                className: 'wrap-text w-15',
+                render: (data, type, row) => {
+                    return `<span class="text-secondary" data-id="${row.id}">${row.code}</span>`;
+                }
+            },
+            {
+                data: 'title',
+                className: 'wrap-text text-center w-25',
+                render: (data, type, row) => {
+                    return `<span class="text-secondary"><b>${row.title}</b></span>`
+                }
+            },
+            {
+                data: '',
+                className: 'wrap-text text-center w-15',
+                render: (data, type, row) => {
+                    let warehouse_data = product_warehouse_detail.filter(function (element) {
+                        return element.warehouse.id === row.id;
+                    })
+                    if (warehouse_data.length > 0) {
+                        return `<span>${warehouse_data[0]?.['stock_amount']}</span>`;
                     }
-                },
-                {
-                    data: 'title',
-                    className: 'wrap-text text-center w-50',
-                    render: (data, type, row) => {
-                        return `<span class="text-secondary"><b>` + row.title + `</b></span>`
+                    else {
+                        return `<span>0</span>`;
                     }
-                },
-                {
-                    data: 'stock_value',
-                    className: 'wrap-text text-center w-25',
-                    render: () => {
-                        return `<span>0</span>`
-                    }
-                },
-            ],
-        });
-    }
+                }
+            },
+        ],
+    });
 }
 
 function loadWareHouseOverView() {
@@ -458,170 +446,13 @@ function loadWareHouseOverView() {
     }
 }
 
-function ConvertToUnitUoM(uom_id_src, uom_id_des) {
-    let get_uom_src_item = unit_of_measure_list.filter(function (item) {
-        return item.id === uom_id_src;
-    })
-    let get_uom_des_item = unit_of_measure_list.filter(function (item) {
-        return item.id === uom_id_des;
-    })
-    let ratio_src = get_uom_src_item[0].ratio;
-    let ratio_des = get_uom_des_item[0].ratio;
-    return ratio_src / ratio_des
-}
-
-function GetProductFromWareHouseStockList(product_id, uom_id_des) {
-    let product_get_from_wh_product_list = warehouse_product_list.filter(function (item) {
-        return item.product === product_id;
-    })
-    let warehouse_stock_list = [];
-    for (let i = 0; i < product_get_from_wh_product_list.length; i++) {
-        let calculated_ratio = ConvertToUnitUoM(product_get_from_wh_product_list[i].uom, uom_id_des);
-        let raw_stock_quantity = calculated_ratio * product_get_from_wh_product_list[i]?.['stock_amount'];
-        let delivered_quantity = calculated_ratio * product_get_from_wh_product_list[i]?.['sold_amount'];
-        let ready_quantity = calculated_ratio * product_get_from_wh_product_list[i]?.['picked_ready'];
-
-        warehouse_stock_list.push(
-            {
-                'warehouse_id': product_get_from_wh_product_list[i].warehouse,
-                'stock': raw_stock_quantity - delivered_quantity,
-                'wait_for_delivery': ready_quantity,
-                'wait_for_receipt': 0,
-            }
-        );
-    }
-    return warehouse_stock_list;
-}
-
-function loadWareHouseListDetail(warehouse_stock_list) {
-    let dtb = $('#datatable-warehouse-list');
-    dtb.DataTable().clear().destroy();
-    let frm = new SetupFormSubmit(dtb);
-    dtb.DataTableDefault({
-        dom: '',
-        paging: false,
-        ajax: {
-            url: frm.dataUrl,
-            type: frm.dataMethod,
-            dataSrc: function (resp) {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (data?.['warehouse_list'].length > 0) {
-                        for (let i = 0; i < data?.['warehouse_list'].length; i++) {
-                            let value_list = warehouse_stock_list.filter(function (item) {
-                                return item.warehouse_id === data?.['warehouse_list'][i].id;
-                            });
-                            let stock_value = 0;
-                            let wait_for_delivery_value = 0;
-                            let wait_for_receipt_value = 0;
-                            for (let i = 0; i < value_list.length; i++) {
-                                stock_value = stock_value + value_list[i].stock;
-                                wait_for_delivery_value = wait_for_delivery_value + value_list[i].wait_for_delivery;
-                                wait_for_receipt_value = wait_for_receipt_value + value_list[i].wait_for_receipt;
-                            }
-                            let available_value = stock_value - wait_for_delivery_value + wait_for_receipt_value;
-                            resp.data['warehouse_list'][i].stock_value = stock_value;
-                            resp.data['warehouse_list'][i].wait_for_delivery_value = wait_for_delivery_value;
-                            resp.data['warehouse_list'][i].wait_for_receipt_value = wait_for_receipt_value;
-                            resp.data['warehouse_list'][i].available_value = available_value;
-                        }
-                        return resp.data['warehouse_list'];
-                    } else {
-                        return [];
-                    }
-                }
-                return [];
-            },
-        },
-        columns: [
-            {
-                data: 'code',
-                className: 'wrap-text w-15',
-                render: (data, type, row) => {
-                    return `<span class="text-secondary">` + row.code + `</span>`
-                }
-            },
-            {
-                data: 'title',
-                className: 'wrap-text text-center w-25',
-                render: (data, type, row) => {
-                    return `<span class="text-secondary"><b>` + row.title + `</b></span>`
-                }
-            },
-            {
-                data: 'stock_value',
-                className: 'wrap-text text-center w-15',
-                render: (data, type, row) => {
-                    return `<span>` + row.stock_value + `</span>`
-                }
-            },
-        ],
-        footerCallback: function () {
-            let api = this.api();
-
-            let sum2 = api
-                .column(2, {page: 'current'})
-                .data()
-                .reduce(function (a, b) {
-                    return parseFloat(a) + parseFloat(b);
-                }, 0);
-
-            $(api.column(2).footer()).html(`<span style="font-weight: bolder">` + sum2 + `</span>`);
-        }
-    });
-}
-
-function loadWareHouseOverViewDetail(warehouse_stock_list) {
+function loadWareHouseOverViewDetail(data_overview) {
     let dtb = $('#datatable-warehouse-overview');
     dtb.DataTable().clear().destroy();
-    let frm = new SetupFormSubmit(dtb);
     dtb.DataTableDefault({
         dom: '',
         paging: false,
-        ajax: {
-            url: frm.dataUrl,
-            type: frm.dataMethod,
-            dataSrc: function (resp) {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (data?.['warehouse_list'].length > 0) {
-                        let sum_stock = 0;
-                        let sum_wait_for_delivery_value = 0;
-                        let sum_wait_for_receipt_value = 0;
-                        let sum_available_value = 0;
-
-                        for (let i = 0; i < data?.['warehouse_list'].length; i++) {
-                            let value_list = warehouse_stock_list.filter(function (item) {
-                                return item.warehouse_id === data?.['warehouse_list'][i].id;
-                            });
-                            let stock_value = 0;
-                            let wait_for_delivery_value = 0;
-                            let wait_for_receipt_value = 0;
-                            for (let i = 0; i < value_list.length; i++) {
-                                stock_value = stock_value + value_list[i].stock;
-                                wait_for_delivery_value = wait_for_delivery_value + value_list[i].wait_for_delivery;
-                                wait_for_receipt_value = wait_for_receipt_value + value_list[i].wait_for_receipt;
-                            }
-                            let available_value = stock_value - wait_for_delivery_value + wait_for_receipt_value;
-
-                            sum_stock = sum_stock + stock_value;
-                            sum_wait_for_delivery_value = sum_wait_for_delivery_value + wait_for_delivery_value;
-                            sum_wait_for_receipt_value = sum_wait_for_receipt_value + wait_for_receipt_value;
-                            sum_available_value = sum_available_value + available_value;
-                        }
-                        return [{
-                            'sum_stock': sum_stock,
-                            'sum_wait_for_delivery_value': sum_wait_for_delivery_value,
-                            'sum_wait_for_receipt_value': sum_wait_for_receipt_value,
-                            'sum_available_value': sum_available_value
-                        }];
-                    } else {
-                        return [];
-                    }
-                }
-                return [];
-            },
-        },
+        data: data_overview,
         columns: [
             {
                 data: 'sum_stock',
@@ -636,26 +467,26 @@ function loadWareHouseOverViewDetail(warehouse_stock_list) {
                 }
             },
             {
-                data: 'sum_wait_for_delivery_value',
+                data: 'sum_wait_for_delivery',
                 className: 'wrap-text text-center w-25',
                 render: (data, type, row) => {
-                    if (row.sum_wait_for_delivery_value > 0) {
-                        return `<span style="font-weight: bolder" class="text-primary">${row.sum_wait_for_delivery_value}</span>`
+                    if (row.sum_wait_for_delivery > 0) {
+                        return `<span style="font-weight: bolder" class="text-primary">${row.sum_wait_for_delivery}</span>`
                     }
                     else {
-                        return `<span style="font-weight: bolder" class="text-danger">${row.sum_wait_for_delivery_value}</span>`
+                        return `<span style="font-weight: bolder" class="text-danger">${row.sum_wait_for_delivery}</span>`
                     }
                 }
             },
             {
-                data: 'sum_wait_for_receipt_value',
+                data: 'sum_wait_for_receipt',
                 className: 'wrap-text text-center w-25',
                 render: (data, type, row) => {
-                    if (row.sum_wait_for_receipt_value > 0) {
-                        return `<span style="font-weight: bolder" class="text-primary">${row.sum_wait_for_receipt_value}</span>`
+                    if (row.sum_wait_for_receipt > 0) {
+                        return `<span style="font-weight: bolder" class="text-primary">${row.sum_wait_for_receipt}</span>`
                     }
                     else {
-                        return `<span style="font-weight: bolder" class="text-danger">${row.sum_wait_for_receipt_value}</span>`
+                        return `<span style="font-weight: bolder" class="text-danger">${row.sum_wait_for_receipt}</span>`
                     }
                 }
             },
@@ -698,9 +529,9 @@ function getDataForm() {
     data['weight'] = parseFloat(weightEle.val());
     data['volume_id'] = volumeEle.attr('data-id');
     data['weight_id'] = weightEle.attr('data-id');
-    data['product_types_mapped_list'] = $('#general-select-box-product-type').val();
-    data['general_product_category'] = $('#general-select-box-product-category').val();
-    data['general_uom_group'] = $('#general-select-box-uom-group').val();
+    data['product_types_mapped_list'] = generalProductTypeEle.val();
+    data['general_product_category'] = generalProductCateEle.val();
+    data['general_uom_group'] = generalUomGroupEle.val();
     data['general_traceability_method'] = $('#general-select-box-traceability-method option:selected').attr('value');
 
     if (check_tab_sale.is(':checked') === true) {
@@ -807,7 +638,6 @@ class ProductHandle {
         loadInventoryDefaultUom();
         loadPurchaseDefaultUom();
         loadBaseItemUnit();
-        loadWareHouseList();
         loadWareHouseOverView();
         await loadPriceList();
     }
@@ -836,80 +666,91 @@ class ProductHandle {
 function LoadDetailProduct(option) {
     let pk = $.fn.getPkDetail()
     $.fn.callAjax($('#form-update-product').data('url').format_url_with_uuid(pk), 'GET').then(
-        (resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                WFRTControl.setWFRuntimeID(data['product']?.['workflow_runtime_id']);
-                let product_detail = data['product'];
-                $.fn.compareStatusShowPageAction(data);
+         async (resp) => {
+             let data = $.fn.switcherResp(resp);
+             if (data) {
+                 WFRTControl.setWFRuntimeID(data['product']?.['workflow_runtime_id']);
+                 let product_detail = data['product'];
+                 $.fn.compareStatusShowPageAction(data);
+                 $x.fn.renderCodeBreadcrumb(product_detail);
+                 console.log(product_detail)
 
-                $('#product-code').text(product_detail['code']);
-                $('#title').val(product_detail['title']);
-                $('#description').val(product_detail['description']);
+                 $('#title').val(product_detail['title']);
+                 $('#description').val(product_detail['description']);
 
-                if (product_detail['product_choice'].includes(0)) {
-                    $('#check-tab-sale').attr('checked', true);
-                    $('#link-tab-sale').removeClass('disabled');
-                }
+                 if (product_detail['product_choice'].includes(0)) {
+                     $('#check-tab-sale').attr('checked', true);
+                     $('#link-tab-sale').removeClass('disabled');
+                 }
 
-                if (product_detail['product_choice'].includes(1)) {
-                    $('#check-tab-inventory').attr('checked', true);
-                    $('#link-tab-inventory').removeClass('disabled');
-                }
+                 if (product_detail['product_choice'].includes(1)) {
+                     $('#check-tab-inventory').attr('checked', true);
+                     $('#link-tab-inventory').removeClass('disabled');
+                 }
 
-                if (product_detail['product_choice'].includes(2)) {
-                    $('#check-tab-purchase').attr('checked', true);
-                    $('#link-tab-purchase').removeClass('disabled');
-                }
+                 if (product_detail['product_choice'].includes(2)) {
+                     $('#check-tab-purchase').attr('checked', true);
+                     $('#link-tab-purchase').removeClass('disabled');
+                 }
 
-                if (Object.keys(product_detail['general_information']).length !== 0) {
-                    let general_information = product_detail['general_information'];
-                    loadGeneralProductType(general_information['general_product_types_mapped']);
-                    loadGeneralProductCategory(general_information['product_category']);
-                    loadGeneralUoMGroup(general_information['uom_group']);
-                    $('#general-select-box-traceability-method').val(general_information['traceability_method']);
-                    if (Object.keys(general_information['product_size']).length !== 0) {
-                        lengthEle.val(general_information['product_size']['length']);
-                        widthEle.val(general_information['product_size']['width']);
-                        heightEle.val(general_information['product_size']['height']);
-                        volumeEle.val(general_information['product_size']['volume']['value']);
-                        weightEle.val(general_information['product_size']['weight']['value']);
-                    }
-                }
+                 if (Object.keys(product_detail['general_information']).length !== 0) {
+                     let general_information = product_detail['general_information'];
+                     loadGeneralProductType(general_information['general_product_types_mapped']);
+                     loadGeneralProductCategory(general_information['product_category']);
+                     loadGeneralUoMGroup(general_information['uom_group']);
+                     $('#general-select-box-traceability-method').val(general_information['traceability_method']);
+                     if (Object.keys(general_information['product_size']).length !== 0) {
+                         lengthEle.val(general_information['product_size']['length']);
+                         widthEle.val(general_information['product_size']['width']);
+                         heightEle.val(general_information['product_size']['height']);
+                         volumeEle.val(general_information['product_size']['volume']['value']);
+                         weightEle.val(general_information['product_size']['weight']['value']);
+                     }
+                     loadBaseItemUnit();
+                 }
 
-                if (Object.keys(product_detail['sale_information']).length !== 0) {
-                    let sale_information = product_detail['sale_information'];
-                    loadSaleDefaultUom(sale_information['default_uom'], generalUomGroupEle.attr('data-url-detail').replace(0, generalUomGroupEle.val()));
-                    loadSaleTaxCode(sale_information['tax']);
-                    $('#sale-cost').attr('value', sale_information['sale_product_cost']);
-                    for (let i = 0; i < sale_information['sale_product_price_list'].length; i++) {
-                        let item = sale_information['sale_product_price_list'][i];
-                        $(`.input_price_list[data-id="` + item.id + `"]`).attr('value', item.price);
-                    }
-                    $.fn.initMaskMoney2();
-                }
+                 if (Object.keys(product_detail['sale_information']).length !== 0) {
+                     let sale_information = product_detail['sale_information'];
+                     loadSaleDefaultUom(sale_information['default_uom']);
+                     loadSaleTaxCode(sale_information['tax']);
+                     $('#sale-cost').attr('value', sale_information['sale_product_cost']);
+                     for (let i = 0; i < sale_information['sale_product_price_list'].length; i++) {
+                         let item = sale_information['sale_product_price_list'][i];
+                         $(`.input_price_list[data-id="` + item.id + `"]`).attr('value', item.price);
+                     }
+                     $.fn.initMaskMoney2();
+                 }
 
-                if (Object.keys(product_detail['inventory_information']).length !== 0) {
-                    let inventory_information = product_detail['inventory_information'];
-                    loadInventoryDefaultUom(inventory_information['uom'], generalUomGroupEle.attr('data-url-detail').replace(0, generalUomGroupEle.val()));
-                    inventoryDefaultUomCodeEle.val(inventory_information['uom']['uom_code']);
-                    $('#inventory-level-min').val(inventory_information['inventory_level_min']);
-                    $('#inventory-level-max').val(inventory_information['inventory_level_max']);
+                 if (Object.keys(product_detail['inventory_information']).length !== 0) {
+                     let inventory_information = product_detail['inventory_information'];
+                     loadInventoryDefaultUom(inventory_information['uom']);
+                     $('#inventory-level-min').val(inventory_information['inventory_level_min']);
+                     $('#inventory-level-max').val(inventory_information['inventory_level_max']);
 
-                    let warehouse_stock_list = GetProductFromWareHouseStockList(product_detail.id, product_detail?.['inventory_information']['uom']['uom_id']);
-                    loadWareHouseListDetail(warehouse_stock_list);
-                    loadWareHouseOverViewDetail(warehouse_stock_list);
-                }
+                     loadWareHouseListDetail(product_detail['product_warehouse_detail']);
+                     let data_overview = [];
+                     let sum_stock = product_detail?.['stock_amount'] ? product_detail?.['stock_amount'] : 0;
+                     let sum_wait_for_delivery = product_detail?.['wait_delivery_amount'] ? product_detail?.['wait_delivery_amount'] : 0;
+                     let sum_wait_for_receipt = product_detail?.['wait_receipt_amount'] ? product_detail?.['wait_receipt_amount'] : 0;
+                     let sum_available_value = product_detail?.['available_amount'] ? product_detail?.['available_amount'] : 0;
+                     data_overview.push({
+                         'sum_stock': sum_stock,
+                         'sum_wait_for_delivery': sum_wait_for_delivery,
+                         'sum_wait_for_receipt': sum_wait_for_receipt,
+                         'sum_available_value': sum_available_value
+                     })
+                     loadWareHouseOverViewDetail(data_overview);
+                 }
 
-                if (Object.keys(product_detail['purchase_information']).length !== 0) {
-                    let purchase_information = product_detail['purchase_information'];
-                    loadPurchaseDefaultUom(purchase_information['default_uom'], generalUomGroupEle.attr('data-url-detail').replace(0, generalUomGroupEle.val()));
-                    loadPurchaseTaxCode(purchase_information['tax']);
-                }
+                 if (Object.keys(product_detail['purchase_information']).length !== 0) {
+                     let purchase_information = product_detail['purchase_information'];
+                     loadPurchaseDefaultUom(purchase_information['default_uom']);
+                     loadPurchaseTaxCode(purchase_information['tax']);
+                 }
 
-                $.fn.initMaskMoney2();
+                 $.fn.initMaskMoney2();
 
-                Disable(option);
-            }
-        })
+                 Disable(option);
+             }
+         })
 }

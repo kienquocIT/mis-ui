@@ -60,12 +60,7 @@ $(function () {
                 width: '20%',
                 data: 'date_created',
                 render: (data, type, row, meta) => {
-                    let date = new Date(data).toLocaleDateString("en-GB")
-                    let time = new Date(data).toLocaleTimeString([], {
-                        hour: "2-digit",
-                        minute: "2-digit"
-                    });
-                    return date + ' ' + time;
+                    return $x.fn.displayRelativeTime(data);
                 }
             }, {
                 width: '20%',

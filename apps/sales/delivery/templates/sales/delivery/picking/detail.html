@@ -179,13 +179,16 @@
            data-picking-area="{% trans 'Picking area' %}"
            data-view-detail="{% trans 'View detail' %}"
     >
-    <input type="hidden" id="url-factory"
-           data-warehouse-stock="{% url 'WarehouseProductAPI' %}"
-           data-product-detail="{% url 'ProductDetail' 1 %}">
+    <input
+            type="hidden" id="url-factory"
+            data-warehouse-stock="{% url 'WarehouseProductAPI' %}"
+            data-product-detail="{% url 'ProductDetail' 1 %}"
+            data-product-warehouse="{% url 'WarehouseGetProductsListAPI' %}"
+    >
 {% endblock %}
 
 {% block jsFooter %}
-    <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
+
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'sales/delivery/picking/detail.js' %}"></script>
 {% endblock %}

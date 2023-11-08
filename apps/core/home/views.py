@@ -35,6 +35,24 @@ class HomeView(View):
         return redirect(reverse('LandingPageView'))
 
 
+class NotFoundView(View):
+    @mask_view(
+        login_require=True, auth_require=False,
+        template='extends/systems/404.html',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
+class ServerMaintainView(View):
+    @mask_view(
+        login_require=False, auth_require=False,
+        template='extends/systems/503.html',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
 class BookMarkListAPI(APIView):
     @mask_view(is_api=True, login_require=True, auth_require=True)
     def get(self, request, *args, **kwargs):
@@ -93,12 +111,62 @@ class DocPinedDetailAPI(APIView):
 class ComponentCollections(View):
     @mask_view(
         auth_require=True,
-        template='core/home/components.html',
+        template='core/utilities/components.html',
         breadcrumb='COMPONENTS_PAGE'
     )
     def get(self, request, *args, **kwargs):
         cond_formset = ConditionFormset()
         return {"form": cond_formset}, status.HTTP_200_OK
+
+
+class UtilitiesView(View):
+    @mask_view(
+        auth_require=True,
+        template='core/utilities/index.html',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
+class DefaultDataView(View):
+    @classmethod
+    def default_data(cls, result):
+        rs = []
+        for plan, plan_data in result.items():
+            for feature, feature_data in plan_data.items():
+                row = []
+                data_tmp = []
+                for data in feature_data:
+                    row_tmp = []
+                    arr_tmp = []
+                    for key in data.keys():
+                        row_tmp.append(key)
+                        arr_tmp.append(data[key])
+                    if not row:
+                        row = row_tmp
+                    data_tmp.append(arr_tmp)
+                rs.append(
+                    {
+                        'plan': plan,
+                        'feature': feature,
+                        'rows': row,
+                        'data': data_tmp,
+                    }
+                )
+        return rs
+
+    @mask_view(
+        auth_require=True,
+        template='core/utilities/default_data.html',
+    )
+    def get(self, request, *args, **kwargs):
+        resp_default_data = ServerAPI(request=request, user=request.user, url='private-system/default-data').get()
+        resp_plan_app = ServerAPI(request=request, user=request.user, url='private-system/plan-app').get()
+        return {
+            'default_data': self.default_data(resp_default_data.result),
+            'plan_app': resp_plan_app.result['plan_app'],
+            'app_by_id': resp_plan_app.result['app_by_id']
+        }
 
 
 class TermsAndConditionsView(View):
@@ -114,15 +182,6 @@ class HelpAndSupportView(View):
     @mask_view(
         auth_require=True,
         template='core/help_support/help_support.html',
-    )
-    def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
-
-
-class UtilitiesView(View):
-    @mask_view(
-        auth_require=True,
-        template='core/utilities/index.html',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -152,6 +211,8 @@ class GatewayMiddleDetailView(APIView):
             if is_redirect is True:
                 return redirect(link_data)
             return {'url': link_data}, status.HTTP_200_OK
+        if is_redirect is True:
+            return redirect('NotFoundView')
         return {}, status.HTTP_404_NOT_FOUND
 
 

@@ -15,20 +15,13 @@ function sum() {
 }
 
 function dataTableQuotationIndicator(data) {
-    // init dataTable
-    let listData = data ? data : [];
-    tableIndicator.DataTable({
-        data: listData,
-        searching: false,
-        ordering: false,
-        paginate: false,
+    tableIndicator.DataTableDefault({
+        data: data ? data : [],
+        paging: false,
         info: false,
+        columnDefs: [],
         drawCallback: function () {
-            // render icon after table callback
-            feather.replace();
             $.fn.initMaskMoney2();
-        },
-        rowCallback: function (row, data) {
         },
         columns: [
             {
@@ -40,19 +33,19 @@ function dataTableQuotationIndicator(data) {
             {
                 targets: 1,
                 render: (data, type, row) => {
-                    return `<span class="table-row-title" data-id="${row.indicator.id}">${row.indicator.title}</span>`
+                    return `<span class="table-row-title" data-id="${row?.['indicator']?.['id']}">${row?.['indicator']?.['title']}</span>`
                 }
             },
             {
                 targets: 2,
                 render: (data, type, row) => {
-                    return `<span class="mask-money table-row-value" data-init-money="${parseFloat(row.indicator_value)}" data-value="${row.indicator_value}"></span>`
+                    return `<span class="mask-money table-row-value" data-init-money="${parseFloat(row?.['indicator_value'])}" data-value="${row?.['indicator_value']}"></span>`
                 }
             },
             {
                 targets: 3,
                 render: (data, type, row) => {
-                    return `<span class="table-row-rate" data-value="${row.indicator_rate}">${row.indicator_rate} %</span>`
+                    return `<span class="table-row-rate" data-value="${row?.['indicator_rate']}">${row?.['indicator_rate']} %</span>`
                 }
             }
         ],
@@ -60,14 +53,11 @@ function dataTableQuotationIndicator(data) {
 }
 
 function dataTableSaleOrderIndicator(data) {
-    // init dataTable
-    let listData = data ? data : [];
-    tableIndicator.DataTable({
-        data: listData,
-        searching: false,
-        ordering: false,
-        paginate: false,
+    tableIndicator.DataTableDefault({
+        data: data ? data : [],
+        paging: false,
         info: false,
+        columnDefs: [],
         drawCallback: function () {
             // render icon after table callback
             feather.replace();
@@ -238,12 +228,8 @@ function calculateIndicator(indicator_list) {
         }
     }
     //
-    tableIndicator.DataTable().destroy();
-    if (!tableIndicator.hasClass('sale-order')) {
-        dataTableQuotationIndicator(result_list);
-    } else {
-        dataTableSaleOrderIndicator(result_list)
-    }
+    tableIndicator.DataTable().clear().draw();
+    tableIndicator.DataTable().rows.add(result_list).draw();
 }
 
 function evaluateFormula(formulaText) {
@@ -404,9 +390,10 @@ $(function () {
 
         // Clear data indicator store then call API to get new
         $('#btn-refresh-quotation-indicator').on('click', function () {
+            let transEle = $('#app-trans-factory');
             document.getElementById('quotation-indicator-data').value = "";
             indicatorClass.loadQuotationIndicator('quotation-indicator-data');
-            $.fn.notifyB({description: $.fn.transEle.attr('data-refreshed')}, 'success');
+            $.fn.notifyB({description: transEle.attr('data-refreshed')}, 'success');
         });
 
     });

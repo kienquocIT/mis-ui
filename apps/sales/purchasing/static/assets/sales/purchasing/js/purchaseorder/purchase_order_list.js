@@ -2,6 +2,8 @@
 $(function () {
     $(document).ready(function () {
 
+        let transEle = $('#app-trans-factory');
+
         function loadDbl() {
             let $table = $('#table_purchase_order_list')
             let frm = new SetupFormSubmit($table);
@@ -24,14 +26,14 @@ $(function () {
                         targets: 0,
                         render: (data, type, row) => {
                             let link = $('#purchase-order-link').data('link-update').format_url_with_uuid(row?.['id']);
-                            return `<a href="${link}" target="_blank" class="link-primary underline_hover"><span class="badge badge-soft-primary">${row?.['code']}</span></a>`
+                            return `<a href="${link}" class="link-primary underline_hover"><span class="badge badge-soft-primary">${row?.['code']}</span></a>`
                         }
                     },
                     {
                         targets: 1,
                         render: (data, type, row) => {
                             const link = $('#purchase-order-link').data('link-update').format_url_with_uuid(row?.['id'])
-                            return `<a href="${link}" target="_blank" class="link-primary underline_hover">${row?.['title']}</a>`
+                            return `<a href="${link}" class="link-primary underline_hover">${row?.['title']}</a>`
                         }
                     },
                     {
@@ -68,10 +70,10 @@ $(function () {
                         targets: 5,
                         render: (data, type, row) => {
                             let status_data = {
+                                "None": "badge badge-soft-light",
                                 "Wait": "badge badge-soft-light",
-                                "Partially received": "badge badge-soft-info",
+                                "Partially received": "badge badge-soft-warning",
                                 "Received": "badge badge-soft-success",
-                                "None": "badge badge-soft-danger",
                             }
                             return `<span class="${status_data[row?.['receipt_status']]}">${row?.['receipt_status']}</span>`;
                         }
@@ -84,9 +86,9 @@ $(function () {
                             return `<div class="dropdown">
                                     <i class="far fa-window-maximize" aria-expanded="false" data-bs-toggle="dropdown"></i>
                                     <div role="menu" class="dropdown-menu">
-                                        <a class="dropdown-item" href="${link}">${$.fn.transEle.attr('data-change')}</a>
+                                        <a class="dropdown-item" href="${link}">${transEle.attr('data-change')}</a>
                                         <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" href="#">${$.fn.transEle.attr('data-cancel')}</a>
+                                        <a class="dropdown-item" href="#">${transEle.attr('data-cancel')}</a>
                                     </div>
                                 </div>`;
                         },

@@ -2,9 +2,16 @@ $(document).ready(function () {
     ExpenseItemLoadPage.loadMainDtbList();
     ExpenseItemLoadPage.loadParentSelectEle($('#select-box-expense-parent'));
     const frm_create = $('#frm-create');
-    SetupFormSubmit.validate(
-        frm_create,
+    new SetupFormSubmit(frm_create).validate(
         {
+            rules: {
+                code: {
+                    required: true,
+                },
+                title: {
+                    required: true,
+                }
+            },
             submitHandler: function (form) {
                 let frm = new SetupFormSubmit($(form));
                 $.fn.callAjax2({
@@ -47,9 +54,18 @@ $(document).ready(function () {
     })
 
     const frm_detail = $('#frm-detail');
-    SetupFormSubmit.validate(
-        frm_detail,
+    new SetupFormSubmit(frm_detail).validate(
         {
+            rules:{
+                code: {
+                    required: true,
+                },
+                title: {
+                    required: true,
+                }
+            },
+            errorElement: 'p',
+            errorClass: 'is-invalid cl-red',
             submitHandler: function (form) {
                 let frm = new SetupFormSubmit($(form));
                 let frm_data = ExpenseItemLoadPage.getDataUpdate();

@@ -4,7 +4,6 @@ from django.views import View
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from django.utils.translation import gettext_lazy as _
 
 from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg, InputMappingProperties
 
@@ -47,10 +46,14 @@ class QuotationCreate(View):
     )
     def get(self, request, *args, **kwargs):
         opportunity = request.GET.get('opportunity', "")
-        return {'data': {
-            'employee_current': json.dumps(request.user.employee_current_data),
-            'opportunity': opportunity,
-        }}, status.HTTP_200_OK
+        ctx = {
+            'data': {
+                'employee_current': json.dumps(request.user.employee_current_data),
+                'opportunity': opportunity,
+            },
+            'list_from_app': 'quotation.quotation.create',
+        }
+        return ctx, status.HTTP_200_OK
 
 
 class QuotationListAPI(APIView):
@@ -75,6 +78,17 @@ class QuotationListAPI(APIView):
         )
 
 
+class QuotationListForCashOutflowAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.QUOTATION_LIST_FOR_CASH_OUTFLOW).get(data)
+        return resp.auto_return(key_success='quotation_list')
+
+
 class QuotationDetail(View):
     permission_classes = [IsAuthenticated]
 
@@ -96,11 +110,13 @@ class QuotationUpdate(View):
         menu_active='menu_quotation_list',
     )
     def get(self, request, pk, *args, **kwargs):
-        input_mapping_properties = InputMappingProperties.QUOTATION_QUOTATION
-        return {
-                   'data': {'doc_id': pk},
-                   'input_mapping_properties': input_mapping_properties, 'form_id': 'frm_quotation_create'
-               }, status.HTTP_200_OK
+        ctx = {
+            'data': {'doc_id': pk},
+            'input_mapping_properties': InputMappingProperties.QUOTATION_QUOTATION,
+            'form_id': 'frm_quotation_create',
+            'list_from_app': 'quotation.quotation.edit',
+        }
+        return ctx, status.HTTP_200_OK
 
 
 class QuotationDetailAPI(APIView):
@@ -233,3 +249,16 @@ class QuotationIndicatorRestoreAPI(APIView):
             pk=pk,
             msg=SaleMsg.QUOTATION_INDICATOR_RESTORE
         )
+
+
+class QuotationPrint(View):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        template='sales/quotation/quotation_print.html',
+        menu_active='menu_quotation_list',
+        breadcrumb='QUOTATION_DETAIL_PAGE',
+    )
+    def get(self, request, pk, *args, **kwargs):
+        return {'data': {'doc_id': pk}}, status.HTTP_200_OK

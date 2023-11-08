@@ -1,4 +1,6 @@
 import uuid
+from typing import Literal
+
 from django.urls import reverse
 from django.views import View
 from requests_toolbelt import MultipartEncoder
@@ -7,7 +9,8 @@ from rest_framework.parsers import MultiPartParser
 
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from apps.shared import mask_view, ServerAPI, ApiURL, PermCheck, HRMsg, PermsMsg
+from apps.shared import mask_view, ServerAPI, ApiURL, PermCheck, HRMsg, PermsMsg, TypeCheck
+from apps.shared.apis import RespData
 
 BELONG_LIST = [
     {'value': 1, "name": PermsMsg.USER},
@@ -49,8 +52,8 @@ class EmployeeListAPI(APIView):
     @classmethod
     def params_custom(cls, request):
         params = request.query_params.dict()
-        if 'group__id' in params and not isinstance(
-                params['group__id'], uuid.UUID
+        if 'group__id' in params and not TypeCheck.check_uuid(
+                params['group__id']
         ) and request.user.employee_current_data.get('group', None):
             params['group__id'] = request.user.employee_current_data.get('group')
         return params
@@ -111,16 +114,73 @@ class EmployeeDetail(View):
         perm_check=PermCheck(url=ApiURL.EMPLOYEE_DETAIL_PK, method='GET', fill_key=['pk']),
     )
     def get(self, request, pk, *args, **kwargs):
-        return {
-                   'data': {
-                       'doc_id': pk,
-                   },
-                   'belong_list': BELONG_LIST,
-                   'app_list': {
-                       'url': reverse('TenantApplicationListAPI'),
-                       'prefix': 'tenant_application_list',
-                   }
-               }, status.HTTP_200_OK
+        ctx = {
+            'data': {
+                'doc_id': pk,
+            },
+            'belong_list': BELONG_LIST,
+            'app_list': {
+                'url': reverse('TenantApplicationListAPI'),
+                'prefix': 'tenant_application_list',
+            }
+        }
+        return ctx, status.HTTP_200_OK
+
+
+class PlanAppGetAppListAPI(APIView):
+    @mask_view(auth_require=True, is_api=True)
+    def get(self, request, *args, pk, **kwargs):
+        url = None
+        data = {}
+        query_params = request.query_params.dict()
+
+        get_from: Literal['employee', 'role', 'opportunity', 'project'] = query_params.get('get_from', None)
+        if get_from == 'employee':
+            url = ApiURL.EMPLOYEE_DETAIL_APP_LIST.fill_key(pk=pk)
+        elif get_from == 'role':
+            url = ApiURL.ROLE_DETAIL_APP_LIST.fill_key(pk=pk)
+        elif get_from == 'opportunity':
+            opp_id = query_params.get('opportunity', None)
+            if opp_id and TypeCheck.check_uuid(opp_id):
+                data = {'opportunity': opp_id}
+                url = ApiURL.EMPLOYEE_APPLICATION_ALL_LIST.fill_key(pk=pk)
+        elif get_from == 'project':
+            prj_id = query_params.get('project', None)
+            if prj_id and TypeCheck.check_uuid(prj_id):
+                data = {'project': prj_id}
+                url = ApiURL.EMPLOYEE_APPLICATION_ALL_LIST.fill_key(pk=pk)
+
+        if url:
+            resp = ServerAPI(request=request, user=request.user, url=url).get(data=data)
+            return resp.auto_return(key_success='app_list')
+        return RespData.resp_200(data=[])
+
+
+class PlanSummaryListAPI(APIView):
+    @mask_view(auth_require=True, is_api=True)
+    def get(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(
+            request=request, user=request.user, url=ApiURL.EMPLOYEE_PLAN_SUMMARY_LIST.fill_key(pk=pk)
+        ).get()
+        return resp.auto_return(key_success='plan_list')
+
+
+class ApplicationSummaryListAPI(APIView):
+    @mask_view(auth_require=True, is_api=True)
+    def get(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(
+            request=request, user=request.user, url=ApiURL.EMPLOYEE_APPLICATION_SUMMARY_LIST.fill_key(pk=pk)
+        ).get()
+        return resp.auto_return(key_success='app_list')
+
+
+class PermissionSummaryListAPI(APIView):
+    @mask_view(auth_require=True, is_api=True)
+    def get(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(
+            request=request, user=request.user, url=ApiURL.EMPLOYEE_PERMISSION_SUMMARY_LIST.fill_key(pk=pk)
+        ).get()
+        return resp.auto_return(key_success='permissions_list')
 
 
 class EmployeeUpdate(View):
@@ -132,7 +192,8 @@ class EmployeeUpdate(View):
         perm_check=PermCheck(url=ApiURL.EMPLOYEE_DETAIL_PK, method='PUT', fill_key=['pk']),
     )
     def get(self, request, pk, *args, **kwargs):
-        return {'data': {'doc_id': pk}}, status.HTTP_200_OK
+        ctx = {'data': {'doc_id': pk}}
+        return ctx, status.HTTP_200_OK
 
 
 class EmployeeDetailAPI(APIView):
@@ -168,14 +229,10 @@ class EmployeeDetailAPI(APIView):
 class EmployeeCompanyListAPI(APIView):
     permission_classes = [IsAuthenticated]
 
-    @mask_view(
-        auth_require=True,
-        is_api=True
-    )
-    def get(self, request, company_id, *args, **kwargs):
-        resp = ServerAPI(
-            request=request, url=(ApiURL.EMPLOYEE_COMPANY_NEW.fill_key(company_id=company_id)), user=request.user
-        ).get()
+    @mask_view(auth_require=True, is_api=True)
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(request=request, url=ApiURL.EMPLOYEE_COMPANY_LIST, user=request.user).get(data)
         return resp.auto_return(key_success='employee_company_list')
 
 

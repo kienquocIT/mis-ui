@@ -239,12 +239,13 @@ class PriceListLoadPage {
                         currencySelectEle.prop('disabled', true);
                         $('#btn-add-new-item').prop('disabled', true);
                     }
+                    let timeValidEle = $('#time-valid');
 
                     if (price_list_detail.valid_time_start && price_list_detail.valid_time_start) {
                         if (price_list_detail.is_default) {
-                            $('#apply_time').html(`From <span style="min-width: max-content;" class="badge badge-soft-primary badge-outline">` + price_list_detail.valid_time_start + `</span> to <span style="min-width: max-content;" class="badge badge-soft-primary badge-outline">now</span>`)
+                            timeValidEle.html(`<span>${price_list_detail.valid_time_start} - ${transEle.data('trans-now')}</span>`)
                         } else {
-                            $('#apply_time').html(`From <span style="min-width: max-content;" class="badge badge-soft-primary badge-outline">` + price_list_detail.valid_time_start + `</span> to <span style="min-width: max-content;" class="badge badge-soft-primary badge-outline">` + price_list_detail.valid_time_end + `</span>`)
+                            timeValidEle.html(`<span>${price_list_detail.valid_time_start} - ${price_list_detail.valid_time_end}</span>`)
                         }
                     }
 
@@ -266,7 +267,8 @@ class PriceListLoadPage {
                     // load parent price list
                     PriceListLoadPage.loadSourcePriceList(priceSelectEle, price_list_detail?.['price_list_mapped'])
                     if (Object.keys(price_list_detail?.['price_list_mapped']).length !== 0) {
-                        autoUpdateCheckBoxEle.prop('disabled', false);
+                        if (page_type !== 1)
+                            autoUpdateCheckBoxEle.prop('disabled', false);
                     } else {
                         autoUpdateCheckBoxEle.prop('disabled', true);
                     }
@@ -274,29 +276,21 @@ class PriceListLoadPage {
                     PriceListLoadPage.loadCurrency(currencySelectEle, price_list_detail.currency);
 
                     if (price_list_detail.status) {
-                        let badge_type;
-                        let text_type;
                         if (price_list_detail.status === 'Valid') {
-                            badge_type = 'badge-green'
-                            text_type = 'text-green'
+                            timeValidEle.find('span').addClass('text-green')
                         } else if (price_list_detail.status === 'Invalid') {
-                            badge_type = 'badge-orange'
-                            text_type = 'text-orange'
+                            timeValidEle.find('span').addClass('text-orange')
                         } else if (price_list_detail.status === 'Expired') {
-                            badge_type = 'badge-red'
-                            text_type = 'text-red'
+                            timeValidEle.find('span').addClass('text-red')
                             this.loadPriceExpired(price_list_detail);
                         } else {
-                            badge_type = 'badge-gray'
-                            text_type = 'text-gray'
+                            timeValidEle.find('span').addClass('text-gray')
                         }
-
-                        $('#status').html(`<span class="badge badge-indicator badge-indicator-xl ` + badge_type + `"></span><span class="` + text_type + `">&nbsp;` + price_list_detail.status + `</span>`);
                     }
                 }
             }).then(
             () => {
-                if(page_type === 'detail'){
+                if (page_type === 1) {
                     $('#datatable-item-list input').prop('readonly', true);
                 }
             }

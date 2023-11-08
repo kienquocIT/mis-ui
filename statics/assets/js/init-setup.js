@@ -37,6 +37,9 @@ class SetupFormSubmit {
             if (dataMethodDefault) {
                 this.dataMethod = dataMethodDefault
             } else {
+                if ($.fn.isDebug()) {
+                    console.log(this.formSelected)
+                }
                 throw ('Data Method do not support! It is ' + this.dataMethod);
             }
         }
@@ -70,26 +73,33 @@ class SetupFormSubmit {
     validate(opts) {
         if (this.formSelected) {
             let submitHandler = opts?.['submitHandler'];
-            this.formSelected.validate({
-                focusInvalid: true,
-                validClass: "is-valid",
-                errorClass: "is-invalid",
-                errorElement: "small",
-                showErrors: function (errorMap, errorList) {
-                    this.defaultShowErrors();
-                },
-                errorPlacement: function (error, element) {
-                    element.closest('.form-group').append(error);
-                    // error.insertAfter(element);
-                    error.css({
-                        'color': "red",
-                    })
-                },
-                submitHandler: function (form, event) {
-                    event.preventDefault();
-                    submitHandler ? submitHandler($(form), event) : form.submit();
-                },
-                onsubmit: true, // !!submitHandler,
+            if (opts.hasOwnProperty('submitHandler')) {
+                delete opts['submitHandler'];
+            }
+
+            this.formSelected.each(function () {
+                $(this).validate({
+                    focusInvalid: true,
+                    validClass: "is-valid",
+                    errorClass: "is-invalid",
+                    errorElement: "small",
+                    showErrors: function (errorMap, errorList) {
+                        this.defaultShowErrors();
+                    },
+                    errorPlacement: function (error, element) {
+                        element.closest('.form-group').append(error);
+                        // error.insertAfter(element);
+                        error.css({
+                            'color': "red",
+                        })
+                    },
+                    submitHandler: function (form, event) {
+                        event.preventDefault();
+                        submitHandler ? submitHandler($(form), event) : form.submit();
+                    },
+                    onsubmit: true, // !!submitHandler,
+                    ...opts,
+                })
             })
         } else {
             throw Error('Form element must be required!');
@@ -407,7 +417,7 @@ class NotifyController {
                                                 <small class="text-muted">${item?.['msg']}</small>
                                             </div>
                                             <div class="notifications-info">
-                                                 <span class="badge badge-soft-success">${item?.['doc_app']}</span>
+                                                 <span class="badge badge-soft-success noti-custom">${item?.['doc_app']}</span>
                                                  <div class="notifications-time">${item?.['date_created']}</div>
                                             </div>
                                         </div>
@@ -893,6 +903,65 @@ class ListeningEventController {
                 $('#' + frm_id).submit();
             }
         });
+        // submit form from Page Actions
+        //      - push status input to form when form create
+        //      - update value of input status when submit
+        $('.btn-saving-form').each(function (event) {
+            let defaultStatus = ["0", "1"];
+            let frm_idx = $(this).attr('form');
+            let status_system = $(this).attr('data-status-submit');
+
+            let allowNextStep = !!(
+                $(this).attr('type') === 'submit'
+                && frm_idx && typeof frm_idx === 'string' && frm_idx.length > 0
+                && status_system && typeof status_system === "string" && status_system.length === 1
+                && defaultStatus.indexOf(status_system) !== -1
+            );
+            if (allowNextStep === true) {
+                let frmEle = $('#' + frm_idx);
+                if (frmEle.length > 0) {
+                    // setup input status
+                    let statusInputEle = $(
+                        `
+                            <input 
+                                name="system_status" 
+                                class="hidden" 
+                                type="text" 
+                                id="idx-system_status" 
+                                value=""
+                                ${frmEle.attr('data-method').toUpperCase() === 'PUT' ? "" : "required"} 
+                            />
+                        `
+                    );
+
+                    // append input status if not exist
+                    if (frmEle.find('input[name="system_status"]').length === 0) frmEle.append(statusInputEle);
+                    else statusInputEle = frmEle.find('input[name="system_status"]');
+
+                    // on submit push status to form
+                    $(frmEle).on('submit', function (event){
+                        let submitterEle = $(event.originalEvent.submitter);
+                        if (submitterEle && submitterEle.length > 0){
+                            let systemStatus = submitterEle.attr('data-status-submit');
+                            let statusCode = statusInputEle.val();
+                            if (statusCode === "" || statusCode === null || statusCode === undefined || statusCode === '0' || statusCode === 0){
+                                statusInputEle.val(Number.parseInt(systemStatus));
+                            } else if (
+                                (statusCode === '0' || statusCode === 0)
+                                && (systemStatus === '1' || systemStatus === 1)
+                            ){
+                                event.preventDefault();
+                                return false;
+                            }
+                        } else {
+                            // get submitter is undefined! => deny next step!
+                            event.preventDefault();
+                            return false;
+                        }
+                    });
+                }
+            }
+        })
     }
 
     formInputClickOpenEdit() {
@@ -1177,22 +1246,77 @@ class ListeningEventController {
         });
     }
 
+    static tabHashUrl__parent_active(currentEle) {
+        $(currentEle).closest('.nav-tabs a[data-bs-toggle="tab"]').each(function () {
+            if ($(this).length > 0) {
+                let drawerEle = $(this).closest('.ntt-drawer');
+                if (drawerEle.length > 0) {
+                    $('.ntt-drawer-toggle-link[data-drawer-target="#' + drawerEle.attr('id') + '"]').each(function () {
+                        $(this).trigger('click');
+                    });
+                }
+                $(this).tab('show');
+                ListeningEventController.tabHashUrl__parent_active($(this).parent());
+            }
+        })
+    }
+
     tabHashUrl() {
         $('.nav-tabs a[data-bs-toggle="tab"]').filter(function () {
             return this.hash === location.hash;
         }).each(function () {
-            let drawerEle = $(this).closest('.ntt-drawer');
-            if (drawerEle.length > 0) {
-                $('.ntt-drawer-toggle-link[data-drawer-target="#' + drawerEle.attr('id') + '"]').each(function () {
-                    $(this).trigger('click');
-                });
+            if ($(this).length > 0) {
+                let drawerEle = $(this).closest('.ntt-drawer');
+                if (drawerEle.length > 0) {
+                    $('.ntt-drawer-toggle-link[data-drawer-target="#' + drawerEle.attr('id') + '"]').each(function () {
+                        $(this).trigger('click');
+                    });
+                }
+                $(this).tab('show');
+                ListeningEventController.tabHashUrl__parent_active($(this).parent());
             }
-            $(this).tab('show');
         });
 
         $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
-            window.history.pushState(null, null, $(e.target).attr("href"));
+            if ($(this).data('not-push-tab') === null || $(this).data('not-push-tab') === undefined) {
+                window.history.pushState(null, null, $(e.target).attr("href"));
+            }
         });
+    }
+
+    setValidatorDefaults() {
+        $.validator.setDefaults({
+            focusInvalid: true,
+            validClass: "is-valid",
+            errorClass: "is-invalid",
+            errorElement: "small",
+            errorPlacement: function (error, element) {
+                element.closest('.form-group').append(error);
+                // error.insertAfter(element);
+                error.css({
+                    'color': "red",
+                })
+            }
+        });
+    }
+
+    dropdownInAccordion() {
+        $('body').on('show.bs.dropdown', '.info-btn-more', function () {
+            // add class for accordion show dropdown
+            let accorItemEle = $(this).closest('.accordion-item');
+            if (accorItemEle.length > 0) {
+                accorItemEle.addClass('overflow-unset');
+            }
+            // check ID to link detail - Yes: show link | No: hide link
+            let linkEle = $(this).parent().find('.link-detail-more');
+            if (linkEle.length > 0) $(this).attr('data-id') ? linkEle.removeClass('hidden') : linkEle.addClass('hidden');
+        }).on('hidden.bs.dropdown', '.info-btn-more', function () {
+            // rollback to original for accordion
+            let accorItemEle = $(this).closest('.accordion-item');
+            if (accorItemEle.length > 0 && accorItemEle.find('.info-btn-more.show').length === 0) {
+                accorItemEle.removeClass('overflow-unset');
+            }
+        })
     }
 
     // main
@@ -1211,6 +1335,8 @@ class ListeningEventController {
         this.activeFileUpload();
         this.avatarUpload();
         this.tabHashUrl();  // keep it run after nttDrawer and log
+        this.setValidatorDefaults();
+        this.dropdownInAccordion();
     }
 }
 
@@ -1598,7 +1724,7 @@ class UtilControl {
         }
     }
 
-    static generateRandomString(length) {
+    static generateRandomString(length = 32) {
         let result = '';
         let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
         let charactersLength = characters.length;
@@ -1725,6 +1851,18 @@ class UtilControl {
         return defaultData;
     }
 
+    static getKey(data, key, defaultData = null, compareTypeWithDefault = false) {
+        if (typeof data === 'object') {
+            if (data.hasOwnProperty(key)) {
+                let tmp = data[key];
+                if (compareTypeWithDefault === true) {
+                    if (typeof tmp === typeof defaultData) return tmp;
+                } else return tmp;
+            }
+        }
+        return defaultData;
+    }
+
     static cleanDataNotify(data) {
         if (data && typeof data === 'object' && data.hasOwnProperty('errors')) {
             data = data.errors;
@@ -1770,6 +1908,90 @@ class UtilControl {
         }
     }
 
+    static removeEmptyValuesFromObj(object) {
+        for (let key in object) {
+            if (object.hasOwnProperty(key)) {
+                let value = object[key];
+                if (value === null || value === undefined || value === '') {
+                    delete object[key];
+                }
+            }
+        }
+        return object;
+    }
+
+    static getRandomArbitrary(min, max) {
+        min = Math.ceil(min);
+        max = Math.ceil(max);
+        return Math.ceil(Math.random() * (max - min) + min);
+
+    }
+
+    static getRandomInArray(array) {
+        return array[Math.floor(Math.random() * array.length)];
+    }
+
+    static keepExistInOther(arr_main, arr_check_remove) {
+        // arr_main:    ["1", "2", "3"]
+        // arr_check:   ["1", "3", "4"]
+        // => ["1", "3"]
+        if (Array.isArray(arr_main) && Array.isArray(arr_check_remove)) {
+            return arr_main.filter(
+                (item) => {
+                    return arr_check_remove.indexOf(item) !== -1;
+                }
+            )
+        }
+        return [];
+    }
+
+    static removeExistInOther(arr_main, arr_check_remove) {
+        // arr_main:    ["1", "2", "3"]
+        // arr_check:   ["1", "3", "4"]
+        // => ["2"]
+        if (Array.isArray(arr_main) && Array.isArray(arr_check_remove)) {
+            return arr_main.filter(
+                (item) => {
+                    return arr_check_remove.indexOf(item) === -1;
+                }
+            )
+        }
+        return [];
+    }
+
+    static hasOwnProperties(objData, keys) {
+        if (objData && typeof objData === 'object' && Array.isArray(keys)) {
+            for (let i = 0; i < keys.length; i++) {
+                if (!objData.hasOwnProperty(keys[i])) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    static displayRelativeTime(dataStr, opts = {}) {
+        if (dataStr) {
+            let format = opts?.['format'] || "YYYY-MM-DD HH:mm:ss";
+            let outputFormat = opts?.['outputFormat'] || "DD-MM-YYYY HH:mm:ss";
+            let callback = opts?.['callback'] || function (data) {
+                return `<p>${data.relate}</p><small>${data.output}</small>`;
+            }
+
+            let relateTimeStr = moment(dataStr, format).fromNow();
+            let appendStrData = moment(dataStr, format).format(outputFormat);
+            return callback({
+                'relate': relateTimeStr,
+                'output': appendStrData,
+            });
+        }
+        return '_';
+    }
+
+    static checkNumber(dataStr){
+        return !isNaN(Number(dataStr))
+    }
 }
 
 class DTBControl {
@@ -2208,7 +2430,9 @@ class DTBControl {
         filterEle.find('input[type="search"]').addClass('form-control w-200p');
 
         // handle sort
-        let preKeyVisible = settings.aoHeader[0].map((item) => {return $(item.cell).text().trim();});
+        let preKeyVisible = settings.aoHeader[0].map((item) => {
+            return $(item.cell).text().trim();
+        });
         let keyVisible = [];
 
         let keySort = [];
@@ -2398,7 +2622,7 @@ class DTBControl {
     }
 
     static parseDomDtl(opts) {
-        // header Toolbar classs name
+        // header Toolbar class name
         let headerToolbarClsName = opts['headerToolbarClsName'] || 'my-2';
 
         // stateDefaultPageControl: disable all toolbar
@@ -2412,7 +2636,7 @@ class DTBControl {
         //     "<'row mt-3'<'col-sm-12 col-md-6'i>>";
 
         // style 1
-        let domDTL = `<'d-flex dtb-header-toolbar ${headerToolbarClsName}'<'btnAddFilter'><'textFilter overflow-hidden'>f<'util-btn'>><'row manualFilter hidden'>` + 'rt' + `<'row' <'col-lg-6 col-md-12 d-flex cus-page-info'li><'col-lg-6 col-md-12'p>>`;
+        let domDTL = `<'d-flex dtb-header-toolbar ${headerToolbarClsName}'<'btnAddFilter'><'textFilter overflow-hidden'>f<'util-btn'>><'row manualFilter hidden'>` + 'rt' + `<'row tbl-footer-toolbar' <'col-lg-6 col-md-12 d-flex cus-page-info'li><'col-lg-6 col-md-12'p>>`;
 
         let utilsDom = {
             // "l": Đại diện cho thanh điều hướng (paging) của DataTable.
@@ -2490,6 +2714,22 @@ class DTBControl {
         return [opts, domDTL];
     }
 
+    static cleanBaseKeyOfDataAjax(d) {
+        if (typeof d === "object" && Object.keys(d).length > 0) {
+            let keyHasRemove = ['columns', 'draw', 'length', 'order', 'ordering', 'search', 'start', 'page', 'pageSize']
+            let result = {};
+            Object.keys(d).map(
+                (key) => {
+                    if (keyHasRemove.indexOf(key) === -1) {
+                        result[key] = d[key];
+                    }
+                }
+            )
+            return result
+        }
+        return {};
+    }
+
     static cleanParamBeforeCall(params, keyKeepEmpty = []) {
         let result = {}
         if (params && typeof params === 'object') {
@@ -2545,6 +2785,7 @@ class DTBControl {
         // config server side processing
         if (this.opts['useDataServer']) {
             // server side v
+            let ajaxDataCallback = this.opts['ajax']['data'];
             let setupServerSide = {
                 processing: true,
                 serverSide: true,
@@ -2552,75 +2793,81 @@ class DTBControl {
                 // ordering: true,
                 searchDelay: 1000,
                 order: [],
-                ajax: $.extend(this.opts['ajax'], {
-                    data: function (d) {
-                        let wrapperEle = clsThis.dtb$.closest('.dataTables_wrapper');
+                ajax: $.extend(
+                    this.opts['ajax'],
+                    {
+                        data: function (d) {
+                            let dataCallbackFromConfig = {}
+                            if (ajaxDataCallback instanceof Function) dataCallbackFromConfig = ajaxDataCallback(Object.assign({}, d));
+                            let wrapperEle = clsThis.dtb$.closest('.dataTables_wrapper');
 
-                        let sortKey = wrapperEle.find('.custom-order-dtb').val();
-                        let sortASC = wrapperEle.find('.custom-order-asc-dtb i').hasClass('fa-arrow-down-z-a');   // DESC
-                        let orderTxt = sortKey ? `${sortASC ? '-' : ''}${sortKey}` : '';
+                            let sortKey = wrapperEle.find('.custom-order-dtb').val();
+                            let sortASC = wrapperEle.find('.custom-order-asc-dtb i').hasClass('fa-arrow-down-z-a');   // DESC
+                            let orderTxt = sortKey ? `${sortASC ? '-' : ''}${sortKey}` : '';
 
-                        let keyKeepEmpty = [];
-                        let customFilter = {};
+                            let keyKeepEmpty = [];
+                            let customFilter = {};
 
-                        $(`div.row-custom-filter[data-dtb-id="#` + clsThis.dtb$.attr('id') + `"]`).find('select').each(
-                            function () {
-                                let val = $(this).val();
-                                if (val) {
-                                    if ((typeof val === "string" && val) || (Array.isArray(val) && val.length > 0)) {
-                                        customFilter[$(this).attr('data-keyParam')] = (!Array.isArray(val) ? [val] : val).join(",");
-                                    }
-                                } else {
-                                    if ($(this).attr('data-keepIdNullHasText') === 'true') {
-                                        customFilter[$(this).attr('data-keyParam')] = "";
-                                        keyKeepEmpty.push($(this).attr('data-keyParam'))
+                            $(`div.row-custom-filter[data-dtb-id="#` + clsThis.dtb$.attr('id') + `"]`).find('select').each(
+                                function () {
+                                    let val = $(this).val();
+                                    if (val) {
+                                        if ((typeof val === "string" && val) || (Array.isArray(val) && val.length > 0)) {
+                                            customFilter[$(this).attr('data-keyParam')] = (!Array.isArray(val) ? [val] : val).join(",");
+                                        }
+                                    } else {
+                                        if ($(this).attr('data-keepIdNullHasText') === 'true') {
+                                            customFilter[$(this).attr('data-keyParam')] = "";
+                                            keyKeepEmpty.push($(this).attr('data-keyParam'))
+                                        }
                                     }
                                 }
-                            }
-                        );
+                            );
 
-                        let customFilterData = {};
-                        let filterManualEle = wrapperEle.find('select.custom-filter-manual-dtb');
-                        if (filterManualEle.length > 0) {
-                            filterManualEle.each(function () {
-                                customFilterData[$(this).attr('data-keyparam')] = $(this).val();
-                            })
-                        } else {
-                            (clsThis.opts.cusFilter || []).map(
-                                (item) => {
-                                    if (item.data && Array.isArray(item.data)) {
-                                        let valParam = [];
-                                        item.data.map(
-                                            (item2) => {
-                                                if (item2.selected === true) {
-                                                    valParam.push(item2.id);
+                            let customFilterData = {};
+                            let filterManualEle = wrapperEle.find('select.custom-filter-manual-dtb');
+                            if (filterManualEle.length > 0) {
+                                filterManualEle.each(function () {
+                                    customFilterData[$(this).attr('data-keyparam')] = $(this).val();
+                                })
+                            } else {
+                                (clsThis.opts.cusFilter || []).map(
+                                    (item) => {
+                                        if (item.data && Array.isArray(item.data)) {
+                                            let valParam = [];
+                                            item.data.map(
+                                                (item2) => {
+                                                    if (item2.selected === true) {
+                                                        valParam.push(item2.id);
+                                                    }
                                                 }
-                                            }
-                                        )
-                                        customFilterData[item.keyParam] = valParam.join(",");
+                                            )
+                                            customFilterData[item.keyParam] = valParam.join(",");
+                                        }
+
                                     }
+                                )
+                            }
 
-                                }
-                            )
-                        }
-
-                        return DTBControl.cleanParamBeforeCall({
-                            'page': Math.ceil(d.start / d.length) + 1,
-                            'pageSize': d.length,
-                            'search': d?.search?.value ? d.search.value : '',
-                            'ordering': orderTxt, ...customFilter, ...customFilterData,
-                        }, keyKeepEmpty);
-                    },
-                    dataFilter: function (data) {
-                        let json = JSON.parse(data);
-                        json.recordsTotal = json?.data?.['page_count']
-                        json.recordsFiltered = json?.data?.['page_count']
-                        return JSON.stringify(json);
-                    },
-                    headers: {
-                        "ENABLEXCACHECONTROL": !!(this.opts?.['ajax']?.['cache']) ? 'true' : 'false',
-                    },
-                })
+                            return DTBControl.cleanParamBeforeCall({
+                                ...DTBControl.cleanBaseKeyOfDataAjax(dataCallbackFromConfig),
+                                'page': Math.ceil(d.start / d.length) + 1,
+                                'pageSize': d.length,
+                                'search': d?.search?.value ? d.search.value : '',
+                                'ordering': orderTxt, ...customFilter, ...customFilterData,
+                            }, keyKeepEmpty);
+                        },
+                        dataFilter: function (data) {
+                            let json = JSON.parse(data);
+                            json.recordsTotal = json?.data?.['page_count']
+                            json.recordsFiltered = json?.data?.['page_count']
+                            return JSON.stringify(json);
+                        },
+                        headers: {
+                            "ENABLEXCACHECONTROL": !!(this.opts?.['ajax']?.['cache']) ? 'true' : 'false',
+                        },
+                    }
+                )
             }
             this.opts = $.extend(this.opts, setupServerSide)
         }
@@ -2832,6 +3079,7 @@ class DTBControl {
                     }
                 });
             }
+            $(window).trigger("resize");
         });
         tbl.on('draw.dt', function (event, settings) {
             // init row has checkbox selection
@@ -2877,7 +3125,18 @@ class WindowControl {
         }
     }
 
-    static showLoading() {
+    static showLoading(opts) {
+        let didOpenStartSetup = opts?.['didOpenStart'] || null;
+        if (didOpenStartSetup) delete opts['didOpenStart'];
+
+        let didOpenEndSetup = opts?.['didOpenEnd'] || null;
+        if (didOpenEndSetup) delete opts['didOpenEnd']
+
+        let didDestroyStartSetup = opts?.['didDestroyStart'] || null;
+        if (didDestroyStartSetup) delete opts['didDestroyStart'];
+
+        let didDestroyEndSetup = opts?.['didDestroyEnd'] || null;
+        if (didDestroyEndSetup) delete opts['didDestroyEnd'];
         Swal.fire({
             icon: 'info',
             title: `${$.fn.transEle.attr('data-loading')}`,
@@ -2886,16 +3145,32 @@ class WindowControl {
             showConfirmButton: false,
             timerProgressBar: true,
             didOpen: () => {
+                if (didOpenStartSetup instanceof Function) didOpenStartSetup();
                 Swal.showLoading();
+                if (didOpenEndSetup instanceof Function) didOpenEndSetup();
             },
             didDestroy: () => {
+                if (didDestroyStartSetup instanceof Function) didDestroyStartSetup();
                 Swal.hideLoading();
+                if (didDestroyEndSetup instanceof Function) didDestroyEndSetup();
             },
+            ...opts,
         });
     }
 
-    static hideLoading() {
-        swal.close();
+    static hideLoading(checkIsLoading = true) {
+        if (checkIsLoading === true) {
+            try {
+                if (Swal.isLoading()) {
+                    checkIsLoading = false;
+                }
+            } catch (e) {
+                checkIsLoading = false;
+            }
+        }
+        if (checkIsLoading === false) {
+            swal.close();
+        }
     }
 
     static showLoadingButton(ele$, opts) {
@@ -3041,21 +3316,38 @@ class WindowControl {
 }
 
 class PersonControl {
-    static shortNameGlobe(personData) {
+    static shortNameGlobe(personData, shortNameKey = null) {
         if (typeof personData === 'object') {
-            if ($.fn.hasOwnProperties(personData, ['first_name', 'last_name'])) {
-                let last_name = personData['last_name'];
-                let first_name = personData['first_name'];
-                return `${last_name.length > 0 ? last_name[0] : ''}${first_name.length > 0 ? first_name[0] : ''}`;
+            if (shortNameKey === null) {
+                if ($.fn.hasOwnProperties(personData, ['first_name', 'last_name'])) {
+                    let last_name = personData['last_name'];
+                    let first_name = personData['first_name'];
+                    return `${last_name.length > 0 ? last_name[0] : ''}${first_name.length > 0 ? first_name[0] : ''}`;
+                }
+            } else {
+                if (personData.hasOwnProperty(shortNameKey)) {
+                    let arr = personData[shortNameKey].split(" ").map(
+                        (charTxt) => {
+                            if (charTxt.length > 0) {
+                                return charTxt[0];
+                            }
+                            return '';
+                        }
+                    )
+                    if (arr.length > 2) {
+                        arr = [arr[0], arr[1]];
+                    }
+                    return arr.join("");
+                }
             }
         }
         return '';
     }
 
-    static renderAvatar(personData, clsName = "", appendHtml = "") {
+    static renderAvatar(personData, clsName = "", appendHtml = "", shortNameKey = null) {
         let avatar = personData?.['avatar'];
         let htmlTooltipFullname = `data-bs-toggle="tooltip" data-bs-placement="bottom" title="${personData?.['full_name']}"`;
-        let shortName = PersonControl.shortNameGlobe(personData);
+        let shortName = PersonControl.shortNameGlobe(personData, shortNameKey);
         if (avatar && avatar !== 'None' && avatar !== 'none') {
             let avatarFullUrl = globeMediaDomain + globePrefixAvatar + avatar + '?alt=' + shortName;
             return `<div class="avatar ${clsName ? clsName : 'avatar-xs avatar-primary'}" ${htmlTooltipFullname}><img src="${avatarFullUrl}" alt="${shortName}" class="avatar-img">${appendHtml}</div>`;
@@ -3250,9 +3542,9 @@ class DocumentControl {
         if (tenant_code_active) $('#menu-tenant').children('option[value=' + tenant_code_active + ']').attr('selected', 'selected');
     }
 
-    static renderCodeBreadcrumb(detailData, keyCode = 'code', keyActive = 'is_active') {
+    static renderCodeBreadcrumb(detailData, keyCode = 'code', keyActive = 'is_active', keyStatus = 'system_status') {
         if (typeof detailData === 'object') {
-            let [code, is_active] = [detailData?.[keyCode], detailData?.[keyActive]];
+            let [code, is_active, system_status] = [detailData?.[keyCode], detailData?.[keyActive], detailData?.[keyStatus]];
             if (code) {
                 let clsState = 'hidden';
                 if (is_active === true) {
@@ -3265,6 +3557,22 @@ class DocumentControl {
                     <span class="${clsState}"></span>
                     <span class="badge badge-primary">${code}</span>
                 `
+                ).removeClass('hidden');
+            }
+            if (system_status) {
+                let status_class = {
+                    "Draft": "badge badge-soft-light",
+                    "Created": "badge badge-soft-primary",
+                    "Added": "badge badge-soft-info",
+                    "Finish": "badge badge-soft-success",
+                    "Cancel": "badge badge-soft-danger",
+                }
+                if ($x.fn.checkNumber(system_status)){
+                   const key = Object.keys(status_class);
+                   system_status = key[system_status]
+                }
+                $('#idx-breadcrumb-current-code').append(
+                    `<span class="${status_class[system_status]}">${system_status}</span>`
                 ).removeClass('hidden');
             }
         }
@@ -3280,6 +3588,22 @@ class DocumentControl {
             >${iconHtml}</button>
         </a>`;
     }
+
+    static closeCard(eleCard, destroyParentClosest = null, isPurge = false) {
+        let ele = $(eleCard).closest('.card');
+        if (destroyParentClosest !== null) ele = ele.closest(destroyParentClosest);
+        if (isPurge === true) {
+            ele.remove();
+        } else {
+            ele.addClass('d-none');
+        }
+    }
+
+    static openCard(eleCard, openParentClosest = null) {
+        let ele = $(eleCard).closest('.card');
+        if (openParentClosest !== null) ele = ele.closest(openParentClosest);
+        ele.removeClass('d-none');
+    }
 }
 
 let $x = {
@@ -3292,6 +3616,7 @@ let $x = {
         dtb: DTBControl,
         person: PersonControl,
         doc: DocumentControl,
+        bastionField: BastionFieldControl,
     },
     fn: {
         fileInit: FileUtils.init,
@@ -3317,6 +3642,10 @@ let $x = {
 
         renderCodeBreadcrumb: DocumentControl.renderCodeBreadcrumb,
         buttonLinkBlank: DocumentControl.buttonLinkBlank,
+        closeCard: DocumentControl.closeCard,
+        openCard: DocumentControl.openCard,
+
+        getFeatureCode: BastionFieldControl.getFeatureCode,
 
         parseDateTime: UtilControl.parseDateTime,
         parseDate: UtilControl.parseDate,
@@ -3325,6 +3654,20 @@ let $x = {
 
         randomStr: UtilControl.generateRandomString,
         checkUUID4: UtilControl.checkUUID4,
+        checkNumber: UtilControl.checkNumber,
+
+        removeEmptyValuesFromObj: UtilControl.removeEmptyValuesFromObj,
+        getRandomArbitrary: UtilControl.getRandomArbitrary,
+        getRandomInArray: UtilControl.getRandomInArray,
+        keepExistInOther: UtilControl.keepExistInOther,
+        removeExistInOther: UtilControl.removeExistInOther,
+
+        popKey: UtilControl.popKey,
+        getKey: UtilControl.getKey,
+
+        hasOwnProperties: UtilControl.hasOwnProperties,
+
+        displayRelativeTime: UtilControl.displayRelativeTime,
     },
 }
 

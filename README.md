@@ -837,6 +837,15 @@ VIII. Validate form khi submit
 3. Chú ý cấu hình rules: https://jqueryvalidation.org/validate/#rules
 
 
+IX. Thêm form các trường mặc định vào phiếu (Opp, Prj, Inherit)
+1. Nền tảng: Có thể bao bọc "include" bởi "div.row" - bắt buộc nó phải ở trong form để form.submit có thể lấy được dữ liệu
+```html
+{% include 'extends/the-documents/bastion.html' with has_opp=True has_prj=True has_inherit=True is_open=True inherit_required=True %}
+```
+2. Tạo
+3. Chi tiết
+4. Sửa
+
 
 ---
 

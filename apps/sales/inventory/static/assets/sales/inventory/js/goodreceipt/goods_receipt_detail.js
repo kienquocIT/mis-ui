@@ -8,7 +8,8 @@ $(function () {
         GRDataTableHandle.dataTableGoodReceiptWH();
         GRDataTableHandle.dataTableGoodReceiptWHLot();
         GRDataTableHandle.dataTableGoodReceiptWHSerial();
-        GRDataTableHandle.dataTableGoodReceiptLineDetail();
+        GRDataTableHandle.dataTableGoodReceiptLineDetailPO();
+        GRDataTableHandle.dataTableGoodReceiptLineDetailIA();
 
         // call ajax get info quotation detail
         $.fn.callAjax2({
@@ -23,8 +24,7 @@ $(function () {
                     $.fn.compareStatusShowPageAction(data);
                     $('#data-detail-page').val(JSON.stringify(data));
                     GRLoadDataHandle.loadDetailPage(data);
-
-                    // WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
+                    WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
                 }
             }
         )

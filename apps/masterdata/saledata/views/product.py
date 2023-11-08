@@ -26,7 +26,8 @@ class ProductTypeListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_TYPE_LIST).get()
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_TYPE_LIST).get(params)
         return resp.auto_return(key_success='product_type_list')
 
     @mask_view(
@@ -64,7 +65,8 @@ class ProductCategoryListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_CATEGORY_LIST).get()
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_CATEGORY_LIST).get(params)
         return resp.auto_return(key_success='product_category_list')
 
     @mask_view(
@@ -92,44 +94,6 @@ class ProductCategoryDetailAPI(APIView):
     def put(self, request, pk, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_CATEGORY_DETAIL.fill_key(pk=pk)).put(request.data)
         return resp.auto_return(key_success='product_category')
-
-
-class ExpenseTypeListAPI(APIView):
-    permission_classes = [IsAuthenticated]
-
-    @mask_view(
-        auth_require=True,
-        is_api=True,
-    )
-    def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.EXPENSE_TYPE_LIST).get()
-        return resp.auto_return(key_success='expense_type_list')
-
-    @mask_view(
-        auth_require=True,
-        is_api=True,
-    )
-    def post(self, request, *arg, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.EXPENSE_TYPE_LIST).post(request.data)
-        return resp.auto_return()
-
-
-class ExpenseTypeDetailAPI(APIView):
-    @mask_view(
-        auth_require=True,
-        is_api=True,
-    )
-    def get(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.EXPENSE_TYPE_DETAIL.fill_key(pk=pk)).get()
-        return resp.auto_return(key_success='expense_type')
-
-    @mask_view(
-        auth_require=True,
-        is_api=True,
-    )
-    def put(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.EXPENSE_TYPE_DETAIL.fill_key(pk=pk)).put(request.data)
-        return resp.auto_return(key_success='expense_type')
 
 
 class UnitOfMeasureListAPI(APIView):
@@ -179,7 +143,8 @@ class UnitOfMeasureGroupListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE_GROUP).get()
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE_GROUP).get(params)
         return resp.auto_return(key_success='unit_of_measure_group')
 
     @mask_view(
@@ -236,8 +201,8 @@ class ProductCreate(View):
         resp0 = ServerAPI(url=ApiURL.ITEM_UNIT_LIST, user=request.user).get()
         resp1 = ServerAPI(url=ApiURL.CURRENCY_LIST, user=request.user).get()
         return {
-            'unit': resp0.result,
-            'currency_list': resp1.result
+                   'unit': resp0.result,
+                   'currency_list': resp1.result,
         }, status.HTTP_200_OK
 
 
@@ -273,16 +238,10 @@ class ProductDetail(View):
     )
     def get(self, request, *args, **kwargs):
         resp0 = ServerAPI(url=ApiURL.ITEM_UNIT_LIST, user=request.user).get()
-        resp1 = ServerAPI(user=request.user, url=ApiURL.WAREHOUSE_PRODUCT_LIST).get()
-        resp2 = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE).get()
-        resp3 = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE_GROUP).get()
-        resp4 = ServerAPI(url=ApiURL.CURRENCY_LIST, user=request.user).get()
+        resp1 = ServerAPI(url=ApiURL.CURRENCY_LIST, user=request.user).get()
         result = {
             'unit': resp0.result,
-            'warehouse_product_list': resp1.result,
-            'unit_of_measure': resp2.result,
-            'unit_of_measure_group': resp3.result,
-            'currency_list': resp4.result,
+            'currency_list': resp1.result,
         }
         return result, status.HTTP_200_OK
 
@@ -298,16 +257,10 @@ class ProductUpdate(View):
     )
     def get(self, request, *args, **kwargs):
         resp0 = ServerAPI(url=ApiURL.ITEM_UNIT_LIST, user=request.user).get()
-        resp1 = ServerAPI(user=request.user, url=ApiURL.WAREHOUSE_PRODUCT_LIST).get()
-        resp2 = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE).get()
-        resp3 = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE_GROUP).get()
-        resp4 = ServerAPI(url=ApiURL.CURRENCY_LIST, user=request.user).get()
+        resp1 = ServerAPI(url=ApiURL.CURRENCY_LIST, user=request.user).get()
         result = {
             'unit': resp0.result,
-            'warehouse_product_list': resp1.result,
-            'unit_of_measure': resp2.result,
-            'unit_of_measure_group': resp3.result,
-            'currency_list': resp4.result,
+            'currency_list': resp1.result,
         }
         return result, status.HTTP_200_OK
 
@@ -352,5 +305,6 @@ class UnitOfMeasureOfGroupLaborListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.UOM_OF_GROUP_LABOR_LIST).get()
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.UOM_OF_GROUP_LABOR_LIST).get(params)
         return resp.auto_return(key_success='uom_of_group_labor')

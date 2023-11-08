@@ -39,8 +39,11 @@
                     <div class="col-sm-10 position-relative mx-auto">
                         <div class="auth-content py-8">
                             <form
-                                    class="w-100" id="form-login" data-url="" data-url-redirect="" data-method="POST"
+                                    class="w-100"
+                                    id="form-login"
+                                    data-url="{% url 'AuthLogin' %}" data-url-redirect="" data-method="POST"
                                     autocomplete="off"
+                                    data-url-select-tenant="{% url 'AuthLoginSelectTenant' %}"
                             >
                                 <div class="row">
                                     <div class="col-lg-5 col-md-7 col-sm-10 mx-auto">
@@ -57,7 +60,7 @@
                                             <div class="card-body">
                                                 <h4 class="mb-4 text-center">{% trans 'Sign in to your account' %}</h4>
                                                 <div class="row gx-3">
-                                                    <div class="form-group col-lg-12">
+                                                    <div class="form-group col-lg-12 d-none">
                                                         <div class="form-label-group">
                                                             <label>Tenant</label>
                                                         </div>
@@ -397,7 +400,15 @@
     <!-- Custom JS -->
     <script>
         $(document).ready(function () {
-            $('#form-login').submit(function (event) {
+            let hasAppendSubCode = false;
+            let allowAutoTenant = '{{allow_auto_tenant}}';
+            let mainDomain = '{{ui_domain}}';
+            let hostData = window.location.hostname;
+            let autoTenant = '{{allow_auto_tenant}}';
+            let tenantSelEle = $('#tenant-select');
+            let frmLoginEle = $('#form-login');
+
+            frmLoginEle.submit(function (event) {
                 event.preventDefault();
 
                 let state = false;
@@ -448,7 +459,9 @@
                                     if (params.next) {
                                         path_redirect = params.next;
                                     }
-                                    $.fn.redirectUrlLogin(path_redirect, 800);
+                                    $.fn.redirectUrlLogin(
+                                        path_redirect, 800
+                                    );
                                 }
                                 setTimeout(
                                     () => {
@@ -467,41 +480,72 @@
                 }
             })
 
-            function loadTenantList() {
-                let tenant_element = $('#tenant-select');
-                if (tenant_element.attr('data-loaded') !== true) {
-                    $.fn.callAjaxLogin(tenant_element.attr('data-url'), tenant_element.attr('data-method')).then(
-                        (resp) => {
-                            let beforeTenantCode = localStorage.getItem('tenant_code');
-                            let code_list = [];
-                            tenant_element.attr('data-loaded', true);
-                            tenant_element.children().remove();
-                            resp.result.map((element) => {
-                                if (beforeTenantCode && element.code === beforeTenantCode) {
-                                    tenant_element.append(`<option value="` + element.code + `" selected="selected">` + String.format('{0} - {1}', element.code, element.title) + `</option>`);
-                                } else {
-                                    tenant_element.append(`<option value="` + element.code + `">` + String.format('{0} - {1}', element.code, element.title) + `</option>`);
-                                }
-                                code_list.push(element.code);
-                            });
-
-                            let tenant_code = window.location.hostname.split(".");
-                            if (tenant_code) {
-                                let code_selected = tenant_code[0].toUpperCase();
-                                if (code_list.indexOf(code_selected) !== -1) {
-                                    tenant_element.find('option[value=' + code_selected + ']').attr('selected', 'selected');
-                                }
+            function loadTenantList(is_show_group = true) {
+                if (is_show_group === true) tenantSelEle.closest('.form-group').removeClass('d-none');
+                return $.fn.callAjaxLogin(tenantSelEle.attr('data-url'), tenantSelEle.attr('data-method')).then(
+                    (resp) => {
+                        let beforeTenantCode = localStorage.getItem('tenant_code');
+                        let code_list = [];
+                        tenantSelEle.attr('data-loaded', true);
+                        tenantSelEle.children().remove();
+                        resp.result.map((element) => {
+                            if (beforeTenantCode && element.code === beforeTenantCode) {
+                                tenantSelEle.append(`<option value="` + element.code + `" selected="selected">` + String.format('{0} - {1}', element.code, element.title) + `</option>`);
+                            } else {
+                                tenantSelEle.append(`<option value="` + element.code + `">` + String.format('{0} - {1}', element.code, element.title) + `</option>`);
                             }
-                            {#tenant_element.children().last().attr('selected', 'selected');#}
-                        },
-                        (err) => {
-                            tenant_element.attr('data-loaded', false);
+                            code_list.push(element.code);
+                        });
+
+                        let tenant_code = window.location.hostname.split(".");
+                        if (tenant_code) {
+                            let code_selected = tenant_code[0].toUpperCase();
+                            if (code_list.indexOf(code_selected) !== -1) {
+                                tenantSelEle.find('option[value=' + code_selected + ']').attr('selected', 'selected');
+                            }
                         }
-                    )
+                    },
+                    (err) => {
+                        tenantSelEle.attr('data-loaded', false);
+                    }
+                )
+            }
+
+            function redirectToSelectTenant() {
+                if (allowAutoTenant !== 'True' && (window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost')) {
+                    let tenant_code = prompt('Tenant Code:');
+                    tenantSelEle.append(`<option value="${tenant_code}" selected></option>`);
+                } else {
+                    window.location.href = frmLoginEle.attr('data-url-select-tenant');
                 }
             }
 
-            loadTenantList();
+            if (autoTenant === 'True' && hostData.endsWith(mainDomain)) {
+                if (hostData.indexOf(mainDomain)) {
+                    loadTenantList(false).then(
+                        () => {
+                            let tenantCode = hostData.split(mainDomain)[0];
+                            if (tenantCode.endsWith(".")) tenantCode = tenantCode.split(".")[0];
+
+                            let optOfCode = tenantSelEle.find(`option[value="${tenantCode}"]`);
+                            if (optOfCode.length > 0) {
+                                hasAppendSubCode = false;
+                                tenantSelEle.val(tenantCode).trigger('change');
+                            } else {
+                                {#redirectToSelectTenant();#}
+                                $.fn.notifyBLogin({
+                                    'description': 'The tenant is not found or was disabled!',
+                                }, 'failure')
+                            }
+                        }
+                    )
+
+                } else {
+                    redirectToSelectTenant();
+                }
+            } else {
+                redirectToSelectTenant();
+            }
         });
     </script>
 {% endcompress %}

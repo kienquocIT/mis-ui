@@ -93,10 +93,14 @@ $(function () {
         });
 
         // Action on change quantity order of tablePurchaseRequestProduct
-        tablePurchaseRequestProduct.on('change', '.table-row-quantity-order', function() {
+        tablePurchaseRequestProduct.on('change', '.table-row-quantity-order', function () {
             POValidateHandle.validateNumber(this);
             let remain = parseFloat(this.closest('tr').querySelector('.table-row-remain').innerHTML);
-            POValidateHandle.validateQuantityOrderRequest(this, remain);
+            let valid_quantity = POValidateHandle.validateQuantityOrderRequest(this, remain);
+            let eleCheck = this?.closest('tr')?.querySelector('.table-row-checkbox');
+            if (eleCheck) {
+                eleCheck.checked = valid_quantity;
+            }
         });
 
         // Purchase quotation modal
@@ -149,16 +153,18 @@ $(function () {
 
         // Action on click button add product
         $('#btn-add-product-purchase-order').on('click', function() {
-            if (elePurchaseRequest[0].innerHTML) {
-                $('#btn-warning-add-product').click();
-            } else {
-                POLoadDataHandle.loadTableProductNoPurchaseRequest();
-            }
+            POLoadDataHandle.loadAddRowTableProductAdd();
+        });
+
+        // Action on click button add product if request
+        $('#btn-add-product-purchase-order-if-request').on('click', function() {
+            $('#btn-warning-add-product').click();
         });
 
         // Action on click btn continue to add product
         $('#btn-continue-add-product').on('click', function() {
-            POLoadDataHandle.loadTableProductNoPurchaseRequest();
+            POLoadDataHandle.loadDataWhenClearPR(true);
+            POLoadDataHandle.loadAddRowTableProductAdd();
         });
 
         // Action on change data on row of tablePurchaseOrderProductAdd

@@ -183,7 +183,6 @@ class SelectDDControl {
     _ele_collect_selected(hasAjax) {
         // Get option:selected in currently
         // Push data to script id random
-
         let optionTextFind = 'option';
         if (hasAjax === true) optionTextFind += ':selected';
 
@@ -295,11 +294,13 @@ class SelectDDControl {
 
         params = this.ele.attr('data-params');
         if (params) {
+            let temp = params.replaceAll("'",'"')
             try {
-                const temp = params.replaceAll("'",'"')
-                return JSON.parse(temp);
+                temp = JSON.parse(temp)
             } catch (e) {
+                temp = {}
             }
+            return temp
         }
         return {};
     }
@@ -311,7 +312,7 @@ class SelectDDControl {
         if (params.term) query.search = params.term;
         query.page = params.page || this.page;
         query.pageSize = params.pageSize || this.pageSize;
-        return {...query, ...this._ajax_parse_params_external()}
+        return $x.fn.removeEmptyValuesFromObj({...query, ...this._ajax_parse_params_external()});
     }
 
     _ajax_parse_headers(headers) {
@@ -598,6 +599,8 @@ class SelectDDControl {
         //      - collect_selected
         //      - this.initData: value was set at this.data
         // ** Will be applied templateSelection in the future
+        let clsThis = this;
+
         let hasAjax = !!(config?.['ajax']);
         let dataSelected = this._ele_collect_selected(hasAjax);
         let dataOnload = this.initData;
@@ -615,7 +618,24 @@ class SelectDDControl {
                     }
                 );
             }
+
+            let selectLoaded = false;
             let optHTML = sumData.map((item) => {
+                if (
+                    selectLoaded === false
+                    && (
+                        item.selected === true || sumData.length === 1
+                    )
+                ){
+                    selectLoaded = true;
+                    let dataIDx = this.callbackValueId(item, this._data_keyId);
+                    clsThis.loadInfoMore(
+                        $(this.ele),
+                        dataIDx ? dataIDx : this.callbackValueId(item?.['data'] || {}, this._data_keyId),
+                        item?.['data'] ? item?.['data'] : item,
+                    )
+                }
+
                 let idn = item?.['id'];
                 let textShow = item?.['text'];
                 if (idn || (!idn && this.keepIdNullHasText)) {
@@ -649,24 +669,49 @@ class SelectDDControl {
         }
     }
 
-    init() {
-        // call this for init select with options
-        let clsThis = this;
-
-        if (!this._config) this._config = this.config();
-        this.renderDataOnload(this._config);
-
-        this.ele.parent('.input-affix-wrapper').find('.dropdown').on('show.bs.dropdown', function () {
-            clsThis.callbackRenderInfoDetail($(this));
-        });
-        return this.ele.select2(this._config).on('change', function (e) {
-            if ($(this).closest('form').length > 0){
-                if ($(this).valid()) {
-                    $(this).closest(".form-group").removeClass("has-error");
+    loadInfoMore(eleThis, detailIdx = null, detailData = null){
+        let nextHasInfoBtnMore = $(eleThis).siblings('.info-btn-more');
+        let nextHasInfoBtnMore__Detail = $(eleThis).siblings('.info-btn-more-detail');
+        if (nextHasInfoBtnMore.length > 0 && nextHasInfoBtnMore__Detail.length > 0) {
+            let selectVal = detailIdx && detailData ? detailIdx : $(eleThis).val();
+            let urlInfoDetail = $(eleThis).attr('data-url-info-detail');
+            if (urlInfoDetail) {
+                if (selectVal){
+                    urlInfoDetail = urlInfoDetail.replaceAll('__pk__', selectVal);
+                    nextHasInfoBtnMore.attr('data-id', selectVal);
+                    nextHasInfoBtnMore__Detail.find('.link-detail-more').attr('href', urlInfoDetail);
                 } else {
-                    $(this).closest(".form-group").addClass("has-error");
+                    nextHasInfoBtnMore.removeAttr('data-id');
+                    nextHasInfoBtnMore__Detail.find('.link-detail-more').attr('href', '#');
                 }
             }
-        });
+
+            let func_onload = window[$(eleThis).data('on-load-info')];
+            if (func_onload && typeof func_onload === 'function') {
+                func_onload(
+                    nextHasInfoBtnMore__Detail,
+                    nextHasInfoBtnMore__Detail.find('.info-btn-more-detail-data'),
+                    detailIdx && detailData ? detailData : SelectDDControl.get_data_from_idx($(eleThis), selectVal),
+                );
+            }
+
+        }
+    }
+
+    init() {
+        // call this for init select with options
+        if (this.ele.length > 0){
+            let clsThis = this;
+
+            if (!this._config) this._config = this.config();
+            this.renderDataOnload(this._config);
+            return this.ele.select2(this._config).on('change', function (e) {
+                if ($(this).closest('form').length > 0){
+                    if ($(this).valid()) $(this).closest(".form-group").removeClass("has-error");
+                    else $(this).closest(".form-group").addClass("has-error");
+                }
+                clsThis.loadInfoMore($(this));
+            });
+        }
     }
 }

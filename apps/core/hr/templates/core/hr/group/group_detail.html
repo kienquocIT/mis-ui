@@ -18,7 +18,7 @@
 
 {% block pageContent %}
     <form
-            id="frm_group_create" class="needs-validation" data-url="{% url 'GroupDetailAPI' data.data.doc_id %}" data-method="GET"
+            id="frm_group_create" class="needs-validation" data-url="{% url 'GroupDetailAPI' pk=pk %}" data-method="GET"
             novalidate data-url-redirect="{% url 'GroupList' %}"
     >
         {% csrf_token %}
@@ -203,7 +203,6 @@
 
                                 </div>
                             </div>
-
                             <table
                                     id="datable_employee_show_list"
                                     class="table nowrap w-100 mb-5"
@@ -219,12 +218,11 @@
                                 <tbody>
                                 </tbody>
                             </table>
-
                             <input
                                     type="hidden"
                                     id="data-group_employee"
                             >
-
+                            <br>
                             <div class="row">
                                 <div class="col-6">
                                     <div class="row">
@@ -341,7 +339,6 @@
 
 
 {% block jsFooter %}
-    <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
     <script src="{% static 'assets/js/core/hr/group/group_common.js' %}"></script>
     <script src="{% static 'assets/js/core/hr/group/group_detail.js' %}"></script>
 {% endblock %}

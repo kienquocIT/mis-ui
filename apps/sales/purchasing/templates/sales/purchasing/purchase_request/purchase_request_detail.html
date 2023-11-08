@@ -1,40 +1,39 @@
 {% extends 'base.html' %}
 {% load static i18n %}
-{% block title %}{% trans 'Purchase Request Create' %}{% endblock %}
+{% block title %}{% trans 'Purchase Request Detail' %}{% endblock %}
 {% block cssHeader %}
     <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}"/>
 {% endblock %}
 {% block pageAction %}
-    <a href="#">
+    <a href="{% url 'PurchaseRequestUpdate' pk=0 %}" id="btn-edit">
         <button class="btn btn-outline-primary">
-        <span>
-            <span>{% trans 'Edit' %}</span>
-            <span class="icon">
-                <i class="fa-regular fa-pen-to-square"></i>
+            <span>
+                <span>{% trans 'Edit' %}</span>
+                <span class="icon">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                </span>
             </span>
-        </span>
         </button>
     </a>
 {% endblock %}
 {% block pageContent %}
     <form id="frm-detail-pr" data-url="{% url "PurchaseRequestDetailAPI" pk=0 %}" data-method="POST">
         <div class="row">
-            <div class="col-6">
+            <div class="col-12 col-md-6 col-lg-6">
                 <div class="form-group">
                     <label class="form-label required">{% trans 'Name' %}</label>
                     <input class="form-control" placeholder="Input Name" name="title" readonly/>
                 </div>
             </div>
-            <div class="col-6">
+            <div class="col-12 col-md-6 col-lg-6">
                 <div class="form-group">
                     <label class="form-label required">{% trans 'Delivered Date' %}</label>
                     <input class="form-control" name="delivered_date" readonly/>
                 </div>
             </div>
         </div>
-
         <div class="row">
-            <div class="col-6">
+            <div class="col-12 col-md-6 col-lg-6">
                 <div class="form-group">
                     <label class="form-label required">{% trans 'Supplier' %}</label>
                     <span class="input-affix-wrapper">
@@ -60,22 +59,15 @@
                                 <span class="col-5">{% trans "Code" %}</span>
                                 <span class="col-7 text-primary span-supplier-code"></span>
                             </div>
-                            <div class="row">
-                                <span class="col-5">{% trans "Owner Name" %}</span>
-                                <span class="col-7 text-primary span-supplier-owner"></span>
-                            </div>
-                            <div class="row">
-                                <span class="col-5">{% trans "Industry" %}</span>
-                                <span class="col-7 text-primary span-supplier-industry"></span>
-                            </div>
                         </span>
                     </span>
                     <select
-                            class="form-control select2"
+                            class="form-select"
                             id="box-select-supplier"
+                            name="supplier"
                             data-method="GET"
-                            data-url="{% url "AccountListAPI" %}"
-                            data-keyResp="account_list"
+                            data-url="{% url "AccountForSaleListAPI" %}"
+                            data-keyResp="account_sale_list"
                             data-keyText="name"
                             disabled
                     >
@@ -83,7 +75,7 @@
                 </span>
                 </div>
             </div>
-            <div class="col-6">
+            <div class="col-12 col-md-6 col-lg-6">
                 <div class="form-group">
                     <label class="form-label">{% trans 'Status' %}</label>
                     <input class="form-control" name="system_status" value="{% trans 'Draft' %}" readonly
@@ -91,9 +83,8 @@
                 </div>
             </div>
         </div>
-
         <div class="row">
-            <div class="col-6">
+            <div class="col-12 col-md-6 col-lg-6">
                 <div class="form-group">
                     <label class="form-label required">{% trans 'Contact' %}</label>
                     <span class="input-affix-wrapper">
@@ -127,14 +118,10 @@
                                 <span class="col-5">{% trans "Email" %}</span>
                                 <span class="col-7 text-primary span-contact-email"></span>
                             </div>
-                            <div class="row">
-                                <span class="col-5">{% trans "Report to" %}</span>
-                                <span class="col-7 text-primary span-contact-report-to"></span>
-                            </div>
                         </span>
                     </span>
                     <select
-                            class="form-control select2"
+                            class="form-select"
                             id="box-select-contact"
                             data-method="GET"
                             data-url="{% url "ContactListAPI" %}"
@@ -146,38 +133,35 @@
                 </span>
                 </div>
             </div>
-            <div class="col-6">
+            <div class="col-12 col-md-6 col-lg-6">
                 <div class="form-group">
                     <label class="form-label">{% trans 'Purchase Status' %}</label>
                     <input class="form-control" name="purchase_status" value="Wait" data-value="0" readonly/>
                 </div>
             </div>
         </div>
-
         <div class="row">
-            <div class="col-6">
+            <div class="col-12 col-md-6 col-lg-6">
                 <div class="form-group">
                     <label class="form-label required">{% trans 'Request For' %}</label>
                     <input type="text" class="form-control" name="request_for" readonly>
                 </div>
             </div>
-            <div class="col-6">
+            <div class="col-12 col-md-6 col-lg-6">
                 <div class="form-group">
                     <label class="form-label">{% trans 'Note' %}</label>
                     <input class="form-control" name="note" readonly/>
                 </div>
             </div>
         </div>
-
         <div class="row">
-            <div class="col-6">
+            <div class="col-12 col-md-6 col-lg-6">
                 <div class="form-group">
                     <label class="form-label required">{% trans 'Order Code' %}</label>
                     <input class="form-control" name="sale_order" readonly/>
                 </div>
             </div>
         </div>
-
         <div class="row mt-3">
             <ul class="nav nav-light nav-tabs" id="purchase-request-tabs">
                 <li class="nav-item">
@@ -192,7 +176,6 @@
                 </li>
             </ul>
         </div>
-
         <div class="tab-content" id="tab-content-purchase-request-product">
             <div class="tab-pane fade show active" id="tab_line_detail">
                 <table id="datatable-pr-product" class="table nowrap w-100 mb-5">
@@ -420,7 +403,7 @@
 {% endblock %}
 
 {% block jsFooter %}
-    <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
+
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'assets/sales/purchasing/js/purchase_request/purchase_request_common.js' %}"></script>
     <script src="{% static 'assets/sales/purchasing/js/purchase_request/purchase_request_detail.js' %}"></script>

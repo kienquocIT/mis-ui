@@ -30,11 +30,8 @@
         <div class="col-6 text-center">
             <h3 style="color: #007D88; font-weight: bolder" id="price_list_name"></h3>
         </div>
-        <div class="col-3 text-right mt-3">
-            <a href="#"><span id="status" data-bs-toggle="collapse" href="#valid_time_detail"></span></a>
-        </div>
-        <div class="collapse text-right" id="valid_time_detail">
-            <span id="apply_time"></span>
+        <div class="col-3">
+            <p id="time-valid" class="text-right"></p>
         </div>
     </div>
     <div class="row">
@@ -170,6 +167,7 @@
            data-trans-confirm-delete-item="{% trans 'Delete this item ?' %}"
            data-trans-delete-item-failed="{% trans 'Can not delete this item!' %}"
            data-trans-update-setting="{% trans 'You can update can delete in tab setting' %}"
+           data-trans-now="{% trans 'now' %}"
     />
 {% endblock %}
 {% block jsFooter %}

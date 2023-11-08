@@ -34,7 +34,7 @@ $.fn.extend({
         return globePK;
     },
     hasOwnProperties: function (objData, keys) {
-        if (typeof objData === 'object' && Array.isArray(keys)) {
+        if (objData && typeof objData === 'object' && Array.isArray(keys)) {
             for (let i = 0; i < keys.length; i++) {
                 if (!objData.hasOwnProperty(keys[i])) {
                     return false;
@@ -287,7 +287,7 @@ $.fn.extend({
         }
     },
     callAjax2: function (opts = {}) {
-        if (isDenied && !globeUrlNotDeny.includes(url)){
+        if (isDenied && !globeUrlNotDeny.includes(opts?.['url'])){
             return new Promise(function (resolve, reject) {});
         } else {
             let isDropdown = UtilControl.popKey(opts, 'isDropdown', false, true);
@@ -322,6 +322,8 @@ $.fn.extend({
                         data = JSON.stringify(data);
                     }
 
+                    if (opts?.['cache'] === true) headers["ENABLEXCACHECONTROL"] = true;
+
                     let successCallback = opts?.['success'] || null;
                     let onlySuccessCallback = UtilControl.popKey(opts, 'successOnly', false);
                     let errorCallback = opts?.['error'] || null;
@@ -331,7 +333,7 @@ $.fn.extend({
                     let ctx = {
                         ...opts,
                         success: function (rest, textStatus, jqXHR) {
-                            if (isLoading) $x.fn.hideLoadingPage(0);
+                            if (isLoading) $x.fn.hideLoadingPage();
                             if (successCallback) successCallback(rest, textStatus, jqXHR);
                             if (onlySuccessCallback === false) {
                                 let data = $.fn.switcherResp(rest, isNotify, sweetAlertOpts);
@@ -412,6 +414,18 @@ $.fn.extend({
     },
     initSelect2: function (opts) {
         return new SelectDDControl($(this), opts).init();
+    },
+    destroySelect2: function (addEmpty=false) {
+        let state = false;
+        if (this instanceof jQuery) {
+            if (this.hasClass("select2-hidden-accessible")) {
+                state = true;
+                this.val("").select2('destroy');
+            }
+            $(this).find('option').remove();
+            $(this).append(`<option value="" selected></option>`);
+        }
+        return state;
     },
     compareStatusShowPageAction: function (resultDetail) {
         WFRTControl.compareStatusShowPageAction(resultDetail);

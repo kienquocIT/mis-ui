@@ -9,20 +9,10 @@ class OpportunityLoadDropdown {
     static loadCustomer(data, config, emp_current) {
         this.customerSelectEle.initSelect2({
             data: data,
-            callbackDataResp(resp, keyResp) {
-                if (config) {
-                    let list_result = []
-                    resp.data[keyResp].map(function (item) {
-                        let list_id_am = item.manager.map(obj => obj.id)
-                        if (list_id_am.includes(emp_current)) {
-                            list_result.push(item)
-                        }
-                    })
-                    return list_result
-                } else {
-                    return resp.data[keyResp]
-                }
-            }
+            dataParams: {
+                'account_types_mapped__account_type_order': 0,
+                'employee__id': emp_current,
+            },
         })
     }
 
@@ -111,19 +101,9 @@ class OpportunityLoadDropdown {
     static loadUoM(ele, data, product) {
         ele.initSelect2({
             data: data,
-            callbackDataResp(resp, keyResp) {
-                let list_result = []
-                if (product !== undefined) {
-                    resp.data[keyResp].map(function (item) {
-                        if (product?.['general_information'].uom_group.id === item.group.id) {
-                            list_result.push(item)
-                        }
-                    })
-                } else {
-                    list_result = resp.data[keyResp]
-                }
-                return list_result
-            }
+            dataParams: {
+                'group': product?.['general_information'].uom_group.id
+            },
         })
     }
 
@@ -136,6 +116,9 @@ class OpportunityLoadDropdown {
     static loadCompetitor(ele, data, customer) {
         ele.initSelect2({
             data: data,
+            dataParams: {
+                'account_types_mapped__account_type_order': 3,
+            },
             callbackDataResp(resp, keyResp) {
                 let list_result = []
                 resp.data[keyResp].map(function (item) {
@@ -157,15 +140,7 @@ class OpportunityLoadDropdown {
     static loadContact(ele, data, customer) {
         ele.initSelect2({
             data: data,
-            callbackDataResp(resp, keyResp) {
-                let list_result = []
-                resp.data[keyResp].map(function (item) {
-                    if (customer === item.account_name.id) {
-                        list_result.push(item)
-                    }
-                })
-                return list_result
-            }
+            'dataParams': {'account_name_id': customer},
         })
     }
 
@@ -339,7 +314,6 @@ class OpportunityLoadDetail {
         }
     }
 
-
     static getDataMember() {
         let ele_tr = $('#dtbMember').find('tr.selected');
         let list_result = []
@@ -362,7 +336,7 @@ class OpportunityLoadDetail {
         let table = $('#dtbMember');
         await new Promise(resolve => setTimeout(resolve, 500));
         table.find('tbody tr').removeClass('selected');
-        table.find('tbody tr .input-select-member').prop('checked', false);
+        table.find('tbody tr .input-select-member:not(:disabled)').prop('checked', false);
         card_member.map(function () {
             table.find(`.input-select-member[data-id="${$(this).attr('data-member-id')}"]`).prop('checked', true);
             table.find(`.input-select-member[data-id="${$(this).attr('data-member-id')}"]`).closest('tr').addClass('selected');
@@ -383,6 +357,7 @@ class OpportunityLoadDetail {
             "cancelClass": "btn-secondary",
             maxYear: parseInt(moment().format('YYYY-MM-DD'), 10) + 100
         });
+
         $('input[name="close_date"]').daterangepicker({
             singleDatePicker: true,
             timePicker: true,
@@ -500,16 +475,186 @@ class OpportunityLoadDetail {
         }
     }
 
-    static loadSaleTeam(data) {
-        let card_member = $('#card-member');
-        data.map(function (item) {
-            card_member.append($('.card-member-hidden').html());
-            let card = card_member.find('.card').last();
-            card.find('.btn-detail-member').attr('href', urlEle.data('url-emp-detail').format_url_with_uuid(item.member.id));
-            card.find('.card-title').text(item.member.name);
-            card.find('.card-text').text(item.member.email);
-            card.attr('data-id', item.id);
-            card.attr('data-member-id', item.member.id);
+    static clickEditMember(memberIdx, memberEditEle, boxEditPermitEle, eleViewOppMember, eleAddOppMember, change_member_selected = true) {
+        boxEditPermitEle.removeClass('hidden');
+        memberEditEle.val(memberIdx);
+        if (change_member_selected === true) memberEditEle.trigger('change');
+        boxEditPermitEle.attr('data-id', memberIdx);
+
+        let urlTmp = boxEditPermitEle.data('url').replaceAll('__pk_member__', memberIdx);
+        $.fn.callAjax2({
+            url: urlTmp,
+            type: 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && typeof data === 'object' && data.hasOwnProperty('member')) {
+                    let memData = data['member'];
+                    eleViewOppMember.prop('checked', memData.permit_view_this_opp);
+                    eleAddOppMember.prop('checked', memData.permit_add_member);
+
+                    HandlePlanAppNew.editEnabled = true;
+                    HandlePlanAppNew.hasSpaceChoice = false;
+                    HandlePlanAppNew.rangeAllowOfApp = ["1", "4"];
+                    HandlePlanAppNew.manual_app_list_and_not_plan_app = true;
+
+                    HandlePlanAppNew.setPlanApp([], true) // opp not using plan_app -> get from storage
+                    HandlePlanAppNew.setPermissionByConfigured(memData.permission_by_configured || [])
+
+                    let clsNew = new HandlePlanAppNew();
+                    clsNew.renderPermissionSelected(
+                        memberIdx, {
+                            'get_from': 'opportunity',
+                            'opportunity': $.fn.getPkDetail(),
+                        })
+                }
+                return {};
+            },
+            (errs) => {
+            }
+        )
+    }
+
+    static loadSaleTeam(data, isEdit = true, employee_inherit = {}) {
+        let employee_inherit_id = employee_inherit?.['id'] || null;
+        let html = `
+            <div class="member-item col-md-12 col-lg-6 col-xl-4">
+               <div
+                  class="card" data-manual-hide="false" data-footer-show="always"
+                  data-id="__idx__"
+                  >
+                  <div class="card-header card-header-action">
+                     <div class="hidden-md">__avatar__</div>
+                     <div class="ml-1 card-main-title">
+                        <p>__full_name__</p>
+                        <p><small><a href="mailto:__email__">__email__</a></small></p> 
+                    </div>
+                     <div class="card-action-wrap __is_edit__">
+                        <button
+                           class="btn btn-xs btn-icon btn-rounded btn-flush-dark flush-soft-hover card-action-edit"
+                           type="button"
+                        >
+                            <span class="icon">
+                                <span class="feather-icon">
+                                    <i data-feather="edit-2"></i>
+                                </span>
+                            </span>
+                        </button>
+                        <a class="btn btn-xs btn-icon btn-rounded btn-flush-dark flush-soft-hover card-action card-action-close __is_delete__">
+                            <span class="icon">
+                                <span class="feather-icon">
+                                    <i data-feather="x"></i>
+                                </span>
+                            </span>
+                        </a>
+                     </div>
+                  </div>
+                  <script type="application/json" class="card-permit-data">__permit_data__</script>
+               </div>
+            </div>
+        `;
+
+        let memberItemListEle = $('#member-item-list');
+        let memberEditEle = $('#member-current-edit');
+        let dataMember = [];
+        let boxEditPermitEle = $('#box-edit-permit');
+        let eleViewOppMember = $('#enable-view-opp-member');
+        let eleAddOppMember = $('#enable-add-opp-member');
+
+        memberItemListEle.children().each(function () {
+            if ($(this).find('#btn-show-modal-add-member').length <= 0) $(this).remove();
+        });
+        data.reverse().map(function (item) {
+            let itemHTML = html.replaceAll(
+                "__idx__",
+                item.id
+            ).replaceAll(
+                "__full_name__",
+                item.full_name,
+            ).replaceAll(
+                "__email__",
+                item.email,
+            ).replaceAll(
+                "__avatar__",
+                $x.fn.renderAvatar(item),
+            ).replaceAll(
+                "__permit_data__",
+                JSON.stringify(item?.['permit_app'] || [])
+            ).replaceAll(
+                "__is_edit__",
+                isEdit ? "" : "hidden"
+            ).replaceAll(
+                '__is_delete__',
+                !!(employee_inherit_id && item.id === employee_inherit_id) ? "hidden" : ""
+            );
+            memberItemListEle.prepend(itemHTML);
+            dataMember.push(item)
+        });
+        memberEditEle.initSelect2({
+            data: dataMember,
+            keyText: 'full_name',
+        }).on('change', function () {
+            OpportunityLoadDetail.clickEditMember($(this).val(), memberEditEle, boxEditPermitEle, eleViewOppMember, eleAddOppMember, false)
+        })
+        memberItemListEle.on('click', '.card-action-edit', function () {
+            let eleCard = $(this).closest('.card');
+            OpportunityLoadDetail.clickEditMember(eleCard.data('id'), memberEditEle, boxEditPermitEle, eleViewOppMember, eleAddOppMember)
+        });
+
+        $('#btnSavePermitMember').on('click', function () {
+            let bodyData = {
+                'permit_view_this_opp': eleViewOppMember.prop('checked'),
+                'permit_add_member': eleAddOppMember.prop('checked'),
+                'permission_by_configured': new HandlePlanAppNew().combinesPermissions(),
+            };
+            let urlData = boxEditPermitEle.data('url').replaceAll('__pk_member__', boxEditPermitEle.data('id'));
+            $.fn.callAjax2({
+                url: urlData,
+                method: 'PUT',
+                data: bodyData,
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && data.hasOwnProperty('member')) {
+                        $.fn.notifyB({
+                            'description': $.fn.transEle.attr('data-success'),
+                        }, 'success')
+                        OpportunityLoadDetail.clickEditMember(boxEditPermitEle.data('id'), memberEditEle, boxEditPermitEle, eleViewOppMember, eleAddOppMember);
+                    } else {
+                        $.fn.notifyB({
+                            'description': $.fn.transEle.attr('data-fail'),
+                        }, 'failure')
+                    }
+                },
+                (errs) => {
+
+                }
+            )
+        });
+
+        $('.member-item').find('.card').on('card.action.close.confirm', function () {
+            let eleCard = $(this).closest('.card');
+            $.fn.callAjax2({
+                url: boxEditPermitEle.data('url').replaceAll('__pk_member__', eleCard.data('id')),
+                method: 'DELETE',
+                'sweetAlertOpts': {
+                    'allowOutsideClick': true
+                }
+            }).then(
+                (resp) => {
+                    $.fn.switcherResp(resp);
+                    $.fn.notifyB({
+                        'description': $.fn.transEle.data('success'),
+                    }, 'success');
+                    $(this).trigger('card.action.close.purge');
+                },
+                (errs) => {
+                    $.fn.notifyB({
+                        'description': $.fn.transEle.data('fail') + ": " + $('#trans-factory').attr('data-msg-deny-delete-member-owner'),
+                    }, 'failure');
+                    $(this).trigger('card.action.close.show');
+                }
+            )
         })
     }
 
@@ -570,6 +715,9 @@ class OpportunityLoadDetail {
                     'product_quantity': $(this).find('.input-quantity').val(),
                     'product_unit_price': $(this).find('.input-unit-price').attr('value'),
                     'product_subtotal_price': $(this).find('.input-subtotal').attr('value'),
+                }
+                if (!$(this).find('.box-select-tax').val()) {
+                    delete data['tax']
                 }
                 list_product_data.push(data);
             })
@@ -675,8 +823,9 @@ class OpportunityLoadDetail {
                     text: transEle.data('trans-role-decision-maker'),
                 })
             } else {
-                let ele_contact = ele.closest('tr').find('.box-select-contact option:selected');
-                this.setDataDecisionMaker(ele_decision_maker, ele_contact.text(), ele_contact.val());
+                let ele_contact = ele.closest('tr').find('.box-select-contact');
+                let contact_data = SelectDDControl.get_data_from_idx(ele_contact, ele_contact.val());
+                this.setDataDecisionMaker(ele_decision_maker, contact_data.fullname, contact_data.id);
             }
         }
 
@@ -687,7 +836,7 @@ class OpportunityLoadDetail {
 
     static setDataDecisionMaker(ele_decision_maker, value, id) {
         ele_decision_maker.val(value);
-        ele_decision_maker.attr(id);
+        ele_decision_maker.attr('data-id', id);
         ele_decision_maker.addClass('tag-change');
     }
 
@@ -697,119 +846,6 @@ class OpportunityLoadDetail {
             title: 'Oops...',
             text: text,
         })
-    }
-
-    static loadDtbApplication() {
-        if (!$.fn.DataTable.isDataTable('#table-applications')) {
-            let $table = $('#table-applications')
-            let frm = new SetupFormSubmit($table);
-            $table.DataTableDefault({
-                useDataServer: true,
-                paging: false,
-                scrollY: '200px',
-                autoWidth: false,
-                ajax: {
-                    url: frm.dataUrl,
-                    type: frm.dataMethod,
-                    dataSrc: function (resp) {
-                        let data = $.fn.switcherResp(resp);
-                        if (data && resp.data.hasOwnProperty('applications')) {
-                            return resp.data['applications'] ? resp.data['applications'] : [];
-                        }
-                        throw Error('Call data raise errors.')
-                    },
-                },
-                columns: [
-                    {
-                        data: 'title',
-                        targets: 0,
-                        render: (data, type, row, meta) => {
-                            return `<span class="application_name" data-id="${row.id}">${data}</span>`
-                        }
-                    },
-                    {
-                        targets: 1,
-                        render: (data, type, row, meta) => {
-                            if (!['Quotation', 'Sale Order', 'Contract', 'Delivery'].includes(row.title))
-                                return `<div class="form-check"><input type="checkbox" class="form-check-input check-create" /></div>`
-                            else
-                                return `<div class="form-check"><input type="checkbox" class="form-check-input check-create" disabled/></div>`
-                        }
-                    },
-                    {
-                        targets: 2,
-                        render: (data, type, row, meta) => {
-                            if (!['Quotation', 'Sale Order', 'Contract', 'Delivery'].includes(row.title))
-                                return `<div class="form-check"><input type="checkbox" class="form-check-input check-edit" /></div>`
-                            else
-                                return `<div class="form-check"><input type="checkbox" class="form-check-input check-edit" disabled/></div>`
-                        }
-                    },
-                    {
-                        targets: 3,
-                        render: (data, type, row, meta) => {
-                            if (!['Quotation', 'Sale Order', 'Contract', 'Delivery'].includes(row.title))
-                                return `<div class="form-check"><input type="checkbox" class="form-check-input check-view-own" /></div>`
-                            else
-                                return `<div class="form-check"><input type="checkbox" class="form-check-input check-view-own" disabled/></div>`
-                        }
-                    },
-                    {
-                        targets: 4,
-                        render: (data, type, row, meta) => {
-                            return `<div class="form-check"><input type="checkbox" class="form-check-input check-view-team-member" /></div>`
-                        }
-                    }
-                ],
-            });
-        }
-    }
-
-    static loadMemberPermission(url, method) {
-        $.fn.callAjax2({
-            url: url,
-            method: method,
-        }).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                let member_detail = data?.['member'];
-                $('#checkViewThisOpp').prop('checked', member_detail?.['permit_view_this_opp']);
-                $('#checkCanAddMember').prop('checked', member_detail?.['permit_add_member']);
-                let permit_app = member_detail?.['permit_app']
-                for (let key in permit_app) {
-                    if (permit_app.hasOwnProperty(key)) {
-                        let tr_current = $(`#table-applications .application_name[data-id=${key}]`).closest('tr');
-                        tr_current.find('.check-create').prop('checked', permit_app[key].is_create);
-                        tr_current.find('.check-edit').prop('checked', permit_app[key].is_edit);
-                        tr_current.find('.check-view-own').prop('checked', permit_app[key].is_view_own_activity);
-                        tr_current.find('.check-view-team-member').prop('checked', permit_app[key].is_view_team_activity);
-                    }
-                }
-            }
-        })
-    }
-
-    static getFormDataMemberPermission() {
-        let data = {}
-        data['employee_current'] = $('#emp-current-id').val();
-        data['permit_view_this_opp'] = $('#checkViewThisOpp').is(':checked');
-        data['permit_add_member'] = $('#checkCanAddMember').is(':checked');
-        let table = document.getElementById('table-applications');
-        let updated_tr_ele = table.getElementsByClassName('tr-updated');
-        let list_app = []
-        for (let i = 0; i < updated_tr_ele.length; i++) {
-            let currentElement = updated_tr_ele[i];
-            let data = {
-                'app': currentElement.querySelector('.application_name').getAttribute('data-id'),
-                'is_create': currentElement.querySelector('.check-create').checked,
-                'is_edit': currentElement.querySelector('.check-edit').checked,
-                'is_view_own_activity': currentElement.querySelector('.check-view-own').checked,
-                'is_view_team_activity': currentElement.querySelector('.check-view-team-member').checked,
-            }
-            list_app.push(data);
-        }
-        data['app_permit'] = list_app
-        return data
     }
 }
 
@@ -862,27 +898,31 @@ function loadDtbOpportunityList() {
                 {
                     targets: 4,
                     render: (data, type, row) => {
-                        return `<span class="badge badge badge-soft-success  ml-2 mt-2">${row?.['sale_person'].name}</span>`
+                        return `<span class="badge badge badge-soft-success  ml-2 mt-2">${row?.['sale_person'].full_name}</span>`
                     }
                 },
                 {
                     targets: 5,
+                    data: "open_date",
                     render: (data, type, row) => {
-                        let open_date = null;
-                        if (row?.['open_date'] !== null) {
-                            open_date = row?.['open_date'].split(" ")[0]
-                        }
-                        return `<p>${open_date}</p>`
+                        return data !== null && data !== undefined ? $x.fn.displayRelativeTime(data, {
+                            'outputFormat': 'DD-MM-YYYY',
+                            callback: function (data) {
+                                return `<p>${data.relate}</p><small>${data.output}</small>`;
+                            }
+                        }) : "_";
                     }
                 },
                 {
                     targets: 6,
+                    data: "close_date",
                     render: (data, type, row) => {
-                        let close_date = null;
-                        if (row?.['close_date'] !== null) {
-                            close_date = row?.['close_date'].split(" ")[0]
-                        }
-                        return `<p>${close_date}</p>`
+                        return data !== null && data !== undefined ? $x.fn.displayRelativeTime(data, {
+                            'outputFormat': 'DD-MM-YYYY',
+                            callback: function (data) {
+                                return `<p>${data.relate}</p><small>${data.output}</small>`;
+                            }
+                        }) : "_";
                     }
                 },
                 {
@@ -892,7 +932,7 @@ function loadDtbOpportunityList() {
                         stage_current = row.stage.find(function (obj) {
                             return obj.is_current === true;
                         });
-                        return `<p>${stage_current.indicator}</p>`
+                        return `<span class="badge badge-light">${stage_current.indicator}</span>`
                     }
                 },
                 {
@@ -916,8 +956,11 @@ function callData(url, method) {
         url: url,
         method: method,
     }).then((resp) => {
-        return $.fn.switcherResp(resp);
-    });
+            return $.fn.switcherResp(resp);
+        },
+        (errs) => {
+            console.log(errs)
+        });
 }
 
 async function loadConfig() {
@@ -928,7 +971,6 @@ async function loadConfig() {
 }
 
 // page detail
-
 async function loadMemberSaleTeam() {
     if (!$.fn.DataTable.isDataTable('#dtbMember')) {
         let dtb = $('#dtbMember');
@@ -936,29 +978,6 @@ async function loadMemberSaleTeam() {
         dtb.DataTableDefault({
             rowIdx: true,
             paging: false,
-            scrollY: '200px',
-            autoWidth: false,
-            columnDefs: [
-                {
-                    "width": "10%",
-                    "targets": 0
-                }, {
-                    "width": "30%",
-                    "targets": 1
-                }, {
-                    "width": "50%",
-                    "targets": 2
-                },
-                {
-                    "width": "0%",
-                    "targers": 3
-                },
-                {
-                    "width": "10%",
-                    "targets": 4
-                }
-            ],
-            useDataServer: true,
             ajax: {
                 url: frm.dataUrl,
                 type: frm.dataMethod,
@@ -972,13 +991,13 @@ async function loadMemberSaleTeam() {
             },
             columns: [
                 {
-                    render: () => {
+                    render: (data, type, row) => {
                         return '';
                     }
                 },
                 {
                     data: 'code',
-                    className: 'wrap-text',
+                    className: 'wrap-text w-20',
                     render: (data) => {
                         return `<span class="span-emp-code">{0}</span>`.format_by_idx(
                             data
@@ -987,7 +1006,7 @@ async function loadMemberSaleTeam() {
                 },
                 {
                     data: 'full_name',
-                    className: 'wrap-text',
+                    className: 'wrap-text w-30',
                     render: (data) => {
                         return `<span class="span-emp-name">{0}</span>`.format_by_idx(
                             data
@@ -995,21 +1014,38 @@ async function loadMemberSaleTeam() {
                     }
                 },
                 {
-                    data: 'email',
-                    className: 'wrap-text hidden',
+                    data: 'group',
+                    className: 'wrap-text w-30',
                     render: (data) => {
                         return `<span class="span-emp-email">{0}</span>`.format_by_idx(
-                            data
+                            data.title
                         )
                     }
                 },
                 {
-                    className: 'wrap-text',
+                    data: 'is_checked_new',
+                    className: 'wrap-text w-10',
                     render: (data, type, row) => {
-                        return `<span class="form-check"><input data-id="{0}" type="checkbox" class="form-check-input input-select-member" /></span>`.format_by_idx(row.id)
+                        if ($('.member-item .card[data-id="' + row.id + '"]').length > 0) {
+                            return `<span class="form-check"><input data-id="${row.id}" type="checkbox" class="form-check-input input-select-member" checked readonly disabled /></span>`
+                        }
+                        return `<span class="form-check"><input data-id="${row.id}" type="checkbox" class="form-check-input input-select-member" ${data === true ? "checked" : ""}/></span>`
                     }
                 },
             ],
+            rowCallback: function (row, data) {
+                $(row).find('.input-select-member').on('change', function (){
+                    let is_checked = $(this).prop('checked');
+                    $x.fn.updateDataRow(this, function (clsThat, rowIdx, rowData) {
+                        rowData['is_checked_new'] = is_checked
+                        return {
+                            ...rowData,
+                            is_checked_new: is_checked,
+                            idx: rowIdx + 1,
+                        }
+                    }, false);
+                })
+            },
         });
     }
 }
@@ -1018,6 +1054,7 @@ function loadDtbProductDetailPageDetail(data) {
     if (!$.fn.DataTable.isDataTable('#table-products')) {
         let dtb = OpportunityLoadDetail.productTableEle;
         dtb.DataTableDefault({
+            dom: "<'row miner-group'<'col-sm-2 mt-3'f><'col-sm-10'p>>",
             rowIdx: true,
             reloadCurrency: true,
             data: data,
@@ -1077,7 +1114,7 @@ function loadDtbProductDetailPageDetail(data) {
                     className: 'wrap-text',
                     render: (data) => {
                         return `<span>{0}</span>`.format_by_idx(
-                            data.title
+                            data ? data.title : '-'
                         )
                     }
                 },
@@ -1099,6 +1136,7 @@ function loadDtbCompetitorPageDetail(data) {
     if (!$.fn.DataTable.isDataTable('#table-competitors')) {
         let dtb = OpportunityLoadDetail.competitorTableEle;
         dtb.DataTableDefault({
+            dom: "<'row miner-group'<'col-sm-2 mt-3'f><'col-sm-10'p>>",
             data: data,
             columns: [
 
@@ -1149,6 +1187,7 @@ function loadDtbContactRolePageDetail(data) {
     if (!$.fn.DataTable.isDataTable('#table-contact-role')) {
         let dtb = OpportunityLoadDetail.contactRoleTableEle;
         dtb.DataTableDefault({
+            dom: "<'row miner-group'<'col-sm-2 mt-3'f><'col-sm-10'p>>",
             data: data,
             columns: [
                 {
@@ -1212,9 +1251,9 @@ function loadDtbProduct(data) {
     if (!$.fn.DataTable.isDataTable('#table-products')) {
         let dtb = OpportunityLoadDetail.productTableEle;
         dtb.DataTableDefault({
+            dom: "<'row miner-group'<'col-sm-2 mt-3'f><'col-sm-10'p>>",
             rowIdx: true,
             reloadCurrency: true,
-            paging: false,
             data: data,
             columns: [
                 {
@@ -1293,13 +1332,13 @@ function loadDtbCompetitor(data) {
     if (!$.fn.DataTable.isDataTable('#table-competitors')) {
         let dtb = OpportunityLoadDetail.competitorTableEle;
         dtb.DataTableDefault({
+            dom: "<'row miner-group'<'col-sm-2 mt-3'f><'col-sm-10'p>>",
             data: data,
-            paging: false,
             columns: [
                 {
                     className: 'wrap-text',
                     render: () => {
-                        return `<select class="form-control box-select-competitor" data-method="GET" data-url="${urlEle.data('url-competitor')}" data-keyResp="account_list" data-keyText="name" required></select>`
+                        return `<select class="form-control box-select-competitor" data-method="GET" data-url="${urlEle.data('url-competitor')}" data-keyResp="account_sale_list" data-keyText="name" required></select>`
                     }
                 },
                 {
@@ -1347,8 +1386,8 @@ function loadDtbContactRole(data) {
     if (!$.fn.DataTable.isDataTable('#table-contact-role')) {
         let dtb = OpportunityLoadDetail.contactRoleTableEle;
         dtb.DataTableDefault({
+            dom: "<'row miner-group'<'col-sm-2 mt-3'f><'col-sm-10'p>>",
             data: data,
-            paging: false,
             columns: [
                 {
                     className: 'wrap-text',
@@ -1391,7 +1430,6 @@ function loadDtbContactRole(data) {
         });
     }
 }
-
 
 function objectsMatch(objA, objB) {
     return objA.property === objB.property && objA.comparison_operator === objB.comparison_operator && objA.compare_data === objB.compare_data;
@@ -1701,6 +1739,8 @@ function toggleShowActivity() {
         $('.div-activity').addClass('hidden');
         $('.div-action').removeClass('hidden');
     })
+
+    $('#btn-show-activity').click();
 }
 
 function sortStage(list_stage) {

@@ -73,51 +73,23 @@ $(document).ready(function () {
     loadDetail();
 
     // Update Opportunity config
-    SetupFormSubmit.validate(
-        frmDetail,
-        {
-            submitHandler: function (form) {
-                let frm = new SetupFormSubmit($(form));
-                let csr = $("[name=csrfmiddlewaretoken]").val();
-                frm.dataForm['is_select_stage'] = $('#is-select-stage')[0].checked;
-                frm.dataForm['is_input_win_rate'] = $('#is-input-win-rate')[0].checked;
-                frm.dataForm['is_account_manager_create'] = $('#is-AM-create')[0].checked;
-                $.fn.callAjax2({
-                    url: frm.dataUrl,
-                    method: frm.dataMethod,
-                    data: frm.dataForm,
-                }, frm.dataMethod, frm.dataForm, csr)
-                    .then(
-                        (resp) => {
-                            let data = $.fn.switcherResp(resp);
-                            if (data) {
-                                $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
-                                $.fn.redirectUrl(window.location, 1000);
-                            }
-                        },
-                        (errs) => {
-                            console.log(errs)
-                        }
-                    )
-            }
-        })
-
-    // Create + Delete Customer Decision Factor
-    const frmCreateFactor = $('#frm-create-factor')
-    SetupFormSubmit.validate(
-        frmCreateFactor,
-        {
-            submitHandler: function (form) {
-                let frm = new SetupFormSubmit($(form));
-                $.fn.callAjax2({
-                    url: frm.dataUrl,
-                    method: frm.dataMethod,
-                    data: frm.dataForm
-                }).then(
+    new SetupFormSubmit(frmDetail).validate({
+        submitHandler: function (form) {
+            let frm = new SetupFormSubmit($(form));
+            let csr = $("[name=csrfmiddlewaretoken]").val();
+            frm.dataForm['is_select_stage'] = $('#is-select-stage')[0].checked;
+            frm.dataForm['is_input_win_rate'] = $('#is-input-win-rate')[0].checked;
+            frm.dataForm['is_account_manager_create'] = $('#is-AM-create')[0].checked;
+            $.fn.callAjax2({
+                url: frm.dataUrl,
+                method: frm.dataMethod,
+                data: frm.dataForm,
+            }, frm.dataMethod, frm.dataForm, csr)
+                .then(
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            $.fn.notifyB({description: $('#base-trans-factory').success()}, 'success')
+                            $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
                             $.fn.redirectUrl(window.location, 1000);
                         }
                     },
@@ -125,8 +97,37 @@ $(document).ready(function () {
                         console.log(errs)
                     }
                 )
+        }
+    })
+
+    // Create + Delete Customer Decision Factor
+    const frmCreateFactor = $('#frm-create-factor')
+    new SetupFormSubmit(frmCreateFactor).validate({
+        rules: {
+            title: {
+                required: true,
             }
-        })
+        },
+        submitHandler: function (form) {
+            let frm = new SetupFormSubmit($(form));
+            $.fn.callAjax2({
+                url: frm.dataUrl,
+                method: frm.dataMethod,
+                data: frm.dataForm
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: $('#base-trans-factory').success()}, 'success')
+                        $.fn.redirectUrl(window.location, 1000);
+                    }
+                },
+                (errs) => {
+                    console.log(errs)
+                }
+            )
+        }
+    })
 
     $(document).on('click', '.btn-del-factor', function () {
         let rowData = DTBControl.getRowData($(this));
@@ -352,31 +353,42 @@ $(document).ready(function () {
     // submit form create Stage
 
     const frmCreateStage = $('#frm-create-stage')
-    SetupFormSubmit.validate(
-        frmCreateStage,
-        {
-            submitHandler: function (form) {
-                let frm = new SetupFormSubmit($(form));
-                $.fn.callAjax2({
-                    url: frm.dataUrl,
-                    method: frm.dataMethod,
-                    data: frm.dataMethod
-                }).then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyB({description: $('#base-trans-factory').success()}, 'success')
-                            let table = $('#table-opportunity-config-stage').DataTable();
-                            table.ajax.reload();
-                            $('#modalCreateStage').modal('hide');
-                        }
-                    },
-                    (errs) => {
-                        console.log(errs)
+    new SetupFormSubmit(frmCreateStage).validate({
+        rules: {
+            indicator: {
+                required: true,
+            },
+            win_rate: {
+                required: true,
+                number: true,
+                min: 0.00000001,
+            },
+            description: {
+                required: true,
+            },
+        },
+        submitHandler: function (form) {
+            let frm = new SetupFormSubmit($(form));
+            $.fn.callAjax2({
+                url: frm.dataUrl,
+                method: frm.dataMethod,
+                data: frm.dataMethod
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: $('#base-trans-factory').success()}, 'success')
+                        let table = $('#table-opportunity-config-stage').DataTable();
+                        table.ajax.reload();
+                        $('#modalCreateStage').modal('hide');
                     }
-                )
-            }
-        })
+                },
+                (errs) => {
+                    console.log(errs)
+                }
+            )
+        }
+    })
 
     $(document).on('click', '.btn-del-stage', function () {
         let rowData = DTBControl.getRowData($(this));
@@ -409,46 +421,44 @@ $(document).ready(function () {
     })
 
     const frmUpdateStageCondition = $('#frm-edit-condition');
-    SetupFormSubmit.validate(
-        frmUpdateStageCondition,
-        {
-            submitHandler: function (form) {
-                let frm = new SetupFormSubmit($(form));
-                let pk = $('#input-id-stage').val();
-                let ele_condition = $('.condition');
-                let condition_list = [];
-                ele_condition.find('.sub-condition').each(function () {
-                    condition_list.push(
-                        {
-                            'condition_property': {
-                                'id': $(this).find('.box-select-attr').val(),
-                                'title': $(this).find('.box-select-attr option:selected').text(),
-                            },
-                            'comparison_operator': $(this).find('.box-select-comparison-operator').val(),
-                            'compare_data': $(this).find('.box-select-compare').val(),
-                        }
-                    )
-                })
-                frm.dataForm['logical_operator'] = $('#box-select-logic-operator').val();
-                frm.dataForm['condition_datas'] = condition_list;
-                $.fn.callAjax2({
-                    url: frm.dataUrl.format_url_with_uuid(pk),
-                    method: frm.dataMethod,
-                    data: frm.dataForm,
-                }).then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyB({description: $('#base-trans-factory').success()}, 'success')
-                            $('#modalDetailStage').modal('hide');
-                        }
-                    },
-                    (errs) => {
-                        console.log(errs)
+    new SetupFormSubmit(frmUpdateStageCondition).validate({
+        submitHandler: function (form) {
+            let frm = new SetupFormSubmit($(form));
+            let pk = $('#input-id-stage').val();
+            let ele_condition = $('.condition');
+            let condition_list = [];
+            ele_condition.find('.sub-condition').each(function () {
+                condition_list.push(
+                    {
+                        'condition_property': {
+                            'id': $(this).find('.box-select-attr').val(),
+                            'title': $(this).find('.box-select-attr option:selected').text(),
+                        },
+                        'comparison_operator': $(this).find('.box-select-comparison-operator').val(),
+                        'compare_data': $(this).find('.box-select-compare').val(),
                     }
                 )
-            }
-        })
+            })
+            frm.dataForm['logical_operator'] = $('#box-select-logic-operator').val();
+            frm.dataForm['condition_datas'] = condition_list;
+            $.fn.callAjax2({
+                url: frm.dataUrl.format_url_with_uuid(pk),
+                method: frm.dataMethod,
+                data: frm.dataForm,
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: $('#base-trans-factory').success()}, 'success')
+                        $('#modalDetailStage').modal('hide');
+                    }
+                },
+                (errs) => {
+                    console.log(errs)
+                }
+            )
+        }
+    })
 
     $(document).on('click', '#btn-restore-default-stage', function () {
         let method = $(this).data('method');

@@ -1,0 +1,104 @@
+{% load i18n %}
+
+<div class="form-group">
+    <label for="rangeInput">{% trans "Win Rate" %}</label>
+    <input type="range" class="form-control-range" id="rangeInput" min="0" max="100" step="1">
+</div>
+<div class="row ml-2">
+    <div class="form-group col-6 mt-2">
+        <input
+                class="form-check-input" type="checkbox" value="0" id="check-input-rate"
+                name="is_input_rate" disabled
+        >
+        <label
+                class="form-check-label"
+                for="check-input-rate"
+        >{% trans "Manually input rate" %}</label>
+    </div>
+    <div class="col-6">
+        <span class="input-affix-wrapper affix-wth-text">
+            <input
+                    class="form-control" type="number" step="0.1" id="input-rate"
+                    name="win_rate"
+                    readonly
+            >
+            <span class="input-suffix">%</span>
+        </span>
+    </div>
+</div>
+<div class="form-group mt-2">
+    <div class="row">
+        <label class="form-label col-7 required">{% trans "Customer" %}</label>
+        <div class="form-group col-5 text-right pr-4">
+            <input class="form-check-input" type="checkbox" value="0" id="check-agency-role">
+            <label
+                    class="form-check-label"
+                    for="check-agency-role"
+            >{% trans "agency role" %}</label>
+        </div>
+    </div>
+    <select
+            class="select2 form-control" id="select-box-customer"
+            data-url="{% url 'AccountListAPI' %}"
+            data-method="GET" data-close-on-select="true"
+            data-keyResp="account_list"
+            data-keyText="name"
+            required
+    >
+    </select>
+</div>
+<div class="form-group mt-2">
+    <label class="form-label">{% trans "End Customer" %}</label>
+    <select
+            class="select2 form-control" id="select-box-end-customer"
+            data-close-on-select="true"
+            data-url="{% url 'AccountListAPI' %}" disabled
+            data-method="GET"
+            data-keyResp="account_list"
+            data-keyText="name"
+    >
+    </select>
+</div>
+<div class="form-group mt-2">
+    <label class="form-label required">{% trans "Product Category" %}</label>
+    <select
+            class="form-select" multiple id="select-box-product-category"
+            data-close-on-select="true"
+            data-method="GET"
+            data-url="{% url 'ProductCategoryListAPI' %}"
+            data-keyResp="product_category_list"
+            required
+    >
+    </select>
+</div>
+<div class="form-group mt-2">
+    <label class="form-label required">{% trans "Sale Person" %}</label>
+    <select
+            class="form-select" id="select-box-sale-person" data-method="GET"
+            data-close-on-select="true"
+            data-url="{% url 'EmployeeListAPI' %}"
+            name="sale_person"
+            data-keyText="full_name"
+            required
+    >
+    </select>
+</div>
+<div class="form-group mt-2">
+    <label class="form-label">{% trans "Budget" %}</label>
+    <input
+            class="form-control mask-money" type="text" data-return-type="number"
+            id="input-budget"
+    />
+</div>
+<div class="form-group mt-2">
+    <label class="form-label">{% trans "Open Date" %}</label>
+    <input class="form-control" type="text" id="input-open-date" name="open_date"/>
+</div>
+<div class="form-group mt-2">
+    <label class="form-label required">{% trans "Close Date" %}</label>
+    <input class="form-control" type="text" id="input-close-date" name="close_date" required/>
+</div>
+<div class="form-group mt-2 readonly">
+    <label class="form-label">{% trans "Decision Maker" %}</label>
+    <input class="form-control" type="text" id="input-decision-maker" readonly data-id=""/>
+</div>

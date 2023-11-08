@@ -19,22 +19,21 @@
     <form id="form-create-pr" data-url="{% url "PurchaseRequestListAPI" %}" data-method="POST"
           data-url-redirect="{% url "PurchaseRequestList" %}">
         <div class="row">
-            <div class="col-6">
+            <div class="col-12 col-md-6 col-lg-6">
                 <div class="form-group">
                     <label class="form-label required">{% trans 'Name' %}</label>
                     <input class="form-control" placeholder="Input Name" name="title" required/>
                 </div>
             </div>
-            <div class="col-6">
+            <div class="col-12 col-md-6 col-lg-6">
                 <div class="form-group">
                     <label class="form-label required">{% trans 'Delivered Date' %}</label>
                     <input class="form-control" name="delivered_date" required/>
                 </div>
             </div>
         </div>
-
         <div class="row">
-            <div class="col-6">
+            <div class="col-12 col-md-6 col-lg-6">
                 <div class="form-group">
                     <label class="form-label required">{% trans 'Supplier' %}</label>
                     <span class="input-affix-wrapper">
@@ -60,22 +59,15 @@
                                 <span class="col-5">{% trans "Code" %}</span>
                                 <span class="col-7 text-primary span-supplier-code"></span>
                             </div>
-                            <div class="row">
-                                <span class="col-5">{% trans "Owner Name" %}</span>
-                                <span class="col-7 text-primary span-supplier-owner"></span>
-                            </div>
-                            <div class="row">
-                                <span class="col-5">{% trans "Industry" %}</span>
-                                <span class="col-7 text-primary span-supplier-industry"></span>
-                            </div>
                         </span>
                     </span>
                     <select
                             class="form-control select2"
                             id="box-select-supplier"
+                            name="supplier"
                             data-method="GET"
-                            data-url="{% url "AccountListAPI" %}"
-                            data-keyResp="account_list"
+                            data-url="{% url "AccountForSaleListAPI" %}"
+                            data-keyResp="account_sale_list"
                             data-keyText="name"
                             required
                     >
@@ -83,7 +75,7 @@
                 </span>
                 </div>
             </div>
-            <div class="col-6">
+            <div class="col-12 col-md-6 col-lg-6">
                 <div class="form-group">
                     <label class="form-label">{% trans 'Status' %}</label>
                     <input class="form-control" name="system_status" value="{% trans 'Draft' %}" readonly
@@ -91,9 +83,8 @@
                 </div>
             </div>
         </div>
-
         <div class="row">
-            <div class="col-6">
+            <div class="col-12 col-md-6 col-lg-6">
                 <div class="form-group">
                     <label class="form-label required">{% trans 'Contact' %}</label>
                     <span class="input-affix-wrapper">
@@ -127,16 +118,13 @@
                                 <span class="col-5">{% trans "Email" %}</span>
                                 <span class="col-7 text-primary span-contact-email"></span>
                             </div>
-                            <div class="row">
-                                <span class="col-5">{% trans "Report to" %}</span>
-                                <span class="col-7 text-primary span-contact-report-to"></span>
-                            </div>
                         </span>
                     </span>
                     <select
                             class="form-select"
                             id="box-select-contact"
                             data-method="GET"
+                            name="contact"
                             data-url="{% url "ContactListAPI" %}"
                             data-keyResp="contact_list"
                             data-keyText="fullname"
@@ -146,16 +134,15 @@
                 </span>
                 </div>
             </div>
-            <div class="col-6">
+            <div class="col-12 col-md-6 col-lg-6">
                 <div class="form-group">
                     <label class="form-label">{% trans 'Purchase Status' %}</label>
                     <input class="form-control" name="purchase_status" value="Wait" data-value="0" readonly required/>
                 </div>
             </div>
         </div>
-
         <div class="row">
-            <div class="col-6">
+            <div class="col-12 col-md-6 col-lg-6">
                 <div class="form-group">
                     <label class="form-label required">{% trans 'Request For' %}</label>
                     <span class="input-affix-wrapper">
@@ -168,23 +155,21 @@
                     </span>
                 </div>
             </div>
-            <div class="col-6">
+            <div class="col-12 col-md-6 col-lg-6">
                 <div class="form-group">
                     <label class="form-label">{% trans 'Note' %}</label>
                     <input class="form-control" name="note"/>
                 </div>
             </div>
         </div>
-
         <div class="row">
-            <div class="col-6">
+            <div class="col-12 col-md-6 col-lg-6">
                 <div class="form-group">
                     <label class="form-label required">{% trans 'Order Code' %}</label>
                     <input class="form-control" name="sale_order" readonly/>
                 </div>
             </div>
         </div>
-
         <div class="row mt-3">
             <ul class="nav nav-light nav-tabs" id="purchase-request-tabs">
                 <li class="nav-item">
@@ -199,10 +184,9 @@
                 </li>
             </ul>
         </div>
-
         <div class="tab-content" id="tab-content-purchase-request-product">
             <div class="tab-pane fade show active" id="tab_line_detail">
-                <table id="datatable-pr-product" class="table nowrap w-100 mb-5">
+                <table id="datatable-pr-product-so" class="table nowrap w-100 mb-5">
                     <thead>
                     <th class="w-5">#</th>
                     <th>{% trans "Product" %}</th>
@@ -214,25 +198,31 @@
                     <th>{% trans "Subtotal Price" %}</th>
                     </thead>
                 </table>
+
+                <table id="datatable-pr-product-other" class="table nowrap w-100 mb-5 hidden">
+                    <thead>
+                    <th class="w-5">#</th>
+                    <th>{% trans "Product" %}</th>
+                    <th>{% trans "Description" %}</th>
+                    <th>{% trans "UoM" %}</th>
+                    <th>{% trans "Quantity" %}</th>
+                    <th>{% trans "Unit Price" %}</th>
+                    <th>{% trans "Tax" %}</th>
+                    <th>{% trans "Subtotal Price" %}</th>
+                    <th class="w-5"></th>
+                    </thead>
+                </table>
                 <div class="row">
                     <div class="col-5">
                         <button type="button"
                                 class="btn btn-primary btn-change-pr-product"
                                 data-bs-toggle="modal"
-                                data-bs-target="#modal-select-sale-order"
-                        >{% trans 'Change' %}</button>
+                                data-bs-target="#modal-select-sale-order">{% trans 'Change' %}</button>
 
                         <div class="dropdown">
-                            <button
-                                    type="button" data-bs-toggle="dropdown"
-                                    class="btn btn-primary btn-add-product dropdown-toggle"
-                            >{% trans 'Add' %}</button>
-                            <div role="menu" class="dropdown-menu dropdown-select-uom-group">
-                                <a class="dropdown-item btn-add-pr-product" href="#">{% trans "New Product" %}</a>
-                                <div class="dropdown-divider"></div>
-                            </div>
+                            <button type="button" data-bs-toggle="dropdown" id="btn-add-pr-product"
+                                    class="btn btn-primary btn-add-product">{% trans "New Product" %}</button>
                         </div>
-
                     </div>
                     <div class="col-7 mt-5">
                         <div class="row mb-2">
@@ -294,7 +284,7 @@
                         <div class="row">
                             <div class="col-5 border">
                                 <table id="datatable-sale-order" class="table nowrap w-100 mb-5"
-                                       data-url="{% url "SaleOrderListAPI" %}"
+                                       data-url="{% url "SaleOrderPurchasingStaffListAPI" %}"
                                        data-method="GET">
                                     <thead>
                                     <th class="w-5">#</th>
@@ -427,9 +417,13 @@
         </div>
     </form>
 
+    <script type="application/json" id="data-sale-order">{}</script>
+    <script type="application/json" id="data-sale-order-product">{}</script>
+    <script type="application/json" id="data-self-product">{}</script>
 
 {% endblock %}
 {% block dataHiddenGroup %}
+    <input id="employee_current_id" value="{{ request.user.employee_current_data.id }}"/>
     <input id="trans-factory"
            data-trans-more-info="{% trans 'More Information' %}"
            data-trans-more="{% trans 'More' %}"
@@ -437,9 +431,11 @@
            data-trans-code="{% trans 'Code' %}"
            data-trans-view-detail="{% trans 'View Detail' %}"
            data-trans-request-greater-remain="{% trans "Num of product request can not greater than num of product remain" %}"
+           data-trans-enter-request="{% trans 'Request number can not blank' %}"
     />
 
     <input type="text" id="url-factory"
+           data-url-config="{% url 'PurchaseRequestConfigAPI' %}"
            data-url-product-detail="{% url 'ProductDetail' pk=0 %}"
            data-url-account-detail="{% url 'AccountDetail' pk=0 %}"
            data-url-contact-detail="{% url 'ContactDetail' pk=0 %}"
@@ -447,11 +443,11 @@
            data-url-uom-group="{% url 'UnitOfMeasureGroupListAPI' %}"
            data-url-this-page="{% url 'PurchaseRequestCreate' %}"
            data-url-uom="{% url 'UnitOfMeasureListAPI' %}"
-    >
+    />
 {% endblock %}
 
 {% block jsFooter %}
-    <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
+
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'assets/sales/purchasing/js/purchase_request/purchase_request_common.js' %}"></script>
     <script src="{% static 'assets/sales/purchasing/js/purchase_request/purchase_request_create.js' %}"></script>

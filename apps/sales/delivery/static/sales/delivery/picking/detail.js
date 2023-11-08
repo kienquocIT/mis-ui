@@ -42,7 +42,7 @@ class pickupUtil {
         let value = parseInt(val);
         let currentList = this.getProdList
         // Cập nhật giá trị của input
-        if (value && value <= currentList[idx]['remaining_quantity']) {
+        if (0 <= value <= currentList[idx]['remaining_quantity']) {
             currentList[idx]['picked_quantity'] = value
             this.setProdList = currentList
         }
@@ -61,6 +61,7 @@ class pickupUtil {
             $('#idxDoneAll').prop('checked', true)
         else
             $('#idxDoneAll').prop('checked', false)
+        $('.cus-loading').remove()
     }
 
     checkAllHandle() {
@@ -86,28 +87,40 @@ class pickupUtil {
         const warehouseID = $('#inputWareHouse').val();
         let currentWHList = this.getWarehouseList
         let checkResult = 0
-        if (dataProd && dataProd?.product_data?.id && dataProd?.uom_data?.id){
-            let prodKey = `${dataProd.product_data.id}.${dataProd.uom_data.id}`
+        if (dataProd && dataProd?.['product_data']?.['id'] && dataProd?.['uom_data']?.['id']){
+            let prodKey = `${dataProd?.['product_data']?.['id']}.${dataProd?.['uom_data']?.['id']}`
             if (currentWHList?.[prodKey] && currentWHList?.[prodKey]?.[warehouseID])
                 checkResult = currentWHList[prodKey][warehouseID]
-            else{
-                let callData = await $.fn.callAjax(
-                    $('#url-factory').attr('data-warehouse-stock'),
-                    'GET',
-                    {'product_id': dataProd.product_data.id, 'uom_id': dataProd.uom_data.id}
+            else {
+                let callData = await $.fn.callAjax2(
+                    {
+                        'url': $('#url-factory').attr('data-product-warehouse'),
+                        'method': 'GET',
+                        'data': {
+                            'product_id': dataProd?.['product_data']?.['id'],
+                            'warehouse_id': warehouseID,
+                        },
+                        'isDropdown': true,
+                    }
                 )
                 if(callData.status === 200) {
                     let res = $.fn.switcherResp(callData);
-                    res = res.warehouse_stock;
+                    res = res?.['warehouse_products_list'];
                     if (res.length){
-                        let dataFormated = {}
-                        for (const warehouse of res){
-                            const avai_stock = warehouse.product_amount - warehouse.picked_ready
-                            dataFormated[warehouse.id] = avai_stock
-                            if (warehouse.id === warehouseID) checkResult = avai_stock
+                        let dataFormatted = {}
+                        for (let productWarehouse of res){
+                            let finalRatio = 1;
+                            let uomSORatio = dataProd?.['uom_data']?.['ratio'];
+                            let uomWHRatio = productWarehouse?.['uom']?.['ratio'];
+                            if (uomSORatio && uomWHRatio) {
+                                finalRatio = uomWHRatio / uomSORatio;
+                            }
+                            let available_stock = (productWarehouse?.['stock_amount'] - productWarehouse?.['picked_ready']) * finalRatio;
+                            dataFormatted[productWarehouse?.['warehouse']?.['id']] = available_stock
+                            if (productWarehouse?.['warehouse']?.['id'] === warehouseID) checkResult = available_stock
                         }
-                        currentWHList[prodKey] = dataFormated
-                        _this.setWarehouseList = currentWHList
+                        currentWHList[prodKey] = dataFormatted;
+                        _this.setWarehouseList = currentWHList;
                     }
                 }
             }
@@ -151,10 +164,11 @@ $(async function () {
     ).then((resp) => {
             let data = $.fn.switcherResp(resp);
             // load sale order
-            pickupInit.setPicking = data.picking_detail
-            data = data.picking_detail
-            $('#inputSaleOrder').val(data?.sale_order_data?.code);
-            $('.title-code').text(data.code)
+            pickupInit.setPicking = data?.['picking_detail']
+            data = data?.['picking_detail']
+            $x.fn.renderCodeBreadcrumb(data);
+            $('#inputSaleOrder').val(data?.['sale_order_data']?.['code']);
+            $('.title-code').text(data?.['code'])
             // state
             let state = data?.state;
             if (state !== undefined && Number.isInteger(state)) {
@@ -212,44 +226,76 @@ $(async function () {
 
     function getStockByProdID(prod, dropdownElm) {
         const $elmTrans = $('#trans-factory')
-        let htmlContent = `<h6 class="dropdown-header header-wth-bg">${
-            $('#base-trans-factory').attr('data-more-info')}</h6>`;
+        let htmlContent = `<h6 class="dropdown-header header-wth-bg">${$('#base-trans-factory').attr('data-more-info')}</h6>`;
         const warehouseID = $('#inputWareHouse').val();
-
         if(!warehouseID.valid_uuid4()){
             $.fn.notifyB({description: $elmTrans.attr('data-error-warehouse')}, 'failure')
             return false
         }
-        $.fn.callAjax(
-            $('#url-factory').attr('data-warehouse-stock'),
-            'GET',
-            {'product_id': prod.product_data.id, 'uom_id':prod.uom_data.id}
+        let warehouseTitle = '';
+        if (warehouseID) {
+            let dataWHSelected = SelectDDControl.get_data_from_idx($('#inputWareHouse'), warehouseID);
+            if (dataWHSelected) {
+                if (dataWHSelected?.['title']) {
+                    warehouseTitle = dataWHSelected?.['title'];
+                } else {
+                    warehouseTitle = dataWHSelected?.['text'];
+                }
+            }
+        }
+        $.fn.callAjax2(
+            {
+                'url': $('#url-factory').attr('data-product-warehouse'),
+                'method': 'GET',
+                'data': {
+                    'product_id': prod?.['product_data']?.['id'],
+                    'warehouse_id': warehouseID,
+                },
+                'isDropdown': true,
+            }
         ).then((resp) => {
             let data = $.fn.switcherResp(resp);
-            const datas = data.warehouse_stock
-
-            let prodTotal = 0
-            let prodName = ''
-            let WHInfo = datas.filter((item)=> item.id === warehouseID)[0]
-
-            prodTotal = WHInfo['original_info'].stock_amount - WHInfo['original_info'].sold_amount
-            prodName = WHInfo.title
-            htmlContent += `<div class="mb-1"><h6><i>${$elmTrans.attr('data-warehouse')}</i></h6><p>${prodName}</p></div>`;
-            htmlContent += `<div class="mb-1 d-flex justify-content-between">` +
-                            `<div><h6>${$elmTrans.attr('data-stock')}</h6>${prodTotal}</div>` +
-                            `<div><h6>${$elmTrans.attr('data-store')}</h6>${prodTotal - WHInfo['original_info'].picked_ready}</div>` +
-                            `<div><h6>${$elmTrans.attr('data-picking-area')}</h6>${WHInfo['original_info'].picked_ready}</div>` +
-                `</div>`;
-            htmlContent += `<div class="mb-1"><h6><i>UoM</i></h6><p>${WHInfo?.warehouse_uom?.title}</p></div>`;
-            const link = $('#url-factory').attr('data-product-detail').format_url_with_uuid(prod.product_data.id);
-            htmlContent += `<div class="dropdown-divider"></div><div class="text-right">
+            if (data.hasOwnProperty('warehouse_products_list') && Array.isArray(data.warehouse_products_list)) {
+                if (data?.['warehouse_products_list'].length > 0) {
+                    for (let productWH of data?.['warehouse_products_list']) {
+                        htmlContent += `<div class="mb-1"><h6><i>${$elmTrans.attr('data-warehouse')}</i></h6><p>${productWH?.['warehouse']?.['title']}</p></div>`;
+                        htmlContent += `<div class="mb-1 d-flex justify-content-between">` +
+                            `<div><h6>${$elmTrans.attr('data-stock')}</h6>${productWH?.['stock_amount']}</div>` +
+                            `<div><h6>${$elmTrans.attr('data-store')}</h6>${productWH?.['stock_amount'] - productWH?.['picked_ready']}</div>` +
+                            `<div><h6>${$elmTrans.attr('data-picking-area')}</h6>${productWH?.['picked_ready']}</div>` +
+                            `</div>`;
+                        htmlContent += `<div class="mb-1"><h6><i>UoM</i></h6><p>${productWH?.['uom']?.['title'] || '--'}</p></div>`;
+                        let link = $('#url-factory').attr('data-product-detail').format_url_with_uuid(productWH?.['product']?.['id']);
+                        htmlContent += `<div class="dropdown-divider"></div><div class="text-right">
                             <a href="${link}" target="_blank" class="link-primary underline_hover">
                                 <span>${$elmTrans.attr('data-view-detail')}</span>
                                 <span class="icon ml-1">
                                     <i class="bi bi-arrow-right-circle-fill"></i>
                                 </span>
                             </a></div>`;
-            $('.dropdown-menu', dropdownElm.parent('.dropdown')).html(htmlContent)
+                        $('.dropdown-menu', dropdownElm.parent('.dropdown')).html(htmlContent);
+                    }
+                } else {
+                    htmlContent += `<div class="mb-1"><h6><i>${$elmTrans.attr('data-warehouse')}</i></h6><p>${warehouseTitle}</p></div>`;
+                        htmlContent += `<div class="mb-1 d-flex justify-content-between">` +
+                            `<div><h6>${$elmTrans.attr('data-stock')}</h6>${0}</div>` +
+                            `<div><h6>${$elmTrans.attr('data-store')}</h6>${0}</div>` +
+                            `<div><h6>${$elmTrans.attr('data-picking-area')}</h6>${0}</div>` +
+                            `</div>`;
+                        htmlContent += `<div class="mb-1"><h6><i>UoM</i></h6><p>${prod?.['product_data']?.['uom_inventory']?.['title'] || '--'}</p></div>`;
+                        let link = $('#url-factory').attr('data-product-detail').format_url_with_uuid(prod?.['product_data']?.['id']);
+                        htmlContent += `<div class="dropdown-divider"></div><div class="text-right">
+                            <a href="${link}" target="_blank" class="link-primary underline_hover">
+                                <span>${$elmTrans.attr('data-view-detail')}</span>
+                                <span class="icon ml-1">
+                                    <i class="bi bi-arrow-right-circle-fill"></i>
+                                </span>
+                            </a></div>`;
+                    $('.dropdown-menu', dropdownElm.parent('.dropdown')).html(htmlContent);
+                    // $.fn.notifyB({description: 'Warehouse does not contain this product'}, 'failure')
+                    // return false
+                }
+            }
         });
     }
 
@@ -264,40 +310,40 @@ $(async function () {
             data: pickupInit.getProdList,
             columns: [
                 {
-                    render: (data, type, row, meta) => {
+                    render: () => {
                         return ``;
                     }
                 },
                 {
-                    render: (data, type, row, meta) => {
+                    render: (data, type, row) => {
                         return `<div class="dropdown d-inline-block mr-2 text-cursor">
                                 <i class="fas fa-info-circle text-blue"
                                    data-bs-toggle="dropdown"
                                    data-dropdown-animation
                                    aria-haspopup="true"
-                                   aria-expanded="false" data-product-id="${row?.product_data?.id}"
+                                   aria-expanded="false" data-product-id="${row?.['product_data']?.['id']}"
                                    ></i>
                                 <div class="dropdown-menu w-280p mt-2"></div>
                             </div> ${row?.['product_data']?.['title']}`
                     }
                 },
                 {
-                    render: (data, type, row, meta) => {
+                    render: (data, type, row) => {
                         return row?.['uom_data']?.['title'];
                     }
                 },
                 {
-                    render: (data, type, row, meta) => {
+                    render: (data, type, row) => {
                         return row?.['pickup_quantity'];
                     }
                 },
                 {
-                    render: (data, type, row, meta) => {
+                    render: (data, type, row) => {
                         return row?.['picked_quantity_before'];
                     }
                 },
                 {
-                    render: (data, type, row, meta) => {
+                    render: (data, type, row) => {
                         return row?.['remaining_quantity'];
                     }
                 },
@@ -319,11 +365,13 @@ $(async function () {
                     getStockByProdID(data, $(this))
                 })
 
-                $(`#prod_row-${index}`, row).off().on('blur', async function (e) {
+                $(`#prod_row-${index}`, row).off().on('change', async function (e) {
                     if (this.value) {
                         // format số âm, nhiều số 0. Ex. 0001, số thập phân.
                         let value = this.value.replace("-", "").replace(/^0+(?=\d)/, '').replace(/\.\d+$/, '');
                         this.value = value
+                        $('body').append('<div class="cus-loading"><div class="spinner-border" role="status">' +
+                            '<span class="sr-only"></span></div></div>')
                         const listCompare = await pickupInit.getWarehouseStock(data)
                         if (listCompare > 0 && listCompare >= parseFloat(value)) {
                             pickupInit.pickedQuantityUtil(value, index);
@@ -334,6 +382,7 @@ $(async function () {
                                 'failure'
                             );
                             $(this).addClass('is-invalid cl-red')
+                            $('.cus-loading').remove()
                         }
                     }
                 })
@@ -359,7 +408,6 @@ $(async function () {
     $form.on('submit', function (e) {
         e.preventDefault();
         let _form = new SetupFormSubmit($form);
-        let csr = $("[name=csrfmiddlewaretoken]").val();
         const $transElm = $('#trans-factory')
 
         if (!_form.dataForm?.warehouse_id) {
@@ -387,36 +435,34 @@ $(async function () {
         for (prod of pickupInit.getProdList) {
             if (prod.picked_quantity > 0)
                 prodSub.push({
-                    'product_id': prod.product_data.id,
+                    'product_id': prod?.['product_data']?.['id'],
                     'done': prod.picked_quantity,
                     'delivery_data': [{
                         'warehouse': _form.dataForm['warehouse_id'],
-                        'uom': prod.uom_data.id,
+                        'uom': prod?.['uom_data']?.['id'],
                         'stock': prod.picked_quantity,
                     }],
                     'order': prod.order,
                 })
         }
-
         pickingData.products = prodSub
 
         //call ajax to update picking
-        $.fn.callAjax(_form.dataUrl, _form.dataMethod, pickingData, csr)
-            .then(
-                (resp) => {
-                    const data = $.fn.switcherResp(resp);
-                    const description = (_form.dataMethod.toLowerCase() === 'put') ? data.detail : data.message;
-                    if (data) {
-                        $.fn.notifyB({description: description}, 'success')
-                        $.fn.redirectUrl($($form).attr('data-url-redirect'), 3000);
-                    }
-                },
-                (errs) => {
-                    if (errs.data.errors.hasOwnProperty('detail')) {
-                        $.fn.notifyB({description: String(errs.data.errors['detail'])}, 'failure')
-                    }
+        $.fn.callAjax2({
+            'url': _form.dataUrl, 'method': _form.dataMethod, 'data': pickingData
+        })
+            .then((resp) => {
+                const data = $.fn.switcherResp(resp);
+                const description = (_form.dataMethod.toLowerCase() === 'put') ? data.detail : data.message;
+                if (data) {
+                    $.fn.notifyB({description: description}, 'success')
+                    $.fn.redirectUrl($($form).attr('data-url-redirect'), 3000);
                 }
-            )
+            }, (errs) => {
+                if (errs.data.errors.hasOwnProperty('detail')) {
+                    $.fn.notifyB({description: String(errs.data.errors['detail'])}, 'failure')
+                }
+            })
             .catch((err) => {
                 console.log(err)
             })

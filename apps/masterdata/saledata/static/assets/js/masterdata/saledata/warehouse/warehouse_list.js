@@ -1,3 +1,4 @@
+let urlEle = $('#url-factory');
 $(document).ready(function () {
     function validBodyDataNewOrUpdate(bodyData) {
         if (bodyData.hasOwnProperty('title') && !bodyData['title']) {
@@ -17,16 +18,6 @@ $(document).ready(function () {
         return true;
     }
 
-    $(document).on('click', '.btn-edit-row', function (event) {
-        let rowData = DTBControl.getRowData($(this));
-        $('#idxObjectUpdateID').text(rowData?.['id']);
-        $('#updateWareHouse').find('.title-warehouse-update').text(rowData?.['title']);
-        $('#inputTextUpdateTitle').attr('value', rowData?.['title']).val(rowData?.['title']);
-        $('#inputTextUpdateCode').val(rowData?.['code']);
-        $('#inputTextUpdateRemarks').val(rowData?.['remarks']);
-        $('#inputUpdateActive').prop('checked', rowData?.['is_active']);
-        event.preventDefault();
-    });
 
     $(document).on('click', '.btn-remove-row', function (event) {
         WindowControl.showLoading();
@@ -60,78 +51,6 @@ $(document).ready(function () {
         event.preventDefault();
     });
 
-    $('#btnSubmitUpdateModal').click(function (event) {
-        WindowControl.showLoading();
-        let frm = new SetupFormSubmit($('#updateWareHouse'));
-        let bodyData = {
-            'title': $('#inputTextUpdateTitle').val(),
-            'code': $('#inputTextUpdateCode').val(),
-            'remarks': $('#inputTextUpdateRemarks').val(),
-            'is_active': $('#inputUpdateActive').prop('checked')
-        }
-        if (!validBodyDataNewOrUpdate(bodyData)) {
-            WindowControl.hideLoading();
-            event.preventDefault();
-            return;
-        }
-        $.fn.callAjax2({
-            'url': frm.getUrlDetail($('#idxObjectUpdateID').text()),
-            'method': frm.dataMethod,
-            'data': bodyData,
-        })
-            .then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data?.['status'] === 200) {
-                $.fn.notifyB({
-                    'description': $.fn.transEle.attr('data-success'),
-                }, 'success')
-                setTimeout(() => {
-                    window.location.reload();
-                }, 1000);
-            }
-        }, (errs) => {
-            WindowControl.hideLoading();
-        })
-    });
-
-    $('#btnSubmitNewModal').click(function (event) {
-        WindowControl.showLoading();
-        let frm = new SetupFormSubmit($('#addWareHouse'));
-        let bodyData = {
-            'title': $('#inputTextNewTitle').val(),
-            'code': $('#inputTextNewCode').val(),
-            'remarks': $('#inputTextNewRemarks').val(),
-            'is_active': $('#inputNewActive').prop('checked')
-        }
-        if (!validBodyDataNewOrUpdate(bodyData)) {
-            WindowControl.hideLoading();
-            event.preventDefault();
-            return;
-        }
-        $.fn.callAjax2(
-            {
-                'url': frm.dataUrl,
-                'method': frm.dataMethod,
-                'data': bodyData,
-            }
-        ).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data?.['status'] === 201) {
-                    $.fn.notifyB({
-                        'description': $.fn.transEle.attr('data-success'),
-                    }, 'success')
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 1000);
-                }
-            },
-            (errs) => {
-                WindowControl.hideLoading();
-            }
-        )
-    });
-
     function loadDbl() {
         let tbl = $('#dtbWareHouseList');
         let frm = new SetupFormSubmit(tbl);
@@ -151,7 +70,9 @@ $(document).ready(function () {
                 }, {
                     data: 'code',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-soft-primary">{0}</span>`.format_by_idx(data);
+                        return `<a href="{0}"><span class="badge badge-soft-primary">{1}</span></a>`.format_by_idx(
+                            urlEle.data('url-detail').format_url_with_uuid(row.id),data
+                        );
                     },
                 }, {
                     data: 'title',
@@ -171,10 +92,11 @@ $(document).ready(function () {
                         return (`<div class="form-check form-switch mb-1"><input type="checkbox" class="form-check-input" {0} disabled></div>`).format_by_idx((data === true ? "checked" : ""))
                     },
                 }, {
-                    orderable: false,
+                    data: 'id',
+                    // orderable: false,
                     className: 'action-center',
                     render: (data, type, row, meta) => {
-                        let btnEdit = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-edit-row" data-bs-toggle="modal" data-bs-target="#updateWareHouse"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
+                        let btnEdit = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" href="${urlEle.data('url-update').format_url_with_uuid(data)}"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
                         let btnRemove = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-remove-row" ><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
                         return `<div>` + btnEdit + btnRemove + `</div>`;
                     }

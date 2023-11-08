@@ -25,54 +25,67 @@
     </button>
 {% endblock %}
 {% block pageContent %}
-    <form id="form-create-account" data-method="POST" data-url="{% url "AccountCreateAPI" %}"
+    <form id="form-create-account" data-method="POST"
+          data-url="{% url "AccountCreateAPI" %}"
           data-url-redirect="{% url "AccountDetail" pk=0 %}">
         {% csrf_token %}
-        <div class="row mb-7">
-                <div class="col-6">
-                    <div class="row form-group">
-                        <div class="col-12">
-                            <label class="form-label required">{% trans "Name" %}</label>
-                            <input id="inp-account-name" class="form-control" required placeholder="">
-                        </div>
-                    </div>
-                    <div class="row form-group">
-                        <div class="col-6">
+        <div class="collapse multi-collapse show" id="collapse-area">
+            <div class="row">
+            <div class="col-12 col-md-6 col-lg-6">
+                <div class="form-group">
+                    <label class="form-label required">{% trans "Name" %}</label>
+                    <input id="inp-account-name" class="form-control" required placeholder="">
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
                             <label class="form-label required">{% trans "Account Code" %}</label>
                             <input id="inp-account-code" class="form-control" placeholder="" required
-                                    oninput="this.value=this.value.toUpperCase()">
+                                   oninput="this.value=this.value.toUpperCase()">
                         </div>
-                        <div class="col-6">
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
                             <label class="form-label">{% trans "Website" %}</label>
                             <input class="form-control" id="inp-account-website" placeholder="">
                         </div>
                     </div>
-                    <div class="row form-group">
-                        <div class="col-6">
-                                        <label class="form-label">{% trans "Phone Number" %}</label>
-                                        <input type="text" class="form-control" placeholder="" id="inp-phone">
-                                    </div>
-                        <div class="col-6">
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label">{% trans "Phone Number" %}</label>
+                            <input type="text" class="form-control" placeholder="" id="inp-phone">
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
                             <label class="form-label">{% trans "Email" %}</label>
                             <input type="text" class="form-control" placeholder="" id="inp-email">
                         </div>
                     </div>
-                    <div class="row form-group">
-                        <div class="col-6">
-                                        <label class="form-label required">{% trans "Industry" %}</label>
-                                        <select id="select-box-industry"
-                                                class="form-control select2"
-                                                data-method="GET" required
-                                                data-url="{% url "IndustryListAPI" %}">
-                                        </select>
-                                    </div>
-                        <div class="col-6">
-                                        <label class="form-label" id="tax-code-label">{% trans "Tax Code" %}</label>
-                                        <input type="text" class="form-control" id="inp-tax-code">
-                                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label required">{% trans "Industry" %}</label>
+                            <select id="select-box-industry"
+                                    class="form-control select2"
+                                    data-method="GET" required
+                                    data-url="{% url "IndustryListAPI" %}">
+                            </select>
+                        </div>
                     </div>
-                    <div class="row form-group">
-                        <div class="col-6">
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label" id="tax-code-label">{% trans "Tax Code" %}</label>
+                            <input type="text" class="form-control" id="inp-tax-code">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
                             <label class="form-label">{% trans "Annual Revenue" %}</label>
                             <select id="select-box-annual-revenue" class="form-select">
                                 <option value=""></option>
@@ -81,11 +94,10 @@
                                 {% endfor %}
                             </select>
                         </div>
-                        <div class="col-6">
-                            <label
-                                    class="form-label"
-                                    id="total_employees_label"
-                            >{% trans "Total Employees" %}</label>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label" id="total_employees_label">{% trans "Total Employees" %}</label>
                             <select id="select-box-total-emp"
                                     class="form-select">
                                 <option value=""></option>
@@ -96,29 +108,27 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-6">
-                    <div class="row form-group">
-                        <div class="col-12">
-                            <label class="form-label required">{% trans "Account Group" %}</label>
-                            <select id="select-box-account-group" class="form-control select2"
-                                    data-method="GET" required
-                                    data-url="{% url "AccountGroupListAPI" %}">
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row form-group">
-                        <div class="col-12">
-                            <label class="form-label required">{% trans "Account Manager" %}</label>
-                            <select id="select-box-acc-manager"
-                                    class="form-control select2 select2-multiple select2-required"
-                                    multiple required
-                                    data-method="GET"
-                                    data-url="{% url "EmployeeListAPI" %}">
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row form-group">
-                        <div class="col-6">
+            </div>
+            <div class="col-12 col-md-6 col-lg-6">
+                <div class="form-group">
+                    <label class="form-label required">{% trans "Account Group" %}</label>
+                    <select id="select-box-account-group" class="form-control select2"
+                            data-method="GET" required
+                            data-url="{% url "AccountGroupListAPI" %}">
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label required">{% trans "Account Manager" %}</label>
+                    <select id="select-box-acc-manager"
+                            class="form-control select2 select2-multiple select2-required"
+                            multiple required
+                            data-method="GET"
+                            data-url="{% url "EmployeeListAPI" %}">
+                    </select>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-12 col-md-6 col-lg-6">
                             <label class="form-label required">{% trans "Account Type" %}</label>
                             <select id="select-box-acc-type"
                                     class="form-select select2 select2-multiple select2-required"
@@ -127,7 +137,7 @@
                                     data-url="{% url "AccountTypeListAPI" %}">
                             </select>
                         </div>
-                        <div class="col-6 mt-6">
+                        <div class="col-12 col-md-6 col-lg-6 mt-6">
                             <div class="row radio-btn">
                                 <div class="col-6">
                                     <input class="form-check-input ml-1" type="radio" name="flexRadioDefault"
@@ -146,285 +156,271 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row form-group">
-                        <div class="col-12">
-                            <label class="form-label">{% trans "Parent Account" %}</label>
-                            <select id="select-box-parent-account" class="form-control select2"
-                                    data-method="GET"
-                                    data-url="{% url "AccountListAPI" %}" disabled>
-                            </select>
-                        </div>
-                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">{% trans "Parent Account" %}</label>
+                    <select id="select-box-parent-account" class="form-control select2"
+                            data-method="GET"
+                            data-url="{% url "AccountListAPI" %}" disabled>
+                    </select>
                 </div>
             </div>
-
-        <ul class="nav nav-icon nav-tabs nav-justified nav-segmented-tabs nav-light">
-            <li class="nav-item">
-                <a class="nav-link bg-primary-light-5 active" data-bs-toggle="tab" href="#tab_block_contact">
-                    <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-journal-bookmark-fill"></i></span></span>
-                    <span class="nav-link-text">{% trans "Select Contacts" %}</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link bg-primary-light-5" data-bs-toggle="tab" href="#tab_block_shipping">
-                    <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-truck"></i></span></span>
-                    <span class="nav-link-text">{% trans "Add Shipping Address" %}</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link bg-primary-light-5" data-bs-toggle="tab" href="#tab_block_billing">
-                    <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-file-text"></i></span></span>
-                    <span class="nav-link-text">{% trans "Add Billing/Invoice Address" %}</span>
-                </a>
-            </li>
-        </ul>
-
-        <div class="tab-content mt-5 mb-30">
+        </div>
+        </div>
+        <button type="button" data-bs-toggle="collapse" data-bs-target="#collapse-area" aria-expanded="false" aria-controls="collapse-area" class="mb-3 w-100 btn btn-animated btn-icon btn-xs">
+            <span class="icon">
+                <i class="fas fa-angle-double-up text-primary"></i>
+            </span>
+        </button>
+        <div class="row">
+            <div class="col-12">
+                <ul class="nav nav-tabs nav-icon nav-light">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#tab_block_contact">
+                            <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-journal-bookmark-fill"></i></span></span>
+                            <span class="nav-link-text">{% trans "Select Contacts" %}</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#tab_block_shipping">
+                            <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-truck"></i></span></span>
+                            <span class="nav-link-text">{% trans "Add Shipping Address" %}</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#tab_block_billing">
+                            <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-file-text"></i></span></span>
+                            <span class="nav-link-text">{% trans "Add Billing/Invoice Address" %}</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="tab-content">
             <div class="tab-pane fade show active" id="tab_block_contact">
-                <div class="row mt-3">
-                    <div class="col-5 text-left">
-                        <button class="btn btn-outline-primary w-20" id="add-contact-btn" data-bs-toggle="offcanvas"
-                                data-bs-target="#offcanvasRight"
-                                aria-controls="offcanvasExample" type="button">
-                            <span>
-                                <span>{% trans 'Select' %}</span>
-                                <span class="icon">
-                                    <i class="bi bi-check-circle-fill"></i>
-                                </span>
-                            </span>
-                        </button>
-                    </div>
-                </div>
-                <div class="row mt-3">
-                <div class="col-12 container mb-10">
-                    <table id="datatable_contact_list" class="table nowrap w-100"
-                           data-method="GET">
-                        <thead>
-                        <th class="w-10">
-                            {% trans "Account Owner" %}
-                            <i class="fas fa-info-circle icon-info"
-                               data-bs-toggle="tooltip"
-                               data-bs-placement="bottom"
-                               title="{% trans 'Check here to select Account Owner.' %}">
-                            </i>
-                        </th>
-                        <th class="w-40">{% trans "Name" %}</th>
-                        <th class="w-15">{% trans "Job title" %}</th>
-                        <th class="w-15">{% trans "Phone number" %}</th>
-                        <th class="w-20">{% trans "Email address" %}</th>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
+                <button class="btn btn-soft-primary mb-3"
+                        id="add-contact-btn"
+                        data-bs-toggle="offcanvas"
+                        data-bs-target="#offcanvasRight"
+                        aria-controls="offcanvasExample"
+                        type="button">
+                    <span>
+                        <span>{% trans 'Select' %}</span>
+                        <span class="icon">
+                            <i class="bi bi-check-circle-fill"></i>
+                        </span>
+                    </span>
+                </button>
+                <table id="datatable_contact_list" class="table nowrap w-100"
+                       data-method="GET">
+                    <thead>
+                    <th class="w-10">
+                        {% trans "Account Owner" %}
+                        <i class="fas fa-info-circle icon-info"
+                           data-bs-toggle="tooltip"
+                           data-bs-placement="bottom"
+                           title="{% trans 'Check here to select Account Owner.' %}">
+                        </i>
+                    </th>
+                    <th class="w-40">{% trans "Name" %}</th>
+                    <th class="w-15">{% trans "Job title" %}</th>
+                    <th class="w-15">{% trans "Phone number" %}</th>
+                    <th class="w-20">{% trans "Email address" %}</th>
+                    </thead>
+                    <tbody></tbody>
+                </table>
             </div>
             <div class="tab-pane fade" id="tab_block_shipping">
-                <div class="row mt-3">
-                    <div class="form-group">
-                        <div class="row">
-                            <div class="col-5 text-left">
-                                <button id="add-shipping-address-btn" class="btn btn-outline-primary w-20" type="button" data-bs-toggle="modal" data-bs-target="#modal-shipping-address">
-                                    <span>
-                                        <span>{% trans 'Add' %}</span>
-                                        <span class="icon">
-                                            <i class="fas fa-plus-circle"></i>
-                                        </span>
-                                    </span>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="row mt-3">
-                            <div class="col-12 mb-10">
-                                <table class="table w-100" id="list-shipping-address">
-                                    <thead>
-                                    <th class="w-10">{% trans 'Default' %}</th>
-                                    <th class="w-85">{% trans 'Full address' %}</th>
-                                    <th class="w-5"></th>
-                                    </thead>
-                                    <tbody></tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <button class="btn btn-soft-primary mb-3"
+                        id="add-shipping-address-btn"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modal-shipping-address"
+                        type="button">
+                    <span>
+                        <span>{% trans 'Add' %}</span>
+                        <span class="icon">
+                            <i class="fas fa-plus-circle"></i>
+                        </span>
+                    </span>
+                </button>
+                <table class="table w-100" id="list-shipping-address">
+                    <thead>
+                    <th class="w-10">{% trans 'Default' %}</th>
+                    <th class="w-85">{% trans 'Full address' %}</th>
+                    <th class="w-5"></th>
+                    </thead>
+                    <tbody></tbody>
+                </table>
             </div>
             <div class="tab-pane fade" id="tab_block_billing">
-                <div class="row mt-3">
-                    <div class="form-group">
-                        <div class="row">
-                            <div class="col-5 text-left">
-                                <button id="add-billing-address-btn" class="btn btn-outline-primary w-20" type="button" data-bs-toggle="modal" data-bs-target="#modal-billing-address">
-                                    <span>
-                                        <span>{% trans 'Add' %}</span>
-                                        <span class="icon">
-                                            <i class="fas fa-plus-circle"></i>
-                                        </span>
-                                    </span>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="row mt-3">
-                            <div class="col-12 mb-10">
-                                <table class="table w-100" id="list-billing-address">
-                                    <thead>
-                                    <th class="w-10">{% trans 'Default' %}</th>
-                                    <th class="w-85">{% trans 'Full address' %}</th>
-                                    <th class="w-5"></th>
-                                    </thead>
-                                    <tbody></tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <button class="btn btn-soft-primary mb-3"
+                        id="add-billing-address-btn"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modal-billing-address"
+                        type="button">
+                    <span>
+                        <span>{% trans 'Add' %}</span>
+                        <span class="icon">
+                            <i class="fas fa-plus-circle"></i>
+                        </span>
+                    </span>
+                </button>
+                <table class="table w-100" id="list-billing-address">
+                    <thead>
+                    <th class="w-10">{% trans 'Default' %}</th>
+                    <th class="w-85">{% trans 'Full address' %}</th>
+                    <th class="w-5"></th>
+                    </thead>
+                    <tbody></tbody>
+                </table>
             </div>
         </div>
+    </form>
 
-        <!-- Modal Shipping Address -->
-        <div class="modal fade" id="modal-shipping-address" tabindex="-1" role="dialog"
-             aria-labelledby="exampleModalCenter" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">{% trans "Add Shipping Address" %}</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="modal-body">
-                            <div class="row">
-                                <div class="form-group">
-                                    <label class="label-field form-label required">{% trans "Address" %}</label>
-                                    <input
-                                            class="form-control" type="text" id="detail-modal-shipping-address"
-                                            placeholder="Number 20, 22 street, Him Lam residential area"
-                                    >
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="form-group">
-                                    <label class="label-field form-label required">{% trans "Province/City" %}</label>
-                                    <select
-                                            class="form-select" id="shipping-city" data-country-id
-                                            data-url="{% url "CityListAPI" %}" data-method="GET"
-                                    ></select>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="form-group">
-                                    <label class="label-field form-label required">{% trans "District" %}</label>
-                                    <select
-                                            class="form-select" id="shipping-district"
-                                            data-url="{% url "DistrictAllListAPI" %}" data-method="GET"
-                                    >
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="form-group">
-                                    <label class="label-field form-label">{% trans "Ward" %}</label>
-                                    <select
-                                            class="form-select" id="shipping-ward"
-                                            data-url="{% url "WardAllListAPI" %}" data-method="GET"
-                                    >
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="form-check ml-3">
-                                    <input
-                                            class="form-check-input" type="checkbox" value=""
-                                            id="make-default-shipping-address"
-                                    >
-                                    <label class="form-check-label" for="make-default-shipping-address">
-                                        {% trans "Make default address" %}
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" id="save-changes-modal-shipping-address">
-                                Save
-                            </button>
-                        </div>
-                    </div>
+    <!-- Modal Shipping Address -->
+    <div class="modal fade" id="modal-shipping-address" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalCenter" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans "Add Shipping Address" %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
-            </div>
-        </div>
-        <!-- End Modal Shipping Address-->
-
-        <!-- Modal billing Address -->
-        <div class="modal fade" id="modal-billing-address" tabindex="-1" role="dialog"
-             aria-labelledby="exampleModalCenter"
-             aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">{% trans "Add Billing/Invoice Address" %}</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
+                <div class="modal-body">
                     <div class="modal-body">
                         <div class="row">
                             <div class="form-group">
-                                <label class="label-field form-label required">{% trans "Account Name" %}</label>
-                                <input class="form-control" id="input-account-name">
+                                <label class="label-field form-label required">{% trans "Address" %}</label>
+                                <input
+                                        class="form-control" type="text" id="detail-modal-shipping-address"
+                                        placeholder="Number 20, 22 street, Him Lam residential area"
+                                >
                             </div>
                         </div>
                         <div class="row">
                             <div class="form-group">
-                                <label class="label-field form-label required">{% trans "Email Address" %}</label>
-                                <input type="text" class="form-control" id="inp-email-address">
+                                <label class="label-field form-label required">{% trans "Province/City" %}</label>
+                                <select
+                                        class="form-select" id="shipping-city" data-country-id
+                                        data-url="{% url "CityListAPI" %}" data-method="GET"
+                                ></select>
                             </div>
                         </div>
                         <div class="row">
                             <div class="form-group">
-                                <label class="label-field form-label required">{% trans "Tax Code" %}</label>
-                                <input type="text" class="form-control" id="inp-tax-code-address">
+                                <label class="label-field form-label required">{% trans "District" %}</label>
+                                <select
+                                        class="form-select" id="shipping-district"
+                                        data-url="{% url "DistrictAllListAPI" %}" data-method="GET"
+                                >
+                                </select>
                             </div>
                         </div>
                         <div class="row">
                             <div class="form-group">
-                                <label class="label-field form-label required">{% trans "Account Address" %}
-                                    <button
-                                            class="btn" type="button"
-                                            id="custom_billing_address"
-                                            style="position: absolute; right: 0; background: none; border: none; color: #007D88"
-                                    >
-                                        <i class="fas fa-plus-circle"></i> Add/Edit
-                                    </button>
-                                </label>
-                                <textarea
-                                        style="border-color: mediumseagreen" class="form-control" hidden
-                                        id="edited-billing-address"
-                                ></textarea>
-                                <select class="form-select" id="select-box-address"></select>
+                                <label class="label-field form-label">{% trans "Ward" %}</label>
+                                <select
+                                        class="form-select" id="shipping-ward"
+                                        data-url="{% url "WardAllListAPI" %}" data-method="GET"
+                                >
+                                </select>
                             </div>
                         </div>
                         <div class="row">
                             <div class="form-check ml-3">
                                 <input
                                         class="form-check-input" type="checkbox" value=""
-                                        id="make-default-billing-address"
+                                        id="make-default-shipping-address"
                                 >
-                                <label class="form-check-label" for="make-default-billing-address">
+                                <label class="form-check-label" for="make-default-shipping-address">
                                     {% trans "Make default address" %}
                                 </label>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" id="save-changes-modal-billing-address">
+                        <button type="button" class="btn btn-primary" id="save-changes-modal-shipping-address">
                             Save
                         </button>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- End Modal Billing Address-->
-    </form>
+    </div>
+    <!-- End Modal Shipping Address-->
+
+    <!-- Modal billing Address -->
+    <div class="modal fade" id="modal-billing-address" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalCenter"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans "Add Billing/Invoice Address" %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="form-group">
+                            <label class="label-field form-label required">{% trans "Account Name" %}</label>
+                            <input class="form-control" id="input-account-name">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <label class="label-field form-label required">{% trans "Email Address" %}</label>
+                            <input type="text" class="form-control" id="inp-email-address">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <label class="label-field form-label required">{% trans "Tax Code" %}</label>
+                            <input type="text" class="form-control" id="inp-tax-code-address">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <label class="label-field form-label required">{% trans "Account Address" %}
+                                <button
+                                        class="btn" type="button"
+                                        id="custom_billing_address"
+                                        style="position: absolute; right: 0; background: none; border: none; color: #007D88"
+                                >
+                                    <i class="fas fa-plus-circle"></i> Add/Edit
+                                </button>
+                            </label>
+                            <textarea
+                                    style="border-color: mediumseagreen" class="form-control" hidden
+                                    id="edited-billing-address"
+                            ></textarea>
+                            <select class="form-select" id="select-box-address"></select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-check ml-3">
+                            <input
+                                    class="form-check-input" type="checkbox" value=""
+                                    id="make-default-billing-address"
+                            >
+                            <label class="form-check-label" for="make-default-billing-address">
+                                {% trans "Make default address" %}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="save-changes-modal-billing-address">
+                        Save
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Modal Billing Address-->
 
     <!-- Off canvas Add Contact-->
     <div class="offcanvas offcanvas-end w-70 mt-9" tabindex="-1" id="offcanvasRight"
@@ -435,13 +431,23 @@
                     aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
-            <button type="button" class="btn btn-soft-primary" id="new_contact_shortcut"
-                    data-bs-toggle="modal" data-bs-target="#modal-add-new-contact"
-                    aria-label="Close">{% trans "New Contact Shortcut" %}&nbsp;
-                <i class="bi bi-journal-bookmark-fill"></i>
-            </button>
-            <div id="table-offcanvas">
-                <table id="datatable-add-contact" class="table nowrap w-100 mb-5"
+            <div class="row">
+                <div class="text-left col-6">
+                    <button type="button" class="btn btn-outline-primary mb-3" id="new_contact_shortcut"
+                            data-bs-toggle="modal" data-bs-target="#modal-add-new-contact"
+                            aria-label="Close">{% trans "New Contact Shortcut" %}&nbsp;
+                        <i class="bi bi-journal-bookmark-fill"></i>
+                    </button>
+                </div>
+                <div class="text-right col-6">
+                    <button type="button" class="btn btn-outline-primary w-15" id="btn-add-contact"
+                            data-bs-dismiss="offcanvas">{% trans "Select" %}&nbsp;
+                        <i class="bi bi-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+            <div id="table-offcanvas" style="overflow: auto; height: 70vh">
+                <table id="datatable-add-contact" class="table nowrap w-100"
                        data-url="{% url "ContactListNotMapAccountAPI" %}"
                        data-method="GET">
                     <thead>
@@ -458,15 +464,8 @@
                         </span>
                     </th>
                     </thead>
+                    <tbody></tbody>
                 </table>
-            </div>
-            <div class="row">
-                <div class="text-right col-12">
-                    <button type="button" class="btn btn-soft-primary w-15" id="btn-add-contact"
-                            data-bs-dismiss="offcanvas">{% trans "Select" %}&nbsp;
-                        <i class="bi bi-arrow-right"></i>
-                    </button>
-                </div>
             </div>
         </div>
     </div>
@@ -537,7 +536,6 @@
                         </div>
                     </form>
                 </div>
-
                 <div class="modal-footer">
                     <button class="btn btn-outline-primary" type="submit" form="frm-create-new-contact">
                         <span>

@@ -71,6 +71,30 @@ class AuthOAuth2Login(APIView):
         return {}, status.HTTP_403_FORBIDDEN
 
 
+class AuthLoginSelectTenant(APIView):
+    permission_classes = [AllowAny]
+
+    @classmethod
+    def get(cls, request):
+        if request.user and not isinstance(request.user, AnonymousUser):
+            resp = ServerAPI(request=request, user=request.user, url=ApiURL.ALIVE_CHECK).get()
+            if resp.state is True:
+                return redirect(request.query_params.get('next', reverse('HomeView')))
+        request.session.flush()
+        request.user = AnonymousUser
+        return render(
+            request,
+            'auths/select_tenant.html' if settings.UI_ALLOW_SHOW_SELECT_TENANT else 'auths/select_tenant_deny.html',
+            {
+                'is_notify_key': False,
+                'captcha_enabled': settings.GG_RECAPTCHA_ENABLED,
+                'secret_key_gg': settings.GG_RECAPTCHA_CLIENT_KEY if settings.GG_RECAPTCHA_ENABLED else None,
+                'allow_auto_tenant': settings.UI_ALLOW_AUTO_TENANT,
+                'ui_domain': settings.UI_DOMAIN,
+            }
+        )
+
+
 class AuthLogin(APIView):
     permission_classes = [AllowAny]
 
@@ -86,7 +110,9 @@ class AuthLogin(APIView):
             request, 'auths/login.html', {
                 'is_notify_key': False,
                 'captcha_enabled': settings.GG_RECAPTCHA_ENABLED,
-                'secret_key_gg': settings.GG_RECAPTCHA_CLIENT_KEY if settings.GG_RECAPTCHA_ENABLED else None
+                'secret_key_gg': settings.GG_RECAPTCHA_CLIENT_KEY if settings.GG_RECAPTCHA_ENABLED else None,
+                'allow_auto_tenant': settings.UI_ALLOW_AUTO_TENANT,
+                'ui_domain': settings.UI_DOMAIN,
             }
         )
 
@@ -161,3 +187,21 @@ class SpaceChangeView(APIView):
             request.user.save(update_fields=['ui_space_selected'])
             return {}, status.HTTP_200_OK
         return {'space_code': 'Space Code is required'}
+
+
+class MyLanguageAPI(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def put(self, request, *args, **kwargs):
+        user_obj = request.user
+        if user_obj and not isinstance(user_obj, AnonymousUser) and hasattr(user_obj, 'id'):
+            language = request.data.get('language', None)
+            if language in dict(settings.LANGUAGE_CHOICE):
+                resp = ServerAPI(request=request, user=request.user, url=ApiURL.LANGUAGE_CHANGE).put(
+                    data={'language': language}
+                )
+                if resp.state:
+                    user_obj.language = language
+                    user_obj.save()
+                return {}, status.HTTP_200_OK
+            return {'language': 'Language not support!'}, status.HTTP_400_BAD_REQUEST
+        return {}, status.HTTP_403_FORBIDDEN

@@ -16,14 +16,7 @@
     </button>
 {% endblock %}
 {% block pageContent %}
-    {{ data.account_list | json_script:"account_list" }}
-    {{ data.contact_list | json_script:"contact_list" }}
-    {{ data.opportunity_list | json_script:"opportunity_list" }}
-    {{ data.employee_list | json_script:"employee_list" }}
-    {{ data.account_map_employees | json_script:"account_map_employees" }}
-
     <input type="hidden" id="employee_current_id" value="{{ data.employee_current_id }}">
-
     <table id="table_opportunity_meeting_list" class="table nowrap w-100 mb-5"
            data-url="{% url 'OpportunityMeetingListAPI' %}"
            data-url-delete="{% url 'OpportunityMeetingDeleteAPI' '0' %}"
@@ -31,7 +24,7 @@
            data-method="GET">
         <thead>
         <tr>
-            <th>#</th>
+            <th></th>
             <th>{% trans 'Subject' %}
                 <i class="fas fa-info-circle icon-info"
                    data-bs-toggle="tooltip"
@@ -41,14 +34,12 @@
             </th>
             <th class="text-center">{% trans 'Sale Code' %}</th>
             <th class="text-center">{% trans 'Date' %}</th>
-            <th class="text-center">{% trans 'Repeat' %}</th>
-            <th class="text-center">{% trans 'Action' %}</th>
+            <th></th>
         </tr>
         </thead>
         <tbody>
         </tbody>
     </table>
-
     <div class="modal fade mt-10" id="create-meeting" tabindex="-1" role="dialog"
          aria-labelledby="createOpportunityMeetingModalForms" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
@@ -75,13 +66,15 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-6">
+                            <div class="col-12">
                                 <div class="mb-3">
                                     <label class="form-label required">{% trans 'Sale Code' %}</label>
-                                    <select id="meeting-sale-code-select-box" class="form-select"></select>
+                                    <select id="meeting-sale-code-select-box" data-url="{% url 'OpportunityListAPI' %}" data-method="GET" class="select2 form-select"></select>
                                 </div>
                             </div>
-                            <div class="col-6">
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
                                 <div class="mb-3">
                                     <label class="form-label required">{% trans 'Date' %}</label>
                                     <input id="meeting-date-input" placeholder="{% trans 'Input date' %}" class="form-control">
@@ -92,10 +85,14 @@
                             <div class="col-12">
                                 <div class="mb-3">
                                     <label class="form-label required">{% trans 'Meeting address' %}</label>
-                                    <select id="meeting-address-select-box" class="form-select"></select>
-                                    <a id="meeting-address-input-btn" class="text-primary form-text text-muted text-right" href="#">input address</a>
-                                    <input hidden id="meeting-address-input" placeholder="Input meeting address" class="form-control">
-                                    <a hidden id="meeting-address-select-btn" class="text-primary form-text text-muted text-right" href="#">select address</a>
+                                    <div id="meeting-address-select-div">
+                                        <select disabled id="meeting-address-select-box" class="select2"></select>
+                                        <a id="meeting-address-input-btn" class="text-primary form-text text-muted text-right" href="#">input address</a>
+                                    </div>
+                                    <div id="meeting-address-input-div" hidden>
+                                        <input id="meeting-address-input" placeholder="Input meeting address" class="form-control">
+                                        <a id="meeting-address-select-btn" class="text-primary form-text text-muted text-right" href="#">select address</a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -111,7 +108,7 @@
                             <div class="col-12">
                                 <div class="mb-3">
                                     <label class="form-label required">{% trans 'Employee attended' %}</label>
-                                    <select id="meeting-employee-attended-select-box" multiple class="select2 select-multiple"></select>
+                                    <select id="meeting-employee-attended-select-box" data-url="{% url 'EmployeeListAPI' %}" multiple class="select2 select-multiple"></select>
                                 </div>
                             </div>
                         </div>
@@ -119,7 +116,7 @@
                             <div class="col-12">
                                 <div class="mb-3">
                                     <label class="form-label required">{% trans 'Customer member' %}</label>
-                                    <select id="meeting-customer-member-select-box" multiple class="select2 select-multiple"></select>
+                                    <select disabled id="meeting-customer-member-select-box" multiple class="select2 select-multiple"></select>
                                 </div>
                             </div>
                         </div>
@@ -133,7 +130,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row" hidden>
                             <div class="col-12">
                                 <div class="mb-3">
                                     <div class="form-check">
@@ -152,7 +149,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal fade mt-10" id="detail-meeting" tabindex="-1" role="dialog"
          aria-labelledby="detailOpportunityMeetingModalForms" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
@@ -173,16 +169,18 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-6">
+                        <div class="col-12">
                             <div class="mb-3">
                                 <label class="form-label required">{% trans 'Sale Code' %}</label>
-                                <select disabled style="color: #6f6f6f" id="detail-meeting-sale-code-select-box" class="form-select"></select>
+                                <select disabled id="detail-meeting-sale-code-select-box" class="select2 form-select"></select>
                             </div>
                         </div>
-                        <div class="col-6">
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
                             <div class="mb-3">
                                 <label class="form-label required">{% trans 'Date' %}</label>
-                                <input disabled style="color: #6f6f6f" id="detail-meeting-date-input" placeholder="{% trans 'Input date' %}" class="form-control">
+                                <input disabled style="color: black" id="detail-meeting-date-input" placeholder="{% trans 'Input date' %}" class="form-control">
                             </div>
                         </div>
                     </div>
@@ -190,7 +188,7 @@
                         <div class="col-12">
                             <div class="mb-3">
                                 <label class="form-label required">{% trans 'Meeting address' %}</label>
-                                <select disabled style="color: #6f6f6f" id="detail-meeting-address-select-box" class="form-select"></select>
+                                <select disabled id="detail-meeting-address-select-box" class="select2 form-select"></select>
                             </div>
                         </div>
                     </div>
@@ -228,7 +226,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row" hidden>
                         <div class="col-12">
                             <div class="mb-3">
                                 <div class="form-check">
@@ -244,7 +242,7 @@
     </div>
 {% endblock %}
 {% block jsFooter %}
-    <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
-    <script src="{% static 'assets/sales/opportunity/js/meeting_list.js' %}"></script>
+
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'assets/sales/opportunity/js/meeting_list.js' %}"></script>
 {% endblock %}

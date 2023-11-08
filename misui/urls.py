@@ -15,7 +15,7 @@ urlpatterns = \
         path('', include('apps.masterdata.urls')),
         path('', include('apps.sales.urls')),
         path('', include('apps.eoffice.urls')),
-        path('private-system/', include('apps.sharedapp.urls')),
+        path('builder/', include('apps.web_builder.urls')),
     ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

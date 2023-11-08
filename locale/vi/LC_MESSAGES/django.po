@@ -122,6 +122,10 @@ msgid "Save"
 msgstr "Lưu"
 
 #
+msgid "Save Draft"
+msgstr "Lưu nháp"
+
+#
 msgid "Reset password"
 msgstr "Đặt lại mật khẩu"
 
@@ -271,6 +275,10 @@ msgstr "Hủy bỏ"
 #: .\apps\core\company\templates\core\company\company_list.html:240
 msgid "Language"
 msgstr "Ngôn ngữ"
+
+#
+msgid "Change language to"
+msgstr "Thay đổi ngôn ngữ thành"
 
 #: .\apps\core\company\templates\core\company\company_list.html:249
 msgid "Currency Primary"
@@ -434,7 +442,7 @@ msgstr "Kích hoạt nhân viên sau khi tạo"
 
 #
 msgid "Summary of permissions"
-msgstr "Tóm tắt quyền"
+msgstr "Tóm tắt"
 
 #
 msgid "Same range of main"
@@ -447,6 +455,10 @@ msgstr "Một số dòng chưa đủ dữ liệu"
 #
 msgid "Permission"
 msgstr "Quyền hạn"
+
+#
+msgid "permission"
+msgstr "quyền hạn"
 
 #
 msgid "Set Permission"
@@ -463,6 +475,10 @@ msgstr "Ứng dụng"
 #
 msgid "All"
 msgstr "Tất cả"
+
+#
+msgid "all"
+msgstr "tất cả"
 
 #
 msgid "Create"
@@ -810,7 +826,7 @@ msgstr "Từ chối"
 
 #
 msgid "Return"
-msgstr "Trả về"
+msgstr "Trả Về"
 
 
 #
@@ -1195,7 +1211,7 @@ msgstr "Tài khoản cha"
 
 #
 msgid "Tax Code"
-msgstr "Mã số thuế"
+msgstr "Thuế"
 
 #
 msgid "Annual Revenue"
@@ -1467,7 +1483,7 @@ msgstr "Tỉnh"
 
 #
 msgid "Inventory"
-msgstr "Hàng tồn kho"
+msgstr "Kho - giao hàng"
 
 #
 msgid "Sale"
@@ -1527,7 +1543,7 @@ msgstr "Sản phẩm"
 
 #
 msgid "Warehouse"
-msgstr "Kho"
+msgstr "Kho hàng"
 
 #
 msgid "Quantity"
@@ -1543,7 +1559,7 @@ msgstr "Thuế"
 
 #
 msgid "Subtotal price"
-msgstr "Tổng tiền"
+msgstr "Thành tiền"
 
 #
 msgid "Add Product"
@@ -1616,7 +1632,7 @@ msgstr "Chỉnh sửa Danh xưng"
 
 #
 msgid "Tax Category"
-msgstr "Danh mục thuế"
+msgstr "Loại thuế"
 
 #
 msgid "Selling rate"
@@ -1648,7 +1664,7 @@ msgstr "Thêm dòng mới"
 
 #
 msgid "Value"
-msgstr "Chi phí giá vốn"
+msgstr "Giá trị"
 
 #
 msgid "Value type"
@@ -1792,7 +1808,7 @@ msgstr "Có thể xóa mục này trong bảng giá"
 
 #
 msgid "Factor"
-msgstr "Yếu tố"
+msgstr "Hệ số"
 
 #
 msgid "Select list type"
@@ -1852,11 +1868,11 @@ msgstr "Quản lý bởi"
 
 #
 msgid "Default UoM"
-msgstr "Giá trị đo mặc định"
+msgstr "Đơn vị tính"
 
 #
 msgid "Product Dimension and Weight Control"
-msgstr "Kiểm soát Kích thước và Trọng lượng Sản phẩm"
+msgstr "Kích thước và trọng lượng sản phẩm"
 
 #
 msgid "Length"
@@ -1872,11 +1888,11 @@ msgstr "Cao"
 
 #
 msgid "Volume"
-msgstr "Độ lớn"
+msgstr "Thể tích"
 
 #
 msgid "Weight"
-msgstr "Nặng"
+msgstr "Cân nặng"
 
 #
 msgid "UoM Code"
@@ -2028,7 +2044,7 @@ msgstr "Ngày Tạo"
 
 #
 msgid "Return date"
-msgstr "Ngày hoàn trả"
+msgstr "Ngày hoàn ứng"
 
 #
 msgid "Advance value"
@@ -2068,7 +2084,7 @@ msgstr "Mã cơ hội kinh doanh"
 
 #
 msgid "Method"
-msgstr "Phương thức"
+msgstr "Phương thức thanh toán"
 
 #
 msgid "Cash"
@@ -2076,7 +2092,7 @@ msgstr "Tiền mặt"
 
 #
 msgid "Bank transfer"
-msgstr "Chuyển khoản ngân hàng"
+msgstr "Chuyển khoản"
 
 #
 msgid "More"
@@ -2137,7 +2153,7 @@ msgstr "Cơ hội kinh doanh"
 
 #
 msgid "Opportunity link to quotation"
-msgstr "Cơ hội kinh doanh liên kết với giá báo"
+msgstr "Cơ hội kinh doanh liên kết với báo giá"
 
 #
 msgid "Customer link to quotation"
@@ -2185,7 +2201,7 @@ msgstr "Hậu cần"
 
 #
 msgid "Cost"
-msgstr "Chi phí giá vốn"
+msgstr "Giá vốn"
 
 #
 msgid "Expense"
@@ -2209,7 +2225,7 @@ msgstr "Thành tiền"
 
 #
 msgid "Add Shipping Fee"
-msgstr "Thêm phí vận chuyển"
+msgstr "Phí vận chuyển"
 
 #
 msgid "Shipping"
@@ -2217,7 +2233,7 @@ msgstr "Vận chuyển"
 
 #
 msgid "Check available promotion"
-msgstr "Kiểm tra khuyến mãi khả dụng"
+msgstr "Chương trình khuyến mãi"
 
 #
 msgid "Promotion"
@@ -2229,7 +2245,7 @@ msgstr "Địa chỉ thanh toán"
 
 #
 msgid "Cost Price"
-msgstr "Giá cả"
+msgstr "Đơn giá"
 
 #
 msgid "Expense Price"
@@ -2486,7 +2502,7 @@ msgstr "Chi tiết đơn hàng"
 
 #
 msgid "WareHouse"
-msgstr "Kho"
+msgstr "Kho Hàng"
 
 #
 msgid "Return Advance"
@@ -2813,6 +2829,10 @@ msgid "Export to file"
 msgstr "Xuất thành file"
 
 #
+msgid "Export To Image"
+msgstr "Xuất thành hình ảnh"
+
+#
 msgid "Open/Close filter area"
 msgstr "Hiện/Ẩn khu vực lọc dữ liệu"
 
@@ -2948,7 +2968,7 @@ msgstr "Cấu hình dữ liệu chính"
 
 #
 msgid "Items"
-msgstr "Mục"
+msgstr "Danh mục"
 
 #
 msgid "Price"
@@ -3145,6 +3165,10 @@ msgstr "Thực thi hành động này và tải lại trang khi hết thời gia
 #
 msgid "Successful"
 msgstr "Thành công"
+
+#
+msgid "Failure"
+msgstr "Thất bại"
 
 #
 msgid "No data available"
@@ -3523,7 +3547,7 @@ msgstr "Toán tử"
 
 #
 msgid "Returned"
-msgstr "Đã hoàn ứng"
+msgstr "Đã trả về"
 
 #
 msgid "To employee"
@@ -3539,7 +3563,7 @@ msgstr "Tổng trước thuế"
 
 #
 msgid "Money gave/transferred"
-msgstr "Đã nhận tiền"
+msgstr "Tiền đã nhận / đã chi"
 
 #
 msgid "Supplier name"
@@ -3721,8 +3745,44 @@ msgid "Delivery before"
 msgstr "Đã giao"
 
 #
+msgid "Information"
+msgstr "Thông tin"
+
+#
 msgid "General Information"
 msgstr "Thông tin chung"
+
+#
+msgid "Maintaining State"
+msgstr "Đang duy trì"
+
+#
+msgid "Broken State"
+msgstr "Đã hỏng"
+
+#
+msgid "All roles"
+msgstr "Tất cả các roles"
+
+#
+msgid "The roles to which the employee belongs"
+msgstr "Các vai trò mà nhân viên thuộc về"
+
+#
+msgid "Date active"
+msgstr "Ngày kích hoạt"
+
+#
+msgid "Date expires"
+msgstr "Ngày hết hạn"
+
+#
+msgid "Used / Quantity"
+msgstr "Đã sử dụng / Tổng"
+
+#
+msgid "Subscription"
+msgstr "Gói thuê bao"
 
 #
 msgid "Plan-Application"
@@ -3730,7 +3790,7 @@ msgstr "Gói - Ứng dụng"
 
 #
 msgid "Jurisdiction"
-msgstr "Phạm vi quyền hạn"
+msgstr "Phạm vi quyền"
 
 #
 msgid "Setup permission pre-commitment"
@@ -4005,7 +4065,7 @@ msgstr "Tiếp Tục"
 
 #
 msgid "All selected purchase requests and related datas will be removed"
-msgstr "Tất cả yêu cầu mua hàng đã chọn và dữ liệu liên quan sẽ bị loại bỏ"
+msgstr "Tất cả yêu cầu mua hàng đã chọn và dữ liệu liên quan sẽ bị xóa"
 
 #
 msgid "Product is not in"
@@ -4181,3 +4241,510 @@ msgstr "Chọn người điều phối cho hoạt động lấy hàng"
 #
 msgid "Select coordinator for Delivery activities"
 msgstr "Chọn người điều phối cho hoạt động giao hàng"
+
+#
+msgid "Org Charts"
+msgstr "Cây Cơ Cấu"
+
+#
+msgid "Manager Person"
+msgstr "Người Quản Lý"
+
+#
+msgid "Belong to Role"
+msgstr "Có Vai Trò"
+
+#
+msgid "Get all"
+msgstr "Lấy tất cả"
+
+#
+msgid "Reset"
+msgstr "Làm lại"
+
+#
+msgid "Re-Password not match Password"
+msgstr "Mật khẩu không khớp"
+
+#
+msgid "Available for currently displayed elements"
+msgstr "Có sẵn cho các phần tử hiện đang hiển thị"
+
+#
+msgid "Show"
+msgstr "Hiển thị"
+
+#
+msgid "Hide"
+msgstr "Ẩn"
+
+#
+msgid "Member of Group"
+msgstr "Thành viên của phòng ban"
+
+#
+msgid "Empty"
+msgstr "Không có dữ liệu"
+
+#
+msgid "Make empty"
+msgstr "Làm trống"
+
+#
+msgid "Leave"
+msgstr "Nghỉ phép"
+
+#
+msgid "Leave config"
+msgstr "Cấu hình nghỉ phép"
+
+#
+msgid "Leave type"
+msgstr "Loại nghỉ phép"
+
+#
+msgid "Year's Seniority"
+msgstr "Thâm niên"
+
+#
+msgid "Paid by"
+msgstr "Thanh toán bởi"
+
+#
+msgid "Balance management"
+msgstr "Quản lý số dư"
+
+#
+msgid "Number of months the balance will expire"
+msgstr "Số tháng số dư sẽ hết hạn"
+
+#
+msgid "Number of paid annual leave days"
+msgstr "Số ngày nghỉ hàng năm được trả lương"
+
+#
+msgid "Leave type create successfully"
+msgstr "Tạo loại phép thành công"
+
+#
+msgid "Leave type delete successfully"
+msgstr "Xoá loại phép thành công"
+
+#
+msgid "Leave type update successfully"
+msgstr "Sửa loại phép thành công"
+
+#
+msgid "Company salary"
+msgstr "Công ty chi trả"
+
+#
+msgid "Social insurance"
+msgstr "Bảo Hiểm Xã Hội chi trả"
+
+#
+msgid "Unpaid"
+msgstr "Không chi trả"
+
+#
+msgid "Type name"
+msgstr "Tên loại"
+
+#
+msgid "Number of annual days"
+msgstr "Số ngày phép"
+
+#
+msgid "Expiration management"
+msgstr "Quản lý ngày hết hạn"
+
+#
+msgid "Date expired"
+msgstr "Ngày hết hạn"
+
+#
+msgid "Wrong number, min is 12 and number format is integer"
+msgstr "Sai định dạng, là số nguyên và nhõ nhất là 12"
+
+#
+msgid "From"
+msgstr "Từ"
+
+#
+msgid "To"
+msgstr "Đến"
+
+#
+msgid "Added days"
+msgstr "Số ngày thêm"
+
+#
+msgid "Unit: Year"
+msgstr "Đơn vị: Năm"
+
+#
+msgid "Return to home"
+msgstr "Trở về trang chủ"
+
+#
+msgid "Sorry, the requested page cannot be found. Try finding with another name."
+msgstr "Xin lỗi, không thể tìm thấy trang được yêu cầu. Hãy thử tìm với một tên khác."
+
+#
+msgid "Server is temporarily unable to handle the request. This may be due to the server being overloaded or down for maintenance."
+msgstr "Máy chủ tạm thời không thể xử lý yêu cầu. Điều này có thể do máy chủ bị quá tải hoặc ngừng hoạt động để bảo trì."
+
+#
+msgid "Purchase order"
+msgstr "Đơn mua hàng"
+
+#
+msgid "Delivered date"
+msgstr "Ngày giao hàng"
+
+#
+msgid "Delivered status"
+msgstr "Trạng thái giao hàng"
+
+#
+msgid "Select items from purchase request"
+msgstr "Chọn sản phẩm từ yêu cầu mua hàng"
+
+#
+msgid "Quantity order must be less than quantity remain"
+msgstr "Số lượng đặt mua phải nhỏ hơn số lượng chưa mua"
+
+#
+msgid "Quantity order actually must be greater than or equal quantity order on request"
+msgstr "Số lượng đặt mua thực tế phải lớn hơn hoặc bằng số lượng yêu cầu"
+
+#
+msgid "Remain (PO)"
+msgstr "Chưa mua"
+
+#
+msgid "Quantity order"
+msgstr "Số lượng đặt mua"
+
+#
+msgid "Received date"
+msgstr "Ngày nhận"
+#
+msgid "Project"
+msgstr "Dự án"
+
+#
+msgid "Inheritor"
+msgstr "Người thụ hưởng"
+
+#
+msgid "Purchase order create successfully"
+msgstr "Tạo đơn mua hàng thành công"
+
+#
+msgid "Purchase order update successfully"
+msgstr "Cập nhật đơn mua hàng thành công"
+
+#
+msgid "Goods receipt create successfully"
+msgstr "Tạo đơn nhập kho thành công"
+
+#
+msgid "Goods receipt update successfully"
+msgstr "Cập nhật đơn nhập kho thành công"
+
+#
+msgid "Must select one warehouse"
+msgstr "Phải chọn một kho"
+
+#
+msgid "Quantity import must be less than equal remain quantity"
+msgstr "Số lượng nhập kho phải nhỏ hơn hoặc bằng số lượng chưa nhập"
+
+#
+msgid "Goods receipt"
+msgstr "Nhập kho"
+
+#
+msgid "Search"
+msgstr "Tìm kiếm"
+
+#
+msgid "search"
+msgstr "tìm kiếm"
+
+#
+msgid "Enter text"
+msgstr "Nhập văn bản"
+
+#
+msgid "enter text"
+msgstr "nhập văn bản"
+
+#
+msgid "Allow view this opportunity"
+msgstr "Cho phép xem chi tiết Cơ Hội Kinh Doanh này"
+
+#
+msgid "Allow add and change permission member"
+msgstr "Cho phép thêm và chỉnh sửa quyền cho thành viên"
+
+#
+msgid "The picklists in this section will be affected by each other when the value of an item changes."
+msgstr "Các danh sách chọn trong phần này sẽ bị ảnh hưởng lẫn nhau khi giá trị của một mục thay đổi."
+
+#
+msgid "Go to the user manual page"
+msgstr "Đi tới trang hướng dẫn sử dụng"
+
+#
+msgid "Go to detail"
+msgstr "Xem chi tiết"
+
+#
+msgid "This application has been disabled for you or cannot be found!"
+msgstr "Ứng dụng này đã bị vô hiệu hóa đối với bạn hoặc không thể tìm thấy!"
+
+#
+msgid "Space general"
+msgstr "Space tổng quát"
+
+#
+msgid "Space all"
+msgstr "Tất cả space"
+
+#
+msgid "The permission scope will not include the person for whom the permission is configured, except for the scope Themselves."
+msgstr "Phạm vi được phép sẽ không bao gồm người được đặt cấu hình quyền, ngoại trừ phạm vi Bản thân họ."
+
+#
+msgid "Allow the action to access data in both the general space and another space."
+msgstr "Cho phép hành động truy cập dữ liệu ở cả không gian chung và không gian khác."
+
+#
+msgid "This employee is not currently associated with the user."
+msgstr "Nhân viên này hiện không được liên kết với người dùng."
+
+#
+msgid "Yes, update it!"
+msgstr "Đồng ý, cập nhật nó!"
+
+#
+msgid "Lot number is exist"
+msgstr "Số lô đã tồn tại"
+
+#
+msgid "Serial number is exist"
+msgstr "Số seri đã tồn tại"
+
+#
+msgid "Lot number must be different"
+msgstr "Số lô phải khác nhau"
+
+#
+msgid "Serial number must be different"
+msgstr "Số seri phải khác nhau"
+
+#
+msgid "Quantity delivery must less than equal quantity picked"
+msgstr "Số lượng giao hàng không vượt quá số lượng lấy hàng"
+
+#
+msgid "Only for view"
+msgstr "Chỉ khả dụng với quyền xem"
+
+#
+msgid "This is Sale Person, can not remove!"
+msgstr "Đây là người bán hàng chính, không thể xoá!"
+
+#
+msgid "Date receive"
+msgstr "Ngày nhận"
+
+#
+msgid "Hello"
+msgstr "Xin chào"
+
+#
+msgid "Welcome to"
+msgstr "Chào mừng đến với"
+
+#
+msgid "Good morning"
+msgstr "Chào buổi sáng"
+
+#
+msgid "Have a wonderful day."
+msgstr "Chúc một ngày tốt lành."
+
+#
+msgid "Good afternoon"
+msgstr "Chào buổi chiều"
+
+#
+msgid "Hope you're having a great day."
+msgstr "Hy vọng bạn có một ngày tuyệt vời."
+
+#
+msgid "Good evening"
+msgstr "Buổi tối vui vẻ"
+
+#
+msgid "Have a relaxing and enjoyable evening."
+msgstr "Chúc bạn một buổi tối thư giãn và vui vẻ."
+
+#
+msgid "My Website"
+msgstr "Website của tôi"
+
+#
+msgid "Working calendar update successfully"
+msgstr "Lịch làm việc cập nhập thành công"
+
+#
+msgid "Working year create successfully"
+msgstr "Năm làm việc tạo thành công"
+
+#
+msgid "Working year delete successfully"
+msgstr "Năm làm việc xoá thành công"
+
+#
+msgid "The holiday create successfully"
+msgstr "Tạo ngày lễ thành công"
+
+#
+msgid "The holiday has been updated successfully"
+msgstr "Cập nhập ngày lễ thành công"
+
+#
+msgid "The holiday deleted"
+msgstr "Xoá ngày lễ thành công"
+
+#
+msgid "Leave request create successfully"
+msgstr "Yêu cầu nghỉ phép tạo thành công"
+
+#
+msgid "Leave available update successfully"
+msgstr "danh sách số dư cập nhập thành công"
+
+#
+msgid "Increase"
+msgstr "Tăng"
+
+#
+msgid "Decrease"
+msgstr "Giảm"
+
+#
+msgid "Working calendar"
+msgstr "Lịch làm việc"
+
+#
+msgid "Weekly working days"
+msgstr "Ngày làm việc trong tuần"
+
+#
+msgid "Holidays"
+msgstr "Ngày lễ"
+
+#
+msgid "Morning"
+msgstr "Sáng"
+
+#
+msgid "Afternoon"
+msgstr "Chiều"
+
+#
+msgid "Year"
+msgstr "Năm"
+
+#
+msgid "Years is empty"
+msgstr "Năm trống"
+
+#
+msgid "Add year"
+msgstr "Thêm mới"
+
+#
+msgid "Add holiday"
+msgstr "Thêm mới"
+
+#
+msgid "Data list is empty"
+msgstr "Danh sách trống"
+
+#
+msgid "Leave request"
+msgstr "Yêu cầu nghỉ phép"
+
+#
+msgid "Available list"
+msgstr "Danh sách số dư"
+
+#
+msgid "Leave request list"
+msgstr "Danh sách nghỉ phép"
+
+#
+msgid "Start day"
+msgstr "Ngày bắt đầu"
+
+#
+msgid "Days off number"
+msgstr "Số ngày nghỉ"
+
+#
+msgid "Date from"
+msgstr "Từ ngày"
+
+#
+msgid "Date to"
+msgstr "Đến ngày"
+
+#
+msgid "Sub total"
+msgstr "Tổng phụ"
+
+#
+msgid "Opening year"
+msgstr "Năm Phép"
+
+#
+msgid "Used"
+msgstr "Đã dùng"
+
+#
+msgid "Expiration date"
+msgstr "Ngày hết hạn"
+
+#
+msgid "Add date"
+msgstr "Thêm ngày"
+
+#
+msgid "Employee name"
+msgstr "Tên nhân viên"
+
+#
+msgid "Group name"
+msgstr "Tên nhóm"
+
+#
+msgid "Adjust history"
+msgstr "Lịch sử điều chỉnh"
+
+#
+msgid "Arises type"
+msgstr "Loại phát sinh"
+
+#
+msgid "Adjust"
+msgstr "Điều chỉnh"
+
+#
+msgid "Adjust date"
+msgstr "Ngày điều chỉnh"

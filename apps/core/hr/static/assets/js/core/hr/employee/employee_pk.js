@@ -3,7 +3,11 @@ function callDetailData(url, method) {
         url: url,
         method: method,
     }).then((resp) => {
-        return $.fn.switcherResp(resp);
+        let data = $.fn.switcherResp(resp);
+        if (data && data.hasOwnProperty('employee')) {
+            return data.employee;
+        }
+        return {};
     });
 }
 
@@ -71,36 +75,35 @@ class EmployeeLoadPage {
         });
     }
 
-    static loadDateJoined(dateJoinedData) {
-        let txtDateJoinedData = dateJoinedData ? moment(dateJoinedData).format('MM/DD/YYYY') : moment().format('MM/DD/YYYY');
-        EmployeeLoadPage.dateJoinedEle.dateRangePickerDefault({
-            singleDatePicker: true,
-            timepicker: false,
-            showDropdowns: true,
-            minYear: 1901,
-            maxYear: parseInt(moment().format('YYYY'), 10)
-        }).val(txtDateJoinedData).on('hide.daterangepicker', function () {
-            $(this).val($(this).val().split(" ")[0])
-        });
+    static loadDateJoined(dateJoinedData, default_is_now = false) {
+        if (dateJoinedData || default_is_now === true){
+            let txtDateJoinedData = dateJoinedData ? moment(dateJoinedData).format('MM/DD/YYYY') : moment().format('MM/DD/YYYY');
+            EmployeeLoadPage.dateJoinedEle.dateRangePickerDefault({
+                singleDatePicker: true,
+                timepicker: false,
+                showDropdowns: true,
+                minYear: 1901,
+                maxYear: parseInt(moment().format('YYYY'), 10)
+            }).val(txtDateJoinedData).on('hide.daterangepicker', function () {
+                $(this).val($(this).val().split(" ")[0])
+            });
+        }
     }
 
     static combinesForm(frmIdx, hasPermit = true) {
         let frm = new SetupFormSubmit($(frmIdx));
-        if (hasPermit === true) frm.dataForm['permission_by_configured'] = new HandlePermissions().combinesData()['data'];
+        // if (hasPermit === true) frm.dataForm['permission_by_configured'] = new HandlePermissions().combinesData()['data'];
         frm.dataForm['is_active'] = frm.dataForm['is_active'] === 'on';
         frm.dataForm['is_admin_company'] = frm.dataForm['is_admin_company'] === 'on';
-        frm.dataForm['plan_app'] = new HandlePlanApp().combinesData();
-        frm.dataForm['date_joined'] = frm.dataForm['date_joined'] ? moment(frm.dataForm['date_joined']).format('YYYY-MM-DD HH:mm:ss') : null;
-        frm.dataForm['dob'] = frm.dataForm['dob'] ? moment(frm.dataForm['dob']).format('YYYY-MM-DD') : null;
+        // frm.dataForm['plan_app'] = new HandlePlanApp().combinesData();
+        let dateJoinedTxt = $('#employee-date-joined').val();
+        frm.dataForm['date_joined'] = dateJoinedTxt ? moment(dateJoinedTxt).format('YYYY-MM-DD HH:mm:ss') : null;
+        let dateOfBirthday = $('#employee-dob').val();
+        frm.dataForm['dob'] = dateOfBirthday ? moment(dateOfBirthday).format('YYYY-MM-DD') : null;
         frm.dataForm['role'] = EmployeeLoadPage.roleSelectEle.val()
 
         if (!frm.dataForm['user']) frm.dataForm['user'] = null;
         if (!frm.dataForm['group']) frm.dataForm['group'] = null;
-
-        if (frm.dataForm['user'] && !frm.dataForm['plan_app']) {
-            $.fn.notifyB({description: 'Employee map user must choose applications'}, 'failure');
-            return false;
-        }
 
         return {
             url: frm.dataUrl,

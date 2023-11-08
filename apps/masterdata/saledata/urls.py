@@ -16,11 +16,10 @@ from apps.masterdata.saledata.views.expense_item import ExpenseItemList, Expense
 from apps.masterdata.saledata.views.good_receipt import GoodReceiptList, GoodReceiptCreate, GoodReceiptListAPI, \
     GoodReceiptDetailAPI, GoodReceiptDetail, GoodReceiptEdit
 from apps.masterdata.saledata.views.product import (
-    ProductMasterDataList, ProductTypeListAPI,
-    ProductCategoryListAPI, ExpenseTypeListAPI, UnitOfMeasureListAPI, UnitOfMeasureGroupListAPI,
-    UnitOfMeasureDetailAPI, ProductTypeDetailAPI, ExpenseTypeDetailAPI, ProductCategoryDetailAPI,
+    ProductMasterDataList, ProductTypeListAPI, ProductCategoryListAPI, UnitOfMeasureListAPI,
+    UnitOfMeasureGroupListAPI, UnitOfMeasureDetailAPI, ProductTypeDetailAPI, ProductCategoryDetailAPI,
     UnitOfMeasureGroupDetailAPI, ProductList, ProductCreate, ProductListAPI, ProductDetailAPI, ProductDetail,
-    ProductForSaleListAPI, ProductUpdate, UnitOfMeasureOfGroupLaborListAPI,
+    ProductForSaleListAPI, ProductUpdate, UnitOfMeasureOfGroupLaborListAPI
 )
 from apps.masterdata.saledata.views.price import (
     PriceMasterDataList, TaxCategoryListAPI, TaxListAPI, TaxDetailAPI, TaxCategoryDetailAPI, CurrencyListAPI,
@@ -32,6 +31,8 @@ from apps.masterdata.saledata.views.shipping import ShippingList, ShippingCreate
     ShippingDetailAPI, ShippingCheckListAPI, ShippingUpdate
 from apps.masterdata.saledata.views.warehouse import (
     WareHouseList, WareHouseListAPI, WareHouseDetailAPI, WarehouseProductAPI, WareHouseListForInventoryAdjustmentAPI,
+    WareHouseCreate, WareHouseDetail, WareHouseUpdate, WarehouseGetProductsListAPI, WarehouseLotListAPI,
+    WarehouseSerialListAPI,
 )
 
 urlpatterns = [
@@ -102,11 +103,6 @@ urlpatterns = [
     path(
         'masterdata/product-category/api/<str:pk>', ProductCategoryDetailAPI.as_view(),
         name='ProductCategoryDetailAPI'
-    ),
-    path('masterdata/expense-type/list/api', ExpenseTypeListAPI.as_view(), name='ExpenseTypeListAPI'),
-    path(
-        'masterdata/expense-type/api/<str:pk>', ExpenseTypeDetailAPI.as_view(),
-        name='ExpenseTypeDetailAPI'
     ),
     path(
         'masterdata/unit-of-measure/list/api', UnitOfMeasureListAPI.as_view(), name='UnitOfMeasureListAPI'
@@ -208,6 +204,9 @@ urlpatterns = [
 # WareHouse
 urlpatterns += [
     path('warehouses', WareHouseList.as_view(), name='WareHouseList'),
+    path('warehouse/create', WareHouseCreate.as_view(), name='WareHouseCreate'),
+    path('warehouse/detail/<str:pk>', WareHouseDetail.as_view(), name='WareHouseDetail'),
+    path('warehouse/update/<str:pk>', WareHouseUpdate.as_view(), name='WareHouseUpdate'),
     path('warehouses/api', WareHouseListAPI.as_view(), name='WareHouseListAPI'),
     path(
         'warehouses-for-inventory-adjustment/api',
@@ -216,6 +215,9 @@ urlpatterns += [
     ),
     path('warehouse/api/<str:pk>', WareHouseDetailAPI.as_view(), name='WareHouseDetailAPI'),
     path('warehouse/product/api', WarehouseProductAPI.as_view(), name='WarehouseProductAPI'),
+    path('warehouse-get-products/api', WarehouseGetProductsListAPI.as_view(), name='WarehouseGetProductsListAPI'),
+    path('warehouse-lots/api', WarehouseLotListAPI.as_view(), name='WarehouseLotListAPI'),
+    path('warehouse-serials/api', WarehouseSerialListAPI.as_view(), name='WarehouseSerialListAPI'),
 ]
 # // WareHouse
 # Good receipt

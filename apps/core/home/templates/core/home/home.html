@@ -5,9 +5,53 @@
 {% endblock %}
 {% block cssHeader %}
     <link href="{% static 'assets/css/core_home/home.css' %}" rel="stylesheet" type="text/css">
+    <style>
+        #welcome-group {
+            position: relative;
+        }
+
+        #welcome-body {
+            position: relative;
+            z-index: 99999;
+        }
+
+        #welcome-canvas {
+            position: absolute;
+            z-index: 99998;
+            top: 0;
+            left: 0;
+            width: inherit;
+            height: inherit;
+        }
+
+        #welcome-group:hover #welcome-close {
+            display: block;
+        }
+
+        #welcome-close {
+            display: none;
+            position: absolute;
+            z-index: 99998;
+            top: -10px;
+            right: -10px;
+            height: 30px;
+        }
+    </style>
 {% endblock %}
 
 {% block pageContent %}
+    <div class="row">
+        <div class="col-lg-12 col-0">
+            <div id="welcome-group" class="border border-light p-3 mb-3">
+                <div id="welcome-body">
+                    <h5>{% trans 'Welcome to' %} BFlow.</h5>
+                    <p id="idx-welcome-txt"></p>
+                </div>
+                <button id="welcome-close" class="btn btn-xs btn-soft-light rounded-circle"><i class="fa-solid fa-xmark"></i></button>
+                <canvas id="welcome-canvas" class="mt-1"></canvas>
+            </div>
+        </div>
+    </div>
     <div class="row">
         <div class="col-xxl-8 col-lg-12 mb-md-4 mb-3">
             <div class="card card-border mb-0 h-100">
@@ -40,7 +84,7 @@
                         <div class="tab-pane fade show active" id="tab-task">
                             <div class="container-fluid table-responsive">
                                 <table
-                                        class="table nowrap table-advance"
+                                        class="table nowrap table-advance w-100"
                                         id="tbl_my_task"
                                         data-url="{% url 'FlowRuntimeTaskListAPI' %}"
                                         data-method="GET"
@@ -49,8 +93,9 @@
                                     <tr>
                                         <th>{% trans 'Title' %}</th>
                                         <th>{% trans 'Application' %}</th>
-                                        <th>{% trans 'Current node' %}</th>
-                                        <th>{% trans 'Assignee & date receive' %}</th>
+                                        <th>{% trans 'Node' %}</th>
+                                        <th>{% trans 'Assignee' %}</th>
+                                        <th>{% trans 'Date receive' %}</th>
                                         <th></th>
                                     </tr>
                                     </thead>
@@ -429,4 +474,18 @@
         let employeeCurrentData = "{{ data.employee_current_data }}";
     </script>
     <script src="{% static 'assets/js/core_home/home.js' %}"></script>
+
+    <script>
+        let currentHours = new Date().getHours();
+        let welcomeTxt = '';
+        if (currentHours >= 0 && currentHours < 12) {
+            styleDaily = 'morning-soon';
+            welcomeTxt = `{% trans 'Good morning' %} {{ base.last_name }} {{ base.first_name }}! {% trans 'Have a wonderful day.' %}`;
+        } else if (currentHours >= 12 && currentHours < 18) {
+            welcomeTxt = `{% trans 'Good afternoon' %} {{ base.last_name }} {{ base.first_name }}! {% trans "Hope you're having a great day." %}`;
+        } else {
+            welcomeTxt = `{% trans 'Good evening' %} {{ base.last_name }} {{ base.first_name }}! {% trans 'Have a relaxing and enjoyable evening.' %}`
+        }
+    </script>
+    <script src="{% static 'assets/js/core_home/canvas_home.js' %}"></script>
 {% endblock %}

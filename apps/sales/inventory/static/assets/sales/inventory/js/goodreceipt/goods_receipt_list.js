@@ -2,6 +2,8 @@
 $(function () {
     $(document).ready(function () {
 
+        let transEle = $('#app-trans-factory');
+
         function loadDbl() {
             let $table = $('#datable_goods_receipt_list')
             let frm = new SetupFormSubmit($table);
@@ -24,14 +26,14 @@ $(function () {
                         targets: 0,
                         render: (data, type, row) => {
                             let link = $('#goods-receipt-link').data('link-update').format_url_with_uuid(row?.['id']);
-                            return `<a href="${link}" target="_blank" class="link-primary underline_hover"><span class="badge badge-soft-primary">${row?.['code']}</span></a>`
+                            return `<a href="${link}" class="link-primary underline_hover"><span class="badge badge-soft-primary">${row?.['code']}</span></a>`
                         }
                     },
                     {
                         targets: 1,
                         render: (data, type, row) => {
                             const link = $('#goods-receipt-link').data('link-update').format_url_with_uuid(row?.['id'])
-                            return `<a href="${link}" target="_blank" class="link-primary underline_hover">${row?.['title']}</a>`
+                            return `<a href="${link}" class="link-primary underline_hover">${row?.['title']}</a>`
                         }
                     },
                     {
@@ -39,7 +41,7 @@ $(function () {
                         render: (data, type, row) => {
                             let status_data = {
                                 "For purchase order": "badge badge-soft-warning",
-                                "For inventory adjustment": "badge badge-soft-primary",
+                                "For inventory adjustment": "badge badge-soft-success",
                                 "For production": "badge badge-soft-info",
                             }
                             return `<span class="${status_data[row?.['goods_receipt_type']]}">${row?.['goods_receipt_type']}</span>`;
@@ -48,9 +50,16 @@ $(function () {
                     {
                         targets: 3,
                         render: (data, type, row) => {
-                            let ele = `<p></p>`;
-                            if (Object.keys(row?.['purchase_order']).length !== 0) {
-                                ele = `<p>${row?.['purchase_order']?.['title']}</p>`;
+                            let status_data = {
+                                "For purchase order": "badge badge-soft-warning",
+                                "For inventory adjustment": "badge badge-soft-success",
+                                "For production": "badge badge-soft-info",
+                            }
+                            let ele = `<span></span>`;
+                            if (row?.['goods_receipt_type'] === 'For purchase order') {
+                                ele = `<span class="${status_data[row?.['goods_receipt_type']]}">${row?.['purchase_order']?.['code']}</span>`;
+                            } else if (row?.['goods_receipt_type'] === 'For inventory adjustment') {
+                                ele = `<span class="${status_data[row?.['goods_receipt_type']]}">${row?.['inventory_adjustment']?.['code']}</span>`;
                             }
                             return ele;
                         }
@@ -83,9 +92,9 @@ $(function () {
                             return `<div class="dropdown">
                                     <i class="far fa-window-maximize" aria-expanded="false" data-bs-toggle="dropdown"></i>
                                     <div role="menu" class="dropdown-menu">
-                                        <a class="dropdown-item" href="${link}">${$.fn.transEle.attr('data-change')}</a>
+                                        <a class="dropdown-item" href="${link}">${transEle.attr('data-change')}</a>
                                         <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" href="#">${$.fn.transEle.attr('data-cancel')}</a>
+                                        <a class="dropdown-item" href="#">${transEle.attr('data-cancel')}</a>
                                     </div>
                                 </div>`;
                         },

@@ -4,5 +4,5 @@ $(document).ready(function () {
 
     let btnEdit = $('#btn-edit')
     btnEdit.attr('href', btnEdit.attr('href').format_url_with_uuid(pk));
-    PriceListLoadPage.loadDetailPage(frm, pk, 'detail');
+    PriceListLoadPage.loadDetailPage(frm, pk, 1);
 })

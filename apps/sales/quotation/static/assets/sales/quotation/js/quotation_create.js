@@ -7,30 +7,14 @@ $(function () {
         let shippingClass = new shippingHandle();
         // Elements
         let formSubmit = $('#frm_quotation_create');
-        let boxOpportunity = $('#select-box-quotation-create-opportunity');
-        let boxCustomer = $('#select-box-quotation-create-customer');
-        let boxContact = $('#select-box-quotation-create-contact');
-        let boxPayment = $('#select-box-quotation-create-payment-term');
-        let boxSalePerson = $('#select-box-quotation-create-sale-person');
         let boxPriceList = $('#select-box-quotation-create-price-list');
         let boxQuotation = $('#select-box-quotation');
         let tabPrice = $('#tab_terms');
 
         // Load inits
+        QuotationLoadDataHandle.loadBoxQuotationCustomer();
         QuotationLoadDataHandle.loadBoxQuotationContact();
         QuotationLoadDataHandle.loadBoxQuotationPaymentTerm();
-        if (formSubmit.attr('data-method') === 'POST') {
-            let employee_current = $('#data-init-quotation-create-request-employee').val();
-            if (employee_current) {
-                let employee_current_data = JSON.parse(employee_current);
-                QuotationLoadDataHandle.loadBoxQuotationSalePerson(employee_current_data);
-                QuotationLoadDataHandle.loadBoxQuotationOpportunity({}, employee_current_data.id);
-                QuotationLoadDataHandle.loadBoxQuotationCustomer({}, employee_current_data.id);
-            } else {
-                QuotationLoadDataHandle.loadBoxQuotationOpportunity();
-                QuotationLoadDataHandle.loadBoxQuotationCustomer();
-            }
-        }
         QuotationLoadDataHandle.loadInitQuotationProduct();
         // init config
         QuotationLoadDataHandle.loadInitQuotationConfig('quotation-config-data', formSubmit.attr('data-method'));
@@ -68,99 +52,18 @@ $(function () {
         $('.daterangepicker').remove();
 
 // Action on change dropdown opportunity
-        boxOpportunity.on('change', function () {
-            if ($(this).val()) {
-                let dataSelected = SelectDDControl.get_data_from_idx(boxOpportunity, $(this).val());
-                if (dataSelected) {
-                    boxCustomer.empty();
-                    QuotationLoadDataHandle.loadBoxQuotationCustomer(dataSelected.customer);
-                    boxCustomer.change();
-                }
-            } else { // No Value => load again dropdowns
-                boxCustomer.empty();
-                QuotationLoadDataHandle.loadBoxQuotationCustomer();
-                boxCustomer.change();
-            }
-            QuotationLoadDataHandle.loadInformationSelectBox(boxOpportunity);
-            // Delete all promotion rows
-            deletePromotionRows(tableProduct, true, false);
-            // Delete all shipping rows
-            deletePromotionRows(tableProduct, false, true);
-            // ReCheck Config when change Opportunity
-            QuotationCheckConfigHandle.checkConfig(true);
+        QuotationLoadDataHandle.opportunitySelectEle.on('change', function () {
+            QuotationLoadDataHandle.loadDataByOpportunity(this);
         });
 
 // Action on change dropdown customer
-        boxCustomer.on('change', function () {
-            if ($(this).val()) {
-                let dataSelected = SelectDDControl.get_data_from_idx(boxCustomer, $(this).val());
-                if (dataSelected) {
-                    if (boxOpportunity.val()) {
-                        let dataOppSelected = SelectDDControl.get_data_from_idx(boxOpportunity, boxOpportunity.val());
-                        if (dataOppSelected) {
-                            if (Object.keys(dataOppSelected.customer).length !== 0) {
-                                if (dataOppSelected.customer.id !== $(this).val()) {
-                                    boxOpportunity.empty();
-                                    QuotationLoadDataHandle.loadBoxQuotationOpportunity();
-                                }
-                            }
-                        }
-                    }
-                    // load Shipping & Billing by Customer
-                    QuotationLoadDataHandle.loadShippingBillingCustomer();
-                    QuotationLoadDataHandle.loadShippingBillingCustomer(dataSelected);
-                    // load Contact by Customer
-                    boxContact.empty();
-                    QuotationLoadDataHandle.loadBoxQuotationContact(dataSelected.owner, dataSelected.id);
-                    // load Payment Term by Customer
-                    boxPayment.empty();
-                    QuotationLoadDataHandle.loadBoxQuotationPaymentTerm(dataSelected?.['payment_term_customer_mapped']);
-                    // Store Account Price List
-                    if (Object.keys(dataSelected?.['price_list_mapped']).length !== 0) {
-                        document.getElementById('customer-price-list').value = dataSelected?.['price_list_mapped'].id;
-                    }
-                    // Load again dropdown sale_person only valueSelected
-                    QuotationLoadDataHandle.loadBoxQuotationSalePerson($('#select-box-quotation-create-sale-person').val());
-                }
-            } else { // No Value => load again dropdowns
-                boxOpportunity.empty();
-                boxContact.empty();
-                boxPayment.empty();
-                QuotationLoadDataHandle.loadBoxQuotationOpportunity();
-                QuotationLoadDataHandle.loadBoxQuotationContact();
-                QuotationLoadDataHandle.loadBoxQuotationPaymentTerm();
-                document.getElementById('customer-price-list').value = "";
-                if (!$('#select-box-quotation-create-opportunity').val()) {
-                    QuotationLoadDataHandle.loadBoxQuotationSalePerson($('#select-box-quotation-create-sale-person').val());
-                }
-            }
-            QuotationLoadDataHandle.loadInformationSelectBox(boxCustomer);
-            // Delete all promotion rows
-            deletePromotionRows(tableProduct, true, false);
-            // Delete all shipping rows
-            deletePromotionRows(tableProduct, false, true);
-            // load again price of product by customer price list then Re Calculate
-            QuotationLoadDataHandle.loadDataProductAll();
+        QuotationLoadDataHandle.customerSelectEle.on('change', function () {
+            QuotationLoadDataHandle.loadDataByCustomer();
         });
 
 // Action on change dropdown sale person
-        boxSalePerson.on('change', function () {
-            // clear Customer box & Opportunity box & Contact box & PaymentTerm box & PriceListVal
-            boxOpportunity.empty();
-            boxCustomer.empty();
-            boxContact.empty();
-            boxPayment.empty();
-            QuotationLoadDataHandle.loadBoxQuotationOpportunity({}, $(this).val());
-            QuotationLoadDataHandle.loadBoxQuotationCustomer({}, $(this).val());
-            document.getElementById('customer-price-list').value = "";
-            // Delete all promotion rows
-            deletePromotionRows(tableProduct, true, false);
-            // Delete all shipping rows
-            deletePromotionRows(tableProduct, false, true);
-            // load again price of product by customer price list then Re Calculate
-            QuotationLoadDataHandle.loadDataProductAll();
-            // ReCheck Config when change Opportunity
-            QuotationCheckConfigHandle.checkConfig(true);
+        QuotationLoadDataHandle.salePersonSelectEle.on('change', function () {
+            QuotationLoadDataHandle.loadDataBySalePerson();
         });
 
 // Action on click dropdown price list
@@ -171,7 +74,7 @@ $(function () {
         });
 
 // Action on click dropdown payment term
-        boxPayment.on('click', function() {
+        QuotationLoadDataHandle.paymentSelectEle.on('click', function() {
             QuotationLoadDataHandle.loadBoxQuotationPaymentTerm();
         });
 
@@ -180,11 +83,11 @@ $(function () {
             if (!$(this)[0].innerHTML) {
                 let opp_id = null;
                 let sale_person_id = null;
-                if (boxOpportunity.val()) {
-                    opp_id = boxOpportunity.val()
+                if (QuotationLoadDataHandle.opportunitySelectEle.val()) {
+                    opp_id = QuotationLoadDataHandle.opportunitySelectEle.val()
                 }
-                if (boxSalePerson.val()) {
-                    sale_person_id = boxSalePerson.val()
+                if (QuotationLoadDataHandle.salePersonSelectEle.val()) {
+                    sale_person_id = QuotationLoadDataHandle.salePersonSelectEle.val()
                 }
                 QuotationLoadDataHandle.loadBoxSaleOrderQuotation('select-box-quotation', null, opp_id, sale_person_id);
             }
@@ -659,11 +562,11 @@ $(function () {
                 // load table quotation list for copy
                 let opp_id = null;
                 let sale_person_id = null;
-                if (boxOpportunity.val()) {
-                    opp_id = boxOpportunity.val()
+                if (QuotationLoadDataHandle.opportunitySelectEle.val()) {
+                    opp_id = QuotationLoadDataHandle.opportunitySelectEle.val()
                 }
-                if (boxSalePerson.val()) {
-                    sale_person_id = boxSalePerson.val()
+                if (QuotationLoadDataHandle.salePersonSelectEle.val()) {
+                    sale_person_id = QuotationLoadDataHandle.salePersonSelectEle.val()
                 }
                 QuotationLoadDataHandle.loadTableCopyQuotation(opp_id, sale_person_id);
             } else if (type === 'copy-to') {
@@ -749,9 +652,12 @@ $(function () {
                 // Begin load data copy FROM
                 document.getElementById('customer-price-list').value = dataCopy.customer?.['customer_price_list'];
                 QuotationLoadDataHandle.loadDataTablesAndDropDowns(dataCopy);
-                QuotationCalculateCaseHandle.calculateAllRowsTableProduct(tableProduct);
                 QuotationLoadDataHandle.loadDetailQuotation(dataCopy, true);
-
+                QuotationCalculateCaseHandle.calculateAllRowsTableProduct(tableProduct);
+                // Check promotion -> re calculate
+                QuotationLoadDataHandle.loadReApplyPromotion(dataCopy, tableProduct);
+                // Set form novalidate
+                formSubmit[0].setAttribute('novalidate', 'novalidate');
             } else if (type === 'copy-to') { // COPY TO (QUOTATION DETAIL -> SALE ORDER CREATE)
                 // create URL and add to href
                 let eleRedirect = document.getElementById('link-to-sale-order-create');
@@ -770,7 +676,7 @@ $(function () {
                     let dataRaw = JSON.parse(eleDataCopy.val());
                     QuotationLoadDataHandle.loadAPIDetailQuotation(dataRaw.id);
                     checkElementValuesBeforeLoadDataCopy();
-                    checkOppLoaded();
+                    // checkOppLoaded();
                 }
             }
         }
@@ -805,8 +711,12 @@ $(function () {
                     // Begin load data copy TO
                     document.getElementById('customer-price-list').value = dataCopy.customer?.['customer_price_list'];
                     QuotationLoadDataHandle.loadDataTablesAndDropDowns(dataCopy);
-                    QuotationCalculateCaseHandle.calculateAllRowsTableProduct(tableProduct);
                     QuotationLoadDataHandle.loadDetailQuotation(dataCopy, true);
+                    QuotationCalculateCaseHandle.calculateAllRowsTableProduct(tableProduct);
+                    // Check promotion -> re calculate
+                    QuotationLoadDataHandle.loadReApplyPromotion(dataCopy, tableProduct);
+                    // Set form novalidate
+                    formSubmit[0].setAttribute('novalidate', 'novalidate');
                 }
             }
         }
@@ -821,26 +731,15 @@ $(function () {
             }
         }
 
-        function checkOppLoaded() {
-            let oppVal = boxOpportunity.val();
-            let dataCopy = $('#data-copy-quotation-detail').val();
-            if (oppVal && dataCopy) {
-                let data = JSON.parse(dataCopy);
-                document.getElementById('quotation-final-revenue-before-tax').value = data.total_product_revenue_before_tax;
-            } else {
-                setTimeout(checkOppLoaded, 1000);  // call again after 1s if condition not pass yet
-            }
-        }
-
 // Load init Opportunity
         QuotationLoadDataHandle.loadInitOpportunity();
 
 // PROMOTION
 // Action on click button Check Available Promotion (show list promotions)
         $('#btn-check-promotion').on('click', function() {
-            if (boxCustomer.val()) {
+            if (QuotationLoadDataHandle.customerSelectEle.val()) {
                 // destroy dataTable then call API load-check again
-                QuotationDataTableHandle.loadTableQuotationPromotion('data-init-quotation-create-promotion', boxCustomer.val())
+                QuotationDataTableHandle.loadTableQuotationPromotion('data-init-quotation-create-promotion', QuotationLoadDataHandle.customerSelectEle.val())
             } else {
                 $('#datable-quotation-create-promotion').DataTable().destroy();
                 QuotationDataTableHandle.dataTablePromotion();
@@ -877,25 +776,25 @@ $(function () {
                 },
                 "order": order,
                 "product": {
-                    "id": promotionResult.product_id,
-                    "code": promotionResult.product_code,
-                    "title": promotionResult.product_title
+                    "id": promotionResult?.['product_id'],
+                    "title": promotionResult?.['product_title'],
+                    "code": promotionResult?.['product_code'],
                 },
-                "product_code": promotionResult.product_code,
-                "product_title": promotionResult.product_title,
+                "product_code": promotionResult?.['product_code'],
+                "product_title": promotionResult?.['product_title'],
                 "unit_of_measure": {
                     "id": "",
                     "code": "",
                     "title": ""
                 },
-                "product_quantity": promotionResult.product_quantity,
+                "product_quantity": promotionResult?.['product_quantity'],
                 "product_uom_code": "",
                 "product_tax_title": "",
                 "product_tax_value": 0,
                 "product_uom_title": "",
                 "product_tax_amount": 0,
-                "product_unit_price": promotionResult.product_price,
-                "product_description": promotionResult.product_description,
+                "product_unit_price": promotionResult?.['product_price'],
+                "product_description": promotionResult?.['product_description'],
                 "product_discount_value": 0,
                 "product_subtotal_price": 0,
                 "product_discount_amount": 0,
@@ -915,6 +814,8 @@ $(function () {
                     $(newRow).detach().insertAfter(afterRow);
                     // Re Calculate all data
                     QuotationCalculateCaseHandle.commonCalculate(tableProduct, newRow, true, false, false);
+                    // Load disabled
+                    QuotationLoadDataHandle.loadRowDisabled(newRow);
                 } else { // on Whole order
                     let newRow = tableProduct.DataTable().row.add(dataAdd).draw().node();
                     QuotationLoadDataHandle.loadBoxQuotationUOM($(newRow.querySelector('.table-row-uom')));
@@ -925,12 +826,14 @@ $(function () {
                     if (promotionResult.hasOwnProperty('discount_rate_on_order')) {
                         if (promotionResult.discount_rate_on_order !== null) {
                             if (promotionResult.is_before_tax === true) {
-                                promotionClass.reCalculateIfPromotion(tableProduct, promotionResult.discount_rate_on_order, promotionResult.product_price)
+                                promotionClass.reCalculateIfPromotion(tableProduct, promotionResult.discount_rate_on_order, promotionResult.product_price);
                             } else {
                                 promotionClass.reCalculateIfPromotion(tableProduct, promotionResult.discount_rate_on_order, promotionResult.product_price, false)
                             }
                         }
                     }
+                    // Load disabled
+                    QuotationLoadDataHandle.loadRowDisabled(newRow);
                 }
             } else if (promotionResult.is_gift === true) { // GIFT
                 if (promotionResult.row_apply_index !== null) { // on Specific product
@@ -939,14 +842,20 @@ $(function () {
                     let afterRow = tableProduct.DataTable().row(promotionResult.row_apply_index).node();
                     // Remove the new row and re-insert it at the desired position
                     $(newRow).detach().insertAfter(afterRow);
+                    // load data dropdown
+                    QuotationLoadDataHandle.loadBoxQuotationProduct($(newRow.querySelector('.table-row-item')));
+                    QuotationLoadDataHandle.loadBoxQuotationUOM($(newRow.querySelector('.table-row-uom')));
+                    QuotationLoadDataHandle.loadBoxQuotationTax($(newRow.querySelector('.table-row-tax')));
+                    // Load disabled
+                    QuotationLoadDataHandle.loadRowDisabled(newRow);
                 } else { // on Whole order
-                    tableProduct.DataTable().row.add(dataAdd).draw()
+                    let newRow = tableProduct.DataTable().row.add(dataAdd).draw().node();
+                    // Load disabled
+                    QuotationLoadDataHandle.loadRowDisabled(newRow);
                 }
             }
             // ReOrder STT
             reOrderSTT(tableProduct[0].tBodies[0], tableProduct);
-            // check disable
-            tableProduct.find('.disabled-but-edit').removeAttr('disabled').removeClass('disabled-but-edit');
         });
 
 // SHIPPING
@@ -982,12 +891,12 @@ $(function () {
                 },
                 "order": order,
                 "product": {
-                    "id": dataShipping.id,
+                    "id": dataShipping?.['id'],
+                    "title": dataShipping?.['shipping_title'],
                     "code": "",
-                    "title": dataShipping.shipping_title,
                 },
                 "product_code": "",
-                "product_title": dataShipping.shipping_title,
+                "product_title": dataShipping?.['shipping_title'],
                 "unit_of_measure": {
                     "id": "",
                     "code": "",
@@ -1000,7 +909,7 @@ $(function () {
                 "product_uom_title": "",
                 "product_tax_amount": 0,
                 "product_unit_price": shippingPrice,
-                "product_description": dataShipping.shipping_title,
+                "product_description": dataShipping?.['shipping_title'],
                 "product_discount_value": 0,
                 "product_subtotal_price": shippingPrice,
                 "product_discount_amount": 0,
@@ -1016,8 +925,10 @@ $(function () {
             QuotationLoadDataHandle.loadBoxQuotationTax($(newRow.querySelector('.table-row-tax')));
             // Re Calculate after add shipping (pretax, discount, total)
             shippingClass.reCalculateIfShipping(shippingPrice);
+            // Load disabled
+            QuotationLoadDataHandle.loadRowDisabled(newRow);
             // ReOrder STT
-            reOrderSTT(tableProduct[0].tBodies[0], tableProduct)
+            reOrderSTT(tableProduct[0].tBodies[0], tableProduct);
             // Clear table COST if add new row Product
             tableCost.DataTable().clear().draw();
             document.getElementById('quotation-create-cost-pretax-amount').innerHTML = "0";
@@ -1030,7 +941,7 @@ $(function () {
         formSubmit.submit(function (e) {
             e.preventDefault();
             if (tableProduct[0].querySelector('.table-row-promotion') && $(this).attr('data-method') === "POST") { // HAS PROMOTION => Check condition again
-                promotionClass.checkPromotionIfSubmit('data-init-quotation-create-promotion', boxCustomer.val());
+                promotionClass.checkPromotionIfSubmit('data-init-quotation-create-promotion', QuotationLoadDataHandle.customerSelectEle.val());
                 // Check promotion then Submit Form
                 submitCheckPromotion();
             } else { // NO PROMOTION => submit normal
@@ -1068,7 +979,7 @@ $(function () {
             QuotationSubmitHandle.setupDataSubmit(_form, is_sale_order);
             let submitFields = [
                 'title',
-                'opportunity',
+                'opportunity_id',
                 'customer',
                 'contact',
                 'employee_inherit_id',
@@ -1105,7 +1016,7 @@ $(function () {
             if (is_sale_order === true) {
                 submitFields = [
                     'title',
-                    'opportunity',
+                    'opportunity_id',
                     'customer',
                     'contact',
                     'employee_inherit_id',
@@ -1147,7 +1058,7 @@ $(function () {
             // validate none & blank
             let check_blank_list = ['', "", "undefined"];
             let check_field_list = [
-                'opportunity',
+                'opportunity_id',
                 'customer',
                 'contact',
                 'employee_inherit_id',

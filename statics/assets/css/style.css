@@ -74015,6 +74015,9 @@ textarea.form-control, textarea.form-select, textarea.dd-handle {
 .form-select {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 20 20' fill='none' stroke='rgba(47, 52, 58, 0.3)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-chevron-down'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
 }
+body.theme-dark .form-select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 20 20' fill='none' stroke='rgba(173, 181, 189, 1)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-chevron-down'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+}
 .form-select:hover:not(:disabled) {
   border-color: #007D88;
   z-index: 4;
@@ -74328,7 +74331,7 @@ textarea.form-control, textarea.form-select, textarea.dd-handle {
   left: 0;
 }
 .input-affix-wrapper .input-suffix {
-  right: 0;
+  right: 0;top:5px;
 }
 .input-affix-wrapper .form-control:not(:first-child), .input-affix-wrapper .form-select:not(:first-child), .input-affix-wrapper .wizard > .content > .body input:not(:first-child), .wizard > .content > .body .input-affix-wrapper input:not(:first-child), .input-affix-wrapper .dd-handle:not(:first-child),
 .input-affix-wrapper .form-select:not(:first-child) {
@@ -78280,6 +78283,7 @@ span[data-notify="icon"] {
   border: none !important;
   vertical-align: 0 !important;
   margin-left: .4em;
+  margin-top: -15px;
 }
 .dropdown-toggle.dropdown-toggle-split:after, .dropdown-toggle.dropdown-toggle-split:before {
   margin: 0 !important;
@@ -83326,13 +83330,13 @@ Project:	Jampack
   background: #d8d8d8;
 }
 .hk-wrapper[data-layout="vertical"][data-menu="dark"] .hk-menu {
-  background: #262a2e;
+  background: var(--bg-dark-mode);
 }
 .hk-wrapper[data-layout="vertical"][data-menu="dark"] .hk-menu .menu-content-wrap .menu-group .navbar-nav .nav-item .nav-link {
   color: #fff;
 }
 .hk-wrapper[data-layout="vertical"][data-menu="dark"] .hk-menu .menu-content-wrap .menu-group .navbar-nav .nav-item .nav-link[data-bs-toggle="collapse"]::after {
-  color: rgba(255, 255, 255, 0.3);
+  color: var(--color-dark-mode);
 }
 .hk-wrapper[data-layout="vertical"][data-menu="dark"] .hk-menu .menu-content-wrap .menu-group .navbar-nav > .nav-item > ul:after {
   background: #d8d8d8;
@@ -91067,4 +91071,3 @@ Project:	Jampack
 }
 
 /*# sourceMappingURL=style.css.map */
-

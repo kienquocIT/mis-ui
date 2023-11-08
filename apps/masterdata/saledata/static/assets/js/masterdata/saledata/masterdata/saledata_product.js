@@ -67,9 +67,6 @@ $(document).ready(function () {
             case 'section-product-category':
                 loadProDuctCategory()
                 break;
-            case 'section-expense-type':
-                loadExpenseType()
-                break;
         }
         $(".lookup-data").hide()
         let id_tag = `#` + section
@@ -138,31 +135,6 @@ $(document).ready(function () {
                             let data = $.fn.switcherResp(resp);
                             if (data && resp.data.hasOwnProperty('product_category_list')) {
                                 return resp.data['product_category_list'] ? resp.data['product_category_list'] : []
-                            }
-                            throw Error('Call data raise errors.')
-                        },
-                    },
-                    columns: column_product_expense,
-                },
-            );
-        }
-    }
-
-    function loadExpenseType() {
-        if (!$.fn.DataTable.isDataTable('#datatable-expense-type-list')) {
-            let tbl = $('#datatable-expense-type-list');
-            let frm = new SetupFormSubmit(tbl);
-            tbl.DataTableDefault(
-                {
-                    useDataServer: true,
-                    rowIdx: true,
-                    ajax: {
-                        url: frm.dataUrl,
-                        type: frm.dataMethod,
-                        dataSrc: function (resp) {
-                            let data = $.fn.switcherResp(resp);
-                            if (data && resp.data.hasOwnProperty('expense_type_list')) {
-                                return resp.data['expense_type_list'] ? resp.data['expense_type_list'] : []
                             }
                             throw Error('Call data raise errors.')
                         },
@@ -378,115 +350,132 @@ $(document).ready(function () {
     $('#check-referenced-unit').on('change', function () {
         let data_referenced = $('#select-box-unit-measure-group').find('option:selected').attr('data-referenced');
         $('#label-referenced-unit').text(`* ` + data_referenced);
+        let ratioEle = $('#ratio-unit');
         if (this.checked) {
-            $('#ratio-unit').val('1');
-            $('#ratio-unit').prop('readonly', true);
+            ratioEle.val('1');
+            ratioEle.prop('readonly', true);
         } else {
-            $('#ratio-unit').val('');
-            $('#ratio-unit').prop('readonly', false);
+            ratioEle.val('');
+            ratioEle.prop('readonly', false);
         }
     })
 
 // Submit form product and expense
     let form_create = $('#form-create-product-and-expense');
-    SetupFormSubmit.validate(
-        form_create,
-        {
-            submitHandler: function (form) {
-                let frm = new SetupFormSubmit($(form));
-                let frm_data = frm.dataForm;
-                let lookup = $(form).attr('data-lookup');
-                let data_url = ''
-                if (lookup === 'section-product-type') {
-                    data_url = $('#form-create-product-and-expense').attr('data-url-product-type');
-                } else if (lookup === 'section-product-category') {
-                    data_url = $('#form-create-product-and-expense').attr('data-url-product-category');
-                } else if (lookup === 'section-expense-type') {
-                    data_url = $('#form-create-product-and-expense').attr('data-url-expense-type');
-                }
-                $.fn.callAjax2({
-                    'url': data_url,
-                    'method': frm.dataMethod,
-                    'data': frm_data,
-                }).then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyB({description: "Tạo mới"}, 'success')
-                            $('#modal-product-and-expense').modal('hide');
-                            if (lookup === 'section-product-type') {
-                                $('#datatable-product-type-list').DataTable().ajax.reload();
-                            } else if (lookup === 'section-product-category') {
-                                $('#datatable-product-category-list').DataTable().ajax.reload();
-                            } else if (lookup === 'section-expense-type') {
-                                $('#datatable-expense-type-list').DataTable().ajax.reload();
-                            }
-                        }
-                    },
-                    (errs) => {
-                    }
-                )
+    new SetupFormSubmit(form_create).validate({
+        rules: {
+            title: {
+                required: true,
             }
-        })
+        },
+        submitHandler: function (form) {
+            let frm = new SetupFormSubmit($(form));
+            let frm_data = frm.dataForm;
+            let lookup = $(form).attr('data-lookup');
+            let data_url = ''
+            if (lookup === 'section-product-type') {
+                data_url = $('#form-create-product-and-expense').attr('data-url-product-type');
+            } else if (lookup === 'section-product-category') {
+                data_url = $('#form-create-product-and-expense').attr('data-url-product-category');
+            }
+            $.fn.callAjax2({
+                'url': data_url,
+                'method': frm.dataMethod,
+                'data': frm_data,
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: "Tạo mới"}, 'success')
+                        $('#modal-product-and-expense').modal('hide');
+                        if (lookup === 'section-product-type') {
+                            $('#datatable-product-type-list').DataTable().ajax.reload();
+                        } else if (lookup === 'section-product-category') {
+                            $('#datatable-product-category-list').DataTable().ajax.reload();
+                        }
+                    }
+                },
+                (errs) => {
+                }
+            )
+        }
+    })
 
 // submit form create unit measure group
     let frm_unit_measure_group = $('#form-create-unit-measure-group');
-    SetupFormSubmit.validate(
-        frm_unit_measure_group,
-        {
-            submitHandler: function (form) {
-                let frm = new SetupFormSubmit($(form));
-                let frm_data = frm.dataForm;
-                let data_url = frm.dataUrl;
-                $.fn.callAjax2({
-                    'url': data_url,
-                    'method': frm.dataMethod,
-                    'data': frm_data,
-                }).then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyB({description: "Tạo mới"}, 'success')
-                            $('#modal-unit-measure-group').modal('hide');
-                            $('#datatable-unit-measure-group-list').DataTable().ajax.reload();
-                        }
-                    },
-                    (errs) => {
-                    }
-                )
+    new SetupFormSubmit(frm_unit_measure_group).validate({
+        rules: {
+            title: {
+                required: true,
             }
-        })
+        },
+        submitHandler: function (form) {
+            let frm = new SetupFormSubmit($(form));
+            let frm_data = frm.dataForm;
+            let data_url = frm.dataUrl;
+            $.fn.callAjax2({
+                'url': data_url,
+                'method': frm.dataMethod,
+                'data': frm_data,
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: "Tạo mới"}, 'success')
+                        $('#modal-unit-measure-group').modal('hide');
+                        $('#datatable-unit-measure-group-list').DataTable().ajax.reload();
+                    }
+                },
+                (errs) => {
+                }
+            )
+        }
+    })
 
 // submit form unit measure
     let frm_unit_measure = $('#form-create-unit-measure');
-    SetupFormSubmit.validate(
-        frm_unit_measure,
-        {
-            submitHandler: function (form) {
-                let frm = new SetupFormSubmit($(form));
-                let frm_data = frm.dataForm;
-                let data_url = frm.dataUrl;
-
-                frm_data['is_referenced_unit'] = !!$('#check-referenced-unit').is(':checked');
-
-                $.fn.callAjax2({
-                    'url': data_url,
-                    'method': frm.dataMethod,
-                    'data': frm_data,
-                }).then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyB({description: "Tạo mới"}, 'success')
-                            $('#modal-unit-measure').modal('hide');
-                            $('#datatable-unit-measure-list').DataTable().ajax.reload();
-                        }
-                    },
-                    (errs) => {
-                    }
-                )
+    new SetupFormSubmit(frm_unit_measure).validate({
+        rules: {
+            title: {
+                required: true,
+            },
+            group: {
+                required: true,
+            },
+            code: {
+                required: true,
+            },
+            ratio: {
+                required: true,
+                number: true,
+                min: 0.000001,
             }
-        })
+        },
+        submitHandler: function (form) {
+            let frm = new SetupFormSubmit($(form));
+            let frm_data = frm.dataForm;
+            let data_url = frm.dataUrl;
+
+            frm_data['is_referenced_unit'] = !!$('#check-referenced-unit').is(':checked');
+
+            $.fn.callAjax2({
+                'url': data_url,
+                'method': frm.dataMethod,
+                'data': frm_data,
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: "Tạo mới"}, 'success')
+                        $('#modal-unit-measure').modal('hide');
+                        $('#datatable-unit-measure-list').DataTable().ajax.reload();
+                    }
+                },
+                (errs) => {
+                }
+            )
+        }
+    })
 
 // load detail uom
     $(document).on('click', '#datatable-unit-measure-list .btn-detail', function () {
@@ -511,17 +500,19 @@ $(document).ready(function () {
                         $('#group-id').val(data.unit_of_measure.group.id);
                         $('#inp-edit-uom-group').val(data.unit_of_measure.group.title);
 
+                        let check_reference_unit = $('#check-edit-unit');
+
                         if (data.unit_of_measure.group.is_referenced_unit === true) {
-                            $('#check-edit-unit').prop('checked', true);
+                            check_reference_unit.prop('checked', true);
                             $('#select-box-edit-uom-group-div').prop('hidden', true);
 
                             $('#ratio-edit-area').prop('hidden', true);
 
 
                             $('#inp-edit-uom-group-div').prop('hidden', false);
-                            $('#check-edit-unit').prop('disabled', true);
+                            check_reference_unit.prop('disabled', true);
                         } else {
-                            $('#check-edit-unit').prop('checked', false);
+                            check_reference_unit.prop('checked', false);
                             $('#select-box-edit-uom-group-div').prop('hidden', false);
 
 
@@ -529,7 +520,7 @@ $(document).ready(function () {
 
 
                             $('#inp-edit-uom-group-div').prop('hidden', true);
-                            $('#check-edit-unit').prop('disabled', false);
+                            check_reference_unit.prop('disabled', false);
                         }
                     }
                 }
@@ -542,9 +533,13 @@ $(document).ready(function () {
 // change select UoM Group in modal detail
     $('#select-box-edit-uom-group').on('change', function () {
         $('#ratio-edit-area').prop('hidden', false);
-        $('#inp-ratio-unit').val('');
-        if ($(this).find('option:selected').val() === $('#group-id').val()) {
-            $('#inp-ratio-unit').val($('#group-referenced-unit-name').val());
+        let groupIdEle = $('#group-id');
+        let ratioEle = $('#inp-ratio-unit');
+        let checkReferenceUnit = $('#check-edit-unit');
+
+        ratioEle.val('');
+        if ($(this).find('option:selected').val() === groupIdEle.val()) {
+            ratioEle.val($('#group-referenced-unit-name').val());
         }
 
         let data_referenced = $(this).find('option:selected').attr('data-referenced');
@@ -552,29 +547,29 @@ $(document).ready(function () {
         if (data_referenced) {
             if (data_referenced === 'undefined') {
                 $('#label-edit-referenced-unit').text('')
-                $('#check-edit-unit').prop('checked', true);
-                $('#check-edit-unit').prop('disabled', true);
+                checkReferenceUnit.prop('checked', true);
+                checkReferenceUnit.prop('disabled', true);
                 $('#notify-area-edit-label').text('');
                 $('#notify-area-edit').prop('hidden', true);
             } else {
-                if ($(this).find('option:selected').val() !== $('#group-id').val()) {
+                if ($(this).find('option:selected').val() !== groupIdEle.val()) {
                     $('#label-edit-referenced-unit').text(`* ` + data_referenced)
-                    $('#check-edit-unit').prop('checked', false);
-                    $('#check-edit-unit').prop('disabled', true);
+                    checkReferenceUnit.prop('checked', false);
+                    checkReferenceUnit.prop('disabled', true);
                     $('#notify-area-edit-label').text('* Can not set referenced unit from another group.');
                     $('#notify-area-edit').prop('hidden', false);
                 } else {
                     $('#label-edit-referenced-unit').text(`* ` + data_referenced)
-                    $('#check-edit-unit').prop('checked', false);
-                    $('#check-edit-unit').prop('disabled', false);
+                    checkReferenceUnit.prop('checked', false);
+                    checkReferenceUnit.prop('disabled', false);
                     $('#notify-area-edit-label').text('');
                     $('#notify-area-edit').prop('hidden', true);
                 }
             }
         } else {
             $('#label-edit-referenced-unit').text('')
-            $('#check-edit-unit').prop('checked', false);
-            $('#check-edit-unit').prop('disabled', true);
+            checkReferenceUnit.prop('checked', false);
+            checkReferenceUnit.prop('disabled', true);
         }
     })
 
@@ -591,34 +586,48 @@ $(document).ready(function () {
 
 //submit form edit uom
     let frm_edit_uom = $('#form-edit-unit-measure')
-    SetupFormSubmit.validate(
-        frm_edit_uom,
-        {
-            submitHandler: function (form) {
-                let frm = new SetupFormSubmit($(form));
-                let frm_data = frm.dataForm;
-                if ($('#check-edit-unit').prop('checked') === true) {
-                    frm_data['is_referenced_unit'] = 'on';
-                }
-                frm_data['group'] = $('#select-box-edit-uom-group').find('option:selected').val();
-                $.fn.callAjax2({
-                    'url': url_update,
-                    'method': frm.dataMethod,
-                    'data': frm_data,
-                }).then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyB({description: "Cập nhật"}, 'success')
-                            $('#modal-detail-unit-measure').modal('hide');
-                            $('#datatable-unit-measure-list').DataTable().ajax.reload();
-                        }
-                    },
-                    (errs) => {
-                    }
-                )
+    new SetupFormSubmit(frm_edit_uom).validate({
+        rules: {
+            title: {
+                required: true,
+            },
+            group: {
+                required: true,
+            },
+            code: {
+                required: true,
+            },
+            ratio: {
+                required: true,
+                number: true,
+                min: 0.000001,
             }
-        })
+        },
+        submitHandler: function (form) {
+            let frm = new SetupFormSubmit($(form));
+            let frm_data = frm.dataForm;
+            if ($('#check-edit-unit').prop('checked') === true) {
+                frm_data['is_referenced_unit'] = 'on';
+            }
+            frm_data['group'] = $('#select-box-edit-uom-group').find('option:selected').val();
+            $.fn.callAjax2({
+                'url': url_update,
+                'method': frm.dataMethod,
+                'data': frm_data,
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: $('#base-trans-factory').data('msg-update')}, 'success')
+                        $('#modal-detail-unit-measure').modal('hide');
+                        $('#datatable-unit-measure-list').DataTable().ajax.reload();
+                    }
+                },
+                (errs) => {
+                }
+            )
+        }
+    })
 
 // load detail Product Type
     $(document).on('click', '#datatable-product-type-list .btn-detail', function () {
@@ -669,29 +678,6 @@ $(document).ready(function () {
         )
     })
 
-// load detail Expense Type
-    $(document).on('click', '#datatable-expense-type-list .btn-detail', function () {
-        let url = $('#form-edit-product-and-expense').attr('data-url-expense-type')
-        url_update = url.replace(0, $(this).attr('data-id'));
-        $('#modal-detail-product-and-expense h5').text('Edit Expense Type');
-        let url_detail = $(this).closest('table').attr('data-url-detail').replace(0, $(this).attr('data-id'))
-        $.fn.callAjax2({
-            'url': url_detail,
-            'method': 'GET',
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('expense_type')) {
-                        $('#inp-edit-name').val(data.expense_type.title);
-                        $('#inp-edit-description').val(data.expense_type.description);
-                    }
-                }
-            },
-            (errs) => {
-            }
-        )
-    })
 
 // load detail UoM Group
     $(document).on('click', '#datatable-unit-measure-group-list .btn-detail', function () {
@@ -717,63 +703,68 @@ $(document).ready(function () {
 
 // submit form update product and expense
     let frm_edit_product_expense = $('#form-edit-product-and-expense')
-    SetupFormSubmit.validate(
-        frm_edit_product_expense,
-        {
-            submitHandler: function (form) {
-                let frm = new SetupFormSubmit($(form));
-                let frm_data = frm.dataForm;
-                $.fn.callAjax2({
-                    'url': url_update,
-                    'method': frm.dataMethod,
-                    'data': frm_data,
-                }).then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyB({description: "Cập nhật"}, 'success')
-                            $('#modal-detail-product-and-expense').modal('hide');
-                            if ($('#tab-select-table li a.active').attr('data-collapse') === 'section-product-type') {
-                                $('#datatable-product-type-list').DataTable().ajax.reload();
-                            } else if ($('#tab-select-table li a.active').attr('data-collapse') === 'section-product-category') {
-                                $('#datatable-product-category-list').DataTable().ajax.reload();
-                            } else {
-                                $('#datatable-expense-type-list').DataTable().ajax.reload();
-                            }
-                        }
-                    },
-                    (errs) => {
-                    }
-                )
+    new SetupFormSubmit(frm_edit_product_expense).validate({
+        rules: {
+            title: {
+                required: true,
             }
-        })
+        },
+        submitHandler: function (form) {
+            let frm = new SetupFormSubmit($(form));
+            let frm_data = frm.dataForm;
+            $.fn.callAjax2({
+                'url': url_update,
+                'method': frm.dataMethod,
+                'data': frm_data,
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: $('#base-trans-factory').data('msg-update')}, 'success')
+                        $('#modal-detail-product-and-expense').modal('hide');
+                        let activeEle = $('#tab-select-table li a.active');
+                        if (activeEle.attr('data-collapse') === 'section-product-type') {
+                            $('#datatable-product-type-list').DataTable().ajax.reload();
+                        } else if (activeEle.attr('data-collapse') === 'section-product-category') {
+                            $('#datatable-product-category-list').DataTable().ajax.reload();
+                        }
+                    }
+                },
+                (errs) => {
+                }
+            )
+        }
+    })
 
 // submit form update uom group
     let frm_edit_uom_group = $('#form-edit-unit-measure-group')
-    SetupFormSubmit.validate(
-        frm_edit_uom_group,
-        {
-            submitHandler: function (form) {
-                let frm = new SetupFormSubmit($(form));
-                let frm_data = frm.dataForm;
-                $.fn.callAjax2({
-                    'url': url_update,
-                    'method': frm.dataMethod,
-                    'data': frm_data
-                }).then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyB({description: "Cập nhật"}, 'success')
-                            $('#modal-detail-unit-measure-group').modal('hide');
-                            $('#datatable-unit-measure-group-list').DataTable().ajax.reload();
-                        }
-                    },
-                    (errs) => {
-                    }
-                )
+    new SetupFormSubmit(frm_edit_uom_group).validate({
+        rules: {
+            title: {
+                required: true,
             }
-        })
+        },
+        submitHandler: function (form) {
+            let frm = new SetupFormSubmit($(form));
+            let frm_data = frm.dataForm;
+            $.fn.callAjax2({
+                'url': url_update,
+                'method': frm.dataMethod,
+                'data': frm_data
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: $('#base-trans-factory').data('msg-update')}, 'success')
+                        $('#modal-detail-unit-measure-group').modal('hide');
+                        $('#datatable-unit-measure-group-list').DataTable().ajax.reload();
+                    }
+                },
+                (errs) => {
+                }
+            )
+        }
+    })
 
 
     $('.btn-show-modal').on('click', function () {

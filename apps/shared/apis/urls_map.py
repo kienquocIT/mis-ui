@@ -39,6 +39,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     user_list = StringUrl('account/users')
     user_detail = StringUrl('account/user')
     USER_RESET_PASSWORD = StringUrl('account/user/reset-password/{pk}')
+    LANGUAGE_CHANGE = 'auth/language'
 
     # attachment
     MEDIA_ACCESS_TOKEN = StringUrl('hr/employee/media-token')
@@ -66,6 +67,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # tenant
     TENANT_PLAN_LIST = StringUrl('tenant/tenant-plans')
+    TENANT_DIAGRAM = StringUrl('tenant/org-chart')
 
     # account
     ACCOUNT_USER_COMPANY = StringUrl('account/user-company')
@@ -76,9 +78,15 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     EMPLOYEE_LIST = StringUrl('hr/employees')
     EMPLOYEE_DETAIL = StringUrl('hr/employee')
     EMPLOYEE_DETAIL_PK = StringUrl('hr/employee/{pk}')
+    EMPLOYEE_DETAIL_APP_LIST = StringUrl('hr/employee/{pk}/app')
+    EMPLOYEE_APPLICATION_ALL_LIST = StringUrl('hr/employee/{pk}/app/all')
+    EMPLOYEE_APPLICATION_SUMMARY_LIST = StringUrl('hr/employee/{pk}/app/summary')
+    EMPLOYEE_PERMISSION_SUMMARY_LIST = StringUrl('hr/employee/{pk}/permissions/summary')
+    EMPLOYEE_PLAN_SUMMARY_LIST = StringUrl('hr/employee/{pk}/plan/summary')
     EMPLOYEE_COMPANY = StringUrl('hr/employee/company')
     EMPLOYEE_COMPANY_NEW = StringUrl('hr/employee/company/{company_id}')
     EMPLOYEE_TENANT = StringUrl('hr/employee/tenant')
+    EMPLOYEE_COMPANY_LIST = StringUrl('hr/employees-company')
 
     # organization/group
     GROUP_LEVEL_LIST = StringUrl('hr/levels')
@@ -101,10 +109,12 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     ROLE_LIST = StringUrl('hr/roles')
     ROLE_DETAIL = StringUrl('hr/role')
     ROLE_DETAIL_PK = StringUrl('hr/role/{pk}')
+    ROLE_DETAIL_APP_LIST = StringUrl('hr/role/{pk}/app')
 
     # base
     PLAN_LIST = StringUrl('base/plans')
     TENANT_APPLICATION_LIST = StringUrl('base/tenant-applications')
+    APPLICATION_DETAIL = StringUrl('base/application/{pk}')
     APPLICATION_PROPERTY_LIST = StringUrl('base/tenant-applications-property')
     APPLICATION_PROPERTY_EMPLOYEE_LIST = StringUrl('base/applications-property-employee')
     APPLICATION_PERMISSION = StringUrl('base/permissions')
@@ -164,8 +174,6 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PRODUCT_TYPE_DETAIL = StringUrl('saledata/product-type/{pk}')
     PRODUCT_CATEGORY_LIST = StringUrl('saledata/product-categories')
     PRODUCT_CATEGORY_DETAIL = StringUrl('saledata/product-category/{pk}')
-    EXPENSE_TYPE_LIST = StringUrl('saledata/expense-types')
-    EXPENSE_TYPE_DETAIL = StringUrl('saledata/expense-type/{pk}')
     UNIT_OF_MEASURE_GROUP = StringUrl('saledata/units-of-measure-group')
     UNIT_OF_MEASURE_GROUP_DETAIL = StringUrl('saledata/unit-of-measure-group/{pk}')
     UNIT_OF_MEASURE = StringUrl('saledata/units-of-measure')
@@ -180,6 +188,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # advance payment
     ADVANCE_PAYMENT_LIST = StringUrl('cashoutflow/advances-payments')
     ADVANCE_PAYMENT_DETAIL = StringUrl('cashoutflow/advances-payments')
+    ADVANCE_PAYMENT_COST_LIST = StringUrl('cashoutflow/advances-payments-cost-list/lists')
 
     # payment
     PAYMENT_LIST = StringUrl('cashoutflow/payments')
@@ -216,6 +225,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # opportunity
     OPPORTUNITY_LIST = StringUrl('opportunity/lists')
+    OPPORTUNITY_LIST_FOR_CASH_OUTFLOW = StringUrl('opportunity/list-for-cash-outflow')
     OPPORTUNITY_CALL_LOG_LIST = StringUrl('opportunity/call-log/lists')
     OPPORTUNITY_CALL_LOG_DELETE = StringUrl('opportunity/delete-call-log/{pk}')
     OPPORTUNITY_EMAIL_LIST = StringUrl('opportunity/send-email/lists')
@@ -254,7 +264,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # sale order
     SALE_ORDER_LIST = StringUrl('saleorder/list')
-    SALE_ORDER_LIST_FOR_CASH_OUTFLOW = StringUrl('saleorder/list-for-cashoutflow')
+    SALE_ORDER_LIST_FOR_CASH_OUTFLOW = StringUrl('saleorder/list-for-cash-outflow')
     SALE_ORDER_DETAIL = StringUrl('saleorder')
     SALE_ORDER_EXPENSE_LIST = StringUrl('saleorder/saleorder-expense-list/lists')
     SALE_ORDER_CONFIG = StringUrl('saleorder/config')
@@ -268,6 +278,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     WAREHOUSE_LIST_FOR_INVENTORY_ADJUSTMENT = StringUrl('saledata/warehouses-for-inventory-adjustment')
     WAREHOUSE_DETAIL = StringUrl('saledata/warehouse/{pk}')
     WAREHOUSE_PRODUCT_LIST = StringUrl('saledata/warehouses-products')
+    WAREHOUSE_LOT_LIST = StringUrl('saledata/warehouses-lots')
+    WAREHOUSE_SERIAL_LIST = StringUrl('saledata/warehouses-serials')
     WAREHOUSE_STOCK_PRODUCT = StringUrl('saledata/warehouses/check/{product_id}/{uom_id}')
 
     # shipping unit
@@ -291,6 +303,12 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     DELIVERY_SUB_LIST = StringUrl('delivery/sub')
     # Opportunity detail
     OPPORTUNITY_DETAIL = StringUrl('opportunity/{pk}')
+    OPPORTUNITY_DETAIL_GET_CREATE_FROM_OPP = StringUrl('opportunity/{pk}/create-from-opp')
+    OPPORTUNITY_CALL_LOG_DETAIL = StringUrl('opportunity/call-log/{pk}')
+    OPPORTUNITY_EMAIL_DETAIL = StringUrl('opportunity/send-email/{pk}')
+    OPPORTUNITY_MEETING_DETAIL = StringUrl('opportunity/meeting/{pk}')
+    MEMBER_OF_OPPORTUNITY_DETAIL = StringUrl('opportunity/{pk_opp}/member/{pk_member}')
+    MEMBER_OF_OPPORTUNITY_ADD = StringUrl('opportunity/{pk_opp}/member/add')
 
     # Opportunity config
     OPPORTUNITY_CONFIG = StringUrl('opportunity/config')
@@ -347,6 +365,10 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     GOODS_RECEIPT_LIST = StringUrl('inventory/goods-receipt/list')
     GOODS_RECEIPT_DETAIL = StringUrl('inventory/goods-receipt')
     GOODS_RECEIPT_DETAIL_PK = StringUrl('inventory/goods-receipt/{pk}')
+    INVENTORY_ADJUSTMENT_LIST = StringUrl('inventory/inventory-adjustments')
+    INVENTORY_ADJUSTMENT_DETAIL = StringUrl('inventory/inventory-adjustment/{pk}')
+    INVENTORY_ADJUSTMENT_PRODUCT_LIST = StringUrl('inventory/inventory-adjustment/product/list/{ia_id}')
+    INVENTORY_ADJUSTMENT_OTHER_LIST = StringUrl('inventory/inventory-adjustments-other')
 
     # Application for Opportunity permission
     APPLICATION_OPPORTUNITY_PERMISSION = StringUrl('base/applications-opportunity-permit')
@@ -358,3 +380,41 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     OPPORTUNITY_ADD_MEMBER = StringUrl('opportunity/add-member/{pk}')
     OPPORTUNITY_DELETE_MEMBER = StringUrl('opportunity/member/delete/{pk}')
     SET_MEMBER_PERMISSION = StringUrl('opportunity/member/set/permission/{pk}')
+
+    # Purchase request config
+    PURCHASE_REQUEST_CONFIG = StringUrl('purchasing/purchase-request/config')
+
+    # e-Office
+    #  leave
+    LEAVE_CONFIG = StringUrl('leave/config')
+    LEAVE_CREATE = StringUrl('leave/leave-type/create')
+    LEAVE_DETAIL = StringUrl('leave/leave-type/detail/{pk}')
+    LEAVE_REQUEST = StringUrl('leave/request')
+    LEAVE_REQUEST_DETAIL = StringUrl('leave/request/detail/{pk}')
+
+    #  Working calendar config
+    WORKING_CALENDAR_CONFIG = StringUrl('leave/working-calendar/config')
+    WORKING_CALENDAR_YEAR = StringUrl('leave/working-calendar/year')
+    WORKING_CALENDAR_HOLIDAY = StringUrl('leave/working-calendar/holiday')
+
+    # leave available
+    LEAVE_AVAILABLE = StringUrl('leave/available/list')
+    LEAVE_AVAILABLE_UPDATE = StringUrl('leave/available/edit/{pk}')
+    LEAVE_AVAILABLE_HISTORY = StringUrl('leave/available/history/{pk}')
+
+    #  Goods transfer
+    GOODS_TRANSFER_LIST = StringUrl('inventory/goods-transfer/list')
+    GOODS_TRANSFER_DETAIL = StringUrl('inventory/goods-transfer/{pk}')
+
+    # Opportunity Member List
+    OPPORTUNITY_MEMBER_LIST = StringUrl('opportunity/member/list/{pk}')
+
+    # Goods issue
+    GOODS_ISSUE_LIST = StringUrl('inventory/goods-issue/list')
+    GOODS_ISSUE_DETAIL = StringUrl('inventory/goods-issue/{pk}')
+
+    # Sale Order List for Purchasing Staff
+    SALE_ORDER_LIST_FOR_PURCHASING_STAFF = StringUrl('saleorder/purchasing-staff/list')
+
+    # Report
+    REPORT_REVENUE_LIST = StringUrl('report/revenue/list')

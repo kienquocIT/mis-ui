@@ -1,11 +1,9 @@
 import json
 
-from django.shortcuts import render
 from django.views import View
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from django.utils.translation import gettext_lazy as _
 
 from apps.shared import mask_view, ServerAPI, ApiURL, ConditionFormset, SaleMsg, InputMappingProperties
 
@@ -53,7 +51,8 @@ class SaleOrderCreate(View):
                 'employee_current': json.dumps(request.user.employee_current_data),
                 'data_copy_to': data_copy_to,
                 'opportunity': opportunity,
-            }
+            },
+            'list_from_app': 'saleorder.saleorder.create',
         }
         return result, status.HTTP_200_OK
 
@@ -90,6 +89,27 @@ class SaleOrderListAPI(APIView):
         )
 
 
+class SaleOrderListForCashOutflowAPI(APIView):
+
+    @classmethod
+    def convert_params(cls, params):
+        if 'delivery_call' in params and params.get('delivery_call'):
+            params['delivery_call'] = False
+        if 'is_approved' in params and params.get('is_approved'):
+            params['system_status'] = 3  # status finish
+            del params['is_approved']
+        return params
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = self.convert_params(request.query_params.dict())
+        resp = ServerAPI(user=request.user, url=ApiURL.SALE_ORDER_LIST_FOR_CASH_OUTFLOW).get(params)
+        return resp.auto_return(key_success='sale_order_list')
+
+
 class SaleOrderDetail(View):
     permission_classes = [IsAuthenticated]
 
@@ -114,7 +134,9 @@ class SaleOrderUpdate(View):
         input_mapping_properties = InputMappingProperties.SALE_ORDER_SALE_ORDER
         return {
                    'data': {'doc_id': pk},
-                   'input_mapping_properties': input_mapping_properties, 'form_id': 'frm_quotation_create'
+                   'input_mapping_properties': input_mapping_properties,
+                   'form_id': 'frm_quotation_create',
+                   'list_from_app': 'saleorder.saleorder.edit',
                }, status.HTTP_200_OK
 
 
@@ -276,3 +298,14 @@ class ProductListSaleOrderAPI(APIView):
     def get(self, request, pk, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_LIST_SALE_ORDER.fill_key(pk=pk)).get()
         return resp.auto_return(key_success='so_product_list')
+
+
+class SaleOrderPurchasingStaffListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.SALE_ORDER_LIST_FOR_PURCHASING_STAFF).get(params)
+        return resp.auto_return(key_success='sale_order_list')

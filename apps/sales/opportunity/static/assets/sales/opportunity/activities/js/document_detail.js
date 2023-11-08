@@ -25,13 +25,12 @@ $(document).ready(function () {
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
-                    let detail = data?.['opportunity_doc']
+                    let detail = data?.['opportunity_doc'];
                     DocumentLoadPage.loadOpportunity(detail.opportunity);
-                    console.log(detail.person_in_charge)
                     DocumentLoadPage.loadPersonInCharge(detail.person_in_charge)
                     $('#input-request-completed-date').val(detail?.['request_completed_date'].split(' ')[0]);
-                    $('[name="subject"]').val(detail.subject);
-                    $('[name="kind_of_product"]').val(detail?.['kind_of_product']);
+                    $('[name="title"]').val(detail.title);
+                    $('[name="description"]').val(detail?.['description']);
                     detail.files.map(function (item) {
                         loadFile(item, detail.data_documents);
                     })

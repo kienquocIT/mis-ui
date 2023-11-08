@@ -6,6 +6,7 @@ $(document).ready(function () {
             dtb.DataTableDefault({
                 useDataServer: true,
                 reloadCurrency: true,
+                rowIdx: true,
                 ajax: {
                     url: frm.dataUrl,
                     type: frm.dataMethod,
@@ -19,17 +20,24 @@ $(document).ready(function () {
                 },
                 columns: [
                     {
+                        targets: 0,
+                        render: () => {
+                            return ``
+                        }
+                    },
+                    {
                         data: 'code',
                         className: 'wrap-text',
                         render: (data, type, row, meta) => {
-                            return `<span class="text-secondary">` + row.code + `</span>`
+                            const link = dtb.attr('data-url-detail').replace('0', row.id);
+                            return `<a href="${link}" class="badge badge-soft-primary w-70">${row.code}</a> ${$x.fn.buttonLinkBlank(link)}`;
                         }
                     },
                     {
                         data: 'title',
                         className: 'wrap-text',
                         render: (data, type, row, meta) => {
-                            return `<a class="link-primary underline_hover" target="_blank" href="` + $('#dtbReturnAdvance').attr('data-url-detail').replace('0', row.id) + `"><span><b>` + row.title + `</b></span></a>`
+                            return `<span><b>` + row.title + `</b></span>`
                         }
                     },
                     {
@@ -42,9 +50,9 @@ $(document).ready(function () {
                         data: 'date_created',
                         className: 'wrap-text',
                         render: (data, type, row, meta) => {
-                            return `<span>{0}</span>`.format_by_idx(
-                                data.split(" ")[0]
-                            )
+                            return $x.fn.displayRelativeTime(data, {
+                                'outputFormat': 'DD-MM-YYYY',
+                            });
                         }
                     },
                     {

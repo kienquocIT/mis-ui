@@ -70,6 +70,14 @@ function loadAccountManager(accountManagerData) {
             url: accountManagerEle.attr('data-url'),
             method: 'GET',
         },
+        templateResult: function(data) {
+            let ele = $('<div class="row col-12"></div>');
+            ele.append('<div class="col-8">' + data.data?.['full_name'] + '</div>');
+            if (data.data?.['group']['title'] !== undefined) {
+                ele.append('<div class="col-4">(' + data.data?.['group']['title'] + ')</div>');
+            }
+            return ele;
+        },
         data: (accountManagerData ? accountManagerData : null),
         keyResp: 'employee_list',
         keyId: 'id',
@@ -158,105 +166,43 @@ function loadContactOwner(contactOwnerData) {
 }
 
 function loadTableSelectContact(selected_contact_list=[], selected_contact_list_detail=[]) {
+    console.log(selected_contact_list)
     let tbl = $('#datatable-add-contact');
-    tbl.DataTable().destroy();
-    tbl.DataTableDefault({
-        scrollY: true,
-        paging: false,
-        useDataServer: true,
-        rowIdx: true,
-        ajax: {
-            url: tbl.attr('data-url'),
-            type: tbl.attr('data-method'),
-            dataSrc: function (resp) {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (resp.data['contact_list_not_map_account']) {
-                        return resp.data['contact_list_not_map_account'].concat(selected_contact_list_detail);
-                    } else {
-                        return [];
+    $.fn.callAjax(tbl.attr('data-url'), 'GET').then(
+        (resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data) {
+                data = data['contact_list_not_map_account'].concat(selected_contact_list_detail);
+                if (data.length > 0) {
+                    tbl.find('tbody').html('')
+                    for (let i = 0; i < data.length; i++) {
+                        let checked = '';
+                        if (selected_contact_list.includes(data[i].id)) {
+                            checked = 'checked';
+                        }
+                        tbl.find('tbody').append(`<tr>
+                            <td>${i+1}</td>
+                            <td><span class="text-primary"><b>${data[i].fullname}</b></span></td>
+                            <td>${data[i].job_title}</td>
+                            <td>${data[i].owner.fullname}</td>
+                            <td>${data[i].mobile}</td>
+                            <td>${data[i].email}</td>
+                            <td>
+                                <span class="form-check">
+                                    <input type="checkbox" class="form-check-input selected_contact"
+                                    data-id="${data[i].id}" ${checked}
+                                    data-fullname="${data[i].fullname}"
+                                    data-mobile="${data[i].mobile}"
+                                    data-email="${data[i].email}"
+                                    data-job-title="${data[i].job_title}">
+                                    <label class="form-check-label"></label>
+                                </span>
+                            </td>
+                        </tr>`)
                     }
                 }
-                return [];
             }
-        },
-        columns: [
-            {
-                className: 'w-5',
-                render: () => {
-                    return ``;
-                }
-            },
-            {
-                data: 'fullname',
-                className: 'w-25',
-                render: (data, type, row) => {
-                    return `<span class="text-primary"><b>${row.fullname}</b></span>`
-                }
-            },
-            {
-                data: 'job_title',
-                render: (data, type, row) => {
-                    return `${row.job_title}`
-                }
-            },
-            {
-                data: 'owner',
-                render: (data, type, row) => {
-                    if (Object.keys(row.owner).length !== 0) {
-                        return `${row.owner.fullname}`
-                    }
-                    return ``
-                }
-            },
-            {
-                data: 'mobile',
-                render: (data, type, row) => {
-                    if (row.mobile !== null) {
-                        return `${row.mobile}`
-                    }
-                    return ``
-                }
-            },
-            {
-                data: 'email',
-                render: (data, type, row) => {
-                    if (row.email !== null) {
-                        return `${row.email}`
-                    }
-                    return ``
-                }
-            },
-            {
-                data: '',
-                className: 'w-5',
-                render: (data, type, row) => {
-                    if (selected_contact_list.includes(row.id)) {
-                        return `<span class="form-check">
-                            <input type="checkbox" class="form-check-input selected_contact"
-                            data-id="${row.id}" checked
-                            data-fullname="${row.fullname}"
-                            data-mobile="${row.mobile}"
-                            data-email="${row.email}"
-                            data-job-title="${row.job_title}">
-                            <label class="form-check-label"></label>
-                        </span>`
-                    }
-                    else {
-                        return `<span class="form-check">
-                            <input type="checkbox" class="form-check-input selected_contact"
-                            data-id="${row.id}"
-                            data-fullname="${row.fullname}"
-                            data-mobile="${row.mobile}"
-                            data-email="${row.email}"
-                            data-job-title="${row.job_title}">
-                            <label class="form-check-label"></label>
-                        </span>`
-                    }
-                }
-            },
-        ],
-    })
+        })
 }
 
 function loadTableSelectedContact(data, option='') {
@@ -395,7 +341,7 @@ function load_bank_accounts_mapped(data) {
             checked = 'checked';
         }
         $('#list-bank-account-information').append(
-            `<div class="card ${default_card_color} close-over col-5 mr-5">
+            `<div class="card ${default_card_color} close-over col-12 col-md-5 col-lg-5 mr-5">
                 <div class="card-body">
                     <button type="button" class="card-close btn-close">
                         <span aria-hidden="true">&times;</span>
@@ -443,7 +389,7 @@ function load_credit_cards_mapped(data) {
             checked = 'checked';
         }
         $('#list-credit-card-information').append(
-            `<div class="card ${default_card_color} close-over col-5 mr-5">
+            `<div class="card ${default_card_color} close-over col-12 col-md-5 col-lg-5 mr-5">
                 <div class="card-body">
                     <button type="button" class="card-close btn-close">
                         <span aria-hidden="true">&times;</span>
@@ -818,6 +764,7 @@ let bankAccountCountryEle = $('#country-select-box-id')
 let creditCardExpDate= $("#credit-card-exp-date")
 let addBankAccountEle= $("#bank-account-information-btn")
 let addCreditCardEle= $("#credit-card-information-btn")
+let frm_create_contact = $('#frm-create-new-contact')
 
 function get_bank_accounts_information() {
     let bank_accounts_information = [];
@@ -1091,6 +1038,15 @@ function loadPriceListForCustomer(priceListCustomerData) {
             method: 'GET',
         },
         data: (priceListCustomerData ? priceListCustomerData : null),
+        callbackDataResp: function (resp, keyResp) {
+            let result = [];
+            for (let i = 0; i < resp.data[keyResp].length; i++) {
+                if (resp.data[keyResp][i].status === 'Valid') {
+                    result.push(resp.data[keyResp][i]);
+                }
+            }
+            return result;
+        },
         keyResp: 'price_list',
         keyId: 'id',
         keyText: 'title',
@@ -1126,7 +1082,7 @@ $(document).on('click', '#save-changes-modal-bank-account', function () {
             default_card_color = 'bg-primary text-dark bg-opacity-10';
         }
         $('#list-bank-account-information').append(
-            `<div class="card ${default_card_color} close-over col-5 mr-5">
+            `<div class="card ${default_card_color} close-over col-12 col-md-5 col-lg-5 mr-5">
                 <div class="card-body">
                     <button type="button" class="card-close btn-close">
                         <span aria-hidden="true">&times;</span>
@@ -1181,7 +1137,7 @@ $(document).on('click', '#save-changes-modal-credit-card', function () {
             default_card_color = 'bg-primary text-dark bg-opacity-10';
         }
         $('#list-credit-card-information').append(
-            `<div class="card ${default_card_color} close-over col-5 mr-5">
+            `<div class="card ${default_card_color} close-over col-12 col-md-5 col-lg-5 mr-5">
                 <div class="card-body">
                     <button type="button" class="card-close btn-close">
                         <span aria-hidden="true">&times;</span>
@@ -1252,8 +1208,6 @@ $(document).on('change', '.radio_select_default_credit_card', function () {
     $(this).closest('.card').addClass('bg-primary text-dark bg-opacity-10');
 })
 
-let frm_create_contact = $('#frm-create-new-contact');
-
 frm_create_contact.submit(function (event) {
     event.preventDefault();
     let data = {
@@ -1269,30 +1223,21 @@ frm_create_contact.submit(function (event) {
         method: $(this).attr('data-method'),
         data: data,
     }
-    WindowControl.showLoading();
     $.fn.callAjax2(combinesData).then(
         (resp) => {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 $('#modal-add-new-contact').hide();
-                $('#offcanvasRight').offcanvas('show');
-                loadTableSelectContact();
+                $('#offcanvasRight').offcanvas('hide');
+                let contact_mapped_list = [];
+                $('#datatable_contact_list tbody').find('.selected_contact_full_name').each(function () {
+                    contact_mapped_list.push($(this).attr('data-id'))
+                })
+                loadTableSelectContact(contact_mapped_list);
                 $.fn.notifyB({description: "Successfully"}, 'success')
-                setTimeout(
-                    () => {
-                        WindowControl.hideLoading();
-                    },
-                    1000
-                )
             }
         },
         (errs) => {
-            setTimeout(
-                    () => {
-                        WindowControl.hideLoading();
-                    },
-                    1000
-                )
             console.log(errs)
             $.fn.notifyB({description: errs.data.errors}, 'failure');
         })

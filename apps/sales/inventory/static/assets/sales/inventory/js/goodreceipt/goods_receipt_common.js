@@ -811,7 +811,7 @@ class GRLoadDataHandle {
         if (formSubmit.attr('data-method') === 'PUT') {
             $('#good-receipt-date-received').val(moment(data?.['date_received']).format('DD/MM/YYYY hh:mm A'));
         }
-        if (['Added', 'Finish'].includes(data?.['system_status'])) {
+        if ([2, 3].includes(data?.['system_status'])) {
             let $btn = $('#btn-enable-edit');
             if ($btn.length) {
                 $btn[0].setAttribute('hidden', 'true');

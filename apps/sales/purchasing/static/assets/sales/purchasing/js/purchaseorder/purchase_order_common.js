@@ -846,7 +846,7 @@ class POLoadDataHandle {
     static loadDetailPage(data) {
         $('#data-detail-page').val(JSON.stringify(data));
         $('#purchase-order-title').val(data?.['title']);
-        if (['Added', 'Finish'].includes(data?.['system_status'])) {
+        if ([2, 3].includes(data?.['system_status'])) {
             let $btn = $('#btn-enable-edit');
             if ($btn.length) {
                 $btn[0].setAttribute('hidden', 'true');

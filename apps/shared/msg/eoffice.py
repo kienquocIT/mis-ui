@@ -10,7 +10,7 @@ class LeaveMsg:
     PAID_BY_THREE = _('Unpaid')
     WORKING_CALENDAR_UPDATE = _("Working calendar update successfully")
     WORKING_YEAR_CREATE = _("Working year create successfully")
-    WORKING_YEAR_DELETE = _("Working year deleted")
+    WORKING_YEAR_DELETE = _("Working year deleted successfully")
     WORKING_HOLIDAY_CREATE = _("The holiday create successfully")
     WORKING_HOLIDAY_UPDATE = _("The holiday has been updated successfully")
     WORKING_HOLIDAY_DELETE = _("The holiday deleted")

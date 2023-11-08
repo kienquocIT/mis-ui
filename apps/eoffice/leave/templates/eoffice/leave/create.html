@@ -76,9 +76,9 @@
                 <label for="selectEmployeeInherit" class="form-label required">{% trans 'Beneficiary' %}</label>
                 <select class="form-select" name="employee_inherit" id="selectEmployeeInherit"
                         data-url="{% url 'EmployeeListAPI' %}"
-                        data-keyResp="employee_list"
-                        data-keyText="full_name"
-                        data-keyId="id">
+                        data-keyResp="employee_list" data-keyText="full_name" data-keyId="id"
+                        data-params="{'list_from_app':'{{data.list_from_app|escape}}', 'list_from_leave':'1'}"
+                >
                 </select>
             </div>
             <div class="col-md-4 col-xs-12">
@@ -120,7 +120,7 @@
                             <th>{% trans 'Date from' %}</th>
                             <th>{% trans 'Date to' %}</th>
                             <th>{% trans 'Sub total' %}</th>
-                            <th>{% trans 'note' %}</th>
+                            <th>{% trans 'Note' %}</th>
                             <th></th>
                         </tr>
                         </thead>

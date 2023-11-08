@@ -656,6 +656,8 @@ $(function () {
                 QuotationCalculateCaseHandle.calculateAllRowsTableProduct(tableProduct);
                 // Check promotion -> re calculate
                 QuotationLoadDataHandle.loadReApplyPromotion(dataCopy, tableProduct);
+                // Set form novalidate
+                formSubmit[0].setAttribute('novalidate', 'novalidate');
             } else if (type === 'copy-to') { // COPY TO (QUOTATION DETAIL -> SALE ORDER CREATE)
                 // create URL and add to href
                 let eleRedirect = document.getElementById('link-to-sale-order-create');
@@ -713,6 +715,8 @@ $(function () {
                     QuotationCalculateCaseHandle.calculateAllRowsTableProduct(tableProduct);
                     // Check promotion -> re calculate
                     QuotationLoadDataHandle.loadReApplyPromotion(dataCopy, tableProduct);
+                    // Set form novalidate
+                    formSubmit[0].setAttribute('novalidate', 'novalidate');
                 }
             }
         }

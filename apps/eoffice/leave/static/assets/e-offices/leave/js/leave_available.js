@@ -15,6 +15,7 @@ $(document).ready(function () {
                     dataSrc: 'data.employee_list',
                     data: function (a) {
                         a.list_from_leave = 1
+                        a.list_from_app = 'leave.leaveavailable.view'
                         return a
                     },
                 },
@@ -285,6 +286,7 @@ $(document).ready(function () {
             const frm = new SetupFormSubmit($editForm);
             let frmData = frm.dataForm;
             if (!frmData?.expiration_date) frmData.expiration_date = null
+            frmData.type_arises = 1
             $.fn.callAjax2({
                 "url": $urlElm.attr('data-available-list'),
                 "method": 'PUT',

@@ -201,7 +201,8 @@ class LeaveRequestCreate(View):
             res_ws = resp.result
         return {
                    'working_shift': res_ws,
-                   'employee': request.user.employee_current_data
+                   'employee': request.user.employee_current_data,
+                   'list_from_app': 'leave.leaverequest.create'
                }, status.HTTP_200_OK
 
 
@@ -262,7 +263,8 @@ class LeaveRequestEdit(View):
                    'input_mapping_properties': input_mapping_properties,
                    'form_id': 'leave_edit',
                    'pk': pk,
-                   'sys_status': SYSTEM_STATUS
+                   'sys_status': SYSTEM_STATUS,
+                   'list_from_app': 'leave.leaverequest.edit'
                }, status.HTTP_200_OK
 
 

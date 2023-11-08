@@ -315,7 +315,7 @@ function count_row(table_body, option) {
         $(this).text(count);
         $(this).closest('tr').attr('id', 'row-' + count.toString());
         let sale_code_length = [].concat(opp_mapped_select.val()).length;
-        let detail_product_element = $(this).closest('tr').nextAll().slice(0, sale_code_length + 1)
+        let detail_product_element = $(this).closest('tr').nextAll().slice(0, sale_code_length)
         detail_product_element.each(function () {
             $(this).attr('class', 'row-detail-product-' + count.toString());
         });
@@ -408,16 +408,6 @@ function loadAPList() {
         },
         columns: [
             {
-                render: (data, type, row) => {
-                    if (row.remain_value <= 0) {
-                        return `<input data-id="` + row.id + `" class="ap-selected" type="checkbox" disabled>`
-                    }
-                    else {
-                        return `<input data-id="` + row.id + `" class="ap-selected" type="checkbox">`
-                    }
-                }
-            },
-            {
                 data: 'code',
                 className: 'wrap-text',
                 render: (data, type, row) => {
@@ -450,6 +440,11 @@ function loadAPList() {
                 className: 'wrap-text',
                 render: (data, type, row) => {
                     return `<span class="text-primary mask-money" data-init-money="` + row.remain_value + `"></span>`
+                }
+            },
+            {
+                render: (data, type, row) => {
+                    return `<input data-id="` + row.id + `" class="ap-selected" type="checkbox">`
                 }
             },
         ],
@@ -515,6 +510,10 @@ function LoadPlanQuotation(opportunity_id, quotation_id) {
                             sum_real_value += data_ap_mapped_item[j]?.['sum_real_value'];
                         }
                     }
+                    let sum_available = data_expense[i]?.['plan_after_tax'] - sum_real_value - ap_approved_value + sum_return_value;
+                    if (sum_available < 0) {
+                        sum_available = 0;
+                    }
 
                     $('#tab_plan_datatable tbody').append(`
                         <tr>
@@ -525,7 +524,7 @@ function LoadPlanQuotation(opportunity_id, quotation_id) {
                             <td><span class="returned mask-money text-primary" data-init-money="${sum_return_value}"></span></td>
                             <td><span class="to_payment mask-money text-primary" data-init-money="${sum_converted_value}"></span></td>
                             <td><span class="other_payment mask-money text-primary" data-init-money="${sum_real_value}"></span></td>
-                            <td><span class="available mask-money text-primary" data-init-money="${data_expense[i]?.['plan_after_tax'] - sum_real_value - ap_approved_value + sum_return_value}"></span></td>
+                            <td><span class="available mask-money text-primary" data-init-money="${sum_available}"></span></td>
                         </tr>
                     `)
                 }
@@ -593,6 +592,10 @@ function LoadPlanQuotationNoOPP(quotation_id) {
                             sum_real_value += data_ap_mapped_item[j]?.['sum_real_value'];
                         }
                     }
+                    let sum_available = data_expense[i]?.['plan_after_tax'] - sum_real_value - ap_approved_value + sum_return_value;
+                    if (sum_available < 0) {
+                        sum_available = 0;
+                    }
 
                     $('#tab_plan_datatable tbody').append(`
                         <tr>
@@ -603,7 +606,7 @@ function LoadPlanQuotationNoOPP(quotation_id) {
                             <td><span class="returned mask-money text-primary" data-init-money="${sum_return_value}"></span></td>
                             <td><span class="to_payment mask-money text-primary" data-init-money="${sum_converted_value}"></span></td>
                             <td><span class="other_payment mask-money text-primary" data-init-money="${sum_real_value}"></span></td>
-                            <td><span class="available mask-money text-primary" data-init-money="${data_expense[i]?.['plan_after_tax'] - sum_real_value - ap_approved_value + sum_return_value}"></span></td>
+                            <td><span class="available mask-money text-primary" data-init-money="${sum_available}"></span></td>
                         </tr>
                     `)
                 }
@@ -671,6 +674,10 @@ function LoadPlanSaleOrderNoOPP(sale_order_id) {
                             sum_real_value += data_ap_mapped_item[j]?.['sum_real_value'];
                         }
                     }
+                    let sum_available = data_expense[i]?.['plan_after_tax'] - sum_real_value - ap_approved_value + sum_return_value;
+                    if (sum_available < 0) {
+                        sum_available = 0;
+                    }
 
                     $('#tab_plan_datatable tbody').append(`
                         <tr>
@@ -681,7 +688,7 @@ function LoadPlanSaleOrderNoOPP(sale_order_id) {
                             <td><span class="returned mask-money text-primary" data-init-money="${sum_return_value}"></span></td>
                             <td><span class="to_payment mask-money text-primary" data-init-money="${sum_converted_value}"></span></td>
                             <td><span class="other_payment mask-money text-primary" data-init-money="${sum_real_value}"></span></td>
-                            <td><span class="available mask-money text-primary" data-init-money="${data_expense[i]?.['plan_after_tax'] - sum_real_value - ap_approved_value + sum_return_value}"></span></td>
+                            <td><span class="available mask-money text-primary" data-init-money="${sum_available}"></span></td>
                         </tr>
                     `)
                 }
@@ -723,53 +730,56 @@ $(document).on("click", '#btn-add-row-line-detail', function () {
         <td><input type="text" class="form-control expense-document-number"></td>
         <td>
         <button class="btn-del-line-detail btn text-danger btn-link btn-animated" type="button" title="Delete row"><span class="icon"><i class="bi bi-dash-circle"></i></span></button>
-        <button class="btn-row-toggle btn text-primary btn-link btn-animated" type="button" title="Delete row"><span class="icon"><i class="bi bi-caret-down-square"></i></span></button>
+        <button class="btn-row-toggle btn text-primary btn-link btn-animated" type="button" title="Collapse row"><span class="icon"><i class="bi bi-caret-down-square"></i></span></button>
         </td>
     </tr>`);
+        // tableLineDetail.append(`<tr class="" hidden>
+        //     <td colspan="1"></td>
+        //     <td colspan="1">
+        //         <label class="text-primary"><b>Sale code</b></label>
+        //     </td>
+        //     <td colspan="2">
+        //         <label class="text-primary"><b>Value</b></label>
+        //     </td>
+        //     <td colspan="1"></td>
+        //     <td colspan="2">
+        //         <label class="text-primary"><b>Value converted from advance payment</b></label>
+        //     </td>
+        //     <td colspan="1"></td>
+        //     <td colspan="1">
+        //         <label class="text-primary"><b>Sum</b></label>
+        //     </td>
+        //     <td colspan="1"></td>
+        // </tr>`)
         tableLineDetail.append(`<tr class="" hidden>
-            <td colspan="1"></td>
-            <td colspan="1">
-                <label class="text-primary"><b>Sale code</b></label>
-            </td>
+            <td colspan="1" class="bg-primary text-dark bg-opacity-10"></td>
+<!--            <td colspan="1">-->
+<!--                <span class="sale_code_product_detail badge badge-outline badge-soft-primary" data-sale-code-id="${sale_code_ID}"><b>${sale_code_CODE}</b></span>-->
+<!--            </td>-->
             <td colspan="2">
-                <label class="text-primary"><b>Value</b></label>
+                <span class="form-text text-muted">Payment value</span>
+                <input data-return-type="number" class="value-inp form-control mask-money">
             </td>
-            <td colspan="1"></td>
-            <td colspan="2">
-                <label class="text-primary"><b>Value converted from advance payment</b></label>
-            </td>
-            <td colspan="1"></td>
-            <td colspan="1">
-                <label class="text-primary"><b>Sum</b></label>
-            </td>
-            <td colspan="1"></td>
-        </tr>`)
-        tableLineDetail.append(`<tr class="" hidden>
-            <td colspan="1"></td>
-            <td colspan="1">
-                <span class="sale_code_product_detail badge badge-outline badge-soft-primary" data-sale-code-id="${sale_code_ID}"><b>${sale_code_CODE}</b></span>
-            </td>
-            <td colspan="2">
-                <input data-return-type="number" placeholder="Enter payment value" class="value-inp form-control mask-money ">
-            </td>
-            <td colspan="1">
-                <i class="fas fa-plus text-primary"></i>
-            </td>
-            <td colspan="2">
+<!--            <td colspan="1">-->
+<!--                <i class="fas fa-plus text-primary"></i>-->
+<!--            </td>-->
+            <td colspan="3">
+                <span class="form-text text-muted">Converted value from advance payment</span>
                 <div class="input-group">
-                    <input data-return-type="number" placeholder="Click button to select payment value" class="value-converted-from-ap-inp form-control mask-money" disabled style="background-color: white; color: black">
+                    <input data-return-type="number" class="value-converted-from-ap-inp form-control mask-money" disabled style="background-color: white; color: black">
                     <button style="border: 1px solid #ced4da" data-bs-toggle="offcanvas" 
-                    data-bs-target="#offcanvasSelectDetailAP" aria-controls="offcanvasExample" 
-                    class="btn btn-icon btn-flush-primary flush-soft-hover btn-add-payment-value" type="button">
+                            data-bs-target="#offcanvasSelectDetailAP" aria-controls="offcanvasExample" 
+                            class="btn btn-icon btn-flush-primary flush-soft-hover btn-add-payment-value" type="button">
                         <span class="icon"><i class="bi bi-pencil-square text-primary"></i></span>
                     </button>
                 </div>
             </td>
-            <td colspan="1">
-                <i class="fas fa-equals text-primary"></i>
-            </td>
-            <td colspan="1">
-                <span class="mask-money total-value-salecode-item text-primary" data-init-money="0"></span>
+<!--            <td colspan="1">-->
+<!--                <i class="fas fa-equals text-primary"></i>-->
+<!--            </td>-->
+            <td colspan="2">
+                <span class="form-text text-muted">Sum</span>
+                <input readonly data-return-type="number" class="total-value-salecode-item form-control mask-money" value="0">
                 <script type="application/json" class="detail-ap-items"></script>
             </td>
         </tr>`);
@@ -781,7 +791,7 @@ $(document).on("click", '#btn-add-row-line-detail', function () {
             let this_value = parseFloat($(this).attr('value'));
             if (isNaN(value_converted_from_ap)) { value_converted_from_ap = 0; }
             if (isNaN(this_value)) { this_value = 0; }
-            $(this).closest('tr').find('.total-value-salecode-item').attr('data-init-money', this_value + value_converted_from_ap);
+            $(this).closest('tr').find('.total-value-salecode-item').attr('value', this_value + value_converted_from_ap);
             $.fn.initMaskMoney2();
         })
 
@@ -872,7 +882,7 @@ $("#next-btn").on('click', function () {
     $('.ap-selected').each(function () {
         if ($(this).is(':checked') === true) {
             selected_ap_list.push($(this).attr('data-id'));
-            selected_ap_code_list.push($(this).closest('td').next('td').text());
+            selected_ap_code_list.push($(this).closest('tr').find('td:first-child span').text());
         }
     })
     if (selected_ap_list.length === 0) {
@@ -884,53 +894,51 @@ $("#next-btn").on('click', function () {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('advance_payment_detail')) {
-                        let ap_item_detail = data.advance_payment_detail;
-                        if (ap_item_detail.expense_items.length > 0) {
-                            tab2.append(`<span class="ap-code-span badge badge-primary mb-3">` + selected_ap_code_list[i] + `</span>`)
-                            tab2.append(`<table id="expense-item-table-` + ap_item_detail.id + `" class="table nowrap w-100">
+                        let ap_item_detail = data?.['advance_payment_detail'];
+                        if (ap_item_detail?.['expense_items'].length > 0) {
+                            tab2.append(`<table id="expense-item-table-${ap_item_detail.id}" class="table nowrap w-100 mb-10">
                                 <thead>
                                     <tr>
-                                        <th class="w-5"></th>
-                                        <th class="w-10">Expense Items</th>
-                                        <th class="w-10">Type</th>
+                                        <th class="w-10"><span class="ap-code-span badge badge-primary w-100">${selected_ap_code_list[i]}</span></th>
+                                        <th class="w-15">Expense name</th>
+                                        <th class="w-15">Expense type</th>
                                         <th class="w-5">Quantity</th>
                                         <th class="w-15">Unit Price</th>
                                         <th class="w-10">Tax</th>
-                                        <th class="w-15">Remain</th>
+                                        <th class="w-15">Available</th>
                                         <th class="w-15">Converted Value</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                </tbody>
+                                <tbody></tbody>
                             </table>`);
-                            let product_table = $('#expense-item-table-' + ap_item_detail.id)
+                            let product_table = $('#expense-item-table-' + ap_item_detail.id);
                             let total_remain_value = 0;
-                            for (let i = 0; i < ap_item_detail.expense_items.length; i++) {
-                                let expense_item = ap_item_detail.expense_items[i];
+                            for (let i = 0; i < ap_item_detail?.['expense_items'].length; i++) {
+                                let expense_item = ap_item_detail?.['expense_items'][i];
                                 let tax_code = '';
-                                if (Object.keys(expense_item.expense_tax).length !== 0) {
-                                    tax_code = expense_item.expense_tax.code
+                                if (Object.keys(expense_item?.['expense_tax']).length !== 0) {
+                                    tax_code = expense_item?.['expense_tax'].code;
                                 }
                                 let disabled = 'disabled';
                                 if (expense_item.remain_total > 0) {
                                     disabled = '';
                                 }
                                 total_remain_value += expense_item.remain_total;
-                                product_table.append(`<tr>
-                                    <td><input data-id="` + expense_item.id + `" class="product-selected" type="checkbox" ` + disabled + `></td>
-                                    <td>` + expense_item.expense_name + `</td>
-                                    <td>` + expense_item.expense_type.title + `</td>
-                                    <td class="text-center">` + expense_item.expense_quantity + `</td>
-                                    <td><span class="text-primary mask-money" data-init-money="` + expense_item.expense_unit_price + `"></span></td>
-                                    <td><span class="badge badge-soft-danger">` + tax_code + `</span></td>
-                                    <td><span class="text-primary mask-money product-remain-value" data-init-money="` + expense_item.remain_total + `"></span></td>
+                                product_table.find('tbody').append(`<tr>
+                                    <td class="text-center"><input data-id="${expense_item.id}" class="product-selected" type="checkbox" ${disabled}></td>
+                                    <td>${expense_item.expense_name}</td>
+                                    <td>${expense_item.expense_type.title}</td>
+                                    <td>${expense_item.expense_quantity}</td>
+                                    <td><span class="text-primary mask-money" data-init-money="${expense_item.expense_unit_price}"></span></td>
+                                    <td><span class="badge badge-soft-danger">${tax_code}</span></td>
+                                    <td><span class="text-primary mask-money product-remain-value" data-init-money="${expense_item.remain_total}"></span></td>
                                     <td><input class="mask-money form-control converted-value-inp" disabled></td>
                                 </tr>`)
                             }
-                            product_table.append(`<tr style="background-color: #ebf5f5">
-                                <td></td><td></td><td></td><td></td><td></td>
+                            product_table.find('tbody').append(`<tr style="background-color: #ebf5f5">
+                                <td colspan="5"></td>
                                 <td><span style="text-align: left"><b>Total:</b></span></td>
-                                <td><span class="mask-money total-available-value text-primary" data-init-money="` + total_remain_value + `"></span></td>
+                                <td><span class="mask-money total-available-value text-primary" data-init-money="${total_remain_value}"></span></td>
                                 <td><span class="mask-money total-converted-value text-primary" data-init-money="0"></span></td>
                             </tr>`)
 
@@ -957,10 +965,12 @@ $("#next-btn").on('click', function () {
                             $('.product-selected').on('change', function () {
                                 if ($(this).is(':checked')) {
                                     $(this).closest('tr').find('.converted-value-inp').prop('disabled', false);
+                                    $(this).closest('tr').find('.converted-value-inp').addClass('is-valid');
                                 }
                                 else {
                                     $(this).closest('tr').find('.converted-value-inp').prop('disabled', true);
                                     $(this).closest('tr').find('.converted-value-inp').attr('value', '');
+                                    $(this).closest('tr').find('.converted-value-inp').removeClass('is-valid');
                                 }
 
                                 let new_total_converted_value = 0;
@@ -1002,7 +1012,7 @@ $("#finish-btn").on('click', function () {
     if (isNaN(value_input_ap)) {
         value_input_ap = 0;
     }
-    current_value_converted_from_ap.closest('tr').find('.total-value-salecode-item').attr('data-init-money', result_total_value + value_input_ap);
+    current_value_converted_from_ap.closest('tr').find('.total-value-salecode-item').attr('value', result_total_value + value_input_ap);
     current_value_converted_from_ap.closest('tr').find('.detail-ap-items').text(JSON.stringify(get_ap_product_items()));
 
     $.fn.initMaskMoney2();
@@ -1127,59 +1137,63 @@ function LoadDetailPayment() {
                         <td><input type="text" data-return-type="number" class="form-control expense-subtotal-price-after-tax mask-money" value="${data_row?.['expense_after_tax_price']}" disabled></td>
                         <td><input type="text" class="form-control expense-document-number" value="${data_row?.['document_number']}"></td>
                         <td>
-                        <button class="btn-row-toggle btn text-primary btn-link btn-animated" type="button" title="Delete row"><span class="icon"><i class="bi bi-caret-down-square"></i></span></button>
+                        <button class="btn-row-toggle btn text-primary btn-link btn-animated" type="button" title="Collapse row"><span class="icon"><i class="bi bi-caret-down-square"></i></span></button>
                         </td>
                     </tr>`);
-                    tableLineDetail.append(`<tr class="" hidden>
-                        <td colspan="1"></td>
-                        <td colspan="1">
-                            <label class="text-primary"><b>Sale code</b></label>
-                        </td>
-                        <td colspan="2">
-                            <label class="text-primary"><b>Value</b></label>
-                        </td>
-                        <td colspan="1"></td>
-                        <td colspan="2">
-                            <label class="text-primary"><b>Value converted from advance payment</b></label>
-                        </td>
-                        <td colspan="1"></td>
-                        <td colspan="1">
-                            <label class="text-primary"><b>Sum</b></label>
-                        </td>
-                        <td colspan="1"></td>
-                    </tr>`)
+                    // tableLineDetail.append(`<tr class="" hidden>
+                    //     <td colspan="1"></td>
+                    //     <td colspan="1">
+                    //         <label class="text-primary"><b>Sale code</b></label>
+                    //     </td>
+                    //     <td colspan="2">
+                    //         <label class="text-primary"><b>Value</b></label>
+                    //     </td>
+                    //     <td colspan="1"></td>
+                    //     <td colspan="2">
+                    //         <label class="text-primary"><b>Value converted from advance payment</b></label>
+                    //     </td>
+                    //     <td colspan="1"></td>
+                    //     <td colspan="1">
+                    //         <label class="text-primary"><b>Sum</b></label>
+                    //     </td>
+                    //     <td colspan="1"></td>
+                    // </tr>`)
+                    let data_row_detail = [];
                     for (let j = 0; j < data_row?.['ap_cost_converted_list'].length; j++) {
-                        let data_row_detail = data_row?.['ap_cost_converted_list'][j];
-                        tableLineDetail.append(`<tr class="row-detail-product-1" hidden>
-                            <td colspan="1"></td>
-                            <td colspan="1">
-                                <span class="sale_code_product_detail badge badge-outline badge-soft-primary" data-sale-code-id="${sale_code_ID}"><b>${sale_code_CODE}</b></span>
-                            </td>
-                            <td colspan="2">
-                                <input data-return-type="number" placeholder="Enter payment value" class="value-inp form-control mask-money" value="${data_row?.['real_value']}">
-                            </td>
-                            <td colspan="1">
-                                <i class="fas fa-plus text-primary"></i>
-                            </td>
-                            <td colspan="2">
-                                <div class="input-group">
-                                    <input data-return-type="number" placeholder="Click button to select payment value" class="value-converted-from-ap-inp form-control mask-money" value="${data_row?.['converted_value']}" disabled>
-                                    <button style="border: 1px solid #ced4da" data-bs-toggle="offcanvas" 
-                                            data-bs-target="#offcanvasSelectDetailAP" aria-controls="offcanvasExample" 
-                                            class="disabled btn btn-icon btn-flush-primary flush-soft-hover btn-add-payment-value" type="button">
-                                        <span class="icon"><i class="bi bi-pencil-square text-primary"></i></span>
-                                    </button>
-                                </div>
-                            </td>
-                            <td colspan="1">
-                                <i class="fas fa-equals text-primary"></i>
-                            </td>
-                            <td colspan="1">
-                                <span class="mask-money total-value-salecode-item text-primary" data-init-money="${data_row?.['sum_value']}" ></span>
-                                <script type="application/json" class="detail-ap-items">${JSON.stringify(data_row_detail)}</script>
-                            </td>
-                        </tr>`);
+                        data_row_detail.push(data_row?.['ap_cost_converted_list'][j]);
                     }
+                    tableLineDetail.append(`<tr class="" hidden>
+                        <td colspan="1" class="bg-primary text-dark bg-opacity-10"></td>
+<!--                        <td colspan="1">-->
+<!--                            <span class="sale_code_product_detail badge badge-outline badge-soft-primary" data-sale-code-id="${sale_code_ID}"><b>${sale_code_CODE}</b></span>-->
+<!--                        </td>-->
+                        <td colspan="2">
+                            <span class="form-text text-muted">Payment value</span>
+                            <input data-return-type="number" class="value-inp form-control mask-money" value="${data_row?.['real_value']}">
+                        </td>
+<!--                        <td colspan="1" class="text-center">-->
+<!--                            <i class="fas fa-plus text-primary"></i>-->
+<!--                        </td>-->
+                        <td colspan="3">
+                            <span class="form-text text-muted">Converted value from advance payment</span>
+                            <div class="input-group">
+                                <input data-return-type="number" class="value-converted-from-ap-inp form-control mask-money" value="${data_row?.['converted_value']}" disabled>
+                                <button style="border: 1px solid #ced4da" data-bs-toggle="offcanvas" 
+                                        data-bs-target="#offcanvasSelectDetailAP" aria-controls="offcanvasExample" 
+                                        class="disabled btn btn-icon btn-flush-primary flush-soft-hover btn-add-payment-value" type="button">
+                                    <span class="icon"><i class="bi bi-pencil-square text-primary"></i></span>
+                                </button>
+                            </div>
+                        </td>
+<!--                        <td colspan="1" class="text-center">-->
+<!--                            <i class="fas fa-equals text-primary"></i>-->
+<!--                        </td>-->
+                        <td colspan="2">
+                            <span class="form-text text-muted">Sum</span>
+                            <input data-return-type="number" class="total-value-salecode-item form-control mask-money" value="${data_row?.['sum_value']}">
+                            <script type="application/json" class="detail-ap-items">${JSON.stringify(data_row_detail)}</script>
+                        </td>
+                    </tr>`);
 
                     count_row(tableLineDetail, 1);
                 }
@@ -1269,7 +1283,7 @@ class PaymentHandle {
                 }
                 let document_number = tableLineDetail.find(row_id + ' .expense-document-number').val();
 
-                let sale_code_item = tableLineDetail.find(row_id).nextAll().slice(1, 2);
+                let sale_code_item = tableLineDetail.find(row_id).nextAll().slice(0, 1);
                 sale_code_item.each(function() {
                     let expense_items_detail_list = [];
                     if ($(this).find('.detail-ap-items').html()) {
@@ -1284,8 +1298,8 @@ class PaymentHandle {
                         converted_value = 0;
                     }
                     let sum_value = 0;
-                    if ($(this).find('.total-value-salecode-item').attr('data-init-money') !== '') {
-                        sum_value = $(this).find('.total-value-salecode-item').attr('data-init-money');
+                    if ($(this).find('.total-value-salecode-item').attr('value') !== '') {
+                        sum_value = $(this).find('.total-value-salecode-item').attr('value');
                     }
                     expense_detail_value = parseFloat(expense_detail_value) + parseFloat(sum_value);
                     payment_expense_valid_list.push({

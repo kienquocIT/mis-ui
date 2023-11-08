@@ -3550,6 +3550,26 @@ msgid "Returned"
 msgstr "Đã trả về"
 
 #
+msgid "Returned value"
+msgstr "Đã hoàn ứng"
+
+#
+msgid "Select Advance Payment"
+msgstr "Chọn phiếu tạm ứng"
+
+#
+msgid "Expense type"
+msgstr "Loại chi phí"
+
+#
+msgid "Expense name"
+msgstr "Tên chi phí"
+
+#
+msgid "Select Expense Item"
+msgstr "Chọn chi phí"
+
+#
 msgid "To employee"
 msgstr "Cho nhân viên"
 

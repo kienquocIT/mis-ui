@@ -502,13 +502,18 @@ function LoadPlanQuotation(opportunity_id, quotation_id) {
                     let sum_return_value = 0;
                     let sum_converted_value = 0;
                     let sum_real_value = 0;
+                    let number_record = 0;
                     for (let j = 0; j < data_ap_mapped_item.length; j++) {
                         if (data_ap_mapped_item[j]?.['expense_type']?.['id'] === data_expense[i]?.['expense_item']?.['id']) {
                             ap_approved_value += data_ap_mapped_item[j]?.['expense_after_tax_price'];
                             sum_return_value += data_ap_mapped_item[j]?.['sum_return_value'];
                             sum_converted_value += data_ap_mapped_item[j]?.['sum_converted_value'];
                             sum_real_value += data_ap_mapped_item[j]?.['sum_real_value'];
+                            number_record += 1;
                         }
+                    }
+                    if (number_record > 0) {
+                        sum_real_value = sum_real_value / number_record;
                     }
                     let sum_available = data_expense[i]?.['plan_after_tax'] - sum_real_value - ap_approved_value + sum_return_value;
                     if (sum_available < 0) {
@@ -584,13 +589,18 @@ function LoadPlanQuotationNoOPP(quotation_id) {
                     let sum_return_value = 0;
                     let sum_converted_value = 0;
                     let sum_real_value = 0;
+                    let number_record = 0;
                     for (let j = 0; j < data_ap_mapped_item.length; j++) {
                         if (data_ap_mapped_item[j]?.['expense_type']?.['id'] === data_expense[i]?.['expense_item']?.['id']) {
                             ap_approved_value += data_ap_mapped_item[j]?.['expense_after_tax_price'];
                             sum_return_value += data_ap_mapped_item[j]?.['sum_return_value'];
                             sum_converted_value += data_ap_mapped_item[j]?.['sum_converted_value'];
                             sum_real_value += data_ap_mapped_item[j]?.['sum_real_value'];
+                            number_record += 1;
                         }
+                    }
+                    if (number_record > 0) {
+                        sum_real_value = sum_real_value / number_record;
                     }
                     let sum_available = data_expense[i]?.['plan_after_tax'] - sum_real_value - ap_approved_value + sum_return_value;
                     if (sum_available < 0) {
@@ -666,13 +676,18 @@ function LoadPlanSaleOrderNoOPP(sale_order_id) {
                     let sum_return_value = 0;
                     let sum_converted_value = 0;
                     let sum_real_value = 0;
+                    let number_record = 0;
                     for (let j = 0; j < data_ap_mapped_item.length; j++) {
                         if (data_ap_mapped_item[j]?.['expense_type']?.['id'] === data_expense[i]?.['expense_item']?.['id']) {
                             ap_approved_value += data_ap_mapped_item[j]?.['expense_after_tax_price'];
                             sum_return_value += data_ap_mapped_item[j]?.['sum_return_value'];
                             sum_converted_value += data_ap_mapped_item[j]?.['sum_converted_value'];
                             sum_real_value += data_ap_mapped_item[j]?.['sum_real_value'];
+                            number_record += 1;
                         }
+                    }
+                    if (number_record > 0) {
+                        sum_real_value = sum_real_value / number_record;
                     }
                     let sum_available = data_expense[i]?.['plan_after_tax'] - sum_real_value - ap_approved_value + sum_return_value;
                     if (sum_available < 0) {

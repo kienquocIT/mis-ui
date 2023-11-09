@@ -118,11 +118,26 @@ class QuotationLoadDataHandle {
         QuotationLoadDataHandle.loadBoxQuotationCustomer();
         QuotationLoadDataHandle.loadBoxQuotationContact();
         QuotationLoadDataHandle.loadBoxQuotationPaymentTerm();
-        // clear shipping + billing text area
-        $('#quotation-create-shipping-address')[0].value = '';
-        $('#quotation-create-customer-shipping').val('');
-        $('#quotation-create-billing-address')[0].value = '';
-        $('#quotation-create-customer-billing').val('');
+        if ($(QuotationLoadDataHandle.opportunitySelectEle).val()) {
+            let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.opportunitySelectEle, $(QuotationLoadDataHandle.opportunitySelectEle).val());
+            if (dataSelected) {
+                let dataCustomer = dataSelected?.['customer'];
+                // load Shipping & Billing by Customer
+                QuotationLoadDataHandle.loadShippingBillingCustomer();
+                QuotationLoadDataHandle.loadShippingBillingCustomer(dataCustomer);
+                // clear shipping + billing text area
+                $('#quotation-create-shipping-address')[0].value = '';
+                $('#quotation-create-customer-shipping').val('');
+                $('#quotation-create-billing-address')[0].value = '';
+                $('#quotation-create-customer-billing').val('');
+                // Store Account Price List
+                if (Object.keys(dataCustomer?.['price_list_mapped']).length !== 0) {
+                    document.getElementById('customer-price-list').value = dataCustomer?.['price_list_mapped']?.['id'];
+                }
+            }
+        } else {
+            document.getElementById('customer-price-list').value = "";
+        }
         // Delete all promotion rows
         deletePromotionRows(tableProduct, true, false);
         // Delete all shipping rows
@@ -204,19 +219,19 @@ class QuotationLoadDataHandle {
                 $('#quotation-create-billing-address')[0].value = '';
                 $('#quotation-create-customer-billing').val('');
                 // Store Account Price List
-                    if (Object.keys(dataSelected?.['price_list_mapped']).length !== 0) {
-                        document.getElementById('customer-price-list').value = dataSelected?.['price_list_mapped']?.['id'];
-                    }
+                if (Object.keys(dataSelected?.['price_list_mapped']).length !== 0) {
+                    document.getElementById('customer-price-list').value = dataSelected?.['price_list_mapped']?.['id'];
+                }
             }
         } else {
             document.getElementById('customer-price-list').value = "";
         }
         // Delete all promotion rows
-            deletePromotionRows(tableProduct, true, false);
-            // Delete all shipping rows
-            deletePromotionRows(tableProduct, false, true);
-            // load again price of product by customer price list then Re Calculate
-            QuotationLoadDataHandle.loadDataProductAll();
+        deletePromotionRows(tableProduct, true, false);
+        // Delete all shipping rows
+        deletePromotionRows(tableProduct, false, true);
+        // load again price of product by customer price list then Re Calculate
+        QuotationLoadDataHandle.loadDataProductAll();
     }
 
     static loadBoxQuotationContact(dataContact = {}, customerID = null) {

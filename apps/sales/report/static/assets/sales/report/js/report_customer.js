@@ -3,7 +3,7 @@ $(function () {
 
         let boxGroup = $('#box-report-customer-group');
         let boxEmployee = $('#box-report-customer-employee');
-        let boxCustomer = $('#box-report-customer-product');
+        let boxCustomer = $('#box-report-customer-customer');
         let btnView = $('#btn-view');
         let eleRevenue = $('#report-customer-revenue');
         let eleGrossProfit = $('#report-customer-gross-profit');
@@ -64,24 +64,6 @@ $(function () {
             });
         }
 
-        function loadBoxEmployee() {
-            if (boxGroup.val()) {
-                boxEmployee.initSelect2({
-                    'dataParams': {'group_id': boxGroup.val()},
-                    callbackTextDisplay: function (item) {
-                        return item?.['full_name'] || '';
-                    },
-                });
-            } else {
-                boxEmployee.initSelect2({
-                    'allowClear': true,
-                    callbackTextDisplay: function (item) {
-                        return item?.['full_name'] || '';
-                    },
-                });
-            }
-        }
-
         function loadTotal() {
             let newRevenue = 0;
             let newGrossProfit = 0;
@@ -105,10 +87,24 @@ $(function () {
             eleGrossProfit.attr('data-init-money', String(newGrossProfit));
             eleNetIncome.attr('data-init-money', String(newNetIncome));
         }
-
         loadDbl();
 
+        function loadBoxEmployee() {
+            boxEmployee.empty();
+            if (boxGroup.val()) {
+                boxEmployee.initSelect2({
+                    'dataParams': {'group_id__in': boxGroup.val().join(',')},
+                    'allowClear': true,
+                });
+            } else {
+                boxEmployee.initSelect2({
+                    'allowClear': true,
+                });
+            }
+        }
+
         boxGroup.initSelect2({'allowClear': true,});
+        boxCustomer.initSelect2({'allowClear': true,});
         loadBoxEmployee();
 
         // run datetimepicker
@@ -126,7 +122,6 @@ $(function () {
 
         // Events
         boxGroup.on('change', function() {
-            boxEmployee.empty();
             loadBoxEmployee();
             $table.DataTable().clear().draw();
             loadTotal();
@@ -137,13 +132,18 @@ $(function () {
             loadTotal();
         });
 
+        boxCustomer.on('change', function() {
+            $table.DataTable().clear().draw();
+            loadTotal();
+        });
+
         btnView.on('click', function () {
             let dataParams = {};
             if (boxGroup.val()) {
-                dataParams['group_inherit_id'] = boxGroup.val();
+                dataParams['group_inherit_id__in'] = boxGroup.val().join(',');
             }
             if (boxEmployee.val()) {
-                dataParams['employee_inherit_id'] = boxEmployee.val();
+                dataParams['employee_inherit_id__in'] = boxEmployee.val().join(',');
             }
             let date = $('#report-customer-date-approved').val();
             if (date) {

@@ -23,6 +23,7 @@
                         data-link-detail="{% url "GroupDetail" 1 %}"
                         name="group"
                         data-keyResp="group_list"
+                        multiple
                 ></select>
             </div>
         </div>
@@ -48,9 +49,10 @@
                         id="box-report-revenue-employee"
                         data-url="{% url "EmployeeListAPI" %}"
                         data-method="GET"
-                        data-link-detail="{% url "EmployeeDetail" 1 %}"
                         name="employee"
                         data-keyResp="employee_list"
+                        data-keyText="full_name"
+                        multiple
                 ></select>
             </div>
         </div>

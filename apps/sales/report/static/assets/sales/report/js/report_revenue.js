@@ -87,17 +87,12 @@ $(function () {
         function loadBoxEmployee() {
             if (boxGroup.val()) {
                 boxEmployee.initSelect2({
-                    'dataParams': {'group_id': boxGroup.val()},
-                    callbackTextDisplay: function (item) {
-                        return item?.['full_name'] || '';
-                    },
+                    'dataParams': {'group_id__in': boxGroup.val().join(',')},
+                    'allowClear': true,
                 });
             } else {
                 boxEmployee.initSelect2({
                     'allowClear': true,
-                    callbackTextDisplay: function (item) {
-                        return item?.['full_name'] || '';
-                    },
                 });
             }
         }
@@ -160,10 +155,10 @@ $(function () {
         btnView.on('click', function () {
             let dataParams = {};
             if (boxGroup.val()) {
-                dataParams['group_inherit_id'] = boxGroup.val();
+                dataParams['group_inherit_id__in'] = boxGroup.val().join(',');
             }
             if (boxEmployee.val()) {
-                dataParams['employee_inherit_id'] = boxEmployee.val();
+                dataParams['employee_inherit_id__in'] = boxEmployee.val().join(',');
             }
             let date = $('#report-revenue-date-approved').val();
             if (date) {

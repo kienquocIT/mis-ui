@@ -395,24 +395,24 @@ class promotionHandle {
                 shippingFee = parseFloat(shippingPrice.value)
             }
         }
-        if (condition.is_discount === true) { // DISCOUNT
+        if (condition?.['is_discount'] === true) { // DISCOUNT
             let DiscountAmount = 0;
             let taxID = "";
             let discount_rate_on_order = null;
             let is_promotion_on_row = false;
             let is_before_tax = true;
-            if (condition.is_on_product === true) { // discount on specific product
-                let row = tableProd.DataTable().row(condition.row_apply_index).node();
+            if (condition?.['is_on_product'] === true) { // discount on specific product
+                let row = tableProd.DataTable().row(condition?.['row_apply_index']).node();
                 let taxSelected = row.querySelector('.table-row-tax').options[row.querySelector('.table-row-tax').selectedIndex];
                 // let taxValue = taxSelected.getAttribute('data-value')
                 taxID = taxSelected.value;
-                if (condition.is_on_percent === true) { // discount by percent
+                if (condition?.['is_on_percent'] === true) { // discount by percent
                     let subtotal = row.querySelector('.table-row-subtotal-raw').value;
                     DiscountAmount = ((parseFloat(subtotal) * parseFloat(condition.percent_discount)) / 100);
                     if (DiscountAmount > parseFloat(condition.max_amount)) { // check discount amount with max discount amount
                         DiscountAmount = parseFloat(condition.max_amount)
                     }
-                } else if (condition.is_fix_amount === true) { // discount by fix amount
+                } else if (condition?.['is_fix_amount'] === true) { // discount by fix amount
                     if (condition.is_before_tax === true) {
                         DiscountAmount = condition.fix_value;
                     } else if (condition.is_after_tax === true) {
@@ -422,8 +422,8 @@ class promotionHandle {
                     }
                 }
                 is_promotion_on_row = true;
-            } else if (condition.is_on_order === true) { // discount on whole order
-                if (condition.is_on_percent === true) { // discount by percent
+            } else if (condition?.['is_on_order'] === true) { // discount on whole order
+                if (condition?.['is_on_percent'] === true) { // discount by percent
                     if (condition.is_before_tax === true) {
                         let preTax = document.getElementById('quotation-create-product-pretax-amount-raw').value;
                         let discount = document.getElementById('quotation-create-product-discount-amount-raw').value;
@@ -454,7 +454,7 @@ class promotionHandle {
                         }
                         is_before_tax = false;
                     }
-                } else if (condition.is_fix_amount === true) { // discount by fix amount
+                } else if (condition?.['is_fix_amount'] === true) { // discount by fix amount
                     if (condition.is_before_tax === true) {
                         DiscountAmount = condition.fix_value;
                         // get promotion rate
@@ -479,30 +479,30 @@ class promotionHandle {
                 }
             }
             return {
-                'row_apply_index': condition.row_apply_index,
+                'row_apply_index': condition?.['row_apply_index'],
                 'is_discount': true,
                 'is_gift': false,
-                'product_id': condition.product_id,
-                'product_title': condition.product_title,
-                'product_code': condition.product_code,
-                'product_description': "(Voucher) " + condition.product_description,
-                'product_quantity': condition.product_quantity,
+                'product_id': condition?.['product_id'],
+                'product_title': condition?.['product_title'],
+                'product_code': condition?.['product_code'],
+                'product_description': "(Voucher) " + condition?.['product_description'],
+                'product_quantity': condition?.['product_quantity'],
                 'product_price': DiscountAmount,
                 'value_tax': taxID,
                 'discount_rate_on_order': discount_rate_on_order,
                 'is_promotion_on_row': is_promotion_on_row,
                 'is_before_tax': is_before_tax
             }
-        } else if (condition.is_gift === true) { // GIFT
+        } else if (condition?.['is_gift'] === true) { // GIFT
             return {
-                'row_apply_index': condition.row_apply_index,
+                'row_apply_index': condition?.['row_apply_index'],
                 'is_discount': false,
                 'is_gift': true,
-                'product_id': condition.product_id,
-                'product_title': condition.product_title,
-                'product_code': condition.product_code,
-                'product_description': "(Gift) " + condition.product_description,
-                'product_quantity': condition.product_quantity,
+                'product_id': condition?.['product_id'],
+                'product_title': condition?.['product_title'],
+                'product_code': condition?.['product_code'],
+                'product_description': "(Gift) " + condition?.['product_description'],
+                'product_quantity': condition?.['product_quantity'],
                 'product_price': 0,
             }
         }

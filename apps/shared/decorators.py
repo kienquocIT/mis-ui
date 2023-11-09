@@ -170,10 +170,6 @@ def mask_view(**parent_kwargs):
 
                         if sub_code in settings.UI_SUB_DENIED:
                             return OutLayoutRender(request=request).render_404()
-
-                        tenant_cls = apps.get_model('account.tenant')
-                        if sub_code not in tenant_cls.all_code():
-                            return OutLayoutRender(request=request).render_404()
                     else:
                         return OutLayoutRender(request=request).render_404()
 

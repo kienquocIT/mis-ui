@@ -39,7 +39,7 @@ DEBUG_NOTIFY_KEY = True
 GA_COLLECTION_ENABLED = True if os.environ.get('GA_COLLECTION_ENABLED', '0') in [1, '1'] else False
 ALLOWED_HOSTS = []
 
-IS_SERVER_MAINTAINING = False
+IS_SERVER_MAINTAINING = True if os.environ.get('IS_SERVER_MAINTAINING', '0') in [1, '1'] else False
 
 RELEASE_VERSION = os.environ.get('RELEASE_VERSION', '0.0.1')
 
@@ -262,9 +262,6 @@ UI_RESP_KEY_PAGE_PREVIOUS = 'page_previous'
 
 # DEBUG CODE enable: allow raise errors if it is enabled else return default value (value is correct type)
 RAISE_EXCEPTION_DEBUG = True
-
-# server maintaining
-IS_SERVER_MAINTAINING = True if os.environ.get('IS_SERVER_MAINTAINING', '0') in [1, '1'] else False
 
 # memcache
 # CACHES = {

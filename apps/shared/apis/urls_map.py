@@ -418,3 +418,5 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # Report
     REPORT_REVENUE_LIST = StringUrl('report/revenue/list')
+    REPORT_PRODUCT_LIST = StringUrl('report/product/list')
+    REPORT_CUSTOMER_LIST = StringUrl('report/customer/list')

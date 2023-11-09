@@ -184,13 +184,14 @@
                                                     <div class="dropdown-menu w-210p mt-4"></div>
                                                 </div>
                                                 <select
-                                                    class="form-select disabled-custom-show"
-                                                    id="select-box-quotation"
-                                                    data-url="{% url "QuotationListAPI" %}"
-                                                    data-method="GET"
-                                                    data-link-detail="{% url "QuotationDetail" 1 %}"
-                                                    name="quotation"
-                                                    disabled
+                                                        class="form-select"
+                                                        id="select-box-quotation"
+                                                        data-url="{% url "QuotationListAPI" %}"
+                                                        data-method="GET"
+                                                        data-link-detail="{% url "QuotationDetail" 1 %}"
+                                                        name="quotation"
+                                                        data-keyResp="quotation_list"
+                                                        disabled
                                                 ></select>
                                             </div>
                                         </div>

@@ -294,11 +294,13 @@ class SelectDDControl {
 
         params = this.ele.attr('data-params');
         if (params) {
+            let temp = params.replaceAll("'",'"')
             try {
-                const temp = params.replaceAll("'",'"')
-                return JSON.parse(temp);
+                temp = JSON.parse(temp)
             } catch (e) {
+                temp = {}
             }
+            return temp
         }
         return {};
     }

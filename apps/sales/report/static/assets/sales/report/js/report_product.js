@@ -1,13 +1,15 @@
 $(function () {
     $(document).ready(function () {
 
-        let boxGroup = $('#box-report-revenue-group');
-        let boxEmployee = $('#box-report-revenue-employee');
+        let boxGroup = $('#box-report-product-group');
+        let boxEmployee = $('#box-report-product-employee');
+        let boxProduct = $('#box-report-product-product');
+        let boxCategory = $('#box-report-product-category');
         let btnView = $('#btn-view');
-        let eleRevenue = $('#report-revenue-revenue');
-        let eleGrossProfit = $('#report-revenue-gross-profit');
-        let eleNetIncome = $('#report-revenue-net-income');
-        let $table = $('#table_report_revenue_list');
+        let eleRevenue = $('#report-product-revenue');
+        let eleGrossProfit = $('#report-product-gross-profit');
+        let eleNetIncome = $('#report-product-net-income');
+        let $table = $('#table_report_product_list');
 
         function loadDbl(data) {
             $table.DataTableDefault({
@@ -17,60 +19,39 @@ $(function () {
                         targets: 0,
                         class: 'w-5',
                         render: (data, type, row) => {
-                            return `<p>${row?.['sale_order']?.['employee_inherit']?.['code'] ? row?.['sale_order']?.['employee_inherit']?.['code'] : ''}</p>`;
+                            return `<p>${row?.['product']?.['code'] ? row?.['product']?.['code'] : ''}</p>`;
                         }
                     },
                     {
                         targets: 1,
-                        class: 'w-10',
+                        class: 'w-20',
                         render: (data, type, row) => {
-                            return `<p>${row?.['sale_order']?.['employee_inherit']?.['full_name'] ? row?.['sale_order']?.['employee_inherit']?.['full_name'] : ''}</p>`;
+                            return `<p>${row?.['product']?.['title'] ? row?.['product']?.['title'] : ''}</p>`;
                         }
                     },
                     {
                         targets: 2,
-                        class: 'w-5',
+                        class: 'w-15',
                         render: (data, type, row) => {
-                            return `<p>${row?.['sale_order']?.['code'] ? row?.['sale_order']?.['code'] : ''}</p>`;
+                            return `<p>${row?.['product']?.['general_product_category']?.['title'] ? row?.['product']?.['general_product_category']?.['title'] : ''}</p>`;
                         }
                     },
                     {
                         targets: 3,
-                        class: 'w-10',
-                        render: (data, type, row) => {
-                            return `<p>${moment(row?.['date_approved'] ? row?.['date_approved'] : '').format('DD/MM/YYYY')}</p>`;
-                        }
-                    },
-                    {
-                        targets: 4,
-                        class: 'w-5',
-                        render: (data, type, row) => {
-                            return `<p>${row?.['sale_order']?.['title'] ? row?.['sale_order']?.['title'] : ''}</p>`;
-                        }
-                    },
-                    {
-                        targets: 5,
-                        class: 'w-20',
-                        render: (data, type, row) => {
-                            return `<p>${row?.['sale_order']?.['customer']?.['title'] ? row?.['sale_order']?.['customer']?.['title'] : ''}</p>`;
-                        }
-                    },
-                    {
-                        targets: 6,
                         class: 'w-20',
                         render: (data, type, row) => {
                             return `<span class="mask-money table-row-revenue" data-init-money="${parseFloat(row?.['revenue'])}"></span>`;
                         }
                     },
                     {
-                        targets: 7,
+                        targets: 4,
                         class: 'w-20',
                         render: (data, type, row) => {
                             return `<span class="mask-money table-row-gross-profit" data-init-money="${parseFloat(row?.['gross_profit'])}"></span>`;
                         }
                     },
                     {
-                        targets: 8,
+                        targets: 5,
                         class: 'w-20',
                         render: (data, type, row) => {
                             return `<span class="mask-money table-row-net-income" data-init-money="${parseFloat(row?.['net_income'])}"></span>`;
@@ -87,12 +68,17 @@ $(function () {
         function loadBoxEmployee() {
             if (boxGroup.val()) {
                 boxEmployee.initSelect2({
-                    'dataParams': {'group_id__in': boxGroup.val().join(',')},
-                    'allowClear': true,
+                    'dataParams': {'group_id': boxGroup.val()},
+                    callbackTextDisplay: function (item) {
+                        return item?.['full_name'] || '';
+                    },
                 });
             } else {
                 boxEmployee.initSelect2({
                     'allowClear': true,
+                    callbackTextDisplay: function (item) {
+                        return item?.['full_name'] || '';
+                    },
                 });
             }
         }
@@ -155,12 +141,12 @@ $(function () {
         btnView.on('click', function () {
             let dataParams = {};
             if (boxGroup.val()) {
-                dataParams['group_inherit_id__in'] = boxGroup.val().join(',');
+                dataParams['group_inherit_id'] = boxGroup.val();
             }
             if (boxEmployee.val()) {
-                dataParams['employee_inherit_id__in'] = boxEmployee.val().join(',');
+                dataParams['employee_inherit_id'] = boxEmployee.val();
             }
-            let date = $('#report-revenue-date-approved').val();
+            let date = $('#report-product-date-approved').val();
             if (date) {
                 let dateStrings = date.split(' - ');
                 let dateStart = dateStrings[0] + " 00:00:00";
@@ -178,9 +164,9 @@ $(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        if (data.hasOwnProperty('report_revenue_list') && Array.isArray(data.report_revenue_list)) {
+                        if (data.hasOwnProperty('report_product_list') && Array.isArray(data.report_product_list)) {
                             $table.DataTable().clear().draw();
-                            $table.DataTable().rows.add(data.report_revenue_list).draw();
+                            $table.DataTable().rows.add(data.report_product_list).draw();
                             loadTotal();
                         }
                     }

@@ -31,3 +31,55 @@ class ReportRevenueListAPI(APIView):
         data = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.REPORT_REVENUE_LIST).get(data)
         return resp.auto_return(key_success='report_revenue_list')
+
+
+class ReportProductList(View):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        template='sales/report/report_product.html',
+        menu_active='',
+        breadcrumb='',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
+class ReportProductListAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.REPORT_PRODUCT_LIST).get(data)
+        return resp.auto_return(key_success='report_product_list')
+
+
+class ReportCustomerList(View):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        template='sales/report/report_customer.html',
+        menu_active='',
+        breadcrumb='',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
+class ReportCustomerListAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.REPORT_CUSTOMER_LIST).get(data)
+        return resp.auto_return(key_success='report_customer_list')

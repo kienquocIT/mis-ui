@@ -9,6 +9,7 @@ from django.contrib.auth.models import AnonymousUser
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
+from django.apps import apps
 
 from rest_framework import status
 from rest_framework.response import Response
@@ -23,6 +24,7 @@ from .utils import RandomGenerate
 
 __all__ = [
     'mask_view',
+    'OutLayoutRender',
 ]
 
 HEADERS_KEY_CACHED_ENABLE = 'HTTP_ENABLEXCACHECONTROL'
@@ -129,6 +131,17 @@ class ArgumentDecorator:
         return result
 
 
+class OutLayoutRender:
+    def __init__(self, request):
+        self.request = request
+
+    def render_404(self):
+        return render(self.request, 'extends/systems/out-layout/404.html', {})
+
+    def render_503(self):
+        return render(self.request, 'extends/systems/out-layout/503.html', {})
+
+
 def mask_view(**parent_kwargs):
     """mask func before api method call form client to UI"""
     # is_api: default False
@@ -140,6 +153,9 @@ def mask_view(**parent_kwargs):
 
         # pylint: disable=R0911
         def wrapper(self, request, *args, **kwargs):
+            if settings.IS_SERVER_MAINTAINING is True:
+                return OutLayoutRender(request=request).render_503()
+
             if settings.UI_ALLOW_AUTO_TENANT:
                 url_skip_check = ['/404', '/503', '/introduce', '/terms', '/help-and-support']
                 if request.path not in url_skip_check:
@@ -150,12 +166,16 @@ def mask_view(**parent_kwargs):
                             sub_code = sub_code[:-1]
 
                         if "*" not in settings.UI_SUB_ALLOWED and sub_code not in settings.UI_SUB_ALLOWED:
-                            return redirect(reverse('NotFoundView'))
+                            return OutLayoutRender(request=request).render_404()
 
                         if sub_code in settings.UI_SUB_DENIED:
-                            return redirect(reverse('NotFoundView'))
+                            return OutLayoutRender(request=request).render_404()
+
+                        tenant_cls = apps.get_model('account.tenant')
+                        if sub_code not in tenant_cls.all_code():
+                            return OutLayoutRender(request=request).render_404()
                     else:
-                        return redirect(reverse('NotFoundView'))
+                        return OutLayoutRender(request=request).render_404()
 
             ctx = {}
             pk = kwargs.get('pk', None)

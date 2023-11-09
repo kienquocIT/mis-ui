@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load static i18n %}
+{% load static i18n page_list %}
 
 {% block cssHeader %}
     <link rel="stylesheet" href="{% static 'builder/builder-style.css' %}">
@@ -11,55 +11,92 @@
             <div class="col-12 col-lg-6">
                 <div class="page-tree border border-light p-3 rounded shadow-sm">
                     <ul>
-                        <li>
-                            <span class="page-item">Home Page</span>
-                            <span class="badge badge-success badge-indicator badge-indicator-lg"></span>
-                            <button class="btn btn-xs btn-flush-primary">
-                                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                        <li class="d-flex align-items-center">
+                            <h5>{% trans 'Page List' %}</h5>
+                            <button class="btn btn-xs btn-soft-primary ml-3" id="idx-add-new-page">
+                                <i class="fa-solid fa-plus"></i>
                             </button>
                         </li>
                         <ul>
-                            <li>
-                                <span class="page-item">Page Chi Tiet</span>
-                                <span class="badge badge-success badge-indicator badge-indicator-lg"></span>
-                                <button class="btn btn-xs btn-flush-primary">
-                                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                                </button>
-                            </li>
-                            <li>
-                                <span class="page-item">Page Giỏ Hàng</span>
-                                <span class="badge badge-secondary badge-indicator badge-indicator-lg"></span>
-                                <button class="btn btn-xs btn-flush-primary">
-                                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                                </button>
-                            </li>
+                            {{ data.page_list|render_tree_page|safe }}
                         </ul>
                     </ul>
                 </div>
             </div>
             <div class="col-12 col-lg-6">
-                <form class="border border-light p-3 rounded shadow-sm">
+                <form
+                        id="frm-add-page"
+                        data-url="{% url 'AddNewCompanyWebsite' %}"
+                        data-method="POST"
+                        class="border border-light p-3 rounded shadow-sm"
+                >
+                    <h5>{% trans 'Add new' %} Page</h5>
                     <div class="form-group">
-                        <label for="idx-page-title" class="form-label">{% trans 'Name' %}</label>
-                        <input type="text" class="form-control" id="idx-page-title"/>
+                        <label for="add-page-name" class="form-label required">{% trans 'Name' %}</label>
+                        <input type="text" name="title" class="form-control" id="add-page-name"/>
                     </div>
                     <div class="form-group">
-                        <label for="idx-page-title" class="form-label">{% trans 'Remarks' %}</label>
-                        <input type="text" class="form-control"/>
+                        <label for="add-page-remarks" class="form-label">{% trans 'Remarks' %}</label>
+                        <input type="text" name="remarks" id="add-page-remarks" class="form-control"/>
                     </div>
                     <div class="form-group">
-                        <label for="idx-page-title" class="form-label">{% trans 'Page Title' %}</label>
-                        <input type="text" class="form-control"/>
+                        <label for="add-page-title" class="form-label required">{% trans 'Page Title' %}</label>
+                        <input type="text" name="page_title" id="add-page-title" class="form-control" required/>
                     </div>
                     <div class="form-group">
-                        <label for="" class="form-label">{% trans 'Path' %}</label>
-                        <input type="text" class="form-control"/>
+                        <label for="add-page-path" class="form-label required">{% trans 'Path' %}</label>
+                        <input type="text" name="page_path" id="add-page-path" class="form-control" required/>
+                        <small id="add-page-path" class="form-text text-muted">{% trans 'Fill id with {id}.' %}</small>
                     </div>
                     <div class="form-group">
                         <div class="form-check form-check-sm">
-                            <input type="checkbox" class="form-check-input" checked>
-                            <label class="form-check-label" for="">{% trans 'Publish' %}</label>
+                            <input type="checkbox" id="add-page-publish" name="is_publish" class="form-check-input">
+                            <label class="form-check-label" for="add-page-publish">{% trans 'Publish' %}</label>
                         </div>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">{% trans 'Add' %}</button>
+                    </div>
+                </form>
+                <form
+                        id="frm-edit-page"
+                        data-base-url-add="{% url 'MyCompanyWebsiteDetailAPI' pk='__pk__' %}"
+                        data-url=""
+                        data-method="PUT"
+                        class="d-none border border-light p-3 rounded shadow-sm"
+                >
+                    <h5>{% trans 'Edit' %} Page</h5>
+                    <div class="form-group">
+                        <label for="edit-page-name" class="form-label required">{% trans 'Name' %}</label>
+                        <input type="text" name="title" class="form-control" id="edit-page-name" required/>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-page-remarks" class="form-label">{% trans 'Remarks' %}</label>
+                        <input type="text" name="remarks" id="edit-page-remarks" class="form-control"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-page-title" class="form-label required">{% trans 'Page Title' %}</label>
+                        <input type="text" name="page_title" id="edit-page-title" class="form-control" required/>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-page-path" class="form-label required">{% trans 'Path' %}</label>
+                        <input type="text" name="page_path" id="edit-page-path" class="form-control" required/>
+                        <small id="edit-page-path" class="form-text text-muted">{% trans 'Fill id with {id}.' %}</small>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-check form-check-sm">
+                            <input
+                                    type="checkbox" id="edit-page-publish" name="is_publish" class="form-check-input"
+                                    checked
+                            >
+                            <label class="form-check-label" for="edit-page-publish">{% trans 'Publish' %}</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">{% trans 'Save' %}</button>
+                        <button
+                                type="button" class="btn btn-secondary" id="idx-btn-delete"
+                        >{% trans 'Delete' %}</button>
                     </div>
                 </form>
             </div>
@@ -69,8 +106,184 @@
 
 {% block jsFooter %}
     <script>
+        let frmAddPage = $("#frm-add-page");
+        let frmEditPage = $("#frm-edit-page");
+
+        function resetInputForm(frm, data) {
+            frm.find('input[name="title"]').val(data ? data['title'] || "" : "");
+            frm.find('input[name="is_publish"]').prop('checked', data ? data['is_publish'] || false : false);
+            frm.find('input[name="page_path"]').val(data ? data['page_path'] || "" : "");
+            frm.find('input[name="page_title"]').val(data ? data['page_title'] || "" : "");
+            frm.find('input[name="remarks"]').val(data ? data['remarks'] || "" : "");
+        }
+
+        function openEdit(data) {
+            frmAddPage.addClass('d-none');
+            frmEditPage.removeClass('d-none');
+            resetInputForm(frmEditPage, data);
+
+            let baseUrl = frmEditPage.attr('data-base-url-add');
+            frmEditPage.attr('data-url', baseUrl.replaceAll('__pk__', data['id']));
+        }
+
+        function openAdd() {
+            frmAddPage.removeClass('d-none');
+            frmEditPage.addClass('d-none');
+            resetInputForm(frmAddPage);
+        }
+
         $('.page-item').on('click', function () {
-            $('#idx-page-title').val($(this).text())
+            let data = JSON.parse($(this).siblings('.page-item-data').text());
+            openEdit(data && typeof data === 'object' ? data : {});
+        });
+
+        $('#idx-add-new-page').on('click', function () {
+            openAdd();
+        });
+
+
+        SetupFormSubmit.validate(frmAddPage, {
+            rules: {
+                // simple rule, converted to {required:true}
+                title: {
+                    required: true,
+                    maxlength: 100,
+                    minlength: 1,
+                },
+                remarks: {
+                    maxlength: 250,
+                },
+                page_path: {
+                    required: true,
+                    maxlength: 200,
+                    minlength: 1,
+                },
+                page_title: {
+                    required: true,
+                    maxlength: 100,
+                    minlength: 1,
+                },
+            },
+            submitHandler: function (form, event) {
+                $x.fn.showLoadingPage();
+                let frm = new SetupFormSubmit(form);
+                let data = {
+                    ...frm.dataForm,
+                    'is_publish': $(form).find('input[name="is_publish"]').prop('checked'),
+                }
+                $.fn.callAjax2({
+                    url: frm.dataUrl,
+                    method: frm.dataMethod,
+                    data: data,
+                }).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        $.fn.notifyB({
+                            'description': $.fn.transEle.attr('data-success'),
+                        }, 'success');
+                        if (data['status'] === 200) setTimeout(() => {
+                            $x.fn.hideLoadingPage();
+                            window.location.reload();
+                        }, 1000);
+                    },
+                    (errs) => {
+                        $x.fn.hideLoadingPage();
+                    }
+                )
+                return false;
+            }
+        });
+
+        SetupFormSubmit.validate(frmEditPage, {
+            rules: {
+                // simple rule, converted to {required:true}
+                title: {
+                    required: true,
+                    maxlength: 100,
+                    minlength: 1,
+                },
+                remarks: {
+                    maxlength: 250,
+                },
+                page_path: {
+                    required: true,
+                    maxlength: 200,
+                    minlength: 1,
+                },
+                page_title: {
+                    required: true,
+                    maxlength: 100,
+                    minlength: 1,
+                },
+            },
+            submitHandler: function (form, event) {
+                $x.fn.showLoadingPage();
+                let frm = new SetupFormSubmit(form);
+                let data = {
+                    ...frm.dataForm,
+                    'is_publish': $(form).find('input[name="is_publish"]').prop('checked'),
+                }
+                $.fn.callAjax2({
+                    url: frm.dataUrl,
+                    method: frm.dataMethod,
+                    data: data,
+                }).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        $.fn.notifyB({
+                            'description': $.fn.transEle.attr('data-success'),
+                        }, 'success');
+                        if (data['status'] === 200) setTimeout(() => {
+                            $x.fn.hideLoadingPage();
+                            window.location.reload();
+                        }, 1000);
+                    },
+                    (errs) => {
+                        $x.fn.hideLoadingPage();
+                    }
+                )
+            }
+        });
+
+        $('#idx-btn-delete').on('click', function () {
+            let page_title = $(this).closest('form').find('input[name="title"]').val();
+            Swal.fire({
+                title: $.fn.transEle.attr('data-sure-delete'),
+                text: page_title,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: $.fn.transEle.attr('data-msg-yes-delete-it'),
+                cancelButtonText: $.fn.transEle.data('cancel'),
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $x.fn.showLoadingPage();
+                    $.fn.callAjax2({
+                        url: frmEditPage.attr('data-url'),
+                        method: 'DELETE',
+                    }).then(
+                        (resp) => {
+                            let data = $.fn.switcherResp(resp);
+                            $.fn.notifyB({
+                                'description': $.fn.transEle.attr('data-success'),
+                            }, 'success');
+                            if (data['status'] === 200) setTimeout(() => {
+                                $x.fn.hideLoadingPage();
+                                window.location.reload();
+                            }, 1000);
+                        },
+                        (errs) => {
+                            $x.fn.hideLoadingPage();
+                        }
+                    )
+                }
+            })
         })
+
+        $(".open-page-design").on('click', function (){
+            let data = JSON.parse($(this).siblings('.page-item-data').text());
+            console.log(data);
+        });
     </script>
 {% endblock %}

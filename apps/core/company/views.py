@@ -1,8 +1,8 @@
+from django.conf import settings
 from django.views import View
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from apps.shared import mask_view, ApiURL, ServerAPI, ServerMsg, TypeCheck
+from apps.shared import mask_view, ApiURL, ServerAPI, TypeCheck
 
 
 class CompanyList(View):
@@ -13,7 +13,10 @@ class CompanyList(View):
         menu_active='menu_company_list',
     )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        ctx = {
+            'ui_domain': settings.UI_DOMAIN
+        }
+        return ctx, status.HTTP_200_OK
 
 
 class CompanyListAPI(APIView):

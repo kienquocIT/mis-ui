@@ -1,4 +1,4 @@
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views import View
 from rest_framework import status
@@ -33,6 +33,25 @@ class HomeView(View):
             if resp.state is True:
                 return {'employee_current_data': employee_current_data}, status.HTTP_200_OK
         return redirect(reverse('LandingPageView'))
+
+
+class OutLayoutNotFoundView(View):
+    def get(self, request, *args, **kwargs):
+        return render(request, 'extends/systems/out-layout/404.html', {})
+
+
+class OutLayoutServerOff(View):
+    def get(self, request, *args, **kwargs):
+        return render(request, 'extends/systems/out-layout/503.html', {})
+
+
+class TenantDisabledView(View):
+    @mask_view(
+        login_require=True, auth_require=False,
+        template='extends/systems/404.html',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
 
 
 class NotFoundView(View):

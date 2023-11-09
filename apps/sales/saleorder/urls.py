@@ -4,7 +4,7 @@ from apps.sales.saleorder.views import (
     SaleOrderCreate, SaleOrderList, SaleOrderListAPI, SaleOrderDetail,
     SaleOrderDetailAPI, SaleOrderExpenseListAPI, SaleOrderDetailDeliveryAPI, SaleOrderConfigDetail,
     SaleOrderConfigDetailAPI, SaleOrderIndicatorListAPI, SaleOrderIndicatorDetailAPI, SaleOrderIndicatorRestoreAPI,
-    ProductListSaleOrderAPI, SaleOrderUpdate, SaleOrderListForCashOutflowAPI, SaleOrderPurchasingStaffListAPI,
+    ProductListSaleOrderAPI, SaleOrderUpdate, SaleOrderPurchasingStaffListAPI
 )
 
 urlpatterns = [
@@ -15,7 +15,6 @@ urlpatterns = [
     path('indicator-restore-api/<str:pk>', SaleOrderIndicatorRestoreAPI.as_view(), name='SaleOrderIndicatorRestoreAPI'),
 
     path('lists', SaleOrderList.as_view(), name='SaleOrderList'),
-    path('list-for-cashoutflow', SaleOrderListForCashOutflowAPI.as_view(), name='SaleOrderListForCashOutflowAPI'),
     path('api/lists', SaleOrderListAPI.as_view(), name='SaleOrderListAPI'),
     path('create', SaleOrderCreate.as_view(), name='SaleOrderCreate'),
     path('detail/<str:pk>', SaleOrderDetail.as_view(), name='SaleOrderDetail'),

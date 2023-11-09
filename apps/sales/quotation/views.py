@@ -78,17 +78,6 @@ class QuotationListAPI(APIView):
         )
 
 
-class QuotationListForCashOutflowAPI(APIView):
-    @mask_view(
-        auth_require=True,
-        is_api=True,
-    )
-    def get(self, request, *args, **kwargs):
-        data = request.query_params.dict()
-        resp = ServerAPI(user=request.user, url=ApiURL.QUOTATION_LIST_FOR_CASH_OUTFLOW).get(data)
-        return resp.auto_return(key_success='quotation_list')
-
-
 class QuotationDetail(View):
     permission_classes = [IsAuthenticated]
 

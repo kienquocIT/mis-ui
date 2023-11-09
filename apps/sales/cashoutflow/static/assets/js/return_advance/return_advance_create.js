@@ -64,7 +64,7 @@ $(function () {
                 frm.dataForm['return_total'] = $('#total-value').attr('data-init-money');
 
                 frm.dataForm['advance_payment'] = $('#chooseAdvancePayment').val();
-                frm.dataForm['employee_inherit_id'] = $('#chooseBeneficiary').val();
+                frm.dataForm['employee_inherit'] = $('#chooseBeneficiary').val();
 
                 $.fn.callAjax2({
                     'url': frm.dataUrl,

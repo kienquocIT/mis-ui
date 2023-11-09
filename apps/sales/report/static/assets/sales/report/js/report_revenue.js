@@ -84,19 +84,6 @@ $(function () {
             });
         }
 
-        function loadBoxEmployee() {
-            if (boxGroup.val()) {
-                boxEmployee.initSelect2({
-                    'dataParams': {'group_id__in': boxGroup.val().join(',')},
-                    'allowClear': true,
-                });
-            } else {
-                boxEmployee.initSelect2({
-                    'allowClear': true,
-                });
-            }
-        }
-
         function loadTotal() {
             let newRevenue = 0;
             let newGrossProfit = 0;
@@ -120,8 +107,21 @@ $(function () {
             eleGrossProfit.attr('data-init-money', String(newGrossProfit));
             eleNetIncome.attr('data-init-money', String(newNetIncome));
         }
-
         loadDbl();
+
+        function loadBoxEmployee() {
+            boxEmployee.empty();
+            if (boxGroup.val()) {
+                boxEmployee.initSelect2({
+                    'dataParams': {'group_id__in': boxGroup.val().join(',')},
+                    'allowClear': true,
+                });
+            } else {
+                boxEmployee.initSelect2({
+                    'allowClear': true,
+                });
+            }
+        }
 
         boxGroup.initSelect2({'allowClear': true,});
         loadBoxEmployee();
@@ -141,7 +141,6 @@ $(function () {
 
         // Events
         boxGroup.on('change', function() {
-            boxEmployee.empty();
             loadBoxEmployee();
             $table.DataTable().clear().draw();
             loadTotal();

@@ -65,24 +65,6 @@ $(function () {
             });
         }
 
-        function loadBoxEmployee() {
-            if (boxGroup.val()) {
-                boxEmployee.initSelect2({
-                    'dataParams': {'group_id': boxGroup.val()},
-                    callbackTextDisplay: function (item) {
-                        return item?.['full_name'] || '';
-                    },
-                });
-            } else {
-                boxEmployee.initSelect2({
-                    'allowClear': true,
-                    callbackTextDisplay: function (item) {
-                        return item?.['full_name'] || '';
-                    },
-                });
-            }
-        }
-
         function loadTotal() {
             let newRevenue = 0;
             let newGrossProfit = 0;
@@ -106,10 +88,39 @@ $(function () {
             eleGrossProfit.attr('data-init-money', String(newGrossProfit));
             eleNetIncome.attr('data-init-money', String(newNetIncome));
         }
-
         loadDbl();
 
+        function loadBoxEmployee() {
+            boxEmployee.empty();
+            if (boxGroup.val()) {
+                boxEmployee.initSelect2({
+                    'dataParams': {'group_id__in': boxGroup.val().join(',')},
+                    'allowClear': true,
+                });
+            } else {
+                boxEmployee.initSelect2({
+                    'allowClear': true,
+                });
+            }
+        }
+
+        function loadBoxProduct() {
+            boxProduct.empty();
+            if (boxCategory.val()) {
+                boxProduct.initSelect2({
+                    'dataParams': {'category_id__in': boxCategory.val().join(',')},
+                    'allowClear': true,
+                });
+            } else {
+                boxProduct.initSelect2({
+                    'allowClear': true,
+                });
+            }
+        }
+
         boxGroup.initSelect2({'allowClear': true,});
+        boxProduct.initSelect2({'allowClear': true,});
+        boxCategory.initSelect2({'allowClear': true,});
         loadBoxEmployee();
 
         // run datetimepicker
@@ -127,7 +138,6 @@ $(function () {
 
         // Events
         boxGroup.on('change', function() {
-            boxEmployee.empty();
             loadBoxEmployee();
             $table.DataTable().clear().draw();
             loadTotal();
@@ -138,13 +148,24 @@ $(function () {
             loadTotal();
         });
 
+        boxCategory.on('change', function() {
+            loadBoxProduct();
+            $table.DataTable().clear().draw();
+            loadTotal();
+        });
+
+        boxProduct.on('change', function() {
+            $table.DataTable().clear().draw();
+            loadTotal();
+        });
+
         btnView.on('click', function () {
             let dataParams = {};
             if (boxGroup.val()) {
-                dataParams['group_inherit_id'] = boxGroup.val();
+                dataParams['group_inherit_id__in'] = boxGroup.val().join(',');
             }
             if (boxEmployee.val()) {
-                dataParams['employee_inherit_id'] = boxEmployee.val();
+                dataParams['employee_inherit_id__in'] = boxEmployee.val().join(',');
             }
             let date = $('#report-product-date-approved').val();
             if (date) {

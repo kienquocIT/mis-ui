@@ -13,7 +13,7 @@ class ReportRevenueList(View):
     @mask_view(
         auth_require=True,
         template='sales/report/report_revenue.html',
-        menu_active='',
+        menu_active='menu_report_revenue_list',
         breadcrumb='',
     )
     def get(self, request, *args, **kwargs):
@@ -39,7 +39,7 @@ class ReportProductList(View):
     @mask_view(
         auth_require=True,
         template='sales/report/report_product.html',
-        menu_active='',
+        menu_active='menu_report_product_list',
         breadcrumb='',
     )
     def get(self, request, *args, **kwargs):
@@ -65,7 +65,7 @@ class ReportCustomerList(View):
     @mask_view(
         auth_require=True,
         template='sales/report/report_customer.html',
-        menu_active='',
+        menu_active='menu_report_customer_list',
         breadcrumb='',
     )
     def get(self, request, *args, **kwargs):

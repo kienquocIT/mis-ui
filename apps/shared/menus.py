@@ -378,13 +378,13 @@ class MenusReport:
                 name='Product Report',
                 code='menu_report_product_list',
                 view_name='ReportProductList',
-                icon='<i class="fas fa-file-invoice-dollar"></i>',
+                icon='<i class="fas fa-box-open"></i>',
             ),
             MenuCommon(
                 name='Customer Report',
                 code='menu_report_customer_list',
                 view_name='ReportCustomerList',
-                icon='<i class="fas fa-file-invoice-dollar"></i>',
+                icon='<i class="fas fa-user-tie"></i>',
             ),
         ],
     )

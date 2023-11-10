@@ -23,15 +23,14 @@
         <table id="datatable_payment_list" class="table nowrap w-100 mb-5" data-method="GET"
                data-url="{% url 'PaymentListAPI' %}"
                data-url-detail="{% url 'PaymentDetail' '0' %}"
-               data-type-translate-approved="{% trans 'Approved' %}"
-        >
+               data-type-translate-approved="{% trans 'Approved' %}">
             <thead>
-            <th></th>
-            <th>{% trans "Code" %}</th>
-            <th>{% trans "Name" %}</th>
-            <th>{% trans "Created date" %}</th>
-            <th>{% trans "Payment value" %}</th>
-            <th>{% trans "Status" %}</th>
+                <th></th>
+                <th>{% trans "Code" %}</th>
+                <th>{% trans "Name" %}</th>
+                <th>{% trans "Created date" %}</th>
+                <th>{% trans "Payment value" %}</th>
+                <th>{% trans "Status" %}</th>
             </thead>
         </table>
     </div>

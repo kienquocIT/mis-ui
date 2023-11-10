@@ -939,13 +939,13 @@ class AdvancePaymentHandle {
         let opportunity_mapped = opp_mapped_select.val();
         let quotation_mapped = quotation_mapped_select.val();
         let sale_order_mapped = sale_order_mapped_select.val();
-        if (opportunity_mapped !== null) {
+        if (opportunity_mapped !== null && opportunity_mapped !== '') {
             frm.dataForm['opportunity_mapped'] = opp_mapped_select.val();
         }
-        else if (quotation_mapped !== null) {
+        else if (quotation_mapped !== null && quotation_mapped !== '') {
             frm.dataForm['quotation_mapped'] = quotation_mapped_select.val();
         }
-        else if (sale_order_mapped !== null) {
+        else if (sale_order_mapped !== null && sale_order_mapped !== '') {
             frm.dataForm['sale_order_mapped'] = sale_order_mapped_select.val();
         }
         else {

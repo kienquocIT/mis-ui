@@ -1,6 +1,4 @@
-const traitInputAttr = { placeholder: 'eg. Text here' };
-
-export default {
+const localeEn = {
   assetManager: {
     addButton: 'Add image',
     inputPlh: 'http://path/to/the/image.jpg',
@@ -146,9 +144,9 @@ export default {
       },
       // In a simple trait, like text input, these are used on input attributes
       attributes: {
-        id: traitInputAttr,
-        alt: traitInputAttr,
-        title: traitInputAttr,
+        id: { placeholder: 'eg. Text here' },
+        alt: { placeholder: 'eg. Text here' },
+        title: { placeholder: 'eg. Text here' },
         href: { placeholder: 'eg. https://google.com' },
       },
       // In a trait like select, these are used to translate option names

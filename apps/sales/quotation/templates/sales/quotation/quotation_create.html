@@ -420,7 +420,7 @@
                                         <label class="form-label">{% trans 'Shipping Address' %}
                                             <button type="button" class="btn btn-icon btn-rounded flush-soft-hover" data-bs-toggle="modal" data-bs-target="#shippingModalCenter"><span class="icon"><i class="fa-regular fa-pen-to-square"></i></span></button>
                                         </label>
-                                        <textarea class="form-control" rows="3" cols="50" name="" id="quotation-create-shipping-address"></textarea>
+                                        <textarea class="form-control" rows="3" cols="50" name="" id="quotation-create-shipping-address" disabled></textarea>
                                         <input type="hidden" id="quotation-create-customer-shipping">
                                     </div>
                                     <div
@@ -453,7 +453,7 @@
                                         <label class="form-label">{% trans 'Billing Address' %}
                                             <button type="button" class="btn btn-icon btn-rounded flush-soft-hover" data-bs-toggle="modal" data-bs-target="#billingModalCenter"><span class="icon"><i class="fa-regular fa-pen-to-square"></i></span></button>
                                         </label>
-                                        <textarea class="form-control" rows="3" cols="50" name="" id="quotation-create-billing-address"></textarea>
+                                        <textarea class="form-control" rows="3" cols="50" name="" id="quotation-create-billing-address" disabled></textarea>
                                         <input type="hidden" id="quotation-create-customer-billing">
                                     </div>
                                     <div
@@ -732,10 +732,10 @@
                         <div class="col-2">
                             <button
                                     type="button"
-                                    class="btn btn-soft-primary"
+                                    class="btn btn-outline-primary"
                                     id="btn-refresh-quotation-indicator"
                             >
-                            <span><span class="icon"><span class="feather-icon"><i class="fa-solid fa-arrows-rotate"></i></span></span><span>{% trans 'Refresh data' %}</span></span>
+                            <span><span>{% trans 'Refresh data' %}</span><span class="icon"><span class="feather-icon"><i class="fas fa-sync-alt"></i></span></span></span>
                             </button>
                         </div>
                         <div class="col-10"></div>

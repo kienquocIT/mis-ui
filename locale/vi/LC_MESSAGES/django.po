@@ -4768,3 +4768,43 @@ msgstr "Điều chỉnh"
 #
 msgid "Adjust date"
 msgstr "Ngày điều chỉnh"
+
+#
+msgid "Are you sure to clean the canvas?"
+msgstr "Bạn chắc chắn muốn làm trống trình soạn thảo?"
+
+#
+msgid "Are you sure to save it?"
+msgstr "Bạn chắc chắn muốn lưu?"
+
+#
+msgid "Show Borders"
+msgstr "Hiển thị đường viền"
+
+#
+msgid "Preview"
+msgstr "Xem trước"
+
+#
+msgid "Fullscreen"
+msgstr "Toàn màn hình"
+
+#
+msgid "Export"
+msgstr "Xuất bản"
+
+#
+msgid "Undo"
+msgstr "Hoàn tác"
+
+#
+msgid "Redo"
+msgstr "Làm lại"
+
+#
+msgid "Import"
+msgstr "Đưa vào"
+
+#
+msgid "Clear canvas"
+msgstr "Làm trống soạn thảo"

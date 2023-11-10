@@ -41,6 +41,11 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     USER_RESET_PASSWORD = StringUrl('account/user/reset-password/{pk}')
     LANGUAGE_CHANGE = 'auth/language'
 
+    # web / page builder
+    BUILDER_PAGE_LIST = StringUrl('site/page-list')
+    BUILDER_PAGE_DETAIL = StringUrl('site/page/{pk}')
+    BUILDER_PAGE_VIEWER = StringUrl('site/page/{tenant_id}/{company_id}/{path_sub}/viewer')
+
     # attachment
     MEDIA_ACCESS_TOKEN = StringUrl('hr/employee/media-token')
     MEDIA_UPLOAD_FILE = StringUrl('f/files')
@@ -415,3 +420,5 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # Report
     REPORT_REVENUE_LIST = StringUrl('report/revenue/list')
+    REPORT_PRODUCT_LIST = StringUrl('report/product/list')
+    REPORT_CUSTOMER_LIST = StringUrl('report/customer/list')

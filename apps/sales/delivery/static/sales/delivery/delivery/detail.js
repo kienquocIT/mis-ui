@@ -111,6 +111,14 @@ $(async function () {
                                 if (val?.['serial_data']) {
                                     item['serial_data'] = val?.['serial_data'];
                                 }
+                            } else {
+                                item['stock_amount'] = item?.['picked_ready'];
+                                if (prod_data.picked_quantity) {
+                                    item['picked'] = prod_data?.['picked_quantity'];
+                                }
+                                if (prod_data?.['uom_data']) {
+                                    item['uom_so'] = prod_data?.['uom_data'];
+                                }
                             }
                         }
                         // change column name stock -> picked
@@ -144,6 +152,14 @@ $(async function () {
                                     }
                                     if (val?.['serial_data']) {
                                         item['serial_data'] = val?.['serial_data'];
+                                    }
+                                } else {
+                                    item['stock_amount'] = item?.['picked_ready'];
+                                    if (prod_data.picked_quantity) {
+                                        item['picked'] = prod_data?.['picked_quantity'];
+                                    }
+                                    if (prod_data?.['uom_data']) {
+                                        item['uom_so'] = prod_data?.['uom_data'];
                                     }
                                 }
                             }

@@ -20,6 +20,12 @@
     </a>
 {% endblock %}
 {% block pageContent %}
+    <script id="script-url"
+            data-url-opp-list="{% url "OpportunityListAPI" %}"
+            data-url-quo-list="{% url "QuotationListAPI" %}"
+            data-url-so-list="{% url "SaleOrderListAPI" %}"
+    >
+    </script>
     <div id="section-advance-list">
         <table id="datatable_advance_list" class="table nowrap w-100 mb-5" data-method="GET"
                data-url="{% url 'AdvancePaymentListAPI' %}"
